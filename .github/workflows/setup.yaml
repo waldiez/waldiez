@@ -36,6 +36,7 @@ jobs:
 
       - name: patch package.json
         run: |
+          bun install
           bun run ci:patch
 
       - name: Setup Node.js
