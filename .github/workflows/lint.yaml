@@ -19,7 +19,6 @@
       with:
         os: ${{ matrix.os }}
         python-version: ${{ matrix.python-version }}
-        node-version: "20"
 
     test:
       needs: setup
