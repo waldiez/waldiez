@@ -17,7 +17,7 @@ repos:
     hooks:
       - id: lint-py
         name: Lint Py
-        entry: python scripts/_py/lint.py
+        entry: make lint-py
         types: [python]
         language: system
         pass_filenames: false
