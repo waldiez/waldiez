@@ -55,7 +55,9 @@
         "version:check": "bun scripts/version.ts --check",
         "all:py": "bun requirements:py && bun format:py && bun lint:py && bun test:py && bun docs:py && bun build:py",
         "all:ts": "bun requirements:ts && bun format:ts && bun lint:ts && bun test:ts && bun docs:ts && bun build:ts",
-        "all": "bun version:check && bun all:ts && bun all:py"
+        "all": "bun version:check && bun all:ts && bun all:py",
+        "ci:patch": "bun scripts/ci/pm.ts --patch",
+        "ci:rollback": "node --import=tsx scripts/ci/pm --rollback"
     },
     "packages": {
         "py": [
