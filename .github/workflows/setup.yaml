@@ -36,9 +36,9 @@ jobs:
 
       - name: Temporarily switch package manager to Yarn
         run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
+          if [ "${{ inputs.os }}" = "windows-latest" ]; then
             powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"${{ env.YARN_VERSION }}\"' | Set-Content package.json"
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+          elif [ "${{ inputs.os }}" = "macos-latest" ]; then
             sed -i '' -E 's/"packageManager":\s*"[^"]*"/"packageManager": \"${{ env.YARN_VERSION }}\"/' package.json
           else
             sed -i.bak -E 's/"packageManager":\s*"[^"]*"/"packageManager": \"${{ env.YARN_VERSION }}\"/' package.json
@@ -56,9 +56,9 @@ jobs:
 
       - name: Revert package manager to Bun
         run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
+          if [ "${{ inputs.os }}" = "windows-latest" ]; then
             powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"${{ env.BUN_VERSION }}\"' | Set-Content package.json"
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+          elif [ "${{ inputs.os }}" = "macos-latest" ]; then
             sed -i '' -E 's/"packageManager":\s*"[^"]*"/"packageManager": \"${{ env.BUN_VERSION }}\"/' package.json
           else
             mv package.json.bak package.json
