@@ -59,5 +59,16 @@ jobs:
           uv sync --all-packages
           bun run requirements:py
 
-      - name: Run Tests
+      - name: Run tests on ubuntu-latest
+        run: |
+          sudo apt update && sudo apt install -y xvfb libasound2t64 libgbm1 libgtk-3-0t64 libnss3 lcov > /dev/null 2>&1 || true
+          xvfb-run -a bun run test
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Run tests on windows-latest
         run: bun run test
+        if: matrix.os == 'windows-latest'
+
+      - name: Run tests on macos-latest
+        run: bun run test
+        if: matrix.os == 'macos-latest'
