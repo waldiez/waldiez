@@ -32,7 +32,7 @@ jobs:
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"yarn@4.5.3\"' | Set-Content package.json"
           else
-            sed -i.bak 's/"packageManager":\\s*"[^"]*"/"packageManager": "yarn@4.5.3"/' package.json
+            sed -i.bak -E 's/"packageManager":\s*"[^"]*"/"packageManager": "yarn@4.5.3"/' package.json
           fi
       - name: Setup Node.js
         uses: actions/setup-node@v4
