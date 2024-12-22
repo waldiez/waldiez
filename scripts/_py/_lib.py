@@ -21,6 +21,7 @@ import shutil
 import subprocess  # nosemgrep # nosec
 import sys
 from functools import cache
+from importlib.metadata import version as package_version
 from pathlib import Path
 from typing import Generator, List, NamedTuple
 
@@ -76,23 +77,20 @@ def get_python_projects() -> Generator[Path, None, None]:
         yield project.parent
 
 
-def ensure_command_exists(command: str) -> None:
-    """Ensure a command exists.
+def ensure_package_exists(package_name: str) -> None:
+    """Ensure a package exists.
 
     Parameters
     ----------
-    command : str
-        Command to check.
-
-    Raises
-    ------
-    RuntimeError
-        If the command is not installed.
+    package_name : str
+        Name of the package to ensure exists.
     """
-    if not shutil.which(command):
-        run_command([sys.executable, "-m", "pip", "install", command])
-    if not shutil.which(command):
-        raise RuntimeError(f"{command} is not installed.")
+    # can't we check if installed?
+    if not shutil.which(package_name):
+        try:
+            package_version(package_name)
+        except BaseException:  # pylint: disable=broad-except
+            run_command([sys.executable, "-m", "pip", "install", package_name])
 
 
 def run_isort(in_dir: Path, fix: bool) -> None:
@@ -105,7 +103,7 @@ def run_isort(in_dir: Path, fix: bool) -> None:
     fix : bool
         Whether to fix the imports.
     """
-    ensure_command_exists("isort")
+    ensure_package_exists("isort")
     args = [sys.executable, "-m", "isort"]
     if not fix:
         args.append("--check-only")
@@ -123,7 +121,7 @@ def run_black(in_dir: Path, fix: bool) -> None:
     fix : bool
         Whether to fix the formatting.
     """
-    ensure_command_exists("black")
+    ensure_package_exists("black")
     args = [sys.executable, "-m", "black", "--config", "pyproject.toml"]
     if not fix:
         args.append("--check")
@@ -139,7 +137,7 @@ def run_mypy(in_dir: Path) -> None:
     in_dir : Path
         Directory to run mypy in.
     """
-    ensure_command_exists("mypy")
+    ensure_package_exists("mypy")
     run_command(
         [sys.executable, "-m", "mypy", "--config", "pyproject.toml", "."],
         cwd=in_dir,
@@ -154,7 +152,7 @@ def run_flake8(in_dir: Path) -> None:
     in_dir : Path
         Directory to run flake8 in.
     """
-    ensure_command_exists("flake8")
+    ensure_package_exists("flake8")
     run_command(
         [sys.executable, "-m", "flake8", "--config", ".flake8", "."],
         cwd=in_dir,
@@ -169,7 +167,7 @@ def run_pydocstyle(in_dir: Path) -> None:
     in_dir : Path
         Directory to run pydocstyle in.
     """
-    ensure_command_exists("pydocstyle")
+    ensure_package_exists("pydocstyle")
     run_command(
         [sys.executable, "-m", "pydocstyle", "--config", "pyproject.toml", "."],
         cwd=in_dir,
@@ -184,7 +182,7 @@ def run_bandit(in_dir: Path) -> None:
     in_dir : Path
         Directory to run bandit in.
     """
-    ensure_command_exists("bandit")
+    ensure_package_exists("bandit")
     run_command(
         [sys.executable, "-m", "bandit", "-r", "-c", "pyproject.toml", "."],
         cwd=in_dir,
@@ -199,7 +197,7 @@ def run_yamllint(in_dir: Path) -> None:
     in_dir : Path
         Directory to run yamllint in.
     """
-    ensure_command_exists("yamllint")
+    ensure_package_exists("yamllint")
     run_command(
         [sys.executable, "-m", "yamllint", "-c", ".yamllint.yaml", "."],
         cwd=in_dir,
@@ -216,7 +214,7 @@ def run_ruff(in_dir: Path, fix: bool) -> None:
     fix : bool
         Whether to fix the formatting.
     """
-    ensure_command_exists("ruff")
+    ensure_package_exists("ruff")
     args = [sys.executable, "-m", "ruff"]
     if not fix:
         args.append("check")
@@ -235,7 +233,7 @@ def run_autoflake(in_dir: Path) -> None:
     in_dir : Path
         Directory to run autoflake in.
     """
-    ensure_command_exists("autoflake")
+    ensure_package_exists("autoflake")
     run_command(
         [
             sys.executable,
@@ -258,25 +256,11 @@ def run_pylint(in_dir: Path) -> None:
     in_dir : Path
         Directory to run pylint in.
     """
-    ensure_command_exists("pylint")
+    ensure_package_exists("pylint")
     run_command(
         [sys.executable, "-m", "pylint", "--rcfile=pyproject.toml", "."],
         cwd=in_dir,
     )
-
-
-def run_eclint() -> None:
-    """Run eclint.
-
-    https://gitlab.com/greut/eclint
-    go install gitlab.com/greut/eclint/cmd/eclint
-    """
-    try:
-        ensure_command_exists("eclint")
-    except RuntimeError:
-        return
-    os.chdir(ROOT_DIR)
-    run_command(["eclint", "-v", "2"])
 
 
 class ImageConfig(NamedTuple):

@@ -25,7 +25,6 @@ try:
         run_bandit,
         run_black,
         run_command,
-        run_eclint,
         run_flake8,
         run_isort,
         run_mypy,
@@ -42,7 +41,6 @@ except ImportError:
         run_bandit,
         run_black,
         run_command,
-        run_eclint,
         run_flake8,
         run_isort,
         run_mypy,
@@ -66,8 +64,6 @@ def lint_root() -> None:
     run_yamllint(in_dir=ROOT_DIR)
     run_ruff(in_dir=ROOT_DIR, fix=False)
     run_pylint(in_dir=ROOT_DIR)
-    if "--eclint" in sys.argv:
-        run_eclint()
 
 
 def lint_package(package_dir: Path) -> None:
