@@ -27,6 +27,13 @@ jobs:
           python-version: ${{ inputs.python-version }}
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
+      - name: Temporarily switch package manager to Yarn
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"yarn@4.5.3\"' | Set-Content package.json"
+          else
+            sed -i.bak 's/"packageManager":\\s*"[^"]*"/"packageManager": "yarn@4.5.3"/' package.json
+          fi
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -35,7 +42,15 @@ jobs:
           node-version: '20'
       - name: Install corepack and yarn
         run: |
-          corepack install -g
+          corepack enable
+          yarn set version stable
+      - name: Revert package manager to Bun
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"bun@1.1.42\"' | Set-Content package.json"
+          else
+            mv package.json.bak package.json
+          fi
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
       - name: Install dependencies
