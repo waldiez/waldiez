@@ -137,5 +137,6 @@ try {
      Write-Host "Failed to update pip. Please check your Python installation."
      exit 1
 }
-uv sync --all-packages
 Write-Host "Python Interpreter Path: $env:PYTHON_INTERPRETER_PATH"
+Write-Host "You can call 'bun requirements' to install the requirements"
+Write-Host "And 'uv sync --all-packages' to sync the packages (and check for conflicts)"

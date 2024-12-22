@@ -86,7 +86,6 @@ if [ ! -d "$VENV_PATH" ] || [ ! -x "$DEFAULT_PATH" ]; then
     echo "Virtual environment created successfully at $VENV_PATH"
 fi
 
-echo "Python Interpreter Path: $PYTHON_INTERPRETER_PATH"
 # shellcheck disable=SC1091
 . "$VENV_PATH/bin/activate"
 export PATH="$VENV_PATH/bin:$PATH"
@@ -96,4 +95,6 @@ if ! "$PYTHON_EXEC" -m pip install --upgrade uv pip; then
     echo "Failed to update pip. Please check your Python installation."
     exit 1
 fi
-uv sync --all-packages
+echo "Python Interpreter Path: $PYTHON_INTERPRETER_PATH"
+echo "You can call 'bun requirements' to install the requirements"
+echo "And 'uv sync --all-packages' to sync the packages (and check for conflicts)"

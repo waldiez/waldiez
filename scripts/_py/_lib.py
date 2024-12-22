@@ -17,7 +17,6 @@ ensure_command_exists(command: str) -> None
 
 import json
 import os
-import shutil
 import subprocess  # nosemgrep # nosec
 import sys
 from functools import cache
@@ -85,12 +84,10 @@ def ensure_package_exists(package_name: str) -> None:
     package_name : str
         Name of the package to ensure exists.
     """
-    # can't we check if installed?
-    if not shutil.which(package_name):
-        try:
-            package_version(package_name)
-        except BaseException:  # pylint: disable=broad-except
-            run_command([sys.executable, "-m", "pip", "install", package_name])
+    try:
+        package_version(package_name)
+    except BaseException:  # pylint: disable=broad-except
+        run_command([sys.executable, "-m", "pip", "install", package_name])
 
 
 def run_isort(in_dir: Path, fix: bool) -> None:
