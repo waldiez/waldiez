@@ -39,9 +39,9 @@ jobs:
           if [ "${{ inputs.os }}" = "windows-latest" ]; then
             powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"${{ env.YARN_VERSION }}\"' | Set-Content package.json"
           elif [ "${{ inputs.os }}" = "macos-latest" ]; then
-            sed -i 's|"packageManager":.*|"packageManager": \"${{ env.YARN_VERSION }}\"|' package.json
-          else
             sed -i '' 's|"packageManager":.*|"packageManager": \"${{ env.YARN_VERSION }}\"|' package.json
+          else
+            sed -i 's|"packageManager":.*|"packageManager": \"${{ env.YARN_VERSION }}\"|' package.json
           fi
 
       - name: Setup Node.js
