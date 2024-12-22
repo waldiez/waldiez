@@ -1,5 +1,5 @@
 ---
-name: Lint and Test
+name: Test
 
 # yamllint disable rule:truthy
 on:
@@ -57,6 +57,7 @@ jobs:
           bun run requirements:ts
           pip install --upgrade pip uv
           uv sync --all-packages
+          bun run requirements:py
 
       - name: Run Tests
         run: bun run test

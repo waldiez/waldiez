@@ -57,6 +57,7 @@ jobs:
           bun run requirements:ts
           pip install --upgrade pip uv
           uv sync --all-packages
+          bun run requirements:py
 
       - name: Run Lint
         run: bun run lint
