@@ -39,9 +39,9 @@ jobs:
           if [ "${{ inputs.os }}" = "windows-latest" ]; then
             powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"${{ env.YARN_VERSION }}\"' | Set-Content package.json"
           elif [ "${{ inputs.os }}" = "macos-latest" ]; then
-            sed -i '' -E 's/"packageManager":\s*"[^"]*"/"packageManager": \"${{ env.YARN_VERSION }}\"/' package.json
+            sed -i 's|"packageManager":.*|"packageManager": \"${{ env.YARN_VERSION }}\"|' package.json
           else
-            sed -i.bak -E 's/"packageManager":\s*"[^"]*"/"packageManager": \"${{ env.YARN_VERSION }}\"/' package.json
+            sed -i '' 's|"packageManager":.*|"packageManager": \"${{ env.YARN_VERSION }}\"|' package.json
           fi
 
       - name: Setup Node.js
@@ -59,9 +59,9 @@ jobs:
           if [ "${{ inputs.os }}" = "windows-latest" ]; then
             powershell -Command "(Get-Content package.json) -replace '\"packageManager\":\\s*\"[^\"]+\"', '\"packageManager\": \"${{ env.BUN_VERSION }}\"' | Set-Content package.json"
           elif [ "${{ inputs.os }}" = "macos-latest" ]; then
-            sed -i '' -E 's/"packageManager":\s*"[^"]*"/"packageManager": \"${{ env.BUN_VERSION }}\"/' package.json
+            sed -i '' 's|"packageManager":.*|"packageManager": \"${{ env.BUN_VERSION }}\"|' package.json
           else
-            mv package.json.bak package.json
+            sed -i 's|"packageManager":.*|"packageManager": \"${{ env.BUN_VERSION }}\"|' package.json
           fi
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
