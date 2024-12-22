@@ -1,0 +1,46 @@
+---
+name: Setup
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: "Python version to use"
+        required: true
+        type: string
+      os:
+        description: "Operating system to use"
+        required: true
+        type: string
+
+jobs:
+  setup:
+    runs-on:
+      ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+          node-version: '20'
+      - name: Install corepack and yarn
+        run: |
+          corepack install -g
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: |
+          bun install
+          bun run requirements:ts
+          pip install --upgrade pip uv
+          uv sync --all-packages

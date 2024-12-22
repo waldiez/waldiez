@@ -1,0 +1,7 @@
+**/node_modules
+**/.local
+**/*cache
+**/dist
+**/site
+**/*.tsbuildinfo
+**/coverage

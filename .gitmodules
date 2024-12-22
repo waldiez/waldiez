@@ -1,3 +1,18 @@
 [submodule "examples"]
 	path = examples
 	url = ../examples.git
+[submodule "packages/core/python"]
+	path = packages/core/python
+	url = ../python
+[submodule "packages/core/react"]
+	path = packages/core/react
+	url =../react
+[submodule "packages/vscode"]
+	path = packages/vscode
+	url = ../vscode
+[submodule "packages/studio"]
+	path = packages/studio
+	url = ../studio
+[submodule "packages/jupyter"]
+	path = packages/jupyter
+	url = ../jupyter

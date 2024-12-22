@@ -1,0 +1,13 @@
+{
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "excludeInternal": true,
+    "entryPoints": ["./src/**/*.ts", "./src/**/*.tsx"],
+    "entryPointStrategy": "expand",
+    "sortEntryPoints": false,
+    "name": "@my/package",
+    "includeVersion": true,
+    "readme": "README.md",
+    "out": "site/"
+}

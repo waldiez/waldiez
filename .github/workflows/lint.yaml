@@ -1,0 +1,34 @@
+---
+  name: Lint
+
+  # yamllint disable rule:truthy
+  on:
+    push:
+      branches:
+        - main
+        - dev
+        - monorepo
+  jobs:
+    setup:
+      strategy:
+        matrix:
+          python-version: ["3.10", "3.11", "3.12"]
+          os: [ubuntu-latest, windows-latest, macos-latest]
+
+      uses: ./.github/workflows/setup.yaml # Call the reusable setup workflow
+      with:
+        os: ${{ matrix.os }}
+        python-version: ${{ matrix.python-version }}
+        node-version: "20"
+
+    test:
+      needs: setup
+      runs-on: ${{ matrix.os }}
+      strategy:
+        matrix:
+          python-version: ["3.10", "3.11", "3.12"]
+          os: [ubuntu-latest, windows-latest, macos-latest]
+      steps:
+        - name: Run tests
+          run: |
+            bun run lint

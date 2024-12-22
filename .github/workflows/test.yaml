@@ -1,0 +1,40 @@
+---
+name: Tests
+
+# yamllint disable rule:truthy
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - monorepo
+jobs:
+  setup:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    uses: ./.github/workflows/setup.yaml # Call the reusable setup workflow
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+
+  test:
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Run tests
+        run: |
+          bun run test
+      # - name: Report to Coveralls
+      #   # don't spam coveralls with multiple reports
+      #   if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
+      #   uses: coverallsapp/github-action@v2
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     path-to-lcov: ./reports/lcov.info

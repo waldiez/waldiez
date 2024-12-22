@@ -1,0 +1,274 @@
+# SPDX-License-Identifier: MIT
+# or select a license from:
+# https://spdx.org/licenses/
+#
+# Example of a `pyproject.toml` file for a Python-only package.
+#
+[project]
+name = "my_package"
+description = "A short description of the package."
+authors = [
+    { name = "Author Name", email = "user@example.com" },
+]
+readme = "README.md"
+
+requires-python = ">=3.10,<3.13"
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+]
+# RESTRICTION: Dependencies MUST NOT conflict with the dependencies of the core package.
+dependencies =[
+    # Add your dependencies here.
+    # together(ag2 extra) 1.2.0 depends on typer<0.13 and >=0.9
+    "typer>=0.9,<0.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[tool.hatch.version]
+path = "my_package/_version.py"
+
+[project.scripts]
+my-package = "my_package.cli:app"
+
+[project.optional-dependencies]
+dev = [
+    'autoflake==2.3.1',
+    'bandit==1.8.0',
+    'black==24.10.0',
+    'flake8==7.1.1',
+    'isort==5.13.2',
+    'mypy==1.14.0',
+    'pre-commit==4.0.1',
+    'pydocstyle==6.3.0',
+    'pylint==3.3.2',
+    'python-dotenv==1.0.1',
+    'ruff==0.8.4',
+    'types-PyYAML==6.0.12.20240917',
+    'yamllint==1.35.1',
+    'toml; python_version <= "3.10"',
+    'types-toml== 0.10.8.20240310',
+]
+test = [
+    'pytest==8.3.4',
+    'pytest-asyncio==0.25.0',
+    'pytest-cov==6.0.0',
+    'pytest-html==4.1.1',
+    'pytest-sugar==1.0.0',
+    'pytest-timeout==2.3.1',
+    'pytest-xdist==3.6.1',
+]
+docs = [
+  'mdx-include==1.4.2',
+  'mdx_truly_sane_lists==1.3',
+  'mkdocs==1.6.1',
+  'mkdocs-jupyter==0.25.1',
+  'mkdocs-macros-plugin==1.3.7',
+  'mkdocs-material==9.5.49',
+  'mkdocs-minify-html-plugin==0.2.3',
+  'mkdocstrings[crystal,python]==0.27.0',
+  'mkdocstrings-python==1.12.2'
+]
+
+# black
+[tool.black]
+line-length = 80
+skip-string-normalization=true
+include = '''
+    \.pyi?$
+'''
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.venv
+  | .local
+  | _build
+  | __init__.py
+  | .local
+)/
+'''
+
+# mypy
+[tool.mypy]
+files = '.'
+show_error_codes = true
+# xcode/dmypy: follow-imports=silent not supported
+# follow_imports = 'skip'
+platform = 'linux'
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = false
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+ignore_missing_imports = false
+no_implicit_reexport = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+plugins = [
+#   'pydantic.mypy'
+]
+exclude = [
+    '.venv',
+    '.local',
+]
+
+# [tool.pydantic-mypy]
+# init_forbid_extra = true
+# init_typed = true
+# warn_required_dynamic_aliases = false
+
+# isort
+[tool.isort]
+profile ='black'
+skip=[
+    '.venv',
+    '.local',
+]
+include_trailing_comma=true
+force_grid_wrap=0
+use_parentheses=true
+line_length=80
+
+# pydocstyle
+[tool.pydocstyle]
+match-dir='([^!(.venv)].*)([^!(.local)].*)'
+
+# pylint
+[tool.pylint.master]
+load-plugins = [
+    'pylint.extensions.mccabe',
+    'pylint.extensions.redefined_variable_type',
+    'pylint.extensions.broad_try_clause',
+    'pylint.extensions.no_self_use',
+    'pylint.extensions.docparams',
+]
+extension-pkg-whitelist= []
+# reports=true
+recursive=true
+fail-under=8.0
+ignore=["CVS"]
+ignore-paths = [
+    ".venv",
+    ".local*",
+]
+unsafe-load-any-extension="no"
+
+[tool.pylint.messages_control]
+enable=["c-extension-no-member"]
+[tool.pylint.format]
+max-line-length=80
+[tool.pylint.similarities]
+ignore-imports="yes"
+ignore-signatures="yes"
+min-similarity-lines=10
+[tool.pylint.broad_try_clause]
+max-try-statements=3
+[tool.pylint.design]
+max-args=10
+max-attributes=10
+max-positional-arguments=10
+[tool.pylint.string]
+check-quote-consistency = true
+check-str-concat-over-line-jumps = true
+[tool.pylint.parameter_documentation]
+accept-no-param-doc=false
+accept-no-raise-doc=false
+accept-no-return-doc=false
+accept-no-yields-doc=false
+# Possible choices: ['sphinx', 'epytext', 'google', 'numpy', 'default']
+default-docstring-type = "numpy"
+
+# bandit
+[tool.bandit]
+exclude_dirs = [
+    ".venv",
+    ".local",
+]
+# B104: bind to all interfaces (0.0.0.0)
+# B110: allow pass on try/except
+# B404: allow import subprocess
+# B602, B603: allow shell=True (subprocess,popen)
+skips = ['B104', 'B110', 'B404', 'B602', 'B603' ]
+[tool.bandit.assert_used]
+skips = ['*_test.py', '*/test_*.py']
+
+# ruff
+[tool.ruff]
+line-length = 80
+extend-exclude = [
+    ".venv",
+    ".local",
+]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "Q"]
+ignore = []
+# # Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# # Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# exclude = ["*.pyi", "*.j2"]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+# pytest
+[tool.pytest.ini_options]
+# If not using pytest-asyncio/async tests remove the next two lines.
+asyncio_mode = 'auto'
+asyncio_default_fixture_loop_scope='session'
+#
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+python_files = [
+    "tests.py",
+    "test_*.py",
+    "*_tests.py",
+]
+addopts = """
+    -d \
+    -n auto \
+    --exitfirst \
+    --durations=10 \
+    --color=yes \
+    --timeout=120
+"""
+
+# coverage
+[tool.coverage.run]
+omit = [
+  "example.py",
+]
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+fail_under = 80
+precision = 2
