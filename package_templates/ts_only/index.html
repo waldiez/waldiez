@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/src/logo.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; worker-src 'self' blob:; connect-src *; font-src 'self'; manifest-src 'self'; "
+        />
+        <meta content="#CB95FA" id="msapplication-TileColor" name="msapplication-TileColor" />
+        <meta name="msapplication-config" id="msapplication-config" content="%BASE_URL%browserconfig.xml" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            media="(prefers-color-scheme: light)"
+            content="#fcfafe"
+        />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            media="(prefers-color-scheme: dark)"
+            content="#1A1A1A"
+        />
+        <meta name="apple-mobile-web-app-title" content="My Package" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfafe" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1A1A1A" />
+        <meta name="description" content="My Package description." />
+        <title>My Package</title>
+        <link rel="manifest" id="manifest" href="%BASE_URL%site.webmanifest" />
+        <link rel="apple-touch-icon" id="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+        <link rel="mask-icon" id="mask-icon" href="/src/logo.svg" color="#CB95FA" />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/index.tsx"></script>
+    </body>
+</html>

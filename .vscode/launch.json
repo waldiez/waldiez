@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Start PyPI Server",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "python",
+            "runtimeArgs": ["${workspaceFolder}/scripts/local_pypi.py", "start"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Stop PyPI Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/local_pypi.py",
+            "args": ["stop"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

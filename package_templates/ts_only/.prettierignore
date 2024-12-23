@@ -1,0 +1,15 @@
+node_modules
+reports
+coverage
+**/*.md
+**/lib
+.venv/
+**/dist/
+**/*cache/
+**/.local/
+**/package.json
+!/package.json
+**/*cache/
+**/site/
+**/dist/
+**/static/**/assets/

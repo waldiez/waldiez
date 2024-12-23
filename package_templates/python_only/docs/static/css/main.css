@@ -1,0 +1,36 @@
+:root {
+    --md-primary-fg-color: #cb95fa;
+}
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+    height: 1.8rem;
+}
+#top {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#top div {
+    display: flex;
+    align-items: center;
+    /* color: #CB95FA; */
+    font-weight: bolder;
+    margin-bottom: 20px;
+}
+
+#top .page-header-left img {
+    margin-right: 20px;
+}
+#top .page-header-left h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+[data-md-color-scheme="custom-light"] img[src$="#only-dark"],
+[data-md-color-scheme="custom-light"] img[src$="#gh-dark-mode-only"] {
+    display: none; /* Hide dark images in light mode */
+}
+[data-md-color-scheme="custom-dark"] img[src$="#only-light"],
+[data-md-color-scheme="custom-dark"] img[src$="#gh-light-mode-only"] {
+    display: none; /* Hide light images in dark mode */
+}

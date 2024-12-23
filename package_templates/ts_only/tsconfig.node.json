@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["ES2022"],
+        "module": "ESNext",
+        "skipLibCheck": true,
+        "moduleResolution": "bundler",
+        "forceConsistentCasingInFileNames": true,
+        "allowImportingTsExtensions": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+        "types": [
+            "node",
+            "jest",
+            "@testing-library/jest-dom",
+            "@vitest/browser/providers/playwright",
+            "vitest/globals"
+        ],
+
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "paths": {
+            "@my/package/*": ["./src/*"]
+        }
+    },
+    "include": ["vite.config.ts"]
+}

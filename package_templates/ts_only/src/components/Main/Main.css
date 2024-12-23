@@ -1,0 +1,107 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: var(--app-width);
+    height: var(--app-height);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.main .logo {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+    -webkit-animation: spin 4s linear infinite;
+    -moz-animation: spin 4s linear infinite;
+    animation: spin 4s linear infinite;
+}
+
+.main .theme-button {
+    position: absolute;
+    cursor: pointer;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    color: var(--primary-alt-color);
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(0 0 0 10%);
+}
+
+/* @-moz-keyframes spin {
+  100% {
+      -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+      -webkit-transform: rotate(360deg);
+  }
+} */
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.main input[type="text"],
+.main input[type="password"] {
+    background: var(--input-background) !important;
+    color: var(--input-color) !important;
+    border: 1px solid var(--input-border) !important;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.main .user-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.main .user-input .input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.main .user-input label {
+    margin-right: 10px;
+}
+
+.main .user-input .toggle-visibility {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--primary-alt-color);
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(0 0 0 10%);
+    font-size: larger;
+}
+
+.main .greet {
+    margin-bottom: 20px;
+}
+
+.main .greet button {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--primary-alt-color);
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(0 0 0 10%);
+    cursor: pointer;
+}
+
+.main .result {
+    font-size: larger;
+    min-height: 2rem;
+}

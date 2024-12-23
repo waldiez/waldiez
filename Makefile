@@ -1,8 +1,5 @@
 .DEFAULT_GOAL := help
-
-.TESTS_DIR := tests
-.REPORTS_DIR := reports
-.PACKAGE_NAME := waldiez
+.MANAGER_COMMAND := bun
 
 .PHONY: help
 help:
@@ -12,136 +9,142 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo " help             Show this message and exit"
-	@echo " format           Format the code"
-	@echo " lint             Lint the code"
-	@echo " forlint          Alias for 'make format && make lint'"
-	@echo " export           Export *.waldiez files in ./examples to {.py,.ipynb}"
-	@echo " requirements	 Generate requirements/*.txt files"
-	@echo " test             Run the tests"
-	@echo " test_models      Run tests on the 'models' directory"
-	@echo " test_exporting   Run tests on the 'exporting' directory"
-	@echo " docs             Generate the documentation"
-	@echo " docs-live        Generate the documentation in 'live' mode"
-	@echo " clean            Remove unneeded files (__pycache__, .mypy_cache, etc.)"
-	@echo " build            Build the python package"
-	@echo " dev              Generate (and install) requirements, lint, test, build, docs, and export"
-	@echo " install          Install the python package"
-	@echo " publish          Publish the python package to PyPI"
-	@echo " image            Generate container image"
-	@echo ""
+	@echo " requirements-ts  Install the typescript requirements (in sub-projects)"
+	@echo " requirements-py  Generate and install the python requirements (in sub-projects)"
+	@echo " requirements     Install the requirements"
+	@echo " format-py        Run the formatters for python"
+	@echo " format-ts        Run the formatters for typescript"
+	@echo " format           Run the formatters for python and typescript"
+	@echo " lint-py          Run the linters for python"
+	@echo " lint-ts          Run the linters for typescript"
+	@echo " lint             Run the linters for python and typescript"
+	@echo " forlint          Alias for 'format' and 'lint'"
+	@echo " clean-py         Cleanup python related unneeded files"
+	@echo " clean-ts         Cleanup typescript related unneeded files"
+	@echo " clean            Cleanup python and typescript related unneeded files"
+	@echo " test-py          Run the tests for python"
+	@echo " test-ts          Run the tests for typescript"
+	@echo " test             Run the tests for python and typescript"
+	@echo " build-py         Build the python packages"
+	@echo " build-ts         Build the typescript packages"
+	@echo " build            Build the python and typescript packages"
+	@echo " docs-py          Generate the python documentation (in sub-projects)"
+	@echo " docs-ts          Generate the typescript documentation (in sub-projects)"
+	@echo " docs             Generate the python and typescript documentation"
+	@echo " images           Build the podman/docker images"
+	@echo " all-py           Run all the python related tasks"
+	@echo " all-ts           Run all the typescript related tasks"
+	@echo " all              Run all the tasks"
+	@echo " bump-patch       Bump the patch version"
+	@echo " bump-minor       Bump the minor version"
+	@echo " bump-major       Bump the major version"
+
+.PHONY: format-py
+format-py:
+	$(.MANAGER_COMMAND) format:py
+
+.PHONY: format-ts
+format-ts:
+	$(.MANAGER_COMMAND) format:ts
 
 .PHONY: format
-format:
-	isort .
-	autoflake --remove-all-unused-imports --remove-unused-variables --in-place .
-	black --config pyproject.toml .
-	ruff format --config pyproject.toml .
+format: format-py format-ts
+
+.PHONY: lint-py
+lint-py:
+	$(.MANAGER_COMMAND) lint:py
+
+.PHONY: lint-ts
+lint-ts:
+	$(.MANAGER_COMMAND) lint:ts
 
 .PHONY: lint
-lint:
-	isort --check-only .
-	black --check --config pyproject.toml .
-	mypy --config pyproject.toml .
-	flake8 --config=.flake8
-	pydocstyle --config pyproject.toml .
-	bandit -r -c pyproject.toml .
-	yamllint -c .yamllint.yaml .
-	ruff check --config pyproject.toml .
-	pylint --rcfile=pyproject.toml .
-	python scripts/eclint.py
+lint: lint-py lint-ts
 
 .PHONY: forlint
 forlint: format lint
 
-.PHONY: clean
-clean:
-	python scripts/clean.py
+.PHONY: clean-py
+clean-py:
+	$(.MANAGER_COMMAND) clean:py
 
-.PHONY: export
-export:
-	python scripts/export.py
+.PHONY: clean-ts
+clean-ts:
+	$(.MANAGER_COMMAND) clean:ts
+
+.PHONY: clean
+clean: clean-py clean-ts
+
+.PHONY: test-py
+test-py:
+	$(.MANAGER_COMMAND) test:py
+
+.PHONY: test-ts
+test-ts:
+	$(.MANAGER_COMMAND) test:ts
+
+.PHONY: test
+test: test-py test-ts
+
+.PHONY: build-py
+build-py:
+	$(.MANAGER_COMMAND) build:py
+
+.PHONY: build-ts
+build-ts:
+	$(.MANAGER_COMMAND) build:ts
+
+.PHONY: build
+build: build-py build-ts
+
+.PHONY: docs-py
+docs-py:
+	$(.MANAGER_COMMAND) docs:py
+
+.PHONY: docs-ts
+docs-ts:
+	$(.MANAGER_COMMAND) docs:ts
+
+.PHONY: docs
+docs: docs-py docs-ts
+
+.PHONY: images
+images:
+	$(.MANAGER_COMMAND) images
+
+.PHONY: requirements-ts
+requirements-ts:
+	$(.MANAGER_COMMAND) requirements:ts
+
+.PHONY: requirements-py
+requirements-py:
+	$(.MANAGER_COMMAND) requirements:py
 
 .PHONY: requirements
 requirements:
-	python scripts/requirements.py
+	$(.MANAGER_COMMAND) install
+	$(.MANAGER_COMMAND) requirements
 
-.PHONY: .before_test
-.before_test:
-	python -c 'import os; os.makedirs("${.REPORTS_DIR}", exist_ok=True)'
-	python -c \
-		'import subprocess, sys; subprocess.run(\
-		[sys.executable, "-m", "pip", "uninstall", "-y", "${.PACKAGE_NAME}"], \
-		stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)'
+.PHONY: bump-patch
+bump-patch:
+	$(.MANAGER_COMMAND) bump:patch
 
-.PHONY: test
-test: .before_test
-	python -m pytest \
-		-c pyproject.toml \
-		--cov=${.PACKAGE_NAME} \
-		--cov-report=term-missing:skip-covered \
-		--cov-report html:${.REPORTS_DIR}/html \
-		--cov-report xml:${.REPORTS_DIR}/coverage.xml \
-		--cov-report lcov:${.REPORTS_DIR}/lcov.info \
-		--junitxml=${.REPORTS_DIR}/xunit.xml \
-		${.TESTS_DIR}/
+.PHONY: bump-minor
+bump-minor:
+	$(.MANAGER_COMMAND) bump:minor
 
-.PHONY: test_models
-test_models: .before_test
-	python -m pytest -s \
-		-c pyproject.toml -vv \
-		--cov-report=term-missing:skip-covered \
-		--cov=${.PACKAGE_NAME}/models \
-		${.TESTS_DIR}/models
+.PHONY: bump-major
+bump-major:
+	$(.MANAGER_COMMAND) bump:major
 
-.PHONY: test_exporting
-test_exporting: .before_test
-	python -m pytest \
-		-c pyproject.toml -vv \
-		--cov-report=term-missing:skip-covered \
-		--cov=${.PACKAGE_NAME}/exporting \
-		${.TESTS_DIR}/exporting
+.PHONY: all-py
+all-py:
+	$(.MANAGER_COMMAND) all:py
 
-.PHONY: docs
-docs:
-	python -m mkdocs build -d site
-	@echo "open:   file://`pwd`/site/index.html"
-	@echo "or use: \`python -m http.server --directory site\`"
+.PHONY: all-ts
+all-ts:
+	$(.MANAGER_COMMAND) all:ts
 
-.PHONY: docs-live
-docs-live:
-	python -m pip install -r requirements/docs.txt
-	python -m mkdocs serve --watch mkdocs.yml --watch docs --watch waldiez --dev-addr localhost:8400
-
-.PHONY: build
-build:
-	python -c 'import os; os.makedirs("dist", exist_ok=True); os.makedirs("build", exist_ok=True)'
-	python -c 'import shutil; shutil.rmtree("dist", ignore_errors=True); shutil.rmtree("build", ignore_errors=True)'
-	python -m pip install --upgrade pip wheel
-	python -m pip install -r requirements/main.txt
-	python -m pip install build twine
-	python -m build --sdist --wheel --outdir dist/
-	python -m twine check dist/*.whl
-	python -c 'import shutil; shutil.rmtree("build", ignore_errors=True)'
-
-.PHONY: dev
-dev: clean requirements
-	python -m pip install -r requirements/all.txt
-	make forlint
-	make test
-	make build
-	make docs
-	make export
-
-.PHONY: install
-install: build
-	python -m pip uninstall -y waldiez
-	python -c 'import subprocess, glob, sys; sys.exit(subprocess.run([sys.executable, "-m", "pip", "install", glob.glob("dist/*.whl")[0]]).returncode)'
-
-.PHONY: publish
-publish: build
-	python -m pip install --upgrade pip twine
-	python -m twine upload dist/*
-
-.PHONY: image
-image:
-	python scripts/image.py
+.PHONY: all
+all:
+	$(.MANAGER_COMMAND) all

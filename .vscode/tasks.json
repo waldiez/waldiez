@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start PyPI Server",
+            "type": "process",
+            "command": "python",
+            "args": ["${workspaceFolder}/scripts/local_pypi.py", "start"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Stop PyPI Server",
+            "type": "process",
+            "command": "python",
+            "args": ["${workspaceFolder}/scripts/local_pypi.py", "stop"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}
