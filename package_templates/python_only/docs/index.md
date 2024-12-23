@@ -6,8 +6,8 @@ A short description of the package. Other details can be added below using the r
 <img fetchpriority="high" alt="Waldiez flow" src="static/images/overview_dark.webp#only-dark" />
 
 !!! Warning
-    This is a warning message.
-    **Required files**
+This is a warning message.
+**Required files**
 
     - `pyproject.toml`  # the project configuration file
     - `scripts/clean.py`  # the script to cleanup unwanted files

@@ -5,6 +5,7 @@ labels: bug
 ---
 
 <!-- markdownlint-disable MD041 -->
+
 ## Search terms
 
 <!-- Include keywords that might help others with the same problem find this issue -->

@@ -21,6 +21,7 @@ npm|yarn|pnpm|bun install @my/package
 prefer using he url instead of the file path.
 Why you ask? For example, the link in the PyPI page might not work.
 -->
+
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
 
 > [!IMPORTANT]
@@ -42,7 +43,6 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 > - `archive`: The `archive` script is optional. If present, it must generate a tarball of the package in the `out` directory.
 > - `publish`: The `publish` script is optional. If present, it must publish the package to the registry.
 > - `docs`: The `docs` script is optional. If present, it must generate the documentation in the `site` directory.
->
 
 ## Init
 
@@ -66,4 +66,5 @@ bun all
 prefer using he url instead of the file path.
 Why you ask? For example, the link in the PyPI page might not work.
 -->
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

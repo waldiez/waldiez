@@ -24,6 +24,7 @@ greet("World")
 prefer using he url instead of the file path.
 Why you ask? For example, the link in the PyPI page might not work.
 -->
+
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
 
 > [!IMPORTANT]
@@ -32,35 +33,38 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 >
 > - `pyproject.toml`: the project configuration file
 > - `scripts/version.py`: the script to update the version
->    The script should expect the arguments `--set` or `--get`  
+>   The script should expect the arguments `--set` or `--get`  
 >    and it should either return `x.y.z` or set the version to `x.y.z`.
 > - `scripts/clean.py`: the script to cleanup unwanted files
 > - `scripts/format.py`: the script to format the code
 > - `scripts/lint.py`: the script to lint the code
 > - `scripts/test.py`: the script to run the tests
->    After tests, the script should generate a `coverage/lcov.info` file with the coverage report.
+>   After tests, the script should generate a `coverage/lcov.info` file with the coverage report.
 >
 > **Optional files**
 >
 > - `scripts/docs.py`: the script to build the documentation
->    If the file exists, it should expect the argument: `--output`.
+>   If the file exists, it should expect the argument: `--output`.
 > - `scripts/build.py`: the script to build the package
->    If the file exists, it should expect the argument: `--output`.
->    It should also expect the optional argument: `--publish`
->    If the `--publish` argument is provided, the script should publish the package to the PyPI.
+>   If the file exists, it should expect the argument: `--output`.
+>   It should also expect the optional argument: `--publish`
+>   If the `--publish` argument is provided, the script should publish the package to the PyPI.
 > - `scripts/image.py`: the script to build the Podman/Docker image
->    It should expect the arguments:
+>   It should expect the arguments:
+
      <!--markdownlint-disable MD007 -->
+
 >      - `--image-name`: the image name
 >      - `--image-tag`: the image tag
 >
->    The script should build the image and tag it with the provided tag.
->    It should also expect the optional argument: `--push`.
->    If the `--push` argument is provided, the script should push the image to one or more registries.
->    Additional optional args can be provided to specify the target platforms and/or other build args
+> The script should build the image and tag it with the provided tag.
+> It should also expect the optional argument: `--push`.
+> If the `--push` argument is provided, the script should push the image to one or more registries.
+> Additional optional args can be provided to specify the target platforms and/or other build args
+
        <!--markdownlint-disable MD007 -->
+
 >      - `--platform`: the target platform
->
 
 ## Init
 
@@ -96,4 +100,5 @@ make all
 prefer using he url instead of the file path.
 Why you ask? For example, the link in the PyPI page might not work.
 -->
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

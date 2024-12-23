@@ -4,7 +4,7 @@ site_description: "MyPackage"
 site_url: https://my_repo.github.io/my_package/
 repo_name: my_repo/my_package
 repo_url: https://github.com/my_repo/my_package.git
-edit_uri_template: 'blob/main/docs/{path}'
+edit_uri_template: "blob/main/docs/{path}"
 copyright: "Copyright &copy; 2024 MyRepo"
 theme:
   name: material
@@ -63,7 +63,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           # yamllint disable
-          format: !!python/name:pymdownx.superfences.fence_code_format ''
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
           # yamllint enable
   - pymdownx.tabbed:
       alternate_style: true
