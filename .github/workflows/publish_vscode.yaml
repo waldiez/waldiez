@@ -1,0 +1,64 @@
+---
+# WIP
+name: Publish VSCode 📦 extension 🌐 to VSCode Marketplace
+
+on:
+  workflow_run:
+    workflows: ["Publish React package to NPM"]
+    branches:
+      - monorepo
+    types:
+      - completed
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  publish_waldiez_vscode:
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref_name == 'monorepo'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: patch package.json
+        run: |
+          bun install
+          bun run ci:patch
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install corepack and yarn
+        run: |
+          corepack enable
+          yarn set version stable
+
+      - name: Rollback package.json
+        run: |
+          bun run ci:rollback
+
+      - name: Install dependencies
+        run: |
+          cd packages/vscode
+          yarn install
+
+      - name: Create VSIX
+        id: create_vsix
+        run: |
+          yarn run build
+          echo "generated<<EOF" >> $GITHUB_OUTPUT
+          echo "$(ls -1 dist/waldiez-vscode-*.vsix)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  # - name: Publish to VSCode Marketplace
+  #   if: success() && steps.create_vsix.outputs.generated
+  #   run: yarn run deploy
+  #   env:
+  #     VSCE_PAT: ${{ secrets.VSCE_PAT }}

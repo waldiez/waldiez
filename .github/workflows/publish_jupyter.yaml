@@ -1,0 +1,94 @@
+---
+# WIP
+name: "Publish Jupyter 📦 extension 🌐 PyPi"
+
+on:
+  workflow_run:
+    workflows:
+      - "Publish React package to NPM"
+      - "Publish Python package to PyPI"
+    branches:
+      - monorepo
+    types:
+      - completed
+
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  publish_waldiez_jupyter:
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref_name == 'monorepo'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --break-system-packages jupyterlab build twine
+
+      - name: Install nodejs and yarn
+        run: |
+          cd packages/jupyter
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt install -y nodejs
+          sudo npm install -g corepack
+          corepack enable
+          yarn set version stable
+
+          - name: Download artifact from python package
+          uses: actions/download-artifact@v4
+          with:
+            name: waldiez-python-package-distribution
+            path: packages/core/python/dist/
+
+      - name: Download artifact from react package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldeiz-react-package-distribution
+          path: packages/core/react/dist/
+
+      - name: Get the new version of the package
+        run: |
+          sudo update && sudo apt install -y jq
+          mkdir -p .local
+          cat package.json | jq -r '.version' > .local/VERSION
+          cd packages/jupyter
+          mkdir -p .local
+          mv ../../.local/VERSION .local/VERSION
+          cat package.json | jq -r '.version' > .local/VERSION
+
+      - name: Set the new @waldiez/react to the path of the artifact
+        run: |
+          cd packages/jupyter
+          touch yarn.lock
+          yarn remove @waldiez/react
+          yarn add @waldiez/react@file:../../react/dist/waldiez-react-$(cat .local/VERSION).tgz
+          yarn install
+
+      - name: Build the frontend part of the extension
+        run: |
+          cd packages/jupyter
+          yarn build
+
+      - name: Build the python part of the extension
+        run: |
+          cd packages/jupyter
+          python -m build
+          python -m twine check dist/*
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-jupyter-package-distribution
+          path: packages/jupyter/dist/
