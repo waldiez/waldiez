@@ -4,12 +4,14 @@
 # The (final) coverage report must be in the `coverage` directory.
 # It must be in the `lcov` format. (file `coverage/lcov.info`)
 
+import os
 import shutil
 import subprocess  # nosemgrep # nosec
 import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent
+os.environ["PYTHONUNBUFFERED"] = "1"
 
 
 def run_pytest() -> None:

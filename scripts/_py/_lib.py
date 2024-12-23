@@ -63,17 +63,24 @@ def get_python_projects() -> Generator[Path, None, None]:
     ------
     Path
         Path to the python project.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the package.json or if a package directory does not exist.
     """
-    packages_dir = ROOT_DIR / "packages"
-    package_templates_dir = ROOT_DIR / "package_templates"
-    for project in packages_dir.glob("**/pyproject.toml"):
-        if "node_modules" in str(project) or ".venv" in str(project):
-            continue
-        yield project.parent
-    for project in package_templates_dir.glob("**/pyproject.toml"):
-        if "node_modules" in str(project) or ".venv" in str(project):
-            continue
-        yield project.parent
+    # read package.json instead
+    package_json_path = ROOT_DIR / "package.json"
+    if not package_json_path.exists():
+        raise FileNotFoundError(f"{package_json_path} does not exist.")
+    with open(package_json_path, "r", encoding="utf-8") as file:
+        package_json = json.load(file)
+    packages = package_json.get("packages", {}).get("py", [])
+    for package in packages:
+        package_dir = ROOT_DIR / package
+        if not package_dir.exists():
+            raise FileNotFoundError(f"{package_dir} does not exist.")
+        yield package_dir
 
 
 def ensure_package_exists(package_name: str) -> None:

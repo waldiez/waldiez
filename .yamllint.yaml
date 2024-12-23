@@ -6,4 +6,4 @@ rules:
     max: 200
     level: warning
 
-ignore-from-file: .gitignore
+ignore-from-file: [.gitignore, .yamlignore]
