@@ -55,11 +55,13 @@ jobs:
         run: |
           bun install
           bun run requirements:ts
-          pip install --upgrade pip uv
+          pip install --upgrade pip uv jupytext
           uv sync --all-packages
           bun run requirements:py
+
       - name: Prepare Playwright
         run: npx playwright install --with-deps chromium
+
       - name: Run tests on ubuntu-latest
         run: |
           sudo apt update && sudo apt install -y xvfb libasound2t64 libgbm1 libgtk-3-0t64 libnss3 lcov > /dev/null 2>&1 || true
