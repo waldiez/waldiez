@@ -41,15 +41,15 @@ def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:
     args_str = " ".join(args).replace(str(ROOT_DIR), ".")
     print(f"Running command: {args_str}")
     try:
-        output = subprocess.check_output(  # nosemgrep # nosec
+        subprocess.run(  # nosemgrep # nosec
             args,
             cwd=cwd,
+            check=True,
+            stdout=sys.stdout,
             stderr=subprocess.STDOUT,
-            text=True,
             env=os.environ,
             encoding="utf-8",
         )
-        print(output)
     except subprocess.CalledProcessError as e:
         print(e.output)
         sys.exit(e.returncode)
