@@ -1,5 +1,4 @@
 ---
-# WIP
 name: Release 🚀
 
 # yamllint disable rule:truthy
@@ -77,13 +76,13 @@ jobs:
           name: waldiez-react
           path: out/archive/waldiez-react-*.tgz
 
-          # - name: Publish to NPM
-          #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-          #   env:
-          #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          #   run: |
-          #     cd packages/core/react
-          #     bun publish
+      - name: Publish to NPM
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/core/react
+          bun publish
 
   package_waldiez_python:
     runs-on: ubuntu-latest
@@ -138,12 +137,12 @@ jobs:
           path: packages/core/python/dist/
           pattern: "*{.tar.gz,.whl}"
 
-          # - name: Publish distribution 📦 to PyPI
-          # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-          #   uses: pypa/gh-action-pypi-publish@release/v1
-          #   with:
-          #     packages-dir:
-          #       packages/core/python/dist/
+      - name: Publish distribution 📦 to PyPI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/core/python/dist/
 
   publish_waldiez_vscode:
     runs-on: ubuntu-latest
@@ -218,13 +217,13 @@ jobs:
           name: waldiez-vscode
           path: packages/vscode/dist/
 
-          # - name: Publish to VSCode Marketplace
-          #   if: success() && steps.create_vsix.outputs.generated && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-          #   run: |
-          #     cd packages/vscode
-          #     yarn run deploy
-          #   env:
-          #     VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Publish to VSCode Marketplace
+        if: success() && steps.create_vsix.outputs.generated && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/vscode
+          yarn run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   package_waldiez_jupyter:
     runs-on: ubuntu-latest
@@ -319,12 +318,12 @@ jobs:
           name: waldiez-jupyter
           path: packages/core/python/dist/
 
-          # - name: Publish to PyPI
-          #   if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-          #   uses: pypa/gh-action-pypi-publish@release/v1
-          #   with:
-          #     packages-dir:
-          #       packages/jupyter/dist/
+      - name: Publish to PyPI
+        if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/jupyter/dist/
 
 
   package_waldiez_studio:
@@ -401,12 +400,12 @@ jobs:
           name: waldiez-studio
           path: packages/studio/dist/
 
-          # - name: Publish to PyPI
-          #   if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-          #   uses: pypa/gh-action-pypi-publish@release/v1
-          #   with:
-          #     packages-dir:
-          #       packages/studio/dist/
+      - name: Publish to PyPI
+        if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/studio/dist/
 
   release:
     runs-on: ubuntu-latest
