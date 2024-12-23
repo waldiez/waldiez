@@ -188,7 +188,7 @@ jobs:
           touch yarn.lock
           yarn version:set $(cat .local/VERSION)
           yarn remove @waldiez/react
-          yarn add @waldiez/react@file:../../react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
+          yarn add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
           yarn install
 
       - name: Create VSIX
@@ -280,13 +280,13 @@ jobs:
           cd packages/jupyter
           yarn version:set $(cat .local/VERSION)
           yarn remove @waldiez/react
-          yarn add @waldiez/react@file:../../react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
+          yarn add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
           yarn install
 
       - name: Set and install the new waldiez py version to the path of the artifact
         run: |
           cd packages/jupyter
-          pip install ../../python/dist/waldiez-$(cat .local/VERSION)-py3-none-any.whl
+          pip install ../core/python/dist/waldiez-$(cat .local/VERSION)-py3-none-any.whl
           python scripts/version.py --set $(cat .local/VERSION)
 
       - name: Build the frontend part of the extension
@@ -315,7 +315,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/waldiez
+      url: https://pypi.org/p/waldiez-jupyter
     steps:
       - name: Download all the dists
         uses: actions/download-artifact@v4
@@ -375,15 +375,14 @@ jobs:
       - name: Set the new @waldiez/react to the path of the artifact
         run: |
           cd packages/studio
-          touch yarn.lock
-          yarn remove @waldiez/react
-          yarn add @waldiez/react@file:../../react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
-          yarn install
+          bun remove @waldiez/react
+          bun add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
+          bun install
 
       - name: Build the frontend part of the extension
         run: |
           cd packages/studio
-          bun build
+          bun run build
 
       - name: Build the python part of the extension
         run: |
@@ -405,7 +404,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/waldiez
+      url: https://pypi.org/p/waldiez-studio
     steps:
       - name: Download all the dists
         uses: actions/download-artifact@v4
