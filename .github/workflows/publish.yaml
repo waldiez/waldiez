@@ -264,6 +264,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: waldiez-react-package-distribution
+          path: packages/core/react/dist/
 
       - name: Get the new version of the package
         run: |
@@ -301,7 +302,7 @@ jobs:
           python -m build
           python -m twine check dist/*
 
-      - name: Store the distribution packages
+      - name: Store the distribution package
         uses: actions/upload-artifact@v4
         with:
           name: waldiez-jupyter-package-distribution
@@ -317,11 +318,11 @@ jobs:
       name: pypi
       url: https://pypi.org/p/waldiez-jupyter
     steps:
-      - name: Download all the dists
+      - name: Download artifact from the python package
         uses: actions/download-artifact@v4
         with:
           name: waldiez-jupyter-package-distribution
-          path: packages/jupyter/dist/
+          path: packages/core/python/dist/
 
           # - name: Publish to PyPI
           #   if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -356,11 +357,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: waldiez-python-package-distribution
+          path: packages/core/python/dist/
 
       - name: Download artifact from react package
         uses: actions/download-artifact@v4
         with:
           name: waldiez-react-package-distribution
+          path: packages/core/react/dist/
 
       - name: Get the new version of the package
         run: |
@@ -390,7 +393,7 @@ jobs:
           python -m build
           python -m twine check dist/*
 
-      - name: Store the distribution packages
+      - name: Store the distribution package
         uses: actions/upload-artifact@v4
         with:
           name: waldiez-studio-package-distribution
@@ -406,10 +409,11 @@ jobs:
       name: pypi
       url: https://pypi.org/p/waldiez-studio
     steps:
-      - name: Download all the dists
+      - name: Download the artifact from the python package
         uses: actions/download-artifact@v4
         with:
           name: waldiez-studio-package-distribution
+          path: packages/studio/dist/
 
           # - name: Publish to PyPI
           #   if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
