@@ -84,6 +84,7 @@ def start_pypi_server(py_executable: str) -> None:
                 ".",
                 "-P",
                 ".",
+                "--overwrite",
                 str(local_pypi_dir),
             ],
             check=True,

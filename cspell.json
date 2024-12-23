@@ -108,9 +108,11 @@
         "multimodal",
         "mypy",
         "nodesource",
+        "nodrag",
         "noninteractive",
         "NOPASSWD",
         "nosemgrep",
+        "nowheel",
         "npmjs",
         "numpy",
         "ounospanas",
@@ -195,6 +197,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
