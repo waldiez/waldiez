@@ -44,33 +44,33 @@ jobs:
         with:
           platforms: |
             linux/amd64
-          file: Containerfile
+          file: packages/core/python/Containerfile
           context: packages/core/python
           push: false
           tags: |
             waldiez/waldiez:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
             quay.io/waldiez/waldiez:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
 
-      - name: Build and push jupyter
-        uses: docker/build-push-action@v6
-        with:
-          platforms: |
-            linux/amd64
-          file: Containerfile
-          context: packages/jupyter
-          push: false
-          tags: |
-            waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-            quay.io/waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+      # - name: Build and push jupyter
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     platforms: |
+      #       linux/amd64
+      #     file: Containerfile
+      #     context: packages/jupyter
+      #     push: false
+      #     tags: |
+      #       waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+      #       quay.io/waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
 
-      - name: Build and push studio
-        uses: docker/build-push-action@v6
-        with:
-          platforms: |
-            linux/amd64
-          file: Containerfile
-          context: packages/studio
-          push: false
-          tags: |
-            waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-            quay.io/waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+      # - name: Build and push studio
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     platforms: |
+      #       linux/amd64
+      #     file: Containerfile
+      #     context: packages/studio
+      #     push: false
+      #     tags: |
+      #       waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+      #       quay.io/waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
