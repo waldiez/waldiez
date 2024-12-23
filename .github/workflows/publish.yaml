@@ -139,6 +139,9 @@ jobs:
         with:
           submodules: "recursive"
 
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
       - name: patch package.json
         run: |
           bun install
@@ -224,6 +227,9 @@ jobs:
         with:
           submodules: "recursive"
 
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
       - name: patch package.json
         run: |
           bun install
@@ -288,4 +294,127 @@ jobs:
           cd packages/jupyter
           yarn build
 
-        # TBC
+      - name: Build the python part of the extension
+        # this will probably fail (the pypi version is not available)
+        run: |
+          cd packages/jupyter
+          python -m build
+          python -m twine check dist/*
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-jupyter-package-distribution
+          path: packages/jupyter/dist/
+
+  publish_waldiez_jupyter:
+    name: Publish Jupyter 🐍 distribution 📦 to PyPI
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref_name == 'monorepo'
+    needs: package_waldiez_jupyter
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/waldiez
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-jupyter-package-distribution
+          path: packages/jupyter/dist/
+
+          # - name: Publish to PyPI
+          #   if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+          #   uses: pypa/gh-action-pypi-publish@release/v1
+          #   with:
+          #     packages-dir:
+          #       packages/jupyter/dist/
+
+
+  pachage_waldiez_studio:
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref_name == 'monorepo'
+    needs:
+      - package_waldiez_react
+      - package_waldiez_python
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: |
+          cd packages/studio
+          bun install
+
+      - name: Download artifact from python package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-python-package-distribution
+
+      - name: Download artifact from react package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldeiz-react-package-distribution
+
+      - name: Get the new version of the package
+        run: |
+          sudo update && sudo apt install -y jq
+          mkdir -p .local
+          cat package.json | jq -r '.version' > .local/VERSION
+          cd packages/studio
+          mkdir -p .local
+          mv ../../.local/VERSION .local/VERSION
+          cat package.json | jq -r '.version' > .local/VERSION
+
+      - name: Set the new @waldiez/react to the path of the artifact
+        run: |
+          cd packages/studio
+          touch yarn.lock
+          yarn remove @waldiez/react
+          yarn add @waldiez/react@file:../../react/dist/waldiez-react-$(cat .local/VERSION).tgz
+          yarn install
+
+      - name: Build the frontend part of the extension
+        run: |
+          cd packages/studio
+          bun build
+
+      - name: Build the python part of the extension
+        run: |
+          cd packages/studio
+          python -m build
+          python -m twine check dist/*
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-studio-package-distribution
+          path: packages/studio/dist/
+
+  publish_waldiez_studio:
+    name: Publish Studio 🐍 distribution 📦 to PyPI
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref_name == 'monorepo'
+    needs: pachage_waldiez_studio
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/waldiez
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-studio-package-distribution
+
+          # - name: Publish to PyPI
+          #   if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+          #   uses: pypa/gh-action-pypi-publish@release/v1
+          #   with:
+          #     packages-dir:
+          #       packages/studio/dist/
