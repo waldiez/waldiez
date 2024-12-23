@@ -116,7 +116,7 @@ jobs:
       name: pypi
       url: https://pypi.org/p/waldiez
     steps:
-      - name: Download all the dists
+      - name: Download the artifact from the python package
         uses: actions/download-artifact@v4
         with:
           name: waldiez-python-package-distribution
@@ -133,7 +133,9 @@ jobs:
     runs-on: ubuntu-latest
     # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     if: github.event_name == 'push' && github.ref_name == 'monorepo'
-    needs: publish_waldiez_to_npm
+    needs:
+      - publish_waldiez_to_npm
+      - publish_waldiez_to_pypi
     steps:
       - uses: actions/checkout@v4
         with:
@@ -183,18 +185,18 @@ jobs:
           cat package.json | jq -r '.version' > .local/VERSION
 
       - name: Set the new version of @waldiez/react to the path of the artifact
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/vscode
           touch yarn.lock
           yarn version:set $(cat .local/VERSION)
-          yarn remove @waldiez/react
-          yarn add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
-          yarn install
 
       - name: Create VSIX
         id: create_vsix
         run: |
           cd packages/vscode
+          yarn cache clean
+          yarn install
           yarn run build
           echo "generated<<EOF" >> $GITHUB_OUTPUT
           echo "$(ls -1 dist/waldiez-vscode-*.vsix)" >> $GITHUB_OUTPUT
@@ -276,16 +278,21 @@ jobs:
           mv ../../.local/VERSION .local/VERSION
           cat package.json | jq -r '.version' > .local/VERSION
 
-      - name: Build the package with the new version of @waldiez/react and waldiez
+      - name: Update the version of the package
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/jupyter
+          touch yarn.lock
           yarn version:set $(cat .local/VERSION)
-          yarn remove @waldiez/react
-          yarn add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
-          yarn install
-          yarn build
           python scripts/version.py --set $(cat .local/VERSION)
-          pip install ../core/python/dist/waldiez-$(cat .local/VERSION)-py3-none-any.whl
+
+      - name: Build the package with the new version of @waldiez/react and waldiez
+        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name == 'push' && github.ref_name == 'monorepo'
+        run: |
+          cd packages/jupyter
+          yarn cache clean
+          yarn install
           python -m build
           python -m twine check dist/*
 
@@ -362,11 +369,19 @@ jobs:
           mv ../../.local/VERSION .local/VERSION
           cat package.json | jq -r '.version' > .local/VERSION
 
-      - name: Build the package with the new version of @waldiez/react and waldiez
+      - name: Set the new version of the package
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/studio
-          bun remove @waldiez/react
-          bun add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
+          bun version:set $(cat .local/VERSION)
+          python scripts/version.py --set $(cat .local/VERSION)
+
+      - name: Build the package
+        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name == 'push' && github.ref_name == 'monorepo'
+        run: |
+          cd packages/studio
+          bun pm cache rm
           bun install
           bun run build
           python -m build
