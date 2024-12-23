@@ -5,8 +5,11 @@ on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
-    # branches:
-    #   - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
 
 permissions:
   contents: read
@@ -14,6 +17,7 @@ permissions:
 
 jobs:
   docker:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
