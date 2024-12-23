@@ -15,9 +15,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: lint
-        name: Lint
-        entry: make lint
+      - id: lint-py
+        name: Lint Py
+        entry: make lint-py
         types: [python]
         language: system
         pass_filenames: false

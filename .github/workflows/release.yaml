@@ -1,92 +1,492 @@
 ---
-name: Release
+name: Release 🚀
 
 # yamllint disable rule:truthy
 on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
+
 permissions:
   contents: write
+  packages: write
   id-token: write
 
+
 jobs:
-  package:
+  package_waldiez_react:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Package React 🌐 distribution 📦
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: |
+          cd packages/core/react
+          bun install
+
+      - name: Build
+        run: |
+          cd packages/core/react
+          bun run build
+
+      - name: Make docs
+        run: |
+          cd packages/core/react
+          bun run docs
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-react
+          path: |
+            packages/core/react/dist
+            packages/core/react/out
+            packages/core/react/site
+
+  publish_waldiez_to_npm:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Publish React 🌐 distribution 📦 to NPM
+    runs-on: ubuntu-latest
+    needs: package_waldiez_react
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: |
+          cd packages/core/react
+          bun install
+
+      - name: Download the artifact from the react package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-react
+          path: out/archive/waldiez-react-*.tgz
+
+      - name: Publish to NPM
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/core/react
+          bun publish
+
+  package_waldiez_python:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Package Python 🐍 distribution 📦
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install dependencies
         run: python -m pip install --break-system-packages build twine
-      - name: Build
-        run: python -m build --sdist --wheel --outdir dist/
-      - name: Check
-        run: python -m twine check dist/*
+
+      - name: Build 🏗️
+        run: |
+          cd packages/core/python
+          python -m build --sdist --wheel --outdir dist/
+          python -m twine check dist/*
+
+      - name: Make docs
+        run: |
+          cd packages/core/python
+          python scripts/docs.py
+
       - name: Store the distribution packages
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
-          path: dist/
+          name: waldiez-python
+          path: |
+            packages/core/python/dist
+            packages/core/python/site
 
-  publish-to-pypi:
+  publish_waldiez_to_pypi:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: package
+    needs: package_waldiez_python
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/p/waldiez
     steps:
-      - name: Download all the dists
+      - name: Download the artifact from the python package
         uses: actions/download-artifact@v4
         with:
-          name: python-package-distributions
-          path: dist/
-      - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+          name: waldiez-python
+          path: packages/core/python/dist/
+          pattern: "*{.tar.gz,.whl}"
 
-  github-release:
-    name: >-
-      Sign the Python 🐍 distribution 📦 with Sigstore
-      and upload them to GitHub Release
-    needs:
-    - publish-to-pypi
+      - name: Publish distribution 📦 to PyPI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/core/python/dist/
+
+  publish_waldiez_vscode:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Publish VSCode 🌐 distribution 📦 to Marketplace
+    needs:
+      - publish_waldiez_to_npm
+      - publish_waldiez_to_pypi
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Sign the dists with Sigstore
-      uses: sigstore/gh-action-sigstore-python@v3.0.0
-      with:
-        inputs: >-
-          ./dist/*.tar.gz
-          ./dist/*.whl
-    - name: Create GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: >-
-        gh release create
-        '${{ github.ref_name }}'
-        --repo '${{ github.repository }}'
-        --notes ""
-    - name: Upload artifact signatures to GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      # Upload to GitHub Release using the `gh` CLI.
-      # `dist/` contains the built packages, and the
-      # sigstore-produced signatures and certificates.
-      run: >-
-        gh release upload
-        '${{ github.ref_name }}' dist/**
-        --repo '${{ github.repository }}'
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: patch package.json
+        run: |
+          bun install
+          bun run ci:patch
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install corepack and yarn
+        run: |
+          corepack enable
+          yarn set version stable
+
+      - name: Rollback package.json
+        run: |
+          bun run ci:rollback
+
+      - name: Install dependencies
+        run: |
+          cd packages/vscode
+          yarn install
+
+      - name: Get the latest version of the package
+        run: |
+          sudo apt update && sudo apt install -y jq
+          mkdir -p .local
+          cat package.json | jq -r '.version' > .local/VERSION
+          cd packages/vscode
+          mkdir -p .local
+          mv ../../.local/VERSION .local/VERSION
+          cat package.json | jq -r '.version' > .local/VERSION
+
+      - name: Set the latest version of @waldiez/react to the path of the artifact
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/vscode
+          touch yarn.lock
+          yarn version:set $(cat .local/VERSION)
+
+      - name: Create VSIX
+        id: create_vsix
+        run: |
+          cd packages/vscode
+          yarn cache clean
+          yarn install
+          yarn run build
+          echo "generated<<EOF" >> $GITHUB_OUTPUT
+          echo "$(ls -1 dist/waldiez-vscode-*.vsix)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload the distribution package
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-vscode
+          path: packages/vscode/dist/
+
+      - name: Publish to VSCode Marketplace
+        if: success() && steps.create_vsix.outputs.generated && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/vscode
+          yarn run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+  package_waldiez_jupyter:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Package Jupyter 🐍 distribution 📦
+    needs:
+      - publish_waldiez_to_npm
+      - publish_waldiez_to_pypi
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: patch package.json
+        run: |
+          bun install
+          bun run ci:patch
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install corepack and yarn
+        run: |
+          corepack enable
+          yarn set version stable
+
+      - name: Rollback package.json
+        run: |
+          bun run ci:rollback
+
+      - name: Install dependencies
+        run: |
+          cd packages/jupyter
+          yarn install
+          python -m pip install --break-system-packages build twine
+
+      - name: Get the latest version of the package
+        run: |
+          sudo apt update && sudo apt install -y jq
+          mkdir -p .local
+          cat package.json | jq -r '.version' > .local/VERSION
+          cd packages/jupyter
+          mkdir -p .local
+          mv ../../.local/VERSION .local/VERSION
+          cat package.json | jq -r '.version' > .local/VERSION
+
+      - name: Update the version of the package
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/jupyter
+          touch yarn.lock
+          yarn version:set $(cat .local/VERSION)
+          python scripts/version.py --set $(cat .local/VERSION)
+
+      - name: Build the package with the latest version of @waldiez/react and waldiez
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/jupyter
+          yarn cache clean
+          yarn install
+          python scripts/build.py
+
+      - name: Store the distribution package
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-jupyter
+          path: packages/jupyter/dist/
+
+  publish_waldiez_jupyter:
+    name: Publish Jupyter 🐍 distribution 📦 to PyPI
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: package_waldiez_jupyter
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/waldiez-jupyter
+    steps:
+      - name: Download artifact from the python package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-jupyter
+          path: packages/core/python/dist/
+
+      - name: Publish to PyPI
+        if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/jupyter/dist/
+
+
+  package_waldiez_studio:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Package Studio 🐍 distribution 📦
+    needs:
+      - publish_waldiez_to_npm
+      - publish_waldiez_to_pypi
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: |
+          cd packages/studio
+          bun install
+          python -m pip install --break-system-packages build twine
+
+      - name: Get the latest version of the package
+        run: |
+          sudo apt update && sudo apt install -y jq
+          mkdir -p .local
+          cat package.json | jq -r '.version' > .local/VERSION
+          cd packages/studio
+          mkdir -p .local
+          mv ../../.local/VERSION .local/VERSION
+          cat package.json | jq -r '.version' > .local/VERSION
+
+      - name: Set the latest version of the package
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/studio
+          bun version:set $(cat .local/VERSION)
+          python scripts/version.py --set $(cat .local/VERSION)
+
+      - name: Build the package
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd packages/studio
+          bun pm cache rm
+          bun install
+          bun run build
+          python scripts/build.py
+
+      - name: Store the distribution package
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-studio
+          path: packages/studio/dist/
+
+  publish_waldiez_studio:
+    name: Publish Studio 🐍 distribution 📦 to PyPI
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: package_waldiez_studio
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/waldiez-studio
+    steps:
+      - name: Download the artifact from the python package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-studio
+          path: packages/studio/dist/
+
+      - name: Publish to PyPI
+        if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/studio/dist/
+
+  release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Release 🚀
+    needs:
+      - publish_waldiez_vscode
+      - publish_waldiez_jupyter
+      - publish_waldiez_studio
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Download artifact from react package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-react
+          path: dist/core/react/
+
+      - name: Download artifact from python package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-python
+          path: dist/core/python/
+
+      - name: Download artifact from vscode package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-vscode
+          path: dist/vscode/
+
+      - name: Download artifact from jupyter package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-jupyter
+          path: dist/jupyter/
+
+      - name: Download artifact from studio package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-studio
+          path: dist/studio/
+
+      - name: Rename site to docs
+        run: |
+          mv dist/core/python/site dist/core/python/docs
+          mv dist/core/react/site dist/core/react/docs
+
+      - name: Sign the python dists with Sigstore
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: sigstore/gh-action-sigstore-python@v3.0.0
+        with:
+          inputs: >-
+            dist/core/python/dist/*.tar.gz
+            dist/core/python/dist/*.whl
+            dist/jupyter/*.tar.gz
+            dist/jupyter/*.whl
+            dist/studio/*.tar.gz
+            dist/studio/*.whl
+
+      - name: Upload the release files to check
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: |
+            dist/*
+      - name: Create a release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create
+          '${{ github.ref_name }}'
+          --repo '${{ github.repository }}'
+          --notes ""
+
+      - name: Upload artifact signatures to GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        # Upload to GitHub Release using the `gh` CLI.
+        # `dist/` contains the built packages, and the
+        # sigstore-produced signatures and certificates.
+        run: |
+          gh release upload '${{ github.ref_name }}' dist/** --repo '${{ github.repository }}'

@@ -1,0 +1,15 @@
+{
+    "npm.packageManager": "bun",
+    "files.eol": "\n",
+    "cSpell.words": [
+        "autohiding",
+        "forlint",
+        "lookpath",
+        "msapplication",
+        "npmjs",
+        "stylelintcache",
+        "trivago",
+        "venv",
+        "webp"
+    ]
+}

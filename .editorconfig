@@ -15,7 +15,7 @@ indent_style = tab
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{yaml,yml,json,md,toml,css}]
+[{*.yml,*.yaml}]
 indent_size = 2
 
 # Ignore:
