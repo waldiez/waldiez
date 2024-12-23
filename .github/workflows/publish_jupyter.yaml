@@ -2,6 +2,7 @@
 # WIP
 name: "Publish Jupyter 📦 extension 🌐 PyPi"
 
+# yamllint disable rule:truthy
 on:
   workflow_run:
     workflows:

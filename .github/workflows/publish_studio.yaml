@@ -2,6 +2,7 @@
 # WIP
 name: "Publish Waldiez studio to PyPi"
 
+# yamllint disable rule:truthy
 on:
   workflow_run:
     workflows:

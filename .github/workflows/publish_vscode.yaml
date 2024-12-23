@@ -2,6 +2,7 @@
 # WIP
 name: Publish VSCode 📦 extension 🌐 to VSCode Marketplace
 
+# yamllint disable rule:truthy
 on:
   workflow_run:
     workflows: ["Publish React package to NPM"]
