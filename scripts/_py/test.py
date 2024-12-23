@@ -6,10 +6,10 @@ from pathlib import Path
 HAD_TO_MODIFY_SYS_PATH = False
 
 try:
-    from _lib import ROOT_DIR, run_command
+    from _lib import get_python_projects, run_command
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
-    from _lib import ROOT_DIR, run_command  # type: ignore
+    from _lib import run_command  # type: ignore
 
     HAD_TO_MODIFY_SYS_PATH = True
 
@@ -41,7 +41,8 @@ def run_tests(in_dir: Path) -> None:
 
 def main() -> None:
     """Run the tests."""
-    run_tests(ROOT_DIR / "package_templates" / "python_only")
+    for project_dir in get_python_projects():
+        run_tests(project_dir)
 
 
 if __name__ == "__main__":
