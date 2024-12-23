@@ -26,6 +26,7 @@ from typing import Generator, List, NamedTuple
 
 ROOT_DIR = Path(__file__).parent.parent.parent
 os.environ["PYTHONUNBUFFERED"] = "1"
+os.environ["PYTHONUTF8"] = "1"
 
 
 def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:

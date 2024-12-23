@@ -17,7 +17,8 @@ else:
         load_dotenv(dot_env_path)
 
 # pylint: disable=broad-except,too-many-try-statements,line-too-long,consider-using-with,unused-argument  # noqa: E501
-
+os.environ["PYTHONUTF8"] = "1"
+os.environ["PYTHONUNBUFFERED"] = "1"
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 

@@ -25,7 +25,8 @@ EXCLUDED_PACKAGES = [  # we manually do theses (in order)
     "waldiez_studio",
     "waldiez_jupyter",
 ]
-
+os.environ["PYTHONUNBUFFERED"] = "1"
+os.environ["PYTHONUTF8"] = "1"
 # toml uses 'r' mode, tomllib uses 'rb' mode
 OPEN_MODE = "rb" if sys.version_info >= (3, 11) else "r"
 

@@ -174,7 +174,7 @@ jobs:
 
       - name: Get the new version of the package
         run: |
-          sudo update && sudo apt install -y jq
+          sudo apt update && sudo apt install -y jq
           mkdir -p .local
           cat package.json | jq -r '.version' > .local/VERSION
           cd packages/vscode
@@ -268,7 +268,7 @@ jobs:
 
       - name: Get the new version of the package
         run: |
-          sudo update && sudo apt install -y jq
+          sudo apt update && sudo apt install -y jq
           mkdir -p .local
           cat package.json | jq -r '.version' > .local/VERSION
           cd packages/jupyter
@@ -276,29 +276,16 @@ jobs:
           mv ../../.local/VERSION .local/VERSION
           cat package.json | jq -r '.version' > .local/VERSION
 
-      - name: Set the new @waldiez/react to the path of the artifact
+      - name: Build the package with the new version of @waldiez/react and waldiez
         run: |
           cd packages/jupyter
           yarn version:set $(cat .local/VERSION)
           yarn remove @waldiez/react
           yarn add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
           yarn install
-
-      - name: Set and install the new waldiez py version to the path of the artifact
-        run: |
-          cd packages/jupyter
-          pip install ../core/python/dist/waldiez-$(cat .local/VERSION)-py3-none-any.whl
-          python scripts/version.py --set $(cat .local/VERSION)
-
-      - name: Build the frontend part of the extension
-        run: |
-          cd packages/jupyter
           yarn build
-
-      - name: Build the python part of the extension
-        # this will probably fail (the pypi version is not available)
-        run: |
-          cd packages/jupyter
+          python scripts/version.py --set $(cat .local/VERSION)
+          pip install ../core/python/dist/waldiez-$(cat .local/VERSION)-py3-none-any.whl
           python -m build
           python -m twine check dist/*
 
@@ -367,7 +354,7 @@ jobs:
 
       - name: Get the new version of the package
         run: |
-          sudo update && sudo apt install -y jq
+          sudo apt update && sudo apt install -y jq
           mkdir -p .local
           cat package.json | jq -r '.version' > .local/VERSION
           cd packages/studio
@@ -375,21 +362,13 @@ jobs:
           mv ../../.local/VERSION .local/VERSION
           cat package.json | jq -r '.version' > .local/VERSION
 
-      - name: Set the new @waldiez/react to the path of the artifact
+      - name: Build the package with the new version of @waldiez/react and waldiez
         run: |
           cd packages/studio
           bun remove @waldiez/react
           bun add @waldiez/react@file:../core/react/dist/archive/waldiez-react-$(cat .local/VERSION).tgz
           bun install
-
-      - name: Build the frontend part of the extension
-        run: |
-          cd packages/studio
           bun run build
-
-      - name: Build the python part of the extension
-        run: |
-          cd packages/studio
           python -m build
           python -m twine check dist/*
 
