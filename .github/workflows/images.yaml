@@ -5,9 +5,8 @@ on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
-    branches:
-      - main
-      - monorepo
+    # branches:
+    #   - main
 
 permissions:
   contents: read
@@ -44,6 +43,7 @@ jobs:
         with:
           platforms: |
             linux/amd64
+            linux/arm64
           file: packages/core/python/Containerfile
           context: packages/core/python
           push: false
@@ -51,26 +51,28 @@ jobs:
             waldiez/waldiez:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
             quay.io/waldiez/waldiez:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
 
-      # - name: Build and push jupyter
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     platforms: |
-      #       linux/amd64
-      #     file: Containerfile
-      #     context: packages/jupyter
-      #     push: false
-      #     tags: |
-      #       waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-      #       quay.io/waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+      - name: Build and push jupyter
+        uses: docker/build-push-action@v6
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
+          file: packages/jupyter/Containerfile
+          context: packages/jupyter
+          push: false
+          tags: |
+            waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+            quay.io/waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
 
-      # - name: Build and push studio
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     platforms: |
-      #       linux/amd64
-      #     file: Containerfile
-      #     context: packages/studio
-      #     push: false
-      #     tags: |
-      #       waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-      #       quay.io/waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+      - name: Build and push studio
+        uses: docker/build-push-action@v6
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
+          file: packages/studio/Containerfile
+          context: packages/studio
+          push: false
+          tags: |
+            waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+            quay.io/waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
