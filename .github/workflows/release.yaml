@@ -185,22 +185,6 @@ jobs:
           cd packages/vscode
           yarn install
 
-      - name: Get the latest version of the package
-        run: |
-          sudo apt update && sudo apt install -y jq
-          mkdir -p .local
-          cat package.json | jq -r '.version' > .local/VERSION
-          cd packages/vscode
-          mkdir -p .local
-          mv ../../.local/VERSION .local/VERSION
-          cat package.json | jq -r '.version' > .local/VERSION
-
-      - name: Set the latest version of @waldiez/react to the path of the artifact
-        run: |
-          cd packages/vscode
-          touch yarn.lock
-          yarn version:set $(cat .local/VERSION)
-
       - name: Create VSIX
         id: create_vsix
         run: |
@@ -271,28 +255,12 @@ jobs:
           yarn install
           python -m pip install --break-system-packages build twine
 
-      - name: Get the latest version of the package
-        run: |
-          sudo apt update && sudo apt install -y jq
-          mkdir -p .local
-          cat package.json | jq -r '.version' > .local/VERSION
-          cd packages/jupyter
-          mkdir -p .local
-          mv ../../.local/VERSION .local/VERSION
-          cat package.json | jq -r '.version' > .local/VERSION
-
-      - name: Update the version of the package
-        run: |
-          cd packages/jupyter
-          touch yarn.lock
-          yarn version:set $(cat .local/VERSION)
-          python scripts/version.py --set $(cat .local/VERSION)
-
       - name: Build the package with the latest version of @waldiez/react and waldiez
         run: |
           cd packages/jupyter
           yarn cache clean
           yarn install
+          yarn build
           python scripts/build.py
 
       - name: Store the distribution package
@@ -314,7 +282,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: waldiez-jupyter
-          path: packages/core/python/dist/
+          path: packages/jupyter/dist/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -349,26 +317,9 @@ jobs:
           bun install
           python -m pip install --break-system-packages build twine
 
-      - name: Get the latest version of the package
-        run: |
-          sudo apt update && sudo apt install -y jq
-          mkdir -p .local
-          cat package.json | jq -r '.version' > .local/VERSION
-          cd packages/studio
-          mkdir -p .local
-          mv ../../.local/VERSION .local/VERSION
-          cat package.json | jq -r '.version' > .local/VERSION
-
-      - name: Set the latest version of the package
-        run: |
-          cd packages/studio
-          bun version:set $(cat .local/VERSION)
-          python scripts/version.py --set $(cat .local/VERSION)
-
       - name: Build the package
         run: |
           cd packages/studio
-          bun pm cache rm
           bun install
           bun run build
           python scripts/build.py
