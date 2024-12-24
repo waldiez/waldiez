@@ -203,6 +203,8 @@ jobs:
           path: packages/vscode/dist/
 
       - name: Publish to VSCode Marketplace
+        # tmp to disable
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/vscode
           yarn run deploy
@@ -253,7 +255,7 @@ jobs:
         run: |
           cd packages/jupyter
           yarn install
-          python -m pip install --break-system-packages build twine
+          python -m pip install --break-system-packages jupyterlab build twine
 
       - name: Build the package with the latest version of @waldiez/react and waldiez
         run: |
@@ -346,6 +348,8 @@ jobs:
           path: packages/studio/dist/
 
       - name: Publish to PyPI
+        # tmp to disable
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir:
