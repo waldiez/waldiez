@@ -16,6 +16,9 @@ function lintThisDir(): void {
 
 function main(): void {
     lintThisDir();
+    if (process.argv.includes("--root")) {
+        return;
+    }
     for (const project of packageJson.packages.ts) {
         const projectDir = path.join(rootDir, project);
         const packageJsonPath = path.join(projectDir, "package.json");

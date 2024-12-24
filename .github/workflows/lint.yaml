@@ -1,11 +1,12 @@
 ---
-name: Lint
+name: Lint 🧹
 
 # yamllint disable rule:truthy
 on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   lint:
@@ -49,13 +50,44 @@ jobs:
         run: |
           bun run ci:rollback
 
-      - name: Install dependencies
+      - name: Lint root
         run: |
-          bun install
-          bun run requirements:ts
-          pip install --upgrade pip uv
-          uv sync --all-packages
-          bun run requirements:py
+          python -m pip install -r requirements/dev.txt
+          python scripts/_py/lint.py --root
+          bun run lint:root
 
-      - name: Run Lint
-        run: bun run lint
+      - name: Lint packages/core/python
+        run: |
+          cd packages/core/python
+          pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+          python scripts/lint.py
+
+      - name: Lint packages/core/react
+        run: |
+          cd packages/core/react
+          bun install
+          bun run lint
+
+      - name: Lint packages/jupyter
+        run: |
+          cd packages/jupyter
+          yarn install
+          yarn run lint
+          pip install --upgrade waldiez pip
+          pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+          python scripts/lint.py
+
+      - name: Lint packages/vscode
+        run: |
+          cd packages/vscode
+          yarn install
+          yarn run lint
+
+      - name: Lint packages/studio
+        run: |
+          cd packages/studio
+          bun install
+          bun run lint
+          pip install --upgrade waldiez pip
+          pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+          python scripts/lint.py

@@ -1,18 +1,24 @@
 [submodule "examples"]
 	path = examples
 	url = ../examples.git
+	branch = main
 [submodule "packages/core/python"]
 	path = packages/core/python
-	url = ../python
+	url = ../python.git
+	branch = main
 [submodule "packages/core/react"]
 	path = packages/core/react
-	url =../react
+	url =../react.git
+	branch = main
 [submodule "packages/vscode"]
 	path = packages/vscode
-	url = ../vscode
+	url = ../vscode.git
+	branch = main
 [submodule "packages/studio"]
 	path = packages/studio
-	url = ../studio
+	url = ../studio.git
+	branch = main
 [submodule "packages/jupyter"]
 	path = packages/jupyter
-	url = ../jupyter
+	url = ../jupyter.git
+	branch = main
