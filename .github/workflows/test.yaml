@@ -62,7 +62,6 @@ jobs:
       - name: Run tests in packages/core/react
         run: |
           cd packages/core/react
-          npx playwright install chromium
           bun install
           bun run test
 
