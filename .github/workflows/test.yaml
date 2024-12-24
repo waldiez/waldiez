@@ -50,6 +50,9 @@ jobs:
         run: |
           bun run ci:rollback
 
+      - name: Prepare Playwright
+        run: npx playwright install --with-deps chromium
+
       - name: Run tests in packages/core/python
         run: |
           cd packages/core/python
@@ -59,6 +62,7 @@ jobs:
       - name: Run tests in packages/core/react
         run: |
           cd packages/core/react
+          npx playwright install chromium
           bun install
           bun run test
 
@@ -71,7 +75,23 @@ jobs:
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
           python scripts/test.py
 
-      - name: Run tests in packages/vscode
+      - name: Run tests in packages/vscode on ubuntu-latest
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd packages/vscode
+          yarn install
+          sudo apt update && sudo apt install -y xvfb libasound2t64 libgbm1 libgtk-3-0t64 libnss3 lcov > /dev/null 2>&1 || true
+          xvfb-run -a yarn run test
+
+      - name: Run tests in packages/vscode on windows-latest
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd packages/vscode
+          yarn install
+          yarn run test
+
+      - name: Run tests in packages/vscode on macos-latest
+        if: matrix.os == 'macos-latest'
         run: |
           cd packages/vscode
           yarn install
