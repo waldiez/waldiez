@@ -60,7 +60,7 @@ jobs:
             linux/arm64
           file: packages/core/python/Containerfile
           context: packages/core/python
-          push: false
+          push: true
           tags: |
             waldiez/waldiez:${{ steps.docker_tag.outputs.docker_tag }}
             quay.io/waldiez/waldiez:${{ steps.docker_tag.outputs.docker_tag }}
@@ -75,7 +75,7 @@ jobs:
             linux/arm64
           file: packages/jupyter/Containerfile
           context: packages/jupyter
-          push: false
+          push: true
           tags: |
             waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
             quay.io/waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
@@ -90,7 +90,7 @@ jobs:
             linux/arm64
           file: packages/studio/Containerfile
           context: packages/studio
-          push: false
+          push: true
           tags: |
             waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
             quay.io/waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
