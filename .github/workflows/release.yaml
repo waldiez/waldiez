@@ -77,13 +77,13 @@ jobs:
           name: waldiez-react
           path: out/archive/waldiez-react-*.tgz
 
-      - name: Publish to NPM
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          cd packages/core/react
-          bun publish
+      # - name: Publish to NPM
+      #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: |
+      #     cd packages/core/react
+      #     bun publish
 
   package_waldiez_python:
     runs-on: ubuntu-latest
@@ -133,8 +133,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: waldiez-python
-          path: packages/core/python/dist/
-          pattern: "*{.tar.gz,.whl}"
+          path: packages/core/python/
 
       - name: Publish distribution 📦 to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
