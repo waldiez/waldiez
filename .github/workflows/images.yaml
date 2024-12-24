@@ -65,23 +65,8 @@ jobs:
             waldiez/waldiez:${{ steps.docker_tag.outputs.docker_tag }}
             quay.io/waldiez/waldiez:${{ steps.docker_tag.outputs.docker_tag }}
 
-      - name: Build and push jupyter
-        # manually, after publishing waldiez_jupyter
-        if: github.event_name == 'workflow_dispatch'
-        uses: docker/build-push-action@v6
-        with:
-          platforms: |
-            linux/amd64
-            linux/arm64
-          file: packages/jupyter/Containerfile
-          context: packages/jupyter
-          push: true
-          tags: |
-            waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
-            quay.io/waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
-
       - name: Build and push studio
-        # manually, after publishing waldiez_studio
+        # manually, after publishing waldiez_studio on pypi
         if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v6
         with:
@@ -94,3 +79,19 @@ jobs:
           tags: |
             waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
             quay.io/waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
+
+      - name: Build and push jupyter
+        # manually, after publishing waldiez_jupyter on pypi
+        # this one takes longer to build
+        if: github.event_name == 'workflow_dispatch'
+        uses: docker/build-push-action@v6
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
+          file: packages/jupyter/Containerfile
+          context: packages/jupyter
+          push: true
+          tags: |
+            waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
