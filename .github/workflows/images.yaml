@@ -46,7 +46,7 @@ jobs:
         id: docker_tag
         run: |
           if  [[ "${{github.event_name}}" == 'push' ]]; then
-            tag="${{ github.ref }}"
+            tag="${{ github.ref_name }}"
           else
             tag="${{ github.event.inputs.version_tag }}"
           fi
