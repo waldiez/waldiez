@@ -88,6 +88,8 @@ def lint_package(package_dir: Path) -> None:
 def main() -> None:
     """Run the linters."""
     lint_root()
+    if "--root" in sys.argv:
+        return
     for package_dir in get_python_projects():
         lint_package(package_dir)
 

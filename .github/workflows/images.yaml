@@ -5,11 +5,12 @@ on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types:
-  #     - closed
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: "The version tag to build and push (e.g. v1.2.3 or latest)"
+        required: true
+        default: "latest"
 
 permissions:
   contents: read
@@ -17,7 +18,6 @@ permissions:
 
 jobs:
   docker:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,6 +42,16 @@ jobs:
           username: ${{ vars.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_TOKEN }}
 
+      - name: Determine Docker Tag
+        id: docker_tag
+        run: |
+          if  [[ "${{github.event_name}}" == 'push' ]]; then
+            tag="${{ github.ref }}"
+          else
+            tag="${{ github.event.inputs.version_tag }}"
+          fi
+          echo "docker_tag=$tag" >> $GITHUB_OUTPUT
+
       - name: Build and push core
         uses: docker/build-push-action@v6
         with:
@@ -52,10 +62,12 @@ jobs:
           context: packages/core/python
           push: false
           tags: |
-            waldiez/waldiez:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-            quay.io/waldiez/waldiez:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+            waldiez/waldiez:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/waldiez:${{ steps.docker_tag.outputs.docker_tag }}
 
       - name: Build and push jupyter
+        # manually, after publishing waldiez_jupyter
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v6
         with:
           platforms: |
@@ -65,10 +77,12 @@ jobs:
           context: packages/jupyter
           push: false
           tags: |
-            waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-            quay.io/waldiez/waldiez-jupyter:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+            waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
 
       - name: Build and push studio
+        # manually, after publishing waldiez_studio
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v6
         with:
           platforms: |
@@ -78,5 +92,5 @@ jobs:
           context: packages/studio
           push: false
           tags: |
-            waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-            quay.io/waldiez/waldiez-studio:${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+            waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}

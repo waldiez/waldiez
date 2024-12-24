@@ -1,11 +1,16 @@
 ---
 name: Release 🚀
 
+# on tags: publish core packags
+# on dispatch (after publising core packages):
+# (bump and) publish other packages
+
 # yamllint disable rule:truthy
 on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,7 +20,6 @@ permissions:
 
 jobs:
   package_waldiez_react:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Package React 🌐 distribution 📦
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +55,6 @@ jobs:
             packages/core/react/site
 
   publish_waldiez_to_npm:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Publish React 🌐 distribution 📦 to NPM
     runs-on: ubuntu-latest
     needs: package_waldiez_react
@@ -84,7 +87,6 @@ jobs:
 
   package_waldiez_python:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Package Python 🐍 distribution 📦
     steps:
       - uses: actions/checkout@v4
@@ -121,7 +123,6 @@ jobs:
   publish_waldiez_to_pypi:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: package_waldiez_python
     runs-on: ubuntu-latest
     environment:
@@ -142,9 +143,10 @@ jobs:
           packages-dir:
             packages/core/python/dist/
 
+  # On Dispatch
   publish_waldiez_vscode:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Publish VSCode 🌐 distribution 📦 to Marketplace
     needs:
       - publish_waldiez_to_npm
@@ -192,7 +194,6 @@ jobs:
           cat package.json | jq -r '.version' > .local/VERSION
 
       - name: Set the latest version of @waldiez/react to the path of the artifact
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/vscode
           touch yarn.lock
@@ -216,7 +217,6 @@ jobs:
           path: packages/vscode/dist/
 
       - name: Publish to VSCode Marketplace
-        if: success() && steps.create_vsix.outputs.generated && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/vscode
           yarn run deploy
@@ -224,8 +224,8 @@ jobs:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   package_waldiez_jupyter:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Package Jupyter 🐍 distribution 📦
     needs:
       - publish_waldiez_to_npm
@@ -280,7 +280,6 @@ jobs:
           cat package.json | jq -r '.version' > .local/VERSION
 
       - name: Update the version of the package
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/jupyter
           touch yarn.lock
@@ -288,7 +287,6 @@ jobs:
           python scripts/version.py --set $(cat .local/VERSION)
 
       - name: Build the package with the latest version of @waldiez/react and waldiez
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/jupyter
           yarn cache clean
@@ -302,8 +300,8 @@ jobs:
           path: packages/jupyter/dist/
 
   publish_waldiez_jupyter:
+    if: github.event_name == 'workflow_dispatch'
     name: Publish Jupyter 🐍 distribution 📦 to PyPI
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: package_waldiez_jupyter
     runs-on: ubuntu-latest
     environment:
@@ -317,16 +315,14 @@ jobs:
           path: packages/core/python/dist/
 
       - name: Publish to PyPI
-        if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir:
             packages/jupyter/dist/
 
-
   package_waldiez_studio:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Package Studio 🐍 distribution 📦
     needs:
       - publish_waldiez_to_npm
@@ -362,14 +358,12 @@ jobs:
           cat package.json | jq -r '.version' > .local/VERSION
 
       - name: Set the latest version of the package
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/studio
           bun version:set $(cat .local/VERSION)
           python scripts/version.py --set $(cat .local/VERSION)
 
       - name: Build the package
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           cd packages/studio
           bun pm cache rm
@@ -384,8 +378,8 @@ jobs:
           path: packages/studio/dist/
 
   publish_waldiez_studio:
+    if: github.event_name == 'workflow_dispatch'
     name: Publish Studio 🐍 distribution 📦 to PyPI
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: package_waldiez_studio
     runs-on: ubuntu-latest
     environment:
@@ -399,15 +393,14 @@ jobs:
           path: packages/studio/dist/
 
       - name: Publish to PyPI
-        if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir:
             packages/studio/dist/
 
   release:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     name: Release 🚀
     needs:
       - publish_waldiez_vscode
@@ -454,7 +447,6 @@ jobs:
           mv dist/core/react/site dist/core/react/docs
 
       - name: Sign the python dists with Sigstore
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         uses: sigstore/gh-action-sigstore-python@v3.0.0
         with:
           inputs: >-
@@ -465,28 +457,38 @@ jobs:
             dist/studio/*.tar.gz
             dist/studio/*.whl
 
-      - name: Upload the release files to check
-        uses: actions/upload-artifact@v4
-        with:
-          name: release
-          path: |
-            dist/*
+      - name: Read changelog
+        id: changelog
+        run: |
+          changelog=$(bun run changelog)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$changelog" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get Tag Name
+        id: tag_name
+        run: |
+          file_version="v$(jq -r .version package.json | xargs)"
+          git_version="$(git describe --tags --abbrev=0 | xargs)"
+          if [ "$file_version" != "$git_version" ]; then
+            echo "Version mismatch: package.json ($file_version) vs Git tag ($git_version)"
+            exit 1
+          fi
+          tag_name=$file_version
+          echo "tag_name<<EOF" >> $GITHUB_OUTPUT
+          echo "$tag_name" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create a release
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create
-          '${{ github.ref_name }}'
-          --repo '${{ github.repository }}'
-          --notes ""
+        if: steps.changelog.outputs.changelog != '' && steps.tag_name.outputs.tag_name != ''
+        run: |
+          gh release create "${{ steps.tag_name.outputs.tag_name }}" \
+            --title '${{ steps.tag_name.outputs.tag_name }}' \
+            --notes '${{ steps.changelog.outputs.changelog }}'
 
       - name: Upload artifact signatures to GitHub Release
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        if: steps.changelog.outputs.changelog != '' && steps.tag_name.outputs.tag_name != ''
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        # Upload to GitHub Release using the `gh` CLI.
-        # `dist/` contains the built packages, and the
-        # sigstore-produced signatures and certificates.
         run: |
-          gh release upload '${{ github.ref_name }}' dist/** --repo '${{ github.repository }}'
+          gh release upload '${{ steps.tag_name.outputs.tag_name }}' dist/** --repo '${{ github.repository }}'
