@@ -10,6 +10,7 @@ on:
 
 jobs:
   lint:
+    name: Run linters
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
