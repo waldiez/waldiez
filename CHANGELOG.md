@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## v0.2.1
+
+- python dependency updates, including ag2 v0.6.0
+- introduce waldiez_studio
+- add waldiez studio and jupyter as waldiez extras
+- Dev dependencies updates
+
 ## v0.2.0
 
 - python dependency updates, including ag2 v0.6.0
