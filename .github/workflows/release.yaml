@@ -455,4 +455,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh release upload '${{ steps.tag_name.outputs.tag_name }}' dist/** --repo '${{ github.repository }}'
+          tar -czf dist/core/python/python_docs.tar.gz dist/core/python/docs
+          tar -czf dist/core/react/react_docs.tar.gz dist/core/react/docs
+          gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
+            dist/**/*.tar.gz \
+            dist/**/*.tar.gz.sigstore.json \
+            dist/**/*.whl \
+            dist/**/*.whl.sigstore.json \
+            dist/**/*.vsix \
+            dist/**/*.tgz \
+            --clobber \
+            --repo '${{ github.repository }}'
