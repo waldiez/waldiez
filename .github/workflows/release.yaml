@@ -463,6 +463,5 @@ jobs:
             dist/**/*.whl \
             dist/**/*.whl.sigstore.json \
             dist/**/*.vsix \
-            dist/**/*.tgz \
             --clobber \
             --repo '${{ github.repository }}'
