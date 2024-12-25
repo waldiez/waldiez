@@ -3150,7 +3150,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.8.4" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
     { name = "typer", specifier = ">=0.9,<0.13" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20240917" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241221" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.35.1" },
 ]
@@ -5960,11 +5960,11 @@ wheels = [
 
 [[package]]
 name = "types-pyyaml"
-version = "6.0.12.20240917"
+version = "6.0.12.20241221"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/92/7d/a95df0a11f95c8f48d7683f03e4aed1a2c0fc73e9de15cca4d38034bea1a/types-PyYAML-6.0.12.20240917.tar.gz", hash = "sha256:d1405a86f9576682234ef83bcb4e6fff7c9305c8b1fbad5e0bcd4f7dbdc9c587", size = 12381 }
+sdist = { url = "https://files.pythonhosted.org/packages/92/7d/a95df0a11f95c8f48d7683f03e4aed1a2c0fc73e9de15cca4d38034bea1a/types-PyYAML-6.0.12.20241221.tar.gz", hash = "sha256:d1405a86f9576682234ef83bcb4e6fff7c9305c8b1fbad5e0bcd4f7dbdc9c587", size = 12381 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/2c/c1d81d680997d24b0542aa336f0a65bd7835e5224b7670f33a7d617da379/types_PyYAML-6.0.12.20240917-py3-none-any.whl", hash = "sha256:392b267f1c0fe6022952462bf5d6523f31e37f6cea49b14cee7ad634b6301570", size = 15264 },
+    { url = "https://files.pythonhosted.org/packages/9e/2c/c1d81d680997d24b0542aa336f0a65bd7835e5224b7670f33a7d617da379/types_PyYAML-6.0.12.20241221-py3-none-any.whl", hash = "sha256:392b267f1c0fe6022952462bf5d6523f31e37f6cea49b14cee7ad634b6301570", size = 15264 },
 ]
 
 [[package]]
@@ -6238,7 +6238,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.8.4" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
     { name = "typer", specifier = ">=0.9,<0.13" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20240917" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241221" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "waldiez-jupyter", marker = "extra == 'jupyter'", editable = "packages/jupyter" },
     { name = "waldiez-studio", marker = "extra == 'studio'", editable = "packages/studio" },
@@ -6313,7 +6313,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.8.4" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
     { name = "toml", marker = "extra == 'dev'", specifier = "==0.10.2" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20240917" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241221" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "waldiez", editable = "packages/core/python" },
     { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.35.1" },
@@ -6368,7 +6368,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.8.4" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
     { name = "types-aiofiles", marker = "extra == 'dev'", specifier = "==24.1.0.20240626" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20240917" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241221" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "uv", specifier = "==0.5.11" },
     { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.35.1" },
@@ -6454,7 +6454,7 @@ requires-dist = [
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
     { name = "typer", specifier = ">=0.9,<0.13" },
     { name = "types-aiofiles", marker = "extra == 'dev'", specifier = "==24.1.0.20240626" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20240917" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241221" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.34.0" },
     { name = "waldiez", editable = "packages/core/python" },
