@@ -43,6 +43,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 > - `archive`: The `archive` script is optional. If present, it must generate a tarball of the package in the `out` directory.
 > - `publish`: The `publish` script is optional. If present, it must publish the package to the registry.
 > - `docs`: The `docs` script is optional. If present, it must generate the documentation in the `site` directory.
+> - `image`: The `image` script is optional. If present, it must build a container image of the package.
 
 ## Init
 

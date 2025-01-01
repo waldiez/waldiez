@@ -3,5 +3,6 @@
 **/*cache
 **/dist
 **/site
+**/out
 **/*.tsbuildinfo
 **/coverage

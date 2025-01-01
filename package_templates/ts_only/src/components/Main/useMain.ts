@@ -1,9 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { UseMain, UserInput } from "@my/package/types";
 
+const getInitialTheme: () => "light" | "dark" = () => {
+    if (document.body.classList.contains("dark-theme")) {
+        return "dark";
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark";
+    }
+    return "light";
+};
+
 export const useMain: () => UseMain = () => {
     const [theme, setTheme] = useState<"light" | "dark">("light");
+    // run once on mount
+    useEffect(() => {
+        const initialTheme = getInitialTheme();
+        setTheme(initialTheme);
+    }, []);
     const [userInput, setUserInput] = useState<UserInput>({
         isHidden: false,
         value: "",

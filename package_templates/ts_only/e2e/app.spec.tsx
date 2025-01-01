@@ -32,6 +32,7 @@ describe("App E2E Tests", () => {
             await userEvent.type(input, "Alice");
         });
         expect(input).toHaveValue("Alice");
+        await sleep(1000);
         await act(async () => {
             await userEvent.click(getByTestId("toggle-user-input-visibility-button"));
         });
