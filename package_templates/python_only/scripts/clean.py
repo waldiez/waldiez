@@ -1,5 +1,7 @@
-"""Clean the project."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Clean the project."""
 import glob
 import os
 import shutil

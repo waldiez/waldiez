@@ -1,7 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=unused-argument
+
 """Main entry point for my_package."""
 
 
-# pylint: disable=unused-argument
 def greet(name: str) -> None:
     """Entry point for my_package.
 

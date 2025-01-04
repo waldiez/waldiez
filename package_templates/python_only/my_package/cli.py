@@ -1,5 +1,7 @@
-"""CLI management for my_package."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""CLI management for my_package."""
 from typing import Annotated
 
 import typer

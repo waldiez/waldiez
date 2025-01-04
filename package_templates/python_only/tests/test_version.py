@@ -1,5 +1,7 @@
-"""Test the package version."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Test the package version."""
 from pathlib import Path
 
 import my_package

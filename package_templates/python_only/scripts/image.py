@@ -1,5 +1,7 @@
-"""Build container image."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Build container image."""
 import argparse
 import os
 import platform

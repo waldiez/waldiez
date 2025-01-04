@@ -1,5 +1,7 @@
-"""Test my_package.app.*."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Test my_package.app.*."""
 import pytest
 
 from my_package.main import greet
