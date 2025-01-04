@@ -5,9 +5,9 @@
         "@cspell/eslint-plugin": "^8.17.1",
         "@eslint/js": "^9.17.0",
         "@stylistic/eslint-plugin": "^2.12.1",
-        "@trivago/prettier-plugin-sort-imports": "^5.2.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.1",
         "@types/fs-extra": "^11.0.4",
-        "@types/node": "^22.10.2",
+        "@types/node": "^22.10.5",
         "@typescript-eslint/eslint-plugin": "^8.18.2",
         "eslint": "^9.17.0",
         "eslint-config-prettier": "^9.1.0",
@@ -19,7 +19,7 @@
         "ts-node": "^10.9.2",
         "tsx": "^4.19.2",
         "typescript": "^5.7.2",
-        "typescript-eslint": "^8.18.2"
+        "typescript-eslint": "^8.19.0"
     },
     "scripts": {
         "postinstall": "bun scripts/_ts/postinstall.ts",
@@ -67,15 +67,13 @@
         "py": [
             "packages/core/python",
             "packages/jupyter",
-            "packages/studio",
-            "package_templates/python_only"
+            "packages/studio"
         ],
         "ts": [
             "packages/core/react",
             "packages/jupyter",
             "packages/studio",
-            "packages/vscode",
-            "package_templates/ts_only"
+            "packages/vscode"
         ],
         "ignorePatterns": [
             "**/node_modules/",
