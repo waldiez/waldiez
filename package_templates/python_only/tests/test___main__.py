@@ -1,5 +1,7 @@
-"""Tests for the __main__ module of my_package."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Tests for the __main__ module of my_package."""
 import sys
 
 import pytest

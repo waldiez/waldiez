@@ -1,5 +1,7 @@
-"""Build container image."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Build container image."""
 import argparse
 import os
 import platform
@@ -216,6 +218,46 @@ def push_image(
     print(f"Pushed image: {image_name}:{image_tag}")
 
 
+def setup_qemu_user_static(container_command: str) -> None:
+    """Try to setup qemu-user-static for multi-platform builds.
+
+    Parameters
+    ----------
+    container_command : str
+        The container command to use.
+
+    Raises
+    ------
+    subprocess.CalledProcessError
+        If the command returns a non-zero exit status.
+    """
+    # for multi-platform builds, we need qemu-user-static:
+    #
+    # docker/podman run \
+    #   --rm \
+    #   --privileged \
+    #   multiarch/qemu-user-static --reset -p yes
+    #
+    # (and maybe a reboot)
+    #
+    # with rootless podman, multi-platform builds might not work
+    # sudo podman build --arch=... might do, but let's not
+    try:
+        run_command(
+            [
+                container_command,
+                "run",
+                "--rm",
+                "--privileged",
+                "multiarch/qemu-user-static",
+                "--reset",
+                "--credential yes",
+            ]
+        )
+    except subprocess.CalledProcessError:
+        pass
+
+
 def check_other_platform(container_command: str, platform_arg: str) -> bool:
     """Check if the image to build is multi-platform.
 
@@ -241,31 +283,8 @@ def check_other_platform(container_command: str, platform_arg: str) -> bool:
             my_arch = "arm64"
         if platform_arg != f"linux/{my_arch}":
             is_other_platform = True
-    # pylint: disable=line-too-long
-    # for multi-platform builds, we need qemu-user-static:
-    #
-    # docker/podman run --rm --privileged multiarch/qemu-user-static --reset -p yes  # noqa: E501
-    #
-    # (and maybe a reboot)
-    #
-    # with rootless podman, multi-platform builds might not work
-    # sudo podman build --arch=... might do, but let's not
     if is_other_platform:
-        try:
-            run_command(
-                [
-                    container_command,
-                    "run",
-                    "--rm",
-                    "--privileged",
-                    "multiarch/qemu-user-static",
-                    "reset",
-                    "-p",
-                    "yes",
-                ]
-            )
-        except BaseException:  # pylint: disable=broad-except
-            pass
+        setup_qemu_user_static(container_command)
     return is_other_platform
 
 

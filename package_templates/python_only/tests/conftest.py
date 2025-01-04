@@ -1,5 +1,7 @@
-"""Configuration for pytest."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Configuration for pytest."""
 import re
 from typing import Callable, Generator
 

@@ -1,5 +1,7 @@
-"""Build the `my_project` python package."""
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+"""Build the `my_project` python package."""
 import shutil
 import subprocess  # nosemgrep # nosec
 import sys

@@ -1,5 +1,5 @@
 # My-Package
-
+<!--markdownlint-disable MD007, MD027 -->
 Insert a short description of the package here.
 
 <!-- ## Features -->
@@ -51,9 +51,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 >   If the `--publish` argument is provided, the script should publish the package to the PyPI.
 > - `scripts/image.py`: the script to build the Podman/Docker image
 >   It should expect the arguments:
-
-     <!--markdownlint-disable MD007 -->
-
+<!--  -->
 >      - `--image-name`: the image name
 >      - `--image-tag`: the image tag
 >
@@ -61,9 +59,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 > It should also expect the optional argument: `--push`.
 > If the `--push` argument is provided, the script should push the image to one or more registries.
 > Additional optional args can be provided to specify the target platforms and/or other build args
-
-       <!--markdownlint-disable MD007 -->
-
+<!--  -->
 >      - `--platform`: the target platform
 
 ## Init

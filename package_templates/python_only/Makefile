@@ -107,4 +107,4 @@ images:
 	python scripts/image.py --platform linux/arm64
 
 .PHONY: all
-all: forlint test docs build images
+all: forlint test docs build

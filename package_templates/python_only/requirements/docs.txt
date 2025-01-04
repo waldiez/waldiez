@@ -5,5 +5,5 @@ mkdocs-macros-plugin==1.3.7
 mkdocs-material==9.5.49
 mkdocs-minify-html-plugin==0.2.3
 mkdocs==1.6.1
-mkdocstrings-python==1.12.2
+mkdocstrings-python==1.13.0
 mkdocstrings[crystal,python]==0.27.0
