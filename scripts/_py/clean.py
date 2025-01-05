@@ -52,6 +52,7 @@ SKIP_DIRS = [
     "node_modules",
     ".venv",
     "packages",  # let packages/* handle it
+    "package_templates",
 ]
 
 

@@ -81,7 +81,8 @@ Repos (submodules) included in this repo:
 - [packages/vscode](https://github.com/waldiez/vscode) is a vscode extension that combines the core python and react packages.
 - [packages/studio](https://github.com/waldiez/studio) is a web app that combines the core python and react packages.
 - [examples](https://github.com/waldiez/examples) is a collection of exported waldiez flows.
+- [package_templates](https://github.com/waldiez_package_templates) is a collection of templates for the projects in this repo.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/waldiez/waldiez/blob/main/LICENSE) file for details.
+This project is licensed under the [Apache License, Version 2.0 (Apache-2.0)](https://github.com/waldiez/waldiez/blob/main/LICENSE).

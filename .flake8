@@ -22,3 +22,4 @@ exclude =
     dist,
     examples,
     packages,
+    package_templates,

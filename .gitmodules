@@ -22,3 +22,6 @@
 	path = packages/jupyter
 	url = ../jupyter.git
 	branch = main
+[submodule "package_templates"]
+	path = package_templates
+	url = ../package_templates.git
