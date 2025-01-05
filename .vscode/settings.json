@@ -5,7 +5,6 @@
         "${workspaceFolder}/packages/core/python",
         "${workspaceFolder}/packages/studio",
         "${workspaceFolder}/packages/jupyter",
-        "${workspaceFolder}/package_templates/python_only"
     ],
     "python.envFile": "",
     "pylint.importStrategy": "fromEnvironment",
@@ -24,7 +23,7 @@
         "**/dist": true,
         "**/out": true
     },
-    "npm.packageManager": "yarn",
+    "npm.packageManager": "bun",
     "files.eol": "\n",
     "cSpell.mergeCSpellSettings": true,
     "cSpell.configFile": "cspell.json"

@@ -1,9 +1,0 @@
-# ignore everything
-**/*
-# but not these ...
-!my_package
-# if using hooks: !scripts/hooks/*
-!pyproject.toml
-!requirements/main.txt
-!LICENSE
-!README.md

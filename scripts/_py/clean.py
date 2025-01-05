@@ -51,7 +51,6 @@ FILE_PATTERNS = [
 SKIP_DIRS = [
     "node_modules",
     ".venv",
-    "package_templates",
     "packages",  # let packages/* handle it
 ]
 
