@@ -15,7 +15,6 @@ members = [
     "packages/core/python",
     "packages/jupyter",
     "packages/studio",
-    "package_templates/python_only",
 ]
 
 # black
@@ -39,7 +38,6 @@ exclude = '''
   | node_modules
   | waldiez_out
   | packages
-  | package_templates
 )/
 '''
 
@@ -74,7 +72,6 @@ exclude = [
     'node_modules',
     'waldiez_out',
     'packages',
-    'package_templates',
 ]
 
 [tool.pydantic-mypy]
@@ -92,7 +89,6 @@ skip=[
     'node_modules',
     'waldiez_out',
     'packages',
-    'package_templates',
 ]
 include_trailing_comma=true
 force_grid_wrap=0
@@ -101,7 +97,7 @@ line_length=80
 
 # pydocstyle
 [tool.pydocstyle]
-match-dir='([^!(.venv)].*)([^!(.local)].*)([^!(examples)].*)([^!(node_modules)].*)([^!(waldiez_out)].*)([^!(packages)].*)([^!(package_templates)].*)'
+match-dir='([^!(.venv)].*)([^!(.local)].*)([^!(examples)].*)([^!(node_modules)].*)([^!(waldiez_out)].*)([^!(packages)].*)'
 
 # pylint
 [tool.pylint.master]
@@ -116,7 +112,6 @@ source-roots = [
     'packages/core/python',
     'packages/studio',
     'packages/jupyter',
-    'package_templates/python_only',
 ]
 
 extension-pkg-whitelist= []
@@ -131,7 +126,6 @@ ignore-patterns = [
     'node_modules/*',
     'waldiez_out/*',
     'packages/*',
-    'package_templates/*',
     'requirements.py',
     '_version.py',
 ]
@@ -172,7 +166,6 @@ exclude_dirs = [
     'node_modules',
     'waldiez_out',
     'packages',
-    'package_templates',
 ]
 # B104: bind to all interfaces (0.0.0.0)
 # B110: allow pass on try/except
@@ -192,7 +185,6 @@ extend-exclude = [
     'node_modules',
     'waldiez_out',
     'packages',
-    'package_templates',
 ]
 
 [tool.ruff.lint]
@@ -221,16 +213,16 @@ dev = [
     'flake8==7.1.1',
     'hatchling==1.27.0',
     'isort==5.13.2',
-    'mypy==1.14.0',
+    'mypy==1.14.1',
     'pre-commit==4.0.1',
     'pydocstyle==6.3.0',
-    'pylint==3.3.2',
+    'pylint==3.3.3',
     'pypiserver==2.3.2',
     'python-dotenv==1.0.1',
-    'ruff==0.8.4',
+    'ruff==0.8.6',
     'toml; python_version <= "3.10"',
-    'types-aiofiles==24.1.0.20240626',
-    'types-PyYAML==6.0.12.20241221',
+    'types-aiofiles==24.1.0.20241221',
+    'types-PyYAML==6.0.12.20241230',
     'types-toml== 0.10.8.20240310',
     'yamllint==1.35.1',
 ]
