@@ -17,12 +17,16 @@ from typing import Any, Dict, List, Protocol, Tuple
 ROOT_DIR = Path(__file__).parent.parent.parent
 PACKAGES_DIR = ROOT_DIR / "packages"
 PY_PROJECTS = [os.path.join("core", "python"), "jupyter", "studio"]
-PY_TEMPLATE_PROJECTS: List[str] = []
+TEMPLATES_DIR = ROOT_DIR / "package_templates"
+PY_TEMPLATE_PROJECTS: List[str] = [
+    str(TEMPLATES_DIR / "python_only"),
+    str(TEMPLATES_DIR / "both"),
+]
 EXCLUDED_EXTRAS = [
     "studio",
     "jupyter",
 ]
-EXCLUDED_PACKAGES = [  # we manually do theses (in order)
+EXCLUDED_PACKAGES = [  # we manually do these (in order)
     "waldiez",
     "waldiez_studio",
     "waldiez_jupyter",
@@ -246,7 +250,7 @@ def generate_requirements(project_dir: Path) -> None:
 
 def main() -> None:
     """Run the script."""
-    for project_dir in ["."] + PY_PROJECTS:
+    for project_dir in [""] + PY_PROJECTS:
         project_path = PACKAGES_DIR / project_dir if project_dir else ROOT_DIR
         print(f"Generating requirements for {project_dir}")
         generate_requirements(project_path)

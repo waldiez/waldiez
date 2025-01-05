@@ -8,13 +8,16 @@ dependencies = ['pip==24.3.1', "uv==0.5.11"]
 waldiez = { workspace = true }
 waldiez_studio = { workspace = true }
 waldiez_jupyter = { workspace = true }
-my_package = { workspace = true }
+my_py_package = { workspace = true }
+py_package = { workspace = true }
 
 [tool.uv.workspace]
 members = [
     "packages/core/python",
     "packages/jupyter",
     "packages/studio",
+    "package_templates/python_only",
+    "package_templates/both",
 ]
 
 # black
@@ -38,6 +41,7 @@ exclude = '''
   | node_modules
   | waldiez_out
   | packages
+  | package_templates
 )/
 '''
 
@@ -72,6 +76,7 @@ exclude = [
     'node_modules',
     'waldiez_out',
     'packages',
+    'package_templates',
 ]
 
 [tool.pydantic-mypy]
@@ -89,6 +94,7 @@ skip=[
     'node_modules',
     'waldiez_out',
     'packages',
+    'package_templates',
 ]
 include_trailing_comma=true
 force_grid_wrap=0
@@ -97,7 +103,7 @@ line_length=80
 
 # pydocstyle
 [tool.pydocstyle]
-match-dir='([^!(.venv)].*)([^!(.local)].*)([^!(examples)].*)([^!(node_modules)].*)([^!(waldiez_out)].*)([^!(packages)].*)'
+match-dir='([^!(.venv)].*)([^!(.local)].*)([^!(examples)].*)([^!(node_modules)].*)([^!(waldiez_out)].*)([^!(packages)].*)([^!(package_templates)].*)'
 
 # pylint
 [tool.pylint.master]
@@ -112,6 +118,8 @@ source-roots = [
     'packages/core/python',
     'packages/studio',
     'packages/jupyter',
+    'package_templates/python_only',
+    'package_templates/both',
 ]
 
 extension-pkg-whitelist= []
@@ -126,6 +134,7 @@ ignore-patterns = [
     'node_modules/*',
     'waldiez_out/*',
     'packages/*',
+    'package_templates/*',
     'requirements.py',
     '_version.py',
 ]
@@ -166,6 +175,7 @@ exclude_dirs = [
     'node_modules',
     'waldiez_out',
     'packages',
+    'package_templates',
 ]
 # B104: bind to all interfaces (0.0.0.0)
 # B110: allow pass on try/except
@@ -185,6 +195,7 @@ extend-exclude = [
     'node_modules',
     'waldiez_out',
     'packages',
+    'package_templates',
 ]
 
 [tool.ruff.lint]

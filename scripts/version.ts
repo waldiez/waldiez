@@ -193,8 +193,20 @@ function checkTsVersions(): void {
                 );
                 process.exit(1);
             }
+            console.info(`\x1b[36m${tsProject} version: ${projectPackageJson.version}`);
         }
     }
+}
+
+/**
+ * Get the path to the version file in a python project.
+ * @param pyProject The python project name.
+ * @returns The path to the version.py file.
+ */
+function getPyVersionPathPath(pyProject: string): string {
+    const versionFile = resolve(rootDir, pyProject, "scripts", "version.py");
+    const devVersionFile = resolve(rootDir, pyProject, "scripts", "dev", "version.py");
+    return fs.existsSync(versionFile) ? versionFile : devVersionFile;
 }
 
 /**
@@ -206,11 +218,10 @@ function checkPyVersions(): void {
     const version = packageJson.version;
     const pyProjects = packageJson.packages.py;
     for (const pyProject of pyProjects) {
-        const versionFile = resolve(rootDir, pyProject, "scripts", "version.py");
-        const devVersionFile = resolve(rootDir, pyProject, "scripts", "dev", "version.py");
-        const versionFilePath = fs.existsSync(versionFile) ? versionFile : devVersionFile;
+        const versionFilePath = getPyVersionPathPath(pyProject);
+        const versionFilePathRelativeToRoot = versionFilePath.replace(rootDir, ".");
         const packageManager = getPackageManager(rootDir);
-        const projectVersion = execSync(`${packageManager} python ${versionFilePath} --get`, {
+        const projectVersion = execSync(`${packageManager} python ${versionFilePathRelativeToRoot} --get`, {
             encoding: "utf-8",
             cwd: rootDir,
         }).trim();
@@ -220,6 +231,7 @@ function checkPyVersions(): void {
             );
             process.exit(1);
         }
+        console.info(`\x1b[36m${pyProject} version: ${projectVersion}`);
     }
 }
 

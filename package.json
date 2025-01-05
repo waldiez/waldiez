@@ -67,13 +67,18 @@
         "py": [
             "packages/core/python",
             "packages/jupyter",
-            "packages/studio"
+            "packages/studio",
+            "package_templates/python_only",
+            "package_templates/both"
         ],
         "ts": [
             "packages/core/react",
             "packages/jupyter",
             "packages/studio",
-            "packages/vscode"
+            "packages/vscode",
+            "package_templates/ts_only",
+            "package_templates/both"
+
         ],
         "ignorePatterns": [
             "**/node_modules/",
@@ -84,7 +89,8 @@
             "**/reports/",
             "**/static/",
             "**/build/",
-            "**/out/"
+            "**/out/",
+            "**/site/"
         ]
     },
     "images": {
@@ -112,9 +118,34 @@
                     "linux/amd64",
                     "linux/arm64"
                 ]
+            },
+            {
+                "name": "py_package",
+                "file": "package_templates/python_only/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            },
+            {
+                "name": "py_ts_package",
+                "file": "package_templates/both/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
             }
         ],
-        "ts": []
+        "ts": [
+            {
+                "name": "ts_package",
+                "file": "package_templates/ts_only/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            }
+        ]
     },
     "packageManager": "bun@1.1.42"
 }
