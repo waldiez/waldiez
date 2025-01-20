@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## v0.3.0
+
+- Added swarm agent ag2 compatibility
+- Add post-processing step to generate mermaid diagrams
+- Minor styling changes
+- Dependency updates.
+
 ## v0.2.2
 
 - introduce waldiez_studio
