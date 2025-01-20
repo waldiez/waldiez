@@ -6,6 +6,23 @@
 
 ![Overview](docs/static/images/overview.webp)
 
+```mermaid
+%%{init: {'sequence': {'actorSpacing': 10, 'width': 150}}}%%
+sequenceDiagram
+    participant customer_engagement_agent as Customer Engagement Agent
+    participant customer_proxy as Customer Proxy
+    participant topic_preference_agent as Topic Preference Agent
+    participant personal_information_agent as Personal Information Agent
+    personal_information_agent->>customer_proxy: Hello, I'm here to help you get started with our product. Could you tell me your name and location?
+    customer_proxy->>personal_information_agent: 
+    note over personal_information_agent: Content: Hi, I'm Stella from Athens
+    topic_preference_agent->>customer_proxy: Great! Could you tell me what topics you are interested in reading about?<br/>Context: <br/>{'name':...
+    customer_proxy->>topic_preference_agent: 
+    note over topic_preference_agent: Content: Software agents
+    customer_proxy->>customer_engagement_agent: Let's find something fun to read.<br/>Context: <br/>{'name': 'Stella', 'location': 'Athens'}<br/>{"t...
+    customer_engagement_agent->>customer_proxy: Hey Stella from Athens! Did you know that software agents are like little digital helpers that can p...
+```
+
 ## Installation
 
 On PyPI:

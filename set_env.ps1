@@ -44,6 +44,10 @@ if (-not $env:PYTHON_INTERPRETER_PATH) {
     Add-Content $envFile "PYTHON_INTERPRETER_PATH=$defaultPath"
 }
 
+# store the environment variable to $PYTHON_INTERPRETER_PATH
+$PYTHON_INTERPRETER_PATH=$env:PYTHON_INTERPRETER_PATH
+
+# Check if the path is valid
 if (-not (Test-Path -Path $PYTHON_INTERPRETER_PATH)) {
     # Check if it matches any path ending with /bin/python
     if ($PYTHON_INTERPRETER_PATH -match "/bin/python$") {

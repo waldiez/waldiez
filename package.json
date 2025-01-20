@@ -1,25 +1,25 @@
 {
     "private": true,
-    "version": "0.2.2",
+    "version": "0.3.0",
     "devDependencies": {
-        "@cspell/eslint-plugin": "^8.17.1",
-        "@eslint/js": "^9.17.0",
-        "@stylistic/eslint-plugin": "^2.12.1",
+        "@cspell/eslint-plugin": "^8.17.2",
+        "@eslint/js": "^9.18.0",
+        "@stylistic/eslint-plugin": "^2.13.0",
         "@trivago/prettier-plugin-sort-imports": "^5.2.1",
         "@types/fs-extra": "^11.0.4",
-        "@types/node": "^22.10.5",
-        "@typescript-eslint/eslint-plugin": "^8.19.0",
-        "eslint": "^9.17.0",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-prettier": "^5.2.1",
-        "fs-extra": "^11.2.0",
+        "@types/node": "^22.10.7",
+        "@typescript-eslint/eslint-plugin": "^8.20.0",
+        "eslint": "^9.18.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-prettier": "^5.2.3",
+        "fs-extra": "^11.3.0",
         "npm-run-all2": "^7.0.2",
         "playwright": "^1.49.1",
         "prettier": "^3.4.2",
         "ts-node": "^10.9.2",
         "tsx": "^4.19.2",
-        "typescript": "^5.7.2",
-        "typescript-eslint": "^8.19.0"
+        "typescript": "^5.7.3",
+        "typescript-eslint": "^8.20.0"
     },
     "scripts": {
         "postinstall": "bun scripts/_ts/postinstall.ts",
@@ -78,7 +78,6 @@
             "packages/vscode",
             "package_templates/ts_only",
             "package_templates/both"
-
         ],
         "ignorePatterns": [
             "**/node_modules/",
@@ -147,5 +146,5 @@
             }
         ]
     },
-    "packageManager": "bun@1.1.42"
+    "packageManager": "bun@1.1.45"
 }
