@@ -4,6 +4,25 @@
   ],
   "hints": {
     "no-inline-styles": "off",
-    "manifest-is-valid": "off"
-  }
+    "manifest-is-valid": "off",
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "scrollbar-width",
+          "scrollbar-width: thin",
+          "width: stretch"
+        ]
+      }
+    ]
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not chrome <= 109",
+    "not ios_saf <= 16.7",
+    "not ios_saf <= 18.2",
+    "not safari <= 18.2",
+    "not samsung <= 27"
+  ]
 }
