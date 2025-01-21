@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## v0.3.1
+
+- Updated swarm agent icon
+- Minor styling changes and bug fixes
+- Dependency updates.
+
 ## v0.3.0
 
 - Added swarm agent ag2 compatibility
