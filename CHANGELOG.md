@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## v0.3.5
+
+- Fixed an issue with initial swarm chat parameters
+
 ## v0.3.3
 
 - Minor styling changes and bug fixes
