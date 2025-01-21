@@ -17,11 +17,26 @@
         "tag:yaml.org,2002:python/name:mkdocs_exporter.formats.pdf.buttons.download.enabled",
         "tag:yaml.org,2002:python/name:mkdocs_exporter.formats.pdf.buttons.download.attributes"
     ],
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/.venv": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/out": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/.ruff_cache": true
+    },
     "search.exclude": {
         "**/node_modules": true,
         "**/.venv": true,
         "**/dist": true,
-        "**/out": true
+        "**/build": true,
+        "**/out": true,
+        "**/coverage": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/.ruff_cache": true
     },
     "npm.packageManager": "bun",
     "files.eol": "\n",
