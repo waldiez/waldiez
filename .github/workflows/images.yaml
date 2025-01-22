@@ -77,8 +77,8 @@ jobs:
           context: packages/studio
           push: true
           tags: |
-            waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
-            quay.io/waldiez/waldiez-studio:${{ steps.docker_tag.outputs.docker_tag }}
+            waldiez/studio:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/studio:${{ steps.docker_tag.outputs.docker_tag }}
 
       - name: Build and push jupyter
         # manually, after publishing waldiez_jupyter on pypi
@@ -93,5 +93,5 @@ jobs:
           context: packages/jupyter
           push: true
           tags: |
-            waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
-            quay.io/waldiez/waldiez-jupyter:${{ steps.docker_tag.outputs.docker_tag }}
+            waldiez/jupyter:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/jupyter:${{ steps.docker_tag.outputs.docker_tag }}
