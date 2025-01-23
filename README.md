@@ -57,8 +57,8 @@ pip install waldiez[studio,jupyter]
 We provide three ways to use the Waldiez using docker/podman:
 
 - Using the core python package to convert and run waldiez flows (image: `waldiez/waldiez`)
-- Using the jupyter extension (image: `waldiez/waldiez-jupyter`) (this starts a jupyterlab server)
-- Using waldiez-studio (image: `waldiez/waldiez-studio`) (this starts a FastAPI server)
+- Using the jupyter extension (image: `waldiez/jupyter`) (this starts a jupyterlab server)
+- Using waldiez-studio (image: `waldiez/studio`) (this starts a FastAPI server)
 
 ```shell
 CONTAINER_COMMAND=docker # or podman
