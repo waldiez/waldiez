@@ -27,7 +27,6 @@ EXCLUDED_EXTRAS = [
     "jupyter",
 ]
 EXCLUDED_PACKAGES = [  # we manually do these (in order)
-    "waldiez",
     "waldiez_studio",
     "waldiez_jupyter",
 ]
