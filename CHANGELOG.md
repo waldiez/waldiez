@@ -4,6 +4,7 @@
 
 ## v0.3.7
 
+- Updated ag2 dependency to 0.7.2
 - Added reasoning agent.
 - Fixed an issue with gemini dependencies not being installed automatically.
 - Minor ui changes.
