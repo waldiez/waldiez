@@ -66,17 +66,6 @@ jobs:
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install dependencies
-        run: |
-          cd packages/core/react
-          bun install
-
-      - name: Download the artifact from the react package
-        uses: actions/download-artifact@v4
-        with:
-          name: waldiez-react
-          path: out/archive/waldiez-react-*.tgz
-
       - name: Publish to NPM
         # publish only on new tags
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -409,17 +398,23 @@ jobs:
           name: waldiez-studio
           path: dist/studio/
 
-      - name: Rename site to docs
+      - name: Make core archives
         run: |
-          mv dist/core/python/site dist/core/python/docs
-          mv dist/core/react/site dist/core/react/docs
+          tar -czf dist/core/python_docs.tar.gz dist/core/python/site
+          tar -czf dist/core/react_docs.tar.gz dist/core/react/site
+
+      - name: Move python and react archives to core
+        run: |
+          mv dist/core/python/dist/*.tar.gz dist/core/
+          mv dist/core/python/dist/*.whl dist/core/
+          mv dist/core/react/out/archive/*.tgz dist/core/
 
       - name: Sign the python dists with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.0
         with:
           inputs: >-
-            dist/core/python/dist/*.tar.gz
-            dist/core/python/dist/*.whl
+            dist/core/*.tar.gz
+            dist/core/*.whl
             dist/jupyter/*.tar.gz
             dist/jupyter/*.whl
             dist/studio/*.tar.gz
@@ -450,13 +445,11 @@ jobs:
             --title '${{ steps.tag_name.outputs.tag_name }}' \
             --notes '${{ steps.changelog.outputs.changelog }}'
 
-      - name: Upload artifact signatures to GitHub Release
+      - name: Upload artifacts and signatures to GitHub Release
         if: steps.changelog.outputs.changelog != '' && steps.tag_name.outputs.tag_name != ''
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          tar -czf dist/core/python/python_docs.tar.gz dist/core/python/docs
-          tar -czf dist/core/react/react_docs.tar.gz dist/core/react/docs
           gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
             dist/**/*.tar.gz \
             dist/**/*.tar.gz.sigstore.json \
