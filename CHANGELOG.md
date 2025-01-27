@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## v0.3.7
+
+- Added reasoning agent.
+- Fixed an issue with gemini dependencies not being installed automatically.
+- Minor ui changes.
+- Dependency updates.
+
 ## v0.3.6
 
 - Fixed an issue with initial swarm chat parameters
