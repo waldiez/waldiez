@@ -441,7 +441,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          sudo apt update && apt install -y tree
+          sudo apt update && sudo apt install -y tree
           gh release create "${{ steps.tag_name.outputs.tag_name }}" \
             --title '${{ steps.tag_name.outputs.tag_name }}' \
             --notes '${{ steps.changelog.outputs.changelog }}'
@@ -451,7 +451,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          sudo apt update && apt install -y tree
+          sudo apt update && sudo apt install -y tree
           gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
             dist/**/*.tar.gz \
             dist/**/*.tar.gz.sigstore.json \
