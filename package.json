@@ -1,8 +1,8 @@
 {
     "private": true,
-    "version": "0.3.8",
+    "version": "0.3.9",
     "devDependencies": {
-        "@cspell/eslint-plugin": "^8.17.2",
+        "@cspell/eslint-plugin": "^8.17.3",
         "@eslint/js": "^9.19.0",
         "@stylistic/eslint-plugin": "^3.0.0",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
