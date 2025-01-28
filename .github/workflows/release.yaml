@@ -403,11 +403,11 @@ jobs:
           tar -czf dist/core/python_docs.tar.gz dist/core/python/site
           tar -czf dist/core/react_docs.tar.gz dist/core/react/site
 
-      - name: Copy python and react archives to core
+      - name: Move python and react archives to core
         run: |
-          cp dist/core/python/dist/*.tar.gz dist/core/
-          cp dist/core/python/dist/*.whl dist/core/
-          cp dist/core/react/out/archive/*.tgz dist/core/
+          mv dist/core/python/dist/*.tar.gz dist/core/
+          mv dist/core/python/dist/*.whl dist/core/
+          mv dist/core/react/out/archive/*.tgz dist/core/
 
       - name: Sign the python dists with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.0
@@ -441,8 +441,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          sudo snap connect tree:removable-media
-          PATH="${PATH:/snap/bin}"
           gh release create "${{ steps.tag_name.outputs.tag_name }}" \
             --title '${{ steps.tag_name.outputs.tag_name }}' \
             --notes '${{ steps.changelog.outputs.changelog }}'
@@ -452,8 +450,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          sudo snap connect tree:removable-media
-          PATH="${PATH:/snap/bin}" gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
+          gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
             dist/**/*.tar.gz \
             dist/**/*.tar.gz.sigstore.json \
             dist/**/*.whl \
