@@ -3284,7 +3284,7 @@ wheels = [
 
 [[package]]
 name = "my-package"
-version = "0.3.7"
+version = "0.3.8"
 source = { editable = "package_templates/both" }
 dependencies = [
     { name = "flask" },
@@ -3379,7 +3379,7 @@ requires-dist = [
 
 [[package]]
 name = "my-py-package"
-version = "0.3.7"
+version = "0.3.8"
 source = { editable = "package_templates/python_only" }
 dependencies = [
     { name = "typer" },
@@ -6833,7 +6833,7 @@ requires-dist = [
 
 [[package]]
 name = "waldiez-jupyter"
-version = "0.3.7"
+version = "0.3.8"
 source = { editable = "packages/jupyter" }
 dependencies = [
     { name = "jupyter-server" },
@@ -6964,7 +6964,7 @@ requires-dist = [
 
 [[package]]
 name = "waldiez-studio"
-version = "0.3.7"
+version = "0.3.8"
 source = { editable = "packages/studio" }
 dependencies = [
     { name = "aiofiles" },
