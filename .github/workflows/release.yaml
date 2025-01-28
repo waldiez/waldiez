@@ -403,7 +403,7 @@ jobs:
           tar -czf dist/core/python_docs.tar.gz dist/core/python/site
           tar -czf dist/core/react_docs.tar.gz dist/core/react/site
 
-      - name: Move python and react archives to core
+      - name: Copy python and react archives to core
         run: |
           cp dist/core/python/dist/*.tar.gz dist/core/
           cp dist/core/python/dist/*.whl dist/core/
@@ -441,6 +441,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          sudo apt update && apt install -y tree
           gh release create "${{ steps.tag_name.outputs.tag_name }}" \
             --title '${{ steps.tag_name.outputs.tag_name }}' \
             --notes '${{ steps.changelog.outputs.changelog }}'
@@ -450,6 +451,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          sudo apt update && apt install -y tree
           gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
             dist/**/*.tar.gz \
             dist/**/*.tar.gz.sigstore.json \
