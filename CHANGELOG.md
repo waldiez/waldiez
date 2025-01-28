@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## v0.3.8
+
+- Added deepseek model option
+- Added feature to export the reasoning agents's tree of thoughts to json
+- Minor ui changes
+- Dependency updates
+
 ## v0.3.7
 
 - Updated ag2 dependency to 0.7.2
