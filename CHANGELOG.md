@@ -1,5 +1,10 @@
 # Changelog
 
+<!-- Careful with the quotes or any special chars
+The contents of each release will be used in
+"gh release create"
+ -->
+
 ## [Unreleased]
 
 ## v0.3.9
