@@ -5,14 +5,14 @@
 ## v0.3.9
 
 - Added deepseek model option
-- Added feature to export the reasoning agents's tree of thoughts to json
+- Added feature to export the reasoning agents tree of thoughts to json
 - Minor ui changes
 - Dependency updates
 
 ## v0.3.8
 
 - Added deepseek model option
-- Added feature to export the reasoning agents's tree of thoughts to json
+- Added feature to export the reasoning agents tree of thoughts to json
 - Minor ui changes
 - Dependency updates
 
