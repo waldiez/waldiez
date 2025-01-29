@@ -1,2 +1,3 @@
 -r dev.txt
+-r test.txt
 -r main.txt

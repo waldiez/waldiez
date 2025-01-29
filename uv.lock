@@ -452,7 +452,7 @@ wheels = [
 
 [[package]]
 name = "black"
-version = "24.10.0"
+version = "25.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -463,21 +463,21 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/0d/cc2fb42b8c50d80143221515dd7e4766995bd07c56c9a3ed30baf080b6dc/black-24.10.0.tar.gz", hash = "sha256:846ea64c97afe3bc677b761787993be4991810ecc7a4a937816dd6bddedc4875", size = 645813 }
+sdist = { url = "https://files.pythonhosted.org/packages/94/49/26a7b0f3f35da4b5a65f081943b7bcd22d7002f5f0fb8098ec1ff21cb6ef/black-25.1.0.tar.gz", hash = "sha256:33496d5cd1222ad73391352b4ae8da15253c5de89b93a80b3e2c8d9a19ec2666", size = 649449 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/f3/465c0eb5cddf7dbbfe1fecd9b875d1dcf51b88923cd2c1d7e9ab95c6336b/black-24.10.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e6668650ea4b685440857138e5fe40cde4d652633b1bdffc62933d0db4ed9812", size = 1623211 },
-    { url = "https://files.pythonhosted.org/packages/df/57/b6d2da7d200773fdfcc224ffb87052cf283cec4d7102fab450b4a05996d8/black-24.10.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1c536fcf674217e87b8cc3657b81809d3c085d7bf3ef262ead700da345bfa6ea", size = 1457139 },
-    { url = "https://files.pythonhosted.org/packages/6e/c5/9023b7673904a5188f9be81f5e129fff69f51f5515655fbd1d5a4e80a47b/black-24.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:649fff99a20bd06c6f727d2a27f401331dc0cc861fb69cde910fe95b01b5928f", size = 1753774 },
-    { url = "https://files.pythonhosted.org/packages/e1/32/df7f18bd0e724e0d9748829765455d6643ec847b3f87e77456fc99d0edab/black-24.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:fe4d6476887de70546212c99ac9bd803d90b42fc4767f058a0baa895013fbb3e", size = 1414209 },
-    { url = "https://files.pythonhosted.org/packages/c2/cc/7496bb63a9b06a954d3d0ac9fe7a73f3bf1cd92d7a58877c27f4ad1e9d41/black-24.10.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:5a2221696a8224e335c28816a9d331a6c2ae15a2ee34ec857dcf3e45dbfa99ad", size = 1607468 },
-    { url = "https://files.pythonhosted.org/packages/2b/e3/69a738fb5ba18b5422f50b4f143544c664d7da40f09c13969b2fd52900e0/black-24.10.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:f9da3333530dbcecc1be13e69c250ed8dfa67f43c4005fb537bb426e19200d50", size = 1437270 },
-    { url = "https://files.pythonhosted.org/packages/c9/9b/2db8045b45844665c720dcfe292fdaf2e49825810c0103e1191515fc101a/black-24.10.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4007b1393d902b48b36958a216c20c4482f601569d19ed1df294a496eb366392", size = 1737061 },
-    { url = "https://files.pythonhosted.org/packages/a3/95/17d4a09a5be5f8c65aa4a361444d95edc45def0de887810f508d3f65db7a/black-24.10.0-cp311-cp311-win_amd64.whl", hash = "sha256:394d4ddc64782e51153eadcaaca95144ac4c35e27ef9b0a42e121ae7e57a9175", size = 1423293 },
-    { url = "https://files.pythonhosted.org/packages/90/04/bf74c71f592bcd761610bbf67e23e6a3cff824780761f536512437f1e655/black-24.10.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:b5e39e0fae001df40f95bd8cc36b9165c5e2ea88900167bddf258bacef9bbdc3", size = 1644256 },
-    { url = "https://files.pythonhosted.org/packages/4c/ea/a77bab4cf1887f4b2e0bce5516ea0b3ff7d04ba96af21d65024629afedb6/black-24.10.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:d37d422772111794b26757c5b55a3eade028aa3fde43121ab7b673d050949d65", size = 1448534 },
-    { url = "https://files.pythonhosted.org/packages/4e/3e/443ef8bc1fbda78e61f79157f303893f3fddf19ca3c8989b163eb3469a12/black-24.10.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:14b3502784f09ce2443830e3133dacf2c0110d45191ed470ecb04d0f5f6fcb0f", size = 1761892 },
-    { url = "https://files.pythonhosted.org/packages/52/93/eac95ff229049a6901bc84fec6908a5124b8a0b7c26ea766b3b8a5debd22/black-24.10.0-cp312-cp312-win_amd64.whl", hash = "sha256:30d2c30dc5139211dda799758559d1b049f7f14c580c409d6ad925b74a4208a8", size = 1434796 },
-    { url = "https://files.pythonhosted.org/packages/8d/a7/4b27c50537ebca8bec139b872861f9d2bf501c5ec51fcf897cb924d9e264/black-24.10.0-py3-none-any.whl", hash = "sha256:3bb2b7a1f7b685f85b11fed1ef10f8a9148bceb49853e47a294a3dd963c1dd7d", size = 206898 },
+    { url = "https://files.pythonhosted.org/packages/4d/3b/4ba3f93ac8d90410423fdd31d7541ada9bcee1df32fb90d26de41ed40e1d/black-25.1.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:759e7ec1e050a15f89b770cefbf91ebee8917aac5c20483bc2d80a6c3a04df32", size = 1629419 },
+    { url = "https://files.pythonhosted.org/packages/b4/02/0bde0485146a8a5e694daed47561785e8b77a0466ccc1f3e485d5ef2925e/black-25.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:0e519ecf93120f34243e6b0054db49c00a35f84f195d5bce7e9f5cfc578fc2da", size = 1461080 },
+    { url = "https://files.pythonhosted.org/packages/52/0e/abdf75183c830eaca7589144ff96d49bce73d7ec6ad12ef62185cc0f79a2/black-25.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:055e59b198df7ac0b7efca5ad7ff2516bca343276c466be72eb04a3bcc1f82d7", size = 1766886 },
+    { url = "https://files.pythonhosted.org/packages/dc/a6/97d8bb65b1d8a41f8a6736222ba0a334db7b7b77b8023ab4568288f23973/black-25.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:db8ea9917d6f8fc62abd90d944920d95e73c83a5ee3383493e35d271aca872e9", size = 1419404 },
+    { url = "https://files.pythonhosted.org/packages/7e/4f/87f596aca05c3ce5b94b8663dbfe242a12843caaa82dd3f85f1ffdc3f177/black-25.1.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:a39337598244de4bae26475f77dda852ea00a93bd4c728e09eacd827ec929df0", size = 1614372 },
+    { url = "https://files.pythonhosted.org/packages/e7/d0/2c34c36190b741c59c901e56ab7f6e54dad8df05a6272a9747ecef7c6036/black-25.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:96c1c7cd856bba8e20094e36e0f948718dc688dba4a9d78c3adde52b9e6c2299", size = 1442865 },
+    { url = "https://files.pythonhosted.org/packages/21/d4/7518c72262468430ead45cf22bd86c883a6448b9eb43672765d69a8f1248/black-25.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:bce2e264d59c91e52d8000d507eb20a9aca4a778731a08cfff7e5ac4a4bb7096", size = 1749699 },
+    { url = "https://files.pythonhosted.org/packages/58/db/4f5beb989b547f79096e035c4981ceb36ac2b552d0ac5f2620e941501c99/black-25.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:172b1dbff09f86ce6f4eb8edf9dede08b1fce58ba194c87d7a4f1a5aa2f5b3c2", size = 1428028 },
+    { url = "https://files.pythonhosted.org/packages/83/71/3fe4741df7adf015ad8dfa082dd36c94ca86bb21f25608eb247b4afb15b2/black-25.1.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:4b60580e829091e6f9238c848ea6750efed72140b91b048770b64e74fe04908b", size = 1650988 },
+    { url = "https://files.pythonhosted.org/packages/13/f3/89aac8a83d73937ccd39bbe8fc6ac8860c11cfa0af5b1c96d081facac844/black-25.1.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:1e2978f6df243b155ef5fa7e558a43037c3079093ed5d10fd84c43900f2d8ecc", size = 1453985 },
+    { url = "https://files.pythonhosted.org/packages/6f/22/b99efca33f1f3a1d2552c714b1e1b5ae92efac6c43e790ad539a163d1754/black-25.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3b48735872ec535027d979e8dcb20bf4f70b5ac75a8ea99f127c106a7d7aba9f", size = 1783816 },
+    { url = "https://files.pythonhosted.org/packages/18/7e/a27c3ad3822b6f2e0e00d63d58ff6299a99a5b3aee69fa77cd4b0076b261/black-25.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:ea0213189960bda9cf99be5b8c8ce66bb054af5e9e861249cd23471bd7b0b3ba", size = 1440860 },
+    { url = "https://files.pythonhosted.org/packages/09/71/54e999902aed72baf26bca0d50781b01838251a462612966e9fc4891eadd/black-25.1.0-py3-none-any.whl", hash = "sha256:95e8176dae143ba9097f351d174fdaf0ccd29efb414b362ae3fd72bf0f710717", size = 207646 },
 ]
 
 [package.optional-dependencies]
@@ -1101,16 +1101,16 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.115.6"
+version = "0.115.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "starlette" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/72/d83b98cd106541e8f5e5bfab8ef2974ab45a62e8a6c5b5e6940f26d2ed4b/fastapi-0.115.6.tar.gz", hash = "sha256:9ec46f7addc14ea472958a96aae5b5de65f39721a46aaf5705c480d9a8b76654", size = 301336 }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/f5/3f921e59f189e513adb9aef826e2841672d50a399fead4e69afdeb808ff4/fastapi-0.115.7.tar.gz", hash = "sha256:0f106da6c01d88a6786b3248fb4d7a940d071f6f488488898ad5d354b25ed015", size = 293177 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/b3/7e4df40e585df024fac2f80d1a2d579c854ac37109675db2b0cc22c0bb9e/fastapi-0.115.6-py3-none-any.whl", hash = "sha256:e9240b29e36fa8f4bb7290316988e90c381e5092e0cbe84e7818cc3713bcf305", size = 94843 },
+    { url = "https://files.pythonhosted.org/packages/e6/7f/bbd4dcf0faf61bc68a01939256e2ed02d681e9334c1a3cef24d5f77aba9f/fastapi-0.115.7-py3-none-any.whl", hash = "sha256:eb6a8c8bf7f26009e8147111ff15b5177a0e19bb4a45bc3486ab14804539d21e", size = 94777 },
 ]
 
 [[package]]
@@ -2004,11 +2004,11 @@ wheels = [
 
 [[package]]
 name = "isort"
-version = "5.13.2"
+version = "6.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/87/f9/c1eb8635a24e87ade2efce21e3ce8cd6b8630bb685ddc9cdaca1349b2eb5/isort-5.13.2.tar.gz", hash = "sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109", size = 175303 }
+sdist = { url = "https://files.pythonhosted.org/packages/1c/28/b382d1656ac0ee4cef4bf579b13f9c6c813bff8a5cb5996669592c8c75fa/isort-6.0.0.tar.gz", hash = "sha256:75d9d8a1438a9432a7d7b54f2d3b45cad9a4a0fdba43617d9873379704a8bdf1", size = 828356 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d1/b3/8def84f539e7d2289a02f0524b944b15d7c75dab7628bedf1c4f0992029c/isort-5.13.2-py3-none-any.whl", hash = "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6", size = 92310 },
+    { url = "https://files.pythonhosted.org/packages/76/c7/d6017f09ae5b1206fbe531f7af3b6dac1f67aedcbd2e79f3b386c27955d6/isort-6.0.0-py3-none-any.whl", hash = "sha256:567954102bb47bb12e0fae62606570faacddd441e45683968c8d1734fb1af892", size = 94053 },
 ]
 
 [[package]]
@@ -3284,7 +3284,6 @@ wheels = [
 
 [[package]]
 name = "my-package"
-version = "0.3.8"
 source = { editable = "package_templates/both" }
 dependencies = [
     { name = "flask" },
@@ -3339,11 +3338,11 @@ test = [
 requires-dist = [
     { name = "autoflake", marker = "extra == 'dev'", specifier = "==2.3.1" },
     { name = "bandit", marker = "extra == 'dev'", specifier = "==1.8.2" },
-    { name = "black", marker = "extra == 'dev'", specifier = "==24.10.0" },
+    { name = "black", marker = "extra == 'dev'", specifier = "==25.1.0" },
     { name = "flake8", marker = "extra == 'dev'", specifier = "==7.1.1" },
     { name = "flask", specifier = "==3.1.0" },
     { name = "hatchling", marker = "extra == 'dev'", specifier = "==1.27.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = "==5.13.2" },
+    { name = "isort", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "mdx-include", marker = "extra == 'docs'", specifier = "==1.4.2" },
     { name = "mdx-truly-sane-lists", marker = "extra == 'docs'", specifier = "==1.3" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = "==1.6.1" },
@@ -3358,9 +3357,9 @@ requires-dist = [
     { name = "playwright", marker = "extra == 'test'", specifier = "==1.49.1" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.1.0" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.3" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
     { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
-    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.2" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.3" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.0.0" },
     { name = "pytest-html", marker = "extra == 'test'", specifier = "==4.1.1" },
     { name = "pytest-sugar", marker = "extra == 'test'", specifier = "==1.0.0" },
@@ -3369,7 +3368,7 @@ requires-dist = [
     { name = "python-dotenv", marker = "extra == 'dev'", specifier = "==1.0.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.9.3" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
-    { name = "typer", specifier = ">=0.9,<0.13" },
+    { name = "typer", specifier = "<1" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241230" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "types-waitress", marker = "extra == 'dev'", specifier = "==3.0.1.20241117" },
@@ -3379,7 +3378,6 @@ requires-dist = [
 
 [[package]]
 name = "my-py-package"
-version = "0.3.8"
 source = { editable = "package_templates/python_only" }
 dependencies = [
     { name = "typer" },
@@ -3427,9 +3425,9 @@ test = [
 requires-dist = [
     { name = "autoflake", marker = "extra == 'dev'", specifier = "==2.3.1" },
     { name = "bandit", marker = "extra == 'dev'", specifier = "==1.8.2" },
-    { name = "black", marker = "extra == 'dev'", specifier = "==24.10.0" },
+    { name = "black", marker = "extra == 'dev'", specifier = "==25.1.0" },
     { name = "flake8", marker = "extra == 'dev'", specifier = "==7.1.1" },
-    { name = "isort", marker = "extra == 'dev'", specifier = "==5.13.2" },
+    { name = "isort", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "mdx-include", marker = "extra == 'docs'", specifier = "==1.4.2" },
     { name = "mdx-truly-sane-lists", marker = "extra == 'docs'", specifier = "==1.3" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = "==1.6.1" },
@@ -3441,9 +3439,9 @@ requires-dist = [
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.14.1" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.1.0" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.3" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
     { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
-    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.2" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.3" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.0.0" },
     { name = "pytest-html", marker = "extra == 'test'", specifier = "==4.1.1" },
     { name = "pytest-sugar", marker = "extra == 'test'", specifier = "==1.0.0" },
@@ -3452,7 +3450,7 @@ requires-dist = [
     { name = "python-dotenv", marker = "extra == 'dev'", specifier = "==1.0.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.9.3" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
-    { name = "typer", specifier = ">=0.9,<0.13" },
+    { name = "typer", specifier = "<1" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241230" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.35.1" },
@@ -3682,7 +3680,6 @@ name = "nvidia-cublas-cu12"
 version = "12.4.5.8"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/7f/7fbae15a3982dc9595e49ce0f19332423b260045d0a6afe93cdbe2f1f624/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_aarch64.whl", hash = "sha256:0f8aa1706812e00b9f19dfe0cdb3999b092ccb8ca168c0db5b8ea712456fd9b3", size = 363333771 },
     { url = "https://files.pythonhosted.org/packages/ae/71/1c91302526c45ab494c23f61c7a84aa568b8c1f9d196efa5993957faf906/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl", hash = "sha256:2fc8da60df463fdefa81e323eef2e36489e1c94335b5358bcb38360adf75ac9b", size = 363438805 },
 ]
 
@@ -3691,7 +3688,6 @@ name = "nvidia-cuda-cupti-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/b5/9fb3d00386d3361b03874246190dfec7b206fd74e6e287b26a8fcb359d95/nvidia_cuda_cupti_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:79279b35cf6f91da114182a5ce1864997fd52294a87a16179ce275773799458a", size = 12354556 },
     { url = "https://files.pythonhosted.org/packages/67/42/f4f60238e8194a3106d06a058d494b18e006c10bb2b915655bd9f6ea4cb1/nvidia_cuda_cupti_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:9dec60f5ac126f7bb551c055072b69d85392b13311fcc1bcda2202d172df30fb", size = 13813957 },
 ]
 
@@ -3700,7 +3696,6 @@ name = "nvidia-cuda-nvrtc-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/77/aa/083b01c427e963ad0b314040565ea396f914349914c298556484f799e61b/nvidia_cuda_nvrtc_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:0eedf14185e04b76aa05b1fea04133e59f465b6f960c0cbf4e37c3cb6b0ea198", size = 24133372 },
     { url = "https://files.pythonhosted.org/packages/2c/14/91ae57cd4db3f9ef7aa99f4019cfa8d54cb4caa7e00975df6467e9725a9f/nvidia_cuda_nvrtc_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:a178759ebb095827bd30ef56598ec182b85547f1508941a3d560eb7ea1fbf338", size = 24640306 },
 ]
 
@@ -3709,7 +3704,6 @@ name = "nvidia-cuda-runtime-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/aa/b656d755f474e2084971e9a297def515938d56b466ab39624012070cb773/nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:961fe0e2e716a2a1d967aab7caee97512f71767f852f67432d572e36cb3a11f3", size = 894177 },
     { url = "https://files.pythonhosted.org/packages/ea/27/1795d86fe88ef397885f2e580ac37628ed058a92ed2c39dc8eac3adf0619/nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:64403288fa2136ee8e467cdc9c9427e0434110899d07c779f25b5c068934faa5", size = 883737 },
 ]
 
@@ -3732,7 +3726,6 @@ dependencies = [
     { name = "nvidia-nvjitlink-cu12", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7a/8a/0e728f749baca3fbeffad762738276e5df60851958be7783af121a7221e7/nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_aarch64.whl", hash = "sha256:5dad8008fc7f92f5ddfa2101430917ce2ffacd86824914c82e28990ad7f00399", size = 211422548 },
     { url = "https://files.pythonhosted.org/packages/27/94/3266821f65b92b3138631e9c8e7fe1fb513804ac934485a8d05776e1dd43/nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_x86_64.whl", hash = "sha256:f083fc24912aa410be21fa16d157fed2055dab1cc4b6934a0e03cba69eb242b9", size = 211459117 },
 ]
 
@@ -3741,7 +3734,6 @@ name = "nvidia-curand-cu12"
 version = "10.3.5.147"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/9c/a79180e4d70995fdf030c6946991d0171555c6edf95c265c6b2bf7011112/nvidia_curand_cu12-10.3.5.147-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1f173f09e3e3c76ab084aba0de819c49e56614feae5c12f69883f4ae9bb5fad9", size = 56314811 },
     { url = "https://files.pythonhosted.org/packages/8a/6d/44ad094874c6f1b9c654f8ed939590bdc408349f137f9b98a3a23ccec411/nvidia_curand_cu12-10.3.5.147-py3-none-manylinux2014_x86_64.whl", hash = "sha256:a88f583d4e0bb643c49743469964103aa59f7f708d862c3ddb0fc07f851e3b8b", size = 56305206 },
 ]
 
@@ -3755,7 +3747,6 @@ dependencies = [
     { name = "nvidia-nvjitlink-cu12", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/46/6b/a5c33cf16af09166845345275c34ad2190944bcc6026797a39f8e0a282e0/nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_aarch64.whl", hash = "sha256:d338f155f174f90724bbde3758b7ac375a70ce8e706d70b018dd3375545fc84e", size = 127634111 },
     { url = "https://files.pythonhosted.org/packages/3a/e1/5b9089a4b2a4790dfdea8b3a006052cfecff58139d5a4e34cb1a51df8d6f/nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_x86_64.whl", hash = "sha256:19e33fa442bcfd085b3086c4ebf7e8debc07cfe01e11513cc6d332fd918ac260", size = 127936057 },
 ]
 
@@ -3767,7 +3758,6 @@ dependencies = [
     { name = "nvidia-nvjitlink-cu12", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/96/a9/c0d2f83a53d40a4a41be14cea6a0bf9e668ffcf8b004bd65633f433050c0/nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_aarch64.whl", hash = "sha256:9d32f62896231ebe0480efd8a7f702e143c98cfaa0e8a76df3386c1ba2b54df3", size = 207381987 },
     { url = "https://files.pythonhosted.org/packages/db/f7/97a9ea26ed4bbbfc2d470994b8b4f338ef663be97b8f677519ac195e113d/nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_x86_64.whl", hash = "sha256:ea4f11a2904e2a8dc4b1833cc1b5181cde564edd0d5cd33e3c168eff2d1863f1", size = 207454763 },
 ]
 
@@ -3784,7 +3774,6 @@ name = "nvidia-nvjitlink-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/45/239d52c05074898a80a900f49b1615d81c07fceadd5ad6c4f86a987c0bc4/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:4abe7fef64914ccfa909bc2ba39739670ecc9e820c83ccc7a6ed414122599b83", size = 20552510 },
     { url = "https://files.pythonhosted.org/packages/ff/ff/847841bacfbefc97a00036e0fce5a0f086b640756dc38caea5e1bb002655/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:06b3b9b25bf3f8af351d664978ca26a16d2c5127dbd53c0497e28d1fb9611d57", size = 21066810 },
 ]
 
@@ -3793,7 +3782,6 @@ name = "nvidia-nvtx-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/06/39/471f581edbb7804b39e8063d92fc8305bdc7a80ae5c07dbe6ea5c50d14a5/nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:7959ad635db13edf4fc65c06a6e9f9e55fc2f92596db928d169c0bb031e88ef3", size = 100417 },
     { url = "https://files.pythonhosted.org/packages/87/20/199b8713428322a2f22b722c62b8cc278cc53dffa9705d744484b5035ee9/nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:781e950d9b9f60d8241ccea575b32f5105a5baf4c2351cab5256a24869f12a1a", size = 99144 },
 ]
 
@@ -4923,7 +4911,7 @@ wheels = [
 
 [[package]]
 name = "pylint"
-version = "3.3.3"
+version = "3.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "astroid" },
@@ -4935,9 +4923,9 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/17/fd/e9a739afac274a39596bbe562e9d966db6f3917fdb2bd7322ffc56da0ba2/pylint-3.3.3.tar.gz", hash = "sha256:07c607523b17e6d16e2ae0d7ef59602e332caa762af64203c24b41c27139f36a", size = 1516550 }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/b9/50be49afc91469f832c4bf12318ab4abe56ee9aa3700a89aad5359ad195f/pylint-3.3.4.tar.gz", hash = "sha256:74ae7a38b177e69a9b525d0794bd8183820bfa7eb68cc1bee6e8ed22a42be4ce", size = 1518905 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/e1/26d55acea92b1ea4d33672e48f09ceeb274e84d7d542a4fb9a32a556db46/pylint-3.3.3-py3-none-any.whl", hash = "sha256:26e271a2bc8bce0fc23833805a9076dd9b4d5194e2a02164942cb3cdc37b4183", size = 521918 },
+    { url = "https://files.pythonhosted.org/packages/0d/8b/eef15df5f4e7aa393de31feb96ca9a3d6639669bd59d589d0685d5ef4e62/pylint-3.3.4-py3-none-any.whl", hash = "sha256:289e6a1eb27b453b08436478391a48cd53bb0efb824873f949e709350f3de018", size = 522280 },
 ]
 
 [[package]]
@@ -5088,14 +5076,14 @@ wheels = [
 
 [[package]]
 name = "pytest-asyncio"
-version = "0.25.2"
+version = "0.25.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/72/df/adcc0d60f1053d74717d21d58c0048479e9cab51464ce0d2965b086bd0e2/pytest_asyncio-0.25.2.tar.gz", hash = "sha256:3f8ef9a98f45948ea91a0ed3dc4268b5326c0e7bce73892acc654df4262ad45f", size = 53950 }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/a8/ecbc8ede70921dd2f544ab1cadd3ff3bf842af27f87bbdea774c7baa1d38/pytest_asyncio-0.25.3.tar.gz", hash = "sha256:fc1da2cf9f125ada7e710b4ddad05518d4cee187ae9412e9ac9271003497f07a", size = 54239 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/d8/defa05ae50dcd6019a95527200d3b3980043df5aa445d40cb0ef9f7f98ab/pytest_asyncio-0.25.2-py3-none-any.whl", hash = "sha256:0d0bb693f7b99da304a0634afc0a4b19e49d5e0de2d670f38dc4bfa5727c5075", size = 19400 },
+    { url = "https://files.pythonhosted.org/packages/67/17/3493c5624e48fd97156ebaec380dcaafee9506d7e2c46218ceebbb57d7de/pytest_asyncio-0.25.3-py3-none-any.whl", hash = "sha256:9e89518e0f9bd08928f97a3482fdc4e244df17529460bc038291ccaf8f85c7c3", size = 19467 },
 ]
 
 [[package]]
@@ -6685,7 +6673,6 @@ wheels = [
 
 [[package]]
 name = "waldiez"
-version = "0.3.7"
 source = { editable = "packages/core/python" }
 dependencies = [
     { name = "aiocsv" },
@@ -6768,13 +6755,13 @@ requires-dist = [
     { name = "autoflake", marker = "extra == 'dev'", specifier = "==2.3.1" },
     { name = "autogen", extras = ["captainagent"], marker = "sys_platform == 'linux' and extra == 'ag2-extras'", specifier = "==0.7.2" },
     { name = "bandit", marker = "extra == 'dev'", specifier = "==1.8.2" },
-    { name = "black", extras = ["jupyter"], marker = "extra == 'dev'", specifier = "==24.10.0" },
+    { name = "black", extras = ["jupyter"], marker = "extra == 'dev'", specifier = "==25.1.0" },
     { name = "chromadb", marker = "sys_platform != 'linux' and extra == 'ag2-extras'" },
     { name = "flake8", marker = "extra == 'dev'", specifier = "==7.1.1" },
     { name = "graphviz", specifier = "==0.20.3" },
-    { name = "httpx", specifier = ">=0.27.0,<0.28.0" },
+    { name = "httpx", specifier = "<1" },
     { name = "huggingface-hub", marker = "sys_platform != 'linux' and extra == 'ag2-extras'", specifier = ">=0.0.17" },
-    { name = "isort", marker = "extra == 'dev'", specifier = "==5.13.2" },
+    { name = "isort", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "jupyterlab", marker = "extra == 'jupyter'", specifier = ">=4.3.0" },
     { name = "jupytext" },
     { name = "mdx-include", marker = "extra == 'docs'", specifier = "==1.4.2" },
@@ -6809,10 +6796,10 @@ requires-dist = [
     { name = "pyautogen", extras = ["websurfer"], marker = "extra == 'ag2-extras'", specifier = "==0.7.2" },
     { name = "pydantic", specifier = ">=2.6.1,<3" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.3" },
-    { name = "pymongo", marker = "extra == 'ag2-extras'", specifier = "==4.10.1" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
+    { name = "pymongo", marker = "extra == 'ag2-extras'", specifier = ">=4.10.1" },
     { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
-    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.2" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.3" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.0.0" },
     { name = "pytest-html", marker = "extra == 'test'", specifier = "==4.1.1" },
     { name = "pytest-sugar", marker = "extra == 'test'", specifier = "==1.0.0" },
@@ -6823,7 +6810,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.9.3" },
     { name = "sentence-transformers", marker = "sys_platform != 'linux' and extra == 'ag2-extras'", specifier = ">=2.0.0" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
-    { name = "typer", specifier = ">=0.9,<0.13" },
+    { name = "typer", specifier = ">=0.9,<0.16" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241230" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
     { name = "waldiez-jupyter", marker = "extra == 'jupyter'", editable = "packages/jupyter" },
@@ -6833,7 +6820,6 @@ requires-dist = [
 
 [[package]]
 name = "waldiez-jupyter"
-version = "0.3.8"
 source = { editable = "packages/jupyter" }
 dependencies = [
     { name = "jupyter-server" },
@@ -6877,17 +6863,17 @@ test = [
 requires-dist = [
     { name = "autoflake", marker = "extra == 'dev'", specifier = "==2.3.1" },
     { name = "bandit", marker = "extra == 'dev'", specifier = "==1.8.2" },
-    { name = "black", extras = ["jupyter"], marker = "extra == 'dev'", specifier = "==24.10.0" },
+    { name = "black", extras = ["jupyter"], marker = "extra == 'dev'", specifier = "==25.1.0" },
     { name = "coverage", marker = "extra == 'test'", specifier = "==7.6.10" },
     { name = "flake8", marker = "extra == 'dev'", specifier = "==7.1.1" },
-    { name = "isort", marker = "extra == 'dev'", specifier = "==5.13.2" },
+    { name = "isort", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "jupyter-server", specifier = ">=2.0.1,<3" },
     { name = "jupyterlab", marker = "extra == 'dev'", specifier = "==4.3.4" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.14.1" },
     { name = "pathvalidate", specifier = "==3.2.3" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.1.0" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.3" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
     { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.0.0" },
     { name = "pytest-datadir", marker = "extra == 'test'", specifier = "==1.5.0" },
@@ -6909,7 +6895,7 @@ requires-dist = [
 
 [[package]]
 name = "waldiez-root"
-version = "0.3.7"
+version = "0.3.10"
 source = { virtual = "." }
 dependencies = [
     { name = "pip" },
@@ -6937,21 +6923,37 @@ dev = [
     { name = "types-toml" },
     { name = "yamllint" },
 ]
+test = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "pytest-html" },
+    { name = "pytest-sugar" },
+    { name = "pytest-timeout" },
+    { name = "pytest-xdist" },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "autoflake", marker = "extra == 'dev'", specifier = "==2.3.1" },
     { name = "bandit", marker = "extra == 'dev'", specifier = "==1.8.2" },
-    { name = "black", marker = "extra == 'dev'", specifier = "==24.10.0" },
+    { name = "black", marker = "extra == 'dev'", specifier = "==25.1.0" },
     { name = "flake8", marker = "extra == 'dev'", specifier = "==7.1.1" },
     { name = "hatchling", marker = "extra == 'dev'", specifier = "==1.27.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = "==5.13.2" },
+    { name = "isort", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.14.1" },
     { name = "pip", specifier = "==25.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.1.0" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.3" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
     { name = "pypiserver", marker = "extra == 'dev'", specifier = "==2.3.2" },
+    { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.3" },
+    { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.0.0" },
+    { name = "pytest-html", marker = "extra == 'test'", specifier = "==4.1.1" },
+    { name = "pytest-sugar", marker = "extra == 'test'", specifier = "==1.0.0" },
+    { name = "pytest-timeout", marker = "extra == 'test'", specifier = "==2.3.1" },
+    { name = "pytest-xdist", marker = "extra == 'test'", specifier = "==3.6.1" },
     { name = "python-dotenv", marker = "extra == 'dev'", specifier = "==1.0.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.9.3" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
@@ -6964,7 +6966,6 @@ requires-dist = [
 
 [[package]]
 name = "waldiez-studio"
-version = "0.3.8"
 source = { editable = "packages/studio" }
 dependencies = [
     { name = "aiofiles" },
@@ -7017,30 +7018,30 @@ requires-dist = [
     { name = "asgi-lifespan", marker = "extra == 'test'", specifier = "==2.1.0" },
     { name = "autoflake", marker = "extra == 'dev'", specifier = "==2.3.1" },
     { name = "bandit", marker = "extra == 'dev'", specifier = "==1.8.2" },
-    { name = "black", marker = "extra == 'dev'", specifier = "==24.10.0" },
-    { name = "fastapi", specifier = "==0.115.6" },
+    { name = "black", marker = "extra == 'dev'", specifier = "==25.1.0" },
+    { name = "fastapi", specifier = "==0.115.7" },
     { name = "flake8", marker = "extra == 'dev'", specifier = "==7.1.1" },
     { name = "hatchling", marker = "extra == 'dev'", specifier = "==1.27.0" },
-    { name = "httpx", marker = "extra == 'test'", specifier = ">=0.27.0,<0.28.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = "==5.13.2" },
+    { name = "httpx", marker = "extra == 'test'", specifier = "<1" },
+    { name = "isort", marker = "extra == 'dev'", specifier = "==6.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.14.1" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.1.0" },
     { name = "pydantic-settings", specifier = "==2.7.1" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.3" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = "==3.3.4" },
     { name = "pytest", marker = "extra == 'test'", specifier = "==8.3.4" },
-    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.2" },
+    { name = "pytest-asyncio", marker = "extra == 'test'", specifier = "==0.25.3" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.0.0" },
     { name = "pytest-html", marker = "extra == 'test'", specifier = "==4.1.1" },
-    { name = "pytest-httpx", marker = "extra == 'test'", specifier = "==0.34.0" },
+    { name = "pytest-httpx", marker = "extra == 'test'" },
     { name = "pytest-sugar", marker = "extra == 'test'", specifier = "==1.0.0" },
     { name = "pytest-timeout", marker = "extra == 'test'", specifier = "==2.3.1" },
     { name = "python-dotenv", marker = "extra == 'dev'", specifier = "==1.0.1" },
     { name = "python-multipart", specifier = "==0.0.20" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.9.3" },
-    { name = "tenacity", specifier = ">=8.2.0,<9.0.0" },
+    { name = "tenacity", specifier = "<10.0.0" },
     { name = "toml", marker = "python_full_version < '3.11' and extra == 'dev'" },
-    { name = "typer", specifier = ">=0.9,<0.13" },
+    { name = "typer", specifier = "<1" },
     { name = "types-aiofiles", marker = "extra == 'dev'", specifier = "==24.1.0.20241221" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20241230" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },

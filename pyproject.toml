@@ -1,6 +1,6 @@
 [project]
 name = "waldiez_root"
-version = "0.3.9"
+version = "0.3.10"
 requires-python = ">=3.10,<3.13"
 dependencies = ['pip==25.0', "uv==0.5.24"]
 
@@ -220,14 +220,14 @@ line-ending = 'lf'
 dev = [
     'autoflake==2.3.1',
     'bandit==1.8.2',
-    'black==24.10.0',
+    'black==25.1.0',
     'flake8==7.1.1',
     'hatchling==1.27.0',
-    'isort==5.13.2',
+    'isort==6.0.0',
     'mypy==1.14.1',
     'pre-commit==4.1.0',
     'pydocstyle==6.3.0',
-    'pylint==3.3.3',
+    'pylint==3.3.4',
     'pypiserver==2.3.2',
     'python-dotenv==1.0.1',
     'ruff==0.9.3',
@@ -236,4 +236,13 @@ dev = [
     'types-PyYAML==6.0.12.20241230',
     'types-toml== 0.10.8.20240310',
     'yamllint==1.35.1',
+]
+test = [
+    'pytest==8.3.4',
+    'pytest-asyncio==0.25.3',
+    'pytest-cov==6.0.0',
+    'pytest-html==4.1.1',
+    'pytest-sugar==1.0.0',
+    'pytest-timeout==2.3.1',
+    'pytest-xdist==3.6.1',
 ]
