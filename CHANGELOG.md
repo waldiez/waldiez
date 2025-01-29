@@ -7,6 +7,9 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+- Added async mode
+- Fixed a bug with long variable or function names
+
 ## v0.3.9
 
 - Added deepseek model option
