@@ -7,8 +7,12 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.3.10
+
 - Added async mode
 - Fixed a bug with long variable or function names
+- Minor ui changes
+- Dependency updates
 
 ## v0.3.9
 
