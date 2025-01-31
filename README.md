@@ -4,7 +4,7 @@
 
 ## Make AI Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez
 
-![Overview](docs/static/images/overview.webp)
+![Overview](overview.webp)
 
 ```mermaid
 %%{init: {'sequence': {'actorSpacing': 10, 'width': 150}}}%%
