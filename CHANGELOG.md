@@ -7,6 +7,11 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+- Updated ag2 dependency to 0.7.3
+- Added a cache seed option
+- Fixed an indentation issue when exporting to ipynb a flow with reasoning agents
+- Dependency updates
+
 ## v0.3.10
 
 - Added async mode
