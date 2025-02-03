@@ -6,7 +6,7 @@ import fs from "fs-extra";
 import packageJson from "../../package.json";
 
 const yarn = "yarn@4.6.0";
-const bun = "bun@1.1.45";
+const bun = "bun@1.2.2";
 
 // check arg (if --patch or --rollback)
 
