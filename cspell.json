@@ -47,6 +47,7 @@
         "docregistry",
         "dotenv",
         "drivername",
+        "easyocr",
         "eclint",
         "epytext",
         "exenv",
