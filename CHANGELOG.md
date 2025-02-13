@@ -7,6 +7,14 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.4.0
+
+- Updated ag2 dependency to 0.7.4
+- Added captain agent support
+- Added LangChain and CrewAI interoperability support for tools.
+- Minor ui changes and bug fixes
+- Dependency updates
+
 ## v0.3.12
 
 - Added cohere model option
