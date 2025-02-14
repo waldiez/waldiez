@@ -7,6 +7,11 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.4.1
+
+- Allow captain agent use non-openai models.
+- Dependency updates.
+
 ## v0.4.0
 
 - Updated ag2 dependency to 0.7.4
