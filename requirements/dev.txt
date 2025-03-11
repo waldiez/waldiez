@@ -1,19 +1,19 @@
 -r main.txt
 autoflake==2.3.1
-bandit==1.8.2
+bandit==1.8.3
 black==25.1.0
-flake8==7.1.1
+flake8==7.1.2
 hatchling==1.27.0
-isort==6.0.0
+isort==6.0.1
 mypy==1.15.0
 pre-commit==4.1.0
 pydocstyle==6.3.0
-pylint==3.3.4
+pylint==3.3.5
 pypiserver==2.3.2
 python-dotenv==1.0.1
-ruff==0.9.6
+ruff==0.9.10
 toml; python_version <= "3.10"
 types-PyYAML==6.0.12.20241230
 types-aiofiles==24.1.0.20241221
 types-toml== 0.10.8.20240310
-yamllint==1.35.1
+yamllint==1.36.0

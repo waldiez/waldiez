@@ -5,8 +5,8 @@ let's patch (and un-patch) the package manager in package.json
 import fs from "fs-extra";
 import packageJson from "../../package.json";
 
-const yarn = "yarn@4.6.0";
-const bun = "bun@1.2.2";
+const yarn = "yarn@4.7.0";
+const bun = "bun@1.2.5";
 
 // check arg (if --patch or --rollback)
 
