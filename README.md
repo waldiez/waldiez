@@ -60,10 +60,11 @@ pip install waldiez[studio,jupyter]
 
 There are several ways to use Waldiez:
 
+- Use the **Playground** to create flows in your browser
+- Launch one for the available container images via **Docker or Podman**
+- Work with **JupyterLab**, **VS Code**, or **Waldiez Studio** for both creating and running flows locally
 - Use the **Python API** to integrate with your own code
 - Run it from the **CLI**
-- Launch via **Docker or Podman**
-- Work with **JupyterLab**, **VS Code**, or the **Waldiez Studio** UI
 
 ### UI Options
 
@@ -83,7 +84,7 @@ If you installed waldiez with the jupyter extra, you can use the jupyter extensi
 waldiez lab
 ```
 
-Alternatively, you can start jupyterlab as usual, the waldiez extension should be loaded automatically.
+Alternatively, you can start jupyterlab as usual, the waldiez extension should be loaded automatically. If not, make sure the `jupyter` command is the one that is installed in the same environment as waldiez.
 
 ```shell
 jupyter lab
@@ -91,7 +92,7 @@ jupyter lab
 
 #### Using Waldiez Studio
 
-If you installed waldiez with the studio extra, you can launch a FastAPI server that will allow you to create and run waldiez flows.
+If you installed waldiez with the studio extra, you can launch the bundled FastAPI app that will allow you to create and run waldiez flows.
 
 To see the available options, you can run:
 
@@ -112,15 +113,15 @@ waldiez studio --help
 # --trusted-origins     TEXT        [default: []]]
 # --force-ssl --no-force-ssl        Force SSL [default: no-force-ssl]
 # --version                         Show the version
-# --help -h                        Show this message and exit.
+# --help -h                         Show this message and exit.
 ```
 
 ### Using Docker/Podman 🐳
 
 We provide three ways to use the Waldiez using docker/podman:
 
-- Using the core python package to convert and run waldiez flows (image: `waldiez/waldiez`)
 - Using the jupyter extension (image: `waldiez/jupyter`) (this starts a jupyterlab server)
+- Using just the core python package to convert and run waldiez flows (image: `waldiez/waldiez`)
 - Using waldiez-studio (image: `waldiez/studio`) (this starts a FastAPI server)
 
 #### sing Docker/Podman on Linux/macOS/Windows with WSL
@@ -156,7 +157,7 @@ $CONTAINER_COMMAND run \
 
 # To convert a Waldiez flow to a python script or a jupyter notebook and run it:
 $CONTAINER_COMMAND run \
-  --rm \
+  --rm -ty \
   -v /path/to/a/flow.waldiez:/flow.waldiez \
   -v /path/to/an/output:/output \
   waldiez/waldiez run --file /flow.waldiez --output /output/output[.py]
@@ -219,7 +220,7 @@ $CONTAINER_COMMAND run --rm \
 
 #### ✅ Tips
 
-- Always use **absolute paths** for `-v` mounts.
+- Try to always use **absolute paths** for `-v` mounts.
 - Avoid special characters or spaces in paths.
 - If you see `file not found` errors, double-check path formats and file sharing settings.
 
@@ -272,3 +273,16 @@ Repos (submodules) included in this repo:
 ## License
 
 This project is licensed under the [Apache License, Version 2.0 (Apache-2.0)](https://github.com/waldiez/waldiez/blob/main/LICENSE).
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

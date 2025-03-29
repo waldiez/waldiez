@@ -1,5 +1,5 @@
 -r main.txt
-pytest-asyncio==0.25.3
+pytest-asyncio==0.26.0
 pytest-cov==6.0.0
 pytest-html==4.1.1
 pytest-sugar==1.0.0

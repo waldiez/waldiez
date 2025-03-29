@@ -41,5 +41,6 @@
     "npm.packageManager": "bun",
     "files.eol": "\n",
     "cSpell.mergeCSpellSettings": true,
-    "cSpell.configFile": "cspell.json"
+    "cSpell.configFile": "cspell.json",
+    "vitest.disableWorkspaceWarning": true
 }

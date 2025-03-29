@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 import path from "path";
 import url from "url";
 import fs from "fs-extra";
@@ -16,24 +20,52 @@ export { packageJson, rootDir };
  * @param cmd The command to run.
  * @param args The arguments to pass to the command.
  * @param strict Whether to throw an error if the command fails.
+ * @param extraEnv Extra environment variables to pass to the command.
  * @returns {void}
  * @throws {Error} If the command fails and strict is true.
  */
-export function runCommandInDir(dir: string, cmd: string, args: string[], strict: boolean = true): void {
+export function runCommandInDir(
+    dir: string,
+    cmd: string,
+    args: string[],
+    strict: boolean = true,
+    extraEnv: { [key: string]: string } = {},
+): void {
     const relativeToRoot = getRelativePathToRoot(dir);
     const commandString = `${cmd} ${args.join(" ")}`.replace(rootDir, ".");
-    const toLog = `\nRunning: ${commandString} in ${relativeToRoot}\n`;
+    let relativeToRootToLog = relativeToRoot;
+    if (relativeToRoot === ".") {
+        relativeToRootToLog = __dirname;
+    }
+    const toLog = `\nRunning: ${commandString} in ${relativeToRootToLog}\n`;
     console.info(toLog);
     try {
         execSync(`${cmd} ${args.join(" ")}`, {
             cwd: dir,
             stdio: "inherit",
             encoding: "utf-8",
+            env: {
+                ...process.env,
+                ...extraEnv,
+            },
         });
     } catch (err) {
         console.error(`Error running command: ${toLog}`);
         if (strict) {
-            throw err;
+            console.error(err);
+            let msg = `Error running command: ${commandString}. Error: ${err}`;
+            msg += "\n\n";
+            msg += "You might want to run the command manually.";
+            msg += "\n\n";
+            msg += "If you are getting an 'Error: The service was stopped' error,";
+            msg += "you might want to run the command outside your IDE (if it consumes many resources).";
+            msg += "\n\n";
+            msg += "See: https://github.com/evanw/esbuild/issues/320 for a possible cause and solution.";
+            msg += "\n\n";
+            msg += "\nOr (as a last resolution) remove the 'node_modules'";
+            msg += `in the ${relativeToRoot} folder and install the dependencies again.`;
+            console.error(msg);
+            process.exit(1);
         }
     }
 }

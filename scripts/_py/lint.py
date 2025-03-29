@@ -18,6 +18,8 @@ This script runs the following linters:
 import sys
 from pathlib import Path
 
+# pylint:disable=duplicate-code
+
 HAD_TO_MODIFY_SYS_PATH = False
 
 try:
@@ -84,7 +86,7 @@ def lint_package(package_dir: Path) -> None:
     lint_script = package_dir / "scripts" / "lint.py"
     if not lint_script.exists():
         raise FileNotFoundError(f"Lint script not found in {package_dir}")
-    run_command([sys.executable, str(lint_script)])
+    run_command([sys.executable, str(lint_script)], cwd=package_dir)
 
 
 def main() -> None:

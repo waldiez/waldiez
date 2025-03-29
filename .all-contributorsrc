@@ -1,0 +1,45 @@
+{
+    "projectName": "waldiez",
+    "projectOwner": "waldiez",
+    "repoType": "github",
+    "repoHost": "https://github.com",
+    "files": [
+        "README.md"
+    ],
+    "imageSize": 100,
+    "commit": false,
+    "commitConvention": "angular",
+    "contributors": [
+        {
+            "login": "ounospanas",
+            "name": "Panagiotis Kasnesis",
+            "avatar_url": "https://avatars.githubusercontent.com/u/29335277?v=4",
+            "profile": "https://scholar.google.com/citations?user=JmW9DwkAAAAJ",
+            "contributions": [
+                "projectManagement",
+                "research"
+            ]
+        },
+        {
+            "login": "lazToum",
+            "name": "Lazaros Toumanidis",
+            "avatar_url": "https://avatars.githubusercontent.com/u/4764837?v=4",
+            "profile": "https://github.com/lazToum",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "siioannidou",
+            "name": "Stella Ioannidou",
+            "avatar_url": "https://avatars.githubusercontent.com/u/3456066?v=4",
+            "profile": "https://humancentered.gr/",
+            "contributions": [
+                "promotion",
+                "design"
+            ]
+        }
+    ],
+    "contributorsPerLine": 7,
+    "linkToUsage": true
+}

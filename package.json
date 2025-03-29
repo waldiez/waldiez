@@ -9,8 +9,10 @@
         "@types/fs-extra": "^11.0.4",
         "@types/node": "^22.13.10",
         "@typescript-eslint/eslint-plugin": "^8.26.1",
+        "all-contributors-cli": "^6.26.1",
         "eslint": "^9.22.0",
         "eslint-config-prettier": "^10.1.1",
+        "eslint-plugin-headers": "^1.2.1",
         "eslint-plugin-prettier": "^5.2.3",
         "fs-extra": "^11.3.0",
         "npm-run-all2": "^7.0.2",
@@ -61,7 +63,8 @@
         "all": "bun version:check && bun all:ts && bun all:py",
         "ci:patch": "bun scripts/ci/pm.ts --patch",
         "ci:rollback": "node --import=tsx scripts/ci/pm --rollback",
-        "changelog": "bun scripts/changelog.ts"
+        "changelog": "bun scripts/changelog.ts",
+        "contributions": "bun scripts/_ts/contributions.ts"
     },
     "packages": {
         "py": [
@@ -146,5 +149,5 @@
             }
         ]
     },
-    "packageManager": "bun@1.2.5"
+    "packageManager": "bun@1.2.7"
 }

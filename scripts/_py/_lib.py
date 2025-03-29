@@ -42,7 +42,8 @@ def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:
         Current working directory.
     """
     args_str = " ".join(args).replace(str(ROOT_DIR), ".")
-    print(f"Running command: {args_str}")
+    cwd_relative_to_root = cwd.relative_to(ROOT_DIR)
+    print(f"Running command: {args_str} in {cwd_relative_to_root}")
     try:
         subprocess.run(  # nosemgrep # nosec
             args,

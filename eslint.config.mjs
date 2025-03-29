@@ -5,6 +5,7 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import headers from "eslint-plugin-headers";
 
 const customBaseConfig = {
     ...eslint.configs.recommended,
@@ -17,6 +18,7 @@ export default tseslint.config({
     plugins: {
         "@stylistic": stylistic,
         "@cspell": cspellPlugin,
+        headers,
     },
     rules: {
         "no-unused-vars": "off",
@@ -45,5 +47,18 @@ export default tseslint.config({
         "@cspell/spellchecker": ["warn", {}],
         "max-lines": ["error", { max: 500, skipBlankLines: true, skipComments: true }],
         "max-lines-per-function": ["error", { max: 300, skipBlankLines: true, skipComments: true }],
+        "headers/header-format": [
+            "error",
+            {
+                source: "string",
+                content: "SPDX-License-Identifier: {spdxIdentifier}\nCopyright {startYear} - {currentYear} {owner}",
+                variables: {
+                    "spdxIdentifier": "Apache-2.0",
+                    "startYear": "2024",
+                    "currentYear": `${new Date().getFullYear()}`,
+                    "owner": "Waldiez & contributors",
+                },
+            },
+        ],
     },
 });

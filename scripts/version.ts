@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 /** Bump or get/check the version number in package.json and in all sub-packages
  * Usage:
  * - `yarn|bun|.. version --major`
@@ -7,7 +11,6 @@
  * - `yarn|bun|.. version --get`
  * - `yarn|bun|.. version --check`
  */
-
 import fs from "fs-extra";
 import { join, resolve } from "path";
 

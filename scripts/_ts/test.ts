@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 /** Run tests in the project's subdirectories. */
 import path from "path";
 import fs from "fs-extra";

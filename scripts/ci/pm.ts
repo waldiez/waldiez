@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 /* If we try to 'setup-node' and (corepack, yarn)
 , we get error because we use bun.
 let's patch (and un-patch) the package manager in package.json
@@ -6,7 +10,7 @@ import fs from "fs-extra";
 import packageJson from "../../package.json";
 
 const yarn = "yarn@4.7.0";
-const bun = "bun@1.2.5";
+const bun = "bun@1.2.7";
 
 // check arg (if --patch or --rollback)
 

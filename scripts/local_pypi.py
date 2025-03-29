@@ -8,6 +8,7 @@ import subprocess  # nosemgrep # nosec
 import sys
 from pathlib import Path
 from types import FrameType
+from typing import Any, Optional
 
 try:
     from dotenv import load_dotenv
@@ -56,15 +57,19 @@ def start_pypi_server(py_executable: str) -> None:
     port = os.getenv("PYPI_SERVER_PORT", "8080")
     print(f"Starting PyPI server on port {port}...")
 
-    def cleanup_and_exit(signum: int, frame: FrameType) -> None:
+    def cleanup_and_exit(
+        signum: int, frame: Optional[FrameType], **kwargs: Any
+    ) -> None:
         """Cleanup logic for signal termination.
 
         Parameters
         ----------
         signum : int
             Signal number
-        frame : signal.FrameType
-            Signal frame
+        frame : signal.FrameType | None
+            Optional frame object
+        kwargs : Any
+            Additional keyword arguments
         """
         print("\nReceived termination signal. Stopping PyPI server...")
         sys.exit(0)
@@ -151,8 +156,8 @@ def main() -> None:
         venv_path / "Scripts" / "python.exe"
         if os.name == "nt"
         else venv_path / "bin" / "python"
-    )
-    if not py_executable.exists():
+    ).as_posix()
+    if not os.path.exists(py_executable):
         py_executable = sys.executable
     ensure_pypiserver_installed(py_executable)
     start_pypi_server(py_executable)
