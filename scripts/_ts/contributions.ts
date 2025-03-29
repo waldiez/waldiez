@@ -102,12 +102,16 @@ const main = (): void => {
     writeContributions(allContributions);
     console.log(`Merged allContributions: ${JSON.stringify(allContributions, null, 4)}`);
     // let's also call: NODE_NO_WARNINGS=1 ${packageManager} all-contributors check
+    //
     // no warnings: to avoid: (node:79251)
     // [DEP0040] DeprecationWarning: The `punycode` module is deprecated.
     //  Please use a userland alternative instead.
     const packageManager = getPackageManager(rootDir);
     const allContributorsCheckCommand = `${packageManager} all-contributors check`;
     runCommandInDir(rootDir, allContributorsCheckCommand, [], true, { NODE_NO_WARNINGS: "1" });
+    // let's also re-generate the all-contributors view in README.md:
+    const allContributorsGenerateCommand = `${packageManager} all-contributors generate`;
+    runCommandInDir(rootDir, allContributorsGenerateCommand, [], true, { NODE_NO_WARNINGS: "1" });
 };
 
 main();

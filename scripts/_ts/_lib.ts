@@ -32,12 +32,15 @@ export function runCommandInDir(
     extraEnv: { [key: string]: string } = {},
 ): void {
     const relativeToRoot = getRelativePathToRoot(dir);
-    const commandString = `${cmd} ${args.join(" ")}`.replace(rootDir, ".");
+    let commandString = `${cmd} ${args.join(" ")}`.replace(rootDir, ".");
+    if (commandString.endsWith(" ")) {
+        commandString = commandString.slice(0, -1);
+    }
     let relativeToRootToLog = relativeToRoot;
     if (relativeToRoot === ".") {
-        relativeToRootToLog = __dirname;
+        relativeToRootToLog = path.basename(rootDir);
     }
-    const toLog = `\nRunning: ${commandString} in ${relativeToRootToLog}\n`;
+    const toLog = `\nRunning: ${commandString} in '${relativeToRootToLog}'\n`;
     console.info(toLog);
     try {
         execSync(`${cmd} ${args.join(" ")}`, {
