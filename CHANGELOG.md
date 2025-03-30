@@ -8,13 +8,14 @@ The contents of each release will be used in
 ## v0.4.2
 
 - Updated ag2 dependency to 0.8.4
-- Added experimental support for Python 3.13
+- Added limited support for Python 3.13: no CrewAI tools with Python 3.13
 - Jupyter: Updated jupyter dependencies to 4.3.6
 - Jupyter: Added an extra button to interrupt the kernel.
 - Minor code rebase to sync with ag2
 - Minor UI changes
 - Dependency updates
-- Js: Using Node.js >=22 (LTS), drop older versions
+- Js: Using Node.js 22 LTS, dropped older versions
+- Doc updates
 - Bug fixes
 
 ## v0.4.1
