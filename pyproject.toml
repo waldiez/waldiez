@@ -4,7 +4,7 @@ version = "0.4.1"
 requires-python = ">=3.10,<3.14"
 dependencies = [
     'pip==25.0.1',
-    "uv==0.6.5",
+    "uv==0.6.10",
 ]
 
 [tool.uv.sources]
@@ -215,7 +215,7 @@ dev = [
     'autoflake==2.3.1',
     'bandit==1.8.3',
     'black==25.1.0',
-    'flake8==7.1.2',
+    'flake8==7.2.0',
     'hatchling==1.27.0',
     'isort==6.0.1',
     'mypy==1.15.0',
