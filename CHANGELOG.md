@@ -5,6 +5,17 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## [Unreleased]
+
+## v0.4.3
+
+- Updated ag2 dependency to 0.8.6
+- Jupyter: Updated jupyter dependencies to 4.4.0
+- Minor code rebase changes to sync with ag2
+- Minor UI changes
+- Dependency updates
+- Bug fixes
+
 ## v0.4.2
 
 - Updated ag2 dependency to 0.8.4

@@ -1,167 +1,167 @@
 {
-  "private": true,
-  "version": "0.4.2",
-  "devDependencies": {
-    "@cspell/eslint-plugin": "^8.18.1",
-    "@eslint/js": "^9.24.0",
-    "@stylistic/eslint-plugin": "^4.2.0",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.14.0",
-    "@typescript-eslint/eslint-plugin": "^8.29.1",
-    "all-contributors-cli": "^6.26.1",
-    "eslint": "^9.24.0",
-    "eslint-config-prettier": "^10.1.2",
-    "eslint-plugin-headers": "^1.2.1",
-    "eslint-plugin-prettier": "^5.2.6",
-    "fs-extra": "^11.3.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.5.0",
-    "npm-run-all2": "^7.0.2",
-    "playwright": "^1.51.1",
-    "prettier": "^3.5.3",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.19.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.29.1"
-  },
-  "scripts": {
-    "postinstall": "bun scripts/_ts/postinstall.ts",
-    "format:py": "bun python scripts/_py/format.py",
-    "format:ts": "bun scripts/_ts/format.ts",
-    "format": "npm-run-all --parallel format:ts format:py",
-    "lint:root": "node --import=tsx scripts/_ts/lint.ts --root",
-    "lint:py": "bun python scripts/_py/lint.py",
-    "lint:ts": "bun scripts/_ts/lint.ts",
-    "lint": "npm-run-all --parallel lint:ts lint:py",
-    "forlint": "npm-run-all --parallel format lint",
-    "clean:py": "bun python scripts/_py/clean.py",
-    "clean:ts": "bun scripts/_ts/clean.ts",
-    "clean": "npm-run-all --parallel clean:ts clean:py",
-    "test:py": "bun python scripts/_py/test.py",
-    "test:ts": "bun scripts/_ts/test.ts",
-    "test": "bun test:ts && bun test:py",
-    "python": "bun scripts/_ts/python.ts",
-    "requirements:py": "bun python scripts/_py/requirements.py --install",
-    "requirements:ts": "bun scripts/_ts/requirements.ts",
-    "requirements": "npm-run-all --parallel requirements:ts requirements:py",
-    "docs:py": "bun python scripts/_py/docs.py",
-    "docs:ts": "bun scripts/_ts/docs.ts",
-    "images:py": "bun python scripts/_py/images.py",
-    "images:ts": "bun scripts/_ts/images.ts",
-    "images": "npm-run-all --parallel images:ts images:py",
-    "build:py": "bun python scripts/_py/build.py",
-    "build:ts": "bun scripts/_ts/build.ts",
-    "build": "npm-run-all --parallel build:ts build:py",
-    "bump:patch": "bun scripts/version.ts --patch",
-    "bump:minor": "bun scripts/version.ts --minor",
-    "bump:major": "bun scripts/version.ts --major",
-    "bump": "bun bump:patch",
-    "version:get": "bun scripts/version.ts --get",
-    "version:set": "bun scripts/version.ts --set",
-    "version:check": "bun scripts/version.ts --check",
-    "all:py": "bun requirements:py && bun format:py && bun lint:py && bun test:py && bun docs:py && bun build:py",
-    "all:ts": "bun requirements:ts && bun format:ts && bun lint:ts && bun test:ts && bun docs:ts && bun build:ts",
-    "all": "bun version:check && bun all:ts && bun all:py",
-    "ci:patch": "bun scripts/ci/pm.ts --patch",
-    "ci:rollback": "node --import=tsx scripts/ci/pm --rollback",
-    "changelog": "bun scripts/changelog.ts",
-    "contributions": "bun scripts/_ts/contributions.ts",
-    "check:branches": "node --import=tsx scripts/_ts/branches.ts",
-    "prepare": "node .husky/install.mjs"
-  },
-  "packages": {
-    "py": [
-      "packages/core/python",
-      "packages/jupyter",
-      "packages/studio",
-      "package_templates/python_only",
-      "package_templates/both"
-    ],
-    "ts": [
-      "packages/core/react",
-      "packages/jupyter",
-      "packages/studio",
-      "packages/vscode",
-      "package_templates/ts_only",
-      "package_templates/both"
-    ],
-    "ignorePatterns": [
-      "**/node_modules/",
-      "**/.venv/",
-      "**/.local/",
-      "**/dist/",
-      "**/coverage/",
-      "**/reports/",
-      "**/static/",
-      "**/build/",
-      "**/out/",
-      "**/site/"
-    ]
-  },
-  "images": {
-    "py": [
-      {
-        "name": "waldiez",
-        "file": "packages/core/python/Containerfile",
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64"
+    "private": true,
+    "version": "0.4.3",
+    "devDependencies": {
+        "@cspell/eslint-plugin": "^8.18.1",
+        "@eslint/js": "^9.24.0",
+        "@stylistic/eslint-plugin": "^4.2.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/fs-extra": "^11.0.4",
+        "@types/node": "^22.14.0",
+        "@typescript-eslint/eslint-plugin": "^8.29.1",
+        "all-contributors-cli": "^6.26.1",
+        "eslint": "^9.24.0",
+        "eslint-config-prettier": "^10.1.2",
+        "eslint-plugin-headers": "^1.2.1",
+        "eslint-plugin-prettier": "^5.2.6",
+        "fs-extra": "^11.3.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.5.1",
+        "npm-run-all2": "^7.0.2",
+        "playwright": "^1.51.1",
+        "prettier": "^3.5.3",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.19.3",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.29.1"
+    },
+    "scripts": {
+        "postinstall": "bun scripts/_ts/postinstall.ts",
+        "format:py": "bun python scripts/_py/format.py",
+        "format:ts": "bun scripts/_ts/format.ts",
+        "format": "npm-run-all --parallel format:ts format:py",
+        "lint:root": "node --import=tsx scripts/_ts/lint.ts --root",
+        "lint:py": "bun python scripts/_py/lint.py",
+        "lint:ts": "bun scripts/_ts/lint.ts",
+        "lint": "npm-run-all --parallel lint:ts lint:py",
+        "forlint": "npm-run-all --parallel format lint",
+        "clean:py": "bun python scripts/_py/clean.py",
+        "clean:ts": "bun scripts/_ts/clean.ts",
+        "clean": "npm-run-all --parallel clean:ts clean:py",
+        "test:py": "bun python scripts/_py/test.py",
+        "test:ts": "bun scripts/_ts/test.ts",
+        "test": "bun test:ts && bun test:py",
+        "python": "bun scripts/_ts/python.ts",
+        "requirements:py": "bun python scripts/_py/requirements.py --install",
+        "requirements:ts": "bun scripts/_ts/requirements.ts",
+        "requirements": "npm-run-all --parallel requirements:ts requirements:py",
+        "docs:py": "bun python scripts/_py/docs.py",
+        "docs:ts": "bun scripts/_ts/docs.ts",
+        "images:py": "bun python scripts/_py/images.py",
+        "images:ts": "bun scripts/_ts/images.ts",
+        "images": "npm-run-all --parallel images:ts images:py",
+        "build:py": "bun python scripts/_py/build.py",
+        "build:ts": "bun scripts/_ts/build.ts",
+        "build": "npm-run-all --parallel build:ts build:py",
+        "bump:patch": "bun scripts/version.ts --patch",
+        "bump:minor": "bun scripts/version.ts --minor",
+        "bump:major": "bun scripts/version.ts --major",
+        "bump": "bun bump:patch",
+        "version:get": "bun scripts/version.ts --get",
+        "version:set": "bun scripts/version.ts --set",
+        "version:check": "bun scripts/version.ts --check",
+        "all:py": "bun requirements:py && bun format:py && bun lint:py && bun test:py && bun docs:py && bun build:py",
+        "all:ts": "bun requirements:ts && bun format:ts && bun lint:ts && bun test:ts && bun docs:ts && bun build:ts",
+        "all": "bun version:check && bun all:ts && bun all:py",
+        "ci:patch": "bun scripts/ci/pm.ts --patch",
+        "ci:rollback": "node --import=tsx scripts/ci/pm --rollback",
+        "changelog": "bun scripts/changelog.ts",
+        "contributions": "bun scripts/_ts/contributions.ts",
+        "check:branches": "node --import=tsx scripts/_ts/branches.ts",
+        "prepare": "node .husky/install.mjs"
+    },
+    "packages": {
+        "py": [
+            "packages/core/python",
+            "packages/jupyter",
+            "packages/studio",
+            "package_templates/python_only",
+            "package_templates/both"
+        ],
+        "ts": [
+            "packages/core/react",
+            "packages/jupyter",
+            "packages/studio",
+            "packages/vscode",
+            "package_templates/ts_only",
+            "package_templates/both"
+        ],
+        "ignorePatterns": [
+            "**/node_modules/",
+            "**/.venv/",
+            "**/.local/",
+            "**/dist/",
+            "**/coverage/",
+            "**/reports/",
+            "**/static/",
+            "**/build/",
+            "**/out/",
+            "**/site/"
         ]
-      },
-      {
-        "name": "jupyter",
-        "file": "packages/jupyter/Containerfile",
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64"
+    },
+    "images": {
+        "py": [
+            {
+                "name": "waldiez",
+                "file": "packages/core/python/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            },
+            {
+                "name": "jupyter",
+                "file": "packages/jupyter/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            },
+            {
+                "name": "studio",
+                "file": "packages/studio/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            },
+            {
+                "name": "py_package",
+                "file": "package_templates/python_only/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            },
+            {
+                "name": "py_ts_package",
+                "file": "package_templates/both/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            }
+        ],
+        "ts": [
+            {
+                "name": "ts_package",
+                "file": "package_templates/ts_only/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            }
         ]
-      },
-      {
-        "name": "studio",
-        "file": "packages/studio/Containerfile",
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64"
+    },
+    "lint-staged": {
+        "*.{js,json,mjs,ts,jsx,tsx,css,md,yaml,yml}": [
+            "bun run format:ts",
+            "bun run lint:ts"
+        ],
+        "*.py": [
+            "bun run format:py",
+            "bun run lint:py"
         ]
-      },
-      {
-        "name": "py_package",
-        "file": "package_templates/python_only/Containerfile",
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64"
-        ]
-      },
-      {
-        "name": "py_ts_package",
-        "file": "package_templates/both/Containerfile",
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64"
-        ]
-      }
-    ],
-    "ts": [
-      {
-        "name": "ts_package",
-        "file": "package_templates/ts_only/Containerfile",
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64"
-        ]
-      }
-    ]
-  },
-  "lint-staged": {
-    "*.{js,json,mjs,ts,jsx,tsx,css,md,yaml,yml}": [
-        "bun run format:ts",
-        "bun run lint:ts"
-    ],
-    "*.py": [
-        "bun run format:py",
-        "bun run lint:py"
-    ]
-  },
-  "packageManager": "bun@1.2.9"
+    },
+    "packageManager": "bun@1.2.9"
 }
