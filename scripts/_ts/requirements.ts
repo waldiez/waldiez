@@ -8,14 +8,14 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
-import { packageJson, rootDir, getPackageManager } from "./_lib";
+import { packageJson, __rootDir, getPackageManager } from "./_lib";
 
 /**
  * Install the requirements for each ts sub-project.
  */
-function main() {
+const main = (): void => {
     for (const project of packageJson.packages.ts) {
-        const projectDir = path.join(rootDir, project);
+        const projectDir = path.join(__rootDir, project);
         const packageJson = path.join(projectDir, "package.json");
         if (!fs.existsSync(packageJson)) {
             console.log(`Skipping ${project}...`);
@@ -28,6 +28,6 @@ function main() {
         }
         execSync(`${packageManager} install`, { cwd: projectDir, stdio: "inherit" });
     }
-}
+};
 
 main();

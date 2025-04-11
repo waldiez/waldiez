@@ -6,11 +6,11 @@
 import path from "path";
 import fs from "fs-extra";
 
-import { packageJson, rootDir, runCommandInDir, getPackageManager } from "../_ts/_lib";
+import { packageJson, __rootDir, runCommandInDir, getPackageManager } from "../_ts/_lib";
 
-function runTests() {
+const runTests = () => {
     for (const project of packageJson.packages.ts) {
-        const projectDir = path.join(rootDir, project);
+        const projectDir = path.join(__rootDir, project);
         const packageJsonPath = path.join(projectDir, "package.json");
         if (fs.existsSync(packageJsonPath)) {
             const packageManager = getPackageManager(projectDir);
@@ -19,6 +19,6 @@ function runTests() {
             console.log(`No package.json in ${projectDir} skipping ...`);
         }
     }
-}
+};
 
 runTests();

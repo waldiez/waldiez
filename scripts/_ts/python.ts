@@ -10,10 +10,10 @@ import { execSync } from "child_process";
 import fs from "fs-extra";
 import path from "path";
 
-import { rootDir } from "./_lib";
+import { __rootDir } from "./_lib";
 
 // this dir: scripts/_ts
-const __me = path.relative(rootDir, __filename);
+const __me = path.relative(__rootDir, __filename);
 
 const isWindows = process.platform === "win32";
 const possibleVenvNames = [".venv", "venv"];
@@ -103,7 +103,7 @@ const getNewPythonExecutable = () => {
         console.error("No compatible python found");
         process.exit(1);
     }
-    const resolvedDir = path.resolve(rootDir, possibleVenvNames[0]);
+    const resolvedDir = path.resolve(__rootDir, possibleVenvNames[0]);
     execSync(`${pyThonExec} -m venv ${resolvedDir}`);
     const pythonPath = getVenvPythonExecutable(resolvedDir);
     execSync(`${pythonPath} -m pip install --upgrade pip uv`);
@@ -120,7 +120,7 @@ const tryGetPythonExecutable = (): string | null => {
         return pythonPath;
     }
     for (const venvName of possibleVenvNames) {
-        const venvDir = path.join(rootDir, venvName);
+        const venvDir = path.join(__rootDir, venvName);
         const venvPythonPath = getVenvPythonExecutable(venvDir);
         if (fs.existsSync(venvPythonPath)) {
             pythonPath = venvPythonPath;
@@ -143,7 +143,7 @@ const getPythonExecutable = (): string => {
     }
     if (!inVenv(pythonExec)) {
         for (const venvName of possibleVenvNames) {
-            const venvDir = path.join(rootDir, venvName);
+            const venvDir = path.join(__rootDir, venvName);
             const venvPythonPath = getVenvPythonExecutable(venvDir);
             if (fs.existsSync(venvPythonPath)) {
                 return venvPythonPath;

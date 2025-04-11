@@ -14,7 +14,7 @@
 import fs from "fs-extra";
 import { join, resolve } from "path";
 
-import { getPackageManager, packageJson, rootDir } from "./_ts/_lib";
+import { getPackageManager, packageJson, __rootDir } from "./_ts/_lib";
 import { execSync } from "child_process";
 
 /**
@@ -22,8 +22,8 @@ import { execSync } from "child_process";
  * @param exitCode The exit code.
  * @returns {void}
  */
-function showHelp(exitCode: number = 0): void {
-    const manger = getPackageManager(rootDir);
+const showHelp = (exitCode: number = 0): void => {
+    const manger = getPackageManager(__rootDir);
     console.info(`\x1b[36mUsage: ${manger} version <args>\n`);
     console.info("\x1b[36mExamples: \n");
     console.info(`${manger} version --major`);
@@ -33,13 +33,13 @@ function showHelp(exitCode: number = 0): void {
     console.info(`${manger} version --get\n`);
     console.info(`${manger} version --check\n`);
     process.exit(exitCode);
-}
+};
 
 /**
  * Get the index of the version part to bump.
  * @returns The index of the version part to bump.
  */
-function getVersionIndexToBump(): number {
+const getVersionIndexToBump = (): number => {
     const arg = process.argv.slice(2)[0];
     if (arg === "--major") {
         return 0;
@@ -52,26 +52,26 @@ function getVersionIndexToBump(): number {
     }
     showHelp(1);
     return -1;
-}
+};
 
 /**
  * Show the current version.
  * @returns {void}
  */
-function showVersion(): void {
+const showVersion = (): void => {
     console.info(`\x1b[36mVersion: ${packageJson.version}\n`);
     process.exit(0);
-}
+};
 
 /**
  * Get the new version string.
  * @returns The new version string.
  * @throws {Error} If an error occurs.
  */
-function getNextVersion(): string {
+const getNextVersion = (): string => {
     try {
         const index = getVersionIndexToBump();
-        const version = fs.readJsonSync(resolve(rootDir, "package.json"), {
+        const version = fs.readJsonSync(resolve(__rootDir, "package.json"), {
             encoding: "utf-8",
         });
         const versionParts = version.version.split(".");
@@ -84,13 +84,13 @@ function getNextVersion(): string {
         console.error("Error:", (err as Error).message);
         process.exit(1);
     }
-}
+};
 
 /**
  * Get the new version number.
  * @returns The new version number.
  */
-function getNewVersion(): string {
+const getNewVersion = (): string => {
     if (process.argv.slice(2)[0] === "--set") {
         if (process.argv.length < 4) {
             console.error("Error: Missing version number");
@@ -104,7 +104,7 @@ function getNewVersion(): string {
         return newVersion;
     }
     return getNextVersion();
-}
+};
 
 /**
  * Bump the version number in package.json and in all sub-packages.
@@ -112,10 +112,10 @@ function getNewVersion(): string {
  * @throws {Error} If an error occurs.
  * @returns {void}
  */
-function bumpTs(newVersion: string): void {
+const bumpTs = (newVersion: string): void => {
     try {
         for (const tsProject of packageJson.packages.ts) {
-            const packageJsonPath = resolve(rootDir, tsProject, "package.json");
+            const packageJsonPath = resolve(__rootDir, tsProject, "package.json");
             if (!fs.existsSync(packageJsonPath)) {
                 console.log(`Skipping ${tsProject}...`);
                 continue;
@@ -130,7 +130,7 @@ function bumpTs(newVersion: string): void {
         console.error("Error:", (err as Error).message);
         process.exit(1);
     }
-}
+};
 
 /**
  * Bump the version number in python projects.
@@ -141,32 +141,32 @@ function bumpTs(newVersion: string): void {
  * @param newVersion The new version number.
  * @throws {Error} If an error occurs.
  */
-function bumpPy(newVersion: string) {
+const bumpPy = (newVersion: string) => {
     for (const pyProject of packageJson.packages.py) {
-        const versionFile = resolve(rootDir, pyProject, "scripts", "version.py");
-        const devVersionFile = resolve(rootDir, pyProject, "scripts", "dev", "version.py");
+        const versionFile = resolve(__rootDir, pyProject, "scripts", "version.py");
+        const devVersionFile = resolve(__rootDir, pyProject, "scripts", "dev", "version.py");
         const versionFilePath = fs.existsSync(versionFile) ? versionFile : devVersionFile;
         if (!fs.existsSync(versionFilePath)) {
             console.log(`Skipping ${pyProject}...`);
             continue;
         }
-        const packageManager = getPackageManager(rootDir);
+        const packageManager = getPackageManager(__rootDir);
         execSync(`${packageManager} python ${versionFilePath} --set ${newVersion}`, {
             encoding: "utf-8",
             stdio: "inherit",
-            cwd: rootDir,
+            cwd: __rootDir,
         });
     }
-}
+};
 
 /**
  * Bump the version number in the root package.json.
  * @param newVersion The new version number.
  * @throws {Error} If an error occurs.
  */
-function bumpRoot(newVersion: string) {
+const bumpRoot = (newVersion: string): void => {
     try {
-        const packageJsonPath = join(rootDir, "package.json");
+        const packageJsonPath = join(__rootDir, "package.json");
         const packageJson = fs.readJsonSync(packageJsonPath);
         packageJson.version = newVersion;
         fs.writeJsonSync(packageJsonPath, packageJson, { spaces: 4 });
@@ -174,18 +174,18 @@ function bumpRoot(newVersion: string) {
         console.error("Error:", (err as Error).message);
         process.exit(1);
     }
-}
+};
 
 /**
  * Check the version number in all projects.
  * @returns {void}
  * @throws {Error} If an error occurs.
  */
-function checkTsVersions(): void {
+const checkTsVersions = (): void => {
     const version = packageJson.version;
     const tsProjects = packageJson.packages.ts;
     for (const tsProject of tsProjects) {
-        const packageJsonPath = resolve(rootDir, tsProject, "package.json");
+        const packageJsonPath = resolve(__rootDir, tsProject, "package.json");
         if (fs.existsSync(packageJsonPath)) {
             const projectPackageJson = fs.readJsonSync(packageJsonPath, {
                 encoding: "utf-8",
@@ -199,34 +199,34 @@ function checkTsVersions(): void {
             console.info(`\x1b[36m${tsProject} version: ${projectPackageJson.version}`);
         }
     }
-}
+};
 
 /**
  * Get the path to the version file in a python project.
  * @param pyProject The python project name.
  * @returns The path to the version.py file.
  */
-function getPyVersionPathPath(pyProject: string): string {
-    const versionFile = resolve(rootDir, pyProject, "scripts", "version.py");
-    const devVersionFile = resolve(rootDir, pyProject, "scripts", "dev", "version.py");
+const getPyVersionPathPath = (pyProject: string): string => {
+    const versionFile = resolve(__rootDir, pyProject, "scripts", "version.py");
+    const devVersionFile = resolve(__rootDir, pyProject, "scripts", "dev", "version.py");
     return fs.existsSync(versionFile) ? versionFile : devVersionFile;
-}
+};
 
 /**
  * Check the version number in all python projects.
  * @returns {void}
  * @throws {Error} If an error occurs.
  */
-function checkPyVersions(): void {
+const checkPyVersions = (): void => {
     const version = packageJson.version;
     const pyProjects = packageJson.packages.py;
     for (const pyProject of pyProjects) {
         const versionFilePath = getPyVersionPathPath(pyProject);
-        const versionFilePathRelativeToRoot = versionFilePath.replace(rootDir, ".");
-        const packageManager = getPackageManager(rootDir);
+        const versionFilePathRelativeToRoot = versionFilePath.replace(__rootDir, ".");
+        const packageManager = getPackageManager(__rootDir);
         const projectVersion = execSync(`${packageManager} python ${versionFilePathRelativeToRoot} --get`, {
             encoding: "utf-8",
-            cwd: rootDir,
+            cwd: __rootDir,
         }).trim();
         if (projectVersion !== version) {
             console.error(
@@ -236,26 +236,26 @@ function checkPyVersions(): void {
         }
         console.info(`\x1b[36m${pyProject} version: ${projectVersion}`);
     }
-}
+};
 
 /**
  * Check the version number in all projects.
  * @returns {void}
  * @throws {Error} If an error occurs.
  */
-function checkVersions(): void {
+const checkVersions = (): void => {
     checkTsVersions();
     checkPyVersions();
     console.info("All versions match\n");
     console.info(`\x1b[36mVersion: ${packageJson.version}\n`);
-}
+};
 
 /**
  * Check the command line arguments.
  * If no write action is requested, we exit.
  * @returns {void}
  */
-function checkArgs(): void {
+const checkArgs = (): void => {
     if (process.argv.length < 3) {
         showHelp();
         return;
@@ -268,12 +268,12 @@ function checkArgs(): void {
         showVersion();
         return;
     }
-}
+};
 
 /**
  * Main function.
  */
-function main() {
+const main = (): void => {
     checkArgs();
     if (process.argv.slice(2)[0] === "--check") {
         checkVersions();
@@ -284,6 +284,6 @@ function main() {
     bumpTs(newVersion);
     bumpPy(newVersion);
     bumpRoot(newVersion);
-}
+};
 
 main();

@@ -10,7 +10,7 @@
 import fs from "fs-extra";
 import path from "path";
 
-import { rootDir } from "./_lib";
+import { __rootDir } from "./_lib";
 
 // const files = ["bun.lockb", "package.json"];
 
@@ -18,7 +18,7 @@ const files = ["package.json"];
 
 try {
     files.forEach(file => {
-        const filePath = path.join(rootDir, file);
+        const filePath = path.join(__rootDir, file);
         const content = fs.readFileSync(filePath, "utf-8");
         if (!content.endsWith("\n")) {
             const fixedContent = content.replace(/\r\n/g, "\n");

@@ -6,14 +6,14 @@
 import path from "path";
 import fs from "fs-extra";
 
-import { packageJson, rootDir, getPackageManager, runCommandInDir } from "./_lib";
+import { packageJson, __rootDir, getPackageManager, runCommandInDir } from "./_lib";
 
 const ALL_CONTRIBUTIONS_RC = ".all-contributorsrc";
 
 const getRootContributions = (): any => {
-    const allContributionsPath = path.join(rootDir, ALL_CONTRIBUTIONS_RC);
+    const allContributionsPath = path.join(__rootDir, ALL_CONTRIBUTIONS_RC);
     if (!fs.existsSync(allContributionsPath)) {
-        console.warn(`No ${ALL_CONTRIBUTIONS_RC} found in ${rootDir}`);
+        console.warn(`No ${ALL_CONTRIBUTIONS_RC} found in ${__rootDir}`);
         process.exit(0);
     }
     const allContributions = fs.readJSONSync(allContributionsPath);
@@ -30,7 +30,7 @@ const getRootContributors = (): any[] => {
 };
 
 const getSubmoduleContributions = (submodule: string): any => {
-    const allContributionsPath = path.join(rootDir, submodule, ALL_CONTRIBUTIONS_RC);
+    const allContributionsPath = path.join(__rootDir, submodule, ALL_CONTRIBUTIONS_RC);
     if (!fs.existsSync(allContributionsPath)) {
         console.warn(`No ${ALL_CONTRIBUTIONS_RC} found in ${submodule}`);
         return null;
@@ -69,7 +69,7 @@ const mergeContributors = (rootContributors: any[], submoduleContributors: any[]
     return mergedContributors;
 };
 const writeContributions = (allContributions: any): void => {
-    const allContributionsPath = path.join(rootDir, ALL_CONTRIBUTIONS_RC);
+    const allContributionsPath = path.join(__rootDir, ALL_CONTRIBUTIONS_RC);
     fs.writeJSONSync(allContributionsPath, allContributions, { spaces: 4 });
 };
 const getSubmodules = (): string[] => {
@@ -106,12 +106,12 @@ const main = (): void => {
     // no warnings: to avoid: (node:79251)
     // [DEP0040] DeprecationWarning: The `punycode` module is deprecated.
     //  Please use a userland alternative instead.
-    const packageManager = getPackageManager(rootDir);
+    const packageManager = getPackageManager(__rootDir);
     const allContributorsCheckCommand = `${packageManager} all-contributors check`;
-    runCommandInDir(rootDir, allContributorsCheckCommand, [], true, { NODE_NO_WARNINGS: "1" });
+    runCommandInDir(__rootDir, allContributorsCheckCommand, [], true, { NODE_NO_WARNINGS: "1" });
     // let's also re-generate the all-contributors view in README.md:
     const allContributorsGenerateCommand = `${packageManager} all-contributors generate`;
-    runCommandInDir(rootDir, allContributorsGenerateCommand, [], true, { NODE_NO_WARNINGS: "1" });
+    runCommandInDir(__rootDir, allContributorsGenerateCommand, [], true, { NODE_NO_WARNINGS: "1" });
 };
 
 main();

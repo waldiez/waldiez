@@ -7,11 +7,11 @@
 import path from "path";
 import fs from "fs-extra";
 
-import { packageJson, rootDir, runCommandInDir, getPackageManager } from "./_lib";
+import { packageJson, __rootDir, runCommandInDir, getPackageManager } from "./_lib";
 
-function main(): void {
+const main = (): void => {
     for (const project of packageJson.packages.ts) {
-        const projectDir = path.join(rootDir, project);
+        const projectDir = path.join(__rootDir, project);
         const packageJsonPath = path.join(projectDir, "package.json");
         if (!fs.existsSync(packageJsonPath)) {
             throw new Error(`package.json not found in ${projectDir}`);
@@ -20,6 +20,6 @@ function main(): void {
         runCommandInDir(projectDir, mangerCmd, ["install"]);
         runCommandInDir(projectDir, mangerCmd, ["run", "build"]);
     }
-}
+};
 
 main();

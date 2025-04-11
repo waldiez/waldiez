@@ -10,9 +10,9 @@ import packageJson from "../../package.json";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.join(__dirname, "..", "..");
+const __rootDir = path.join(__dirname, "..", "..");
 
-export { packageJson, rootDir };
+export { packageJson, __rootDir };
 
 /**
  * Run a command in a directory.
@@ -24,21 +24,21 @@ export { packageJson, rootDir };
  * @returns {void}
  * @throws {Error} If the command fails and strict is true.
  */
-export function runCommandInDir(
+export const runCommandInDir = (
     dir: string,
     cmd: string,
     args: string[],
     strict: boolean = true,
     extraEnv: { [key: string]: string } = {},
-): void {
+): void => {
     const relativeToRoot = getRelativePathToRoot(dir);
-    let commandString = `${cmd} ${args.join(" ")}`.replace(rootDir, ".");
+    let commandString = `${cmd} ${args.join(" ")}`.replace(__rootDir, ".");
     if (commandString.endsWith(" ")) {
         commandString = commandString.slice(0, -1);
     }
     let relativeToRootToLog = relativeToRoot;
     if (relativeToRoot === ".") {
-        relativeToRootToLog = path.basename(rootDir);
+        relativeToRootToLog = path.basename(__rootDir);
     }
     const toLog = `\nRunning: ${commandString} in '${relativeToRootToLog}'\n`;
     console.info(toLog);
@@ -71,14 +71,14 @@ export function runCommandInDir(
             process.exit(1);
         }
     }
-}
+};
 /**
  * Run Prettier in a directory.
  * @param dir The directory in which to run Prettier.
  * @param fix Whether to fix the files.
  * @returns {void}
  */
-export function runPrettier(dir: string, fix: boolean): void {
+export const runPrettier = (dir: string, fix: boolean): void => {
     const cmdArgs = ["prettier"];
     if (fix) {
         cmdArgs.push("--write");
@@ -87,7 +87,7 @@ export function runPrettier(dir: string, fix: boolean): void {
     }
     cmdArgs.push(".");
     runCommandInDir(dir, "npx", cmdArgs);
-}
+};
 
 /**
  * Run ESLint in a directory.
@@ -96,7 +96,7 @@ export function runPrettier(dir: string, fix: boolean): void {
  * @param isRoot Whether the directory is the root directory.
  * @returns {void}
  */
-export function runEsLint(dir: string, fix: boolean, isRoot: boolean = false): void {
+export const runEsLint = (dir: string, fix: boolean, isRoot: boolean = false): void => {
     const configFile = path.join(dir, "eslint.config.mjs");
     if (!fs.existsSync(configFile)) {
         console.warn(`No ESLint configuration file found in ${dir}.`);
@@ -104,20 +104,20 @@ export function runEsLint(dir: string, fix: boolean, isRoot: boolean = false): v
     }
     const cmdArgs = getEsLintArgs(configFile, fix, isRoot);
     runCommandInDir(dir, "npx", cmdArgs);
-}
+};
 
 /**
  * Get the relative path to the root directory.
  * @param dir The directory for which to get the relative path.
  * @returns {string} The relative path to the root directory.
  */
-function getRelativePathToRoot(dir: string): string {
-    let relativeToRoot = path.relative(rootDir, dir);
+const getRelativePathToRoot = (dir: string): string => {
+    let relativeToRoot = path.relative(__rootDir, dir);
     if (relativeToRoot === "") {
         relativeToRoot = ".";
     }
     return relativeToRoot;
-}
+};
 
 /**
  * Get the ESLint arguments.
@@ -126,7 +126,7 @@ function getRelativePathToRoot(dir: string): string {
  * @param isRoot Whether the directory is the root directory.
  * @returns {string[]} The ESLint arguments.
  */
-function getEsLintArgs(configFile: string, fix: boolean, isRoot: boolean): string[] {
+const getEsLintArgs = (configFile: string, fix: boolean, isRoot: boolean): string[] => {
     const cmdArgs = [
         "eslint",
         "--report-unused-disable-directives",
@@ -150,14 +150,14 @@ function getEsLintArgs(configFile: string, fix: boolean, isRoot: boolean): strin
         cmdArgs.push("--ignore-pattern", ignorePattern);
     }
     return cmdArgs;
-}
+};
 
 /**
  * Get the package manager for a project.
  * @param projectDir The directory of the project.
  * @returns {string} The package manager.
  */
-export function getPackageManager(projectDir: string): "bun" | "yarn" | "npm" | "pnpm" {
+export const getPackageManager = (projectDir: string): "bun" | "yarn" | "npm" | "pnpm" => {
     const ifNotFound = "yarn";
     const packageJsonPath = path.join(projectDir, "package.json");
     if (!fs.existsSync(packageJsonPath)) {
@@ -171,4 +171,4 @@ export function getPackageManager(projectDir: string): "bun" | "yarn" | "npm" | 
         console.error(`Error reading package manager from ${packageJsonPath}.`);
         return ifNotFound;
     }
-}
+};
