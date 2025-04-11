@@ -270,6 +270,20 @@ Repos (submodules) included in this repo:
 - [docs](https://github.com/waldiez/docs) has the documentation for the usage of waldiez.
 - [package_templates](https://github.com/waldiez/package_templates) is a collection of templates for the projects in this repo.
 
+## Repository Structure Philosophy
+
+This repository uses Git submodules to combine independently developed packages rather than relying on a traditional monorepo setup.
+
+We do this to maintain flexibility across our projects, which include:
+
+- Python packages (using `venv`, `uv`, or just plain `pip`)
+- TypeScript projects (using `npm`, `yarn`, or `bun`)
+- Hybrid extensions (e.g., JupyterLab, VS Code)
+
+Each submodule manages its own tools, dependencies, and workflows. When integration with the central system is required, we provide [shared templates and conventions](https://github.com/waldiez/package_templates) to keep things consistent (or at least try to).
+
+This structure allows us to support diverse tooling needs without enforcing a single stack or package manager.
+
 ## License
 
 This project is licensed under the [Apache License, Version 2.0 (Apache-2.0)](https://github.com/waldiez/waldiez/blob/main/LICENSE).
