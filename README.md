@@ -1,6 +1,6 @@
 # Waldiez
 
-[![PyPI version](https://badge.fury.io/py/waldiez.svg?icon=si%3Apython&?cacheSeconds=3600)](https://badge.fury.io/py/waldiez)
+[![PyPI version](https://badge.fury.io/py/waldiez.svg?icon=si%3Apython&?cacheSeconds=3600)](https://badge.fury.io/py/waldiez) [![PyPI Downloads](https://static.pepy.tech/badge/waldiez)](https://pepy.tech/projects/waldiez)
 
 ## Make AI Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez
 
