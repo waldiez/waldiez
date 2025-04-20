@@ -25,7 +25,12 @@
 [submodule "package_templates"]
 	path = package_templates
 	url = ../package_templates.git
+	branch = main
 [submodule "docs"]
 	path = docs
 	url = ../docs.git
+	branch = main
+[submodule "packages/runner"]
+	path = packages/runner
+	url = ../runner.git
 	branch = main
