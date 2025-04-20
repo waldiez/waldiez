@@ -75,6 +75,7 @@
             "packages/core/python",
             "packages/jupyter",
             "packages/studio",
+            "packages/runner",
             "package_templates/python_only",
             "package_templates/both"
         ],
@@ -126,6 +127,14 @@
                 ]
             },
             {
+                "name": "runner",
+                "file": "packages/runner/Containerfile",
+                "platforms": [
+                    "linux/amd64",
+                    "linux/arm64"
+                ]
+            },
+            {
                 "name": "py_package",
                 "file": "package_templates/python_only/Containerfile",
                 "platforms": [
@@ -163,5 +172,5 @@
             "bun run lint:py"
         ]
     },
-    "packageManager": "bun@1.2.9"
+    "packageManager": "bun@1.2.10"
 }
