@@ -95,3 +95,18 @@ jobs:
           tags: |
             waldiez/jupyter:${{ steps.docker_tag.outputs.docker_tag }}
             quay.io/waldiez/jupyter:${{ steps.docker_tag.outputs.docker_tag }}
+
+      - name: Build and push runner
+        # manually, after publishing waldiez_runner on pypi
+        if: github.event_name == 'workflow_dispatch'
+        uses: docker/build-push-action@v6
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
+          file: packages/runner/Containerfile
+          context: packages/runner
+          push: true
+          tags: |
+            waldiez/runner:${{ steps.docker_tag.outputs.docker_tag }}
+            quay.io/waldiez/runner:${{ steps.docker_tag.outputs.docker_tag }}

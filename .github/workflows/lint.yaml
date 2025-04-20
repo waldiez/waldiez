@@ -92,3 +92,10 @@ jobs:
           pip install --upgrade waldiez pip
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
           python scripts/lint.py
+
+      - name: Lint packages/runner
+        run: |
+          cd packages/runner
+          pip install --upgrade waldiez pip
+          pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+          python scripts/lint.py

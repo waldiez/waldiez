@@ -105,3 +105,10 @@ jobs:
           pip install --upgrade waldiez pip
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
           python scripts/test.py
+
+      - name: Run tests in packages/runner
+        run: |
+          cd packages/runner
+          pip install --upgrade waldiez pip
+          pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+          python scripts/test.py
