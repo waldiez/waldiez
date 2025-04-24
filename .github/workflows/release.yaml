@@ -349,6 +349,60 @@ jobs:
           packages-dir:
             packages/studio/dist/
 
+  package_waldiez_runner:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Package Runner 🐍 distribution 📦
+    needs:
+      - publish_waldiez_to_npm
+      - publish_waldiez_to_pypi
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build the package
+        run: |
+          cd packages/runner
+          python -m pip install --break-system-packages build twine
+          python -m build --sdist --wheel --outdir dist/
+          python -m twine check dist/*
+
+      - name: Store the distribution package
+        uses: actions/upload-artifact@v4
+        with:
+          name: waldiez-runner
+          path: packages/runner/dist/
+
+  publish_waldiez_runner:
+    if: github.event_name == 'workflow_dispatch'
+    name: Publish Runner 🐍 distribution 📦 to PyPI
+    needs: package_waldiez_runner
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/waldiez-runner
+    steps:
+      - name: Download the artifact from the python package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-runner
+          path: packages/runner/dist/
+
+      - name: Publish to PyPI
+        # tmp to disable (on dispatch):
+        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir:
+            packages/runner/dist/
+
   release:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -357,6 +411,7 @@ jobs:
       - publish_waldiez_vscode
       - publish_waldiez_jupyter
       - publish_waldiez_studio
+      - publish_waldiez_runner
     steps:
       - uses: actions/checkout@v4
         with:
@@ -398,6 +453,12 @@ jobs:
           name: waldiez-studio
           path: dist/studio/
 
+      - name: Download artifact from runner package
+        uses: actions/download-artifact@v4
+        with:
+          name: waldiez-runner
+          path: dist/runner/
+
       - name: Make core archives
         run: |
           tar -czf dist/core/python_docs.tar.gz dist/core/python/site
@@ -419,6 +480,8 @@ jobs:
             dist/jupyter/*.whl
             dist/studio/*.tar.gz
             dist/studio/*.whl
+            dist/runner/*.tar.gz
+            dist/runner/*.whl
 
       - name: Read changelog
         id: changelog

@@ -11,7 +11,7 @@ pydocstyle==6.3.0
 pylint==3.3.6
 pypiserver==2.3.2
 python-dotenv==1.1.0
-ruff==0.11.6
+ruff==0.11.7
 toml==0.10.2; python_version <= "3.10"
 types-PyYAML==6.0.12.20250402
 types-aiofiles==24.1.0.20250326

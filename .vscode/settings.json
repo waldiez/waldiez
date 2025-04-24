@@ -1,5 +1,5 @@
 {
-    "python.defaultInterpreterPath": "${env:PYTHON_INTERPRETER_PATH:.venv/bin/python}",
+    "python.defaultInterpreterPath": "",
     "pylint.args": ["--rcfile=pyproject.toml"],
     "python.autoComplete.extraPaths": [
         "${workspaceFolder}/packages/core/python",

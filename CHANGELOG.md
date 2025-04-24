@@ -7,6 +7,16 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.4.4
+
+- Updated ag2 dependency to 0.8.7
+- Updated jupyter dependencies to 4.4.1
+- Introduce waldiez-runner
+- UI: Added predefined models to select from
+- UI: Added a button to test model configurations
+- Dependency updates
+- Bug fixes
+
 ## v0.4.3
 
 - Updated ag2 dependency to 0.8.6

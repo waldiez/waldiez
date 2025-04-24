@@ -1,16 +1,17 @@
 [project]
 name = "waldiez_root"
-version = "0.4.3"
+version = "0.4.4"
 requires-python = ">=3.10,<3.14"
 dependencies = [
     'pip==25.0.1',
-    "uv==0.6.14",
+    "uv==0.6.16",
 ]
 
 [tool.uv.sources]
 waldiez = { workspace = true }
 waldiez_studio = { workspace = true }
 waldiez_jupyter = { workspace = true }
+waldiez_runner = { workspace = true }
 my_py_package = { workspace = true }
 py_package = { workspace = true }
 
@@ -19,6 +20,7 @@ members = [
     "packages/core/python",
     "packages/jupyter",
     "packages/studio",
+    "packages/runner",
     "package_templates/python_only",
     "package_templates/both",
 ]
@@ -112,6 +114,7 @@ source-roots = [
     'packages/core/python',
     'packages/studio',
     'packages/jupyter',
+    'packages/runner',
     'package_templates/python_only',
     'package_templates/both',
 ]
@@ -224,7 +227,7 @@ dev = [
     'pylint==3.3.6',
     'pypiserver==2.3.2',
     'python-dotenv==1.1.0',
-    'ruff==0.11.6',
+    'ruff==0.11.7',
     'toml==0.10.2; python_version <= "3.10"',
     'types-aiofiles==24.1.0.20250326',
     'types-PyYAML==6.0.12.20250402',

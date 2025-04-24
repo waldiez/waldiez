@@ -25,10 +25,12 @@ PY_TEMPLATE_PROJECTS: List[str] = [
 EXCLUDED_EXTRAS = [
     "studio",
     "jupyter",
+    "runner",
 ]
 EXCLUDED_PACKAGES = [  # we manually do these (in order)
     "waldiez_studio",
     "waldiez_jupyter",
+    "waldiez_runner",
 ]
 os.environ["PYTHONUNBUFFERED"] = "1"
 os.environ["PYTHONUTF8"] = "1"
