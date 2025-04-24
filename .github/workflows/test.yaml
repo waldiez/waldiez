@@ -101,7 +101,6 @@ jobs:
           yarn run test
 
       - name: Run tests in packages/studio
-        if: matrix.python-version != '3.10'
         run: |
           cd packages/studio
           bun install
@@ -111,6 +110,7 @@ jobs:
           python scripts/test.py
 
       - name: Run tests in packages/runner
+        if: matrix.python-version != '3.10'
         run: |
           cd packages/runner
           pip install --upgrade waldiez pip
