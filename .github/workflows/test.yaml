@@ -101,6 +101,7 @@ jobs:
           yarn run test
 
       - name: Run tests in packages/studio
+        if: matrix.python-version != '3.10'
         run: |
           cd packages/studio
           bun install
