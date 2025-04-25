@@ -31,7 +31,7 @@ dmypy.json
 **/*.coverage*
 **/*_db
 **/*cache
-**/*log
+**/*.log
 **/*.pid
 **/*.buildinfo
 **/*.tsbuildinfo
