@@ -20,6 +20,5 @@ exclude =
     setup.py,
     build,
     dist,
+    lib,
     examples,
-    packages,
-    package_templates,

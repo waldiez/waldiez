@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "skipLibCheck": true,
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "paths": {
+            "@waldiez": ["./src/waldiez/index.ts"],
+            "@waldiez/*": ["./src/waldiez/*"]
+        },
+        "types": ["vitest/globals", "@vitest/browser/providers/playwright", "@testing-library/jest-dom"]
+    },
+    "include": ["src", "ui-tests"]
+}

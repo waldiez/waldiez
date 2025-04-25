@@ -1,0 +1,103 @@
+/* simple snackbar */
+
+.flow-wrapper .snackbar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 10001;
+    padding: 15px;
+    margin: 10px;
+    color: #fff !important;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
+}
+
+.flow-wrapper .snackbar.show {
+    display: block;
+}
+
+.flow-wrapper .snackbar.show .message {
+    margin-right: 20px;
+}
+
+.flow-wrapper .snackbar .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 15px;
+    cursor: pointer;
+}
+
+.flow-wrapper .snackbar .close:hover {
+    background-color: #444;
+}
+
+.flow-wrapper .snackbar.error {
+    background-color: #d32f2f;
+}
+
+.flow-wrapper .snackbar.success {
+    background-color: #38903d;
+}
+
+.flow-wrapper .snackbar.warning {
+    background-color: #fbc02d;
+    color: #000 !important;
+}
+
+.flow-wrapper .snackbar.info {
+    background-color: #1866b3;
+}
+
+.flow-wrapper.dark .sidebar-toggle-button div {
+    background-color: #666;
+}
+
+.flow-wrapper.light .sidebar-toggle-button div {
+    background-color: #bbb;
+}
+
+.flow-wrapper.dark .sidebar-toggle-button:hover div {
+    background-color: #eee;
+}
+
+.flow-wrapper.light .sidebar-toggle-button:hover div {
+    background-color: #111;
+}
+
+/* Snackbar inside modal */
+dialog .modal-content .snackbar {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 10001;
+    margin: 0;
+    max-width: calc(100% - 30px);
+    animation: slide-up 0.3s ease;
+}
+
+dialog .modal-content .snackbar.show {
+    display: block;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+dialog .modal-content .snackbar .close {
+    padding: 10px;
+}
+
+dialog .modal-content .snackbar.warning {
+    color: #000 !important;
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

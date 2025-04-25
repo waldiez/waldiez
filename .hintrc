@@ -5,6 +5,7 @@
   "hints": {
     "no-inline-styles": "off",
     "manifest-is-valid": "off",
+    "vendor-prefixes": "off",
     "compat-api/css": [
       "default",
       {
@@ -14,7 +15,9 @@
           "width: stretch"
         ]
       }
-    ]
+    ],
+    "detect-css-reflows/composite": "off",
+    "detect-css-reflows/paint": "off"
   },
   "browserslist": [
     "defaults",

@@ -1,0 +1,139 @@
+---
+site_name: "Waldiez"
+site_description: "Make AI Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez"
+site_url: https://docs.waldiez.io
+repo_name: waldiez/waldiez
+repo_url: https://github.com/waldiez/waldiez
+copyright: "Copyright &copy; 2024 - 2025 Waldiez"
+docs_dir: docs
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: custom-light
+      accent: blue
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: custom-dark
+      accent: blue
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    # - announce.dismiss
+    # - content.action.edit
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - toc.follow
+    - toc.integrate
+  icon:
+    repo: material/git
+  logo: static/images/waldiez.svg
+  favicon: static/favicon.ico
+  include_sidebar: true
+  extra:
+    homepage: https://docs.waldiez.io
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      baselevel: 2
+  - attr_list
+  - markdown.extensions.codehilite:
+      guess_lang: true
+  - admonition
+  - codehilite
+  - extra
+  - mdx_truly_sane_lists
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          # yamllint disable
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
+          # yamllint enable
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap
+  - static/css/main.css
+
+plugins:
+  - search:
+      lang: en
+  - awesome-nav
+  - minify_html
+  - open-in-new-tab
+  - macros
+  - autorefs
+  - privacy
+  - offline
+  - mkdocs-jupyter
+  - mkdocstrings:
+      enabled: true
+      default_handler: python
+      handlers:
+        python:
+          paths: [.]
+          import:
+            - url: https://docs.python.org/3/objects.inv
+              domains: [std, py]
+            - https://typing-extensions.readthedocs.io/en/latest/objects.inv
+          options:
+            filters:
+              - "!^_"
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            docstring_style: numpy
+            show_submodules: true
+            show_root_heading: false
+            show_signature_annotations: true
+            show_signature: true
+            signature_crossrefs: true
+            show_source: true
+            group_by_category: false
+            show_category_heading: true
+            inherited_members: false
+  - tags
+  - blog:
+      blog_dir: blog
+      archive: false
+      blog_toc: true
+
+not_in_nav: |
+  CODE_OF_CONDUCT.md
+  static/On-boarding.ipynb
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/waldiez/waldiez
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/Waldiez_io
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/waldiez
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/@waldiez
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/waldiez

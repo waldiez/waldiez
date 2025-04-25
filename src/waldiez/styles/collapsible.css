@@ -1,0 +1,73 @@
+.flow-wrapper .collapsible {
+    padding: 0;
+    width: calc(100% - 38px);
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+}
+
+.flow-wrapper .collapsible-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 18px;
+}
+
+.flow-wrapper .collapsible-content {
+    padding: 18px;
+    margin-left: 0;
+
+    /* width: 100%; */
+
+    border-radius: 4px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.flow-wrapper.light .collapsible {
+    background-color: #f1f1f1;
+    color: #444;
+    border: 1px solid #f1f1f1;
+}
+
+.flow-wrapper.light .collapsible-content {
+    background-color: #fefefe;
+    color: #141414;
+}
+
+.flow-wrapper.light .collapsible-toggle {
+    background-color: #f1f1f1;
+    color: #444;
+}
+
+.flow-wrapper.dark .collapsible {
+    background-color: #444;
+    border: 1px solid #444;
+    color: #f1f1f1;
+}
+
+.flow-wrapper.dark .collapsible-content {
+    background-color: #333;
+}
+
+.flow-wrapper.dark .collapsible-toggle {
+    background-color: #444;
+    color: #f1f1f1;
+}
+
+.flow-wrapper.light .collapsible-header {
+    background-color: #f1f1f1;
+    color: #444;
+}
+
+.flow-wrapper.light .collapsible.active,
+.flow-wrapper.light .collapsible-toggle.active {
+    background-color: #ccc;
+}
+
+.flow-wrapper.dark .collapsible.active,
+.flow-wrapper.dark .collapsible-toggle.active {
+    background-color: #666;
+}

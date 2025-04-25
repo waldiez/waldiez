@@ -2,22 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/*
-Read the changelog file
-and output the current tag's changes
-*/
-import fs from "fs-extra";
-import path from "path";
-import url from "url";
+import { readFileSync } from "fs";
 import { resolve } from "path";
 
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const packageJsonPath = resolve(__dirname, "..", "package.json");
-const changelogPath = resolve(__dirname, "..", "CHANGELOG.md");
+const packageJson = JSON.parse(readFileSync(resolve("package.json"), "utf-8"));
 
-const packageJson = fs.readJsonSync(packageJsonPath, { encoding: "utf-8" });
-const changelog = fs.readFileSync(changelogPath, { encoding: "utf-8" });
+const changelog = readFileSync(resolve("CHANGELOG.md"), "utf-8");
+
 const tag = packageJson.version;
 
 const lines = changelog.split("\n");

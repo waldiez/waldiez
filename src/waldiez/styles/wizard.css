@@ -1,0 +1,40 @@
+.flow-wrapper .wizard {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.flow-wrapper .wizard .wizard-step {
+    display: none;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.flow-wrapper .wizard .wizard-step--active {
+    display: unset;
+}
+
+.flow-wrapper .wizard .wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.flow-wrapper .wizard .wizard-actions .wizard-action-btn-next {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.flow-wrapper .wizard .wizard-actions .wizard-action-btn-prev {
+    padding: 10px 20px;
+    background-color: #9e37a2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -1,0 +1,29 @@
+---
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Getting Started: usage/index.md
+      - Models: usage/models.md
+      - Skills: usage/skills.md
+      - Agents: usage/agents.md
+      - Flow: usage/flow.md
+      - Running and Troubleshooting: usage/run.md
+      - Convert: usage/convert.md
+  - Examples:
+      - Examples: examples/index.md
+      - Standup Comedians: examples/1.md
+      - Onboarding: examples/2.md
+      - Reflection: examples/3.md
+      - Tool Use: examples/4.md
+      - Coding: examples/5.md
+      - Planning: examples/6.md
+      - RAG: examples/7.md
+      - ReAct: examples/8.md
+  - Get Involved:
+      - Contribute: contribute/index.md
+  - Blog:
+      - Blog: blog/index.md
+  - Reference:
+      - Python: reference/python/
+      - React: reference/react/
+  - "Playground 🛝": https://waldiez.github.io

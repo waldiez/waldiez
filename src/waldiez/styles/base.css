@@ -1,0 +1,74 @@
+:root {
+    --user-agent-color: #bc76f5;
+    --assistant-agent-color: #66bc57;
+    --group-manager-color: #ed8a34;
+    --rag-user-color: #e34561;
+    --swarm-agent-color: #f0c808;
+    --reasoning-agent-color: #63d0d4;
+    --captain-agent-color: #0e2766;
+
+    /* --captain-agent-color: #112044; */
+    --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+    --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+}
+
+.flow-wrapper {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    color-scheme: light dark;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.flow-wrapper * {
+    scrollbar-width: thin;
+}
+
+.flow-wrapper *::-webkit-scrollbar {
+    width: 10px;
+}
+
+.flow-wrapper *:focus {
+    outline: none;
+}
+
+.flow-wrapper a {
+    color: #007bff;
+}
+
+.flow-wrapper a:visited {
+    color: #007bff;
+}
+
+.flow-wrapper input[type="file"] {
+    display: none;
+}
+
+.flow-wrapper .clickable {
+    cursor: pointer;
+}
+
+.flow-wrapper input,
+textarea {
+    border-radius: 5px;
+    font-size: unset;
+}
+
+.flow-wrapper .number-max-width {
+    max-width: 100px;
+}
+
+.flow-wrapper textarea {
+    font-family: unset;
+    min-height: 2rem;
+}
+
+.flow-wrapper input:disabled {
+    cursor: unset;
+    pointer-events: none;
+}
+
+.flow-wrapper button:disabled {
+    cursor: unset !important;
+    opacity: 0.6;
+}

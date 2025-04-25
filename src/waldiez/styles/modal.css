@@ -1,0 +1,198 @@
+.flow-wrapper dialog:modal {
+    width: 100%;
+    height: 100%;
+    max-width: var(--app-width);
+    max-height: var(--app-height);
+    color: transparent;
+}
+
+.flow-wrapper .modal {
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0/ 40%);
+    cursor: default !important;
+}
+
+.flow-wrapper.light dialog:modal {
+    color: transparent;
+}
+
+.flow-wrapper dialog button {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
+.flow-wrapper .modal-header {
+    display: flex;
+    font-weight: bold;
+    font-size: large;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -8px;
+}
+
+.flow-wrapper .modal-header-import-export {
+    display: flex;
+}
+
+.flow-wrapper .modal-header-import-button svg,
+.flow-wrapper .modal-header-export-button svg {
+    font-size: large;
+}
+
+.flow-wrapper.dark .modal-header svg {
+    fill: white;
+}
+
+.flow-wrapper.light .modal-header svg {
+    fill: black;
+}
+
+.flow-wrapper .modal-header button {
+    box-shadow: none;
+    padding: unset;
+}
+
+.flow-wrapper .modal-header .modal-title {
+    margin: 0;
+    font-size: large;
+}
+
+.flow-wrapper .modal-header-actions {
+    display: flex;
+}
+
+.flow-wrapper .modal-close-btn,
+.flow-wrapper .modal-fullscreen-btn {
+    cursor: pointer;
+    padding: 8px;
+}
+
+.flow-wrapper .modal-content {
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    padding: 10px;
+    width: 60%;
+    border-radius: 10px;
+}
+
+.flow-wrapper .fullscreen .modal-content {
+    margin: 0;
+    width: calc(100vw - 20px);
+    min-height: calc(100vh - 20px);
+    transform: translate(0, 0);
+}
+
+.flow-wrapper .modal-body {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+}
+
+.flow-wrapper .modal-body input,
+.flow-wrapper .modal-body textarea {
+    padding: 10px;
+}
+
+.flow-wrapper .modal-body textarea {
+    resize: vertical;
+}
+
+.flow-wrapper .fullscreen .modal-body {
+    margin-top: 0;
+    max-height: unset;
+}
+
+.flow-wrapper .modal-actions {
+    display: flex;
+    justify-content: space-between;
+
+    /* margin-top: 10px; */
+}
+
+.flow-wrapper .modal-actions > .modal-action-submit,
+.flow-wrapper .modal-actions > .modal-action-submit-alt,
+.flow-wrapper .modal-actions > .modal-action-cancel,
+.flow-wrapper .modal-actions > div > .modal-action-submit,
+.flow-wrapper .modal-actions > div > .modal-action-submit-alt,
+.flow-wrapper .modal-actions > div > .modal-action-cancel {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.flow-wrapper .modal-actions > .modal-action-submit,
+.flow-wrapper .modal-actions > div > .modal-action-submit {
+    background-color: #007bff;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.flow-wrapper .modal-actions > .modal-action-cancel,
+.flow-wrapper .modal-actions > div > .modal-action-cancel {
+    background-color: #9e37a2;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.flow-wrapper .modal-actions > .modal-action-submit-alt,
+.flow-wrapper .modal-actions > div > .modal-action-submit-alt {
+    background-color: #004085;
+}
+
+@media (width <= 1280px) {
+    .flow-wrapper .modal-content {
+        width: unset;
+    }
+}
+
+.flow-wrapper .modal-header-import-button,
+.flow-wrapper .modal-header-export-button {
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 10px;
+    border: none;
+    background-color: transparent;
+}
+
+.flow-wrapper .modal-header-export-button {
+    margin-left: 20px;
+}
+
+.flow-wrapper.light .modal-content {
+    background-color: white;
+    color: #000 !important;
+}
+
+.flow-wrapper.dark .modal-content {
+    background-color: #333;
+    color: #fff !important;
+}
+
+.flow-wrapper .modal-confirmation {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.flow-wrapper .modal-confirmation-actions {
+    display: flex;
+    justify-content: space-between;
+}

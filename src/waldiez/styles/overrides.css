@@ -1,0 +1,133 @@
+.flow-wrapper .react-flow__panel {
+    margin-top: 10px !important;
+}
+
+.flow-wrapper .react-flow__node-agent {
+    display: flex;
+    align-items: stretch;
+}
+
+.flow-wrapper .react-flow__handle {
+    border: none;
+}
+
+.flow-wrapper .agent-node .react-flow__handle.source {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.flow-wrapper .agent-node .react-flow__handle.target {
+    width: 14px;
+    height: 2px;
+    border-radius: 0;
+}
+
+.flow-wrapper .agent-node .react-flow__handle.target.top,
+.flow-wrapper .agent-node .react-flow__handle.target.bottom {
+    width: 2px;
+    height: 14px;
+}
+
+.flow-wrapper .agent-node .group-member-handle {
+    margin-left: 8px;
+    position: relative !important;
+    transform: unset !important;
+}
+
+.flow-wrapper .react-flow__panel button {
+    cursor: pointer;
+    border: none;
+}
+
+.flow-wrapper .agent-node.assistant .react-flow__handle {
+    background-color: var(--assistant-agent-color);
+}
+
+.flow-wrapper .agent-node.user .react-flow__handle {
+    background-color: var(--user-agent-color);
+}
+
+.flow-wrapper .agent-node.manager .react-flow__handle {
+    background-color: var(--group-manager-color);
+}
+
+.flow-wrapper .agent-node.rag_user .react-flow__handle {
+    background-color: var(--rag-user-color);
+}
+
+.flow-wrapper .agent-node.swarm .react-flow__handle {
+    background-color: var(--swarm-agent-color);
+}
+
+.flow-wrapper .agent-node.reasoning .react-flow__handle {
+    background-color: var(--reasoning-agent-color);
+}
+
+.flow-wrapper .agent-node.captain .react-flow__handle {
+    background-color: var(--captain-agent-color);
+}
+
+.react-flow__resize-control.line {
+    display: none;
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.assistant {
+    border-color: var(--assistant-agent-color);
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.user {
+    border-color: var(--user-agent-color);
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.manager {
+    border-color: var(--manager-agent-color);
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.reasoning {
+    border-color: var(--captain-agent-color);
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.captain {
+    border-color: var(--captain-agent-color);
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.swarm_container {
+    width: 8px;
+    height: 8px;
+}
+
+.react-flow__resize-control.nodrag.bottom.left.handle {
+    display: none;
+}
+
+.react-flow__resize-control.nodrag.top.left.handle {
+    display: none;
+}
+
+.react-flow__resize-control.nodrag.top.right.handle {
+    display: none;
+}
+
+.react-flow__attribution {
+    background: transparent;
+}
+
+.react-flow__attribution a {
+    color: currentcolor;
+    opacity: 0.6;
+}
+
+.flow-wrapper .rc-slider {
+    width: calc(100% - 20px);
+    margin: 0 10px;
+}
+
+.flow-wrapper .rc-slider-handle {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.flow-wrapper.dark .rc-slider-rail {
+    background-color: #666;
+}

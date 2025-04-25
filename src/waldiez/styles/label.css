@@ -1,0 +1,90 @@
+.flow-wrapper label {
+    padding: 12px 8px 4px;
+}
+
+.flow-wrapper label.hidden {
+    padding: 0;
+}
+
+.flow-wrapper .file-label {
+    padding: unset !important;
+}
+
+.flow-wrapper .info-label {
+    /* display: flex;
+  align-items: center; */
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.flow-wrapper .number-input-info-label-wrapper {
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.flow-wrapper .number-input-info-label-inner {
+    min-height: 50px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.flow-wrapper .number-input-label-wrapper {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+}
+
+.flow-wrapper .info-label label {
+    margin-right: 4px;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.flow-wrapper .info-label .info-icon {
+    cursor: pointer;
+    font-size: unset !important;
+    margin-top: 10px;
+    margin-left: -4px;
+    color: #007bff;
+}
+
+.flow-wrapper .info-label .info-description {
+    display: none;
+    width: auto;
+    background-color: #007bff;
+    color: white;
+    font-size: unset;
+    padding: 4px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -50%;
+    z-index: 1;
+}
+
+/* .info-label .info-description.show {
+  display: unset;
+} */
+
+/* on info-icon hover */
+.flow-wrapper .info-label .info-icon:hover {
+    color: #0056b3;
+    cursor: help;
+}
+
+.flow-wrapper .info-label .info-icon:hover + .info-description {
+    display: unset;
+}
+
+.flow-wrapper .checkbox-label {
+    cursor: pointer;
+    padding-top: unset !important;
+    padding-bottom: unset !important;
+}
+
+.flow-wrapper .checkbox-label input {
+    margin-right: 8px;
+}

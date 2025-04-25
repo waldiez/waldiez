@@ -1,176 +1,224 @@
 {
-    "private": true,
+    "name": "@waldiez/react",
+    "description": "Make AI Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez.",
+    "license": "Apache-2.0",
     "version": "0.4.4",
-    "devDependencies": {
-        "@cspell/eslint-plugin": "^8.19.2",
-        "@eslint/js": "^9.25.1",
-        "@stylistic/eslint-plugin": "^4.2.0",
-        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "@types/fs-extra": "^11.0.4",
-        "@types/node": "^22.14.1",
-        "@typescript-eslint/eslint-plugin": "^8.31.0",
-        "all-contributors-cli": "^6.26.1",
-        "eslint": "^9.25.1",
-        "eslint-config-prettier": "^10.1.2",
-        "eslint-plugin-headers": "^1.2.1",
-        "eslint-plugin-prettier": "^5.2.6",
-        "fs-extra": "^11.3.0",
-        "husky": "^9.1.7",
-        "lint-staged": "^15.5.1",
-        "npm-run-all2": "^7.0.2",
-        "playwright": "^1.52.0",
-        "prettier": "^3.5.3",
-        "ts-node": "^10.9.2",
-        "tsx": "^4.19.3",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.31.0"
+    "type": "module",
+    "main": "./dist/@waldiez.umd.cjs",
+    "module": "./dist/@waldiez.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/@waldiez.js",
+            "require": "./dist/@waldiez.js"
+        },
+        "./dist/*.css": "./dist/*.css",
+        "./dist/*.svg": "./dist/*.svg"
     },
+    "homepage": "https://waldiez.io",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/waldiez/waldiez.git"
+    },
+    "bugs": {
+        "url": "https://github.com/waldiez/waldiez/issues"
+    },
+    "icon": "https://github.com/waldiez/waldiez/blob/main/public/logo-128x128.png",
+    "contributors": [
+        {
+            "name": "Panagiotis Kasnesis",
+            "email": "pkasnesis@waldiez.io"
+        },
+        {
+            "name": "Lazaros Toumanidis",
+            "email": "laztoum@waldiez.io"
+        },
+        {
+            "name": "Stella Ioannidou",
+            "email": "stella@waldiez.io"
+        }
+    ],
+    "files": [
+        "dist"
+    ],
     "scripts": {
-        "postinstall": "bun scripts/_ts/postinstall.ts",
-        "format:py": "bun python scripts/_py/format.py",
-        "format:ts": "bun scripts/_ts/format.ts",
-        "format": "npm-run-all --parallel format:ts format:py",
-        "lint:root": "node --import=tsx scripts/_ts/lint.ts --root",
-        "lint:py": "bun python scripts/_py/lint.py",
-        "lint:ts": "bun scripts/_ts/lint.ts",
-        "lint": "npm-run-all --parallel lint:ts lint:py",
-        "forlint": "npm-run-all --parallel format lint",
-        "clean:py": "bun python scripts/_py/clean.py",
-        "clean:ts": "bun scripts/_ts/clean.ts",
-        "clean": "npm-run-all --parallel clean:ts clean:py",
-        "test:py": "bun python scripts/_py/test.py",
-        "test:ts": "bun scripts/_ts/test.ts",
-        "test": "bun test:ts && bun test:py",
-        "python": "bun scripts/_ts/python.ts",
-        "requirements:py": "bun python scripts/_py/requirements.py --install",
-        "requirements:ts": "bun scripts/_ts/requirements.ts",
-        "requirements": "npm-run-all --parallel requirements:ts requirements:py",
-        "docs:py": "bun python scripts/_py/docs.py",
-        "docs:ts": "bun scripts/_ts/docs.ts",
-        "images:py": "bun python scripts/_py/images.py",
-        "images:ts": "bun scripts/_ts/images.ts",
-        "images": "npm-run-all --parallel images:ts images:py",
-        "build:py": "bun python scripts/_py/build.py",
-        "build:ts": "bun scripts/_ts/build.ts",
-        "build": "npm-run-all --parallel build:ts build:py",
-        "bump:patch": "bun scripts/version.ts --patch",
-        "bump:minor": "bun scripts/version.ts --minor",
-        "bump:major": "bun scripts/version.ts --major",
-        "bump": "bun bump:patch",
-        "version:get": "bun scripts/version.ts --get",
-        "version:set": "bun scripts/version.ts --set",
-        "version:check": "bun scripts/version.ts --check",
-        "all:py": "bun requirements:py && bun format:py && bun lint:py && bun test:py && bun docs:py && bun build:py",
-        "all:ts": "bun requirements:ts && bun format:ts && bun lint:ts && bun test:ts && bun docs:ts && bun build:ts",
-        "all": "bun version:check && bun all:ts && bun all:py",
-        "ci:patch": "bun scripts/ci/pm.ts --patch",
-        "ci:rollback": "node --import=tsx scripts/ci/pm --rollback",
+        "prepare": "node .husky/install.mjs",
+        "dev": "bun monaco && vite",
+        "typecheck": "tsc --noEmit",
+        "monaco": "bun scripts/monaco.ts",
+        "build": "bun clean && bun build:lib && bun build:web && bun archive",
+        "build:lib": "tsc -b && vite build",
+        "build:web": "tsc -b && vite build --config vite.web.config.ts",
+        "build:site": "bun monaco && bun build:web && bun/scripts/afterSite.ts",
+        "docs": "typedoc --tsconfig tsconfig.docs.json && bun after:docs",
+        "after:docs": "bun scripts/docs.ts",
+        "preview": "vite preview",
+        "format": "bun prettier && bun stylelint && bun eslint",
+        "lint": "bun typecheck && bun prettier:check && bun stylelint:check && bun eslint:check",
+        "forlint": "bun format && bun lint",
+        "eslint": "bun eslint:check --fix",
+        "eslint:check": "eslint --config ./eslint.config.mjs --report-unused-disable-directives --max-warnings 0 --no-warn-ignored --cache --cache-location ./.eslintcache",
+        "prettier": "prettier \"**/*{.ts,.tsx,.css,.json,.md}\" --write --list-different",
+        "prettier:check": "prettier \"src/**/*{.ts,.tsx,.css,.json,.md}\" --check",
+        "stylelint": "bun stylelint:check --fix --ignore-path .gitignore",
+        "stylelint:check": "stylelint --ignore-path .gitignore --cache **/*.css",
+        "mkdir": "bun scripts/mkdir.ts --path ./out/archive --parents",
+        "prepack": "bun mkdir",
+        "archive": "bun pm pack --destination ./out/archive",
+        "clean:lintcache": "bun rimraf .eslintcache .stylelintcache",
+        "clean:dist": "bun rimraf dist",
+        "clean:web": "bun rimraf out/static",
+        "clean:docs": "bun rimraf site",
+        "clean:archive": "bun rimraf out/archive",
+        "clean:coverage": "bun rimraf coverage",
+        "clean:tsbuild": "bun rimraf tsconfig.app.tsbuildinfo tsconfig.node.tsbuildinfo tsconfig.build.tsbuildinfo",
+        "clean": "bun clean:lintcache && bun clean:dist && bun clean:coverage && bun clean:tsbuild && bun clean:web && bun clean:docs && bun clean:archive",
+        "schema": "bun scripts/schema.ts && bun prettier schema.json --write",
+        "before:test": "bun monaco && bun scripts/mkdir.ts --path .local && bun rimraf .local/recordings",
+        "before:test-ui": "bun before:test && bun playwright install chromium",
+        "after:test": "bun scripts/video.ts",
+        "test:components": "bun monaco && vitest run",
+        "test:snapshots": "bun before:test && vitest run --browser.enabled --browser.headless --update ui-tests/** && bun after:test",
+        "vitest:ui": "bun monaco && vitest --ui",
+        "test:coverage": "bun monaco && vitest run --coverage",
+        "test:ui": "bun before:test-ui && vitest run --browser.enabled --browser.headless ui-tests/** && bun after:test",
+        "test:all": "bun test:ui && bun test:coverage",
+        "test": "bun test:all",
         "changelog": "bun scripts/changelog.ts",
-        "contributions": "bun scripts/_ts/contributions.ts",
-        "check:branches": "node --import=tsx scripts/_ts/branches.ts",
-        "prepare": "node .husky/install.mjs"
-    },
-    "packages": {
-        "py": [
-            "packages/core/python",
-            "packages/jupyter",
-            "packages/studio",
-            "packages/runner",
-            "package_templates/python_only",
-            "package_templates/both"
-        ],
-        "ts": [
-            "packages/core/react",
-            "packages/jupyter",
-            "packages/studio",
-            "packages/vscode",
-            "package_templates/ts_only",
-            "package_templates/both"
-        ],
-        "ignorePatterns": [
-            "**/node_modules/",
-            "**/.venv/",
-            "**/.local/",
-            "**/dist/",
-            "**/coverage/",
-            "**/reports/",
-            "**/static/",
-            "**/build/",
-            "**/out/",
-            "**/site/"
-        ]
-    },
-    "images": {
-        "py": [
-            {
-                "name": "waldiez",
-                "file": "packages/core/python/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            },
-            {
-                "name": "jupyter",
-                "file": "packages/jupyter/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            },
-            {
-                "name": "studio",
-                "file": "packages/studio/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            },
-            {
-                "name": "runner",
-                "file": "packages/runner/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            },
-            {
-                "name": "py_package",
-                "file": "package_templates/python_only/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            },
-            {
-                "name": "py_ts_package",
-                "file": "package_templates/both/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            }
-        ],
-        "ts": [
-            {
-                "name": "ts_package",
-                "file": "package_templates/ts_only/Containerfile",
-                "platforms": [
-                    "linux/amd64",
-                    "linux/arm64"
-                ]
-            }
-        ]
+        "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun archive && bun docs"
     },
     "lint-staged": {
         "*.{js,json,mjs,ts,jsx,tsx,css,md,yaml,yml}": [
-            "bun run format:ts",
-            "bun run lint:ts"
-        ],
-        "*.py": [
-            "bun run format:py",
-            "bun run lint:py"
+            "bun run format",
+            "bun run lint"
         ]
+    },
+    "dependencies": {
+        "@monaco-editor/react": "^4.7.0",
+        "@xyflow/react": "^12.6.0",
+        "jszip": "^3.10.1",
+        "microdiff": "^1.5.0",
+        "nanoid": "^5.1.5",
+        "rc-slider": "^11.1.8",
+        "react-error-boundary": "^5.0.0",
+        "react-fast-compare": "^3.2.2",
+        "react-hotkeys-hook": "^5.0.1",
+        "react-icons": "^5.5.0",
+        "react-select": "^5.10.1",
+        "zundo": "^2.3.0",
+        "zustand": "^5.0.3"
+    },
+    "peerDependencies": {
+        "react": "^18.3.1 || ^19.1.0",
+        "react-dom": "^18.3.1 || ^19.1.0"
+    },
+    "devDependencies": {
+        "@eslint/compat": "^1.2.8",
+        "@eslint/js": "9.25.1",
+        "@stylistic/eslint-plugin": "^4.2.0",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.3.0",
+        "@testing-library/user-event": "^14.6.1",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/bun": "^1.2.10",
+        "@types/eslint__js": "^9.14.0",
+        "@types/fs-extra": "^11.0.4",
+        "@types/gunzip-maybe": "^1.4.2",
+        "@types/jest": "^29.5.14",
+        "@types/jest-image-snapshot": "^6.4.0",
+        "@types/react": "^19.1.2",
+        "@types/react-dom": "^19.1.2",
+        "@types/tar-stream": "^3.1.3",
+        "@types/ws": "^8.18.1",
+        "@typescript-eslint/eslint-plugin": "^8.31.0",
+        "@typescript-eslint/parser": "^8.31.0",
+        "@vitejs/plugin-react": "^4.4.1",
+        "@vitest/browser": "^3.1.2",
+        "@vitest/coverage-v8": "^3.1.2",
+        "@vitest/ui": "^3.1.2",
+        "ajv": "^8.17.1",
+        "all-contributors-cli": "^6.26.1",
+        "cross-spawn": "^7.0.6",
+        "dotenv": "^16.5.0",
+        "eslint": "^9.25.1",
+        "eslint-config-prettier": "^10.1.2",
+        "eslint-import-resolver-typescript": "^4.3.4",
+        "eslint-plugin-headers": "^1.2.1",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-prettier": "^5.2.6",
+        "eslint-plugin-react-refresh": "^0.4.20",
+        "eslint-plugin-tsdoc": "^0.4.0",
+        "fs-extra": "^11.3.0",
+        "got": "^14.4.7",
+        "gunzip-maybe": "^1.4.2",
+        "hint": "^7.1.13",
+        "husky": "^9.1.7",
+        "jsdom": "^26.1.0",
+        "lint-staged": "^15.5.1",
+        "lookpath": "^1.2.3",
+        "playwright": "^1.52.0",
+        "prettier": "^3.5.3",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-select-event": "^5.5.1",
+        "rimraf": "^6.0.1",
+        "stylelint": "^16.19.1",
+        "stylelint-config-recommended": "^16.0.0",
+        "stylelint-config-standard": "^38.0.0",
+        "stylelint-prettier": "^5.0.3",
+        "tar-stream": "^3.1.7",
+        "terser": "^5.39.0",
+        "ts-json-schema-generator": "^2.4.0",
+        "tsx": "^4.19.3",
+        "typedoc": "^0.28.3",
+        "typedoc-material-theme": "^1.4.0",
+        "typedoc-plugin-markdown": "^4.6.3",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.31.0",
+        "vite": "^6.3.3",
+        "vite-plugin-dts": "^4.5.3",
+        "vite-plugin-externalize-deps": "^0.9.0",
+        "vitest": "^3.1.2",
+        "vitest-browser-react": "^0.1.1",
+        "ws": "^8.18.1"
+    },
+    "prettier": {
+        "plugins": [
+            "@trivago/prettier-plugin-sort-imports"
+        ],
+        "tabWidth": 4,
+        "printWidth": 110,
+        "arrowParens": "avoid",
+        "bracketSpacing": true,
+        "singleQuote": false,
+        "trailingComma": "all",
+        "endOfLine": "lf",
+        "importOrderSeparation": true,
+        "importOrderSortSpecifiers": true,
+        "importOrder": [
+            "^@fortawesome/",
+            "^@xyflow/",
+            "^react",
+            "^react-dom",
+            "^react-select",
+            "^zustand",
+            "^nanoid",
+            "^rc-slider",
+            "^@monaco-editor/react",
+            "^@waldiez/"
+        ]
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "overrides": {
+        "rollup": "npm:@rollup/wasm-node"
+    },
+    "resolutions": {
+        "cross-spawn": "^7.0.6",
+        "ws": "^8.18.1",
+        "got": "^14.4.6"
     },
     "packageManager": "bun@1.2.10"
 }

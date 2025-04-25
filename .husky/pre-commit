@@ -1,2 +1,1 @@
 npx lint-staged --relative
-node --import=tsx scripts/_ts/branches.ts

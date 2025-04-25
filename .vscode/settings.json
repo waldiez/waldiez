@@ -1,45 +1,26 @@
 {
-    "python.defaultInterpreterPath": "",
-    "pylint.args": ["--rcfile=pyproject.toml"],
-    "python.autoComplete.extraPaths": [
-        "${workspaceFolder}/packages/core/python",
-        "${workspaceFolder}/packages/studio",
-        "${workspaceFolder}/packages/jupyter",
-    ],
+    "files.eol": "\n",
+    "files.trimTrailingWhitespaceInRegexAndStrings": false,
     "python.envFile": "",
-    "pylint.importStrategy": "fromEnvironment",
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "mypy.runUsingActiveInterpreter": true,
-    "mypy-type-checker.args": ["--config pyproject.toml"],
-    "yaml.format.printWidth": 100,
-    "yaml.customTags": [
-        "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format",
-        "tag:yaml.org,2002:python/name:mkdocs_exporter.formats.pdf.buttons.download.enabled",
-        "tag:yaml.org,2002:python/name:mkdocs_exporter.formats.pdf.buttons.download.attributes"
-    ],
-    "files.exclude": {
-        "**/node_modules": true,
-        "**/.venv": true,
-        "**/dist": true,
-        "**/build": true,
-        "**/out": true,
-        "**/.mypy_cache": true,
-        "**/.pytest_cache": true,
-        "**/.ruff_cache": true
-    },
     "search.exclude": {
         "**/node_modules": true,
         "**/.venv": true,
         "**/dist": true,
-        "**/build": true,
-        "**/out": true,
-        "**/coverage": true,
-        "**/.mypy_cache": true,
-        "**/.pytest_cache": true,
-        "**/.ruff_cache": true
+        "**/out": true
     },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    },
+    "pylint.args": ["--rcfile=pyproject.toml"],
+    "pylint.importStrategy": "fromEnvironment",
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "black-formatter.args": ["--config=pyproject.toml"],
+    "mypy.runUsingActiveInterpreter": true,
+    "mypy-type-checker.args": ["--config pyproject.toml"],
+    "yaml.customTags": ["tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"],
+    "yaml.format.printWidth": 100,
     "npm.packageManager": "bun",
-    "files.eol": "\n",
     "cSpell.mergeCSpellSettings": true,
     "cSpell.configFile": "cspell.json",
     "vitest.disableWorkspaceWarning": true

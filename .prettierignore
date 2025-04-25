@@ -1,0 +1,7 @@
+node_modules
+**/*.md
+.venv/
+dist/
+lib/
+.local/
+public/

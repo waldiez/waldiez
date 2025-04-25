@@ -1,0 +1,10 @@
+# ignore everything
+**/*
+# but not these files...
+!package.json
+!waldiez/
+!pyproject.toml
+!requirements/main.txt
+!LICENSE
+!NOTICE.md
+!README.md

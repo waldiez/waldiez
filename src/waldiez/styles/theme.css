@@ -1,0 +1,133 @@
+.flow-wrapper.light {
+    color-scheme: light;
+    background-color: #fefefe;
+    color: #141414;
+}
+
+.flow-wrapper.dark {
+    background-color: #141414;
+    color: #f8f8f8;
+    color-scheme: dark;
+}
+
+.flow-wrapper.dark * {
+    scrollbar-color: #ccc #333;
+}
+
+.flow-wrapper.light * {
+    scrollbar-color: #333 #fefefe;
+}
+
+.flow-wrapper input:disabled {
+    opacity: 0.8;
+}
+
+.flow-wrapper ::placeholder {
+    opacity: 0.5;
+}
+
+.flow-wrapper.light input:disabled {
+    color: #222 !important;
+}
+
+.flow-wrapper.light::placeholder {
+    color: #222;
+}
+
+.flow-wrapper.light ::-webkit-input-placeholder {
+    color: #222;
+}
+
+.flow-wrapper.light::-moz-placeholder {
+    color: #222;
+}
+
+.flow-wrapper.dark input:disabled {
+    color: #ccc !important;
+}
+
+.flow-wrapper.dark ::placeholder {
+    color: #ccc;
+}
+
+.flow-wrapper.dark ::-webkit-input-placeholder {
+    color: #ccc;
+}
+
+.flow-wrapper.dark ::-moz-placeholder {
+    color: #ccc;
+}
+
+.flow-wrapper.dark .editor-nav-action {
+    background-color: #141414;
+}
+
+.flow-wrapper.dark .editor-nav-action svg {
+    fill: #fefefe;
+}
+
+.flow-wrapper.light .editor-nav-action {
+    background-color: #fefefe;
+}
+
+.flow-wrapper.light .editor-nav-action svg {
+    fill: #141414;
+}
+
+.flow-wrapper.dark .editor-nav-action:hover {
+    background-color: #141414;
+}
+
+.flow-wrapper.light .editor-nav-action:hover {
+    background-color: #fefefe;
+}
+
+.flow-wrapper.light input[type="text"],
+.flow-wrapper.light input[type="password"],
+.flow-wrapper.light input[type="number"],
+.flow-wrapper.light textarea {
+    background-color: #fefefe;
+    border: 1px solid #ccc;
+    color: #141414;
+}
+
+.flow-wrapper.dark input[type="text"],
+.flow-wrapper.dark input[type="password"],
+.flow-wrapper.dark input[type="number"],
+.flow-wrapper.dark textarea {
+    background-color: #222;
+    border: 1px solid #444;
+    color: #f8f8f8;
+}
+
+.flow-wrapper.dark input[type="number"],
+.flow-wrapper.dark input[type="number"]::-webkit-inner-spin-button,
+.flow-wrapper.dark input[type="number"]::-webkit-outer-spin-button {
+    color-scheme: dark;
+}
+
+.flow-wrapper.light input[type="number"],
+.flow-wrapper.light input[type="number"]::-webkit-inner-spin-button,
+.flow-wrapper.light input[type="number"]::-webkit-outer-spin-button {
+    color-scheme: light;
+}
+
+.flow-wrapper.dark .flow-order-add-button {
+    background-color: #222;
+    color: #fefefe;
+}
+
+.flow-wrapper.light .flow-order-add-button {
+    background-color: #fefefe;
+    color: #141414;
+}
+
+.flow-wrapper.dark .flow-order-item-actions button {
+    background-color: #222;
+    color: #fefefe;
+}
+
+.flow-wrapper.light .flow-order-item-actions button {
+    background-color: #fefefe;
+    color: #141414;
+}

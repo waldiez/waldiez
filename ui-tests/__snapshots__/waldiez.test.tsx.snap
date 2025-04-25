@@ -1,0 +1,1011 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`All > should render Waldiez components 1`] = `
+{
+  "asFragment": [Function],
+  "baseElement": <body
+    class="waldiez-sidebar-expanded waldiez-light"
+  >
+    
+  
+
+
+    <div>
+      <div
+        class="flow-wrapper light"
+        data-testid="rf-root-test-flow"
+        id="rf-root-test-flow"
+      >
+        <div
+          class="flow-main"
+        >
+          <div
+            class="sidebar"
+            data-testid="sidebar-test-flow"
+            style="width: 200px;"
+          >
+            <div
+              class="sidebar-header"
+              style="justify-content: space-between;"
+            >
+              <div
+                class="title"
+              >
+                Waldiez
+              </div>
+              <div
+                aria-hidden="true"
+                class="sidebar-toggle"
+                data-testid="sidebar-toggle"
+                role="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="sidebar-toggle-button tooltip-container clickable"
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <title>
+                    Close sidebar
+                  </title>
+                  <path
+                    d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="sidebar-content"
+            >
+              <ul>
+                <li
+                  class="clickable"
+                  data-testid="edit-flow-test-flow-sidebar-button"
+                  id="edit-flow-test-flow-sidebar-button"
+                  title="Edit flow"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 576 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+                    />
+                  </svg>
+                  <span>
+                    Edit flow
+                  </span>
+                </li>
+                <li
+                  class="clickable"
+                  data-node-type="model"
+                  data-testid="show-models"
+                >
+                  <svg
+                    fill="currentColor"
+                    fill-rule="evenodd"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 1024 1024"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M366.609 0C292.567 0 226.882 42.382 193.68 104.575v237.284l92.265 56.484 3.386-235.699 188.997-127.45C446.12 12.695 407.577 0 366.608 0M569.51 62.248c-13.17 0-26.054 1.758-38.8 4.359L344.2 192.363l-1.37 96.146 186.584-125.253 231.22 137.284c3.08-13.888 4.863-28.051 4.863-42.327 0-108.044-87.93-195.965-195.986-195.965m-431.168 91.75C58.343 178.696 0 253.216 0 341.21c0 27.924 5.906 54.829 16.788 79.36l245.487 139.769 90.571-56.124-214.503-131.376zm392.872 74.676-72.702 48.848 203.984 128.062 25.795 235.41C758.422 611.115 807 541.971 807 461.095c0-27.555-5.855-54.129-16.572-78.53zM408.22 311.275l-66.362 44.56-1.045 76.117 64.704 39.662 69.532-43.048-1.837-76.477zm121.194 76.117 5.872 248.343-201.282 119.164C368.72 783.635 412.631 800 458.837 800c79.224 0 147.798-46.522 178.621-114.986L610.402 438.22zm-52.852 105.295L263.428 624.676 60.56 509.15c-3.357 14.46-5.224 29.262-5.224 44.164 0 102.935 79.847 187.408 180.819 195.173l243.036-143.876z"
+                      transform="translate(109 112)"
+                    />
+                  </svg>
+                  <span>
+                    Models
+                  </span>
+                </li>
+                <li
+                  class="clickable"
+                  data-node-type="skill"
+                  data-testid="show-skills"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 1024 1024"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zM513.1 518.1l-192 161c-5.2 4.4-13.1.7-13.1-6.1v-62.7c0-2.3 1.1-4.6 2.9-6.1L420.7 512l-109.8-92.2a7.63 7.63 0 0 1-2.9-6.1V351c0-6.8 7.9-10.5 13.1-6.1l192 160.9c3.9 3.2 3.9 9.1 0 12.3zM716 673c0 4.4-3.4 8-7.5 8h-185c-4.1 0-7.5-3.6-7.5-8v-48c0-4.4 3.4-8 7.5-8h185c4.1 0 7.5 3.6 7.5 8v48z"
+                    />
+                  </svg>
+                  <span>
+                    Skills
+                  </span>
+                </li>
+                <li
+                  class="clickable expandable"
+                  data-node-type="agent"
+                  data-testid="show-agents"
+                >
+                  <div
+                    class="flex"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 640 512"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M320 0c17.7 0 32 14.3 32 32l0 64 120 0c39.8 0 72 32.2 72 72l0 272c0 39.8-32.2 72-72 72l-304 0c-39.8 0-72-32.2-72-72l0-272c0-39.8 32.2-72 72-72l120 0 0-64c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0z"
+                      />
+                    </svg>
+                    <span>
+                      Agents
+                    </span>
+                  </div>
+                  <div
+                    class="expand-icon"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 24 24"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18.78 15.78a.749.749 0 0 1-1.06 0L12 10.061 6.28 15.78a.749.749 0 1 1-1.06-1.06l6.25-6.25a.749.749 0 0 1 1.06 0l6.25 6.25a.749.749 0 0 1 0 1.06Z"
+                      />
+                    </svg>
+                  </div>
+                </li>
+              </ul>
+              <div
+                class="dnd-description"
+              >
+                <p>
+                  Drag n' drop an agent to the canvas to add it to the flow
+                </p>
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="user-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/user.webp"
+                  title="User Proxy Agent"
+                />
+                User Proxy
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="assistant-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/assistant.webp"
+                  title="Assistant Agent"
+                />
+                Assistant
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="manager-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/manager.webp"
+                  title="Group Manager Agent"
+                />
+                Group Manager
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="swarm-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/swarm.webp"
+                  title="Swarm Agent"
+                />
+                Swarm Agent
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="reasoning-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/reasoning.webp"
+                  title="Reasoning Agent"
+                />
+                Reasoning Agent
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="captain-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/captain.webp"
+                  title="Captain Agent"
+                />
+                Captain Agent
+              </div>
+            </div>
+            <div
+              class="spacer"
+            />
+          </div>
+          <div
+            class="react-flow-wrapper"
+            data-testid="rf-wrapper-test-flow"
+          >
+            <div
+              class="react-flow light"
+              data-testid="rf__wrapper"
+              id="test-flow"
+              style="width: 100%; height: 100%; overflow: hidden; position: relative; z-index: 0;"
+            >
+              <div
+                class="react-flow__renderer"
+                style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+              >
+                <div
+                  class="react-flow__pane draggable"
+                  style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+                >
+                  <div
+                    class="react-flow__viewport xyflow__viewport react-flow__container"
+                    style="transform: translate(50px, 50px) scale(1);"
+                  >
+                    <div
+                      class="react-flow__edges"
+                    />
+                    <div
+                      class="react-flow__edgelabel-renderer"
+                    />
+                    <div
+                      class="react-flow__nodes"
+                      style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+                    />
+                    <div
+                      class="react-flow__viewport-portal"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                aria-label="React Flow controls"
+                class="react-flow__panel react-flow__controls vertical bottom left"
+                data-testid="rf__controls"
+                style="pointer-events: all;"
+              >
+                <button
+                  aria-label="zoom in"
+                  class="react-flow__controls-button react-flow__controls-zoomin"
+                  title="zoom in"
+                  type="button"
+                >
+                  <svg
+                    viewBox="0 0 32 32"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M32 18.133H18.133V32h-4.266V18.133H0v-4.266h13.867V0h4.266v13.867H32z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  aria-label="zoom out"
+                  class="react-flow__controls-button react-flow__controls-zoomout"
+                  title="zoom out"
+                  type="button"
+                >
+                  <svg
+                    viewBox="0 0 32 5"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0 0h32v4.2H0z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  aria-label="fit view"
+                  class="react-flow__controls-button react-flow__controls-fitview"
+                  title="fit view"
+                  type="button"
+                >
+                  <svg
+                    viewBox="0 0 32 30"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3.692 4.63c0-.53.4-.938.939-.938h5.215V0H4.708C2.13 0 0 2.054 0 4.63v5.216h3.692V4.631zM27.354 0h-5.2v3.692h5.17c.53 0 .984.4.984.939v5.215H32V4.631A4.624 4.624 0 0027.354 0zm.954 24.83c0 .532-.4.94-.939.94h-5.215v3.768h5.215c2.577 0 4.631-2.13 4.631-4.707v-5.139h-3.692v5.139zm-23.677.94c-.531 0-.939-.4-.939-.94v-5.138H0v5.139c0 2.577 2.13 4.707 4.708 4.707h5.138V25.77H4.631z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  aria-label="toggle interactivity"
+                  class="react-flow__controls-button react-flow__controls-interactive"
+                  title="toggle interactivity"
+                  type="button"
+                >
+                  <svg
+                    viewBox="0 0 25 32"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M21.333 10.667H19.81V7.619C19.81 3.429 16.38 0 12.19 0c-4.114 1.828-1.37 2.133.305 2.438 1.676.305 4.42 2.59 4.42 5.181v3.048H3.047A3.056 3.056 0 000 13.714v15.238A3.056 3.056 0 003.048 32h18.285a3.056 3.056 0 003.048-3.048V13.714a3.056 3.056 0 00-3.048-3.047zM12.19 24.533a3.056 3.056 0 01-3.047-3.047 3.056 3.056 0 013.047-3.048 3.056 3.056 0 013.048 3.048 3.056 3.056 0 01-3.048 3.047z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="react-flow__panel top right"
+                style="pointer-events: all;"
+              >
+                <div
+                  class="editor-nav-actions"
+                >
+                  <button
+                    class="editor-nav-action"
+                    data-testid="import-flow-test-flow-button"
+                    title="Import flow"
+                    type="button"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      style="stroke-width: 2;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="editor-nav-action"
+                    data-testid="export-flow-test-flow-button"
+                    title="Export flow"
+                    type="button"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      style="stroke-width: 2;"
+                      viewBox="0 0 512 512"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M307 34.8c-11.5 5.1-19 16.6-19 29.2l0 64-112 0C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96l96 0 0 64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    class="editor-nav-action"
+                    data-testid="toggle-theme-test-flow"
+                    title="Toggle theme"
+                    type="button"
+                  >
+                    <svg
+                      fill="currentColor"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 384 512"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="hidden"
+                data-testid="drop-area-test-flow"
+              />
+              <svg
+                class="react-flow__background"
+                data-testid="rf__background"
+                style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+              >
+                <pattern
+                  height="20"
+                  id="pattern-test-flow"
+                  patternTransform="translate(-11,-11)"
+                  patternUnits="userSpaceOnUse"
+                  width="20"
+                  x="10"
+                  y="10"
+                >
+                  <circle
+                    class="react-flow__background-pattern dots"
+                    cx="0.5"
+                    cy="0.5"
+                    r="0.5"
+                  />
+                </pattern>
+                <rect
+                  fill="url(#pattern-test-flow)"
+                  height="100%"
+                  width="100%"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+              <div
+                class="react-flow__panel react-flow__attribution bottom right"
+                data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
+                style="pointer-events: all;"
+              >
+                <a
+                  aria-label="React Flow attribution"
+                  href="https://reactflow.dev"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  React Flow
+                </a>
+              </div>
+              <div
+                id="react-flow__node-desc-test-flow"
+                style="display: none;"
+              >
+                Press enter or space to select a node.
+                You can then use the arrow keys to move the node around.
+                 Press delete to remove it and escape to cancel.
+                 
+              </div>
+              <div
+                id="react-flow__edge-desc-test-flow"
+                style="display: none;"
+              >
+                Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.
+              </div>
+              <div
+                aria-atomic="true"
+                aria-live="assertive"
+                id="react-flow__aria-live-test-flow"
+                style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(100%);"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="flow-wrapper light"
+      data-testid="rf-root-test-flow"
+      id="rf-root-test-flow"
+    >
+      <div
+        class="flow-main"
+      >
+        <div
+          class="sidebar"
+          data-testid="sidebar-test-flow"
+          style="width: 200px;"
+        >
+          <div
+            class="sidebar-header"
+            style="justify-content: space-between;"
+          >
+            <div
+              class="title"
+            >
+              Waldiez
+            </div>
+            <div
+              aria-hidden="true"
+              class="sidebar-toggle"
+              data-testid="sidebar-toggle"
+              role="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="sidebar-toggle-button tooltip-container clickable"
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 448 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>
+                  Close sidebar
+                </title>
+                <path
+                  d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="sidebar-content"
+          >
+            <ul>
+              <li
+                class="clickable"
+                data-testid="edit-flow-test-flow-sidebar-button"
+                id="edit-flow-test-flow-sidebar-button"
+                title="Edit flow"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 576 512"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+                  />
+                </svg>
+                <span>
+                  Edit flow
+                </span>
+              </li>
+              <li
+                class="clickable"
+                data-node-type="model"
+                data-testid="show-models"
+              >
+                <svg
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 1024 1024"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M366.609 0C292.567 0 226.882 42.382 193.68 104.575v237.284l92.265 56.484 3.386-235.699 188.997-127.45C446.12 12.695 407.577 0 366.608 0M569.51 62.248c-13.17 0-26.054 1.758-38.8 4.359L344.2 192.363l-1.37 96.146 186.584-125.253 231.22 137.284c3.08-13.888 4.863-28.051 4.863-42.327 0-108.044-87.93-195.965-195.986-195.965m-431.168 91.75C58.343 178.696 0 253.216 0 341.21c0 27.924 5.906 54.829 16.788 79.36l245.487 139.769 90.571-56.124-214.503-131.376zm392.872 74.676-72.702 48.848 203.984 128.062 25.795 235.41C758.422 611.115 807 541.971 807 461.095c0-27.555-5.855-54.129-16.572-78.53zM408.22 311.275l-66.362 44.56-1.045 76.117 64.704 39.662 69.532-43.048-1.837-76.477zm121.194 76.117 5.872 248.343-201.282 119.164C368.72 783.635 412.631 800 458.837 800c79.224 0 147.798-46.522 178.621-114.986L610.402 438.22zm-52.852 105.295L263.428 624.676 60.56 509.15c-3.357 14.46-5.224 29.262-5.224 44.164 0 102.935 79.847 187.408 180.819 195.173l243.036-143.876z"
+                    transform="translate(109 112)"
+                  />
+                </svg>
+                <span>
+                  Models
+                </span>
+              </li>
+              <li
+                class="clickable"
+                data-node-type="skill"
+                data-testid="show-skills"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 1024 1024"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zM513.1 518.1l-192 161c-5.2 4.4-13.1.7-13.1-6.1v-62.7c0-2.3 1.1-4.6 2.9-6.1L420.7 512l-109.8-92.2a7.63 7.63 0 0 1-2.9-6.1V351c0-6.8 7.9-10.5 13.1-6.1l192 160.9c3.9 3.2 3.9 9.1 0 12.3zM716 673c0 4.4-3.4 8-7.5 8h-185c-4.1 0-7.5-3.6-7.5-8v-48c0-4.4 3.4-8 7.5-8h185c4.1 0 7.5 3.6 7.5 8v48z"
+                  />
+                </svg>
+                <span>
+                  Skills
+                </span>
+              </li>
+              <li
+                class="clickable expandable"
+                data-node-type="agent"
+                data-testid="show-agents"
+              >
+                <div
+                  class="flex"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 640 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M320 0c17.7 0 32 14.3 32 32l0 64 120 0c39.8 0 72 32.2 72 72l0 272c0 39.8-32.2 72-72 72l-304 0c-39.8 0-72-32.2-72-72l0-272c0-39.8 32.2-72 72-72l120 0 0-64c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0z"
+                    />
+                  </svg>
+                  <span>
+                    Agents
+                  </span>
+                </div>
+                <div
+                  class="expand-icon"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18.78 15.78a.749.749 0 0 1-1.06 0L12 10.061 6.28 15.78a.749.749 0 1 1-1.06-1.06l6.25-6.25a.749.749 0 0 1 1.06 0l6.25 6.25a.749.749 0 0 1 0 1.06Z"
+                    />
+                  </svg>
+                </div>
+              </li>
+            </ul>
+            <div
+              class="dnd-description"
+            >
+              <p>
+                Drag n' drop an agent to the canvas to add it to the flow
+              </p>
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="user-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/user.webp"
+                title="User Proxy Agent"
+              />
+              User Proxy
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="assistant-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/assistant.webp"
+                title="Assistant Agent"
+              />
+              Assistant
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="manager-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/manager.webp"
+                title="Group Manager Agent"
+              />
+              Group Manager
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="swarm-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/swarm.webp"
+                title="Swarm Agent"
+              />
+              Swarm Agent
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="reasoning-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/reasoning.webp"
+                title="Reasoning Agent"
+              />
+              Reasoning Agent
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="captain-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/captain.webp"
+                title="Captain Agent"
+              />
+              Captain Agent
+            </div>
+          </div>
+          <div
+            class="spacer"
+          />
+        </div>
+        <div
+          class="react-flow-wrapper"
+          data-testid="rf-wrapper-test-flow"
+        >
+          <div
+            class="react-flow light"
+            data-testid="rf__wrapper"
+            id="test-flow"
+            style="width: 100%; height: 100%; overflow: hidden; position: relative; z-index: 0;"
+          >
+            <div
+              class="react-flow__renderer"
+              style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+            >
+              <div
+                class="react-flow__pane draggable"
+                style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+              >
+                <div
+                  class="react-flow__viewport xyflow__viewport react-flow__container"
+                  style="transform: translate(50px, 50px) scale(1);"
+                >
+                  <div
+                    class="react-flow__edges"
+                  />
+                  <div
+                    class="react-flow__edgelabel-renderer"
+                  />
+                  <div
+                    class="react-flow__nodes"
+                    style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+                  />
+                  <div
+                    class="react-flow__viewport-portal"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              aria-label="React Flow controls"
+              class="react-flow__panel react-flow__controls vertical bottom left"
+              data-testid="rf__controls"
+              style="pointer-events: all;"
+            >
+              <button
+                aria-label="zoom in"
+                class="react-flow__controls-button react-flow__controls-zoomin"
+                title="zoom in"
+                type="button"
+              >
+                <svg
+                  viewBox="0 0 32 32"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M32 18.133H18.133V32h-4.266V18.133H0v-4.266h13.867V0h4.266v13.867H32z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-label="zoom out"
+                class="react-flow__controls-button react-flow__controls-zoomout"
+                title="zoom out"
+                type="button"
+              >
+                <svg
+                  viewBox="0 0 32 5"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h32v4.2H0z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-label="fit view"
+                class="react-flow__controls-button react-flow__controls-fitview"
+                title="fit view"
+                type="button"
+              >
+                <svg
+                  viewBox="0 0 32 30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3.692 4.63c0-.53.4-.938.939-.938h5.215V0H4.708C2.13 0 0 2.054 0 4.63v5.216h3.692V4.631zM27.354 0h-5.2v3.692h5.17c.53 0 .984.4.984.939v5.215H32V4.631A4.624 4.624 0 0027.354 0zm.954 24.83c0 .532-.4.94-.939.94h-5.215v3.768h5.215c2.577 0 4.631-2.13 4.631-4.707v-5.139h-3.692v5.139zm-23.677.94c-.531 0-.939-.4-.939-.94v-5.138H0v5.139c0 2.577 2.13 4.707 4.708 4.707h5.138V25.77H4.631z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-label="toggle interactivity"
+                class="react-flow__controls-button react-flow__controls-interactive"
+                title="toggle interactivity"
+                type="button"
+              >
+                <svg
+                  viewBox="0 0 25 32"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.333 10.667H19.81V7.619C19.81 3.429 16.38 0 12.19 0c-4.114 1.828-1.37 2.133.305 2.438 1.676.305 4.42 2.59 4.42 5.181v3.048H3.047A3.056 3.056 0 000 13.714v15.238A3.056 3.056 0 003.048 32h18.285a3.056 3.056 0 003.048-3.048V13.714a3.056 3.056 0 00-3.048-3.047zM12.19 24.533a3.056 3.056 0 01-3.047-3.047 3.056 3.056 0 013.047-3.048 3.056 3.056 0 013.048 3.048 3.056 3.056 0 01-3.048 3.047z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              class="react-flow__panel top right"
+              style="pointer-events: all;"
+            >
+              <div
+                class="editor-nav-actions"
+              >
+                <button
+                  class="editor-nav-action"
+                  data-testid="import-flow-test-flow-button"
+                  title="Import flow"
+                  type="button"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    style="stroke-width: 2;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="editor-nav-action"
+                  data-testid="export-flow-test-flow-button"
+                  title="Export flow"
+                  type="button"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    style="stroke-width: 2;"
+                    viewBox="0 0 512 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M307 34.8c-11.5 5.1-19 16.6-19 29.2l0 64-112 0C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96l96 0 0 64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="editor-nav-action"
+                  data-testid="toggle-theme-test-flow"
+                  title="Toggle theme"
+                  type="button"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="1em"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 384 512"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div
+              class="hidden"
+              data-testid="drop-area-test-flow"
+            />
+            <svg
+              class="react-flow__background"
+              data-testid="rf__background"
+              style="position: absolute; width: 100%; height: 100%; top: 0px; left: 0px;"
+            >
+              <pattern
+                height="20"
+                id="pattern-test-flow"
+                patternTransform="translate(-11,-11)"
+                patternUnits="userSpaceOnUse"
+                width="20"
+                x="10"
+                y="10"
+              >
+                <circle
+                  class="react-flow__background-pattern dots"
+                  cx="0.5"
+                  cy="0.5"
+                  r="0.5"
+                />
+              </pattern>
+              <rect
+                fill="url(#pattern-test-flow)"
+                height="100%"
+                width="100%"
+                x="0"
+                y="0"
+              />
+            </svg>
+            <div
+              class="react-flow__panel react-flow__attribution bottom right"
+              data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
+              style="pointer-events: all;"
+            >
+              <a
+                aria-label="React Flow attribution"
+                href="https://reactflow.dev"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                React Flow
+              </a>
+            </div>
+            <div
+              id="react-flow__node-desc-test-flow"
+              style="display: none;"
+            >
+              Press enter or space to select a node.
+              You can then use the arrow keys to move the node around.
+               Press delete to remove it and escape to cancel.
+               
+            </div>
+            <div
+              id="react-flow__edge-desc-test-flow"
+              style="display: none;"
+            >
+              Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.
+            </div>
+            <div
+              aria-atomic="true"
+              aria-live="assertive"
+              id="react-flow__aria-live-test-flow"
+              style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(100%);"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "getByAltText": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholder": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

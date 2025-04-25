@@ -1,0 +1,23 @@
+.flow-wrapper .tooltip-container .tooltip {
+    display: none;
+}
+
+.flow-wrapper .tooltip-container:hover .tooltip {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-4px, -50%);
+    width: max-content;
+}
+
+.flow-wrapper .tooltip-container:hover .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+}

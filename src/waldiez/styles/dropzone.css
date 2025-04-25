@@ -1,0 +1,32 @@
+.flow-wrapper .drop_zone {
+    border: 2px dashed #ccc;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flow-wrapper .drop_zone .drop_zone_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.flow-wrapper .drop_zone .drop_zone_content .drop_zone_icon {
+    font-size: 1.5rem;
+}
+
+.flow-wrapper .drop_zone .drop_zone_content .drop_zone_text {
+    font-size: 0.9rem;
+}
+
+.flow-wrapper.dark .drop_zone.drag-over,
+.flow-wrapper.dark .drop_zone:hover {
+    background-color: #444;
+}
+
+.flow-wrapper.light .drop_zone.drag-over,
+.flow-wrapper.light .drop_zone:hover {
+    background-color: #f8f8f8;
+}
