@@ -266,6 +266,7 @@ Repos (submodules) included in this repo:
 - [packages/jupyter](https://github.com/waldiez/jupyter) is a jupyter extension that combines the core python and react packages.
 - [packages/vscode](https://github.com/waldiez/vscode) is a vscode extension that combines the core python and react packages.
 - [packages/studio](https://github.com/waldiez/studio) is a web app that combines the core python and react packages.
+- [packages/runner](https://github.com/waldiez/runner) provides a way to trigger and queue the execution of waldiez flows in isolation.
 - [examples](https://github.com/waldiez/examples) is a collection of exported waldiez flows.
 - [docs](https://github.com/waldiez/docs) has the documentation for the usage of waldiez.
 - [package_templates](https://github.com/waldiez/package_templates) is a collection of templates for the projects in this repo.
