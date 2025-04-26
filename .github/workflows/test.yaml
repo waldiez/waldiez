@@ -49,12 +49,12 @@ jobs:
       - name: install lcov
         run: sudo apt update && sudo apt install -y lcov
         if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
-      # we need to merge the two .lcov files
-      # - name: Report to Coveralls
-      #   # don't spam coveralls with multiple reports
-      #   if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
-      #   uses: coverallsapp/github-action@v2
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     path-to-lcov: ./coverage/lcov.info
-      #     fail-on-error: false
+        # we need to merge the two .lcov files
+        # - name: Report to Coveralls
+        #   # don't spam coveralls with multiple reports
+        #   if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
+        #   uses: coverallsapp/github-action@v2
+        #   with:
+        #     github-token: ${{ secrets.GITHUB_TOKEN }}
+        #     path-to-lcov: ./coverage/lcov.info
+        #     fail-on-error: false
