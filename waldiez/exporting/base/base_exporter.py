@@ -10,7 +10,7 @@ from .export_position import ExportPosition
 from .import_position import ImportPosition
 
 
-# flake8: noqa: E501
+# flake8: noqa: E501,B027
 # pylint: disable=line-too-long
 class ExporterReturnType(TypedDict):
     """Exporter Return Type.
@@ -66,7 +66,7 @@ class BaseExporter(abc.ABC):
         """
 
     def get_imports(self) -> Optional[List[Tuple[str, ImportPosition]]]:
-        """ "Generate the imports string for the exporter.
+        """Generate the imports string for the exporter.
 
         Returns
         -------

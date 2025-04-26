@@ -5,7 +5,6 @@
 from waldiez.exporting.agent.utils.teachability import (
     get_agent_teachability_string,
 )
-
 from waldiez.models import WaldiezAgent, WaldiezAgentTeachability
 
 

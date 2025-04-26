@@ -3,5 +3,7 @@ node_modules
 .venv/
 dist/
 lib/
+out/
+site/
 .local/
 public/

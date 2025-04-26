@@ -83,6 +83,7 @@ def get_rag_user_retrieve_config_str(
         The path resolver function.
     serializer : Callable[..., str]
         The serializer function.
+
     Returns
     -------
     Tuple[str, str, Set[str]]

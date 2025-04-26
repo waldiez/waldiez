@@ -8,7 +8,6 @@ import os
 from waldiez.exporting.agent.utils.rag_user.qdrant_utils import (
     get_qdrant_db_args,
 )
-
 from waldiez.models import (
     WaldiezRagUser,
     WaldiezRagUserData,

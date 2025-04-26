@@ -29,6 +29,30 @@ def prefer_uv() -> bool:
     return (ROOT_DIR / ".uv").is_file()
 
 
+def ensure_venv() -> None:
+    """Ensure the virtual environment executable exists."""
+    if os.path.exists(ROOT_DIR / ".venv"):
+        return
+    if prefer_uv():
+        print("Creating virtual environment with uv...")
+        run_command(["uv", "venv", str(ROOT_DIR / ".venv")])
+        run_command(["uv", "sync"])
+        run_command(["uv", "pip", "install", "-U", "pip"])
+    else:
+        print("Creating virtual environment...")
+        run_command([sys.executable, "-m", "venv", str(ROOT_DIR / ".venv")])
+        run_command(
+            [
+                str(ROOT_DIR / ".venv" / "bin" / "python"),
+                "-m",
+                "pip",
+                "install",
+                "-U",
+                "pip",
+            ]
+        )
+
+
 def get_executable() -> str:
     """Get the path to the Python executable.
 
@@ -38,7 +62,7 @@ def get_executable() -> str:
         The path to the Python executable.
     """
     if not os.path.exists(ROOT_DIR / ".venv"):
-        return sys.executable
+        ensure_venv()
     if sys.platform != "win32":
         if os.path.exists(ROOT_DIR / ".venv" / "bin" / "python"):
             return str(ROOT_DIR / ".venv" / "bin" / "python")
@@ -58,7 +82,7 @@ def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:
         Directory to run the command in. Defaults to the root directory.
 
     Raises
-    -------
+    ------
     ValueError
         If the command is not valid.
     """
@@ -69,7 +93,7 @@ def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:
             if use_uv:
                 args = ["uv", "pip"] + args[pip_index + 1 :]
             else:
-                args = [get_executable(), "-m"] + args[pip_index + 1 :]
+                args = [get_executable(), "-m", "pip"] + args[pip_index + 1 :]
         else:
             raise ValueError("pip command requires an argument.")
     else:
@@ -134,6 +158,7 @@ def ensure_test_requirements() -> None:
     if "--no-deps" in sys.argv:
         return
     requirements_file = ROOT_DIR / "requirements" / "test.txt"
+    run_command(["pip", "install", "--upgrade", "pip"])
     run_command(
         [
             "pip",
@@ -157,24 +182,6 @@ def ensure_docs_requirements() -> None:
             str(requirements_file),
         ]
     )
-
-
-def run_isort(fix: bool, in_dir: Path = ROOT_DIR) -> None:
-    """Run isort.
-
-    Parameters
-    ----------
-    fix : bool
-        Whether to fix the imports.
-    in_dir : Path
-        Directory to run isort in.
-    """
-    ensure_package_exists("isort")
-    args = ["isort"]
-    if not fix:
-        args.append("--check-only")
-    args.append(".")
-    run_command(args, cwd=in_dir)
 
 
 def run_black(fix: bool, in_dir: Path = ROOT_DIR) -> None:
@@ -221,21 +228,6 @@ def run_flake8(in_dir: Path = ROOT_DIR) -> None:
     ensure_package_exists("flake8")
     run_command(
         ["flake8", "--config", ".flake8", "."],
-        cwd=in_dir,
-    )
-
-
-def run_pydocstyle(in_dir: Path = ROOT_DIR) -> None:
-    """Run pydocstyle.
-
-    Parameters
-    ----------
-    in_dir : Path
-        Directory to run pydocstyle in.
-    """
-    ensure_package_exists("pydocstyle")
-    run_command(
-        ["pydocstyle", "--config", "pyproject.toml", "."],
         cwd=in_dir,
     )
 

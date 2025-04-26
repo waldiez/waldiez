@@ -192,6 +192,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         ------
         ValueError
             If the configuration is invalid.
+
         Returns
         -------
         WaldiezAgentTerminationMessage

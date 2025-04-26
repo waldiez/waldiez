@@ -19,7 +19,6 @@ def test_models_exporter(tmp_path: Path) -> None:
     tmp_path : Path
         The temporary path.
     """
-
     flow_name = "flow1"
     model1_name = "model1"
     model2_name = "model2"

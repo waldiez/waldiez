@@ -3,6 +3,7 @@
 """Test waldiez.models.agents.swarm.WaldiezSwarmUpdateSystemMessage."""
 
 import pytest
+
 from waldiez.models.agents.swarm_agent.update_system_message import (
     WaldiezSwarmUpdateSystemMessage,
 )

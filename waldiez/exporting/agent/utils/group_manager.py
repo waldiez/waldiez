@@ -31,7 +31,6 @@ def get_group_manager_extras(
     Tuple[str, str]
         The content before the agent string and the group chat argument.
     """
-
     group_chat_arg = ""
     before_agent_string = ""
     custom_speaker_selection: Optional[str] = None

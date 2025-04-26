@@ -3,6 +3,7 @@
 """Test waldiez.models.agents.group_manager.group_manager.*."""
 
 import pytest
+
 from waldiez.models.agents.group_manager.group_manager import (
     WaldiezGroupManager,
 )

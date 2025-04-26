@@ -69,12 +69,12 @@ def process_events(df_events: pd.DataFrame) -> str:
     ----------
     df_events : pd.DataFrame
         The DataFrame containing the events data.
+
     Returns
     -------
     str
         The Mermaid sequence diagram text.
     """
-
     # Set to store participants (senders and recipients)
     participants: Set[str] = set()
     recipient: str
@@ -150,7 +150,7 @@ def save_diagram(mermaid_text: str, output_path: Union[str, Path]) -> None:
 def generate_sequence_diagram(
     file_path: Union[str, Path], output_path: Union[str, Path]
 ) -> None:
-    """Main function to generate the Mermaid diagram.
+    """Generate the Mermaid diagram.
 
     Parameters
     ----------
@@ -163,6 +163,7 @@ def generate_sequence_diagram(
     ------
     FileNotFoundError
         If the input file is not found.
+
     ValueError
         If the input file is not a JSON or CSV file.
     """

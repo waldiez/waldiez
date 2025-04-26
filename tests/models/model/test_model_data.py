@@ -4,6 +4,7 @@
 """Test waldiez.models.model.model_data.*."""
 
 import pytest
+
 from waldiez.models.model import (
     WaldiezModelAPIType,
     WaldiezModelData,

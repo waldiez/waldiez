@@ -109,7 +109,7 @@ export const WaldiezAgentRagUserCustomFunctions = (props: {
 
 export const DEFAULT_RAG_CUSTOM_EMBEDDING_FUNCTION = `"""Custom embedding function."""
 # provide the function to embed the input text
-# complete the \`custom_embedding_function\` below. 
+# complete the \`custom_embedding_function\` below.
 # Do not change the name of the function.
 # See https://docs.trychroma.com/integrations for more information and examples.
 # examples:

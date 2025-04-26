@@ -5,7 +5,6 @@
 from waldiez.exporting.agent.utils.rag_user.mongo_utils import (
     get_mongodb_db_args,
 )
-
 from waldiez.models import (
     WaldiezRagUser,
     WaldiezRagUserData,

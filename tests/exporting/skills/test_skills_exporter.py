@@ -7,7 +7,6 @@ from pathlib import Path
 
 from waldiez.exporting.base import AgentPosition, AgentPositions
 from waldiez.exporting.skills import SkillsExporter
-
 from waldiez.models import WaldiezAgent, WaldiezSkill
 
 

@@ -514,6 +514,7 @@ class WaldiezFlow(WaldiezBase):
         ----------
         member : WaldiezAgent
             The only agent in the flow
+
         Returns
         -------
         WaldiezFlow

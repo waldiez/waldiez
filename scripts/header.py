@@ -69,6 +69,7 @@ def update_file(
         The copyright line to add.
     remaining_content : str
         The remaining content of the file.
+
     Raises
     ------
     RuntimeError
@@ -136,6 +137,7 @@ def ensure_license_and_copyright(
         The start year of the project.
     holder : str
         The holder of the license.
+
     Raises
     ------
     RuntimeError

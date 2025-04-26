@@ -3,6 +3,7 @@
 """Test waldiez.models.skill.skill_data.*."""
 
 import pytest
+
 from waldiez.models.skill import WaldiezSkillData
 
 

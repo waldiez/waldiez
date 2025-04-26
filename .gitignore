@@ -39,4 +39,5 @@ dmypy.json
 **/.DS_Store
 waldiez/_version.py
 **/*.mmd
+docs/api/react
 .uv

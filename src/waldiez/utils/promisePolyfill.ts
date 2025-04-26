@@ -6,6 +6,8 @@
 // in case we are on node < 22 ?
 // src, credits: https://github.com/wojtekmaj/react-pdf/issues/1811#issuecomment-2265067062
 
+/* c8 ignore start */
+
 // @ts-expect-error This does not exist outside of polyfill which this is doing
 if (typeof Promise.withResolvers === "undefined") {
     if (typeof window !== "undefined") {
@@ -32,3 +34,5 @@ if (typeof Promise.withResolvers === "undefined") {
 }
 
 export {};
+
+/* c8 ignore end */

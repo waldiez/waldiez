@@ -35,7 +35,6 @@ CUSTOM_AFTER_WORK_TYPES = (
 class WaldiezSwarmAfterWork(WaldiezBase):
     """Swarm after work.
 
-
     Attributes
     ----------
     recipient : str

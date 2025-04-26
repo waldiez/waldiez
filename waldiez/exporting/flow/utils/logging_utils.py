@@ -17,7 +17,7 @@ get_sqlite_to_csv_call_string
 
 
 def get_start_logging(is_async: bool, tabs: int = 0) -> str:
-    """Get the logging start call string.
+    r"""Get the logging start call string.
 
     Parameters
     ----------
@@ -70,7 +70,7 @@ def get_start_logging(is_async: bool, tabs: int = 0) -> str:
 
 # pylint: disable=differing-param-doc,differing-type-doc
 def get_sync_sqlite_out() -> str:
-    """Get the sqlite to csv and json conversion code string.
+    r"""Get the sqlite to csv and json conversion code string.
 
     Returns
     -------
@@ -84,8 +84,8 @@ def get_sync_sqlite_out() -> str:
     def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
         \"\"\"Convert a sqlite table to csv and json files.
 
-        Parameters
-        ----------
+    Parameters
+    ----------
         dbname : str
             The sqlite database name.
         table : str
@@ -152,7 +152,7 @@ def get_sync_sqlite_out() -> str:
 
 # pylint: disable=differing-param-doc,differing-type-doc,line-too-long
 def get_async_sqlite_out() -> str:
-    """Get the sqlite to csv and json conversion code string.
+    r"""Get the sqlite to csv and json conversion code string.
 
     Returns
     -------
@@ -166,8 +166,8 @@ def get_async_sqlite_out() -> str:
     async def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
         \"\"\"Convert a sqlite table to csv and json files.
 
-        Parameters
-        ----------
+    Parameters
+    ----------
         dbname : str
             The sqlite database name.
         table : str
@@ -313,7 +313,7 @@ def get_sqlite_out_call(tabs: int, is_async: bool) -> str:
 
 
 def get_stop_logging(tabs: int, is_async: bool) -> str:
-    """Get the function to stop logging and gather logs.
+    r"""Get the function to stop logging and gather logs.
 
     Parameters
     ----------

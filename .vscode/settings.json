@@ -14,7 +14,12 @@
     },
     "pylint.args": ["--rcfile=pyproject.toml"],
     "pylint.importStrategy": "fromEnvironment",
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "black-formatter.args": ["--config=pyproject.toml"],
     "mypy.runUsingActiveInterpreter": true,
     "mypy-type-checker.args": ["--config pyproject.toml"],

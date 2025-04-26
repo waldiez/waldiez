@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-""" "Extras for exporting a captain agent."""
+"""Extras for exporting a captain agent."""
 
 import json
 import os
@@ -37,6 +37,7 @@ def get_captain_agent_extras(
         The serializer to use.
     output_dir : Optional[Union[str, Path]]
         The output directory to save the agent lib and nested config.
+
     Returns
     -------
     str
@@ -90,6 +91,7 @@ def generate_nested_config(
         All the models in the flow.
     save_path : str
         The path to save the nested config.
+
     Returns
     -------
     Dict[str, Any]
@@ -131,6 +133,7 @@ def get_llm_config(
         The agent.
     all_models : List[WaldiezModel]
         All the models in the flow.
+
     Returns
     -------
     Dict[str, str]

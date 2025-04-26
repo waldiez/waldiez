@@ -49,6 +49,7 @@ def export_single_chat(
         The number of tabs to use for indentation.
     is_async : bool
         Whether the chat is asynchronous.
+
     Returns
     -------
     Tuple[str, str]
@@ -154,6 +155,7 @@ def get_simple_chat_string(
         The number of tabs to use for indentation.
     is_async : bool
         Whether the chat is asynchronous.
+
     Returns
     -------
     Tuple[str, str]
@@ -218,6 +220,7 @@ def get_empty_simple_chat_string(
         The tab string.
     is_async : bool
         Whether the chat is asynchronous.
+
     Returns
     -------
     Tuple[str, str]

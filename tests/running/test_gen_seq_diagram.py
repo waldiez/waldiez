@@ -11,6 +11,7 @@ from typing import Any, Dict, List
 
 import pandas as pd
 import pytest
+
 from waldiez.running.gen_seq_diagram import (
     escape_mermaid_text,
     generate_sequence_diagram,

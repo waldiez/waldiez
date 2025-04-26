@@ -5,8 +5,6 @@
 
 from waldiez.exporting.base import ExportPositions
 from waldiez.exporting.chats import ChatsExporter
-from waldiez.models.chat.chat_message import get_last_carryover_method_content
-
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
@@ -15,6 +13,7 @@ from waldiez.models import (
     WaldiezChatSummary,
     WaldiezRagUser,
 )
+from waldiez.models.chat.chat_message import get_last_carryover_method_content
 
 
 def test_single_chat() -> None:

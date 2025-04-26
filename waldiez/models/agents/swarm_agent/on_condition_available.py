@@ -84,6 +84,7 @@ class WaldiezSwarmOnConditionAvailable(WaldiezBase):
             The prefix to add to the function name. Default is None.
         name_suffix : str, optional
             The suffix to add to the function name. Default is None.
+
         Returns
         -------
         Tuple[str, str]

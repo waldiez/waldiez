@@ -4,6 +4,7 @@
 """Test waldiez.models.agents.swarm.after_work.*."""
 
 import pytest
+
 from waldiez.models.agents.swarm_agent.after_work import WaldiezSwarmAfterWork
 
 

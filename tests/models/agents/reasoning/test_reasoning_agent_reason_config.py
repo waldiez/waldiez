@@ -3,6 +3,7 @@
 """Test waldiez.models.agents.reasoning.reason_config.*."""
 
 import pytest
+
 from waldiez.models.agents.reasoning.reasoning_agent_reason_config import (
     WaldiezReasoningAgentReasonConfig,
 )

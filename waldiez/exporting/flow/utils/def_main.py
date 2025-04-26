@@ -28,6 +28,7 @@ def get_def_main(
         Whether the main function is asynchronous.
     cache_seed : Optional[int]
         The seed for the cache. If None, cache should be disabled.
+
     Returns
     -------
     str

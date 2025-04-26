@@ -7,10 +7,10 @@ import sys
 from pathlib import Path
 
 import pytest
-from waldiez.__main__ import app as waldiez_main  # type: ignore
-from waldiez.cli import app
 
 from waldiez import __version__
+from waldiez.__main__ import app as waldiez_main  # type: ignore
+from waldiez.cli import app
 from waldiez.models import WaldiezFlow
 
 

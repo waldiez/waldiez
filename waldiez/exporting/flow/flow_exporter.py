@@ -197,6 +197,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
         chats_content : str
             The chats content.
         before_chats : str
+
         Returns
         -------
         str
@@ -412,6 +413,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
             The before export.
         after_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
             The after export.
+
         Returns
         -------
         str

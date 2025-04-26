@@ -3,6 +3,7 @@
 """Test waldiez.models.chat.chat_nested.*."""
 
 import pytest
+
 from waldiez.models.chat.chat_message import WaldiezChatMessage
 from waldiez.models.chat.chat_nested import WaldiezChatNested
 

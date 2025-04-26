@@ -15,24 +15,20 @@ try:
         run_bandit,
         run_black,
         run_flake8,
-        run_isort,
         run_mypy,
-        run_pydocstyle,
         run_pylint,
         run_ruff,
         run_yamllint,
     )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from _lib import (  # type: ignore
-        ensure_dev_requirements,
-        ensure_test_requirements,
+    from _lib import ensure_dev_requirements  # type: ignore # noqa: I001
+    from _lib import ensure_test_requirements  # noqa: I001
+    from _lib import (
         run_bandit,
         run_black,
         run_flake8,
-        run_isort,
         run_mypy,
-        run_pydocstyle,
         run_pylint,
         run_ruff,
         run_yamllint,
@@ -45,11 +41,9 @@ def main() -> None:
     """Run linters."""
     ensure_dev_requirements()
     ensure_test_requirements()
-    run_isort(False)
     run_black(False)
     run_mypy()
     run_flake8()
-    run_pydocstyle()
     run_bandit()
     run_yamllint()
     run_ruff(False)
@@ -64,4 +58,5 @@ if __name__ == "__main__":
         sys.exit(1)
     finally:
         if HAD_TO_MODIFY_SYS_PATH:
+            sys.path.pop(0)
             sys.path.pop(0)

@@ -1,1 +1,31 @@
-npx lint-staged --relative
+#!/usr/bin/env sh
+set -e
+
+HERE="$(dirname "$(readlink -f "$0")")"
+ROOT_DIR="$(dirname "${HERE}")"
+
+# Try lint-staged (for React)
+if command -v npx >/dev/null 2>&1 && [ -f "package.json" ]; then
+    echo "Running lint-staged (TS/TSX files)..."
+    if [ $# -gt 0 ]; then
+        npx lint-staged --relative
+    else
+        cd "${ROOT_DIR}" || exit 1
+        bun run lint
+    fi
+fi
+
+if command -v pre-commit >/dev/null 2>&1 && [ -f ".pre-commit-config.yaml" ]; then
+    echo "Running pre-commit (Python files)..."
+
+    if [ $# -gt 0 ]; then
+        # If arguments passed (i.e., staged files), use hook-impl
+        pre-commit hook-impl \
+            --config=.pre-commit-config.yaml \
+            --hook-type=pre-commit -- "$@"
+    else
+        # If no arguments (manually triggered?), run all files
+        cd "${ROOT_DIR}" || exit 1
+        pre-commit run --all-files
+    fi
+fi

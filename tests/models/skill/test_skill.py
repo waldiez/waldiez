@@ -5,6 +5,7 @@
 """Test waldiez.models.skill.*."""
 
 import pytest
+
 from waldiez.models.skill import (
     SHARED_SKILL_NAME,
     WaldiezSkill,

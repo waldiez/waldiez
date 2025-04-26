@@ -24,7 +24,9 @@ try:  # pragma: no cover
 except ImportError:  # pragma: no cover
     import warnings
 
-    warnings.warn("Importing __version__ failed. Using 'dev' as version.")
+    warnings.warn(
+        "Importing __version__ failed. Using 'dev' as version.", stacklevel=2
+    )
     __version__ = "dev"
 
 
@@ -83,7 +85,7 @@ def run(
             resolve_path=True,
         ),
     ],
-    output: Optional[Path] = typer.Option(
+    output: Optional[Path] = typer.Option(  # noqa: B008
         None,
         help=(
             "Path to the output (.py) file. "
@@ -93,7 +95,7 @@ def run(
         dir_okay=False,
         resolve_path=True,
     ),
-    force: bool = typer.Option(
+    force: bool = typer.Option(  # noqa: B008
         False,
         help="Override the output file if it already exists.",
     ),

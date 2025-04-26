@@ -3,7 +3,6 @@
 """Test waldiez.exporting.chats.ChatsExporter with a sequential chat."""
 
 from waldiez.exporting.chats import ChatsExporter
-
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,

@@ -3,6 +3,7 @@
 """Test waldiez.models.flow.flow_data.*."""
 
 import pytest
+
 from waldiez.models.flow.flow_data import WaldiezFlowData
 
 

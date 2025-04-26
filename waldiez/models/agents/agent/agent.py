@@ -148,7 +148,7 @@ class WaldiezAgent(WaldiezBase):
     def ag2_imports(self) -> Set[str]:
         """Return the AG2 imports of the agent."""
         agent_class = self.ag2_class
-        imports = set(["import autogen"])
+        imports = {"import autogen"}
         if agent_class == "AssistantAgent":
             imports.add("from autogen import AssistantAgent")
         elif agent_class == "UserProxyAgent":

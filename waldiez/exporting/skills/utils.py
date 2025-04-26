@@ -23,7 +23,7 @@ def get_agent_skill_registration(
     skill_description: str,
     string_escape: Callable[[str], str],
 ) -> str:
-    """Get the agent skill string and secrets.
+    r"""Get the agent skill string and secrets.
 
     Parameters
     ----------
@@ -37,6 +37,7 @@ def get_agent_skill_registration(
         The skill description.
     string_escape : Callable[[str], str]
         The string escape function.
+
     Returns
     -------
     str
@@ -220,7 +221,6 @@ def _sort_imports(
     Tuple[List[str], List[str], List[str]]
         The sorted skill imports.
     """
-
     # "from x import y" and "import z"
     # the "import a" should be first (and sorted)
     # then the "from b import c" (and sorted)
@@ -254,6 +254,7 @@ def get_skill_secrets_import(flow_name: str, skill: WaldiezSkill) -> str:
         The name of the flow.
     skill : WaldiezSkill
         The skill.
+
     Returns
     -------
     str
@@ -274,7 +275,7 @@ def get_agent_skill_registrations(
     skill_names: Dict[str, str],
     string_escape: Callable[[str], str],
 ) -> str:
-    """Get the agent skill registrations.
+    r"""Get the agent skill registrations.
 
     example output:
 
@@ -333,6 +334,7 @@ def get_agent_skill_registrations(
         A mapping of skill id to skill name.
     string_escape : Callable[[str], str]
         The string escape function.
+
     Returns
     -------
     str

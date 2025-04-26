@@ -206,6 +206,7 @@ def push_image(
         The platform to push the image to.
     container_command : str
         The container command to use.
+
     Raises
     ------
     subprocess.CalledProcessError

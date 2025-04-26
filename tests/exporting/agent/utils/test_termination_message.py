@@ -4,10 +4,10 @@
 """Test waldiez.exporting.agents.termination_message.*."""
 
 import pytest
+
 from waldiez.exporting.agent.utils.termination_message import (
     get_is_termination_message,
 )
-
 from waldiez.models import WaldiezAgent
 
 

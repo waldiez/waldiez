@@ -23,7 +23,7 @@ def export_sequential_chat(
     tabs: int,
     is_async: bool,
 ) -> Tuple[str, str]:
-    """Get the chats content, when there are more than one chats in the flow.
+    r"""Get the chats content, when there are more than one chats in the flow.
 
     Parameters
     ----------

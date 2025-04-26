@@ -82,7 +82,7 @@ class SkillsExporter(BaseExporter, ExporterMixin):
         return self.skill_secrets
 
     def get_imports(self) -> List[Tuple[str, ImportPosition]]:
-        """ "Generate the imports string.
+        """Generate the imports string.
 
         Returns
         -------

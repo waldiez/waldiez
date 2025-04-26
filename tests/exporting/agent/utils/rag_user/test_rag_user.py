@@ -12,7 +12,6 @@ from waldiez.exporting.agent.utils.rag_user.rag_user import (
     get_rag_user_retrieve_config_str,
 )
 from waldiez.exporting.base import ExporterMixin
-
 from waldiez.models import (
     WaldiezRagUser,
     WaldiezRagUserData,

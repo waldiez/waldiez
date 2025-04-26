@@ -6,7 +6,6 @@
 from waldiez.exporting.agent.utils.rag_user.pgvector_utils import (
     get_pgvector_db_args,
 )
-
 from waldiez.models import (
     WaldiezRagUser,
     WaldiezRagUserData,

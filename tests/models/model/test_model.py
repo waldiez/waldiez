@@ -6,6 +6,7 @@ import os
 from typing import List
 
 import pytest
+
 from waldiez.models.model import (
     DEFAULT_BASE_URLS,
     MODEL_NEEDS_BASE_URL,

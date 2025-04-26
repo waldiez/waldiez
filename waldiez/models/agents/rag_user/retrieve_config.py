@@ -844,6 +844,7 @@ def resolve_path(path: str, is_raw: bool, must_exist: bool) -> str:
         If the path is a raw string.
     must_exist : bool
         If the path must exist.
+
     Returns
     -------
     Path

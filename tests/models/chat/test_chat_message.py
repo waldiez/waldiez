@@ -3,6 +3,7 @@
 """Test waldiez.models.chat.chat_message."""
 
 import pytest
+
 from waldiez.models.chat.chat_message import (
     RAG_METHOD_WITH_CARRYOVER_BODY,
     WaldiezChatMessage,

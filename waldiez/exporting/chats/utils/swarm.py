@@ -47,6 +47,7 @@ def export_swarm_chat(
         The number of tabs to use for indentation.
     is_async : bool
         Whether the chat is asynchronous.
+
     Returns
     -------
     Tuple[str, str]
@@ -124,6 +125,7 @@ def get_swarm_agents_strings(
         A mapping of agent id to agent name.
     user_agent : Optional[WaldiezAgent]
         The user agent.
+
     Returns
     -------
     Tuple[str, str]
@@ -190,6 +192,7 @@ def get_swarm_after_work_string(
         A mapping of agent id to agent name.
     name_suffix : str
         The suffix to use for the function name.
+
     Returns
     -------
     Tuple[str, str]

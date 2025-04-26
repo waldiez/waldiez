@@ -204,6 +204,7 @@ def get_last_carryover_method_content(text_content: str) -> str:
     ----------
     text_content : str
         Text content before the carryover.
+
     Returns
     -------
     str

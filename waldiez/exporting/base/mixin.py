@@ -28,6 +28,7 @@ class ExporterMixin:
             The item.
         tabs : int, optional
             The number of tabs for indentation, by default 1.
+
         Returns
         -------
         str
@@ -77,6 +78,7 @@ class ExporterMixin:
             The comment key.
         for_notebook : bool
             Whether the comment is for a notebook or not.
+
         Returns
         -------
         str
@@ -121,6 +123,7 @@ class ExporterMixin:
             The prefix for the instance name, by default "w".
         max_length : int, optional
             The maximum length of the variable name, by default 64
+
         Returns
         -------
         Dict[str, str]

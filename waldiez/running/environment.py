@@ -70,7 +70,7 @@ def refresh_environment() -> None:
 
             @contextlib.contextmanager
             def _np_no_nep50_warning() -> Generator[None, None, None]:
-                """Dummy function to avoid the warning.
+                """Avoid no_nep50 warning.
 
                 Yields
                 ------

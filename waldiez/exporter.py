@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """
+Waldiez exporter class.
+
 The role of the exporter is to export the model's data
 to an autogen's flow with one or more chats.
 
@@ -20,14 +22,16 @@ from .models import Waldiez
 class WaldiezExporter:
     """Waldiez exporter.
 
-    Attributes:
+    Attributes
+    ----------
         waldiez (Waldiez): The Waldiez instance.
     """
 
     def __init__(self, waldiez: Waldiez) -> None:
         """Initialize the Waldiez exporter.
 
-        Parameters:
+        Parameters
+        ----------
             waldiez (Waldiez): The Waldiez instance.
         """
         self.waldiez = waldiez

@@ -8,6 +8,7 @@ import shutil
 from pathlib import Path
 
 import pytest
+
 from waldiez.models.agents.rag_user.retrieve_config import (
     WaldiezRagUserRetrieveConfig,
 )

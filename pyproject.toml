@@ -95,7 +95,6 @@ dev = [
     "jupyterlab>=4.3.0",
     "jupyter_server==2.15.0",
     "hatchling==1.27.0",
-    "isort==6.0.1",
     "mypy==1.15.0",
     "pandas-stubs==2.2.3.250308",
     "pre-commit==4.2.0",
@@ -107,6 +106,7 @@ dev = [
     "yamllint==1.37.0",
     "toml==0.10.2; python_version <= '3.10'",
     "types-toml==0.10.8.20240310",
+    "types-requests==2.32.0.20250328",
 ]
 ag2_extras =[
     # models
@@ -251,24 +251,6 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 
-# isort
-[tool.isort]
-profile ="black"
-skip=[
-    ".venv",
-    ".local",
-    "node_modules",
-    "examples",
-    "waldiez_out",
-]
-include_trailing_comma=true
-force_grid_wrap=0
-use_parentheses=true
-line_length=80
-
-# pydocstyle
-[tool.pydocstyle]
-match-dir="([^!(.venv)].*)([^!(.local)].*)([^!(examples)].*)([^!(waldiez_out)].*)([^!(node_modules)].*)"
 
 # pylint
 [tool.pylint.master]
@@ -346,11 +328,11 @@ extend-exclude = [
     "node_modules",
     "examples",
     "waldiez_out",
+    "docs",
 ]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "Q"]
-ignore = []
+select = ["F", "Q" , "D", "I", "G", "C4", "C90", "E", "W", "B"]
 # # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
 unfixable = []
@@ -367,6 +349,10 @@ indent-style = "space"
 # Like Black, respect magic trailing commas.
 skip-magic-trailing-comma = false
 line-ending = "lf"
+docstring-code-format = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 # pytest
 [tool.pytest.ini_options]

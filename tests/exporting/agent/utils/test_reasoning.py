@@ -4,7 +4,6 @@
 
 from waldiez.exporting.agent.utils.reasoning import get_reasoning_agent_extras
 from waldiez.exporting.base import ExporterMixin
-
 from waldiez.models import WaldiezAgent, WaldiezReasoningAgent
 
 

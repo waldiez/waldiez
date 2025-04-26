@@ -8,7 +8,6 @@ import os
 from waldiez.exporting.agent.utils.rag_user.vector_db import (
     get_rag_user_vector_db_string,
 )
-
 from waldiez.models import (
     WaldiezRagUser,
     WaldiezRagUserData,

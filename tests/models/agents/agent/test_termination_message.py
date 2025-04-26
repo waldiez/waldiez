@@ -5,6 +5,7 @@
 """Test waldiez.models.agents.agent.termination_message.*."""
 
 import pytest
+
 from waldiez.models.agents.agent.termination_message import (
     WaldiezAgentTerminationMessage,
 )

@@ -21,13 +21,16 @@ except ImportError:  # pragma: no cover
     # https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
     import warnings
 
-    warnings.warn("Importing __version__ failed. Using 'dev' as version.")
+    warnings.warn(
+        "Importing __version__ failed. Using 'dev' as version.", stacklevel=2
+    )
     __version__ = "dev"
 
 
 __WALDIEZ_INITIALIZED = False
 
 if not __WALDIEZ_INITIALIZED:
+    __WALDIEZ_INITIALIZED = True
     check_conflicts()
     check_flaml_warnings()
     # let's skip the one below
@@ -37,7 +40,6 @@ if not __WALDIEZ_INITIALIZED:
     #   before calling pip install pyautogen[captainagent]
     #   we should have pysqlite3 installed (at least on windows)
     # before running a flow
-    __WALDIEZ_INITIALIZED = True
 
 __all__ = [
     "Waldiez",

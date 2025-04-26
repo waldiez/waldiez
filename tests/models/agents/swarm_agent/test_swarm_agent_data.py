@@ -5,6 +5,7 @@
 from typing import List
 
 import pytest
+
 from waldiez.models.agents.swarm_agent import (
     WaldiezSwarmAfterWork,
     WaldiezSwarmAgentData,

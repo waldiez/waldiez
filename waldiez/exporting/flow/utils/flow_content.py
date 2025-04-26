@@ -16,6 +16,7 @@ def get_py_content_start(waldiez: Waldiez) -> str:
     ----------
     waldiez : Waldiez
         The waldiez object.
+
     Returns
     -------
     str
@@ -46,6 +47,7 @@ def get_ipynb_content_start(
         The waldiez object.
     comment : Callable[[bool, int], str]
         The function to create a comment.
+
     Returns
     -------
     str
@@ -130,6 +132,7 @@ def get_after_run_content(
         The dictionary of agent names and their corresponding ids
     tabs : int
         The number of tabs to add before the content.
+
     Returns
     -------
     str

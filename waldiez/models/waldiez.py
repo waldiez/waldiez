@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Waldiez
+"""Waldiez data class.
 
 A Waldiez class contains all the information that is needed to generate
 and run an autogen workflow. It has the model/LLM configurations, the agent
@@ -167,7 +167,7 @@ class Waldiez:
         """Get the agents.
 
         Yields
-        -------
+        ------
         WaldiezAgent
             The flow agents.
         """
@@ -178,7 +178,7 @@ class Waldiez:
         """Get the flow skills.
 
         Yields
-        -------
+        ------
         WaldiezSkill
             The skills.
         """
@@ -189,7 +189,7 @@ class Waldiez:
         """Get the models.
 
         Yields
-        -------
+        ------
         WaldiezModel
             The flow models.
         """
@@ -276,7 +276,7 @@ class Waldiez:
                 autogen_version=autogen_version,
             )
         )
-        return sorted(list(requirements))
+        return sorted(requirements)
 
     def get_flow_env_vars(self) -> List[Tuple[str, str]]:
         """Get the flow environment variables.

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from waldiez.models.skill import WaldiezSkill
 
 

@@ -3,6 +3,7 @@
 """Test waldiez.models.agents.agent.agent.*."""
 
 import pytest
+
 from waldiez.models.agents import (
     WaldiezAgent,
     WaldiezAgentCodeExecutionConfig,

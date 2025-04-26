@@ -8,7 +8,6 @@ from typing import List
 
 from waldiez.exporting.agent.utils.group_manager import get_group_manager_extras
 from waldiez.exporting.base import ExporterMixin
-
 from waldiez.models import (
     WaldiezAgent,
     WaldiezGroupManager,

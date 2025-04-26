@@ -6,8 +6,8 @@ import shutil
 from pathlib import Path
 
 import jupytext  # type: ignore[import-untyped]
-from waldiez.exporting.flow.flow_exporter import FlowExporter
 
+from waldiez.exporting.flow.flow_exporter import FlowExporter
 from waldiez.models import Waldiez
 
 from .flow_helpers import get_flow

@@ -4,6 +4,7 @@
 """Test waldiez.models.chat.chat_data.*."""
 
 import pytest
+
 from waldiez.models.chat.chat_data import WaldiezChatData
 from waldiez.models.chat.chat_message import WaldiezChatMessage
 

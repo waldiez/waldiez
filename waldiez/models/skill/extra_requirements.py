@@ -19,6 +19,7 @@ def get_skills_extra_requirements(
         The skills.
     autogen_version : str
         The ag2 version.
+
     Returns
     -------
     List[str]

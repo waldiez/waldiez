@@ -318,6 +318,7 @@ class WaldiezChat(WaldiezBase):
             Whether to get the chat arguments for a chat queue.
         sender : WaldiezAgent, optional
             The sender agent, to check if it's a RAG user.
+
         Returns
         -------
         dict
@@ -342,6 +343,7 @@ class WaldiezChat(WaldiezBase):
         ----------
         kwargs : Any
             The keyword arguments.
+
         Returns
         -------
         Dict[str, Any]

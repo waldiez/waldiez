@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Run a waldiez flow.
+
 The flow is first converted to an autogen flow with agents, chats and skills.
 We then chown to temporary directory, call the flow's `main()` and
 return the results. Before running the flow, any additional environment
@@ -144,9 +145,9 @@ class WaldiezRunner:
         Set[str]
             The extra requirements.
         """
-        extra_requirements = set(
+        extra_requirements = {
             req for req in self.waldiez.requirements if req not in sys.modules
-        )
+        }
         if self.waldiez.has_captain_agents:
             check_pysqlite3()
         return extra_requirements
@@ -185,6 +186,7 @@ class WaldiezRunner:
             The runtime uploads root.
         skip_mmd : bool
             Whether to skip the Mermaid diagram generation.
+
         Returns
         -------
         Union[ChatResult, List[ChatResult]]

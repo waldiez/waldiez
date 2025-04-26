@@ -6,7 +6,6 @@
 from typing import Callable, Dict, List, Tuple
 
 from waldiez.exporting.chats.utils.nested import get_nested_chat_queue
-
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
@@ -56,6 +55,7 @@ def get_swarm_extras(
         The serializer to get the string representation of an object.
     string_escape : Callable[[str], str]
         The function to escape the string quotes and newlines.
+
     Returns
     -------
     Tuple[str, str, str]

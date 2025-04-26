@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 import pytest
+
 from waldiez.running.running import (
     a_chdir,
     a_install_requirements,
@@ -23,7 +24,6 @@ def test_chdir(tmp_path: Path) -> None:
 
     Parameters
     ----------
-
     tmp_path : Path
         The temporary path.
     """
@@ -43,7 +43,6 @@ async def test_a_chdir(tmp_path: Path) -> None:
 
     Parameters
     ----------
-
     tmp_path : Path
         The temporary path.
     """
@@ -62,7 +61,6 @@ def test_before_run(tmp_path: Path) -> None:
 
     Parameters
     ----------
-
     tmp_path : Path
         The temporary path.
     """
@@ -122,7 +120,6 @@ def test_after_run(tmp_path: Path) -> None:
 
     Parameters
     ----------
-
     tmp_path : Path
         The temporary path.
     """

@@ -5,6 +5,7 @@
 import os
 
 import pytest
+
 from waldiez.models.agents.rag_user.vector_db_config import (
     WaldiezRagUserVectorDbConfig,
 )

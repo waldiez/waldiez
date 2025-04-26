@@ -151,6 +151,7 @@ def check_function(
         The expected method name.
     function_args : List[str]
         The expected method arguments.
+
     Returns
     -------
     Tuple[bool, str]
@@ -186,6 +187,7 @@ def _validate_function_body(
         The expected method name.
     function_args : List[str]
         The expected method arguments.
+
     Returns
     -------
     Tuple[bool, str]
@@ -205,7 +207,11 @@ def _validate_function_body(
                         f" got: {len(node.args.args)} :("
                     ),
                 )
-            for arg, expected_arg in zip(node.args.args, function_args):
+            for arg, expected_arg in zip(
+                node.args.args,
+                function_args,
+                strict=False,
+            ):
                 if arg.arg != expected_arg:
                     return (
                         False,
@@ -315,6 +321,7 @@ def generate_function(
     types_as_comments : bool, optional
         Include the type hints as comments (or in the function signature)
         (default is False).
+
     Returns
     -------
     str
@@ -327,7 +334,9 @@ def generate_function(
         function_string += ")"
     else:
         function_string += "\n"
-        for arg, arg_type in zip(function_args, function_types[0]):
+        for arg, arg_type in zip(
+            function_args, function_types[0], strict=False
+        ):
             if types_as_comments:
                 function_string += f"    {arg},  # type: {arg_type}" + "\n"
             else:

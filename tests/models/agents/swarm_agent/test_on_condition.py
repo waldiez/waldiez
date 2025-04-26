@@ -3,6 +3,7 @@
 """Test waldiez.models.agents.swarm.on_condition."""
 
 import pytest
+
 from waldiez.models.agents.swarm_agent import (
     WaldiezSwarmOnCondition,
     WaldiezSwarmOnConditionAvailable,

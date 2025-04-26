@@ -31,7 +31,7 @@ CUSTOM_SPEAKER_SELECTION_TYPES = (
 
 
 class WaldiezGroupManagerSpeakers(WaldiezBase):
-    """Group chat speakers.
+    r"""Group chat speakers.
 
     If the method for the speaker selection is `custom`
     the `selection_custom_method` contents (source code) will be used.

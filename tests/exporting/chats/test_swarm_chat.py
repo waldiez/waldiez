@@ -3,6 +3,7 @@
 """Test waldiez.exporting.chats.ChatsExporter with a swarm chat."""
 
 import pytest
+
 from waldiez.exporting.chats import ChatsExporter
 from waldiez.exporting.chats.utils.swarm import (
     export_swarm_chat,
@@ -10,7 +11,6 @@ from waldiez.exporting.chats.utils.swarm import (
     get_swarm_agents_strings,
     get_swarm_messages_string,
 )
-
 from waldiez.models import (
     Waldiez,
     WaldiezAgent,
