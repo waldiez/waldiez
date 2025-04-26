@@ -1,95 +1,95 @@
 .flow-wrapper .dict-entries-view {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flow-wrapper .dict-entries-view label {
-    padding-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .flow-wrapper .dict-entries-list {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flow-wrapper .dict-entry {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .dict-entry input {
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    margin-right: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  margin-right: 10px;
 }
 
 .flow-wrapper .dict-entry input[type="password"] {
-    text-shadow: 0 0 0 #000;
+  text-shadow: 0 0 0 #000;
 }
 
 .flow-wrapper .dict-entry input[type="password"]:focus {
-    text-shadow: none;
+  text-shadow: none;
 }
 
 .flow-wrapper.light .dict-entry input[type="password"]:focus {
-    color: black;
+  color: black;
 }
 
 .flow-wrapper.dark .dict-entry input[type="password"]:focus {
-    color: white;
+  color: white;
 }
 
 .flow-wrapper .dict-entries-view button {
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    cursor: pointer;
-    min-width: 40px;
-    margin-right: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  min-width: 40px;
+  margin-right: 10px;
 }
 
 .flow-wrapper .dict-entries-view button:hover {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
 .flow-wrapper .dict-entry button:hover {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
 .flow-wrapper .add-dict-entry-view {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .add-dict-entry-view input {
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    margin-right: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  margin-right: 10px;
 }
 
 .flow-wrapper .add-dict-entry-view button:hover {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
 .flow-wrapper .add-dict-entry-view .visibilityWrapperBtn {
-    padding: 8px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    cursor: pointer;
-    margin-right: 10px;
-    min-width: 40px;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  margin-right: 10px;
+  min-width: 40px;
 }
 
 .flow-wrapper.dark .dict-entries-view button {
-    background-color: #222;
-    color: #f8f8f8;
+  background-color: #222;
+  color: #f8f8f8;
 }
 
 .flow-wrapper.light .dict-entries-view button {
-    background-color: #f8f8f8;
-    color: #000;
+  background-color: #f8f8f8;
+  color: #000;
 }

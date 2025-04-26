@@ -148,7 +148,7 @@ const predefinedNIMModels = [
     },
     {
         label: "Llama 3.3 70B Instruct",
-        value: "llama/llama-3.3-70b-instruct",
+        value: "meta/llama-3.3-70b-instruct",
     },
     {
         label: "Llama 3.1 Nemotron Ultra 253B v1",

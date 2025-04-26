@@ -1,18 +1,18 @@
 .flow-wrapper .console {
-    border-radius: 5px;
-    padding: 10px;
-    margin-top: 10px;
-    overflow: auto;
-    max-height: 200px;
-    text-wrap: wrap;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+  overflow: auto;
+  max-height: 200px;
+  text-wrap: wrap;
 }
 
 .flow-wrapper.light .console {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
 }
 
 .flow-wrapper.dark .console {
-    background-color: #141414;
-    border: 1px solid #444;
+  background-color: #141414;
+  border: 1px solid #444;
 }

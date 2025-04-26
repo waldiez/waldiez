@@ -1,132 +1,132 @@
 .flow-wrapper .agent-edge-box {
-    display: flex;
-    cursor: pointer;
-    align-items: stretch;
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
-    z-index: 10000;
-    background-color: transparent !important;
+  display: flex;
+  cursor: pointer;
+  align-items: stretch;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  z-index: 10000;
+  background-color: transparent !important;
 }
 
 .flow-wrapper .agent-edge-view {
-    font-size: small;
-    font-weight: 500;
-    border-radius: 4px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  font-size: small;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .flow-wrapper .agent-edge-view.with-position {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    min-width: 50px;
-    max-width: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-width: 50px;
+  max-width: 50px;
 }
 
 .flow-wrapper.light .agent-edge-view {
-    background-color: #f8f8f8;
-    border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
 }
 
 .flow-wrapper.dark .agent-edge-view {
-    background-color: #222;
-    border: 1px solid #333;
+  background-color: #222;
+  border: 1px solid #333;
 }
 
 .flow-wrapper .agent-edge-box.assistant .agent-edge-view {
-    color: var(--assistant-agent-color);
+  color: var(--assistant-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.manager .agent-edge-view {
-    color: var(--group-manager-color);
+  color: var(--group-manager-color);
 }
 
 .flow-wrapper .agent-edge-box.rag_user .agent-edge-view {
-    color: var(--rag-user-color);
+  color: var(--rag-user-color);
 }
 
 .flow-wrapper .agent-edge-box.user .agent-edge-view {
-    color: var(--user-agent-color);
+  color: var(--user-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.assistant .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--assistant-agent-color);
+  box-shadow: 0 0 4px var(--assistant-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.manager .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--group-manager-color);
+  box-shadow: 0 0 4px var(--group-manager-color);
 }
 
 .flow-wrapper .agent-edge-box.rag_user .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--rag-user-color);
+  box-shadow: 0 0 4px var(--rag-user-color);
 }
 
 .flow-wrapper .agent-edge-box.user .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--user-agent-color);
+  box-shadow: 0 0 4px var(--user-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.swarm .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--swarm-agent-color);
+  box-shadow: 0 0 4px var(--swarm-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.reasoning .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--reasoning-agent-color);
+  box-shadow: 0 0 4px var(--reasoning-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.captain .agent-edge-view:hover {
-    box-shadow: 0 0 4px var(--captain-agent-color);
+  box-shadow: 0 0 4px var(--captain-agent-color);
 }
 
 .flow-wrapper .clear-history-checkbox {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .flow-wrapper .edge-modal .modal-actions {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .flow-wrapper.dark .edge-position-warning-icon {
-    fill: yellow;
+  fill: yellow;
 }
 
 .flow-wrapper.light .edge-position-warning-icon {
-    fill: red;
+  fill: red;
 }
 
 .flow-wrapper .edge-actions {
-    position: absolute;
-    top: -40px;
-    left: -50%;
-    display: flex;
-    justify-content: space-between;
-    width: 50px;
-    padding: 8px;
+  position: absolute;
+  top: -40px;
+  left: -50%;
+  display: flex;
+  justify-content: space-between;
+  width: 50px;
+  padding: 8px;
 }
 
 .flow-wrapper .edge-actions.with-position {
-    left: 0;
+  left: 0;
 }
 
 .flow-wrapper .edge-actions div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .flow-wrapper.dark .edge-actions {
-    background-color: #222;
+  background-color: #222;
 }
 
 .flow-wrapper.light .edge-actions {
-    background-color: #f8f8f8;
+  background-color: #f8f8f8;
 }

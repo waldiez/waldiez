@@ -1,31 +1,45 @@
 #!/usr/bin/env sh
 set -e
 
-HERE="$(dirname "$(readlink -f "$0")")"
-ROOT_DIR="$(dirname "${HERE}")"
+FORCE_MODE=0
 
-# Try lint-staged (for React)
+# Check for --force
+for arg in "$@"; do
+    if [ "$arg" = "--force" ]; then
+        FORCE_MODE=1
+        break
+    fi
+done
+HERE="$(cd "$(dirname "$0")" && pwd)"
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+# Detect staged TS/JS/CSS/JSON/YAML/Markdown files
+FROM_NPM=$(echo "${STAGED_FILES}" | grep -E '\.(js|jsx|ts|tsx|css|json|yml|yaml)$' || true)
+
+# Detect staged Python files
+PY_FILES=$(echo "$STAGED_FILES" | grep -E '\.(py|yml|yaml|md)$' || true)
+
+# --- React / TS side ---
 if command -v npx >/dev/null 2>&1 && [ -f "package.json" ]; then
-    echo "Running lint-staged (TS/TSX files)..."
-    if [ $# -gt 0 ]; then
-        npx lint-staged --relative
-    else
-        cd "${ROOT_DIR}" || exit 1
+    if [ "${FORCE_MODE}" -eq 1 ]; then
+        echo "Running lint-staged (React/TS/JS files), forced..."
         bun run lint
+    else
+        if [ -n "${FROM_NPM}" ]; then
+            echo "Running lint-staged (React/TS/JS files)..."
+            npx lint-staged --relative
+        fi
     fi
 fi
 
+# --- Python side ---
 if command -v pre-commit >/dev/null 2>&1 && [ -f ".pre-commit-config.yaml" ]; then
-    echo "Running pre-commit (Python files)..."
-
-    if [ $# -gt 0 ]; then
-        # If arguments passed (i.e., staged files), use hook-impl
-        pre-commit hook-impl \
-            --config=.pre-commit-config.yaml \
-            --hook-type=pre-commit -- "$@"
-    else
-        # If no arguments (manually triggered?), run all files
-        cd "${ROOT_DIR}" || exit 1
+    if [ "$FORCE_MODE" -eq 1 ]; then
+        echo "Running pre-commit on all files (forced)..."
         pre-commit run --all-files
+        elif [ -n "${PY_FILES}" ]; then
+        echo "Running pre-commit on staged Python files..."
+        pre-commit hook-impl --config=.pre-commit-config.yaml --hook-dir "${HERE}" --hook-type=pre-commit
+    else
+        echo "No PY/YAML/MD files to lint."
     fi
 fi

@@ -1,455 +1,455 @@
 .flow-wrapper .agent-node {
-    border-radius: 12px;
-    min-width: 200px;
-    min-height: 200px;
-    width: 200px;
-    width: calc(100% - 6px);
-    height: 200px;
-    height: calc(100% - 6px);
-    display: flex;
-    padding: 0;
-    flex-direction: column;
+  border-radius: 12px;
+  min-width: 200px;
+  min-height: 200px;
+  width: 200px;
+  width: calc(100% - 6px);
+  height: 200px;
+  height: calc(100% - 6px);
+  display: flex;
+  padding: 0;
+  flex-direction: column;
 
-    /* overflow: auto;
+  /* overflow: auto;
   resize: both; */
 }
 
 .flow-wrapper label + .select {
-    margin-top: 4px;
+  margin-top: 4px;
 }
 
 .flow-wrapper .agent-content label {
-    font-weight: bolder;
-    padding: unset !important;
+  font-weight: bolder;
+  padding: unset !important;
 }
 
 .flow-wrapper .agent-content label,
 .flow-wrapper .agent-content textarea,
 .flow-wrapper .agent-content input[type="text"] {
-    font-size: small;
+  font-size: small;
 }
 
 .flow-wrapper .agent-node .agent-description-view label {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 .flow-wrapper .agent-header {
-    display: flex;
-    width: 100%;
-    margin-top: 4px;
-    height: 40px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  width: 100%;
+  margin-top: 4px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flow-wrapper .agent-header .agent-header-left {
-    display: inline-flex;
-    margin-left: 4px;
-    align-items: center;
+  display: inline-flex;
+  margin-left: 4px;
+  align-items: center;
 }
 
 .flow-wrapper .agent-header img {
-    max-width: 30px;
-    max-height: 30px;
+  max-width: 30px;
+  max-height: 30px;
 }
 
 .flow-wrapper .agent-skill-preview svg,
 .flow-wrapper .agent-model-preview img {
-    width: 18px !important;
-    max-width: 18px !important;
-    margin-right: 4px;
+  width: 18px !important;
+  max-width: 18px !important;
+  margin-right: 4px;
 }
 
 .flow-wrapper .agent-model-preview .other img,
 .flow-wrapper .agent-model-preview .openai img {
-    width: 16px !important;
-    max-width: 16px !important;
+  width: 16px !important;
+  max-width: 16px !important;
 }
 
 .flow-wrapper .agent-model-preview .nim img {
-    width: 16px !important;
-    max-width: 16px !important;
+  width: 16px !important;
+  max-width: 16px !important;
 }
 
 .flow-wrapper .group-member-entry svg {
-    margin-left: 8px;
+  margin-left: 8px;
 }
 
 .flow-wrapper .group-member-entry .group-member-name {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .flow-wrapper .agent-header .agent-header-left svg {
-    margin-right: 4px;
+  margin-right: 4px;
 }
 
 .flow-wrapper .agent-header .agent-label {
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 4px;
-    border: none;
-    background-color: transparent;
-    text-wrap: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 4px;
+  border: none;
+  background-color: transparent;
+  text-wrap: nowrap;
 }
 
 .flow-wrapper .agent-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 8px;
 }
 
 .flow-wrapper .agent-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 
-    /* height: 100%; */
-    margin-bottom: 20px;
+  /* height: 100%; */
+  margin-bottom: 20px;
 }
 
 .flow-wrapper .agent-body .agent-models,
 .flow-wrapper .agent-body .agent-skills {
-    width: auto;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    font-style: italic;
-    font-weight: 500;
-    font-size: small;
-    min-height: 1.3rem;
+  width: auto;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  font-style: italic;
+  font-weight: 500;
+  font-size: small;
+  min-height: 1.3rem;
 }
 
 .flow-wrapper .agent-content input,
 .flow-wrapper .agent-content textarea {
-    border-radius: 4px;
+  border-radius: 4px;
 }
 
 .flow-wrapper .agent-node textarea {
-    width: 100% !important;
-    height: calc(100% - 10px) !important;
-    resize: none;
-    box-sizing: border-box;
+  width: 100% !important;
+  height: calc(100% - 10px) !important;
+  resize: none;
+  box-sizing: border-box;
 }
 
 .flow-wrapper .agent-panel {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flow-wrapper .agent-panel-add-skill {
-    display: flex;
-    align-items: baseline;
+  display: flex;
+  align-items: baseline;
 }
 
 .flow-wrapper .nested-chat-remove button,
 .flow-wrapper .nested-chat-reorder button {
-    margin-left: 8px;
+  margin-left: 8px;
 }
 
 .flow-wrapper .manager-speakers-add-transition,
 .flow-wrapper .agent-panel-select-group button,
 .flow-wrapper .agent-panel-add-skill button {
-    border: 1px solid #007bff;
-    margin-top: 5px;
+  border: 1px solid #007bff;
+  margin-top: 5px;
 }
 
 .flow-wrapper .agent-panel button {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
 .flow-wrapper .manager-speakers-add-transition:disabled,
 .flow-wrapper .agent-panel-select-group button:disabled,
 .flow-wrapper .agent-panel-add-skill button:disabled {
-    border: none;
-    color: #6c757d;
-    cursor: not-allowed;
+  border: none;
+  color: #6c757d;
+  cursor: not-allowed;
 }
 
 .flow-wrapper .agent-panel button:hover {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
 .flow-wrapper.dark .agent-panel button {
-    background-color: #222;
-    color: #f8f8f8;
+  background-color: #222;
+  color: #f8f8f8;
 }
 
 .flow-wrapper.light .agent-panel button {
-    background-color: #f8f8f8;
-    color: #000;
+  background-color: #f8f8f8;
+  color: #000;
 }
 
 .flow-wrapper .agent-panel-current-skills,
 .flow-wrapper .agent-panel-current-skills-heading {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .flow-wrapper .agent-panel-current-skill {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 2px;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .agent-panel .agent-no-skills {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .agent-panel-current-skill-entry {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .agent-panel-add-skill .select {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 .flow-wrapper .agent-panel-current-skill .skill-item,
 .flow-wrapper .agent-panel-current-skill .agent-item {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .agent-panel-current-skill .agent-name,
 .flow-wrapper .agent-panel-current-skill .skill-name {
-    margin-right: 10px;
-    padding: 10px;
-    background-color: rgb(150 150 150 / 10%);
+  margin-right: 10px;
+  padding: 10px;
+  background-color: rgb(150 150 150 / 10%);
 }
 
 .flow-wrapper .agent-footer {
-    /* flex: 1; */
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    justify-content: flex-end;
-    width: calc(100% + 4px);
-    margin-left: -2px;
-    margin-right: -2px;
+  /* flex: 1; */
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: flex-end;
+  width: calc(100% + 4px);
+  margin-left: -2px;
+  margin-right: -2px;
 }
 
 .flow-wrapper .agent-footer .agent-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: calc(100% - 4px);
-    padding: 2px;
-    margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% - 4px);
+  padding: 2px;
+  margin-bottom: 4px;
 }
 
 .flow-wrapper .agent-footer .date-info {
-    font-size: small;
-    color: #666;
+  font-size: small;
+  color: #666;
 }
 
 .flow-wrapper.light .agent-node {
-    border: 3px solid;
-    background-color: white;
+  border: 3px solid;
+  background-color: white;
 }
 
 .flow-wrapper.dark .agent-node {
-    border: 3px solid;
-    background-color: #222;
+  border: 3px solid;
+  background-color: #222;
 }
 
 .flow-wrapper .agent-node.user {
-    border-color: var(--user-agent-color);
+  border-color: var(--user-agent-color);
 }
 
 .flow-wrapper .agent-node.assistant {
-    border-color: var(--assistant-agent-color);
+  border-color: var(--assistant-agent-color);
 }
 
 .flow-wrapper .agent-node.manager {
-    border-color: var(--group-manager-color);
+  border-color: var(--group-manager-color);
 }
 
 .flow-wrapper .agent-node.rag_user {
-    border-color: var(--rag-user-color);
+  border-color: var(--rag-user-color);
 }
 
 .flow-wrapper .agent-node.swarm {
-    border-color: var(--swarm-agent-color);
+  border-color: var(--swarm-agent-color);
 }
 
 .flow-wrapper .agent-node.reasoning {
-    border-color: var(--reasoning-agent-color);
+  border-color: var(--reasoning-agent-color);
 }
 
 .flow-wrapper .agent-node.captain {
-    border-color: var(--captain-agent-color);
+  border-color: var(--captain-agent-color);
 }
 
 .flow-wrapper .group-member-entry {
-    display: flex;
-    align-items: center;
-    padding: 8px;
+  display: flex;
+  align-items: center;
+  padding: 8px;
 }
 
 .flow-wrapper .nested-chats-add-message {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .nested-chats-add-message .nested-chat-recipients {
-    flex: 1;
+  flex: 1;
 }
 
 .flow-wrapper .nested-chat-select-trigger-view {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .nested-chat-select-trigger {
-    flex: 1;
-    margin-right: 10px;
+  flex: 1;
+  margin-right: 10px;
 }
 
 .flow-wrapper .nested-chat-triggers {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .flow-wrapper .nested-chat-triggers-label,
 .flow-wrapper .nested-chat-messages-label {
-    margin-top: 10px;
-    font-weight: bold;
+  margin-top: 10px;
+  font-weight: bold;
 }
 
 .flow-wrapper .nested-chat-current-triggers,
 .flow-wrapper .nested-chat-registered-messages {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flow-wrapper .nested-chat-registered-messages {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .nested-chat-messages-label {
-    margin-bottom: -10px;
+  margin-bottom: -10px;
 }
 
 .flow-wrapper .nested-chat-trigger-entry,
 .flow-wrapper .nested-chat-registered-message {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0 0 8px;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 0 8px;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .nested-chat-registered .nested-chat-triggered-by-value,
 .flow-wrapper .nested-chat-registered .nested-chat-recipient-value {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 2px;
-    background-color: rgb(150 150 150 / 10%);
-    padding: 3px;
-    padding-left: 6px;
-    box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 2px;
+  background-color: rgb(150 150 150 / 10%);
+  padding: 3px;
+  padding-left: 6px;
+  box-sizing: border-box;
 }
 
 .flow-wrapper .nested-chat-message-actions {
-    display: flex;
+  display: flex;
 }
 
 .flow-wrapper .codeExecution-checkbox {
-    margin-top: 10px;
-    margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .flow-wrapper .agent-group-panel {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .agent-panel-add-to-group {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
 .flow-wrapper .agent-panel-add-to-group .select {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .flow-wrapper .agent-panel-add-to-group .agent-panel-add-to-group-button {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .flow-wrapper .codeExecution-use-docker-checkbox {
-    margin-top: 20px;
-    margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .flow-wrapper .agent-models-preview,
 .flow-wrapper .agent-skills-preview {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flow-wrapper .agent-model-preview,
 .flow-wrapper .agent-skill-preview {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
 .flow-wrapper .agent-model-preview .agent-model-img,
 .flow-wrapper .agent-skill-preview .agent-skill-img {
-    display: flex;
+  display: flex;
 }
 
 .flow-wrapper.dark .agent-model-preview .agent-model-img.other img,
 .flow-wrapper.dark .agent-model-preview .agent-model-img.openai img {
-    filter: invert(1);
+  filter: invert(1);
 }
 
 .flow-wrapper .agent-panel-select-group .select {
-    margin-right: 10px;
-    margin-bottom: 0;
-    flex: 1;
+  margin-right: 10px;
+  margin-bottom: 0;
+  flex: 1;
 }
 
 .flow-wrapper .agent-panel-select-group {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .agent-panel-current-group {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .agent-panel-current-group .agent-panel-group-label {
-    /* flex: 1; */
-    margin-right: 10px;
+  /* flex: 1; */
+  margin-right: 10px;
 }
 
 .flow-wrapper .speaker-repetition-mode-label {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 .flow-wrapper .codeExecution-functions {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 
 .flow-wrapper .manager-transitions-wrapper {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
 .flow-wrapper .manager-speakers-transitions-to {
-    margin-left: 5px;
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin-left: 5px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

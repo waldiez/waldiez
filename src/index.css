@@ -1,45 +1,45 @@
 :root {
-    --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
-    --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+  --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+  --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
 
-    font-family:
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        "Segoe UI",
-        Roboto,
-        Ubuntu,
-        Cantarell,
-        "Noto Sans",
-        sans-serif,
-        "Helvetica Neue",
-        Arial,
-        "Apple Color Emoji",
-        "Segoe UI Emoji",
-        "Segoe UI Symbol",
-        "Noto Color Emoji";
-    color-scheme: light dark;
-    font-synthesis: none;
-    text-rendering: optimizelegibility;
-    -webkit-font-smoothing: antialiased;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Ubuntu,
+    Cantarell,
+    "Noto Sans",
+    sans-serif,
+    "Helvetica Neue",
+    Arial,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* stylelint-disable csstree/validator */
 
 html,
 body {
-    margin: 0;
-    padding: 0;
-    min-height: -webkit-fill-available;
-    min-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
-    height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
-    height: -webkit-fill-available;
-    height: var(--app-height);
-    width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
-    width: -webkit-fill-available;
-    width: var(--app-width);
-    min-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
-    min-width: -webkit-fill-available;
-    min-width: var(--app-width);
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+  margin: 0;
+  padding: 0;
+  min-height: -webkit-fill-available;
+  min-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+  height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+  height: -webkit-fill-available;
+  height: var(--app-height);
+  width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+  width: -webkit-fill-available;
+  width: var(--app-width);
+  min-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+  min-width: -webkit-fill-available;
+  min-width: var(--app-width);
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 }

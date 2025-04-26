@@ -89,11 +89,11 @@
         "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun archive && bun docs"
     },
     "lint-staged": {
-        "*.{js,json,mjs,ts,jsx,tsx,css,md,yaml,yml}": [
-            "bun run format",
+        "*.{js,jsx,ts,tsx,json,css,md,yml,yaml}": [
             "bun run lint"
         ]
     },
+    "triggerPreCommit": "1",
     "dependencies": {
         "@monaco-editor/react": "^4.7.0",
         "@xyflow/react": "^12.6.0",
@@ -184,9 +184,6 @@
         "ws": "^8.18.1"
     },
     "prettier": {
-        "plugins": [
-            "@trivago/prettier-plugin-sort-imports"
-        ],
         "tabWidth": 4,
         "printWidth": 110,
         "arrowParens": "avoid",
@@ -194,6 +191,9 @@
         "singleQuote": false,
         "trailingComma": "all",
         "endOfLine": "lf",
+        "plugins": [
+            "@trivago/prettier-plugin-sort-imports"
+        ],
         "importOrderSeparation": true,
         "importOrderSortSpecifiers": true,
         "importOrder": [
@@ -207,6 +207,19 @@
             "^rc-slider",
             "^@monaco-editor/react",
             "^@waldiez/"
+        ],
+        "overrides": [
+            {
+                "files": [
+                    "**/*.yml",
+                    "**/*.yaml",
+                    "**/*.md",
+                    "**/*.css"
+                ],
+                "options": {
+                    "tabWidth": 2
+                }
+            }
         ]
     },
     "publishConfig": {

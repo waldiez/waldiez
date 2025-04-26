@@ -1,15 +1,15 @@
 .flow-wrapper .code-editor {
-    width: 100%;
-    height: 35vh;
-    max-height: 340px;
-    background-color: transparent;
-    text-align: center;
+  width: 100%;
+  height: 35vh;
+  max-height: 340px;
+  background-color: transparent;
+  text-align: center;
 }
 
 .flow-wrapper.light .code-editor {
-    border: 1px solid #ccc;
+  border: 1px solid #ccc;
 }
 
 .flow-wrapper.dark .code-editor {
-    border: 1px solid #333;
+  border: 1px solid #333;
 }

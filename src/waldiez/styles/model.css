@@ -1,152 +1,152 @@
 .flow-wrapper .model-node {
-    border-radius: 10px;
-    width: 180px;
-    min-width: 180px;
-    max-width: 180px;
-    height: 180px;
-    min-height: 180px;
-    max-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  border-radius: 10px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .flow-wrapper .model-node .model-header {
-    display: flex;
-    padding: 0 8px;
-    height: 40px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  padding: 0 8px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flow-wrapper .model-node .model-header div[role="button"] {
-    display: flex;
+  display: flex;
 }
 
 .flow-wrapper .model-logo {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flow-wrapper .model-logo img {
-    width: 30px;
-    max-width: 30px;
-    height: auto;
+  width: 30px;
+  max-width: 30px;
+  height: auto;
 }
 
 .flow-wrapper .model-logo.other img,
 .flow-wrapper .model-logo.openai img {
-    width: 20px !important;
-    max-width: 20px !important;
+  width: 20px !important;
+  max-width: 20px !important;
 }
 
 .flow-wrapper .model-logo.cohere img {
-    width: 24px !important;
-    max-width: 24px !important;
+  width: 24px !important;
+  max-width: 24px !important;
 }
 
 .flow-wrapper .model-logo.anthropic img {
-    width: 24px !important;
-    max-width: 24px !important;
+  width: 24px !important;
+  max-width: 24px !important;
 }
 
 .flow-wrapper .model-logo.google img {
-    width: 22px !important;
-    max-width: 22px !important;
+  width: 22px !important;
+  max-width: 22px !important;
 }
 
 .flow-wrapper .model-logo.azure img {
-    width: 22px !important;
-    max-width: 22px !important;
+  width: 22px !important;
+  max-width: 22px !important;
 }
 
 .flow-wrapper .model-logo.deepseek img {
-    width: 22px !important;
-    max-width: 22px !important;
+  width: 22px !important;
+  max-width: 22px !important;
 }
 
 .flow-wrapper .model-logo.mistral img {
-    width: 22px !important;
-    max-width: 22px !important;
+  width: 22px !important;
+  max-width: 22px !important;
 }
 
 .flow-wrapper .model-logo.nim img {
-    width: 24px !important;
-    max-width: 24px !important;
+  width: 24px !important;
+  max-width: 24px !important;
 }
 
 .flow-wrapper .model-logo.groq img {
-    width: 18px !important;
-    max-width: 18px !important;
+  width: 18px !important;
+  max-width: 18px !important;
 }
 
 .flow-wrapper .model-node .model-header .node-label {
-    width: 100%;
-    max-width: 110px;
-    white-space: nowrap;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  width: 100%;
+  max-width: 110px;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .flow-wrapper .model-node .model-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
 }
 
 .flow-wrapper .model-node .modal-actions {
-    padding: 10px;
+  padding: 10px;
 }
 
 .flow-wrapper .model-node .modal-body label {
-    margin-top: 10px;
-    padding: 4px;
+  margin-top: 10px;
+  padding: 4px;
 }
 
 .flow-wrapper .model-node .date-info {
-    font-size: small;
-    color: #666;
+  font-size: small;
+  color: #666;
 }
 
 .flow-wrapper .model-node .model-footer {
-    display: flex;
-    padding: 0 8px;
-    height: 40px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  padding: 0 8px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flow-wrapper.light .model-node {
-    border: 1px solid #ccc;
-    background-color: white;
+  border: 1px solid #ccc;
+  background-color: white;
 }
 
 .flow-wrapper.dark .model-node {
-    border: 1px solid #333;
-    background-color: #222;
+  border: 1px solid #333;
+  background-color: #222;
 }
 
 .flow-wrapper.dark .model-logo.other img,
 .flow-wrapper.dark .model-logo.openai img {
-    filter: invert(1);
+  filter: invert(1);
 }
 
 .flow-wrapper .visibilityWrapperBtn {
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-    cursor: pointer;
-    min-width: 40px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  min-width: 40px;
 }
 
 .flow-wrapper.light .visibilityWrapperBtn {
-    background-color: #f8f8f8;
-    color: #000;
+  background-color: #f8f8f8;
+  color: #000;
 }
 
 .flow-wrapper.dark .visibilityWrapperBtn {
-    background-color: #222;
-    color: #f8f8f8;
+  background-color: #222;
+  color: #f8f8f8;
 }

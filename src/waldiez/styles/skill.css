@@ -1,69 +1,69 @@
 .flow-wrapper .skill-node {
-    border-radius: 10px;
-    width: 180px;
-    min-width: 180px;
-    max-width: 180px;
-    height: 180px;
-    min-height: 180px;
-    max-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  border-radius: 10px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .flow-wrapper .skill-node .skill-header {
-    display: flex;
-    padding: 0 8px;
-    height: 40px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  padding: 0 8px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flow-wrapper .skill-node .skill-header div[role="button"] {
-    display: flex;
+  display: flex;
 }
 
 .flow-wrapper .skill-node .skill-header .node-label {
-    width: 100%;
-    max-width: 110px;
-    white-space: nowrap;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  width: 100%;
+  max-width: 110px;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .flow-wrapper .skill-node .skill-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
 }
 
 .flow-wrapper .skill-node .modal-body label {
-    margin-top: 10px;
-    padding: 4px;
+  margin-top: 10px;
+  padding: 4px;
 }
 
 .flow-wrapper .skill-node .date-info {
-    font-size: small;
-    color: #666;
+  font-size: small;
+  color: #666;
 }
 
 .flow-wrapper .skill-node .skill-footer {
-    display: flex;
-    padding: 0 8px;
-    height: 40px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  padding: 0 8px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .flow-wrapper.light .skill-node {
-    border: 1px solid #ccc;
-    background-color: white;
+  border: 1px solid #ccc;
+  background-color: white;
 }
 
 .flow-wrapper.dark .skill-node {
-    border: 1px solid #333;
-    background-color: #222;
+  border: 1px solid #333;
+  background-color: #222;
 }

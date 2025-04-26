@@ -1,74 +1,74 @@
 .flow-wrapper .tab-nav {
-    overflow-x: scroll;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    /* stylelint-disable-next-line csstree/validator */
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* stylelint-disable-next-line csstree/validator */
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
 .flow-wrapper .tab-list::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .flow-wrapper .tab-list {
-    width: fit-content;
-    min-width: 100%;
-    display: flex;
-    gap: 0.5em;
-    margin: 0;
-    padding: 0;
+  width: fit-content;
+  min-width: 100%;
+  display: flex;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
 }
 
 .flow-wrapper .tab-list li {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    display: block;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  display: block;
 }
 
 .flow-wrapper .tab-btn {
-    font: inherit;
-    padding: 0.75em 1em;
-    background-color: transparent !important;
-    border-width: 0 0 1px;
-    border-radius: unset !important;
-    cursor: pointer;
-    color: inherit;
-    white-space: nowrap;
-    box-shadow: none !important;
+  font: inherit;
+  padding: 0.75em 1em;
+  background-color: transparent !important;
+  border-width: 0 0 1px;
+  border-radius: unset !important;
+  cursor: pointer;
+  color: inherit;
+  white-space: nowrap;
+  box-shadow: none !important;
 }
 
 .flow-wrapper .tab-panel {
-    /* margin-top: 1em; */
-    padding: 0.5rem;
-    border-radius: 0.5em;
+  /* margin-top: 1em; */
+  padding: 0.5rem;
+  border-radius: 0.5em;
 }
 
 .flow-wrapper.light .tab-list {
-    border-bottom: 1px solid #eee;
-    color: #888;
+  border-bottom: 1px solid #eee;
+  color: #888;
 }
 
 .flow-wrapper.dark .tab-list {
-    border-bottom: 1px solid #222;
-    color: #888;
+  border-bottom: 1px solid #222;
+  color: #888;
 }
 
 .flow-wrapper.light .tab-btn {
-    border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
 .flow-wrapper.dark .tab-btn {
-    border-bottom: 1px solid #222;
+  border-bottom: 1px solid #222;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
 .flow-wrapper.light .tab-btn--active {
-    color: black !important;
-    border-bottom: 1px solid #111;
+  color: black !important;
+  border-bottom: 1px solid #111;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
 .flow-wrapper.dark .tab-btn--active {
-    color: white !important;
-    border-bottom: 1px solid #eee;
+  color: white !important;
+  border-bottom: 1px solid #eee;
 }

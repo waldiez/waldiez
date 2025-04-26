@@ -1,36 +1,36 @@
 .flow-wrapper .info {
-    color: #004085;
-    background-color: #cce5ff;
-    border-color: #b8daff;
-    padding: 0.75rem 1.25rem;
-    border-radius: 4px;
+  color: #004085;
+  background-color: #cce5ff;
+  border-color: #b8daff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
 }
 
 .flow-wrapper.dark .info {
-    background-color: #20558f;
-    color: #cce5ff;
+  background-color: #20558f;
+  color: #cce5ff;
 }
 
 .flow-wrapper .success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-    padding: 0.75rem 1.25rem;
-    border-radius: 4px;
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
 }
 
 .flow-wrapper .warning {
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
-    padding: 0.75rem 1.25rem;
-    border-radius: 4px;
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
 }
 
 .flow-wrapper .error {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-    padding: 0.75rem 1.25rem;
-    border-radius: 4px;
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
 }
