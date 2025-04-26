@@ -16,7 +16,6 @@ public/monaco.json
 **/tmp/
 **/documents/
 **/.env
-!**/.env.example
 *.log
 __pycache__/
 *.py[cod]
@@ -39,5 +38,7 @@ dmypy.json
 **/.DS_Store
 waldiez/_version.py
 **/*.mmd
-docs/api/react
+docs/reference/react
+docs/reference/react/assets
 .uv
+!**/.env.example

@@ -1,0 +1,43 @@
+---
+# yamllint disable rule:truthy
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+      - name: Run tests
+        run: |
+          python -m pytest -c pyproject.toml -s --cov=waldiez --cov-report=term-missing:skip-covered --cov-report lcov:coverage/lcov.info tests/
+      - name: Report to Coveralls
+        # don't spam coveralls with multiple reports
+        if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
+          fail-on-error: false

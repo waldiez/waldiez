@@ -32,10 +32,10 @@ class WaldiezExporter:
 
         Parameters
         ----------
-            waldiez (Waldiez): The Waldiez instance.
+            waldiez: Waldiez
+                The Waldiez instance.
         """
         self.waldiez = waldiez
-        # self._initialize()
 
     @classmethod
     def load(cls, file_path: Path) -> "WaldiezExporter":

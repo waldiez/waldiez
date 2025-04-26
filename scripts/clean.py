@@ -15,7 +15,7 @@ DIR_PATTERNS = [
     ".mypy_cache",
     ".ruff_cache",
     "*.egg-info",
-    "coverage",
+    os.path.join("coverage", "py"),
     "build",
     "site",
 ]
@@ -26,6 +26,7 @@ FILE_PATTERNS = [
     "*.pyo",
     "*.pyc~",
     "*.py~",
+    "*.mmd",
     "*~",
     ".*~",
     ".DS_Store",

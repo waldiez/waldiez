@@ -11,7 +11,7 @@
     "name": "@waldiez/react",
     "includeVersion": true,
     "readme": "README.npm.md",
-    "out": "docs/api/react",
+    "out": "docs/reference/react",
     "favicon": "docs/static/favicon.ico",
     "cleanOutputDir": true,
     "hideGenerator": true,

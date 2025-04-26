@@ -20,6 +20,34 @@
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "yaml.format.indent": 2,
     "black-formatter.args": ["--config=pyproject.toml"],
     "mypy.runUsingActiveInterpreter": true,
     "mypy-type-checker.args": ["--config pyproject.toml"],
@@ -28,5 +56,6 @@
     "npm.packageManager": "bun",
     "cSpell.mergeCSpellSettings": true,
     "cSpell.configFile": "cspell.json",
-    "vitest.disableWorkspaceWarning": true
+    "vitest.disableWorkspaceWarning": true,
+    "prettier.configPath": ".prettierrc.json"
 }
