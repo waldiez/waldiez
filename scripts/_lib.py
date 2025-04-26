@@ -61,6 +61,8 @@ def get_executable() -> str:
     str
         The path to the Python executable.
     """
+    if os.getenv("CI") == "true":
+        return sys.executable
     if not os.path.exists(ROOT_DIR / ".venv"):
         ensure_venv()
     if sys.platform != "win32":
