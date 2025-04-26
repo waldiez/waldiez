@@ -213,6 +213,7 @@
         "venv",
         "Waldiez",
         "watchgod",
+        "wdth",
         "webhint",
         "webp",
         "websurfer",
@@ -231,6 +232,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
