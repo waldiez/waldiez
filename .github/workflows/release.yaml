@@ -66,8 +66,11 @@ jobs:
           run: |
             bun install
             bun clean
+            cp README.md README.md.bak
+            cp README.npm.md README.md
             bun build:lib
             bun publish
+            cp README.md.bak README.md
 
         - name: Dry-run publish to NPM
           if: github.event_name == 'workflow_dispatch'
@@ -176,20 +179,21 @@ jobs:
           name: waldiez-python
           path: dist/python
 
-      - name: Make docs archive
+      - name: Move artifacts to dist/waldiez
         run: |
-          mkdir -p dist/waldiez
+          rm -rf dist/waldiez && mkdir -p dist/waldiez
           tar -czf dist/waldiez/docs.tar.gz dist/python/docs
-          rm -rf dist/python/docs
+          rm -rf dist/react/docs
+          mv dist/react/* dist/waldiez
+          mv dist/python/* dist/waldiez
 
       - name: Sign with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.0
         with:
           inputs: >-
-            dist/waldiez/docs.tar.gz
-            dist/python/*.whl
-            dist/python/*.tar.gz
-            dist/react/*.tgz
+            dist/waldiez/*.whl
+            dist/waldiez/*.tar.gz
+            dist/waldiez/*.tgz
 
       - name: Read changelog
         id: changelog
@@ -247,5 +251,3 @@ jobs:
           echo "Changelog: ${{ steps.changelog.outputs.changelog }}"
           echo "Artifacts:"
           ls -la dist/waldiez
-          ls -la dist/python
-          ls -la dist/react
