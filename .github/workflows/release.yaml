@@ -184,6 +184,7 @@ jobs:
           rm -rf dist/waldiez && mkdir -p dist/waldiez
           tar -czf dist/waldiez/docs.tar.gz dist/python/docs
           rm -rf dist/react/docs
+          rm -rf dist/python/docs
           mv dist/react/* dist/waldiez
           mv dist/python/* dist/waldiez
 
