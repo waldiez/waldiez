@@ -1,4 +1,5 @@
 ---
+name: Test 🧪
 # yamllint disable rule:truthy
 on:
   pull_request:
@@ -26,13 +27,28 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
-      - name: Install dependencies
+      - name: Install py dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install ts dependencies
+        run: bun install
+
+      - name: Prepare Playwright
+        run: npx playwright install --with-deps chromium
+
       - name: Run tests
         run: |
-          python -m pytest -c pyproject.toml -s --cov=waldiez --cov-report=term-missing:skip-covered --cov-report lcov:coverage/lcov.info tests/
+          bun run test
+          python scripts/test.py
+      - name: install lcov
+        run: sudo apt update && sudo apt install -y lcov
+        if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
+      # we need to merge the two .lcov files
       # - name: Report to Coveralls
       #   # don't spam coveralls with multiple reports
       #   if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
