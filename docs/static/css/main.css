@@ -1,6 +1,9 @@
+/* stylelint-disable font-family-name-quotes */
+/* stylelint-disable selector-class-pattern */
 :root {
   --md-primary-fg-color: #cb95fa;
 }
+
 .fredoka-300 {
   font-family: "Fredoka", sans-serif;
   font-optical-sizing: auto;
@@ -8,6 +11,7 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+
 .fredoka-500 {
   font-family: "Fredoka", sans-serif;
   font-optical-sizing: auto;
@@ -15,6 +19,7 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+
 .fredoka-700 {
   font-family: "Fredoka", sans-serif;
   font-optical-sizing: auto;
@@ -22,6 +27,7 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+
 .md-source__fact--repositories {
   display: none;
 }
@@ -40,7 +46,9 @@
 #top div {
   display: flex;
   align-items: center;
+
   /* color: #CB95FA; */
+
   font-weight: bolder;
   margin-bottom: 20px;
 }
@@ -49,15 +57,11 @@
   margin-right: 20px;
 }
 
-/* #top .page-header-right img { */
-/* border-radius: 2rem;
-  box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.5); */
-/* } */
-
 #top .page-header-left h2 {
   margin-top: 0;
   margin-bottom: 0;
 }
+
 .getting-started-btn {
   padding: 15px 20px;
   min-width: 240px;
@@ -82,13 +86,16 @@ nav > .md-nav__title {
   background-color: transparent;
   color: unset;
 }
+
 /* .md-tabs__list li:first-child {
   display: none;
 } */
+
 [data-md-color-scheme="custom-light"] img[src$="#only-dark"],
 [data-md-color-scheme="custom-light"] img[src$="#gh-dark-mode-only"] {
   display: none; /* Hide dark images in light mode */
 }
+
 [data-md-color-scheme="custom-dark"] img[src$="#only-light"],
 [data-md-color-scheme="custom-dark"] img[src$="#gh-light-mode-only"] {
   display: none; /* Hide light images in dark mode */
