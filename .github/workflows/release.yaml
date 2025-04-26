@@ -175,7 +175,9 @@ jobs:
 
       - name: Make docs archive
         run: |
+          mkdir -p dist/waldiez
           tar -czf dist/waldiez/docs.tar.gz dist/python/docs
+          rm -rf dist/python/docs
 
       - name: Sign with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.0
@@ -233,3 +235,14 @@ jobs:
         with:
           name: waldiez
           path: dist
+
+      - name: Print release info
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Release info:"
+          echo "Tag name: ${{ steps.tag_name.outputs.tag_name }}"
+          echo "Changelog: ${{ steps.changelog.outputs.changelog }}"
+          echo "Artifacts:"
+          ls -la dist/waldiez
+          ls -la dist/python
+          ls -la dist/react
