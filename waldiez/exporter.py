@@ -32,8 +32,8 @@ class WaldiezExporter:
 
         Parameters
         ----------
-            waldiez: Waldiez
-                The Waldiez instance.
+        waldiez: Waldiez
+            The Waldiez instance.
         """
         self.waldiez = waldiez
 
