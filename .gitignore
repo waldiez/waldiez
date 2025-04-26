@@ -38,4 +38,5 @@ dmypy.json
 **/*.egg-info
 **/.DS_Store
 waldiez/_version.py
+**/*.mmd
 .uv
