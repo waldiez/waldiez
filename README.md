@@ -16,16 +16,36 @@ To a python script or a jupyter notebook with the corresponding [ag2](https://gi
 
 ## Installation
 
+### Python
+
 On PyPI:
 
-```bash
+```shell
 python -m pip install waldiez
 ```
 
 From the repository:
 
-```bash
+```shell
 python -m pip install git+https://github.com/waldiez/waldiez.git
+```
+
+### React Component
+
+If you’re looking for the React component, please refer to [README.npm](https://github.com/waldiez/waldiez/blob/main/README.npm.md).
+
+> Note: The React component is only for creating and editing flows — it is not needed to convert or run flows (that functionality is handled by the Python package).
+
+Quick install:
+
+```shell
+npm install @waldiez/react
+# or
+yarn add @waldiez/react
+# or
+pnpm add @waldiez/react
+# or
+bun add @waldiez/react
 ```
 
 ## Usage
@@ -134,6 +154,14 @@ runner.run(output_path=output_path)
   ```shell
   pip install --force --no-cache waldiez pyautogen
   ```
+
+## See also
+
+- [Waldiez Playground](https://waldiez.github.io)
+- [React Component](https://github.com/waldiez/waldiez/blob/main/README.npm.md)
+- [Waldiez Studio](https://github.com/waldiez/studio)
+- [Waldiez JupyterLab Extension](htttps://github.com/waldiez/jupyter)
+- [Waldiez VSCode Extension](https://github.com/waldiez/vscode)
 
 ## Contributors ✨
 
