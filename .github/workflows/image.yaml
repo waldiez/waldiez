@@ -1,5 +1,5 @@
 ---
-name: Build and push container image 🐳
+name: Image 🐳
 # yamllint disable rule:truthy
 on:
   push:
