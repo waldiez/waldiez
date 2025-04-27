@@ -189,11 +189,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          echo "Creating release for tag: ${{ steps.tag_name.outputs.tag_name }}"
-        # run: |
-        #   gh release create "${{ steps.tag_name.outputs.tag_name }}" \
-        #     --title '${{ steps.tag_name.outputs.tag_name }}' \
-        #     --notes '${{ steps.changelog.outputs.changelog }}'
+          gh release create "${{ steps.tag_name.outputs.tag_name }}" \
+            --title '${{ steps.tag_name.outputs.tag_name }}' \
+            --notes '${{ steps.changelog.outputs.changelog }}'
 
       - name: Upload artifacts and signatures to GitHub Release
         if: >
@@ -204,17 +202,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          echo "Uploading artifacts to release for tag: ${{ steps.tag_name.outputs.tag_name }}"
-        # run: |
-        #   gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
-        #     dist/**/*.tar.gz \
-        #     dist/**/*.tar.gz.sigstore.json \
-        #     dist/**/*.whl \
-        #     dist/**/*.whl.sigstore.json \
-        #     dist/**/*.tgz \
-        #     dist/**/*.tgz.sigstore.json \
-        #     --clobber \
-        #     --repo '${{ github.repository }}'
+          gh release upload "${{ steps.tag_name.outputs.tag_name }}" \
+            dist/**/*.tar.gz \
+            dist/**/*.tar.gz.sigstore.json \
+            dist/**/*.whl \
+            dist/**/*.whl.sigstore.json \
+            dist/**/*.tgz \
+            dist/**/*.tgz.sigstore.json \
+            --clobber \
+            --repo '${{ github.repository }}'
 
       - name: Store artifacts (Dry Run Mode)
         if: github.event.inputs.dry_run == 'true'
