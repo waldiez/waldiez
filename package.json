@@ -50,7 +50,7 @@
         "build": "bun clean && bun build:lib && bun build:web && bun archive",
         "build:lib": "tsc -b && vite build",
         "build:web": "tsc -b && vite build --config vite.web.config.ts",
-        "build:site": "bun monaco && bun build:web && bun/scripts/afterSite.ts",
+        "build:site": "bun monaco && bun build:web && bun scripts/afterSite.ts",
         "docs": "typedoc --tsconfig tsconfig.docs.json",
         "preview": "vite preview",
         "format": "bun prettier && bun stylelint && bun eslint",
