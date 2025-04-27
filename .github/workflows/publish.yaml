@@ -1,5 +1,5 @@
 ---
-name: Publish
+name: Publish 📦
 
 # yamllint disable rule:truthy
 on:
