@@ -8818,9 +8818,9 @@ requires-dist = [
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = "==6.0.12.20250402" },
     { name = "types-requests", marker = "extra == 'dev'", specifier = "==2.32.0.20250328" },
     { name = "types-toml", marker = "extra == 'dev'", specifier = "==0.10.8.20240310" },
-    { name = "waldiez-jupyter", marker = "extra == 'jupyter'", specifier = "==0.4.4" },
-    { name = "waldiez-runner", marker = "python_full_version >= '3.11' and extra == 'runner'", specifier = "==0.4.4" },
-    { name = "waldiez-studio", marker = "extra == 'studio'", specifier = "==0.4.4" },
+    { name = "waldiez-jupyter", marker = "extra == 'jupyter'", specifier = "==0.4.5" },
+    { name = "waldiez-runner", marker = "python_full_version >= '3.11' and extra == 'runner'", specifier = "==0.4.5" },
+    { name = "waldiez-studio", marker = "extra == 'studio'", specifier = "==0.4.5" },
     { name = "wikipedia-api", marker = "extra == 'ag2-extras'", specifier = ">=0.8.1,<1.0" },
     { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.37.0" },
 ]
@@ -8828,21 +8828,21 @@ provides-extras = ["ag2-extras", "dev", "docs", "jupyter", "runner", "studio", "
 
 [[package]]
 name = "waldiez-jupyter"
-version = "0.4.4"
+version = "0.4.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jupyter-server" },
     { name = "pathvalidate" },
     { name = "waldiez" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/88/eb/6c901413c595bf93db7843de47bb5d0de09515f96a4ce32b4dfce516c04e/waldiez_jupyter-0.4.4.tar.gz", hash = "sha256:c53c8c481d94c7911f31ec9be1fda8b33654eb209315590c3defea64877103a5", size = 688001, upload_time = "2025-04-25T06:44:41.962Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/99/695afcffa6ccd7aa8753d5e536d930559ce076948ba2a373bff4197c70cf/waldiez_jupyter-0.4.5.tar.gz", hash = "sha256:de4d5e936a3ec7e7294fb877362e48f829a2ac0e99156f1da25c2999ae9c67bd", size = 688138, upload_time = "2025-04-27T07:36:58.55Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/bf/fa372918f843154086393883995cb277105aecf3ad6cc0f60c6cde658746/waldiez_jupyter-0.4.4-py3-none-any.whl", hash = "sha256:35e2edd22c0f250ac6dbdfa7ba172ee358d1bc02edf2c9f8b764e3ca021e0b89", size = 361621, upload_time = "2025-04-25T06:44:39.81Z" },
+    { url = "https://files.pythonhosted.org/packages/13/33/201a5a2e39c1c50bacbbb0be1469d87cff9741008484567ad00cee8a134f/waldiez_jupyter-0.4.5-py3-none-any.whl", hash = "sha256:a2056c5548657c26159325905bf620959ad8d41bf9108f96eb3533f492509a65", size = 361788, upload_time = "2025-04-27T07:36:57.083Z" },
 ]
 
 [[package]]
 name = "waldiez-runner"
-version = "0.4.4"
+version = "0.4.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiocsv", marker = "python_full_version >= '3.11'" },
@@ -8883,14 +8883,14 @@ dependencies = [
     { name = "waldiez", marker = "python_full_version >= '3.11'" },
     { name = "zipstream", marker = "python_full_version >= '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d5/50/a73f55b8635120c17aa5be1a9e728799c02fc79acf6ed55af7fb95bd58a9/waldiez_runner-0.4.4.tar.gz", hash = "sha256:2a375aec2e7dd56174994ee70e07b13fe9ab684153f2aff4f2b082f996b736e5", size = 92747, upload_time = "2025-04-25T06:41:52.633Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/fe/5e0a32166082abd92aeee94472b7228ec6c055d386323524b7e4f669b3a1/waldiez_runner-0.4.5.tar.gz", hash = "sha256:38823128c086b4f794f8e823a8768267daf2084a60ccf8ef96907c761b80391a", size = 92745, upload_time = "2025-04-27T07:53:33.59Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c4/31/5e9f151bedbf87f235a507890cdbe8b940f36e8f373900bbd69964be2ae7/waldiez_runner-0.4.4-py3-none-any.whl", hash = "sha256:2c261426d2b17a685717bd743dfcd96602ab3d9ea6cb1aa1c2215dd799d3a3b3", size = 140557, upload_time = "2025-04-25T06:41:50.632Z" },
+    { url = "https://files.pythonhosted.org/packages/37/6a/2902af15af38ce91008a8b2e294c1a61fd36b81f82a4b831e9939d0be193/waldiez_runner-0.4.5-py3-none-any.whl", hash = "sha256:e4a940ddec24a7d697a7167bc20f9b956c36e08d5b2580e646d831552bb129e5", size = 140558, upload_time = "2025-04-27T07:53:31.941Z" },
 ]
 
 [[package]]
 name = "waldiez-studio"
-version = "0.4.4"
+version = "0.4.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -8903,9 +8903,9 @@ dependencies = [
     { name = "uvicorn", extra = ["standard"] },
     { name = "waldiez" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/44/2fb4c9eef8777eca0d9f2583bef167b7e01b16df82b450fb37ba234762c9/waldiez_studio-0.4.4.tar.gz", hash = "sha256:353f13d294621dae259d6269fcb230a010d9c5fe828d0dbb5ed5965ca08c3cc1", size = 924873, upload_time = "2025-04-25T06:42:06.68Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/e9/ac95b624ee22e89e570f4f2061f791cac63e5d6869d430b2293fc7184869/waldiez_studio-0.4.5.tar.gz", hash = "sha256:6d1c36bd6f78bbd3b4de27c04a05a88e5d2a585495fc975300f401243b512ca8", size = 925009, upload_time = "2025-04-27T07:59:26.276Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/10/5f20002cb53d0864e95758ae8beaf3bc9f94751b63d656129b7193c7d094/waldiez_studio-0.4.4-py3-none-any.whl", hash = "sha256:d1e8dade18849b747bb1f1310977e02037586f487e725439afb8bdb3b2f6ed97", size = 948341, upload_time = "2025-04-25T06:42:04.715Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/c7/4ff2329a6a1bf89e346172a30bb27a9f56981159d0a47c09b4258bb6de02/waldiez_studio-0.4.5-py3-none-any.whl", hash = "sha256:a10be5a6aa00dbe52e5e0865d52c7248f1f19e23f70e7f375d156d6d17aca8d4", size = 948470, upload_time = "2025-04-27T07:59:24.311Z" },
 ]
 
 [[package]]

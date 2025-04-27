@@ -18,6 +18,8 @@ RUN pip install -r /tmp/requirements.txt && \
 
 WORKDIR /app
 COPY . /app
+# let's also make sure the extras have the same version
+RUN python scripts/bump_extras.py
 RUN python -m build --wheel --outdir dist
 
 #####################################################################################
