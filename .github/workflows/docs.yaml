@@ -37,7 +37,8 @@ jobs:
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt -r requirements/docs.txt
       - name: Build
         run: |
-          mkdocs gh-deploy --config-file mkdocs.yaml --force
+          bun run docs
+          mkdocs gh-deploy --config-file mkdocs.yml --force
 
   deploy-docs:
     name: Deploy Docs to GitHub Pages
