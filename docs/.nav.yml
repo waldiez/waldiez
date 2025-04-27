@@ -23,7 +23,7 @@ nav:
       - Contribute: contribute/index.md
   - Blog:
       - Blog: blog/index.md
+  - "Playground 🛝": https://waldiez.github.io
   - Reference:
       - Python: reference/python/
       - React: reference/react/
-  - "Playground 🛝": https://waldiez.github.io
