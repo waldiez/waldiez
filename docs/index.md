@@ -14,7 +14,7 @@ hide:
 </style>
 <section id="top">
     <div class="page-header-left">
-        <img alt="Waldiez Logo" style="width: 100px; height: auto;" loading="lazy" src="/static/images/logo.svg">
+        <img alt="Waldiez Logo" style="width: 100px; height: auto;" loading="lazy" src="static/images/logo.svg">
         <h2>Make AI Agents Collaborate: <br> Drag, Drop, and Orchestrate with <span class="fredoka-500">Waldiez</span></h2>
     </div>
     <div class="page-header-right">
