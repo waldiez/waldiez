@@ -72,11 +72,11 @@ To maintain code consistency:
 
 Some repositories may have additional instructions:
 
-- **[waldiez/waldiez](https://github.com/waldiez/waldiez)**: The core python part of the project. Responsible for converting waldiez flows to python scripts and jupyter notebooks, as well as running them.
-- **[waldiez/react](https://github.com/waldiez/react)**: The frontend part of the project. Responsible for creating the user interface for waldiez flows.
+- **[waldiez/waldiez](https://github.com/waldiez/waldiez)**: The core python and react parts of the project. Responsible for generating waldiez flows, converting them to python scripts and jupyter notebooks, as well as running them.
 - **[waldiez/jupyter](https://github.com/waldiez/jupyter)**: It combines the python and react parts above. It is responsible for running the python scripts and jupyter notebooks created by the user.
 - **[waldiez/studio](https://github.com/waldiez/studio)**: A standalone (without jupyter) web app that also combines the python and react parts above. Once ready, it will be included as an extra requirement in the waldiez pypi package.
 - **[waldiez/vscode](https://github.com/waldiez/vscode)**: A waldiez vscode extension: Open .waldiez files in vscode convert them to python scripts and jupyter notebooks, and run them.
+- **[waldiez/runner](https://github.com/waldiez/runner)**: Responsible for queuing and running waldiez flows in isolated environments and stream logs/input/output via Redis.
 
 Refer to the `README.md` or `CONTRIBUTING.md` of each repository for detailed information.
 
