@@ -7,6 +7,12 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.4.5
+
+- Minor UI changes
+- Dependency updates
+- Bug fixes
+
 ## v0.4.4
 
 - Updated ag2 dependency to 0.8.7
