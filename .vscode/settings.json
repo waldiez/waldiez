@@ -47,6 +47,10 @@
     "[markdown]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[toml]": {
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "yaml.format.indent": 2,
     "black-formatter.args": ["--config=pyproject.toml"],
     "mypy.runUsingActiveInterpreter": true,
