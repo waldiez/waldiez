@@ -7,6 +7,19 @@ import { Edge, Node, ReactFlowJsonObject, Viewport } from "@xyflow/react";
 export type * from "@waldiez/models";
 export type * from "@waldiez/store";
 
+export type WaldiezUserInputType = {
+    text?: string | null;
+    image?: string | File | null;
+    // to add more types here in the future (audio?)
+};
+
+export type WaldiezPreviousMessage = {
+    id: string;
+    timestamp: string;
+    type: string; // print/error/input_request...
+    data: string | { [key: string]: any };
+};
+
 export type WaldiezFlowProps = ReactFlowJsonObject & {
     flowId: string;
     isAsync?: boolean;
@@ -26,7 +39,7 @@ export type WaldiezProps = WaldiezFlowProps & {
     viewport?: Viewport;
     monacoVsPath?: string | null;
     inputPrompt?: {
-        previousMessages: string[];
+        previousMessages: WaldiezPreviousMessage[];
         prompt: string;
     } | null;
     readOnly?: boolean | null;
@@ -36,7 +49,7 @@ export type WaldiezProps = WaldiezFlowProps & {
     onUpload?: ((files: File[]) => Promise<string[]>) | null;
     onChange?: ((flow: string) => void) | null;
     onRun?: ((flow: string) => void) | null;
-    onUserInput?: ((input: string) => void) | null;
+    onUserInput?: ((input: WaldiezUserInputType) => void) | null;
     onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
     onSave?: ((flow: string) => void) | null;
 };

@@ -16,7 +16,20 @@ import { createdAt, edgesCount, updatedAt } from "./common";
 import { edges } from "./edges";
 
 export const userInput = {
-    previousMessages: ["Message 1", "Message 2"],
+    previousMessages: [
+        {
+            id: "1",
+            type: "print",
+            data: "Message 1",
+            timestamp: "2024-01-01T00:00:00Z",
+        },
+        {
+            id: "2",
+            type: "print",
+            data: "Message 2",
+            timestamp: "2024-01-01T00:01:00Z",
+        },
+    ],
     prompt: "User Input Prompt",
 };
 

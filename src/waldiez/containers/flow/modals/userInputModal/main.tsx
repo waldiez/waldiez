@@ -5,10 +5,23 @@
 import { Modal } from "@waldiez/components";
 import { useUserInputModal } from "@waldiez/containers/flow/modals/userInputModal/hooks";
 import { UserInputModalProps } from "@waldiez/containers/flow/modals/userInputModal/types";
+import { WaldiezPreviousMessage } from "@waldiez/types";
 
 export const UserInputModal = (props: UserInputModalProps) => {
     const { flowId, isOpen, inputPrompt } = props;
     const { onClose, onCancel, onSubmit } = useUserInputModal(props);
+    const handlePreviousMessage = (message: WaldiezPreviousMessage) => {
+        // TODO: handle different message types
+        if (typeof message.data === "string") {
+            return message.data;
+        }
+        if (typeof message.data === "object") {
+            return Object.entries(message.data)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join(", ");
+        }
+        return "";
+    };
     return (
         <Modal
             title="User Input"
@@ -24,7 +37,7 @@ export const UserInputModal = (props: UserInputModalProps) => {
                         <div className="console-messages" data-flow-id={flowId}>
                             {inputPrompt.previousMessages.map((message, index) => (
                                 <div className="console-message" key={index}>
-                                    {message}
+                                    {handlePreviousMessage(message)}
                                 </div>
                             ))}
                         </div>

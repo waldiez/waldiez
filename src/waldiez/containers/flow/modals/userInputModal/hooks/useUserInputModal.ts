@@ -56,24 +56,24 @@ export const useUserInputModal = (props: UserInputModalProps) => {
             userInputElement.removeEventListener("keydown", onKeyDown);
             const userInput = userInputElement.value;
             if (userInput) {
-                onUserInput(userInput);
+                onUserInput({ text: userInput });
             } else {
-                onUserInput("");
+                onUserInput({ text: "" });
             }
         }
     };
 
     const onCancel = () => {
-        onUserInput("");
+        onUserInput({ text: "" });
     };
 
     const onSubmit = () => {
         const userInput = (document.getElementById(`rf-${flowId}-user-input-modal-input`) as HTMLInputElement)
             ?.value;
         if (userInput) {
-            onUserInput(userInput);
+            onUserInput({ text: userInput });
         } else {
-            onUserInput("");
+            onUserInput({ text: "" });
         }
     };
     return {

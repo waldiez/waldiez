@@ -2,12 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { WaldiezPreviousMessage, WaldiezUserInputType } from "@waldiez/types";
+
 export type UserInputModalProps = {
     flowId: string;
     isOpen: boolean;
-    onUserInput: (userInput: string) => void;
+    onUserInput: (userInput: WaldiezUserInputType) => void;
     inputPrompt: {
-        previousMessages: string[];
+        previousMessages: WaldiezPreviousMessage[];
         prompt: string;
     };
 };
@@ -18,7 +20,7 @@ export type UserInputModalViewProps = {
     oncancel: () => void;
     onSubmit: () => void;
     inputPrompt: {
-        previousMessages: string[];
+        previousMessages: WaldiezPreviousMessage[];
         prompt: string;
     };
 };
