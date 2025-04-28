@@ -1,8 +1,7 @@
 ## Quick Start
 
 This section provides an overview of the waldiez library and its core functionality.
-You can find detailed documentation for each class and method in the 
-next sections.
+You can find detailed documentation for each class and method in the next sections.
 
 ### Exporting a Waldiez Flow
 
