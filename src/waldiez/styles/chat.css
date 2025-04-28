@@ -77,12 +77,15 @@
 
 .chat-text-input {
   flex-grow: 1;
-  background-color: #333;
   border-radius: 8px;
   margin-bottom: 8px;
   border: none !important;
   padding: 10px 2px !important;
   outline: none;
+}
+
+.flow-wrapper.light .chat-text-input {
+  background-color: #eee !important;
 }
 
 .chat-send-button {
