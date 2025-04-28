@@ -1,0 +1,23 @@
+{
+  "id": "wm-B_P4rPsIHRFKG5CfXTDxJ",
+  "type": "model",
+  "name": "nvidia/llama-3.1-nemotron-70b-instruct",
+  "description": "NIM Model description",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-09-26T11:38:48.413Z",
+  "updatedAt": "2024-10-28T17:41:46.867Z",
+  "data": {
+    "apiKey": "REPLACE_ME",
+    "apiType": "nim",
+    "baseUrl": "https://integrate.api.nvidia.com/v1",
+    "temperature": 0.5,
+    "topP": 1,
+    "maxTokens": null,
+    "defaultHeaders": {},
+    "price": {
+      "promptPricePer1k": null,
+      "completionTokenPricePer1k": null
+    }
+  }
+}

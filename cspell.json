@@ -71,6 +71,7 @@
         "flaml",
         "fontawesome",
         "forlint",
+        "fredoka",
         "gecos",
         "generativeai",
         "genhtml",
@@ -232,6 +233,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }

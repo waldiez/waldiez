@@ -1,0 +1,23 @@
+{
+  "id": "wm-x_v9eRZR4e9EB_IsgHDBR",
+  "type": "model",
+  "name": "gpt-4-turbo",
+  "description": "OpenAI GPT-4",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-10-28T07:23:33.793Z",
+  "updatedAt": "2024-10-28T19:50:06.596Z",
+  "data": {
+    "apiKey": "REPLACE_ME",
+    "apiType": "openai",
+    "baseUrl": null,
+    "temperature": 0.5,
+    "topP": null,
+    "maxTokens": null,
+    "defaultHeaders": {},
+    "price": {
+      "promptPricePer1k": null,
+      "completionTokenPricePer1k": null
+    }
+  }
+}

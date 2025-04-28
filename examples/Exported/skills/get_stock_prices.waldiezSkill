@@ -1,0 +1,14 @@
+{
+  "id": "ws-sKToUpnsHKAV7jglab1Te",
+  "type": "skill",
+  "name": "get_stock_prices",
+  "description": "Get the stock prices for the given stock symbols between the start and end dates.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-09-27T16:23:01.437Z",
+  "updatedAt": "2024-10-28T19:37:39.746Z",
+  "data": {
+    "content": "# filename: {get_stock_prices}.py\n\"\"\"Get stock prices.\n\nGet the stock prices for the given stock symbols between  \nthe start and end dates.\n\"\"\"\n\n\ndef get_stock_prices(\n    stock_symbols: str | list,\n    start_date: str,\n    end_date: str,\n):\n    \"\"\"Get the stock prices for the given stock symbols between\n    the start and end dates.\n\n    Args:\n        stock_symbols (str or list): The stock symbols to get the\n        prices for.\n        start_date (str): The start date in the format \n        'YYYY-MM-DD'.\n        end_date (str): The end date in the format 'YYYY-MM-DD'.\n\n    Returns:\n        dict: (pandas.DataFrame.to_dict): The stock prices for the given stock\n        symbols indexed by date, with one column per stock \n        symbol.\n    \"\"\"\n    # pylint: disable=import-outside-toplevel\n    import yfinance\n\n    stock_data = yfinance.download(\n        stock_symbols, start=start_date, end=end_date\n    )\n    close = stock_data.get(\"Close\")\n    # avoid: Timestamp is not JSON serializable\n    close.index = close.index.date  # Convert the index to date only\n    close.index = close.index.astype(str)  # Convert the index to string\n    return close.to_dict()\n",
+    "secrets": {}
+  }
+}

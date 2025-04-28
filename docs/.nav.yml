@@ -19,11 +19,11 @@ nav:
       - Planning: examples/6.md
       - RAG: examples/7.md
       - ReAct: examples/8.md
+  - API Reference:
+      - Python: reference/python/
+      - React: reference/react/
   - Get Involved:
       - Contribute: contribute/index.md
   - Blog:
       - Blog: blog/index.md
   - "Playground 🛝": https://waldiez.github.io
-  - Reference:
-      - Python: reference/python/
-      - React: reference/react/

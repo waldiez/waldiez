@@ -1,0 +1,23 @@
+{
+  "id": "wm-x_v9eRZR4e9EB_IsgHDBR",
+  "type": "model",
+  "name": "gpt-3.5-turbo",
+  "description": "OpenAI GPT-3.5",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-10-28T07:23:33.793Z",
+  "updatedAt": "2024-10-28T20:24:08.435Z",
+  "data": {
+    "apiKey": "REPLACE_ME",
+    "apiType": "openai",
+    "baseUrl": null,
+    "temperature": null,
+    "topP": null,
+    "maxTokens": null,
+    "defaultHeaders": {},
+    "price": {
+      "promptPricePer1k": null,
+      "completionTokenPricePer1k": null
+    }
+  }
+}

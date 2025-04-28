@@ -1,0 +1,14 @@
+{
+  "id": "ws-m060JbKZ3VRuvZTpbBVl6",
+  "type": "skill",
+  "name": "make_move",
+  "description": "Make a move on the board.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-09-27T16:01:14.292Z",
+  "updatedAt": "2024-10-28T18:31:26.979Z",
+  "data": {
+    "content": "# filename: {make_move}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the skill is defined in the code.\n\"\"\"\n# pylint: disable=global-statement,unused-import\nfrom typing import Annotated\n\nimport chess\n\nif \"BOARD\" not in globals():\n    BOARD = chess.Board()\n    globals()[\"BOARD\"] = BOARD\nelse:\n    BOARD = globals()[\"BOARD\"]\n\nif \"MADE_MOVE\" not in globals():\n    MADE_MOVE = False\n    globals()[\"MADE_MOVE\"] = MADE_MOVE\nelse:\n    MADE_MOVE = globals()[\"MADE_MOVE\"]\n\n\ndef make_move(\n    move: Annotated[str, \"A move in UCI format.\"],\n) -> Annotated[str, \"Result of the move.\"]:\n    \"\"\"Make a move on the board.\"\"\"\n    global MADE_MOVE\n    try:\n        move = chess.Move.from_uci(move)\n    except BaseException:  # pylint: disable=broad-except\n        move = BOARD.parse_san(move)\n    BOARD.push_uci(str(move))\n    # Get the piece name.\n    piece = BOARD.piece_at(move.to_square)\n    piece_symbol = piece.unicode_symbol()\n    piece_name = (\n        chess.piece_name(piece.piece_type).capitalize()\n        if piece_symbol.isupper()\n        else chess.piece_name(piece.piece_type)\n    )\n    MADE_MOVE = True\n    return f\"Moved {piece_name} ({piece_symbol}) from \"\\\n        f\"{chess.SQUARE_NAMES[move.from_square]} to \"\\\n        f\"{chess.SQUARE_NAMES[move.to_square]}.\"\n",
+    "secrets": {}
+  }
+}

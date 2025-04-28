@@ -21,7 +21,7 @@ Thank you for your interest in contributing to the Waldiez repositories! Below, 
 Before making any changes, please read through our organization-wide contribution guidelines:
 
 - **Open an Issue First**: For larger changes, open an issue to discuss your proposed changes with the maintainers. This helps avoid duplicate work and ensures alignment with project goals.
-- **Follow the Code of Conduct**: Review and adhere to our [Code of Conduct](../CODE_OF_CONDUCT.md).
+- **Follow the Code of Conduct**: Review and adhere to our [Code of Conduct](https://github.com/waldiez/waldiez/blob/main/CODE_OF_CONDUCT.md).
 - **Respect Repository Owners**: Each repository may have its own set of maintainers or reviewers. Follow their guidelines for submitting work and await feedback before merging.
 
 ## 3. Submitting Issues
