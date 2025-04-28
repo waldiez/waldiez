@@ -13,7 +13,7 @@ import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
-import { WaldiezUserInputType } from "@waldiez/types";
+import { WaldiezPreviousMessage, WaldiezUserInputType } from "@waldiez/types";
 
 import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "../data";
 
@@ -24,13 +24,27 @@ export const renderFlow = (
     includeUserInput: boolean = false,
     singleAgent: boolean = false,
     noAgents: boolean = false,
+    options: {
+        onUserInput?: (userInput: WaldiezUserInputType) => void;
+        previousMessages?: WaldiezPreviousMessage[];
+    } = {
+        onUserInput: undefined,
+        previousMessages: [],
+    },
 ) => {
     const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0]] : nodes;
     const edgesToUse = singleAgent ? [] : edges;
     const Wrapper = () => {
         const [isUserInputModalOpen, setIsUserInputModalOpen] = useState<boolean>(includeUserInput);
-        const onUserInput = (_: WaldiezUserInputType) => {
+        const onUserInputCb = (_: WaldiezUserInputType) => {
             setIsUserInputModalOpen(false);
+            if (options.onUserInput) {
+                options.onUserInput(_);
+            }
+        };
+        const userInputProp = {
+            ...userInput,
+            previousMessages: options.previousMessages || [],
         };
         return (
             <WaldiezThemeProvider>
@@ -54,8 +68,10 @@ export const renderFlow = (
                             >
                                 <WaldiezFlowView
                                     flowId={flowId}
-                                    onUserInput={onUserInput}
-                                    inputPrompt={includeUserInput && isUserInputModalOpen ? userInput : null}
+                                    onUserInput={onUserInputCb}
+                                    inputPrompt={
+                                        includeUserInput && isUserInputModalOpen ? userInputProp : null
+                                    }
                                 />
                             </WaldiezProvider>
                         </SidebarProvider>

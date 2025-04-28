@@ -18,7 +18,7 @@ export type UserInputModalViewProps = {
     isOpen: boolean;
     onClose: () => void;
     oncancel: () => void;
-    onSubmit: () => void;
+    onSubmit: (userInput: WaldiezUserInputType) => void;
     inputPrompt: {
         previousMessages: WaldiezPreviousMessage[];
         prompt: string;

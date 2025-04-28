@@ -3,9 +3,9 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import { Waldiez, WaldiezProps, importFlow } from "@waldiez";
+import { Waldiez, WaldiezPreviousMessage, WaldiezProps, WaldiezUserInputType, importFlow } from "@waldiez";
 
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 
 import { nanoid } from "nanoid";
@@ -37,36 +37,36 @@ const onSaveDev = (flowString: string) => {
 };
 const onSave = isProd ? null : onSaveDev;
 /**
- * UserInput
- */
-// to check/test the user input, use `onUserInput` and `inputPrompt`
-// reset `inputPrompt` to `null` to remove/hide the modal
-// these two props are used to show a modal to the user
-// and get the user input
-// Example:
+ * Handling user input:
+ *
+ * onUserInput?: ((input: WaldiezUserInputType) => void) | null;
+ *
+ * inputPrompt?: {
+        previousMessages: WaldiezPreviousMessage[];
+        prompt: string;
+    } | null;
+ *
+ * `onUserInput` is a function that handles the user input
+ * `inputPrompt` is an object that contains the previous messages
+ * and the prompt to show to the user
+*/
 //
-// const [ inputPrompt, setInputPrompt ] = useState<{
-//   previousMessages: string[];
-//   prompt: string;
-// } | null>(null);
+// type WaldiezUserInputType = {
+//     text?: string | null;
+//     image?: string | File | null;
+//     // to add more types here in the future (audio?)
+// };
+// Previous messages are passed to the modal
+// to show the user the context of the conversation
+// the type of one previous message is:
+// type WaldiezPreviousMessage = {
+//     id: string;
+//     timestamp: string;
+//     type: string; // print/error/input_request...
+//     data: string | { [key: string]: any };
+// };
 //
-// const onUserInput = (input: string) => {
-//   const allMessages = input.split('\n');
-//   const previousMessages = allMessages.slice(0, allMessages.length - 1);
-//   const prompt = allMessages[allMessages.length - 1];
-//   setInputPrompt({ previousMessages, prompt });
-// };
-
-// const inputPrompt = {
-//   previousMessages: ['Hello, World!', 'How\n are you?'],
-//   prompt: 'What is your name?'
-// };
-// const onUserInput = (input: string) => {
-//   console.info(input);
-// };
-const inputPrompt = null;
-const onUserInput = null;
-
+//
 /**
  * OnRun
  * adds a button to the main panel, to run the code.
@@ -232,8 +232,6 @@ if (!vsPath) {
 const flowId = `wf-${nanoid()}`;
 const defaultWaldiezProps: Partial<WaldiezProps> = {
     monacoVsPath: vsPath,
-    onUserInput,
-    inputPrompt,
     onRun,
     onConvert,
     onChange,
@@ -279,18 +277,96 @@ export const getProps = () => {
     });
 };
 
+// just to trigger the user input modal:
+const initialPrompt: {
+    previousMessages: WaldiezPreviousMessage[];
+    prompt: string;
+} | null = {
+    previousMessages: [
+        {
+            id: nanoid(),
+            timestamp: new Date().toISOString(),
+            type: "print",
+            data: "Hello, how can I help you?",
+        },
+    ],
+    prompt: "What is your name?",
+};
+
+// const initialPrompt: {
+//     previousMessages: WaldiezPreviousMessage[];
+//     prompt: string;
+// } | null = null;
+
 export const startApp = (waldiezProps: Partial<WaldiezProps> = defaultWaldiezProps) => {
-    // console.log(waldiezProps);
+    // the wrapper should better be in a separate file,
+    // but for the sake of the example, we put it here
+    const WaldiezWrapper = (waldiezProps: Partial<WaldiezProps>) => {
+        const [conversation, setConversation] = useState<{
+            previousMessages: WaldiezPreviousMessage[];
+            prompt: string;
+        } | null>(initialPrompt);
+        const [emptyMessagesCount, setEmptyMessagesCount] = useState(0);
+        const onEmptyMessage = () => {
+            if (emptyMessagesCount > 5) {
+                console.warn("Too many empty messages, stop spamming");
+                setConversation(null);
+                setEmptyMessagesCount(0);
+            } else {
+                setEmptyMessagesCount(emptyMessagesCount + 1);
+            }
+        };
+        const onUserInput = (input: WaldiezUserInputType) => {
+            if (!input.text && !input.image) {
+                onEmptyMessage();
+                // or just assume Esc/Cancel, so send an empty input to the backend
+                throw new Error("No input provided");
+            }
+            setEmptyMessagesCount(0);
+            console.info("submitted text: ", input.text);
+            if (input.image) {
+                console.info("submit base64 image");
+                return;
+            }
+            const newMessage = {
+                id: nanoid(),
+                timestamp: new Date().toISOString(),
+                type: "input_response",
+                data: input.text ?? "\n",
+            };
+            setConversation(prev => {
+                if (!prev) {
+                    return {
+                        previousMessages: [newMessage],
+                        prompt: "",
+                    };
+                }
+                return {
+                    previousMessages: [...prev.previousMessages, newMessage],
+                    prompt: `Did you say \`${input.text}\` ?`,
+                };
+            });
+        };
+        // "waldiez-wrapper" (just an example) can be used to
+        // style the component that wraps the waldiez flow view
+        return (
+            <div className="waldiez-wrapper">
+                <Waldiez
+                    {...waldiezProps}
+                    readOnly={readOnly}
+                    skipExport={skipExport}
+                    skipImport={skipImport}
+                    skipHub={skipHub}
+                    inputPrompt={conversation}
+                    onUserInput={onUserInput}
+                />
+            </div>
+        );
+    };
     window.history.replaceState({}, document.title, window.location.pathname);
     ReactDOM.createRoot(document.getElementById("root")!).render(
         <React.StrictMode>
-            <Waldiez
-                {...waldiezProps}
-                readOnly={readOnly}
-                skipExport={skipExport}
-                skipImport={skipImport}
-                skipHub={skipHub}
-            />
+            <WaldiezWrapper {...waldiezProps} />
         </React.StrictMode>,
     );
 };

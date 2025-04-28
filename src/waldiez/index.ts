@@ -3,11 +3,11 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { flowMapper } from "@waldiez/models/mappers";
-import { WaldiezProps } from "@waldiez/types";
+import { WaldiezPreviousMessage, WaldiezProps, WaldiezUserInputType } from "@waldiez/types";
 import "@waldiez/utils/promisePolyfill";
 import { Waldiez } from "@waldiez/waldiez";
 
-export type { WaldiezProps };
+export type { WaldiezPreviousMessage, WaldiezProps, WaldiezUserInputType };
 
 export const importFlow = (data: any) => {
     const flow = flowMapper.importFlow(data);
