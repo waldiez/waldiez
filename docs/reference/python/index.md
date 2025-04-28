@@ -25,4 +25,3 @@ output_path = "/path/to/an/output.py"
 runner = WaldiezRunner.load(flow_path)
 runner.run(output_path=output_path)
 ```
-
