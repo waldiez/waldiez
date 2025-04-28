@@ -2,15 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
-    assistantJson,
-    captainJson,
-    groupManagerJson,
-    ragUserJson,
-    swarmContainerJson,
-    swarmJson,
-    userJson,
-} from "./data";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -30,6 +21,16 @@ import {
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers";
+
+import {
+    assistantJson,
+    captainJson,
+    groupManagerJson,
+    ragUserJson,
+    swarmContainerJson,
+    swarmJson,
+    userJson,
+} from "./data";
 
 describe("agentMapper", () => {
     it("should throw an error when importing without a json", () => {

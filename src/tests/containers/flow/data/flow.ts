@@ -2,10 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, description, flowId, name, requirements, tags, updatedAt } from "./common";
-import { edges } from "./edges";
-import { nodes } from "./nodes";
-
 import { Edge, Node } from "@xyflow/react";
 
 import {
@@ -22,6 +18,10 @@ import {
     modelMapper,
     skillMapper,
 } from "@waldiez/models";
+
+import { createdAt, description, flowId, name, requirements, tags, updatedAt } from "./common";
+import { edges } from "./edges";
+import { nodes } from "./nodes";
 
 const agents = {
     users: [] as WaldiezAgentUserProxy[],

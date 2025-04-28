@@ -83,7 +83,10 @@ export const flowMapper = {
             updatedAt: flow.updatedAt,
             edges,
             nodes,
-            viewport: flow.data.viewport || { zoom: 1, position: { x: 0, y: 0 } },
+            viewport: flow.data.viewport || {
+                zoom: 1,
+                position: { x: 0, y: 0 },
+            },
             ...flow.rest,
         };
         return flowProps;
@@ -142,7 +145,17 @@ const getFlowDataToImport = (json: Record<string, unknown>, flowId: string) => {
         }
     });
 
-    return new WaldiezFlowData({ nodes, edges, agents, models, skills, chats, isAsync, cacheSeed, viewport });
+    return new WaldiezFlowData({
+        nodes,
+        edges,
+        agents,
+        models,
+        skills,
+        chats,
+        isAsync,
+        cacheSeed,
+        viewport,
+    });
 };
 
 const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipLinks: boolean) => {

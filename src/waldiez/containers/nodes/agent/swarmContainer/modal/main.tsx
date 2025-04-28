@@ -85,12 +85,18 @@ export const WaldiezNodeSwarmContainerModal = (props: WaldiezSwarmContainerModal
         setIsDirty(!isEqual(data, newData));
     };
     const onAddContextVariable = (key: string, value: string) => {
-        const newData = { ...agentData, contextVariables: { ...agentData.contextVariables, [key]: value } };
+        const newData = {
+            ...agentData,
+            contextVariables: { ...agentData.contextVariables, [key]: value },
+        };
         setAgentData(newData);
         setIsDirty(!isEqual(data, newData));
     };
     const onDeleteContextVariable = (key: string) => {
-        const newData = { ...agentData, contextVariables: { ...agentData.contextVariables } };
+        const newData = {
+            ...agentData,
+            contextVariables: { ...agentData.contextVariables },
+        };
         delete newData.contextVariables[key];
         setAgentData(newData);
         setIsDirty(!isEqual(data, newData));

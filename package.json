@@ -73,7 +73,7 @@
         "clean:coverage": "bun rimraf coverage",
         "clean:tsbuild": "bun rimraf tsconfig.app.tsbuildinfo tsconfig.node.tsbuildinfo tsconfig.build.tsbuildinfo",
         "clean": "bun clean:lintcache && bun clean:dist && bun clean:coverage && bun clean:tsbuild && bun clean:web && bun clean:docs && bun clean:archive",
-        "schema": "bun scripts/schema.ts && bun prettier schema.json --write",
+        "schema": "node --import=tsx scripts/schema.ts && bun prettier schema.json --write",
         "before:test": "bun monaco && bun scripts/mkdir.ts --path .local && bun rimraf .local/recordings",
         "before:test-ui": "bun before:test && bun playwright install chromium",
         "after:test": "bun scripts/video.ts",
@@ -205,7 +205,8 @@
             "^nanoid",
             "^rc-slider",
             "^@monaco-editor/react",
-            "^@waldiez/"
+            "^@waldiez/",
+            "^[./]"
         ],
         "overrides": [
             {

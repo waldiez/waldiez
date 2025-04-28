@@ -55,7 +55,12 @@ describe("getSwarmUpdateAgentStateBeforeReply", () => {
     });
     it("should return an array of updateAgentStateBeforeReply", () => {
         const updateAgentStateBeforeReply = getSwarmUpdateAgentStateBeforeReply({
-            updateAgentStateBeforeReply: [{ updateFunctionType: "string", updateFunction: "function" }],
+            updateAgentStateBeforeReply: [
+                {
+                    updateFunctionType: "string",
+                    updateFunction: "function",
+                },
+            ],
         });
         expect(updateAgentStateBeforeReply).toEqual([
             { updateFunctionType: "string", updateFunction: "function" },
@@ -96,7 +101,9 @@ describe("getSwarmHandoffs", () => {
         expect(handoffs).toEqual([]);
     });
     it("should return an empty array if handoffs is not an array of objects with the right keys", () => {
-        const handoffs = getSwarmHandoffs({ handoffs: [{ recipientType: "option" }] });
+        const handoffs = getSwarmHandoffs({
+            handoffs: [{ recipientType: "option" }],
+        });
         expect(handoffs).toEqual([]);
     });
     it("should return an array of handoffs", () => {

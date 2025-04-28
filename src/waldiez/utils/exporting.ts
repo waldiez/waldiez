@@ -80,7 +80,9 @@ export const exportItem = async (
         if (filename.endsWith(".zip")) {
             await downloadZip(filename, itemString, onNoItem);
         } else {
-            const blob = new Blob([itemString], { type: "application/json; charset=utf-8" });
+            const blob = new Blob([itemString], {
+                type: "application/json; charset=utf-8",
+            });
             downloadFile(blob, filename);
         }
     } else {

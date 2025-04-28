@@ -54,7 +54,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, method: "beam_search" });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            method: "beam_search",
+        });
     });
     it("should use a default max_depth if invalid", () => {
         const reasonConfig = {
@@ -67,7 +70,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, max_depth: 3 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            max_depth: 3,
+        });
     });
     it("should use a default forest_size if invalid", () => {
         const reasonConfig = {
@@ -80,7 +86,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, forest_size: 1 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            forest_size: 1,
+        });
     });
     it("should use a default rating_scale if invalid", () => {
         const reasonConfig = {
@@ -93,7 +102,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, rating_scale: 10 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            rating_scale: 10,
+        });
     });
     it("should use a default beam_size if invalid", () => {
         const reasonConfig = {
@@ -106,7 +118,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, beam_size: 3 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            beam_size: 3,
+        });
     });
     it("should use a default answer_approach if invalid", () => {
         const reasonConfig = {
@@ -119,7 +134,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, answer_approach: "pool" });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            answer_approach: "pool",
+        });
     });
     it("should use a default nsim if invalid", () => {
         const reasonConfig = {
@@ -132,7 +150,10 @@ describe("getReasonConfig", () => {
             nsim: "invalid",
             exploration_constant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, nsim: 3 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            nsim: 3,
+        });
     });
     it("should use a default exploration_constant if invalid", () => {
         const reasonConfig = {
@@ -145,7 +166,10 @@ describe("getReasonConfig", () => {
             nsim: 7,
             exploration_constant: "invalid",
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, exploration_constant: 1.41 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            exploration_constant: 1.41,
+        });
     });
 });
 

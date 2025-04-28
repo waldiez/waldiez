@@ -136,7 +136,9 @@ describe("getCodeExecutionConfig", () => {
 
 describe("getAgentDefaultAutoReply", () => {
     it("should return the default auto reply", () => {
-        const reply = getAgentDefaultAutoReply({ agentDefaultAutoReply: "test" });
+        const reply = getAgentDefaultAutoReply({
+            agentDefaultAutoReply: "test",
+        });
         expect(reply).toBe("test");
     });
     it("should return null", () => {
@@ -147,7 +149,9 @@ describe("getAgentDefaultAutoReply", () => {
 
 describe("getMaximumConsecutiveAutoReply", () => {
     it("should return the maximum consecutive auto reply", () => {
-        const max = getMaximumConsecutiveAutoReply({ maxConsecutiveAutoReply: 3 });
+        const max = getMaximumConsecutiveAutoReply({
+            maxConsecutiveAutoReply: 3,
+        });
         expect(max).toBe(3);
     });
     it("should return null", () => {
@@ -169,7 +173,9 @@ describe("getModelIds", () => {
 
 describe("getSkills", () => {
     it("should return the skills", () => {
-        const skills = getSkills({ skills: [{ id: "skill-1", executorId: "wa-1" }] });
+        const skills = getSkills({
+            skills: [{ id: "skill-1", executorId: "wa-1" }],
+        });
         expect(skills).toEqual([{ id: "skill-1", executorId: "wa-1" }]);
     });
     it("should return an empty array", () => {
@@ -223,9 +229,19 @@ describe("getParentId", () => {
 describe("getNestedChats", () => {
     it("should return the nested chats", () => {
         const chats = getNestedChats({
-            nestedChats: [{ triggeredBy: ["wa-1"], messages: [{ id: "wa-2", isReply: false }] }],
+            nestedChats: [
+                {
+                    triggeredBy: ["wa-1"],
+                    messages: [{ id: "wa-2", isReply: false }],
+                },
+            ],
         });
-        expect(chats).toEqual([{ triggeredBy: ["wa-1"], messages: [{ id: "wa-2", isReply: false }] }]);
+        expect(chats).toEqual([
+            {
+                triggeredBy: ["wa-1"],
+                messages: [{ id: "wa-2", isReply: false }],
+            },
+        ]);
     });
     it("should return an empty array", () => {
         const chats = getNestedChats({});

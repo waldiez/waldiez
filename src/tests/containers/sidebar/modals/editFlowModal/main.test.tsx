@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { onChange, renderFlow } from "../common";
-import { description, flowId, name } from "../data";
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { onChange, renderFlow } from "../common";
+import { description, flowId, name } from "../data";
 
 describe("Sidebar Edit flow modal", () => {
     afterEach(() => {
@@ -70,7 +71,9 @@ describe("Sidebar Edit flow modal", () => {
         // flowName
         const flowNameInput = screen.getByTestId(`edit-flow-${flowId}-name-input`);
         expect(flowNameInput).toBeTruthy();
-        fireEvent.change(flowNameInput, { target: { value: `${name} update` } });
+        fireEvent.change(flowNameInput, {
+            target: { value: `${name} update` },
+        });
         // flowDescription
         const flowDescriptionInput = screen.getByTestId(`edit-flow-${flowId}-description-input`);
         expect(flowDescriptionInput).toBeTruthy();

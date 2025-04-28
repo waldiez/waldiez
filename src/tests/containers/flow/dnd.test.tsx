@@ -2,6 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { act, fireEvent, screen } from "@testing-library/react";
+import { describe, it } from "vitest";
+
 import {
     assistantDataTransfer,
     captainDataTransfer,
@@ -12,8 +15,6 @@ import {
     userDataTransfer,
 } from "./common";
 import { edgesCount, flowId } from "./data";
-import { act, fireEvent, screen } from "@testing-library/react";
-import { describe, it } from "vitest";
 
 describe("Flow DnD", () => {
     const ensureAgentsView = () => {

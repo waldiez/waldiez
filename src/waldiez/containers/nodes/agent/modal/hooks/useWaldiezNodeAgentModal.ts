@@ -35,7 +35,9 @@ export const useWaldiezNodeAgentModal = (
     const addGroupMember = useWaldiez(s => s.addGroupMember);
     const uploadHandler = useWaldiez(s => s.onUpload);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
-    const [agentData, setAgentData] = useState<WaldiezNodeAgentData>({ ...data });
+    const [agentData, setAgentData] = useState<WaldiezNodeAgentData>({
+        ...data,
+    });
     const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
     const { isDark } = useWaldiezTheme();
     const [isDirty, setIsDirty] = useState(false);

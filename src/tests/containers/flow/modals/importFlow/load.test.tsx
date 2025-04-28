@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { flow, flowId } from "../../../flow/data";
-import { renderFlow } from "../common";
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { flow, flowId } from "../../../flow/data";
+import { renderFlow } from "../common";
 
 afterEach(() => {
     vi.resetAllMocks();

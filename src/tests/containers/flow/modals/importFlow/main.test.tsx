@@ -2,8 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderFlow } from "../common";
 import { act, fireEvent, screen } from "@testing-library/react";
+
+import { renderFlow } from "../common";
 
 // import userEvent from '@testing-library/user-event';
 

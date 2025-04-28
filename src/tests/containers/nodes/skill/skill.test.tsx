@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, flowId, skillData, skillId, storedNodes, updatedAt } from "./data";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -10,6 +9,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WaldiezNodeSkillView } from "@waldiez/containers/nodes";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { createdAt, flowId, skillData, skillId, storedNodes, updatedAt } from "./data";
 
 const renderSkillNode = (skipStoredNodes = false, includeSecrets = false, goToAdvancedTab = false) => {
     render(

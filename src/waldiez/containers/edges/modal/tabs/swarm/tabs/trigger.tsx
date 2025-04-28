@@ -9,7 +9,12 @@ export const WaldiezEdgeSwarmTriggerTab = (props: WaldiezEdgeSwarmTriggerTabProp
     const { activeTabIndex, edgeId, flowId, data: edgeData, onDataChange } = props;
     const onMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         onDataChange({
-            message: { content: event.target.value, type: "string", context: {}, use_carryover: false },
+            message: {
+                content: event.target.value,
+                type: "string",
+                context: {},
+                use_carryover: false,
+            },
         });
     };
     const onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => {

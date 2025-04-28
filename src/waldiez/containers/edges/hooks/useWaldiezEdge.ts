@@ -66,7 +66,10 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
     const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const edge = getEdgeById(id);
         if (edge) {
-            updateEdgeData(id, { ...edge.data, description: event.target.value });
+            updateEdgeData(id, {
+                ...edge.data,
+                description: event.target.value,
+            });
         }
     };
     return {

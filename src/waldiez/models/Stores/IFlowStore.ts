@@ -21,7 +21,10 @@ export interface IWaldiezFlowStore {
     onFlowChanged: () => WaldiezFlow;
     onViewportChange: (viewport: { x: number; y: number; zoom: number }, nodeType: WaldiezNodeType) => void;
     saveFlow: () => void;
-    getFlowEdges: (skipSwarm: boolean) => { used: WaldiezEdge[]; remaining: WaldiezEdge[] };
+    getFlowEdges: (skipSwarm: boolean) => {
+        used: WaldiezEdge[];
+        remaining: WaldiezEdge[];
+    };
     importFlow: (items: ThingsToImport, flowData: ImportedFlow, typeShown: WaldiezNodeType) => void;
     exportFlow: (hideSecrets: boolean, skipLinks: boolean) => WaldiezFlow;
     updateFlowOrder: (data: { id: string; order: number }[]) => void;

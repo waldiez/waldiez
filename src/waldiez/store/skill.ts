@@ -92,7 +92,10 @@ export class WaldiezSkillStore implements IWaldiezSkillStore {
             nodes: [
                 ...this.get().nodes.map(node => {
                     if (node.type === "skill" && node.id === id) {
-                        return { ...node, data: { ...skill.data, ...data, updatedAt } };
+                        return {
+                            ...node,
+                            data: { ...skill.data, ...data, updatedAt },
+                        };
                     }
                     return node;
                 }),
@@ -123,7 +126,9 @@ export class WaldiezSkillStore implements IWaldiezSkillStore {
             skillNode.position = position;
         }
         if (save) {
-            this.set({ nodes: this.get().nodes.map(node => (node.id === skillId ? skillNode : node)) });
+            this.set({
+                nodes: this.get().nodes.map(node => (node.id === skillId ? skillNode : node)),
+            });
         }
         return skillNode;
     };

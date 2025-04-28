@@ -68,10 +68,14 @@ export const getNestedChat = (data: { [key: string]: any }): WaldiezNestedChat =
     } as WaldiezNestedChat;
     if ("nestedChat" in data && data.nestedChat) {
         if ("message" in data.nestedChat && data.nestedChat.message) {
-            nestedChat.message = messageMapper.importMessage({ message: data.nestedChat.message });
+            nestedChat.message = messageMapper.importMessage({
+                message: data.nestedChat.message,
+            });
         }
         if ("reply" in data.nestedChat && data.nestedChat.reply) {
-            nestedChat.reply = messageMapper.importMessage({ message: data.nestedChat.reply });
+            nestedChat.reply = messageMapper.importMessage({
+                message: data.nestedChat.reply,
+            });
         }
     }
     return nestedChat;

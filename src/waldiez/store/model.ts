@@ -95,7 +95,10 @@ export class WaldiezModelStore implements IWaldiezModelStore {
             nodes: [
                 ...this.get().nodes.map(node => {
                     if (node.id === id) {
-                        return { ...node, data: { ...node.data, ...data, updatedAt } };
+                        return {
+                            ...node,
+                            data: { ...node.data, ...data, updatedAt },
+                        };
                     }
                     return node;
                 }),
@@ -126,7 +129,9 @@ export class WaldiezModelStore implements IWaldiezModelStore {
             modelNode.position = position;
         }
         if (save) {
-            this.set({ nodes: this.get().nodes.map(node => (node.id === modelId ? modelNode : node)) });
+            this.set({
+                nodes: this.get().nodes.map(node => (node.id === modelId ? modelNode : node)),
+            });
         }
         return modelNode;
     };

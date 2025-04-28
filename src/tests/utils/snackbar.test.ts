@@ -111,25 +111,33 @@ describe("Snackbar", () => {
     });
 
     it("should use error.detail if present", () => {
-        showSnackbar(flowId, "Error detail", "error", { detail: "Detailed error" });
+        showSnackbar(flowId, "Error detail", "error", {
+            detail: "Detailed error",
+        });
         const detail = document.querySelector(`#${flowId}-snackbar details div`);
         expect(detail?.textContent).toContain("Detailed error");
     });
 
     it("should use error.message if present", () => {
-        showSnackbar(flowId, "Error message", "error", { message: "Message error" });
+        showSnackbar(flowId, "Error message", "error", {
+            message: "Message error",
+        });
         const detail = document.querySelector(`#${flowId}-snackbar details div`);
         expect(detail?.textContent).toContain("Message error");
     });
 
     it("should use statusText if present", () => {
-        showSnackbar(flowId, "Status text error", "error", { statusText: "Server Error" });
+        showSnackbar(flowId, "Status text error", "error", {
+            statusText: "Server Error",
+        });
         const detail = document.querySelector(`#${flowId}-snackbar details div`);
         expect(detail?.textContent).toContain("Error: Server Error");
     });
 
     it("should show generic error for unknown objects", () => {
-        showSnackbar(flowId, "Unknown error", "error", { unexpected: true } as any);
+        showSnackbar(flowId, "Unknown error", "error", {
+            unexpected: true,
+        } as any);
         const detail = document.querySelector(`#${flowId}-snackbar details div`);
         expect(detail?.textContent).toContain("An unexpected error occurred.");
     });

@@ -25,7 +25,10 @@ export const getSkills = (json: Record<string, unknown>, nodes: Node[]) => {
                 delete nodeExtras.data;
                 delete nodeExtras.type;
                 delete nodeExtras.parentId;
-                const waldiezModel = skillMapper.importSkill({ ...skillJson, ...nodeExtras });
+                const waldiezModel = skillMapper.importSkill({
+                    ...skillJson,
+                    ...nodeExtras,
+                });
                 skills.push(waldiezModel);
             }
         }

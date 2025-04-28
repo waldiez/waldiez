@@ -41,7 +41,10 @@ export const ModelSelector = (props: {
     };
 
     const formatGroupLabel = (
-        group: GroupBase<{ label: WaldiezModelAPIType; options: { label: string; value: string }[] }>,
+        group: GroupBase<{
+            label: WaldiezModelAPIType;
+            options: { label: string; value: string }[];
+        }>,
     ) => {
         const logo = LOGOS[group.label as WaldiezModelAPIType];
         return (
@@ -49,7 +52,12 @@ export const ModelSelector = (props: {
                 <img
                     src={logo}
                     alt="logo"
-                    style={{ width: 20, height: 20, marginRight: 10, backgroundColor: "transparent" }}
+                    style={{
+                        width: 20,
+                        height: 20,
+                        marginRight: 10,
+                        backgroundColor: "transparent",
+                    }}
                 />
                 <strong>{group.label}</strong>
             </div>

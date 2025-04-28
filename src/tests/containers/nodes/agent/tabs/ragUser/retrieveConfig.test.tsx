@@ -2,13 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../../common";
-import { agentId, flowId } from "../../data";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 // import userEvent from '@testing-library/user-event';
 import selectEvent from "react-select-event";
+
+import { renderAgent, submitAgentChanges } from "../../common";
+import { agentId, flowId } from "../../data";
 
 let uploading = false;
 const uploadsHandler = async (files: File[]) => {

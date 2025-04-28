@@ -15,7 +15,10 @@ export const GroupManagerSpeakersTransition = (props: {
     onAddTransition: () => void;
     onRemoveTransition: (source: string) => void;
     onTransitionsTypeChange: (
-        option: SingleValue<{ label: string; value: GroupChatSpeakerTransitionsType }>,
+        option: SingleValue<{
+            label: string;
+            value: GroupChatSpeakerTransitionsType;
+        }>,
     ) => void;
     onTransitionsSourceChange: (value: SingleValue<{ label: string; value: string }>) => void;
     onTransitionsTargetsChange: (value: MultiValue<{ label: string; value: string }>) => void;
@@ -131,7 +134,10 @@ export const GroupManagerSpeakersTransition = (props: {
     );
 };
 
-const speakerTransitionOptions: { label: string; value: GroupChatSpeakerTransitionsType }[] = [
+const speakerTransitionOptions: {
+    label: string;
+    value: GroupChatSpeakerTransitionsType;
+}[] = [
     { label: "Allowed", value: "allowed" },
     { label: "Disallowed", value: "disallowed" },
 ];

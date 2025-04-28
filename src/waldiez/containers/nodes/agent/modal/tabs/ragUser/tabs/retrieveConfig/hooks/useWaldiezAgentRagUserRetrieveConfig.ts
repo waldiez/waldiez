@@ -39,7 +39,12 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
             },
         });
     };
-    const onTaskChange = (option: SingleValue<{ label: string; value: "code" | "qa" | "default" }>) => {
+    const onTaskChange = (
+        option: SingleValue<{
+            label: string;
+            value: "code" | "qa" | "default";
+        }>,
+    ) => {
         if (option) {
             setRetrieveConfigConfigData({ task: option.value });
         }

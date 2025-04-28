@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { apiTypeOptions, createdAt, flowId, modelData, modelId, storedModels, updatedAt } from "./data";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
@@ -12,6 +11,8 @@ import { WaldiezNodeModelView } from "@waldiez/containers/nodes";
 import { WaldiezModelAPIType } from "@waldiez/models";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { apiTypeOptions, createdAt, flowId, modelData, modelId, storedModels, updatedAt } from "./data";
 
 const renderModel = (
     apiType: WaldiezModelAPIType = "other",

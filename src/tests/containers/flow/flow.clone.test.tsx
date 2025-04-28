@@ -2,9 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { onChange, renderFlow } from "./common";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
+import { onChange, renderFlow } from "./common";
 
 describe("WaldiezFlow Clone Nodes", () => {
     it("should clone a model node", async () => {

@@ -2,11 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../common";
-import { agentId, flowId } from "../data";
 import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+
+import { renderAgent, submitAgentChanges } from "../common";
+import { agentId, flowId } from "../data";
 
 const goToCaptainTab = () => {
     // Click on the Captain tab

@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, description, edgesCount, flowId, name, requirements, tags, updatedAt } from "./data";
 import { render } from "@testing-library/react";
 
 import { ReactFlow, ReactFlowProvider } from "@xyflow/react";
@@ -11,6 +10,8 @@ import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar, SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { createdAt, description, edgesCount, flowId, name, requirements, tags, updatedAt } from "./data";
 
 export const onChange = vi.fn();
 

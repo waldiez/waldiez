@@ -2,12 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderEdge } from "../common";
-import { edgeId, edgeProps } from "../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
+
+import { renderEdge } from "../common";
+import { edgeId, edgeProps } from "../data";
 
 describe("WaldiezEdgeModalTab basic", () => {
     it("changes edge type", async () => {
@@ -28,7 +29,9 @@ describe("WaldiezEdgeModalTab basic", () => {
         const labelDescription = screen.getByTestId(
             `edge-${edgeId}-description-input`,
         ) as HTMLTextAreaElement;
-        fireEvent.change(labelDescription, { target: { value: "Updated description" } });
+        fireEvent.change(labelDescription, {
+            target: { value: "Updated description" },
+        });
         const cancelButton = screen.getByTestId("modal-cancel-btn");
         fireEvent.click(cancelButton);
         const toGainFocus = screen.getByTestId(`edge-${edgeId}-box`);
@@ -45,7 +48,9 @@ describe("WaldiezEdgeModalTab basic", () => {
         const labelDescription = screen.getByTestId(
             `edge-${edgeId}-description-input`,
         ) as HTMLTextAreaElement;
-        fireEvent.change(labelDescription, { target: { value: "Updated description" } });
+        fireEvent.change(labelDescription, {
+            target: { value: "Updated description" },
+        });
         const chatTypeSelect = screen.getByLabelText("Chat Type:");
         selectEvent.openMenu(chatTypeSelect);
         await selectEvent.select(chatTypeSelect, "Nested Chat");

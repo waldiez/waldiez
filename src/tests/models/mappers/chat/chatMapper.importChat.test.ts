@@ -2,11 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { agents, chatJson, edges } from "./data";
 import { describe, expect, it } from "vitest";
 
 import { WaldiezChat } from "@waldiez/models";
 import { chatMapper } from "@waldiez/models/mappers";
+
+import { agents, chatJson, edges } from "./data";
 
 describe("chatMapper.importChat", () => {
     it("should import a chat", () => {
@@ -74,7 +75,11 @@ describe("chatMapper.importChat", () => {
     it("should throw an error if the edge source does not match the data source", () => {
         expect(() =>
             chatMapper.importChat(
-                { id: "wc-1", data: { source: "wa-2", target: "wa-2" }, type: "chat" },
+                {
+                    id: "wc-1",
+                    data: { source: "wa-2", target: "wa-2" },
+                    type: "chat",
+                },
                 edges,
                 agents,
                 1,
@@ -84,7 +89,11 @@ describe("chatMapper.importChat", () => {
     it("should throw an error if the edge target does not match the data target", () => {
         expect(() =>
             chatMapper.importChat(
-                { id: "wc-1", data: { source: "wa-1", target: "wa-3" }, type: "chat" },
+                {
+                    id: "wc-1",
+                    data: { source: "wa-1", target: "wa-3" },
+                    type: "chat",
+                },
                 edges,
                 agents,
                 1,
@@ -93,7 +102,11 @@ describe("chatMapper.importChat", () => {
     });
     it("should change the edge type to chat if the chat.type not a valid type", () => {
         const { chat, edge } = chatMapper.importChat(
-            { id: "wc-1", type: "other", data: { source: "wa-1", target: "wa-2" } },
+            {
+                id: "wc-1",
+                type: "other",
+                data: { source: "wa-1", target: "wa-2" },
+            },
             edges,
             agents,
             1,
@@ -111,7 +124,11 @@ describe("chatMapper.importChat", () => {
         const newEdges = [...edges];
         delete newEdges[0].type;
         const { chat, edge } = chatMapper.importChat(
-            { id: "wc-1", type: "nested", data: { source: "wa-1", target: "wa-2" } },
+            {
+                id: "wc-1",
+                type: "nested",
+                data: { source: "wa-1", target: "wa-2" },
+            },
             newEdges,
             agents,
             1,
@@ -131,9 +148,15 @@ describe("chatMapper.importChat", () => {
     });
     it("should change the edge type to hidden if the target is a group and the source is the parent", () => {
         const newAgents = [...agents];
-        newAgents[2] = { ...newAgents[2], data: { ...newAgents[2].data, parentId: "wa-2" } };
+        newAgents[2] = {
+            ...newAgents[2],
+            data: { ...newAgents[2].data, parentId: "wa-2" },
+        };
         const { chat, edge } = chatMapper.importChat(
-            { id: "wc-2", data: { type: "group", source: "wa-2", target: "wa-3" } },
+            {
+                id: "wc-2",
+                data: { type: "group", source: "wa-2", target: "wa-3" },
+            },
             edges,
             newAgents,
             1,
@@ -225,7 +248,10 @@ describe("chatMapper.importChat", () => {
     });
     it("should animate swarm chat if the source is swarm and the target is not", () => {
         const newAgents = [...agents];
-        newAgents[0] = { ...newAgents[0], data: { ...newAgents[0].data, agentType: "swarm" } };
+        newAgents[0] = {
+            ...newAgents[0],
+            data: { ...newAgents[0].data, agentType: "swarm" },
+        };
         const { chat, edge } = chatMapper.importChat(chatJson, edges, newAgents, 1);
         expect(chat).toBeTruthy();
         expect(edge?.animated).toBe(true);

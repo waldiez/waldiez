@@ -223,6 +223,7 @@
         "xunit",
         "xyflow",
         "ydoc",
+        "zoomin",
         "zundo"
     ],
     "ignorePaths": [
@@ -233,8 +234,6 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": [
-        "/**"
-    ],
+    "files": ["/**"],
     "useGitignore": true
 }

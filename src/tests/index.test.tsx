@@ -2,8 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { getProps, startApp } from "..";
 import { afterEach, vi } from "vitest";
+
+import { getProps, startApp } from "..";
 
 const flowLinksBaseUrl = "https://raw.githubusercontent.com/waldiez/examples/refs/heads/main";
 const flowLink = `${flowLinksBaseUrl}/01 - Standup Comedians/Standup Comedians 1.waldiez`;

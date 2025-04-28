@@ -291,7 +291,13 @@ export const getNewEdgeConnectionProps = (
             break;
         }
     }
-    return { oldSourceNode, oldTargetNode, newSourceNode, newTargetNode, color };
+    return {
+        oldSourceNode,
+        oldTargetNode,
+        newSourceNode,
+        newTargetNode,
+        color,
+    };
 };
 const updateNestedEdges = (get: typeOfGet, set: typeOfSet) => {
     const agentNodes = get().nodes.filter(node => node.type === "agent" && node.data.agentType !== "manager");

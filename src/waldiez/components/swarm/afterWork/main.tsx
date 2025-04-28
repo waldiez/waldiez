@@ -50,7 +50,9 @@ export const AfterWork = (props: AfterWorkProps) => {
         { value: "option", label: "Option" },
         { value: "callable", label: "Custom Function" },
     ];
-    const recipientToLabel: { [key in WaldiezSwarmAfterWorkRecipientType]: string } = {
+    const recipientToLabel: {
+        [key in WaldiezSwarmAfterWorkRecipientType]: string;
+    } = {
         agent: "Agent",
         option: "Option",
         callable: "Custom Function",
@@ -75,14 +77,19 @@ export const AfterWork = (props: AfterWorkProps) => {
         acc[agent.id] = agent.data.label;
         return acc;
     }, {});
-    const agentOptionToValue = agents.reduce<{ [key: string]: WaldiezNodeAgentSwarm }>((acc, agent) => {
+    const agentOptionToValue = agents.reduce<{
+        [key: string]: WaldiezNodeAgentSwarm;
+    }>((acc, agent) => {
         acc[agent.id] = agent;
         return acc;
     }, {});
     const isRecipientAnOption = VALID_AFTER_WORK_OPTIONS.includes(afterWorkLocal.recipient as string);
     const isRecipientAnAgent = agentOptions.some(agent => agent.value.id === afterWorkLocal.recipient);
     const onRecipientTypeChange = (
-        option: SingleValue<{ value: WaldiezSwarmAfterWorkRecipientType; label: string }>,
+        option: SingleValue<{
+            value: WaldiezSwarmAfterWorkRecipientType;
+            label: string;
+        }>,
     ) => {
         if (option) {
             const recipientType = option.value;
@@ -101,7 +108,10 @@ export const AfterWork = (props: AfterWorkProps) => {
         }
     };
     const onAfterWorkOptionChange = (
-        option: SingleValue<{ value: WaldiezSwarmAfterWorkOption; label: string }>,
+        option: SingleValue<{
+            value: WaldiezSwarmAfterWorkOption;
+            label: string;
+        }>,
     ) => {
         if (option) {
             const newAfterWork = {

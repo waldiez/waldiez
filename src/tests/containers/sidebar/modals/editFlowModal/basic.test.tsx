@@ -2,12 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { edges, renderFlow } from "../common";
-import { flowId } from "../data";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
+
+import { edges, renderFlow } from "../common";
+import { flowId } from "../data";
 
 describe("Sidebar Edit flow modal config tab", () => {
     afterEach(() => {
@@ -30,7 +31,9 @@ describe("Sidebar Edit flow modal config tab", () => {
         fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
         const flowDescriptionInput = screen.getByTestId(`edit-flow-${flowId}-description-input`);
         expect(flowDescriptionInput).toBeTruthy();
-        fireEvent.change(flowDescriptionInput, { target: { value: "New Flow Description" } });
+        fireEvent.change(flowDescriptionInput, {
+            target: { value: "New Flow Description" },
+        });
         expect(flowDescriptionInput).toHaveValue("New Flow Description");
     });
     it("should toggle async mode", () => {

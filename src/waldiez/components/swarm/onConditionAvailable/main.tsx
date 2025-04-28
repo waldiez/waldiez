@@ -21,7 +21,10 @@ export const OnConditionAvailable = (props: OnConditionAvailableProps) => {
         }
     };
     const onConditionAvailableTypeChange = (
-        option: SingleValue<{ label: string; value: WaldiezSwarmOnConditionAvailableCheckType }>,
+        option: SingleValue<{
+            label: string;
+            value: WaldiezSwarmOnConditionAvailableCheckType;
+        }>,
     ) => {
         if (option) {
             const defaultContent =

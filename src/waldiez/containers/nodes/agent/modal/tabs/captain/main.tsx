@@ -80,7 +80,12 @@ export const WaldiezAgentCaptainTab = (props: WaldiezAgentCaptainTabProps) => {
                                 expanded={false}
                                 fullWidth
                             >
-                                <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                                <div
+                                    style={{
+                                        maxHeight: "300px",
+                                        overflowY: "auto",
+                                    }}
+                                >
                                     <pre>{JSON.stringify(agentLib, null, 2)}</pre>
                                 </div>
                             </Collapsible>

@@ -47,7 +47,10 @@ export const WaldiezAgentSwarmUpdateState = (props: WaldiezAgentSwarmUpdateState
                   updateFunction: "",
               };
     const onUpdateSystemMessageTypeChange = (
-        option: SingleValue<{ label: string; value: WaldiezSwarmUpdateSystemMessageType }>,
+        option: SingleValue<{
+            label: string;
+            value: WaldiezSwarmUpdateSystemMessageType;
+        }>,
     ) => {
         if (option) {
             setSelectedUpdateSystemMessageType(option.value);

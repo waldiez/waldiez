@@ -2,11 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent } from "./common";
-import { agentId, flowId, getAgentData } from "./data";
 import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Mock, describe, expect, it } from "vitest";
+
+import { renderAgent } from "./common";
+import { agentId, flowId, getAgentData } from "./data";
 
 describe("WaldiezAgentNode", () => {
     const user = userEvent.setup({

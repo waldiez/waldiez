@@ -2,9 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, edgesCount, updatedAt } from "./common";
-import { edges } from "./edges";
-
 import { Node } from "@xyflow/react";
 
 import {
@@ -14,6 +11,9 @@ import {
     WaldiezAgentTerminationMessageCheck,
     defaultRetrieveConfig,
 } from "@waldiez/models";
+
+import { createdAt, edgesCount, updatedAt } from "./common";
+import { edges } from "./edges";
 
 export const userInput = {
     previousMessages: ["Message 1", "Message 2"],

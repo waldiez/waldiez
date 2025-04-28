@@ -31,7 +31,10 @@ export const useWaldiezAgentBasic = (props: {
         onDataChange({ systemMessage: event.target.value });
     };
     const onHumanInputModeChange = (
-        option: SingleValue<{ label: string; value: WaldiezAgentHumanInputMode }>,
+        option: SingleValue<{
+            label: string;
+            value: WaldiezAgentHumanInputMode;
+        }>,
     ) => {
         if (option) {
             setLocalData({ ...localData, humanInputMode: option.value });
@@ -43,7 +46,10 @@ export const useWaldiezAgentBasic = (props: {
         onDataChange({ maxConsecutiveAutoReply: value });
     };
     const onAgentDefaultAutoReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLocalData({ ...localData, agentDefaultAutoReply: event.target.value });
+        setLocalData({
+            ...localData,
+            agentDefaultAutoReply: event.target.value,
+        });
         onDataChange({ agentDefaultAutoReply: event.target.value });
     };
     return {

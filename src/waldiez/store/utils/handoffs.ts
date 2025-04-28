@@ -157,10 +157,10 @@ export const getNestedChatOnConditionHandoff: (
 const getSwarmAgentHandoff: (
     edge: WaldiezEdge,
     agentNodes: WaldiezNodeAgent[],
-) => { afterWork: WaldiezSwarmAfterWork | null; onCondition: WaldiezSwarmOnCondition | null } = (
-    edge,
-    agentNodes,
 ) => {
+    afterWork: WaldiezSwarmAfterWork | null;
+    onCondition: WaldiezSwarmOnCondition | null;
+} = (edge, agentNodes) => {
     const targetNode = agentNodes.find(node => node.id === edge.target);
     if (!targetNode || !edge.data) {
         return {

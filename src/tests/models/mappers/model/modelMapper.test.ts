@@ -110,7 +110,9 @@ describe("modelMapper", () => {
         expect(modelJson.type).toBe("model");
         expect(modelJson.name).toBe(modelNode.data.label);
         expect((modelJson.data as any).apiKey).toBe("REPLACE_ME");
-        expect((modelJson.data as any).defaultHeaders).toEqual({ key: "REPLACE_ME" });
+        expect((modelJson.data as any).defaultHeaders).toEqual({
+            key: "REPLACE_ME",
+        });
     });
     it("should convert a model to a model node", () => {
         const modelData = new WaldiezModelData();

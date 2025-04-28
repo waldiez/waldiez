@@ -24,7 +24,10 @@ export const useWaldiezNodeAgentBody = (props: {
         if (!isModalOpen) {
             const agent = getAgentById(id) as WaldiezNodeAgent;
             if (agent) {
-                updateAgentData(id, { ...agent.data, description: event.target.value });
+                updateAgentData(id, {
+                    ...agent.data,
+                    description: event.target.value,
+                });
             }
         }
     };
@@ -42,7 +45,9 @@ export const useWaldiezNodeAgentBody = (props: {
                     return;
                 }
                 if (storedAgent.data) {
-                    updateAgentData(id, { ...(storedAgent.data as WaldiezNodeAgentData) });
+                    updateAgentData(id, {
+                        ...(storedAgent.data as WaldiezNodeAgentData),
+                    });
                 }
                 setTimeout(() => {
                     reselectNode(member.id);

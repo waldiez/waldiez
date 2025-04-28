@@ -55,7 +55,6 @@ const defaultConfig = eslintTs.config({
     },
     rules: {
         "prettier/prettier": [
-            // also check package.json for prettier config
             "error",
             {
                 tabWidth: 4,
@@ -65,6 +64,30 @@ const defaultConfig = eslintTs.config({
                 singleQuote: false,
                 trailingComma: "all",
                 endOfLine: "lf",
+                plugins: ["@trivago/prettier-plugin-sort-imports"],
+                importOrderSeparation: true,
+                importOrderSortSpecifiers: true,
+                importOrder: [
+                    "^@fortawesome/",
+                    "^@xyflow/",
+                    "^react",
+                    "^react-dom",
+                    "^react-select",
+                    "^zustand",
+                    "^nanoid",
+                    "^rc-slider",
+                    "^@monaco-editor/react",
+                    "^@waldiez/",
+                    "^[./]",
+                ],
+                overrides: [
+                    {
+                        files: ["**/*.yml", "**/*.yaml", "**/*.md", "**/*.css"],
+                        options: {
+                            tabWidth: 2,
+                        },
+                    },
+                ],
             },
         ],
         "@typescript-eslint/naming-convention": [

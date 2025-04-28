@@ -33,7 +33,17 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
         "data",
     ]);
     const storageId = getStorageId(json, id);
-    return { id, storageId, name, description, tags, requirements, createdAt, updatedAt, rest };
+    return {
+        id,
+        storageId,
+        name,
+        description,
+        tags,
+        requirements,
+        createdAt,
+        updatedAt,
+        rest,
+    };
 };
 export const getFlowViewport = (data: { [key: string]: unknown }) => {
     let viewport = { zoom: 1, x: 0, y: 0 };

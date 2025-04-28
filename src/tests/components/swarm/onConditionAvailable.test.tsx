@@ -41,13 +41,19 @@ describe("OnConditionAvailable", () => {
     it("switches to enabled", () => {
         render(<OnConditionAvailable {...props} />);
         fireEvent.click(screen.getByRole("checkbox"));
-        expect(onDataChange).toHaveBeenCalledWith({ type: "string", value: "" });
+        expect(onDataChange).toHaveBeenCalledWith({
+            type: "string",
+            value: "",
+        });
     });
     it("switches to disabled", () => {
         props.data = { type: "string", value: "" };
         render(<OnConditionAvailable {...props} />);
         fireEvent.click(screen.getByRole("checkbox"));
-        expect(onDataChange).toHaveBeenCalledWith({ type: "none", value: null });
+        expect(onDataChange).toHaveBeenCalledWith({
+            type: "none",
+            value: null,
+        });
     });
     it("handles type change", async () => {
         props.data = { type: "string", value: "" };
@@ -68,7 +74,10 @@ describe("OnConditionAvailable", () => {
         fireEvent.change(screen.getByTestId("onConditionAvailableVariableInput"), {
             target: { value: "test" },
         });
-        expect(onDataChange).toHaveBeenCalledWith({ type: "string", value: "test" });
+        expect(onDataChange).toHaveBeenCalledWith({
+            type: "string",
+            value: "test",
+        });
     });
     it("handles callable change", () => {
         props.data = { type: "callable", value: "" };
@@ -76,6 +85,9 @@ describe("OnConditionAvailable", () => {
         const editor = screen.getByTestId("mocked-monaco-editor");
         expect(editor).toBeInTheDocument();
         fireEvent.change(editor, { target: { value: "test" } });
-        expect(onDataChange).toHaveBeenCalledWith({ type: "callable", value: "test" });
+        expect(onDataChange).toHaveBeenCalledWith({
+            type: "callable",
+            value: "test",
+        });
     });
 });

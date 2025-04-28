@@ -98,7 +98,9 @@ describe("skillMapper", () => {
         expect(skillJson).toBeTruthy();
         expect(skillJson.id).toBe("1");
         expect(skillJson.type).toBe("skill");
-        expect((skillJson.data as any).secrets).toEqual({ secret: "REPLACE_ME" });
+        expect((skillJson.data as any).secrets).toEqual({
+            secret: "REPLACE_ME",
+        });
     });
     it("should convert a skill to a skill node", () => {
         const skillData = new WaldiezSkillData();

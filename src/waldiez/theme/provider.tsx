@@ -7,10 +7,10 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { WaldiezThemeContext } from "@waldiez/theme/useWaldiezTheme";
 import { isInitiallyDark, setIsDarkMode } from "@waldiez/theme/utils";
 
-export const WaldiezThemeProvider: React.FC<{ children: ReactNode; initial?: boolean }> = ({
-    children,
-    initial,
-}) => {
+export const WaldiezThemeProvider: React.FC<{
+    children: ReactNode;
+    initial?: boolean;
+}> = ({ children, initial }) => {
     const initialDark = typeof initial === "boolean" ? initial : isInitiallyDark();
     const [isDark, setIsDark] = useState(initialDark);
     useEffect(() => {

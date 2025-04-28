@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent } from "../../common";
-import { agentId, flowId } from "../../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
+import { renderAgent } from "../../common";
+import { agentId, flowId } from "../../data";
 
 describe("Nested Chats tab main", () => {
     it("should not render the Nested Chats tab if the agent has no connections", async () => {

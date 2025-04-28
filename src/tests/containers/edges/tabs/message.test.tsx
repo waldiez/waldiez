@@ -2,12 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderEdge } from "../common";
-import { edgeProps, flowId } from "../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
+
+import { renderEdge } from "../common";
+import { edgeProps, flowId } from "../data";
 
 describe("WaldiezEdgeModalTab message", () => {
     it("updates the message type", async () => {

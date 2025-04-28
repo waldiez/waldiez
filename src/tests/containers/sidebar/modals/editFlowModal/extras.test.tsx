@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderFlow } from "../common";
-import { flowId } from "../data";
 import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, it, vi } from "vitest";
+
+import { renderFlow } from "../common";
+import { flowId } from "../data";
 
 const openFlowModalToExtras = (positions: number[]) => {
     act(() => {

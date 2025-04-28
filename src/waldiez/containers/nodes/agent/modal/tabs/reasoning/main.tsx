@@ -12,7 +12,10 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
     const { id, data, onDataChange } = props;
     const [localData, setLocalData] = useState(data);
 
-    const reasoningMethodOptions: { value: ReasoningConfigMethod; label: string }[] = [
+    const reasoningMethodOptions: {
+        value: ReasoningConfigMethod;
+        label: string;
+    }[] = [
         { value: "beam_search", label: "Beam Search" },
         { value: "mcts", label: "Monte Carlo Tree Search" },
         { value: "lats", label: "Language Agent Tree Search" },

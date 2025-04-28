@@ -52,15 +52,21 @@ describe("getRetrieveConfig", () => {
         expect(retrieveConfig).toEqual(defaultRetrieveConfig);
     });
     it("should return the default retrieve config if data.retrieveConfig is not an object", () => {
-        const retrieveConfig = getRetrieveConfig({ data: { retrieveConfig: 4 } });
+        const retrieveConfig = getRetrieveConfig({
+            data: { retrieveConfig: 4 },
+        });
         expect(retrieveConfig).toEqual(defaultRetrieveConfig);
     });
     it("should return a retrieve config", () => {
-        const retrieveConfig = getRetrieveConfig({ retrieveConfig: retrieveJson });
+        const retrieveConfig = getRetrieveConfig({
+            retrieveConfig: retrieveJson,
+        });
         expect(retrieveConfig).toEqual(retrieveJson);
     });
     it("should return a retrieve config if the key is in the data", () => {
-        const retrieveConfig = getRetrieveConfig({ data: { retrieveConfig: retrieveJson } });
+        const retrieveConfig = getRetrieveConfig({
+            data: { retrieveConfig: retrieveJson },
+        });
         expect(retrieveConfig).toEqual(retrieveJson);
     });
     it("should include a localStoragePath if it is in the dbConfig", () => {

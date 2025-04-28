@@ -3,13 +3,14 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import "./index.css";
 import { Waldiez, WaldiezProps, importFlow } from "@waldiez";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { nanoid } from "nanoid";
+
+import "./index.css";
 
 const isProd = import.meta.env.PROD;
 

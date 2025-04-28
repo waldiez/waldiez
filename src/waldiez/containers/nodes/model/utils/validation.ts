@@ -94,7 +94,11 @@ const validateModelBaseUrl = (model: WaldiezNodeModelData): ValidationResult => 
     if (!baseUrl.trim()) {
         return { success: false, message: ValidationMessage.MissingBaseUrl };
     }
-    return { success: true, message: ValidationMessage.ValidationSuccess, details: baseUrl };
+    return {
+        success: true,
+        message: ValidationMessage.ValidationSuccess,
+        details: baseUrl,
+    };
 };
 
 const validateModelInputs = (model: WaldiezNodeModelData): ValidationResult => {
@@ -179,7 +183,11 @@ const validateFallbackModel = async (
         data = await res.json();
     } catch (error) {
         const details = error instanceof Error ? error.message : String(error);
-        return { success: false, message: ValidationMessage.CouldNotFetchModel, details };
+        return {
+            success: false,
+            message: ValidationMessage.CouldNotFetchModel,
+            details,
+        };
     }
     const found = Array.isArray(data.data) && data.data.some((d: any) => d.id === modelName);
     return found

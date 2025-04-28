@@ -6,10 +6,10 @@ import React, { ReactNode, useEffect, useState } from "react";
 
 import { SidebarContext } from "@waldiez/containers/sidebar";
 
-export const SidebarProvider: React.FC<{ children: ReactNode; collapsed?: boolean }> = ({
-    children,
-    collapsed,
-}) => {
+export const SidebarProvider: React.FC<{
+    children: ReactNode;
+    collapsed?: boolean;
+}> = ({ children, collapsed }) => {
     const initiallyCollapsed = typeof collapsed === "boolean" ? collapsed : getIsSidebarCollapsedFromBody();
     const [isCollapsed, setIsCollapsed] = useState(initiallyCollapsed);
     useEffect(() => {

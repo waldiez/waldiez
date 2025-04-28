@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "../data";
 import { render } from "@testing-library/react";
 
 import { ReactFlowProvider } from "@xyflow/react";
@@ -14,6 +13,8 @@ import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "../data";
 
 const onRun = vi.fn();
 export const onChange = vi.fn();

@@ -101,7 +101,15 @@ export const useDnD = (onNewAgent: () => void) => {
         return { position, parent };
     };
     const addParentNodeEdge = (parent: Node, newNode: Node) => {
-        addEdge({ source: parent.id, target: newNode.id, sourceHandle: null, targetHandle: null }, true);
+        addEdge(
+            {
+                source: parent.id,
+                target: newNode.id,
+                sourceHandle: null,
+                targetHandle: null,
+            },
+            true,
+        );
         setTimeout(() => {
             setAgentGroup(newNode.id, parent.id);
         }, 0);

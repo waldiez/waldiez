@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, edgeData, edgeId, edgeProps, flowId, nodes, updatedAt } from "./data";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { ReactFlow, ReactFlowProvider, applyEdgeChanges } from "@xyflow/react";
@@ -11,6 +10,8 @@ import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { WaldiezEdgeType } from "@waldiez/models";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { createdAt, edgeData, edgeId, edgeProps, flowId, nodes, updatedAt } from "./data";
 
 export const renderEdge = (
     edgeType: WaldiezEdgeType,
@@ -22,15 +23,26 @@ export const renderEdge = (
     if (edgeType === "swarm") {
         if (swarmType === "trigger" || swarmType === "handoff") {
             // target: swarm
-            flowNodes[1].data = { ...flowNodes[1].data, agentType: "swarm", functions: [] } as any;
+            flowNodes[1].data = {
+                ...flowNodes[1].data,
+                agentType: "swarm",
+                functions: [],
+            } as any;
         }
         if (swarmType === "handoff" || swarmType === "nested") {
             // source: swarm
-            flowNodes[0].data = { ...flowNodes[0].data, agentType: "swarm", functions: [] } as any;
+            flowNodes[0].data = {
+                ...flowNodes[0].data,
+                agentType: "swarm",
+                functions: [],
+            } as any;
         }
         if (swarmType === "nested") {
             // target: assistant
-            flowNodes[1].data = { ...flowNodes[1].data, agentType: "assistant" };
+            flowNodes[1].data = {
+                ...flowNodes[1].data,
+                agentType: "assistant",
+            };
         }
     }
     const edges = [

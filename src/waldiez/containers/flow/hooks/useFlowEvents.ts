@@ -141,7 +141,9 @@ export const useFlowEvents = (flowId: string) => {
         }
         const { name } = getFlowInfo();
         const exporter = () => {
-            return exportFlow(true, false) as unknown as { [key: string]: unknown };
+            return exportFlow(true, false) as unknown as {
+                [key: string]: unknown;
+            };
         };
         const onError = () => {
             showSnackbar(flowId, "Could not export flow", "error", undefined, 3000);

@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../../common";
-import { agentId, flowId } from "../../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
+import { renderAgent, submitAgentChanges } from "../../common";
+import { agentId, flowId } from "../../data";
 
 const goToAdvancedTab = () => {
     renderAgent("rag_user", {

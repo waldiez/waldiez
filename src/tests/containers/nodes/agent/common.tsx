@@ -2,6 +2,18 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { act, fireEvent, render, screen } from "@testing-library/react";
+
+import { Edge, Node, ReactFlowProvider } from "@xyflow/react";
+
+import { HotkeysProvider } from "react-hotkeys-hook";
+
+import { WaldiezNodeAgentView } from "@waldiez/containers/nodes/agent";
+import { SidebarProvider } from "@waldiez/containers/sidebar";
+import { WaldiezNodeAgentType } from "@waldiez/models";
+import { WaldiezProvider } from "@waldiez/store";
+import { WaldiezThemeProvider } from "@waldiez/theme";
+
 import {
     agentId,
     createdAt,
@@ -14,17 +26,6 @@ import {
     getSkillNodes,
     updatedAt,
 } from "./data";
-import { act, fireEvent, render, screen } from "@testing-library/react";
-
-import { Edge, Node, ReactFlowProvider } from "@xyflow/react";
-
-import { HotkeysProvider } from "react-hotkeys-hook";
-
-import { WaldiezNodeAgentView } from "@waldiez/containers/nodes/agent";
-import { SidebarProvider } from "@waldiez/containers/sidebar";
-import { WaldiezNodeAgentType } from "@waldiez/models";
-import { WaldiezProvider } from "@waldiez/store";
-import { WaldiezThemeProvider } from "@waldiez/theme";
 
 /* eslint-disable max-statements */
 export const renderAgent = (

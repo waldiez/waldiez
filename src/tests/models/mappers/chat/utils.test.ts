@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { updateData } from "./data";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -21,6 +20,8 @@ import {
     getRealTarget,
     updateEdge,
 } from "@waldiez/models/mappers/chat/utils";
+
+import { updateData } from "./data";
 
 describe("getChatClearHistory", () => {
     it("should return the clearHistory value", () => {
@@ -149,7 +150,11 @@ describe("getAvailable", () => {
 
 describe("getChatAfterWork", () => {
     it("should return the afterWork value", () => {
-        expect(getChatAfterWork({ afterWork: { recipientType: "agent", recipient: "wa-2" } })).toEqual({
+        expect(
+            getChatAfterWork({
+                afterWork: { recipientType: "agent", recipient: "wa-2" },
+            }),
+        ).toEqual({
             recipientType: "agent",
             recipient: "wa-2",
         });
@@ -174,9 +179,20 @@ describe("getRealTarget", () => {
 
 describe("getChatRest", () => {
     it("should return the rest value", () => {
-        expect(getChatRest({ id: "1", data: { source: "wa-1", target: "wa-2" }, type: "chat" })).toEqual({});
         expect(
-            getChatRest({ id: "1", data: { source: "wa-1", target: "wa-2" }, type: "chat", custom: "value" }),
+            getChatRest({
+                id: "1",
+                data: { source: "wa-1", target: "wa-2" },
+                type: "chat",
+            }),
+        ).toEqual({});
+        expect(
+            getChatRest({
+                id: "1",
+                data: { source: "wa-1", target: "wa-2" },
+                type: "chat",
+                custom: "value",
+            }),
         ).toEqual({
             custom: "value",
         });
@@ -186,8 +202,16 @@ describe("getChatRest", () => {
 describe("updateEdge", () => {
     it("should update the edge", () => {
         const { edge, chat, json, expected } = updateData;
-        const sourceNode = { data: { agentType: "agent" }, id: "wa-1", position: { x: 0, y: 0 } };
-        const targetNode = { data: { agentType: "agent" }, id: "wa-2", position: { x: 20, y: 20 } };
+        const sourceNode = {
+            data: { agentType: "agent" },
+            id: "wa-1",
+            position: { x: 0, y: 0 },
+        };
+        const targetNode = {
+            data: { agentType: "agent" },
+            id: "wa-2",
+            position: { x: 20, y: 20 },
+        };
         const rest = {
             sourceHandle: "agent-handle-top-source-wa-1",
             targetHandle: "agent-handle-top-target-wa-2",
@@ -211,7 +235,11 @@ describe("updateEdge", () => {
             ...updateData.chat,
             realTarget: "wa-3",
         });
-        const sourceNode = { data: { agentType: "agent" }, id: "wa-1", position: { x: 0, y: 0 } };
+        const sourceNode = {
+            data: { agentType: "agent" },
+            id: "wa-1",
+            position: { x: 0, y: 0 },
+        };
         const targetNode = {
             data: { agentType: "swarm_container" },
             id: "wc-2",
@@ -250,7 +278,11 @@ describe("updateEdge", () => {
             ...updateData.chat,
             realTarget: null,
         });
-        const sourceNode = { data: { agentType: "agent" }, id: "wa-1", position: { x: 0, y: 0 } };
+        const sourceNode = {
+            data: { agentType: "agent" },
+            id: "wa-1",
+            position: { x: 0, y: 0 },
+        };
         const targetNode = {
             data: { agentType: "swarm_container" },
             id: "wc-2",

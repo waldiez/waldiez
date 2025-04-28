@@ -15,7 +15,9 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
         onDataChange({ tags: tags.filter(t => t !== tag) });
     };
     const onTagChange = (oldValue: string, newValue: string) => {
-        onDataChange({ tags: tags.map(t => (t === oldValue ? newValue : t)) });
+        onDataChange({
+            tags: tags.map(t => (t === oldValue ? newValue : t)),
+        });
     };
     const onAddRequirement = (requirement: string) => {
         onDataChange({ requirements: [...requirements, requirement] });

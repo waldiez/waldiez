@@ -2,12 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderEdge } from "../common";
-import { edgeProps, flowId } from "../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
+
+import { renderEdge } from "../common";
+import { edgeProps, flowId } from "../data";
 
 describe("WaldiezEdgeSwarmTabs Trigger", () => {
     it("renders the trigger tab", () => {
@@ -34,7 +35,9 @@ describe("WaldiezEdgeSwarmTabs Trigger", () => {
         const messageInput = screen.getByTestId(
             `edge-${edgeProps.id}-condition-input`,
         ) as HTMLTextAreaElement;
-        fireEvent.change(messageInput, { target: { value: "Updated message" } });
+        fireEvent.change(messageInput, {
+            target: { value: "Updated message" },
+        });
         expect(messageInput.value).toBe("Updated message");
     });
 });
@@ -56,7 +59,9 @@ describe("WaldiezEdgeSwarmTabs Handoff", () => {
         const conditionInput = screen.getByTestId(
             `edge-${edgeProps.id}-condition-input`,
         ) as HTMLTextAreaElement;
-        fireEvent.change(conditionInput, { target: { value: "Updated condition" } });
+        fireEvent.change(conditionInput, {
+            target: { value: "Updated condition" },
+        });
         expect(conditionInput.value).toBe("Updated condition");
     });
     it("updates the availability", () => {
@@ -68,7 +73,9 @@ describe("WaldiezEdgeSwarmTabs Handoff", () => {
         const checkbox = screen.getByTestId("onConditionAvailable") as HTMLInputElement;
         fireEvent.click(checkbox);
         const availableInput = screen.getByTestId("onConditionAvailableVariableInput") as HTMLInputElement;
-        fireEvent.change(availableInput, { target: { value: "Updated available" } });
+        fireEvent.change(availableInput, {
+            target: { value: "Updated available" },
+        });
         expect(availableInput.value).toBe("Updated available");
     });
 });

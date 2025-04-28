@@ -99,7 +99,10 @@ export const useGroupManagerSpeakers = (props: {
         }
     };
     const onTransitionsTypeChange = (
-        option: SingleValue<{ label: string; value: GroupChatSpeakerTransitionsType }>,
+        option: SingleValue<{
+            label: string;
+            value: GroupChatSpeakerTransitionsType;
+        }>,
     ) => {
         if (option) {
             setSpeakersData({ transitionsType: option.value });

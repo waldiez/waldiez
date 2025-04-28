@@ -2,11 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { onConvert, onSave, renderFlow } from "./common";
-import { flowId } from "./data";
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
 import { describe, it } from "vitest";
+
+import { onConvert, onSave, renderFlow } from "./common";
+import { flowId } from "./data";
 
 const undoAction = async (user: UserEvent) => {
     act(() => {

@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { waldiezFlow } from "./data";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -19,6 +18,8 @@ import {
     getEdgeTrigger,
     getSwarmContainer,
 } from "@waldiez/models/mappers/flow/utils/swarm";
+
+import { waldiezFlow } from "./data";
 
 describe("getSwarmContainer", () => {
     it("should return a new swarm container if not in nodes", () => {
@@ -165,7 +166,12 @@ describe("exportSwarmAgents", () => {
                 source: swarm.id,
                 target: container.id,
                 type: "swarm" as WaldiezEdgeType,
-                data: chatMapper.asEdge(WaldiezChat.create({ source: swarm.id, target: container.id })).data,
+                data: chatMapper.asEdge(
+                    WaldiezChat.create({
+                        source: swarm.id,
+                        target: container.id,
+                    }),
+                ).data,
             },
         ];
         const { swarmAgents, edges } = exportSwarmAgents([swarm], allEdges, false);
@@ -184,7 +190,12 @@ describe("exportSwarmAgents", () => {
                 source: swarm1.id,
                 target: swarm2.id,
                 type: "swarm" as WaldiezEdgeType,
-                data: chatMapper.asEdge(WaldiezChat.create({ source: swarm1.id, target: swarm2.id })).data,
+                data: chatMapper.asEdge(
+                    WaldiezChat.create({
+                        source: swarm1.id,
+                        target: swarm2.id,
+                    }),
+                ).data,
             },
         ];
         const { swarmAgents, edges } = exportSwarmAgents([swarm1, swarm2, container], allEdges, false);

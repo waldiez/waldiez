@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, edgesCount, updatedAt } from "./common";
-
 import { Edge } from "@xyflow/react";
 
 import { WaldiezChatLlmSummaryMethod, WaldiezMessageType } from "@waldiez/models";
+
+import { createdAt, edgesCount, updatedAt } from "./common";
 
 const edges: Edge[] = [];
 for (let i = 0; i < edgesCount; i++) {

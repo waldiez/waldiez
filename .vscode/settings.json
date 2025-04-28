@@ -61,5 +61,5 @@
     "cSpell.mergeCSpellSettings": true,
     "cSpell.configFile": "cspell.json",
     "vitest.disableWorkspaceWarning": true,
-    "prettier.configPath": ".prettierrc.json"
+    "prettier.configPath": "package.json"
 }

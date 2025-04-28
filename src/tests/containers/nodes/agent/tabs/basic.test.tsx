@@ -2,13 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../common";
-import { agentId } from "../data";
 import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
+
+import { renderAgent, submitAgentChanges } from "../common";
+import { agentId } from "../data";
 
 describe("WaldiezAgentNode Basic Modal Tab", () => {
     it("Updates the agent type from user to rag_user", () => {

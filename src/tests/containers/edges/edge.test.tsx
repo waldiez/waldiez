@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderEdge } from "./common";
-import { edgeProps, flowId } from "./data";
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+
+import { renderEdge } from "./common";
+import { edgeProps, flowId } from "./data";
 
 describe("WaldiezEdgeHidden", () => {
     it("should render", () => {

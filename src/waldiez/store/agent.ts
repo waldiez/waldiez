@@ -47,7 +47,10 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         parentId: string | undefined,
     ) => {
         const agentNode = getAgentNode(agentType, position, parentId);
-        this.set({ nodes: [...this.get().nodes, { ...agentNode }], updatedAt: new Date().toISOString() });
+        this.set({
+            nodes: [...this.get().nodes, { ...agentNode }],
+            updatedAt: new Date().toISOString(),
+        });
         return agentNode;
     };
     cloneAgent = (id: string) => {
@@ -58,8 +61,16 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                 x: agent.position.x + (agent.width ?? 100) + 40,
                 y: agent.position.y + (agent.height ?? 100) + 40,
             };
-            const newAgent = { ...agent, position, id: getId(), data: { ...agent.data, label: newName } };
-            this.set({ nodes: [...this.get().nodes, newAgent], updatedAt: new Date().toISOString() });
+            const newAgent = {
+                ...agent,
+                position,
+                id: getId(),
+                data: { ...agent.data, label: newName },
+            };
+            this.set({
+                nodes: [...this.get().nodes, newAgent],
+                updatedAt: new Date().toISOString(),
+            });
             // select the new node
             setTimeout(() => {
                 this.set({
@@ -150,7 +161,10 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
     };
     addGroupMember = (groupId: string, memberId: string) => {
         // add an edge with source the parent and target the member
-        const newChat = WaldiezChat.create({ source: groupId, target: memberId });
+        const newChat = WaldiezChat.create({
+            source: groupId,
+            target: memberId,
+        });
         const innerEdge: Edge = chatMapper.asEdge(newChat);
         innerEdge.type = "hidden";
         innerEdge.selected = false;
@@ -161,7 +175,10 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         this.set({
             nodes: this.get().nodes.map(node => {
                 if (node.id === memberId) {
-                    return { ...node, data: { ...node.data, parentId: groupId } };
+                    return {
+                        ...node,
+                        data: { ...node.data, parentId: groupId },
+                    };
                 }
                 return node;
             }),
@@ -229,7 +246,10 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         const agentNode = getAgentNode("swarm_container", position, undefined);
         agentNode.id = expectedId;
-        this.set({ nodes: [...this.get().nodes, { ...agentNode }], updatedAt: new Date().toISOString() });
+        this.set({
+            nodes: [...this.get().nodes, { ...agentNode }],
+            updatedAt: new Date().toISOString(),
+        });
         return agentNode as WaldiezNodeAgent;
     };
     getSwarmAgents = () => {
@@ -263,7 +283,11 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                                 targetHandleParts[3]
                             }-${agentId}`;
                         }
-                        return { ...edge, target: agentId, targetHandle: newTargetHandle };
+                        return {
+                            ...edge,
+                            target: agentId,
+                            targetHandle: newTargetHandle,
+                        };
                     }
                 }
                 return edge;
@@ -275,11 +299,10 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         swarmContainerId: string,
         swarmAgents: WaldiezNodeAgent[],
         edges: { source: string; target: string }[],
-    ) => { swarmSources: WaldiezNodeAgent[]; swarmTargets: WaldiezNodeAgent[] } = (
-        swarmContainerId,
-        swarmAgents,
-        edges,
     ) => {
+        swarmSources: WaldiezNodeAgent[];
+        swarmTargets: WaldiezNodeAgent[];
+    } = (swarmContainerId, swarmAgents, edges) => {
         // get the agents connecting to swarm agents that are not swarm agents themselves
         const swarmSources = edges
             .filter(edge => swarmAgents.some(agent => [agent.id, swarmContainerId].includes(edge.target)))
