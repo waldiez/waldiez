@@ -51,7 +51,7 @@ def export_swarm_chat(
     Returns
     -------
     Tuple[str, str]
-        The `initiate_swarm_chat` message string and additional methods string.
+        The `initiate_group_chat` message string and additional methods string.
 
     Raises
     ------
@@ -88,10 +88,10 @@ def export_swarm_chat(
     )
     agent_name = agent_names[initial_agent.id]
     results_is = f"{tab}results, _, __ = "
-    initiate = "initiate_swarm_chat"
+    initiate = "initiate_group_chat"
     if is_async:
         results_is += "await "
-        initiate = "a_initiate_swarm_chat"
+        initiate = "a_initiate_group_chat"
     initiate_chat = "\n" + f"{results_is}{initiate}(" + "\n"
     initiate_chat += f"{tab}    initial_agent={agent_name}," + "\n"
     initiate_chat += f"{tab}    agents=[{swarm_agents_string}]," + "\n"
@@ -111,7 +111,7 @@ def get_swarm_agents_strings(
     agent_names: Dict[str, str],
     user_agent: Optional[WaldiezAgent],
 ) -> Tuple[str, str]:
-    """Get the swarm agent strings to use in `initiate_swarm_chat`.
+    """Get the swarm agent strings to use in `initiate_group_chat`.
 
     Parameters
     ----------
@@ -152,7 +152,7 @@ def get_swarm_messages_string(
     chat: WaldiezChat,
     string_escape: Callable[[str], str],
 ) -> str:
-    """Get the swarm chat messages string to use in `initiate_swarm_chat`.
+    """Get the swarm chat messages string to use in `initiate_group_chat`.
 
     Parameters
     ----------

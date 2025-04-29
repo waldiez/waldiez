@@ -23,22 +23,22 @@ psycopg==3.2.6 ;sys_platform == 'win32' and platform_machine == 'arm64'
 psycopg>=3.2.6 ;sys_platform == 'win32'
 psycopg[binary]==3.2.6 ;sys_platform != 'linux' and platform_machine != 'arm64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'AARCH64'
 psycopg[binary]>=3.2.6 ;sys_platform != 'win32'
-pyautogen[anthropic]==0.8.7
-pyautogen[bedrock]==0.8.7
-pyautogen[cohere]==0.8.7
-pyautogen[gemini]==0.8.7 ;sys_platform != 'win32'
-pyautogen[gemini]==0.8.7 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-pyautogen[groq]==0.8.7
-pyautogen[interop-crewai]==0.8.7
-pyautogen[interop-langchain]==0.8.7
-pyautogen[lmm]==0.8.7
-pyautogen[mistral]==0.8.7
-pyautogen[neo4j]==0.8.7 ;sys_platform != 'win32'
-pyautogen[neo4j]==0.8.7 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-pyautogen[ollama]==0.8.7
-pyautogen[together]==0.8.7 ;sys_platform != 'win32'
-pyautogen[together]==0.8.7 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-pyautogen[websurfer]==0.8.7
+pyautogen[anthropic]==0.9
+pyautogen[bedrock]==0.9
+pyautogen[cohere]==0.9
+pyautogen[gemini]==0.9 ;sys_platform != 'win32'
+pyautogen[gemini]==0.9 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+pyautogen[groq]==0.9
+pyautogen[interop-crewai]==0.9
+pyautogen[interop-langchain]==0.9
+pyautogen[lmm]==0.9
+pyautogen[mistral]==0.9
+pyautogen[neo4j]==0.9 ;sys_platform != 'win32'
+pyautogen[neo4j]==0.9 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+pyautogen[ollama]==0.9
+pyautogen[together]==0.9 ;sys_platform != 'win32'
+pyautogen[together]==0.9 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+pyautogen[websurfer]==0.9
 pydantic-ai>=0.0.21
 pymongo>=4.11
 pypdf

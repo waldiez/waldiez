@@ -273,7 +273,7 @@ def callable_message(sender, recipient, context):
     )
     generated = exporter.generate()
     expected = """
-        results, _, __ = initiate_swarm_chat(
+        results, _, __ = initiate_group_chat(
             initial_agent=agent2,
             agents=[agent2, agent3, agent4],
             messages=[{"role": "user", "content": "Hello wa-2 from wa-1!"}],
@@ -288,7 +288,9 @@ def callable_message(sender, recipient, context):
     assert generated == expected
     chat_imports = exporter.get_imports()
     assert chat_imports
-    assert chat_imports[0][0] == ("from autogen import initiate_swarm_chat")
+    assert chat_imports[0][0] == (
+        "from autogen.agentchat import initiate_group_chat"
+    )
     with pytest.raises(ValueError):
         # no swarm agent in chat
         export_swarm_chat(

@@ -6123,7 +6123,7 @@ wheels = [
 
 [[package]]
 name = "pyautogen"
-version = "0.8.7"
+version = "0.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -6137,9 +6137,10 @@ dependencies = [
     { name = "termcolor" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/77/171aa7d6ccef67d914dc8a1810455797846c171acf8fbb95fcd4daa94a7e/pyautogen-0.8.7.tar.gz", hash = "sha256:190f86d5fd03b7208a4f54464fad4c2cf5c63d42c1b735c3d7eb7291437e64fb", size = 3202986, upload_time = "2025-04-17T21:54:05.177Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/25/977ff23b28789f17a4fbc2c009805e55ec0cb8a6ab309beebc07a8c5ceff/pyautogen-0.9.tar.gz", hash = "sha256:58763009b6f6f988cdf9bb908c56a61a60c16e772096ab621edf06748fa58e50", size = 3255051, upload_time = "2025-04-25T00:11:21.462Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/46/c0b295863b3b76abfc9eea6394b9266339ecd854c246462fc72ced7f8a8c/pyautogen-0.8.7-py3-none-any.whl", hash = "sha256:d9f367091c0f62837810f9c01b76517fd3ee4fca9e9e8a8899965adf7c849e21", size = 739288, upload_time = "2025-04-17T21:54:02.365Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/7a/2ba1e2787340ed2650d9b4d030c48e5b40b0c08cb8a86716799062c037e1/pyautogen-0.9-py3-none-any.whl", hash = "sha256:b4bef3cc0aee1aa71959aea39b53001a62326682e6f23acb036f90212b3baf5d", size = 781663, upload_time = "2025-04-25T00:11:18.242Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/eb/ceb8c7d04d7d453472282ce40a833a7fe09f2e751dad53ad88f60199b5e9/pyautogen-0.9.0-py3-none-any.whl", hash = "sha256:88be3538fb98fc443d05ec0f6b1e95660a1dffe10d9769067ba699fac8155a4a", size = 781684, upload_time = "2025-04-28T09:41:12.585Z" },
 ]
 
 [package.optional-dependencies]
@@ -8777,23 +8778,23 @@ requires-dist = [
     { name = "psycopg", marker = "sys_platform == 'win32' and extra == 'ag2-extras'", specifier = ">=3.2.6" },
     { name = "psycopg", extras = ["binary"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform != 'linux' and extra == 'ag2-extras'", specifier = "==3.2.6" },
     { name = "psycopg", extras = ["binary"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = ">=3.2.6" },
-    { name = "pyautogen", extras = ["anthropic"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["bedrock"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["cohere"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["gemini"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["gemini"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["groq"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["interop-crewai"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["interop-langchain"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["lmm"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["mistral"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["neo4j"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["neo4j"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["ollama"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["openai"], specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["together"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["together"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
-    { name = "pyautogen", extras = ["websurfer"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "pyautogen", extras = ["anthropic"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["bedrock"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["cohere"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["gemini"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["gemini"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["groq"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["interop-crewai"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["interop-langchain"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["lmm"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["mistral"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["neo4j"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["neo4j"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["ollama"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["openai"], specifier = "==0.9.0" },
+    { name = "pyautogen", extras = ["together"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["together"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.9" },
+    { name = "pyautogen", extras = ["websurfer"], marker = "extra == 'ag2-extras'", specifier = "==0.9" },
     { name = "pydantic", specifier = ">=2.10.2,<3" },
     { name = "pydantic-ai", marker = "extra == 'ag2-extras'", specifier = ">=0.0.21" },
     { name = "pydocstyle", marker = "extra == 'dev'", specifier = "==6.3.0" },

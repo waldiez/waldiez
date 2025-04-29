@@ -234,8 +234,9 @@ def get_agent_handoff_registrations(
     if not agent.handoffs:
         return before_agent, after_agent
     tab = "    "
-    # change {agent}.register_hand_off([...
-    # to register_hand_off({agent}, [...
+    # TODO: change it back to {agent_name}.register_hand_off(
+    # TODO: support all 3 types of handoffs:
+    # LLM-based conditions, Context-based conditions, After works
     # after_agent = f"{agent_name}.register_hand_off(" + "\n" + f"{tab}[" + "\n"
     after_agent = (
         "register_hand_off(\n" + f"{tab}{agent_name}," + "\n" + f"{tab}[" + "\n"

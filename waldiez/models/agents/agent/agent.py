@@ -167,14 +167,42 @@ class WaldiezAgent(WaldiezBase):
             )
         elif agent_class == "SwarmAgent":
             imports.add(
-                "from autogen import "
-                "register_hand_off, "
-                "AfterWork, "
-                "OnCondition, "
-                "UpdateSystemMessage, "
-                "AfterWorkOption, "
-                "SwarmResult"
+                """from autogen.agentchat.group import (
+    AgentNameTarget,
+    AgentTarget,
+    AskUserTarget,
+    ContextExpression,
+    ContextStr,
+    ContextStrLLMCondition,
+    ContextVariables,
+    ExpressionAvailableCondition,
+    ExpressionContextCondition,
+    GroupChatConfig,
+    GroupChatTarget,
+    Handoffs,
+    NestedChatTarget,
+    OnCondition,
+    OnContextCondition,
+    ReplyResult,
+    RevertToUserTarget,
+    SpeakerSelectionResult,
+    StayTarget,
+    StringAvailableCondition,
+    StringContextCondition,
+    StringLLMCondition,
+    TerminateTarget,
+)"""
             )
+            imports.add(
+                """from autogen.agentchat.group.patterns import (
+    DefaultPattern,
+    ManualPattern,
+    AutoPattern,
+    RandomPattern,
+    RoundRobinPattern,
+)"""
+            )
+            imports.add("from autogen.agentchat.group import ContextVariables")
         elif agent_class == "ReasoningAgent":
             imports.add(
                 "from autogen.agents.experimental import ReasoningAgent"

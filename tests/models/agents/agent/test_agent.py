@@ -188,9 +188,47 @@ def test_agent_ag2_imports() -> None:
         "import autogen",
         "from autogen.agentchat.contrib.multimodal_conversable_agent import MultimodalConversableAgent",  # noqa: E501
     }
+    # pylint: disable=duplicate-code
+    swarm_group_imports = """from autogen.agentchat.group import (
+    AgentNameTarget,
+    AgentTarget,
+    AskUserTarget,
+    ContextExpression,
+    ContextStr,
+    ContextStrLLMCondition,
+    ContextVariables,
+    ExpressionAvailableCondition,
+    ExpressionContextCondition,
+    GroupChatConfig,
+    GroupChatTarget,
+    Handoffs,
+    NestedChatTarget,
+    OnCondition,
+    OnContextCondition,
+    ReplyResult,
+    RevertToUserTarget,
+    SpeakerSelectionResult,
+    StayTarget,
+    StringAvailableCondition,
+    StringContextCondition,
+    StringLLMCondition,
+    TerminateTarget,
+)"""
+    swarm_patterns = """from autogen.agentchat.group.patterns import (
+    DefaultPattern,
+    ManualPattern,
+    AutoPattern,
+    RandomPattern,
+    RoundRobinPattern,
+)"""
+    new_swarm_context_imports = (
+        """from autogen.agentchat.group import ContextVariables"""
+    )
     assert swarm_agent.ag2_imports == {
         "import autogen",
-        "from autogen import register_hand_off, AfterWork, OnCondition, UpdateSystemMessage, AfterWorkOption, SwarmResult",  # noqa: E501
+        swarm_group_imports,
+        swarm_patterns,
+        new_swarm_context_imports,
     }
     assert reasoning_agent.ag2_imports == {
         "import autogen",

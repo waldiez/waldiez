@@ -41,10 +41,33 @@ def test_export_swarm_agent() -> None:
     output = exporter.export()
     assert output["imports"]
     imports = [x[0] for x in output["imports"]]
-    assert (
-        "from autogen import register_hand_off, AfterWork, OnCondition, UpdateSystemMessage, AfterWorkOption, SwarmResult"  # noqa: E501
-        in imports
-    )
+    # pylint: disable=duplicate-code
+    new_swarm_imports = """from autogen.agentchat.group import (
+    AgentNameTarget,
+    AgentTarget,
+    AskUserTarget,
+    ContextExpression,
+    ContextStr,
+    ContextStrLLMCondition,
+    ContextVariables,
+    ExpressionAvailableCondition,
+    ExpressionContextCondition,
+    GroupChatConfig,
+    GroupChatTarget,
+    Handoffs,
+    NestedChatTarget,
+    OnCondition,
+    OnContextCondition,
+    ReplyResult,
+    RevertToUserTarget,
+    SpeakerSelectionResult,
+    StayTarget,
+    StringAvailableCondition,
+    StringContextCondition,
+    StringLLMCondition,
+    TerminateTarget,
+)"""
+    assert new_swarm_imports in imports
     content = output["content"]
     assert content == (
         f"{agent.name} = ConversableAgent(\n"
