@@ -13,11 +13,19 @@ export type WaldiezUserInputType = {
     // to add more types here in the future (audio?)
 };
 
+export type UserResponseType = {
+    request_id: string;
+    data: string | { [key: string]: any };
+    timestamp: number;
+};
+
 export type WaldiezPreviousMessage = {
     id: string;
     timestamp: string;
     type: string; // print/error/input_request...
+    request_id?: string; // if type is input_request
     data: string | { [key: string]: any };
+    password?: boolean;
 };
 
 export type WaldiezFlowProps = ReactFlowJsonObject & {
