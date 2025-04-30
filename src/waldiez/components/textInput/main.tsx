@@ -19,6 +19,7 @@ export const TextInput = (props: TextInputProps) => {
         dataTestId = "text-input",
         placeholder = "...",
         style = {},
+        className = undefined,
         isPassword = false,
         fullWidth = false,
     } = props;
@@ -37,6 +38,7 @@ export const TextInput = (props: TextInputProps) => {
             {labelInfo ? <InfoLabel label={label} info={labelInfo} /> : <label>{label}</label>}
             <div className="flex">
                 <input
+                    className={className}
                     placeholder={placeholder}
                     type={isPassword ? (visible ? "text" : "password") : "text"}
                     value={value !== null ? value : onNull}
