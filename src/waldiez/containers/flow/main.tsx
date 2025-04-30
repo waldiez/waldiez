@@ -158,7 +158,7 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                         noWheelClassName="no-wheel"
                         width={rfParent.current?.clientWidth}
                         height={rfParent.current?.clientHeight}
-                        fitView={true}
+                        // fitView={true}
                         // noPanClassName="no-pan"
                         // noDragClassName="no-drag"
                         // nodesDraggable
