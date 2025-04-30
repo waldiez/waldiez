@@ -92,11 +92,13 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
         }
     };
     const onNewAgent = () => {
-        if (selectedNodeType.current !== "agent") {
-            setSelectedNodeType("agent");
-            showNodes("agent");
-        }
-        onFlowChanged();
+        setTimeout(() => {
+            if (selectedNodeType.current !== "agent") {
+                setSelectedNodeType("agent");
+                showNodes("agent");
+            }
+            onFlowChanged();
+        }, 1);
     };
     const { onDragOver, onDrop } = useDnD(onNewAgent);
     const onViewportChange = (viewport: Viewport) => {
@@ -162,6 +164,7 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                         noWheelClassName="no-wheel"
                         width={rfParent.current?.clientWidth}
                         height={rfParent.current?.clientHeight}
+                        // fitView={true}
                         // noPanClassName="no-pan"
                         // noDragClassName="no-drag"
                         // nodesDraggable

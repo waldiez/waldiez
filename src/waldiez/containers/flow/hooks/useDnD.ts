@@ -76,15 +76,24 @@ export const useDnD = (onNewAgent: () => void) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
     }, []);
-    const addAgentNode = (event: React.DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
-        let position = screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-        });
+    const getAgentPositionAndParent = (event: React.DragEvent<HTMLDivElement>) => {
+        let position = screenToFlowPosition(
+            {
+                x: event.clientX,
+                y: event.clientY,
+            },
+            {
+                snapToGrid: false,
+            },
+        );
         const parent = getDroppedAgentParent("manager", position);
         if (parent) {
             position = parent.position;
         }
+        return { position, parent };
+    };
+    const addAgentNode = (event: React.DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
+        const { position, parent } = getAgentPositionAndParent(event);
         const newNode = addAgent(agentType, position, parent?.id);
         if (parent) {
             addParentNodeEdge(parent, newNode);
@@ -172,9 +181,9 @@ export const useDnD = (onNewAgent: () => void) => {
     };
     const onDrop = useCallback(
         (event: React.DragEvent<HTMLDivElement>) => {
-            event.preventDefault();
             const agentType = getAgentType(event);
             if (agentType) {
+                event.preventDefault();
                 if (agentType === "swarm") {
                     const { parent } = ensureSwarmContainerNode(event);
                     addSwarmNode(event, parent);

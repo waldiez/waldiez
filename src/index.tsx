@@ -2,386 +2,233 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable tsdoc/syntax */
-import { Waldiez, WaldiezPreviousMessage, WaldiezProps, WaldiezUserInput, importFlow } from "@waldiez";
+import { Waldiez, WaldiezProps, importFlow } from "@waldiez";
 
-import React, { useState } from "react";
+// Import the development wrapper component
+import { Edge, Node } from "@xyflow/react";
+
+import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { nanoid } from "nanoid";
 
 import "./index.css";
+import WaldiezWrapper from "./index.dev";
 
+/**
+ * Environment Configuration
+ * ------------------------
+ * - isProd: Determines if we're in production mode
+ * - USE_DEV_SERVER: Determines if we should use the WebSocket dev server (to communicate with the python part)
+ * - DEFAULT_WS_URL: Default WebSocket URL for development server
+ *
+ * Note: The WebSocket URL can be overridden by the VITE_DEV_WS_URL environment variable.
+ * If VITE_USE_DEV_SERVER is set to "true", make sure the dev server is running (../scripts/dev_server.py).
+ */
 const isProd = import.meta.env.PROD;
-
-// the actions should be handled by other components
-// that use `Waldiez` as a child component
+const USE_DEV_SERVER = import.meta.env.VITE_USE_DEV_SERVER === "true" && !isProd;
+const DEFAULT_WS_URL = import.meta.env.VITE_DEV_WS_URL || "ws://localhost:7654";
 
 /**
- *OnChange
+ * Monaco Editor Configuration
+ * --------------------------
+ * - In DEV: Uses local 'vs' folder (should be in public directory)
+ * - In PROD: Uses provided path or defaults to CDN
  */
-const onChange = null;
-// const onChange = (flowJson: any) => {
-//   console.info(JSON.stringify(JSON.parse(flowJson), null, 2));
-// };
-
-/**
- * OnSave
- * if enabled, add a listener for the key combination (ctrl+s/mod+s)
- * to save the flow
- * the flow string is the JSON stringified flow
- * the action should be handled by the parent component
- */
-const onSaveDev = (flowString: string) => {
-    console.info("saving", flowString);
-};
-const onSave = isProd ? null : onSaveDev;
-/**
- * Handling user input:
- *
- * onUserInput?: ((input: WaldiezUserInput) => void) | null;
- *
- * inputPrompt?: {
-        previousMessages: WaldiezPreviousMessage[];
-        prompt: string;
-    } | null;
- *
- * `onUserInput` is a function that handles the user input
- * `inputPrompt` is an object that contains the previous messages
- * and the prompt to show to the user
-*/
-//
-// type WaldiezUserInput = {
-//     id: string;
-//     type: "input_response";
-//     request_id: string;
-//     data: {
-//         text?: string | null;
-//         image?: string | File | null;
-//         // to add more types here in the future (audio?)
-//     };
-// };
-// Previous messages are passed to the modal
-// to show the user the context of the conversation
-// the type of one previous message is:
-// type WaldiezPreviousMessage = {
-//     id: string;
-//     timestamp: string;
-//     type: string; // print/error/input_request...
-//     data: string | { [key: string]: any };
-// };
-//
-//
-/**
- * OnRun
- * adds a button to the main panel, to run the code.
- * The action should be handled by the parent component
- * "running" the flow happens in the python part / backend
- * the flow string is the JSON stringified flow
- */
-const onRunDev = (flowString: string) => {
-    console.info(flowString);
-};
-const onRun = isProd ? null : onRunDev;
-
-/**
- * OnConvert
- * adds two buttons to the main panel, to convert the flow to python or jupyter notebook
- * The action should be handled by the parent component
- * the flow string is the JSON stringified flow
- * the `to` parameter is either 'py' or 'ipynb'
- * the conversion happens in the python part / backend
- */
-
-const onConvertDev = (_flowString: string, to: "py" | "ipynb") => {
-    console.info("converting to", to);
-};
-const onConvert = isProd ? null : onConvertDev;
-
-/**
- * readOnly
- * if true, only the theme button is shown
- * only zoom and viewport are enabled, no further actions are allowed
- */
-const readOnly: boolean | undefined | null = undefined;
-
-/**
- * skipImport and skipExport
- * if true, the import and export buttons are not added to the main panel
- */
-const skipImport = false;
-const skipExport = false;
-
-/**
- * skipHub
- * if true, `exporting` will be a modal with an option to upload the flow to the hub
- * also, importing will include a `search` option to search the hub
- */
-const skipHub = isProd;
-
-/**
- * OnUpload
- * on RAG user: adds a dropzone to upload files
- * when triggered, the files are sent to the backend,
- * returning the paths of the uploaded files
- * and the 'docsPath' in RAG retrieveConfig is updated.
- * the paths can be either relative or absolute,
- * this depends on how we run the flow
- * (the docsPath will have to be updated accordingly if needed on the backend)
- */
-const onUploadDev = (files: File[]) => {
-    // reject randomly
-    if (Math.random() < 0.4) {
-        return Promise.reject("Error uploading files");
-    }
-    return new Promise<string[]>(resolve => {
-        const uploadedFiles: string[] = [];
-        const promises = files.map(file => {
-            // simulate uploading files
-            return new Promise<string>(resolve => {
-                setTimeout(() => {
-                    if (Math.random() > 0.8) {
-                        uploadedFiles.push(null as any);
-                    } else {
-                        uploadedFiles.push(`path/to/${file.name}`);
-                    }
-                    resolve(`path/to/${file.name}`);
-                }, 2000);
-            });
-        });
-        Promise.all(promises).then(() => {
-            resolve(uploadedFiles);
-        });
-    });
-};
-const onUpload = isProd ? null : onUploadDev;
-
-/**
- * Monaco Editor
- */
-// DEV: downloaded in `public/vs` folder (.gitignored)
-// PROD:
-//  either served and `VITE_VS_PATH` is set to the path, or
-//  use the default cdn (jsdelivr) that monaco loader uses
-// make sure the csp allows the cdn
-let vsPath = !isProd ? "vs" : (import.meta.env.VITE_VS_PATH ?? null);
-if (!vsPath) {
-    // if set to empty string, make it null
+let vsPath = !isProd ? "vs" : import.meta.env.VITE_VS_PATH || null;
+if (vsPath === "") {
     vsPath = null;
 }
 /**
-  Other props:
-   we can use:
-  `import { importFlow } from '@waldiez/react';`
-   to import an existing flow from a waldiez/json file
-   import { ReactFlowJsonObject } from "@xyflow/react";
-    // ReactFlowJsonObject: nodes: NodeType[]; edges: EdgeType[]; viewport: Viewport;
+ * Default Development Handlers
+ * ---------------------------
+ * These handlers provide sensible defaults for development
+ * but are replaced by the WebSocket server when USE_DEV_SERVER is true
+ */
+const devHandlers = {
+    // Log changes to the flow
+    onChange: null,
 
-   // all the props:
-   type WaldiezFlowProps = ReactFlowJsonObject & {
-        flowId: string;
-        isAsync?: boolean;
-        cacheSeed?: number | null;
-        storageId: string;
-        name: string;
-        description: string;
-        tags: string[];
-        requirements: string[];
-        viewport?: Viewport;
-        createdAt?: string;
-        updatedAt?: string;
-    };
-    type WaldiezProps = WaldiezFlowProps & {
-        nodes: Node[];
-        edges: Edge[];
-        viewport?: Viewport;
-        monacoVsPath?: string | null;
-        inputPrompt?: {
-            previousMessages: string[];
-            prompt: string;
-        } | null;
-        readOnly?: boolean | null;
-        skipImport?: boolean | null;
-        skipExport?: boolean | null;
-        onUpload?: ((files: File[]) => Promise<string[]>) | null;
-        onChange?: ((flow: string) => void) | null;
-        onRun?: ((flow: string) => void) | null;
-        onUserInput?: ((input: string) => void) | null;
-        onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
-        onSave?: ((flow: string) => void) | null;
-    };
+    // Handle save requests (triggered by Ctrl+S/Cmd+S)
+    onSave: (flowString: string) => {
+        console.info("[DEV] Saving flow:", flowString.substring(0, 100) + "...");
+    },
 
-    // Alternative:
-    // use the ones we want to override
-    const overrides: Partial<WaldiezProps> = {
-        monacoVsPath: vsPath,
-        onUserInput,
-        flowId: "flow-0",
-        storageId: "storage-0",
-        inputPrompt,
-        onRun,
-        onConvert,
-        onChange,
-        onUpload,
-        onSave,
-        readOnly,
-        skipImport,
-        skipExport,
-    }
-    const imported = importFlow("path/to/flow.json");
-    <Waldiez {...imported} {...overrides} />
-    // example:
-    <Waldiez {...imported} readOnly={readOnly} skipExport={skipExport} skipImport={skipImport} />
-*/
+    // Handle run requests
+    onRun: (flowString: string) => {
+        console.info("[DEV] Running flow:", flowString.substring(0, 100) + "...");
+    },
 
+    // Handle conversion requests (to Python or Jupyter)
+    onConvert: (_flowString: string, to: "py" | "ipynb") => {
+        console.info("[DEV] Converting flow to", to);
+    },
+
+    // Simulate file uploads with random success/failure
+    onUpload: (files: File[]) => {
+        console.info("[DEV] Uploading files:", files.map(f => f.name).join(", "));
+
+        // Random rejection for testing error handling
+        if (Math.random() < 0.2) {
+            return Promise.reject("Simulated upload error");
+        }
+
+        return new Promise<string[]>(resolve => {
+            const uploadedFiles: string[] = [];
+            const promises = files.map(file => {
+                return new Promise<string>(resolve => {
+                    setTimeout(() => {
+                        const filePath = `path/to/${file.name}`;
+                        uploadedFiles.push(filePath);
+                        resolve(filePath);
+                    }, 1000); // Simulate network delay
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                console.info("[DEV] Files uploaded:", uploadedFiles);
+                resolve(uploadedFiles);
+            });
+        });
+    },
+
+    // Default input prompt is null (no prompt shown)
+    inputPrompt: null,
+
+    // Log user input
+    onUserInput: null,
+};
+
+/**
+ * Feature Flags
+ * ------------
+ * Control which features are enabled/disabled
+ */
+const featureFlags = {
+    readOnly: undefined, // If true, only viewing is allowed (no editing)
+    skipImport: false, // If true, hides the import button
+    skipExport: false, // If true, hides the export button
+    skipHub: isProd, // If true, skips hub integration for import/export
+};
+
+/**
+ * Default Waldiez Props
+ * -------------------
+ * Basic configuration for the Waldiez component
+ */
 const flowId = `wf-${nanoid()}`;
 const defaultWaldiezProps: Partial<WaldiezProps> = {
-    monacoVsPath: vsPath,
-    onRun,
-    onConvert,
-    onChange,
-    onUpload,
-    onSave,
     flowId,
     isAsync: false,
     cacheSeed: 41,
     storageId: flowId,
+    monacoVsPath: vsPath,
+    viewport: undefined,
+    ...(!USE_DEV_SERVER
+        ? {
+              // Only include these handlers if not using the dev server
+              ...devHandlers,
+          }
+        : {}),
 };
 
-export const getProps = () => {
+/**
+ * Get Waldiez Props
+ * ---------------
+ * Fetches flow data from URL if specified in query parameters
+ * Otherwise returns default props
+ */
+export const getProps = (): Promise<Partial<WaldiezProps>> => {
     return new Promise<Partial<WaldiezProps>>(resolve => {
         let waldiezProps = { ...defaultWaldiezProps };
-        const haveFlowInQuery = window.location.search.includes("flow");
-        if (haveFlowInQuery) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const flowUrl = urlParams.get("flow");
-            if (flowUrl && flowUrl.startsWith("http")) {
-                try {
-                    fetch(flowUrl, {
-                        method: "GET",
-                        redirect: "follow",
-                        signal: AbortSignal.timeout(10000),
-                    })
-                        .then(response => response.json())
-                        .then(flow => {
-                            waldiezProps = {
-                                ...importFlow(flow),
-                            };
-                            resolve(waldiezProps);
-                        })
-                        .catch(_ => {
-                            resolve(waldiezProps);
-                        });
-                } catch (_) {
-                    resolve(waldiezProps);
-                }
-            }
-        } else {
-            resolve(waldiezProps);
+        const urlParams = new URLSearchParams(window.location.search);
+        const flowUrl = urlParams.get("flow");
+
+        // If no flow URL is provided, use default props
+        if (!flowUrl || !flowUrl.startsWith("http")) {
+            console.info("No valid flow URL provided, using default configuration");
+            return resolve(waldiezProps);
         }
+
+        // Attempt to fetch flow from URL
+        console.info(`Fetching flow from: ${flowUrl}`);
+        fetch(flowUrl, {
+            method: "GET",
+            redirect: "follow",
+            signal: AbortSignal.timeout(10000),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch flow: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(flow => {
+                console.info("Successfully loaded flow from URL");
+                waldiezProps = {
+                    ...waldiezProps,
+                    ...importFlow(flow),
+                };
+                resolve(waldiezProps);
+            })
+            .catch(error => {
+                console.warn(`Error loading flow from URL: ${error.message}`);
+                resolve(waldiezProps);
+            });
     });
 };
 
-// just to trigger the user input modal:
-const initialPrompt: {
-    previousMessages: WaldiezPreviousMessage[];
-    prompt: string;
-    request_id: string;
-} | null = {
-    previousMessages: [
-        {
-            id: nanoid(),
-            timestamp: new Date().toISOString(),
-            type: "print",
-            data: {
-                text: "Hello, how can I help you?",
-            },
-        },
-    ],
-    prompt: "What is your name?",
-    request_id: nanoid(),
-};
-
-// const initialPrompt: {
-//     previousMessages: WaldiezPreviousMessage[];
-//     prompt: string;
-// } | null = null;
-
+/**
+ * Start Application
+ * ---------------
+ * Initializes and renders the Waldiez component or WebSocket wrapper
+ */
 export const startApp = (waldiezProps: Partial<WaldiezProps> = defaultWaldiezProps) => {
-    // the wrapper should better be in a separate file,
-    // but for the sake of the example, we put it here
-    const WaldiezWrapper = (waldiezProps: Partial<WaldiezProps>) => {
-        const [conversation, setConversation] = useState<{
-            previousMessages: WaldiezPreviousMessage[];
-            prompt: string;
-            request_id: string;
-        } | null>(initialPrompt);
-        const [emptyMessagesCount, setEmptyMessagesCount] = useState(0);
-        const onEmptyMessage = () => {
-            if (emptyMessagesCount > 5) {
-                console.warn("Too many empty messages, stop spamming");
-                setConversation(null);
-                setEmptyMessagesCount(0);
-            } else {
-                setEmptyMessagesCount(emptyMessagesCount + 1);
-            }
-        };
-        const onUserInput = (input: WaldiezUserInput) => {
-            console.info("input: ", input);
-            if (!input.data.text && !input.data.image) {
-                onEmptyMessage();
-                // or just assume Esc/Cancel, so send an empty input to the backend
-                throw new Error("No input provided");
-            }
-            setEmptyMessagesCount(0);
-            console.info("submitted text: ", input.data.text);
-            if (input.data.image) {
-                console.info("submit base64 image");
-                return;
-            }
-            const newMessage = {
-                id: nanoid(),
-                timestamp: new Date().toISOString(),
-                type: "input_response",
-                data: input.data.text ?? "\n",
-            };
-            setConversation(prev => {
-                if (!prev) {
-                    return {
-                        previousMessages: [newMessage],
-                        prompt: "",
-                        request_id: input.request_id,
-                    };
-                }
-                return {
-                    previousMessages: [...prev.previousMessages, newMessage],
-                    prompt: `Did you say \`${input.data.text}\` ?`,
-                    request_id: input.request_id,
-                };
-            });
-        };
-        // "waldiez-wrapper" (just an example) can be used to
-        // style the component that wraps the waldiez flow view
-        return (
-            <div className="waldiez-wrapper">
-                <Waldiez
-                    {...waldiezProps}
-                    readOnly={readOnly}
-                    skipExport={skipExport}
-                    skipImport={skipImport}
-                    skipHub={skipHub}
-                    inputPrompt={conversation}
-                    onUserInput={onUserInput}
-                />
-            </div>
-        );
-    };
+    // Clear URL parameters after loading
     window.history.replaceState({}, document.title, window.location.pathname);
-    ReactDOM.createRoot(document.getElementById("root")!).render(
-        <React.StrictMode>
-            <WaldiezWrapper {...waldiezProps} />
-        </React.StrictMode>,
-    );
+
+    // Get the root element
+    const rootElement = document.getElementById("root");
+    if (!rootElement) {
+        console.error("Root element not found");
+        return;
+    }
+
+    // Create root
+    const root = ReactDOM.createRoot(rootElement);
+
+    // Decide whether to use the WebSocket wrapper or direct component
+    if (USE_DEV_SERVER) {
+        console.info("Using WebSocket development server at:", DEFAULT_WS_URL);
+        root.render(
+            <React.StrictMode>
+                <WaldiezWrapper
+                    waldiezProps={{
+                        ...waldiezProps,
+                        ...featureFlags,
+                        name: waldiezProps.name ?? "Waldiez Flow",
+                        description: waldiezProps.description ?? "Waldiez Flow",
+                        tags: waldiezProps.tags ?? [],
+                        requirements: waldiezProps.requirements ?? [],
+                        flowId: waldiezProps.flowId ?? flowId,
+                        storageId: waldiezProps.storageId ?? flowId,
+                        nodes: waldiezProps.nodes ?? ([] as Node[]),
+                        edges: waldiezProps.edges ?? ([] as Edge[]),
+                        viewport: waldiezProps.viewport ?? { x: 0, y: 0, zoom: 1 },
+                    }}
+                    wsUrl={DEFAULT_WS_URL}
+                />
+            </React.StrictMode>,
+        );
+    } else {
+        console.info("Using direct component integration");
+        root.render(
+            <React.StrictMode>
+                <Waldiez {...waldiezProps} {...featureFlags} />
+            </React.StrictMode>,
+        );
+    }
 };
 
+// Initialize the application
 getProps().then(startApp);

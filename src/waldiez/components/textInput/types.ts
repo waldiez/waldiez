@@ -16,4 +16,5 @@ export type TextInputProps = {
     style?: React.CSSProperties;
     isPassword?: boolean;
     fullWidth?: boolean;
+    className?: string;
 };
