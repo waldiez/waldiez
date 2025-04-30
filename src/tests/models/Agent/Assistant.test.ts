@@ -81,6 +81,7 @@ describe("WaldiezAgentAssistant", () => {
                     ],
                 },
             ],
+            isMultimodal: false,
         });
         const assistant = new WaldiezAgentAssistant({
             id: "assistant",

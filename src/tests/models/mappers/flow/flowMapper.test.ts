@@ -30,6 +30,7 @@ const flowLinks = [
 
 // we removed "teachability"
 const deprecatedAgentDataKeys = ["teachability"];
+const newAgentDataKeys: { [key: string]: any }[] = [{ assistant: { isMultimodal: false } }];
 const newAgents = ["reasoning_agents", "captain_agents"];
 // flowAfterWork, added with swarm, "prerequisites" added with async
 const newChatKeys = ["prerequisites", "flowAfterWork"];
@@ -142,6 +143,15 @@ const updateAgent = (agent: any) => {
     }
     deprecatedAgentDataKeys.forEach(key => {
         delete agent.data[key];
+    });
+    newAgentDataKeys.forEach(perAgent => {
+        Object.keys(perAgent).forEach(agentdType => {
+            if (agent.agentType === agentdType) {
+                Object.keys(perAgent[agentdType]).forEach(newKey => {
+                    agent.data[newKey] = perAgent[agentdType][newKey];
+                });
+            }
+        });
     });
     return agent;
 };

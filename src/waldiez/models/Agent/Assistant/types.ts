@@ -8,6 +8,7 @@ import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
 
 export type WaldiezNodeAgentAssistantData = WaldiezAgentCommonData & {
     label: string;
+    isMultimodal: boolean;
 };
 
 export type WaldiezNodeAgentAssistant = Node<WaldiezNodeAgentAssistantData, "agent">;

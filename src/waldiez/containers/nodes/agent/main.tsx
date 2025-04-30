@@ -52,8 +52,8 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
                     {agentType !== "swarm" && (
                         <NodeResizer
                             color={AGENT_COLORS[agentType]}
-                            minWidth={206}
-                            minHeight={206}
+                            minWidth={210}
+                            minHeight={210}
                             handleStyle={{ color: AGENT_COLORS[agentType] }}
                             handleClassName={agentType}
                         />

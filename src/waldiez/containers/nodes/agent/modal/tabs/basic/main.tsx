@@ -5,13 +5,14 @@
 import { InfoCheckbox, InfoLabel, NumberInput, Select, TextInput } from "@waldiez/components";
 import { useWaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic/hooks";
 import { WaldiezAgentBasicProps } from "@waldiez/containers/nodes/agent/modal/tabs/basic/types";
-import { WaldiezAgentHumanInputMode } from "@waldiez/types";
+import { WaldiezAgentHumanInputMode, WaldiezNodeAgentAssistantData } from "@waldiez/types";
 
 export const WaldiezAgentBasic = (props: WaldiezAgentBasicProps) => {
     const { id } = props;
     const {
         data,
         onRagChange,
+        onMultimodalChange,
         onNameChange,
         onDescriptionChange,
         onSystemMessageChange,
@@ -30,6 +31,15 @@ export const WaldiezAgentBasic = (props: WaldiezAgentBasicProps) => {
                     checked={data.agentType === "rag_user"}
                     onChange={onRagChange}
                     dataTestId={`agent-rag-toggle-${id}`}
+                />
+            )}
+            {data.agentType === "assistant" && (
+                <InfoCheckbox
+                    label={"Multimodal"}
+                    info={"If checked, the agent will handle uploaded images from the user."}
+                    checked={(data as WaldiezNodeAgentAssistantData).isMultimodal ?? false}
+                    onChange={onMultimodalChange}
+                    dataTestId={`agent-multimodal-toggle-${id}`}
                 />
             )}
             <TextInput

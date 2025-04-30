@@ -6,6 +6,7 @@ import { Edge, Node } from "@xyflow/react";
 
 import {
     WaldiezAgentAssistant,
+    WaldiezAgentAssistantData,
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentUserProxy,
@@ -49,7 +50,16 @@ const nodesWithoutData = nodes.map((node: Node) => {
         if (agentType === "user") {
             agents.users.push(agentMapper.importAgent(jsonData, jsonData.id));
         } else if (agentType === "assistant") {
-            agents.assistants.push(agentMapper.importAgent(jsonData, jsonData.id));
+            const dateWIthIsMultimodal = {
+                ...jsonData,
+                data: {
+                    ...jsonData.data,
+                    isMultimodal: (jsonData.data as WaldiezAgentAssistantData).isMultimodal,
+                },
+            };
+            agents.assistants.push(
+                agentMapper.importAgent(dateWIthIsMultimodal, jsonData.id) as WaldiezAgentAssistant,
+            );
         } else if (agentType === "manager") {
             agents.managers.push(agentMapper.importAgent(jsonData, jsonData.id) as WaldiezAgentGroupManager);
         } else if (agentType === "rag_user") {
