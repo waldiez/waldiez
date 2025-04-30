@@ -90,8 +90,13 @@ describe("WaldiezFlow User Input modal", () => {
         await waitFor(() => {
             expect(mockOnUserInput).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    text: null,
-                    image: expect.stringMatching(/^data:image\/png;base64,/),
+                    id: expect.any(String),
+                    type: "input_response",
+                    request_id: expect.any(String),
+                    data: {
+                        text: null,
+                        image: expect.stringMatching(/^data:image\/png;base64,/),
+                    },
                 }),
             );
         });

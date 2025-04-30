@@ -20,17 +20,22 @@ export const userInput = {
         {
             id: "1",
             type: "print",
-            data: "Message 1",
+            data: {
+                text: "Message 1",
+            },
             timestamp: "2024-01-01T00:00:00Z",
         },
         {
             id: "2",
             type: "print",
-            data: "Message 2",
+            data: {
+                text: "Message 2",
+            },
             timestamp: "2024-01-01T00:01:00Z",
         },
     ],
     prompt: "User Input Prompt",
+    request_id: "request_id",
 };
 
 let addedNestedChat = false;

@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import { Waldiez, WaldiezPreviousMessage, WaldiezProps, WaldiezUserInputType, importFlow } from "@waldiez";
+import { Waldiez, WaldiezPreviousMessage, WaldiezProps, WaldiezUserInput, importFlow } from "@waldiez";
 
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
@@ -39,7 +39,7 @@ const onSave = isProd ? null : onSaveDev;
 /**
  * Handling user input:
  *
- * onUserInput?: ((input: WaldiezUserInputType) => void) | null;
+ * onUserInput?: ((input: WaldiezUserInput) => void) | null;
  *
  * inputPrompt?: {
         previousMessages: WaldiezPreviousMessage[];
@@ -51,10 +51,15 @@ const onSave = isProd ? null : onSaveDev;
  * and the prompt to show to the user
 */
 //
-// type WaldiezUserInputType = {
-//     text?: string | null;
-//     image?: string | File | null;
-//     // to add more types here in the future (audio?)
+// type WaldiezUserInput = {
+//     id: string;
+//     type: "input_response";
+//     request_id: string;
+//     data: {
+//         text?: string | null;
+//         image?: string | File | null;
+//         // to add more types here in the future (audio?)
+//     };
 // };
 // Previous messages are passed to the modal
 // to show the user the context of the conversation
@@ -281,16 +286,20 @@ export const getProps = () => {
 const initialPrompt: {
     previousMessages: WaldiezPreviousMessage[];
     prompt: string;
+    request_id: string;
 } | null = {
     previousMessages: [
         {
             id: nanoid(),
             timestamp: new Date().toISOString(),
             type: "print",
-            data: "Hello, how can I help you?",
+            data: {
+                text: "Hello, how can I help you?",
+            },
         },
     ],
     prompt: "What is your name?",
+    request_id: nanoid(),
 };
 
 // const initialPrompt: {
@@ -305,6 +314,7 @@ export const startApp = (waldiezProps: Partial<WaldiezProps> = defaultWaldiezPro
         const [conversation, setConversation] = useState<{
             previousMessages: WaldiezPreviousMessage[];
             prompt: string;
+            request_id: string;
         } | null>(initialPrompt);
         const [emptyMessagesCount, setEmptyMessagesCount] = useState(0);
         const onEmptyMessage = () => {
@@ -316,15 +326,16 @@ export const startApp = (waldiezProps: Partial<WaldiezProps> = defaultWaldiezPro
                 setEmptyMessagesCount(emptyMessagesCount + 1);
             }
         };
-        const onUserInput = (input: WaldiezUserInputType) => {
-            if (!input.text && !input.image) {
+        const onUserInput = (input: WaldiezUserInput) => {
+            console.info("input: ", input);
+            if (!input.data.text && !input.data.image) {
                 onEmptyMessage();
                 // or just assume Esc/Cancel, so send an empty input to the backend
                 throw new Error("No input provided");
             }
             setEmptyMessagesCount(0);
-            console.info("submitted text: ", input.text);
-            if (input.image) {
+            console.info("submitted text: ", input.data.text);
+            if (input.data.image) {
                 console.info("submit base64 image");
                 return;
             }
@@ -332,18 +343,20 @@ export const startApp = (waldiezProps: Partial<WaldiezProps> = defaultWaldiezPro
                 id: nanoid(),
                 timestamp: new Date().toISOString(),
                 type: "input_response",
-                data: input.text ?? "\n",
+                data: input.data.text ?? "\n",
             };
             setConversation(prev => {
                 if (!prev) {
                     return {
                         previousMessages: [newMessage],
                         prompt: "",
+                        request_id: input.request_id,
                     };
                 }
                 return {
                     previousMessages: [...prev.previousMessages, newMessage],
-                    prompt: `Did you say \`${input.text}\` ?`,
+                    prompt: `Did you say \`${input.data.text}\` ?`,
+                    request_id: input.request_id,
                 };
             });
         };

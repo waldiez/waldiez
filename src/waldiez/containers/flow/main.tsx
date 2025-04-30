@@ -13,14 +13,15 @@ import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar } from "@waldiez/containers/sidebar";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import { WaldiezNodeType, WaldiezPreviousMessage, WaldiezUserInputType } from "@waldiez/types";
+import { WaldiezNodeType, WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/types";
 
 type WaldiezFlowViewProps = {
     flowId: string;
-    onUserInput?: ((input: WaldiezUserInputType) => void) | null;
+    onUserInput?: ((input: WaldiezUserInput) => void) | null;
     inputPrompt?: {
         previousMessages: WaldiezPreviousMessage[];
         prompt: string;
+        request_id: string;
     } | null;
     skipImport?: boolean;
     skipExport?: boolean;

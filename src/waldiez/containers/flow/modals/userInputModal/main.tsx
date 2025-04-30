@@ -64,8 +64,13 @@ export const UserInputModal = (props: UserInputModalProps) => {
     };
     const handleSubmit = () => {
         onUserInput?.({
-            text: textInput.trim() || null,
-            image: imagePreview,
+            id: `${flowId}-${Date.now()}`,
+            request_id: inputPrompt.request_id,
+            type: "input_response",
+            data: {
+                text: textInput.trim() || null,
+                image: imagePreview,
+            },
         });
         setTextInput("");
         setImagePreview(null);
@@ -84,7 +89,12 @@ export const UserInputModal = (props: UserInputModalProps) => {
     };
     const handleClose = () => {
         onUserInput({
-            text: "",
+            id: `${flowId}-${Date.now()}`,
+            type: "input_response",
+            request_id: inputPrompt.request_id,
+            data: {
+                text: "",
+            },
         });
         setTextInput("");
         setImagePreview(null);

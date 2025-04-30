@@ -13,7 +13,7 @@ import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
-import { WaldiezPreviousMessage, WaldiezUserInputType } from "@waldiez/types";
+import { WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/types";
 
 import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "../data";
 
@@ -25,10 +25,12 @@ export const renderFlow = (
     singleAgent: boolean = false,
     noAgents: boolean = false,
     options: {
-        onUserInput?: (userInput: WaldiezUserInputType) => void;
+        onUserInput?: (userInput: WaldiezUserInput) => void;
+        request_id?: string;
         previousMessages?: WaldiezPreviousMessage[];
     } = {
         onUserInput: undefined,
+        request_id: "request_id",
         previousMessages: [],
     },
 ) => {
@@ -36,7 +38,7 @@ export const renderFlow = (
     const edgesToUse = singleAgent ? [] : edges;
     const Wrapper = () => {
         const [isUserInputModalOpen, setIsUserInputModalOpen] = useState<boolean>(includeUserInput);
-        const onUserInputCb = (_: WaldiezUserInputType) => {
+        const onUserInputCb = (_: WaldiezUserInput) => {
             setIsUserInputModalOpen(false);
             if (options.onUserInput) {
                 options.onUserInput(_);
