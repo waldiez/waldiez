@@ -107,6 +107,7 @@ export const WaldiezAgentBasic = (props: WaldiezAgentBasicProps) => {
                 dataTestId={`agent-max-consecutive-auto-reply-input-${id}`}
             />
             <TextInput
+                className="full-width"
                 label="Agent Default Auto Reply:"
                 value={data.agentDefaultAutoReply ?? ""}
                 onChange={onAgentDefaultAutoReplyChange}
