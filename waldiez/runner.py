@@ -17,10 +17,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union
 
-from autogen.io import IOStream  # type: ignore
-
 from .exporter import WaldiezExporter
-from .io import StructuredIOStream
 from .models.waldiez import Waldiez
 from .running import (
     a_chdir,
@@ -211,8 +208,7 @@ class WaldiezRunner:
         results: Union[
             "ChatResult", List["ChatResult"], Dict[int, "ChatResult"]
         ] = []
-        stream = StructuredIOStream()
-        with chdir(to=temp_dir), IOStream.set_default(stream):
+        with chdir(to=temp_dir):
             self._exporter.export(Path(file_name))
             spec = importlib.util.spec_from_file_location(
                 module_name, temp_dir / file_name
@@ -260,23 +256,21 @@ class WaldiezRunner:
         results: Union[
             "ChatResult", List["ChatResult"], Dict[int, "ChatResult"]
         ] = []
-        stream = StructuredIOStream()
-        with IOStream.set_default(stream):
-            async with a_chdir(to=temp_dir):
-                self._exporter.export(Path(file_name))
-                spec = importlib.util.spec_from_file_location(
-                    module_name, temp_dir / file_name
-                )
-                if not spec or not spec.loader:
-                    raise ImportError("Could not import the flow")
-                sys.path.insert(0, str(temp_dir))
-                old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-                printer("<Waldiez> - Starting workflow...")
-                results = await module.main()
-                sys.path.pop(0)
-                reset_env_vars(old_vars)
+        async with a_chdir(to=temp_dir):
+            self._exporter.export(Path(file_name))
+            spec = importlib.util.spec_from_file_location(
+                module_name, temp_dir / file_name
+            )
+            if not spec or not spec.loader:
+                raise ImportError("Could not import the flow")
+            sys.path.insert(0, str(temp_dir))
+            old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            printer("<Waldiez> - Starting workflow...")
+            results = await module.main()
+            sys.path.pop(0)
+            reset_env_vars(old_vars)
         after_run(
             temp_dir=temp_dir,
             output_path=output_path,
