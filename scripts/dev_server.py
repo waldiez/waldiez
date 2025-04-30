@@ -10,6 +10,7 @@ import base64
 import json
 import logging
 import sys
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
@@ -17,7 +18,7 @@ import nest_asyncio  # type: ignore
 import websockets
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing_extensions import Literal
 
 try:
@@ -46,35 +47,51 @@ OutgoingAction = Literal[
 ]
 
 
-class UserInputPrompt(BaseModel):
+class ModelBase(BaseModel):
+    """Base model to inherit."""
+
+    model_config = ConfigDict(extra="ignore")
+
+
+class UserInputPrompt(ModelBase):
     """User input prompt model."""
 
     type: str = "input"
+    request_id: str
     prompt: str
 
 
-class UserResponse(BaseModel):
+class UserInputData(ModelBase):
+    """Use's input data model."""
+
+    text: str | None
+    image: str | None  # base64
+
+
+class UserResponse(ModelBase):
     """User response model."""
 
-    type: str = "input"
-    input: str
+    id: str
+    type: str = "input_response"
+    request_id: str
+    data: UserInputData
 
 
-class PrintMessage(BaseModel):
+class PrintMessage(ModelBase):
     """Message to be printed."""
 
     type: str = "print"
     message: str
 
 
-class IncomingMessage(BaseModel):
+class IncomingMessage(ModelBase):
     """Incoming message model."""
 
     action: IncomingAction
     message: str
 
 
-class OutgoingMessage(BaseModel):
+class OutgoingMessage(ModelBase):
     """Outgoing message model."""
 
     type: OutgoingAction
@@ -142,19 +159,44 @@ class AsyncIOWebsockets(IOStream):
         str
             The user input.
         """
-        prompt = UserInputPrompt(prompt=prompt).model_dump_json()
+        request_id = uuid.uuid4().hex
+        prompt = UserInputPrompt(
+            prompt=prompt, request_id=request_id
+        ).model_dump_json()
         asyncio.run(
             self.websocket.send(prompt),
         )
         response = asyncio.run(self.websocket.recv())
         if isinstance(response, bytes):
             response = response.decode("utf-8")
+        logger.info("Got input: %s ...", response[:100])
         try:
-            user_response = UserResponse.model_validate_json(response)
-            return user_response.input
-        except Exception:
-            logger.error("Error parsing user input response")
+            response_dict = json.loads(response)
+        except json.JSONDecodeError:
             return response
+        if "action" in response_dict and "input" in response_dict:
+            try:
+                user_response = UserResponse.model_validate(
+                    response_dict["input"]
+                )
+            except Exception:
+                logger.error("Error parsing user input response: %s", response)
+                return response
+        else:
+            return "\n"
+        if user_response.request_id != request_id:
+            logger.error(
+                "Invalid input request_id. Expecting %s, got: %s",
+                request_id,
+                user_response.request_id,
+            )
+            return "\n"
+        response_str = user_response.data.text or ""
+        if user_response.data.image:
+            response_str = f"{response_str} <img {user_response.data.image}>"
+        if not response_str:
+            response_str = "\n"
+        return response_str
 
 
 class WaldiezDevServer:
