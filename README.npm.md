@@ -45,6 +45,8 @@ bun add @waldiez/react
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+import { Edge, Node, Viewport } from "@xyflow/react";
+
 import { Waldiez, importFlow } from "@waldiez/react";
 import "@waldiez/react/dist/@waldiez.css";
 
@@ -57,6 +59,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       description="A sample flow"
       tags={["example"]}
       requirements={[]}
+      nodes={[] as Node[]}
+      edges={[] as Edge[]}
+      viewport={{ x: 0, y: 0, zoom: 1 } as Viewport}
     />
   </React.StrictMode>
 );
@@ -70,12 +75,15 @@ These properties define the basic identity and metadata of your flow:
 
 ```tsx
 <Waldiez
-  flowId="unique-flow-id"        // Unique identifier for this flow
-  storageId="storage-id"         // ID for storing flow state
-  name="My Flow"                 // Display name
-  description="Flow description" // Description text
-  tags={["tag1", "tag2"]}        // Categorization tags
-  requirements={[]}              // Dependencies/requirements
+  flowId="unique-flow-id"             // Unique identifier for this flow
+  storageId="storage-id"              // ID for storing flow state
+  name="My Flow"                      // Display name
+  description="Flow description"      // Description text
+  tags={["tag1", "tag2"]}             // Categorization tags
+  requirements={[]}                   // Dependencies/requirements
+  nodes={[]}                          // Initial nodes in the flow
+  edges={[]}                          // Initial edges in the flow
+  viewport={{ x: 0, y: 0, zoom: 1 }}  // Initial viewport settings
 />
 ```
 
@@ -235,9 +243,10 @@ You can import flows from existing Waldiez files:
 ```tsx
 import { Waldiez, importFlow, WaldiezProps } from "@waldiez/react";
 
-// Import flow from a JSON object
+// Import flow from an existing .waldiez file
+// could be loaded from a backend or local storage
 const flowJson = {
-  // Your flow definition...
+  // existing data
 };
 
 const flowData = importFlow(flowJson);
