@@ -102,6 +102,7 @@
         "jupyterlab",
         "jupytext",
         "Kasnesis",
+        "kernelspec",
         "kwargs",
         "labextension",
         "labextensions",
@@ -176,6 +177,7 @@
         "rendermime",
         "retrievechat",
         "returncode",
+        "REUSEADDR",
         "rjsf",
         "rmtree",
         "rpds",
@@ -234,6 +236,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
