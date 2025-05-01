@@ -92,6 +92,15 @@ export const getAgentMeta = (data: Record<string, unknown>, agentType: WaldiezNo
     const updatedAt = getUpdatedAtFromJSON(data);
     return { name, description, tags, requirements, createdAt, updatedAt };
 };
+export const getIsMultimodal = (data: Record<string, unknown>): boolean => {
+    if ("isMultimodal" in data && typeof data.isMultimodal === "boolean") {
+        return data.isMultimodal;
+    }
+    if ("is_multimodal" in data && typeof data.is_multimodal === "boolean") {
+        return data.is_multimodal;
+    }
+    return false;
+};
 export const getSystemMessage = (data: Record<string, unknown>): string | null => {
     if ("systemMessage" in data && typeof data.systemMessage === "string") {
         return data.systemMessage;

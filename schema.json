@@ -501,7 +501,6 @@
         },
         "WaldiezAgentAssistantData": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "systemMessage": {
                     "type": ["string", "null"]
@@ -541,12 +540,16 @@
                     "items": {
                         "$ref": "#/definitions/WaldiezAgentNestedChat"
                     }
+                },
+                "isMultimodal": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
                 "humanInputMode",
+                "isMultimodal",
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
@@ -555,6 +558,7 @@
                 "systemMessage",
                 "termination"
             ],
+            "additionalProperties": false,
             "description": "Waldiez Assistant Agent Data."
         },
         "WaldiezAgentGroupManager": {

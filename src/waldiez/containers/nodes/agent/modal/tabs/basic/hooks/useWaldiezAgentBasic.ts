@@ -18,6 +18,10 @@ export const useWaldiezAgentBasic = (props: {
         const newAgentType = event.target.checked ? "rag_user" : "user";
         onAgentTypeChange(newAgentType);
     };
+    const onMultimodalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLocalData({ ...localData, isMultimodal: event.target.checked });
+        onDataChange({ isMultimodal: event.target.checked });
+    };
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLocalData({ ...localData, label: event.target.value });
         onDataChange({ label: event.target.value });
@@ -55,6 +59,7 @@ export const useWaldiezAgentBasic = (props: {
     return {
         data: localData,
         onRagChange,
+        onMultimodalChange,
         onNameChange,
         onDescriptionChange,
         onSystemMessageChange,

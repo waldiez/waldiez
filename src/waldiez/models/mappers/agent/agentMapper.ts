@@ -4,6 +4,7 @@
  */
 import {
     WaldiezAgent,
+    WaldiezAgentAssistantData,
     WaldiezAgentCaptainData,
     WaldiezAgentData,
     WaldiezAgentGroupManagerData,
@@ -31,6 +32,7 @@ import {
     getGroupChatMaxRound,
     getHumanInputMode,
     getIsInitial,
+    getIsMultimodal,
     getMaximumConsecutiveAutoReply,
     getModelIds,
     getNestedChats,
@@ -183,6 +185,9 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     if (agentType === "rag_user") {
         toExclude.push("retrieveConfig");
     }
+    if (agentType === "assistant") {
+        toExclude.push("isMultimodal");
+    }
     if (agentType === "manager") {
         toExclude.push("maxRound", "adminName", "speakers", "enableClearHistory", "sendIntroductions");
     }
@@ -208,6 +213,12 @@ const getAgentDataToImport = (
         return new WaldiezAgentRagUserData({
             ...data,
             retrieveConfig: getRetrieveConfig(jsonData),
+        });
+    }
+    if (agentType === "assistant") {
+        return new WaldiezAgentAssistantData({
+            ...data,
+            isMultimodal: getIsMultimodal(jsonData),
         });
     }
     if (agentType === "manager") {
@@ -278,6 +289,7 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     return agentCopy;
 };
 
+// eslint-disable-next-line max-statements
 const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any, data: any) => {
     if (agentType === "rag_user") {
         updateRagAgent(agentData, data);
@@ -293,6 +305,9 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
     }
     if (agentType === "captain") {
         updateCaptainAgent(agentData, data);
+    }
+    if (agentType === "assistant") {
+        agentData.isMultimodal = getIsMultimodal(data);
     }
 };
 

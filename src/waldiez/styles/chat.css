@@ -1,0 +1,130 @@
+.chat-input-container {
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.flow-wrapper.light .chat-input-container {
+  background-color: #eee;
+}
+
+.flow-wrapper.dark .chat-input-container {
+  background-color: #222;
+}
+
+.chat-input-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.chat-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px !important;
+  cursor: pointer;
+}
+
+.chat-image-preview {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.chat-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.chat-preview-image {
+  max-width: 120px;
+  max-height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.chat-remove-image-button {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  border-radius: 50% !important;
+  padding: 4px !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-wrapper.light .chat-remove-image-button {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  color: #000;
+}
+
+.flow-wrapper.dark .chat-remove-image-button {
+  background-color: #222;
+  border: 1px solid #444;
+  color: #fff;
+}
+
+.chat-upload-input {
+  display: none;
+}
+
+.chat-text-input {
+  flex-grow: 1;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: none !important;
+  padding: 10px 2px !important;
+  outline: none;
+}
+
+.flow-wrapper.light .chat-text-input {
+  background-color: #eee !important;
+}
+
+.chat-send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 50% !important;
+}
+
+.flow-wrapper.light .chat-send-button {
+  background-color: #222;
+  color: #fff;
+}
+
+.flow-wrapper.dark .chat-send-button {
+  background-color: #eee;
+  color: #000;
+}
+
+.flow-wrapper.light .chat-send-button:hover {
+  background-color: #444;
+}
+
+.flow-wrapper.light .chat-send-button:disabled {
+  background-color: #555;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.flow-wrapper.dark .chat-send-button:hover {
+  background-color: #ddd;
+}
+
+.flow-wrapper.dark .chat-send-button:disabled {
+  background-color: #555;
+  color: #999;
+  cursor: not-allowed;
+}

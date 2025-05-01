@@ -6,7 +6,7 @@ import Waldiez from "@waldiez";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { WaldiezProps } from "@waldiez/types";
+import { WaldiezPreviousMessage, WaldiezProps, WaldiezUserInput } from "@waldiez/types";
 
 // WebSocket message types
 type WebSocketMessage = {
@@ -17,11 +17,12 @@ type WebSocketMessage = {
         content: string;
     }[];
     to?: "py" | "ipynb";
-    input?: string;
+    input?: WaldiezUserInput;
 };
 
 type WebSocketResponse = {
     type: string;
+    request_id?: string;
     content?: string;
     filePaths?: string[];
     outputPath?: string;
@@ -41,11 +42,11 @@ interface IWaldiezWrapperProps {
 
 const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = "ws://localhost:8765" }) => {
     const wsRef = useRef<WebSocket | null>(null);
-    const flowMessagesRef = useRef<string[]>([]);
+    const flowMessagesRef = useRef<WaldiezPreviousMessage[]>([]);
+    const inputRequestId = useRef<string | null>(null);
     const [connected, setConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [inputPrompt, setInputPrompt] = useState<WaldiezProps["inputPrompt"]>(null);
-    // const [lastConnectionAttempt, setLastConnectionAttempt] = useState(new Date());
 
     const connectWebSocket = useCallback(() => {
         // Clean up existing connection if any
@@ -57,7 +58,6 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
             }
             wsRef.current = null;
         }
-        // setLastConnectionAttempt(new Date());
         const ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
@@ -69,11 +69,6 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
         ws.onclose = () => {
             console.log("WebSocket connection closed");
             setConnected(false);
-            // const now = new Date();
-            // if (lastConnectionAttempt.getTime() < now.getTime() + 30000) {
-            //     setLastConnectionAttempt(now);
-            //     connectWebSocket();
-            // }
         };
 
         ws.onerror = error => {
@@ -88,11 +83,16 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
 
                 // Handle different response types
                 switch (data.type) {
+                    case "input_request":
+                        if (data.content && data.request_id) {
+                            inputRequestId.current = data.request_id;
+                        }
+                        break;
                     case "text":
                         if (data.content) {
-                            // content is probably an object
-                            const newMessages = [...flowMessagesRef.current, JSON.stringify(data.content)];
-                            flowMessagesRef.current = newMessages;
+                            console.log(data.content);
+                            // const newMessages = [...flowMessagesRef.current, JSON.stringify(data.content)];
+                            // flowMessagesRef.current = newMessages;
                         }
                         break;
                     case "input":
@@ -104,6 +104,7 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
                             setInputPrompt({
                                 previousMessages: flowMessagesRef.current,
                                 prompt,
+                                request_id: data.request_id || inputRequestId.current || "<unknown>",
                             });
                         }
                         break;
@@ -240,7 +241,7 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
 
     // Handler for onUserInput
     const handleUserInput = useCallback(
-        (input: string) => {
+        (input: WaldiezUserInput) => {
             if (!wsRef.current) {
                 setError("WebSocket not connected");
                 return;

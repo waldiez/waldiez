@@ -23,6 +23,7 @@ import {
  * @param skills - The linked skills of the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
+ * @param isMultimodal - The multimodal flag of the agent
  * @see {@link WaldiezAgentData}
  * @see {@link WaldiezAgentLinkedSkill}
  * @see {@link WaldiezAgentNestedChat}
@@ -31,6 +32,8 @@ import {
  * @see {@link WaldiezAgentCodeExecutionConfig}
  */
 export class WaldiezAgentAssistantData extends WaldiezAgentData {
+    isMultimodal: boolean;
+
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -43,6 +46,7 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId: string | null;
             nestedChats: WaldiezAgentNestedChat[];
+            isMultimodal: boolean;
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,
@@ -59,8 +63,10 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             skills: [],
             parentId: null,
             nestedChats: [],
+            isMultimodal: false,
         },
     ) {
         super(props);
+        this.isMultimodal = props.isMultimodal;
     }
 }

@@ -60,6 +60,7 @@ export const assistantJson = {
         skills: [],
         parentId: null,
         nestedChats: [],
+        isMultimodal: false,
     },
     position: { x: 20, y: 21 },
 };

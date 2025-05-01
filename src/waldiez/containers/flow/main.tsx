@@ -13,12 +13,16 @@ import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar } from "@waldiez/containers/sidebar";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import { WaldiezNodeType } from "@waldiez/types";
+import { WaldiezNodeType, WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/types";
 
 type WaldiezFlowViewProps = {
     flowId: string;
-    onUserInput?: ((input: string) => void) | null;
-    inputPrompt?: { previousMessages: string[]; prompt: string } | null;
+    onUserInput?: ((input: WaldiezUserInput) => void) | null;
+    inputPrompt?: {
+        previousMessages: WaldiezPreviousMessage[];
+        prompt: string;
+        request_id: string;
+    } | null;
     skipImport?: boolean;
     skipExport?: boolean;
     skipHub?: boolean;
@@ -115,7 +119,9 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
         }
     };
     const handleExportToHub = () => {
-        const exported = exportFlow(true, false) as unknown as { [key: string]: unknown };
+        const exported = exportFlow(true, false) as unknown as {
+            [key: string]: unknown;
+        };
         return JSON.stringify(exported);
     };
     return (

@@ -27,8 +27,9 @@ help:
 	@echo " clean            Cleanup unneeded files"
 	@echo " test             Run the tests for the python package"
 	@echo " test-models      Run the tests for the models"
-	@echo " test-exporting   Run the tests for the exporting"
-	@echo " test-running    Run the tests for the running"
+	@echo " test-exporting   Run the tests for exporting"
+	@echo " test-running     Run the tests for running"
+	@echo " test-io          Run the tests for the IO stream"
 	@echo " build            Build the python package"
 	@echo " docs             Generate the python documentation"
 	@echo " docs-live        Generate the documentation in 'live' mode"
@@ -88,6 +89,22 @@ test_running:
 		--cov=${.PACKAGE_NAME}/running \
 		--cov-branch \
 		${.TESTS_DIR}/running
+
+.PHONY: test-running
+test-running: test_running
+
+.PHONY: test_io
+test_io:
+	pytest \
+		-c pyproject.toml -vv \
+		--cov-report=term-missing:skip-covered \
+		--cov=${.PACKAGE_NAME}/io \
+		--cov-branch \
+		${.TESTS_DIR}/io
+
+.PHONY: test-io
+test-io: test_io
+
 
 .PHONY: build
 build:
