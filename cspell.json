@@ -237,8 +237,6 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": [
-        "/**"
-    ],
+    "files": ["/**"],
     "useGitignore": true
 }
