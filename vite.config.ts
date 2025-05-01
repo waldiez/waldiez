@@ -42,9 +42,10 @@ export default defineConfig(({ command }) => ({
             formats: ["es", "cjs", "umd"],
             fileName: "@waldiez",
         },
-        minify: "terser",
+        minify: "terser" as const,
         rollupOptions: {
             external: [
+                /src\/index\.dev\.tsx$/,
                 "jszip",
                 "react",
                 "react-dom",
@@ -131,7 +132,7 @@ export default defineConfig(({ command }) => ({
             provider: "v8",
             reporter: ["lcov", "text", "text-summary", "html"],
             include: ["src/**/*"],
-            exclude: ["**/types.ts"],
+            exclude: ["**/types.ts", "src/index.dev.tsx", "src/index.tsx", "**/tests/**", "**/ui-tests/**"],
             ignoreEmptyLines: true,
             thresholds,
             all: true,
