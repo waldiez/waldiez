@@ -11,6 +11,7 @@ from .utils import check_conflicts, check_flaml_warnings, check_rpds_py
 # pylint: disable=import-error,line-too-long
 # pyright: reportMissingImports=false
 try:
+    # noqa: I001
     from ._version import __version__  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 except ImportError:  # pragma: no cover
     import warnings
