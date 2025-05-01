@@ -7,7 +7,7 @@ import threading
 from datetime import datetime, timezone
 from getpass import getpass
 from typing import Any
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
@@ -82,12 +82,7 @@ class StructuredIOStream(IOStream):
         message : BaseEvent
             The message to send.
         """
-        message_dump = message.model_dump()
-        # let's avoid:
-        # TypeError: Object of type UUID is not JSON serializable
-        for key, value in message_dump.items():
-            if isinstance(value, UUID):
-                message_dump[key] = str(value)
+        message_dump = message.model_dump(mode="json")
         payload = {
             "type": message_dump.get("type", "event"),
             "id": uuid4().hex,
