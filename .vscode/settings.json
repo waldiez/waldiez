@@ -10,12 +10,15 @@
     },
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-        "source.organizeImports": "always"
+        "source.organizeImports": "explicit"
     },
     "pylint.args": ["--rcfile=pyproject.toml"],
     "pylint.importStrategy": "fromEnvironment",
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
+        "editor.defaultFormatter": "charliermarsh.ruff",
+            "editor.codeActionsOnSave": {
+            "source.organizeImports": "never"
+        },
     },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
