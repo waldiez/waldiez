@@ -20,6 +20,7 @@ export const Modal = (props: ModalProps) => {
         preventCloseIfUnsavedChanges = false,
         onClose,
         onSaveAndClose,
+        onCancel,
         children,
         className,
     } = props;
@@ -51,14 +52,18 @@ export const Modal = (props: ModalProps) => {
     };
     const onKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === "Escape" && canClose) {
-            onCancel(event);
+            handleCancel(event);
         }
     };
 
-    const onCancel = (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        handleCloseModal();
+    const handleCancel = (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => {
+        if (onCancel) {
+            onCancel(event);
+        } else {
+            event.preventDefault();
+            event.stopPropagation();
+            handleCloseModal();
+        }
     };
 
     const onToggleFullScreen = () => {
@@ -86,7 +91,7 @@ export const Modal = (props: ModalProps) => {
             id={id}
             data-testid={dataTestId ?? "modal-dialog"}
             onKeyDown={onKeyDown}
-            onCancel={onCancel}
+            onCancel={handleCancel}
             className={`modal ${noInteraction} ${isFullScreen ? "fullscreen" : ""} ${className ?? ""}`}
         >
             <div className="modal-content">

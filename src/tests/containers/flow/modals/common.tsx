@@ -47,6 +47,7 @@ export const renderFlow = (
         const userInputProp = {
             ...userInput,
             previousMessages: options.previousMessages || [],
+            userParticipants: new Set(["user"]),
         };
         return (
             <WaldiezThemeProvider>

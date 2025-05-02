@@ -36,6 +36,7 @@ export const userInput = {
     ],
     prompt: "User Input Prompt",
     request_id: "request_id",
+    userParticipants: new Set(["user"]),
 };
 
 let addedNestedChat = false;

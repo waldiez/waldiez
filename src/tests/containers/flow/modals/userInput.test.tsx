@@ -121,16 +121,17 @@ describe("WaldiezFlow User Input modal", () => {
     it("should render previous messages correctly", async () => {
         const previousMessages: WaldiezPreviousMessage[] = [
             { id: "1", timestamp: "1", type: "print", data: "Simple text message" },
-            { id: "1", timestamp: "1", type: "print", data: { key1: "value1", key2: "value2" } },
+            { id: "2", timestamp: "1", type: "print", data: { key1: "value1", key2: "value2" } },
             // @ts-expect-error not a string or object
-            { id: "1", timestamp: "1", type: "print", data: 42 },
+            { id: "3", timestamp: "1", type: "print", data: 42 },
         ];
         act(() => {
             renderFlow(true, undefined, undefined, { previousMessages });
         });
         expect(screen.getByText("Simple text message")).toBeInTheDocument();
-        expect(screen.getByText("key1: value1, key2: value2")).toBeInTheDocument();
-        const consoleMessages = screen.getAllByTestId("rf-console-message");
-        expect(consoleMessages.length).toBe(3);
+        screen.debug(undefined, 100000);
+        expect(screen.getByText('{"key1":"value1","key2":"value2"}')).toBeInTheDocument();
+        const chatMessages = screen.getAllByTestId("rf-chat-message");
+        expect(chatMessages.length).toBe(3);
     });
 });

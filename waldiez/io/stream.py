@@ -6,9 +6,11 @@ import sys
 import threading
 from datetime import datetime, timezone
 from getpass import getpass
+from pathlib import Path
 from typing import Any
-from uuid import UUID, uuid4
+from uuid import uuid4
 
+from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
@@ -27,8 +29,16 @@ def now() -> str:
 class StructuredIOStream(IOStream):
     """Structured I/O stream using stdin and stdout."""
 
-    def __init__(self, timeout: float = 120):
+    uploads_root: Path | None = None
+
+    def __init__(
+        self, timeout: float = 120, uploads_root: Path | str | None = None
+    ) -> None:
         self.timeout = timeout
+        if uploads_root is not None:
+            self.uploads_root = Path(uploads_root).resolve()
+            if not self.uploads_root.exists():
+                self.uploads_root.mkdir(parents=True, exist_ok=True)
 
     def print(self, *args: Any, **kwargs: Any) -> None:
         """Structured print to stdout.
@@ -82,12 +92,7 @@ class StructuredIOStream(IOStream):
         message : BaseEvent
             The message to send.
         """
-        message_dump = message.model_dump()
-        # let's avoid:
-        # TypeError: Object of type UUID is not JSON serializable
-        for key, value in message_dump.items():
-            if isinstance(value, UUID):
-                message_dump[key] = str(value)
+        message_dump = message.model_dump(mode="json")
         payload = {
             "type": message_dump.get("type", "event"),
             "id": uuid4().hex,
@@ -220,7 +225,9 @@ class StructuredIOStream(IOStream):
             if not data:
                 # let's check if text|image keys are sent (outside data)
                 if "image" in user_input or "text" in user_input:
-                    return self._format_multimedia_response(user_input)
+                    return self._format_multimedia_response(
+                        request_id=request_id, data=user_input
+                    )
             if not data or not isinstance(data, (str, dict)):
                 # No / invalid data provided in the response
                 return "\n"
@@ -229,7 +236,9 @@ class StructuredIOStream(IOStream):
                 # double inner dumped?
                 data = self._load_user_input(data)
             if isinstance(data, dict):
-                return self._format_multimedia_response(data)
+                return self._format_multimedia_response(
+                    request_id=request_id, data=data
+                )
             # For other types (lists, numbers, booleans), convert to string
             return str(data)  # pragma: no cover
         # This response doesn't match our request_id, log and return empty
@@ -266,13 +275,19 @@ class StructuredIOStream(IOStream):
         # Print to stderr to avoid interfering with stdout communication
         print(json.dumps(log_payload), file=sys.stderr)
 
-    def _format_multimedia_response(self, data: dict[str, Any]) -> str:
+    def _format_multimedia_response(
+        self,
+        data: dict[str, Any],
+        request_id: str | None = None,
+    ) -> str:
         """Format a multimedia response dict into a string with image tags.
 
         Parameters
         ----------
         data : dict[str, Any]
             The data dictionary containing "image" and "text" keys.
+        request_id : str | None
+            The input request ID, if available.
 
         Returns
         -------
@@ -284,7 +299,8 @@ class StructuredIOStream(IOStream):
         # Handle image if present
         if "image" in data and data["image"]:
             image_data = data["image"]
-            img_tag = f"<img {image_data}>"
+            image = self.get_image(self.uploads_root, image_data, request_id)
+            img_tag = f"<img {image}>"
             result.append(img_tag)
 
         # Handle text if present
@@ -296,3 +312,38 @@ class StructuredIOStream(IOStream):
             return ""
         # Join with a space
         return " ".join(result)
+
+    @staticmethod
+    def get_image(
+        uploads_root: Path | None,
+        image_data: str,
+        base_name: str | None = None,
+    ) -> str:
+        """Store the image data in a file and return the file path.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        image_data : str
+            The base64-encoded image data.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The file path of the stored image.
+        """
+        if uploads_root:
+            try:
+                pil_image = get_pil_image(image_data)
+            except BaseException:  # pylint: disable=broad-exception-caught
+                return image_data
+            if not base_name:
+                base_name = uuid4().hex
+            file_name = f"{base_name}.png"
+            file_path = uploads_root / file_name
+            pil_image.save(file_path, format="PNG")
+            return str(file_path)
+        return image_data

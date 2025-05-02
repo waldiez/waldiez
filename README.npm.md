@@ -50,6 +50,11 @@ import { Edge, Node, Viewport } from "@xyflow/react";
 import { Waldiez, importFlow } from "@waldiez/react";
 import "@waldiez/react/dist/@waldiez.css";
 
+// starting with an empty flow
+const nodes: Node[] = []
+const edges: Edge[] = []
+const viewport: Viewport = { x: 0, y: 0, zoom: 1 }
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Waldiez
@@ -59,12 +64,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       description="A sample flow"
       tags={["example"]}
       requirements={[]}
-      nodes={[] as Node[]}
-      edges={[] as Edge[]}
-      viewport={{ x: 0, y: 0, zoom: 1 } as Viewport}
+      nodes={nodes}
+      edges={edges}
+      viewport={viewport}
     />
   </React.StrictMode>
-);
 ```
 
 ### Configuration Options
@@ -83,7 +87,6 @@ These properties define the basic identity and metadata of your flow:
   requirements={[]}                   // Dependencies/requirements
   nodes={[]}                          // Initial nodes in the flow
   edges={[]}                          // Initial edges in the flow
-  viewport={{ x: 0, y: 0, zoom: 1 }}  // Initial viewport settings
 />
 ```
 

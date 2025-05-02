@@ -6,31 +6,16 @@ import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
 
-import { Modal } from "@waldiez/components";
+import { ChatUI, Modal } from "@waldiez/components";
 import { UserInputModalProps } from "@waldiez/containers/flow/modals/userInputModal/types";
-import { WaldiezPreviousMessage } from "@waldiez/types";
 
 export const UserInputModal = (props: UserInputModalProps) => {
     const { flowId, isOpen, inputPrompt, onUserInput } = props;
     const [textInput, setTextInput] = useState("");
+    const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     useEffect(() => {
-        if (isOpen && inputPrompt.previousMessages.length > 0) {
-            const messagesRoot = document.querySelector(`.console-messages[data-flow-id="${flowId}"]`);
-            if (messagesRoot) {
-                const console = messagesRoot.querySelectorAll(".console-message");
-                if (console && console.length > 0) {
-                    const lastMessage = console[console.length - 1];
-                    if (lastMessage) {
-                        lastMessage.scrollIntoView();
-                    }
-                }
-            }
-        }
-        onOpenModalChange();
-    }, [isOpen]);
-    const onOpenModalChange = () => {
         if (isOpen) {
             setTextInput("");
             setImagePreview(null);
@@ -38,7 +23,7 @@ export const UserInputModal = (props: UserInputModalProps) => {
                 inputRef.current.focus();
             }
         }
-    };
+    }, [isOpen]);
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
@@ -48,6 +33,7 @@ export const UserInputModal = (props: UserInputModalProps) => {
     const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTextInput(event.target.value);
     };
+
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -58,6 +44,7 @@ export const UserInputModal = (props: UserInputModalProps) => {
             reader.readAsDataURL(file);
         }
         event.target.value = "";
+        setIsFileSelectModalOpen(false);
     };
     const clearImage = () => {
         setImagePreview(null);
@@ -75,29 +62,33 @@ export const UserInputModal = (props: UserInputModalProps) => {
         setTextInput("");
         setImagePreview(null);
     };
-    const handlePreviousMessage = (message: WaldiezPreviousMessage) => {
-        // TODO: handle different message types
-        if (typeof message.data === "string") {
-            return message.data;
-        }
-        if (typeof message.data === "object") {
-            return Object.entries(message.data)
-                .map(([key, value]) => `${key}: ${value}`)
-                .join(", ");
-        }
-        return "";
-    };
     const handleClose = () => {
         onUserInput({
             id: `${flowId}-${Date.now()}`,
             type: "input_response",
             request_id: inputPrompt.request_id,
-            data: {
-                text: "",
-            },
+            data: {},
         });
         setTextInput("");
         setImagePreview(null);
+    };
+    const openFileSelectModal = () => {
+        setIsFileSelectModalOpen(true);
+    };
+    const closeFileSelectModal = () => {
+        setIsFileSelectModalOpen(false);
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+    const handleCancel = (event: React.SyntheticEvent<HTMLDialogElement, Event> | KeyboardEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!isFileSelectModalOpen) {
+            handleClose();
+        } else {
+            setIsFileSelectModalOpen(false);
+        }
     };
 
     return (
@@ -105,20 +96,18 @@ export const UserInputModal = (props: UserInputModalProps) => {
             title="User Input"
             isOpen={isOpen}
             onClose={handleClose}
+            onCancel={handleCancel}
             className="user-input-modal"
             hasMaximizeBtn={false}
             dataTestId={`rf-${flowId}-user-input-modal`}
         >
             <div className="modal-body">
                 {inputPrompt.previousMessages.length > 0 && (
-                    <div className="console">
-                        <div className="console-messages" data-flow-id={flowId}>
-                            {inputPrompt.previousMessages.map((message, index) => (
-                                <div className="console-message" key={index} data-testid="rf-console-message">
-                                    {handlePreviousMessage(message)}
-                                </div>
-                            ))}
-                        </div>
+                    <div className="chat-wrapper" data-flow-id={flowId}>
+                        <ChatUI
+                            messages={inputPrompt.previousMessages}
+                            userParticipants={inputPrompt.userParticipants}
+                        />
                     </div>
                 )}
                 <div className="input-prompt">{inputPrompt.prompt}</div>
@@ -164,6 +153,8 @@ export const UserInputModal = (props: UserInputModalProps) => {
                                 accept="image/*"
                                 className="chat-upload-input"
                                 onChange={handleImageChange}
+                                onClick={openFileSelectModal}
+                                onBlur={closeFileSelectModal}
                             />
                         </label>
                         <button

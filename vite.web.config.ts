@@ -28,6 +28,7 @@ export default defineConfig(({ command }) => {
             target: "esnext",
             outDir: resolve(__dirname, "out", "static"),
             rollupOptions: {
+                external: [/src\/index\.dev\.tsx$/],
                 output: {
                     manualChunks(id) {
                         if (id.includes("node_modules")) {

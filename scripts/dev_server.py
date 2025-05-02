@@ -27,6 +27,8 @@ except ImportError:
     sys.path.insert(0, str(Path(__file__).parent.parent))
     from waldiez import WaldiezExporter, WaldiezRunner
 
+from waldiez.io import StructuredIOStream
+
 nest_asyncio.apply()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("waldiez-dev-server")
@@ -36,14 +38,17 @@ ROOT_DIR = HERE.parent
 DOT_LOCAL = ROOT_DIR / ".local"
 MY_DIR = DOT_LOCAL / "dev"
 SAVE_PATH = MY_DIR / "save"
-UPLOAD_DIR = MY_DIR / "uploads"
+UPLOADS_DIR = MY_DIR / "uploads"
+PUBLIC_DIR = ROOT_DIR / "public"
+if PUBLIC_DIR.exists():
+    UPLOADS_DIR = PUBLIC_DIR / "uploads"
 # Create directories if they don't exist
 SAVE_PATH.mkdir(exist_ok=True, parents=True)
-UPLOAD_DIR.mkdir(exist_ok=True, parents=True)
+UPLOADS_DIR.mkdir(exist_ok=True, parents=True)
 
 IncomingAction = Literal["run", "save", "upload", "convert"]
 OutgoingAction = Literal[
-    "runResult", "saveResult", "uploadResult", "convertResult"
+    "runResult", "saveResult", "uploadResult", "convertResult", "error"
 ]
 
 
@@ -64,8 +69,8 @@ class UserInputPrompt(ModelBase):
 class UserInputData(ModelBase):
     """Use's input data model."""
 
-    text: str | None
-    image: str | None  # base64
+    text: str | None = None
+    image: str | None = None
 
 
 class UserResponse(ModelBase):
@@ -128,8 +133,11 @@ class AsyncIOWebsockets(IOStream):
         end = kwargs.get("end", "\n")
         msg = sep.join(str(arg) for arg in args) + end
         message_dump = PrintMessage(message=msg).model_dump(mode="json")
+        json_dump = json.dumps(message_dump)
+        # let's also actual print
+        print(json_dump)
         asyncio.run(
-            self.websocket.send(json.dumps(message_dump)),
+            self.websocket.send(json_dump),
         )
 
     def send(self, message: BaseEvent) -> None:
@@ -140,8 +148,12 @@ class AsyncIOWebsockets(IOStream):
         message : str
             The message to send.
         """
+        message_dump = message.model_dump(mode="json")
+        json_dump = json.dumps(message_dump)
+        # let's also actual print
+        print(json_dump)
         asyncio.run(
-            self.websocket.send(json.dumps(message.model_dump(mode="json"))),
+            self.websocket.send(json_dump),
         )
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
@@ -193,7 +205,13 @@ class AsyncIOWebsockets(IOStream):
             return "\n"
         response_str = user_response.data.text or ""
         if user_response.data.image:
-            response_str = f"{response_str} <img {user_response.data.image}>"
+            image = StructuredIOStream.get_image(
+                uploads_root=UPLOADS_DIR,
+                image_data=user_response.data.image,
+                base_name=request_id,
+            )
+            response_str = f"{response_str} <img {image}>"
+            # response_str = f"{response_str} <img {user_response.data.image}>"
         if not response_str:
             response_str = "\n"
         return response_str
@@ -338,6 +356,7 @@ class WaldiezDevServer:
         """
         logger.info("Handling run action")
         await self.handle_save(websocket, flow)
+        default_steam = IOStream.get_default()
         try:
             io_steam = AsyncIOWebsockets(websocket)
             with IOStream.set_default(io_steam):
@@ -349,41 +368,11 @@ class WaldiezDevServer:
             return OutgoingMessage(
                 type="runResult", success=False, message=to_log
             )
-            # await self._send(
-            #     OutgoingMessage(
-            #         type="runResult", success=False, message=to_log
-            #     ),
-            #     websocket,
-            # )
-            # await websocket.send(
-            #     json.dumps(
-            #         {
-            #             "type": "runResult",
-            #             "success": False,
-            #             "message": f"Error running flow: {str(e)}",
-            #         }
-            #     )
-            # )
-            # return
-        # else:
-        # to_log = "Flow executed successfully"
-        # logger.info(to_log)
-        # await self._send(
-        #     OutgoingMessage(type="runResult", success=True, message=to_log),
-        #     websocket,
-        # )
+        finally:
+            IOStream.set_default(default_steam)
         return OutgoingMessage(
             type="runResult", success=True, message="Flow executed successfully"
         )
-        # await websocket.send(
-        #     json.dumps(
-        #         {
-        #             "type": "runResult",
-        #             "success": True,
-        #             "message": "Flow executed successfully",
-        #         }
-        #     )
-        # )
 
     async def handle_save(
         self, websocket: websockets.ServerConnection, flow: str
@@ -413,15 +402,6 @@ class WaldiezDevServer:
         to_log = f"Flow saved to {dot_waldiez_path}"
         logger.info(to_log)
         return OutgoingMessage(type="saveResult", success=True, message=to_log)
-        # await websocket.send(
-        #     json.dumps(
-        #         {
-        #             "type": "saveResult",
-        #             "success": True,
-        #             "message": "Flow saved successfully",
-        #         }
-        #     )
-        # )
 
     async def handle_upload(
         self,
@@ -455,7 +435,7 @@ class WaldiezDevServer:
 
             try:
                 content = base64.b64decode(content_b64)
-                file_path = UPLOAD_DIR / filename
+                file_path = UPLOADS_DIR / filename
 
                 with open(file_path, "wb") as f:
                     f.write(content)
@@ -472,16 +452,6 @@ class WaldiezDevServer:
             message="Files uploaded successfully",
             filePaths=file_paths,
         )
-        # await websocket.send(
-        #     json.dumps(
-        #         {
-        #             "type": "uploadResult",
-        #             "success": True,
-        #             "message": "Files uploaded successfully",
-        #             "filePaths": file_paths,
-        #         }
-        #     )
-        # )
 
     async def handle_convert(
         self, websocket: websockets.ServerConnection, flow: str, to: str
@@ -517,25 +487,6 @@ class WaldiezDevServer:
             return OutgoingMessage(
                 type="convertResult", success=False, message=to_log
             )
-            # await websocket.send(
-            #     json.dumps(
-            #         {
-            #             "type": "convertResult",
-            #             "success": False,
-            #             "message": f"Error converting flow: {str(e)}",
-            #         }
-            #     )
-            # )
-        #     return
-        # await websocket.send(
-        #     json.dumps(
-        #         {
-        #             "type": "convertResult",
-        #             "success": True,
-        #             "message": output_path,
-        #         }
-        #     )
-        # )
         return OutgoingMessage(
             type="convertResult",
             success=True,

@@ -7,9 +7,8 @@ dist/
 lib/
 site/
 out/
-public/vs
-public/min-maps
-public/monaco.json
+public/**/*
+!public/logo/
 **/coverage/
 **/waldiez_out/
 **/logs/
