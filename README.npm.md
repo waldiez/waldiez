@@ -30,7 +30,7 @@ bun add @waldiez/react
     "react-icons": "^5.5.0",
     "react-select": "^5.10.1",
     "zundo": "^2.3.0",
-    "zustand": "^5.0.3"
+    "zustand": "^5.0.4"
 }
 ```
 
