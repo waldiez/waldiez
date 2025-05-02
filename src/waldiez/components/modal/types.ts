@@ -12,6 +12,7 @@ export type ModalProps = {
     hasMaximizeBtn?: boolean;
     onClose?: () => void;
     onSaveAndClose?: () => void;
+    onCancel?: (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => void;
     children: React.ReactNode;
     className?: string;
     hasUnsavedChanges?: boolean;
