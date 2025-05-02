@@ -223,6 +223,7 @@
         "websurfer",
         "workerinput",
         "xdist",
+        "Xmark",
         "xunit",
         "xyflow",
         "ydoc",
@@ -237,6 +238,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
