@@ -1,5 +1,7 @@
 # Waldiez React
 
+## Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez
+
 ![CI Build](https://github.com/waldiez/react/actions/workflows/main.yaml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/waldiez/react/badge.svg)](https://coveralls.io/github/waldiez/react) [![npm version](https://badge.fury.io/js/@waldiez%2Freact.svg)](https://badge.fury.io/js/@waldiez%2Freact)
 
 ## Installation from npm registry
