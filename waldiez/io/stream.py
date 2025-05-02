@@ -1,23 +1,18 @@
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
-import base64
 import json
-import os
 import queue
-import re
 import sys
 import threading
 from datetime import datetime, timezone
 from getpass import getpass
-from io import BytesIO
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-import requests
+from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
-from PIL import Image
 
 
 def now() -> str:
@@ -352,48 +347,3 @@ class StructuredIOStream(IOStream):
             pil_image.save(file_path, format="PNG")
             return str(file_path)
         return image_data
-
-
-# from ag2, but with webp (TODO: PR to ag2 to add webp support)
-def get_pil_image(image_file: str | Image.Image) -> Image.Image:
-    """Load an image from a file and returns a PIL Image object.
-
-    Parameters
-    ----------
-    image_file : str | Image.Image
-        The filename, URL, URI, or base64 string of the image file.
-
-    Returns
-    -------
-    Image.Image
-        The PIL Image object.
-    """
-    if isinstance(image_file, Image.Image):
-        # Already a PIL Image object
-        return image_file
-
-    # Remove quotes if existed
-    if image_file.startswith('"') and image_file.endswith('"'):
-        image_file = image_file[1:-1]
-    if image_file.startswith("'") and image_file.endswith("'"):
-        image_file = image_file[1:-1]
-
-    if image_file.startswith("http://") or image_file.startswith("https://"):
-        # A URL file
-        response = requests.get(image_file, timeout=10)
-        content = BytesIO(response.content)
-        image = Image.open(content)
-    elif re.match(r"data:image/(?:png|jpeg|webp);base64,", image_file):
-        # A URI. Remove the prefix and decode the base64 string.
-        base64_data = re.sub(
-            r"data:image/(?:png|jpeg|webp);base64,", "", image_file
-        )
-        image = Image.open(BytesIO(base64.b64decode(base64_data)))
-    elif os.path.exists(image_file):
-        # A local file
-        image = Image.open(image_file)
-    else:
-        # base64 encoded string
-        image = Image.open(BytesIO(base64.b64decode(image_file)))
-
-    return image.convert("RGB")
