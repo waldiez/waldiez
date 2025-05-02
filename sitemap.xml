@@ -2,714 +2,714 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.waldiez.io/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/blog/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/blog/2024/11/02/multi-agent-conversation-and-stand-up-comedy.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/blog/2024/11/02/sequential-chats-and-customer-onboarding.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/contribute/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/1.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/2.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/3.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/4.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/5.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/6.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/7.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/examples/8.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporter.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/runner.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/waldiez.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporting/agents.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporting/base.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporting/chats.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporting/flow.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporting/models.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/exporting/skills.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/chat.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/common.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/flow.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/model.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/skill.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/agent.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/assistant.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/captain_agent.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/group_manager.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/rag_user.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/swarm_agent.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/python/models/agents/user_proxy.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/globals.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgent.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentAssistant.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentAssistantData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentCaptain.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentCaptainData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentGroupManager.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentGroupManagerData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentGroupManagerSpeakers.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentRagUser.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentRagUserData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentReasoning.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentReasoningData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentSwarm.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentSwarmContainer.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentSwarmContainerData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentSwarmData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentUserProxy.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezAgentUserProxyData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezChat.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezChatData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezFlow.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezFlowData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezMessage.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezModel.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezModelData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezSkill.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezSkillData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezSwarmAfterWork.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezSwarmOnCondition.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/classes/WaldiezSwarmUpdateSystemMessage.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/functions/WaldiezProvider.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/functions/createWaldiezStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/functions/useWaldiez.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/functions/useWaldiezHistory.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/interfaces/IWaldiezAgentStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/interfaces/IWaldiezEdgeStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/interfaces/IWaldiezFlowStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/interfaces/IWaldiezModelStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/interfaces/IWaldiezNodeStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/interfaces/IWaldiezSkillStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/GroupChatSpeakerSelectionMethodOption.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/GroupChatSpeakerSelectionMode.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/GroupChatSpeakerTransitionsType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/ImportedFlow.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/ReasoningConfigAnswerApproach.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/ReasoningConfigMethod.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/ThingsToImport.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentCodeExecutionConfig.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentCodeExecutionConfigDict.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentCommonData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentHumanInputMode.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentLinkedSkill.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentNestedChat.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentTerminationCriterionOption.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentTerminationMessageCheck.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezAgentTypeTerminationTypeOption.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezCaptainAgentLibEntry.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezChatDataCommon.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezChatLlmSummaryMethod.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezChatSummary.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezEdge.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezEdgeData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezEdgeType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezFlowInfo.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezFlowProps.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezMessageType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezModelAPIType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezModelDataCommon.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezModelPrice.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNestedChat.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgent.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentAssistant.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentAssistantData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentCaptain.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentCaptainData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentGroupManager.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentGroupManagerData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentRagUser.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentRagUserData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentReasoning.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentReasoningData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentSwarm.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentSwarmContainer.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentSwarmContainerData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentSwarmData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentUserProxy.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeAgentUserProxyData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeModel.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeModelData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeSkill.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeSkillData.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezNodeType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezProps.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezProviderProps.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezRagUserRetrieveConfig.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezReasoningAgentReasonConfig.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSkillDataCommon.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSkillType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezState.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezStore.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezStoreProps.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmAfterWorkOption.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmAfterWorkRecipientType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmHandoff.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmOnConditionAvailable.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmOnConditionAvailableCheckType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmOnConditionTargetType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezSwarmUpdateSystemMessageType.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/WaldiezVectorDbConfig.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/typeOfGet.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/type-aliases/typeOfSet.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/DEFAULT_CREWAI_SKILL_CONTENT.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/DEFAULT_CUSTOM_SKILL_CONTENT.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/DEFAULT_LANGCHAIN_SKILL_CONTENT.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/DEFAULT_SHARED_SKILL_CONTENT.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/DEFAULT_SKILL_CONTENT_MAP.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/agentMapper.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/chatMapper.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/defaultReasonConfig.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/defaultRetrieveConfig.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/emptyFlow.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/flowMapper.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/modelMapper.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/reference/react/variables/skillMapper.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/static/On-boarding.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/index.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/agents.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/convert.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/flow.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/models.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/run.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/usage/skills.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/blog/category/standup-comedians.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/blog/category/sequential-chats.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
     <url>
          <loc>https://docs.waldiez.io/blog/category/customer-onboarding.html</loc>
-         <lastmod>2025-04-28</lastmod>
+         <lastmod>2025-05-02</lastmod>
     </url>
 </urlset>
