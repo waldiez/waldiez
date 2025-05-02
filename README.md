@@ -1,6 +1,6 @@
 # Waldiez
 
-![CI Build](https://github.com/waldiez/python/actions/workflows/main.yaml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/waldiez/python/badge.svg)](https://coveralls.io/github/waldiez/python) [![PyPI version](https://badge.fury.io/py/waldiez.svg?icon=si%3Apython)](https://badge.fury.io/py/waldiez) [![npm version](https://badge.fury.io/js/@waldiez%2Freact.svg)](https://badge.fury.io/js/@waldiez%2Freact)
+![CI Build](https://github.com/waldiez/python/actions/workflows/main.yaml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/waldiez/python/badge.svg)](https://coveralls.io/github/waldiez/python) [![PyPI Downloads](https://static.pepy.tech/badge/waldiez)](https://pepy.tech/projects/waldiez) [![PyPI version](https://badge.fury.io/py/waldiez.svg?icon=si%3Apython)](https://badge.fury.io/py/waldiez) [![npm version](https://badge.fury.io/js/@waldiez%2Freact.svg)](https://badge.fury.io/js/@waldiez%2Freact)
 
 ## Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez
 
