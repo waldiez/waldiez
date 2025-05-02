@@ -22,6 +22,7 @@ type WaldiezFlowViewProps = {
         previousMessages: WaldiezPreviousMessage[];
         prompt: string;
         request_id: string;
+        userParticipants: Set<string>;
     } | null;
     skipImport?: boolean;
     skipExport?: boolean;

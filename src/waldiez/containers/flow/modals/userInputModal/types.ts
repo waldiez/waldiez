@@ -12,6 +12,7 @@ export type UserInputModalProps = {
         previousMessages: WaldiezPreviousMessage[];
         request_id: string;
         prompt: string;
+        userParticipants: Set<string>;
     };
 };
 export type UserInputModalViewProps = {
@@ -24,5 +25,6 @@ export type UserInputModalViewProps = {
         previousMessages: WaldiezPreviousMessage[];
         request_id: string;
         prompt: string;
+        userParticipants: Set<string>;
     };
 };

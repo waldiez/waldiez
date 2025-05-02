@@ -2,11 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable max-lines-per-function */
 import Waldiez from "@waldiez";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { WaldiezPreviousMessage, WaldiezProps, WaldiezUserInput } from "@waldiez/types";
+import { nanoid } from "nanoid";
+
+import { WaldiezContentItem, WaldiezPreviousMessage, WaldiezProps, WaldiezUserInput } from "@waldiez/types";
 
 // WebSocket message types
 type WebSocketMessage = {
@@ -20,10 +23,12 @@ type WebSocketMessage = {
     input?: WaldiezUserInput;
 };
 
+type DataContent = string | string[] | { [key: string]: unknown } | { [key: string]: unknown }[];
+
 type WebSocketResponse = {
     type: string;
     request_id?: string;
-    content?: string;
+    content?: DataContent;
     filePaths?: string[];
     outputPath?: string;
     response?: string;
@@ -43,10 +48,74 @@ interface IWaldiezWrapperProps {
 const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = "ws://localhost:8765" }) => {
     const wsRef = useRef<WebSocket | null>(null);
     const flowMessagesRef = useRef<WaldiezPreviousMessage[]>([]);
+    const userParticipants = useRef<Set<string>>(new Set());
     const inputRequestId = useRef<string | null>(null);
+    const expectingUserInput = useRef<boolean>(false);
     const [connected, setConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [inputPrompt, setInputPrompt] = useState<WaldiezProps["inputPrompt"]>(null);
+    const serverBaseUrl = window.location.protocol + "//" + window.location.host;
+
+    // eslint-disable-next-line max-statements
+    const onWsMessage = (event: MessageEvent) => {
+        try {
+            const data: WebSocketResponse = JSON.parse(event.data);
+            console.log("Received message:", data);
+
+            // Handle different response types
+            switch (data.type) {
+                case "input_request":
+                    if (data.content && data.request_id) {
+                        inputRequestId.current = data.request_id;
+                    }
+                    break;
+                case "text":
+                case "print":
+                    if (data.content) {
+                        if (
+                            expectingUserInput.current &&
+                            typeof data.content === "object" &&
+                            data.content !== null &&
+                            "sender" in data.content &&
+                            typeof data.content.sender === "string"
+                        ) {
+                            console.log("User input received from: ", data.content.sender);
+                            userParticipants.current.add(data.content.sender);
+                            expectingUserInput.current = false;
+                        }
+                        const processedContent = processImagePlaceholders(data.content);
+                        flowMessagesRef.current = [
+                            ...flowMessagesRef.current,
+                            makePreviousMessage(processedContent),
+                        ];
+                    }
+                    break;
+                case "input":
+                    if (data.prompt) {
+                        let prompt = data.prompt.trim();
+                        if (prompt === ">") {
+                            prompt = "Enter your input:";
+                        }
+                        if (data.request_id) {
+                            inputRequestId.current = data.request_id;
+                        }
+                        expectingUserInput.current = true;
+                        setInputPrompt({
+                            previousMessages: flowMessagesRef.current,
+                            prompt,
+                            request_id: inputRequestId.current || "<unknown>",
+                            userParticipants: userParticipants.current,
+                        });
+                    }
+                    break;
+                case "termination":
+                    console.log("flow terminated: ", data);
+                    break;
+            }
+        } catch (error) {
+            console.error("Error parsing WebSocket message:", error);
+        }
+    };
 
     const connectWebSocket = useCallback(() => {
         // Clean up existing connection if any
@@ -77,47 +146,11 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
         };
 
         ws.onmessage = event => {
-            try {
-                const data: WebSocketResponse = JSON.parse(event.data);
-                console.log("Received message:", data);
-
-                // Handle different response types
-                switch (data.type) {
-                    case "input_request":
-                        if (data.content && data.request_id) {
-                            inputRequestId.current = data.request_id;
-                        }
-                        break;
-                    case "text":
-                        if (data.content) {
-                            console.log(data.content);
-                            // const newMessages = [...flowMessagesRef.current, JSON.stringify(data.content)];
-                            // flowMessagesRef.current = newMessages;
-                        }
-                        break;
-                    case "input":
-                        if (data.prompt) {
-                            let prompt = data.prompt.trim();
-                            if (prompt === ">") {
-                                prompt = "Enter your input:";
-                            }
-                            setInputPrompt({
-                                previousMessages: flowMessagesRef.current,
-                                prompt,
-                                request_id: data.request_id || inputRequestId.current || "<unknown>",
-                            });
-                        }
-                        break;
-                    case "termination":
-                        console.log("flow terminated: ", data);
-                        break;
-                }
-            } catch (error) {
-                console.error("Error parsing WebSocket message:", error);
-            }
+            onWsMessage(event);
         };
         wsRef.current = ws;
     }, [wsUrl]);
+
     useEffect(() => {
         connectWebSocket();
 
@@ -126,7 +159,6 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
                 wsRef.current.close();
                 wsRef.current = null;
             }
-            // setLastConnectionAttempt(new Date());
         };
     }, [connectWebSocket, wsRef]);
 
@@ -138,6 +170,11 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
                 return;
             }
 
+            // Clear previous messages
+            flowMessagesRef.current = [];
+            userParticipants.current.clear();
+            setInputPrompt(null);
+            inputRequestId.current = null;
             const message: WebSocketMessage = {
                 action: "run",
                 flow,
@@ -258,6 +295,106 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
         },
         [connected],
     );
+    const processImagePlaceholders = (content: DataContent): DataContent => {
+        if (
+            typeof content === "object" &&
+            content !== null &&
+            "content" in content &&
+            Array.isArray(content.content)
+        ) {
+            content.content = content.content.map(item => {
+                if (
+                    typeof item === "object" &&
+                    item !== null &&
+                    "image_url" in item &&
+                    item.image_url &&
+                    typeof item.image_url === "object" &&
+                    "url" in item.image_url
+                ) {
+                    const imageUrl = item.image_url.url;
+                    if (imageUrl === "<image>") {
+                        return {
+                            ...item,
+                            image_url: {
+                                url: serverBaseUrl + "/uploads/" + inputRequestId.current + ".png",
+                            },
+                        };
+                    }
+                }
+                return item;
+            }) as DataContent;
+        }
+        return content;
+    };
+
+    const makePreviousMessage = (
+        content:
+            | string
+            | string[]
+            | WaldiezContentItem[]
+            | { [key: string]: unknown }
+            | { [key: string]: unknown }[],
+        sender?: string,
+        recipient?: string,
+        type: string = "text",
+    ): WaldiezPreviousMessage => {
+        const id = nanoid();
+        const timestamp = new Date().toISOString();
+
+        // If it's a string, create a simple message
+        if (typeof content === "string") {
+            return {
+                id,
+                timestamp,
+                type,
+                data: {
+                    content,
+                    sender,
+                    recipient,
+                },
+            };
+        }
+
+        // If it's a string array
+        if (Array.isArray(content) && content.every(item => typeof item === "string")) {
+            return {
+                id,
+                timestamp,
+                type,
+                data: {
+                    content: content.join(", "),
+                    sender,
+                    recipient,
+                },
+            };
+        }
+
+        // If it's an object, include it directly in the data
+        if (typeof content === "object" && content !== null && !Array.isArray(content)) {
+            return {
+                id,
+                timestamp,
+                type,
+                data: {
+                    ...content,
+                    sender: sender || (content["sender"] as string),
+                    recipient: recipient || (content["recipient"] as string),
+                },
+            };
+        }
+
+        // Fallback for unexpected content
+        return {
+            id,
+            timestamp,
+            type,
+            data: {
+                content,
+                sender,
+                recipient,
+            },
+        };
+    };
 
     // Assemble props for the Waldiez component
     const completeProps: WaldiezProps = {
