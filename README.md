@@ -162,7 +162,7 @@ runner.run(output_path=output_path)
 - [Waldiez Playground](https://waldiez.github.io)
 - [React Component](https://github.com/waldiez/waldiez/blob/main/README.npm.md)
 - [Waldiez Studio](https://github.com/waldiez/studio)
-- [Waldiez JupyterLab Extension](htttps://github.com/waldiez/jupyter)
+- [Waldiez JupyterLab Extension](https://github.com/waldiez/jupyter)
 - [Waldiez VSCode Extension](https://github.com/waldiez/vscode)
 
 ## Contributors ✨
