@@ -21,7 +21,7 @@ import { WaldiezThemeProvider, isInitiallyDark, setIsDarkMode } from "@waldiez/t
 import { WaldiezProps } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
-const READY_FOR_HUB = false;
+const READY_FOR_HUB = true;
 
 export const Waldiez = (props: Partial<WaldiezProps>) => {
     const flowId: string = props.flowId ?? `wf-${getId()}`;
