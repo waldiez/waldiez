@@ -7,73 +7,43 @@ import { FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
 import { ModalProps } from "@waldiez/components/modal/types";
 
-export const Modal = (props: ModalProps) => {
-    const {
-        id,
-        dataTestId,
-        beforeTitle,
-        title,
-        isOpen,
-        hasCloseBtn = true,
-        hasMaximizeBtn = true,
-        hasUnsavedChanges = false,
-        preventCloseIfUnsavedChanges = false,
-        onClose,
-        onSaveAndClose,
-        onCancel,
-        children,
-        className,
-    } = props;
-    const [isFullScreen, setFullScreen] = useState(false);
+export const Modal: React.FC<ModalProps> = ({
+    id,
+    dataTestId,
+    beforeTitle,
+    title,
+    isOpen,
+    hasCloseBtn = true,
+    hasMaximizeBtn = true,
+    hasUnsavedChanges = false,
+    preventCloseIfUnsavedChanges = false,
+    onClose,
+    onSaveAndClose,
+    onCancel,
+    children,
+    className,
+}) => {
+    const modalRef = useRef<HTMLDialogElement>(null);
+    const dragRef = useRef<HTMLDivElement>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const modalRef = useRef<HTMLDialogElement | null>(null);
-    useEffect(() => {
-        setFullScreen(false);
-        setShowConfirmation(false);
-        setModalOpen(isOpen);
-    }, [isOpen]);
+    const [isFullScreen, setFullScreen] = useState(false);
+    const [position, setPosition] = useState({ x: 10, y: 50 });
+    const [dragging, setDragging] = useState(false);
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+
     const cannotClose = preventCloseIfUnsavedChanges && hasUnsavedChanges;
     const canClose = !cannotClose;
-    const handleCloseModal = () => {
-        if (cannotClose && !showConfirmation) {
-            setShowConfirmation(true);
-            return;
-        }
-        if (onClose) {
-            onClose();
-        }
-        setModalOpen(false);
-    };
-    const handleSaveAndClose = () => {
-        if (onSaveAndClose) {
-            onSaveAndClose();
-        }
-        setModalOpen(false);
-    };
-    const onKeyDown = (event: React.KeyboardEvent) => {
-        if (event.key === "Escape" && canClose) {
-            handleCancel(event);
-        }
-    };
 
-    const handleCancel = (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => {
-        if (onCancel) {
-            onCancel(event);
-        } else {
-            event.preventDefault();
-            event.stopPropagation();
-            handleCloseModal();
+    const resetModalState = () => {
+        setPosition({ x: 0, y: 0 });
+        setFullScreen(false);
+        if (modalRef.current) {
+            modalRef.current.style.width = "";
+            modalRef.current.style.height = "";
         }
-    };
-
-    const onToggleFullScreen = () => {
-        setFullScreen(!isFullScreen);
-    };
-
-    const hideConfirmation = () => {
+        setPosition({ x: 10, y: 50 });
         setShowConfirmation(false);
     };
-
     const setModalOpen = (open: boolean) => {
         const modalElement = modalRef.current;
         if (modalElement) {
@@ -84,7 +54,79 @@ export const Modal = (props: ModalProps) => {
             }
         }
     };
-    const noInteraction = isOpen ? "no-wheel no-pan no-drag" : "";
+    const onToggleFullScreen = () => {
+        setFullScreen(prev => !prev);
+    };
+    const handleCloseModal = () => {
+        if (cannotClose && !showConfirmation) {
+            setShowConfirmation(true);
+            return;
+        }
+        resetModalState();
+        onClose?.();
+        setModalOpen(false);
+    };
+    const handleSaveAndClose = () => {
+        resetModalState();
+        onSaveAndClose?.();
+        setModalOpen(false);
+    };
+    const onKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === "Escape" && canClose) {
+            handleCancel(event);
+        }
+    };
+    const handleCancel = (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => {
+        if (onCancel) {
+            onCancel(event);
+        } else {
+            event.preventDefault();
+            event.stopPropagation();
+            handleCloseModal();
+        }
+    };
+    const hideConfirmation = () => {
+        setShowConfirmation(false);
+    };
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (!modalRef.current) {
+            return;
+        }
+        setDragging(true);
+        const style = window.getComputedStyle(modalRef.current);
+        const left = parseInt(style.left, 10) || 0;
+        const top = parseInt(style.top, 10) || 0;
+        setOffset({ x: e.clientX - left, y: e.clientY - top });
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!dragging) {
+            return;
+        }
+        setPosition({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+    };
+
+    const handleMouseUp = () => setDragging(false);
+
+    useEffect(() => {
+        if (dragging) {
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+        } else {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+        }
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, [dragging]);
+
+    useEffect(() => {
+        setModalOpen(isOpen);
+    }, [isOpen]);
+
+    const noInteraction = "no-wheel no-pan no-drag";
     return (
         <dialog
             ref={modalRef}
@@ -92,37 +134,37 @@ export const Modal = (props: ModalProps) => {
             data-testid={dataTestId ?? "modal-dialog"}
             onKeyDown={onKeyDown}
             onCancel={handleCancel}
-            className={`modal ${noInteraction} ${isFullScreen ? "fullscreen" : ""} ${className ?? ""}`}
+            className={`modal ${noInteraction} ${isFullScreen && "modal-fullscreen"} ${className || ""} ${showConfirmation && "confirmation"}`}
+            style={!isFullScreen ? { top: position.y, left: position.x } : undefined}
         >
-            <div className="modal-content">
-                <div className="modal-header">
-                    <div>{beforeTitle ?? ""}</div>
-                    <h3 className="modal-title">{title}</h3>
-                    <div className="modal-header-actions">
-                        {hasMaximizeBtn && (
-                            <div
-                                className="modal-fullscreen-btn clickable"
-                                role="button"
-                                title={isFullScreen ? "Minimize" : "Maximize"}
-                                onClick={onToggleFullScreen}
-                            >
-                                {isFullScreen ? <FaCompress /> : <FaExpand />}
-                            </div>
-                        )}
-                        {hasCloseBtn && (
-                            <div
-                                className="modal-close-btn clickable"
-                                role="button"
-                                title="Close"
-                                data-testid="modal-close-btn"
-                                onClick={handleCloseModal}
-                            >
-                                <FaCircleXmark />
-                            </div>
-                        )}
-                    </div>
+            <div className="modal-header" ref={dragRef} onMouseDown={handleMouseDown}>
+                <div>{beforeTitle ?? ""}</div>
+                <h3 className="modal-title">{title}</h3>
+                <div className="modal-header-actions">
+                    {hasMaximizeBtn && (
+                        <div
+                            className="modal-fullscreen-btn clickable"
+                            role="button"
+                            title={isFullScreen ? "Minimize" : "Maximize"}
+                            onClick={onToggleFullScreen}
+                        >
+                            {isFullScreen ? <FaCompress /> : <FaExpand />}
+                        </div>
+                    )}
+                    {hasCloseBtn && (
+                        <div
+                            className="modal-close-btn clickable"
+                            role="button"
+                            title="Close"
+                            data-testid="modal-close-btn"
+                            onClick={handleCloseModal}
+                        >
+                            <FaCircleXmark />
+                        </div>
+                    )}
                 </div>
-                {/* {children} */}
+            </div>
+            <div className="modal-content">
                 {!showConfirmation && children}
                 {showConfirmation && (
                     <div className="modal-confirmation padding-10">

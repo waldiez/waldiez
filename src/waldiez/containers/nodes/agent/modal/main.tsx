@@ -55,7 +55,7 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
                     onFilesToUploadChange={onFilesToUploadChange}
                 />
             </div>
-            <div className="modal-actions padding-10">
+            <div className="modal-actions">
                 <button
                     className="modal-action-cancel"
                     onClick={onCancel}

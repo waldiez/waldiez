@@ -28,34 +28,33 @@ export const useFlowEvents = (flowId: string) => {
     const exportFlow = useWaldiez(s => s.exportFlow);
     const onFlowInit = (instance: ReactFlowInstance) => {
         const rootDiv = getFlowRoot(flowId);
-        const noINteractivity = isReadOnly || (skipImport === true && skipExport === true);
+        const noInteractivity = isReadOnly || (skipImport === true && skipExport === true);
+        const hasContent = instance.getNodes().length > 0 || instance.getEdges().length > 0;
         if (rootDiv) {
-            if (noINteractivity) {
-                // lock interactivity by default (can be later toggled back)
+            if (noInteractivity) {
                 const interactiveControl = rootDiv.querySelector(".react-flow__controls-interactive");
                 if (interactiveControl) {
                     (interactiveControl as HTMLButtonElement).click();
                 }
-                setTimeout(() => {
-                    instance.fitView({
-                        includeHiddenNodes: false,
-                        padding: 0.2,
-                        duration: 100,
-                    });
-                }, 100);
-            } else {
-                setTimeout(() => {
-                    instance.fitView({
-                        includeHiddenNodes: false,
-                        padding: 0.2,
-                        duration: 100,
-                        minZoom: instance.getZoom(),
-                        maxZoom: instance.getZoom(),
-                    });
-                }, 1);
             }
+            if (hasContent) {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        instance.fitView({
+                            includeHiddenNodes: false,
+                            padding: 0.2,
+                            duration: 100,
+                        });
+                        setRfInstance(instance);
+                    });
+                });
+            } else {
+                instance.setViewport({ x: 0, y: 0, zoom: 1 });
+                setRfInstance(instance);
+            }
+        } else {
+            setRfInstance(instance);
         }
-        setRfInstance(instance);
     };
     const onNodesChange = (changes: NodeChange<Node>[]) => {
         if (!isReadOnly) {

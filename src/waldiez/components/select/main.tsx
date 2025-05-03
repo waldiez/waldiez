@@ -6,7 +6,7 @@
 import React, { JSX, forwardRef } from "react";
 import ReactSelect, { GroupBase, MultiValue, Props, SelectInstance, SingleValue } from "react-select";
 
-export type { SingleValue, MultiValue, GroupBase };
+export type { GroupBase, MultiValue, SingleValue };
 
 type SelectComponent = <
     Option,
@@ -29,6 +29,7 @@ export const Select = forwardRef(
                 {...props}
                 className="select"
                 classNamePrefix="w-select"
+                menuPosition="fixed"
                 styles={{
                     menu: provided => ({
                         ...provided,
@@ -36,6 +37,7 @@ export const Select = forwardRef(
                         width: "max-content",
                         minWidth: "100%",
                     }),
+                    menuPortal: base => ({ ...base, zIndex: 9999 }),
                 }}
             />
         );

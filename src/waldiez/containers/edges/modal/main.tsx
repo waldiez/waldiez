@@ -106,7 +106,7 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
                         onDataChange={onDataChange}
                     />
                 )}
-                <div className="modal-actions padding-10">
+                <div className="modal-actions">
                     <button
                         type="button"
                         title="Cancel"

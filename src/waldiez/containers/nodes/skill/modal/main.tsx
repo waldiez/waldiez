@@ -48,7 +48,7 @@ export const WaldiezNodeSkillModal = (props: WaldiezNodeSkillModalProps) => {
                     </TabItem>
                 </TabItems>
             </div>
-            <div className="modal-actions margin-top-10">
+            <div className="modal-actions">
                 <button
                     type="button"
                     title="Cancel"
