@@ -10,6 +10,7 @@ variables specified in the waldiez file are set.
 
 # pylint: disable=import-outside-toplevel,reimported
 
+import gc
 import importlib.util
 import sys
 import tempfile
@@ -159,7 +160,6 @@ class WaldiezRunner:
         extra_requirements = self.gather_requirements()
         if extra_requirements:
             install_requirements(extra_requirements, printer)
-            refresh_environment()
 
     async def a_install_requirements(self) -> None:
         """Install the requirements for the flow asynchronously."""
@@ -168,7 +168,6 @@ class WaldiezRunner:
         extra_requirements = self.gather_requirements()
         if extra_requirements:
             await a_install_requirements(extra_requirements, printer)
-            refresh_environment()
 
     def _run(
         self,
@@ -197,8 +196,7 @@ class WaldiezRunner:
         module_name = file_name.replace(".py", "")
         if not self._called_install_requirements:
             self.install_requirements()
-        else:
-            refresh_environment()
+        refresh_environment()
         printer = get_printer()
         printer(
             "Requirements installed.\n"
@@ -231,6 +229,8 @@ class WaldiezRunner:
             flow_name=self.waldiez.name,
             skip_mmd=skip_mmd,
         )
+        gc.collect()
+        refresh_environment()
         return results
 
     async def _a_run(
@@ -245,8 +245,7 @@ class WaldiezRunner:
         module_name = file_name.replace(".py", "")
         if not self._called_install_requirements:
             await self.a_install_requirements()
-        else:
-            refresh_environment()
+        refresh_environment()
         printer = get_printer()
         printer(
             "Requirements installed.\n"
@@ -278,6 +277,8 @@ class WaldiezRunner:
             flow_name=self.waldiez.name,
             skip_mmd=skip_mmd,
         )
+        gc.collect()
+        refresh_environment()
         return results
 
     def run(
@@ -331,7 +332,7 @@ class WaldiezRunner:
         self,
         output_path: Optional[Union[str, Path]] = None,
         uploads_root: Optional[Union[str, Path]] = None,
-    ) -> Union["ChatResult", List["ChatResult"]]:
+    ) -> Union["ChatResult", List["ChatResult"], Dict[int, "ChatResult"]]:
         """Run the Waldiez workflow asynchronously.
 
         Parameters
@@ -343,7 +344,7 @@ class WaldiezRunner:
 
         Returns
         -------
-        Union[ChatResult, List[ChatResult]]
+        Union[ChatResult, List[ChatResult]], Dict[int, ChatResult]
             The result(s) of the chat(s).
 
         Raises

@@ -8,11 +8,14 @@ from waldiez.exporting.base import ImportPosition
 
 BUILTIN_IMPORTS = [
     "import csv",
+    "import importlib",
     "import json",
     "import os",
     "import sqlite3",
+    "import sys",
     "from dataclasses import asdict",
     "from pprint import pprint",
+    "from types import ModuleType",
 ]
 TYPING_IMPORTS = [
     "Annotated",

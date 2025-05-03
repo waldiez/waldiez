@@ -212,6 +212,9 @@ class FlowExporter(BaseExporter, ExporterMixin):
         )
         content += self.get_comment("imports", self.for_notebook) + "\n"
         content += imports[0] + "\n"
+        content += (
+            ModelsExporter.get_api_key_loader_script(self.flow_name) + "\n"
+        )
         content += get_np_no_nep50_handle() + "\n"
         content += self.get_comment("logging", self.for_notebook) + "\n"
         content += get_start_logging(is_async=is_async, tabs=0) + "\n"

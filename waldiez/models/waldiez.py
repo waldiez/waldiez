@@ -290,6 +290,11 @@ class Waldiez:
         for skill in self.skills:
             for secret_key, secret_value in skill.secrets.items():
                 env_vars.append((secret_key, secret_value))
+        for model in self.models:
+            api_eny_key = model.api_key_env_key
+            api_key = model.api_key
+            if api_eny_key and api_key:
+                env_vars.append((api_eny_key, api_key))
         return env_vars
 
     def get_group_chat_members(self, agent: WaldiezAgent) -> List[WaldiezAgent]:
