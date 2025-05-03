@@ -129,7 +129,6 @@ describe("WaldiezFlow User Input modal", () => {
             renderFlow(true, undefined, undefined, { previousMessages });
         });
         expect(screen.getByText("Simple text message")).toBeInTheDocument();
-        screen.debug(undefined, 100000);
         expect(screen.getByText('{"key1":"value1","key2":"value2"}')).toBeInTheDocument();
         const chatMessages = screen.getAllByTestId("rf-chat-message");
         expect(chatMessages.length).toBe(3);
