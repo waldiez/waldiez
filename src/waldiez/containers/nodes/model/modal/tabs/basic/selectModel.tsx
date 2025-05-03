@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { GroupBase, Select, SingleValue } from "@waldiez/components";
-import { predefinedModels } from "@waldiez/containers/nodes/model/utils/predefined";
+import { predefinedModels } from "@waldiez/containers/nodes/model/utils";
 import { WaldiezModelAPIType } from "@waldiez/models";
 import { LOGOS } from "@waldiez/theme";
 

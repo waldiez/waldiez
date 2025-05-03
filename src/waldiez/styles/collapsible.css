@@ -71,3 +71,13 @@
 .flow-wrapper.dark .collapsible-toggle.active {
   background-color: #666;
 }
+
+.flow-wrapper .collapsible-header.transparent {
+  background-color: transparent;
+  border: none;
+}
+
+.flow-wrapper .collapsible.transparent {
+  background-color: transparent;
+  border: none;
+}

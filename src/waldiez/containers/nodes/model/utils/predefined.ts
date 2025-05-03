@@ -4,6 +4,20 @@
  */
 import { WaldiezModelAPIType } from "@waldiez/models";
 
+export const modelLinks: Record<WaldiezModelAPIType, string> = {
+    openai: "https://platform.openai.com/docs/models",
+    anthropic: "https://docs.anthropic.com/en/docs/about-claude/models/all-models",
+    google: "https://ai.google.dev/gemini-api/docs/models",
+    deepseek: "https://api-docs.deepseek.com/quick_start/pricing",
+    cohere: "https://docs.cohere.com/v2/docs/models",
+    together: "https://docs.together.ai/docs/serverless-models",
+    nim: "https://docs.nvidia.com/nim/large-language-models/latest/models.html",
+    mistral: "https://docs.mistral.ai/getting-started/models/models_overview/",
+    azure: "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models",
+    groq: "",
+    other: "",
+};
+
 // https://platform.openai.com/docs/models
 const predefinedOpenAIModels = [
     {
@@ -25,6 +39,14 @@ const predefinedOpenAIModels = [
     {
         label: "GPT-4o",
         value: "gpt-4o",
+    },
+    {
+        label: "GPT-4o Mini",
+        value: "gpt-4o-mini",
+    },
+    {
+        label: "GPT Image 1",
+        value: "gpt-image-1",
     },
     {
         label: "o4-mini",

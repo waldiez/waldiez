@@ -18,8 +18,11 @@ export const Collapsible = (props: CollapsibleProps) => {
         setIsOpen(!isOpen);
     };
     return (
-        <div className={`collapsible ${fullWidth && "full-width"}`} data-testid={dataTestId}>
-            <div className="collapsible-header" onClick={onToggle}>
+        <div
+            className={`collapsible ${fullWidth && "full-width"} ${props.className || ""}`}
+            data-testid={dataTestId}
+        >
+            <div className={`collapsible-header ${props.className || ""}`} onClick={onToggle}>
                 <span>{title}</span>
                 <span className="margin-left-5">{isOpen ? "▲" : "▼"}</span>
             </div>

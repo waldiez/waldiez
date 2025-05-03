@@ -131,17 +131,31 @@ export const Modal = (props: ModalProps) => {
                                 Are you sure you want to close this modal? Any unsaved changes will be lost.
                             </h4>
                             <div className="modal-actions">
-                                <button
-                                    className="modal-action-cancel"
-                                    data-testid="modal-action-confirm-cancel"
-                                    onClick={hideConfirmation}
-                                    type="button"
-                                    title="Don't Close"
-                                >
-                                    Don't Close
-                                </button>
                                 {onSaveAndClose ? (
-                                    <div className="modal-actions flex-center">
+                                    <div className="modal-actions flex-center margin-top--10 margin-bottom--10">
+                                        <button
+                                            className="modal-action-cancel"
+                                            data-testid="modal-action-confirm-cancel"
+                                            onClick={hideConfirmation}
+                                            type="button"
+                                            title="Don't Close"
+                                        >
+                                            Don't Close
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        className="modal-action-cancel"
+                                        data-testid="modal-action-confirm-cancel"
+                                        onClick={hideConfirmation}
+                                        type="button"
+                                        title="Don't Close"
+                                    >
+                                        Don't Close
+                                    </button>
+                                )}
+                                {onSaveAndClose ? (
+                                    <div className="modal-actions flex-center margin-top--10 margin-bottom--10">
                                         <button
                                             className="modal-action-submit margin-right-20"
                                             data-testid="modal-action-confirm-save"

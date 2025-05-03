@@ -4,11 +4,13 @@
  */
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { InfoLabel, Select } from "@waldiez/components";
+import { Collapsible, InfoLabel, Select } from "@waldiez/components";
 import { useModelModalBasicTab } from "@waldiez/containers/nodes/model/modal/tabs/basic/hooks";
 import { ModelSelector } from "@waldiez/containers/nodes/model/modal/tabs/basic/selectModel";
 import { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/basic/types";
+import { modelLinks } from "@waldiez/containers/nodes/model/utils";
 import { WaldiezModelAPIType } from "@waldiez/types";
+import { capitalize } from "@waldiez/utils";
 
 export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicTabProps) => {
     const { id, data } = props;
@@ -51,6 +53,30 @@ export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicT
                 Note that if testing the model fails with a "Failed to load" message (for example the NIM
                 models), it doesn't mean that the configuration is not correct (it could be a browser/CORS
                 issue).
+                <Collapsible
+                    title="Useful Links"
+                    expanded={false}
+                    fullWidth
+                    className="transparent no-padding color-info margin-top-10 margin-bottom-10"
+                >
+                    <div className="flex-column">
+                        {Object.entries(modelLinks)
+                            .filter(([_, link]) => link.length > 0)
+                            .map(([key, link]) => (
+                                <div key={key} className="flex-row">
+                                    {capitalize(key)} models:&nbsp;&nbsp;
+                                    <a
+                                        href={link}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="margin-bottom-10"
+                                    >
+                                        {link}
+                                    </a>
+                                </div>
+                            ))}
+                    </div>
+                </Collapsible>
             </div>
             <ModelSelector ref={predefinedModelsSelectRef} onChange={onPredefineSelected} />
             <label>Name:</label>
