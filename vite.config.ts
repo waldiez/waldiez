@@ -134,6 +134,7 @@ export default defineConfig(({ command }) => ({
             reporter: ["lcov", "text", "text-summary", "html"],
             include: ["src/**/*"],
             exclude: ["**/types.ts", "src/index.dev.tsx", "src/index.tsx", "**/tests/**", "**/ui-tests/**"],
+            reportsDirectory: resolve(__dirname, "coverage", "react"),
             ignoreEmptyLines: true,
             thresholds,
             all: true,
