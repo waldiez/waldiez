@@ -14,13 +14,13 @@ import { WaldiezReasoningAgentReasonConfig } from "@waldiez/models/Agent/Reasoni
 
 export const defaultReasonConfig: WaldiezReasoningAgentReasonConfig = {
     method: "beam_search",
-    max_depth: 3,
-    forest_size: 1,
-    rating_scale: 10,
-    beam_size: 3,
-    answer_approach: "pool",
+    maxDepth: 3,
+    forestSize: 1,
+    ratingScale: 10,
+    beamSize: 3,
+    answerApproach: "pool",
     nsim: 3,
-    exploration_constant: 1.41,
+    explorationConstant: 1.41,
 };
 
 export class WaldiezAgentReasoningData extends WaldiezAgentData {
@@ -37,7 +37,7 @@ export class WaldiezAgentReasoningData extends WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             verbose: boolean;
             reasonConfig: WaldiezReasoningAgentReasonConfig;
@@ -55,7 +55,7 @@ export class WaldiezAgentReasoningData extends WaldiezAgentData {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
             verbose: true,
             reasonConfig: defaultReasonConfig,

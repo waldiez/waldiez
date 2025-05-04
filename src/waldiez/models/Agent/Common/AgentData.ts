@@ -38,7 +38,7 @@ export class WaldiezAgentData {
     // links
     modelIds: string[];
     skills: WaldiezAgentLinkedSkill[];
-    parentId: string | null;
+    parentId?: string;
     nestedChats: WaldiezAgentNestedChat[];
     constructor(
         props: {
@@ -50,7 +50,7 @@ export class WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
         } = {
             humanInputMode: "NEVER",
@@ -66,7 +66,7 @@ export class WaldiezAgentData {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
         },
     ) {

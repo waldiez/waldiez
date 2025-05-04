@@ -50,6 +50,7 @@ export class WaldiezFlowData {
     chats: WaldiezChat[];
     isAsync?: boolean = false;
     cacheSeed?: number | null = 41;
+    silent?: boolean = false;
 
     constructor(
         props: {
@@ -68,6 +69,7 @@ export class WaldiezFlowData {
             chats: WaldiezChat[];
             isAsync?: boolean;
             cacheSeed?: number | null;
+            silent?: boolean;
         } = {
             nodes: [],
             edges: [],
@@ -87,7 +89,8 @@ export class WaldiezFlowData {
             skills: [],
             chats: [],
             isAsync: false,
-            cacheSeed: 41,
+            cacheSeed: 42,
+            silent: false,
         },
     ) {
         this.nodes = props.nodes;
@@ -99,5 +102,6 @@ export class WaldiezFlowData {
         this.chats = props.chats;
         this.isAsync = props.isAsync;
         this.cacheSeed = props.cacheSeed;
+        this.silent = props.silent;
     }
 }

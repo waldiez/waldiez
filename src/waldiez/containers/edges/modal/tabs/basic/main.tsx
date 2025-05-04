@@ -114,7 +114,7 @@ export const WaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
                 onChange={onSummaryMethodChange}
                 inputId={`select-summary-method-${edgeId}`}
             />
-            {data.summary.method === "reflection_with_llm" && (
+            {data.summary.method === "reflectionWithLlm" && (
                 <>
                     <InfoLabel
                         label="Summary Prompt:"

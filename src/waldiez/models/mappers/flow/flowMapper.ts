@@ -224,10 +224,10 @@ const getEdgeHandles = (flow: WaldiezFlow, chat: WaldiezChat) => {
     // if not found, use the default ones
     let sourceHandle; // = `agent-handle-right-source-${chat.source}`;
     let targetHandle; // = `agent-handle-left-target-${chat.target}`;
-    if (chat.rest.sourceHandle && typeof chat.rest.sourceHandle === "string") {
+    if (chat.rest?.sourceHandle && typeof chat.rest.sourceHandle === "string") {
         sourceHandle = chat.rest.sourceHandle;
     }
-    if (chat.rest.targetHandle && typeof chat.rest.targetHandle === "string") {
+    if (chat.rest?.targetHandle && typeof chat.rest.targetHandle === "string") {
         targetHandle = chat.rest.targetHandle;
     }
     if (!sourceHandle || !targetHandle) {

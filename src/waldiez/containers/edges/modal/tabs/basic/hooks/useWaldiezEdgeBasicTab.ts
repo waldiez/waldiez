@@ -111,8 +111,8 @@ const summaryOptions: {
     value: WaldiezChatLlmSummaryMethod;
 }[] = [
     { label: "None", value: null },
-    { label: "Reflection with LLM", value: "reflection_with_llm" },
-    { label: "Last Message", value: "last_msg" },
+    { label: "Reflection with LLM", value: "reflectionWithLlm" },
+    { label: "Last Message", value: "lastMsg" },
 ];
 const edgeTypeOptions: {
     label: string;
@@ -122,7 +122,7 @@ const edgeTypeOptions: {
     { label: "Nested Chat", value: "nested" },
 ];
 const summaryMethodMapping = {
-    reflection_with_llm: "Reflection with LLM",
-    last_msg: "Last Message",
+    reflectionWithLlm: "Reflection with LLM",
+    lastMsg: "Last Message",
     none: "None",
 };

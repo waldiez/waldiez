@@ -10,7 +10,7 @@ export type WaldiezSkillDataCommon = {
     content: string;
     skillType: WaldiezSkillType;
     description: string;
-    secrets: { [key: string]: string };
+    secrets: { [key: string]: unknown };
     requirements: string[];
     tags: string[];
     createdAt: string;

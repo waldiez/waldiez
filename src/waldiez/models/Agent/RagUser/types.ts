@@ -12,6 +12,9 @@ export type WaldiezVectorDbConfig = {
     useLocalStorage: boolean;
     localStoragePath: string | null;
     connectionUrl: string | null;
+    waitUntilIndexReady?: boolean | null;
+    waitUntilDocumentReady?: boolean | null;
+    metadata?: { [key: string]: unknown } | null;
 };
 
 export type WaldiezRagUserRetrieveConfig = {
@@ -37,10 +40,10 @@ export type WaldiezRagUserRetrieveConfig = {
     customTokenCountFunction: string | null;
     useCustomTextSplit: boolean;
     customTextSplitFunction: string | null;
-    customTextTypes: string[];
+    customTextTypes: string[] | null;
     recursive: boolean;
     distanceThreshold: number | null;
-    n_results: number | null;
+    nResults: number | null;
 };
 
 export type WaldiezNodeAgentRagUserData = WaldiezAgentCommonData & {

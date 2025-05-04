@@ -44,7 +44,7 @@ export const Dict = (props: DictProps) => {
                         <input
                             type={areValuesSecret ? (visible[key] ? "text" : "password") : "text"}
                             key={`${value}-${index}-${key}`}
-                            defaultValue={value}
+                            defaultValue={String(value)}
                             onChange={onValueChange.bind(null, index)}
                             data-testid={`value-input-${itemsType}-${index}`}
                             placeholder="Value"

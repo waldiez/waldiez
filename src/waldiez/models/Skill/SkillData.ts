@@ -13,12 +13,12 @@ import { WaldiezSkillType } from "@waldiez/models/Skill/types";
 export class WaldiezSkillData {
     content: string;
     skillType: WaldiezSkillType;
-    secrets: { [key: string]: string };
+    secrets: { [key: string]: unknown };
     constructor(
         props: {
             content: string;
             skillType: WaldiezSkillType;
-            secrets: { [key: string]: string };
+            secrets: { [key: string]: unknown };
         } = {
             content: DEFAULT_CUSTOM_SKILL_CONTENT,
             skillType: "custom",

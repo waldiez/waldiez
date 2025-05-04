@@ -27,7 +27,7 @@ describe("WaldiezChat", () => {
     it("should create an instance with custom data", () => {
         const message = new WaldiezMessage({
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "Hello",
             context: {
                 name: "World",
@@ -35,7 +35,7 @@ describe("WaldiezChat", () => {
         });
         const nestedChatMessage = new WaldiezMessage({
             type: "method",
-            use_carryover: false,
+            useCarryover: false,
             content: "method",
             context: {
                 name: "World",
@@ -43,7 +43,7 @@ describe("WaldiezChat", () => {
         });
         const nestedChatReply = new WaldiezMessage({
             type: "none",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
         });
         const chatData = new WaldiezChatData({
@@ -54,7 +54,7 @@ describe("WaldiezChat", () => {
             clearHistory: false,
             maxTurns: 10,
             summary: {
-                method: "last_msg",
+                method: "lastMsg",
                 prompt: "",
                 args: {},
             },
@@ -85,7 +85,7 @@ describe("WaldiezChat", () => {
         expect(chat.data.order).toBe(1);
         expect(chat.data.clearHistory).toBe(false);
         expect(chat.data.maxTurns).toBe(10);
-        expect(chat.data.summary.method).toBe("last_msg");
+        expect(chat.data.summary.method).toBe("lastMsg");
         expect(chat.data.message).toEqual(message);
         expect(chat.data.maxRounds).toBe(30);
     });

@@ -52,7 +52,7 @@ describe("WaldiezAgentAssistant", () => {
             systemMessage: null,
             codeExecutionConfig: {
                 workDir: "code",
-                useDocker: true,
+                useDocker: undefined,
                 timeout: 30,
                 lastNMessages: "auto",
             },
@@ -71,7 +71,7 @@ describe("WaldiezAgentAssistant", () => {
                     executorId: "2",
                 },
             ],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [
                 {
                     triggeredBy: ["1", "2"],
@@ -102,7 +102,7 @@ describe("WaldiezAgentAssistant", () => {
         expect(assistant.data.systemMessage).toBe(null);
         expect(assistant.data.codeExecutionConfig).toEqual({
             workDir: "code",
-            useDocker: true,
+            useDocker: undefined,
             timeout: 30,
             lastNMessages: "auto",
         });

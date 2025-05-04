@@ -47,7 +47,7 @@ describe("WaldiezAgentRagUser", () => {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
             retrieveConfig: defaultRetrieveConfig,
         });

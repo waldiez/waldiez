@@ -23,13 +23,13 @@ describe("getChats", () => {
                         clearHistory: true,
                         maxTurns: 4,
                         summary: {
-                            method: "last_msg",
+                            method: "lastMsg",
                             prompt: "",
                             args: {},
                         },
                         message: {
                             type: "none",
-                            use_carryover: false,
+                            useCarryover: false,
                             content: null,
                             context: {},
                         },
@@ -91,13 +91,13 @@ describe("getChats", () => {
                     clearHistory: true,
                     maxTurns: 4,
                     summary: {
-                        method: "last_msg",
+                        method: "lastMsg",
                         prompt: "",
                         args: {},
                     },
                     message: {
                         type: "none",
-                        use_carryover: false,
+                        useCarryover: false,
                         content: null,
                         context: {},
                     },

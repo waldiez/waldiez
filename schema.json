@@ -143,6 +143,9 @@
                 },
                 "cacheSeed": {
                     "type": ["number", "null"]
+                },
+                "silent": {
+                    "type": "boolean"
                 }
             },
             "required": ["agents", "chats", "edges", "models", "nodes", "skills"]
@@ -248,7 +251,7 @@
                     }
                 },
                 "parentId": {
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "nestedChats": {
                     "type": "array",
@@ -264,7 +267,6 @@
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
-                "parentId",
                 "skills",
                 "systemMessage",
                 "termination"
@@ -307,6 +309,9 @@
                         },
                         {
                             "type": "boolean"
+                        },
+                        {
+                            "type": "null"
                         }
                     ]
                 },
@@ -511,7 +516,7 @@
                     }
                 },
                 "parentId": {
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "nestedChats": {
                     "type": "array",
@@ -531,7 +536,6 @@
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
-                "parentId",
                 "skills",
                 "systemMessage",
                 "termination"
@@ -632,7 +636,7 @@
                     }
                 },
                 "parentId": {
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "nestedChats": {
                     "type": "array",
@@ -651,7 +655,6 @@
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
-                "parentId",
                 "retrieveConfig",
                 "skills",
                 "systemMessage",
@@ -736,10 +739,17 @@
                     "type": ["string", "null"]
                 },
                 "customTextTypes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 },
                 "recursive": {
                     "type": "boolean"
@@ -747,7 +757,7 @@
                 "distanceThreshold": {
                     "type": ["number", "null"]
                 },
-                "n_results": {
+                "nResults": {
                     "type": ["number", "null"]
                 }
             },
@@ -777,7 +787,7 @@
                 "customTextTypes",
                 "recursive",
                 "distanceThreshold",
-                "n_results"
+                "nResults"
             ],
             "additionalProperties": false
         },
@@ -798,6 +808,23 @@
                 },
                 "connectionUrl": {
                     "type": ["string", "null"]
+                },
+                "waitUntilIndexReady": {
+                    "type": ["boolean", "null"]
+                },
+                "waitUntilDocumentReady": {
+                    "type": ["boolean", "null"]
+                },
+                "metadata": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "additionalProperties": {}
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 }
             },
             "required": ["model", "useMemory", "useLocalStorage", "localStoragePath", "connectionUrl"],
@@ -896,7 +923,7 @@
                     }
                 },
                 "parentId": {
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "nestedChats": {
                     "type": "array",
@@ -918,7 +945,6 @@
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
-                "parentId",
                 "reasonConfig",
                 "skills",
                 "systemMessage",
@@ -933,37 +959,37 @@
                 "method": {
                     "$ref": "#/definitions/ReasoningConfigMethod"
                 },
-                "max_depth": {
+                "maxDepth": {
                     "type": "number"
                 },
-                "forest_size": {
+                "forestSize": {
                     "type": "number"
                 },
-                "rating_scale": {
+                "ratingScale": {
                     "type": "number"
                 },
-                "beam_size": {
+                "beamSize": {
                     "type": "number"
                 },
-                "answer_approach": {
+                "answerApproach": {
                     "$ref": "#/definitions/ReasoningConfigAnswerApproach"
                 },
                 "nsim": {
                     "type": "number"
                 },
-                "exploration_constant": {
+                "explorationConstant": {
                     "type": "number"
                 }
             },
             "required": [
                 "method",
-                "max_depth",
-                "forest_size",
-                "rating_scale",
-                "beam_size",
-                "answer_approach",
+                "maxDepth",
+                "forestSize",
+                "ratingScale",
+                "beamSize",
+                "answerApproach",
                 "nsim",
-                "exploration_constant"
+                "explorationConstant"
             ],
             "additionalProperties": false
         },
@@ -1068,7 +1094,7 @@
                     }
                 },
                 "parentId": {
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "nestedChats": {
                     "type": "array",
@@ -1103,7 +1129,6 @@
                 "maxTurns",
                 "modelIds",
                 "nestedChats",
-                "parentId",
                 "skills",
                 "systemMessage",
                 "termination",
@@ -1208,9 +1233,7 @@
                 },
                 "defaultHeaders": {
                     "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
+                    "additionalProperties": {}
                 },
                 "price": {
                     "$ref": "#/definitions/WaldiezModelPrice"
@@ -1325,9 +1348,7 @@
                 },
                 "secrets": {
                     "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
+                    "additionalProperties": {}
                 }
             },
             "required": ["content", "skillType", "secrets"],
@@ -1352,7 +1373,7 @@
                     "additionalProperties": {}
                 }
             },
-            "required": ["id", "data", "rest"],
+            "required": ["id", "data"],
             "additionalProperties": false,
             "description": "Waldiez Chat"
         },
@@ -1430,6 +1451,9 @@
                 },
                 "realTarget": {
                     "type": ["string", "null"]
+                },
+                "silent": {
+                    "type": "boolean"
                 }
             },
             "required": [
@@ -1461,17 +1485,15 @@
                 "content": {
                     "type": ["string", "null"]
                 },
-                "use_carryover": {
+                "useCarryover": {
                     "type": "boolean"
                 },
                 "context": {
                     "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
+                    "additionalProperties": {}
                 }
             },
-            "required": ["type", "content", "use_carryover", "context"],
+            "required": ["type", "content", "context"],
             "additionalProperties": false
         },
         "WaldiezMessageType": {
@@ -1496,7 +1518,7 @@
         },
         "WaldiezChatLlmSummaryMethod": {
             "type": ["string", "null"],
-            "enum": ["reflection_with_llm", "last_msg", null]
+            "enum": ["reflectionWithLlm", "lastMsg", null]
         }
     },
     "title": "Waldiez Flow",

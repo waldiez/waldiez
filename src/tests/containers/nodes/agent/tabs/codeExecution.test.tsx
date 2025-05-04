@@ -105,7 +105,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
             dataOverrides: {
                 codeExecutionConfig: {
                     ...codeExecutionOverrides,
-                    useDocker: false,
+                    useDocker: undefined,
                     functions: ["test-skill1"],
                 },
             },

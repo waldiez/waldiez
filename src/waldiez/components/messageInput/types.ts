@@ -20,5 +20,5 @@ export type MessageInputProps = {
     onMessageChange: (message: WaldiezMessage) => void;
     onAddContextEntry?: (key: string, value: string) => void;
     onRemoveContextEntry?: (key: string) => void;
-    onUpdateContextEntries?: (entries: Record<string, string>) => void;
+    onUpdateContextEntries?: (entries: Record<string, unknown>) => void;
 };

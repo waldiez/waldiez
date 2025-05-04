@@ -21,12 +21,12 @@ describe("chatMapper.exportChat", () => {
                 clearHistory: false,
                 message: {
                     type: "none",
-                    use_carryover: false,
+                    useCarryover: false,
                     content: null,
                     context: {},
                 },
                 summary: {
-                    method: "last_msg",
+                    method: "lastMsg",
                     prompt: "summarize the conversation",
                     args: {
                         summary_role: "user",
@@ -55,7 +55,7 @@ describe("chatMapper.exportChat", () => {
         expect(json.data.clearHistory).toBe(false);
         expect(json.data.message).toEqual({
             type: "none",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {},
         });
@@ -64,7 +64,7 @@ describe("chatMapper.exportChat", () => {
             reply: null,
         });
         expect(json.data.summary).toEqual({
-            method: "last_msg",
+            method: "lastMsg",
             prompt: "summarize the conversation",
             args: {
                 summary_role: "user",
@@ -87,7 +87,7 @@ describe("chatMapper.exportChat", () => {
                 clearHistory: false,
                 message: {
                     type: "none",
-                    use_carryover: false,
+                    useCarryover: false,
                     content: null,
                     context: {},
                 },
@@ -97,7 +97,7 @@ describe("chatMapper.exportChat", () => {
                 },
                 prerequisites: [],
                 summary: {
-                    method: "last_msg",
+                    method: "lastMsg",
                     prompt: "summarize the conversation",
                     args: {
                         summary_role: "user",

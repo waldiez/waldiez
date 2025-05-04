@@ -18,7 +18,7 @@ export const edgeData = {
     position: 1,
     clearHistory: false,
     summary: {
-        method: "last_msg" as WaldiezChatLlmSummaryMethod,
+        method: "lastMsg" as WaldiezChatLlmSummaryMethod,
         prompt: "",
         args: {},
     },

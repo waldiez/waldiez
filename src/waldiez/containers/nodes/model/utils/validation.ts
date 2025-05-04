@@ -62,7 +62,7 @@ const supportsDirectLookup: WaldiezModelAPIType[] = [
     "cohere",
     "mistral",
     "nim",
-    "other", // should be openai compati-ball
+    "other", // should be openai compat-i-ball
 ];
 export const validateModel = async (model: WaldiezNodeModelData): Promise<ValidationResult> => {
     const validation = validateModelInputs(model);
@@ -121,7 +121,9 @@ const validateModelInputs = (model: WaldiezNodeModelData): ValidationResult => {
 const buildRequestConfig = (model: WaldiezNodeModelData, baseUrl: string) => {
     const base = baseUrl.replace(/\/$/, "");
     let url = base + modelListPaths[model.apiType];
-    const headers: Record<string, string> = { ...model.defaultHeaders };
+    const headers: Record<string, string> = Object.fromEntries(
+        Object.entries(model.defaultHeaders).map(([key, value]) => [key, String(value)]),
+    );
 
     if (model.apiType === "azure") {
         url += `?api-version=${model.apiVersion}`;

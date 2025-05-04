@@ -32,10 +32,10 @@ for (let i = 0; i < edgesCount; i++) {
                 type: i % 2 === 0 ? "string" : "none",
                 content: "Message content",
                 context: {},
-                use_carryover: false,
+                useCarryover: false,
             },
             summary: {
-                type: "last_msg",
+                type: "lastMsg",
                 prompt: "Prompt",
                 args: {},
             },

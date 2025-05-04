@@ -183,11 +183,11 @@ export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNo
 export const getParentId = (
     data: Record<string, unknown>,
     _agentType: WaldiezNodeAgentType,
-): string | null => {
+): string | undefined => {
     if ("parentId" in data && typeof data.parentId === "string") {
         return data.parentId;
     }
-    return null;
+    return undefined;
 };
 export const getNestedChats = (data: Record<string, unknown>): WaldiezAgentNestedChat[] => {
     // old version: [{ triggeredBy: [{id: string, isReply: boolean}], messages: [{ id: string, isReply: boolean }] }]

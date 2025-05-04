@@ -18,7 +18,7 @@ export const chatJson = {
         clearHistory: false,
         message: {
             type: "none",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {
                 context_key: "context_value",
@@ -29,7 +29,7 @@ export const chatJson = {
             reply: null,
         },
         summary: {
-            method: "reflection_with_llm",
+            method: "reflectionWithLlm",
             prompt: "summarize the conversation",
             args: {
                 summary_role: "user",
@@ -109,7 +109,7 @@ export const updateData = {
         clearHistory: false,
         message: {
             type: "none" as WaldiezMessageType,
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {},
         },
@@ -119,7 +119,7 @@ export const updateData = {
         },
         prerequisites: [],
         summary: {
-            method: "last_msg" as WaldiezChatLlmSummaryMethod,
+            method: "lastMsg" as WaldiezChatLlmSummaryMethod,
             prompt: "summarize the conversation",
             args: {
                 summary_role: "user",
@@ -143,7 +143,7 @@ export const updateData = {
             clearHistory: false,
             message: {
                 type: "none" as WaldiezMessageType,
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -153,7 +153,7 @@ export const updateData = {
             },
             prerequisites: [],
             summary: {
-                method: "last_msg" as WaldiezChatLlmSummaryMethod,
+                method: "lastMsg" as WaldiezChatLlmSummaryMethod,
                 prompt: "summarize the conversation",
                 args: {
                     summary_role: "user",
@@ -173,7 +173,7 @@ export const updateData = {
         clearHistory: false,
         message: {
             type: "none",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {},
         },
@@ -183,7 +183,7 @@ export const updateData = {
         },
         prerequisites: [],
         summary: {
-            method: "last_msg",
+            method: "lastMsg",
             prompt: "summarize the conversation",
             args: {
                 summary_role: "user",
@@ -207,7 +207,7 @@ export const updateData = {
             clearHistory: false,
             message: {
                 type: "none",
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -217,7 +217,7 @@ export const updateData = {
             },
             prerequisites: [],
             summary: {
-                method: "last_msg",
+                method: "lastMsg",
                 prompt: "summarize the conversation",
                 args: {
                     summary_role: "user",

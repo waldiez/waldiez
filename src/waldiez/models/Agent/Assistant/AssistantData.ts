@@ -44,7 +44,7 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             isMultimodal: boolean;
         } = {
@@ -61,7 +61,7 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
             isMultimodal: false,
         },

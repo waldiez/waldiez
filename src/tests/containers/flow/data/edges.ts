@@ -25,7 +25,7 @@ for (let i = 0; i < edgesCount; i++) {
             order: i,
             clearHistory: false,
             summary: {
-                method: "last_msg" as WaldiezChatLlmSummaryMethod,
+                method: "lastMsg" as WaldiezChatLlmSummaryMethod,
                 prompt: "Summarize the conversation",
                 args: {
                     "summary-arg-key": "summary-arg-value",
@@ -38,7 +38,7 @@ for (let i = 0; i < edgesCount; i++) {
                 context: {
                     "context-key": "context-value",
                 },
-                use_carryover: false,
+                useCarryover: false,
             },
             nestedChat: {
                 message: {

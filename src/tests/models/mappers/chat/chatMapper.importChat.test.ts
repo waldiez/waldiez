@@ -25,7 +25,7 @@ describe("chatMapper.importChat", () => {
         expect(chat.data.clearHistory).toBe(false);
         expect(chat.data.message).toEqual({
             type: "none",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {
                 context_key: "context_value",
@@ -36,7 +36,7 @@ describe("chatMapper.importChat", () => {
             reply: null,
         });
         expect(chat.data.summary).toEqual({
-            method: "reflection_with_llm",
+            method: "reflectionWithLlm",
             prompt: "summarize the conversation",
             args: {
                 summary_role: "user",
@@ -171,7 +171,7 @@ describe("chatMapper.importChat", () => {
         expect(chat.data.nestedChat.reply!.type).toBe("method");
         expect(chat.data.nestedChat.reply!.content).toBe("nested_reply");
     });
-    it("should use last_msg as summary method", () => {
+    it("should use lastMsg as summary method", () => {
         const chatJsonWithSummaryMethod = {
             ...chatJson,
             data: {
@@ -187,7 +187,7 @@ describe("chatMapper.importChat", () => {
         };
         const { chat } = chatMapper.importChat(chatJsonWithSummaryMethod, edges, agents, 1);
         expect(chat).toBeTruthy();
-        expect(chat.data.summary.method).toBe("last_msg");
+        expect(chat.data.summary.method).toBe("lastMsg");
     });
     it("should set the order to -1 for a nested chat", () => {
         const chatJsonWithNestedChat = {
@@ -212,7 +212,7 @@ describe("chatMapper.importChat", () => {
         expect(chat).toBeTruthy();
         expect(chat.data.order).toBe(-1);
     });
-    it("should accept useCarryover as a key for use_carryover", () => {
+    it("should accept useCarryover as a key for useCarryover", () => {
         const chatJsonWithUseCarryover = {
             ...chatJson,
             data: {
@@ -225,6 +225,6 @@ describe("chatMapper.importChat", () => {
         };
         const { chat } = chatMapper.importChat(chatJsonWithUseCarryover, edges, agents, 1);
         expect(chat).toBeTruthy();
-        expect(chat.data.message.use_carryover).toBe(true);
+        expect(chat.data.message.useCarryover).toBe(true);
     });
 });

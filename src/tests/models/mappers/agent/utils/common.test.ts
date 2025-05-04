@@ -182,7 +182,7 @@ describe("getParentId", () => {
     });
     it("should return null if no parent id in the data", () => {
         const id = getParentId({}, "user_proxy");
-        expect(id).toBeNull();
+        expect(id).toBeUndefined();
     });
 });
 

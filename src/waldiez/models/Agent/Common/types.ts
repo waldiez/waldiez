@@ -16,7 +16,7 @@ export type WaldiezAgentHumanInputMode = "ALWAYS" | "NEVER" | "TERMINATE";
  */
 export type WaldiezAgentCodeExecutionConfigDict = {
     workDir?: string;
-    useDocker?: string | string[] | boolean;
+    useDocker?: string | string[] | boolean | null;
     timeout?: number;
     lastNMessages?: number | "auto";
     functions?: string[];

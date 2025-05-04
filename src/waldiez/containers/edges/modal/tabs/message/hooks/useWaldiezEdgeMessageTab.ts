@@ -12,7 +12,7 @@ export const useWaldiezEdgeMessageTab = (props: WaldiezEdgeMessageTabProps) => {
             message: {
                 ...data.message,
                 type,
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -31,7 +31,7 @@ export const useWaldiezEdgeMessageTab = (props: WaldiezEdgeMessageTabProps) => {
         delete messageContext[key];
         onDataChange({ message: { ...data.message, context: messageContext } });
     };
-    const onUpdateMessageContextEntries = (entries: Record<string, string>) => {
+    const onUpdateMessageContextEntries = (entries: Record<string, unknown>) => {
         onDataChange({ message: { ...data.message, context: entries } });
     };
     return {

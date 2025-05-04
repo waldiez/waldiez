@@ -10,7 +10,7 @@ export const useDict = (props: DictProps) => {
     const { items, onUpdate, onDelete, onAdd, allowEmptyValues } = props;
     const [visible, setVisible] = useState<{ [key: string]: boolean }>({});
     // tmp state to save on submit, discard on cancel
-    const [stateItems, setStateItems] = useState<[string, string][]>(Object.entries(items));
+    const [stateItems, setStateItems] = useState<[string, unknown][]>(Object.entries(items));
     const [newEntry, setNewEntry] = useState<{ key: string; value: string }>({
         key: "",
         value: "",
@@ -66,7 +66,7 @@ export const useDict = (props: DictProps) => {
         setStateItems(stateItems.filter(([k]) => k !== key));
     };
     const onSaveEntry = () => {
-        const itemsToSend: { [key: string]: string } = {};
+        const itemsToSend: { [key: string]: unknown } = {};
         stateItems.forEach(([key, value]) => {
             itemsToSend[key] = value;
         });

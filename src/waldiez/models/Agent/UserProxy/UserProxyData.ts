@@ -40,7 +40,7 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
         } = {
             humanInputMode: "ALWAYS",
@@ -56,7 +56,7 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
         },
     ) {

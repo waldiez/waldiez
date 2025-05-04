@@ -123,7 +123,7 @@ const addRagUserProps = (agentData: WaldiezAgentData) => {
         customTextTypes: [],
         recursive: true,
         distanceThreshold: -1,
-        n_results: null,
+        nResults: null,
     };
 };
 
@@ -131,13 +131,13 @@ const addReasoningProps = (agentData: WaldiezAgentData) => {
     (agentData as any).verbose = true;
     (agentData as any).reasonConfig = {
         method: "beam_search" as "beam_search" | "mcts" | "lats" | "dfs",
-        max_depth: 3,
-        forest_size: 1,
-        rating_scale: 10,
-        beam_size: 3,
-        answer_approach: "pool" as "pool" | "best",
+        maxDepth: 3,
+        forestSize: 1,
+        ratingScale: 10,
+        beamSize: 3,
+        answerApproach: "pool" as "pool" | "best",
         nsim: 3,
-        exploration_constant: 1.41,
+        explorationConstant: 1.41,
     };
 };
 

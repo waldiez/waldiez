@@ -37,7 +37,7 @@ describe("WaldiezAgentUserProxy", () => {
             systemMessage: "system_message",
             codeExecutionConfig: {
                 workDir: "code",
-                useDocker: true,
+                useDocker: undefined,
                 timeout: 30,
                 lastNMessages: "auto",
             },
@@ -56,7 +56,7 @@ describe("WaldiezAgentUserProxy", () => {
                     executorId: "2",
                 },
             ],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [
                 {
                     triggeredBy: ["1", "2"],
@@ -87,7 +87,7 @@ describe("WaldiezAgentUserProxy", () => {
         expect(userProxy.data.systemMessage).toBe("system_message");
         expect(userProxy.data.codeExecutionConfig).toEqual({
             workDir: "code",
-            useDocker: true,
+            useDocker: undefined,
             timeout: 30,
             lastNMessages: "auto",
         });
@@ -110,7 +110,7 @@ describe("WaldiezAgentUserProxy", () => {
         expect(userProxy.requirements).toEqual(["req1", "req2"]);
         expect(userProxy.createdAt).toBe(createdAt);
         expect(userProxy.updatedAt).toBe(updatedAt);
-        expect(userProxy.data.parentId).toBeNull();
+        expect(userProxy.data.parentId).toBeUndefined();
         expect(userProxy.data.nestedChats).toEqual([
             {
                 triggeredBy: ["1", "2"],

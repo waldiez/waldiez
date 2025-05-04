@@ -135,7 +135,7 @@ describe("WaldiezAgentNode", () => {
             dataOverrides: {
                 codeExecutionConfig: {
                     workDir: undefined,
-                    useDocker: false,
+                    useDocker: undefined,
                     timeout: 10,
                     lastNMessages: "auto",
                     functions: ["skill1", "skill2"],

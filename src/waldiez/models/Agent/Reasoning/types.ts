@@ -10,13 +10,13 @@ export type ReasoningConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
 export type ReasoningConfigAnswerApproach = "pool" | "best";
 export type WaldiezReasoningAgentReasonConfig = {
     method: ReasoningConfigMethod;
-    max_depth: number;
-    forest_size: number;
-    rating_scale: number;
-    beam_size: number;
-    answer_approach: ReasoningConfigAnswerApproach;
+    maxDepth: number;
+    forestSize: number;
+    ratingScale: number;
+    beamSize: number;
+    answerApproach: ReasoningConfigAnswerApproach;
     nsim: number;
-    exploration_constant: number;
+    explorationConstant: number;
 };
 
 export type WaldiezNodeAgentReasoningData = WaldiezAgentCommonData & {

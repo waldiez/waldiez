@@ -31,7 +31,7 @@ export type WaldiezModelDataCommon = {
     temperature: number | null;
     topP: number | null;
     maxTokens: number | null;
-    defaultHeaders: { [key: string]: string };
+    defaultHeaders: { [key: string]: unknown };
     price: WaldiezModelPrice;
     requirements: string[];
     tags: string[];

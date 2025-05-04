@@ -27,7 +27,7 @@ export const useModelModalAdvancedTab = (props: WaldiezNodeModelModalAdvancedTab
         }
         onDataChange({ maxTokens });
     };
-    const onUpdateHeaders = (items: { [key: string]: string }) => {
+    const onUpdateHeaders = (items: { [key: string]: unknown }) => {
         onDataChange({ defaultHeaders: items });
     };
     const onDeleteHeader = (headerKey: string) => {

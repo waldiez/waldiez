@@ -21,6 +21,9 @@ export const defaultRetrieveConfig: WaldiezRagUserRetrieveConfig = {
         useLocalStorage: false,
         localStoragePath: null,
         connectionUrl: null,
+        waitUntilIndexReady: null,
+        waitUntilDocumentReady: null,
+        metadata: null,
     },
     docsPath: [],
     newDocs: true,
@@ -44,7 +47,7 @@ export const defaultRetrieveConfig: WaldiezRagUserRetrieveConfig = {
     customTextTypes: [],
     recursive: true,
     distanceThreshold: -1,
-    n_results: null,
+    nResults: null,
 };
 /**
  * Waldiez Rag User Agent Data.
@@ -81,7 +84,7 @@ export class WaldiezAgentRagUserData extends WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             retrieveConfig: WaldiezRagUserRetrieveConfig;
         } = {
@@ -98,7 +101,7 @@ export class WaldiezAgentRagUserData extends WaldiezAgentData {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
             retrieveConfig: defaultRetrieveConfig,
         },

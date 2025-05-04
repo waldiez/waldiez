@@ -45,10 +45,10 @@ const getEdgeSummary: (data: { [key: string]: any }) => {
 const getEdgeSummaryMethod: (data: { [key: string]: any }) => WaldiezChatLlmSummaryMethod = data => {
     let method: WaldiezChatLlmSummaryMethod = null;
     if ("method" in data.summary && data.summary.method) {
-        if (data.summary.method === "reflection_with_llm" || data.summary.method === "reflectionWithLlm") {
-            method = "reflection_with_llm";
-        } else if (data.summary.method === "last_msg" || data.summary.method === "lastMsg") {
-            method = "last_msg";
+        if (data.summary.method === "reflectionWithLlm" || data.summary.method === "reflectionWithLlm") {
+            method = "reflectionWithLlm";
+        } else if (data.summary.method === "lastMsg" || data.summary.method === "lastMsg") {
+            method = "lastMsg";
         }
     }
     return method;

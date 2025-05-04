@@ -105,7 +105,7 @@ export const WaldiezAgentRagUserRetrieveConfig = (props: {
                 <input
                     title="Number of results"
                     type="number"
-                    value={retrieveConfig.n_results ?? ""}
+                    value={retrieveConfig.nResults ?? ""}
                     onChange={onNResultsChange}
                     data-testid={`rag-retrieve-n-results-${id}`}
                 />

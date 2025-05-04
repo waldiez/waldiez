@@ -26,7 +26,7 @@ export const useMessageInput = (props: MessageInputProps) => {
             handleRemoveContextEntry(key);
         }
     };
-    const onUpdateContextEntries = (entries: Record<string, string>) => {
+    const onUpdateContextEntries = (entries: Record<string, unknown>) => {
         if (handleUpdateContextEntries) {
             handleUpdateContextEntries(entries);
         }
@@ -34,7 +34,7 @@ export const useMessageInput = (props: MessageInputProps) => {
     const onContentUpdate = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onMessageChange({
             type: "string",
-            use_carryover: current.use_carryover,
+            useCarryover: current.useCarryover,
             content: e.target.value,
             context: current.context,
         });
@@ -43,7 +43,7 @@ export const useMessageInput = (props: MessageInputProps) => {
         onMessageChange({
             type: "rag_message_generator",
             content: null,
-            use_carryover: current.use_carryover,
+            useCarryover: current.useCarryover,
             context: {
                 ...current.context,
                 problem: e.target.value,
@@ -54,7 +54,7 @@ export const useMessageInput = (props: MessageInputProps) => {
         if (value) {
             onMessageChange({
                 type: "method",
-                use_carryover: current.use_carryover,
+                useCarryover: current.useCarryover,
                 content: value,
                 context: current.context,
             });
@@ -63,7 +63,7 @@ export const useMessageInput = (props: MessageInputProps) => {
     const onUseCarryoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onMessageChange({
             type: current.type,
-            use_carryover: e.target.checked,
+            useCarryover: e.target.checked,
             content: current.content,
             context: current.context,
         });

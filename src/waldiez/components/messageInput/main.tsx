@@ -98,7 +98,7 @@ export const MessageInput = (props: MessageInputProps) => {
                             placeholder="Enter the problem"
                             rows={3}
                             className="fill-available"
-                            defaultValue={current.context.problem ?? ""}
+                            defaultValue={String(current.context.problem ?? "")}
                             onChange={onRagProblemUpdate}
                             data-testid="rag-message-generator-problem"
                         />
@@ -128,7 +128,7 @@ export const MessageInput = (props: MessageInputProps) => {
                     <InfoCheckbox
                         label="Carryover "
                         info={carryOverInfo}
-                        checked={current.use_carryover}
+                        checked={current.useCarryover ?? false}
                         dataTestId="message-use-carryover"
                         onChange={onUseCarryoverChange}
                     />

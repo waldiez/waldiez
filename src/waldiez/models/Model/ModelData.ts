@@ -24,7 +24,7 @@ export class WaldiezModelData {
     temperature: number | null;
     topP: number | null;
     maxTokens: number | null;
-    defaultHeaders: { [key: string]: string };
+    defaultHeaders: { [key: string]: unknown };
     price: WaldiezModelPrice;
 
     constructor(
@@ -36,7 +36,7 @@ export class WaldiezModelData {
             temperature: number | null;
             topP: number | null;
             maxTokens: number | null;
-            defaultHeaders: { [key: string]: string };
+            defaultHeaders: { [key: string]: unknown };
             price: WaldiezModelPrice;
         } = {
             baseUrl: null,

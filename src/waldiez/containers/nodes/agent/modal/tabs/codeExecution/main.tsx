@@ -26,9 +26,7 @@ export const WaldiezAgentCodeExecution = (props: WaldiezAgentCodeExecutionProps)
         <div className="agent-panel agent-codeExecution-panel margin-top--10">
             <InfoCheckbox
                 label={"Use Code Execution"}
-                info={
-                    "Whether the agent is capable of executing code. If set to True,  the user can select the directory to execute the code and whether to use docker (recommended)."
-                }
+                info={"Whether the agent is capable of executing code."}
                 checked={data.codeExecutionConfig !== false}
                 onChange={onUseCodeExecutionChange}
                 dataTestId={`agent-code-execution-toggle-${id}`}

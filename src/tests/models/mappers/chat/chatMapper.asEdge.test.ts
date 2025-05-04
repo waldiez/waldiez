@@ -19,7 +19,7 @@ describe("chatMapper.asEdge", () => {
             clearHistory: false,
             message: {
                 type: "none",
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -28,7 +28,7 @@ describe("chatMapper.asEdge", () => {
                 reply: null,
             },
             summary: {
-                method: "last_msg",
+                method: "lastMsg",
                 prompt: "summarize the conversation",
                 args: {
                     summary_role: "user",

@@ -33,9 +33,8 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
     ];
 
     const answerApproachValue = {
-        value: data.reasonConfig.answer_approach,
-        label: answerApproachOptions.find(option => option.value === data.reasonConfig.answer_approach)!
-            .label,
+        value: data.reasonConfig.answerApproach,
+        label: answerApproachOptions.find(option => option.value === data.reasonConfig.answerApproach)!.label,
     };
 
     const onChange = (partialData: Partial<typeof localData>) => {
@@ -60,7 +59,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             onChange({
                 reasonConfig: {
                     ...localData.reasonConfig,
-                    answer_approach: option.value,
+                    answerApproach: option.value,
                 },
             });
         }
@@ -71,7 +70,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             onChange({
                 reasonConfig: {
                     ...localData.reasonConfig,
-                    forest_size: value,
+                    forestSize: value,
                 },
             });
         }
@@ -94,7 +93,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             onChange({
                 reasonConfig: {
                     ...localData.reasonConfig,
-                    max_depth: value,
+                    maxDepth: value,
                 },
             });
         }
@@ -105,7 +104,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             onChange({
                 reasonConfig: {
                     ...localData.reasonConfig,
-                    rating_scale: value,
+                    ratingScale: value,
                 },
             });
         }
@@ -116,7 +115,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             onChange({
                 reasonConfig: {
                     ...localData.reasonConfig,
-                    beam_size: value,
+                    beamSize: value,
                 },
             });
         }
@@ -138,7 +137,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             onChange({
                 reasonConfig: {
                     ...localData.reasonConfig,
-                    exploration_constant: value,
+                    explorationConstant: value,
                 },
             });
         }
@@ -166,7 +165,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             />
             <NumberInput
                 label={"Max Depth:"}
-                value={localData.reasonConfig.max_depth}
+                value={localData.reasonConfig.maxDepth}
                 onChange={onMaxDepthChange}
                 min={1}
                 max={10}
@@ -174,7 +173,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             />
             <NumberInput
                 label={"Forest Size:"}
-                value={localData.reasonConfig.forest_size}
+                value={localData.reasonConfig.forestSize}
                 onChange={onForestSizeChange}
                 min={1}
                 max={10}
@@ -182,7 +181,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             />
             <NumberInput
                 label={"Rating Scale:"}
-                value={localData.reasonConfig.rating_scale}
+                value={localData.reasonConfig.ratingScale}
                 onChange={onRatingScaleChange}
                 min={1}
                 max={10}
@@ -192,7 +191,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
                 <>
                     <NumberInput
                         label={"Beam Size:"}
-                        value={localData.reasonConfig.beam_size}
+                        value={localData.reasonConfig.beamSize}
                         onChange={onBeamSizeChange}
                         min={1}
                         max={10}
@@ -221,7 +220,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
                     />
                     <NumberInput
                         label={"Exploration Constant:"}
-                        value={localData.reasonConfig.exploration_constant}
+                        value={localData.reasonConfig.explorationConstant}
                         onChange={onExplorationConstantChange}
                         min={0}
                         max={10}

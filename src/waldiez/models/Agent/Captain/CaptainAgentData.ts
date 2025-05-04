@@ -28,7 +28,7 @@ export class WaldiezAgentCaptainData extends WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             agentLib: WaldiezCaptainAgentLibEntry[];
             toolLib: "default" | null;
@@ -48,7 +48,7 @@ export class WaldiezAgentCaptainData extends WaldiezAgentData {
             },
             modelIds: [],
             skills: [],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [],
             agentLib: [],
             toolLib: null,

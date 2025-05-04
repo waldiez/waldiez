@@ -16,6 +16,9 @@ const retrieveJson = {
         useLocalStorage: false,
         localStoragePath: null,
         connectionUrl: null,
+        waitUntilIndexReady: null,
+        waitUntilDocumentReady: null,
+        metadata: null,
     },
     docsPath: ["path"],
     newDocs: true,
@@ -39,7 +42,7 @@ const retrieveJson = {
     customTextTypes: ["type"],
     recursive: true,
     distanceThreshold: 0.5,
-    n_results: 10,
+    nResults: 10,
 };
 
 describe("getRetrieveConfig", () => {

@@ -44,13 +44,13 @@ export const getReasonConfig: (json: { [key: string]: any }) => WaldiezReasoning
     }
     return {
         method: getReasoningConfigMethod(jsonData),
-        max_depth: getReasoningConfigMaxDepth(jsonData),
-        forest_size: getReasoningConfigForestSize(jsonData),
-        rating_scale: getReasoningConfigRatingScale(jsonData),
-        beam_size: getReasoningConfigBeamSize(jsonData),
-        answer_approach: getReasoningConfigAnswerApproach(jsonData),
+        maxDepth: getReasoningConfigMaxDepth(jsonData),
+        forestSize: getReasoningConfigForestSize(jsonData),
+        ratingScale: getReasoningConfigRatingScale(jsonData),
+        beamSize: getReasoningConfigBeamSize(jsonData),
+        answerApproach: getReasoningConfigAnswerApproach(jsonData),
         nsim: getReasoningConfigNsim(jsonData),
-        exploration_constant: getReasoningConfigExplorationConstant(jsonData),
+        explorationConstant: getReasoningConfigExplorationConstant(jsonData),
     };
 };
 
@@ -66,40 +66,40 @@ const getReasoningConfigMethod = (data: Record<string, unknown>): "beam_search" 
 };
 
 const getReasoningConfigMaxDepth = (data: Record<string, unknown>): number => {
-    if ("max_depth" in data && typeof data.max_depth === "number") {
-        return data.max_depth;
+    if ("maxDepth" in data && typeof data.maxDepth === "number") {
+        return data.maxDepth;
     }
     return 3;
 };
 
 const getReasoningConfigForestSize = (data: Record<string, unknown>): number => {
-    if ("forest_size" in data && typeof data.forest_size === "number") {
-        return data.forest_size;
+    if ("forestSize" in data && typeof data.forestSize === "number") {
+        return data.forestSize;
     }
     return 1;
 };
 
 const getReasoningConfigRatingScale = (data: Record<string, unknown>): number => {
-    if ("rating_scale" in data && typeof data.rating_scale === "number") {
-        return data.rating_scale;
+    if ("ratingScale" in data && typeof data.ratingScale === "number") {
+        return data.ratingScale;
     }
     return 10;
 };
 
 const getReasoningConfigBeamSize = (data: Record<string, unknown>): number => {
-    if ("beam_size" in data && typeof data.beam_size === "number") {
-        return data.beam_size;
+    if ("beamSize" in data && typeof data.beamSize === "number") {
+        return data.beamSize;
     }
     return 3;
 };
 
 const getReasoningConfigAnswerApproach = (data: Record<string, unknown>): "pool" | "best" => {
     if (
-        "answer_approach" in data &&
-        typeof data.answer_approach === "string" &&
-        ["pool", "best"].includes(data.answer_approach)
+        "answerApproach" in data &&
+        typeof data.answerApproach === "string" &&
+        ["pool", "best"].includes(data.answerApproach)
     ) {
-        return data.answer_approach as "pool" | "best";
+        return data.answerApproach as "pool" | "best";
     }
     return "pool";
 };
@@ -112,8 +112,8 @@ const getReasoningConfigNsim = (data: Record<string, unknown>): number => {
 };
 
 const getReasoningConfigExplorationConstant = (data: Record<string, unknown>): number => {
-    if ("exploration_constant" in data && typeof data.exploration_constant === "number") {
-        return data.exploration_constant;
+    if ("explorationConstant" in data && typeof data.explorationConstant === "number") {
+        return data.explorationConstant;
     }
     return 1.41;
 };

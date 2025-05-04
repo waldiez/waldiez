@@ -17,7 +17,7 @@ export const messageMapper = {
             type: message.type,
             content: message.content,
             context: message.context,
-            use_carryover: message.use_carryover,
+            useCarryover: message.useCarryover,
         };
     },
 };
@@ -25,12 +25,12 @@ export const messageMapper = {
 const getEdgeMessage = (data: { [key: string]: any }) => {
     const message = {
         type: "none",
-        use_carryover: false,
+        useCarryover: false,
         content: null,
         context: {},
     } as {
         type: ChatMessageType;
-        use_carryover: boolean;
+        useCarryover: boolean;
         content: string | null;
         context: { [key: string]: any };
     };
@@ -38,7 +38,7 @@ const getEdgeMessage = (data: { [key: string]: any }) => {
         message.type = getEdgeMessageType(data.message);
         message.content = getEdgeMessageContent(data.message);
         message.context = getEdgeMessageContext(data.message);
-        message.use_carryover = getEdgeMessageUseCarryover(data.message);
+        message.useCarryover = getEdgeMessageUseCarryover(data.message);
     }
     return message;
 };
@@ -79,8 +79,8 @@ const getEdgeMessageContext = (data: { [key: string]: any }) => {
 };
 const getEdgeMessageUseCarryover = (data: { [key: string]: any }) => {
     let useCarryover = false;
-    if ("use_carryover" in data && typeof data.use_carryover === "boolean") {
-        useCarryover = data.use_carryover;
+    if ("useCarryover" in data && typeof data.useCarryover === "boolean") {
+        useCarryover = data.useCarryover;
     }
     /* deprecated */
     if ("useCarryover" in data && typeof data.useCarryover === "boolean") {

@@ -13,7 +13,7 @@ export const useWaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
                 reply: data.nestedChat.reply,
                 message: {
                     type,
-                    use_carryover: false,
+                    useCarryover: false,
                     content: null,
                     context: {},
                 },
@@ -26,7 +26,7 @@ export const useWaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
                 message: data.nestedChat.message,
                 reply: {
                     type,
-                    use_carryover: false,
+                    useCarryover: false,
                     content: null,
                     context: {},
                 },

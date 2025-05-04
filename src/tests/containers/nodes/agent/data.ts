@@ -163,13 +163,13 @@ const getEdge = (agent: Node, index: number) => {
                 context: {
                     key1: "value1",
                 },
-                use_carryover: false,
+                useCarryover: false,
             },
             reply: {
                 type: "none",
                 content: "",
                 context: {},
-                use_carryover: true,
+                useCarryover: true,
             },
         };
     }

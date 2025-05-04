@@ -7,7 +7,7 @@ import { DEFAULT_SKILL_CONTENT_MAP, WaldiezSkillType } from "@waldiez/models";
 
 export const useSkillNodeModal = (props: WaldiezNodeSkillModalProps) => {
     const { data, onDataChange } = props;
-    const onUpdateSecrets = (secrets: { [key: string]: string }) => {
+    const onUpdateSecrets = (secrets: { [key: string]: unknown }) => {
         onDataChange({ secrets });
     };
     const onDeleteSecret = (key: string) => {

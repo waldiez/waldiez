@@ -12,13 +12,13 @@ export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
         useWaldiezEdgeNestedTab(props);
     const currentMessageInput = data.nestedChat?.message ?? {
         type: "none",
-        use_carryover: false,
+        useCarryover: false,
         content: null,
         context: {},
     };
     const currentReplyInput = data.nestedChat?.reply ?? {
         type: "none",
-        use_carryover: false,
+        useCarryover: false,
         content: null,
         context: {},
     };

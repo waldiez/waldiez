@@ -106,13 +106,13 @@ describe("WaldiezEdgeModalTab basic", () => {
         selectEvent.openMenu(summaryMethodSelect);
         await selectEvent.select(summaryMethodSelect, "Last Message");
         fireEvent.change(summaryMethodSelect, {
-            target: { label: "Last Message", value: "last_msg" },
+            target: { label: "Last Message", value: "lastMsg" },
         });
     });
     it("updates the LLM prompt", () => {
         renderEdge("chat", {
             summary: {
-                method: "reflection_with_llm",
+                method: "reflectionWithLlm",
                 prompt: "",
                 args: { summary_role: "user" },
             },
@@ -126,7 +126,7 @@ describe("WaldiezEdgeModalTab basic", () => {
     it("updates the LLM summary role", async () => {
         renderEdge("chat", {
             summary: {
-                method: "reflection_with_llm",
+                method: "reflectionWithLlm",
                 prompt: "",
                 args: { summary_role: "user" },
             },

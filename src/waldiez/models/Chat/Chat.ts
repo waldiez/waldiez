@@ -15,7 +15,7 @@ import { getId } from "@waldiez/utils";
 export class WaldiezChat {
     id: string;
     data: WaldiezChatData;
-    rest: { [key: string]: unknown };
+    rest?: { [key: string]: unknown };
 
     constructor(
         props: {

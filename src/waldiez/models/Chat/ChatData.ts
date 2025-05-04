@@ -45,6 +45,7 @@ export class WaldiezChatData {
     maxRounds: number;
     realSource: string | null = null;
     realTarget: string | null = null;
+    silent?: boolean = false;
     constructor(
         props: {
             source: string;
@@ -62,6 +63,7 @@ export class WaldiezChatData {
             maxRounds: number;
             realSource: string | null;
             realTarget: string | null;
+            silent?: boolean;
         } = {
             source: "source",
             target: "target",
@@ -70,7 +72,7 @@ export class WaldiezChatData {
             clearHistory: true,
             maxTurns: null,
             summary: {
-                method: "last_msg",
+                method: "lastMsg",
                 prompt: "",
                 args: {},
             },
@@ -78,7 +80,7 @@ export class WaldiezChatData {
             order: -1,
             message: {
                 type: "none",
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -90,6 +92,7 @@ export class WaldiezChatData {
             maxRounds: 20,
             realSource: null,
             realTarget: null,
+            silent: false,
         },
     ) {
         const {
@@ -108,6 +111,7 @@ export class WaldiezChatData {
             maxRounds,
             realSource,
             realTarget,
+            silent,
         } = props;
         this.source = source;
         this.target = target;
@@ -124,5 +128,6 @@ export class WaldiezChatData {
         this.maxRounds = maxRounds;
         this.realSource = realSource;
         this.realTarget = realTarget;
+        this.silent = silent;
     }
 }

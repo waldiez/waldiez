@@ -8,7 +8,7 @@ import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 
 export type WaldiezMessageType = "string" | "method" | "rag_message_generator" | "none";
 
-export type WaldiezChatLlmSummaryMethod = "reflection_with_llm" | "last_msg" | null;
+export type WaldiezChatLlmSummaryMethod = "reflectionWithLlm" | "lastMsg" | null;
 export type WaldiezChatSummary = {
     method: WaldiezChatLlmSummaryMethod;
     prompt: string;

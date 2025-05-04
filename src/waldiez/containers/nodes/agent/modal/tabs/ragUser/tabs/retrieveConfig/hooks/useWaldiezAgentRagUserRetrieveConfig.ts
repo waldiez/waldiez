@@ -81,9 +81,9 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
         try {
             const value = parseInt(event.target.value, 10);
             if (isNaN(value) || value < 1) {
-                setRetrieveConfigConfigData({ n_results: null });
+                setRetrieveConfigConfigData({ nResults: null });
             } else {
-                setRetrieveConfigConfigData({ n_results: value });
+                setRetrieveConfigConfigData({ nResults: value });
             }
         } catch (_) {
             //

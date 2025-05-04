@@ -115,7 +115,7 @@ export const chatMapper = {
             source: chat.source,
             target: chat.target,
             data,
-            hidden: chat.rest.hidden === true || chat.rest.type === "hidden",
+            hidden: chat.rest?.hidden === true || chat.rest?.type === "hidden",
             ...chat.rest,
         };
     },

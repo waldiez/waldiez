@@ -15,7 +15,7 @@ const onMessageChange = vi.fn();
 const messageInputProps = {
     current: {
         type: "none",
-        use_carryover: false,
+        useCarryover: false,
         content: "",
         context: {},
     } as WaldiezMessage,
@@ -33,7 +33,7 @@ const messageInputWithStringType = {
     ...messageInputProps,
     current: {
         type: "string",
-        use_carryover: false,
+        useCarryover: false,
         content: "",
         context: {},
     } as WaldiezMessage,
@@ -87,7 +87,7 @@ describe("MessageInput", () => {
         expect(onMessageChange).toHaveBeenCalledWith({
             type: "string",
             content: "test update",
-            use_carryover: false,
+            useCarryover: false,
             context: {},
         });
     });
@@ -97,7 +97,7 @@ it("should render with null string content", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {},
         } as WaldiezMessage,
@@ -110,7 +110,7 @@ it("should render with null method content", () => {
         ...messageInputProps,
         current: {
             type: "method",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
             context: {},
         } as WaldiezMessage,
@@ -123,7 +123,7 @@ it("should handle method message change", async () => {
         ...messageInputProps,
         current: {
             type: "method",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {},
         } as WaldiezMessage,
@@ -134,7 +134,7 @@ it("should handle method message change", async () => {
     fireEvent.change(editor, { target: { value: "test update" } });
     expect(onMessageChange).toHaveBeenCalledWith({
         type: "method",
-        use_carryover: false,
+        useCarryover: false,
         content: "test update",
         context: {},
     });
@@ -144,7 +144,7 @@ it("should include context", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -160,7 +160,7 @@ it("should add a context entry", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -184,7 +184,7 @@ it("should remove a context entry", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -204,7 +204,7 @@ it("should update context entries", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -225,7 +225,7 @@ it("should include rag option", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {},
         } as WaldiezMessage,
@@ -242,7 +242,7 @@ it("should skip rag option", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {},
         } as WaldiezMessage,
@@ -259,7 +259,7 @@ it("should display and update the rag input", () => {
         ...messageInputProps,
         current: {
             type: "rag_message_generator",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -275,7 +275,7 @@ it("should display and update the rag input", () => {
     expect(onMessageChange).toHaveBeenCalledWith({
         type: "rag_message_generator",
         content: null,
-        use_carryover: false,
+        useCarryover: false,
         context: {
             key1: "value1",
             problem: "test update",
@@ -287,7 +287,7 @@ it("should display and update the carryover input with type string", () => {
         ...messageInputProps,
         current: {
             type: "string",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -303,7 +303,7 @@ it("should display and update the carryover input with type string", () => {
     expect(onMessageChange).toHaveBeenCalledWith({
         type: "string",
         content: "",
-        use_carryover: true,
+        useCarryover: true,
         context: {
             key1: "value1",
         },
@@ -314,7 +314,7 @@ it("should display and update the carryover input with type rag_message_generato
         ...messageInputProps,
         current: {
             type: "rag_message_generator",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -330,7 +330,7 @@ it("should display and update the carryover input with type rag_message_generato
     expect(onMessageChange).toHaveBeenCalledWith({
         type: "rag_message_generator",
         content: "",
-        use_carryover: true,
+        useCarryover: true,
         context: {
             key1: "value1",
         },
@@ -341,7 +341,7 @@ it("should not display carryover input when type is method", () => {
         ...messageInputProps,
         current: {
             type: "method",
-            use_carryover: false,
+            useCarryover: false,
             content: "",
             context: {
                 key1: "value1",
@@ -360,7 +360,7 @@ it("should display and update the rag input", () => {
     const messageInputProps = {
         current: {
             type: "rag_message_generator",
-            use_carryover: true,
+            useCarryover: true,
             content: "",
             context: {
                 key1: "value1",
@@ -390,6 +390,6 @@ it("should display and update the rag input", () => {
             key1: "value1",
             problem: "test update",
         },
-        use_carryover: true,
+        useCarryover: true,
     });
 });
