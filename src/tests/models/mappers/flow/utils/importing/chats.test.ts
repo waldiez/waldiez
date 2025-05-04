@@ -107,13 +107,6 @@ describe("getChats", () => {
                     },
                     prerequisites: [],
                     maxRounds: 20,
-                    afterWork: null,
-                    flowAfterWork: null,
-                    contextVariables: {},
-                    available: {
-                        type: "none",
-                        value: null,
-                    },
                     realSource: null,
                     realTarget: null,
                 },

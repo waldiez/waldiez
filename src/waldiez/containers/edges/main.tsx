@@ -6,25 +6,20 @@ import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
 
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
-import { FaGear, FaPeopleGroup } from "react-icons/fa6";
+import { FaGear } from "react-icons/fa6";
 import { GiNestEggs } from "react-icons/gi";
 import { GoAlert } from "react-icons/go";
 import { MdMessage } from "react-icons/md";
 
 import { EdgeLabel } from "@waldiez/containers/edges/edgeLabel";
 import { useWaldiezEdge } from "@waldiez/containers/edges/hooks";
-import { WaldiezEdgeSwarmView } from "@waldiez/containers/edges/swarm";
 import { WaldiezEdgeProps } from "@waldiez/containers/edges/types";
 import { getEdgeTranslations } from "@waldiez/containers/edges/utils";
-import { WaldiezAgentType, WaldiezEdge } from "@waldiez/models";
+import { WaldiezEdge } from "@waldiez/models";
 import { AGENT_COLORS } from "@waldiez/theme";
 
 export const WaldiezEdgeChat = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="chat" />;
-};
-
-export const WaldiezEdgeGroup = (props: EdgeProps<WaldiezEdge>) => {
-    return <WaldiezEdgeCommon {...props} type="group" />;
 };
 
 export const WaldiezEdgeNested = (props: EdgeProps<WaldiezEdge>) => {
@@ -33,10 +28,6 @@ export const WaldiezEdgeNested = (props: EdgeProps<WaldiezEdge>) => {
 
 export const WaldiezEdgeHidden = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="hidden" />;
-};
-
-export const WaldiezEdgeSwarm = (props: EdgeProps<WaldiezEdge>) => {
-    return <WaldiezEdgeCommon {...props} type="swarm" />;
 };
 
 // eslint-disable-next-line max-statements
@@ -59,7 +50,6 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
         labelX,
         labelY,
         sourceAgent,
-        targetAgent,
         isReadOnly,
         onOpenModal,
         onDelete,
@@ -78,22 +68,11 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
         const edgeIcon =
             type === "chat" ? (
                 <MdMessage color={edgeColor} size={size} />
-            ) : type === "nested" ? (
-                <GiNestEggs color={edgeColor} size={size} />
             ) : (
-                <FaPeopleGroup color={edgeColor} size={size} />
+                <GiNestEggs color={edgeColor} size={size} />
             );
         return edgeIcon;
     };
-    if (type === "swarm") {
-        return (
-            <WaldiezEdgeSwarmView
-                {...props}
-                sourceType={sourceAgent.data.agentType as WaldiezAgentType}
-                targetType={targetAgent?.data.agentType as WaldiezAgentType}
-            />
-        );
-    }
     const edgeNumber = getEdgeNumber();
     const edge = getEdgeById(id);
     const edgeIcon = getEdgeIcon();

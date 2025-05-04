@@ -10,7 +10,7 @@ import { capitalize, getId } from "@waldiez/utils";
  * Waldiez Agent.
  * @param id - The id of the agent
  * @param type - The type of the node in a graph (agent)
- * @param agentType - The type of the agent ("user" | "assistant" | "manager" | "rag_user" | "swarm" | "reasoning" | "captain")
+ * @param agentType - The type of the agent ("user" | "assistant" | "rag_user" | "reasoning" | "captain")
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param tags - The tags of the agent
@@ -56,12 +56,9 @@ export class WaldiezAgent {
         this.rest = props.rest;
     }
 
-    static create(agentType: WaldiezAgentType | "swarm_container"): WaldiezAgent {
+    static create(agentType: WaldiezAgentType): WaldiezAgent {
         const name = capitalize(agentType.replace("_", " "));
-        let description = `A new ${name}`;
-        if (agentType !== "swarm_container") {
-            description += " agent";
-        }
+        const description = `A new ${name} agent`;
         const agent = new WaldiezAgent({
             id: `wa-${getId()}`,
             agentType,
@@ -78,22 +75,12 @@ export class WaldiezAgent {
     }
 }
 
-// eslint-disable-next-line max-statements
-const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType | "swarm_container") => {
+const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType) => {
     if (["user", "rag_user"].includes(agentType)) {
         agent.data.humanInputMode = "ALWAYS";
         if (agentType === "rag_user") {
             addRagUserProps(agent.data);
         }
-    }
-    if (agentType === "manager") {
-        addGroupManagerProps(agent.data);
-    }
-    if (agentType === "swarm_container") {
-        addSwarmContainerProps(agent.data);
-    }
-    if (agentType === "swarm") {
-        addSwarmProps(agent.data);
     }
     if (agentType === "reasoning") {
         addReasoningProps(agent.data);
@@ -101,20 +88,6 @@ const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType |
     if (agentType === "captain") {
         addCaptainProps(agent.data);
     }
-};
-
-const addSwarmContainerProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).initialAgent = null;
-    (agentData as any).maxRounds = 20;
-    (agentData as any).afterWork = null;
-    (agentData as any).contextVariables = {};
-};
-
-const addSwarmProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).functions = [];
-    (agentData as any).updateAgentStateBeforeReply = [];
-    (agentData as any).handoffs = [];
-    (agentData as any).isInitial = false;
 };
 
 const addRagUserProps = (agentData: WaldiezAgentData) => {
@@ -166,22 +139,6 @@ const addReasoningProps = (agentData: WaldiezAgentData) => {
         nsim: 3,
         exploration_constant: 1.41,
     };
-};
-
-const addGroupManagerProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).maxRound = null;
-    (agentData as any).adminName = null;
-    (agentData as any).speakers = {
-        selectionMethod: "auto",
-        selectionCustomMethod: "",
-        maxRetriesForSelecting: null,
-        selectionMode: "repeat",
-        allowRepeat: true,
-        allowedOrDisallowedTransitions: {},
-        transitionsType: "allowed",
-    };
-    (agentData as any).enableClearHistory = false;
-    (agentData as any).sendIntroductions = false;
 };
 
 const addCaptainProps = (agentData: WaldiezAgentData) => {

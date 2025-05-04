@@ -6,7 +6,6 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { onChange, renderFlow } from "./common";
-import { edgesCount } from "./data";
 
 describe("WaldiezFlow Delete Nodes", () => {
     it("should delete an agent node", async () => {
@@ -16,17 +15,6 @@ describe("WaldiezFlow Delete Nodes", () => {
         const agentFooter = screen.getByTestId("agent-footer-agent-0");
         expect(agentFooter).toBeTruthy();
         const deleteDiv = agentFooter.querySelector(".delete-agent");
-        expect(deleteDiv).toBeTruthy();
-        fireEvent.click(deleteDiv as HTMLElement);
-        expect(onChange).toHaveBeenCalled();
-    });
-    it("should delete a group manager node", async () => {
-        act(() => {
-            renderFlow();
-        });
-        const groupManagerFooter = screen.getByTestId(`agent-footer-agent-${edgesCount}`);
-        expect(groupManagerFooter).toBeTruthy();
-        const deleteDiv = groupManagerFooter.querySelector(".delete-agent");
         expect(deleteDiv).toBeTruthy();
         fireEvent.click(deleteDiv as HTMLElement);
         expect(onChange).toHaveBeenCalled();

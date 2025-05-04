@@ -207,28 +207,6 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
               <div
                 class="dnd-area"
-                data-testid="manager-dnd"
-                draggable="true"
-              >
-                <img
-                  src="/src/waldiez/assets/manager.webp"
-                  title="Group Manager Agent"
-                />
-                Group Manager
-              </div>
-              <div
-                class="dnd-area"
-                data-testid="swarm-dnd"
-                draggable="true"
-              >
-                <img
-                  src="/src/waldiez/assets/swarm.webp"
-                  title="Swarm Agent"
-                />
-                Swarm Agent
-              </div>
-              <div
-                class="dnd-area"
                 data-testid="reasoning-dnd"
                 draggable="true"
               >
@@ -698,28 +676,6 @@ exports[`All > should render Waldiez components 1`] = `
                 title="Assistant Agent"
               />
               Assistant
-            </div>
-            <div
-              class="dnd-area"
-              data-testid="manager-dnd"
-              draggable="true"
-            >
-              <img
-                src="/src/waldiez/assets/manager.webp"
-                title="Group Manager Agent"
-              />
-              Group Manager
-            </div>
-            <div
-              class="dnd-area"
-              data-testid="swarm-dnd"
-              draggable="true"
-            >
-              <img
-                src="/src/waldiez/assets/swarm.webp"
-                title="Swarm Agent"
-              />
-              Swarm Agent
             </div>
             <div
               class="dnd-area"

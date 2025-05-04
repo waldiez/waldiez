@@ -65,50 +65,6 @@ export const assistantJson = {
     position: { x: 20, y: 21 },
 };
 
-export const groupManagerJson = {
-    id: "groupManager",
-    type: "agent",
-    agentType: "manager",
-    name: "Manager",
-    description: "A group manager agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-        maxRound: 1,
-        adminName: "admin",
-        speakers: {
-            selectionMethod: "auto",
-            selectionCustomMethod: "",
-            maxRetriesForSelecting: 4,
-            selectionMode: "repeat",
-            allowRepeat: true,
-            allowedOrDisallowedTransitions: {},
-            transitionsType: "allowed",
-        },
-        enableClearHistory: true,
-        sendIntroductions: true,
-    },
-    key: "value",
-    position: { x: 30, y: 31 },
-};
-
 export const ragUserJson = {
     id: "ragUser",
     type: "agent",
@@ -139,72 +95,6 @@ export const ragUserJson = {
     },
     key: "value",
     position: { x: 40, y: 41 },
-};
-
-export const swarmJson = {
-    id: "swarm",
-    type: "agent",
-    agentType: "swarm",
-    name: "Swarm",
-    description: "A swarm agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-        functions: [],
-        updateAgentStateBeforeReply: [],
-        handoffs: [],
-        isInitial: false,
-    },
-    key: "value",
-    position: { x: 50, y: 51 },
-};
-
-export const swarmContainerJson = {
-    id: "swarm",
-    type: "agent",
-    agentType: "swarm_container",
-    name: "Swarm Container",
-    description: "A swarm container agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-    },
-    key: "value",
-    position: { x: 60, y: 61 },
 };
 
 export const captainJson = {

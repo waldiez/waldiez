@@ -12,14 +12,10 @@ export const useWaldiezNodeAgentBody = (props: {
     data: WaldiezNodeAgentData;
     isModalOpen: boolean;
 }) => {
-    const { id, data, isModalOpen } = props;
-    const getGroupMembers = useWaldiez(s => s.getGroupMembers);
+    const { id, isModalOpen } = props;
     const getAgentById = useWaldiez(s => s.getAgentById);
     const updateAgentData = useWaldiez(s => s.updateAgentData);
     const onNodeDoubleClick = useWaldiez(s => s.onNodeDoubleClick);
-    const removeGroupMember = useWaldiez(s => s.removeGroupMember);
-    const reselectNode = useWaldiez(s => s.reselectNode);
-    const groupMembers = getGroupMembers(id) as WaldiezNodeAgent[];
     const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (!isModalOpen) {
             const agent = getAgentById(id) as WaldiezNodeAgent;
@@ -36,29 +32,8 @@ export const useWaldiezNodeAgentBody = (props: {
             onNodeDoubleClick(null, member);
         }
     };
-    const onRemoveGroupMember = (member: Node) => {
-        if (!isModalOpen) {
-            if (!data.parentId && data.agentType === "manager") {
-                removeGroupMember(id, member.id);
-                const storedAgent = getAgentById(id);
-                if (!storedAgent) {
-                    return;
-                }
-                if (storedAgent.data) {
-                    updateAgentData(id, {
-                        ...(storedAgent.data as WaldiezNodeAgentData),
-                    });
-                }
-                setTimeout(() => {
-                    reselectNode(member.id);
-                }, 200);
-            }
-        }
-    };
     return {
-        groupMembers,
         onDescriptionChange,
-        onRemoveGroupMember,
         onOpenMemberModal,
     };
 };

@@ -9,6 +9,7 @@ import {
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
+    defaultReasonConfig,
     defaultRetrieveConfig,
 } from "@waldiez/models";
 
@@ -44,10 +45,14 @@ const agentNodes: Node[] = edges.map((_, index) => {
     const nodeId = `agent-${index}`;
     let agentType = "user";
     let includeNested = false;
-    if (index % 3 === 0) {
+    if (index % 5 === 1) {
         agentType = "assistant";
-    } else if (index % 3 === 1) {
+    } else if (index % 5 === 2) {
         agentType = "rag_user";
+    } else if (index % 5 === 3) {
+        agentType = "captain";
+    } else if (index % 5 === 4) {
+        agentType = "reasoning";
     }
     if (agentType === "user" || agentType === "assistant") {
         includeNested = index % 2 === 0;
@@ -101,6 +106,13 @@ const agentNodes: Node[] = edges.map((_, index) => {
     if (agentType === "rag_user") {
         agentData.data.retrieveConfig = defaultRetrieveConfig;
     }
+    if (agentType === "reasoning") {
+        agentData.data.reasoningConfig = defaultReasonConfig;
+    }
+    if (agentType === "captain") {
+        agentData.data.toolLib = "default";
+        agentData.data.agentLib = [];
+    }
     return agentData;
 });
 agentNodes.push({
@@ -109,43 +121,6 @@ agentNodes.push({
     position: {
         x: 100 * edgesCount,
         y: 100 * edgesCount,
-    },
-    data: {
-        label: "Agent Node",
-        agentType: "manager",
-        nestedChats: [] as WaldiezAgentNestedChat[],
-        skills: [] as WaldiezAgentLinkedSkill[],
-        modelIds: [] as string[],
-        codeExecutionConfig: false as WaldiezAgentCodeExecutionConfig,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: "found",
-            methodContent: null,
-        } as WaldiezAgentTerminationMessageCheck,
-        createdAt,
-        updatedAt,
-        maxRound: 1,
-        adminName: "Node 1",
-        enableClearHistory: false,
-        sendIntroductions: undefined,
-        speakers: {
-            selectionMethod: "auto",
-            selectionCustomMethod: "",
-            maxRetriesForSelecting: null,
-            selectionMode: "repeat",
-            allowRepeat: false,
-            allowedOrDisallowedTransitions: {},
-            transitionsType: "allowed",
-        },
-    },
-});
-agentNodes.push({
-    id: `agent-${edgesCount + 1}`,
-    type: "agent",
-    position: {
-        x: 100 * (edgesCount + 1),
-        y: 100 * (edgesCount + 1),
     },
     data: {
         label: "Agent Node",
@@ -162,7 +137,6 @@ agentNodes.push({
         } as WaldiezAgentTerminationMessageCheck,
         createdAt,
         updatedAt,
-        parentId: `agent-${edgesCount}`,
     },
 });
 export { agentNodes };

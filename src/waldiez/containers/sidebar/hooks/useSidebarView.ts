@@ -39,12 +39,6 @@ export const useSidebarView = (props: SidebarViewProps) => {
     const onAssistantDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         onDragStart(event, "agent", "assistant");
     };
-    const onManagerDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "manager");
-    };
-    const onSwarmDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "swarm");
-    };
     const onReasoningDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         onDragStart(event, "agent", "reasoning");
     };
@@ -68,8 +62,6 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onShowSkills,
         onUserDragStart,
         onAssistantDragStart,
-        onManagerDragStart,
-        onSwarmDragStart,
         onReasoningDragStart,
         onCaptainDragStart,
     };

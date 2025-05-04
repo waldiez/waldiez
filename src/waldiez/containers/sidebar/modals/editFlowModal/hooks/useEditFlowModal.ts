@@ -31,7 +31,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     });
     const [selectedNewEdge, setSelectedNewEdge] = useState<WaldiezEdge | null>(null);
     const getFlowEdges = useWaldiez(s => s.getFlowEdges);
-    const { used: sortedEdges, remaining: remainingEdges } = getFlowEdges(true);
+    const { used: sortedEdges, remaining: remainingEdges } = getFlowEdges();
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
     // tmp state (to save onSubmit, discard onCancel)
     const [sortedEdgesState, setSortedEdgesState] = useState<WaldiezEdge[]>(sortedEdges);
@@ -80,7 +80,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
             isAsync,
             cacheSeed,
         });
-        const { used, remaining } = getFlowEdges(true);
+        const { used, remaining } = getFlowEdges();
         setSortedEdgesState(used);
         setRemainingEdgeState(remaining);
         setIsDirty(false);

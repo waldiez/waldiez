@@ -88,12 +88,6 @@ describe("SideBar", () => {
         fireEvent.dragStart(screen.getByTestId("assistant-dnd"), {
             dataTransfer: { setData: vi.fn() },
         });
-        fireEvent.dragStart(screen.getByTestId("manager-dnd"), {
-            dataTransfer: { setData: vi.fn() },
-        });
-        fireEvent.dragStart(screen.getByTestId("swarm-dnd"), {
-            dataTransfer: { setData: vi.fn() },
-        });
     });
 });
 

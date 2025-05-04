@@ -7,17 +7,13 @@ import { Edge, Node } from "@xyflow/react";
 import {
     WaldiezAgent,
     WaldiezAgentCaptainData,
-    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
-    WaldiezAgentSwarmContainerData,
-    WaldiezAgentSwarmData,
     WaldiezEdge,
     WaldiezNodeAgent,
     WaldiezNodeAgentType,
     agentMapper,
 } from "@waldiez/models";
-import { typeOfGet, typeOfSet } from "@waldiez/types";
 
 export const getAgentNode = (
     agentType: WaldiezNodeAgentType,
@@ -26,28 +22,15 @@ export const getAgentNode = (
 ) => {
     const newAgent = WaldiezAgent.create(agentType);
     const agentNode = agentMapper.asNode(newAgent, position);
-    if (agentType !== "swarm") {
-        agentNode.data.parentId = parentId;
-        if (agentType === "rag_user") {
-            const agentExtras = new WaldiezAgentRagUserData();
-            agentNode.data = { ...agentNode.data, ...agentExtras };
-        } else if (agentType === "manager") {
-            const agentExtras = new WaldiezAgentGroupManagerData();
-            agentNode.data = { ...agentNode.data, ...agentExtras };
-        } else if (agentType === "swarm_container") {
-            const agentExtras = new WaldiezAgentSwarmContainerData();
-            agentNode.data = { ...agentNode.data, ...agentExtras };
-        } else if (agentType === "reasoning") {
-            const agentExtras = new WaldiezAgentReasoningData();
-            agentNode.data = { ...agentNode.data, ...agentExtras };
-        } else if (agentType === "captain") {
-            const agentExtras = new WaldiezAgentCaptainData();
-            agentNode.data = { ...agentNode.data, ...agentExtras };
-        }
-    } else {
-        agentNode.parentId = parentId;
-        agentNode.extent = "parent";
-        const agentExtras = new WaldiezAgentSwarmData();
+    agentNode.data.parentId = parentId;
+    if (agentType === "rag_user") {
+        const agentExtras = new WaldiezAgentRagUserData();
+        agentNode.data = { ...agentNode.data, ...agentExtras };
+    } else if (agentType === "reasoning") {
+        const agentExtras = new WaldiezAgentReasoningData();
+        agentNode.data = { ...agentNode.data, ...agentExtras };
+    } else if (agentType === "captain") {
+        const agentExtras = new WaldiezAgentCaptainData();
         agentNode.data = { ...agentNode.data, ...agentExtras };
     }
     return agentNode as WaldiezNodeAgent;
@@ -60,14 +43,12 @@ export const getAgentConnections = (
     options?: {
         sourcesOnly?: boolean;
         targetsOnly?: boolean;
-        skipManagers?: boolean;
     },
 ) => {
     if (!options) {
         options = {
             sourcesOnly: false,
             targetsOnly: false,
-            skipManagers: false,
         };
     }
     const sourceConnectedNodes = [];
@@ -103,7 +84,6 @@ const getAgentEdgeConnections = (
     options: {
         sourcesOnly?: boolean;
         targetsOnly?: boolean;
-        skipManagers?: boolean;
     },
 ) => {
     let targetNode;
@@ -115,40 +95,4 @@ const getAgentEdgeConnections = (
         targetNode = nodes.find(node => node.id === edge.target);
     }
     return { sourceNode, targetNode };
-};
-
-export const setSwarmInitialAgent = (agentId: string, get: typeOfGet, set: typeOfSet) => {
-    set({
-        nodes: get().nodes.map(node => {
-            if (node.data.agentType === "swarm") {
-                if (node.id === agentId) {
-                    return {
-                        ...node,
-                        data: {
-                            ...node.data,
-                            isInitial: true,
-                        },
-                    };
-                }
-                return {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        isInitial: false,
-                    },
-                };
-            }
-            if (node.data.agentType === "swarm_container") {
-                return {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        initialAgent: agentId,
-                    },
-                };
-            }
-            return node;
-        }),
-        updatedAt: new Date().toISOString(),
-    });
 };

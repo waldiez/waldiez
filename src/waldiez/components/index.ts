@@ -14,7 +14,6 @@ export { Modal } from "@waldiez/components/modal";
 export { NumberInput } from "@waldiez/components/numberInput";
 export { Select } from "@waldiez/components/select";
 export { StringList } from "@waldiez/components/stringList";
-export { AfterWork, OnConditionAvailable } from "@waldiez/components/swarm";
 export { TabItem, TabItems } from "@waldiez/components/tabs";
 export { TextInput } from "@waldiez/components/textInput";
 export type * from "@waldiez/components/types";

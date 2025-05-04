@@ -14,9 +14,7 @@ describe("getAgents", () => {
         expect(agents).toEqual({
             users: [],
             assistants: [],
-            managers: [],
             rag_users: [],
-            swarm_agents: [],
             reasoning_agents: [],
             captain_agents: [],
         });
@@ -28,9 +26,7 @@ describe("getAgents", () => {
         expect(agents).toEqual({
             users: [],
             assistants: [],
-            managers: [],
             rag_users: [],
-            swarm_agents: [],
             reasoning_agents: [],
             captain_agents: [],
         });
@@ -40,9 +36,7 @@ describe("getAgents", () => {
             agents: {
                 users: [{ id: "wa-1", type: "agent", agentType: "user" }],
                 assistants: [{ id: "wa-2", type: "agent", agentType: "assistant" }],
-                managers: [{ id: "wa-3", type: "agent", agentType: "manager" }],
                 rag_users: [{ id: "wa-4", type: "agent", agentType: "rag_user" }],
-                swarm_agents: [{ id: "wa-5", type: "agent", agentType: "swarm" }],
                 reasoning_agents: [{ id: "wa-6", type: "agent", agentType: "reasoning" }],
                 captain_agents: [{ id: "wa-7", type: "agent", agentType: "captain" }],
             },
@@ -52,9 +46,7 @@ describe("getAgents", () => {
         expect(agents).toEqual({
             users: [],
             assistants: [],
-            managers: [],
             rag_users: [],
-            swarm_agents: [],
             reasoning_agents: [],
             captain_agents: [],
         });
@@ -63,9 +55,7 @@ describe("getAgents", () => {
         const json = {
             agents: {
                 users: [{ id: "wa-1", type: "agent", agentType: "user" }],
-                managers: [{ id: "wa-3", type: "agent", agentType: "manager" }],
                 rag_users: [{ id: "wa-4", type: "agent", agentType: "rag_user" }],
-                swarm_agents: [{ id: "wa-5", type: "agent", agentType: "swarm" }],
                 reasoning_agents: [{ id: "wa-6", type: "agent", agentType: "reasoning" }],
                 captain_agents: [{ id: "wa-7", type: "agent", agentType: "captain" }],
             },
@@ -75,9 +65,7 @@ describe("getAgents", () => {
         expect(agents).toEqual({
             users: [],
             assistants: [],
-            managers: [],
             rag_users: [],
-            swarm_agents: [],
             reasoning_agents: [],
             captain_agents: [],
         });

@@ -31,8 +31,6 @@ export const useWaldiezNodeAgentModal = (
     const importAgent = useWaldiez(s => s.importAgent);
     const getAgentConnections = useWaldiez(s => s.getAgentConnections);
     const updateEdgePath = useWaldiez(s => s.updateEdgePath);
-    const removeGroupMember = useWaldiez(s => s.removeGroupMember);
-    const addGroupMember = useWaldiez(s => s.addGroupMember);
     const uploadHandler = useWaldiez(s => s.onUpload);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
     const [agentData, setAgentData] = useState<WaldiezNodeAgentData>({
@@ -70,7 +68,6 @@ export const useWaldiezNodeAgentModal = (
         if (dataToSubmit.agentType !== data.agentType) {
             dataToSubmit = handleAgentTypeChange(dataToSubmit);
         }
-        checkGroupChange(dataToSubmit);
         updateAgentData(id, dataToSubmit);
         if (data.label !== dataToSubmit.label) {
             updateAgentEdgeLabels();
@@ -78,25 +75,12 @@ export const useWaldiezNodeAgentModal = (
         setFilesToUpload([]);
         postSubmit();
     };
-    const checkGroupChange = (dataToSubmit: { [key: string]: any }) => {
-        const currentParentId = data.parentId;
-        const newParentId = dataToSubmit.parentId;
-        if (currentParentId !== newParentId) {
-            if (currentParentId) {
-                removeGroupMember(currentParentId, id);
-            }
-            if (newParentId) {
-                addGroupMember(newParentId, id);
-            }
-        }
-    };
     const updateAgentEdgeLabels = () => {
         // naming: "source" => "target"
         // depending on the 'agentConnections', update the edge labels
         const agentConnections = getAgentConnections(id, {
             sourcesOnly: false,
             targetsOnly: false,
-            skipManagers: false,
         });
         const sourceEdges = agentConnections.source.edges;
         const targetEdges = agentConnections.target.edges;

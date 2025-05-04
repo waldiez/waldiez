@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-statements */
 import { describe, expect, it } from "vitest";
 
 import { WaldiezFlow, WaldiezFlowData, emptyFlow } from "@waldiez/models/Flow";
@@ -33,9 +32,7 @@ describe("WaldiezFlow", () => {
         expect(flow.updatedAt).toBe(updatedAt);
         expect(flow.data.agents.users).toEqual([]);
         expect(flow.data.agents.assistants).toEqual([]);
-        expect(flow.data.agents.managers).toEqual([]);
         expect(flow.data.agents.rag_users).toEqual([]);
-        expect(flow.data.agents.swarm_agents).toEqual([]);
         expect(flow.data.models).toEqual([]);
         expect(flow.data.skills).toEqual([]);
         expect(flow.data.chats).toEqual([]);

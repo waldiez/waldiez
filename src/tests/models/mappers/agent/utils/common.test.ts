@@ -56,21 +56,9 @@ describe("getFallbackDescription", () => {
         const description = getFallbackDescription("assistant");
         expect(description).toBe("An assistant agent");
     });
-    it("should return the manager fallback description", () => {
-        const description = getFallbackDescription("manager");
-        expect(description).toBe("A group chat manager");
-    });
     it("should return the rag user fallback description", () => {
         const description = getFallbackDescription("rag_user");
         expect(description).toBe("A RAG user agent");
-    });
-    it("should return the swarm agent fallback description", () => {
-        const description = getFallbackDescription("swarm");
-        expect(description).toBe("A Swarm agent");
-    });
-    it("should return the swarm container fallback description", () => {
-        const description = getFallbackDescription("swarm_container");
-        expect(description).toBe("A Swarm container");
     });
 });
 
@@ -101,21 +89,9 @@ describe("getHumanInputMode", () => {
         const mode = getHumanInputMode({}, "assistant");
         expect(mode).toBe("NEVER");
     });
-    it("should return the default human input mode if the agent is a manager", () => {
-        const mode = getHumanInputMode({}, "manager");
-        expect(mode).toBe("NEVER");
-    });
     it("should return the default human input mode if the agent is a rag user", () => {
         const mode = getHumanInputMode({}, "rag_user");
         expect(mode).toBe("ALWAYS");
-    });
-    it("should return the default human input mode if the agent is a swarm agent", () => {
-        const mode = getHumanInputMode({}, "swarm");
-        expect(mode).toBe("NEVER");
-    });
-    it("should return the default human input mode if the agent is a swarm container", () => {
-        const mode = getHumanInputMode({}, "swarm_container");
-        expect(mode).toBe("NEVER");
     });
     it("should return the human input mode from the data", () => {
         const mode = getHumanInputMode({ humanInputMode: "NEVER" }, "user");
@@ -193,21 +169,9 @@ describe("getAgentName", () => {
         const name = getAgentName({}, "assistant");
         expect(name).toBe("Assistant");
     });
-    it("should return the fallback name for a manager", () => {
-        const name = getAgentName({}, "manager");
-        expect(name).toBe("Manager");
-    });
     it("should return the fallback name for a rag user", () => {
         const name = getAgentName({}, "rag_user");
         expect(name).toBe("RAG User");
-    });
-    it("should return the fallback name for a swarm agent", () => {
-        const name = getAgentName({}, "swarm");
-        expect(name).toBe("Swarm Agent");
-    });
-    it("should return the fallback name for a swarm container", () => {
-        const name = getAgentName({}, "swarm_container");
-        expect(name).toBe("Swarm Container");
     });
 });
 
@@ -218,10 +182,6 @@ describe("getParentId", () => {
     });
     it("should return null if no parent id in the data", () => {
         const id = getParentId({}, "user");
-        expect(id).toBeNull();
-    });
-    it("should return null if the agent type is manager or swarm container", () => {
-        const id = getParentId({ parentId: "wa-1" }, "manager");
         expect(id).toBeNull();
     });
 });

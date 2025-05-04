@@ -81,10 +81,8 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
         }
         return exported;
     };
-    getFlowEdges = (skipSwarm: boolean) => {
-        const allEdges = skipSwarm
-            ? this.get().edges.filter(edge => edge.type === "chat")
-            : this.get().edges.filter(edge => edge.type === "chat" || edge.type === "swarm");
+    getFlowEdges = () => {
+        const allEdges = this.get().edges.filter(edge => edge.type === "chat");
         const usedEdges = [] as WaldiezEdge[];
         const remainingEdges = [] as WaldiezEdge[];
         allEdges.forEach(edge => {

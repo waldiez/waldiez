@@ -8,13 +8,11 @@ import { describe, it } from "vitest";
 import {
     assistantDataTransfer,
     captainDataTransfer,
-    managerDataTransfer,
     reasoningDataTransfer,
     renderFlow,
-    swarmDataTransfer,
     userDataTransfer,
 } from "./common";
-import { edgesCount, flowId } from "./data";
+import { flowId } from "./data";
 
 describe("Flow DnD", () => {
     const ensureAgentsView = () => {
@@ -60,65 +58,6 @@ describe("Flow DnD", () => {
         });
         fireEvent.drop(targetElement, {
             dataTransfer: assistantDataTransfer,
-        });
-        fireEvent.mouseUp(targetElement);
-    });
-    it("should add a manager agent node on drag and drop", async () => {
-        act(() => {
-            renderFlow();
-        });
-        ensureAgentsView();
-        const sourceElement = screen.getByTestId("manager-dnd");
-        const targetElement = screen.getByTestId(`drop-area-${flowId}`);
-        fireEvent.mouseDown(sourceElement);
-        fireEvent.dragStart(sourceElement, {
-            dataTransfer: managerDataTransfer,
-        });
-        fireEvent.dragOver(targetElement, {
-            dataTransfer: managerDataTransfer,
-        });
-        fireEvent.drop(targetElement, {
-            dataTransfer: managerDataTransfer,
-        });
-        fireEvent.mouseUp(targetElement);
-    });
-    it("should drop an agent node on a manager agent node", async () => {
-        // this gives: Cannot read properties of undefined (reading 'parentId')
-        // and event.clientX: Nan, event.clientY: Nan :(
-        act(() => {
-            renderFlow();
-        });
-        ensureAgentsView();
-        const sourceElement = screen.getByTestId("user-dnd");
-        const targetElement = screen.getByTestId(`rf__node-agent-${edgesCount}`);
-        fireEvent.mouseDown(sourceElement);
-        fireEvent.dragStart(sourceElement, {
-            dataTransfer: managerDataTransfer,
-        });
-        fireEvent.dragOver(targetElement, {
-            dataTransfer: managerDataTransfer,
-        });
-        fireEvent.drop(targetElement, {
-            dataTransfer: managerDataTransfer,
-        });
-        fireEvent.mouseUp(targetElement);
-    });
-    it("should add a swarm agent node on drag and drop", async () => {
-        act(() => {
-            renderFlow();
-        });
-        ensureAgentsView();
-        const sourceElement = screen.getByTestId("swarm-dnd");
-        const targetElement = screen.getByTestId(`drop-area-${flowId}`);
-        fireEvent.mouseDown(sourceElement);
-        fireEvent.dragStart(sourceElement, {
-            dataTransfer: swarmDataTransfer,
-        });
-        fireEvent.dragOver(targetElement, {
-            dataTransfer: swarmDataTransfer,
-        });
-        fireEvent.drop(targetElement, {
-            dataTransfer: swarmDataTransfer,
         });
         fireEvent.mouseUp(targetElement);
     });

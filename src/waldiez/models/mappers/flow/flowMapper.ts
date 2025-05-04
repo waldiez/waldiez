@@ -20,7 +20,6 @@ import {
     exportChat,
     exportModel,
     exportSkill,
-    exportSwarmAgents,
     getAgentNodes,
     getAgents,
     getCacheSeed,
@@ -31,8 +30,6 @@ import {
     getModels,
     getNodes,
     getSkills,
-    getSwarmInitialFlowAgent,
-    getSwarmRFNodes,
     importFlowMeta,
 } from "@waldiez/models/mappers/flow/utils";
 import { modelMapper } from "@waldiez/models/mappers/model";
@@ -108,7 +105,7 @@ export const flowMapper = {
     },
 };
 
-const getFlowDataToImport = (json: Record<string, unknown>, flowId: string) => {
+const getFlowDataToImport = (json: Record<string, unknown>, _flowId: string) => {
     const isAsync = getIsAsync(json);
     const cacheSeed = getCacheSeed(json);
     const viewport = getFlowViewport(json);
@@ -126,24 +123,6 @@ const getFlowDataToImport = (json: Record<string, unknown>, flowId: string) => {
         skills.map(skill => skill.id),
         edges.map(edge => edge.id),
     );
-    agents.swarm_agents.forEach(agent => {
-        if (
-            agent.rest &&
-            agent.rest.parentId &&
-            typeof agent.rest.parentId === "string" &&
-            agent.rest.parentId.startsWith("swarm-container")
-        ) {
-            agent.rest.parentId = `swarm-container-${flowId}`;
-        }
-    });
-    nodes.forEach(node => {
-        if (node.id.startsWith("swarm-container")) {
-            node.id = `swarm-container-${flowId}`;
-        }
-        if (node.parentId && node.parentId.startsWith("swarm-container")) {
-            node.parentId = `swarm-container-${flowId}`;
-        }
-    });
 
     return new WaldiezFlowData({
         nodes,
@@ -163,16 +142,8 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
     const flowEdges = (flow.edges || []) as WaldiezEdge[];
     const modelNodes = nodes.filter(node => node.type === "model") as WaldiezNodeModel[];
     const skillNodes = nodes.filter(node => node.type === "skill") as WaldiezNodeSkill[];
-    const {
-        agentNodes,
-        userAgentNodes,
-        assistantAgentNodes,
-        managerNodes,
-        ragUserNodes,
-        reasoningAgentNodes,
-        captainAgentNodes,
-    } = getAgentNodes(nodes);
-    const { edges, swarmAgents } = exportSwarmAgents(agentNodes, flowEdges, skipLinks);
+    const { userAgentNodes, assistantAgentNodes, ragUserNodes, reasoningAgentNodes, captainAgentNodes } =
+        getAgentNodes(nodes);
     return new WaldiezFlowData({
         nodes: nodes.map(node => {
             const nodeCopy = { ...node } as any;
@@ -180,7 +151,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             delete nodeCopy.agentType;
             return nodeCopy;
         }),
-        edges: edges.map(edge => {
+        edges: flowEdges.map(edge => {
             const edgeCopy = { ...edge } as any;
             delete edgeCopy.data;
             return edgeCopy;
@@ -190,9 +161,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             assistants: assistantAgentNodes.map(assistantAgentNode =>
                 exportAgent(assistantAgentNode, nodes, skipLinks),
             ),
-            managers: managerNodes.map(managerNode => exportAgent(managerNode, nodes, skipLinks)),
             rag_users: ragUserNodes.map(ragUserNode => exportAgent(ragUserNode, nodes, skipLinks)),
-            swarm_agents: swarmAgents,
             reasoning_agents: reasoningAgentNodes.map(reasoningAgentNode =>
                 exportAgent(reasoningAgentNode, nodes, skipLinks),
             ),
@@ -202,14 +171,14 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),
         skills: skillNodes.map(skillNode => exportSkill(skillNode, nodes, hideSecrets)),
-        chats: edges.map((edge, index) => exportChat(edge, edges, index)),
+        chats: flowEdges.map((edge, index) => exportChat(edge, flowEdges, index)),
         isAsync: flow.isAsync,
         cacheSeed: flow.cacheSeed,
         viewport: flow.viewport,
     });
 };
 
-const getRFNodes = (flow: WaldiezFlow, edges: Edge[]) => {
+const getRFNodes = (flow: WaldiezFlow, _edges: Edge[]) => {
     const nodes: Node[] = [];
     flow.data.models.forEach(model => {
         nodes.push(modelMapper.asNode(model));
@@ -223,9 +192,6 @@ const getRFNodes = (flow: WaldiezFlow, edges: Edge[]) => {
     flow.data.agents.assistants.forEach(assistant => {
         nodes.push(agentMapper.asNode(assistant));
     });
-    flow.data.agents.managers.forEach(manager => {
-        nodes.push(agentMapper.asNode(manager));
-    });
     flow.data.agents.rag_users.forEach(ragUser => {
         nodes.push(agentMapper.asNode(ragUser));
     });
@@ -235,8 +201,6 @@ const getRFNodes = (flow: WaldiezFlow, edges: Edge[]) => {
     flow.data.agents.captain_agents.forEach(captainAgent => {
         nodes.push(agentMapper.asNode(captainAgent));
     });
-    const swarmNodes = getSwarmRFNodes(flow, edges);
-    nodes.push(...swarmNodes);
     return nodes;
 };
 
@@ -247,9 +211,6 @@ const getRFEdges = (flow: WaldiezFlow) => {
         const { sourceHandle, targetHandle } = getEdgeHandles(flow, chat);
         edge.sourceHandle = sourceHandle;
         edge.targetHandle = targetHandle;
-        if (edge.type === "swarm" && edge.target.startsWith("swarm-container")) {
-            handleEdgeToSwarmContainer(edge, flow);
-        }
         flowEdges.push(edge);
     });
     return flowEdges;
@@ -281,16 +242,6 @@ const getEdgeHandles = (flow: WaldiezFlow, chat: WaldiezChat) => {
         targetHandle = `agent-handle-left-target-${chat.target}`;
     }
     return { sourceHandle, targetHandle };
-};
-
-const handleEdgeToSwarmContainer = (edge: Edge, flow: WaldiezFlow) => {
-    const initialAgent = getSwarmInitialFlowAgent(flow);
-    edge.target = initialAgent.id;
-    edge.sourceHandle = `agent-handle-right-source-${edge.source}`;
-    edge.targetHandle = `agent-handle-left-target-${initialAgent.id}`;
-    if (edge.data) {
-        edge.data.realTarget = initialAgent.id;
-    }
 };
 
 const getFlowJson = (item: any) => {

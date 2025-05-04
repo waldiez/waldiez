@@ -8,7 +8,7 @@ import { WaldiezChat } from "@waldiez/models";
 import { chatMapper } from "@waldiez/models/mappers/chat";
 import { getRestFromJSON } from "@waldiez/models/mappers/common";
 
-const VALID_EDGE_TYPES = ["chat", "nested", "group", "swarm", "hidden"];
+const VALID_EDGE_TYPES = ["chat", "nested", "hidden"];
 
 export const getEdges = (json: Record<string, unknown>) => {
     if (!("edges" in json) || !Array.isArray(json.edges)) {

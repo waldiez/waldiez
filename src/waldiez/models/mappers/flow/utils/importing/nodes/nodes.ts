@@ -8,7 +8,7 @@ import { WaldiezAgentType } from "@waldiez/models";
 import { getIdFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
 const VALID_NODE_TYPES = ["model", "skill", "agent"];
-const VALID_AGENT_TYPES: WaldiezAgentType[] = ["user", "assistant", "manager", "rag_user", "swarm"];
+const VALID_AGENT_TYPES: WaldiezAgentType[] = ["user", "assistant", "rag_user"];
 
 export const getNodes = (json: Record<string, unknown>) => {
     const nodes: Node[] = [];
@@ -131,7 +131,7 @@ const updateAgentNodes = (json: Record<string, unknown>, nodes: Node[]) => {
             return;
         }
         VALID_AGENT_TYPES.forEach(agentType => {
-            const key = agentType === "swarm" ? "swarm_agents" : `${agentType}s`;
+            const key = `${agentType}s`;
             if (!(key in agents) || !Array.isArray(agents[key])) {
                 return;
             }

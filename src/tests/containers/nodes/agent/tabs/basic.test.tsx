@@ -93,7 +93,7 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         submitAgentChanges();
     });
     it("Updates the agent default auto reply", async () => {
-        renderAgent("manager", { openModal: true });
+        renderAgent("assistant", { openModal: true });
         const agentDefaultAutoReplyInput = screen.getByTestId(`agent-default-auto-reply-input-${agentId}`);
         await userEvent.clear(agentDefaultAutoReplyInput);
         await userEvent.type(agentDefaultAutoReplyInput, "Default Auto Reply");

@@ -7,10 +7,8 @@ import { Edge, Node, Viewport } from "@xyflow/react";
 import {
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
-    WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
-    WaldiezAgentSwarm,
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { WaldiezChat } from "@waldiez/models/Chat";
@@ -30,9 +28,7 @@ import { WaldiezSkill } from "@waldiez/models/Skill";
  * @param viewport - The viewport
  * @see {@link WaldiezAgentUserProxy}
  * @see {@link WaldiezAgentAssistant}
- * @see {@link WaldiezAgentGroupManager}
  * @see {@link WaldiezAgentRagUser}
- * @see {@link WaldiezAgentSwarm}
  * @see {@link WaldiezModel}
  * @see {@link WaldiezSkill}
  * @see {@link WaldiezChat}
@@ -45,9 +41,7 @@ export class WaldiezFlowData {
     agents: {
         users: WaldiezAgentUserProxy[];
         assistants: WaldiezAgentAssistant[];
-        managers: WaldiezAgentGroupManager[];
         rag_users: WaldiezAgentRagUser[];
-        swarm_agents: WaldiezAgentSwarm[];
         reasoning_agents: WaldiezAgentReasoning[];
         captain_agents: WaldiezAgentCaptain[];
     };
@@ -65,9 +59,7 @@ export class WaldiezFlowData {
             agents: {
                 users: WaldiezAgentUserProxy[];
                 assistants: WaldiezAgentAssistant[];
-                managers: WaldiezAgentGroupManager[];
                 rag_users: WaldiezAgentRagUser[];
-                swarm_agents: WaldiezAgentSwarm[];
                 reasoning_agents: WaldiezAgentReasoning[];
                 captain_agents: WaldiezAgentCaptain[];
             };
@@ -87,9 +79,7 @@ export class WaldiezFlowData {
             agents: {
                 users: [],
                 assistants: [],
-                managers: [],
                 rag_users: [],
-                swarm_agents: [],
                 reasoning_agents: [],
                 captain_agents: [],
             },

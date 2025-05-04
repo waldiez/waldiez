@@ -122,6 +122,7 @@ export default defineConfig(({ command }) => ({
     ],
     test: {
         include: isBrowserTest ? defaultBrowserIncludes : defaultIncludes,
+        exclude: [".local/**"],
         // support `describe`, `test` etc. globally,
         globals: true,
         // pool: 'vmThreads',

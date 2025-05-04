@@ -5,17 +5,12 @@
 /* eslint-disable max-statements */
 import { Edge, MarkerType, Node } from "@xyflow/react";
 
-import {
-    WaldiezNodeAgentSwarmContainer,
-    WaldiezNodeAgentType,
-    WaldiezSwarmOnConditionAvailable,
-} from "@waldiez/models";
+import { WaldiezNodeAgentType } from "@waldiez/models";
 import { WaldiezChatData, WaldiezEdge, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
-import { swarmAfterWorkMapper } from "@waldiez/models/mappers/common";
 import { AGENT_COLORS } from "@waldiez/theme";
 
-const VALID_CHAT_TYPES = ["chat", "nested", "group", "hidden", "swarm"];
+const VALID_CHAT_TYPES = ["chat", "nested", "hidden"];
 
 export const getChatClearHistory = (data: { [key: string]: any }) => {
     let clearHistory = true;
@@ -110,59 +105,6 @@ export const getChatMaxRounds = (data: { [key: string]: any }) => {
     return maxRounds;
 };
 
-export const getContextVariables = (data: { [key: string]: any }) => {
-    const contextVariables: { [key: string]: string } = {};
-    if ("contextVariables" in data && typeof data.contextVariables === "object") {
-        Object.entries(data.contextVariables).forEach(([key, value]) => {
-            if (
-                typeof value === "string" ||
-                typeof value === "number" ||
-                typeof value === "boolean" ||
-                value === null
-            ) {
-                contextVariables[key] = value !== null ? `${value}` : "";
-            }
-        });
-    }
-    return contextVariables;
-};
-
-export const getAvailable = (data: { [key: string]: any }) => {
-    const available: WaldiezSwarmOnConditionAvailable = {
-        type: "none",
-        value: null,
-    };
-    if ("available" in data && typeof data.available === "object") {
-        if (
-            "type" in data.available &&
-            typeof data.available.type === "string" &&
-            ["string", "callable", "none"].includes(data.available.type)
-        ) {
-            available.type = data.available.type;
-        }
-        if ("value" in data.available && typeof data.available.value === "string") {
-            available.value = data.available.value;
-        }
-    }
-    return available;
-};
-
-export const getChatAfterWork = (data: { [key: string]: any }) => {
-    let afterWorkData = null;
-    if ("afterWork" in data && typeof data.afterWork === "object") {
-        afterWorkData = swarmAfterWorkMapper.importSwarmAfterWork(data.afterWork);
-    }
-    return afterWorkData;
-};
-
-export const getChatFlowAfterWork = (data: { [key: string]: any }) => {
-    let flowAfterWorkData = null;
-    if ("flowAfterWork" in data && typeof data.flowAfterWork === "object") {
-        flowAfterWorkData = swarmAfterWorkMapper.importSwarmAfterWork(data.flowAfterWork);
-    }
-    return flowAfterWorkData;
-};
-
 export const getRealSource = (data: { [key: string]: any }) => {
     let realSource = null;
     if ("realSource" in data && typeof data.realSource === "string") {
@@ -182,27 +124,16 @@ export const getRealTarget = (data: { [key: string]: any }) => {
 export const getChatType = (
     edge: WaldiezEdge,
     json: { [key: string]: any },
-    sourceNode: Node,
-    targetNode: Node,
+    _sourceNode: Node,
+    _targetNode: Node,
 ) => {
     let edgeType: WaldiezEdgeType = "chat";
     if (json.type && VALID_CHAT_TYPES.includes(json.type)) {
         edgeType = json.type;
     }
     let chatType = edge?.type ?? edgeType;
-    const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    if (sourceAgentType === "manager") {
-        chatType = "group";
-    }
     if (!VALID_CHAT_TYPES.includes(chatType)) {
         chatType = "chat";
-    }
-    if (chatType === "group" && targetNode.data.parentId && targetNode.data.parentId === sourceNode.id) {
-        edge.hidden = true;
-        chatType = "hidden";
-    }
-    if (sourceNode.data.agentType === "swarm" || targetNode.data.agentType === "swarm") {
-        chatType = "swarm";
     }
     return chatType as WaldiezEdgeType;
 };
@@ -216,28 +147,6 @@ export const updateEdge = (
     rest: { [key: string]: any },
 ) => {
     const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    const targetNodeType = targetNode.data.agentType as WaldiezNodeAgentType;
-    if (targetNodeType === "swarm_container") {
-        const swarmContainer = targetNode as WaldiezNodeAgentSwarmContainer;
-        let initialAgent = swarmContainer.data.initialAgent;
-        if (chatData.realTarget) {
-            initialAgent = chatData.realTarget;
-        }
-        if (!initialAgent) {
-            // search in json for json.swarm_agents, if found, select the first one
-            if (json.swarm_agents && Array.isArray(json.swarm_agents) && json.swarm_agents.length > 0) {
-                const swarmAgent = json.swarm_agents[0];
-                if (typeof swarmAgent === "object" && swarmAgent && "id" in swarmAgent) {
-                    initialAgent = swarmAgent.id;
-                }
-            }
-        }
-        if (initialAgent) {
-            edge.target = initialAgent;
-            chatData.target = initialAgent;
-            chatData.realTarget = initialAgent;
-        }
-    }
     const chatType = getChatType(edge, json, sourceNode, targetNode);
     const color = AGENT_COLORS[sourceAgentType];
     edge.type = chatType;
@@ -281,11 +190,8 @@ const updateChatCommonStyle = (edge: WaldiezEdge, edgeType: WaldiezEdgeType, col
     };
 };
 
-const isChatAnimated = (chatType: WaldiezEdgeType, sourceNode: Node, targetNode: Node) => {
+const isChatAnimated = (chatType: WaldiezEdgeType, _sourceNode: Node, _targetNode: Node) => {
     if (chatType === "nested") {
-        return true;
-    }
-    if (sourceNode.data.agentType === "swarm" && targetNode.data.agentType !== "swarm") {
         return true;
     }
     return false;

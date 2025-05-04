@@ -40,26 +40,6 @@ export const userDataTransfer = {
     },
 };
 
-export const managerDataTransfer = {
-    setData: vi.fn(),
-    getData: (key: string) => {
-        if (key === "application/node") {
-            return "agent";
-        }
-        return "manager";
-    },
-};
-
-export const swarmDataTransfer = {
-    setData: vi.fn(),
-    getData: (key: string) => {
-        if (key === "application/node") {
-            return "agent";
-        }
-        return "swarm";
-    },
-};
-
 export const reasoningDataTransfer = {
     setData: vi.fn(),
     getData: (key: string) => {

@@ -19,15 +19,12 @@ import {
     createdAt,
     flowId,
     getAgentNode,
-    getGroupMembers,
-    getGroupNodes,
     getModelNodes,
     getNestedChats,
     getSkillNodes,
     updatedAt,
 } from "./data";
 
-/* eslint-disable max-statements */
 export const renderAgent = (
     type: WaldiezNodeAgentType,
     options: {
@@ -36,31 +33,19 @@ export const renderAgent = (
         dataOverrides?: { [key: string]: any };
         includeModels?: boolean;
         includeSkills?: boolean;
-        includeGroups?: boolean;
         includeNestedChats?: boolean;
-        includeGroupMembers?: boolean;
     } = {
         openModal: false,
         nodeOverrides: {},
         dataOverrides: {},
         includeModels: false,
         includeSkills: false,
-        includeGroups: false,
         includeNestedChats: false,
-        includeGroupMembers: false,
     },
     uploadsHandler: ((files: File[]) => Promise<string[]>) | null = null,
 ) => {
-    const {
-        openModal,
-        nodeOverrides,
-        dataOverrides,
-        includeModels,
-        includeSkills,
-        includeGroups,
-        includeNestedChats,
-        includeGroupMembers,
-    } = options;
+    const { openModal, nodeOverrides, dataOverrides, includeModels, includeSkills, includeNestedChats } =
+        options;
     const agentNode = getAgentNode(type, nodeOverrides, dataOverrides);
     const nodeData = {
         ...agentNode.data,
@@ -75,16 +60,8 @@ export const renderAgent = (
     if (includeSkills) {
         flowNodes.push(...getSkillNodes());
     }
-    if (includeGroups) {
-        flowNodes.push(...getGroupNodes());
-    }
     if (includeNestedChats) {
         const { nodes, edges } = getNestedChats();
-        flowNodes.push(...nodes);
-        flowEdges.push(...edges);
-    }
-    if (includeGroupMembers) {
-        const { nodes, edges } = getGroupMembers();
         flowNodes.push(...nodes);
         flowEdges.push(...edges);
     }

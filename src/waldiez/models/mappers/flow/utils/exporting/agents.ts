@@ -8,7 +8,6 @@ import {
     WaldiezNodeAgent,
     WaldiezNodeAgentAssistant,
     WaldiezNodeAgentCaptain,
-    WaldiezNodeAgentGroupManager,
     WaldiezNodeAgentRagUser,
     WaldiezNodeAgentUserProxy,
 } from "@waldiez/models/Agent";
@@ -32,14 +31,6 @@ export const getAgentNodes = (nodes: Node[]) => {
             "agentType" in node.data &&
             node.data.agentType === "assistant",
     ) as WaldiezNodeAgentAssistant[];
-    const managerNodes = agentNodes.filter(
-        node =>
-            "data" in node &&
-            typeof node.data === "object" &&
-            node.data &&
-            "agentType" in node.data &&
-            node.data.agentType === "manager",
-    ) as WaldiezNodeAgentGroupManager[];
     const ragUserNodes = agentNodes.filter(
         node =>
             "data" in node &&
@@ -68,7 +59,6 @@ export const getAgentNodes = (nodes: Node[]) => {
         agentNodes,
         userAgentNodes,
         assistantAgentNodes,
-        managerNodes,
         ragUserNodes,
         reasoningAgentNodes,
         captainAgentNodes,

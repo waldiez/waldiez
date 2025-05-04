@@ -7,9 +7,7 @@ import { Node } from "@xyflow/react";
 import {
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
-    WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
-    WaldiezAgentSwarm,
     WaldiezAgentUserProxy,
     WaldiezChatData,
     WaldiezEdge,
@@ -32,14 +30,8 @@ export const getAgentData = (agentType: WaldiezNodeAgentType) => {
     if (agentType === "assistant") {
         return WaldiezAgentAssistant.create("assistant").data;
     }
-    if (agentType === "manager") {
-        return WaldiezAgentGroupManager.create("manager").data;
-    }
     if (agentType === "rag_user") {
         return WaldiezAgentRagUser.create("rag_user").data;
-    }
-    if (agentType === "swarm") {
-        return WaldiezAgentSwarm.create("swarm").data;
     }
     if (agentType === "reasoning") {
         return WaldiezAgentUserProxy.create("reasoning").data;
@@ -75,25 +67,7 @@ export const getAgentNode = (
                 }),
             );
             break;
-        case "manager":
-            node = agentMapper.asNode(
-                agentMapper.importAgent({
-                    ...agentData,
-                    agentType: agentType as any,
-                    ...dataOverrides,
-                }),
-            );
-            break;
         case "rag_user":
-            node = agentMapper.asNode(
-                agentMapper.importAgent({
-                    ...agentData,
-                    agentType: agentType as any,
-                    ...dataOverrides,
-                }),
-            );
-            break;
-        case "swarm":
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
@@ -164,11 +138,11 @@ export const getModelNodes = () => {
     model2.id = "test-model2";
     return [{ ...model1 }, { ...model2 }];
 };
-const getEdge = (agent: Node, index: number, isGroup: boolean) => {
-    const source = isGroup ? agentId : index % 2 === 0 ? agentId : agent.id;
-    const target = isGroup ? agent.id : index % 2 === 0 ? agent.id : agentId;
+const getEdge = (agent: Node, index: number) => {
+    const source = index % 2 === 0 ? agentId : agent.id;
+    const target = index % 2 === 0 ? agent.id : agentId;
     const edgeId = `test-edge-${index}`;
-    const type = isGroup ? "hidden" : index < 2 ? "nested" : "chat";
+    const type = index < 2 ? "nested" : "chat";
     const chatData = new WaldiezChatData();
     const edge: WaldiezEdge = {
         id: edgeId,
@@ -181,7 +155,7 @@ const getEdge = (agent: Node, index: number, isGroup: boolean) => {
         },
     };
     // edge.type = type;
-    if (!isGroup && index < 2) {
+    if (index < 2) {
         edge.data!.nestedChat = {
             message: {
                 type: "string",
@@ -201,48 +175,20 @@ const getEdge = (agent: Node, index: number, isGroup: boolean) => {
     }
     return edge;
 };
-export const getConnectedAgents = (areGroupMembers: boolean = false) => {
+export const getConnectedAgents = () => {
     const nodes: Node[] = [];
     const edges = [];
     for (let i = 0; i < 5; i++) {
         const agent = getAgentNode("user");
         agent.data.label = `Agent ${i}`;
-        if (areGroupMembers) {
-            agent.data.parentId = agentId;
-        }
         agent.id = `agent-${i}`;
         nodes.push({ ...agent });
-        const edge = getEdge(agent, i, areGroupMembers);
+        const edge = getEdge(agent, i);
         edges.push({ ...edge });
     }
     return { nodes, edges };
 };
 
-export const getGroupMembers = () => {
-    return getConnectedAgents(true);
-};
-
 export const getNestedChats = () => {
     return getConnectedAgents();
-};
-
-export const getGroupNodes = () => {
-    const groupData = WaldiezAgentGroupManager.create("manager");
-    const group1 = agentMapper.asNode(
-        agentMapper.importAgent({
-            ...groupData,
-            agentType: "manager" as any,
-        }),
-    );
-    group1.data.label = "Group 1";
-    group1.id = "test-group1";
-    const group2 = agentMapper.asNode(
-        agentMapper.importAgent({
-            ...groupData,
-            agentType: "manager" as any,
-        }),
-    );
-    group2.data.label = "Group 2";
-    group2.id = "test-group2";
-    return [{ ...group1 }, { ...group2 }];
 };

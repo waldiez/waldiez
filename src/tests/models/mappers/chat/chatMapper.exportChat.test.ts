@@ -39,16 +39,6 @@ describe("chatMapper.exportChat", () => {
                 prerequisites: [],
                 maxTurns: 0,
                 maxRounds: 0,
-                afterWork: {
-                    recipientType: "agent",
-                    recipient: "wa-2",
-                },
-                flowAfterWork: null,
-                contextVariables: {},
-                available: {
-                    type: "none",
-                    value: null,
-                },
                 realSource: "wa-1",
                 realTarget: "wa-2",
             },
@@ -82,10 +72,6 @@ describe("chatMapper.exportChat", () => {
         });
         expect(json.data.maxTurns).toBe(0);
         expect(json.data.maxRounds).toBe(0);
-        expect(json.data.afterWork).toEqual({
-            recipientType: "agent",
-            recipient: "wa-2",
-        });
         expect((json.data as any).label).toBeFalsy();
     });
     it("should export an edge without afterWork", () => {
@@ -119,19 +105,11 @@ describe("chatMapper.exportChat", () => {
                 },
                 maxTurns: 0,
                 maxRounds: 0,
-                afterWork: null,
-                flowAfterWork: null,
-                contextVariables: {},
-                available: {
-                    type: "none",
-                    value: null,
-                },
                 realSource: "wa-1",
                 realTarget: "wa-2",
             },
         };
         const json = chatMapper.exportChat(edge, 0);
         expect(json).toBeTruthy();
-        expect(json.data.afterWork).toBeNull();
     });
 });

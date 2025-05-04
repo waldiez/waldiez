@@ -20,16 +20,7 @@ import {
 } from "@waldiez/models/mappers/common";
 import { getId } from "@waldiez/utils";
 
-const VALID_AGENT_TYPES: WaldiezNodeAgentType[] = [
-    "user",
-    "assistant",
-    "captain",
-    "manager",
-    "rag_user",
-    "reasoning",
-    "swarm",
-    "swarm_container",
-];
+const VALID_AGENT_TYPES: WaldiezNodeAgentType[] = ["user", "assistant", "captain", "rag_user", "reasoning"];
 export const getAgentId = (data: any, agentId?: string) => {
     let id = `wa-${getId()}`;
     if (!agentId || typeof agentId !== "string") {
@@ -67,14 +58,8 @@ export const getFallbackDescription = (agentType: WaldiezNodeAgentType) => {
         fallbackDescription = "A user agent";
     } else if (agentType === "assistant") {
         fallbackDescription = "An assistant agent";
-    } else if (agentType === "manager") {
-        fallbackDescription = "A group chat manager";
     } else if (agentType === "rag_user") {
         fallbackDescription = "A RAG user agent";
-    } else if (agentType === "swarm") {
-        fallbackDescription = "A Swarm agent";
-    } else if (agentType === "swarm_container") {
-        fallbackDescription = "A Swarm container";
     } else if (agentType === "reasoning") {
         fallbackDescription = "A reasoning agent";
     } else if (agentType === "captain") {
@@ -180,14 +165,8 @@ export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNo
         fallbackName = "User";
     } else if (agentType === "assistant") {
         fallbackName = "Assistant";
-    } else if (agentType === "manager") {
-        fallbackName = "Manager";
     } else if (agentType === "rag_user") {
         fallbackName = "RAG User";
-    } else if (agentType === "swarm") {
-        fallbackName = "Swarm Agent";
-    } else if (agentType === "swarm_container") {
-        fallbackName = "Swarm Container";
     } else if (agentType === "reasoning") {
         fallbackName = "Reasoning Agent";
     } else if (agentType === "captain") {
@@ -197,11 +176,8 @@ export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNo
 };
 export const getParentId = (
     data: Record<string, unknown>,
-    agentType: WaldiezNodeAgentType,
+    _agentType: WaldiezNodeAgentType,
 ): string | null => {
-    if (agentType === "manager" || agentType === "swarm_container") {
-        return null;
-    }
     if ("parentId" in data && typeof data.parentId === "string") {
         return data.parentId;
     }

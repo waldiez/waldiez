@@ -10,7 +10,6 @@ import { WaldiezNodeAgentFooter } from "@waldiez/containers/nodes/agent/footer";
 import { WaldiezNodeAgentHeader } from "@waldiez/containers/nodes/agent/header";
 import { useWaldiezNodeAgent } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal";
-import { WaldiezNodeSwarmContainer } from "@waldiez/containers/nodes/agent/swarmContainer";
 import { WaldiezNodeAgentProps } from "@waldiez/containers/nodes/agent/types";
 import { AGENT_COLORS } from "@waldiez/theme";
 
@@ -34,30 +33,18 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
     if (!data.parentId) {
         className += `agent-node ${agentType}`;
     }
-    if (agentType === "swarm_container") {
-        return (
-            <WaldiezNodeSwarmContainer
-                {...props}
-                isNodeModalOpen={isNodeModalOpen}
-                onOpenNodeModal={onOpenNodeModal}
-                onCloseNodeModal={onCloseNodeModal}
-            />
-        );
-    }
-    const handleClassNameBase = agentType === "swarm" ? "swarm-" : data.parentId ? "hidden " : "";
+    const handleClassNameBase = data.parentId ? "hidden " : "";
     return (
         <div className={className} data-testid={`agent-node-${id}-view`}>
             {!data.parentId && (
                 <div className="agent-content" data-testid={`agent-${id}-content`}>
-                    {agentType !== "swarm" && (
-                        <NodeResizer
-                            color={AGENT_COLORS[agentType]}
-                            minWidth={210}
-                            minHeight={210}
-                            handleStyle={{ color: AGENT_COLORS[agentType] }}
-                            handleClassName={agentType}
-                        />
-                    )}
+                    <NodeResizer
+                        color={AGENT_COLORS[agentType]}
+                        minWidth={210}
+                        minHeight={210}
+                        handleStyle={{ color: AGENT_COLORS[agentType] }}
+                        handleClassName={agentType}
+                    />
                     <WaldiezNodeAgentHeader id={id} data={data} onOpenNodeModal={onOpenNodeModal} />
                     <WaldiezNodeAgentBody
                         flowId={flowId}

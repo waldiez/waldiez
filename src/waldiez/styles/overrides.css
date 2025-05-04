@@ -29,12 +29,6 @@
   height: 14px;
 }
 
-.flow-wrapper .agent-node .group-member-handle {
-  margin-left: 8px;
-  position: relative !important;
-  transform: unset !important;
-}
-
 .flow-wrapper .react-flow__panel button {
   cursor: pointer;
   border: none;
@@ -48,16 +42,8 @@
   background-color: var(--user-agent-color);
 }
 
-.flow-wrapper .agent-node.manager .react-flow__handle {
-  background-color: var(--group-manager-color);
-}
-
 .flow-wrapper .agent-node.rag_user .react-flow__handle {
   background-color: var(--rag-user-color);
-}
-
-.flow-wrapper .agent-node.swarm .react-flow__handle {
-  background-color: var(--swarm-agent-color);
 }
 
 .flow-wrapper .agent-node.reasoning .react-flow__handle {
@@ -80,21 +66,12 @@
   border-color: var(--user-agent-color);
 }
 
-.react-flow__resize-control.nodrag.bottom.right.handle.manager {
-  border-color: var(--manager-agent-color);
-}
-
 .react-flow__resize-control.nodrag.bottom.right.handle.reasoning {
   border-color: var(--captain-agent-color);
 }
 
 .react-flow__resize-control.nodrag.bottom.right.handle.captain {
   border-color: var(--captain-agent-color);
-}
-
-.react-flow__resize-control.nodrag.bottom.right.handle.swarm_container {
-  width: 8px;
-  height: 8px;
 }
 
 .react-flow__resize-control.nodrag.bottom.left.handle {

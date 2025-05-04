@@ -56,8 +56,7 @@ const nodes = edges.map((edge, index) => {
         },
         data: {
             label: `Node ${index}`,
-            agentType:
-                index > 6 ? "swarm" : index % 3 === 0 ? "user" : index % 3 === 1 ? "assistant" : "manager",
+            agentType: index % 3 === 0 ? "user" : "assistant",
             nestedChats: [],
             skills: [],
             modelIds: [],

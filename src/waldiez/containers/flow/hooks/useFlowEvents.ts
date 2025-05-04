@@ -105,12 +105,8 @@ export const useFlowEvents = (flowId: string) => {
             showSnackbar(flowId, `${msg} found in the flow`, "error", undefined, 3000);
             return false;
         }
-        const swarmAgents = allAgents.filter(agent => agent.data.agentType === "swarm");
-        if (swarmAgents.length > 0) {
-            return true;
-        }
-        const { used } = getFlowEdges(true);
-        return used.length > 0;
+        const { used, remaining } = getFlowEdges();
+        return used.length > 0 && remaining.length === 0;
     };
     const onRun = () => {
         if (isReadOnly) {

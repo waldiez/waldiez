@@ -13,8 +13,6 @@ for (let i = 0; i < edgesCount; i++) {
     let chatType = "chat";
     if (i % 3 === 1) {
         chatType = "nested";
-    } else if (i % 3 === 2) {
-        chatType = "group";
     }
     edges.push({
         id: `edge-${i}`,

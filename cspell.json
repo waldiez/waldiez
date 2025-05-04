@@ -14,6 +14,7 @@
         "alac",
         "apputils",
         "aresponses",
+        "arrowclosed",
         "ASGI",
         "asgiref",
         "asyncer",
@@ -123,6 +124,7 @@
         "makedirs",
         "markdownify",
         "mccabe",
+        "mcts",
         "metaclass",
         "microdiff",
         "Ministral",
@@ -140,10 +142,12 @@
         "nodesource",
         "nodrag",
         "noninteractive",
+        "nopan",
         "NOPASSWD",
         "nosemgrep",
         "nowheel",
         "npmjs",
+        "nsim",
         "numpy",
         "ollama",
         "ounospanas",
@@ -242,6 +246,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }

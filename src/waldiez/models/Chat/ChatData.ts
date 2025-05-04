@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezSwarmAfterWork, WaldiezSwarmOnConditionAvailable } from "@waldiez/models/Agent";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
 
@@ -20,18 +19,12 @@ import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/type
  * @param message - The message
  * @param nestedChat - The nested chat
  * @param prerequisites - The prerequisites (chat ids) for async mode
- * @param maxRounds - The maximum rounds
- * @param afterWork - The after work
- * @param flowAfterWork - The flow after work
- * @param contextVariables - The context variables
  * @param available - The available for handoff condition
  * @param realSource - The real source (overrides source)
  * @param realTarget - The real target (overrides target)
  * @see {@link WaldiezMessage}
  * @see {@link WaldiezChatSummary}
  * @see {@link WaldiezNestedChat}
- * @see {@link WaldiezSwarmAfterWork}
- * @see {@link WaldiezSwarmOnConditionAvailable}
  */
 export class WaldiezChatData {
     source: string;
@@ -50,13 +43,6 @@ export class WaldiezChatData {
     };
     prerequisites: string[] = [];
     maxRounds: number;
-    afterWork: WaldiezSwarmAfterWork | null;
-    flowAfterWork: WaldiezSwarmAfterWork | null;
-    contextVariables: { [key: string]: string } = {};
-    available: WaldiezSwarmOnConditionAvailable = {
-        type: "none",
-        value: null,
-    };
     realSource: string | null = null;
     realTarget: string | null = null;
     constructor(
@@ -74,10 +60,6 @@ export class WaldiezChatData {
             nestedChat: WaldiezNestedChat;
             prerequisites: string[];
             maxRounds: number;
-            afterWork: WaldiezSwarmAfterWork | null;
-            flowAfterWork: WaldiezSwarmAfterWork | null;
-            contextVariables: { [key: string]: string };
-            available: WaldiezSwarmOnConditionAvailable;
             realSource: string | null;
             realTarget: string | null;
         } = {
@@ -106,13 +88,6 @@ export class WaldiezChatData {
             },
             prerequisites: [],
             maxRounds: 20,
-            afterWork: null,
-            flowAfterWork: null,
-            contextVariables: {},
-            available: {
-                type: "none",
-                value: null,
-            },
             realSource: null,
             realTarget: null,
         },
@@ -131,10 +106,6 @@ export class WaldiezChatData {
             nestedChat,
             prerequisites,
             maxRounds,
-            afterWork,
-            flowAfterWork,
-            contextVariables,
-            available,
             realSource,
             realTarget,
         } = props;
@@ -151,10 +122,6 @@ export class WaldiezChatData {
         this.nestedChat = nestedChat;
         this.prerequisites = prerequisites;
         this.maxRounds = maxRounds;
-        this.afterWork = afterWork;
-        this.flowAfterWork = flowAfterWork;
-        this.contextVariables = contextVariables;
-        this.available = available;
         this.realSource = realSource;
         this.realTarget = realTarget;
     }

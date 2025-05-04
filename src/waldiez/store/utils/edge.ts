@@ -4,8 +4,14 @@
  */
 import { Connection, Edge, MarkerType, Node } from "@xyflow/react";
 
-import { WaldiezEdge, chatMapper } from "@waldiez/models";
-import { WaldiezChat, WaldiezChatData, WaldiezEdgeType, WaldiezNodeAgentType } from "@waldiez/models";
+import {
+    WaldiezChat,
+    WaldiezChatData,
+    WaldiezEdge,
+    WaldiezEdgeType,
+    WaldiezNodeAgentType,
+    chatMapper,
+} from "@waldiez/models";
 import { AGENT_COLORS } from "@waldiez/theme";
 import { WaldiezNodeAgent, WaldiezNodeAgentData, typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
@@ -49,115 +55,20 @@ export const getNewEdgeName = (sourceNode: Node, targetNode: Node) => {
     return edgeName;
 };
 
-const isSwarmEdge = (sourceNode: Node, targetNode: Node) => {
-    const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    const targetAgentType = targetNode.data.agentType as WaldiezNodeAgentType;
-    if (sourceAgentType === "swarm") {
-        return true;
-    }
-    if (["user", "rag_user"].includes(sourceAgentType) && targetAgentType === "swarm") {
-        return true;
-    }
-    return false;
-};
-
 const getNewChatType: (sourceNode: Node, targetNode: Node, hidden: boolean) => WaldiezEdgeType = (
-    sourceNode,
+    _sourceNode,
     targetNode,
     hidden,
 ) => {
     if (hidden) {
         return "hidden" as WaldiezEdgeType;
     }
-    if (isSwarmEdge(sourceNode, targetNode)) {
-        return "swarm" as WaldiezEdgeType;
-    }
-    const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    let chatType: WaldiezEdgeType = sourceAgentType === "manager" ? "group" : "chat";
+    // const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
+    let chatType: WaldiezEdgeType = "chat";
     if (targetNode.data.parentId) {
         chatType = "hidden";
     }
     return chatType;
-};
-
-const getSwarmEdge = (
-    edges: Edge[],
-    sourceNode: Node,
-    targetNode: Node,
-    positionGetter: (chatType: string) => number,
-) => {
-    // if the source is not swarm, it should not connect to any other node
-    if (sourceNode.data.agentType !== "swarm") {
-        const existing = edges.find(edge => edge.source === sourceNode.id);
-        if (existing) {
-            return null;
-        }
-    }
-    const chatData = getSwarmChatData(sourceNode, targetNode, positionGetter);
-    chatData.position = positionGetter("swarm");
-    const chat = new WaldiezChat({
-        id: `we-${getId()}`,
-        data: chatData,
-        rest: {},
-    });
-    const newEdge = chatMapper.asEdge(chat);
-    const animated = sourceNode.data.agentType === "swarm" && targetNode.data.agentType !== "swarm";
-    let color = AGENT_COLORS.swarm;
-    if (sourceNode.data.agentType !== "swarm") {
-        color = AGENT_COLORS[sourceNode.data.agentType as WaldiezNodeAgentType];
-    }
-    return {
-        ...newEdge,
-        type: "swarm",
-        animated,
-        selected: true,
-        ...edgeCommonStyle("swarm", color),
-    };
-};
-
-const getSwarmChatData = (
-    sourceNode: Node,
-    targetNode: Node,
-    positionGetter: (chatType: string) => number,
-) => {
-    // const edgeName = getNewEdgeName(sourceNode, targetNode);
-    const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    const targetAgentType = targetNode.data.agentType as WaldiezNodeAgentType;
-    const source = sourceNode.id;
-    const target = targetNode.id;
-    const chatData = new WaldiezChatData();
-    chatData.source = source;
-    chatData.target = target;
-    chatData.name = getNewEdgeName(sourceNode, targetNode);
-    chatData.description = `Transfer to ${targetNode.data.label}`;
-    chatData.order = -1;
-    chatData.position = positionGetter("swarm");
-    if (sourceAgentType !== "swarm") {
-        chatData.message = {
-            type: "string",
-            content: "Start the chat",
-            context: {},
-            use_carryover: false,
-        };
-    }
-    if (targetAgentType !== "swarm") {
-        // nested chat
-        chatData.nestedChat = {
-            message: {
-                type: "string",
-                content: "",
-                context: {},
-                use_carryover: false,
-            },
-            reply: {
-                type: "none",
-                content: "",
-                context: {},
-                use_carryover: false,
-            },
-        };
-    }
-    return chatData;
 };
 
 export const getNewEdge = (
@@ -165,14 +76,8 @@ export const getNewEdge = (
     positionGetter: (chatType: string) => number,
     sourceNode: Node,
     targetNode: Node,
-    edges: Edge[],
+    _edges: Edge[],
 ) => {
-    if (isSwarmEdge(sourceNode, targetNode)) {
-        return getSwarmEdge(edges, sourceNode, targetNode, positionGetter);
-    }
-    if (["swarm", "swarm_container"].includes(targetNode.data.agentType as WaldiezNodeAgentType)) {
-        return null;
-    }
     const edgeName = getNewEdgeName(sourceNode, targetNode);
     const chatData = new WaldiezChatData();
     chatData.source = sourceNode.id;
@@ -223,10 +128,6 @@ export const getNewNestedEdges = (allEdges: Edge[]) => {
     return getNewChatsOfType(allEdges, "nested");
 };
 
-export const getNewGroupEdges = (allEdges: Edge[]) => {
-    return getNewChatsOfType(allEdges, "group");
-};
-
 export const getNewHiddenEdges = (allEdges: Edge[]) => {
     return getNewChatsOfType(allEdges, "hidden");
 };
@@ -240,22 +141,7 @@ export const shouldReconnect = (newConnection: Connection, nodes: Node[]): boole
     if (!newSource || !newTarget) {
         return false;
     }
-    const isSourceSwarmAgent = newSource.data.agentType === "swarm";
-    const isTargetSwarmAgent = newTarget.data.agentType === "swarm";
-    // if not a swarm connection, allow reconnect
-    if (!isSourceSwarmAgent && !isTargetSwarmAgent) {
-        return true;
-    }
-    if (isSourceSwarmAgent && ["swarm", "assistant"].includes(newTarget.data.agentType as string)) {
-        return true;
-    }
-    // if the source is not a swarm agent, but the target is,
-    // only allow user/rag_user to connect to swarm
-    if (!isSourceSwarmAgent && isTargetSwarmAgent) {
-        return ["user", "rag_user"].includes(newSource.data.agentType as string);
-    }
-    // if both are swarm agents, allow reconnect
-    return isSourceSwarmAgent && isTargetSwarmAgent;
+    return true;
 };
 export const getNewEdgeConnectionProps = (
     oldEdge: Edge,
@@ -300,7 +186,7 @@ export const getNewEdgeConnectionProps = (
     };
 };
 const updateNestedEdges = (get: typeOfGet, set: typeOfSet) => {
-    const agentNodes = get().nodes.filter(node => node.type === "agent" && node.data.agentType !== "manager");
+    const agentNodes = get().nodes.filter(node => node.type === "agent");
     const nestedEdges: Edge[] = [];
     const nestedEdgeIds: string[] = [];
     agentNodes.forEach(agentNode => {
@@ -412,7 +298,6 @@ const resetEdgeOrders: (get: typeOfGet, set: typeOfSet) => void = (get, set) => 
 };
 const resetEdgePositions = (get: typeOfGet, set: typeOfSet) => {
     const edges = get().edges as WaldiezEdge[];
-    const swarmEdges = edges.filter(edge => edge.type === "swarm");
     const newEdges = edges.map(edge => {
         return {
             ...edge,
@@ -421,10 +306,9 @@ const resetEdgePositions = (get: typeOfGet, set: typeOfSet) => {
     });
     const newChatEdges = getNewChatEdges(newEdges);
     const newNestedEdges = getNewNestedEdges(newEdges);
-    const newGroupEdges = getNewGroupEdges(newEdges);
     const newHiddenEdges = getNewHiddenEdges(newEdges);
     // ensure no dupe ids
-    const allEdges = [...newChatEdges, ...newNestedEdges, ...newGroupEdges, ...newHiddenEdges, ...swarmEdges];
+    const allEdges = [...newChatEdges, ...newNestedEdges, ...newHiddenEdges];
     const edgeIds = allEdges.map(edge => edge.id);
     const uniqueEdgeIds = Array.from(new Set(edgeIds));
     const uniqueEdges = allEdges.filter(edge => uniqueEdgeIds.includes(edge.id));

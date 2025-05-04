@@ -76,9 +76,7 @@ export const emptyFlow: WaldiezFlow = {
         agents: {
             users: [],
             assistants: [],
-            managers: [],
             rag_users: [],
-            swarm_agents: [],
             reasoning_agents: [],
             captain_agents: [],
         },

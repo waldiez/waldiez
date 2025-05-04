@@ -6,7 +6,6 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { onChange, renderFlow } from "./common";
-import { edgesCount } from "./data";
 
 describe("WaldiezFlow Nodes and Edges", () => {
     it("should add a model node", () => {
@@ -20,19 +19,6 @@ describe("WaldiezFlow Nodes and Edges", () => {
         expect(screen.queryByTestId("skill-0")).toBeNull();
         fireEvent.click(screen.getByTestId("show-skills"));
         fireEvent.click(screen.getByTestId("add-skill-node"));
-    });
-    it("should detach an agent node from its parent", async () => {
-        act(() => {
-            renderFlow();
-        });
-        vi.advanceTimersByTime(500);
-        const groupMemberId = `group-member-agent-${edgesCount + 1}`;
-        expect(screen.getByTestId(groupMemberId)).toBeTruthy();
-        const removeButton = screen.queryByTitle("Remove member"); // svg title
-        expect(removeButton).toBeTruthy();
-        fireEvent.click(removeButton as HTMLElement);
-        vi.advanceTimersByTime(500);
-        expect(screen.queryByTestId(groupMemberId)).toBeNull();
     });
     it("should open edge edit modal on double click", async () => {
         act(() => {

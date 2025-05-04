@@ -5,32 +5,19 @@
 import { describe, expect, it } from "vitest";
 
 import {
-    WaldiezAgent,
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
     WaldiezAgentCaptainData,
     WaldiezAgentData,
-    WaldiezAgentGroupManager,
-    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUser,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoning,
     WaldiezAgentReasoningData,
-    WaldiezAgentSwarm,
-    WaldiezAgentSwarmData,
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers";
 
-import {
-    assistantJson,
-    captainJson,
-    groupManagerJson,
-    ragUserJson,
-    swarmContainerJson,
-    swarmJson,
-    userJson,
-} from "./data";
+import { assistantJson, captainJson, ragUserJson, userJson } from "./data";
 
 describe("agentMapper", () => {
     it("should throw an error when importing without a json", () => {
@@ -54,26 +41,6 @@ describe("agentMapper", () => {
         expect(agent.data).toBeInstanceOf(WaldiezAgentRagUserData);
         expect(agent.agentType).toBe("rag_user");
         expect((agent.data as any).retrieveConfig).toBeTruthy();
-    });
-    it("should import a group manager agent", () => {
-        const agent = agentMapper.importAgent(groupManagerJson);
-        expect(agent).toBeInstanceOf(WaldiezAgentGroupManager);
-        expect(agent.data).toBeInstanceOf(WaldiezAgentGroupManagerData);
-        expect(agent.agentType).toBe("manager");
-        expect((agent.data as any).speakers).toBeTruthy();
-    });
-    it("should import a swarm container agent", () => {
-        const agent = agentMapper.importAgent(swarmContainerJson);
-        expect(agent).toBeInstanceOf(WaldiezAgent);
-        expect(agent.data).toBeInstanceOf(WaldiezAgentData);
-        expect(agent.agentType).toBe("swarm_container");
-    });
-    it("should import a swarm agent", () => {
-        const agent = agentMapper.importAgent(swarmJson);
-        expect(agent).toBeInstanceOf(WaldiezAgentSwarm);
-        expect(agent.data).toBeInstanceOf(WaldiezAgentSwarmData);
-        expect(agent.agentType).toBe("swarm");
-        expect((agent as WaldiezAgentSwarm).data.handoffs.length).toBe(swarmJson.data.handoffs.length);
     });
     it("should import a reasoning agent", () => {
         const reasoningJson = {
@@ -124,24 +91,6 @@ describe("agentMapper", () => {
         const exported = agentMapper.exportAgent(agentNode, false);
         expect(exported).toEqual(ragUserJson);
     });
-    it("should import, convert and export a group manager agent node", () => {
-        const agent = agentMapper.importAgent(groupManagerJson);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, false);
-        expect(exported).toEqual(groupManagerJson);
-    });
-    it("should import, convert and export a swarm container agent node", () => {
-        const agent = agentMapper.importAgent(swarmContainerJson);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, false);
-        expect(exported).toEqual(swarmContainerJson);
-    });
-    it("should import, convert and export a swarm agent node", () => {
-        const agent = agentMapper.importAgent(swarmJson);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, false);
-        expect(exported).toEqual(swarmJson);
-    });
     it("should import, convert and export a reasoning agent node", () => {
         const reasoningJson = {
             ...assistantJson,
@@ -171,55 +120,6 @@ describe("agentMapper", () => {
         const agentNode = agentMapper.asNode(agent, undefined, false);
         const exported = agentMapper.exportAgent(agentNode, false);
         expect(exported).toEqual(captainJson);
-    });
-    it("should import, convert and export an agent node without links", () => {
-        const managerWithoutLinks = {
-            ...groupManagerJson,
-            data: {
-                ...groupManagerJson.data,
-                codeExecutionConfig: {
-                    workDir: "workDir",
-                    useDocker: false,
-                    timeout: 30,
-                    lastNMessages: "auto",
-                    functions: [],
-                },
-            },
-        };
-        const managerWithLinks = {
-            ...groupManagerJson,
-            data: {
-                ...groupManagerJson.data,
-                modes: ["mode1", "mode2"],
-                skills: [{ id: "skill1", executorId: "wa-2" }],
-                codeExecutionConfig: {
-                    workDir: "workDir",
-                    useDocker: false,
-                    timeout: 30,
-                    lastNMessages: "auto",
-                    functions: ["skill1"],
-                },
-                nestedChats: [
-                    {
-                        messages: ["wc-1"],
-                        triggeredBy: ["wa-2"],
-                    },
-                ],
-                speakers: {
-                    ...groupManagerJson.data.speakers,
-                    allowedOrDisallowedTransitions: {
-                        "wa-1": ["wa-2"],
-                        "wa-2": ["wa-1", "wa-3"],
-                    },
-                },
-            },
-        };
-        const agent = agentMapper.importAgent(managerWithLinks);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, true);
-        expect(exported).toEqual(managerWithoutLinks);
-        // just for the coverage
-        agentMapper.asNode(agent, undefined, true);
     });
     it("should import, convert and export a rag user without links in retrieveConfig", () => {
         const ragUserWitLinks = {

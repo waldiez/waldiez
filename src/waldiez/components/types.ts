@@ -21,7 +21,6 @@ export type { ModalProps } from "@waldiez/components/modal/types";
 export type { NumberInputProps } from "@waldiez/components/numberInput/types";
 export type { ActionMeta, GroupBase, MultiValue, SingleValue } from "@waldiez/components/select";
 export type { StringListProps } from "@waldiez/components/stringList/types";
-export type { AfterWorkProps, OnConditionAvailableProps } from "@waldiez/components/swarm/types";
 export type { TabItemProps, TabItemsProps } from "@waldiez/components/tabs/types";
 export type { TextInputProps } from "@waldiez/components/textInput/types";
 export type { WizardProps, WizardStepProps } from "@waldiez/components/wizard/types";

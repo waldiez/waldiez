@@ -157,13 +157,10 @@ const isEdgeAnimated = (edge: Edge, nodes: Node[]) => {
     if (edge.type === "nested") {
         return true;
     }
-    if (edge.type !== "swarm") {
-        return false;
-    }
     const sourceNode = nodes.find(node => node.id === edge.source);
     const targetNode = nodes.find(node => node.id === edge.target);
     if (!sourceNode || !targetNode) {
         return false;
     }
-    return sourceNode.data.agentType === "swarm" && targetNode.data.agentType !== "swarm";
+    return false;
 };

@@ -44,10 +44,6 @@ describe("chatMapper.importChat", () => {
         });
         expect(chat.data.maxTurns).toBe(0);
         expect(chat.data.maxRounds).toBe(0);
-        expect(chat.data.afterWork).toEqual({
-            recipientType: "agent",
-            recipient: "wa-2",
-        });
     });
     it("should throw an error when importing an invalid chat", () => {
         expect(() => chatMapper.importChat(4, edges, agents, 1)).toThrowError("Invalid edge data");
@@ -146,24 +142,6 @@ describe("chatMapper.importChat", () => {
         expect(chat).toBeTruthy();
         expect(edge.type).toBe("chat");
     });
-    it("should change the edge type to hidden if the target is a group and the source is the parent", () => {
-        const newAgents = [...agents];
-        newAgents[2] = {
-            ...newAgents[2],
-            data: { ...newAgents[2].data, parentId: "wa-2" },
-        };
-        const { chat, edge } = chatMapper.importChat(
-            {
-                id: "wc-2",
-                data: { type: "group", source: "wa-2", target: "wa-3" },
-            },
-            edges,
-            newAgents,
-            1,
-        );
-        expect(chat).toBeTruthy();
-        expect(edge.type).toBe("hidden");
-    });
     it("should import a chat's nested chat", () => {
         const chatJsonWithNestedChat = {
             ...chatJson,
@@ -233,28 +211,6 @@ describe("chatMapper.importChat", () => {
         const { chat } = chatMapper.importChat(chatJsonWithNegativeOrder, edges, agents, 1);
         expect(chat).toBeTruthy();
         expect(chat.data.order).toBe(-1);
-    });
-    it("should have null afterWork if not provided", () => {
-        const chatJsonWithoutAfterWork = {
-            ...chatJson,
-            data: {
-                ...chatJson.data,
-                afterWork: null,
-            },
-        };
-        const { chat } = chatMapper.importChat(chatJsonWithoutAfterWork, edges, agents, 1);
-        expect(chat).toBeTruthy();
-        expect(chat.data.afterWork).toBeNull();
-    });
-    it("should animate swarm chat if the source is swarm and the target is not", () => {
-        const newAgents = [...agents];
-        newAgents[0] = {
-            ...newAgents[0],
-            data: { ...newAgents[0].data, agentType: "swarm" },
-        };
-        const { chat, edge } = chatMapper.importChat(chatJson, edges, newAgents, 1);
-        expect(chat).toBeTruthy();
-        expect(edge?.animated).toBe(true);
     });
     it("should accept useCarryover as a key for use_carryover", () => {
         const chatJsonWithUseCarryover = {

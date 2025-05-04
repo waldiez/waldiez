@@ -7,17 +7,13 @@ import {
     WaldiezAgentAssistantData,
     WaldiezAgentCaptainData,
     WaldiezAgentData,
-    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
-    WaldiezAgentSwarmData,
     WaldiezNodeAgent,
-    WaldiezNodeAgentGroupManager,
     WaldiezNodeAgentRagUser,
     WaldiezNodeAgentType,
 } from "@waldiez/models/Agent";
 import {
-    getAdminName,
     getAgent,
     getAgentDefaultAutoReply,
     getAgentId,
@@ -28,10 +24,7 @@ import {
     getCaptainMaxTurns,
     getCaptainToolLib,
     getCodeExecutionConfig,
-    getEnableClearHistory,
-    getGroupChatMaxRound,
     getHumanInputMode,
-    getIsInitial,
     getIsMultimodal,
     getMaximumConsecutiveAutoReply,
     getModelIds,
@@ -39,12 +32,7 @@ import {
     getParentId,
     getReasonConfig,
     getRetrieveConfig,
-    getSendIntroductions,
     getSkills,
-    getSpeakers,
-    getSwarmFunctions,
-    getSwarmHandoffs,
-    getSwarmUpdateAgentStateBeforeReply,
     getSystemMessage,
     getTermination,
     getVerbose,
@@ -179,7 +167,6 @@ const getCommonAgentData = (
     });
 };
 
-// eslint-disable-next-line max-statements
 const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     const toExclude = ["id", "name", "description", "tags", "requirements", "createdAt", "updatedAt", "data"];
     if (agentType === "rag_user") {
@@ -187,12 +174,6 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     }
     if (agentType === "assistant") {
         toExclude.push("isMultimodal");
-    }
-    if (agentType === "manager") {
-        toExclude.push("maxRound", "adminName", "speakers", "enableClearHistory", "sendIntroductions");
-    }
-    if (agentType === "swarm") {
-        toExclude.push("functions", "updateAgentStateBeforeReply", "handoffs");
     }
     if (agentType === "reasoning") {
         toExclude.push("verbose", "reasonConfig");
@@ -203,7 +184,6 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     return toExclude;
 };
 
-// eslint-disable-next-line max-statements
 const getAgentDataToImport = (
     jsonData: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -219,25 +199,6 @@ const getAgentDataToImport = (
         return new WaldiezAgentAssistantData({
             ...data,
             isMultimodal: getIsMultimodal(jsonData),
-        });
-    }
-    if (agentType === "manager") {
-        return new WaldiezAgentGroupManagerData({
-            ...data,
-            maxRound: getGroupChatMaxRound(jsonData),
-            adminName: getAdminName(jsonData),
-            speakers: getSpeakers(jsonData),
-            enableClearHistory: getEnableClearHistory(jsonData),
-            sendIntroductions: getSendIntroductions(jsonData),
-        });
-    }
-    if (agentType === "swarm") {
-        return new WaldiezAgentSwarmData({
-            ...data,
-            isInitial: getIsInitial(jsonData),
-            functions: getSwarmFunctions(jsonData),
-            updateAgentStateBeforeReply: getSwarmUpdateAgentStateBeforeReply(jsonData),
-            handoffs: getSwarmHandoffs(jsonData),
         });
     }
     if (agentType === "reasoning") {
@@ -260,11 +221,6 @@ const getAgentDataToImport = (
 };
 
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
-    // remove agent's links to other nodes, such as models, skills, and nested chats
-    // if the agent is a manager,
-    //    also remove the speaker transitions (allowedOrDisallowedTransitions)
-    //    and allowRepeat if it's a list of strings
-    // if the agent is a rag_user, also remove the model and docsPath
     const agentCopy = { ...agent };
     agentCopy.data.modelIds = [];
     agentCopy.data.skills = [];
@@ -279,26 +235,12 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
             docsPath: [],
         };
     }
-    if (agent.data.agentType === "manager") {
-        (agentCopy as WaldiezNodeAgentGroupManager).data.speakers = {
-            ...(agentCopy as WaldiezNodeAgentGroupManager).data.speakers,
-            allowRepeat: [],
-            allowedOrDisallowedTransitions: {},
-        };
-    }
     return agentCopy;
 };
 
-// eslint-disable-next-line max-statements
 const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any, data: any) => {
     if (agentType === "rag_user") {
         updateRagAgent(agentData, data);
-    }
-    if (agentType === "manager") {
-        updateGroupManager(agentData, data);
-    }
-    if (agentType === "swarm") {
-        updateSwarmAgent(agentData, data);
     }
     if (agentType === "reasoning") {
         updateReasoningAgent(agentData, data);
@@ -313,21 +255,6 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
 
 const updateRagAgent = (agentData: WaldiezAgentRagUserData, data: any) => {
     agentData.retrieveConfig = getRetrieveConfig(data);
-};
-
-const updateGroupManager = (agentData: WaldiezAgentGroupManagerData, data: any) => {
-    agentData.maxRound = getGroupChatMaxRound(data);
-    agentData.adminName = getAdminName(data);
-    agentData.speakers = getSpeakers(data);
-    agentData.enableClearHistory = getEnableClearHistory(data);
-    agentData.sendIntroductions = getSendIntroductions(data);
-};
-
-const updateSwarmAgent = (agentData: WaldiezAgentSwarmData, data: any) => {
-    agentData.functions = (data as WaldiezAgentSwarmData).functions;
-    agentData.updateAgentStateBeforeReply = (data as WaldiezAgentSwarmData).updateAgentStateBeforeReply;
-    agentData.handoffs = (data as WaldiezAgentSwarmData).handoffs;
-    agentData.isInitial = (data as WaldiezAgentSwarmData).isInitial;
 };
 
 const updateReasoningAgent = (agentData: WaldiezAgentReasoningData, data: any) => {

@@ -8,10 +8,8 @@ import {
     WaldiezAgent,
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
-    WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
-    WaldiezAgentSwarm,
     WaldiezAgentType,
     WaldiezAgentUserProxy,
 } from "@waldiez/models";
@@ -29,9 +27,7 @@ export const getAgents = (
         return {
             users: [],
             assistants: [],
-            managers: [],
             rag_users: [],
-            swarm_agents: [],
             reasoning_agents: [],
             captain_agents: [],
         };
@@ -40,9 +36,7 @@ export const getAgents = (
     const agents: {
         users: WaldiezAgentUserProxy[];
         assistants: WaldiezAgentAssistant[];
-        managers: WaldiezAgentGroupManager[];
         rag_users: WaldiezAgentRagUser[];
-        swarm_agents: WaldiezAgentSwarm[];
         reasoning_agents: WaldiezAgentReasoning[];
         captain_agents: WaldiezAgentCaptain[];
     } = {
@@ -62,14 +56,6 @@ export const getAgents = (
             skillIds,
             chatIds,
         ) as WaldiezAgentAssistant[],
-        managers: getFlowAgents(
-            "manager",
-            agentsJson,
-            nodes,
-            modelIds,
-            skillIds,
-            chatIds,
-        ) as WaldiezAgentGroupManager[],
         rag_users: getFlowAgents(
             "rag_user",
             agentsJson,
@@ -78,14 +64,6 @@ export const getAgents = (
             skillIds,
             chatIds,
         ) as WaldiezAgentRagUser[],
-        swarm_agents: getFlowAgents(
-            "swarm",
-            agentsJson,
-            nodes,
-            modelIds,
-            skillIds,
-            chatIds,
-        ) as WaldiezAgentSwarm[],
         reasoning_agents: getFlowAgents(
             "reasoning",
             agentsJson,
@@ -115,7 +93,7 @@ const getFlowAgents = (
     chatIds: string[],
 ) => {
     let keyToCheck = `${agentType}s`;
-    if (["swarm", "reasoning", "captain"].includes(agentType)) {
+    if (["reasoning", "captain"].includes(agentType)) {
         keyToCheck = `${agentType}_agents`;
     }
     if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
@@ -165,13 +143,7 @@ const validateAgents = (
             return filterAgentNestedChats(agent, nodeIds, chatIds);
         });
     if (agentType === "rag_user") {
-        return filterGroupRagUsers(agents as WaldiezAgentRagUser[], modelIds);
-    }
-    if (agentType === "manager") {
-        return filterGroupManagerSpeakers(agents as WaldiezAgentGroupManager[], nodeIds);
-    }
-    if (agentType === "swarm") {
-        return filterSwarmAgentFunctions(agents as WaldiezAgentSwarm[], skillIds);
+        return filterRagUsers(agents as WaldiezAgentRagUser[], modelIds);
     }
     return agents;
 };
@@ -205,7 +177,7 @@ const filterAgentNestedChats = (agent: WaldiezAgent, nodeIds: string[], chatIds:
     return agent;
 };
 
-const filterGroupRagUsers = (agents: WaldiezAgentRagUser[], modelIds: string[]) => {
+const filterRagUsers = (agents: WaldiezAgentRagUser[], modelIds: string[]) => {
     return agents.map(agent => {
         if (
             "data" in agent &&
@@ -220,58 +192,6 @@ const filterGroupRagUsers = (agents: WaldiezAgentRagUser[], modelIds: string[]) 
             if (!modelIds.includes(modelId)) {
                 agent.data.retrieveConfig.model = null;
             }
-        }
-        return agent;
-    });
-};
-
-const filterGroupManagerSpeakers = (managers: WaldiezAgentGroupManager[], agentIds: string[]) => {
-    // also check the "speakers" property
-    // - if allowRepeat is an array (list of allowed agent[id]s), check if all the values are in the nodeIds/agentIds
-    // - if allowedOrDisallowedTransitions is an object 9agent => list[agent], check if all the keys and values are in the nodeIds/agentIds
-    return managers.map(manager => {
-        if (
-            "data" in manager &&
-            typeof manager.data === "object" &&
-            "speakers" in manager.data &&
-            typeof manager.data.speakers === "object" &&
-            manager.data.speakers
-        ) {
-            if (
-                "allowRepeat" in manager.data.speakers &&
-                Array.isArray(manager.data.speakers.allowRepeat) &&
-                manager.data.speakers.allowRepeat.length > 0
-            ) {
-                manager.data.speakers.allowRepeat = manager.data.speakers.allowRepeat.filter(value =>
-                    agentIds.includes(value),
-                );
-            }
-            if (
-                "allowedOrDisallowedTransitions" in manager.data.speakers &&
-                typeof manager.data.speakers.allowedOrDisallowedTransitions === "object"
-            ) {
-                const allowedOrDisallowedTransitions = manager.data.speakers.allowedOrDisallowedTransitions;
-                const keys = Object.keys(allowedOrDisallowedTransitions);
-                keys.forEach(key => {
-                    allowedOrDisallowedTransitions[key] = allowedOrDisallowedTransitions[key].filter(value =>
-                        agentIds.includes(value),
-                    );
-                });
-            }
-        }
-        return manager;
-    });
-};
-
-const filterSwarmAgentFunctions = (agents: WaldiezAgentSwarm[], skillIds: string[]) => {
-    return agents.map(agent => {
-        if (
-            "data" in agent &&
-            typeof agent.data === "object" &&
-            "functions" in agent.data &&
-            Array.isArray(agent.data.functions)
-        ) {
-            agent.data.functions = agent.data.functions.filter(func => skillIds.includes(func));
         }
         return agent;
     });

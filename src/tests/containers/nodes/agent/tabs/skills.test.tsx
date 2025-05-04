@@ -17,19 +17,8 @@ const goToSkillsTab = () => {
     fireEvent.click(skillsTab);
 };
 
-const goToFunctionsTab = () => {
-    // Click on the Functions tab
-    const functionsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-swarm-skills-${agentId}`);
-    expect(functionsTab).toBeInTheDocument();
-    fireEvent.click(functionsTab);
-};
-
 const skillOverrides = {
     skills: [{ id: "test-skill1", executorId: agentId }],
-};
-
-const swarmFunctionOverrides = {
-    functions: ["test-skill1"],
 };
 
 describe("Skills tab", () => {
@@ -47,17 +36,6 @@ describe("Skills tab", () => {
         const agentName = screen.getByTestId(`agent-name-${agentId}-0`);
         expect(agentName).toBeInTheDocument();
         expect(agentName).toHaveTextContent("User");
-    });
-    it("should should display a swarm agent's functions", async () => {
-        renderAgent("swarm", {
-            openModal: true,
-            dataOverrides: swarmFunctionOverrides,
-            includeSkills: true,
-        });
-        goToFunctionsTab();
-        const skillName = screen.getByTestId(`agent-${agentId}-linked-skill-0`);
-        expect(skillName).toBeInTheDocument();
-        expect(skillName).toHaveTextContent("test skill1");
     });
     it("should allow removing agent skills", async () => {
         renderAgent("user", {

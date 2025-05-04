@@ -17,41 +17,15 @@ export const renderEdge = (
     edgeType: WaldiezEdgeType,
     dataOverrides: { [key: string]: any } = {},
     openModal: boolean = true,
-    swarmType: "trigger" | "handoff" | "nested" = "trigger",
 ) => {
     const flowNodes = structuredClone(nodes);
-    if (edgeType === "swarm") {
-        if (swarmType === "trigger" || swarmType === "handoff") {
-            // target: swarm
-            flowNodes[1].data = {
-                ...flowNodes[1].data,
-                agentType: "swarm",
-                functions: [],
-            } as any;
-        }
-        if (swarmType === "handoff" || swarmType === "nested") {
-            // source: swarm
-            flowNodes[0].data = {
-                ...flowNodes[0].data,
-                agentType: "swarm",
-                functions: [],
-            } as any;
-        }
-        if (swarmType === "nested") {
-            // target: assistant
-            flowNodes[1].data = {
-                ...flowNodes[1].data,
-                agentType: "assistant",
-            };
-        }
-    }
     const edges = [
         {
             id: edgeId,
             source: edgeProps.source,
             target: edgeProps.target,
             hidden: edgeType === "hidden",
-            animated: edgeType === "nested" || (edgeType === "swarm" && swarmType === "nested"),
+            animated: edgeType === "nested",
             type: edgeType,
             data: structuredClone({ ...edgeData, ...dataOverrides }),
         },
@@ -59,7 +33,7 @@ export const renderEdge = (
             id: "edge-2",
             source: edgeProps.target,
             target: edgeProps.source,
-            type: "group",
+            type: "chat",
             animated: false,
             hidden: false,
             data: {

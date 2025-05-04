@@ -25,5 +25,4 @@ export interface IWaldiezEdgeStore {
     addEdge: (connection: Connection, hidden: boolean) => WaldiezEdge | null;
     onEdgeDoubleClick: (event: React.MouseEvent, edge: WaldiezEdge) => void;
     onReconnect: (oldEdge: Edge, newConnection: Connection) => void;
-    getSwarmEdges: () => WaldiezEdge[];
 }

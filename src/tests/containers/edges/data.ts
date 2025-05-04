@@ -77,16 +77,6 @@ export const nodes = [
             nestedChats: [],
             skills: [],
             modelIds: [],
-            handoffs: [
-                {
-                    targetType: "agent",
-                    target: { id: edgeProps.target, order: 0 },
-                    available: {
-                        type: "option",
-                        value: "TERMINATE",
-                    },
-                },
-            ],
         },
     },
     {

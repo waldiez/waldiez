@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { AiFillOpenAI } from "react-icons/ai";
-import { AiFillCode } from "react-icons/ai";
+import { AiFillCode, AiFillOpenAI } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { FaBars, FaRobot } from "react-icons/fa6";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
@@ -26,8 +25,6 @@ export const SideBar = (props: SidebarViewProps) => {
         onShowSkills,
         onUserDragStart,
         onAssistantDragStart,
-        onManagerDragStart,
-        onSwarmDragStart,
         onReasoningDragStart,
         onCaptainDragStart,
     } = useSidebarView(props);
@@ -128,24 +125,6 @@ export const SideBar = (props: SidebarViewProps) => {
                         >
                             <img src={AGENT_ICONS.assistant} title="Assistant Agent" />
                             Assistant
-                        </div>
-                        <div
-                            className="dnd-area"
-                            data-testid="manager-dnd"
-                            onDragStart={onManagerDragStart}
-                            draggable
-                        >
-                            <img src={AGENT_ICONS.manager} title="Group Manager Agent" />
-                            Group Manager
-                        </div>
-                        <div
-                            className="dnd-area"
-                            data-testid="swarm-dnd"
-                            onDragStart={onSwarmDragStart}
-                            draggable
-                        >
-                            <img src={AGENT_ICONS.swarm} title="Swarm Agent" />
-                            Swarm Agent
                         </div>
                         <div
                             className="dnd-area"

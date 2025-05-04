@@ -9,11 +9,8 @@ import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { summaryMapper } from "@waldiez/models/mappers/chat/summaryMapper";
 import {
     checkChatData,
-    getAvailable,
-    getChatAfterWork,
     getChatClearHistory,
     getChatDescription,
-    getChatFlowAfterWork,
     getChatMaxRounds,
     getChatMaxTurns,
     getChatName,
@@ -21,18 +18,12 @@ import {
     getChatPosition,
     getChatPrerequisites,
     getChatRest,
-    getContextVariables,
     getNestedChat,
     getRealSource,
     getRealTarget,
     updateEdge,
 } from "@waldiez/models/mappers/chat/utils";
-import {
-    getDescriptionFromJSON,
-    getNameFromJSON,
-    swarmAfterWorkMapper,
-} from "@waldiez/models/mappers/common";
-import "@waldiez/models/mappers/common/swarmAfterWorkMapper";
+import { getDescriptionFromJSON, getNameFromJSON } from "@waldiez/models/mappers/common";
 
 /* eslint-disable max-statements */
 export const chatMapper = {
@@ -82,12 +73,6 @@ export const chatMapper = {
             nestedChat: getNestedChat(data),
             prerequisites: getChatPrerequisites(data),
             maxRounds: getChatMaxRounds(data),
-            afterWork: data.afterWork ? swarmAfterWorkMapper.exportSwarmAfterWork(data.afterWork) : null,
-            flowAfterWork: data.flowAfterWork
-                ? swarmAfterWorkMapper.exportSwarmAfterWork(data.flowAfterWork)
-                : null,
-            available: data.available,
-            contextVariables: data.contextVariables,
             realSource: data.realSource,
             realTarget: data.realTarget,
         };
@@ -122,10 +107,6 @@ export const chatMapper = {
             summary: chat.data.summary,
             maxTurns: chat.data.maxTurns,
             maxRounds: chat.data.maxRounds,
-            afterWork: chat.data.afterWork,
-            flowAfterWork: chat.data.flowAfterWork,
-            contextVariables: chat.data.contextVariables,
-            available: chat.data.available,
             realSource: chat.data.realSource,
             realTarget: chat.data.realTarget,
         };
@@ -154,10 +135,6 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
     const nestedChat = getNestedChat(json);
     const prerequisites = getChatPrerequisites(json);
     const maxRounds = getChatMaxRounds(json);
-    const afterWork = getChatAfterWork(json);
-    const flowAfterWork = getChatFlowAfterWork(json);
-    const contextVariables = getContextVariables(json);
-    const available = getAvailable(json);
     const realSource = getRealSource(json);
     const realTarget = getRealTarget(json);
     const data = new WaldiezChatData({
@@ -174,10 +151,6 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
         nestedChat,
         prerequisites,
         maxRounds,
-        afterWork,
-        flowAfterWork,
-        contextVariables,
-        available,
         realSource,
         realTarget,
     });

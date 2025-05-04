@@ -7,14 +7,10 @@ import {
     WaldiezAgentAssistantData,
     WaldiezAgentCaptain,
     WaldiezAgentCaptainData,
-    WaldiezAgentGroupManager,
-    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUser,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoning,
     WaldiezAgentReasoningData,
-    WaldiezAgentSwarm,
-    WaldiezAgentSwarmData,
     WaldiezAgentUserProxy,
     WaldiezAgentUserProxyData,
 } from "@waldiez/models";
@@ -60,20 +56,6 @@ export const getAgent = (
             rest,
         });
     }
-    if (agentType === "manager") {
-        return new WaldiezAgentGroupManager({
-            id,
-            agentType,
-            name,
-            description,
-            tags,
-            requirements,
-            createdAt,
-            updatedAt,
-            data: data as WaldiezAgentGroupManagerData,
-            rest,
-        });
-    }
     if (agentType === "rag_user") {
         return new WaldiezAgentRagUser({
             id,
@@ -85,20 +67,6 @@ export const getAgent = (
             createdAt,
             updatedAt,
             data: data as WaldiezAgentRagUserData,
-            rest,
-        });
-    }
-    if (agentType === "swarm") {
-        return new WaldiezAgentSwarm({
-            id,
-            agentType,
-            name,
-            description,
-            tags,
-            requirements,
-            createdAt,
-            updatedAt,
-            data: data as WaldiezAgentSwarmData,
             rest,
         });
     }

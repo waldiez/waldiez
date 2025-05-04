@@ -40,22 +40,8 @@ describe("WaldiezAgentNode", () => {
         fireEvent.click(editButton);
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
-    it("should open a manager's modal", () => {
-        renderAgent("manager");
-        const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
-        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-    });
     it("should open a rag user's modal", () => {
         renderAgent("rag_user");
-        const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
-        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-    });
-    it("should open a swarm agent's modal", () => {
-        renderAgent("swarm");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
@@ -92,20 +78,6 @@ describe("WaldiezAgentNode", () => {
         };
         await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
     });
-    it("should import a manager agent", async () => {
-        renderAgent("assistant", { openModal: true });
-        const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("Assistant");
-        const agentData = getAgentData("manager");
-        const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
-        const importData = {
-            id: agentId,
-            type: "agent",
-            agentType: "manager",
-            data: { ...(agentData as any) },
-        };
-        await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
-    });
 
     it("should import a rag user agent", async () => {
         renderAgent("user", { openModal: true });
@@ -117,20 +89,6 @@ describe("WaldiezAgentNode", () => {
             id: agentId,
             type: "agent",
             agentType: "rag_user",
-            data: { ...(agentData as any) },
-        };
-        await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
-    });
-    it("should import a swarm agent", async () => {
-        renderAgent("user", { openModal: true });
-        const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("User");
-        const agentData = getAgentData("swarm");
-        const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
-        const importData = {
-            id: agentId,
-            type: "agent",
-            agentType: "swarm",
             data: { ...(agentData as any) },
         };
         await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
@@ -181,44 +139,6 @@ describe("WaldiezAgentNode", () => {
                     timeout: 10,
                     lastNMessages: "auto",
                     functions: ["skill1", "skill2"],
-                },
-            },
-        });
-        const exportButton = screen.getByTestId(`export-agent-${flowId}-${agentId}`);
-        fireEvent.click(exportButton);
-        expect(window.URL.createObjectURL).toHaveBeenCalled();
-        expect(window.URL.revokeObjectURL).toHaveBeenCalled();
-        expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
-    });
-    it("should export a manager agent", () => {
-        renderAgent("manager", {
-            openModal: true,
-            dataOverrides: {
-                codeExecutionConfig: {
-                    workDir: undefined,
-                    useDocker: false,
-                    timeout: 10,
-                    lastNMessages: "auto",
-                    functions: [],
-                },
-            },
-        });
-        const exportButton = screen.getByTestId(`export-agent-${flowId}-${agentId}`);
-        fireEvent.click(exportButton);
-        expect(window.URL.createObjectURL).toHaveBeenCalled();
-        expect(window.URL.revokeObjectURL).toHaveBeenCalled();
-        expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
-    });
-    it("should export a swarm agent", () => {
-        renderAgent("swarm", {
-            openModal: true,
-            dataOverrides: {
-                codeExecutionConfig: {
-                    workDir: undefined,
-                    useDocker: false,
-                    timeout: 10,
-                    lastNMessages: "auto",
-                    functions: [],
                 },
             },
         });

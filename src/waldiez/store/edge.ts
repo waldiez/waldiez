@@ -5,13 +5,13 @@
 import { Edge, EdgeChange, applyEdgeChanges } from "@xyflow/react";
 
 import {
+    IWaldiezEdgeStore,
     WaldiezEdge,
     WaldiezEdgeType,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,
     WaldiezNodeAgentType,
 } from "@waldiez/models";
-import { IWaldiezEdgeStore } from "@waldiez/models";
 import {
     edgeCommonStyle,
     getNewEdge,
@@ -19,7 +19,6 @@ import {
     getNewEdgeName,
     getNewEdgeNodes,
     resetEdgeOrdersAndPositions,
-    setSwarmInitialAgent,
     shouldReconnect,
 } from "@waldiez/store/utils";
 import { AGENT_COLORS } from "@waldiez/theme";
@@ -161,9 +160,6 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
         });
         this.resetEdgeOrdersAndPositions();
         const newStoredEdge = this.get().edges.find(edge => edge.id === newEdge.id);
-        if (sourceNode.data.agentType !== "swarm" && targetNode.data.agentType === "swarm") {
-            setSwarmInitialAgent(targetNode.id, this.get, this.set);
-        }
         return (newStoredEdge ?? newEdge) as WaldiezEdge;
     };
     onEdgeDoubleClick = (_event: any, edge: WaldiezEdge) => {
@@ -215,9 +211,6 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
             console.error("Not all nodes found");
             return;
         }
-        if (oldSourceNode.data.agentType !== "swarm" && newTargetNode.data.agentType === "swarm") {
-            setSwarmInitialAgent(newTargetNode.id, this.get, this.set);
-        }
         if (!color) {
             return false;
         }
@@ -251,9 +244,6 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
     onEdgesChange = (changes: EdgeChange[]) => {
         const edges = applyEdgeChanges(changes, this.get().edges);
         this.set({ edges, updatedAt: new Date().toISOString() });
-    };
-    getSwarmEdges: () => WaldiezEdge[] = () => {
-        return this.get().edges.filter(edge => edge.type === "swarm") as WaldiezEdge[];
     };
     private resetEdgeOrdersAndPositions = () => {
         resetEdgeOrdersAndPositions(this.get, this.set);

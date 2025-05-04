@@ -67,13 +67,6 @@ describe("WaldiezChat", () => {
             },
             prerequisites: [],
             maxRounds: 30,
-            afterWork: null,
-            flowAfterWork: null,
-            contextVariables: {},
-            available: {
-                type: "none",
-                value: null,
-            },
             realSource: "agent1",
             realTarget: "agent2",
         });

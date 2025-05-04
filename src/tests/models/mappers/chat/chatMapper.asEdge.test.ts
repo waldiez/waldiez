@@ -37,16 +37,6 @@ describe("chatMapper.asEdge", () => {
             prerequisites: [],
             maxTurns: 0,
             maxRounds: 0,
-            afterWork: {
-                recipientType: "agent",
-                recipient: "wa-2",
-            },
-            flowAfterWork: null,
-            contextVariables: {},
-            available: {
-                type: "none",
-                value: null,
-            },
             realSource: "wa-1",
             realTarget: "wa-2",
         };

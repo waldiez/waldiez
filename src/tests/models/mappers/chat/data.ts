@@ -4,13 +4,7 @@
  */
 import { Edge, Node } from "@xyflow/react";
 
-import {
-    WaldiezChatLlmSummaryMethod,
-    WaldiezEdgeType,
-    WaldiezMessageType,
-    WaldiezSwarmAfterWorkRecipientType,
-    WaldiezSwarmOnConditionAvailableCheckType,
-} from "@waldiez/types";
+import { WaldiezChatLlmSummaryMethod, WaldiezEdgeType, WaldiezMessageType } from "@waldiez/types";
 
 export const chatJson = {
     id: "wc-1",
@@ -43,10 +37,6 @@ export const chatJson = {
         },
         maxTurns: 0,
         maxRounds: 0,
-        afterWork: {
-            recipientType: "agent",
-            recipient: "wa-2",
-        },
     },
     type: "chat",
 };
@@ -84,7 +74,7 @@ export const agents: Node[] = [
         id: "wa-2",
         type: "agent",
         data: {
-            agentType: "manager",
+            agentType: "assistant",
             label: "wa-2",
         },
         position: { x: 10, y: 10 },
@@ -93,10 +83,19 @@ export const agents: Node[] = [
         id: "wa-3",
         type: "agent",
         data: {
-            agentType: "assistant",
+            agentType: "reasoning",
             label: "wa-3",
         },
         position: { x: 20, y: 20 },
+    },
+    {
+        id: "wa-4",
+        type: "agent",
+        data: {
+            agentType: "captain",
+            label: "wa-4",
+        },
+        position: { x: 30, y: 40 },
     },
 ];
 export const updateData = {
@@ -128,16 +127,6 @@ export const updateData = {
         },
         maxTurns: 0,
         maxRounds: 0,
-        afterWork: {
-            recipientType: "agent" as WaldiezSwarmAfterWorkRecipientType,
-            recipient: "wa-2",
-        },
-        flowAfterWork: null,
-        contextVariables: {},
-        available: {
-            type: "none" as WaldiezSwarmOnConditionAvailableCheckType,
-            value: null,
-        },
         realSource: "wa-1",
         realTarget: "wa-2",
     },
@@ -172,16 +161,6 @@ export const updateData = {
             },
             maxTurns: 0,
             maxRounds: 0,
-            afterWork: {
-                recipientType: "agent" as WaldiezSwarmAfterWorkRecipientType,
-                recipient: "wa-2",
-            },
-            flowAfterWork: null,
-            contextVariables: {},
-            available: {
-                type: "none" as WaldiezSwarmOnConditionAvailableCheckType,
-                value: null,
-            },
             realSource: "wa-1",
             realTarget: "wa-2",
         },
@@ -212,16 +191,6 @@ export const updateData = {
         },
         maxTurns: 0,
         maxRounds: 0,
-        afterWork: {
-            recipientType: "agent",
-            recipient: "wa-2",
-        },
-        flowAfterWork: null,
-        contextVariables: {},
-        available: {
-            type: "none",
-            value: null,
-        },
         realSource: "wa-1",
         realTarget: "wa-2",
     },
@@ -256,16 +225,6 @@ export const updateData = {
             },
             maxTurns: 0,
             maxRounds: 0,
-            afterWork: {
-                recipientType: "agent",
-                recipient: "wa-2",
-            },
-            flowAfterWork: null,
-            contextVariables: {},
-            available: {
-                type: "none",
-                value: null,
-            },
             source: "wa-1",
             target: "wa-2",
             realSource: "wa-1",

@@ -43,10 +43,6 @@
   color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.manager .agent-edge-view {
-  color: var(--group-manager-color);
-}
-
 .flow-wrapper .agent-edge-box.rag_user .agent-edge-view {
   color: var(--rag-user-color);
 }
@@ -59,20 +55,12 @@
   box-shadow: 0 0 4px var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.manager .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--group-manager-color);
-}
-
 .flow-wrapper .agent-edge-box.rag_user .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--rag-user-color);
 }
 
 .flow-wrapper .agent-edge-box.user .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--user-agent-color);
-}
-
-.flow-wrapper .agent-edge-box.swarm .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--swarm-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.reasoning .agent-edge-view:hover {

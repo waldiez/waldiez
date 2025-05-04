@@ -4,11 +4,10 @@
  */
 import { Node, ReactFlowInstance } from "@xyflow/react";
 
-import { WaldiezNodeSkill, WaldiezNodeSkillData, WaldiezSkill } from "@waldiez/models";
-import { IWaldiezSkillStore } from "@waldiez/models";
+import { IWaldiezSkillStore, WaldiezNodeSkill, WaldiezNodeSkillData, WaldiezSkill } from "@waldiez/models";
 import { skillMapper } from "@waldiez/models/mappers";
 import { getNewNodePosition, reArrangeSkills, setViewPortTopLeft } from "@waldiez/store/utils";
-import { WaldiezNodeAgent, WaldiezNodeAgentSwarm, typeOfGet, typeOfSet } from "@waldiez/types";
+import { WaldiezNodeAgent, typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
 export class WaldiezSkillStore implements IWaldiezSkillStore {
@@ -172,9 +171,6 @@ export class WaldiezSkillStore implements IWaldiezSkillStore {
         }
         const functions = codeExecution.functions ?? [];
         const newFunctions = functions.filter(func => func !== skillId);
-        if (agent.data.agentType === "swarm") {
-            this.updateSwarmAgentAfterSkillDeletion(agent as WaldiezNodeAgentSwarm, skillId);
-        }
         return {
             ...agent,
             data: {
@@ -186,11 +182,6 @@ export class WaldiezSkillStore implements IWaldiezSkillStore {
                 },
             },
         };
-    };
-    private updateSwarmAgentAfterSkillDeletion = (agent: WaldiezNodeAgentSwarm, skillId: string) => {
-        const agentFunctions = agent.data.functions;
-        const newAgentFunctions = agentFunctions.filter(func => func !== skillId);
-        agent.data.functions = newAgentFunctions;
     };
     private getAgentsAfterSkillDeletion = (skillId: string, rfInstance: ReactFlowInstance | undefined) => {
         const newSkillNodes = this.get().nodes.filter(node => node.type === "skill" && node.id !== skillId);

@@ -14,9 +14,7 @@ import mistral from "@waldiez/assets/logos/mistral.svg";
 import nim from "@waldiez/assets/logos/nim.svg";
 import openai from "@waldiez/assets/logos/openai.svg";
 import together from "@waldiez/assets/logos/together.svg";
-import managerWebp from "@waldiez/assets/manager.webp";
 import reasoningWebp from "@waldiez/assets/reasoning.webp";
-import swarmAgentWebp from "@waldiez/assets/swarm.webp";
 import userWebp from "@waldiez/assets/user.webp";
 
 export const LOGOS = {
@@ -38,8 +36,5 @@ export const AGENT_ICONS = {
     rag_user: userWebp,
     captain: captainWebp,
     assistant: assistantWebp,
-    manager: managerWebp,
-    swarm: swarmAgentWebp,
     reasoning: reasoningWebp,
-    swarm_container: userWebp,
 };
