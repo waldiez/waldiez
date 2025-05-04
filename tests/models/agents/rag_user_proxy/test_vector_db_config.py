@@ -6,14 +6,14 @@ import os
 
 import pytest
 
-from waldiez.models.agents.rag_user.vector_db_config import (
-    WaldiezRagUserVectorDbConfig,
+from waldiez.models.agents.rag_user_proxy.vector_db_config import (
+    WaldiezRagUserProxyVectorDbConfig,
 )
 
 
 def test_waldiez_rag_user_vector_db_config() -> None:
-    """Test WaldiezRagUserVectorDbConfig."""
-    vector_db_config = WaldiezRagUserVectorDbConfig(
+    """Test WaldiezRagUserProxyVectorDbConfig."""
+    vector_db_config = WaldiezRagUserProxyVectorDbConfig(
         model="all-MiniLM-L6-v2",
         use_memory=True,
         use_local_storage=False,
@@ -34,8 +34,8 @@ def test_waldiez_rag_user_vector_db_config() -> None:
 
 
 def test_waldiez_rag_user_vector_db_config_local_storage() -> None:
-    """Test WaldiezRagUserVectorDbConfig with local storage."""
-    vector_db_config = WaldiezRagUserVectorDbConfig(
+    """Test WaldiezRagUserProxyVectorDbConfig with local storage."""
+    vector_db_config = WaldiezRagUserProxyVectorDbConfig(
         model="all-MiniLM-L6-v2",
         use_memory=False,
         use_local_storage=True,
@@ -57,7 +57,7 @@ def test_waldiez_rag_user_vector_db_config_local_storage() -> None:
     assert vector_db_config.metadata == {}
 
     with pytest.raises(ValueError):
-        WaldiezRagUserVectorDbConfig(
+        WaldiezRagUserProxyVectorDbConfig(
             model="all-MiniLM-L6-v2",
             use_memory=False,
             use_local_storage=True,

@@ -10,12 +10,10 @@ from waldiez.models import (
     WaldiezAgent,
     WaldiezAgentType,
     WaldiezAssistant,
-    WaldiezGroupManager,
     WaldiezModel,
-    WaldiezRagUser,
+    WaldiezRagUserProxy,
     WaldiezReasoningAgent,
     WaldiezSkill,
-    WaldiezSwarmAgent,
     WaldiezUserProxy,
 )
 
@@ -74,16 +72,12 @@ def create_agent(
         data={"apiType": "nim"},  # type: ignore
     )
     agent_cls: Type[WaldiezAgent] = WaldiezAgent
-    if agent_type == "user":
+    if agent_type == "user_proxy":
         agent_cls = WaldiezUserProxy
     if agent_type == "assistant":
         agent_cls = WaldiezAssistant
-    if agent_type == "rag_user":
-        agent_cls = WaldiezRagUser
-    if agent_type == "manager":
-        agent_cls = WaldiezGroupManager
-    if agent_type == "swarm":
-        agent_cls = WaldiezSwarmAgent
+    if agent_type == "rag_user_proxy":
+        agent_cls = WaldiezRagUserProxy
     if agent_type == "reasoning":
         agent_cls = WaldiezReasoningAgent
     agent = agent_cls(

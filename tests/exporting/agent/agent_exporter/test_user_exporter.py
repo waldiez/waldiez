@@ -22,7 +22,7 @@ def test_export_user(tmp_path: Path) -> None:
     """
     output_dir = tmp_path / "test_agent_exporter"
     output_dir.mkdir(exist_ok=True)
-    agent, skills, models = create_agent(1, "user")
+    agent, skills, models = create_agent(1, "user_proxy")
     model_names = {model.id: model.name for model in models}
     exporter = AgentExporter(
         agent=agent,
@@ -30,7 +30,6 @@ def test_export_user(tmp_path: Path) -> None:
         agent_names={agent.id: agent.name},
         skill_names={skill.id: skill.name for skill in skills},
         models=(models, model_names),
-        group_chat_members=[],
         for_notebook=False,
         arguments_resolver=lambda _agent: [
             "    llm_config='model-config'",

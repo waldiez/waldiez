@@ -5,15 +5,15 @@
 from pathlib import Path
 from typing import Set, Tuple
 
-from waldiez.models import WaldiezRagUser
+from waldiez.models import WaldiezRagUserProxy
 
 
-def _get_qdrant_client_string(agent: WaldiezRagUser) -> Tuple[str, str]:
+def _get_qdrant_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
     """Get the QdrantVectorDB client string.
 
     Parameters
     ----------
-    agent : WaldiezRagUser
+    agent : WaldiezRagUserProxy
         The agent.
     agent_name : str
         The agent's name.
@@ -44,13 +44,13 @@ def _get_qdrant_client_string(agent: WaldiezRagUser) -> Tuple[str, str]:
 
 
 def _get_qdrant_embedding_function_string(
-    agent: WaldiezRagUser, agent_name: str
+    agent: WaldiezRagUserProxy, agent_name: str
 ) -> Tuple[str, str, str]:
     """Get the QdrantVectorDB embedding function string.
 
     Parameters
     ----------
-    agent : WaldiezRagUser
+    agent : WaldiezRagUserProxy
         The agent.
     agent_name : str
         The agent's name.
@@ -83,13 +83,13 @@ def _get_qdrant_embedding_function_string(
 
 
 def get_qdrant_db_args(
-    agent: WaldiezRagUser, agent_name: str
+    agent: WaldiezRagUserProxy, agent_name: str
 ) -> Tuple[str, Set[str], str]:
     """Get the kwargs to use for QdrantVectorDB.
 
     Parameters
     ----------
-    agent : WaldiezRagUser
+    agent : WaldiezRagUserProxy
         The agent.
     agent_name : str
         The agent's name.

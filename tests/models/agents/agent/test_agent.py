@@ -10,14 +10,11 @@ from waldiez.models.agents import (
     WaldiezAgentData,
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
-    WaldiezAgentTeachability,
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
-    WaldiezGroupManager,
-    WaldiezRagUser,
+    WaldiezRagUserProxy,
     WaldiezReasoningAgent,
-    WaldiezSwarmAgent,
     WaldiezUserProxy,
 )
 
@@ -44,13 +41,6 @@ def test_waldiez_agent() -> None:
                 keywords=[],
                 criterion=None,
                 method_content=None,
-            ),
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=0.0,
-                max_num_retrievals=0,
             ),
             code_execution_config=WaldiezAgentCodeExecutionConfig(
                 work_dir="work_dir",
@@ -102,11 +92,7 @@ def test_agent_ag2_class() -> None:
         id="wa-2",
         name="assistant",
     )
-    group_manager = WaldiezGroupManager(
-        id="wa-3",
-        name="group_manager",
-    )
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-4",
         name="rag_user",
     )
@@ -117,20 +103,14 @@ def test_agent_ag2_class() -> None:
             is_multimodal=True,
         ),
     )
-    swarm_agent = WaldiezSwarmAgent(
-        id="wa-6",
-        name="swarm_agent",
-    )
     reasoning_agent = WaldiezReasoningAgent(
         id="wa-7",
         name="reasoning_agent",
     )
     assert user_proxy.ag2_class == "UserProxyAgent"
     assert assistant.ag2_class == "AssistantAgent"
-    assert group_manager.ag2_class == "GroupChatManager"
     assert rag_user.ag2_class == "RetrieveUserProxyAgent"
     assert multimodal_agent.ag2_class == "MultimodalConversableAgent"
-    assert swarm_agent.ag2_class == "SwarmAgent"
     assert reasoning_agent.ag2_class == "ReasoningAgent"
 
 
@@ -144,11 +124,7 @@ def test_agent_ag2_imports() -> None:
         id="wa-2",
         name="assistant",
     )
-    group_manager = WaldiezGroupManager(
-        id="wa-3",
-        name="group_manager",
-    )
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-4",
         name="rag_user",
     )
@@ -158,10 +134,6 @@ def test_agent_ag2_imports() -> None:
         data=WaldiezAssistantData(
             is_multimodal=True,
         ),
-    )
-    swarm_agent = WaldiezSwarmAgent(
-        id="wa-6",
-        name="swarm_agent",
     )
     reasoning_agent = WaldiezReasoningAgent(
         id="wa-7",
@@ -175,10 +147,6 @@ def test_agent_ag2_imports() -> None:
         "import autogen",
         "from autogen import AssistantAgent",
     }
-    assert group_manager.ag2_imports == {
-        "import autogen",
-        "from autogen import GroupChatManager",
-    }
     # pylint: disable=line-too-long
     assert rag_user.ag2_imports == {
         "import autogen",
@@ -187,48 +155,6 @@ def test_agent_ag2_imports() -> None:
     assert multimodal_agent.ag2_imports == {
         "import autogen",
         "from autogen.agentchat.contrib.multimodal_conversable_agent import MultimodalConversableAgent",  # noqa: E501
-    }
-    # pylint: disable=duplicate-code
-    swarm_group_imports = """from autogen.agentchat.group import (
-    AgentNameTarget,
-    AgentTarget,
-    AskUserTarget,
-    ContextExpression,
-    ContextStr,
-    ContextStrLLMCondition,
-    ContextVariables,
-    ExpressionAvailableCondition,
-    ExpressionContextCondition,
-    GroupChatConfig,
-    GroupChatTarget,
-    Handoffs,
-    NestedChatTarget,
-    OnCondition,
-    OnContextCondition,
-    ReplyResult,
-    RevertToUserTarget,
-    SpeakerSelectionResult,
-    StayTarget,
-    StringAvailableCondition,
-    StringContextCondition,
-    StringLLMCondition,
-    TerminateTarget,
-)"""
-    swarm_patterns = """from autogen.agentchat.group.patterns import (
-    DefaultPattern,
-    ManualPattern,
-    AutoPattern,
-    RandomPattern,
-    RoundRobinPattern,
-)"""
-    new_swarm_context_imports = (
-        """from autogen.agentchat.group import ContextVariables"""
-    )
-    assert swarm_agent.ag2_imports == {
-        "import autogen",
-        swarm_group_imports,
-        swarm_patterns,
-        new_swarm_context_imports,
     }
     assert reasoning_agent.ag2_imports == {
         "import autogen",

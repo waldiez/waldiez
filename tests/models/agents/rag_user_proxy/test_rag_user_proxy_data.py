@@ -2,12 +2,14 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents.rag_user.rag_user_data.*."""
 
-from waldiez.models.agents.rag_user.rag_user_data import WaldiezRagUserData
+from waldiez.models.agents.rag_user_proxy.rag_user_proxy_data import (
+    WaldiezRagUserProxyData,
+)
 
 
 def test_waldiez_rag_user_data() -> None:
-    """Test WaldiezRagUserData."""
-    rag_user_data = WaldiezRagUserData()
+    """Test WaldiezRagUserProxyData."""
+    rag_user_data = WaldiezRagUserProxyData()
     assert rag_user_data.retrieve_config
     # assert defaults
     assert rag_user_data.retrieve_config.task == "default"
@@ -33,5 +35,7 @@ def test_waldiez_rag_user_data() -> None:
     assert rag_user_data.retrieve_config.custom_token_count_function is None
     assert rag_user_data.retrieve_config.token_count_function_string is None
     assert not rag_user_data.retrieve_config.use_custom_text_split
+    assert rag_user_data.retrieve_config.custom_text_split_function is None
+    assert rag_user_data.retrieve_config.text_split_function_string is None
     assert rag_user_data.retrieve_config.custom_text_split_function is None
     assert rag_user_data.retrieve_config.text_split_function_string is None

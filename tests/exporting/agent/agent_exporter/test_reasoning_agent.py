@@ -24,7 +24,6 @@ def test_export_reasoning_agent() -> None:
         models=(models, model_names),
         chats=([], {}),
         is_async=False,
-        group_chat_members=[],
         for_notebook=False,
         arguments_resolver=lambda _agent: [
             "    llm_config='model-config'",

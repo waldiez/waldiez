@@ -6,6 +6,6 @@ from typing_extensions import Literal
 
 # pylint: disable=line-too-long
 # fmt: off
-WaldiezAgentType = Literal["user", "assistant", "manager", "rag_user", "swarm", "reasoning", "captain"]  # noqa: E501
-"""Possible types of a Waldiez Agent: user, assistant, manager, rag_user, swarm, reasoning, captain."""  # noqa: E501
+WaldiezAgentType = Literal["user", "user_proxy", "assistant", "manager", "rag_user", "rag_user_proxy", "swarm", "reasoning", "captain"]  # noqa: E501
+"""Possible types of a Waldiez Agent: user_proxy, assistant, manager, rag_user_proxy, swarm, reasoning, captain."""  # noqa: E501
 # fmt: on

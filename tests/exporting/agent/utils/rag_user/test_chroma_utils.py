@@ -9,10 +9,10 @@ from waldiez.exporting.agent.utils.rag_user.chroma_utils import (
     get_chroma_db_args,
 )
 from waldiez.models import (
-    WaldiezRagUser,
-    WaldiezRagUserData,
-    WaldiezRagUserRetrieveConfig,
-    WaldiezRagUserVectorDbConfig,
+    WaldiezRagUserProxy,
+    WaldiezRagUserProxyData,
+    WaldiezRagUserProxyRetrieveConfig,
+    WaldiezRagUserProxyVectorDbConfig,
 )
 
 # pylint: disable=line-too-long
@@ -21,7 +21,7 @@ from waldiez.models import (
 def test_get_chroma_db_args() -> None:
     """Test get_chroma_db_args."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -29,13 +29,13 @@ def test_get_chroma_db_args() -> None:
         description="description",
         tags=["tag1"],
         requirements=["requirement1"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 get_or_create=True,
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     use_local_storage=True,
                     local_storage_path="local_storage_path",
                     model="model",
@@ -75,7 +75,7 @@ def test_get_chroma_db_args() -> None:
 def test_get_chroma_db_args_no_local() -> None:
     """Test get_chroma_db_args with no local storage."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -83,12 +83,12 @@ def test_get_chroma_db_args_no_local() -> None:
         description="description of rag_user",
         tags=["tag3"],
         requirements=["requirement4", "requirement5"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     use_local_storage=False,
                     local_storage_path=None,
                     model="model",
@@ -122,7 +122,7 @@ def test_get_chroma_db_custom_embeddings() -> None:
         "def custom_embedding_function():\n"
         '    return SentenceTransformerEmbeddingFunction(model_name="model")\n'
     )
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -130,12 +130,12 @@ def test_get_chroma_db_custom_embeddings() -> None:
         description="description",
         tags=["tag2"],
         requirements=["requirement4"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     use_local_storage=False,
                     local_storage_path=None,
                     model="model",

@@ -10,15 +10,15 @@ from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
 
 from ...common import WaldiezBase, check_function, generate_function
-from .vector_db_config import WaldiezRagUserVectorDbConfig
+from .vector_db_config import WaldiezRagUserProxyVectorDbConfig
 
-WaldiezRagUserTask = Literal["code", "qa", "default"]
+WaldiezRagUserProxyTask = Literal["code", "qa", "default"]
 """Possible tasks for the retrieve chat."""
-WaldiezRagUserVectorDb = Literal["chroma", "pgvector", "mongodb", "qdrant"]
+WaldiezRagUserProxyVectorDb = Literal["chroma", "pgvector", "mongodb", "qdrant"]
 """Possible vector dbs for the retrieve chat."""
-WaldiezRagUserChunkMode = Literal["multi_lines", "one_line"]
+WaldiezRagUserProxyChunkMode = Literal["multi_lines", "one_line"]
 """Possible chunk modes for the retrieve chat."""
-WaldiezRagUserModels: Dict[WaldiezRagUserVectorDb, str] = {
+WaldiezRagUserProxyModels: Dict[WaldiezRagUserProxyVectorDb, str] = {
     "chroma": "all-MiniLM-L6-v2",
     "mongodb": "all-MiniLM-L6-v2",
     "pgvector": "all-MiniLM-L6-v2",
@@ -59,7 +59,7 @@ NOT_LOCAL = (
 )
 
 
-class WaldiezRagUserRetrieveConfig(WaldiezBase):
+class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
     """RAG user agent.
 
     Attributes
@@ -180,7 +180,7 @@ class WaldiezRagUserRetrieveConfig(WaldiezBase):
     """
 
     task: Annotated[
-        WaldiezRagUserTask,
+        WaldiezRagUserProxyTask,
         Field(
             "default",
             title="Task",
@@ -195,7 +195,7 @@ class WaldiezRagUserRetrieveConfig(WaldiezBase):
         ),
     ]
     vector_db: Annotated[
-        WaldiezRagUserVectorDb,
+        WaldiezRagUserProxyVectorDb,
         Field(
             "chroma",
             title="Vector DB",
@@ -203,11 +203,11 @@ class WaldiezRagUserRetrieveConfig(WaldiezBase):
         ),
     ]
     db_config: Annotated[
-        WaldiezRagUserVectorDbConfig,
+        WaldiezRagUserProxyVectorDbConfig,
         Field(
             title="DB Config",
             description="The config for the selected vector db.",
-            default_factory=WaldiezRagUserVectorDbConfig,
+            default_factory=WaldiezRagUserProxyVectorDbConfig,
         ),
     ]
     docs_path: Annotated[
@@ -273,7 +273,7 @@ class WaldiezRagUserRetrieveConfig(WaldiezBase):
         ),
     ]
     chunk_mode: Annotated[
-        WaldiezRagUserChunkMode,
+        WaldiezRagUserProxyChunkMode,
         Field(
             default="multi_lines",
             title="Chunk Mode",
@@ -756,7 +756,7 @@ class WaldiezRagUserRetrieveConfig(WaldiezBase):
 
         Returns
         -------
-        WaldiezRagUserData
+        WaldiezRagUserProxyData
             The validated RAG user data.
         """
         self.validate_custom_embedding_function()
@@ -764,7 +764,7 @@ class WaldiezRagUserRetrieveConfig(WaldiezBase):
         self.validate_custom_text_split_function()
         self.validate_docs_path()
         if not self.db_config.model:
-            self.db_config.model = WaldiezRagUserModels[self.vector_db]
+            self.db_config.model = WaldiezRagUserProxyModels[self.vector_db]
         if isinstance(self.n_results, int) and self.n_results < 1:
             self.n_results = None
         return self

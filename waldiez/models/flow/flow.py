@@ -2,17 +2,16 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez flow model."""
 
-import uuid
 from typing import List, Optional, Tuple
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
 
-from ..agents import WaldiezAgent, WaldiezSwarmAgent
+from ..agents import WaldiezAgent
 from ..chat import WaldiezChat
 from ..common import WaldiezBase, now
 from .flow_data import WaldiezFlowData
-from .utils import check_handoff_to_nested_chat, id_factory
+from .utils import id_factory
 
 
 class WaldiezFlow(WaldiezBase):
@@ -101,7 +100,7 @@ class WaldiezFlow(WaldiezBase):
     storage_id: Annotated[
         str,
         Field(
-            uuid.uuid4(),
+            default_factory=id_factory,
             description="The storage ID of the flow (ignored, UI related)",
             title="Storage ID",
             alias="storageId",
@@ -151,19 +150,6 @@ class WaldiezFlow(WaldiezBase):
         return self.data.cache_seed
 
     @property
-    def is_swarm_flow(self) -> bool:
-        """Check if the flow is a swarm flow.
-
-        Returns
-        -------
-        bool
-            True if the flow is a swarm flow, False otherwise.
-        """
-        return any(
-            agent.agent_type == "swarm" for agent in self.data.agents.members
-        )
-
-    @property
     def is_single_agent_mode(self) -> bool:
         """Check if the flow is in single agent mode.
 
@@ -206,6 +192,25 @@ class WaldiezFlow(WaldiezBase):
                 return agent
         raise ValueError(f"Agent with ID {agent_id} not found.")
 
+    @staticmethod
+    def default() -> "WaldiezFlow":
+        """Get the default flow.
+
+        Returns
+        -------
+        WaldiezFlow
+            The default flow.
+        """
+        return WaldiezFlow(
+            id=id_factory(),
+            type="flow",
+            name="Default Flow",
+            description="Default Flow",
+            tags=[],
+            requirements=[],
+            data=WaldiezFlowData.default(),
+        )
+
     def _get_flow_order(
         self,
     ) -> List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
@@ -214,11 +219,6 @@ class WaldiezFlow(WaldiezBase):
         # we only keep the ones with order >=0
         # and sort them by this property
         ordered_flow: List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]] = []
-        # if swarm, we only keep the first chat
-        if self.is_swarm_flow:
-            ordered_flow = self._get_swarm_flow()
-        if ordered_flow:
-            return ordered_flow
         for chat in self.data.chats:
             if chat.data.order < 0:
                 continue
@@ -232,59 +232,6 @@ class WaldiezFlow(WaldiezBase):
                 target = self.get_agent_by_id(chat.target)
                 ordered_flow.append((chat, source, target))
         return ordered_flow
-
-    def _get_swarm_flow(
-        self,
-    ) -> List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
-        # valid "first" chat:
-        # - source is a user|rag_user and target is a swarm
-        # - source is a swarm and target is a  (and source.is_initial)
-        valid_chats: List[WaldiezChat] = []
-        for chat in self.data.chats:
-            target = self.get_agent_by_id(chat.target)
-            source = self.get_agent_by_id(chat.source)
-            if (
-                source.agent_type in ["user", "rag_user"]
-                and target.agent_type == "swarm"
-            ):
-                return [(chat, source, target)]
-            if source.agent_type == "swarm" and target.agent_type == "swarm":
-                valid_chats.append(chat)
-        if not valid_chats:
-            return []
-        for valid_chat in valid_chats:
-            source = self.get_agent_by_id(valid_chat.source)
-            if isinstance(source, WaldiezSwarmAgent) and source.is_initial:
-                return [
-                    (
-                        valid_chat,
-                        source,
-                        self.get_agent_by_id(valid_chat.target),
-                    )
-                ]
-        first_chat: Optional[WaldiezChat] = None
-        # first check the order
-        by_order = sorted(
-            filter(lambda edge: edge.data.order >= 0, valid_chats),
-            key=lambda edge: edge.data.order,
-        )
-        if not by_order:
-            # let's order by position
-            by_position = sorted(
-                valid_chats,
-                key=lambda chat: chat.data.position,
-            )
-            if by_position:
-                first_chat = by_position[0]
-            else:
-                first_chat = valid_chats[0]
-        else:
-            first_chat = by_order[0]
-        if first_chat:
-            source = self.get_agent_by_id(first_chat.source)
-            target = self.get_agent_by_id(first_chat.target)
-            return [(first_chat, source, target)]
-        return []
 
     def get_agent_connections(
         self, agent_id: str, all_chats: bool = True
@@ -318,99 +265,6 @@ class WaldiezFlow(WaldiezBase):
                 if target.id == agent_id:
                     connections.append(source.id)
         return connections
-
-    def get_group_chat_members(
-        self, group_manager_id: str
-    ) -> List[WaldiezAgent]:
-        """Get the group chat members.
-
-        Parameters
-        ----------
-        group_manager_id : str
-            The ID of the group manager.
-
-        Returns
-        -------
-        List[WaldiezAgent]
-            The list of group chat
-        """
-        agent = self.get_agent_by_id(group_manager_id)
-        if agent.agent_type != "manager":
-            return []
-        connections = self.get_agent_connections(
-            group_manager_id,
-            all_chats=True,
-        )
-        return [self.get_agent_by_id(member_id) for member_id in connections]
-
-    def get_initial_swarm_agent(self) -> Optional[WaldiezAgent]:
-        """Get the initial swarm agent.
-
-        Returns
-        -------
-        Optional[WaldiezAgent]
-            The initial swarm agent if found, None otherwise.
-        """
-        fallback_agent = None
-        for chat in self.data.chats:
-            source_agent = self.get_agent_by_id(chat.source)
-            target_agent = self.get_agent_by_id(chat.target)
-            if (
-                target_agent.agent_type == "swarm"
-                and source_agent.agent_type != "swarm"
-            ):
-                return target_agent
-            if (
-                source_agent.agent_type == "swarm"
-                and target_agent.agent_type == "swarm"
-            ):
-                fallback_agent = source_agent
-                break
-        for swarm_agent in self.data.agents.swarm_agents:
-            if swarm_agent.is_initial:
-                return swarm_agent
-        return fallback_agent
-
-    def get_swarm_chat_members(
-        self,
-        initial_agent: WaldiezAgent,
-    ) -> Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]:
-        """Get the swarm chat members.
-
-        Parameters
-        ----------
-        initial_agent : WaldiezAgent
-            The initial agent.
-
-        Returns
-        -------
-        Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]
-            The list of swarm chat members and the user agent if any.
-        """
-        if initial_agent.agent_type != "swarm":
-            return [], None
-        members: List[WaldiezAgent] = [initial_agent]
-        user_agent: Optional[WaldiezAgent] = None
-        visited_agents = set()
-        visited_agents.add(initial_agent.id)
-        connections = self.get_agent_connections(
-            initial_agent.id,
-            all_chats=True,
-        )
-        while connections:
-            agent_id = connections.pop()
-            if agent_id in visited_agents:
-                continue
-            agent = self.get_agent_by_id(agent_id)
-            visited_agents.add(agent_id)
-            if agent.agent_type == "swarm":
-                members.append(agent)
-                connections.extend(
-                    self.get_agent_connections(agent_id, all_chats=True)
-                )
-            if agent.agent_type in ["user", "rag_user"] and not user_agent:
-                user_agent = agent
-        return members, user_agent
 
     def _validate_agent_connections(self) -> None:
         for agent in self.data.agents.members:
@@ -462,13 +316,6 @@ class WaldiezFlow(WaldiezBase):
         skills_ids = self.validate_flow_skills()
         self.data.agents.validate_flow(model_ids, skills_ids)
         self._validate_agent_connections()
-        if self.is_swarm_flow:
-            for swarm_agent in self.data.agents.swarm_agents:
-                check_handoff_to_nested_chat(
-                    swarm_agent,
-                    all_agents=list(self.data.agents.members),
-                    all_chats=self.data.chats,
-                )
         return self
 
     def validate_flow_models(self) -> List[str]:

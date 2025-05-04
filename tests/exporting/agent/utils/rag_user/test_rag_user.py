@@ -13,10 +13,10 @@ from waldiez.exporting.agent.utils.rag_user.rag_user import (
 )
 from waldiez.exporting.base import ExporterMixin
 from waldiez.models import (
-    WaldiezRagUser,
-    WaldiezRagUserData,
-    WaldiezRagUserRetrieveConfig,
-    WaldiezRagUserVectorDbConfig,
+    WaldiezRagUserProxy,
+    WaldiezRagUserProxyData,
+    WaldiezRagUserProxyRetrieveConfig,
+    WaldiezRagUserProxyVectorDbConfig,
 )
 
 # pylint: disable=line-too-long
@@ -37,9 +37,9 @@ def _get_rag_user(
     custom_embedding: Optional[str] = None,
     custom_token_count: Optional[str] = None,
     custom_text_split: Optional[str] = None,
-) -> WaldiezRagUser:
+) -> WaldiezRagUserProxy:
     """Get a RAG user agent."""
-    return WaldiezRagUser(
+    return WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         description="A RAG user agent.",
@@ -47,9 +47,9 @@ def _get_rag_user(
         agent_type="rag_user",
         tags=[],
         requirements=[],
-        data=WaldiezRagUserData(
+        data=WaldiezRagUserProxyData(
             model_ids=["wm-1"],
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 vector_db="chroma",
                 docs_path=[
                     doc_path,
@@ -58,7 +58,7 @@ def _get_rag_user(
                     r"file:///home/username/Documents/ New Folder",
                     "file:///home/username/Documents/ New Folder1",
                 ],
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     use_local_storage=local_path is not None,
                     local_storage_path=local_path,
                 ),

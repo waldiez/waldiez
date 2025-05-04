@@ -20,11 +20,9 @@ from ..base import (
 from .utils import (
     get_agent_code_execution_config,
     get_captain_agent_extras,
-    get_group_manager_extras,
     get_is_termination_message,
     get_rag_user_extras,
     get_reasoning_agent_extras,
-    get_swarm_extras,
 )
 
 
@@ -39,7 +37,6 @@ class AgentExporter(BaseExporter, ExporterMixin):
         chats: Tuple[List[WaldiezChat], Dict[str, str]],
         skill_names: Dict[str, str],
         is_async: bool,
-        group_chat_members: List[WaldiezAgent],
         for_notebook: bool,
         arguments_resolver: Callable[[WaldiezAgent], List[str]],
         output_dir: Optional[Union[str, Path]] = None,
@@ -75,7 +72,6 @@ class AgentExporter(BaseExporter, ExporterMixin):
         self.model_names = models[1]
         self.skill_names = skill_names
         self.arguments_resolver = arguments_resolver
-        self.group_chat_members = group_chat_members
         self.chats = chats
         self.is_async = is_async
         self._agent_name = agent_names[agent.id]
@@ -92,23 +88,6 @@ class AgentExporter(BaseExporter, ExporterMixin):
             model_names=self.model_names,
             path_resolver=self.path_resolver,
             serializer=self.serializer,
-        )
-        # before_manager, group_chat_arg
-        self._group_chat = get_group_manager_extras(
-            agent=self.agent,
-            agent_names=self.agent_names,
-            group_chat_members=self.group_chat_members,
-            serializer=self.serializer,
-        )
-        # before_agent, extra args, handoff_registrations
-        self._swarm = get_swarm_extras(
-            agent=self.agent,
-            agent_names=self.agent_names,
-            skill_names=self.skill_names,
-            chats=self.chats,
-            is_async=self.is_async,
-            serializer=self.serializer,
-            string_escape=self.string_escape,
         )
         # before_agent, termination_arg
         self._termination = get_is_termination_message(
@@ -179,12 +158,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
             before_agent_string += self._code_execution[0]
         if self._termination[1]:
             before_agent_string += self._termination[1]
-        if self._group_chat[0]:
-            before_agent_string += self._group_chat[0]
         if self._rag[0]:
             before_agent_string += self._rag[0]
-        if self._swarm[0]:
-            before_agent_string += self._swarm[0]
         if before_agent_string:
             return [
                 (
@@ -205,8 +180,6 @@ class AgentExporter(BaseExporter, ExporterMixin):
             The exported content after the main export and its position.
         """
         after_agent_string = ""
-        if self._swarm[2]:
-            after_agent_string += self._swarm[2]
         if after_agent_string:
             return [
                 (
@@ -227,7 +200,6 @@ class AgentExporter(BaseExporter, ExporterMixin):
         agent = self.agent
         agent_name = self._agent_name
         retrieve_arg = self._rag[1]
-        group_chat_arg = self._group_chat[1]
         is_termination = self._termination[0]
         code_execution_arg = self._code_execution[1]
         system_message_arg = self.get_system_message_arg()
@@ -236,9 +208,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
             default_auto_reply = (
                 f'"{self.string_escape(agent.data.agent_default_auto_reply)}"'
             )
-        extras = (
-            f"{group_chat_arg}{retrieve_arg}{self._reasoning}{self._captain}"
-        )
+        extras = f"{retrieve_arg}{self._reasoning}{self._captain}"
         ag2_class = self.agent.ag2_class
         if agent.agent_type == "swarm":
             # SwarmAgent is deprecated.
@@ -252,8 +222,6 @@ class AgentExporter(BaseExporter, ExporterMixin):
     code_execution_config={code_execution_arg},
     is_termination_msg={is_termination},{extras}
 """
-        if self._swarm[1]:
-            agent_str += self._swarm[1]
         # e.g. llm_config=...
         other_args = self.arguments_resolver(agent)
         if other_args:

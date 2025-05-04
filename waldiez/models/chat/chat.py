@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from pydantic import Field
 from typing_extensions import Annotated
 
-from ..agents import WaldiezAgent, WaldiezRagUser, WaldiezSwarmAfterWork
+from ..agents import WaldiezAgent, WaldiezRagUserProxy
 from ..common import WaldiezBase, generate_function
 from .chat_data import WaldiezChatData
 from .chat_message import (
@@ -127,19 +127,9 @@ class WaldiezChat(WaldiezBase):
         return self.data.message_content
 
     @property
-    def context_variables(self) -> Dict[str, Any]:
-        """Get the context variables."""
-        return self.data.context_variables or {}
-
-    @property
     def max_rounds(self) -> int:
         """Get the max rounds for swarm chat."""
         return self.data.max_rounds
-
-    @property
-    def after_work(self) -> Optional[WaldiezSwarmAfterWork]:
-        """Get the after work."""
-        return self.data.after_work
 
     @property
     def chat_id(self) -> int:
@@ -326,8 +316,8 @@ class WaldiezChat(WaldiezBase):
         """
         args_dict = self.data.get_chat_args(for_queue)
         if (
-            isinstance(sender, WaldiezRagUser)
-            and sender.agent_type == "rag_user"
+            isinstance(sender, WaldiezRagUserProxy)
+            and sender.agent_type == "rag_user_proxy"
             and self.message.type == "rag_message_generator"
         ):
             # check for n_results in agent data, to add in context
@@ -357,9 +347,5 @@ class WaldiezChat(WaldiezBase):
         dump["nested_chat"] = self.nested_chat.model_dump()
         dump["message"] = self.message.model_dump()
         dump["message_content"] = self.message_content
-        dump["context_variables"] = self.context_variables
         dump["max_rounds"] = self.max_rounds
-        dump["after_work"] = (
-            self.after_work.model_dump() if self.after_work else None
-        )
         return dump

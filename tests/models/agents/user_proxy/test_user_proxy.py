@@ -9,4 +9,4 @@ def test_waldiez_user_proxy() -> None:
     """Test WaldiezUserProxy."""
     user_proxy = WaldiezUserProxy(id="wa-1", name="user")
     assert user_proxy.data.human_input_mode == "ALWAYS"
-    assert user_proxy.agent_type == "user"
+    assert user_proxy.agent_type == "user_proxy"

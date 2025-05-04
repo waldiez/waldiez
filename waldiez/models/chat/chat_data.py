@@ -7,10 +7,6 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents.swarm_agent import (
-    WaldiezSwarmAfterWork,
-    WaldiezSwarmOnConditionAvailable,
-)
 from ..common import WaldiezBase, check_function, update_dict
 from .chat_message import (
     CALLABLE_MESSAGE,
@@ -198,35 +194,9 @@ class WaldiezChatData(WaldiezBase):
         Field(
             20,
             title="Max Rounds",
-            description="Maximum number of conversation rounds.(swarm)",
+            description="Maximum number of conversation rounds.(group)",
         ),
     ] = 20
-    after_work: Annotated[
-        Optional[WaldiezSwarmAfterWork],
-        Field(
-            None,
-            alias="afterWork",
-            title="After Work",
-            description="The work to do after the chat (swarm).",
-        ),
-    ] = None
-    context_variables: Annotated[
-        Optional[Dict[str, Any]],
-        Field(
-            None,
-            alias="contextVariables",
-            title="Context Variables",
-            description="The context variables to use in the chat.",
-        ),
-    ] = None
-    available: Annotated[
-        WaldiezSwarmOnConditionAvailable,
-        Field(
-            default_factory=WaldiezSwarmOnConditionAvailable,
-            title="Available",
-            description="The available condition for the chat.",
-        ),
-    ]
 
     _message_content: Optional[str] = None
     _chat_id: int = 0
@@ -347,32 +317,6 @@ class WaldiezChatData(WaldiezBase):
                 type="none", use_carryover=False, content=None, context={}
             )
         return value
-
-    @field_validator("context_variables", mode="after")
-    @classmethod
-    def validate_context_variables(
-        cls, value: Optional[Dict[str, Any]]
-    ) -> Optional[Dict[str, Any]]:
-        """Validate the context variables.
-
-        Parameters
-        ----------
-        value : Optional[Dict[str, Any]]
-            The context variables value.
-
-        Returns
-        -------
-        Optional[Dict[str, Any]]
-            The validated context variables value.
-
-        Raises
-        ------
-        ValueError
-            If the validation fails.
-        """
-        if value is None:
-            return None
-        return update_dict(value)
 
     @property
     def summary_args(self) -> Optional[Dict[str, Any]]:

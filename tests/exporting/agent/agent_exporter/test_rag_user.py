@@ -15,15 +15,14 @@ def test_export_rag_user() -> None:
     """Test exporting a RAG user agent."""
     output_dir = Path("test_rag_user_exporter")
     output_dir.mkdir(exist_ok=True)
-    agent, skills, models = create_agent(1, "rag_user")
+    agent, skills, models = create_agent(1, "rag_user_proxy")
     model_names = {model.id: model.name for model in models}
     exporter = AgentExporter(
         agent=agent,
         agent_names={agent.id: agent.name},
-        skill_names={skill.id: skill.name for skill in skills},
         models=(models, model_names),
+        skill_names={skill.id: skill.name for skill in skills},
         chats=([], {}),
-        group_chat_members=[],
         is_async=False,
         for_notebook=False,
         arguments_resolver=lambda _agent: [

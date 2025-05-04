@@ -11,7 +11,7 @@ from waldiez.models import (
     WaldiezChatData,
     WaldiezChatMessage,
     WaldiezChatSummary,
-    WaldiezRagUser,
+    WaldiezRagUserProxy,
 )
 from waldiez.models.chat.chat_message import get_last_carryover_method_content
 
@@ -64,7 +64,6 @@ def callable_message(sender, recipient, context):
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2],
         agent_names=agent_names,
         all_chats=[chat],
@@ -154,7 +153,6 @@ def test_empty_chat() -> None:
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2],
         agent_names=agent_names,
         all_chats=[chat],
@@ -227,7 +225,6 @@ def test_chat_with_rag_and_carryover() -> None:
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2],
         agent_names=agent_names,
         all_chats=[chat],
@@ -283,7 +280,7 @@ def test_chat_with_rag_no_carryover() -> None:
     agent1_name = "agent1"
     agent2_name = "agent2"
     chat_name = "chat1"
-    agent1 = WaldiezRagUser(
+    agent1 = WaldiezRagUserProxy(
         id="wa-1",
         name=agent1_name,
         agent_type="rag_user",
@@ -325,7 +322,6 @@ def test_chat_with_rag_no_carryover() -> None:
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2],
         agent_names=agent_names,
         all_chats=[chat],

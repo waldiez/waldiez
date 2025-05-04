@@ -7,17 +7,17 @@ from waldiez.exporting.agent.utils.rag_user.pgvector_utils import (
     get_pgvector_db_args,
 )
 from waldiez.models import (
-    WaldiezRagUser,
-    WaldiezRagUserData,
-    WaldiezRagUserRetrieveConfig,
-    WaldiezRagUserVectorDbConfig,
+    WaldiezRagUserProxy,
+    WaldiezRagUserProxyData,
+    WaldiezRagUserProxyRetrieveConfig,
+    WaldiezRagUserProxyVectorDbConfig,
 )
 
 
 def test_get_pgvector_db_args() -> None:
     """Test get_pgvector_db_args."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         type="agent",
         name="rag_user",
@@ -25,12 +25,12 @@ def test_get_pgvector_db_args() -> None:
         agent_type="rag_user",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="pgvector",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url="http://localhost:5432",
                     use_local_storage=True,
                     local_storage_path="local_storage_path",
@@ -64,7 +64,7 @@ def test_get_pgvector_db_args_custom_embeddings() -> None:
         "def custom_embedding_function():\n"
         '    return SentenceTransformer("model").encode\n'
     )
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         type="agent",
         name="rag_user",
@@ -72,12 +72,12 @@ def test_get_pgvector_db_args_custom_embeddings() -> None:
         agent_type="rag_user",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="pgvector",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url="http://localhost:5432",
                     use_local_storage=True,
                     local_storage_path="local_storage_path",

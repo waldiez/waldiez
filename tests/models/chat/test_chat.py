@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.chat.chat.*."""
 
-from waldiez.models.agents.rag_user import WaldiezRagUser
+from waldiez.models.agents.rag_user_proxy import WaldiezRagUserProxy
 from waldiez.models.chat.chat import WaldiezChat
 from waldiez.models.chat.chat_data import WaldiezChatData
 from waldiez.models.chat.chat_nested import WaldiezChatNested
@@ -98,7 +98,7 @@ def test_waldiez_chat() -> None:
 
 def test_waldiez_chat_with_rag_user() -> None:
     """Test WaldiezChat with RAG user as a source."""
-    agent = WaldiezRagUser(
+    agent = WaldiezRagUserProxy(
         id="wa-1",
         type="agent",
         agent_type="rag_user",
@@ -134,7 +134,6 @@ def test_waldiez_chat_with_rag_user() -> None:
     chat_args = chat.get_chat_args(for_queue=False, sender=agent)
     # Then
     assert chat_args["n_results"] == 5
-    assert chat.context_variables == {"problem": "Solve this task"}
 
 
 def test_waldiez_chat_get_message_function() -> None:
@@ -354,96 +353,3 @@ def test_waldiez_chat_get_nested_chat_reply_function() -> None:
     assert nested_chat_reply_function[1] == "nested_chat_reply_post"
     nested_chat_reply_function = chat.get_nested_chat_reply_function()
     assert nested_chat_reply_function[1] == "nested_chat_reply"
-
-
-# NESTED_CHAT_MESSAGE = "nested_chat_message"
-# NESTED_CHAT_REPLY = "nested_chat_reply"
-# NESTED_CHAT_ARGS = ["recipient", "messages", "sender", "config"]
-# NESTED_CHAT_TYPES = (
-#     [
-#         "ConversableAgent",
-#         "List[Dict[str, Any]]",
-#         "ConversableAgent",
-#         "Dict[str, Any]",
-#     ],
-#     "Union[Dict[str, Any], str]",
-# )
-# def get_nested_chat_message_function(
-#         self,
-#         name_prefix: Optional[str] = None,
-#         name_suffix: Optional[str] = None,
-#     ) -> Tuple[str, str]:
-#         """Get the nested chat message function.
-
-#         Parameters
-#         ----------
-#         name_prefix : str
-#             The function name prefix.
-#         name_suffix : str
-#             The function name suffix.
-
-#         Returns
-#         -------
-#         Tuple[str, str]
-#             The nested chat message function and the function name.
-#         """
-#         if (
-#             not self.nested_chat.message
-#             or self.nested_chat.message.type in ("string", "none")
-#             or not self.nested_chat.message_content
-#         ):
-#             return "", ""
-#         function_name = NESTED_CHAT_MESSAGE
-#         if name_prefix:
-#             function_name = f"{name_prefix}_{function_name}"
-#         if name_suffix:
-#             function_name = f"{function_name}_{name_suffix}"
-#         return (
-#             generate_function(
-#                 function_name=function_name,
-#                 function_args=NESTED_CHAT_ARGS,
-#                 function_types=NESTED_CHAT_TYPES,
-#                 function_body=self.nested_chat.message_content,
-#             ),
-#             function_name,
-#         )
-
-#     def get_nested_chat_reply_function(
-#         self,
-#         name_prefix: Optional[str] = None,
-#         name_suffix: Optional[str] = None,
-#     ) -> Tuple[str, str]:
-#         """Get the nested chat reply function.
-
-#         Parameters
-#         ----------
-#         name_prefix : str
-#             The function name prefix.
-#         name_suffix : str
-#             The function name suffix.
-
-#         Returns
-#         -------
-#         Tuple[str, str]
-#             The nested chat reply function and the function name.
-#         """
-#         if (
-#             not self.nested_chat.reply
-#             or self.nested_chat.reply.type in ("string", "none")
-#             or not self.nested_chat.reply_content
-#         ):
-#             return "", ""
-#         function_name = NESTED_CHAT_REPLY
-#         if name_prefix:
-#             function_name = f"{name_prefix}_{function_name}"
-#         if name_suffix:
-#             function_name = f"{function_name}_{name_suffix}"
-#         return (
-#             generate_function(
-#                 function_name=function_name,
-#                 function_args=NESTED_CHAT_ARGS,
-#                 function_types=NESTED_CHAT_TYPES,
-#                 function_body=self.nested_chat.reply_content,
-#             ),
-#             function_name,
-#         )

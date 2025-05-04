@@ -28,7 +28,6 @@ def test_export_assistant(tmp_path: Path) -> None:
         models=(models, {model.id: model.name for model in models}),
         chats=([], {}),
         is_async=False,
-        group_chat_members=[],
         for_notebook=False,
         arguments_resolver=lambda _agent: [
             "    llm_config='model-config'",

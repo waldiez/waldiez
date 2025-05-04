@@ -15,7 +15,7 @@ from ...common import WaldiezBase
 
 
 # pylint: disable=line-too-long
-class WaldiezRagUserVectorDbConfig(WaldiezBase):
+class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
     """The config for the vector db.
 
     Attributes
@@ -147,7 +147,7 @@ class WaldiezRagUserVectorDbConfig(WaldiezBase):
 
         Returns
         -------
-        WaldiezRagUserVectorDbConfig
+        WaldiezRagUserProxyVectorDbConfig
             The vector db config.
 
         Raises

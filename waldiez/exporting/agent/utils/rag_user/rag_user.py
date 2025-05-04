@@ -6,9 +6,9 @@ from typing import Callable, Dict, List, Set, Tuple, Union
 
 from waldiez.models import (
     WaldiezAgent,
-    WaldiezRagUser,
-    WaldiezRagUserModels,
-    WaldiezRagUserRetrieveConfig,
+    WaldiezRagUserProxy,
+    WaldiezRagUserProxyModels,
+    WaldiezRagUserProxyRetrieveConfig,
 )
 
 from .vector_db import get_rag_user_vector_db_string
@@ -44,7 +44,9 @@ def get_rag_user_extras(
     before_agent_string = ""
     retrieve_arg = ""
     db_imports: Set[str] = set()
-    if agent.agent_type == "rag_user" and isinstance(agent, WaldiezRagUser):
+    if agent.agent_type == "rag_user_proxy" and isinstance(
+        agent, WaldiezRagUserProxy
+    ):
         rag_content_before_agent, retrieve_arg, db_imports = (
             get_rag_user_retrieve_config_str(
                 agent=agent,
@@ -63,7 +65,7 @@ def get_rag_user_extras(
 
 # pylint: disable=too-many-locals
 def get_rag_user_retrieve_config_str(
-    agent: WaldiezRagUser,
+    agent: WaldiezRagUserProxy,
     agent_name: str,
     model_names: Dict[str, str],
     path_resolver: Callable[[str], str],
@@ -73,7 +75,7 @@ def get_rag_user_retrieve_config_str(
 
     Parameters
     ----------
-    agent : WaldiezRagUser
+    agent : WaldiezRagUserProxy
         The agent.
     agent_name : str
         The agent's name.
@@ -141,8 +143,8 @@ def get_rag_user_retrieve_config_str(
 
 
 def _get_model_arg(
-    agent: WaldiezRagUser,
-    retrieve_config: WaldiezRagUserRetrieveConfig,
+    agent: WaldiezRagUserProxy,
+    retrieve_config: WaldiezRagUserProxyRetrieveConfig,
     model_names: Dict[str, str],
 ) -> str:  # pragma: no cover
     agent_models = agent.data.model_ids
@@ -155,12 +157,12 @@ def _get_model_arg(
         selected_model = model_names[retrieve_config.model]
         new_model_name = f"{selected_model}"
         return f"{new_model_name}"
-    return WaldiezRagUserModels[retrieve_config.vector_db]
+    return WaldiezRagUserProxyModels[retrieve_config.vector_db]
 
 
 def _get_args_dict(
-    agent: WaldiezRagUser,
-    retrieve_config: WaldiezRagUserRetrieveConfig,
+    agent: WaldiezRagUserProxy,
+    retrieve_config: WaldiezRagUserProxyRetrieveConfig,
     model_names: Dict[str, str],
     path_resolver: Callable[[str], str],
 ) -> Dict[str, Union[str, List[str]]]:

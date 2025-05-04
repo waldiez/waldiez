@@ -71,7 +71,7 @@ def get_chat_message_string(
         return string_escape(chat.message.content), None
 
     is_rag_with_carryover = (
-        sender.agent_type == "rag_user" and chat.message.use_carryover
+        sender.agent_type == "rag_user_proxy" and chat.message.use_carryover
     )
     chat_name = chat_names[chat.id]
     function_content, function_name = chat.get_message_function(

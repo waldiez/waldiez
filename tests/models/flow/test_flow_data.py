@@ -27,10 +27,10 @@ def test_waldiez_flow_data() -> None:
         edges=[],
         viewport={},
         agents={  # type: ignore
-            "users": [],
-            "assistants": [assistant_1, assistant_2],
-            "managers": [],
-            "rag_users": [],
+            "userProxyAgents": [],
+            "assistantAgents": [assistant_1, assistant_2],
+            "managerAgents": [],
+            "ragUserProxyAgents": [],
         },
         models=[],
         skills=[],
@@ -40,10 +40,9 @@ def test_waldiez_flow_data() -> None:
     assert not flow_data.nodes
     assert not flow_data.edges
     assert not flow_data.viewport
-    assert not flow_data.agents.users
-    assert len(flow_data.agents.assistants) == 2
-    assert not flow_data.agents.managers
-    assert not flow_data.agents.rag_users
+    assert not flow_data.agents.userProxyAgents
+    assert len(flow_data.agents.assistantAgents) == 2
+    assert not flow_data.agents.ragUserProxyAgents
     assert not flow_data.models
     assert not flow_data.skills
     assert not flow_data.chats
@@ -55,10 +54,9 @@ def test_waldiez_flow_data() -> None:
             edges=[],
             viewport={},
             agents={  # type: ignore
-                "users": [],
-                "assistants": [],
-                "managers": [],
-                "rag_users": [],
+                "userProxyAgents": [],
+                "assistantAgents": [],
+                "ragUserProxyAgents": [],
             },
             models=[],
             skills=[],
@@ -71,10 +69,9 @@ def test_waldiez_flow_data() -> None:
             edges=[],
             viewport={},
             agents={  # type: ignore
-                "users": [],
-                "assistants": [assistant_1, assistant_1],
-                "managers": [],
-                "rag_users": [],
+                "userProxyAgents": [],
+                "assistantAgents": [assistant_1, assistant_1],
+                "ragUserProxyAgents": [],
             },
             models=[],
             skills=[],

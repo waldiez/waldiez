@@ -2,12 +2,13 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Base agent class to be inherited by all agents."""
 
+import warnings
 from typing import List, Set
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from typing_extensions import Annotated, Literal
 
-from ...common import WaldiezBase, now
+from ....models.common import WaldiezBase, now
 from .agent_data import WaldiezAgentData
 from .agent_type import WaldiezAgentType
 from .code_execution import WaldiezAgentCodeExecutionConfig
@@ -65,8 +66,8 @@ class WaldiezAgent(WaldiezBase):
             ...,
             title="Agent type",
             description=(
-                "The type of the agent: user, assistant, group manager, "
-                "rag_user, swarm or reasoning"
+                "The type of the agent: user_proxy, assistant, group manager, "
+                "rag_user_proxy or reasoning"
             ),
         ),
     ]
@@ -122,22 +123,62 @@ class WaldiezAgent(WaldiezBase):
         ),
     ]
 
+    @field_validator("agent_type")
+    @classmethod
+    def validate_agent_type(cls, v: WaldiezAgentType) -> WaldiezAgentType:
+        """Validate the agent type.
+
+        Parameters
+        ----------
+        v : WaldiezAgentType
+            The agent type.
+
+        Returns
+        -------
+        WaldiezAgentType
+            The validated agent type.
+
+        Raises
+        ------
+        ValueError
+            If the agent type is not valid.
+        """
+
+        def _get_warning_message(old_type: str, new_type: str) -> str:
+            return (
+                f"The agent type '{old_type}' is deprecated. "
+                f"Use '{new_type}' instead."
+            )
+
+        if v == "user":
+            warnings.warn(
+                _get_warning_message("user", "user_proxy"),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return "user_proxy"
+        if v == "rag_user":
+            warnings.warn(
+                _get_warning_message("rag_user", "rag_user_proxy"),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return "rag_user_proxy"
+        return v
+
     @property
     def ag2_class(self) -> str:
         """Return the AG2 class of the agent."""
         class_name = "ConversableAgent"
-        if self.data.is_multimodal:
-            return "MultimodalConversableAgent"
         if self.agent_type == "assistant":
-            class_name = "AssistantAgent"
-        if self.agent_type == "user":
+            if getattr(self.data, "is_multimodal", False) is True:
+                class_name = "MultimodalConversableAgent"
+            else:
+                class_name = "AssistantAgent"
+        if self.agent_type in ("user", "user_proxy"):
             class_name = "UserProxyAgent"
-        if self.agent_type == "manager":
-            class_name = "GroupChatManager"
-        if self.agent_type == "rag_user":
+        if self.agent_type in ("rag_user", "rag_user_proxy"):
             class_name = "RetrieveUserProxyAgent"
-        if self.agent_type == "swarm":
-            class_name = "SwarmAgent"
         if self.agent_type == "reasoning":
             class_name = "ReasoningAgent"
         if self.agent_type == "captain":
@@ -165,44 +206,6 @@ class WaldiezAgent(WaldiezBase):
                 "from autogen.agentchat.contrib.multimodal_conversable_agent "
                 "import MultimodalConversableAgent"
             )
-        elif agent_class == "SwarmAgent":
-            imports.add(
-                """from autogen.agentchat.group import (
-    AgentNameTarget,
-    AgentTarget,
-    AskUserTarget,
-    ContextExpression,
-    ContextStr,
-    ContextStrLLMCondition,
-    ContextVariables,
-    ExpressionAvailableCondition,
-    ExpressionContextCondition,
-    GroupChatConfig,
-    GroupChatTarget,
-    Handoffs,
-    NestedChatTarget,
-    OnCondition,
-    OnContextCondition,
-    ReplyResult,
-    RevertToUserTarget,
-    SpeakerSelectionResult,
-    StayTarget,
-    StringAvailableCondition,
-    StringContextCondition,
-    StringLLMCondition,
-    TerminateTarget,
-)"""
-            )
-            imports.add(
-                """from autogen.agentchat.group.patterns import (
-    DefaultPattern,
-    ManualPattern,
-    AutoPattern,
-    RandomPattern,
-    RoundRobinPattern,
-)"""
-            )
-            imports.add("from autogen.agentchat.group import ContextVariables")
         elif agent_class == "ReasoningAgent":
             imports.add(
                 "from autogen.agents.experimental import ReasoningAgent"

@@ -2,8 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """It extends a user agent and has RAG related parameters."""
 
-from .rag_user import WaldiezRagUser
-from .rag_user_data import WaldiezRagUserData
+from .rag_user_proxy import WaldiezRagUserProxy
+from .rag_user_proxy_data import WaldiezRagUserProxyData
 from .retrieve_config import (
     CUSTOM_EMBEDDING_FUNCTION,
     CUSTOM_EMBEDDING_FUNCTION_ARGS,
@@ -14,13 +14,13 @@ from .retrieve_config import (
     CUSTOM_TOKEN_COUNT_FUNCTION,
     CUSTOM_TOKEN_COUNT_FUNCTION_ARGS,
     CUSTOM_TOKEN_COUNT_FUNCTION_TYPES,
-    WaldiezRagUserChunkMode,
-    WaldiezRagUserModels,
-    WaldiezRagUserRetrieveConfig,
-    WaldiezRagUserTask,
-    WaldiezRagUserVectorDb,
+    WaldiezRagUserProxyChunkMode,
+    WaldiezRagUserProxyModels,
+    WaldiezRagUserProxyRetrieveConfig,
+    WaldiezRagUserProxyTask,
+    WaldiezRagUserProxyVectorDb,
 )
-from .vector_db_config import WaldiezRagUserVectorDbConfig
+from .vector_db_config import WaldiezRagUserProxyVectorDbConfig
 
 __all__ = [
     "CUSTOM_EMBEDDING_FUNCTION",
@@ -32,12 +32,12 @@ __all__ = [
     "CUSTOM_TOKEN_COUNT_FUNCTION",
     "CUSTOM_TOKEN_COUNT_FUNCTION_ARGS",
     "CUSTOM_TOKEN_COUNT_FUNCTION_TYPES",
-    "WaldiezRagUser",
-    "WaldiezRagUserData",
-    "WaldiezRagUserModels",
-    "WaldiezRagUserVectorDb",
-    "WaldiezRagUserChunkMode",
-    "WaldiezRagUserRetrieveConfig",
-    "WaldiezRagUserTask",
-    "WaldiezRagUserVectorDbConfig",
+    "WaldiezRagUserProxy",
+    "WaldiezRagUserProxyData",
+    "WaldiezRagUserProxyModels",
+    "WaldiezRagUserProxyVectorDb",
+    "WaldiezRagUserProxyChunkMode",
+    "WaldiezRagUserProxyRetrieveConfig",
+    "WaldiezRagUserProxyTask",
+    "WaldiezRagUserProxyVectorDbConfig",
 ]

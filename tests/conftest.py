@@ -8,7 +8,6 @@ import pytest
 
 from waldiez.models import (
     WaldiezAgents,
-    WaldiezAgentTeachability,
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
@@ -22,7 +21,6 @@ from waldiez.models import (
     WaldiezFlow,
     WaldiezFlowData,
     WaldiezModel,
-    WaldiezSwarmOnConditionAvailable,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -59,13 +57,6 @@ def get_runnable_flow() -> WaldiezFlow:
             model_ids=[],
             skills=[],
             nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
         ),
         tags=["user"],
         requirements=[],
@@ -93,13 +84,6 @@ def get_runnable_flow() -> WaldiezFlow:
             model_ids=[],
             skills=[],
             nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
         ),
         tags=["assistant"],
         requirements=[],
@@ -133,23 +117,17 @@ def get_runnable_flow() -> WaldiezFlow:
                 message=None,
                 reply=None,
             ),
-            available=WaldiezSwarmOnConditionAvailable(
-                type="none",
-                value=None,
-            ),
             real_source=None,
             real_target=None,
             prerequisites=[],
         ),
     )
     agents = WaldiezAgents(
-        users=[user],
-        assistants=[assistant],
-        managers=[],
-        rag_users=[],
-        swarm_agents=[],
-        reasoning_agents=[],
-        captain_agents=[],
+        userProxyAgents=[user],
+        assistantAgents=[assistant],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
     )
     flow = WaldiezFlow(
         id="wf-1",
@@ -202,7 +180,9 @@ def waldiez_flow_no_human_input() -> WaldiezFlow:
     """
     flow = get_runnable_flow()
     dumped = flow.model_dump(by_alias=True)
-    dumped["data"]["agents"]["users"][0]["data"]["humanInputMode"] = "NEVER"
+    user_proxy = dumped["data"]["agents"]["userProxyAgents"][0]
+    user_proxy["data"]["humanInputMode"] = "NEVER"
+    dumped["data"]["agents"]["userProxyAgents"] = [user_proxy]
     dumped["data"]["chats"][0]["data"]["maxTurns"] = 1
     return WaldiezFlow(**dumped)
 
@@ -219,7 +199,7 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
         A WaldiezFlow instance.
     """
     flow = get_runnable_flow()
-    flow.data.agents.assistants = []
+    flow.data.agents.assistantAgents = []
     flow.data.models = [
         WaldiezModel(
             id="wm-1",
@@ -234,7 +214,7 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
         ),
     ]
     os.environ["OPENAI_API_KEY"] = "sk-proj-something"
-    flow.data.agents.captain_agents = [
+    flow.data.agents.captainAgents = [
         WaldiezCaptainAgent(
             id="wa-2",
             type="agent",
@@ -251,6 +231,8 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
         )
     ]
     dumped = flow.model_dump(by_alias=True)
-    dumped["data"]["agents"]["users"][0]["data"]["humanInputMode"] = "NEVER"
+    user_proxy = dumped["data"]["agents"]["userProxyAgents"][0]
+    user_proxy["data"]["humanInputMode"] = "NEVER"
+    dumped["data"]["agents"]["userProxyAgents"] = [user_proxy]
     dumped["data"]["chats"][0]["data"]["maxTurns"] = 1
     return flow

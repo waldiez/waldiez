@@ -9,10 +9,10 @@ from waldiez.exporting.agent.utils.rag_user.vector_db import (
     get_rag_user_vector_db_string,
 )
 from waldiez.models import (
-    WaldiezRagUser,
-    WaldiezRagUserData,
-    WaldiezRagUserRetrieveConfig,
-    WaldiezRagUserVectorDbConfig,
+    WaldiezRagUserProxy,
+    WaldiezRagUserProxyData,
+    WaldiezRagUserProxyRetrieveConfig,
+    WaldiezRagUserProxyVectorDbConfig,
 )
 
 # pylint: disable=line-too-long
@@ -21,7 +21,7 @@ from waldiez.models import (
 def test_get_rag_user_vector_db_string_chroma() -> None:
     """Test get_rag_user_vector_db_string with ChromaVectorDB."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -29,12 +29,12 @@ def test_get_rag_user_vector_db_string_chroma() -> None:
         description="description",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url=None,
                     use_memory=True,
                     use_local_storage=True,
@@ -78,7 +78,7 @@ def test_get_rag_user_vector_db_string_chroma() -> None:
 def test_get_rag_user_vector_db_string_qdrant() -> None:
     """Test get_rag_user_vector_db_string with QdrantVectorDB."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -86,12 +86,12 @@ def test_get_rag_user_vector_db_string_qdrant() -> None:
         description="description",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="qdrant",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url=None,
                     use_memory=True,
                     use_local_storage=True,
@@ -123,7 +123,7 @@ def test_get_rag_user_vector_db_string_qdrant() -> None:
 def test_get_rag_user_vector_db_string_mongodb() -> None:
     """Test get_rag_user_vector_db_string with MongoDBAtlasVectorDB."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -131,12 +131,12 @@ def test_get_rag_user_vector_db_string_mongodb() -> None:
         description="description",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="mongodb",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url="connection_url",
                     use_memory=True,
                     use_local_storage=True,
@@ -167,7 +167,7 @@ def test_get_rag_user_vector_db_string_mongodb() -> None:
 def test_get_rag_user_vector_db_string_pgvector() -> None:
     """Test get_rag_user_vector_db_string with PGVectorDB."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -175,12 +175,12 @@ def test_get_rag_user_vector_db_string_pgvector() -> None:
         description="description",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="pgvector",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url="connection_url",
                     use_memory=True,
                     use_local_storage=True,
@@ -218,7 +218,7 @@ def test_get_rag_user_vector_db_string_custom_embedding() -> None:
         "    from sentence_transformers import SentenceTransformer\n"
         '    return SentenceTransformer("model").encode\n'
     )
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -226,12 +226,12 @@ def test_get_rag_user_vector_db_string_custom_embedding() -> None:
         description="description",
         tags=["tag1", "tag2"],
         requirements=["requirement1", "requirement2"],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url=None,
                     use_memory=True,
                     use_local_storage=True,
@@ -284,7 +284,7 @@ def custom_embedding_function_rag_user() -> Callable[..., Any]:
 def test_get_rag_user_vector_db_string_with_metadata() -> None:
     """Test get_rag_user_vector_db_string with metadata."""
     # Given
-    rag_user = WaldiezRagUser(
+    rag_user = WaldiezRagUserProxy(
         id="wa-1",
         name="rag_user",
         type="agent",
@@ -292,12 +292,12 @@ def test_get_rag_user_vector_db_string_with_metadata() -> None:
         description="rag user description",
         tags=[],
         requirements=[],
-        data=WaldiezRagUserData(
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+        data=WaldiezRagUserProxyData(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 docs_path="docs_path",
                 collection_name="collection_name",
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     connection_url=None,
                     use_memory=True,
                     use_local_storage=True,

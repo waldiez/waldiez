@@ -74,7 +74,6 @@ def test_sequential_chat() -> None:
     chat_names = {"wc-1": chat1_name, "wc-2": chat2_name}
     main_chats = [(chat1, agent1, agent2), (chat2, agent2, agent3)]
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2, agent3],
         agent_names=agent_names,
         all_chats=[chat1, chat2],

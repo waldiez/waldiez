@@ -9,52 +9,56 @@ from pydantic import Field
 from typing_extensions import Annotated, Literal
 
 from ..agent import WaldiezAgent
-from .rag_user_data import WaldiezRagUserData
-from .retrieve_config import WaldiezRagUserRetrieveConfig
+from .rag_user_proxy_data import WaldiezRagUserProxyData
+from .retrieve_config import WaldiezRagUserProxyRetrieveConfig
 
 
-class WaldiezRagUser(WaldiezAgent):
+class WaldiezRagUserProxy(WaldiezAgent):
     """RAG user agent.
 
     It extends a user agent and has RAG related parameters.
 
     Attributes
     ----------
-    agent_type : Literal["rag_user"]
+    agent_type : Literal["rag_user", "rag_user_proxy"]
         The agent type: 'rag_user' for a RAG user agent.
-    data : WaldiezRagUserData
+    data : WaldiezRagUserProxyData
         The RAG user agent's data.
-        See `WaldiezRagUserData` for more info.
-    retrieve_config : WaldiezRagUserRetrieveConfig
+        See `WaldiezRagUserProxyData` for more info.
+    retrieve_config : WaldiezRagUserProxyRetrieveConfig
         The RAG user agent's retrieve config.
     """
 
     agent_type: Annotated[
-        Literal["rag_user"],
+        Literal["rag_user", "rag_user_proxy"],
         Field(
-            "rag_user",
+            "rag_user_proxy",
             title="Agent type",
-            description="The agent type: 'rag_user' for a RAG user agent",
+            description=(
+                "The agent type in a graph. "
+                "`rag_user` is deprecated and will be removed in "
+                "future versions. Use `rag_user_proxy` instead."
+            ),
             alias="agentType",
         ),
     ]
 
     data: Annotated[
-        WaldiezRagUserData,
+        WaldiezRagUserProxyData,
         Field(
             title="Data",
             description="The RAG user agent's data",
-            default_factory=WaldiezRagUserData,
+            default_factory=WaldiezRagUserProxyData,
         ),
     ]
 
     @property
-    def retrieve_config(self) -> WaldiezRagUserRetrieveConfig:
+    def retrieve_config(self) -> WaldiezRagUserProxyRetrieveConfig:
         """Get the retrieve config.
 
         Returns
         -------
-        WaldiezRagUserRetrieveConfig
+        WaldiezRagUserProxyRetrieveConfig
             The RAG user agent's retrieve config.
         """
         return self.data.retrieve_config

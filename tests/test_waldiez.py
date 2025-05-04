@@ -43,11 +43,6 @@ def test_waldiez(tmp_path: Path) -> None:
     assert "chromadb>=0.5.23" in waldiez2.requirements
     assert "SKILL_KEY" in skill.secrets
     assert "SKILL_KEY" == waldiez2.get_flow_env_vars()[0][0]
-    for agent in waldiez2.agents:
-        if agent.agent_type == "manager":
-            assert waldiez2.get_group_chat_members(agent)
-        else:
-            assert not waldiez2.get_group_chat_members(agent)
     assert waldiez2.chats
 
 

@@ -8,7 +8,7 @@ from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
     WaldiezChatMessage,
-    WaldiezRagUser,
+    WaldiezRagUserProxy,
 )
 
 from .common import get_chat_message_string, update_summary_chat_args
@@ -193,8 +193,8 @@ def _get_chat_dict_string(
         else:
             chat_string += "\n" + f'{tab}    "{key}": {value},'
     if (
-        sender.agent_type == "rag_user"
-        and isinstance(sender, WaldiezRagUser)
+        sender.agent_type == "rag_user_proxy"
+        and isinstance(sender, WaldiezRagUserProxy)
         and chat.message.type == "rag_message_generator"
     ):
         message = f"{agent_names[sender.id]}.message_generator"

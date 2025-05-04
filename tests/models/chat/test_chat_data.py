@@ -297,38 +297,6 @@ def test_waldiez_chat_get_chat_args() -> None:
     assert chat_args["not_a_solution"] is None
 
 
-def test_waldiez_chat_invalid_context_variables() -> None:
-    """Test invalid context variables."""
-    with pytest.raises(ValueError):
-        WaldiezChatData(
-            name="Chat data",
-            description="Chat data",
-            source="wa-1",
-            target="wa-2",
-            position=0,
-            clear_history=False,
-            message={  # type: ignore
-                "type": "string",
-                "content": "Hello there",
-                "context": {
-                    "problem": "Solve this task",
-                    "solution": "4.2",
-                    "alternative_solution": "42",
-                    "not_a_solution": "null",
-                    "is_valid": "true",
-                },
-            },
-            summary={  # type: ignore
-                "method": "last_msg",
-                "prompt": "Summarize this chat",
-                "args": {
-                    "summary_role": "system",
-                },
-            },
-            context_variables=4,  # type: ignore
-        )
-
-
 def test_waldiez_chat_invalid_message_method() -> None:
     """Test invalid message method."""
     with pytest.raises(ValueError):

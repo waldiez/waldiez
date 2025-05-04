@@ -10,7 +10,7 @@ from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
     WaldiezChatMessage,
-    WaldiezRagUser,
+    WaldiezRagUserProxy,
 )
 
 from .common import get_chat_message_string, update_summary_chat_args
@@ -280,8 +280,8 @@ def get_chat_message(
     additional_methods_string = ""
     method_content: Optional[str] = None
     if (
-        sender.agent_type == "rag_user"
-        and isinstance(sender, WaldiezRagUser)
+        sender.agent_type == "rag_user_proxy"
+        and isinstance(sender, WaldiezRagUserProxy)
         and chat.message.type == "rag_message_generator"
         and chat.message.use_carryover is False
     ):

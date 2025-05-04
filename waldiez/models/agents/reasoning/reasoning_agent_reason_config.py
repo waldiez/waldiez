@@ -100,3 +100,31 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             description="UCT exploration parameter.",
         ),
     ]
+
+
+# reason_config (dict): Configuration for the reasoning method.
+# Supported parameters:
+#     method (str): The search strategy to use. Options:
+#         - "beam_search" (default): Uses beam search with parallel paths
+#         - "mcts": Uses Monte Carlo Tree Search for exploration
+#         - "lats": Uses Language Agent Tree Search with per-step rewards
+#         - "dfs": Uses depth-first search
+#                (equivalent to beam_search with beam_size=1)
+#     Common parameters:
+#         max_depth (int): Maximum depth of reasoning tree (default: 3)
+#         forest_size (int):
+#               Number of independent trees to maintain (default: 1)
+#         rating_scale (int):
+#               Scale for grading responses, e.g. 1-10 (default: 10)
+#     Beam Search specific:
+#         beam_size (int): Number of parallel paths to maintain (default: 3)
+#         answer_approach (str):
+#               How to select final answer, "pool" or "best" (default: "pool")
+#     MCTS/LATS specific:
+#         nsim (int): Number of simulations to run (default: 3)
+#         exploration_constant (float):
+#               UCT exploration parameter (default: 1.41)
+#     Example configs:
+#         `{"method": "beam_search", "beam_size": 5, "max_depth": 4}`
+#         `{"method": "mcts", "nsim": 10, "exploration_constant": 2.0}`
+#         `{"method": "lats", "nsim": 5, "forest_size": 3}`

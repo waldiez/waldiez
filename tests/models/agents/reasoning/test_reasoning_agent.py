@@ -20,9 +20,6 @@ def test_waldiez_reasoning_agent() -> None:
         name="reasoning_agent",
         agent_type="reasoning",
         data=WaldiezReasoningAgentData(
-            max_depth=3,
-            beam_size=3,
-            answer_approach="pool",
             verbose=True,
             reason_config=WaldiezReasoningAgentReasonConfig(
                 method="beam_search",

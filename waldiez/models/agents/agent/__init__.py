@@ -8,7 +8,6 @@ from .agent_type import WaldiezAgentType
 from .code_execution import WaldiezAgentCodeExecutionConfig
 from .linked_skill import WaldiezAgentLinkedSkill
 from .nested_chat import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
-from .teachability import WaldiezAgentTeachability
 from .termination_message import (
     IS_TERMINATION_MESSAGE,
     IS_TERMINATION_MESSAGE_ARGS,
@@ -26,7 +25,6 @@ __all__ = [
     "WaldiezAgentLinkedSkill",
     "WaldiezAgentNestedChat",
     "WaldiezAgentNestedChatMessage",
-    "WaldiezAgentTeachability",
     "WaldiezAgentTerminationMessage",
     "WaldiezAgentType",
 ]

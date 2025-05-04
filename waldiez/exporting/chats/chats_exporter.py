@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Chats exporter."""
 
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from waldiez.models import WaldiezAgent, WaldiezChat
 
@@ -22,7 +22,6 @@ from .utils import (
     export_nested_chat_registration,
     export_sequential_chat,
     export_single_chat,
-    export_swarm_chat,
 )
 
 
@@ -35,9 +34,6 @@ class ChatsExporter(BaseExporter, ExporterMixin):
 
     def __init__(
         self,
-        get_swarm_members: Callable[
-            [WaldiezAgent], Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]
-        ],
         all_agents: List[WaldiezAgent],
         agent_names: Dict[str, str],
         all_chats: List[WaldiezChat],
@@ -50,11 +46,6 @@ class ChatsExporter(BaseExporter, ExporterMixin):
 
         Parameters
         ----------
-        get_swarm_members : Callable[
-                [WaldiezAgent],
-                Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]
-            ]
-            The function to use to resolve the swarm members.
         all_agents : List[WaldiezAgent]
             All the agents in the flow.
         agent_names : Dict[str, str]
@@ -75,7 +66,6 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         self.main_chats = main_chats
         self.all_chats = all_chats
         self.chat_names = chat_names
-        self.get_swarm_members = get_swarm_members
         self.for_notebook = for_notebook
         self.is_async = is_async
         self._chat_string = None
@@ -87,20 +77,6 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         if len(self.main_chats) == 1:
             main_chat = self.main_chats[0]
             chat, sender, recipient = main_chat
-            if sender.agent_type == "swarm" or recipient.agent_type == "swarm":
-                self._chat_string, self._before_chat = export_swarm_chat(
-                    get_swarm_members=self.get_swarm_members,
-                    chat=chat,
-                    agent_names=self.agent_names,
-                    chat_names=self.chat_names,
-                    sender=sender,
-                    recipient=recipient,
-                    serializer=self.serializer,
-                    string_escape=self.string_escape,
-                    tabs=1 if self.for_notebook else 2,
-                    is_async=self.is_async,
-                )
-                return
             self._chat_string, self._before_chat = export_single_chat(
                 sender=sender,
                 recipient=recipient,

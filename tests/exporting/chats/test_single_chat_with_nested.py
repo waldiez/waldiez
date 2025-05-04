@@ -158,7 +158,6 @@ def nested_chat_message(recipient, messages, sender, config):
     }
     chat_names = {"wc-1": chat_name, "wc-2": chat_name, "wc-3": chat_name}
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2, agent3, agent4],
         agent_names=agent_names,
         all_chats=[chat1, chat2, chat3],

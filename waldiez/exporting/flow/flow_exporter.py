@@ -431,7 +431,6 @@ class FlowExporter(BaseExporter, ExporterMixin):
                 self.agent_arguments_resolver,
                 exported_with_agent_arg,
             )
-            group_chat_members = self.waldiez.get_group_chat_members(agent)
             exporter = AgentExporter(
                 agent=agent,
                 agent_names=self.agent_names,
@@ -441,7 +440,6 @@ class FlowExporter(BaseExporter, ExporterMixin):
                 is_async=self.waldiez.is_async,
                 for_notebook=self.for_notebook,
                 output_dir=self.output_dir,
-                group_chat_members=group_chat_members,
                 arguments_resolver=arguments_resolver,
             )
             agent_output = exporter.export()
@@ -500,7 +498,6 @@ class FlowExporter(BaseExporter, ExporterMixin):
             The exported chats.
         """
         exporter = ChatsExporter(
-            get_swarm_members=self.waldiez.get_swarm_members,
             all_agents=self.agents,
             agent_names=self.agent_names,
             all_chats=self.chats,

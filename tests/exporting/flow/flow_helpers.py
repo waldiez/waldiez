@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Helpers for getting a flow."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from typing_extensions import Literal
 
@@ -12,7 +12,6 @@ from waldiez.models import (
     WaldiezAgentNestedChat,
     WaldiezAgentNestedChatMessage,
     WaldiezAgents,
-    WaldiezAgentTeachability,
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
@@ -25,28 +24,18 @@ from waldiez.models import (
     WaldiezChatSummary,
     WaldiezFlow,
     WaldiezFlowData,
-    WaldiezGroupManager,
-    WaldiezGroupManagerData,
-    WaldiezGroupManagerSpeakers,
     WaldiezModel,
     WaldiezModelData,
     WaldiezModelPrice,
-    WaldiezRagUser,
-    WaldiezRagUserData,
-    WaldiezRagUserRetrieveConfig,
-    WaldiezRagUserVectorDbConfig,
+    WaldiezRagUserProxy,
+    WaldiezRagUserProxyData,
+    WaldiezRagUserProxyRetrieveConfig,
+    WaldiezRagUserProxyVectorDbConfig,
     WaldiezReasoningAgent,
     WaldiezReasoningAgentData,
     WaldiezReasoningAgentReasonConfig,
     WaldiezSkill,
     WaldiezSkillData,
-    WaldiezSwarmAfterWork,
-    WaldiezSwarmAgent,
-    WaldiezSwarmAgentData,
-    WaldiezSwarmOnCondition,
-    WaldiezSwarmOnConditionAvailable,
-    WaldiezSwarmOnConditionTarget,
-    WaldiezSwarmUpdateSystemMessage,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -227,13 +216,6 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
                     ],
                 ),
             ],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
         ),
     )
 
@@ -289,20 +271,13 @@ def get_assistant(agent_id: str = "wa-2") -> WaldiezAssistant:
                 ),
             ],
             nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
             is_multimodal=True,
         ),
     )
 
 
-def get_group_manager(agent_id: str = "wa-3") -> WaldiezGroupManager:
-    """Get a WaldiezGroupManager.
+def get_rag_user(agent_id: str = "wa-3") -> WaldiezRagUserProxy:
+    """Get a WaldiezRagUserProxy.
 
     Parameters
     ----------
@@ -311,80 +286,11 @@ def get_group_manager(agent_id: str = "wa-3") -> WaldiezGroupManager:
 
     Returns
     -------
-    WaldiezGroupManager
-        A WaldiezGroupManager instance.
-    """
-    custom_speaker_selection = (
-        "def custom_speaker_selection(last_speaker, groupchat):\n"
-        "    return last_speaker"
-    )
-    return WaldiezGroupManager(
-        id=agent_id,
-        name="group_manager",
-        description="Group Manager Agent",
-        type="agent",
-        agent_type="manager",
-        tags=["manager"],
-        requirements=[],
-        created_at="2021-01-01T00:00:00.000Z",
-        updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezGroupManagerData(
-            max_round=10,
-            admin_name="user",
-            enable_clear_history=True,
-            send_introductions=False,
-            system_message="You are a group manager.",
-            human_input_mode="NEVER",
-            code_execution_config=False,
-            agent_default_auto_reply="I am a group manager.",
-            max_consecutive_auto_reply=5,
-            termination=WaldiezAgentTerminationMessage(
-                type="keyword",
-                keywords=["TERMINATE"],
-                criterion="exact",
-                method_content=None,
-            ),
-            model_ids=[],
-            skills=[],
-            nested_chats=[],
-            speakers=WaldiezGroupManagerSpeakers(
-                selection_mode="transition",
-                selection_method="custom",
-                selection_custom_method=custom_speaker_selection,
-                allow_repeat=["wa-1"],
-                max_retries_for_selecting=3,
-                allowed_or_disallowed_transitions={
-                    "wa-1": ["wa-2"],
-                    "wa-2": ["wa-1"],
-                },
-                transitions_type="allowed",
-            ),
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
-        ),
-    )
-
-
-def get_rag_user(agent_id: str = "wa-4") -> WaldiezRagUser:
-    """Get a WaldiezRagUser.
-
-    Parameters
-    ----------
-    agent_id : str, optional
-        The agent ID, by default "wa-4"
-
-    Returns
-    -------
-    WaldiezRagUser
-        A WaldiezRagUser instance.
+    WaldiezRagUserProxy
+        A WaldiezRagUserProxy instance.
     """
     custom_embedding = "def custom_embedding_function():\n    return list"
-    return WaldiezRagUser(
+    return WaldiezRagUserProxy(
         id=agent_id,
         name="rag_user",
         description="RAG User",
@@ -394,7 +300,7 @@ def get_rag_user(agent_id: str = "wa-4") -> WaldiezRagUser:
         updated_at="2021-01-01T00:00:00.000Z",
         type="agent",
         agent_type="rag_user",
-        data=WaldiezRagUserData(
+        data=WaldiezRagUserProxyData(
             system_message="You are a RAG user agent.",
             human_input_mode="ALWAYS",
             code_execution_config=False,
@@ -409,10 +315,10 @@ def get_rag_user(agent_id: str = "wa-4") -> WaldiezRagUser:
             model_ids=[],
             skills=[],
             nested_chats=[],
-            retrieve_config=WaldiezRagUserRetrieveConfig(
+            retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 task="default",
                 vector_db="chroma",
-                db_config=WaldiezRagUserVectorDbConfig(
+                db_config=WaldiezRagUserProxyVectorDbConfig(
                     model=None,
                     use_memory=False,
                     use_local_storage=True,
@@ -451,136 +357,17 @@ def get_rag_user(agent_id: str = "wa-4") -> WaldiezRagUser:
                 n_results=10,
                 customized_prompt=None,
             ),
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
         ),
     )
 
 
-def get_swarm_agent(agent_id: str = "wa-5") -> WaldiezSwarmAgent:
-    """Get a WaldiezSwarmAgent.
-
-    Parameters
-    ----------
-    agent_id : str, optional
-        The agent ID, by default "wa-5"
-
-    Returns
-    -------
-    WaldiezSwarmAgent
-        A WaldiezSwarmAgent instance.
-    """
-    return WaldiezSwarmAgent(
-        id=agent_id,
-        name="swarm_agent",
-        description="Swarm Agent",
-        tags=["swarm_agent"],
-        requirements=[],
-        created_at="2021-01-01T00:00:00.000Z",
-        updated_at="2021-01-01T00:00:00.000Z",
-        type="agent",
-        agent_type="swarm",
-        data=WaldiezSwarmAgentData(
-            system_message=None,
-            human_input_mode="ALWAYS",
-            code_execution_config=False,
-            agent_default_auto_reply="I am a swarm agent.",
-            max_consecutive_auto_reply=5,
-            termination=WaldiezAgentTerminationMessage(
-                type="keyword",
-                criterion="ending",
-                keywords=["bye", "goodbye"],
-                method_content=None,
-            ),
-            model_ids=[],
-            skills=[],
-            nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
-            is_initial=True,
-            functions=["ws-1"],
-            update_agent_state_before_reply=[
-                WaldiezSwarmUpdateSystemMessage(
-                    update_function_type="string",
-                    update_function="Use template for the {variable}.",
-                ),
-                WaldiezSwarmUpdateSystemMessage(
-                    update_function_type="callable",
-                    update_function=(
-                        "def custom_update_system_message(agent, messages):\n"
-                        "    return messages[-1]"
-                    ),
-                ),
-                "ws-1",
-            ],
-            # we need to check if use this or get this from the chats
-            handoffs=[
-                WaldiezSwarmOnCondition(
-                    target=WaldiezSwarmOnConditionTarget(
-                        id="wa-1",
-                        order=1,
-                    ),
-                    target_type="agent",
-                    condition="go to agent 1",
-                    available=WaldiezSwarmOnConditionAvailable(
-                        type="none",
-                        value=None,
-                    ),
-                ),
-                WaldiezSwarmOnCondition(
-                    target=WaldiezSwarmOnConditionTarget(
-                        id="wa-2",
-                        order=2,
-                    ),
-                    target_type="agent",
-                    condition="go to agent 2",
-                    available=WaldiezSwarmOnConditionAvailable(
-                        type="string",
-                        value="bool_variable",
-                    ),
-                ),
-                WaldiezSwarmOnCondition(
-                    target=WaldiezSwarmOnConditionTarget(
-                        id="wa-3",
-                        order=3,
-                    ),
-                    target_type="agent",
-                    condition="go to agent 3",
-                    available=WaldiezSwarmOnConditionAvailable(
-                        type="callable",
-                        # pylint: disable=line-too-long
-                        value=(
-                            "def custom_on_condition_available(agent, message):\n"  # noqa: E501
-                            "    return True"
-                        ),
-                    ),
-                ),
-                WaldiezSwarmAfterWork(
-                    recipient_type="option",
-                    recipient="REVERT_TO_USER",
-                ),
-            ],
-        ),
-    )
-
-
-def get_reasoning_agent(agent_id: str = "wa-6") -> WaldiezReasoningAgent:
+def get_reasoning_agent(agent_id: str = "wa-4") -> WaldiezReasoningAgent:
     """Get a WaldiezReasoningAgent.
 
     Parameters
     ----------
     agent_id : str, optional
-        The agent ID, by default "wa-6"
+        The agent ID, by default "wa-4"
 
     Returns
     -------
@@ -612,13 +399,6 @@ def get_reasoning_agent(agent_id: str = "wa-6") -> WaldiezReasoningAgent:
             model_ids=[],
             skills=[],
             nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
             verbose=True,
             reason_config=WaldiezReasoningAgentReasonConfig(
                 method="beam_search",
@@ -634,8 +414,13 @@ def get_reasoning_agent(agent_id: str = "wa-6") -> WaldiezReasoningAgent:
     )
 
 
-def get_captain_agent() -> WaldiezCaptainAgent:
+def get_captain_agent(agent_id: str = "wa-5") -> WaldiezCaptainAgent:
     """Get a WaldiezCaptainAgent.
+
+    Parameters
+    ----------
+    agent_id : str, optional
+        The agent ID, by default "wa-5"
 
     Returns
     -------
@@ -663,18 +448,11 @@ def get_captain_agent() -> WaldiezCaptainAgent:
         model_ids=["wm-1"],
         skills=[],
         nested_chats=[],
-        teachability=WaldiezAgentTeachability(
-            enabled=False,
-            verbosity=0,
-            reset_db=False,
-            recall_threshold=1.5,
-            max_num_retrievals=10,
-        ),
         agent_lib=EXAMPLE_AGENT_LIB,  # type: ignore
         tool_lib="default",
     )
     return WaldiezCaptainAgent(
-        id="wa-7",
+        id=agent_id,
         name="captain_agent",
         description="Captain Agent",
         type="agent",
@@ -687,13 +465,13 @@ def get_captain_agent() -> WaldiezCaptainAgent:
     )
 
 
-def get_chats(count: int = 7) -> List[WaldiezChat]:
+def get_chats(count: int = 4) -> List[WaldiezChat]:
     """Get a list of WaldiezChat instances.
 
     Parameters
     ----------
     count : int, optional
-        The number of chats to generate, by default 7
+        The number of chats to generate, by default 4
 
     Returns
     -------
@@ -718,19 +496,6 @@ def get_chats(count: int = 7) -> List[WaldiezChat]:
         )
         source_index = index + 1
         target_index = index + 2
-        chat_after_work: Optional[WaldiezSwarmAfterWork] = None
-        if index == 3:
-            chat_after_work = WaldiezSwarmAfterWork(
-                recipient_type="callable",
-                recipient=(
-                    "def custom_after_work(\n"
-                    "    last_speaker,\n"
-                    "    messages,\n"
-                    "    groupchat\n"
-                    "):\n"
-                    "    return 'agent1'"
-                ),
-            )
         prerequisites = []
         if index == 1:
             prerequisites = ["wc-1"]
@@ -768,11 +533,6 @@ def get_chats(count: int = 7) -> List[WaldiezChat]:
                 nested_chat=nested_chat,
                 real_source=None,
                 real_target=None,
-                available=WaldiezSwarmOnConditionAvailable(
-                    type="none",
-                    value=None,
-                ),
-                after_work=chat_after_work,
                 prerequisites=prerequisites,
             ),
         )
@@ -799,20 +559,16 @@ def get_flow(is_async: bool = False) -> WaldiezFlow:
     crewai_skill = get_interop_skill(skill_id="ws-3", skill_type="crewai")
     user = get_user_proxy()
     assistant = get_assistant()
-    manager = get_group_manager()
     rag_user = get_rag_user()
-    swarm_agent = get_swarm_agent()
     reasoning_agent = get_reasoning_agent()
     captain_agent = get_captain_agent()
     chats = get_chats()
     agents = WaldiezAgents(
-        users=[user],
-        assistants=[assistant],
-        managers=[manager],
-        rag_users=[rag_user],
-        swarm_agents=[swarm_agent],
-        reasoning_agents=[reasoning_agent],
-        captain_agents=[captain_agent],
+        userProxyAgents=[user],
+        assistantAgents=[assistant],
+        ragUserProxyAgents=[rag_user],
+        reasoningAgents=[reasoning_agent],
+        captainAgents=[captain_agent],
     )
     flow = WaldiezFlow(
         id="wf-1",

@@ -59,14 +59,12 @@ def test_waldiez_agents() -> None:
         data={},  # type: ignore
     )
     agents = WaldiezAgents(
-        assistants=[assistant],
-        users=[user],
-        managers=[],
-        rag_users=[],
-        swarm_agents=[],
-        reasoning_agents=[],
-        captain_agents=[],
+        assistantAgents=[assistant],
+        userProxyAgents=[user],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
     )
-    assert agents.assistants == [assistant]
+    assert agents.assistantAgents == [assistant]
     assert next(agents.members) == user
     agents.validate_flow(model_ids=[model.id], skill_ids=[skill.id])

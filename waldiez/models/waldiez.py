@@ -145,12 +145,17 @@ class Waldiez:
     @property
     def has_rag_agents(self) -> bool:
         """Check if the flow has RAG agents."""
-        return any(agent.agent_type == "rag_user" for agent in self.agents)
+        return any(
+            agent.agent_type == "rag_user_proxy" for agent in self.agents
+        )
 
     @property
     def has_multimodal_agents(self) -> bool:
         """Check if the flow has multimodal agents."""
-        return any(agent.data.is_multimodal for agent in self.agents)
+        return any(
+            agent.data.is_multimodal
+            for agent in self.flow.data.agents.assistantAgents
+        )
 
     @property
     def has_captain_agents(self) -> bool:
@@ -296,37 +301,3 @@ class Waldiez:
             if api_eny_key and api_key:
                 env_vars.append((api_eny_key, api_key))
         return env_vars
-
-    def get_group_chat_members(self, agent: WaldiezAgent) -> List[WaldiezAgent]:
-        """Get the chat members that connect to a group chat manager agent.
-
-        Parameters
-        ----------
-        agent : WaldiezAgent
-            The agent (group chat manager).
-
-        Returns
-        -------
-        List[WaldiezAgent]
-            The group chat members.
-        """
-        if agent.agent_type != "manager":
-            return []
-        return self.flow.get_group_chat_members(agent.id)
-
-    def get_swarm_members(
-        self, initial_agent: WaldiezAgent
-    ) -> Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]:
-        """Get the chat members that connect to a swarm agent.
-
-        Parameters
-        ----------
-        initial_agent : WaldiezAgent
-            The initial agent.
-
-        Returns
-        -------
-        Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]
-            The swarm agents and the user agent.
-        """
-        return self.flow.get_swarm_chat_members(initial_agent)

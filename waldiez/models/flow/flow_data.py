@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents import WaldiezAgents
+from ..agents import WaldiezAgents, WaldiezAssistant
 from ..chat import WaldiezChat
 from ..common import WaldiezBase
 from ..model import WaldiezModel
@@ -30,7 +30,7 @@ class WaldiezFlowData(WaldiezBase):
         users: List[WaldiezUserProxy]
         assistants: List[WaldiezAssistant]
         managers: List[WaldiezGroupManager]
-        rag_users : List[WaldiezRagUser]
+        rag_users : List[WaldiezRagUserProxy]
         See `WaldiezAgents` for more info.
     models : List[WaldiezModel]
         The models of the flow. See `WaldiezModel`.
@@ -122,7 +122,7 @@ class WaldiezFlowData(WaldiezBase):
             ),
             title="Cache Seed",
         ),
-    ] = 41
+    ] = 42
 
     @model_validator(mode="after")
     def validate_flow_chats(self) -> Self:
@@ -174,3 +174,35 @@ class WaldiezFlowData(WaldiezBase):
                 chat_prerequisites.append(id_to_chat_id[chat_id])
             chat.set_prerequisites(chat_prerequisites)
         return self
+
+    @staticmethod
+    def default() -> "WaldiezFlowData":
+        """Create a default flow data.
+
+        Returns
+        -------
+        WaldiezFlowData
+            The default flow data.
+        """
+        return WaldiezFlowData(
+            nodes=[],
+            edges=[],
+            viewport={},
+            agents=WaldiezAgents(
+                userProxyAgents=[],
+                assistantAgents=[
+                    WaldiezAssistant(
+                        id="assistant",
+                        name="Assistant",
+                    )
+                ],
+                ragUserProxyAgents=[],
+                reasoningAgents=[],
+                captainAgents=[],
+            ),
+            models=[],
+            skills=[],
+            chats=[],
+            is_async=False,
+            cache_seed=42,
+        )

@@ -12,7 +12,6 @@ from ...common import WaldiezBase
 from .code_execution import WaldiezAgentCodeExecutionConfig
 from .linked_skill import WaldiezAgentLinkedSkill
 from .nested_chat import WaldiezAgentNestedChat
-from .teachability import WaldiezAgentTeachability
 from .termination_message import WaldiezAgentTerminationMessage
 
 
@@ -34,16 +33,12 @@ class WaldiezAgentData(WaldiezBase):
         before ending the chat. Default: None (no limit).
     termination : WaldiezAgentTerminationMessage
         The message termination check to use (keyword, method, none)
-    teachability : WaldiezAgentTeachability
-        The agent teachability configuration.
     model_ids: List[str]
         A list of models (their ids) to link with the agent.
     skills : List[WaldiezAgentLinkedSkill]
         A list of skills (id and executor) to register.
     nested_chats : List[WaldiezAgentNestedChat]
         A list of nested chats (triggered_by, messages), to register.
-    is_multimodal: bool
-        A flag to indicate if the agent is multimodal.
     """
 
     model_config = ConfigDict(
@@ -118,14 +113,6 @@ class WaldiezAgentData(WaldiezBase):
             default_factory=WaldiezAgentTerminationMessage,
         ),
     ]
-    teachability: Annotated[
-        Optional[WaldiezAgentTeachability],
-        Field(
-            title="Teachability",
-            description="The agent teachability configuration.",
-            default_factory=WaldiezAgentTeachability,
-        ),
-    ]
     model_ids: Annotated[
         List[str],
         Field(
@@ -153,12 +140,3 @@ class WaldiezAgentData(WaldiezBase):
             alias="nestedChats",
         ),
     ]
-    is_multimodal: Annotated[
-        bool,
-        Field(
-            False,
-            title="Is multimodal",
-            description="A flag to indicate if the agent is multimodal.",
-            alias="isMultimodal",
-        ),
-    ] = False
