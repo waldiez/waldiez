@@ -26,7 +26,7 @@ bun add @waldiez/react
     "microdiff": "^1.5.0",
     "nanoid": "^5.1.5",
     "rc-slider": "^11.1.8",
-    "react-error-boundary": "^5.0.0",
+    "react-error-boundary": "^6.0.0",
     "react-fast-compare": "^3.2.2",
     "react-hotkeys-hook": "^5.0.1",
     "react-icons": "^5.5.0",
@@ -39,7 +39,7 @@ bun add @waldiez/react
 ## Development requirements
 
 - Node.js >= 22.x
-- bun@latest
+- bun@1.2.12
 
 ## Basic Usage
 

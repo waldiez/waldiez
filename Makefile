@@ -3,15 +3,6 @@
 .TESTS_DIR := tests
 .PACKAGE_NAME := waldiez
 
-ifeq ($(OS),Windows_NT)
-  PYTHON_PATH := $(shell where python 2>NUL || where py 2>NUL)
-else
-  PYTHON_PATH := $(shell command -v python || command -v python3)
-endif
-
-PYTHON_NAME := $(notdir $(firstword $(PYTHON_PATH)))
-PYTHON := $(basename $(PYTHON_NAME))
-
 .PHONY: help
 help:
 	@echo "Usage: make [target]"
@@ -39,22 +30,22 @@ help:
 
 .PHONY: format
 format:
-	$(PYTHON) scripts/format.py
+	python3 scripts/format.py
 
 .PHONY: lint
 lint:
-	$(PYTHON) scripts/lint.py
+	python3 scripts/lint.py
 
 .PHONY: forlint
 forlint: format lint
 
 .PHONY: clean
 clean:
-	$(PYTHON) scripts/clean.py
+	python3 scripts/clean.py
 
 .PHONY: test
 test:
-	$(PYTHON) scripts/test.py
+	python3 scripts/test.py
 
 
 .PHONY: test_models
@@ -108,24 +99,24 @@ test-io: test_io
 
 .PHONY: build
 build:
-	$(PYTHON) scripts/build.py
+	python3 scripts/build.py
 
 .PHONY: docs
 docs:
-	$(PYTHON) scripts/docs.py
+	python3 scripts/docs.py
 
 .PHONY: docs-live
 docs-live:
-	$(PYTHON) -m pip install -r requirements/docs.txt
-	$(PYTHON) -m mkdocs serve --watch mkdocs.yml --watch docs --watch waldiez --dev-addr localhost:8400
+	python3 -m pip install -r requirements/docs.txt
+	python3 -m mkdocs serve --watch mkdocs.yml --watch docs --watch waldiez --dev-addr localhost:8400
 
 .PHONY: image
 image:
-	$(PYTHON) scripts/image.py
+	python3 scripts/image.py
 
 .PHONY: requirements
 requirements:
-	$(PYTHON) scripts/requirements.py
+	python3 scripts/requirements.py
 
 .PHONY: some
 some: clean format lint test build docs image

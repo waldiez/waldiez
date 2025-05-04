@@ -78,14 +78,14 @@
         "clean": "bun clean:lintcache && bun clean:dist && bun clean:coverage && bun clean:tsbuild && bun clean:web && bun clean:docs && bun clean:archive",
         "schema": "node --import=tsx scripts/schema.ts && bun prettier schema.json --write",
         "before:test": "bun monaco && bun scripts/mkdir.ts --path .local && bun rimraf .local/recordings",
-        "before:test-ui": "bun before:test && bun playwright install chromium",
+        "before:test-browser": "bun before:test && bun playwright install chromium",
         "after:test": "bun scripts/video.ts",
         "test:components": "bun monaco && vitest run",
         "test:snapshots": "bun before:test && vitest run --browser.enabled --browser.headless --update ui-tests/** && bun after:test",
         "vitest:ui": "bun monaco && vitest --ui",
         "test:coverage": "bun monaco && vitest run --coverage",
-        "test:ui": "bun before:test-ui && vitest run --browser.enabled --browser.headless ui-tests/** && bun after:test",
-        "test:all": "bun test:ui && bun test:coverage",
+        "test:browser": "bun before:test-browser && vitest run --browser.enabled --browser.headless ui-tests/** && bun after:test",
+        "test:all": "bun test:browser && bun test:coverage",
         "test": "bun test:all",
         "changelog": "bun scripts/changelog.ts",
         "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun archive && bun docs"
@@ -103,7 +103,7 @@
         "microdiff": "^1.5.0",
         "nanoid": "^5.1.5",
         "rc-slider": "^11.1.8",
-        "react-error-boundary": "^5.0.0",
+        "react-error-boundary": "^6.0.0",
         "react-fast-compare": "^3.2.2",
         "react-hotkeys-hook": "^5.0.1",
         "react-icons": "^5.5.0",
@@ -117,13 +117,13 @@
     },
     "devDependencies": {
         "@eslint/compat": "^1.2.9",
-        "@eslint/js": "9.25.1",
+        "@eslint/js": "9.26.0",
         "@stylistic/eslint-plugin": "^4.2.0",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.3.0",
         "@testing-library/user-event": "^14.6.1",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "@types/bun": "^1.2.11",
+        "@types/bun": "^1.2.12",
         "@types/eslint__js": "^9.14.0",
         "@types/fs-extra": "^11.0.4",
         "@types/gunzip-maybe": "^1.4.2",
@@ -143,12 +143,12 @@
         "all-contributors-cli": "^6.26.1",
         "cross-spawn": "^7.0.6",
         "dotenv": "^16.5.0",
-        "eslint": "^9.25.1",
+        "eslint": "^9.26.0",
         "eslint-config-prettier": "^10.1.2",
         "eslint-import-resolver-typescript": "^4.3.4",
         "eslint-plugin-headers": "^1.2.1",
         "eslint-plugin-import": "^2.31.0",
-        "eslint-plugin-prettier": "^5.2.6",
+        "eslint-plugin-prettier": "^5.3.1",
         "eslint-plugin-react-refresh": "^0.4.20",
         "eslint-plugin-tsdoc": "^0.4.0",
         "fs-extra": "^11.3.0",
@@ -173,7 +173,7 @@
         "terser": "^5.39.0",
         "ts-json-schema-generator": "^2.4.0",
         "tsx": "^4.19.4",
-        "typedoc": "^0.28.3",
+        "typedoc": "^0.28.4",
         "typedoc-material-theme": "^1.4.0",
         "typedoc-plugin-markdown": "^4.6.3",
         "typescript": "^5.8.3",
@@ -183,7 +183,7 @@
         "vite-plugin-externalize-deps": "^0.9.0",
         "vitest": "^3.1.2",
         "vitest-browser-react": "^0.1.1",
-        "ws": "^8.18.1"
+        "ws": "^8.18.2"
     },
     "prettier": {
         "tabWidth": 4,
@@ -236,5 +236,5 @@
         "ws": "^8.18.1",
         "got": "^14.4.6"
     },
-    "packageManager": "bun@1.2.11"
+    "packageManager": "bun@1.2.12"
 }

@@ -48,10 +48,12 @@ allow-direct-references = true
 [tool.hatch.build.targets.sdist]
 exclude = ["**/example.py", ".gitignore"]
 packages = ["waldiez", "waldiez.*"]
+directory = "out/dist"
 
 [tool.hatch.build.targets.wheel]
 exclude = ["**/example.py"]
 packages = ["waldiez", "waldiez.*"]
+directory = "out/dist"
 
 [tool.hatch.version]
 source = "nodejs"
@@ -128,6 +130,7 @@ dev = [
   "autoflake==2.3.1",
   "bandit==1.8.3",
   "black[jupyter]==25.1.0",
+  "build==1.2.2.post1",
   "flake8==7.2.0",
   "jsonschema==4.23.0",
   "jupyterlab>=4.3.0",
@@ -185,6 +188,68 @@ test = [
 
 [project.scripts]
 waldiez = "waldiez.cli:app"
+
+[tool.hatch.envs.default]
+python = "3.12"
+dependencies = ["waldiez[dev,test,docs]"]
+
+[tool.hatch.envs.default.scripts]
+test = """pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests"""
+test-models = "pytest -c pyproject.toml -vv tests/models"
+test-exporting = "pytest -c pyproject.toml -vv tests/exporting"
+test-io = "pytest -c pyproject.toml -vv tests/io"
+
+format-black = "black --config pyproject.toml waldiez tests scripts"
+format-autoflake = "autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive waldiez tests scripts"
+format-ruff = "ruff format --config pyproject.toml waldiez tests scripts"
+format = """
+hatch run format-black
+hatch run format-autoflake
+hatch run format-ruff
+"""
+
+lint-black = "black --config pyproject.toml --check --diff waldiez tests scripts"
+lint-mypy = "mypy --config pyproject.toml waldiez tests scripts"
+lint-flake8 = "flake8 --config .flake8 waldiez tests scripts"
+lint-bandit = "bandit -r -c pyproject.toml waldiez scripts"
+lint-yamllint = "yamllint ."
+lint-ruff = "ruff check --config pyproject.toml waldiez tests scripts"
+lint-pylint = "pylint --rcfile=pyproject.toml waldiez tests scripts"
+lint = """
+hatch run lint-black
+hatch run lint-mypy
+hatch run lint-flake8
+hatch run lint-bandit
+hatch run lint-yamllint
+hatch run lint-ruff
+hatch run lint-pylint
+"""
+
+docs = "mkdocs build -d site"
+build = "python -m build --wheel --sdist --outdir out/dist"
+
+check = """
+hatch run format
+hatch run lint
+hatch run test
+"""
+
+matrix-test = "hatch run test:test"
+
+release = """
+hatch run check
+hatch run matrix-test
+hatch run docs
+hatch run build
+"""
+
+all = "hatch run release"
+
+[tool.hatch.envs.test]
+inherit = true
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13"]
 
 # black
 [tool.black]

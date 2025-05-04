@@ -37,6 +37,7 @@ jobs:
       - name: Build
         run: |
           bun run docs
+          cp CONTRIBUTING.md docs/contribute/index.md
           mkdocs gh-deploy --config-file mkdocs.yml --force
 
   deploy-docs:

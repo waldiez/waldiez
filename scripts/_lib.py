@@ -137,6 +137,7 @@ def ensure_package_exists(package_name: str) -> None:
             ):
                 return
         print(f"Package {package_name} not found. Installing...")
+        run_command(["ensurepip"])
         run_command(["pip", "install", package_name])
 
 
@@ -145,6 +146,7 @@ def ensure_dev_requirements() -> None:
     if "--no-deps" in sys.argv or os.getenv("CI") == "true":
         return
     requirements_file = ROOT_DIR / "requirements" / "dev.txt"
+    run_command(["ensurepip"])
     run_command(
         [
             "pip",
@@ -160,6 +162,7 @@ def ensure_test_requirements() -> None:
     if "--no-deps" in sys.argv or os.getenv("CI") == "true":
         return
     requirements_file = ROOT_DIR / "requirements" / "test.txt"
+    run_command(["ensurepip"])
     run_command(["pip", "install", "--upgrade", "pip"])
     run_command(
         [
@@ -176,6 +179,7 @@ def ensure_docs_requirements() -> None:
     if "--no-deps" in sys.argv:
         return
     requirements_file = ROOT_DIR / "requirements" / "docs.txt"
+    run_command(["ensurepip"])
     run_command(
         [
             "pip",
