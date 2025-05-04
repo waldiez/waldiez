@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { exec } from "child_process";
-import fs from "fs";
+import fs from "fs-extra";
 import { lookpath } from "lookpath";
 import path from "path";
 import url from "url";
