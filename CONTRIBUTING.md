@@ -4,23 +4,30 @@ Thank you for your interest in contributing to our projects! This document outli
 
 ## [Project Specific Guidelines]
 
+The project contains two parts: a Python package (see pyproject.toml) and a TypeScript library (see package.json). The Python package is located in the `waldiez` directory, while the TypeScript library is located in the `src` directory. The TypeScript library is built using [bun](https://bun.sh/), and the Python package is built using [hatch]
+
+### Python
+
 This project is a Python package managed with [uv](https://github.com/astral-sh/uv) and [hatch](https://github.com/pypa/hatch). To get started, clone the repository and install the dependencies:
 
 ```bash
 git clone ssh://github.com/waldiez/python.git -b dev
 cd waldiez
-# install uv if not already installed
-python -m pip install uv
-# generate a new venv
-uv venv --python 3.12  # 3.10, 3.11, 3.13
-# upgrade pip
-uv pip install --upgrade pip
+# either use uv or just create a new venv
+## create a new venv
+# python -m venv .venv
 # activate the venv
 . .venv/bin/activate
 # on windows
 # .venv\Scripts\activate.ps1 or .venv\Scripts\activate.bat
 # install the dependencies
 pip install -r requirements/all.txt
+#
+## with uv:
+## install uv if not already installed
+# python -m pip install uv
+uv sync
+#
 ```
 
 When ready, you can create a new branch and start working on your changes:
@@ -36,6 +43,29 @@ make format
 make lint
 make test
 ```
+
+You can also call:
+
+```bash
+./do all
+# this will:
+# - format the code on the typescript part
+# - lint the code on the typescript part
+# - run the tests on the typescript part
+# - build the typescript library (lib, static, and archive)
+# - format the code on the python part
+# - lint the code on the python part
+# - run the tests on the python part
+# - build the python project (whl, sdist)
+# - generate the docs
+# - create a container image (with the python project)
+```
+
+To check both the python and the typescript projects.
+
+### TypeScript
+
+TODO
 
 If everything is fine, you can commit your changes and push them to the repository:
 
