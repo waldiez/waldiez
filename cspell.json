@@ -101,6 +101,7 @@
         "isort",
         "jlpm",
         "jpserver",
+        "jsonschema",
         "junitxml",
         "juptytext",
         "jupyterlab",
