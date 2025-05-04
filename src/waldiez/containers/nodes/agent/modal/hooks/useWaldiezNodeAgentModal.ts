@@ -206,7 +206,7 @@ export const useWaldiezNodeAgentModal = (
     const toRagUser = () => {
         // make sure data.retrieveConfig (WaldiezRageUserRetrieveConfig) is set
         const ragData = agentData as { [key: string]: any };
-        ragData.agentType = "rag_user";
+        ragData.agentType = "rag_user_proxy";
         if (!ragData.retrieveConfig) {
             ragData.retrieveConfig = defaultRetrieveConfig;
         }

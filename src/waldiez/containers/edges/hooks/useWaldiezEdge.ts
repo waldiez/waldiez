@@ -40,7 +40,7 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
         let edgeColor;
         if (sourceAgent) {
             const agentType = sourceAgent.data.agentType as WaldiezNodeAgentType;
-            if (["user_proxy", "assistant", "rag_user", "reasoning", "captain"].includes(agentType)) {
+            if (["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain"].includes(agentType)) {
                 edgeColor = AGENT_COLORS_ALT[agentType];
             }
         }

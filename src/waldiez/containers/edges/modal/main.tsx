@@ -21,7 +21,7 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         edgeType,
         isDark,
         isDirty,
-        isRagUser,
+        isRagUserProxy,
         sourceAgent,
         targetAgent,
         onDataChange,
@@ -65,7 +65,7 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
                                 edgeId={edgeId}
                                 data={edgeData}
                                 darkMode={isDark}
-                                skipRagOption={!isRagUser}
+                                skipRagOption={!isRagUserProxy}
                                 onDataChange={onDataChange}
                             />
                         </TabItem>

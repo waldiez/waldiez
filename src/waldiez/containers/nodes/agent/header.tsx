@@ -21,7 +21,7 @@ export const WaldiezNodeAgentHeader = (props: {
         <div className="agent-header">
             <div className="agent-header-left">
                 <FaGear role="button" className="clickable" onClick={onOpenNodeModal} />
-                {data.agentType === "rag_user" && <FaDatabase color={AGENT_COLORS.rag_user} />}
+                {data.agentType === "rag_user_proxy" && <FaDatabase color={AGENT_COLORS.rag_user_proxy} />}
                 {data.agentType === "assistant" &&
                     (data as WaldiezNodeAgentAssistantData).isMultimodal === true && (
                         <FaImage color={AGENT_COLORS.assistant} />

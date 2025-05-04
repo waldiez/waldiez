@@ -80,38 +80,44 @@
                 "agents": {
                     "type": "object",
                     "properties": {
-                        "users": {
+                        "userProxyAgents": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentUserProxy"
                             }
                         },
-                        "assistants": {
+                        "assistantAgents": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentAssistant"
                             }
                         },
-                        "rag_users": {
+                        "ragUserProxyAgents": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentRagUser"
                             }
                         },
-                        "reasoning_agents": {
+                        "reasoningAgents": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentReasoning"
                             }
                         },
-                        "captain_agents": {
+                        "captainAgents": {
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentCaptain"
                             }
                         }
                     },
-                    "required": ["users", "assistants", "rag_users", "reasoning_agents", "captain_agents"],
+                    "required": [
+                        "userProxyAgents",
+                        "assistantAgents",
+                        "ragUserProxyAgents",
+                        "reasoningAgents",
+                        "captainAgents"
+                    ],
                     "additionalProperties": false
                 },
                 "models": {
@@ -205,7 +211,7 @@
         },
         "WaldiezAgentType": {
             "type": "string",
-            "enum": ["user", "assistant", "rag_user", "reasoning", "captain"]
+            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain"]
         },
         "WaldiezAgentUserProxyData": {
             "type": "object",

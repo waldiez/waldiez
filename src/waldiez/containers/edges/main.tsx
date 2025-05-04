@@ -109,7 +109,7 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
             <BaseEdge
                 path={edgePath}
                 markerEnd={markerEnd}
-                style={{ ...style, color: AGENT_COLORS.rag_user }}
+                style={{ ...style, color: AGENT_COLORS.rag_user_proxy }}
             />
             <EdgeLabelRenderer>
                 {/* <EdgeLabel edge={edge} transform={translations.edgeStart} /> */}

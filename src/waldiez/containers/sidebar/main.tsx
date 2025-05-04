@@ -114,7 +114,7 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onUserDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.user} title="User Proxy Agent" />
+                            <img src={AGENT_ICONS.user_proxy} title="User Proxy Agent" />
                             User Proxy
                         </div>
                         <div

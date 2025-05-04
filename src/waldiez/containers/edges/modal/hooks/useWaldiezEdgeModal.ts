@@ -27,7 +27,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     const { isDark } = useWaldiezTheme();
     const sourceAgent = edge ? getEdgeSourceAgent(edge) : null;
     const targetAgent = edge ? getEdgeTargetAgent(edge) : null;
-    const isRagUser = sourceAgent?.data?.agentType === "rag_user";
+    const isRagUserProxy = sourceAgent?.data?.agentType === "rag_user_proxy";
     const onDataChange = (data: Partial<WaldiezEdgeData>) => {
         if (edgeData) {
             setEdgeData({
@@ -84,7 +84,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         edgeData,
         edgeType,
         isDirty,
-        isRagUser,
+        isRagUserProxy,
         isDark,
         sourceAgent,
         targetAgent,

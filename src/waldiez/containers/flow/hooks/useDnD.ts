@@ -17,7 +17,9 @@ export const useDnD = (onNewAgent: () => void) => {
         let agentType: WaldiezNodeAgentType | undefined;
         if (nodeTypeData === "agent") {
             const agentTypeData = event.dataTransfer.getData("application/agent");
-            if (["user_proxy", "assistant", "rag_user", "reasoning", "captain"].includes(agentTypeData)) {
+            if (
+                ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain"].includes(agentTypeData)
+            ) {
                 agentType = agentTypeData as WaldiezNodeAgentType;
             }
         }

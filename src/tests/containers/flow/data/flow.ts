@@ -28,7 +28,7 @@ import { edges } from "./edges";
 import { nodes } from "./nodes";
 
 const agents = {
-    userAgents: [] as WaldiezAgentUserProxy[],
+    userProxyAgents: [] as WaldiezAgentUserProxy[],
     assistantAgents: [] as WaldiezAgentAssistant[],
     ragUserProxyAgents: [] as WaldiezAgentRagUser[],
     captainAgents: [] as WaldiezAgentCaptain[],
@@ -52,7 +52,7 @@ const nodesWithoutData = nodes.map((node: Node) => {
             updatedAt,
         };
         if (agentType === "user_proxy") {
-            agents.userAgents.push(agentMapper.importAgent(jsonData, jsonData.id));
+            agents.userProxyAgents.push(agentMapper.importAgent(jsonData, jsonData.id));
         } else if (agentType === "assistant") {
             const dateWIthIsMultimodal = {
                 ...jsonData,
