@@ -152,6 +152,7 @@
         "numpy",
         "ollama",
         "ounospanas",
+        "pacman",
         "Panagiotis",
         "parso",
         "pathvalidate",
