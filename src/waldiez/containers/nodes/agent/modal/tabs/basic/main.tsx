@@ -22,13 +22,13 @@ export const WaldiezAgentBasic = (props: WaldiezAgentBasicProps) => {
     } = useWaldiezAgentBasic(props);
     return (
         <div className="agent-panel agent-basic-panel">
-            {(data.agentType === "user" || data.agentType === "rag_user") && (
+            {(data.agentType === "user_proxy" || data.agentType === "rag_user_proxy") && (
                 <InfoCheckbox
                     label={"Use RAG"}
                     info={
                         "If checked, the agent will use Retrieval augmented generation (RAG) for generating responses."
                     }
-                    checked={data.agentType === "rag_user"}
+                    checked={data.agentType === "rag_user_proxy"}
                     onChange={onRagChange}
                     dataTestId={`agent-rag-toggle-${id}`}
                 />

@@ -21,7 +21,7 @@ export const getAgentNodes = (nodes: Node[]) => {
             typeof node.data === "object" &&
             node.data &&
             "agentType" in node.data &&
-            node.data.agentType === "user",
+            node.data.agentType === "user_proxy",
     ) as WaldiezNodeAgentUserProxy[];
     const assistantAgentNodes = agentNodes.filter(
         node =>
@@ -37,7 +37,7 @@ export const getAgentNodes = (nodes: Node[]) => {
             typeof node.data === "object" &&
             node.data &&
             "agentType" in node.data &&
-            node.data.agentType === "rag_user",
+            node.data.agentType === "rag_user_proxy",
     ) as WaldiezNodeAgentRagUser[];
     const reasoningAgentNodes = agentNodes.filter(
         node =>

@@ -20,7 +20,13 @@ import {
 } from "@waldiez/models/mappers/common";
 import { getId } from "@waldiez/utils";
 
-const VALID_AGENT_TYPES: WaldiezNodeAgentType[] = ["user", "assistant", "captain", "rag_user", "reasoning"];
+const VALID_AGENT_TYPES: WaldiezNodeAgentType[] = [
+    "user_proxy",
+    "assistant",
+    "captain",
+    "rag_user_proxy",
+    "reasoning",
+];
 export const getAgentId = (data: any, agentId?: string) => {
     let id = `wa-${getId()}`;
     if (!agentId || typeof agentId !== "string") {
@@ -32,7 +38,7 @@ export const getAgentId = (data: any, agentId?: string) => {
 };
 
 export const getAgentType = (json: any) => {
-    let agentType: WaldiezNodeAgentType = "user";
+    let agentType: WaldiezNodeAgentType = "user_proxy";
     let jsonObject = json;
     const inJson = "agentType" in json && typeof json.agentType === "string";
     if (!inJson) {
@@ -54,11 +60,11 @@ export const getAgentType = (json: any) => {
 
 export const getFallbackDescription = (agentType: WaldiezNodeAgentType) => {
     let fallbackDescription = "An agent";
-    if (agentType === "user") {
+    if (agentType === "user_proxy") {
         fallbackDescription = "A user agent";
     } else if (agentType === "assistant") {
         fallbackDescription = "An assistant agent";
-    } else if (agentType === "rag_user") {
+    } else if (agentType === "rag_user_proxy") {
         fallbackDescription = "A RAG user agent";
     } else if (agentType === "reasoning") {
         fallbackDescription = "A reasoning agent";
@@ -97,7 +103,7 @@ export const getHumanInputMode = (
     agentType: WaldiezNodeAgentType,
 ): WaldiezAgentHumanInputMode => {
     let humanInputMode: WaldiezAgentHumanInputMode = "NEVER";
-    if (["user", "rag_user"].includes(agentType)) {
+    if (["user_proxy", "rag_user_proxy"].includes(agentType)) {
         humanInputMode = "ALWAYS";
     }
     if (
@@ -161,11 +167,11 @@ export const getSkills = (data: Record<string, unknown>): WaldiezAgentLinkedSkil
 
 export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNodeAgentType) => {
     let fallbackName = "Agent";
-    if (agentType === "user") {
-        fallbackName = "User";
+    if (agentType === "user_proxy") {
+        fallbackName = "user_proxy";
     } else if (agentType === "assistant") {
         fallbackName = "Assistant";
-    } else if (agentType === "rag_user") {
+    } else if (agentType === "rag_user_proxy") {
         fallbackName = "RAG User";
     } else if (agentType === "reasoning") {
         fallbackName = "Reasoning Agent";

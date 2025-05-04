@@ -248,7 +248,7 @@
   background-color: #222;
 }
 
-.flow-wrapper .agent-node.user {
+.flow-wrapper .agent-node.user_proxy {
   border-color: var(--user-agent-color);
 }
 
@@ -256,7 +256,7 @@
   border-color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-node.rag_user {
+.flow-wrapper .agent-node.rag_user_proxy {
   border-color: var(--rag-user-color);
 }
 

@@ -13,5 +13,5 @@ export type WaldiezNodeAgentModalTabsProps = {
     filesToUpload: File[];
     onFilesToUploadChange: (files: File[]) => void;
     onDataChange: (data: Partial<WaldiezNodeAgentData>, markDirty?: boolean) => void;
-    onAgentTypeChange: (agentType: "rag_user" | "user") => void;
+    onAgentTypeChange: (agentType: "rag_user_proxy" | "user_proxy") => void;
 };

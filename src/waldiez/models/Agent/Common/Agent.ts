@@ -10,7 +10,7 @@ import { capitalize, getId } from "@waldiez/utils";
  * Waldiez Agent.
  * @param id - The id of the agent
  * @param type - The type of the node in a graph (agent)
- * @param agentType - The type of the agent ("user" | "assistant" | "rag_user" | "reasoning" | "captain")
+ * @param agentType - The type of the agent ("user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain")
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param tags - The tags of the agent
@@ -76,9 +76,9 @@ export class WaldiezAgent {
 }
 
 const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType) => {
-    if (["user", "rag_user"].includes(agentType)) {
+    if (["user_proxy", "rag_user_proxy"].includes(agentType)) {
         agent.data.humanInputMode = "ALWAYS";
-        if (agentType === "rag_user") {
+        if (agentType === "rag_user_proxy") {
             addRagUserProps(agent.data);
         }
     }

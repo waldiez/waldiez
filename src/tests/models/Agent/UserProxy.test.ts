@@ -12,20 +12,20 @@ describe("WaldiezAgentUserProxy", () => {
         const userProxyData = new WaldiezAgentUserProxyData();
         const userProxy = new WaldiezAgentUserProxy({
             id: "1",
-            name: "User",
+            name: "user_proxy",
             description: "User description",
             tags: [],
             requirements: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            agentType: "user",
+            agentType: "user_proxy",
             data: userProxyData,
         });
         expect(userProxy).toBeTruthy();
         expect(userProxy.id).toBe("1");
-        expect(userProxy.name).toBe("User");
+        expect(userProxy.name).toBe("user_proxy");
         expect(userProxy.data.humanInputMode).toBe("ALWAYS");
-        const userProxy2 = WaldiezAgentUserProxy.create("user");
+        const userProxy2 = WaldiezAgentUserProxy.create("user_proxy");
         expect(userProxy2).toBeTruthy();
         expect(userProxy2.data.humanInputMode).toBe("ALWAYS");
     });
@@ -69,7 +69,7 @@ describe("WaldiezAgentUserProxy", () => {
         });
         const userProxy = new WaldiezAgentUserProxy({
             id: "1",
-            agentType: "user",
+            agentType: "user_proxy",
             name: "custom_user",
             description: "custom_description",
             tags: ["tag1", "tag2"],

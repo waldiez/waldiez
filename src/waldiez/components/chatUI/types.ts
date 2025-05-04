@@ -39,5 +39,5 @@ export type WaldiezChatMessage = WaldiezMessageBase & {
 
 export type ChatUIProps = {
     messages: WaldiezPreviousMessage[];
-    userParticipants: Set<string>; // Names of senders considered as "user"
+    userParticipants: Set<string>; // Names of senders considered as "user_proxy"
 };

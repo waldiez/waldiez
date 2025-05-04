@@ -9,7 +9,7 @@ import { WaldiezAgentRagUserData } from "@waldiez/models/Agent/RagUser/RagUserDa
  * WaldiezAgentRagUser
  * @param id - The id of the rag user agent
  * @param type - The type of the node in a graph (agent)
- * @param agentType - The type of the node in a graph (rag_user)
+ * @param agentType - The type of the node in a graph (rag_user_proxy)
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param tags - The tags of the agent
@@ -21,7 +21,7 @@ import { WaldiezAgentRagUserData } from "@waldiez/models/Agent/RagUser/RagUserDa
  */
 export class WaldiezAgentRagUser extends WaldiezAgent {
     data: WaldiezAgentRagUserData;
-    agentType: WaldiezNodeAgentType = "rag_user";
+    agentType: WaldiezNodeAgentType = "rag_user_proxy";
 
     constructor(props: {
         id: string;
@@ -37,7 +37,7 @@ export class WaldiezAgentRagUser extends WaldiezAgent {
     }) {
         super(props);
         this.data = props.data;
-        this.agentType = "rag_user";
+        this.agentType = "rag_user_proxy";
         this.rest = props.rest || {};
     }
 }

@@ -10,12 +10,12 @@ import { WaldiezAgentHumanInputMode, WaldiezNodeAgentData } from "@waldiez/model
 export const useWaldiezAgentBasic = (props: {
     data: WaldiezNodeAgentData;
     onDataChange: (data: Partial<WaldiezNodeAgentData>) => void;
-    onAgentTypeChange: (agentType: "rag_user" | "user") => void;
+    onAgentTypeChange: (agentType: "rag_user_proxy" | "user_proxy") => void;
 }) => {
     const { data, onDataChange, onAgentTypeChange } = props;
     const [localData, setLocalData] = useState<WaldiezNodeAgentData>(data);
     const onRagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newAgentType = event.target.checked ? "rag_user" : "user";
+        const newAgentType = event.target.checked ? "rag_user_proxy" : "user_proxy";
         onAgentTypeChange(newAgentType);
     };
     const onMultimodalChange = (event: React.ChangeEvent<HTMLInputElement>) => {

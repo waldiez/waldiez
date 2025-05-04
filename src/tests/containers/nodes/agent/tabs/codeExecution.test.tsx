@@ -28,7 +28,7 @@ const codeExecutionOverrides = {
 
 describe("WaldiezAgentNode Code Execution Tab", () => {
     it("Shows the code execution tab", () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
         });
         goToCodeExecutionTab();
@@ -37,7 +37,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         expect(toggle).not.toBeChecked(); // no code execution
     });
     it("It toggles the code execution", () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -64,7 +64,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It updates the last N messages", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -75,7 +75,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It updates the timeout", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -87,7 +87,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It toggles the use docker", () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -100,7 +100,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It updates the functions", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: {
                 codeExecutionConfig: {

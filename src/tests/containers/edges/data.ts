@@ -73,7 +73,7 @@ export const nodes = [
         },
         data: {
             label: "Edge source",
-            agentType: "user",
+            agentType: "user_proxy",
             nestedChats: [],
             skills: [],
             modelIds: [],

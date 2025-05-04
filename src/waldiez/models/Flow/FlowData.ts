@@ -39,11 +39,11 @@ export class WaldiezFlowData {
     edges: Edge[];
     viewport: Viewport;
     agents: {
-        users: WaldiezAgentUserProxy[];
-        assistants: WaldiezAgentAssistant[];
-        rag_users: WaldiezAgentRagUser[];
-        reasoning_agents: WaldiezAgentReasoning[];
-        captain_agents: WaldiezAgentCaptain[];
+        userProxyAgents: WaldiezAgentUserProxy[];
+        assistantAgents: WaldiezAgentAssistant[];
+        ragUserProxyAgents: WaldiezAgentRagUser[];
+        reasoningAgents: WaldiezAgentReasoning[];
+        captainAgents: WaldiezAgentCaptain[];
     };
     models: WaldiezModel[];
     skills: WaldiezSkill[];
@@ -57,11 +57,11 @@ export class WaldiezFlowData {
             edges: Edge[];
             viewport: Viewport;
             agents: {
-                users: WaldiezAgentUserProxy[];
-                assistants: WaldiezAgentAssistant[];
-                rag_users: WaldiezAgentRagUser[];
-                reasoning_agents: WaldiezAgentReasoning[];
-                captain_agents: WaldiezAgentCaptain[];
+                userProxyAgents: WaldiezAgentUserProxy[];
+                assistantAgents: WaldiezAgentAssistant[];
+                ragUserProxyAgents: WaldiezAgentRagUser[];
+                reasoningAgents: WaldiezAgentReasoning[];
+                captainAgents: WaldiezAgentCaptain[];
             };
             models: WaldiezModel[];
             skills: WaldiezSkill[];
@@ -77,11 +77,11 @@ export class WaldiezFlowData {
                 zoom: 1,
             },
             agents: {
-                users: [],
-                assistants: [],
-                rag_users: [],
-                reasoning_agents: [],
-                captain_agents: [],
+                userProxyAgents: [],
+                assistantAgents: [],
+                ragUserProxyAgents: [],
+                reasoningAgents: [],
+                captainAgents: [],
             },
             models: [],
             skills: [],

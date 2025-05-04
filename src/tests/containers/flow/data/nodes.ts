@@ -37,24 +37,24 @@ export const userInput = {
     ],
     prompt: "User Input Prompt",
     request_id: "request_id",
-    userParticipants: new Set(["user"]),
+    userParticipants: new Set(["user_proxy"]),
 };
 
 let addedNestedChat = false;
 const agentNodes: Node[] = edges.map((_, index) => {
     const nodeId = `agent-${index}`;
-    let agentType = "user";
+    let agentType = "user_proxy";
     let includeNested = false;
     if (index % 5 === 1) {
         agentType = "assistant";
     } else if (index % 5 === 2) {
-        agentType = "rag_user";
+        agentType = "rag_user_proxy";
     } else if (index % 5 === 3) {
         agentType = "captain";
     } else if (index % 5 === 4) {
         agentType = "reasoning";
     }
-    if (agentType === "user" || agentType === "assistant") {
+    if (agentType === "user_proxy" || agentType === "assistant") {
         includeNested = index % 2 === 0;
     }
     const nestedChats = [] as WaldiezAgentNestedChat[];
@@ -89,7 +89,7 @@ const agentNodes: Node[] = edges.map((_, index) => {
             description: `The agent's description ${index}`,
             codeExecutionConfig,
             systemMessage: `System Message ${index}`,
-            humanInputMode: agentType.includes("user") ? "ALWAYS" : "NEVER",
+            humanInputMode: agentType.includes("user_proxy") ? "ALWAYS" : "NEVER",
             termination: {
                 type: "keyword",
                 keywords: ["keyword1", "keyword2"],
@@ -103,7 +103,7 @@ const agentNodes: Node[] = edges.map((_, index) => {
             updatedAt,
         },
     } as any;
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         agentData.data.retrieveConfig = defaultRetrieveConfig;
     }
     if (agentType === "reasoning") {

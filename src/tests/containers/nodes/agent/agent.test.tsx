@@ -14,17 +14,17 @@ describe("WaldiezAgentNode", () => {
         applyAccept: false,
     });
     it("should render", () => {
-        renderAgent("user");
+        renderAgent("user_proxy");
     });
     it("should open a user's modal", () => {
-        renderAgent("user");
+        renderAgent("user_proxy");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should not open a user's modal if it's already open", () => {
-        renderAgent("user", { openModal: true });
+        renderAgent("user_proxy", { openModal: true });
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
@@ -41,7 +41,7 @@ describe("WaldiezAgentNode", () => {
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should open a rag user's modal", () => {
-        renderAgent("rag_user");
+        renderAgent("rag_user_proxy");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
@@ -51,23 +51,23 @@ describe("WaldiezAgentNode", () => {
         renderAgent("assistant", { openModal: true });
         const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
         expect(labelViewInput).toHaveValue("Assistant");
-        const agentData = getAgentData("user");
+        const agentData = getAgentData("user_proxy");
         const importInputElement = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
         const modalView = screen.getByTestId(`wf-${flowId}-agent-modal-${agentId}`);
         expect(modalView).toBeInTheDocument();
         const importData = structuredClone({
             type: "agent",
-            agentType: "user",
-            data: { ...(agentData as any), name: "User" },
+            agentType: "user_proxy",
+            data: { ...(agentData as any), name: "user_proxy" },
         });
         const newFile = new File([JSON.stringify(importData)], "test.waldiezAgent");
         const importInput = importInputElement as HTMLInputElement;
         await user.upload(importInput, [newFile]);
     });
     it("should import an assistant agent", async () => {
-        renderAgent("user", { openModal: true });
+        renderAgent("user_proxy", { openModal: true });
         const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("User");
+        expect(labelViewInput).toHaveValue("user_proxy");
         const agentData = getAgentData("assistant");
         const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
         const importData = {
@@ -80,21 +80,21 @@ describe("WaldiezAgentNode", () => {
     });
 
     it("should import a rag user agent", async () => {
-        renderAgent("user", { openModal: true });
+        renderAgent("user_proxy", { openModal: true });
         const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("User");
-        const agentData = getAgentData("rag_user");
+        expect(labelViewInput).toHaveValue("user_proxy");
+        const agentData = getAgentData("rag_user_proxy");
         const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
         const importData = {
             id: agentId,
             type: "agent",
-            agentType: "rag_user",
+            agentType: "rag_user_proxy",
             data: { ...(agentData as any) },
         };
         await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
     });
     it("should export a user agent", () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: {
                 nestedChats: [
@@ -112,7 +112,7 @@ describe("WaldiezAgentNode", () => {
         expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
     });
     it("should export a rag user agent", () => {
-        renderAgent("rag_user", {
+        renderAgent("rag_user_proxy", {
             openModal: true,
             dataOverrides: {
                 nestedChats: [

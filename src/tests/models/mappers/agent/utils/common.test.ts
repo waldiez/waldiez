@@ -34,8 +34,8 @@ describe("getAgentId", () => {
 
 describe("getAgentType", () => {
     it("should return the agent type", () => {
-        const agentType = getAgentType({ agentType: "user" });
-        expect(agentType).toBe("user");
+        const agentType = getAgentType({ agentType: "user_proxy" });
+        expect(agentType).toBe("user_proxy");
     });
     it("should return the agent type from the data", () => {
         const agentType = getAgentType({ data: { agentType: "assistant" } });
@@ -43,13 +43,13 @@ describe("getAgentType", () => {
     });
     it("should return the default agent type", () => {
         const agentType = getAgentType({});
-        expect(agentType).toBe("user");
+        expect(agentType).toBe("user_proxy");
     });
 });
 
 describe("getFallbackDescription", () => {
     it("should return the user fallback description", () => {
-        const description = getFallbackDescription("user");
+        const description = getFallbackDescription("user_proxy");
         expect(description).toBe("A user agent");
     });
     it("should return the assistant fallback description", () => {
@@ -57,14 +57,14 @@ describe("getFallbackDescription", () => {
         expect(description).toBe("An assistant agent");
     });
     it("should return the rag user fallback description", () => {
-        const description = getFallbackDescription("rag_user");
+        const description = getFallbackDescription("rag_user_proxy");
         expect(description).toBe("A RAG user agent");
     });
 });
 
 describe("getAgentMeta", () => {
     it("should return the agent meta", () => {
-        const meta = getAgentMeta({}, "user");
+        const meta = getAgentMeta({}, "user_proxy");
         expect(meta).toBeTruthy();
     });
 });
@@ -82,7 +82,7 @@ describe("getSystemMessage", () => {
 
 describe("getHumanInputMode", () => {
     it("should return the default human input mode if the agent is user", () => {
-        const mode = getHumanInputMode({}, "user");
+        const mode = getHumanInputMode({}, "user_proxy");
         expect(mode).toBe("ALWAYS");
     });
     it("should return the default human input mode if the agent is an assistant", () => {
@@ -90,11 +90,11 @@ describe("getHumanInputMode", () => {
         expect(mode).toBe("NEVER");
     });
     it("should return the default human input mode if the agent is a rag user", () => {
-        const mode = getHumanInputMode({}, "rag_user");
+        const mode = getHumanInputMode({}, "rag_user_proxy");
         expect(mode).toBe("ALWAYS");
     });
     it("should return the human input mode from the data", () => {
-        const mode = getHumanInputMode({ humanInputMode: "NEVER" }, "user");
+        const mode = getHumanInputMode({ humanInputMode: "NEVER" }, "user_proxy");
         expect(mode).toBe("NEVER");
     });
 });
@@ -162,7 +162,7 @@ describe("getSkills", () => {
 
 describe("getAgentName", () => {
     it("should return the agent name", () => {
-        const name = getAgentName({ name: "test" }, "user");
+        const name = getAgentName({ name: "test" }, "user_proxy");
         expect(name).toBe("test");
     });
     it("should return the fallback name", () => {
@@ -170,18 +170,18 @@ describe("getAgentName", () => {
         expect(name).toBe("Assistant");
     });
     it("should return the fallback name for a rag user", () => {
-        const name = getAgentName({}, "rag_user");
+        const name = getAgentName({}, "rag_user_proxy");
         expect(name).toBe("RAG User");
     });
 });
 
 describe("getParentId", () => {
     it("should return the parent id", () => {
-        const id = getParentId({ parentId: "wa-1" }, "user");
+        const id = getParentId({ parentId: "wa-1" }, "user_proxy");
         expect(id).toBe("wa-1");
     });
     it("should return null if no parent id in the data", () => {
-        const id = getParentId({}, "user");
+        const id = getParentId({}, "user_proxy");
         expect(id).toBeNull();
     });
 });

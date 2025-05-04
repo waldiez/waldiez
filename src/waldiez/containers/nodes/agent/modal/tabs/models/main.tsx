@@ -48,13 +48,13 @@ export const WaldiezAgentModels = (props: WaldiezAgentModelsProps) => {
             ) : (
                 <>
                     <label className="select-models-label" htmlFor={`select-agent-models-${id}`}>
-                        Model{localData.agentType !== "rag_user" ? "s" : ""} to link to agent:
+                        Model{localData.agentType !== "rag_user_proxy" ? "s" : ""} to link to agent:
                     </label>
                     <Select
                         options={modelOptions}
                         value={selectedModels}
                         onChange={onModelsChange}
-                        isMulti={localData.agentType !== "rag_user"}
+                        isMulti={localData.agentType !== "rag_user_proxy"}
                         inputId={`select-agent-models-${id}`}
                         isClearable
                     />

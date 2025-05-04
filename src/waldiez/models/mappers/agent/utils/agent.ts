@@ -28,7 +28,7 @@ export const getAgent = (
     data: WaldiezAgentData,
     rest: { [key: string]: any },
 ) => {
-    if (agentType === "user") {
+    if (agentType === "user_proxy") {
         return new WaldiezAgentUserProxy({
             id,
             agentType,
@@ -56,7 +56,7 @@ export const getAgent = (
             rest,
         });
     }
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         return new WaldiezAgentRagUser({
             id,
             agentType,

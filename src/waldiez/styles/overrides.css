@@ -38,11 +38,11 @@
   background-color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-node.user .react-flow__handle {
+.flow-wrapper .agent-node.user_proxy .react-flow__handle {
   background-color: var(--user-agent-color);
 }
 
-.flow-wrapper .agent-node.rag_user .react-flow__handle {
+.flow-wrapper .agent-node.rag_user_proxy .react-flow__handle {
   background-color: var(--rag-user-color);
 }
 

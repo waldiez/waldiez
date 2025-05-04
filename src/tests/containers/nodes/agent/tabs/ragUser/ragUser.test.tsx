@@ -10,7 +10,7 @@ import { renderAgent } from "../../common";
 import { agentId, flowId } from "../../data";
 
 const goToRagTab = () => {
-    renderAgent("rag_user", { openModal: true });
+    renderAgent("rag_user_proxy", { openModal: true });
     const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
     fireEvent.click(ragUserTab);
 };

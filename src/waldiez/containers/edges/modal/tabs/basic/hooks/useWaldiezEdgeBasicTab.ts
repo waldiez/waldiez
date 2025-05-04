@@ -103,7 +103,7 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
 };
 const summaryRoleOptions = [
     { label: "System", value: "system" },
-    { label: "User", value: "user" },
+    { label: "user_proxy", value: "user_proxy" },
     { label: "Assistant", value: "assistant" },
 ];
 const summaryOptions: {

@@ -15,7 +15,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
     const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string, agentType?: string) => {
         event.dataTransfer.setData("application/node", nodeType);
         if (nodeType === "agent") {
-            event.dataTransfer.setData("application/agent", agentType ?? "user");
+            event.dataTransfer.setData("application/agent", agentType ?? "user_proxy");
         }
         event.dataTransfer.effectAllowed = "move";
     };

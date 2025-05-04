@@ -149,7 +149,7 @@ export const useWaldiezNodeAgentModal = (
     };
     const onSave = () => {
         const dataToSubmit = { ...agentData } as { [key: string]: any };
-        if (agentData.agentType === "rag_user") {
+        if (agentData.agentType === "rag_user_proxy") {
             submitRagUser(dataToSubmit);
         } else {
             submit(dataToSubmit);
@@ -166,9 +166,9 @@ export const useWaldiezNodeAgentModal = (
     const handleAgentTypeChange = (dataToSubmit: { [key: string]: any }) => {
         const newAgentType = dataToSubmit.agentType as WaldiezNodeAgentType;
         updateAgentConnections(newAgentType);
-        if (newAgentType === "rag_user" && !dataToSubmit.retrieveConfig) {
+        if (newAgentType === "rag_user_proxy" && !dataToSubmit.retrieveConfig) {
             dataToSubmit.retrieveConfig = defaultRetrieveConfig;
-        } else if (newAgentType === "user" && dataToSubmit.retrieveConfig) {
+        } else if (newAgentType === "user_proxy" && dataToSubmit.retrieveConfig) {
             delete dataToSubmit.retrieveConfig;
         }
         return dataToSubmit;
@@ -219,7 +219,7 @@ export const useWaldiezNodeAgentModal = (
     const toUser = () => {
         // remove retrieveConfig if it exists
         const noRagData = agentData as { [key: string]: any };
-        noRagData.agentType = "user";
+        noRagData.agentType = "user_proxy";
         if (noRagData.retrieveConfig) {
             delete noRagData.retrieveConfig;
         }
@@ -230,8 +230,8 @@ export const useWaldiezNodeAgentModal = (
     };
 
     const onAgentTypeChange = (agentType: WaldiezNodeAgentType) => {
-        // rag_user | user only
-        if (agentType === "rag_user") {
+        // rag_user_proxy | user_proxy only
+        if (agentType === "rag_user_proxy") {
             toRagUser();
         } else {
             toUser();

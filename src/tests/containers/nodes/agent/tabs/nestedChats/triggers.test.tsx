@@ -11,7 +11,7 @@ import { renderAgent, submitAgentChanges } from "../../common";
 import { agentId, flowId } from "../../data";
 
 const goToNestedChatsTab = () => {
-    renderAgent("user", {
+    renderAgent("user_proxy", {
         openModal: true,
         includeNestedChats: true,
         dataOverrides: {

@@ -23,7 +23,7 @@ const modelOverrides = {
 
 describe("Models tab", () => {
     it("should have the agent models selected", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: modelOverrides,
             includeModels: true,
@@ -36,7 +36,7 @@ describe("Models tab", () => {
         expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model1");
     });
     it("should allow changing the agent models", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: modelOverrides,
             includeModels: true,
@@ -67,7 +67,7 @@ describe("Models tab", () => {
         submitAgentChanges();
     });
     it("should allow having multiple models", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             includeModels: true,
         });
@@ -83,7 +83,7 @@ describe("Models tab", () => {
         submitAgentChanges();
     });
     it("should show a message if there are no models", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
         });
         goToModelsTab();

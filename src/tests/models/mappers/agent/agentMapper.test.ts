@@ -27,7 +27,7 @@ describe("agentMapper", () => {
         const agent = agentMapper.importAgent(userJson);
         expect(agent).toBeInstanceOf(WaldiezAgentUserProxy);
         expect(agent.data).toBeInstanceOf(WaldiezAgentData);
-        expect(agent.agentType).toBe("user");
+        expect(agent.agentType).toBe("user_proxy");
     });
     it("should import an assistant agent", () => {
         const agent = agentMapper.importAgent(assistantJson);
@@ -39,7 +39,7 @@ describe("agentMapper", () => {
         const agent = agentMapper.importAgent(ragUserJson);
         expect(agent).toBeInstanceOf(WaldiezAgentRagUser);
         expect(agent.data).toBeInstanceOf(WaldiezAgentRagUserData);
-        expect(agent.agentType).toBe("rag_user");
+        expect(agent.agentType).toBe("rag_user_proxy");
         expect((agent.data as any).retrieveConfig).toBeTruthy();
     });
     it("should import a reasoning agent", () => {

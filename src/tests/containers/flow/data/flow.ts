@@ -28,11 +28,11 @@ import { edges } from "./edges";
 import { nodes } from "./nodes";
 
 const agents = {
-    users: [] as WaldiezAgentUserProxy[],
-    assistants: [] as WaldiezAgentAssistant[],
-    rag_users: [] as WaldiezAgentRagUser[],
-    captain_agents: [] as WaldiezAgentCaptain[],
-    reasoning_agents: [] as WaldiezAgentReasoning[],
+    userAgents: [] as WaldiezAgentUserProxy[],
+    assistantAgents: [] as WaldiezAgentAssistant[],
+    ragUserProxyAgents: [] as WaldiezAgentRagUser[],
+    captainAgents: [] as WaldiezAgentCaptain[],
+    reasoningAgents: [] as WaldiezAgentReasoning[],
 };
 const models = [] as WaldiezModel[];
 const skills = [] as WaldiezSkill[];
@@ -51,8 +51,8 @@ const nodesWithoutData = nodes.map((node: Node) => {
             createdAt,
             updatedAt,
         };
-        if (agentType === "user") {
-            agents.users.push(agentMapper.importAgent(jsonData, jsonData.id));
+        if (agentType === "user_proxy") {
+            agents.userAgents.push(agentMapper.importAgent(jsonData, jsonData.id));
         } else if (agentType === "assistant") {
             const dateWIthIsMultimodal = {
                 ...jsonData,
@@ -61,10 +61,10 @@ const nodesWithoutData = nodes.map((node: Node) => {
                     isMultimodal: (jsonData.data as WaldiezAgentAssistantData).isMultimodal,
                 },
             };
-            agents.assistants.push(
+            agents.assistantAgents.push(
                 agentMapper.importAgent(dateWIthIsMultimodal, jsonData.id) as WaldiezAgentAssistant,
             );
-        } else if (agentType === "rag_user") {
+        } else if (agentType === "rag_user_proxy") {
             const dataWithRetrieveConfig = {
                 ...jsonData,
                 data: {
@@ -72,7 +72,7 @@ const nodesWithoutData = nodes.map((node: Node) => {
                     retrieveConfig: (jsonData.data as WaldiezNodeAgentRagUserData).retrieveConfig,
                 },
             };
-            agents.rag_users.push(
+            agents.ragUserProxyAgents.push(
                 agentMapper.importAgent(dataWithRetrieveConfig, jsonData.id) as WaldiezAgentRagUser,
             );
         } else if (agentType === "captain") {
@@ -84,7 +84,7 @@ const nodesWithoutData = nodes.map((node: Node) => {
                     toolLib: (jsonData.data as WaldiezAgentCaptainData).toolLib,
                 },
             };
-            agents.captain_agents.push(
+            agents.captainAgents.push(
                 agentMapper.importAgent(dataWithAgentLibAndToolLib, jsonData.id) as WaldiezAgentCaptain,
             );
         } else if (agentType === "reasoning") {
@@ -95,7 +95,7 @@ const nodesWithoutData = nodes.map((node: Node) => {
                     reasonConfig: (jsonData.data as WaldiezAgentReasoningData).reasonConfig,
                 },
             };
-            agents.reasoning_agents.push(
+            agents.reasoningAgents.push(
                 agentMapper.importAgent(dataWithAgentReasonConfig, jsonData.id) as WaldiezAgentReasoning,
             );
         }

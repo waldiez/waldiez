@@ -32,8 +32,8 @@ export const LOGOS = {
     other: openai,
 };
 export const AGENT_ICONS = {
-    user: userWebp,
-    rag_user: userWebp,
+    user_proxy: userWebp,
+    rag_user_proxy: userWebp,
     captain: captainWebp,
     assistant: assistantWebp,
     reasoning: reasoningWebp,

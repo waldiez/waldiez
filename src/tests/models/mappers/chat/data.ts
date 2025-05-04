@@ -66,7 +66,7 @@ export const agents: Node[] = [
         type: "agent",
         data: {
             label: "wa-1",
-            agentType: "user",
+            agentType: "user_proxy",
         },
         position: { x: 0, y: 0 },
     },

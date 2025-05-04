@@ -7,9 +7,9 @@ import { defaultRetrieveConfig } from "@waldiez/models/Agent";
 export const userJson = {
     id: "wa-1",
     type: "agent",
-    name: "User",
+    name: "user_proxy",
     description: "New user",
-    agentType: "user",
+    agentType: "user_proxy",
     tags: [],
     requirements: [],
     createdAt: new Date().toISOString(),
@@ -68,7 +68,7 @@ export const assistantJson = {
 export const ragUserJson = {
     id: "ragUser",
     type: "agent",
-    agentType: "rag_user",
+    agentType: "rag_user_proxy",
     name: "Rag User",
     description: "A rag user agent",
     tags: [],

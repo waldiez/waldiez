@@ -169,7 +169,7 @@ const getCommonAgentData = (
 
 const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     const toExclude = ["id", "name", "description", "tags", "requirements", "createdAt", "updatedAt", "data"];
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         toExclude.push("retrieveConfig");
     }
     if (agentType === "assistant") {
@@ -189,7 +189,7 @@ const getAgentDataToImport = (
     agentType: WaldiezNodeAgentType,
 ): WaldiezAgentData => {
     const data = getCommonAgentData(jsonData, agentType);
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         return new WaldiezAgentRagUserData({
             ...data,
             retrieveConfig: getRetrieveConfig(jsonData),
@@ -228,7 +228,7 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     if (agentCopy.data.codeExecutionConfig) {
         agentCopy.data.codeExecutionConfig.functions = [];
     }
-    if (agent.data.agentType === "rag_user") {
+    if (agent.data.agentType === "rag_user_proxy") {
         (agentCopy as WaldiezNodeAgentRagUser).data.retrieveConfig = {
             ...(agentCopy as WaldiezNodeAgentRagUser).data.retrieveConfig,
             model: null,
@@ -239,7 +239,7 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
 };
 
 const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any, data: any) => {
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         updateRagAgent(agentData, data);
     }
     if (agentType === "reasoning") {

@@ -24,7 +24,7 @@ const skillOverrides = {
 describe("Skills tab", () => {
     it("should display the agent skills", async () => {
         // renderAgent('user', true, skillOverrides, false, true);
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: skillOverrides,
             includeSkills: true,
@@ -35,10 +35,10 @@ describe("Skills tab", () => {
         expect(skillName).toHaveTextContent("test skill1");
         const agentName = screen.getByTestId(`agent-name-${agentId}-0`);
         expect(agentName).toBeInTheDocument();
-        expect(agentName).toHaveTextContent("User");
+        expect(agentName).toHaveTextContent("user_proxy");
     });
     it("should allow removing agent skills", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: skillOverrides,
             includeSkills: true,
@@ -54,7 +54,7 @@ describe("Skills tab", () => {
         submitAgentChanges();
     });
     it("should allow adding agent skills", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: skillOverrides,
             includeSkills: true,
@@ -67,7 +67,7 @@ describe("Skills tab", () => {
         const selectExecutor = screen.getByLabelText("Executor:");
         expect(selectExecutor).toBeInTheDocument();
         selectEvent.openMenu(selectExecutor);
-        await selectEvent.select(selectExecutor, "User");
+        await selectEvent.select(selectExecutor, "user_proxy");
         const addSkillButton = screen.getByTestId(`add-agent-skill-${agentId}`);
         expect(addSkillButton).toBeInTheDocument();
         fireEvent.click(addSkillButton);
@@ -76,11 +76,11 @@ describe("Skills tab", () => {
         expect(skillName).toHaveTextContent("test skill2");
         const agentName = screen.getByTestId(`agent-name-${agentId}-1`);
         expect(agentName).toBeInTheDocument();
-        expect(agentName).toHaveTextContent("User");
+        expect(agentName).toHaveTextContent("user_proxy");
         submitAgentChanges();
     });
     it("should show a message if there are no skills", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
         });
         goToSkillsTab();

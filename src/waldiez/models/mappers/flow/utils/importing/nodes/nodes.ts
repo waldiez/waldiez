@@ -8,7 +8,7 @@ import { WaldiezAgentType } from "@waldiez/models";
 import { getIdFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
 const VALID_NODE_TYPES = ["model", "skill", "agent"];
-const VALID_AGENT_TYPES: WaldiezAgentType[] = ["user", "assistant", "rag_user"];
+const VALID_AGENT_TYPES: WaldiezAgentType[] = ["user_proxy", "assistant", "rag_user_proxy"];
 
 export const getNodes = (json: Record<string, unknown>) => {
     const nodes: Node[] = [];

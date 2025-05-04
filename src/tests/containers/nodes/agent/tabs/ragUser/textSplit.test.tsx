@@ -11,7 +11,7 @@ import { renderAgent, submitAgentChanges } from "../../common";
 import { agentId, flowId } from "../../data";
 
 const goToTextSplitTab = () => {
-    renderAgent("rag_user", {
+    renderAgent("rag_user_proxy", {
         openModal: true,
     });
     const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);

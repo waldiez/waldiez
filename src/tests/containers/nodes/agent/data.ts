@@ -24,14 +24,14 @@ export const flowId = "test-flow";
 export const createdAt = new Date().toISOString();
 export const updatedAt = new Date().toISOString();
 export const getAgentData = (agentType: WaldiezNodeAgentType) => {
-    if (agentType === "user") {
-        return WaldiezAgentUserProxy.create("user").data;
+    if (agentType === "user_proxy") {
+        return WaldiezAgentUserProxy.create("user_proxy").data;
     }
     if (agentType === "assistant") {
         return WaldiezAgentAssistant.create("assistant").data;
     }
-    if (agentType === "rag_user") {
-        return WaldiezAgentRagUser.create("rag_user").data;
+    if (agentType === "rag_user_proxy") {
+        return WaldiezAgentRagUser.create("rag_user_proxy").data;
     }
     if (agentType === "reasoning") {
         return WaldiezAgentUserProxy.create("reasoning").data;
@@ -49,7 +49,7 @@ export const getAgentNode = (
     const agentData = getAgentData(agentType);
     let node: Node;
     switch (agentType) {
-        case "user":
+        case "user_proxy":
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
@@ -67,7 +67,7 @@ export const getAgentNode = (
                 }),
             );
             break;
-        case "rag_user":
+        case "rag_user_proxy":
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
@@ -179,7 +179,7 @@ export const getConnectedAgents = () => {
     const nodes: Node[] = [];
     const edges = [];
     for (let i = 0; i < 5; i++) {
-        const agent = getAgentNode("user");
+        const agent = getAgentNode("user_proxy");
         agent.data.label = `Agent ${i}`;
         agent.id = `agent-${i}`;
         nodes.push({ ...agent });

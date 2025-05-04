@@ -23,7 +23,7 @@ export const getAgentNode = (
     const newAgent = WaldiezAgent.create(agentType);
     const agentNode = agentMapper.asNode(newAgent, position);
     agentNode.data.parentId = parentId;
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         const agentExtras = new WaldiezAgentRagUserData();
         agentNode.data = { ...agentNode.data, ...agentExtras };
     } else if (agentType === "reasoning") {

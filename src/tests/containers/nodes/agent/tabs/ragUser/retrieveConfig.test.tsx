@@ -24,7 +24,7 @@ const uploadsHandler = async (files: File[]) => {
 
 const goToRetrieveConfigTab = async () => {
     renderAgent(
-        "rag_user",
+        "rag_user_proxy",
         {
             openModal: true,
         },

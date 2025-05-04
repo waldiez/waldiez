@@ -37,7 +37,7 @@ export const WaldiezNodeAgentModalTabs = ({
     onAgentTypeChange,
     onFilesToUploadChange,
 }: WaldiezNodeAgentModalTabsProps) => {
-    const isRagUser = dataProp.agentType === "rag_user";
+    const isRagUser = dataProp.agentType === "rag_user_proxy";
     const isReasoning = dataProp.agentType === "reasoning";
     const isCaptain = dataProp.agentType === "captain";
     const getAgentConnections = useWaldiez(s => s.getAgentConnections);

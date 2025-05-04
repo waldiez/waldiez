@@ -8,5 +8,5 @@ export type WaldiezAgentBasicProps = {
     id: string;
     data: WaldiezNodeAgentData;
     onDataChange: (data: Partial<WaldiezNodeAgentData>) => void;
-    onAgentTypeChange: (agentType: "user" | "rag_user") => void;
+    onAgentTypeChange: (agentType: "user_proxy" | "rag_user_proxy") => void;
 };

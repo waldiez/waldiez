@@ -12,11 +12,11 @@ describe("getAgents", () => {
         const nodes: any[] = [];
         const agents = getAgents(json, nodes, [], [], []);
         expect(agents).toEqual({
-            users: [],
-            assistants: [],
-            rag_users: [],
-            reasoning_agents: [],
-            captain_agents: [],
+            userProxyAgents: [],
+            assistantAgents: [],
+            ragUserProxyAgents: [],
+            reasoningAgents: [],
+            captainAgents: [],
         });
     });
     it("should not import agents if agents is not in the json", () => {
@@ -24,50 +24,50 @@ describe("getAgents", () => {
         const nodes: any[] = [];
         const agents = getAgents(json, nodes, [], [], []);
         expect(agents).toEqual({
-            users: [],
-            assistants: [],
-            rag_users: [],
-            reasoning_agents: [],
-            captain_agents: [],
+            userProxyAgents: [],
+            assistantAgents: [],
+            ragUserProxyAgents: [],
+            reasoningAgents: [],
+            captainAgents: [],
         });
     });
     it("should return empty arrays if there are no nodes", () => {
         const json = {
             agents: {
-                users: [{ id: "wa-1", type: "agent", agentType: "user" }],
-                assistants: [{ id: "wa-2", type: "agent", agentType: "assistant" }],
-                rag_users: [{ id: "wa-4", type: "agent", agentType: "rag_user" }],
-                reasoning_agents: [{ id: "wa-6", type: "agent", agentType: "reasoning" }],
-                captain_agents: [{ id: "wa-7", type: "agent", agentType: "captain" }],
+                userProxyAgents: [{ id: "wa-1", type: "agent", agentType: "user_proxy" }],
+                assistantAgents: [{ id: "wa-2", type: "agent", agentType: "assistant" }],
+                ragUserProxyAgents: [{ id: "wa-4", type: "agent", agentType: "rag_user_proxy" }],
+                reasoningAgents: [{ id: "wa-6", type: "agent", agentType: "reasoning" }],
+                captainAgents: [{ id: "wa-7", type: "agent", agentType: "captain" }],
             },
         };
         const nodes: any[] = [];
         const agents = getAgents(json, nodes, [], [], []);
         expect(agents).toEqual({
-            users: [],
-            assistants: [],
-            rag_users: [],
-            reasoning_agents: [],
-            captain_agents: [],
+            userProxyAgents: [],
+            assistantAgents: [],
+            ragUserProxyAgents: [],
+            reasoningAgents: [],
+            captainAgents: [],
         });
     });
     it("should not return agents if there is no match in the nodes", () => {
         const json = {
             agents: {
-                users: [{ id: "wa-1", type: "agent", agentType: "user" }],
-                rag_users: [{ id: "wa-4", type: "agent", agentType: "rag_user" }],
-                reasoning_agents: [{ id: "wa-6", type: "agent", agentType: "reasoning" }],
-                captain_agents: [{ id: "wa-7", type: "agent", agentType: "captain" }],
+                userProxyAgents: [{ id: "wa-1", type: "agent", agentType: "user_proxy" }],
+                ragUserProxyAgents: [{ id: "wa-4", type: "agent", agentType: "rag_user_proxy" }],
+                reasoningAgents: [{ id: "wa-6", type: "agent", agentType: "reasoning" }],
+                captainAgents: [{ id: "wa-7", type: "agent", agentType: "captain" }],
             },
         };
         const nodes: any[] = [{ id: "wa-2", type: "agent", data: {} }];
         const agents = getAgents(json, nodes, ["wm-1"], ["ws-1"], ["we-1"]);
         expect(agents).toEqual({
-            users: [],
-            assistants: [],
-            rag_users: [],
-            reasoning_agents: [],
-            captain_agents: [],
+            userProxyAgents: [],
+            assistantAgents: [],
+            ragUserProxyAgents: [],
+            reasoningAgents: [],
+            captainAgents: [],
         });
     });
 });

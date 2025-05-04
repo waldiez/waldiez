@@ -25,30 +25,30 @@ export const getAgents = (
 ) => {
     if (!("agents" in json) || typeof json.agents !== "object") {
         return {
-            users: [],
-            assistants: [],
-            rag_users: [],
-            reasoning_agents: [],
-            captain_agents: [],
+            userProxyAgents: [],
+            assistantAgents: [],
+            ragUserProxyAgents: [],
+            reasoningAgents: [],
+            captainAgents: [],
         };
     }
     const agentsJson = json.agents as Record<string, unknown>;
     const agents: {
-        users: WaldiezAgentUserProxy[];
-        assistants: WaldiezAgentAssistant[];
-        rag_users: WaldiezAgentRagUser[];
-        reasoning_agents: WaldiezAgentReasoning[];
-        captain_agents: WaldiezAgentCaptain[];
+        userProxyAgents: WaldiezAgentUserProxy[];
+        assistantAgents: WaldiezAgentAssistant[];
+        ragUserProxyAgents: WaldiezAgentRagUser[];
+        reasoningAgents: WaldiezAgentReasoning[];
+        captainAgents: WaldiezAgentCaptain[];
     } = {
-        users: getFlowAgents(
-            "user",
+        userProxyAgents: getFlowAgents(
+            "user_proxy",
             agentsJson,
             nodes,
             modelIds,
             skillIds,
             chatIds,
         ) as WaldiezAgentUserProxy[],
-        assistants: getFlowAgents(
+        assistantAgents: getFlowAgents(
             "assistant",
             agentsJson,
             nodes,
@@ -56,15 +56,15 @@ export const getAgents = (
             skillIds,
             chatIds,
         ) as WaldiezAgentAssistant[],
-        rag_users: getFlowAgents(
-            "rag_user",
+        ragUserProxyAgents: getFlowAgents(
+            "rag_user_proxy",
             agentsJson,
             nodes,
             modelIds,
             skillIds,
             chatIds,
         ) as WaldiezAgentRagUser[],
-        reasoning_agents: getFlowAgents(
+        reasoningAgents: getFlowAgents(
             "reasoning",
             agentsJson,
             nodes,
@@ -72,7 +72,7 @@ export const getAgents = (
             skillIds,
             chatIds,
         ) as WaldiezAgentReasoning[],
-        captain_agents: getFlowAgents(
+        captainAgents: getFlowAgents(
             "captain",
             agentsJson,
             nodes,
@@ -92,10 +92,7 @@ const getFlowAgents = (
     skillIds: string[],
     chatIds: string[],
 ) => {
-    let keyToCheck = `${agentType}s`;
-    if (["reasoning", "captain"].includes(agentType)) {
-        keyToCheck = `${agentType}_agents`;
-    }
+    const keyToCheck = `${agentType}_agents`;
     if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
         return [] as WaldiezAgent[];
     }
@@ -142,8 +139,8 @@ const validateAgents = (
         .map(agent => {
             return filterAgentNestedChats(agent, nodeIds, chatIds);
         });
-    if (agentType === "rag_user") {
-        return filterRagUsers(agents as WaldiezAgentRagUser[], modelIds);
+    if (agentType === "rag_user_proxy") {
+        return filterRagUserProxyAgents(agents as WaldiezAgentRagUser[], modelIds);
     }
     return agents;
 };
@@ -177,7 +174,7 @@ const filterAgentNestedChats = (agent: WaldiezAgent, nodeIds: string[], chatIds:
     return agent;
 };
 
-const filterRagUsers = (agents: WaldiezAgentRagUser[], modelIds: string[]) => {
+const filterRagUserProxyAgents = (agents: WaldiezAgentRagUser[], modelIds: string[]) => {
     return agents.map(agent => {
         if (
             "data" in agent &&

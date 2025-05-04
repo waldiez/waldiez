@@ -36,7 +36,7 @@ export const userDataTransfer = {
         if (key === "application/node") {
             return "agent";
         }
-        return "user";
+        return "user_proxy";
     },
 };
 

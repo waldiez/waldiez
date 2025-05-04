@@ -10,11 +10,11 @@ import { agentId, flowId } from "../../data";
 
 describe("Nested Chats tab main", () => {
     it("should not render the Nested Chats tab if the agent has no connections", async () => {
-        renderAgent("user");
+        renderAgent("user_proxy");
         expect(screen.queryByTestId(`tab-id-wf-${flowId}-agent-nestedChats-${agentId}`)).toBeNull();
     });
     it("should render the Nested Chats tab if the agent has connections", async () => {
-        renderAgent("user", {
+        renderAgent("user_proxy", {
             openModal: true,
             includeNestedChats: true,
             dataOverrides: {
