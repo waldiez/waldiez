@@ -35,7 +35,13 @@ export const TextInput = (props: TextInputProps) => {
     };
     return (
         <>
-            {labelInfo ? <InfoLabel label={label} info={labelInfo} /> : <label>{label}</label>}
+            {labelInfo ? (
+                <InfoLabel label={label} info={labelInfo} />
+            ) : typeof label === "string" ? (
+                <label>{label}</label>
+            ) : (
+                label
+            )}
             <div className="flex">
                 <input
                     className={className}

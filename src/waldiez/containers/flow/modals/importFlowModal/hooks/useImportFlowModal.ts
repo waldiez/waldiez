@@ -8,7 +8,7 @@ import { ImportFlowModalProps, ImportFlowState } from "@waldiez/containers/flow/
 import { useWaldiez } from "@waldiez/store";
 
 export const useImportFlowModal = (props: ImportFlowModalProps) => {
-    const { onClose: handleClose, typeShown } = props;
+    const { onClose: handleClose, typeShown, onTypeShownChange } = props;
     const [importFlowState, setImportFlowState] = useState<ImportFlowState>(initialState);
     const importFlow = useWaldiez(s => s.importFlow);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
@@ -16,7 +16,7 @@ export const useImportFlowModal = (props: ImportFlowModalProps) => {
         const { loadedFlowData, selectedProps } = importFlowState;
         if (loadedFlowData) {
             importFlow(selectedProps, loadedFlowData, typeShown);
-            // onTypeShownChange('agent');
+            onTypeShownChange("agent");
             onFlowChanged();
         }
     };

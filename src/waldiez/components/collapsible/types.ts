@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 
 export type CollapsibleProps = {
     title: string;
+    className?: string;
     children: ReactNode;
     expanded?: boolean;
     fullWidth?: boolean;
@@ -13,6 +14,7 @@ export type CollapsibleProps = {
 };
 export type CollapsibleViewProps = {
     title: string;
+    className?: string;
     children: ReactNode;
     isOpen: boolean;
     dataTestId?: string;

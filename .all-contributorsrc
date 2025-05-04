@@ -38,6 +38,13 @@
                 "promotion",
                 "design"
             ]
+        },
+        {
+            "login": "amaliacontiero",
+            "name": "Amalia Contiero",
+            "avatar_url": "https://avatars.githubusercontent.com/u/29499343?v=4",
+            "profile": "https://github.com/amaliacontiero",
+            "contributions": ["code", "bug"]
         }
     ],
     "contributorsPerLine": 7,

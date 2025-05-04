@@ -14,7 +14,6 @@ from ..base import (
     ExporterMixin,
     ExporterReturnType,
     ExportPosition,
-    ImportPosition,
 )
 from .utils import export_models, get_agent_llm_config_arg
 
@@ -66,14 +65,8 @@ class ModelsExporter(BaseExporter, ExporterMixin):
         self.output_dir = output_dir
         self._exported_string = None
 
-    def get_imports(self) -> Optional[List[Tuple[str, ImportPosition]]]:
-        """Generate the imports string.
-
-        Returns
-        -------
-        Optional[Tuple[str, ImportPosition]]
-            The exported imports and the position of the imports.
-        """
+    def get_imports(self) -> None:
+        """Generate the imports string."""
         if not self.output_dir:
             return None
         file_path = self.output_dir / f"{self.flow_name}_api_keys.py"
@@ -81,13 +74,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
             # might be because the models are not exported yet
             if not self._exported_string:
                 self.generate()
-            # if still not exported, return None
-            if not file_path.exists():  # pragma: no cover
-                return None
-        import_string = f"from {self.flow_name}_api_keys import (" + "\n"
-        import_string += f"    get_{self.flow_name}_model_api_key," + "\n"
-        import_string += ")\n"
-        return [(import_string, ImportPosition.LOCAL)]
+        return None
 
     def get_after_export(
         self,
@@ -158,6 +145,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
                 output_dir=self.output_dir,
                 serializer=self.serializer,
             )
+            self.get_imports()
         return self._exported_string
 
     def get_environment_variables(self) -> Optional[List[Tuple[str, str]]]:
@@ -174,6 +162,58 @@ class ModelsExporter(BaseExporter, ExporterMixin):
                 env_vars.append((model.api_key_env_key, model.api_key))
         return env_vars
 
+    @staticmethod
+    def get_api_key_loader_script(flow_name: str) -> str:
+        """Get the api key loader script.
+
+        Parameters
+        ----------
+        flow_name : str
+            The flow name.
+
+        Returns
+        -------
+        str
+            The api key loader script.
+        """
+        loader_script = f'''
+def load_api_key_module(flow_name: str) -> ModuleType:
+    """Load the api key module.
+
+    Parameters
+    ----------
+    flow_name : str
+        The flow name.
+
+    Returns
+    -------
+    ModuleType
+        The api keys loading module.
+    """
+    module_name = f"{{flow_name}}_api_keys"
+    if module_name in sys.modules:
+        return importlib.reload(sys.modules[module_name])
+    return importlib.import_module(module_name)
+
+__MODELS_MODULE__ = load_api_key_module("{flow_name}")
+
+
+def get_{flow_name}_model_api_key(model_name: str) -> str:
+    """Get the model api key.
+    Parameters
+    ----------
+    model_name : str
+        The model name.
+
+    Returns
+    -------
+    str
+        The model api key.
+    """
+    return __MODELS_MODULE__.get_{flow_name}_model_api_key(model_name)
+'''
+        return loader_script
+
     def export(self) -> ExporterReturnType:
         """Export the models.
 
@@ -187,13 +227,12 @@ class ModelsExporter(BaseExporter, ExporterMixin):
             and the environment variables.
         """
         exported_string = self.generate()
-        imports = self.get_imports()
         after_export = self.get_after_export()
         result: ExporterReturnType = {
             "content": exported_string,
-            "imports": imports,
+            "imports": [],
             "before_export": None,
             "after_export": after_export,
-            "environment_variables": None,
+            "environment_variables": self.get_environment_variables(),
         }
         return result

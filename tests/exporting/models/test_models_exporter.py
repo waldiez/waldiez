@@ -19,7 +19,7 @@ def test_models_exporter(tmp_path: Path) -> None:
     tmp_path : Path
         The temporary path.
     """
-    flow_name = "flow1"
+    flow_name = "test_models_exporter"
     model1_name = "model1"
     model2_name = "model2"
     model3_name = "model3"
@@ -66,8 +66,6 @@ def test_models_exporter(tmp_path: Path) -> None:
         output_dir=None,
         cache_seed=42,
     )
-    imports = models_exporter.get_imports()
-    assert imports is None
     generated_string = models_exporter.generate()
     expected = f"""
 {model1_name}_llm_config = {{
@@ -98,20 +96,10 @@ def test_models_exporter(tmp_path: Path) -> None:
         models=[model1, model2],
         model_names=model_names,
         for_notebook=True,
-        output_dir=str(tmp_path),
+        output_dir=str(output_dir),
         cache_seed=42,
     )
-    imports = models_exporter.get_imports()
-    assert imports is not None
-    expected_import_string = (
-        f"from {flow_name}_api_keys import ("
-        "\n"
-        f"    get_{flow_name}_model_api_key,"
-        "\n"
-        ")\n"
-    )
-    assert imports[0][0] == expected_import_string
-    assert imports[0][1].name == "LOCAL"
+    models_exporter.get_imports()
     after_export = models_exporter.get_after_export()
     assert after_export is not None
     assert after_export[0][0] == (
@@ -123,7 +111,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         '        "cache_seed": 42,\n'
         "    },\n"
     )
-    assert (tmp_path / f"{flow_name}_api_keys.py").exists()
+    assert (output_dir / f"{flow_name}_api_keys.py").exists()
     shutil.rmtree(output_dir)
 
     agent = WaldiezAgent(
@@ -145,7 +133,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         output_dir=str(tmp_path),
         cache_seed=43,
     )
-    assert models_exporter.get_imports() is not None
+    models_exporter.get_imports()
     generated_string = models_exporter.generate()
     assert generated_string == expected
     output_dir = tmp_path / "test_models_exporter"
@@ -160,15 +148,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         output_dir=str(tmp_path),
         cache_seed=None,
     )
-    imports = models_exporter.get_imports()
-    assert imports is not None
-    expected_import_string = (
-        f"from {flow_name}_api_keys import (" + "\n"
-        f"    get_{flow_name}_model_api_key," + "\n"
-        ")\n"
-    )
-    assert imports[0][0] == expected_import_string
-    assert imports[0][1].name == "LOCAL"
+    models_exporter.get_imports()
     assert (tmp_path / f"{flow_name}_api_keys.py").exists()
     shutil.rmtree(output_dir)
 
@@ -191,7 +171,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         output_dir=str(tmp_path),
         cache_seed=None,
     )
-    assert models_exporter.get_imports() is not None
+    models_exporter.get_imports()
     after_export = models_exporter.get_after_export()
     assert after_export is not None
     assert after_export[0][0] == "    llm_config=False,\n"

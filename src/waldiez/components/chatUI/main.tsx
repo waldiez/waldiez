@@ -52,13 +52,19 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) =>
         },
         [userParticipants],
     );
-
     const processedMessages = useMemo(() => messages.map(processMessage), [messages, processMessage]);
     useEffect(() => {
-        const container = chatContainer.current;
-        if (container) {
-            container.scrollTop = container.scrollHeight;
-        }
+        setTimeout(() => {
+            const container = chatContainer.current;
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            } else {
+                const scrollableContainers = document.querySelectorAll(".chat-container");
+                scrollableContainers.forEach(container => {
+                    (container as HTMLDivElement).scrollTop = container.scrollHeight;
+                });
+            }
+        }, 100);
     }, [processedMessages]);
 
     return (

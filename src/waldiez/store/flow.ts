@@ -177,6 +177,8 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
                 includeHiddenNodes: false,
                 padding: 0.2,
                 duration: 100,
+                maxZoom: rfInstance?.getZoom(),
+                minZoom: rfInstance?.getZoom(),
             });
         }, 100);
     };

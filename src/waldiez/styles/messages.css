@@ -1,3 +1,23 @@
+.color-info {
+  color: #004085 !important;
+}
+
+.flow-wrapper.dark .color-info {
+  color: #cce5ff !important;
+}
+
+.color-success {
+  color: #155724 !important;
+}
+
+.color-warning {
+  color: #856404 !important;
+}
+
+.color-error {
+  color: #721c24 !important;
+}
+
 .flow-wrapper .info {
   color: #004085;
   background-color: #cce5ff;

@@ -52,7 +52,7 @@ export const useModelModalBasicTab = (props: WaldiezNodeModelModalBasicTabProps)
         setApiKeyVisible(!apiKeyVisible);
     };
     const apiKeyEnv = apiKeyEnvs[apiType];
-    const apiKeyInfo = `API key to use if ${apiKeyEnv} environment variable is not set`;
+    const apiKeyInfo = `API key to use if the '${apiKeyEnv}' environment variable is not set`;
     const apiTypeLabel = getApiTypeLabel(apiType);
     const readOnlyBaseUrl = getBaseUrl(apiType);
     const urlIsEditable = isBaseUrlEditable(apiType);
