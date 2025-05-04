@@ -8,6 +8,7 @@ Highly recommended to be run in a virtual environment.
 'setuptools' and 'wheel' will also be installed if not already installed.
 """
 
+import contextlib
 import os
 import platform
 import shutil
@@ -22,10 +23,10 @@ PYSQLITE3_VERSION = "0.5.4"
 SQLITE_URL = "https://www.sqlite.org/2025/sqlite-amalgamation-3480000.zip"
 PYSQLITE3_URL = f"https://github.com/coleifer/pysqlite3/archive/refs/tags/{PYSQLITE3_VERSION}.zip"  # pylint: disable=line-too-long
 
-PIP = f"{sys.executable} -m pip"
+PIP = [sys.executable, "-m", "pip"]
 
 
-def run_command(command: str, cwd: str = ".") -> None:
+def run_command(command: list[str], cwd: str = ".") -> None:
     """Run a command.
 
     Parameters
@@ -35,12 +36,11 @@ def run_command(command: str, cwd: str = ".") -> None:
     cwd : str
         The current working directory.
     """
-    cmd_parts = command.split(" ")
     if cwd == ".":
         cwd = os.getcwd()
     try:
         subprocess.run(  # nosemgrep  # nosec
-            cmd_parts,
+            command,
             check=True,
             cwd=cwd,
             env=os.environ,
@@ -75,10 +75,18 @@ def pip_install(*package_names: str, cwd: str = ".") -> None:
         The current working directory.
     """
     args = "-qq"
+    break_system_packages = ""
     if not in_virtualenv():
-        args += " --user --break-system-packages"
-    package_names_str = " ".join(package_names)
-    run_command(f"{PIP} install {args} {package_names_str}", cwd)
+        break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
+        os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
+        args += " --user"
+    args_list = args.split()
+    run_command(PIP + ["install"] + args_list + list(package_names), cwd)
+    if not in_virtualenv():
+        if break_system_packages:
+            os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
+        else:
+            os.environ.pop("PIP_BREAK_SYSTEM_PACKAGES", None)
 
 
 def pip_uninstall(*package_names: str, cwd: str = ".") -> None:
@@ -92,10 +100,18 @@ def pip_uninstall(*package_names: str, cwd: str = ".") -> None:
         The current working directory.
     """
     args = "-qq --yes"
+    break_system_packages = ""
     if not in_virtualenv():
-        args += " --break-system-packages"
-    package_names_str = " ".join(package_names)
-    run_command(f"{PIP} uninstall {args} {package_names_str}", cwd)
+        break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
+        os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
+        args += " --user"
+    args_list = args.split()
+    run_command(PIP + ["uninstall"] + args_list + list(package_names), cwd)
+    if not in_virtualenv():
+        if break_system_packages:
+            os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
+        else:
+            os.environ.pop("PIP_BREAK_SYSTEM_PACKAGES", None)
 
 
 def download_sqlite_amalgamation() -> str:
@@ -187,10 +203,18 @@ def install_pysqlite3(sqlite_amalgamation_path: str) -> None:
     try:
         pysqlite3_dir = prepare_pysqlite3(sqlite_amalgamation_path)
         pip_install("setuptools")
-        run_command(f"{sys.executable} setup.py build_static", pysqlite3_dir)
+        # let's suppress logs
+        with open(os.devnull, "w", encoding="utf-8") as devnull:
+            with (
+                contextlib.redirect_stdout(devnull),
+                contextlib.redirect_stderr(devnull),
+            ):
+                run_command(
+                    [sys.executable, "setup.py", "build_static"], pysqlite3_dir
+                )
         pip_install("wheel")
         run_command(
-            f"{PIP} wheel . -w dist",
+            PIP + ["wheel", ".", "-w", "dist"],
             pysqlite3_dir,
         )
         wheel_file = os.listdir(os.path.join(pysqlite3_dir, "dist"))[0]

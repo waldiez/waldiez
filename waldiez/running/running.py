@@ -120,6 +120,7 @@ def install_requirements(
     requirements_string = ", ".join(extra_requirements)
     printer(f"Installing requirements: {requirements_string}")
     pip_install = [sys.executable, "-m", "pip", "install"]
+    break_system_packages = ""
     if not in_virtualenv():  # it should
         # if not, let's try to install as user
         # not sure if --break-system-packages is safe
@@ -165,6 +166,7 @@ async def a_install_requirements(
     requirements_string = ", ".join(extra_requirements)
     printer(f"Installing requirements: {requirements_string}")
     pip_install = [sys.executable, "-m", "pip", "install"]
+    break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
