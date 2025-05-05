@@ -131,8 +131,8 @@ Triggered when the flow is changed:
 
 ```tsx
 <Waldiez
-  onChange={(flowJson) => {
-    console.log("Flow changed:", JSON.parse(flowJson));
+  onChange={(flowString: string) => {
+    console.log("Flow changed:", JSON.parse(flowString));
     // Persist changes, update state, etc.
   }}
 />
@@ -144,7 +144,7 @@ Triggered when the user presses Ctrl+S/Cmd+S:
 
 ```tsx
 <Waldiez
-  onSave={(flowString) => {
+  onSave={(flowString: string) => {
     console.log("Saving flow...");
     // Save flow to backend, file, etc.
   }}
@@ -170,7 +170,7 @@ Adds buttons to convert the flow to Python or Jupyter notebook:
 
 ```tsx
 <Waldiez
-  onConvert={(flowString, to) => {
+  onConvert={(flowString: string, to: 'py' | 'ipynb') => {
     console.log(`Converting flow to ${to}`);
     // Convert flow to Python (.py) or Jupyter (.ipynb)
     // 'to' parameter is either 'py' or 'ipynb'
@@ -184,7 +184,7 @@ Handles file uploads, particularly useful for RAG nodes:
 
 ```tsx
 <Waldiez
-  onUpload={(files) => {
+  onUpload={(files: File[]) => {
     console.log("Uploading files:", files.map(f => f.name));
     
     // Returns a promise that resolves to an array of file paths
@@ -205,30 +205,112 @@ Display an input prompt to the user and handle their response:
 
 ```tsx
 import { useState } from "react";
+import { WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/react";
 
+/*
+Some useful types for user input handling:
+
+type WaldiezUserInput = {
+    id: string;
+    type: "input_response";
+    request_id: string;
+    data: {
+        text?: string | null;
+        image?: string | File | null;
+        // to add more types here in the future (audio, document, etc.)
+    };
+};
+type WaldiezMessageBase = {
+    id: string;
+    timestamp: string;
+    type: string; // print/error/input_request...
+    request_id?: string; // if type is input_request
+    password?: boolean;
+};
+type WaldiezContentItem = {
+    type: "text" | "image_url" | string;
+    text?: string;
+    image_url?: {
+        url: string;
+    };
+    [key: string]: any; // Allow for other properties
+};
+type WaldiezMessageData = {
+    content: string | WaldiezContentItem[];
+    sender?: string;
+    recipient?: string;
+    [key: string]: any; // Allow for other metadata
+};
+type WaldiezPreviousMessage = WaldiezMessageBase & {
+    data: string | WaldiezMessageData | { [key: string]: any };
+};
+
+// related props: 
+inputPrompt?: {
+        previousMessages: WaldiezPreviousMessage[];
+        request_id: string;
+        prompt: string;
+        userParticipants: Set<string>;
+    } | null;
+onUserInput?: ((input: WaldiezUserInput) => void) | null;
+
+// if handling the "onRun" event (through WebSockets?), 
+// we could/should keep track the input requests and have the:
+// - 'request_id' to pass with the user's input
+// - 'inputPrompt' to show the prompt to the user
+// - 'previousMessages' to send them to the chat-ui
+// - 'userParticipants' to determine if a message comes from a user, an assistant or the system 
+*/
 function FlowWithInput() {
-  const [inputPrompt, setInputPrompt] = useState<{
-    previousMessages: string[];
+  const [messages, setMessages] = useState<{
+    previousMessages: WaldiezPreviousMessage[];
+    request_id: string;
     prompt: string;
+    userParticipants: Set<string>;
   } | null>(null);
   
-  const handleUserInput = (input: string) => {
-    console.log("User input:", input);
-    // Process input, then clear the prompt
+  const handleUserInput = (input: WaldiezUserInput) => {
+    console.log("User input:", input.data.text || "");
+    console.log("Request ID:", input.request_id);
+    // Process input (send to the backend, etc.)
+    // and close the prompt
     setInputPrompt(null);
+  };
+
+ // just an example here, this depends on how
+ // we handle the messages when "onRun" is triggered
+  const onNewMessage = (message: Record<string, unknown>) => {
+    // extract the message.type, message.data, message.sender, message.recipient, message.request_id ...
+    const newMessage: WaldiezPreviousMessage = {
+      id: message.id,
+      timestamp: message.timestamp,
+      type: message.type,
+      request_id: message.request_id,
+      data: message.data,
+    };
+    setMessages((prev) => {
+      if (prev) {
+        return {
+          ...prev,
+          previousMessages: [...prev.previousMessages, newMessage],
+        };
+      }
+      return {
+        previousMessages: [newMessage],
+        request_id: message.request_id,
+        prompt: "Please provide your input:",
+        userParticipants: new Set([message.sender]),
+      };
+    });
   };
   
   // Show a prompt (e.g., in response to some flow action)
   const showPrompt = () => {
-    setInputPrompt({
-      previousMessages: ["System: Processing your request..."],
-      prompt: "Please provide additional information:"
-    });
+    setInputPrompt(messages);
   };
   
   return (
     <div>
-      <button onClick={showPrompt}>Request Input</button>
       <Waldiez
         flowId="flow-with-input"
         storageId="storage-with-input"
@@ -275,7 +357,7 @@ function ExistingFlow() {
 
 ### Types
 
-The component accepts these main prop types:
+The component accepts these prop types:
 
 ```typescript
 type WaldiezFlowProps = ReactFlowJsonObject & {
@@ -291,15 +373,17 @@ type WaldiezFlowProps = ReactFlowJsonObject & {
   createdAt?: string;
   updatedAt?: string;
 };
-
+//
 type WaldiezProps = WaldiezFlowProps & {
   nodes: Node[];
   edges: Edge[];
   viewport?: Viewport;
   monacoVsPath?: string | null;
   inputPrompt?: {
-    previousMessages: string[];
+    previousMessages: WaldiezPreviousMessage[];
     prompt: string;
+    request_id: string;
+    userParticipants: Set<string>;
   } | null;
   readOnly?: boolean | null;
   skipImport?: boolean | null;
@@ -308,9 +392,49 @@ type WaldiezProps = WaldiezFlowProps & {
   onUpload?: ((files: File[]) => Promise<string[]>) | null;
   onChange?: ((flow: string) => void) | null;
   onRun?: ((flow: string) => void) | null;
-  onUserInput?: ((input: string) => void) | null;
+  onUserInput?: ((input: WaldiezUserInput) => void) | null;
   onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
   onSave?: ((flow: string) => void) | null;
+};
+//
+// where:
+type WaldiezUserInput = {
+    id: string;
+    type: "input_response";
+    request_id: string;
+    data: {
+        text?: string | null;
+        image?: string | File | null;
+        // to add more types here in the future (audio?)
+    };
+};
+//
+type WaldiezMessageBase = {
+    id: string;
+    timestamp: string;
+    type: string; // print/error/input_request...
+    request_id?: string; // if type is input_request
+    password?: boolean;
+};
+// Content structure for structured content (text, images, etc.)
+type WaldiezContentItem = {
+    type: "text" | "image_url" | string;
+    text?: string;
+    image_url?: {
+        url: string;
+    };
+    [key: string]: any; // Allow for other properties
+};
+//
+type WaldiezMessageData = {
+    content: string | WaldiezContentItem[];
+    sender?: string;
+    recipient?: string;
+    [key: string]: any; // Allow for other metadata
+};
+//
+type WaldiezPreviousMessage = WaldiezMessageBase & {
+    data: string | WaldiezMessageData | { [key: string]: any };
 };
 ```
 
