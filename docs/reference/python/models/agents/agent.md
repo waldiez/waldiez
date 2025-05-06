@@ -5,3 +5,4 @@
 ::: waldiez.models.agents.agent.linked_skill
 ::: waldiez.models.agents.agent.nested_chat
 ::: waldiez.models.agents.agent.termination_message
+::: waldiez.models.agents.agent.handoff
