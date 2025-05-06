@@ -57,8 +57,15 @@ export class WaldiezAgent {
     }
 
     static create(agentType: WaldiezAgentType): WaldiezAgent {
-        const name = capitalize(agentType.replace("_", " "));
-        const description = `A new ${name} agent`;
+        let name = "";
+        let description = "";
+        if (agentType === "manager") {
+            name = "Group";
+            description = "A new group";
+        } else {
+            name = capitalize(agentType.replace("_", " "));
+            description = `A new ${name} agent`;
+        }
         const agent = new WaldiezAgent({
             id: `wa-${getId()}`,
             agentType,

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
 import json

@@ -4,6 +4,7 @@
  */
 import {
     WaldiezAgentCodeExecutionConfig,
+    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
@@ -216,4 +217,26 @@ export const getNestedChats = (data: Record<string, unknown>): WaldiezAgentNeste
         }
     }
     return chats;
+};
+
+export const getContextVariables = (data: Record<string, unknown>): Record<string, any> => {
+    if ("contextVariables" in data && typeof data.contextVariables === "object") {
+        return data.contextVariables as Record<string, any>;
+    }
+    return {};
+};
+
+export const getHandoffs = (data: Record<string, unknown>): WaldiezAgentHandoff[] => {
+    if ("handoffs" in data && Array.isArray(data.handoffs)) {
+        return data.handoffs.filter(
+            handoff =>
+                typeof handoff === "object" &&
+                handoff &&
+                "llm_conditions" in handoff &&
+                Array.isArray(handoff.llm_conditions) &&
+                "context_conditions" in handoff &&
+                Array.isArray(handoff.context_conditions),
+        ) as WaldiezAgentHandoff[];
+    }
+    return [];
 };

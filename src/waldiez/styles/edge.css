@@ -44,11 +44,11 @@
 }
 
 .flow-wrapper .agent-edge-box.rag_user_proxy .agent-edge-view {
-  color: var(--rag-user-color);
+  color: var(--rag-user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.user_proxy .agent-edge-view {
-  color: var(--user-agent-color);
+  color: var(--user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.assistant .agent-edge-view:hover {
@@ -56,11 +56,11 @@
 }
 
 .flow-wrapper .agent-edge-box.rag_user_proxy .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--rag-user-color);
+  box-shadow: 0 0 4px var(--rag-user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.user_proxy .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--user-agent-color);
+  box-shadow: 0 0 4px var(--user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.reasoning .agent-edge-view:hover {
@@ -69,6 +69,10 @@
 
 .flow-wrapper .agent-edge-box.captain .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--captain-agent-color);
+}
+
+.flow-wrapper .agent-edge-box.manager .agent-edge-view:hover {
+  box-shadow: 0 0 4px var(--group-manager-color);
 }
 
 .flow-wrapper .clear-history-checkbox {

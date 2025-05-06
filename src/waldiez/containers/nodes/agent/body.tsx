@@ -19,14 +19,18 @@ type WaldiezNodeAgentBodyProps = {
 
 export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
     const { id, flowId, data, isReadOnly } = props;
-    // const agentType = data.agentType;
+    const agentType = data.agentType;
     const agentModelsView = getAgentModelsView(id, data);
     const agentSkillsView = getAgentSkillsView(id, data);
     const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
+    if (agentType === "manager") {
+        return <div className="group-body" />;
+    }
     return (
         <div className="agent-body">
             <div className="agent-models">{agentModelsView}</div>
             <div className="agent-skills">{agentSkillsView}</div>
+
             <div className="flex-column flex-1 agent-description-view">
                 <label>Description:</label>
                 <textarea

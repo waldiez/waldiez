@@ -2,13 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { Edge, XYPosition } from "@xyflow/react";
+
 import {
     IWaldiezAgentStore,
+    WaldiezChat,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,
     WaldiezNodeAgentType,
 } from "@waldiez/models";
-import { agentMapper } from "@waldiez/models/mappers";
+import { agentMapper, chatMapper } from "@waldiez/models/mappers";
 import { getAgentConnections, getAgentNode, resetEdgeOrdersAndPositions } from "@waldiez/store/utils";
 import { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
@@ -148,5 +151,83 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
             };
         }
         return getAgentConnections(this.get().nodes, this.get().edges, nodeId, options);
+    };
+    setAgentGroup = (agentId: string, groupId: string, position?: XYPosition) => {
+        this.set({
+            nodes: this.get().nodes.map(node => {
+                if (node.id === agentId) {
+                    return {
+                        ...node,
+                        position: position ?? node.position,
+                        parentId: groupId,
+                        extent: "parent",
+                        data: {
+                            ...node.data,
+                            parentId: groupId,
+                        },
+                    };
+                }
+                return node;
+            }),
+            updatedAt: new Date().toISOString(),
+        });
+    };
+    getGroupMembers = (groupId: string) => {
+        return this.get().nodes.filter(
+            node => node.type === "agent" && node.data.parentId === groupId,
+        ) as WaldiezNodeAgent[];
+    };
+    addGroupMember = (groupId: string, memberId: string, position?: XYPosition) => {
+        // add an edge with source the parent and target the member
+        const newChat = WaldiezChat.create({ source: groupId, target: memberId });
+        const innerEdge: Edge = chatMapper.asEdge(newChat);
+        innerEdge.type = "hidden";
+        innerEdge.selected = false;
+        // remove any other edges that the member currently has with other nodes
+        const remainingEdges = this.get().edges.filter(
+            edge => edge.source !== memberId && edge.target !== memberId,
+        );
+        this.set({
+            nodes: this.get().nodes.map(node => {
+                if (node.id === memberId) {
+                    return {
+                        ...node,
+                        position: position || node.position,
+                        parentId: groupId,
+                        extent: "parent",
+                        data: { ...node.data, parentId: groupId },
+                    };
+                }
+                return node;
+            }),
+            edges: [...remainingEdges, ...[innerEdge]],
+            updatedAt: new Date().toISOString(),
+        });
+        if (!position) {
+            resetEdgeOrdersAndPositions(this.get, this.set);
+        }
+    };
+    removeGroupMember = (groupId: string, memberId: string) => {
+        const nodes = [
+            ...this.get().nodes.map(node => {
+                if (node.id === memberId && node.data.parentId === groupId) {
+                    node.data.parentId = null;
+                    node.parentId = undefined;
+                    node.extent = undefined;
+                    node.position = {
+                        x: node.position.x + 50,
+                        y: node.position.y + 50,
+                    };
+                }
+                return { ...node };
+            }),
+        ];
+        const edges = this.get().edges.filter(edge => !(edge.source === groupId && edge.target === memberId));
+        this.set({
+            nodes,
+            edges,
+            updatedAt: new Date().toISOString(),
+        });
+        resetEdgeOrdersAndPositions(this.get, this.set);
     };
 }

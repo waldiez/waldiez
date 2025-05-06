@@ -7,7 +7,7 @@ import { EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/mod
 
 export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProps) => {
     const { flowId, data, onDataChange } = props;
-    const { tags, requirements } = data;
+    const { tags, requirements, cacheSeed } = data;
     const onAddTag = (tag: string) => {
         onDataChange({ tags: [...tags, tag] });
     };
@@ -32,6 +32,17 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             requirements: requirements.map(r => (r === oldValue ? newValue : r)),
         });
     };
+    const onCacheSeedToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onDataChange({ cacheSeed: e.target.checked ? null : 41 });
+    };
+    const onCacheSeedValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            const cacheSeed = parseInt(e.target.value);
+            onDataChange({ cacheSeed });
+        } catch (_) {
+            // ignore
+        }
+    };
     const viewLabelInfo = () => (
         <div>
             Requirements to <span className="bold italic">pip install</span> before running this flow
@@ -42,6 +53,29 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             className="modal-body agent-panel agent-config-panel"
             data-testid={`edit-flow-${flowId}-modal-other-view`}
         >
+            <label className="checkbox-label margin-left-5">
+                <div className="checkbox-label-view">Disable cache</div>
+                <input
+                    type="checkbox"
+                    checked={typeof cacheSeed !== "number"}
+                    onChange={onCacheSeedToggleChange}
+                    data-testid={`edit-flow-${flowId}-modal-cache-seed-toggle`}
+                />
+                <div className="checkbox"></div>
+            </label>
+            {typeof cacheSeed === "number" && (
+                <div className="cache-seed-view flex">
+                    <div className="margin-left-5 margin-right-5"> Cache seed:</div>
+                    <input
+                        type="number"
+                        step={1}
+                        placeholder="41"
+                        value={cacheSeed}
+                        onChange={onCacheSeedValueChange}
+                        data-testid={`edit-flow-${flowId}-cache-seed-input`}
+                    />
+                </div>
+            )}
             <StringList
                 items={requirements}
                 itemsType="requirement"

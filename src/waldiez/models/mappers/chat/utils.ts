@@ -10,7 +10,7 @@ import { WaldiezChatData, WaldiezEdge, WaldiezEdgeType, WaldiezNestedChat } from
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { AGENT_COLORS } from "@waldiez/theme";
 
-const VALID_CHAT_TYPES = ["chat", "nested", "hidden"];
+const VALID_CHAT_TYPES = ["chat", "nested", "hidden", "group"];
 
 export const getChatClearHistory = (data: { [key: string]: any }) => {
     let clearHistory = true;

@@ -56,19 +56,17 @@ export const getNewEdgeName = (sourceNode: Node, targetNode: Node) => {
 };
 
 const getNewChatType: (sourceNode: Node, targetNode: Node, hidden: boolean) => WaldiezEdgeType = (
-    _sourceNode,
+    sourceNode,
     targetNode,
     hidden,
 ) => {
-    if (hidden) {
-        return "hidden" as WaldiezEdgeType;
+    if (hidden || sourceNode.data.agentType === "manager") {
+        return "hidden";
     }
-    // const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    let chatType: WaldiezEdgeType = "chat";
-    if (targetNode.data.parentId) {
-        chatType = "hidden";
+    if (sourceNode.data.parentId && targetNode.data.parentId) {
+        return "group" as WaldiezEdgeType;
     }
-    return chatType;
+    return "chat" as WaldiezEdgeType;
 };
 
 export const getNewEdge = (
@@ -94,10 +92,11 @@ export const getNewEdge = (
     const agentType = sourceNode.data.agentType as WaldiezNodeAgentType;
     const newEdge = chatMapper.asEdge(chat);
     const color = AGENT_COLORS[agentType];
+    const isFromGroupToOutside = !!sourceNode.data.parentId && !targetNode.data.parentId;
     return {
         ...newEdge,
         type: chatType,
-        animated: false,
+        animated: isFromGroupToOutside,
         selected: true,
         ...edgeCommonStyle(chatType, color),
     };
@@ -131,6 +130,10 @@ export const getNewNestedEdges = (allEdges: Edge[]) => {
 export const getNewHiddenEdges = (allEdges: Edge[]) => {
     return getNewChatsOfType(allEdges, "hidden");
 };
+export const getNewGroupEdges = (allEdges: Edge[]) => {
+    return getNewChatsOfType(allEdges, "group");
+};
+
 export const resetEdgeOrdersAndPositions = (get: typeOfGet, set: typeOfSet) => {
     resetEdgePositions(get, set);
     resetEdgeOrders(get, set);
@@ -307,8 +310,9 @@ const resetEdgePositions = (get: typeOfGet, set: typeOfSet) => {
     const newChatEdges = getNewChatEdges(newEdges);
     const newNestedEdges = getNewNestedEdges(newEdges);
     const newHiddenEdges = getNewHiddenEdges(newEdges);
+    const newGroupEdges = getNewGroupEdges(newEdges);
     // ensure no dupe ids
-    const allEdges = [...newChatEdges, ...newNestedEdges, ...newHiddenEdges];
+    const allEdges = [...newChatEdges, ...newNestedEdges, ...newHiddenEdges, ...newGroupEdges];
     const edgeIds = allEdges.map(edge => edge.id);
     const uniqueEdgeIds = Array.from(new Set(edgeIds));
     const uniqueEdges = allEdges.filter(edge => uniqueEdgeIds.includes(edge.id));

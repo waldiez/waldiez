@@ -15,7 +15,7 @@ from .code_execution import WaldiezAgentCodeExecutionConfig
 
 
 class WaldiezAgent(WaldiezBase):
-    """Waldiez Agent.
+    """Waldiez Agent to be inherited by all other agents.
 
     Attributes
     ----------

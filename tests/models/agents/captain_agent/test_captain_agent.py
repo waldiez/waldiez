@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents.captain_agent.*."""
 
-from waldiez.models.agents.captain_agent import WaldiezCaptainAgent
+from waldiez.models.agents.captain import WaldiezCaptainAgent
 
 
 def test_waldiez_captain_agent() -> None:

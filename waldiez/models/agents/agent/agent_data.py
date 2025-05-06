@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common data structures for agents."""
 
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import ConfigDict, Field
 from pydantic.alias_generators import to_camel
@@ -10,6 +10,7 @@ from typing_extensions import Annotated, Literal
 
 from ...common import WaldiezBase
 from .code_execution import WaldiezAgentCodeExecutionConfig
+from .handoff import WaldiezAgentHandoff
 from .linked_skill import WaldiezAgentLinkedSkill
 from .nested_chat import WaldiezAgentNestedChat
 from .termination_message import WaldiezAgentTerminationMessage
@@ -39,6 +40,13 @@ class WaldiezAgentData(WaldiezBase):
         A list of skills (id and executor) to register.
     nested_chats : List[WaldiezAgentNestedChat]
         A list of nested chats (triggered_by, messages), to register.
+    context_variables : Optional[Dict[str, Any]]
+        Context variables that provide a persistent context
+        for the agent. Note: This will be a reference to a shared
+        context for multi-agent chats. Behaves like a dictionary
+        with keys and values (akin to dict[str, Any]).
+    handoffs : List[WaldiezAgentHandoff]
+        A list of handoffs (conditions, targets) to register.
     """
 
     model_config = ConfigDict(
@@ -140,3 +148,27 @@ class WaldiezAgentData(WaldiezBase):
             alias="nestedChats",
         ),
     ]
+    context_variables: Annotated[
+        Optional[Dict[str, Any]],
+        Field(
+            default_factory=dict,
+            title="Context variables",
+            description=(
+                "Context variables that provide a persistent context "
+                "for the agent. Note: This will be a reference to a shared "
+                "context for multi-agent chats. Behaves like a dictionary "
+                "with keys and values (akin to dict[str, Any])."
+            ),
+            alias="contextVariables",
+        ),
+    ] = None
+    handoffs: Annotated[
+        List[WaldiezAgentHandoff],
+        Field(
+            default_factory=list,
+            title="Handoffs",
+            description=(
+                "A list of handoffs (conditions, targets) to register."
+            ),
+        ),
+    ] = []

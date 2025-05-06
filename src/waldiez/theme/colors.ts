@@ -9,6 +9,7 @@ export const AGENT_COLORS = {
     user_proxy: "#bc76f5",
     rag_user_proxy: "#e34561",
     reasoning: "#63D0D4",
+    manager: "#ed8a34",
 };
 export const AGENT_COLORS_ALT = {
     agent: "#005490",
@@ -17,4 +18,5 @@ export const AGENT_COLORS_ALT = {
     user_proxy: "#bc76f5",
     rag_user_proxy: "#e34561",
     reasoning: "#63D0D4",
+    manager: "#ed8a34",
 };

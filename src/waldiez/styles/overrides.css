@@ -39,11 +39,11 @@
 }
 
 .flow-wrapper .agent-node.user_proxy .react-flow__handle {
-  background-color: var(--user-agent-color);
+  background-color: var(--user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-node.rag_user_proxy .react-flow__handle {
-  background-color: var(--rag-user-color);
+  background-color: var(--rag-user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-node.reasoning .react-flow__handle {
@@ -59,19 +59,27 @@
 }
 
 .react-flow__resize-control.nodrag.bottom.right.handle.assistant {
-  border-color: var(--assistant-agent-color);
+  border-color: var(--assistant-agent-color) !important;
 }
 
-.react-flow__resize-control.nodrag.bottom.right.handle.user {
-  border-color: var(--user-agent-color);
+.react-flow__resize-control.nodrag.bottom.right.handle.user_proxy {
+  border-color: var(--user-proxy-agent-color) !important;
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.rag_user_proxy {
+  border-color: var(--rag-user-proxy-agent-color) !important;
 }
 
 .react-flow__resize-control.nodrag.bottom.right.handle.reasoning {
-  border-color: var(--captain-agent-color);
+  border-color: var(--captain-agent-color) !important;
 }
 
 .react-flow__resize-control.nodrag.bottom.right.handle.captain {
-  border-color: var(--captain-agent-color);
+  border-color: var(--captain-agent-color) !important;
+}
+
+.react-flow__resize-control.nodrag.bottom.right.handle.manager {
+  border-color: var(--manager-agent-color) !important;
 }
 
 .react-flow__resize-control.nodrag.bottom.left.handle {
@@ -88,11 +96,12 @@
 
 .react-flow__attribution {
   background: transparent;
+  padding: 10px;
 }
 
 .react-flow__attribution a {
-  color: currentcolor;
-  opacity: 0.6;
+  color: currentcolor !important;
+  opacity: 0.7;
 }
 
 .flow-wrapper .rc-slider {

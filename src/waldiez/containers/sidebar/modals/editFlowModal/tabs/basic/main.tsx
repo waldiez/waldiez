@@ -8,7 +8,7 @@ import { EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/mod
 
 export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProps) => {
     const { flowId, data, sortedEdges, remainingEdges, onDataChange } = props;
-    const { name, description, isAsync, cacheSeed } = data;
+    const { name, description, isAsync } = data;
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const name = event.target.value;
         onDataChange({ name });
@@ -19,17 +19,6 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
     };
     const onAsyncChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onDataChange({ isAsync: e.target.checked });
-    };
-    const onCacheSeedToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onDataChange({ cacheSeed: e.target.checked ? null : 41 });
-    };
-    const onCacheSeedValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        try {
-            const cacheSeed = parseInt(e.target.value);
-            onDataChange({ cacheSeed });
-        } catch (_) {
-            // ignore
-        }
     };
     const edgesCount = sortedEdges.length + remainingEdges.length;
     return (
@@ -52,29 +41,6 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
                 onChange={onDescriptionChange}
                 data-testid={`edit-flow-${flowId}-description-input`}
             />
-            <label className="checkbox-label margin-left-5">
-                <div className="checkbox-label-view">Disable cache</div>
-                <input
-                    type="checkbox"
-                    checked={typeof cacheSeed !== "number"}
-                    onChange={onCacheSeedToggleChange}
-                    data-testid={`edit-flow-${flowId}-modal-cache-seed-toggle`}
-                />
-                <div className="checkbox"></div>
-            </label>
-            {typeof cacheSeed === "number" && (
-                <div className="cache-seed-view flex">
-                    <div className="margin-left-5 margin-right-5"> Cache seed:</div>
-                    <input
-                        type="number"
-                        step={1}
-                        placeholder="41"
-                        value={cacheSeed}
-                        onChange={onCacheSeedValueChange}
-                        data-testid={`edit-flow-${flowId}-cache-seed-input`}
-                    />
-                </div>
-            )}
             <label className="checkbox-label margin-left-5">
                 <div className="checkbox-label-view">Async Mode</div>
                 <input

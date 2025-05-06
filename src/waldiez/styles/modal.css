@@ -152,6 +152,10 @@
   width: calc(100% - 20px);
 }
 
+.flow-wrapper .modal-body input[type="number"] {
+  width: auto;
+}
+
 .flow-wrapper .modal-body textarea {
   resize: vertical;
 }

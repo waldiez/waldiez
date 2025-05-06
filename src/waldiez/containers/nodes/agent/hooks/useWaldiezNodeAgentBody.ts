@@ -16,6 +16,8 @@ export const useWaldiezNodeAgentBody = (props: {
     const getAgentById = useWaldiez(s => s.getAgentById);
     const updateAgentData = useWaldiez(s => s.updateAgentData);
     const onNodeDoubleClick = useWaldiez(s => s.onNodeDoubleClick);
+    const getGroupMembers = useWaldiez(s => s.getGroupMembers);
+    const groupMembers = getGroupMembers(id) as WaldiezNodeAgent[];
     const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (!isModalOpen) {
             const agent = getAgentById(id) as WaldiezNodeAgent;
@@ -35,5 +37,6 @@ export const useWaldiezNodeAgentBody = (props: {
     return {
         onDescriptionChange,
         onOpenMemberModal,
+        groupMembers,
     };
 };

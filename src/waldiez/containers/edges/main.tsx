@@ -7,7 +7,7 @@ import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
-import { GiNestEggs } from "react-icons/gi";
+import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert } from "react-icons/go";
 import { MdMessage } from "react-icons/md";
 
@@ -24,6 +24,10 @@ export const WaldiezEdgeChat = (props: EdgeProps<WaldiezEdge>) => {
 
 export const WaldiezEdgeNested = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="nested" />;
+};
+
+export const WaldiezEdgeGroup = (props: EdgeProps<WaldiezEdge>) => {
+    return <WaldiezEdgeCommon {...props} type="group" />;
 };
 
 export const WaldiezEdgeHidden = (props: EdgeProps<WaldiezEdge>) => {
@@ -50,6 +54,7 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
         labelX,
         labelY,
         sourceAgent,
+        targetAgent,
         isReadOnly,
         onOpenModal,
         onDelete,
@@ -58,18 +63,26 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
         getEdgeNumber,
     } = useWaldiezEdge(props);
     const [focussed, setFocussed] = useState(false);
-    if (type === "hidden" || !sourceAgent || !data) {
+    if (type === "hidden" || !sourceAgent || !targetAgent || !data) {
         // if not hidden, the source agent might be recently deleted
         return <></>;
     }
     const getEdgeIcon = () => {
         const edgeColor = getEdgeColor();
         const size = 18;
+        if (!!sourceAgent.data.parentId && !targetAgent.data.parentId) {
+            // from group-member to non-group member => nested
+            return <GiNestEggs color={edgeColor} size={size} />;
+        }
         const edgeIcon =
             type === "chat" ? (
                 <MdMessage color={edgeColor} size={size} />
-            ) : (
+            ) : type === "nested" ? (
                 <GiNestEggs color={edgeColor} size={size} />
+            ) : type === "group" ? (
+                <GiShakingHands color={edgeColor} size={size} />
+            ) : (
+                <></>
             );
         return edgeIcon;
     };

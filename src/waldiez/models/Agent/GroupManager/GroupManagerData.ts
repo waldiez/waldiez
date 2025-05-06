@@ -5,15 +5,16 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
-    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
 } from "@waldiez/models/Agent/Common";
+import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
+import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupManager/GroupSpeakers";
 
 /**
- * Waldiez User Proxy Agent Data.
+ * Waldiez Group Manager Agent Data.
  * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "SOMETIMES")
  * @param systemMessage - The system message of the agent
  * @param codeExecutionConfig - The code execution configuration of the agent
@@ -24,16 +25,26 @@ import {
  * @param skills - The linked skills of the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
- * @param contextVariables - The context variables of the agent
- * @param handoffs - The handoffs of the agent
- * @param rest - The rest of the agent data
+ * @param maxRound - The maximum round of the agent
+ * @param adminName - The admin name of the agent
+ * @param speakers - The speakers of the agent
+ * @param enableClearHistory - The enable clear history of the agent
+ * @param sendIntroductions - The send introductions of the agent
  * @see {@link WaldiezAgentData}
  * @see {@link WaldiezAgentLinkedSkill}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentTerminationMessageCheck}
- * @see {@link WaldiezAgentHandoff}
+ * @see {@link WaldiezAgentGroupManagerSpeakers}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
  */
-export class WaldiezAgentUserProxyData extends WaldiezAgentData {
+export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
+    maxRound: number | null;
+    adminName: string | null;
+    speakers: WaldiezAgentGroupManagerSpeakers;
+    enableClearHistory?: boolean;
+    sendIntroductions?: boolean;
+
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -48,8 +59,13 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables?: Record<string, any>;
             handoffs?: WaldiezAgentHandoff[];
+            maxRound: number | null;
+            adminName: string | null;
+            speakers: WaldiezAgentGroupManagerSpeakers;
+            enableClearHistory?: boolean;
+            sendIntroductions?: boolean;
         } = {
-            humanInputMode: "ALWAYS",
+            humanInputMode: "NEVER",
             systemMessage: null,
             codeExecutionConfig: false,
             agentDefaultAutoReply: null,
@@ -66,8 +82,27 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             nestedChats: [],
             contextVariables: {},
             handoffs: [],
+            maxRound: null,
+            adminName: null,
+            speakers: {
+                selectionMethod: "auto",
+                selectionCustomMethod: "",
+                maxRetriesForSelecting: null,
+                selectionMode: "repeat",
+                allowRepeat: true,
+                allowedOrDisallowedTransitions: {},
+                transitionsType: "allowed",
+            },
+            enableClearHistory: undefined,
+            sendIntroductions: undefined,
         },
     ) {
+        props.parentId = undefined;
         super(props);
+        this.maxRound = props.maxRound;
+        this.adminName = props.adminName;
+        this.speakers = props.speakers;
+        this.enableClearHistory = props.enableClearHistory;
+        this.sendIntroductions = props.sendIntroductions;
     }
 }

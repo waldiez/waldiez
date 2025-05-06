@@ -36,6 +36,7 @@ export class WaldiezAgentAssistant extends WaldiezAgent {
         rest?: { [key: string]: unknown };
     }) {
         super(props);
+        this.agentType = "assistant";
         this.data = props.data;
         this.rest = props.rest || {};
     }

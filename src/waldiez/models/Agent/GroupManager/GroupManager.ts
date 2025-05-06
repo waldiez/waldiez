@@ -3,38 +3,40 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { WaldiezAgent, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
-import { WaldiezAgentUserProxyData } from "@waldiez/models/Agent/UserProxy/UserProxyData";
+import { WaldiezAgentGroupManagerData } from "@waldiez/models/Agent/GroupManager/GroupManagerData";
 
 /**
- * Waldiez User Proxy Agent.
- * @param id - The id of the user proxy
+ * Waldiez Agent Group Manager.
+ * @param id - The id of the agent
  * @param type - The type of the node in a graph (agent)
- * @param agentType - The type of the agent (user)
+ * @param agentType - The type of the agent ("manager")
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param tags - The tags of the agent
  * @param requirements - The requirements of the agent
  * @param createdAt - The creation date of the agent
  * @param updatedAt - The update date of the agent
- * @param data - The data of the agent. See {@link WaldiezAgentUserProxyData}
+ * @param data - The data of the agent. See {@link WaldiezAgentGroupManagerData}
+ * @param rest - Any other data
+ * @see {@link WaldiezAgent}
  */
-export class WaldiezAgentUserProxy extends WaldiezAgent {
-    data: WaldiezAgentUserProxyData;
-    agentType: WaldiezNodeAgentType = "user_proxy";
+export class WaldiezAgentGroupManager extends WaldiezAgent {
+    data: WaldiezAgentGroupManagerData;
+    agentType: WaldiezNodeAgentType = "manager";
     constructor(props: {
         id: string;
+        agentType: WaldiezNodeAgentType;
         name: string;
         description: string;
         tags: string[];
         requirements: string[];
         createdAt: string;
         updatedAt: string;
-        agentType: WaldiezNodeAgentType;
-        data: WaldiezAgentUserProxyData;
+        data: WaldiezAgentGroupManagerData;
         rest?: { [key: string]: unknown };
     }) {
         super(props);
-        this.agentType = "user_proxy";
+        this.agentType = "manager";
         this.data = props.data;
         this.rest = props.rest || {};
     }

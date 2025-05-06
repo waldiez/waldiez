@@ -2,10 +2,10 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents.captain_agent.captain_agent_data.*."""
 
-from waldiez.models.agents.captain_agent.captain_agent_data import (
+from waldiez.models.agents.captain.captain_agent_data import (
     WaldiezCaptainAgentData,
 )
-from waldiez.models.agents.captain_agent.captain_agent_lib_entry import (
+from waldiez.models.agents.captain.captain_agent_lib_entry import (
     WaldiezCaptainAgentLibEntry,
 )
 

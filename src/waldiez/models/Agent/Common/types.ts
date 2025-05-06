@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+export type * from "@waldiez/models/Agent/Common/Handoff";
+
 /**
  * Human input mode.
  */
@@ -113,6 +115,12 @@ export type WaldiezAgentCommonData = {
     updatedAt: string;
 };
 
-export type WaldiezAgentType = "user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain";
+export type WaldiezAgentType =
+    | "user_proxy"
+    | "assistant"
+    | "rag_user_proxy"
+    | "reasoning"
+    | "captain"
+    | "manager";
 
 export type WaldiezNodeAgentType = WaldiezAgentType;

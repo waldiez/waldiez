@@ -9,6 +9,7 @@ import {
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
 } from "@waldiez/models/Agent/Common";
+import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
 
 /**
  * Waldiez Agent data
@@ -22,11 +23,14 @@ import {
  * @param skills - Linked skills
  * @param parentId - Parent id
  * @param nestedChats - Nested chats
+ * @param contextVariables - Context variables
+ * @param handoffs - Handoffs
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentLinkedSkill}
  * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentHandoff}
  */
 export class WaldiezAgentData {
     systemMessage: string | null;
@@ -35,11 +39,12 @@ export class WaldiezAgentData {
     agentDefaultAutoReply: string | null;
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
-    // links
     modelIds: string[];
     skills: WaldiezAgentLinkedSkill[];
     parentId?: string;
     nestedChats: WaldiezAgentNestedChat[];
+    contextVariables?: Record<string, any>;
+    handoffs?: WaldiezAgentHandoff[];
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -52,6 +57,8 @@ export class WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
+            contextVariables?: Record<string, any>;
+            handoffs?: WaldiezAgentHandoff[];
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,
@@ -68,6 +75,8 @@ export class WaldiezAgentData {
             skills: [],
             parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
+            handoffs: [],
         },
     ) {
         this.systemMessage = props.systemMessage;
@@ -80,5 +89,7 @@ export class WaldiezAgentData {
         this.skills = props.skills;
         this.parentId = props.parentId;
         this.nestedChats = props.nestedChats;
+        this.contextVariables = props.contextVariables;
+        this.handoffs = props.handoffs;
     }
 }

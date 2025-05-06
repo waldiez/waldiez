@@ -75,4 +75,20 @@ export class WaldiezNodeStore implements IWaldiezNodeStore {
             }),
         });
     };
+    highlightNode = (nodeId: string) => {
+        this.set({
+            nodes: this.get().nodes.map(node => ({
+                ...node,
+                className: node.id === nodeId ? "highlight" : "",
+            })),
+        });
+    };
+    clearNodeHighlight = () => {
+        this.set({
+            nodes: this.get().nodes.map(node => ({
+                ...node,
+                className: "",
+            })),
+        });
+    };
 }

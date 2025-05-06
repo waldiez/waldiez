@@ -31,29 +31,41 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
         onSave,
         onCancel,
     } = useWaldiezNodeAgentModal(id, isOpen, data, onClose);
-    const importExportView = getImportExportView(flowId, id, "agent", onImport, onExport);
+    const onSaveAndClose = () => {
+        onSave();
+        onClose();
+    };
+    const importExportView =
+        data.agentType !== "manager"
+            ? getImportExportView(flowId, id, "agent", onImport, onExport)
+            : undefined;
     return (
         <Modal
             title={agentData.label}
             isOpen={isOpen}
             onClose={onCancel}
+            onSaveAndClose={onSaveAndClose}
             beforeTitle={importExportView}
             dataTestId={`wf-${flowId}-agent-modal-${id}`}
             hasUnsavedChanges={isDirty}
             preventCloseIfUnsavedChanges
         >
             <div className="modal-body">
-                <WaldiezNodeAgentModalTabs
-                    id={id}
-                    flowId={flowId}
-                    data={agentData}
-                    isDarkMode={isDarkMode}
-                    onDataChange={onDataChange}
-                    isModalOpen={isOpen}
-                    onAgentTypeChange={onAgentTypeChange}
-                    filesToUpload={filesToUpload}
-                    onFilesToUploadChange={onFilesToUploadChange}
-                />
+                {data.agentType === "manager" ? (
+                    <div>Group related settings</div>
+                ) : (
+                    <WaldiezNodeAgentModalTabs
+                        id={id}
+                        flowId={flowId}
+                        data={agentData}
+                        isDarkMode={isDarkMode}
+                        onDataChange={onDataChange}
+                        isModalOpen={isOpen}
+                        onAgentTypeChange={onAgentTypeChange}
+                        filesToUpload={filesToUpload}
+                        onFilesToUploadChange={onFilesToUploadChange}
+                    />
+                )}
             </div>
             <div className="modal-actions">
                 <button

@@ -38,6 +38,6 @@ export type WaldiezEdgeData = WaldiezChatDataCommon & {
     label: string;
 };
 
-export type WaldiezEdgeType = "chat" | "nested" | "hidden";
+export type WaldiezEdgeType = "chat" | "nested" | "group" | "hidden";
 
 export type WaldiezEdge = Edge<WaldiezEdgeData, WaldiezEdgeType>;

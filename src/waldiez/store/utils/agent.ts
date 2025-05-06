@@ -7,6 +7,7 @@ import { Edge, Node } from "@xyflow/react";
 import {
     WaldiezAgent,
     WaldiezAgentCaptainData,
+    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
     WaldiezEdge,
@@ -32,6 +33,13 @@ export const getAgentNode = (
     } else if (agentType === "captain") {
         const agentExtras = new WaldiezAgentCaptainData();
         agentNode.data = { ...agentNode.data, ...agentExtras };
+    } else if (agentType === "manager") {
+        const agentExtras = new WaldiezAgentGroupManagerData();
+        agentNode.data = { ...agentNode.data, ...agentExtras };
+    }
+    if (parentId) {
+        agentNode.parentId = parentId;
+        agentNode.extent = "parent";
     }
     return agentNode as WaldiezNodeAgent;
 };

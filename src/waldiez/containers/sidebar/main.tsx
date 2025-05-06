@@ -27,6 +27,7 @@ export const SideBar = (props: SidebarViewProps) => {
         onAssistantDragStart,
         onReasoningDragStart,
         onCaptainDragStart,
+        onManagerDragStart,
     } = useSidebarView(props);
     const { isCollapsed, toggleSidebar } = useSidebar();
     return (
@@ -143,6 +144,15 @@ export const SideBar = (props: SidebarViewProps) => {
                         >
                             <img src={AGENT_ICONS.captain} title="Captain Agent" />
                             Captain Agent
+                        </div>
+                        <div
+                            className="dnd-area"
+                            data-testid="manager-dnd"
+                            onDragStart={onManagerDragStart}
+                            draggable
+                        >
+                            <img src={AGENT_ICONS.manager} title="Group Manager Agent" />
+                            Group Manager
                         </div>
                     </>
                 )}

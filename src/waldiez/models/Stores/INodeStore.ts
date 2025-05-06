@@ -11,4 +11,6 @@ export interface IWaldiezNodeStore {
     showNodes: (nodeType: WaldiezNodeType) => void;
     reselectNode: (id: string) => void;
     onNodeDoubleClick: (event: any, node: Node) => void;
+    highlightNode: (id: string) => void;
+    clearNodeHighlight: () => void;
 }

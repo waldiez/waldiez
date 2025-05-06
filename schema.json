@@ -214,7 +214,7 @@
         },
         "WaldiezAgentType": {
             "type": "string",
-            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain"]
+            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "manager"]
         },
         "WaldiezAgentUserProxyData": {
             "type": "object",
@@ -257,6 +257,15 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentHandoff"
                     }
                 }
             },
@@ -423,6 +432,220 @@
             "additionalProperties": false,
             "description": "Waldiez agent nested chat."
         },
+        "WaldiezAgentHandoff": {
+            "type": "object",
+            "properties": {
+                "llm_conditions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezOnCondition"
+                    }
+                },
+                "context_conditions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezOnContextCondition"
+                    }
+                },
+                "after_work": {
+                    "$ref": "#/definitions/WaldiezTransitionTarget"
+                },
+                "explicit_tool_handoff_info": {
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false
+        },
+        "WaldiezOnCondition": {
+            "type": "object",
+            "properties": {
+                "target": {
+                    "$ref": "#/definitions/WaldiezTransitionTarget"
+                },
+                "condition": {
+                    "$ref": "#/definitions/WaldiezLLMCondition"
+                }
+            },
+            "required": ["target", "condition"],
+            "additionalProperties": false
+        },
+        "WaldiezTransitionTarget": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "target_type": {
+                            "type": "string",
+                            "const": "AgentTarget"
+                        },
+                        "target": {
+                            "type": "string"
+                        },
+                        "order": {
+                            "type": "number"
+                        }
+                    },
+                    "required": ["target_type", "target"],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "target_type": {
+                            "type": "string",
+                            "const": "RandomAgentTarget"
+                        },
+                        "target": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "order": {
+                            "type": "number"
+                        }
+                    },
+                    "required": ["target_type", "target"],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "target_type": {
+                            "type": "string",
+                            "enum": ["GroupChatTarget", "NestedChatTarget"]
+                        },
+                        "target": {
+                            "type": "string"
+                        },
+                        "order": {
+                            "type": "number"
+                        }
+                    },
+                    "required": ["target_type", "target"],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "target_type": {
+                            "type": "string",
+                            "enum": [
+                                "AskUserTarget",
+                                "GroupManagerTarget",
+                                "RevertToUserTarget",
+                                "StayTarget",
+                                "TerminateTarget"
+                            ]
+                        },
+                        "order": {
+                            "type": "number"
+                        }
+                    },
+                    "required": ["target_type"],
+                    "additionalProperties": false
+                }
+            ],
+            "description": "SPDX-License-Identifier: Apache-2.0 Copyright 2024 - 2025 Waldiez & contributors"
+        },
+        "WaldiezLLMCondition": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/WaldiezStringLLMCondition"
+                },
+                {
+                    "$ref": "#/definitions/WaldiezContextStrLLMCondition"
+                }
+            ]
+        },
+        "WaldiezStringLLMCondition": {
+            "type": "object",
+            "properties": {
+                "condition_type": {
+                    "type": "string",
+                    "const": "string_llm"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                }
+            },
+            "required": ["condition_type", "prompt"],
+            "additionalProperties": false
+        },
+        "WaldiezContextStrLLMCondition": {
+            "type": "object",
+            "properties": {
+                "condition_type": {
+                    "type": "string",
+                    "const": "context_str_llm"
+                },
+                "context_str": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                }
+            },
+            "required": ["condition_type", "context_str"],
+            "additionalProperties": false
+        },
+        "WaldiezOnContextCondition": {
+            "type": "object",
+            "properties": {
+                "target": {
+                    "$ref": "#/definitions/WaldiezTransitionTarget"
+                },
+                "condition": {
+                    "$ref": "#/definitions/WaldiezContextCondition"
+                }
+            },
+            "required": ["target", "condition"],
+            "additionalProperties": false
+        },
+        "WaldiezContextCondition": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/WaldiezStringContextCondition"
+                },
+                {
+                    "$ref": "#/definitions/WaldiezExpressionContextCondition"
+                }
+            ]
+        },
+        "WaldiezStringContextCondition": {
+            "type": "object",
+            "properties": {
+                "condition_type": {
+                    "type": "string",
+                    "const": "string_context"
+                },
+                "variable_name": {
+                    "type": "string"
+                }
+            },
+            "required": ["condition_type", "variable_name"],
+            "additionalProperties": false
+        },
+        "WaldiezExpressionContextCondition": {
+            "type": "object",
+            "properties": {
+                "condition_type": {
+                    "type": "string",
+                    "const": "expression_context"
+                },
+                "expression": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                }
+            },
+            "required": ["condition_type", "expression"],
+            "additionalProperties": false
+        },
         "WaldiezAgentAssistant": {
             "type": "object",
             "properties": {
@@ -522,6 +745,15 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentHandoff"
                     }
                 },
                 "isMultimodal": {
@@ -642,6 +874,15 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentHandoff"
                     }
                 },
                 "retrieveConfig": {
@@ -931,6 +1172,15 @@
                         "$ref": "#/definitions/WaldiezAgentNestedChat"
                     }
                 },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                    }
+                },
                 "verbose": {
                     "type": "boolean"
                 },
@@ -1100,6 +1350,15 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentHandoff"
                     }
                 },
                 "agentLib": {

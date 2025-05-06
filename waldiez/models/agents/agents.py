@@ -10,7 +10,7 @@ from typing_extensions import Annotated, Self
 from ..common import WaldiezBase
 from .agent import WaldiezAgent
 from .assistant import WaldiezAssistant
-from .captain_agent import WaldiezCaptainAgent
+from .captain import WaldiezCaptainAgent
 from .rag_user_proxy import WaldiezRagUserProxy
 from .reasoning import WaldiezReasoningAgent
 from .user_proxy import WaldiezUserProxy

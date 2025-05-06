@@ -60,8 +60,12 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
         onNodeDoubleClick,
         onEdgeDoubleClick,
     } = useFlowEvents(flowId);
-    const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
+    useEffect(() => {
+        showNodes("agent");
+        // setSelectedNodeType("agent");
+    }, []);
     const { isDark } = useWaldiezTheme();
+    const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
     const colorMode = isDark ? "dark" : "light";
     const setSelectedNodeType = (nodeType: WaldiezNodeType) => {
         selectedNodeType.current = nodeType;
@@ -82,7 +86,6 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
             showNodes(nodeType);
         }
     };
-
     const onAddNode = () => {
         if (selectedNodeType.current === "model") {
             addModel();
@@ -101,15 +104,10 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
             onFlowChanged();
         }, 1);
     };
-    const { onDragOver, onDrop } = useDnD(onNewAgent);
     const onViewportChange = (viewport: Viewport) => {
         handleViewportChange(viewport, selectedNodeType.current);
         // onFlowChanged();
     };
-    useEffect(() => {
-        showNodes("agent");
-        // setSelectedNodeType("agent");
-    }, []);
     const handleExport = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         // if skip hub, just export/download the flow
         // else, show a modal with further options
@@ -125,6 +123,7 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
         };
         return JSON.stringify(exported);
     };
+    const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
     return (
         <div
             className={`flow-wrapper ${colorMode}`}
@@ -165,6 +164,8 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                         noWheelClassName="no-wheel"
                         width={rfParent.current?.clientWidth}
                         height={rfParent.current?.clientHeight}
+                        onNodeDrag={onNodeDrag}
+                        onNodeDragStop={onNodeDragStop}
                         // fitView={true}
                         // noPanClassName="no-pan"
                         // noDragClassName="no-drag"

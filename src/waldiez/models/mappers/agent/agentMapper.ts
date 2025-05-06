@@ -7,13 +7,16 @@ import {
     WaldiezAgentAssistantData,
     WaldiezAgentCaptainData,
     WaldiezAgentData,
+    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
     WaldiezNodeAgent,
+    WaldiezNodeAgentGroupManager,
     WaldiezNodeAgentRagUser,
     WaldiezNodeAgentType,
 } from "@waldiez/models/Agent";
 import {
+    getAdminName,
     getAgent,
     getAgentDefaultAutoReply,
     getAgentId,
@@ -24,6 +27,10 @@ import {
     getCaptainMaxTurns,
     getCaptainToolLib,
     getCodeExecutionConfig,
+    getContextVariables,
+    getEnableClearHistory,
+    getGroupChatMaxRound,
+    getHandoffs,
     getHumanInputMode,
     getIsMultimodal,
     getMaximumConsecutiveAutoReply,
@@ -32,7 +39,9 @@ import {
     getParentId,
     getReasonConfig,
     getRetrieveConfig,
+    getSendIntroductions,
     getSkills,
+    getSpeakers,
     getSystemMessage,
     getTermination,
     getVerbose,
@@ -139,6 +148,7 @@ export const agentMapper = {
         return agentNode;
     },
 };
+// eslint-disable-next-line max-statements
 const getCommonAgentData = (
     data: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -153,6 +163,8 @@ const getCommonAgentData = (
     const skills = getSkills(data);
     const parentId = getParentId(data, agentType);
     const nestedChats = getNestedChats(data);
+    const contextVariables = getContextVariables(data);
+    const handoffs = getHandoffs(data);
     return new WaldiezAgentData({
         systemMessage,
         humanInputMode,
@@ -164,9 +176,11 @@ const getCommonAgentData = (
         skills,
         parentId,
         nestedChats,
+        contextVariables,
+        handoffs,
     });
 };
-
+// eslint-disable-next-line max-statements
 const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     const toExclude = ["id", "name", "description", "tags", "requirements", "createdAt", "updatedAt", "data"];
     if (agentType === "rag_user_proxy") {
@@ -181,9 +195,13 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     if (agentType === "captain") {
         toExclude.push("agentLib", "toolLib", "maxRound", "maxTurns");
     }
+    if (agentType === "manager") {
+        toExclude.push("maxRound", "adminName", "speakers", "enableClearHistory", "sendIntroductions");
+    }
     return toExclude;
 };
 
+// eslint-disable-next-line max-statements
 const getAgentDataToImport = (
     jsonData: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -217,6 +235,16 @@ const getAgentDataToImport = (
             maxTurns: getCaptainMaxTurns(jsonData),
         });
     }
+    if (agentType === "manager") {
+        return new WaldiezAgentGroupManagerData({
+            ...data,
+            maxRound: getGroupChatMaxRound(jsonData),
+            adminName: getAdminName(jsonData),
+            speakers: getSpeakers(jsonData),
+            enableClearHistory: getEnableClearHistory(jsonData),
+            sendIntroductions: getSendIntroductions(jsonData),
+        });
+    }
     return data;
 };
 
@@ -235,6 +263,13 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
             docsPath: [],
         };
     }
+    if (agent.data.agentType === "manager") {
+        (agentCopy as WaldiezNodeAgentGroupManager).data.speakers = {
+            ...(agentCopy as WaldiezNodeAgentGroupManager).data.speakers,
+            allowRepeat: [],
+            allowedOrDisallowedTransitions: {},
+        };
+    }
     return agentCopy;
 };
 
@@ -250,6 +285,9 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
     }
     if (agentType === "assistant") {
         agentData.isMultimodal = getIsMultimodal(data);
+    }
+    if (agentType === "manager") {
+        updateGroupManager(agentData, data);
     }
 };
 
@@ -267,4 +305,12 @@ const updateCaptainAgent = (agentData: WaldiezAgentCaptainData, data: any) => {
     agentData.toolLib = getCaptainToolLib(data);
     agentData.maxRound = getCaptainMaxRound(data);
     agentData.maxTurns = getCaptainMaxTurns(data);
+};
+
+const updateGroupManager = (agentData: WaldiezAgentGroupManagerData, data: any) => {
+    agentData.maxRound = getGroupChatMaxRound(data);
+    agentData.adminName = getAdminName(data);
+    agentData.speakers = getSpeakers(data);
+    agentData.enableClearHistory = getEnableClearHistory(data);
+    agentData.sendIntroductions = getSendIntroductions(data);
 };

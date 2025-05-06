@@ -6,6 +6,20 @@ from .agent import WaldiezAgent
 from .agent_data import WaldiezAgentData
 from .agent_type import WaldiezAgentType
 from .code_execution import WaldiezAgentCodeExecutionConfig
+from .handoff import (
+    WaldiezAgentHandoff,
+    WaldiezAgentTarget,
+    WaldiezContextStrLLMCondition,
+    WaldiezExpressionContextCondition,
+    WaldiezGroupOrNestedTarget,
+    WaldiezOnCondition,
+    WaldiezOnContextCondition,
+    WaldiezRandomAgentTarget,
+    WaldiezSimpleTarget,
+    WaldiezStringContextCondition,
+    WaldiezStringLLMCondition,
+    WaldiezTransitionTarget,
+)
 from .linked_skill import WaldiezAgentLinkedSkill
 from .nested_chat import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
 from .termination_message import (
@@ -27,4 +41,16 @@ __all__ = [
     "WaldiezAgentNestedChatMessage",
     "WaldiezAgentTerminationMessage",
     "WaldiezAgentType",
+    "WaldiezAgentHandoff",
+    "WaldiezAgentTarget",
+    "WaldiezContextStrLLMCondition",
+    "WaldiezExpressionContextCondition",
+    "WaldiezGroupOrNestedTarget",
+    "WaldiezOnCondition",
+    "WaldiezOnContextCondition",
+    "WaldiezRandomAgentTarget",
+    "WaldiezSimpleTarget",
+    "WaldiezStringContextCondition",
+    "WaldiezStringLLMCondition",
+    "WaldiezTransitionTarget",
 ]

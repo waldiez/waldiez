@@ -219,9 +219,8 @@
   flex-direction: column;
   align-self: center;
   justify-content: flex-end;
-  width: calc(100% + 4px);
-  margin-left: -2px;
-  margin-right: -2px;
+  width: calc(100% - 10px);
+  margin-bottom: -20px;
 }
 
 .flow-wrapper .agent-footer .agent-actions {
@@ -245,27 +244,39 @@
 
 .flow-wrapper.dark .agent-node {
   border: 3px solid;
-  background-color: #222;
 }
 
 .flow-wrapper .agent-node.user_proxy {
-  border-color: var(--user-agent-color);
+  border-color: var(--user-proxy-agent-color) !important;
 }
 
 .flow-wrapper .agent-node.assistant {
-  border-color: var(--assistant-agent-color);
+  border-color: var(--assistant-agent-color) !important;
 }
 
 .flow-wrapper .agent-node.rag_user_proxy {
-  border-color: var(--rag-user-color);
+  border-color: var(--rag-user-proxy-agent-color) !important;
 }
 
 .flow-wrapper .agent-node.reasoning {
-  border-color: var(--reasoning-agent-color);
+  border-color: var(--reasoning-agent-color) !important;
 }
 
 .flow-wrapper .agent-node.captain {
-  border-color: var(--captain-agent-color);
+  border-color: var(--captain-agent-color) !important;
+}
+
+.flow-wrapper .agent-node.manager {
+  border-color: var(--group-manager-color) !important;
+  background-color: transparent !important;
+}
+
+.flow-wrapper.dark .agent-node.user_proxy,
+.flow-wrapper.dark .agent-node.assistant,
+.flow-wrapper.dark .agent-node.rag_user_proxy,
+.flow-wrapper.dark .agent-node.reasoning,
+.flow-wrapper.dark .agent-node.captain {
+  background-color: #222 !important;
 }
 
 .flow-wrapper .nested-chats-add-message {

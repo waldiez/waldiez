@@ -4,6 +4,8 @@
  */
 import { Handle, NodeResizer, Position } from "@xyflow/react";
 
+import { useCallback, useState } from "react";
+
 import { WaldiezEdgeModal } from "@waldiez/containers/edges/modal";
 import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
 import { WaldiezNodeAgentFooter } from "@waldiez/containers/nodes/agent/footer";
@@ -28,24 +30,53 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
         onCloseEdgeModal,
         onEdgeConnection,
     } = useWaldiezNodeAgent();
+    const [isDragging, setIsDragging] = useState(false);
     const isModalOpen = isNodeModalOpen || isEdgeModalOpen;
     let className = isModalOpen ? "nodrag nowheel" : "";
     if (!data.parentId) {
         className += `agent-node ${agentType}`;
+    } else {
+        className += `agent-node ${agentType} group-member`;
     }
-    const handleClassNameBase = data.parentId ? "hidden " : "";
+    if (agentType === "manager" && isDragging) {
+        className += " dragging";
+    }
+    const handleClassNameBase = data.parentId ? "group-member " : "";
+    const minWidth = agentType === "manager" ? 490 : 210;
+    const minHeight = agentType === "manager" ? 330 : 210;
+    const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    }, []);
+    const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    }, []);
+    const onDrop = useCallback((_: React.DragEvent<HTMLDivElement>) => {
+        setIsDragging(false);
+    }, []);
     return (
-        <div className={className} data-testid={`agent-node-${id}-view`}>
-            {!data.parentId && (
-                <div className="agent-content" data-testid={`agent-${id}-content`}>
-                    <NodeResizer
-                        color={AGENT_COLORS[agentType]}
-                        minWidth={210}
-                        minHeight={210}
-                        handleStyle={{ color: AGENT_COLORS[agentType] }}
-                        handleClassName={agentType}
-                    />
-                    <WaldiezNodeAgentHeader id={id} data={data} onOpenNodeModal={onOpenNodeModal} />
+        <div
+            className={className}
+            data-testid={`agent-node-${id}-view`}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+        >
+            <div className="agent-content" data-testid={`agent-${id}-content`}>
+                <NodeResizer
+                    color={AGENT_COLORS[agentType]}
+                    minWidth={minWidth}
+                    minHeight={minHeight}
+                    handleStyle={{ color: AGENT_COLORS[agentType] }}
+                    handleClassName={agentType}
+                />
+                <WaldiezNodeAgentHeader id={id} data={data} onOpenNodeModal={onOpenNodeModal} />
+                {agentType === "manager" ? (
+                    <div className="agent-body" />
+                ) : (
                     <WaldiezNodeAgentBody
                         flowId={flowId}
                         id={id}
@@ -53,9 +84,9 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
                         isModalOpen={isModalOpen}
                         isReadOnly={isReadOnly}
                     />
-                    <WaldiezNodeAgentFooter id={id} data={data} isModalOpen={isModalOpen} />
-                </div>
-            )}
+                )}
+                <WaldiezNodeAgentFooter id={id} data={data} isModalOpen={isModalOpen} />
+            </div>
             <Handle
                 className={`${handleClassNameBase}handle top target`}
                 type="target"
@@ -154,10 +185,10 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
                 onClick={onOpenEdgeModal}
                 data-edge-id=""
             ></button>
-            {edge && isEdgeModalOpen && (
+            {edge && isEdgeModalOpen && !isNodeModalOpen && (
                 <WaldiezEdgeModal isOpen={isEdgeModalOpen} edgeId={edge.id} onClose={onCloseEdgeModal} />
             )}
-            {isNodeModalOpen && (
+            {isNodeModalOpen && !isEdgeModalOpen && (
                 <WaldiezNodeAgentModal
                     id={id}
                     data={data}

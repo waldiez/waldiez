@@ -17,7 +17,7 @@ from .agent import (
 )
 from .agents import WaldiezAgents
 from .assistant import WaldiezAssistant, WaldiezAssistantData
-from .captain_agent import (
+from .captain import (
     WaldiezCaptainAgent,
     WaldiezCaptainAgentData,
     WaldiezCaptainAgentLibEntry,

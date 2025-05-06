@@ -126,7 +126,7 @@
 }
 
 .flow-wrapper .flow-main .sidebar .dnd-area.user-proxy {
-  border-color: var(--user-agent-color);
+  border-color: var(--user-proxy-agent-color);
 }
 
 .flow-wrapper .flow-main .sidebar .dnd-area.assistant {
@@ -134,7 +134,7 @@
 }
 
 .flow-wrapper .flow-main .sidebar .dnd-area.rag-user {
-  border-color: var(--rag-user-color);
+  border-color: var(--rag-user-proxy-agent-color);
 }
 
 .flow-wrapper .flow-main .sidebar .dnd-area.reasoning {

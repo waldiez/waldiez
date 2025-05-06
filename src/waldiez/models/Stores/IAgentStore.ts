@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { XYPosition } from "@xyflow/react";
+
 import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezNodeAgentType } from "@waldiez/models";
 
 export interface IWaldiezAgentStore {
@@ -39,4 +41,8 @@ export interface IWaldiezAgentStore {
             edges: WaldiezEdge[];
         };
     };
+    getGroupMembers: (groupId: string) => WaldiezNodeAgent[];
+    addGroupMember: (groupId: string, agentId: string, position?: XYPosition) => void;
+    removeGroupMember: (groupId: string, memberId: string) => void;
+    setAgentGroup: (agentId: string, groupId: string, position?: XYPosition) => void;
 }

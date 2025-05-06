@@ -227,6 +227,17 @@ exports[`All > should render Waldiez components 1`] = `
                 />
                 Captain Agent
               </div>
+              <div
+                class="dnd-area"
+                data-testid="manager-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/manager.webp"
+                  title="Group Manager Agent"
+                />
+                Group Manager
+              </div>
             </div>
             <div
               class="spacer"
@@ -698,6 +709,17 @@ exports[`All > should render Waldiez components 1`] = `
                 title="Captain Agent"
               />
               Captain Agent
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="manager-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/manager.webp"
+                title="Group Manager Agent"
+              />
+              Group Manager
             </div>
           </div>
           <div
