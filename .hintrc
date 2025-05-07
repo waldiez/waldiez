@@ -13,7 +13,8 @@
           "scrollbar-width",
           "scrollbar-width: thin",
           "width: stretch",
-          "scrollbar-color"
+          "scrollbar-color",
+          "-webkit-overflow-scrolling"
         ]
       }
     ],
@@ -28,6 +29,8 @@
     "not ios_saf <= 16.7",
     "not ios_saf <= 18.2",
     "not safari <= 18.2",
-    "not samsung <= 27"
+    "not samsung <= 27",
+    "not ios_saf <= 18.4",
+    "not safari <= 18.4"
   ]
 }
