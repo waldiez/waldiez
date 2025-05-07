@@ -425,7 +425,7 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
                 </>
             )}
 
-            {!connected && (
+            {!connected && !error && (
                 <div
                     style={{
                         backgroundColor: "white",
