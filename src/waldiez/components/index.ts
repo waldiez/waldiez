@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+export { AfterWork } from "@waldiez/components/afterWork";
 export { ChatUI, ImageModal } from "@waldiez/components/chatUI";
 export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";
@@ -12,7 +13,7 @@ export { InfoLabel } from "@waldiez/components/infoLabel";
 export { MessageInput } from "@waldiez/components/messageInput";
 export { Modal } from "@waldiez/components/modal";
 export { NumberInput } from "@waldiez/components/numberInput";
-export { Select } from "@waldiez/components/select";
+export * from "@waldiez/components/select";
 export { StringList } from "@waldiez/components/stringList";
 export { TabItem, TabItems } from "@waldiez/components/tabs";
 export { TextInput } from "@waldiez/components/textInput";

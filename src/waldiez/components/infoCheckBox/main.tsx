@@ -4,9 +4,14 @@
  */
 import { FaInfoCircle } from "react-icons/fa";
 
-import { InfoCheckboxProps } from "@waldiez/components/infoCheckBox/types";
-
-export const InfoCheckbox = (props: InfoCheckboxProps) => {
+type InfoCheckboxProps = {
+    label: string | React.JSX.Element | (() => React.JSX.Element | string);
+    info: string | React.JSX.Element | (() => React.JSX.Element | string);
+    checked: boolean;
+    dataTestId: string;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+export const InfoCheckbox: React.FC<InfoCheckboxProps> = (props: InfoCheckboxProps) => {
     const { label, info, checked, dataTestId, onChange } = props;
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;

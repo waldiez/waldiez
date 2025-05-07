@@ -43,8 +43,8 @@ export class WaldiezAgentData {
     skills: WaldiezAgentLinkedSkill[];
     parentId?: string;
     nestedChats: WaldiezAgentNestedChat[];
-    contextVariables?: Record<string, any>;
-    handoffs?: WaldiezAgentHandoff[];
+    contextVariables: Record<string, any>;
+    handoffs: WaldiezAgentHandoff[];
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -57,8 +57,8 @@ export class WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
-            contextVariables?: Record<string, any>;
-            handoffs?: WaldiezAgentHandoff[];
+            contextVariables: Record<string, any>;
+            handoffs: WaldiezAgentHandoff[];
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,

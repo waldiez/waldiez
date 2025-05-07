@@ -49,6 +49,8 @@ describe("WaldiezAgentRagUser", () => {
             skills: [],
             parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
+            handoffs: [],
             retrieveConfig: defaultRetrieveConfig,
         });
         const ragUser = new WaldiezAgentRagUser({

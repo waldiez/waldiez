@@ -60,8 +60,8 @@ export class WaldiezAgent {
         let name = "";
         let description = "";
         if (agentType === "group_manager") {
-            name = "Group";
-            description = "A new group";
+            name = "Manager";
+            description = "The group manager agent";
         } else {
             name = capitalize(agentType.replace("_", " "));
             description = `A new ${name} agent`;
@@ -83,6 +83,7 @@ export class WaldiezAgent {
 }
 
 const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType) => {
+    agent.data.humanInputMode = "NEVER";
     if (["user_proxy", "rag_user_proxy"].includes(agentType)) {
         agent.data.humanInputMode = "ALWAYS";
         if (agentType === "rag_user_proxy") {
@@ -95,26 +96,31 @@ const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType) 
     if (agentType === "captain") {
         addCaptainProps(agent.data);
     }
-    // TODO: add group_manager props
+    if (agentType === "group_manager") {
+        addGroupManagerProps(agent.data);
+    }
 };
 
 const addRagUserProps = (agentData: WaldiezAgentData) => {
     (agentData as any).retrieveConfig = {
-        task: "default" as "code" | "qa" | "default",
-        vectorDb: "chroma" as "chroma" | "pgvector" | "mongodb" | "qdrant",
+        task: "default",
+        vectorDb: "chroma",
         dbConfig: {
             model: "all-MiniLM-L6-v2",
             useMemory: false,
             useLocalStorage: false,
             localStoragePath: null,
             connectionUrl: null,
+            waitUntilIndexReady: null,
+            waitUntilDocumentReady: null,
+            metadata: null,
         },
         docsPath: [],
         newDocs: true,
         model: null,
         chunkTokenSize: null,
         contextMaxTokens: null,
-        chunkMode: "multi_lines" as "multi_lines" | "one_line",
+        chunkMode: "multi_lines",
         mustBreakAtEmptyLine: true,
         useCustomEmbedding: false,
         embeddingFunction: null,
@@ -138,12 +144,12 @@ const addRagUserProps = (agentData: WaldiezAgentData) => {
 const addReasoningProps = (agentData: WaldiezAgentData) => {
     (agentData as any).verbose = true;
     (agentData as any).reasonConfig = {
-        method: "beam_search" as "beam_search" | "mcts" | "lats" | "dfs",
+        method: "beam_search",
         maxDepth: 3,
         forestSize: 1,
         ratingScale: 10,
         beamSize: 3,
-        answerApproach: "pool" as "pool" | "best",
+        answerApproach: "pool",
         nsim: 3,
         explorationConstant: 1.41,
     };
@@ -154,4 +160,23 @@ const addCaptainProps = (agentData: WaldiezAgentData) => {
     (agentData as any).toolLib = null;
     (agentData as any).maxRound = 10;
     (agentData as any).maxTurns = 5;
+};
+
+const addGroupManagerProps = (agentData: WaldiezAgentData) => {
+    (agentData as any).groupName = "Group";
+    (agentData as any).maxRound = 20;
+    (agentData as any).adminName = null;
+    (agentData as any).contextVariables = {};
+    (agentData as any).enableClearHistory = false;
+    (agentData as any).sendIntroductions = false;
+    (agentData as any).initialAgentId = undefined;
+    (agentData as any).speakers = {
+        selectionMethod: "auto",
+        selectionCustomMethod: "",
+        maxRetriesForSelecting: null,
+        selectionMode: "repeat",
+        allowRepeat: true,
+        allowedOrDisallowedTransitions: {},
+        transitionsType: "allowed",
+    };
 };

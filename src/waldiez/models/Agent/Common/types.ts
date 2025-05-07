@@ -108,7 +108,7 @@ export type WaldiezAgentCommonData = {
     termination: WaldiezAgentTerminationMessageCheck;
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables?: { [key: string]: unknown };
-    handoffs?: WaldiezAgentHandoff[];
+    handoffs: WaldiezAgentHandoff[];
     // links
     modelIds: string[];
     skills: WaldiezAgentLinkedSkill[];
@@ -119,6 +119,15 @@ export type WaldiezAgentCommonData = {
     updatedAt: string;
 };
 
+/**
+ * Waldiez agent type.
+ * @param user_proxy - User proxy
+ * @param assistant - Assistant
+ * @param rag_user_proxy - RAG user proxy
+ * @param reasoning - Reasoning
+ * @param captain - Captain
+ * @param group_manager - Group manager
+ */
 export type WaldiezAgentType =
     | "user_proxy"
     | "assistant"
@@ -127,4 +136,13 @@ export type WaldiezAgentType =
     | "captain"
     | "group_manager";
 
+/**
+ * Waldiez node agent type (alias for WaldiezAgentType).
+ * @param user_proxy - User proxy
+ * @param assistant - Assistant
+ * @param rag_user_proxy - RAG user proxy
+ * @param reasoning - Reasoning
+ * @param captain - Captain
+ * @param group_manager - Group manager
+ */
 export type WaldiezNodeAgentType = WaldiezAgentType;

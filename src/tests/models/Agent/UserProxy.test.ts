@@ -66,6 +66,8 @@ describe("WaldiezAgentUserProxy", () => {
                     ],
                 },
             ],
+            contextVariables: {},
+            handoffs: [],
         });
         const userProxy = new WaldiezAgentUserProxy({
             id: "1",

@@ -81,6 +81,8 @@ describe("WaldiezAgentAssistant", () => {
                     ],
                 },
             ],
+            contextVariables: {},
+            handoffs: [],
             isMultimodal: false,
         });
         const assistant = new WaldiezAgentAssistant({

@@ -46,8 +46,8 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
-            contextVariables?: Record<string, any>;
-            handoffs?: WaldiezAgentHandoff[];
+            contextVariables: Record<string, any>;
+            handoffs: WaldiezAgentHandoff[];
         } = {
             humanInputMode: "ALWAYS",
             systemMessage: null,

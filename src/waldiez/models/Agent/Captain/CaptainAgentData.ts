@@ -6,6 +6,7 @@ import { WaldiezCaptainAgentLibEntry } from "@waldiez/models/Agent/Captain/types
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
+    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
@@ -30,6 +31,8 @@ export class WaldiezAgentCaptainData extends WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
+            contextVariables: Record<string, any>;
+            handoffs: WaldiezAgentHandoff[];
             agentLib: WaldiezCaptainAgentLibEntry[];
             toolLib: "default" | null;
             maxRound: number;
@@ -50,6 +53,8 @@ export class WaldiezAgentCaptainData extends WaldiezAgentData {
             skills: [],
             parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
+            handoffs: [],
             agentLib: [],
             toolLib: null,
             maxRound: 10,

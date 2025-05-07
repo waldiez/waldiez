@@ -102,9 +102,23 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
     deleteAgent = (id: string) => {
         const agent = this.get().nodes.find(node => node.id === id);
         if (agent) {
-            const idsToRemove = [id];
+            const idsToRemove = [id]; // let's keep the group members
+            const idsToResetParent: string[] = [];
+            if (agent.type === "group_manager") {
+                const groupMembers = this.getGroupMembers(id);
+                idsToResetParent.push(...groupMembers.map(member => member.id));
+            }
             this.set({
-                nodes: this.get().nodes.filter(node => !idsToRemove.includes(node.id)),
+                nodes: this.get()
+                    .nodes.map(node => {
+                        if (idsToResetParent.includes(node.id)) {
+                            node.parentId = undefined;
+                            node.extent = undefined;
+                        }
+                        return node;
+                    })
+                    .filter(node => !idsToRemove.includes(node.id)),
+                // remove all edges that are connected to the deleted agent
                 edges: this.get().edges.filter(
                     edge => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target),
                 ),

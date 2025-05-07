@@ -6,9 +6,23 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
-import { TextInputProps } from "@waldiez/components/textInput/types";
 
-export const TextInput = (props: TextInputProps) => {
+type TextInputProps = {
+    label: string | React.JSX.Element;
+    value: string | null;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    onNull?: string;
+    disabled?: boolean;
+    labelInfo?: string | React.JSX.Element;
+    dataTestId?: string;
+    style?: React.CSSProperties;
+    isPassword?: boolean;
+    fullWidth?: boolean;
+    className?: string;
+};
+
+export const TextInput: React.FC<TextInputProps> = (props: TextInputProps) => {
     const {
         label,
         value,

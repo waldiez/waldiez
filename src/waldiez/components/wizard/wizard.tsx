@@ -4,10 +4,32 @@
  */
 import React, { ReactElement, useEffect, useState } from "react";
 
-import { WizardProps, WizardStepProps } from "@waldiez/components/wizard/types";
-import { WizardStep } from "@waldiez/components/wizard/wizardStep";
+type WizardStepProps = {
+    id: string;
+    title: string;
+    children: React.ReactNode;
+};
 
-export const Wizard = (props: WizardProps) => {
+export type WizardProps = {
+    activeStep: number;
+    children: React.ReactNode;
+    canGoForward?: boolean | ((step: number) => boolean);
+    canGoBack?: boolean | ((step: number) => boolean);
+    firstBackTitle?: string;
+    lastNextTitle?: string;
+    onBack?: (step: number) => void;
+    onForward?: (step: number) => void;
+};
+export const WizardStep: React.FC<WizardStepProps> = (props: WizardStepProps) => {
+    const { children, id } = props;
+    return (
+        <div className="wizard-step-view" data-testid={`wizard-step-${id}`}>
+            {children}
+        </div>
+    );
+};
+
+export const Wizard: React.FC<WizardProps> = (props: WizardProps) => {
     const {
         children,
         activeStep = 0,

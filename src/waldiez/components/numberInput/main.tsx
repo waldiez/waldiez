@@ -5,9 +5,27 @@
 import Slider from "rc-slider";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
-import { NumberInputProps } from "@waldiez/components/numberInput/types";
 
-export const NumberInput = (props: NumberInputProps) => {
+type NumberInputProps = {
+    label: string | React.JSX.Element;
+    value: number | null;
+    min: number;
+    max: number;
+    onChange: (value: number | null) => void;
+    forceInt?: boolean;
+    onNull?: number;
+    onUpperLabel?: string | null;
+    onLowerLabel?: string | null;
+    setNullOnUpper?: boolean;
+    setNullOnLower?: boolean;
+    step?: number;
+    stepDownScale?: number;
+    disabled?: boolean;
+    labelInfo?: string | React.JSX.Element | null;
+    dataTestId?: string;
+};
+
+export const NumberInput: React.FC<NumberInputProps> = (props: NumberInputProps) => {
     const {
         value,
         label,

@@ -2,11 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
-import { CollapsibleProps } from "@waldiez/components/collapsible/types";
-
-export const Collapsible = (props: CollapsibleProps) => {
+type CollapsibleProps = {
+    title: string;
+    className?: string;
+    children: ReactNode;
+    expanded?: boolean;
+    fullWidth?: boolean;
+    dataTestId?: string;
+};
+export const Collapsible: React.FC<CollapsibleProps> = props => {
     const { title, children, dataTestId, fullWidth = false, expanded = false } = props;
     const [isOpen, setIsOpen] = useState(expanded);
 

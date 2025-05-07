@@ -11,7 +11,7 @@ import { MessageInputProps } from "@waldiez/components/messageInput/types";
 import { Select } from "@waldiez/components/select";
 import { WaldiezMessageType } from "@waldiez/models";
 
-export const MessageInput = (props: MessageInputProps) => {
+export const MessageInput: React.FC<MessageInputProps> = (props: MessageInputProps) => {
     const {
         current,
         darkMode,

@@ -40,7 +40,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @see {@link WaldiezAgentCodeExecutionConfig}
  */
 export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
-    maxRound: number | null;
+    maxRound: number;
     adminName: string | null;
     speakers: WaldiezAgentGroupManagerSpeakers;
     enableClearHistory?: boolean;
@@ -60,9 +60,9 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
-            contextVariables?: Record<string, any>;
-            handoffs?: WaldiezAgentHandoff[];
-            maxRound: number | null;
+            contextVariables: Record<string, any>;
+            handoffs: WaldiezAgentHandoff[];
+            maxRound: number;
             adminName: string | null;
             speakers: WaldiezAgentGroupManagerSpeakers;
             enableClearHistory?: boolean;
@@ -87,7 +87,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             nestedChats: [],
             contextVariables: {},
             handoffs: [],
-            maxRound: null,
+            maxRound: 20,
             adminName: null,
             speakers: {
                 selectionMethod: "auto",

@@ -6,7 +6,11 @@ import { FaDatabase } from "react-icons/fa";
 import { FaGear, FaImage } from "react-icons/fa6";
 import { TfiThought } from "react-icons/tfi";
 
-import { WaldiezNodeAgentAssistantData, WaldiezNodeAgentData } from "@waldiez/models";
+import {
+    WaldiezNodeAgentAssistantData,
+    WaldiezNodeAgentData,
+    WaldiezNodeAgentGroupManagerData,
+} from "@waldiez/models";
 import { AGENT_COLORS, AGENT_ICONS } from "@waldiez/theme";
 
 export const WaldiezNodeAgentHeader = (props: {
@@ -30,7 +34,10 @@ export const WaldiezNodeAgentHeader = (props: {
                     <TfiThought size={18} strokeWidth={0.1} color={AGENT_COLORS.reasoning} />
                 )}
                 <div className="agent-label" data-testid={`agent-header-label-${id}`}>
-                    {data.label}
+                    {data.agentType === "group_manager"
+                        ? (data as WaldiezNodeAgentGroupManagerData).groupName ||
+                          `Group managed by ${data.label}`
+                        : data.label}
                 </div>
             </div>
             <img src={agentImgSrc} title={data.label} alt={data.label} />

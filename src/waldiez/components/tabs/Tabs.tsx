@@ -4,10 +4,30 @@
  */
 import React, { ReactElement, useState } from "react";
 
-import { TabItem } from "@waldiez/components/tabs/TabItem";
-import { TabItemProps, TabItemsProps } from "@waldiez/components/tabs/types";
-
-export const TabItems = (props: TabItemsProps) => {
+type TabItemProps = {
+    id: string;
+    label: string;
+    children: React.ReactNode;
+};
+type TabItemsProps = {
+    activeTabIndex: number;
+    children: React.ReactNode;
+};
+export const TabItem: React.FC<TabItemProps> = (props: TabItemProps) => {
+    const { id, label, children } = props;
+    return (
+        <div
+            className="tab-panel"
+            role="tabpanel"
+            aria-labelledby={`${label}-Tab`}
+            data-testid={`panel-${id}`}
+            id={`panel-${id}`}
+        >
+            {children}
+        </div>
+    );
+};
+export const TabItems: React.FC<TabItemsProps> = (props: TabItemsProps) => {
     const { activeTabIndex, children } = props;
     const [activeTab, setActiveTab] = useState(activeTabIndex);
     const handleTabClick = (index: number) => {

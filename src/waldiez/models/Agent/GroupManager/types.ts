@@ -7,12 +7,12 @@ import { Node } from "@xyflow/react";
 import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
 import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupManager/GroupSpeakers";
 
-export type GroupChatSpeakerSelectionMethodOption = "auto" | "manual" | "random" | "round_robin" | "custom";
+export type GroupChatSpeakerSelectionMethodOption = "default" | "auto" | "manual" | "random" | "round_robin"; //| "custom";
 
 export type GroupChatSpeakerSelectionMode = "repeat" | "transition";
 export type GroupChatSpeakerTransitionsType = "allowed" | "disallowed";
 export type WaldiezNodeAgentGroupManagerData = WaldiezAgentCommonData & {
-    maxRound: number | null;
+    maxRound: number;
     adminName: string | null;
     speakers: WaldiezAgentGroupManagerSpeakers;
     enableClearHistory?: boolean;

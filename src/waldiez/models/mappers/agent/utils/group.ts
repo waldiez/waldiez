@@ -34,13 +34,13 @@ export const getSpeakers: (json: Record<string, unknown>) => WaldiezAgentGroupMa
     return speakers;
 };
 
-export const getGroupChatMaxRound: (json: Record<string, unknown>) => number | null = json => {
-    let maxRound: number | null = null;
+export const getGroupChatMaxRound: (json: Record<string, unknown>) => number = json => {
+    let maxRound: number = 20;
     if ("maxRound" in json && typeof json.maxRound === "number") {
         try {
             maxRound = parseInt(json.maxRound.toString(), 10);
         } catch (_) {
-            maxRound = null;
+            //
         }
     }
     return maxRound;
@@ -75,7 +75,7 @@ const getSelectionMethod = (json: Record<string, unknown>): GroupChatSpeakerSele
     if (
         "selectionMethod" in json &&
         typeof json.selectionMethod === "string" &&
-        ["auto", "manual", "random", "round_robin", "custom"].includes(json.selectionMethod)
+        ["auto", "manual", "random", "round_robin", "default"].includes(json.selectionMethod)
     ) {
         selectionMethod = json.selectionMethod as GroupChatSpeakerSelectionMethodOption;
     }

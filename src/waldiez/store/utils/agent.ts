@@ -35,6 +35,7 @@ export const getAgentNode = (
         agentNode.data = { ...agentNode.data, ...agentExtras };
     } else if (agentType === "group_manager") {
         const agentExtras = new WaldiezAgentGroupManagerData();
+        agentExtras.groupName = "Group";
         agentNode.data = { ...agentNode.data, ...agentExtras };
     }
     if (parentId) {

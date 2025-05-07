@@ -16,6 +16,10 @@
   flex-grow: 1;
 }
 
+.flow-wrapper .agent-node.group_manager .agent-header .agent-label {
+  max-width: 320px !important;
+}
+
 .react-flow__node.highlight > .agent-node.group_manager,
 .flow-wrapper .agent-node.dragging.group_manager {
   background-color: rgb(237 138 52 / 15%) !important;

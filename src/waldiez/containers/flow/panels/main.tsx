@@ -5,7 +5,8 @@
 import { Panel } from "@xyflow/react";
 
 import { FaPlusCircle } from "react-icons/fa";
-import { FaCirclePlay, FaFileImport, FaMoon, FaPython, FaShare, FaSun } from "react-icons/fa6";
+import { FaCirclePlay, FaFileImport, FaMoon, FaPython, FaSun } from "react-icons/fa6";
+import { MdIosShare } from "react-icons/md";
 import { SiJupyter } from "react-icons/si";
 
 import { WaldiezFlowPanelsProps } from "@waldiez/containers/flow/panels/types";
@@ -97,7 +98,7 @@ export const WaldiezFlowPanels = (props: WaldiezFlowPanelsProps) => {
                             title="Import flow"
                             data-testid={`import-flow-${flowId}-button`}
                         >
-                            <FaFileImport style={{ strokeWidth: 2 }} />
+                            <FaFileImport />
                         </button>
                     )}
                     {includeExportButton && (
@@ -108,7 +109,7 @@ export const WaldiezFlowPanels = (props: WaldiezFlowPanelsProps) => {
                             title="Export flow"
                             data-testid={`export-flow-${flowId}-button`}
                         >
-                            <FaShare style={{ strokeWidth: 2 }} />
+                            <MdIosShare size={24} />
                         </button>
                     )}
                     <button

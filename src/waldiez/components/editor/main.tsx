@@ -5,9 +5,13 @@
 //MonacoEditor with standard options
 import MonacoEditor from "@monaco-editor/react";
 
-import { EditorProps } from "@waldiez/components/editor/types";
+type EditorProps = {
+    value: string;
+    onChange: (value: string | undefined) => void;
+    darkMode: boolean;
+};
 
-export const Editor = (props: EditorProps) => {
+export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     const { value, onChange, darkMode } = props;
     const theme = darkMode ? "vs-dark" : "vs-light";
     return (

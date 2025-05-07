@@ -50,9 +50,9 @@ export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicT
                 You can use the <strong>Test</strong> button to check if the model parameters are correct, but
                 model credits might be used for this test (depending on the provider).
                 <br />
-                Note that if testing the model fails with a "Failed to load" message (for example the NIM
-                models), it doesn't mean that the configuration is not correct (it could be a browser/CORS
-                issue).
+                <strong>Note</strong> that if testing the model fails with a "Failed to load" message (for
+                example a NIM model), it doesn't mean that the configuration is not correct (it could be a
+                browser/CORS issue).
                 <Collapsible
                     title="Useful Links"
                     expanded={false}
@@ -79,6 +79,7 @@ export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicT
                 </Collapsible>
             </div>
             <ModelSelector ref={predefinedModelsSelectRef} onChange={onPredefineSelected} />
+            <div className="margin-top--10"></div>
             <label>Name:</label>
             <input
                 type="text"

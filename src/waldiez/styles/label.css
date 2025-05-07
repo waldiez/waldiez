@@ -58,8 +58,8 @@
 .flow-wrapper .info-label .info-description {
   display: none;
   width: auto;
-  background-color: #007bff;
-  color: white;
+  color: #004085;
+  background-color: #cce5ff;
   font-size: unset;
   padding: 4px;
   position: absolute;
@@ -67,6 +67,11 @@
   left: 50%;
   margin-left: -50%;
   z-index: 1;
+}
+
+.flow-wrapper.dark .info-label .info-description {
+  background-color: #20558f;
+  color: #cce5ff;
 }
 
 /* .info-label .info-description.show {

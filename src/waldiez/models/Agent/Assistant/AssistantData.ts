@@ -5,6 +5,7 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
+    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
@@ -46,6 +47,8 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
+            contextVariables: Record<string, any>;
+            handoffs: WaldiezAgentHandoff[];
             isMultimodal: boolean;
         } = {
             humanInputMode: "NEVER",
@@ -63,6 +66,8 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             skills: [],
             parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
+            handoffs: [],
             isMultimodal: false,
         },
     ) {

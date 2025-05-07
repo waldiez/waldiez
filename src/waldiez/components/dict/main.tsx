@@ -8,7 +8,7 @@ import { useDict } from "@waldiez/components/dict/hooks";
 import { DictProps } from "@waldiez/components/dict/types";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
-export const Dict = (props: DictProps) => {
+export const Dict: React.FC<DictProps> = (props: DictProps) => {
     const { viewLabel, viewLabelInfo, items, itemsType, areValuesSecret = false } = props;
     const {
         visible,

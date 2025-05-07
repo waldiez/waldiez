@@ -5,6 +5,7 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
+    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedSkill,
     WaldiezAgentNestedChat,
@@ -86,6 +87,8 @@ export class WaldiezAgentRagUserData extends WaldiezAgentData {
             skills: WaldiezAgentLinkedSkill[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
+            contextVariables: Record<string, any>;
+            handoffs: WaldiezAgentHandoff[];
             retrieveConfig: WaldiezRagUserRetrieveConfig;
         } = {
             humanInputMode: "ALWAYS",
@@ -103,6 +106,8 @@ export class WaldiezAgentRagUserData extends WaldiezAgentData {
             skills: [],
             parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
+            handoffs: [],
             retrieveConfig: defaultRetrieveConfig,
         },
     ) {

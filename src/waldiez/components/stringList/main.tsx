@@ -8,7 +8,7 @@ import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useStringList } from "@waldiez/components/stringList/hooks";
 import { StringListProps } from "@waldiez/components/stringList/types";
 
-export const StringList = (props: StringListProps) => {
+export const StringList: React.FC<StringListProps> = (props: StringListProps) => {
     const { viewLabel, viewLabelInfo, items, itemsType } = props;
     const placeholder = props.placeholder || "...";
     const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange } = useStringList(props);

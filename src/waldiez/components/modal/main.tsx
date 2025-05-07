@@ -5,7 +5,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
-import { ModalProps } from "@waldiez/components/modal/types";
+type ModalProps = {
+    id?: string;
+    dataTestId?: string;
+    beforeTitle?: string | React.ReactNode;
+    title: string | React.ReactNode;
+    isOpen: boolean;
+    hasCloseBtn?: boolean;
+    hasMaximizeBtn?: boolean;
+    onClose?: () => void;
+    onSaveAndClose?: () => void;
+    onCancel?: (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => void;
+    children: React.ReactNode;
+    className?: string;
+    hasUnsavedChanges?: boolean;
+    preventCloseIfUnsavedChanges?: boolean;
+};
 
 export const Modal: React.FC<ModalProps> = ({
     id,
