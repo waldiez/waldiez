@@ -123,7 +123,6 @@ class WaldiezAgents(WaldiezBase):
             raise ValueError("At least one agent is required.")
         if len(all_agent_ids) != len(set(all_agent_ids)):
             raise ValueError("Agent IDs must be unique.")
-        # TODO: (in group manager), check the InitialAgentId is in the group
         return self
 
     def validate_flow(self, model_ids: List[str], skill_ids: List[str]) -> None:

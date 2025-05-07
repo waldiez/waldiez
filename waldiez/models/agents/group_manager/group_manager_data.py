@@ -22,8 +22,8 @@ class WaldiezGroupManagerData(WaldiezAgentData):
     ----------
     human_input_mode : Literal["ALWAYS", "NEVER", "TERMINATE"]
         The human input mode, Defaults to `NEVER`
-    max_round : Optional[int]
-        The maximum number of rounds to have in the group.
+    max_round : int
+        The maximum number of rounds to have in the group. Defaults to 20.
     admin_name : Optional[str]
         The name of the group's admin.
         Make sure you use a name of an agent in the group.
@@ -49,14 +49,14 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         ),
     ] = "NEVER"
     max_round: Annotated[
-        Optional[int],
+        int,
         Field(
-            None,
+            20,
             title="Max round",
             description="The maximum number of rounds to have in the group.",
             alias="maxRound",
         ),
-    ] = None
+    ] = 20
     admin_name: Annotated[
         Optional[str],
         Field(
