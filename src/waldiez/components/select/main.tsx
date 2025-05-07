@@ -27,7 +27,7 @@ export const Select = forwardRef(
             <ReactSelect
                 ref={ref}
                 {...props}
-                className="select"
+                className={`select ${props.className ? ` ${props.className}` : ""}`}
                 classNamePrefix="w-select"
                 menuPosition="fixed"
                 styles={{
