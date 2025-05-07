@@ -13,6 +13,30 @@ import {
     WaldiezAgentTerminationMessageCheck,
 } from "@waldiez/models/Agent/Common";
 
+/**
+ * Waldiez Captain Agent Data.
+ * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "SOMETIMES")
+ * @param systemMessage - The system message of the agent
+ * @param codeExecutionConfig - The code execution configuration of the agent
+ * @param agentDefaultAutoReply - The default auto reply of the agent
+ * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
+ * @param termination - The termination message check of the agent
+ * @param modelIds - The model ids of the agent
+ * @param skills - The linked skills of the agent
+ * @param parentId - The parent id of the agent
+ * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param handoffs - The handoffs of the agent
+ * @param toolLib - The tool library of the agent
+ * @param maxRound - The maximum round of the agent
+ * @param maxTurns - The maximum turns of the agent
+ * @see {@link WaldiezAgentData}
+ * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ */
 export class WaldiezAgentCaptainData extends WaldiezAgentData {
     agentLib: WaldiezCaptainAgentLibEntry[];
     toolLib: "default" | null;

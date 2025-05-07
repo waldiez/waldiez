@@ -9,6 +9,8 @@ export {
     getAdminName,
     getEnableClearHistory,
     getGroupChatMaxRound,
+    getGroupName,
+    getInitialAgentId,
     getSendIntroductions,
     getSpeakers,
 } from "@waldiez/models/mappers/agent/utils/group";

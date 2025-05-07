@@ -24,6 +24,31 @@ export const defaultReasonConfig: WaldiezReasoningAgentReasonConfig = {
     explorationConstant: 1.41,
 };
 
+/**
+ * Waldiez Reasoning Agent Data.
+ * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "SOMETIMES")
+ * @param systemMessage - The system message of the agent
+ * @param codeExecutionConfig - The code execution configuration of the agent
+ * @param agentDefaultAutoReply - The default auto reply of the agent
+ * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
+ * @param termination - The termination message check of the agent
+ * @param modelIds - The model ids of the agent
+ * @param skills - The linked skills of the agent
+ * @param parentId - The parent id of the agent
+ * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param handoffs - The handoffs of the agent
+ * @param verbose - The verbose flag of the agent
+ * @param reasonConfig - The reasoning configuration of the agent
+ * @see {@link WaldiezAgentData}
+ * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezReasoningAgentReasonConfig}
+ * @see {@link defaultReasonConfig}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ */
 export class WaldiezAgentReasoningData extends WaldiezAgentData {
     verbose: boolean;
     reasonConfig: WaldiezReasoningAgentReasonConfig;

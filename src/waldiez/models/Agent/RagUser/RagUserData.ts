@@ -62,6 +62,8 @@ export const defaultRetrieveConfig: WaldiezRagUserRetrieveConfig = {
  * @param skills - The linked skills of the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param handoffs - The handoffs of the agent
  * @param retrieveConfig - The retrieve configuration of the agent
  * @see {@link WaldiezAgentData}
  * @see {@link WaldiezAgentLinkedSkill}

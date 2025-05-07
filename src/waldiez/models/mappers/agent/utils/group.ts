@@ -70,6 +70,21 @@ export const getSendIntroductions: (json: Record<string, unknown>) => boolean = 
     return sendIntroductions;
 };
 
+export const getGroupName: (json: Record<string, unknown>) => string | undefined = json => {
+    let groupName: string | undefined = undefined;
+    if ("groupName" in json && typeof json.groupName === "string") {
+        groupName = json.groupName;
+    }
+    return groupName;
+};
+export const getInitialAgentId: (json: Record<string, unknown>) => string | undefined = json => {
+    let initialAgentId: string | undefined = undefined;
+    if ("initialAgentId" in json && typeof json.initialAgentId === "string") {
+        initialAgentId = json.initialAgentId;
+    }
+    return initialAgentId;
+};
+
 const getSelectionMethod = (json: Record<string, unknown>): GroupChatSpeakerSelectionMethodOption => {
     let selectionMethod: GroupChatSpeakerSelectionMethodOption = "auto";
     if (

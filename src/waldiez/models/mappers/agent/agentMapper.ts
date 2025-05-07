@@ -30,8 +30,10 @@ import {
     getContextVariables,
     getEnableClearHistory,
     getGroupChatMaxRound,
+    getGroupName,
     getHandoffs,
     getHumanInputMode,
+    getInitialAgentId,
     getIsMultimodal,
     getMaximumConsecutiveAutoReply,
     getModelIds,
@@ -321,4 +323,6 @@ const updateGroupManager = (agentData: WaldiezAgentGroupManagerData, data: any) 
     agentData.speakers = getSpeakers(data);
     agentData.enableClearHistory = getEnableClearHistory(data);
     agentData.sendIntroductions = getSendIntroductions(data);
+    agentData.initialAgentId = getInitialAgentId(data);
+    agentData.groupName = getGroupName(data);
 };

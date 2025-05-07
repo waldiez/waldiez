@@ -25,6 +25,9 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param skills - The linked skills of the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param handoffs - The handoffs of the agent
+ * @param groupName - The name of the group that the agent manages
  * @param maxRound - The maximum round of the agent
  * @param adminName - The admin name of the agent
  * @param speakers - The speakers of the agent
