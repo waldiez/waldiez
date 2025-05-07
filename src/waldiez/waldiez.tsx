@@ -2,6 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable tsdoc/syntax */
+/**
+ * @categoryDescription React component for Waldiez
+ * @showCategories
+ * @module
+ */
 import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -23,7 +29,72 @@ import { getId } from "@waldiez/utils";
 
 const READY_FOR_HUB = true;
 
-export const Waldiez = (props: Partial<WaldiezProps>) => {
+/**
+ * Waldiez component
+ * @param props - The props of the component
+ * @primaryExport
+ * @category Component
+ * @example
+```tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+import { Edge, Node, Viewport } from "@xyflow/react";
+
+import { Waldiez, importFlow } from "@waldiez/react";
+import "@waldiez/react/dist/@waldiez.css";
+
+// starting with an empty flow
+const nodes: Node[] = []
+const edges: Edge[] = []
+const viewport: Viewport = { x: 0, y: 0, zoom: 1 }
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Waldiez
+      flowId="flow-0"
+      storageId="storage-0"
+      name="My Flow"
+      description="A sample flow"
+      tags={["example"]}
+      requirements={[]}
+      nodes={nodes}
+      edges={edges}
+      viewport={viewport}
+    />
+  </React.StrictMode>
+```
+ * @example
+```tsx
+ import { Waldiez, importFlow, WaldiezProps } from "@waldiez/react";
+
+// Import flow from an existing .waldiez file
+// could be loaded from a backend or local storage
+const flowJson = {
+  // existing data
+};
+
+const flowData = importFlow(flowJson);
+
+// Override specific properties
+const overrides: Partial<WaldiezProps> = {
+  onSave: (flow) => saveToBackend(flow),
+  readOnly: isViewMode,
+  skipImport: true,
+};
+
+function ExistingFlow() {
+  return (
+    <Waldiez
+      {...flowData}
+      {...overrides}
+    />
+  );
+}
+```
+ * @see {@link WaldiezProps}
+ */
+export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>) => {
     const flowId: string = props.flowId ?? `wf-${getId()}`;
     const skipImport = typeof props.skipImport === "boolean" ? props.skipImport : false;
     const skipExport = typeof props.skipExport === "boolean" ? props.skipExport : false;

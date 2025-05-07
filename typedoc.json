@@ -5,8 +5,8 @@
     "excludeInternal": true,
     "plugin": ["typedoc-material-theme", "typedoc-plugin-markdown"],
     "themeColor": "#cb95fa",
-    "entryPoints": ["src/waldiez/types.ts"],
-    "entryPointStrategy": "expand",
+    "entryPoints": ["src/waldiez/docs.ts"],
+    "entryPointStrategy": "resolve",
     "sortEntryPoints": false,
     "name": "@waldiez/react",
     "includeVersion": true,
@@ -18,5 +18,12 @@
     "hideBreadcrumbs": true,
     "hidePageTitle": true,
     "darkHighlightTheme": "dark-plus",
-    "lightHighlightTheme": "light-plus"
+    "lightHighlightTheme": "light-plus",
+    "commentStyle": "all",
+    "excludeTags": [
+        "@param",
+    ],
+    "navigation": {
+        "includeCategories": true,
+    }
 }

@@ -26,7 +26,7 @@ export const defaultReasonConfig: WaldiezReasoningAgentReasonConfig = {
 
 /**
  * Waldiez Reasoning Agent Data.
- * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "SOMETIMES")
+ * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "TERMINATE")
  * @param systemMessage - The system message of the agent
  * @param codeExecutionConfig - The code execution configuration of the agent
  * @param agentDefaultAutoReply - The default auto reply of the agent
