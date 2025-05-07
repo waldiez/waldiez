@@ -77,16 +77,28 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
                 >
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    title={isDirty ? "Save" : "No changes to save"}
-                    className="modal-action-submit"
-                    onClick={onSave}
-                    data-testid={`submit-agent-data-${id}`}
-                    disabled={!isDirty}
-                >
-                    Save
-                </button>
+                <div className="flex-row">
+                    <button
+                        type="button"
+                        title="Save & Close"
+                        className="modal-action-submit margin-right-10"
+                        onClick={onSaveAndClose}
+                        data-testid={`submit-and-close-agent-data-${id}`}
+                        disabled={!isDirty}
+                    >
+                        Save & Close
+                    </button>
+                    <button
+                        type="button"
+                        title={isDirty ? "Save" : "No changes to save"}
+                        className="modal-action-submit"
+                        onClick={onSave}
+                        data-testid={`submit-agent-data-${id}`}
+                        disabled={!isDirty}
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
         </Modal>
     );

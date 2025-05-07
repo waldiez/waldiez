@@ -34,6 +34,10 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     useEffect(() => {
         setActiveTabIndex(0);
     }, [isOpen]);
+    const onSaveAndClose = () => {
+        onSubmit();
+        onClose();
+    };
     if (!edgeData || !edge || edgeType === "hidden" || !sourceAgent || !targetAgent) {
         return <></>;
     }
@@ -42,6 +46,7 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         <Modal
             isOpen={isOpen}
             onClose={onClose}
+            onSaveAndClose={onSaveAndClose}
             beforeTitle={beforeTitle}
             title={edgeData.label}
             dataTestId={`edge-modal-${edgeId}`}
@@ -88,20 +93,32 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
                         title="Cancel"
                         className="modal-action-cancel"
                         onClick={onCancel}
-                        data-testid="modal-cancel-btn"
+                        data-testid={`modal-cancel-btn-${edgeId}`}
                     >
                         Cancel
                     </button>
-                    <button
-                        type="button"
-                        title={isDirty ? "Save changes" : "No changes to save"}
-                        className="modal-action-submit"
-                        onClick={onSubmit}
-                        data-testid="modal-submit-btn"
-                        disabled={!isDirty}
-                    >
-                        Save
-                    </button>
+                    <div className="flex-row">
+                        <button
+                            title="Save & Close"
+                            type="button"
+                            className="modal-action-submit margin-right-10 "
+                            onClick={onSaveAndClose}
+                            data-testid={`modal-submit-and-close-btn-${edgeId}`}
+                            disabled={!isDirty}
+                        >
+                            Save & Close
+                        </button>
+                        <button
+                            type="button"
+                            title={isDirty ? "Save changes" : "No changes to save"}
+                            className="modal-action-submit"
+                            onClick={onSubmit}
+                            data-testid={`modal-submit-btn-${edgeId}`}
+                            disabled={!isDirty}
+                        >
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </Modal>

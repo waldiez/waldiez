@@ -32,7 +32,7 @@ describe("WaldiezEdgeModalTab basic", () => {
         fireEvent.change(labelDescription, {
             target: { value: "Updated description" },
         });
-        const cancelButton = screen.getByTestId("modal-cancel-btn");
+        const cancelButton = screen.getByTestId(`modal-cancel-btn-${edgeId}`);
         fireEvent.click(cancelButton);
         const toGainFocus = screen.getByTestId(`edge-${edgeId}-box`);
         fireEvent.click(toGainFocus);
@@ -58,7 +58,7 @@ describe("WaldiezEdgeModalTab basic", () => {
             label: "Nested Chat",
             target: { value: "nested" },
         });
-        const submitButton = screen.getByTestId("modal-submit-btn");
+        const submitButton = screen.getByTestId(`modal-submit-btn-${edgeId}`);
         fireEvent.click(submitButton);
         // open again the modal
         const toGainFocus = screen.getByTestId(`edge-${edgeId}-box`);

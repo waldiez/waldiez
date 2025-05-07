@@ -77,16 +77,28 @@ export const EditFlowModal = (props: EditFlowModalProps) => {
                 >
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    title="Save"
-                    className="modal-action-submit"
-                    onClick={onSubmit}
-                    data-testid="edit-flow-submit-button"
-                    disabled={!isDirty}
-                >
-                    Save
-                </button>
+                <div className="flex-row">
+                    <button
+                        title="Save & Close"
+                        type="button"
+                        className="modal-action-submit margin-right-10 "
+                        onClick={onSaveAndClose}
+                        data-testid={`modal-submit-and-close-btn-${flowId}`}
+                        disabled={!isDirty}
+                    >
+                        Save & Close
+                    </button>
+                    <button
+                        type="button"
+                        title="Save"
+                        className="modal-action-submit"
+                        onClick={onSubmit}
+                        data-testid="edit-flow-submit-button"
+                        disabled={!isDirty}
+                    >
+                        Save
+                    </button>
+                </div>
             </div>
         </Modal>
     );
