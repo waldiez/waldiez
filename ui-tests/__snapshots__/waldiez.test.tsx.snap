@@ -229,7 +229,7 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
               <div
                 class="dnd-area"
-                data-testid="manager-dnd"
+                data-testid="group-manager-dnd"
                 draggable="true"
               >
                 <img
@@ -712,7 +712,7 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
             <div
               class="dnd-area"
-              data-testid="manager-dnd"
+              data-testid="group-manager-dnd"
               draggable="true"
             >
               <img

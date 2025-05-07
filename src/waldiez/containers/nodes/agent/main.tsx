@@ -38,12 +38,12 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
     } else {
         className += `agent-node ${agentType} group-member`;
     }
-    if (agentType === "manager" && isDragging) {
+    if (agentType === "group_manager" && isDragging) {
         className += " dragging";
     }
     const handleClassNameBase = data.parentId ? "group-member " : "";
-    const minWidth = agentType === "manager" ? 490 : 210;
-    const minHeight = agentType === "manager" ? 330 : 210;
+    const minWidth = agentType === "group_manager" ? 490 : 210;
+    const minHeight = agentType === "group_manager" ? 330 : 210;
     const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
@@ -74,7 +74,7 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
                     handleClassName={agentType}
                 />
                 <WaldiezNodeAgentHeader id={id} data={data} onOpenNodeModal={onOpenNodeModal} />
-                {agentType === "manager" ? (
+                {agentType === "group_manager" ? (
                     <div className="agent-body" />
                 ) : (
                     <WaldiezNodeAgentBody

@@ -25,7 +25,7 @@ export const WaldiezNodeAgentFooter = (props: {
                     title="Delete Agent"
                     className={"delete-agent no-margin no-padding clickable"}
                 />
-                {data.agentType !== "manager" && (
+                {data.agentType !== "group_manager" && (
                     <>
                         <div className="date-info">{getDateString(data.updatedAt)}</div>
                         <FaCopy

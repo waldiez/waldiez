@@ -38,5 +38,5 @@ export const AGENT_ICONS = {
     captain: captainWebp,
     assistant: assistantWebp,
     reasoning: reasoningWebp,
-    manager: managerWebp,
+    group_manager: managerWebp,
 };

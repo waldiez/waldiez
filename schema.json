@@ -109,6 +109,12 @@
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentCaptain"
                             }
+                        },
+                        "groupManagerAgents": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/WaldiezAgentGroupManager"
+                            }
                         }
                     },
                     "required": [
@@ -116,7 +122,8 @@
                         "assistantAgents",
                         "ragUserProxyAgents",
                         "reasoningAgents",
-                        "captainAgents"
+                        "captainAgents",
+                        "groupManagerAgents"
                     ],
                     "additionalProperties": false
                 },
@@ -214,7 +221,7 @@
         },
         "WaldiezAgentType": {
             "type": "string",
-            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "manager"]
+            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "group_manager"]
         },
         "WaldiezAgentUserProxyData": {
             "type": "object",
@@ -1410,6 +1417,219 @@
             },
             "required": ["name", "description", "systemMessage"],
             "additionalProperties": false
+        },
+        "WaldiezAgentGroupManager": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "agentType": {
+                    "$ref": "#/definitions/WaldiezNodeAgentType"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "requirements": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/WaldiezAgentGroupManagerData"
+                },
+                "rest": {
+                    "type": "object",
+                    "additionalProperties": {}
+                }
+            },
+            "required": [
+                "agentType",
+                "createdAt",
+                "data",
+                "description",
+                "id",
+                "name",
+                "requirements",
+                "tags",
+                "type",
+                "updatedAt"
+            ],
+            "additionalProperties": false,
+            "description": "Waldiez Agent Group Manager."
+        },
+        "WaldiezAgentGroupManagerData": {
+            "type": "object",
+            "properties": {
+                "systemMessage": {
+                    "type": ["string", "null"]
+                },
+                "humanInputMode": {
+                    "$ref": "#/definitions/WaldiezAgentHumanInputMode"
+                },
+                "codeExecutionConfig": {
+                    "$ref": "#/definitions/WaldiezAgentCodeExecutionConfig"
+                },
+                "agentDefaultAutoReply": {
+                    "type": ["string", "null"]
+                },
+                "maxConsecutiveAutoReply": {
+                    "type": ["number", "null"]
+                },
+                "termination": {
+                    "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
+                },
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                    }
+                },
+                "parentId": {
+                    "type": "string"
+                },
+                "nestedChats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                    }
+                },
+                "maxRound": {
+                    "type": ["number", "null"]
+                },
+                "adminName": {
+                    "type": ["string", "null"]
+                },
+                "speakers": {
+                    "$ref": "#/definitions/WaldiezAgentGroupManagerSpeakers"
+                },
+                "enableClearHistory": {
+                    "type": "boolean"
+                },
+                "sendIntroductions": {
+                    "type": "boolean"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "initialAgentId": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "adminName",
+                "agentDefaultAutoReply",
+                "codeExecutionConfig",
+                "humanInputMode",
+                "maxConsecutiveAutoReply",
+                "maxRound",
+                "modelIds",
+                "nestedChats",
+                "skills",
+                "speakers",
+                "systemMessage",
+                "termination"
+            ],
+            "additionalProperties": false,
+            "description": "Waldiez Group Manager Agent Data."
+        },
+        "WaldiezAgentGroupManagerSpeakers": {
+            "type": "object",
+            "properties": {
+                "selectionMethod": {
+                    "$ref": "#/definitions/GroupChatSpeakerSelectionMethodOption"
+                },
+                "selectionCustomMethod": {
+                    "type": "string"
+                },
+                "maxRetriesForSelecting": {
+                    "type": ["number", "null"]
+                },
+                "selectionMode": {
+                    "$ref": "#/definitions/GroupChatSpeakerSelectionMode"
+                },
+                "allowRepeat": {
+                    "anyOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                "allowedOrDisallowedTransitions": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "transitionsType": {
+                    "$ref": "#/definitions/GroupChatSpeakerTransitionsType"
+                }
+            },
+            "required": [
+                "selectionMethod",
+                "selectionCustomMethod",
+                "maxRetriesForSelecting",
+                "selectionMode",
+                "allowRepeat",
+                "allowedOrDisallowedTransitions",
+                "transitionsType"
+            ],
+            "additionalProperties": false
+        },
+        "GroupChatSpeakerSelectionMethodOption": {
+            "type": "string",
+            "enum": ["auto", "manual", "random", "round_robin", "custom"]
+        },
+        "GroupChatSpeakerSelectionMode": {
+            "type": "string",
+            "enum": ["repeat", "transition"]
+        },
+        "GroupChatSpeakerTransitionsType": {
+            "type": "string",
+            "enum": ["allowed", "disallowed"]
         },
         "WaldiezModel": {
             "type": "object",

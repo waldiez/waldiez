@@ -82,8 +82,8 @@
   border-color: var(--captain-agent-color) !important;
 }
 
-.react-flow__resize-control.nodrag.bottom.right.handle.manager {
-  border-color: var(--manager-agent-color) !important;
+.react-flow__resize-control.nodrag.bottom.right.handle.group_manager {
+  border-color: var(--group-manager-agent-color) !important;
 }
 
 .react-flow__resize-control.nodrag.bottom.left.handle {

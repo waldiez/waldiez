@@ -142,8 +142,14 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
     const flowEdges = (flow.edges || []) as WaldiezEdge[];
     const modelNodes = nodes.filter(node => node.type === "model") as WaldiezNodeModel[];
     const skillNodes = nodes.filter(node => node.type === "skill") as WaldiezNodeSkill[];
-    const { userAgentNodes, assistantAgentNodes, ragUserNodes, reasoningAgentNodes, captainAgentNodes } =
-        getAgentNodes(nodes);
+    const {
+        userAgentNodes,
+        assistantAgentNodes,
+        ragUserNodes,
+        reasoningAgentNodes,
+        captainAgentNodes,
+        groupManagerAgentNodes,
+    } = getAgentNodes(nodes);
     return new WaldiezFlowData({
         nodes: nodes.map(node => {
             const nodeCopy = { ...node } as any;
@@ -169,6 +175,9 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             ),
             captainAgents: captainAgentNodes.map(captainAgentNode =>
                 exportAgent(captainAgentNode, nodes, skipLinks),
+            ),
+            groupManagerAgents: groupManagerAgentNodes.map(groupManagerAgentNode =>
+                exportAgent(groupManagerAgentNode, nodes, skipLinks),
             ),
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),

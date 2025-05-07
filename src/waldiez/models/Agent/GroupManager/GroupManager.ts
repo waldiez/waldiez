@@ -9,7 +9,7 @@ import { WaldiezAgentGroupManagerData } from "@waldiez/models/Agent/GroupManager
  * Waldiez Agent Group Manager.
  * @param id - The id of the agent
  * @param type - The type of the node in a graph (agent)
- * @param agentType - The type of the agent ("manager")
+ * @param agentType - The type of the agent ("group_manager")
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param tags - The tags of the agent
@@ -22,7 +22,7 @@ import { WaldiezAgentGroupManagerData } from "@waldiez/models/Agent/GroupManager
  */
 export class WaldiezAgentGroupManager extends WaldiezAgent {
     data: WaldiezAgentGroupManagerData;
-    agentType: WaldiezNodeAgentType = "manager";
+    agentType: WaldiezNodeAgentType = "group_manager";
     constructor(props: {
         id: string;
         agentType: WaldiezNodeAgentType;
@@ -36,7 +36,7 @@ export class WaldiezAgentGroupManager extends WaldiezAgent {
         rest?: { [key: string]: unknown };
     }) {
         super(props);
-        this.agentType = "manager";
+        this.agentType = "group_manager";
         this.data = props.data;
         this.rest = props.rest || {};
     }

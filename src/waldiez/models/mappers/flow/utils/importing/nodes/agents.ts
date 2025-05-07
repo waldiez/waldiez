@@ -8,6 +8,7 @@ import {
     WaldiezAgent,
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
+    WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
     WaldiezAgentType,
@@ -30,6 +31,7 @@ export const getAgents = (
             ragUserProxyAgents: [],
             reasoningAgents: [],
             captainAgents: [],
+            groupManagerAgents: [],
         };
     }
     const agentsJson = json.agents as Record<string, unknown>;
@@ -39,6 +41,7 @@ export const getAgents = (
         ragUserProxyAgents: WaldiezAgentRagUser[];
         reasoningAgents: WaldiezAgentReasoning[];
         captainAgents: WaldiezAgentCaptain[];
+        groupManagerAgents: WaldiezAgentGroupManager[];
     } = {
         userProxyAgents: getFlowAgents(
             "user_proxy",
@@ -80,6 +83,14 @@ export const getAgents = (
             skillIds,
             chatIds,
         ) as WaldiezAgentCaptain[],
+        groupManagerAgents: getFlowAgents(
+            "group_manager",
+            agentsJson,
+            nodes,
+            modelIds,
+            skillIds,
+            chatIds,
+        ) as WaldiezAgentGroupManager[],
     };
     return agents;
 };

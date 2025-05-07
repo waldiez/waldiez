@@ -30,6 +30,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param speakers - The speakers of the agent
  * @param enableClearHistory - The enable clear history of the agent
  * @param sendIntroductions - The send introductions of the agent
+ * @param initialAgentId - The id of the initial agent in the group
  * @see {@link WaldiezAgentData}
  * @see {@link WaldiezAgentLinkedSkill}
  * @see {@link WaldiezAgentNestedChat}
@@ -44,6 +45,8 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
     speakers: WaldiezAgentGroupManagerSpeakers;
     enableClearHistory?: boolean;
     sendIntroductions?: boolean;
+    groupName?: string;
+    initialAgentId?: string;
 
     constructor(
         props: {
@@ -64,6 +67,8 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             speakers: WaldiezAgentGroupManagerSpeakers;
             enableClearHistory?: boolean;
             sendIntroductions?: boolean;
+            groupName?: string;
+            initialAgentId?: string;
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,
@@ -95,6 +100,8 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             },
             enableClearHistory: undefined,
             sendIntroductions: undefined,
+            groupName: undefined,
+            initialAgentId: undefined,
         },
     ) {
         props.parentId = undefined;
@@ -104,5 +111,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
         this.speakers = props.speakers;
         this.enableClearHistory = props.enableClearHistory;
         this.sendIntroductions = props.sendIntroductions;
+        this.groupName = props.groupName;
+        this.initialAgentId = props.initialAgentId;
     }
 }

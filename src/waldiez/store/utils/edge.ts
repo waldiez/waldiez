@@ -60,7 +60,7 @@ const getNewChatType: (sourceNode: Node, targetNode: Node, hidden: boolean) => W
     targetNode,
     hidden,
 ) => {
-    if (hidden || sourceNode.data.agentType === "manager") {
+    if (hidden || sourceNode.data.agentType === "group_manager") {
         return "hidden";
     }
     if (sourceNode.data.parentId && targetNode.data.parentId) {

@@ -23,8 +23,9 @@ export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
     const agentModelsView = getAgentModelsView(id, data);
     const agentSkillsView = getAgentSkillsView(id, data);
     const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
-    if (agentType === "manager") {
-        return <div className="group-body" />;
+    // c8 ignore next 3
+    if (agentType === "group_manager") {
+        return null;
     }
     return (
         <div className="agent-body">

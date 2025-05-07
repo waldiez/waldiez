@@ -6,11 +6,15 @@
 import { Edge, MarkerType, Node } from "@xyflow/react";
 
 import { WaldiezNodeAgentType } from "@waldiez/models";
-import { WaldiezChatData, WaldiezEdge, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat";
+import {
+    VALID_CHAT_TYPES,
+    WaldiezChatData,
+    WaldiezEdge,
+    WaldiezEdgeType,
+    WaldiezNestedChat,
+} from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { AGENT_COLORS } from "@waldiez/theme";
-
-const VALID_CHAT_TYPES = ["chat", "nested", "hidden", "group"];
 
 export const getChatClearHistory = (data: { [key: string]: any }) => {
     let clearHistory = true;

@@ -55,6 +55,14 @@ export const getAgentNodes = (nodes: Node[]) => {
             "agentType" in node.data &&
             node.data.agentType === "captain",
     ) as WaldiezNodeAgentCaptain[];
+    const groupManagerAgentNodes = agentNodes.filter(
+        node =>
+            "data" in node &&
+            typeof node.data === "object" &&
+            node.data &&
+            "agentType" in node.data &&
+            node.data.agentType === "group_manager",
+    );
     return {
         agentNodes,
         userAgentNodes,
@@ -62,6 +70,7 @@ export const getAgentNodes = (nodes: Node[]) => {
         ragUserNodes,
         reasoningAgentNodes,
         captainAgentNodes,
+        groupManagerAgentNodes,
     };
 };
 

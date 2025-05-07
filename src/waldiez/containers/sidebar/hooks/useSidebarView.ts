@@ -46,7 +46,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onDragStart(event, "agent", "captain");
     };
     const onManagerDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "manager");
+        onDragStart(event, "agent", "group_manager");
     };
     const onOpenEditModal = () => {
         setIsEditModalOpen(true);

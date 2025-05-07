@@ -7,6 +7,7 @@ import { Edge, Node, Viewport } from "@xyflow/react";
 import {
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
+    WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
     WaldiezAgentUserProxy,
@@ -44,6 +45,7 @@ export class WaldiezFlowData {
         ragUserProxyAgents: WaldiezAgentRagUser[];
         reasoningAgents: WaldiezAgentReasoning[];
         captainAgents: WaldiezAgentCaptain[];
+        groupManagerAgents: WaldiezAgentGroupManager[];
     };
     models: WaldiezModel[];
     skills: WaldiezSkill[];
@@ -63,6 +65,7 @@ export class WaldiezFlowData {
                 ragUserProxyAgents: WaldiezAgentRagUser[];
                 reasoningAgents: WaldiezAgentReasoning[];
                 captainAgents: WaldiezAgentCaptain[];
+                groupManagerAgents: WaldiezAgentGroupManager[];
             };
             models: WaldiezModel[];
             skills: WaldiezSkill[];
@@ -84,6 +87,7 @@ export class WaldiezFlowData {
                 ragUserProxyAgents: [],
                 reasoningAgents: [],
                 captainAgents: [],
+                groupManagerAgents: [],
             },
             models: [],
             skills: [],

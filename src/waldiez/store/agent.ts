@@ -2,16 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, XYPosition } from "@xyflow/react";
+import { XYPosition } from "@xyflow/react";
 
 import {
     IWaldiezAgentStore,
-    WaldiezChat,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,
     WaldiezNodeAgentType,
 } from "@waldiez/models";
-import { agentMapper, chatMapper } from "@waldiez/models/mappers";
+import { agentMapper } from "@waldiez/models/mappers";
 import { getAgentConnections, getAgentNode, resetEdgeOrdersAndPositions } from "@waldiez/store/utils";
 import { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
@@ -83,9 +82,19 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
     };
     updateAgentData = (id: string, data: Partial<WaldiezNodeAgentData>) => {
         this.set({
-            nodes: this.get().nodes.map(node =>
-                node.id === id ? { ...node, data: { ...node.data, ...data } } : node,
-            ),
+            nodes: this.get().nodes.map(node => {
+                if (node.id === id) {
+                    if (data.parentId !== node.data.parentId) {
+                        node.parentId = data.parentId ?? undefined;
+                        node.extent = data.parentId ? "parent" : undefined;
+                    }
+                    return {
+                        ...node,
+                        data: { ...node.data, ...data },
+                    };
+                }
+                return node;
+            }),
             updatedAt: new Date().toISOString(),
         });
         resetEdgeOrdersAndPositions(this.get, this.set);
@@ -178,15 +187,6 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         ) as WaldiezNodeAgent[];
     };
     addGroupMember = (groupId: string, memberId: string, position?: XYPosition) => {
-        // add an edge with source the parent and target the member
-        const newChat = WaldiezChat.create({ source: groupId, target: memberId });
-        const innerEdge: Edge = chatMapper.asEdge(newChat);
-        innerEdge.type = "hidden";
-        innerEdge.selected = false;
-        // remove any other edges that the member currently has with other nodes
-        const remainingEdges = this.get().edges.filter(
-            edge => edge.source !== memberId && edge.target !== memberId,
-        );
         this.set({
             nodes: this.get().nodes.map(node => {
                 if (node.id === memberId) {
@@ -200,18 +200,15 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                 }
                 return node;
             }),
-            edges: [...remainingEdges, ...[innerEdge]],
             updatedAt: new Date().toISOString(),
         });
-        if (!position) {
-            resetEdgeOrdersAndPositions(this.get, this.set);
-        }
+        resetEdgeOrdersAndPositions(this.get, this.set);
     };
     removeGroupMember = (groupId: string, memberId: string) => {
         const nodes = [
             ...this.get().nodes.map(node => {
                 if (node.id === memberId && node.data.parentId === groupId) {
-                    node.data.parentId = null;
+                    node.data.parentId = undefined;
                     node.parentId = undefined;
                     node.extent = undefined;
                     node.position = {
@@ -222,10 +219,8 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                 return { ...node };
             }),
         ];
-        const edges = this.get().edges.filter(edge => !(edge.source === groupId && edge.target === memberId));
         this.set({
             nodes,
-            edges,
             updatedAt: new Date().toISOString(),
         });
         resetEdgeOrdersAndPositions(this.get, this.set);

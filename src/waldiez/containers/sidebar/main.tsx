@@ -147,11 +147,11 @@ export const SideBar = (props: SidebarViewProps) => {
                         </div>
                         <div
                             className="dnd-area"
-                            data-testid="manager-dnd"
+                            data-testid="group-manager-dnd"
                             onDragStart={onManagerDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.manager} title="Group Manager Agent" />
+                            <img src={AGENT_ICONS.group_manager} title="Group Manager Agent" />
                             Group Manager
                         </div>
                     </>

@@ -8,6 +8,7 @@ import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic";
 import { WaldiezAgentCaptainTab } from "@waldiez/containers/nodes/agent/modal/tabs/captain";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
+import { WaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
 import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats";
 import { WaldiezAgentRagUser } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
@@ -37,6 +38,7 @@ export const WaldiezNodeAgentModalTabs = ({
     onAgentTypeChange,
     onFilesToUploadChange,
 }: WaldiezNodeAgentModalTabsProps) => {
+    const isManager = dataProp.agentType === "group_manager";
     const isRagUser = dataProp.agentType === "rag_user_proxy";
     const isReasoning = dataProp.agentType === "reasoning";
     const isCaptain = dataProp.agentType === "captain";
@@ -51,6 +53,7 @@ export const WaldiezNodeAgentModalTabs = ({
     const agents = getAgents() as WaldiezNodeAgent[];
     const skills = getSkills() as WaldiezNodeSkill[];
     // const edges = getEdges() as WaldiezEdge[];
+    const groupManagers = agents.filter(agent => agent.data.agentType === "group_manager");
     const connectionsCount = agentConnections.target.edges.length + agentConnections.source.edges.length;
     const showNestedChatsTab = connectionsCount > 0;
     const uploadsEnabled = !!uploadHandler;
@@ -156,6 +159,13 @@ export const WaldiezNodeAgentModalTabs = ({
                             data={data as WaldiezNodeAgentCaptainData}
                             onDataChange={onDataChange}
                         />
+                    </div>
+                </TabItem>
+            )}
+            {!isManager && groupManagers.length > 0 && (
+                <TabItem id={`wf-${flowId}-agent-group-${id}`} label="Group">
+                    <div className="modal-tab-body">
+                        <WaldiezAgentGroup id={id} data={data} agents={agents} onDataChange={onDataChange} />
                     </div>
                 </TabItem>
             )}

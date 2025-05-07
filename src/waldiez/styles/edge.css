@@ -75,8 +75,8 @@
   box-shadow: 0 0 4px var(--captain-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.manager .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--group-manager-color);
+.flow-wrapper .agent-edge-box.group_manager .agent-edge-view:hover {
+  box-shadow: 0 0 4px var(--group-manager-agent-color);
 }
 
 .flow-wrapper .clear-history-checkbox {

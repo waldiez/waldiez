@@ -33,7 +33,7 @@ export const getAgentNode = (
     } else if (agentType === "captain") {
         const agentExtras = new WaldiezAgentCaptainData();
         agentNode.data = { ...agentNode.data, ...agentExtras };
-    } else if (agentType === "manager") {
+    } else if (agentType === "group_manager") {
         const agentExtras = new WaldiezAgentGroupManagerData();
         agentNode.data = { ...agentNode.data, ...agentExtras };
     }

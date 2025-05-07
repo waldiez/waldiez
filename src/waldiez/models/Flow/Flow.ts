@@ -79,6 +79,7 @@ export const emptyFlow: WaldiezFlow = {
             ragUserProxyAgents: [],
             reasoningAgents: [],
             captainAgents: [],
+            groupManagerAgents: [],
         },
         models: [],
         skills: [],

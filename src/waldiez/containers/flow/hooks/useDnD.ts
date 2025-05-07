@@ -6,7 +6,7 @@ import { Node, XYPosition, useReactFlow } from "@xyflow/react";
 
 import { useCallback } from "react";
 
-import { WaldiezNodeAgentType } from "@waldiez/models";
+import { VALID_AGENT_TYPES, WaldiezNodeAgentType } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
 export const useDnD = (onNewAgent: () => void) => {
@@ -23,11 +23,7 @@ export const useDnD = (onNewAgent: () => void) => {
         let agentType: WaldiezNodeAgentType | undefined;
         if (nodeTypeData === "agent") {
             const agentTypeData = event.dataTransfer.getData("application/agent");
-            if (
-                ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "manager"].includes(
-                    agentTypeData,
-                )
-            ) {
+            if (VALID_AGENT_TYPES.includes(agentTypeData)) {
                 agentType = agentTypeData as WaldiezNodeAgentType;
             }
         }
@@ -44,11 +40,11 @@ export const useDnD = (onNewAgent: () => void) => {
     const getIntersectingParent = (intersectingNodes: Node[]) => {
         let parent: Node | undefined;
         const isIntersectingWithParent = intersectingNodes.some(
-            node => node.type === "agent" && node.data.agentType === "manager",
+            node => node.type === "agent" && node.data.agentType === "group_manager",
         );
         if (isIntersectingWithParent) {
             const parentNode = intersectingNodes.find(
-                node => node.type === "agent" && node.data.agentType === "manager",
+                node => node.type === "agent" && node.data.agentType === "group_manager",
             );
             if (parentNode) {
                 parent = parentNode;
@@ -156,7 +152,7 @@ export const useDnD = (onNewAgent: () => void) => {
         try {
             const intersectingNodes = getIntersectingNodes(node);
             const intersections = intersectingNodes.filter(
-                node => node.type === "agent" && node.data.agentType === "manager",
+                node => node.type === "agent" && node.data.agentType === "group_manager",
             );
             if (intersections.length === 1) {
                 return intersections[0];
@@ -167,7 +163,7 @@ export const useDnD = (onNewAgent: () => void) => {
         return undefined;
     };
     const onNodeDrag = useCallback((event: React.MouseEvent, node: Node) => {
-        if (!node.parentId && node.data.agentType !== "manager") {
+        if (!node.parentId && node.data.agentType !== "group_manager") {
             const groupManager = getIntersectingGroupManager(event, node);
             if (groupManager) {
                 highlightNode(groupManager.id);
@@ -179,44 +175,11 @@ export const useDnD = (onNewAgent: () => void) => {
         }
     }, []);
     const onNodeDragStop = useCallback((event: React.MouseEvent, node: Node) => {
-        if (!node.parentId && node.data.agentType !== "manager") {
+        if (!node.parentId && node.data.agentType !== "group_manager") {
             const groupManager = getIntersectingGroupManager(event, node);
             if (groupManager) {
                 const { position } = getAgentPositionAndParent(event, groupManager);
                 addGroupMember(groupManager.id, node.id, position);
-                //         const parentPos = getParentPosition(groupManager);
-                //         let position: XYPosition | undefined = undefined;
-                //         if (parentPos) {
-                //             const clientX = (event?.clientX as number) || 0;
-                //             const clientY = (event?.clientY as number) || 0;
-                //             const screenPos = screenToFlowPosition({
-                //                 x: clientX,
-                //                 y: clientY,
-                //             });
-                //             position = {
-                //                 x: screenPos.x - parentPos.x - 50,
-                //                 y: screenPos.y - parentPos.y - 50,
-                //             };
-                //         }
-
-                // const intersectingManagers = getIntersectingGroupManagers(event, node);
-                // if (intersectingManagers.length === 1) {
-                //     const groupManager = intersectingManagers[0];
-                //     const parentPos = getParentPosition(groupManager);
-                //     let position: XYPosition | undefined = undefined;
-                //     if (parentPos) {
-                //         const clientX = (event?.clientX as number) || 0;
-                //         const clientY = (event?.clientY as number) || 0;
-                //         const screenPos = screenToFlowPosition({
-                //             x: clientX,
-                //             y: clientY,
-                //         });
-                //         position = {
-                //             x: screenPos.x - parentPos.x - 50,
-                //             y: screenPos.y - parentPos.y - 50,
-                //         };
-                //     }
-                // addGroupMember(groupManager.id, node.id, position);
             }
         }
         clearNodeHighlight();

@@ -75,6 +75,10 @@
   flex: 1;
 }
 
+.flow-wrapper .space-between {
+  justify-content: space-between;
+}
+
 .flow-wrapper .no-margin {
   margin: 0;
 }

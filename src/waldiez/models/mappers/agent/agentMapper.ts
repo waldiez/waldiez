@@ -195,8 +195,15 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     if (agentType === "captain") {
         toExclude.push("agentLib", "toolLib", "maxRound", "maxTurns");
     }
-    if (agentType === "manager") {
-        toExclude.push("maxRound", "adminName", "speakers", "enableClearHistory", "sendIntroductions");
+    if (agentType === "group_manager") {
+        toExclude.push(
+            "initialAgentId",
+            "maxRound",
+            "adminName",
+            "speakers",
+            "enableClearHistory",
+            "sendIntroductions",
+        );
     }
     return toExclude;
 };
@@ -235,9 +242,10 @@ const getAgentDataToImport = (
             maxTurns: getCaptainMaxTurns(jsonData),
         });
     }
-    if (agentType === "manager") {
+    if (agentType === "group_manager") {
         return new WaldiezAgentGroupManagerData({
             ...data,
+            // TODO: get InitialAgentId
             maxRound: getGroupChatMaxRound(jsonData),
             adminName: getAdminName(jsonData),
             speakers: getSpeakers(jsonData),
@@ -263,7 +271,7 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
             docsPath: [],
         };
     }
-    if (agent.data.agentType === "manager") {
+    if (agent.data.agentType === "group_manager") {
         (agentCopy as WaldiezNodeAgentGroupManager).data.speakers = {
             ...(agentCopy as WaldiezNodeAgentGroupManager).data.speakers,
             allowRepeat: [],
@@ -286,7 +294,7 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
     if (agentType === "assistant") {
         agentData.isMultimodal = getIsMultimodal(data);
     }
-    if (agentType === "manager") {
+    if (agentType === "group_manager") {
         updateGroupManager(agentData, data);
     }
 };

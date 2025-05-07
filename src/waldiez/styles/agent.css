@@ -270,8 +270,8 @@
   border-color: var(--captain-agent-color) !important;
 }
 
-.flow-wrapper .agent-node.manager {
-  border-color: var(--group-manager-color) !important;
+.flow-wrapper .agent-node.group_manager {
+  border-color: var(--group-manager-agent-color) !important;
   background-color: transparent !important;
 }
 

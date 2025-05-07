@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
+
 export type * from "@waldiez/models/Agent/Common/Handoff";
 
 /**
@@ -105,6 +107,8 @@ export type WaldiezAgentCommonData = {
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
     nestedChats: WaldiezAgentNestedChat[];
+    contextVariables?: { [key: string]: unknown };
+    handoffs?: WaldiezAgentHandoff[];
     // links
     modelIds: string[];
     skills: WaldiezAgentLinkedSkill[];
@@ -121,6 +125,6 @@ export type WaldiezAgentType =
     | "rag_user_proxy"
     | "reasoning"
     | "captain"
-    | "manager";
+    | "group_manager";
 
 export type WaldiezNodeAgentType = WaldiezAgentType;

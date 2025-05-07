@@ -8,7 +8,7 @@
   --rag-user-proxy-agent-color: #e34561;
   --reasoning-agent-color: #63d0d4;
   --captain-agent-color: #0e2766;
-  --group-manager-color: #ed8a34;
+  --group-manager-agent-color: #ed8a34;
 
   /* --captain-agent-color: #112044; */
   --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));

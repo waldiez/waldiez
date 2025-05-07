@@ -17,6 +17,8 @@ export type WaldiezNodeAgentGroupManagerData = WaldiezAgentCommonData & {
     speakers: WaldiezAgentGroupManagerSpeakers;
     enableClearHistory?: boolean;
     sendIntroductions?: boolean;
+    groupName?: string;
+    initialAgentId?: string;
     label: string;
 };
 

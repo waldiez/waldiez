@@ -4,9 +4,16 @@
  */
 import { Modal } from "@waldiez/components";
 import { useWaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal/hooks";
-import { WaldiezNodeAgentModalTabs } from "@waldiez/containers/nodes/agent/modal/tabs";
+import {
+    WaldiezNodeAgentModalTabs,
+    WaldiezNodeGroupManagerTabs,
+} from "@waldiez/containers/nodes/agent/modal/tabs";
 import { getImportExportView } from "@waldiez/containers/nodes/common";
-import { WaldiezNodeAgentData } from "@waldiez/models";
+import {
+    WaldiezAgentGroupManagerData,
+    WaldiezNodeAgentData,
+    WaldiezNodeAgentGroupManagerData,
+} from "@waldiez/models";
 
 type WaldiezNodeAgentModalProps = {
     id: string;
@@ -36,12 +43,16 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
         onClose();
     };
     const importExportView =
-        data.agentType !== "manager"
+        data.agentType !== "group_manager"
             ? getImportExportView(flowId, id, "agent", onImport, onExport)
             : undefined;
+    const modalTitle =
+        data.agentType === "group_manager"
+            ? (agentData as WaldiezAgentGroupManagerData).groupName
+            : agentData.label;
     return (
         <Modal
-            title={agentData.label}
+            title={modalTitle}
             isOpen={isOpen}
             onClose={onCancel}
             onSaveAndClose={onSaveAndClose}
@@ -51,8 +62,15 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
             preventCloseIfUnsavedChanges
         >
             <div className="modal-body">
-                {data.agentType === "manager" ? (
-                    <div>Group related settings</div>
+                {data.agentType === "group_manager" ? (
+                    <WaldiezNodeGroupManagerTabs
+                        isModalOpen={isOpen}
+                        flowId={flowId}
+                        id={id}
+                        data={agentData as WaldiezNodeAgentGroupManagerData}
+                        onDataChange={onDataChange}
+                        isDarkMode={isDarkMode}
+                    />
                 ) : (
                     <WaldiezNodeAgentModalTabs
                         id={id}

@@ -11,6 +11,7 @@ from ..common import WaldiezBase
 from .agent import WaldiezAgent
 from .assistant import WaldiezAssistant
 from .captain import WaldiezCaptainAgent
+from .group_manager import WaldiezGroupManager
 from .rag_user_proxy import WaldiezRagUserProxy
 from .reasoning import WaldiezReasoningAgent
 from .user_proxy import WaldiezUserProxy
@@ -31,6 +32,8 @@ class WaldiezAgents(WaldiezBase):
         Reasoning agents.
     captainAgents : List[WaldiezCaptainAgent]
         Captain agents.
+    groupManagerAgents : List[WaldiezGroupManager]
+        Group manager agents.
     """
 
     userProxyAgents: Annotated[
@@ -73,6 +76,14 @@ class WaldiezAgents(WaldiezBase):
             default_factory=list,
         ),
     ]
+    groupManagerAgents: Annotated[
+        List[WaldiezGroupManager],
+        Field(
+            title="Group Manager Agents.",
+            description="The Group manager agents in the flow.",
+            default_factory=list,
+        ),
+    ]
 
     @property
     def members(self) -> Iterator[WaldiezAgent]:
@@ -88,6 +99,7 @@ class WaldiezAgents(WaldiezBase):
         yield from self.ragUserProxyAgents
         yield from self.reasoningAgents
         yield from self.captainAgents
+        yield from self.groupManagerAgents
 
     @model_validator(mode="after")
     def validate_agents(self) -> Self:
@@ -111,6 +123,7 @@ class WaldiezAgents(WaldiezBase):
             raise ValueError("At least one agent is required.")
         if len(all_agent_ids) != len(set(all_agent_ids)):
             raise ValueError("Agent IDs must be unique.")
+        # TODO: (in group manager), check the InitialAgentId is in the group
         return self
 
     def validate_flow(self, model_ids: List[str], skill_ids: List[str]) -> None:
@@ -137,3 +150,8 @@ class WaldiezAgents(WaldiezBase):
             agent.validate_linked_models(model_ids)
             agent.validate_linked_skills(skill_ids, agent_ids=all_agent_ids)
             agent.validate_code_execution(skill_ids=skill_ids)
+            if agent.agent_type == "manager" and isinstance(
+                agent, WaldiezGroupManager
+            ):
+                agent.validate_initial_agent_id(all_agent_ids)
+                agent.validate_transitions(agent_ids=all_agent_ids)
