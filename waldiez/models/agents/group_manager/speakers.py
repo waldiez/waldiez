@@ -14,6 +14,7 @@ WaldiezGroupManagerSpeakersSelectionMethod = Literal[
     "manual",
     "random",
     "round_robin",
+    "default",
     "custom",
 ]
 """Possible methods for the speaker selection."""

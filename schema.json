@@ -217,11 +217,13 @@
             "description": "Waldiez User Proxy Agent."
         },
         "WaldiezNodeAgentType": {
-            "$ref": "#/definitions/WaldiezAgentType"
+            "$ref": "#/definitions/WaldiezAgentType",
+            "description": "Waldiez node agent type (alias for WaldiezAgentType)."
         },
         "WaldiezAgentType": {
             "type": "string",
-            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "group_manager"]
+            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "group_manager"],
+            "description": "Waldiez agent type."
         },
         "WaldiezAgentUserProxyData": {
             "type": "object",
@@ -279,6 +281,8 @@
             "required": [
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "modelIds",
@@ -461,7 +465,8 @@
                     "type": "object"
                 }
             },
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez agent handoff A handoff that can be triggered by LLM or context conditions."
         },
         "WaldiezOnCondition": {
             "type": "object",
@@ -474,7 +479,8 @@
                 }
             },
             "required": ["target", "condition"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez on condition A condition that triggers a handoff to a target based on LLM evaluation."
         },
         "WaldiezTransitionTarget": {
             "anyOf": [
@@ -553,7 +559,7 @@
                     "additionalProperties": false
                 }
             ],
-            "description": "SPDX-License-Identifier: Apache-2.0 Copyright 2024 - 2025 Waldiez & contributors"
+            "description": "Waldiez Handoff transition target The target of a handoff transition. It can be one of the following:\n- `AgentTarget`: A specific agent target.\n- `RandomAgentTarget`: A random agent target.\n- `GroupChatTarget`: A group chat target.\n- `NestedChatTarget`: A nested chat target.\n- `AskUserTarget`: Ask the user for input.\n- `GroupManagerTarget`: A group manager target.\n- `RevertToUserTarget`: Revert to the user.\n- `StayTarget`: Stay in the current state.\n- `TerminateTarget`: Terminate the conversation."
         },
         "WaldiezLLMCondition": {
             "anyOf": [
@@ -563,7 +569,8 @@
                 {
                     "$ref": "#/definitions/WaldiezContextStrLLMCondition"
                 }
-            ]
+            ],
+            "description": "Waldiez LLM condition A condition that can be evaluated by an LLM."
         },
         "WaldiezStringLLMCondition": {
             "type": "object",
@@ -580,7 +587,8 @@
                 }
             },
             "required": ["condition_type", "prompt"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez String LLM condition A static string prompt to be evaluated by an LLM."
         },
         "WaldiezContextStrLLMCondition": {
             "type": "object",
@@ -597,7 +605,8 @@
                 }
             },
             "required": ["condition_type", "context_str"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez ContextStr LLM condition A `ContextStr` object with context variable placeholders that  will be substituted before being evaluated by an LLM."
         },
         "WaldiezOnContextCondition": {
             "type": "object",
@@ -610,7 +619,8 @@
                 }
             },
             "required": ["target", "condition"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez on context condition A condition that triggers a handoff to a target based on context evaluation."
         },
         "WaldiezContextCondition": {
             "anyOf": [
@@ -620,7 +630,8 @@
                 {
                     "$ref": "#/definitions/WaldiezExpressionContextCondition"
                 }
-            ]
+            ],
+            "description": "Waldiez context condition A condition that can be evaluated against context variables."
         },
         "WaldiezStringContextCondition": {
             "type": "object",
@@ -634,7 +645,8 @@
                 }
             },
             "required": ["condition_type", "variable_name"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez String context condition  This condition checks if a named context variable exists and is truthy."
         },
         "WaldiezExpressionContextCondition": {
             "type": "object",
@@ -651,7 +663,8 @@
                 }
             },
             "required": ["condition_type", "expression"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez Expression context condition  This condition evaluates a ContextExpression against the context variables."
         },
         "WaldiezAgentAssistant": {
             "type": "object",
@@ -770,6 +783,8 @@
             "required": [
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
                 "humanInputMode",
                 "isMultimodal",
                 "maxConsecutiveAutoReply",
@@ -899,6 +914,8 @@
             "required": [
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "modelIds",
@@ -1198,6 +1215,8 @@
             "required": [
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "modelIds",
@@ -1389,6 +1408,8 @@
                 "agentDefaultAutoReply",
                 "agentLib",
                 "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "maxRound",
@@ -1529,7 +1550,7 @@
                     }
                 },
                 "maxRound": {
-                    "type": ["number", "null"]
+                    "type": "number"
                 },
                 "adminName": {
                     "type": ["string", "null"]
@@ -1554,6 +1575,8 @@
                 "adminName",
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "maxRound",
@@ -1621,7 +1644,7 @@
         },
         "GroupChatSpeakerSelectionMethodOption": {
             "type": "string",
-            "enum": ["auto", "manual", "random", "round_robin", "custom"]
+            "enum": ["default", "auto", "manual", "random", "round_robin"]
         },
         "GroupChatSpeakerSelectionMode": {
             "type": "string",
