@@ -39,7 +39,7 @@ def get_runnable_flow() -> WaldiezFlow:
     user = WaldiezUserProxy(
         id="wa-1",
         name="user",
-        agent_type="user",
+        agent_type="user_proxy",
         description="User Agent",
         type="agent",
         data=WaldiezUserProxyData(
@@ -97,6 +97,8 @@ def get_runnable_flow() -> WaldiezFlow:
             description="Description of chat 1",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             position=-1,
             order=0,
             clear_history=True,

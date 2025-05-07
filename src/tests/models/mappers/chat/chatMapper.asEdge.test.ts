@@ -12,6 +12,8 @@ describe("chatMapper.asEdge", () => {
         const chatData: WaldiezChatData = {
             source: "wa-1",
             target: "wa-2",
+            sourceType: "user_proxy",
+            targetType: "assistant",
             name: "custom_chat",
             description: "custom_description",
             position: 0,

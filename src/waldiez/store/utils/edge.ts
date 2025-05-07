@@ -69,13 +69,50 @@ const getNewChatType: (sourceNode: Node, targetNode: Node, hidden: boolean) => W
     return "chat" as WaldiezEdgeType;
 };
 
+const isGroupEdge = (sourceNode: Node, targetNode: Node) => {
+    // Check if any of the nodes is either a group member or a group manager
+    return (
+        sourceNode.data.parentId !== undefined ||
+        targetNode.data.parentId !== undefined ||
+        sourceNode.data.agentType === "group_manager" ||
+        targetNode.data.agentType === "group_manager"
+    );
+};
+
+const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: Edge[]) => {
+    if (typeof sourceNode.data.agentType !== "string") {
+        return false;
+    }
+    // only user sources to group manager
+    if (!sourceNode.data.parentId && !["user_proxy", "rag_user_proxy"].includes(sourceNode.data.agentType)) {
+        return true;
+    }
+    // no direct connection from non-group member to group member (only through group manager)
+    if (!sourceNode.data.parentId && targetNode.data.parentId) {
+        return true;
+    }
+    // only one edge to group target
+    if (targetNode.data.agentType === "group_manager") {
+        const edgesWithTheSameTarget = allEdges.filter(edge => edge.target === targetNode.id);
+        if (edgesWithTheSameTarget.length > 0) {
+            return true;
+        }
+    }
+    return false;
+};
+
 export const getNewEdge = (
     hidden: boolean,
     positionGetter: (chatType: string) => number,
     sourceNode: Node,
     targetNode: Node,
-    _edges: Edge[],
+    edges: Edge[],
 ) => {
+    if (isGroupEdge(sourceNode, targetNode)) {
+        if (shouldNotCreateGroupEdge(sourceNode, targetNode, edges)) {
+            return null;
+        }
+    }
     const edgeName = getNewEdgeName(sourceNode, targetNode);
     const chatData = new WaldiezChatData();
     chatData.source = sourceNode.id;

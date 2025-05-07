@@ -18,6 +18,8 @@ import {
     getChatPosition,
     getChatPrerequisites,
     getChatRest,
+    getChatSourceType,
+    getChatTargetType,
     getNestedChat,
     getRealSource,
     getRealTarget,
@@ -62,6 +64,8 @@ export const chatMapper = {
         const chatData = {
             source: edge.source,
             target: edge.target,
+            sourceType: getChatSourceType(data),
+            targetType: getChatTargetType(data),
             name: getChatName(data),
             order: getChatOrder(data),
             description: getChatDescription(data),
@@ -97,6 +101,8 @@ export const chatMapper = {
     asEdge: (chat: WaldiezChat): WaldiezEdge => {
         const data = {
             label: chat.data.name,
+            sourceType: chat.data.sourceType,
+            targetType: chat.data.targetType,
             description: chat.data.description,
             position: chat.data.position,
             order: chat.data.order,
@@ -126,6 +132,8 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
     const description = getDescriptionFromJSON(json, "New connection");
     const source = json.source as string;
     const target = json.target as string;
+    const sourceType = getChatSourceType(json);
+    const targetType = getChatTargetType(json);
     const clearHistory = getChatClearHistory(json);
     const maxTurns = getChatMaxTurns(json);
     const position = getChatPosition(json, index);
@@ -140,6 +148,8 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
     const data = new WaldiezChatData({
         source,
         target,
+        sourceType,
+        targetType,
         name,
         description,
         clearHistory,

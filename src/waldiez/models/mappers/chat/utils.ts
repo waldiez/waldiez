@@ -5,7 +5,7 @@
 /* eslint-disable max-statements */
 import { Edge, MarkerType, Node } from "@xyflow/react";
 
-import { WaldiezNodeAgentType } from "@waldiez/models";
+import { VALID_AGENT_TYPES, WaldiezNodeAgentType } from "@waldiez/models";
 import {
     VALID_CHAT_TYPES,
     WaldiezChatData,
@@ -280,4 +280,26 @@ export const checkChatData = (json: { [key: string]: any }, edges: Edge[], nodes
         throw new Error(`Target node does not match edge target: ${json.data.target}`);
     }
     return { edge, sourceNode, targetNode };
+};
+
+export const getChatSourceType = (json: { [key: string]: any }) => {
+    let sourceType = "user_proxy";
+    if ("sourceType" in json && typeof json.sourceType === "string") {
+        sourceType = json.sourceType;
+    }
+    if (VALID_AGENT_TYPES.includes(sourceType)) {
+        return sourceType as WaldiezNodeAgentType;
+    }
+    return "assistant" as WaldiezNodeAgentType;
+};
+
+export const getChatTargetType = (json: { [key: string]: any }) => {
+    let targetType = "assistant";
+    if ("targetType" in json && typeof json.targetType === "string") {
+        targetType = json.targetType;
+    }
+    if (VALID_AGENT_TYPES.includes(targetType)) {
+        return targetType as WaldiezNodeAgentType;
+    }
+    return "user_proxy" as WaldiezNodeAgentType;
 };

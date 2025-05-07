@@ -84,6 +84,8 @@ describe("getChats", () => {
                 data: {
                     source: "wa-1",
                     target: "wa-2",
+                    sourceType: "user_proxy",
+                    targetType: "assistant",
                     name: "agent1 => agent2",
                     description: "New connection",
                     position: 1,

@@ -41,6 +41,8 @@ describe("chatMapper.exportChat", () => {
                 maxRounds: 0,
                 realSource: "wa-1",
                 realTarget: "wa-2",
+                sourceType: "user_proxy" as const,
+                targetType: "assistant" as const,
             },
         };
         const json = chatMapper.exportChat(edge, 0);
@@ -107,6 +109,8 @@ describe("chatMapper.exportChat", () => {
                 maxRounds: 0,
                 realSource: "wa-1",
                 realTarget: "wa-2",
+                sourceType: "user_proxy" as const,
+                targetType: "assistant" as const,
             },
         };
         const json = chatMapper.exportChat(edge, 0);

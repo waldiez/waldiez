@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { WaldiezAgentType } from "@waldiez/models/Agent/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
 
@@ -29,6 +30,8 @@ import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/type
 export class WaldiezChatData {
     source: string;
     target: string;
+    sourceType: WaldiezAgentType;
+    targetType: WaldiezAgentType;
     name: string;
     description: string;
     position: number;
@@ -50,6 +53,8 @@ export class WaldiezChatData {
         props: {
             source: string;
             target: string;
+            sourceType: WaldiezAgentType;
+            targetType: WaldiezAgentType;
             name: string;
             description: string;
             clearHistory: boolean;
@@ -67,6 +72,8 @@ export class WaldiezChatData {
         } = {
             source: "source",
             target: "target",
+            sourceType: "user_proxy",
+            targetType: "assistant",
             name: "Chat",
             description: "New connection",
             clearHistory: true,
@@ -98,6 +105,8 @@ export class WaldiezChatData {
         const {
             source,
             target,
+            sourceType,
+            targetType,
             name,
             description,
             clearHistory,
@@ -115,6 +124,8 @@ export class WaldiezChatData {
         } = props;
         this.source = source;
         this.target = target;
+        this.sourceType = sourceType;
+        this.targetType = targetType;
         this.name = name;
         this.description = description;
         this.clearHistory = clearHistory;

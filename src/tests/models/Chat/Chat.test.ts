@@ -49,6 +49,8 @@ describe("WaldiezChat", () => {
         const chatData = new WaldiezChatData({
             source: "agent1",
             target: "agent2",
+            sourceType: "reasoning",
+            targetType: "assistant",
             name: "custom_chat",
             description: "custom_description",
             clearHistory: false,

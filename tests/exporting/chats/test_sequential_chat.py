@@ -45,6 +45,8 @@ def test_sequential_chat() -> None:
         data=WaldiezChatData(
             source="wa-1",
             target="wa-2",
+            source_type="assistant",
+            target_type="assistant",
             name=chat1_name,
             description="A chat between two agents.",
             message=WaldiezChatMessage(
@@ -58,6 +60,8 @@ def test_sequential_chat() -> None:
         data=WaldiezChatData(
             source="wa-2",
             target="wa-3",
+            source_type="assistant",
+            target_type="assistant",
             name=chat2_name,
             description="A chat between two agents.",
             message=WaldiezChatMessage(

@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
 
+from ..agents import WaldiezAgentType
 from ..common import WaldiezBase, check_function, update_dict
 from .chat_message import (
     CALLABLE_MESSAGE,
@@ -28,6 +29,10 @@ class WaldiezChatData(WaldiezBase):
         The source of the chat (sender).
     target : str
         The target of the chat (recipient).
+    source_type : WaldiezAgentType
+        The agent type of the chat source.
+    target_type : WaldiezAgentType
+        The agent type of the chat target.
     description : str
         The description of the chat.
     position : int
@@ -48,14 +53,14 @@ class WaldiezChatData(WaldiezBase):
         Whether to run the chat silently, by default None (ignored).
     summary_args : Optional[Dict[str, Any]]
         The summary args to use in autogen.
-    real_source : Optional[str]
-        The real source of the chat (overrides the source).
-    real_target : Optional[str]
-        The real target of the chat (overrides the target).
     max_rounds : int
         Maximum number of conversation rounds (swarm).
     after_work : Optional[WaldiezSwarmAfterWork]
         The work to do after the chat (swarm).
+    real_source : Optional[str]
+        The real source of the chat (overrides the source).
+    real_target : Optional[str]
+        The real target of the chat (overrides the target).
 
     Functions
     ---------
@@ -171,6 +176,14 @@ class WaldiezChatData(WaldiezBase):
             description="Whether to run the chat silently.",
         ),
     ]
+    max_rounds: Annotated[
+        int,
+        Field(
+            20,
+            title="Max Rounds",
+            description="Maximum number of conversation rounds.(group)",
+        ),
+    ] = 20
     real_source: Annotated[
         Optional[str],
         Field(
@@ -189,15 +202,24 @@ class WaldiezChatData(WaldiezBase):
             description="The real target of the chat (overrides the target).",
         ),
     ]
-    max_rounds: Annotated[
-        int,
+    source_type: Annotated[
+        WaldiezAgentType,
         Field(
-            20,
-            title="Max Rounds",
-            description="Maximum number of conversation rounds.(group)",
+            ...,
+            alias="sourceType",
+            title="Source Type",
+            description="The agent type of the source.",
         ),
-    ] = 20
-
+    ]
+    target_type: Annotated[
+        WaldiezAgentType,
+        Field(
+            ...,
+            alias="targetType",
+            title="Target Type",
+            description="The agent type of the target.",
+        ),
+    ]
     _message_content: Optional[str] = None
     _chat_id: int = 0
     _prerequisites: List[int] = []

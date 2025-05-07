@@ -24,7 +24,7 @@ def test_single_chat() -> None:
     agent1 = WaldiezAgent(
         id="wa-1",
         name=agent1_name,
-        agent_type="user",
+        agent_type="user_proxy",
         description="agent description",
         data={},  # type: ignore
     )
@@ -46,6 +46,8 @@ def callable_message(sender, recipient, context):
             description="A chat between two agents.",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             summary=WaldiezChatSummary(
                 method="reflectionWithLlm",
                 prompt="Summarize the chat.",
@@ -134,6 +136,8 @@ def test_empty_chat() -> None:
             description="A chat between two agents.",
             source="wa-1",
             target="wa-2",
+            source_type="assistant",
+            target_type="assistant",
             max_turns=-1,
             clear_history=None,
             silent=None,
@@ -203,6 +207,8 @@ def test_chat_with_rag_and_carryover() -> None:
             description="A chat between two agents.",
             source="wa-1",
             target="wa-2",
+            source_type="rag_user",
+            target_type="assistant",
             max_turns=-1,
             clear_history=None,
             silent=None,
@@ -301,6 +307,8 @@ def test_chat_with_rag_no_carryover() -> None:
             description="A chat between two agents.",
             source="wa-1",
             target="wa-2",
+            source_type="rag_user",
+            target_type="assistant",
             max_turns=-1,
             clear_history=None,
             silent=None,

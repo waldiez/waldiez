@@ -533,6 +533,8 @@ def get_chats(count: int = 4) -> List[WaldiezChat]:
                 nested_chat=nested_chat,
                 real_source=None,
                 real_target=None,
+                source_type="user_proxy",
+                target_type="assistant",
                 prerequisites=prerequisites,
             ),
         )

@@ -18,6 +18,8 @@ def test_waldiez_chat() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             position=0,
             clear_history=False,
             max_turns=1,
@@ -65,6 +67,8 @@ def test_waldiez_chat() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             real_source="wa-3",
             real_target=None,
         ),
@@ -83,6 +87,8 @@ def test_waldiez_chat() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             real_source=None,
             real_target="wa-4",
         ),
@@ -122,6 +128,8 @@ def test_waldiez_chat_with_rag_user() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message={  # type: ignore
                 "type": "rag_message_generator",
                 "content": None,
@@ -156,6 +164,8 @@ def test_waldiez_chat_get_message_function() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message=message1,  # type: ignore
         ),
     )
@@ -177,6 +187,8 @@ def test_waldiez_chat_get_message_function() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message=message2,  # type: ignore
         ),
     )
@@ -221,6 +233,8 @@ def test_waldiez_chat_get_nested_chat_message_function() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message=message1,  # type: ignore
             nested_chat=WaldiezChatNested(
                 message=message1,  # type: ignore
@@ -246,6 +260,8 @@ def test_waldiez_chat_get_nested_chat_message_function() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message=message1,  # type: ignore
             nested_chat=WaldiezChatNested(
                 message=message2,  # type: ignore
@@ -295,6 +311,8 @@ def test_waldiez_chat_get_nested_chat_reply_function() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message=message1,  # type: ignore
             nested_chat=WaldiezChatNested(
                 message=message1,  # type: ignore
@@ -320,6 +338,8 @@ def test_waldiez_chat_get_nested_chat_reply_function() -> None:
             description="Chat data",
             source="wa-1",
             target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             message=message1,  # type: ignore
             nested_chat=WaldiezChatNested(
                 message=message1,  # type: ignore

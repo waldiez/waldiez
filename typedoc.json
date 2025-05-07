@@ -20,10 +20,8 @@
     "darkHighlightTheme": "dark-plus",
     "lightHighlightTheme": "light-plus",
     "commentStyle": "all",
-    "excludeTags": [
-        "@param",
-    ],
+    "excludeTags": ["@param"],
     "navigation": {
-        "includeCategories": true,
+        "includeCategories": true
     }
 }

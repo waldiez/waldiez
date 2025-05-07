@@ -4,6 +4,7 @@
  */
 import { Edge } from "@xyflow/react";
 
+import { WaldiezAgentType } from "@waldiez/models/Agent/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 
 export type WaldiezMessageType = "string" | "method" | "rag_message_generator" | "none";
@@ -33,6 +34,8 @@ export type WaldiezChatDataCommon = {
     maxRounds: number;
     realSource: string | null;
     realTarget: string | null;
+    sourceType: WaldiezAgentType;
+    targetType: WaldiezAgentType;
 };
 export type WaldiezEdgeData = WaldiezChatDataCommon & {
     label: string;

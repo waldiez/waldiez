@@ -1227,7 +1227,8 @@
                 "termination",
                 "verbose"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez Reasoning Agent Data."
         },
         "WaldiezReasoningAgentReasonConfig": {
             "type": "object",
@@ -1421,7 +1422,8 @@
                 "termination",
                 "toolLib"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez Captain Agent Data."
         },
         "WaldiezCaptainAgentLibEntry": {
             "type": "object",
@@ -1888,6 +1890,12 @@
                 "target": {
                     "type": "string"
                 },
+                "sourceType": {
+                    "$ref": "#/definitions/WaldiezAgentType"
+                },
+                "targetType": {
+                    "$ref": "#/definitions/WaldiezAgentType"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1961,6 +1969,8 @@
             "required": [
                 "source",
                 "target",
+                "sourceType",
+                "targetType",
                 "name",
                 "description",
                 "position",

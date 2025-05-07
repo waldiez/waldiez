@@ -73,6 +73,8 @@ def test_single_chat_with_nested() -> None:
             description="A chat between two agents.",
             source="wa-1",
             target="wa-2",
+            source_type="assistant",
+            target_type="assistant",
             order=1,
             message=WaldiezChatMessage(
                 type="string",
@@ -91,6 +93,8 @@ def test_single_chat_with_nested() -> None:
             description="A chat between two agents.",
             source="wa-1",
             target="wa-3",
+            source_type="assistant",
+            target_type="assistant",
             order=-1,
             message=WaldiezChatMessage(
                 type="none",
@@ -125,6 +129,8 @@ def nested_chat_message(recipient, messages, sender, config):
             description="A chat between two agents.",
             source="wa-2",
             target="wa-4",
+            source_type="assistant",
+            target_type="assistant",
             order=-1,
             message=WaldiezChatMessage(
                 type="none",
