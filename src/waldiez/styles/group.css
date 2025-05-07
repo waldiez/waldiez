@@ -1,3 +1,7 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 .flow-wrapper .manager .react-flow__handle {
   border-radius: 2px;
   background-color: var(--group-manager-color);
