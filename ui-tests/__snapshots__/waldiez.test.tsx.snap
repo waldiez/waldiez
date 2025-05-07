@@ -214,7 +214,7 @@ exports[`All > should render Waldiez components 1`] = `
                   src="/src/waldiez/assets/reasoning.webp"
                   title="Reasoning Agent"
                 />
-                Reasoning Agent
+                Reasoning
               </div>
               <div
                 class="dnd-area"
@@ -225,7 +225,7 @@ exports[`All > should render Waldiez components 1`] = `
                   src="/src/waldiez/assets/captain.webp"
                   title="Captain Agent"
                 />
-                Captain Agent
+                Captain
               </div>
               <div
                 class="dnd-area"
@@ -699,7 +699,7 @@ exports[`All > should render Waldiez components 1`] = `
                 src="/src/waldiez/assets/reasoning.webp"
                 title="Reasoning Agent"
               />
-              Reasoning Agent
+              Reasoning
             </div>
             <div
               class="dnd-area"
@@ -710,7 +710,7 @@ exports[`All > should render Waldiez components 1`] = `
                 src="/src/waldiez/assets/captain.webp"
                 title="Captain Agent"
               />
-              Captain Agent
+              Captain
             </div>
             <div
               class="dnd-area"

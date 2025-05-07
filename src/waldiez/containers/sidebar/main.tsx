@@ -134,7 +134,7 @@ export const SideBar = (props: SidebarViewProps) => {
                             draggable
                         >
                             <img src={AGENT_ICONS.reasoning} title="Reasoning Agent" />
-                            Reasoning Agent
+                            Reasoning
                         </div>
                         <div
                             className="dnd-area"
@@ -143,7 +143,7 @@ export const SideBar = (props: SidebarViewProps) => {
                             draggable
                         >
                             <img src={AGENT_ICONS.captain} title="Captain Agent" />
-                            Captain Agent
+                            Captain
                         </div>
                         <div
                             className="dnd-area"
