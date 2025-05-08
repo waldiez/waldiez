@@ -25,7 +25,13 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
     const onUploadToHub = (_e: React.MouseEvent<HTMLButtonElement>) => {
         const flowString = onExport();
         if (!flowString) {
-            showSnackbar(flowId, "Error exporting flow.", "error", null, 5e3);
+            showSnackbar({
+                flowId,
+                message: "Error exporting flow.",
+                level: "error",
+                details: null,
+                duration: 5e3,
+            });
             return;
         }
         const fileData = new Blob([flowString], { type: "application/json" });
@@ -66,21 +72,45 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
                     console.error("Error uploading additional file to hub:", response.statusText);
                     throw new Error("Error uploading additional file to hub");
                 }
-                showSnackbar(flowId, "Flow uploaded to hub.", "success", null, 5e3);
+                showSnackbar({
+                    flowId,
+                    message: "Flow uploaded to hub.",
+                    level: "success",
+                    details: null,
+                    duration: 5e3,
+                });
             })
             .catch(() => {
-                showSnackbar(flowId, "Error uploading to hub.", "error", null, 5e3);
+                showSnackbar({
+                    flowId,
+                    message: "Error uploading to hub.",
+                    level: "error",
+                    details: null,
+                    duration: 5e3,
+                });
             });
     };
     const onAdditionalFilesUpload = (files: File[]) => {
         if (files.length > 0) {
             const file = files[0];
             if (file.size > 5 * 1024 * 1024) {
-                showSnackbar(flowId, "File size exceeds 5MB.", "error", null, 5e3);
+                showSnackbar({
+                    flowId,
+                    message: "File size exceeds 5MB.",
+                    level: "error",
+                    details: null,
+                    duration: 5e3,
+                });
                 return;
             }
             if (file.name.split(".").pop() !== "csv") {
-                showSnackbar(flowId, "File is not a csv.", "error", null, 5e3);
+                showSnackbar({
+                    flowId,
+                    message: "File is not a csv.",
+                    level: "error",
+                    details: null,
+                    duration: 5e3,
+                });
                 return;
             }
             setAdditionalFile(file);

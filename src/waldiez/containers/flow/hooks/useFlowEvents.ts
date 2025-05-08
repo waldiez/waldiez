@@ -104,7 +104,13 @@ export const useFlowEvents = (flowId: string) => {
         const agentsCount = allAgents.length;
         if (agentsCount < 2) {
             const msg = agentsCount === 0 ? "No agents" : "Only one agent";
-            showSnackbar(flowId, `${msg} found in the flow`, "error", undefined, 3000);
+            showSnackbar({
+                flowId,
+                message: `${msg} found in the flow`,
+                level: "error",
+                details: undefined,
+                duration: 3000,
+            });
             return false;
         }
         const { used, remaining } = getFlowEdges();
@@ -143,7 +149,13 @@ export const useFlowEvents = (flowId: string) => {
             };
         };
         const onError = () => {
-            showSnackbar(flowId, "Could not export flow", "error", undefined, 3000);
+            showSnackbar({
+                flowId,
+                message: "Could not export the flow",
+                level: "error",
+                details: undefined,
+                duration: 3000,
+            });
         };
         await exportItem(name, "flow", exporter, onError);
     }, []);

@@ -14,6 +14,7 @@
   color: #fff !important;
   border-radius: 5px;
   box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
+  max-width: 300px;
 }
 
 .flow-wrapper .snackbar.show {
@@ -40,8 +41,16 @@
   background-color: #d32f2f;
 }
 
+.flow-wrapper .snackbar.error .close:hover {
+  background-color: #f00;
+}
+
 .flow-wrapper .snackbar.success {
   background-color: #38903d;
+}
+
+.flow-wrapper .snackbar.success .close:hover {
+  background-color: #2e7d32;
 }
 
 .flow-wrapper .snackbar.warning {
@@ -49,8 +58,16 @@
   color: #000 !important;
 }
 
+.flow-wrapper .snackbar.warning .close:hover {
+  background-color: #f9a825;
+}
+
 .flow-wrapper .snackbar.info {
   background-color: #1866b3;
+}
+
+.flow-wrapper .snackbar.info .close:hover {
+  background-color: #0d47a1;
 }
 
 .flow-wrapper.dark .sidebar-toggle-button div {

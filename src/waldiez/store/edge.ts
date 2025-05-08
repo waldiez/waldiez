@@ -141,16 +141,25 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
         });
         this.resetEdgeOrdersAndPositions();
     };
-    addEdge = (connection: Connection, hidden: boolean) => {
+    addEdge = (options: { flowId: string; connection: Connection; hidden: boolean }) => {
+        const { flowId, connection, hidden } = options;
         const nodes = this.get().nodes as WaldiezNodeAgent[];
         const edges = this.get().edges;
-        const edgesCounter = (chatType: string) => edges.filter(edge => edge.type === chatType).length;
+        const positionGetter = (chatType: string) => edges.filter(edge => edge.type === chatType).length;
         const { source, target, sourceHandle, targetHandle } = connection;
         const { sourceNode, targetNode } = getNewEdgeNodes(nodes, source, target);
         if (!sourceNode || !targetNode) {
+            // showSnackbar
             return null;
         }
-        const newEdge = getNewEdge(hidden, edgesCounter, sourceNode, targetNode, edges);
+        const newEdge = getNewEdge({
+            flowId,
+            hidden,
+            sourceNode,
+            targetNode,
+            positionGetter,
+            edges,
+        });
         if (!newEdge) {
             return null;
         }

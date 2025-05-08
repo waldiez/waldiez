@@ -22,7 +22,7 @@ export interface IWaldiezEdgeStore {
     getEdgeSourceAgent: (edge: WaldiezEdge) => WaldiezNodeAgent | undefined;
     getEdgeTargetAgent: (edge: WaldiezEdge) => WaldiezNodeAgent | undefined;
     updateEdgeType: (id: string, type: WaldiezEdgeType) => void;
-    addEdge: (connection: Connection, hidden: boolean) => WaldiezEdge | null;
+    addEdge: (params: { flowId: string; connection: Connection; hidden: boolean }) => WaldiezEdge | null;
     onEdgeDoubleClick: (event: React.MouseEvent, edge: WaldiezEdge) => void;
     onReconnect: (oldEdge: Edge, newConnection: Connection) => void;
 }

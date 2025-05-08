@@ -47,7 +47,13 @@ export const useLoadFlowStep = (props: {
         const isEmpty = flow.nodes.length === 0 && flow.edges.length === 0;
         if (isEmpty) {
             setLoadedFlowData(null);
-            showSnackbar(flowId, "Failed to load flow", "error", null, 3000);
+            showSnackbar({
+                flowId,
+                message: "Failed to load flow",
+                level: "error",
+                details: null,
+                duration: 3000,
+            });
             return;
         }
         setLoadedFlowData(flow);
@@ -71,7 +77,7 @@ export const useLoadFlowStep = (props: {
             })
             .catch(error => {
                 console.error(error);
-                showSnackbar(flowId, "Failed to load flow", "error");
+                showSnackbar({ flowId, message: "Failed to load flow", level: "error" });
                 onStateChange(initialState);
             });
     };

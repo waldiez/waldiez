@@ -56,11 +56,19 @@ export const useDropZone = (props: DropZoneProps) => {
         const extension = file.name.split(".").pop();
         // already checked in onFileDrop/file input change event
         if (!extension || !allowedFileExtensions.includes(`.${extension}`)) {
-            showSnackbar(flowId, "Invalid file extension. Please upload a valid file.", "error");
+            showSnackbar({
+                flowId,
+                message: "Invalid file extension. Please upload a valid file.",
+                level: "error",
+            });
             return false;
         }
         if (file.size > 10 * 1024 * 1024) {
-            showSnackbar(flowId, "File size limit exceeded. Maximum file size is 10MB.", "error");
+            showSnackbar({
+                flowId,
+                message: "File size limit exceeded. Maximum file size is 10MB.",
+                level: "error",
+            });
             return false;
         }
         return true;

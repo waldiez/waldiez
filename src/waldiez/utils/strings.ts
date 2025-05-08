@@ -10,3 +10,16 @@ export const getDateString = (date: string) => {
     const d = new Date(date);
     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
 };
+
+export const getFriendlyString = (str: string) => {
+    return str
+        .replace(/([A-Z])/g, " $1")
+        .replace(/([0-9])/g, " $1")
+        .replace(/_/g, " ")
+        .replace(/-/g, " ")
+        .trim()
+        .toLowerCase()
+        .split(" ")
+        .map(word => capitalize(word))
+        .join(" ");
+};

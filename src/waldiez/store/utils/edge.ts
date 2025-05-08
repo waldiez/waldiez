@@ -14,7 +14,7 @@ import {
 } from "@waldiez/models";
 import { AGENT_COLORS } from "@waldiez/theme";
 import { WaldiezNodeAgent, WaldiezNodeAgentData, typeOfGet, typeOfSet } from "@waldiez/types";
-import { getId } from "@waldiez/utils";
+import { getFriendlyString, getId, showSnackbar } from "@waldiez/utils";
 
 export const edgeCommonStyle = (edgeType: WaldiezEdgeType, color: string) => ({
     markerEnd:
@@ -84,40 +84,71 @@ const isGroupEdge = (sourceNode: Node, targetNode: Node) => {
     );
 };
 
-const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: Edge[]) => {
+const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: Edge[], flowId: string) => {
     if (typeof sourceNode.data.agentType !== "string" || typeof targetNode.data.agentType !== "string") {
+        showSnackbar({
+            flowId,
+            message: `Cannot create a connection from ${sourceNode.data.label} to ${targetNode.data.label}`,
+            level: "warning",
+            details: "Invalid agent type",
+            withCloseButton: true,
+        });
         return true;
     }
+    const errorMessage = `Cannot create a connection from ${getFriendlyString(sourceNode.data.agentType)} to ${getFriendlyString(targetNode.data.agentType)}`;
     // only user sources to group manager, or group_manager (as source) to other nodes
     if (
         !sourceNode.data.parentId &&
         !["user_proxy", "rag_user_proxy", "group_manager"].includes(sourceNode.data.agentType)
     ) {
+        showSnackbar({
+            flowId,
+            message: errorMessage,
+            level: "warning",
+            details: `Invalid source agent type: ${getFriendlyString(sourceNode.data.agentType)}`,
+            withCloseButton: true,
+        });
         return true;
     }
     // no direct connection from non-group member to group member (only through group manager)
     if (!sourceNode.data.parentId && targetNode.data.parentId) {
+        showSnackbar({
+            flowId,
+            message: errorMessage,
+            level: "warning",
+            details: "A connection from a non-group member to a group member is not allowed",
+            withCloseButton: true,
+        });
         return true;
     }
     // only one edge to group target
     if (targetNode.data.agentType === "group_manager") {
         const edgesWithTheSameTarget = allEdges.filter(edge => edge.target === targetNode.id);
         if (edgesWithTheSameTarget.length > 0) {
+            showSnackbar({
+                flowId,
+                message: errorMessage,
+                level: "warning",
+                details: "An connection already exists to this group manager",
+                withCloseButton: true,
+            });
             return true;
         }
     }
     return false;
 };
 
-export const getNewEdge = (
-    hidden: boolean,
-    positionGetter: (chatType: string) => number,
-    sourceNode: Node,
-    targetNode: Node,
-    edges: Edge[],
-) => {
+export const getNewEdge = (params: {
+    flowId: string;
+    hidden: boolean;
+    positionGetter: (chatType: string) => number;
+    sourceNode: Node;
+    targetNode: Node;
+    edges: Edge[];
+}) => {
+    const { flowId, hidden, positionGetter, sourceNode, targetNode, edges } = params;
     if (isGroupEdge(sourceNode, targetNode)) {
-        if (shouldNotCreateGroupEdge(sourceNode, targetNode, edges)) {
+        if (shouldNotCreateGroupEdge(sourceNode, targetNode, edges, flowId)) {
             return null;
         }
     }

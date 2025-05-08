@@ -44,7 +44,7 @@ export const useWaldiezNodeAgent = () => {
     };
     const onEdgeConnection = (connection: Connection) => {
         if (!isReadOnly && !isNodeModalOpen) {
-            const newEdge = addEdge(connection, false);
+            const newEdge = addEdge({ flowId, connection, hidden: false });
             setEdge(newEdge as WaldiezEdge);
             // setEdgeModalOpen(true);
         }

@@ -12,7 +12,6 @@ import { useWaldiez } from "@waldiez/store";
 export const useDnD = (onNewAgent: () => void) => {
     const { screenToFlowPosition, getIntersectingNodes } = useReactFlow();
     const addAgent = useWaldiez(s => s.addAgent);
-    const addEdge = useWaldiez(s => s.addEdge);
     const setAgentGroup = useWaldiez(s => s.setAgentGroup);
     const addGroupMember = useWaldiez(s => s.addGroupMember);
     const getRfInstance = useWaldiez(s => s.getRfInstance);
@@ -121,18 +120,15 @@ export const useDnD = (onNewAgent: () => void) => {
         }
         return { position, parent };
     };
-    const addParentNodeEdge = (parent: Node, newNode: Node) => {
-        addEdge({ source: parent.id, target: newNode.id, sourceHandle: null, targetHandle: null }, true);
-        setTimeout(() => {
-            setAgentGroup(newNode.id, parent.id);
-        }, 0);
-    };
     const addAgentNode = (event: React.DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
         const { position, parent } = getAgentPositionAndParent(event);
         const newNode = addAgent(agentType, position, parent?.id);
         if (parent) {
             newNode.parentId = parent.id;
-            addParentNodeEdge(parent, newNode);
+            newNode.data.parentId = parent.id;
+            setTimeout(() => {
+                setAgentGroup(newNode.id, parent.id);
+            }, 0);
         }
         return newNode;
     };

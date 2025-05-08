@@ -66,15 +66,36 @@ export const useWaldiezNodeModel = (id: string, data: WaldiezNodeModelData) => {
             .then(result => {
                 if (result.success) {
                     // console.log("Model is valid");
-                    showSnackbar(flowId, result.message, "success", null, 3000, false);
+                    showSnackbar({
+                        flowId,
+                        message: result.message,
+                        level: "success",
+                        details: null,
+                        duration: 3000,
+                        withCloseButton: false,
+                    });
                 } else {
-                    showSnackbar(flowId, result.message, "error", result.details, undefined, true);
+                    showSnackbar({
+                        flowId,
+                        message: result.message,
+                        level: "error",
+                        details: result.details,
+                        duration: undefined,
+                        withCloseButton: true,
+                    });
                 }
             })
             .catch(error => {
                 // console.error("Error validating model:", error);
                 const details = error instanceof Error ? error.message : String(error);
-                showSnackbar(flowId, "Error validating model", "error", details, undefined, true);
+                showSnackbar({
+                    flowId,
+                    message: "Error validating model",
+                    level: "error",
+                    details,
+                    duration: undefined,
+                    withCloseButton: true,
+                });
             });
     };
     const onSave = () => {

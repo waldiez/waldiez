@@ -14,16 +14,32 @@
 
 const DEFAULT_SNACKBAR_DURATION = 3000;
 
-export const showSnackbar = (
-    flowId: string,
-    message: string,
-    level: "info" | "warning" | "error" | "success" = "info",
-    details: string | Error | object | null = null,
-    duration: number | undefined = undefined,
-    withCloseButton: boolean = false,
-) => {
+// export const showSnackbar = (props: {
+//     flowId: string
+//     message: string,
+//     level: "info" | "warning" | "error" | "success" = "info",
+//     details: string | Error | object | null = null,
+//     duration: number | undefined = undefined,
+//     withCloseButton: boolean = false,
+//     }
+// ) => {
+export const showSnackbar: (props: {
+    flowId: string;
+    message: string;
+    level?: "info" | "warning" | "error" | "success";
+    details?: string | Error | object | null;
+    duration?: number;
+    withCloseButton?: boolean;
+}) => void = ({
+    flowId,
+    message,
+    level = "info",
+    details = null,
+    duration = undefined,
+    withCloseButton = false,
+}) => {
     if (isSnackbarLocked(flowId)) {
-        setTimeout(() => showSnackbar(flowId, message, level, details, duration, withCloseButton), 200);
+        setTimeout(() => showSnackbar({ flowId, message, level, details, duration, withCloseButton }), 200);
         return;
     }
 
