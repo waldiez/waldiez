@@ -78,6 +78,7 @@
         "genhtml",
         "geninfo",
         "getbasetemp",
+        "getuid",
         "graphviz",
         "greut",
         "groq",
