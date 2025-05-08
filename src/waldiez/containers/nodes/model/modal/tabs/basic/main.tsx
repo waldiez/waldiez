@@ -45,11 +45,8 @@ export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicT
             <div className="info margin-bottom-10">
                 You can select one of the predefined models from the list below or manually enter the model
                 name and type. In the latter case, make sure that the model's name is a valid name (based on
-                the provider).
-                <br />
-                You can use the <strong>Test</strong> button to check if the model parameters are correct, but
-                model credits might be used for this test (depending on the provider).
-                <br />
+                the provider). You can use the <strong>Test</strong> button to check if the model parameters
+                are correct, but model credits might be used for this test (depending on the provider). <br />
                 <strong>Note</strong> that if testing the model fails with a "Failed to load" message (for
                 example a NIM model), it doesn't mean that the configuration is not correct (it could be a
                 browser/CORS issue).
@@ -57,7 +54,7 @@ export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicT
                     title="Useful Links"
                     expanded={false}
                     fullWidth
-                    className="transparent no-padding color-info margin-top-10 margin-bottom-10"
+                    className="transparent no-padding color-info margin-top-5 margin-bottom-5"
                 >
                     <div className="flex-column">
                         {Object.entries(modelLinks)
