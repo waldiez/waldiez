@@ -33,7 +33,7 @@ export const WaldiezEdgeHidden = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="hidden" />;
 };
 
-type GroupChatType = "source" | "target" | "nested" | "handoff";
+type GroupChatType = "toManager" | "nested" | "handoff" | "fromManager";
 
 // eslint-disable-next-line max-statements
 const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
@@ -68,13 +68,14 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
         // if not hidden, the source agent might be recently deleted
         return <></>;
     }
-    const groupChatType = type === "group" ? getGroupChatType(sourceAgent, targetAgent) : "source";
+    const groupChatType = type === "group" ? getGroupChatType(sourceAgent, targetAgent) : "toManager";
     const edgeNumber = getEdgeNumber();
     const edge = getEdgeById(id);
     const edgeColor = getEdgeColor();
     const edgeIcon = getEdgeIcon(type, groupChatType, edgeColor);
     const needsPosition =
-        type !== "group" || (type === "group" && (groupChatType === "source" || groupChatType === "target"));
+        type !== "group" ||
+        (type === "group" && (groupChatType === "toManager" || groupChatType === "fromManager"));
     const positionClass = needsPosition ? " with-position" : "";
     const translations = getEdgeTranslations(
         sourceX,
@@ -157,12 +158,12 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
                         </div>
                     ) : type === "group" ? (
                         <div className={`agent-edge-view clickable${positionClass}`}>
-                            {groupChatType === "target" && (
+                            {groupChatType === "fromManager" && (
                                 <div className="edge-position">
                                     <GoAlert size={16} className="edge-position-warning-icon" />
                                 </div>
                             )}
-                            {groupChatType === "source" && <div className="edge-position">1</div>}
+                            {groupChatType === "toManager" && <div className="edge-position">1</div>}
                             <div className="edge-icon">{edgeIcon}</div>
                         </div>
                     ) : (
