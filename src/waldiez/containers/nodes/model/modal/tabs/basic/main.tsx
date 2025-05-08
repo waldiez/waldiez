@@ -79,6 +79,7 @@ export const WaldiezNodeModelModalBasicTab = (props: WaldiezNodeModelModalBasicT
                 </Collapsible>
             </div>
             <ModelSelector ref={predefinedModelsSelectRef} onChange={onPredefineSelected} />
+            <div className="margin-top--10"></div>
             <label>Name:</label>
             <input
                 type="text"

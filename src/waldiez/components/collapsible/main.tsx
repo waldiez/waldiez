@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { CollapsibleProps } from "@waldiez/components/collapsible/types";
 
-export const Collapsible = (props: CollapsibleProps) => {
+export const Collapsible: React.FC<CollapsibleProps> = props => {
     const { title, children, dataTestId, fullWidth = false, expanded = false } = props;
     const [isOpen, setIsOpen] = useState(expanded);
 

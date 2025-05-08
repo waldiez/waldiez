@@ -4,6 +4,7 @@
 
 from .environment import (
     in_virtualenv,
+    is_root,
     refresh_environment,
     reset_env_vars,
     set_env_vars,
@@ -26,6 +27,7 @@ __all__ = [
     "chdir",
     "get_printer",
     "in_virtualenv",
+    "is_root",
     "install_requirements",
     "refresh_environment",
     "reset_env_vars",

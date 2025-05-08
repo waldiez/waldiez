@@ -5,6 +5,8 @@
 /* eslint-disable max-statements */
 import { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyflow/react";
 
+import { useCallback } from "react";
+
 import { WaldiezEdge } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { exportItem, getFlowRoot, showSnackbar } from "@waldiez/utils";
@@ -26,7 +28,7 @@ export const useFlowEvents = (flowId: string) => {
     const getFlowEdges = useWaldiez(s => s.getFlowEdges);
     const getFlowInfo = useWaldiez(s => s.getFlowInfo);
     const exportFlow = useWaldiez(s => s.exportFlow);
-    const onFlowInit = (instance: ReactFlowInstance) => {
+    const onFlowInit = useCallback((instance: ReactFlowInstance) => {
         const rootDiv = getFlowRoot(flowId);
         const noInteractivity = isReadOnly || (skipImport === true && skipExport === true);
         const hasContent = instance.getNodes().length > 0 || instance.getEdges().length > 0;
@@ -61,19 +63,19 @@ export const useFlowEvents = (flowId: string) => {
             handleNodesChange(changes);
         }
         // onFlowChanged();
-    };
-    const onEdgesChange = (changes: EdgeChange<Edge>[]) => {
+    }, []);
+    const onEdgesChange = useCallback((changes: EdgeChange<Edge>[]) => {
         if (!isReadOnly) {
             handleEdgesChange(changes);
             onFlowChanged();
         }
-    };
-    const onEdgeDoubleClick = (event: React.MouseEvent, edge: Edge) => {
+    }, []);
+    const onEdgeDoubleClick = useCallback((event: React.MouseEvent, edge: Edge) => {
         if (!isReadOnly) {
             handleEdgeDoubleClick(event, edge as WaldiezEdge);
         }
-    };
-    const onNodeDoubleClick = (event: React.MouseEvent, node: Node) => {
+    }, []);
+    const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
         if (!isReadOnly) {
             const target = event.target;
             if (target instanceof Element && target.tagName === "TEXTAREA") {
@@ -81,19 +83,19 @@ export const useFlowEvents = (flowId: string) => {
             }
             handleNodeDoubleClick(event, node);
         }
-    };
-    const convertToPy = () => {
+    }, []);
+    const convertToPy = useCallback(() => {
         if (!isReadOnly) {
             const flow = onFlowChanged();
             onConvert?.(JSON.stringify(flow), "py");
         }
-    };
-    const convertToIpynb = () => {
+    }, []);
+    const convertToIpynb = useCallback(() => {
         if (!isReadOnly) {
             const flow = onFlowChanged();
             onConvert?.(JSON.stringify(flow), "ipynb");
         }
-    };
+    }, []);
     const canRun = () => {
         if (isReadOnly) {
             return false;
@@ -105,14 +107,10 @@ export const useFlowEvents = (flowId: string) => {
             showSnackbar(flowId, `${msg} found in the flow`, "error", undefined, 3000);
             return false;
         }
-        const swarmAgents = allAgents.filter(agent => agent.data.agentType === "swarm");
-        if (swarmAgents.length > 0) {
-            return true;
-        }
-        const { used } = getFlowEdges(true);
-        return used.length > 0;
+        const { used, remaining } = getFlowEdges(true);
+        return used.length > 0 && remaining.length === 0;
     };
-    const onRun = () => {
+    const onRun = useCallback(() => {
         if (isReadOnly) {
             return;
         }
@@ -132,9 +130,9 @@ export const useFlowEvents = (flowId: string) => {
                 }
             }
         }
-    };
+    }, []);
 
-    const onExport = async (_e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const onExport = useCallback(async (_e: React.MouseEvent<HTMLElement, MouseEvent>) => {
         if (isReadOnly) {
             return;
         }
@@ -145,10 +143,10 @@ export const useFlowEvents = (flowId: string) => {
             };
         };
         const onError = () => {
-            showSnackbar(flowId, "Could not export flow", "error", undefined, 3000);
+            showSnackbar(flowId, "Could not export the flow", "error", undefined, 3000);
         };
         await exportItem(name, "flow", exporter, onError);
-    };
+    }, []);
     return {
         convertToPy,
         convertToIpynb,

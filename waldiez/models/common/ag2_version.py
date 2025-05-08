@@ -18,7 +18,7 @@ def get_autogen_version() -> str:
     Raises
     ------
     ValueError
-        If pyautogen is not installed.
+        If ag2 is not installed.
     """
     # pylint: disable=import-outside-toplevel
     with warnings.catch_warnings():
@@ -26,5 +26,5 @@ def get_autogen_version() -> str:
         try:
             from autogen.version import __version__ as ag2  # type: ignore
         except ImportError as error:  # pragma: no cover
-            raise ValueError("pyautogen is not installed.") from error
+            raise ValueError("ag2 is not installed.") from error
     return ag2

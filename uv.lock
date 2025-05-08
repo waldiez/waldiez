@@ -45,6 +45,62 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "ag2"
+version = "0.8.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyautogen" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4a/aa/d3c5462313ac11349e665a503d6d6a1dfb8a6678445761740fef4e39afde/ag2-0.8.7.tar.gz", hash = "sha256:6699bfae43d4fc1046bff0c7dc8d2d8242f53637d566ef46056bd36311d8a9d1", size = 42554, upload_time = "2025-04-17T21:54:15.818Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/a8/68661150806746365ed3dfa4b17984bfb6038f3440d29d90d23abe6231b0/ag2-0.8.7-py3-none-any.whl", hash = "sha256:1d9820e0f29dde857e66e4c691e294a18fb8072b05e370b2fcb5e55f42d55a01", size = 13577, upload_time = "2025-04-17T21:54:14.65Z" },
+]
+
+[package.optional-dependencies]
+anthropic = [
+    { name = "pyautogen", extra = ["anthropic"] },
+]
+bedrock = [
+    { name = "pyautogen", extra = ["bedrock"] },
+]
+cohere = [
+    { name = "pyautogen", extra = ["cohere"] },
+]
+gemini = [
+    { name = "pyautogen", extra = ["gemini"], marker = "(platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64') or sys_platform != 'win32'" },
+]
+groq = [
+    { name = "pyautogen", extra = ["groq"] },
+]
+interop-crewai = [
+    { name = "pyautogen", extra = ["interop-crewai"] },
+]
+interop-langchain = [
+    { name = "pyautogen", extra = ["interop-langchain"] },
+]
+lmm = [
+    { name = "pyautogen", extra = ["lmm"] },
+]
+mistral = [
+    { name = "pyautogen", extra = ["mistral"] },
+]
+neo4j = [
+    { name = "pyautogen", extra = ["neo4j"], marker = "(platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64') or sys_platform != 'win32'" },
+]
+ollama = [
+    { name = "pyautogen", extra = ["ollama"] },
+]
+openai = [
+    { name = "pyautogen", extra = ["openai"] },
+]
+together = [
+    { name = "pyautogen", extra = ["together"], marker = "(platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64') or sys_platform != 'win32'" },
+]
+websurfer = [
+    { name = "pyautogen", extra = ["websurfer"] },
+]
+
+[[package]]
 name = "aiocsv"
 version = "1.3.2"
 source = { registry = "https://pypi.org/simple" }
@@ -5924,11 +5980,11 @@ wheels = [
 
 [[package]]
 name = "puremagic"
-version = "1.28"
+version = "1.29"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/09/2d/40599f25667733e41bbc3d7e4c7c36d5e7860874aa5fe9c584e90b34954d/puremagic-1.28.tar.gz", hash = "sha256:195893fc129657f611b86b959aab337207d6df7f25372209269ed9e303c1a8c0", size = 314945, upload_time = "2024-09-25T19:55:58.264Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/de/c9dbb741a2e0e657147c6125699e4a2a3b9003840fed62528e17c87c0989/puremagic-1.29.tar.gz", hash = "sha256:67c115db3f63d43b13433860917b11e2b767e5eaec696a491be2fb544f224f7a", size = 314734, upload_time = "2025-05-02T03:16:17.891Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c5/53/200a97332d10ed3edd7afcbc5f5543920ac59badfe5762598327999f012e/puremagic-1.28-py3-none-any.whl", hash = "sha256:e16cb9708ee2007142c37931c58f07f7eca956b3472489106a7245e5c3aa1241", size = 43241, upload_time = "2024-09-25T19:55:55.734Z" },
+    { url = "https://files.pythonhosted.org/packages/50/e3/6d0ad0dc83cf0871198a68d527c61e443c10509a93db1e1666be9d1bf9c6/puremagic-1.29-py3-none-any.whl", hash = "sha256:2c3cfcde77f0b1560f1898f627bd388421d2bd64ec94d8d25f400f7742a4f109", size = 43279, upload_time = "2025-05-02T03:16:16.407Z" },
 ]
 
 [[package]]
@@ -6714,14 +6770,14 @@ wheels = [
 
 [[package]]
 name = "pytest-timeout"
-version = "2.3.1"
+version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/0d/04719abc7a4bdb3a7a1f968f24b0f5253d698c9cc94975330e9d3145befb/pytest-timeout-2.3.1.tar.gz", hash = "sha256:12397729125c6ecbdaca01035b9e5239d4db97352320af155b3f5de1ba5165d9", size = 17697, upload_time = "2024-03-07T21:04:01.069Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ac/82/4c9ecabab13363e72d880f2fb504c5f750433b2b6f16e99f4ec21ada284c/pytest_timeout-2.4.0.tar.gz", hash = "sha256:7e68e90b01f9eff71332b25001f85c75495fc4e3a836701876183c4bcfd0540a", size = 17973, upload_time = "2025-05-05T19:44:34.99Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/03/27/14af9ef8321f5edc7527e47def2a21d8118c6f329a9342cc61387a0c0599/pytest_timeout-2.3.1-py3-none-any.whl", hash = "sha256:68188cb703edfc6a18fad98dc25a3c61e9f24d644b0b70f33af545219fc7813e", size = 14148, upload_time = "2024-03-07T21:03:58.764Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/b6/3127540ecdf1464a00e5a01ee60a1b09175f6913f0644ac748494d9c4b21/pytest_timeout-2.4.0-py3-none-any.whl", hash = "sha256:c42667e5cdadb151aeb5b26d114aff6bdf5a907f176a007a30b940d3d865b5c2", size = 14382, upload_time = "2025-05-05T19:44:33.502Z" },
 ]
 
 [[package]]
@@ -7837,7 +7893,7 @@ wheels = [
 
 [[package]]
 name = "taskiq"
-version = "0.11.16"
+version = "0.11.17"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio", marker = "python_full_version >= '3.11'" },
@@ -7850,9 +7906,9 @@ dependencies = [
     { name = "taskiq-dependencies", marker = "python_full_version >= '3.11'" },
     { name = "typing-extensions", marker = "python_full_version >= '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/30/13b3ee114a37d87840543137e80e18e3e388e49a12581ca62b9e13902210/taskiq-0.11.16.tar.gz", hash = "sha256:52e73794503c41250e384f9e1a2645fa56fd25ffebbbf512ca708a7a46e728f3", size = 51904, upload_time = "2025-03-25T09:58:55.526Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ee/02/3257ed9da7a6207d095d9abdd7fe5c8aad4a6d484cc309a657d6422a4a6c/taskiq-0.11.17.tar.gz", hash = "sha256:9c1c402beea452e8e834c53494035d653499d044ef1c7e6250c8fb7b31e52165", size = 54083, upload_time = "2025-04-27T11:43:52.629Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/17/43/8a48f22129d941055b51a633ad02a1461fe93767db8eba3897624e8fd3cc/taskiq-0.11.16-py3-none-any.whl", hash = "sha256:2cbc458890c0a5544a34ea2489bce255bcbc8459b2a344b62a43f7db51c1389c", size = 76706, upload_time = "2025-03-25T09:58:53.981Z" },
+    { url = "https://files.pythonhosted.org/packages/34/f4/c11112085b2a86f1c2787700a23278d94263c700bf2b55753bda37d72440/taskiq-0.11.17-py3-none-any.whl", hash = "sha256:a01fe1fc9c646f71113d0b886761a5e5253a35e625491d62e3379a14a99563b7", size = 80019, upload_time = "2025-04-27T11:43:50.682Z" },
 ]
 
 [[package]]
@@ -8601,6 +8657,7 @@ wheels = [
 name = "waldiez"
 source = { editable = "." }
 dependencies = [
+    { name = "ag2", extra = ["openai"] },
     { name = "aiocsv" },
     { name = "aiofiles" },
     { name = "aiosqlite" },
@@ -8620,6 +8677,8 @@ dependencies = [
 
 [package.optional-dependencies]
 ag2-extras = [
+    { name = "ag2", extra = ["anthropic", "bedrock", "cohere", "groq", "interop-crewai", "interop-langchain", "lmm", "mistral", "ollama", "websurfer"] },
+    { name = "ag2", extra = ["gemini", "neo4j", "together"], marker = "(platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64') or sys_platform != 'win32'" },
     { name = "beautifulsoup4" },
     { name = "chromadb", marker = "(platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64') or sys_platform != 'win32'" },
     { name = "embedchain", marker = "(platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64') or sys_platform != 'win32'" },
@@ -8704,6 +8763,23 @@ test = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ag2", extras = ["anthropic"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["bedrock"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["cohere"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["gemini"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["gemini"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["groq"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["interop-crewai"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["interop-langchain"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["lmm"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["mistral"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["neo4j"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["neo4j"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["ollama"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["openai"], specifier = "==0.8.7" },
+    { name = "ag2", extras = ["together"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["together"], marker = "sys_platform != 'win32' and extra == 'ag2-extras'", specifier = "==0.8.7" },
+    { name = "ag2", extras = ["websurfer"], marker = "extra == 'ag2-extras'", specifier = "==0.8.7" },
     { name = "aiocsv", specifier = "==1.3.2" },
     { name = "aiofiles", specifier = "==24.1.0" },
     { name = "aiosqlite", specifier = "==0.21.0" },
@@ -8789,7 +8865,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'test'", specifier = "==6.1.1" },
     { name = "pytest-html", marker = "extra == 'test'", specifier = "==4.1.1" },
     { name = "pytest-sugar", marker = "extra == 'test'", specifier = "==1.0.0" },
-    { name = "pytest-timeout", marker = "extra == 'test'", specifier = "==2.3.1" },
+    { name = "pytest-timeout", marker = "extra == 'test'", specifier = "==2.4.0" },
     { name = "pytest-xdist", marker = "extra == 'test'", specifier = "==3.6.1" },
     { name = "python-dotenv", marker = "extra == 'dev'", specifier = "==1.1.0" },
     { name = "qdrant-client", extras = ["fastembed"], marker = "platform_machine != 'AARCH64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'arm64' and sys_platform == 'win32' and extra == 'ag2-extras'" },
@@ -8806,27 +8882,27 @@ requires-dist = [
     { name = "waldiez-studio", marker = "extra == 'studio'", specifier = "==0.4.5" },
     { name = "websockets", marker = "extra == 'dev'", specifier = "==15.0.1" },
     { name = "wikipedia-api", marker = "extra == 'ag2-extras'", specifier = ">=0.8.1,<1.0" },
-    { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.37.0" },
+    { name = "yamllint", marker = "extra == 'dev'", specifier = "==1.37.1" },
 ]
 provides-extras = ["ag2-extras", "dev", "docs", "jupyter", "runner", "studio", "test"]
 
 [[package]]
 name = "waldiez-jupyter"
-version = "0.4.5"
+version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jupyter-server" },
     { name = "pathvalidate" },
     { name = "waldiez" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/99/695afcffa6ccd7aa8753d5e536d930559ce076948ba2a373bff4197c70cf/waldiez_jupyter-0.4.5.tar.gz", hash = "sha256:de4d5e936a3ec7e7294fb877362e48f829a2ac0e99156f1da25c2999ae9c67bd", size = 688138, upload_time = "2025-04-27T07:36:58.55Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/2d/e5167b793bd41be0cd02322663250c3b9d1900d4052e36c6fca2e364ddf1/waldiez_jupyter-0.4.6.tar.gz", hash = "sha256:584a202f62caae7167f939dcce27c9da871270a8d529c73ccf927ff04250c0da", size = 694407, upload_time = "2025-05-08T17:32:01.854Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/33/201a5a2e39c1c50bacbbb0be1469d87cff9741008484567ad00cee8a134f/waldiez_jupyter-0.4.5-py3-none-any.whl", hash = "sha256:a2056c5548657c26159325905bf620959ad8d41bf9108f96eb3533f492509a65", size = 361788, upload_time = "2025-04-27T07:36:57.083Z" },
+    { url = "https://files.pythonhosted.org/packages/14/47/758d3fb49685b7d8018a88832023bff7312a6445bb07f66bcae85d4fb942/waldiez_jupyter-0.4.6-py3-none-any.whl", hash = "sha256:771f5503b809d5e5c5d91196f97e2bd84de9e75fe1dd26c16620ccc695a72792", size = 362854, upload_time = "2025-05-08T17:31:59.969Z" },
 ]
 
 [[package]]
 name = "waldiez-runner"
-version = "0.4.5"
+version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiocsv", marker = "python_full_version >= '3.11'" },
@@ -8867,14 +8943,14 @@ dependencies = [
     { name = "waldiez", marker = "python_full_version >= '3.11'" },
     { name = "zipstream", marker = "python_full_version >= '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6a/fe/5e0a32166082abd92aeee94472b7228ec6c055d386323524b7e4f669b3a1/waldiez_runner-0.4.5.tar.gz", hash = "sha256:38823128c086b4f794f8e823a8768267daf2084a60ccf8ef96907c761b80391a", size = 92745, upload_time = "2025-04-27T07:53:33.59Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/b9/7595cd3921ae6caaa12147d07d9ed6bb78aecb0c46650cb900c8203a9ecf/waldiez_runner-0.4.6.tar.gz", hash = "sha256:0f6b27c05d5477ef31f95c412f3e3c88aa11abe1face51a65b7f57899b01b952", size = 92807, upload_time = "2025-05-08T18:12:49.281Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/6a/2902af15af38ce91008a8b2e294c1a61fd36b81f82a4b831e9939d0be193/waldiez_runner-0.4.5-py3-none-any.whl", hash = "sha256:e4a940ddec24a7d697a7167bc20f9b956c36e08d5b2580e646d831552bb129e5", size = 140558, upload_time = "2025-04-27T07:53:31.941Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/c8/32a3585c1cc75b76052839132faa0aa542915ff025baf9f6206ab6db013d/waldiez_runner-0.4.6-py3-none-any.whl", hash = "sha256:58bb4bd186701dcbcee8fd047444eca854c89c09035a8890d7cb3d4df668562f", size = 140615, upload_time = "2025-05-08T18:12:45.143Z" },
 ]
 
 [[package]]
 name = "waldiez-studio"
-version = "0.4.5"
+version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -8887,9 +8963,9 @@ dependencies = [
     { name = "uvicorn", extra = ["standard"] },
     { name = "waldiez" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/e9/ac95b624ee22e89e570f4f2061f791cac63e5d6869d430b2293fc7184869/waldiez_studio-0.4.5.tar.gz", hash = "sha256:6d1c36bd6f78bbd3b4de27c04a05a88e5d2a585495fc975300f401243b512ca8", size = 925009, upload_time = "2025-04-27T07:59:26.276Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b5/b6/47db452d75957a9e68c10cc084b142f52382d215f13667c11ad0cca9ab9e/waldiez_studio-0.4.6.tar.gz", hash = "sha256:99b3fcda73be4f2f9c0a2a484a993b571ff98a915d886656dd9ff29d3fd9b664", size = 926597, upload_time = "2025-05-08T17:48:20.627Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ed/c7/4ff2329a6a1bf89e346172a30bb27a9f56981159d0a47c09b4258bb6de02/waldiez_studio-0.4.5-py3-none-any.whl", hash = "sha256:a10be5a6aa00dbe52e5e0865d52c7248f1f19e23f70e7f375d156d6d17aca8d4", size = 948470, upload_time = "2025-04-27T07:59:24.311Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/e7/35d08378ef1ce1a13509c321061fbe1b761a81311da14cb3ef6e9465c408/waldiez_studio-0.4.6-py3-none-any.whl", hash = "sha256:c694d9c0e9fb53f24b86ae44034b41053f26f7b26e3f85b75a43932c30e31f63", size = 949580, upload_time = "2025-05-08T17:48:18.575Z" },
 ]
 
 [[package]]
@@ -9210,15 +9286,15 @@ wheels = [
 
 [[package]]
 name = "yamllint"
-version = "1.37.0"
+version = "1.37.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pathspec" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4e/82/b2b6fa4c3e24df501d14eff23100b37e6d9f80cbed80644de4d1260ff402/yamllint-1.37.0.tar.gz", hash = "sha256:ead81921d4d87216b2528b7a055664708f9fb8267beb0c427cb706ac6ab93580", size = 141202, upload_time = "2025-03-23T09:21:43.881Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/f2/cd8b7584a48ee83f0bc94f8a32fea38734cefcdc6f7324c4d3bfc699457b/yamllint-1.37.1.tar.gz", hash = "sha256:81f7c0c5559becc8049470d86046b36e96113637bcbe4753ecef06977c00245d", size = 141613, upload_time = "2025-05-04T08:25:54.355Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/ed/7596a24148f05d97a9c09934c727437b07a941aad96b21f173539840984c/yamllint-1.37.0-py3-none-any.whl", hash = "sha256:c03ab4e79ab4af964c8eb16ac9746880fc76a3bb0ffb14925b9a55220ae7dda0", size = 68695, upload_time = "2025-03-23T09:21:42.214Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/b9/be7a4cfdf47e03785f657f94daea8123e838d817be76c684298305bd789f/yamllint-1.37.1-py3-none-any.whl", hash = "sha256:364f0d79e81409f591e323725e6a9f4504c8699ddf2d7263d8d2b539cd66a583", size = 68813, upload_time = "2025-05-04T08:25:52.552Z" },
 ]
 
 [[package]]

@@ -146,7 +146,7 @@ runner.run(output_path=output_path)
 
 ## Known Conflicts
 
-- **autogen-agentchat**: This package conflicts with `ag2` / `pyautogen`. Ensure that `autogen-agentchat` is uninstalled before installing `waldiez`. If you have already installed `autogen-agentchat`, you can uninstall it with the following command:
+- **autogen-agentchat**: This package conflicts with `ag2`. Ensure that `autogen-agentchat` is uninstalled before installing `waldiez`. If you have already installed `autogen-agentchat`, you can uninstall it with the following command:
 
   ```shell
   pip uninstall autogen-agentchat -y
@@ -155,7 +155,7 @@ runner.run(output_path=output_path)
   If already installed waldiez you might need to reinstall it after uninstalling `autogen-agentchat`:
 
   ```shell
-  pip install --force --no-cache waldiez pyautogen
+  pip install --force --no-cache waldiez ag2
   ```
 
 ## See also
