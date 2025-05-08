@@ -9,9 +9,13 @@ The contents of each release will be used in
 
 ## v0.4.6
 
-- Minor UI changes
+- Updated jupyter dependencies to 4.4.2
+- UI: Fixed typos in predefined models
+- UI: Make modals resizable and draggable
+- VSCode: Fixed an issue with activating previously opened flows
 - Dependency updates
-- Bug fixes
+- Other Minor UI changes
+- Other Minor Bug fixes
 
 ## v0.4.5
 
