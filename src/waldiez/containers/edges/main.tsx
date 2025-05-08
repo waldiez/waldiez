@@ -15,8 +15,7 @@ import { EdgeLabel } from "@waldiez/containers/edges/edgeLabel";
 import { useWaldiezEdge } from "@waldiez/containers/edges/hooks";
 import { WaldiezEdgeProps } from "@waldiez/containers/edges/types";
 import { getEdgeTranslations } from "@waldiez/containers/edges/utils";
-import { WaldiezEdge } from "@waldiez/models";
-import { AGENT_COLORS } from "@waldiez/theme";
+import { WaldiezEdge, WaldiezEdgeType, WaldiezNodeAgent } from "@waldiez/models";
 
 export const WaldiezEdgeChat = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="chat" />;
@@ -33,6 +32,8 @@ export const WaldiezEdgeGroup = (props: EdgeProps<WaldiezEdge>) => {
 export const WaldiezEdgeHidden = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="hidden" />;
 };
+
+type GroupChatType = "source" | "target" | "nested" | "handoff";
 
 // eslint-disable-next-line max-statements
 const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
@@ -67,29 +68,14 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
         // if not hidden, the source agent might be recently deleted
         return <></>;
     }
-    const getEdgeIcon = () => {
-        const edgeColor = getEdgeColor();
-        const size = 18;
-        if (!!sourceAgent.data.parentId && !targetAgent.data.parentId) {
-            // from group-member to non-group member => nested
-            return <GiNestEggs color={edgeColor} size={size} />;
-        }
-        const edgeIcon =
-            type === "chat" ? (
-                <MdMessage color={edgeColor} size={size} />
-            ) : type === "nested" ? (
-                <GiNestEggs color={edgeColor} size={size} />
-            ) : type === "group" ? (
-                <GiShakingHands color={edgeColor} size={size} />
-            ) : (
-                <></>
-            );
-        return edgeIcon;
-    };
+    const groupChatType = type === "group" ? getGroupChatType(sourceAgent, targetAgent) : "source";
     const edgeNumber = getEdgeNumber();
     const edge = getEdgeById(id);
-    const edgeIcon = getEdgeIcon();
-    const className = `nodrag nopan clickable agent-edge-box with-position ${sourceAgent.data.agentType}`;
+    const edgeColor = getEdgeColor();
+    const edgeIcon = getEdgeIcon(type, groupChatType, edgeColor);
+    const needsPosition =
+        type !== "group" || (type === "group" && (groupChatType === "source" || groupChatType === "target"));
+    const positionClass = needsPosition ? " with-position" : "";
     const translations = getEdgeTranslations(
         sourceX,
         sourceY,
@@ -119,11 +105,7 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
 
     return (
         <>
-            <BaseEdge
-                path={edgePath}
-                markerEnd={markerEnd}
-                style={{ ...style, color: AGENT_COLORS.rag_user_proxy }}
-            />
+            <BaseEdge path={edgePath} markerEnd={markerEnd} style={{ ...style, color: edgeColor }} />
             <EdgeLabelRenderer>
                 {/* <EdgeLabel edge={edge} transform={translations.edgeStart} /> */}
                 <div
@@ -134,14 +116,14 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
                         // if you have an interactive element, set pointer-events: all
                         pointerEvents: "all",
                     }}
-                    className={className}
+                    className={`nodrag nopan clickable agent-edge-box ${sourceAgent.data.agentType}${positionClass}`}
                     onClick={onEdgeClick}
                     data-testid={`edge-${id}-box`}
                     tabIndex={0}
                     onBlur={onEdgeBlur}
                 >
                     {focussed && (
-                        <div className="edge-actions with-position">
+                        <div className={`edge-actions${positionClass}`}>
                             <div
                                 title="Delete"
                                 role="button"
@@ -163,7 +145,7 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
                         </div>
                     )}
                     {edgeNumber !== "" ? (
-                        <div className="agent-edge-view with-position clickable">
+                        <div className={`agent-edge-view clickable${positionClass}`}>
                             <div className="edge-position">
                                 {edgeNumber === "0" ? (
                                     <GoAlert size={16} className="edge-position-warning-icon" />
@@ -173,6 +155,16 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
                             </div>
                             {edgeIcon}
                         </div>
+                    ) : type === "group" ? (
+                        <div className={`agent-edge-view clickable${positionClass}`}>
+                            {groupChatType === "target" && (
+                                <div className="edge-position">
+                                    <GoAlert size={16} className="edge-position-warning-icon" />
+                                </div>
+                            )}
+                            {groupChatType === "source" && <div className="edge-position">1</div>}
+                            <div className="edge-icon">{edgeIcon}</div>
+                        </div>
                     ) : (
                         <div className="agent-edge-view clickable">{edgeIcon}</div>
                     )}
@@ -181,4 +173,44 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
             </EdgeLabelRenderer>
         </>
     );
+};
+
+const getGroupChatType = (sourceAgent: WaldiezNodeAgent, targetAgent: WaldiezNodeAgent) => {
+    if (targetAgent.data.agentType === "group_manager") {
+        return "source" as GroupChatType;
+    }
+    if (sourceAgent.data.agentType === "group_manager") {
+        return "target" as GroupChatType;
+    }
+    if (!!sourceAgent.data.parentId && !!targetAgent.data.parentId) {
+        return "handoff" as GroupChatType;
+    }
+    return "nested" as GroupChatType;
+};
+
+const getGroupChatIcon = (groupChatType: GroupChatType, size: number) => {
+    const icon =
+        groupChatType === "handoff" ? (
+            <GiShakingHands size={size} />
+        ) : groupChatType === "nested" ? (
+            <GiNestEggs size={size} />
+        ) : (
+            <MdMessage size={size} />
+        );
+    return icon;
+};
+const getEdgeIcon = (type: WaldiezEdgeType, groupChatType: GroupChatType, edgeColor?: string) => {
+    const size = 18;
+    if (type === "group") {
+        return getGroupChatIcon(groupChatType, size);
+    }
+    const edgeIcon =
+        type === "chat" ? (
+            <MdMessage color={edgeColor} size={size} />
+        ) : type === "nested" ? (
+            <GiNestEggs color={edgeColor} size={size} />
+        ) : (
+            <></>
+        );
+    return edgeIcon;
 };

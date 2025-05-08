@@ -12,7 +12,7 @@ export const EdgeLabel = ({ edge, transform }: { edge: WaldiezEdge | undefined; 
     if (label === "") {
         return null;
     }
-    const trimmedTo20 = label.length > 20 ? `${label.slice(0, 20)}...` : label;
+    const trimmedTo20Chars = label.length > 20 ? `${label.slice(0, 20)}...` : label;
     return (
         <div
             style={{
@@ -27,7 +27,7 @@ export const EdgeLabel = ({ edge, transform }: { edge: WaldiezEdge | undefined; 
             }}
             className="nodrag nopan"
         >
-            {trimmedTo20}
+            {trimmedTo20Chars}
         </div>
     );
 };

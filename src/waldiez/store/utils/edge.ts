@@ -60,10 +60,15 @@ const getNewChatType: (sourceNode: Node, targetNode: Node, hidden: boolean) => W
     targetNode,
     hidden,
 ) => {
-    if (hidden || sourceNode.data.agentType === "group_manager") {
+    if (hidden) {
         return "hidden";
     }
-    if (sourceNode.data.parentId && targetNode.data.parentId) {
+    if (sourceNode.data.agentType === "group_manager" || targetNode.data.agentType === "group_manager") {
+        // from/to group manager
+        return "group" as WaldiezEdgeType;
+    }
+    if (sourceNode.data.parentId !== undefined || targetNode.data.parentId !== undefined) {
+        // between group members
         return "group" as WaldiezEdgeType;
     }
     return "chat" as WaldiezEdgeType;
@@ -80,11 +85,14 @@ const isGroupEdge = (sourceNode: Node, targetNode: Node) => {
 };
 
 const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: Edge[]) => {
-    if (typeof sourceNode.data.agentType !== "string") {
-        return false;
+    if (typeof sourceNode.data.agentType !== "string" || typeof targetNode.data.agentType !== "string") {
+        return true;
     }
-    // only user sources to group manager
-    if (!sourceNode.data.parentId && !["user_proxy", "rag_user_proxy"].includes(sourceNode.data.agentType)) {
+    // only user sources to group manager, or group_manager (as source) to other nodes
+    if (
+        !sourceNode.data.parentId &&
+        !["user_proxy", "rag_user_proxy", "group_manager"].includes(sourceNode.data.agentType)
+    ) {
         return true;
     }
     // no direct connection from non-group member to group member (only through group manager)
@@ -113,10 +121,34 @@ export const getNewEdge = (
             return null;
         }
     }
+    const sourceType = sourceNode.data.agentType as WaldiezNodeAgentType;
+    const { chat, chatType } = getNewChat(sourceNode, targetNode, hidden, positionGetter);
+    const newEdge = chatMapper.asEdge(chat);
+    const color = AGENT_COLORS[sourceType];
+    const isFromGroupToOutside = !!sourceNode.data.parentId && !targetNode.data.parentId;
+    return {
+        ...newEdge,
+        type: chatType,
+        animated: isFromGroupToOutside,
+        selected: true,
+        ...edgeCommonStyle(chatType, color),
+    };
+};
+
+const getNewChat = (
+    sourceNode: Node,
+    targetNode: Node,
+    hidden: boolean,
+    positionGetter: (chatType: string) => number,
+) => {
     const edgeName = getNewEdgeName(sourceNode, targetNode);
+    const sourceType = sourceNode.data.agentType as WaldiezNodeAgentType;
+    const targetType = targetNode.data.agentType as WaldiezNodeAgentType;
     const chatData = new WaldiezChatData();
     chatData.source = sourceNode.id;
     chatData.target = targetNode.id;
+    chatData.sourceType = sourceType;
+    chatData.targetType = targetType;
     chatData.name = edgeName;
     chatData.order = -1;
     const chatType = getNewChatType(sourceNode, targetNode, hidden);
@@ -126,17 +158,7 @@ export const getNewEdge = (
         data: chatData,
         rest: {},
     });
-    const agentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    const newEdge = chatMapper.asEdge(chat);
-    const color = AGENT_COLORS[agentType];
-    const isFromGroupToOutside = !!sourceNode.data.parentId && !targetNode.data.parentId;
-    return {
-        ...newEdge,
-        type: chatType,
-        animated: isFromGroupToOutside,
-        selected: true,
-        ...edgeCommonStyle(chatType, color),
-    };
+    return { chat, chatType };
 };
 
 const getNewChatsOfType = (allEdges: Edge[], type: string) => {

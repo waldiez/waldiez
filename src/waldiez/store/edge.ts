@@ -170,15 +170,17 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
         const flowRoot = getFlowRoot(this.get().flowId);
         if (flowRoot) {
             const srcModalBtn = flowRoot.querySelector(
-                `#open-edge-modal-node-${edge.source}`,
+                `[data-edge-node-id="${edge.source}"]`,
             ) as HTMLButtonElement;
+
             if (srcModalBtn) {
                 srcModalBtn.setAttribute("data-edge-id", edge.id);
                 srcModalBtn.click();
             } else {
                 const dstModalBtn = flowRoot.querySelector(
-                    `#open-edge-modal-node-${edge.target}`,
+                    `[data-edge-node-id="${edge.target}"]`,
                 ) as HTMLButtonElement;
+
                 if (dstModalBtn) {
                     dstModalBtn.setAttribute("data-edge-id", edge.id);
                     dstModalBtn.click();

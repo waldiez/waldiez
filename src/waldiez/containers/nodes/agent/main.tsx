@@ -2,13 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Handle, NodeResizer, Position } from "@xyflow/react";
+import { NodeResizer } from "@xyflow/react";
 
 import { useCallback, useState } from "react";
 
 import { WaldiezEdgeModal } from "@waldiez/containers/edges/modal";
 import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
 import { WaldiezNodeAgentFooter } from "@waldiez/containers/nodes/agent/footer";
+import { createHandles } from "@waldiez/containers/nodes/agent/handles";
 import { WaldiezNodeAgentHeader } from "@waldiez/containers/nodes/agent/header";
 import { useWaldiezNodeAgent } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal";
@@ -41,7 +42,11 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
     if (agentType === "group_manager" && isDragging) {
         className += " dragging";
     }
-    const handleClassNameBase = data.parentId ? "group-member " : "";
+    const handleClassNameBase = data.parentId
+        ? "group-member "
+        : agentType === "group_manager"
+          ? "group-manager "
+          : "";
     const minWidth = agentType === "group_manager" ? 490 : 210;
     const minHeight = agentType === "group_manager" ? 330 : 210;
     const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -87,90 +92,10 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
                 )}
                 <WaldiezNodeAgentFooter id={id} data={data} isModalOpen={isModalOpen} />
             </div>
-            <Handle
-                className={`${handleClassNameBase}handle top target`}
-                type="target"
-                isConnectableEnd
-                position={Position.Top}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-top-target-${id}`}
-                id={`agent-handle-top-target-${id}`}
-                style={{ left: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle top source`}
-                type="source"
-                isConnectableStart
-                position={Position.Top}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-top-source-${id}`}
-                id={`agent-handle-top-source-${id}`}
-                style={{ left: "25%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle bottom target`}
-                type="target"
-                isConnectableEnd
-                position={Position.Bottom}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-bottom-target-${id}`}
-                id={`agent-handle-bottom-target-${id}`}
-                style={{ left: "25%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle bottom source`}
-                type="source"
-                isConnectableStart
-                position={Position.Bottom}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-bottom-source-${id}`}
-                id={`agent-handle-bottom-source-${id}`}
-                style={{ left: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle left target`}
-                type="target"
-                // isConnectableEnd
-                position={Position.Left}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-left-target-${id}`}
-                id={`agent-handle-left-target-${id}`}
-                style={{ top: "25%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle left source`}
-                type="source"
-                isConnectableStart
-                position={Position.Left}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-left-source-${id}`}
-                id={`agent-handle-left-source-${id}`}
-                style={{ top: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle right target`}
-                type="target"
-                isConnectableEnd
-                position={Position.Right}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-right-target-${id}`}
-                id={`agent-handle-right-target-${id}`}
-                style={{ top: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle right source`}
-                type="source"
-                isConnectableStart
-                position={Position.Right}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-right-source-${id}`}
-                id={`agent-handle-right-source-${id}`}
-                style={{ top: "25%" }}
-            />
+            {createHandles(agentType, id, handleClassNameBase, onEdgeConnection)}
             <button
                 title="Open Node Modal"
                 type="button"
-                // id={`open-agent-node-modal-${id}`}
                 data-node-id={id}
                 data-testid={`open-agent-node-modal-${id}`}
                 className="hidden"
@@ -179,10 +104,10 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
             <button
                 title="Open Edge Modal"
                 type="button"
-                id={`open-edge-modal-node-${id}`}
                 data-testid={`open-edge-modal-node-${id}`}
                 className="hidden"
                 onClick={onOpenEdgeModal}
+                data-edge-node-id={id}
                 data-edge-id=""
             ></button>
             {edge && isEdgeModalOpen && !isNodeModalOpen && (
