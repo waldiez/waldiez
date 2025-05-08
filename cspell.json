@@ -162,7 +162,7 @@
         "posttest",
         "psycopg",
         "pwsh",
-        "pyautogen",
+        "ag2",
         "pycache",
         "pydantic",
         "pydocstyle",

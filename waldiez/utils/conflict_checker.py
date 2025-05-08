@@ -17,11 +17,11 @@ def _check_conflicts() -> None:  # pragma: no cover
         print(
             "Conflict detected: 'autogen-agentchat' is installed "
             "in the current environment, \n"
-            "which conflicts with 'ag2' / 'pyautogen'.\n"
+            "which conflicts with 'ag2'.\n"
             "Please uninstall 'autogen-agentchat': \n"
             f"{sys.executable} -m pip uninstall -y autogen-agentchat" + "\n"
-            "And install 'pyautogen' (and/or 'waldiez') again: \n"
-            f"{sys.executable} -m pip install --force pyautogen waldiez",
+            "And install 'ag2' (and/or 'waldiez') again: \n"
+            f"{sys.executable} -m pip install --force ag2 waldiez",
             file=sys.stderr,
         )
         sys.exit(1)

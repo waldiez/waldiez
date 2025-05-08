@@ -1,4 +1,20 @@
 -r main.txt
+ag2[anthropic]==0.9.1.post0
+ag2[bedrock]==0.9.1.post0
+ag2[cohere]==0.9.1.post0
+ag2[gemini]==0.9.1.post0 ;sys_platform != 'win32'
+ag2[gemini]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[groq]==0.9.1.post0
+ag2[interop-crewai]==0.9.1.post0
+ag2[interop-langchain]==0.9.1.post0
+ag2[lmm]==0.9.1.post0
+ag2[mistral]==0.9.1.post0
+ag2[neo4j]==0.9.1.post0 ;sys_platform != 'win32'
+ag2[neo4j]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[ollama]==0.9.1.post0
+ag2[together]==0.9.1.post0 ;sys_platform != 'win32'
+ag2[together]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[websurfer]==0.9.1.post0
 beautifulsoup4
 chromadb>=0.5.10 ;sys_platform != 'win32'
 chromadb>=0.5.10 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
@@ -21,22 +37,6 @@ psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'ARM64'
 psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'aarch64'
 psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'arm64'
 psycopg[binary]>=3.2.6 ;sys_platform != 'linux' and platform_machine != 'arm64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'AARCH64'
-pyautogen[anthropic]==0.9
-pyautogen[bedrock]==0.9
-pyautogen[cohere]==0.9.0
-pyautogen[gemini]==0.9.0 ;sys_platform != 'win32'
-pyautogen[gemini]==0.9.0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-pyautogen[groq]==0.9.0
-pyautogen[interop-crewai]==0.9.0
-pyautogen[interop-langchain]==0.9.0
-pyautogen[lmm]==0.9.0
-pyautogen[mistral]==0.9.0
-pyautogen[neo4j]==0.9.0 ;sys_platform != 'win32'
-pyautogen[neo4j]==0.9.0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-pyautogen[ollama]==0.9.0
-pyautogen[together]==0.9.0 ;sys_platform != 'win32'
-pyautogen[together]==0.9.0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-pyautogen[websurfer]==0.9.0
 pydantic-ai>=0.0.21
 pymongo>=4.11
 pypdf

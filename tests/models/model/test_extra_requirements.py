@@ -73,13 +73,13 @@ def test_get_models_extra_requirements() -> None:
     autogen_version = get_autogen_version()
     expected_packages = [
         "requests",
-        f"pyautogen[gemini]=={autogen_version}",
-        f"pyautogen[together]=={autogen_version}",
-        f"pyautogen[mistral]=={autogen_version}",
-        f"pyautogen[groq]=={autogen_version}",
-        f"pyautogen[anthropic]=={autogen_version}",
-        f"pyautogen[cohere]=={autogen_version}",
-        # f"pyautogen[bedrock]=={autogen_version}",
+        f"ag2[gemini]=={autogen_version}",
+        f"ag2[together]=={autogen_version}",
+        f"ag2[mistral]=={autogen_version}",
+        f"ag2[groq]=={autogen_version}",
+        f"ag2[anthropic]=={autogen_version}",
+        f"ag2[cohere]=={autogen_version}",
+        # f"ag2[bedrock]=={autogen_version}",
     ]
     model_requirements = get_models_extra_requirements(
         models=models_iter, autogen_version=autogen_version
