@@ -7,6 +7,10 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.4.7
+
+- Fixed a bug with flow not running if using a swarm chat.
+
 ## v0.4.6
 
 - Updated jupyter dependencies to 4.4.2
