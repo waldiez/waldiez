@@ -1,29 +1,140 @@
-.flow-wrapper dialog:modal {
-  width: 100%;
-  height: 100%;
-  max-width: var(--app-width);
-  max-height: var(--app-height);
-  color: transparent;
-}
-
 .flow-wrapper .modal {
   position: fixed;
-  z-index: 10000;
-  left: 0;
-  top: 0;
-  margin: 0;
+  resize: both;
+  overflow: auto;
+  width: 50vw;
+  margin: 0 auto;
+  height: fit-content;
+  max-width: 90vw;
+  max-height: 90vh;
+  min-width: 300px;
+  min-height: 200px;
+  border-radius: 8px;
   padding: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgb(0 0 0/ 40%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  z-index: 1000;
   cursor: default !important;
 }
 
-.flow-wrapper.light dialog:modal {
-  color: transparent;
+.flow-wrapper .modal-fullscreen {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  resize: none !important;
+  border-radius: 0;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
 }
 
-.flow-wrapper dialog button {
+.flow-wrapper .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: move;
+  -webkit-user-select: none;
+  user-select: none;
+  gap: 0.5rem;
+}
+
+.flow-wrapper .modal-header > div:first-child {
+  margin-right: auto;
+  flex-shrink: 0;
+}
+
+.flow-wrapper .modal-title {
+  flex-grow: 1;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  pointer-events: none;
+}
+
+.flow-wrapper .modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.flow-wrapper .modal-close-btn,
+.flow-wrapper .modal-fullscreen-btn {
+  font-size: 1.25rem;
+  transition: color 0.2s ease;
+}
+
+.flow-wrapper .modal-close-btn:hover {
+  color: #d33;
+}
+
+.flow-wrapper .modal-fullscreen-btn:hover {
+  color: #007bff;
+}
+
+.flow-wrapper .modal-header-import-export {
+  display: flex;
+  align-items: center;
+}
+
+.flow-wrapper .modal-header-import-button svg,
+.flow-wrapper .modal-header-export-button svg {
+  font-size: large;
+  margin-right: 0.5rem;
+}
+
+.flow-wrapper .modal-header-export-button {
+  margin-left: 10px;
+}
+
+.flow-wrapper .modal-header-import-button,
+.flow-wrapper .modal-header-export-button {
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  margin-left: 10px;
+  border: none;
+  color: #555;
+  background-color: transparent;
+}
+
+.flow-wrapper.dark .modal-header-import-button,
+.flow-wrapper.dark .modal-header-export-button {
+  color: #aaa;
+}
+
+.flow-wrapper .modal-header-import-button:hover,
+.flow-wrapper .modal-header-export-button:hover {
+  color: #007bff;
+}
+
+.flow-wrapper .modal-header button {
+  box-shadow: none;
+  padding: unset;
+}
+
+.flow-wrapper .modal-content {
+  padding: 10px;
+  margin-bottom: 10px;
+  min-width: 320px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-wrapper.dark .modal-content {
+  background-color: #333;
+  color: #eee !important;
+}
+
+.flow-wrapper .modal.confirmation .modal-content {
+  min-height: unset;
+}
+
+.flow-wrapper .modal-content button {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
@@ -35,93 +146,33 @@
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.flow-wrapper .modal-header {
-  display: flex;
-  font-weight: bold;
-  font-size: large;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: -8px;
-}
-
-.flow-wrapper .modal-header-import-export {
-  display: flex;
-}
-
-.flow-wrapper .modal-header-import-button svg,
-.flow-wrapper .modal-header-export-button svg {
-  font-size: large;
-}
-
-.flow-wrapper.dark .modal-header svg {
-  fill: white;
-}
-
-.flow-wrapper.light .modal-header svg {
-  fill: black;
-}
-
-.flow-wrapper .modal-header button {
-  box-shadow: none;
-  padding: unset;
-}
-
-.flow-wrapper .modal-header .modal-title {
-  margin: 0;
-  font-size: large;
-}
-
-.flow-wrapper .modal-header-actions {
-  display: flex;
-}
-
-.flow-wrapper .modal-close-btn,
-.flow-wrapper .modal-fullscreen-btn {
-  cursor: pointer;
-  padding: 8px;
-}
-
-.flow-wrapper .modal-content {
-  position: relative;
-  margin: auto;
-  margin-top: 10px;
-  padding: 10px;
-  width: 60%;
-  border-radius: 10px;
-}
-
-.flow-wrapper .fullscreen .modal-content {
-  margin: 0;
-  width: calc(100vw - 20px);
-  min-height: calc(100vh - 20px);
-  transform: translate(0, 0);
-}
-
-.flow-wrapper .modal-body {
-  display: flex;
-  height: auto;
-  flex-direction: column;
-}
-
 .flow-wrapper .modal-body input,
 .flow-wrapper .modal-body textarea {
   padding: 10px;
+  width: calc(100% - 20px);
+}
+
+.flow-wrapper .modal-body input[type="number"] {
+  width: auto;
 }
 
 .flow-wrapper .modal-body textarea {
   resize: vertical;
 }
 
-.flow-wrapper .fullscreen .modal-body {
-  margin-top: 0;
-  max-height: unset;
-}
-
 .flow-wrapper .modal-actions {
   display: flex;
   justify-content: space-between;
+  padding: 10px;
+}
 
-  /* margin-top: 10px; */
+.flow-wrapper .modal-body {
+  display: flex;
+  height: auto;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  min-height: 0;
 }
 
 .flow-wrapper .modal-actions > .modal-action-submit,
@@ -130,7 +181,6 @@
 .flow-wrapper .modal-actions > div > .modal-action-submit,
 .flow-wrapper .modal-actions > div > .modal-action-submit-alt,
 .flow-wrapper .modal-actions > div > .modal-action-cancel {
-  padding: 10px 20px;
   color: white;
   border: none;
   border-radius: 5px;
@@ -155,44 +205,34 @@
   background-color: #004085;
 }
 
-@media (width <= 1280px) {
-  .flow-wrapper .modal-content {
-    width: unset;
-  }
+.flow-wrapper.light .modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  color: #555 !important;
 }
 
-.flow-wrapper .modal-header-import-button,
-.flow-wrapper .modal-header-export-button {
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  margin-left: 10px;
-  border: none;
-  background-color: transparent;
+.flow-wrapper.dark .modal-header {
+  background-color: #222;
+  color: #aaa !important;
 }
 
-.flow-wrapper .modal-header-export-button {
-  margin-left: 20px;
-}
-
-.flow-wrapper.light .modal-content {
+.flow-wrapper.light .modal {
   background-color: white;
   color: #000 !important;
+  border: 1px solid #ccc;
 }
 
-.flow-wrapper.dark .modal-content {
+.flow-wrapper.dark .modal {
   background-color: #333;
   color: #fff !important;
+  border: 1px solid #444;
 }
 
-.flow-wrapper .modal-confirmation {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.flow-wrapper .modal-confirmation-actions {
-  display: flex;
-  justify-content: space-between;
+@media (width <= 768px) {
+  .modal {
+    width: 90vw;
+    height: 90vh;
+    max-width: var(--app-width);
+    max-height: var(--app-height);
+  }
 }

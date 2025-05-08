@@ -62,7 +62,7 @@ const supportsDirectLookup: WaldiezModelAPIType[] = [
     "cohere",
     "mistral",
     "nim",
-    "other", // should be openai compati-ball
+    "other", // should be openai compat-i-ball
 ];
 export const validateModel = async (model: WaldiezNodeModelData): Promise<ValidationResult> => {
     const validation = validateModelInputs(model);
@@ -94,7 +94,11 @@ const validateModelBaseUrl = (model: WaldiezNodeModelData): ValidationResult => 
     if (!baseUrl.trim()) {
         return { success: false, message: ValidationMessage.MissingBaseUrl };
     }
-    return { success: true, message: ValidationMessage.ValidationSuccess, details: baseUrl };
+    return {
+        success: true,
+        message: ValidationMessage.ValidationSuccess,
+        details: baseUrl,
+    };
 };
 
 const validateModelInputs = (model: WaldiezNodeModelData): ValidationResult => {
@@ -117,7 +121,9 @@ const validateModelInputs = (model: WaldiezNodeModelData): ValidationResult => {
 const buildRequestConfig = (model: WaldiezNodeModelData, baseUrl: string) => {
     const base = baseUrl.replace(/\/$/, "");
     let url = base + modelListPaths[model.apiType];
-    const headers: Record<string, string> = { ...model.defaultHeaders };
+    const headers: Record<string, string> = Object.fromEntries(
+        Object.entries(model.defaultHeaders).map(([key, value]) => [key, String(value)]),
+    );
 
     if (model.apiType === "azure") {
         url += `?api-version=${model.apiVersion}`;
@@ -179,7 +185,11 @@ const validateFallbackModel = async (
         data = await res.json();
     } catch (error) {
         const details = error instanceof Error ? error.message : String(error);
-        return { success: false, message: ValidationMessage.CouldNotFetchModel, details };
+        return {
+            success: false,
+            message: ValidationMessage.CouldNotFetchModel,
+            details,
+        };
     }
     const found = Array.isArray(data.data) && data.data.some((d: any) => d.id === modelName);
     return found

@@ -7,6 +7,10 @@
   color: currentcolor;
 }
 
+.flow-wrapper .transparent {
+  background-color: transparent;
+}
+
 .flow-wrapper .hidden {
   visibility: hidden;
   margin: 0 !important;

@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 
 export type CollapsibleProps = {
     title: string;
+    className?: string;
     children: ReactNode;
     expanded?: boolean;
     fullWidth?: boolean;

@@ -3,9 +3,10 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
+export { apiKeyEnvs, apiTypeOptions, getApiTypeLabel } from "@waldiez/containers/nodes/model/utils/display";
+export { modelLinks, predefinedModels } from "@waldiez/containers/nodes/model/utils/predefined";
 export {
-    validateModel,
     baseUrlsMapping,
+    validateModel,
     ValidationMessage,
 } from "@waldiez/containers/nodes/model/utils/validation";
-export { getApiTypeLabel, apiTypeOptions, apiKeyEnvs } from "@waldiez/containers/nodes/model/utils/display";
