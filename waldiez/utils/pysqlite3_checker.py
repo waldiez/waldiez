@@ -94,15 +94,14 @@ def pip_install(*package_names: str, cwd: str = ".") -> None:
     cwd : str
         The current working directory.
     """
-    args = "-qq"
+    args = ["install", "-qq"]
     break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
         if not is_root():
-            args += " --user"
-    args_list = args.split()
-    run_command(PIP + ["install"] + args_list + list(package_names), cwd)
+            args.append("--user")
+    run_command(PIP + args + list(package_names), cwd)
     if not in_virtualenv():
         if break_system_packages:
             os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
@@ -120,14 +119,12 @@ def pip_uninstall(*package_names: str, cwd: str = ".") -> None:
     cwd : str
         The current working directory.
     """
-    args = "-qq --yes"
+    args = ["uninstall", "-qq", "--yes"]
     break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        args += " --user"
-    args_list = args.split()
-    run_command(PIP + ["uninstall"] + args_list + list(package_names), cwd)
+    run_command(PIP + args + list(package_names), cwd)
     if not in_virtualenv():
         if break_system_packages:
             os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
