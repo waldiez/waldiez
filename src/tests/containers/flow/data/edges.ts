@@ -56,12 +56,7 @@ for (let i = 0; i < edgesCount; i++) {
                     },
                 },
             },
-            maxRounds: 10,
-            afterWork: {
-                recipientType: "option",
-                recipient: "TERMINATE",
-            },
-            flowAfterWork: null,
+            prerequisites: [],
             createdAt,
             updatedAt,
         },

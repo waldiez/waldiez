@@ -68,7 +68,7 @@ describe("WaldiezChat", () => {
                 reply: nestedChatReply,
             },
             prerequisites: [],
-            maxRounds: 30,
+            handoffCondition: null,
             realSource: "agent1",
             realTarget: "agent2",
         });
@@ -89,6 +89,6 @@ describe("WaldiezChat", () => {
         expect(chat.data.maxTurns).toBe(10);
         expect(chat.data.summary.method).toBe("lastMsg");
         expect(chat.data.message).toEqual(message);
-        expect(chat.data.maxRounds).toBe(30);
+        expect(chat.data.handoffCondition).toBe(null);
     });
 });

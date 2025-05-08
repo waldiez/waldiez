@@ -20,6 +20,7 @@ type TextInputProps = {
     isPassword?: boolean;
     fullWidth?: boolean;
     className?: string;
+    labelClassName?: string;
 };
 
 export const TextInput: React.FC<TextInputProps> = (props: TextInputProps) => {
@@ -36,6 +37,7 @@ export const TextInput: React.FC<TextInputProps> = (props: TextInputProps) => {
         className = undefined,
         isPassword = false,
         fullWidth = false,
+        labelClassName = undefined,
     } = props;
 
     const [visible, setVisible] = useState(false);
@@ -52,7 +54,7 @@ export const TextInput: React.FC<TextInputProps> = (props: TextInputProps) => {
             {labelInfo ? (
                 <InfoLabel label={label} info={labelInfo} />
             ) : typeof label === "string" ? (
-                <label>{label}</label>
+                <label className={labelClassName || ""}>{label}</label>
             ) : (
                 label
             )}

@@ -7,7 +7,6 @@ import { describe, expect, it } from "vitest";
 import {
     getChatClearHistory,
     getChatDescription,
-    getChatMaxRounds,
     getChatMaxTurns,
     getChatName,
     getChatOrder,
@@ -82,19 +81,6 @@ describe("getChatOrder", () => {
         expect(getChatOrder({ order: "1" })).toBe(-1);
         expect(getChatOrder({ order: "1.5" })).toBe(-1);
         expect(getChatOrder({} as any)).toBe(-1);
-    });
-});
-
-describe("getChatMaxRounds", () => {
-    it("should return the maxRounds value", () => {
-        expect(getChatMaxRounds({ maxRounds: 0 })).toBe(0);
-        expect(getChatMaxRounds({ maxRounds: 1 })).toBe(1);
-        expect(getChatMaxRounds({ maxRounds: 2 })).toBe(2);
-        expect(getChatMaxRounds({ maxRounds: -1 })).toBe(-1);
-        expect(getChatMaxRounds({ maxRounds: 1.5 })).toBe(1);
-        expect(getChatMaxRounds({ maxRounds: "1" })).toBe(20);
-        expect(getChatMaxRounds({ maxRounds: "1.5" })).toBe(20);
-        expect(getChatMaxRounds({} as any)).toBe(20);
     });
 });
 

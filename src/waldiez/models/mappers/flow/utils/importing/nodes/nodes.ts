@@ -7,8 +7,8 @@ import { Node } from "@xyflow/react";
 import { WaldiezAgentType } from "@waldiez/models";
 import { getIdFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
-const VALID_NODE_TYPES = ["model", "skill", "agent"];
-const VALID_AGENT_TYPES: WaldiezAgentType[] = ["user_proxy", "assistant", "rag_user_proxy"];
+const ValidChatTypesNODE_TYPES = ["model", "skill", "agent"];
+const ValidAgentTypes: WaldiezAgentType[] = ["user_proxy", "assistant", "rag_user_proxy"];
 
 export const getNodes = (json: Record<string, unknown>) => {
     const nodes: Node[] = [];
@@ -47,7 +47,7 @@ const isValidNode = (nodeJson: Record<string, unknown>) => {
     if (
         !("type" in nodeJson) ||
         typeof nodeJson.type !== "string" ||
-        !VALID_NODE_TYPES.includes(nodeJson.type)
+        !ValidChatTypesNODE_TYPES.includes(nodeJson.type)
     ) {
         return null;
     }
@@ -85,7 +85,7 @@ const getNodeData = (nodeJson: Record<string, unknown>, type: string) => {
         if (
             !("agentType" in agentData) ||
             typeof agentData.agentType !== "string" ||
-            !VALID_AGENT_TYPES.includes(agentData.agentType as any)
+            !ValidAgentTypes.includes(agentData.agentType as any)
         ) {
             return data;
         }
@@ -130,7 +130,7 @@ const updateAgentNodes = (json: Record<string, unknown>, nodes: Node[]) => {
         if (node.type !== "agent") {
             return;
         }
-        VALID_AGENT_TYPES.forEach(agentType => {
+        ValidAgentTypes.forEach(agentType => {
             const key = `${agentType}s`;
             if (!(key in agents) || !Array.isArray(agents[key])) {
                 return;

@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 export { AfterWork } from "@waldiez/components/afterWork";
+export { ChatAvailability } from "@waldiez/components/chatAvailability";
 export { ChatUI, ImageModal } from "@waldiez/components/chatUI";
 export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";

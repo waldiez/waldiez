@@ -213,3 +213,6 @@ class WaldiezAgentHandoff(WaldiezBase):
     context_conditions: Optional[List[WaldiezOnContextCondition]] = None
     after_work: Optional[WaldiezTransitionTarget] = None
     explicit_tool_handoff_info: Optional[Dict[str, Any]] = None
+
+
+WaldiezHandoffCondition = Union[WaldiezOnCondition, WaldiezOnContextCondition]

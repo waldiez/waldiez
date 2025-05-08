@@ -38,9 +38,9 @@ describe("chatMapper.asEdge", () => {
             },
             prerequisites: [],
             maxTurns: 0,
-            maxRounds: 0,
             realSource: "wa-1",
             realTarget: "wa-2",
+            handoffCondition: null,
         };
         const chat = new WaldiezChat({ id: "1", data: chatData });
         const edge = chatMapper.asEdge(chat);

@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents import WaldiezAgentType
+from ..agents import WaldiezAgentType, WaldiezHandoffCondition
 from ..common import WaldiezBase, check_function, update_dict
 from .chat_message import (
     CALLABLE_MESSAGE,
@@ -53,10 +53,8 @@ class WaldiezChatData(WaldiezBase):
         Whether to run the chat silently, by default None (ignored).
     summary_args : Optional[Dict[str, Any]]
         The summary args to use in autogen.
-    max_rounds : int
-        Maximum number of conversation rounds (swarm).
-    after_work : Optional[WaldiezSwarmAfterWork]
-        The work to do after the chat (swarm).
+    handoff_condition : Optional[WaldiezHandoffCondition], optional
+        The handoff condition to use, by default None (for group chat).
     real_source : Optional[str]
         The real source of the chat (overrides the source).
     real_target : Optional[str]
@@ -176,14 +174,6 @@ class WaldiezChatData(WaldiezBase):
             description="Whether to run the chat silently.",
         ),
     ]
-    max_rounds: Annotated[
-        int,
-        Field(
-            20,
-            title="Max Rounds",
-            description="Maximum number of conversation rounds.(group)",
-        ),
-    ] = 20
     real_source: Annotated[
         Optional[str],
         Field(
@@ -220,6 +210,15 @@ class WaldiezChatData(WaldiezBase):
             description="The agent type of the target.",
         ),
     ]
+    handoff_condition: Annotated[
+        Optional[WaldiezHandoffCondition],
+        Field(
+            None,
+            alias="handoffCondition",
+            title="Handoff Condition",
+            description="The handoff condition to use.",
+        ),
+    ] = None
     _message_content: Optional[str] = None
     _chat_id: int = 0
     _prerequisites: List[int] = []

@@ -89,7 +89,7 @@ export const WaldiezNodeGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsPr
                         dataTestId={`manager-max-rounds-input-${id}`}
                     />
                     <Dict
-                        itemsType="swarm-context-variables"
+                        itemsType="group-context-variables"
                         viewLabel="Context Variables"
                         viewLabelInfo="The context variables that will be available when the group chat starts."
                         onAdd={onAddContextVariable}

@@ -43,7 +43,6 @@ describe("chatMapper.importChat", () => {
             },
         });
         expect(chat.data.maxTurns).toBe(0);
-        expect(chat.data.maxRounds).toBe(0);
     });
     it("should throw an error when importing an invalid chat", () => {
         expect(() => chatMapper.importChat(4, edges, agents, 1)).toThrowError("Invalid edge data");

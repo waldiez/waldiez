@@ -38,11 +38,7 @@ export const edgeData = {
             content: "",
         },
     },
-    maxRounds: 20,
-    afterWork: {
-        recipientType: "option",
-        recipient: "TERMINATE",
-    },
+    prerequisites: [],
     contextVariables: {},
     available: {
         type: "none",

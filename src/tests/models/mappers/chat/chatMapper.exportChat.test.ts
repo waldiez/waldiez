@@ -38,7 +38,7 @@ describe("chatMapper.exportChat", () => {
                 },
                 prerequisites: [],
                 maxTurns: 0,
-                maxRounds: 0,
+                handoffCondition: null,
                 realSource: "wa-1",
                 realTarget: "wa-2",
                 sourceType: "user_proxy" as const,
@@ -73,47 +73,6 @@ describe("chatMapper.exportChat", () => {
             },
         });
         expect(json.data.maxTurns).toBe(0);
-        expect(json.data.maxRounds).toBe(0);
         expect((json.data as any).label).toBeFalsy();
-    });
-    it("should export an edge without afterWork", () => {
-        const edge: WaldiezEdge = {
-            id: "1",
-            source: "wa-1",
-            target: "wa-2",
-            data: {
-                label: "custom_chat",
-                description: "custom_description",
-                position: 0,
-                order: 0,
-                clearHistory: false,
-                message: {
-                    type: "none",
-                    useCarryover: false,
-                    content: null,
-                    context: {},
-                },
-                nestedChat: {
-                    message: null,
-                    reply: null,
-                },
-                prerequisites: [],
-                summary: {
-                    method: "lastMsg",
-                    prompt: "summarize the conversation",
-                    args: {
-                        summary_role: "user",
-                    },
-                },
-                maxTurns: 0,
-                maxRounds: 0,
-                realSource: "wa-1",
-                realTarget: "wa-2",
-                sourceType: "user_proxy" as const,
-                targetType: "assistant" as const,
-            },
-        };
-        const json = chatMapper.exportChat(edge, 0);
-        expect(json).toBeTruthy();
     });
 });

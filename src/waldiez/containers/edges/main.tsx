@@ -15,7 +15,7 @@ import { EdgeLabel } from "@waldiez/containers/edges/edgeLabel";
 import { useWaldiezEdge } from "@waldiez/containers/edges/hooks";
 import { WaldiezEdgeProps } from "@waldiez/containers/edges/types";
 import { getEdgeTranslations } from "@waldiez/containers/edges/utils";
-import { WaldiezEdge, WaldiezEdgeType, WaldiezNodeAgent } from "@waldiez/models";
+import { WaldiezEdge, WaldiezEdgeType, WaldiezGroupChatType, WaldiezNodeAgent } from "@waldiez/models";
 
 export const WaldiezEdgeChat = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="chat" />;
@@ -32,8 +32,6 @@ export const WaldiezEdgeGroup = (props: EdgeProps<WaldiezEdge>) => {
 export const WaldiezEdgeHidden = (props: EdgeProps<WaldiezEdge>) => {
     return <WaldiezEdgeCommon {...props} type="hidden" />;
 };
-
-type GroupChatType = "toManager" | "nested" | "handoff" | "fromManager";
 
 // eslint-disable-next-line max-statements
 const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
@@ -178,18 +176,18 @@ const WaldiezEdgeCommon = (props: WaldiezEdgeProps) => {
 
 const getGroupChatType = (sourceAgent: WaldiezNodeAgent, targetAgent: WaldiezNodeAgent) => {
     if (targetAgent.data.agentType === "group_manager") {
-        return "source" as GroupChatType;
+        return "source" as WaldiezGroupChatType;
     }
     if (sourceAgent.data.agentType === "group_manager") {
-        return "target" as GroupChatType;
+        return "target" as WaldiezGroupChatType;
     }
     if (!!sourceAgent.data.parentId && !!targetAgent.data.parentId) {
-        return "handoff" as GroupChatType;
+        return "handoff" as WaldiezGroupChatType;
     }
-    return "nested" as GroupChatType;
+    return "nested" as WaldiezGroupChatType;
 };
 
-const getGroupChatIcon = (groupChatType: GroupChatType, size: number) => {
+const getGroupChatIcon = (groupChatType: WaldiezGroupChatType, size: number) => {
     const icon =
         groupChatType === "handoff" ? (
             <GiShakingHands size={size} />
@@ -200,7 +198,7 @@ const getGroupChatIcon = (groupChatType: GroupChatType, size: number) => {
         );
     return icon;
 };
-const getEdgeIcon = (type: WaldiezEdgeType, groupChatType: GroupChatType, edgeColor?: string) => {
+const getEdgeIcon = (type: WaldiezEdgeType, groupChatType: WaldiezGroupChatType, edgeColor?: string) => {
     const size = 18;
     if (type === "group") {
         return getGroupChatIcon(groupChatType, size);

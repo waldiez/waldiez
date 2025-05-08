@@ -88,12 +88,21 @@ export type WaldiezAgentLinkedSkill = {
  * @param maxConsecutiveAutoReply - The max consecutive auto reply
  * @param termination - The termination message check
  * @param nestedChats - The nested chats
+ * @param contextVariables - The context variables
+ * @param handoffs - The handoffs
  * @param modelIds - The model ids
  * @param skills - The linked skills
  * @param tags - The tags
  * @param requirements - The requirements
  * @param createdAt - The created at date
  * @param updatedAt - The updated at date
+ * @see {@link WaldiezNodeAgentType}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentHandoff}
+ * @see {@link WaldiezAgentLinkedSkill}
  */
 export type WaldiezAgentCommonData = {
     name: string;
@@ -146,3 +155,7 @@ export type WaldiezAgentType =
  * @param group_manager - Group manager
  */
 export type WaldiezNodeAgentType = WaldiezAgentType;
+
+export type ConditionCategory = "llm" | "context";
+
+export type ConditionType = "string_llm" | "context_str_llm" | "string_context" | "expression_context";

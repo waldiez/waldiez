@@ -97,7 +97,7 @@ export const AfterWork: React.FC<AfterWorkProps> = ({ target, agents, onChange, 
             <InfoCheckbox
                 label={`Include an action to perform after ${infoLabelAfter}?`}
                 info={
-                    "After work handles conversation continuation when an agent doesn't select the next agent. " +
+                    "Check this to handle conversation continuation when no further options are available. " +
                     "If no agent is selected and no tool calls have output, we will use this property to determine the next action."
                 }
                 checked={enabled}

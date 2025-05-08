@@ -4,7 +4,7 @@
  */
 import { Edge, Node } from "@xyflow/react";
 
-import { VALID_CHAT_TYPES, WaldiezChat } from "@waldiez/models";
+import { ValidChatTypes, WaldiezChat } from "@waldiez/models";
 import { chatMapper } from "@waldiez/models/mappers/chat";
 import { getRestFromJSON } from "@waldiez/models/mappers/common";
 
@@ -20,7 +20,7 @@ export const getEdges = (json: Record<string, unknown>) => {
         if (
             !("type" in edgeJson) ||
             typeof edgeJson.type !== "string" ||
-            !VALID_CHAT_TYPES.includes(edgeJson.type)
+            !ValidChatTypes.includes(edgeJson.type)
         ) {
             return;
         }

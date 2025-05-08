@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from pydantic import Field
 from typing_extensions import Annotated
 
-from ..agents import WaldiezAgent, WaldiezRagUserProxy
+from ..agents import WaldiezAgent, WaldiezHandoffCondition, WaldiezRagUserProxy
 from ..common import WaldiezBase, generate_function
 from .chat_data import WaldiezChatData
 from .chat_message import (
@@ -127,9 +127,9 @@ class WaldiezChat(WaldiezBase):
         return self.data.message_content
 
     @property
-    def max_rounds(self) -> int:
-        """Get the max rounds for swarm chat."""
-        return self.data.max_rounds
+    def max_turns(self) -> Optional[int]:
+        """Get the max rounds for the chat."""
+        return self.data.max_turns
 
     @property
     def chat_id(self) -> int:
@@ -140,6 +140,11 @@ class WaldiezChat(WaldiezBase):
     def prerequisites(self) -> List[int]:
         """Get the chat prerequisites."""
         return self.data.get_prerequisites()
+
+    @property
+    def handoff_condition(self) -> WaldiezHandoffCondition | None:
+        """Get the handoff condition."""
+        return self.data.handoff_condition
 
     def set_chat_id(self, value: int) -> None:
         """Set the chat ID.
@@ -347,5 +352,5 @@ class WaldiezChat(WaldiezBase):
         dump["nested_chat"] = self.nested_chat.model_dump()
         dump["message"] = self.message.model_dump()
         dump["message_content"] = self.message_content
-        dump["max_rounds"] = self.max_rounds
+        dump["max_turns"] = self.max_turns
         return dump

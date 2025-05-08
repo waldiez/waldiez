@@ -6,7 +6,7 @@ import { Node, XYPosition, useReactFlow } from "@xyflow/react";
 
 import { useCallback } from "react";
 
-import { VALID_AGENT_TYPES, WaldiezNodeAgentType } from "@waldiez/models";
+import { ValidAgentTypes, WaldiezNodeAgentType } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
 export const useDnD = (onNewAgent: () => void) => {
@@ -22,7 +22,7 @@ export const useDnD = (onNewAgent: () => void) => {
         let agentType: WaldiezNodeAgentType | undefined;
         if (nodeTypeData === "agent") {
             const agentTypeData = event.dataTransfer.getData("application/agent");
-            if (VALID_AGENT_TYPES.includes(agentTypeData)) {
+            if (ValidAgentTypes.includes(agentTypeData)) {
                 agentType = agentTypeData as WaldiezNodeAgentType;
             }
         }

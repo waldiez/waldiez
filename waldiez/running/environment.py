@@ -51,7 +51,7 @@ def refresh_environment() -> None:
         for mod in modules_to_reload:
             if mod not in sys.modules:
                 importlib.import_module(mod)
-        # a swarm chat without a user agent
+        # a group chat without a user agent
         # creates a new user (this has a default code execution with docker)
         # captain also generates new agents that also have
         # default code execution with docker

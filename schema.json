@@ -1,5 +1,5 @@
 {
-    "$id": "https://github.com/waldiez/waldiez/tree/v0.4.5/schema.json",
+    "$id": "https://github.com/waldiez/waldiez/tree/v0.4.6/schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "additionalProperties": false,
@@ -1953,14 +1953,21 @@
                         "type": "string"
                     }
                 },
-                "maxRounds": {
-                    "type": "number"
-                },
                 "realSource": {
                     "type": ["string", "null"]
                 },
                 "realTarget": {
                     "type": ["string", "null"]
+                },
+                "handoffCondition": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezHandoffCondition"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 },
                 "silent": {
                     "type": "boolean"
@@ -1981,9 +1988,9 @@
                 "summary",
                 "nestedChat",
                 "prerequisites",
-                "maxRounds",
                 "realSource",
-                "realTarget"
+                "realTarget",
+                "handoffCondition"
             ],
             "additionalProperties": false,
             "description": "Waldiez Chat Data"
@@ -2026,11 +2033,23 @@
                 }
             },
             "required": ["method", "prompt", "args"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Waldiez Chat Summary"
         },
         "WaldiezChatLlmSummaryMethod": {
             "type": ["string", "null"],
             "enum": ["reflectionWithLlm", "lastMsg", null]
+        },
+        "WaldiezHandoffCondition": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/WaldiezLLMCondition"
+                },
+                {
+                    "$ref": "#/definitions/WaldiezContextCondition"
+                }
+            ],
+            "description": "Waldiez LLM or context condition A condition that can be evaluated by an LLM or against context variables."
         }
     },
     "title": "Waldiez Flow",

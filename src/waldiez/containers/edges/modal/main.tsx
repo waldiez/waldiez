@@ -5,12 +5,14 @@
 import { useEffect, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 
-import { Modal, TabItem, TabItems } from "@waldiez/components";
+import { ChatAvailability, Modal, TabItem, TabItems } from "@waldiez/components";
 import { useWaldiezEdgeModal } from "@waldiez/containers/edges/modal/hooks";
 import { WaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic";
+import { WaldiezEdgeGroupCommonTab } from "@waldiez/containers/edges/modal/tabs/group";
 import { WaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/message";
 import { WaldiezEdgeNestedTab } from "@waldiez/containers/edges/modal/tabs/nested";
 import { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
+import { WaldiezGroupChatType } from "@waldiez/types";
 
 export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     const { edgeId, isOpen, onClose } = props;
@@ -42,6 +44,16 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         return <></>;
     }
     const beforeTitle = <FaTrashCan className="clickable" onClick={onDelete} />;
+    const groupChatType: WaldiezGroupChatType =
+        edgeType !== "group"
+            ? "none"
+            : edgeData.targetType === "group_manager"
+              ? "toManager"
+              : edgeData.sourceType === "group_manager"
+                ? "fromManager"
+                : !targetAgent.parentId
+                  ? "nested"
+                  : "handoff";
     return (
         <Modal
             isOpen={isOpen}
@@ -54,39 +66,67 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
             preventCloseIfUnsavedChanges
         >
             <div className="modal-body edge-modal">
-                <TabItems activeTabIndex={activeTabIndex}>
-                    <TabItem label="Properties" id={`we-${flowId}-edge-properties-${edgeId}`}>
-                        <WaldiezEdgeBasicTab
-                            edgeId={edgeId}
-                            data={edgeData}
-                            edgeType={edgeType}
-                            onTypeChange={onTypeChange}
-                            onDataChange={onDataChange}
-                        />
-                    </TabItem>
-                    {edgeType === "chat" && (
-                        <TabItem label="Message" id={`we-${flowId}-edge-message-${edgeId}`}>
-                            <WaldiezEdgeMessageTab
+                {edgeType === "group" ? (
+                    <TabItems activeTabIndex={activeTabIndex}>
+                        <TabItem label="Properties" id={`we-${flowId}-edge-properties-${edgeId}`}>
+                            <WaldiezEdgeGroupCommonTab
                                 edgeId={edgeId}
-                                data={edgeData}
-                                darkMode={isDark}
-                                skipRagOption={!isRagUserProxy}
-                                onDataChange={onDataChange}
-                            />
-                        </TabItem>
-                    )}
-                    {edgeType === "nested" && (
-                        <TabItem label="Nested Chat" id={`we-${flowId}-edge-nested-${edgeId}`}>
-                            <WaldiezEdgeNestedTab
-                                flowId={flowId}
-                                edgeId={edgeId}
-                                darkMode={isDark}
                                 data={edgeData}
                                 onDataChange={onDataChange}
                             />
                         </TabItem>
-                    )}
-                </TabItems>
+                        {groupChatType === "nested" && (
+                            <TabItem label="Nested Chat" id={`we-${flowId}-edge-nested-${edgeId}`}>
+                                <WaldiezEdgeNestedTab
+                                    flowId={flowId}
+                                    edgeId={edgeId}
+                                    darkMode={isDark}
+                                    data={edgeData}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
+                        )}
+                        {groupChatType === "handoff" && (
+                            <TabItem label="Availability" id={`we-${flowId}-edge-availability-${edgeId}`}>
+                                <ChatAvailability data={edgeData} onDataChange={onDataChange} />
+                            </TabItem>
+                        )}
+                    </TabItems>
+                ) : (
+                    <TabItems activeTabIndex={activeTabIndex}>
+                        <TabItem label="Properties" id={`we-${flowId}-edge-properties-${edgeId}`}>
+                            <WaldiezEdgeBasicTab
+                                edgeId={edgeId}
+                                data={edgeData}
+                                edgeType={edgeType}
+                                onTypeChange={onTypeChange}
+                                onDataChange={onDataChange}
+                            />
+                        </TabItem>
+                        {edgeType === "chat" && (
+                            <TabItem label="Message" id={`we-${flowId}-edge-message-${edgeId}`}>
+                                <WaldiezEdgeMessageTab
+                                    edgeId={edgeId}
+                                    data={edgeData}
+                                    darkMode={isDark}
+                                    skipRagOption={!isRagUserProxy}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
+                        )}
+                        {edgeType === "nested" && (
+                            <TabItem label="Nested Chat" id={`we-${flowId}-edge-nested-${edgeId}`}>
+                                <WaldiezEdgeNestedTab
+                                    flowId={flowId}
+                                    edgeId={edgeId}
+                                    darkMode={isDark}
+                                    data={edgeData}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
+                        )}
+                    </TabItems>
+                )}
                 <div className="modal-actions">
                     <button
                         type="button"

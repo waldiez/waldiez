@@ -28,7 +28,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param contextVariables - The context variables of the agent
  * @param handoffs - The handoffs of the agent
  * @param groupName - The name of the group that the agent manages
- * @param maxRound - The maximum round of the agent
+ * @param maxRound - The maximum number of rounds for the group chat this agent manages
  * @param adminName - The admin name of the agent
  * @param speakers - The speakers of the agent
  * @param enableClearHistory - The enable clear history of the agent

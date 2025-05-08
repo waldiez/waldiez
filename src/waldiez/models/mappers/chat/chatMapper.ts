@@ -11,7 +11,7 @@ import {
     checkChatData,
     getChatClearHistory,
     getChatDescription,
-    getChatMaxRounds,
+    getChatHandoffCondition,
     getChatMaxTurns,
     getChatName,
     getChatOrder,
@@ -76,7 +76,7 @@ export const chatMapper = {
             summary: summaryMapper.exportSummary(data.summary),
             nestedChat: getNestedChat(data),
             prerequisites: getChatPrerequisites(data),
-            maxRounds: getChatMaxRounds(data),
+            handoffCondition: getChatHandoffCondition(data),
             realSource: data.realSource,
             realTarget: data.realTarget,
         };
@@ -112,9 +112,9 @@ export const chatMapper = {
             prerequisites: chat.data.prerequisites,
             summary: chat.data.summary,
             maxTurns: chat.data.maxTurns,
-            maxRounds: chat.data.maxRounds,
             realSource: chat.data.realSource,
             realTarget: chat.data.realTarget,
+            handoffCondition: chat.data.handoffCondition,
         };
         return {
             id: chat.id,
@@ -142,9 +142,9 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
     const summary = summaryMapper.importSummary(json);
     const nestedChat = getNestedChat(json);
     const prerequisites = getChatPrerequisites(json);
-    const maxRounds = getChatMaxRounds(json);
     const realSource = getRealSource(json);
     const realTarget = getRealTarget(json);
+    const handoffCondition = getChatHandoffCondition(json);
     const data = new WaldiezChatData({
         source,
         target,
@@ -160,9 +160,9 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
         summary,
         nestedChat,
         prerequisites,
-        maxRounds,
         realSource,
         realTarget,
+        handoffCondition,
     });
     return data;
 };

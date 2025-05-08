@@ -17,11 +17,8 @@ export const WaldiezAgentGroup = (props: WaldiezAgentGroupProps) => {
         onLeaveGroup,
     } = useWaldiezAgentGroup(props);
     return (
-        <div className="agent-panel agent-group-panel margin-top-20 margin-bottom-10">
-            <div className="info margin-bottom-20">
-                Whether this agent will become member of a group chat. If a manager agent is selected, the
-                current agent is placed inside the group manager box.
-            </div>
+        <div className="agent-panel agent-group-panel margin-top-10 margin-bottom-10">
+            <div className="info margin-bottom-10">Should this agent be part of a group chat?</div>
             {!currentGroupManager ? (
                 <div className="agent-panel-select-group">
                     <label className="hidden" htmlFor={`agent-select-group-${id}`}>

@@ -12,9 +12,9 @@ WaldiezAgentType = Literal["user_proxy", "assistant", "group_manager", "manager"
     - assistant,
     - group_manager,
     - rag_user_proxy,
-    - swarm,
     - reasoning,
     - captain,
+    - swarm (deprecated: do not use it),
     - user (deprecated: use user_proxy)
     - rag_user (deprecated: user rag_user_proxy)
     - manager (deprecated: use group_manager)

@@ -10,7 +10,7 @@ export * from "@waldiez/models/Agent/RagUser";
 export * from "@waldiez/models/Agent/Reasoning";
 export type * from "@waldiez/models/Agent/types";
 export * from "@waldiez/models/Agent/UserProxy";
-export const VALID_AGENT_TYPES = [
+export const ValidAgentTypes = [
     "user_proxy",
     "assistant",
     "rag_user_proxy",

@@ -21,7 +21,7 @@ import {
 } from "@waldiez/models/mappers/common";
 import { getId } from "@waldiez/utils";
 
-const VALID_AGENT_TYPES: WaldiezNodeAgentType[] = [
+const ValidAgentTypes: WaldiezNodeAgentType[] = [
     "user_proxy",
     "assistant",
     "captain",
@@ -53,7 +53,7 @@ export const getAgentType = (json: any) => {
         }
         jsonObject = json.data;
     }
-    if (VALID_AGENT_TYPES.includes(jsonObject.agentType)) {
+    if (ValidAgentTypes.includes(jsonObject.agentType)) {
         agentType = jsonObject.agentType as WaldiezNodeAgentType;
     }
     return agentType;

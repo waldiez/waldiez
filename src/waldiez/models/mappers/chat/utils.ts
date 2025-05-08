@@ -5,14 +5,14 @@
 /* eslint-disable max-statements */
 import { Edge, MarkerType, Node } from "@xyflow/react";
 
-import { VALID_AGENT_TYPES, WaldiezNodeAgentType } from "@waldiez/models";
 import {
-    VALID_CHAT_TYPES,
-    WaldiezChatData,
-    WaldiezEdge,
-    WaldiezEdgeType,
-    WaldiezNestedChat,
-} from "@waldiez/models/Chat";
+    ValidAgentTypes,
+    ValidChatTypes,
+    ValidConditionTypes,
+    WaldiezHandoffCondition,
+    WaldiezNodeAgentType,
+} from "@waldiez/models";
+import { WaldiezChatData, WaldiezEdge, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { AGENT_COLORS } from "@waldiez/theme";
 
@@ -101,14 +101,6 @@ export const getChatOrder = (data: { [key: string]: any }) => {
     return order;
 };
 
-export const getChatMaxRounds = (data: { [key: string]: any }) => {
-    let maxRounds = 20;
-    if ("maxRounds" in data && typeof data.maxRounds === "number") {
-        maxRounds = Math.floor(data.maxRounds);
-    }
-    return maxRounds;
-};
-
 export const getRealSource = (data: { [key: string]: any }) => {
     let realSource = null;
     if ("realSource" in data && typeof data.realSource === "string") {
@@ -125,6 +117,122 @@ export const getRealTarget = (data: { [key: string]: any }) => {
     return realTarget;
 };
 
+/*
+export type WaldiezStringLLMCondition = {
+    condition_type: "string_llm";
+    prompt: string;
+    data?: Record<string, any>;
+};
+export type WaldiezContextStrLLMCondition = {
+    condition_type: "context_str_llm";
+    context_str: string;
+    data?: Record<string, any>;
+};
+export type WaldiezLLMCondition = WaldiezStringLLMCondition | WaldiezContextStrLLMCondition;
+export type WaldiezStringContextCondition = {
+    condition_type: "string_context";
+    variable_name: string;
+};
+export type WaldiezExpressionContextCondition = {
+    condition_type: "expression_context";
+    expression: string;
+    data?: Record<string, any>;
+};
+export type WaldiezContextCondition = WaldiezStringContextCondition | WaldiezExpressionContextCondition;
+export type WaldiezHandoffCondition = WaldiezLLMCondition | WaldiezContextCondition;
+export type ConditionCategory = "llm" | "context";
+export const ValidConditionCategories: ConditionCategory[] = ["llm", "context"];
+export type ConditionType = "string_llm" | "context_str_llm" | "string_context" | "expression_context";
+export const ValidConditionTypes: ConditionType[] = [
+    "string_llm",
+    "context_str_llm",
+    "string_context",
+    "expression_context",
+];
+
+*/
+
+const getStringLLMCondition = (data: { [key: string]: any }) => {
+    let condition: WaldiezHandoffCondition | null = null;
+    if ("condition_type" in data && data.condition_type === "string_llm") {
+        if ("prompt" in data && typeof data.prompt === "string") {
+            condition = {
+                condition_type: "string_llm",
+                prompt: data.prompt,
+            };
+        }
+    }
+    return condition;
+};
+const getContextStrLLMCondition = (data: { [key: string]: any }) => {
+    let condition: WaldiezHandoffCondition | null = null;
+    if ("condition_type" in data && data.condition_type === "context_str_llm") {
+        if ("context_str" in data && typeof data.context_str === "string") {
+            condition = {
+                condition_type: "context_str_llm",
+                context_str: data.context_str,
+            };
+        }
+    }
+    return condition;
+};
+const getStringContextCondition = (data: { [key: string]: any }) => {
+    let condition: WaldiezHandoffCondition | null = null;
+    if ("condition_type" in data && data.condition_type === "string_context") {
+        if ("variable_name" in data && typeof data.variable_name === "string") {
+            condition = {
+                condition_type: "string_context",
+                variable_name: data.variable_name,
+            };
+        }
+    }
+    return condition;
+};
+const getExpressionContextCondition = (data: { [key: string]: any }) => {
+    let condition: WaldiezHandoffCondition | null = null;
+    if ("condition_type" in data && data.condition_type === "expression_context") {
+        if ("expression" in data && typeof data.expression === "string") {
+            condition = {
+                condition_type: "expression_context",
+                expression: data.expression,
+            };
+        }
+    }
+    return condition;
+};
+
+export const getChatHandoffCondition = (data: { [key: string]: any }) => {
+    let handoffCondition: WaldiezHandoffCondition | null = null;
+    if ("handoffCondition" in data && data.handoffCondition) {
+        if (typeof data.handoffCondition === "object") {
+            if (
+                "condition_type" in data.handoffCondition &&
+                data.handoffCondition.condition_type &&
+                ValidConditionTypes.includes(data.handoffCondition.condition_type)
+            ) {
+                const conditionType = data.handoffCondition.condition_type;
+                switch (conditionType) {
+                    case "string_llm":
+                        handoffCondition = getStringLLMCondition(data.handoffCondition);
+                        break;
+                    case "context_str_llm":
+                        handoffCondition = getContextStrLLMCondition(data.handoffCondition);
+                        break;
+                    case "string_context":
+                        handoffCondition = getStringContextCondition(data.handoffCondition);
+                        break;
+                    case "expression_context":
+                        handoffCondition = getExpressionContextCondition(data.handoffCondition);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    return handoffCondition;
+};
+
 export const getChatType = (
     edge: WaldiezEdge,
     json: { [key: string]: any },
@@ -132,11 +240,11 @@ export const getChatType = (
     _targetNode: Node,
 ) => {
     let edgeType: WaldiezEdgeType = "chat";
-    if (json.type && VALID_CHAT_TYPES.includes(json.type)) {
+    if (json.type && ValidChatTypes.includes(json.type)) {
         edgeType = json.type;
     }
     let chatType = edge?.type ?? edgeType;
-    if (!VALID_CHAT_TYPES.includes(chatType)) {
+    if (!ValidChatTypes.includes(chatType)) {
         chatType = "chat";
     }
     return chatType as WaldiezEdgeType;
@@ -287,7 +395,7 @@ export const getChatSourceType = (json: { [key: string]: any }) => {
     if ("sourceType" in json && typeof json.sourceType === "string") {
         sourceType = json.sourceType;
     }
-    if (VALID_AGENT_TYPES.includes(sourceType)) {
+    if (ValidAgentTypes.includes(sourceType)) {
         return sourceType as WaldiezNodeAgentType;
     }
     return "assistant" as WaldiezNodeAgentType;
@@ -298,7 +406,7 @@ export const getChatTargetType = (json: { [key: string]: any }) => {
     if ("targetType" in json && typeof json.targetType === "string") {
         targetType = json.targetType;
     }
-    if (VALID_AGENT_TYPES.includes(targetType)) {
+    if (ValidAgentTypes.includes(targetType)) {
         return targetType as WaldiezNodeAgentType;
     }
     return "user_proxy" as WaldiezNodeAgentType;

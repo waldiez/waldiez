@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezAgentType } from "@waldiez/models/Agent/types";
+import { WaldiezAgentType, WaldiezHandoffCondition } from "@waldiez/models/Agent/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
 
@@ -45,9 +45,9 @@ export class WaldiezChatData {
         reply: WaldiezMessage | null;
     };
     prerequisites: string[] = [];
-    maxRounds: number;
     realSource: string | null = null;
     realTarget: string | null = null;
+    handoffCondition: WaldiezHandoffCondition | null = null;
     silent?: boolean = false;
     constructor(
         props: {
@@ -65,7 +65,7 @@ export class WaldiezChatData {
             message: WaldiezMessage;
             nestedChat: WaldiezNestedChat;
             prerequisites: string[];
-            maxRounds: number;
+            handoffCondition?: WaldiezHandoffCondition | null;
             realSource: string | null;
             realTarget: string | null;
             silent?: boolean;
@@ -96,7 +96,7 @@ export class WaldiezChatData {
                 reply: null,
             },
             prerequisites: [],
-            maxRounds: 20,
+            handoffCondition: null,
             realSource: null,
             realTarget: null,
             silent: false,
@@ -117,10 +117,10 @@ export class WaldiezChatData {
             order,
             nestedChat,
             prerequisites,
-            maxRounds,
             realSource,
             realTarget,
             silent,
+            handoffCondition,
         } = props;
         this.source = source;
         this.target = target;
@@ -136,7 +136,7 @@ export class WaldiezChatData {
         this.order = order;
         this.nestedChat = nestedChat;
         this.prerequisites = prerequisites;
-        this.maxRounds = maxRounds;
+        this.handoffCondition = handoffCondition || null;
         this.realSource = realSource;
         this.realTarget = realTarget;
         this.silent = silent;

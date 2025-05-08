@@ -283,15 +283,15 @@ class WaldiezFlow(WaldiezBase):
 
         - unique node ids
         - there are at least two agents
-            - (or a single agent but not a group manager or a swarm agent)
+            - (or a single agent but not a group manager)
         - all the agents connect to at least one other agent
         - all the linked agent skills are found in the flow
         - all the linked agent models are found in the flow
         - all the managers have at least one member in the chat group
         - the ordered flow (chats with position >=0) is not empty
         - all agents' code execution config functions exist in the flow skills
-        - if swarm flow, there is at least one swarm agent
-        - if swarm flow, there is an initial swarm agent
+        - if group chat flow, there is at least one group manager agent
+        - if group chat flow, there is an initial group member agent
 
         Returns
         -------
@@ -374,7 +374,7 @@ class WaldiezFlow(WaldiezBase):
             - If the model IDs are not unique.
             - If the skill IDs are not unique.
         """
-        if member.agent_type in ["manager", "swarm"]:
+        if member.agent_type in ["group_manager", "swarm"]:
             raise ValueError(
                 "In single agent mode, "
                 "the agent must not be a group manager or a swarm agent."
