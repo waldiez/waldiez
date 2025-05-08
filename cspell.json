@@ -121,6 +121,7 @@
         "makedirs",
         "markdownify",
         "mccabe",
+        "mcts",
         "metaclass",
         "microdiff",
         "Ministral",
@@ -142,6 +143,7 @@
         "nosemgrep",
         "nowheel",
         "npmjs",
+        "nsim",
         "numpy",
         "ollama",
         "ounospanas",
@@ -236,6 +238,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
