@@ -230,14 +230,14 @@ def install_pysqlite3(sqlite_amalgamation_path: str) -> None:
                 run_command(
                     [sys.executable, "setup.py", "build_static"], pysqlite3_dir
                 )
-            pip_install("wheel")
-            run_command(
-                PIP + ["wheel", ".", "-w", "dist"],
-                pysqlite3_dir,
-            )
-            wheel_file = os.listdir(os.path.join(pysqlite3_dir, "dist"))[0]
-            wheel_path = os.path.join("dist", wheel_file)
-            pip_install(wheel_path, cwd=pysqlite3_dir)
+                pip_install("wheel")
+                run_command(
+                    PIP + ["wheel", ".", "-w", "dist"],
+                    pysqlite3_dir,
+                )
+                wheel_file = os.listdir(os.path.join(pysqlite3_dir, "dist"))[0]
+                wheel_path = os.path.join("dist", wheel_file)
+                pip_install(wheel_path, cwd=pysqlite3_dir)
     except BaseException as e:  # pylint: disable=broad-except
         print(f"Failed to install pysqlite3: {e}")
         sys.exit(1)
