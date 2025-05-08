@@ -1,6 +1,5 @@
 ---
 name: Docs 📖
-  # yamllint disable rule:truthy
 # yamllint disable rule:truthy
 on:
   push:
