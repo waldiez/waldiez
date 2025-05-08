@@ -43,6 +43,7 @@ class StructuredIOStream(IOStream):
             if not self.uploads_root.exists():
                 self.uploads_root.mkdir(parents=True, exist_ok=True)
 
+    # pylint: disable=no-self-use
     def print(self, *args: Any, **kwargs: Any) -> None:
         """Structured print to stdout.
 

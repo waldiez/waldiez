@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=protected-access
 """Test WaldiezRunner."""
+# pylint: disable=protected-access,no-self-use,unused-argument
 
 import shutil
 from pathlib import Path
@@ -59,8 +59,15 @@ class CustomIOStream(IOStream):
         with patch("builtins.input", return_value="User Input\n"):
             return input(prompt)
 
+    def send(self, message: Any) -> None:
+        """Send data.
 
-IOStream.set_global_default(CustomIOStream())
+        Parameters
+        ----------
+        message : Any
+            Message to send.
+        """
+        self.print(str(message))
 
 
 def test_waldiez_runner(
@@ -124,14 +131,16 @@ def test_waldiez_with_invalid_requirement(
     flow_dict = waldiez_flow.model_dump(by_alias=True)
     # add an invalid requirement
     flow_dict["requirements"] = ["invalid_requirement"]
-    waldiez = Waldiez.from_dict(data=flow_dict)
-    runner = WaldiezRunner(waldiez)
-    runner.install_requirements()
-    std_err = capsys.readouterr().out
-    assert (
-        "ERROR: No matching distribution found for invalid_requirement"
-        in std_err
-    )
+    with IOStream.set_default(CustomIOStream()):
+        # create a Waldiez instance with invalid requirement
+        waldiez = Waldiez.from_dict(data=flow_dict)
+        runner = WaldiezRunner(waldiez)
+        runner.install_requirements()
+        std_err = capsys.readouterr().out
+        assert (
+            "ERROR: No matching distribution found for invalid_requirement"
+            in std_err
+        )
 
 
 class BadIOStream(IOStream):
@@ -173,14 +182,14 @@ def test_get_printer(capsys: pytest.CaptureFixture[str]) -> None:
     capsys : pytest.CaptureFixture[str]
         Pytest fixture to capture stdout and stderr.
     """
-    printer = get_printer()
-    invalid_str = "This is an invalid string: 🤯"
-    printer(invalid_str)
-    assert "This is an invalid string: " in capsys.readouterr().out
-    invalid_encoded = "This is an invalid encoded string".encode("cp1252")
-    printer(invalid_encoded)
-    assert "This is an invalid encoded string" in capsys.readouterr().out
+    with IOStream.set_default(CustomIOStream()):
+        printer = get_printer()
+        invalid_str = "This is an invalid string: 🤯"
+        printer(invalid_str)
+        assert "This is an invalid string: " in capsys.readouterr().out
+        invalid_encoded = "This is an invalid encoded string".encode("cp1252")
+        printer(invalid_encoded)
+        assert "This is an invalid encoded string" in capsys.readouterr().out
     with IOStream.set_default(BadIOStream()):
         printer1 = get_printer()
         printer1(invalid_str)
-    IOStream.set_global_default(CustomIOStream())
