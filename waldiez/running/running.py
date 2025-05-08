@@ -169,7 +169,8 @@ async def a_install_requirements(
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        pip_install.extend(["--user"])
+        if not is_root():
+            pip_install.extend(["--user"])
     pip_install.extend(extra_requirements)
     # pylint: disable=too-many-try-statements
     try:
