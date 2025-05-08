@@ -4,7 +4,7 @@
  */
 
 /**
- * Shows a snackbar message for a given flow view.
+ * Display a snackbar message for a given flow view.
  * @param flowId - The id of the flow to show the snackbar for.
  * @param message - The message to show in the snackbar.
  * @param level - The level of the snackbar. Can be 'info', 'warning', 'error' or 'success'. Defaults to 'info'.
@@ -14,15 +14,6 @@
 
 const DEFAULT_SNACKBAR_DURATION = 3000;
 
-// export const showSnackbar = (props: {
-//     flowId: string
-//     message: string,
-//     level: "info" | "warning" | "error" | "success" = "info",
-//     details: string | Error | object | null = null,
-//     duration: number | undefined = undefined,
-//     withCloseButton: boolean = false,
-//     }
-// ) => {
 export const showSnackbar: (props: {
     flowId: string;
     message: string;
