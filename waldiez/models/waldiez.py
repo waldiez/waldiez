@@ -230,8 +230,9 @@ class Waldiez:
         """Get the flow requirements."""
         autogen_version = get_autogen_version()
         requirements_list = filter(
-            # we use the fixed "pyautogen=={autogen_version}" below
+            # we use the fixed "ag2=={autogen_version}" below
             lambda requirement: not (
+                # cspell:disable-next-line
                 requirement.startswith("pyautogen")
                 or requirement.startswith("ag2")
                 or requirement.startswith("autogen")
@@ -239,12 +240,12 @@ class Waldiez:
             self.flow.requirements,
         )
         requirements = set(requirements_list)
-        requirements.add(f"pyautogen[openai]=={autogen_version}")
+        requirements.add(f"ag2[openai]=={autogen_version}")
         if self.has_rag_agents:
             rag_extras = get_retrievechat_extra_requirements(self.agents)
             requirements.update(rag_extras)
         if self.has_multimodal_agents:
-            requirements.add(f"pyautogen[lmm]=={autogen_version}")
+            requirements.add(f"ag2[lmm]=={autogen_version}")
         if self.has_captain_agents:
             # pysqlite3-binary might not get installed on windows
             captain_extras = [

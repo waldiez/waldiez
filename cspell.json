@@ -153,7 +153,6 @@
         "posttest",
         "psycopg",
         "pwsh",
-        "pyautogen",
         "pycache",
         "pydantic",
         "pydocstyle",
@@ -173,6 +172,7 @@
         "pyyaml",
         "qdrant",
         "rcfile",
+        "rdps",
         "redoc",
         "rendermime",
         "retrievechat",
@@ -234,8 +234,6 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": [
-        "/**"
-    ],
+    "files": ["/**"],
     "useGitignore": true
 }

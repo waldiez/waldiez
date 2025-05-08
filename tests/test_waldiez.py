@@ -39,7 +39,7 @@ def test_waldiez(tmp_path: Path) -> None:
     assert waldiez2.has_rag_agents
     assert waldiez.is_single_agent_mode is False
     skill = next(waldiez2.skills)
-    assert f"pyautogen[openai]=={ag2_version}" in waldiez2.requirements
+    assert f"ag2[openai]=={ag2_version}" in waldiez2.requirements
     assert "chromadb>=0.5.23" in waldiez2.requirements
     assert "SKILL_KEY" in skill.secrets
     assert "SKILL_KEY" == waldiez2.get_flow_env_vars()[0][0]

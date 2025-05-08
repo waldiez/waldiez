@@ -28,13 +28,9 @@ def get_skills_extra_requirements(
     skill_requirements: Set[str] = set()
     for skill in skills:
         if skill.skill_type == "langchain":
-            skill_requirements.add(
-                f"pyautogen[interop-langchain]=={autogen_version}"
-            )
+            skill_requirements.add(f"ag2[interop-langchain]=={autogen_version}")
         if skill.skill_type == "crewai":
-            skill_requirements.add(
-                f"pyautogen[interop-crewai]=={autogen_version}"
-            )
+            skill_requirements.add(f"ag2[interop-crewai]=={autogen_version}")
         for requirement in skill.requirements:
             skill_requirements.add(requirement)
     return skill_requirements

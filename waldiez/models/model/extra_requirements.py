@@ -39,11 +39,11 @@ def get_models_extra_requirements(
         for requirement in model.requirements:
             model_requirements.add(requirement)
         if model.data.api_type == "google":
-            model_requirements.add(f"pyautogen[gemini]=={autogen_version}")
+            model_requirements.add(f"ag2[gemini]=={autogen_version}")
             continue
         if model.data.api_type in models_with_additional_requirements:
             model_requirements.add(
-                f"pyautogen[{model.data.api_type}]=={autogen_version}"
+                f"ag2[{model.data.api_type}]=={autogen_version}"
             )
     return model_requirements
 
