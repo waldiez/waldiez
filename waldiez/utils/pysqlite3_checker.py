@@ -64,6 +64,26 @@ def in_virtualenv() -> bool:
     )
 
 
+def is_root() -> bool:
+    """Check if the script is running as root/administrator.
+
+    Returns
+    -------
+    bool
+        True if running as root/administrator, False otherwise.
+    """
+    # pylint: disable=import-outside-toplevel,line-too-long
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
+        except Exception:  # pylint: disable=broad-exception-caught
+            return False
+    else:
+        return os.getuid() == 0
+
+
 def pip_install(*package_names: str, cwd: str = ".") -> None:
     """Install packages using pip.
 
@@ -79,7 +99,8 @@ def pip_install(*package_names: str, cwd: str = ".") -> None:
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        args += " --user"
+        if not is_root():
+            args += " --user"
     args_list = args.split()
     run_command(PIP + ["install"] + args_list + list(package_names), cwd)
     if not in_virtualenv():
@@ -212,14 +233,14 @@ def install_pysqlite3(sqlite_amalgamation_path: str) -> None:
                 run_command(
                     [sys.executable, "setup.py", "build_static"], pysqlite3_dir
                 )
-        pip_install("wheel")
-        run_command(
-            PIP + ["wheel", ".", "-w", "dist"],
-            pysqlite3_dir,
-        )
-        wheel_file = os.listdir(os.path.join(pysqlite3_dir, "dist"))[0]
-        wheel_path = os.path.join("dist", wheel_file)
-        pip_install(wheel_path, cwd=pysqlite3_dir)
+            pip_install("wheel")
+            run_command(
+                PIP + ["wheel", ".", "-w", "dist"],
+                pysqlite3_dir,
+            )
+            wheel_file = os.listdir(os.path.join(pysqlite3_dir, "dist"))[0]
+            wheel_path = os.path.join("dist", wheel_file)
+            pip_install(wheel_path, cwd=pysqlite3_dir)
     except BaseException as e:  # pylint: disable=broad-except
         print(f"Failed to install pysqlite3: {e}")
         sys.exit(1)
