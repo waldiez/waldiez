@@ -41,7 +41,7 @@ export const EditFlowModal = (props: EditFlowModalProps) => {
             onSaveAndClose={onSaveAndClose}
             onClose={onClose}
             className="edit-flow-modal"
-            hasMaximizeBtn={false}
+            hasMaximizeBtn={true}
             dataTestId={`edit-flow-modal-${flowId}`}
             hasUnsavedChanges={isDirty}
             preventCloseIfUnsavedChanges

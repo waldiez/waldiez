@@ -6,16 +6,12 @@
   border-radius: 12px;
   min-width: 200px;
   min-height: 200px;
-  width: 200px;
   width: calc(100% - 6px);
-  height: 200px;
   height: calc(100% - 6px);
+  box-sizing: border-box;
   display: flex;
   padding: 0;
   flex-direction: column;
-
-  /* overflow: auto;
-  resize: both; */
 }
 
 .flow-wrapper label + .select {
@@ -102,7 +98,7 @@
   flex-direction: column;
 
   /* height: 100%; */
-  margin-bottom: 20px;
+  padding-bottom: 20px;
 }
 
 .flow-wrapper .agent-body .agent-models,
@@ -224,7 +220,6 @@
   align-self: center;
   justify-content: flex-end;
   width: calc(100% - 10px);
-  margin-bottom: -20px;
 }
 
 .flow-wrapper .agent-footer .agent-actions {
