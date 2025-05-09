@@ -9,6 +9,7 @@ Highly recommended to be run in a virtual environment.
 """
 
 import contextlib
+import io
 import os
 import platform
 import shutil
@@ -64,6 +65,26 @@ def in_virtualenv() -> bool:
     )
 
 
+def is_root() -> bool:
+    """Check if the script is running as root/administrator.
+
+    Returns
+    -------
+    bool
+        True if running as root/administrator, False otherwise.
+    """
+    # pylint: disable=import-outside-toplevel,line-too-long
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
+        except Exception:  # pylint: disable=broad-exception-caught
+            return False
+    else:
+        return os.getuid() == 0
+
+
 def pip_install(*package_names: str, cwd: str = ".") -> None:
     """Install packages using pip.
 
@@ -74,14 +95,14 @@ def pip_install(*package_names: str, cwd: str = ".") -> None:
     cwd : str
         The current working directory.
     """
-    args = "-qq"
+    args = ["install", "-qq"]
     break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        args += " --user"
-    args_list = args.split()
-    run_command(PIP + ["install"] + args_list + list(package_names), cwd)
+        if not is_root():
+            args.append("--user")
+    run_command(PIP + args + list(package_names), cwd)
     if not in_virtualenv():
         if break_system_packages:
             os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
@@ -99,14 +120,12 @@ def pip_uninstall(*package_names: str, cwd: str = ".") -> None:
     cwd : str
         The current working directory.
     """
-    args = "-qq --yes"
+    args = ["uninstall", "-qq", "--yes"]
     break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        args += " --user"
-    args_list = args.split()
-    run_command(PIP + ["uninstall"] + args_list + list(package_names), cwd)
+    run_command(PIP + args + list(package_names), cwd)
     if not in_virtualenv():
         if break_system_packages:
             os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
@@ -203,15 +222,7 @@ def install_pysqlite3(sqlite_amalgamation_path: str) -> None:
     try:
         pysqlite3_dir = prepare_pysqlite3(sqlite_amalgamation_path)
         pip_install("setuptools")
-        # let's suppress logs
-        with open(os.devnull, "w", encoding="utf-8") as devnull:
-            with (
-                contextlib.redirect_stdout(devnull),
-                contextlib.redirect_stderr(devnull),
-            ):
-                run_command(
-                    [sys.executable, "setup.py", "build_static"], pysqlite3_dir
-                )
+        run_command([sys.executable, "setup.py", "build_static"], pysqlite3_dir)
         pip_install("wheel")
         run_command(
             PIP + ["wheel", ".", "-w", "dist"],
@@ -280,7 +291,12 @@ def main() -> None:
     cwd = os.getcwd()
     tmpdir = tempfile.mkdtemp()
     os.chdir(tmpdir)
-    check_pysqlite3()
+    # let's try to suppress logs
+    with (
+        contextlib.redirect_stderr(io.StringIO()),
+        contextlib.redirect_stdout(io.StringIO()),
+    ):
+        check_pysqlite3()
     os.chdir(cwd)
     shutil.rmtree(tmpdir)
     test_sqlite_usage()

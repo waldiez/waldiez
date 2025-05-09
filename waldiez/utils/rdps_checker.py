@@ -18,7 +18,7 @@ import platform
 import subprocess
 import sys
 
-PIP = f"{sys.executable} -m pip"
+PIP = [os.path.normpath(sys.executable), "-m", "pip"]
 RDPS_PY_VERSION = "0.24.0"
 RDPS_PY_URL = f"git+https://github.com/crate-py/rpds.git@{RDPS_PY_VERSION}"
 
@@ -53,6 +53,26 @@ def is_rpds_py_installed() -> bool:
         return False
 
 
+def is_root() -> bool:
+    """Check if the script is running as root/administrator.
+
+    Returns
+    -------
+    bool
+        True if running as root/administrator, False otherwise.
+    """
+    # pylint: disable=import-outside-toplevel,line-too-long
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
+        except Exception:  # pylint: disable=broad-exception-caught
+            return False
+    else:
+        return os.getuid() == 0
+
+
 def in_virtualenv() -> bool:
     """Check if the current environment is a virtual environment.
 
@@ -69,11 +89,12 @@ def in_virtualenv() -> bool:
 
 def install_rpds_py() -> None:
     """Install `rpds-py`."""
-    command = [PIP, "install"]
+    command = PIP + ["install", "-qq"]
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        command.append("--user")
+        if not is_root():
+            command.append("--user")
     command.append(RDPS_PY_URL)
     try:
         subprocess.check_call(command)
