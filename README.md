@@ -1,12 +1,12 @@
 # Waldiez
 
-![CI Build](https://github.com/waldiez/python/actions/workflows/main.yaml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/waldiez/python/badge.svg)](https://coveralls.io/github/waldiez/python) [![PyPI Downloads](https://static.pepy.tech/badge/waldiez)](https://pepy.tech/projects/waldiez) [![PyPI version](https://badge.fury.io/py/waldiez.svg?icon=si%3Apython)](https://badge.fury.io/py/waldiez) [![npm version](https://badge.fury.io/js/@waldiez%2Freact.svg)](https://badge.fury.io/js/@waldiez%2Freact)
+[![Coverage Status](https://coveralls.io/repos/github/waldiez/waldiez/badge.svg)](https://coveralls.io/github/waldiez/python) [![PyPI Downloads](https://static.pepy.tech/badge/waldiez)](https://pepy.tech/projects/waldiez) [![PyPI version](https://badge.fury.io/py/waldiez.svg?icon=si%3Apython)](https://badge.fury.io/py/waldiez) [![npm version](https://badge.fury.io/js/@waldiez%2Freact.svg)](https://badge.fury.io/js/@waldiez%2Freact)
 
 ## Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez
 
 Design AI Agents and translate a Waldiez flow to AG2:
 
-
+<!-- markdownlint-disable MD034 -->
 https://github.com/user-attachments/assets/71d4b8d1-a24b-45ab-ab53-dfc193e8fcaa
 
 To a python script or a jupyter notebook with the corresponding [ag2](https://github.com/ag2ai/ag2/) agents and chats.
