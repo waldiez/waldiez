@@ -29,9 +29,23 @@ def prefer_uv() -> bool:
     return (ROOT_DIR / ".uv").is_file()
 
 
+def in_hatch_environment() -> bool:
+    """Check if the script is running in a Hatch environment.
+
+    Returns
+    -------
+    bool
+        True if the script is running in a Hatch environment, False otherwise.
+    """
+    return (
+        "HATCH_ENV_ACTIVE" in os.environ
+        and len(os.environ["HATCH_ENV_ACTIVE"]) > 0
+    )
+
+
 def ensure_venv() -> None:
     """Ensure the virtual environment executable exists."""
-    if os.path.exists(ROOT_DIR / ".venv"):
+    if os.path.exists(ROOT_DIR / ".venv") or in_hatch_environment():
         return
     if prefer_uv():
         print("Creating virtual environment with uv...")
@@ -62,6 +76,8 @@ def get_executable() -> str:
         The path to the Python executable.
     """
     if os.getenv("CI") == "true":
+        return sys.executable
+    if in_hatch_environment():
         return sys.executable
     if not os.path.exists(ROOT_DIR / ".venv"):
         ensure_venv()
