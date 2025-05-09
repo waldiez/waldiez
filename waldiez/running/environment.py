@@ -25,6 +25,26 @@ def in_virtualenv() -> bool:
     )
 
 
+def is_root() -> bool:
+    """Check if the script is running as root/administrator.
+
+    Returns
+    -------
+    bool
+        True if running as root/administrator, False otherwise.
+    """
+    # pylint: disable=import-outside-toplevel,line-too-long
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
+        except Exception:  # pylint: disable=broad-exception-caught
+            return False
+    else:
+        return os.getuid() == 0
+
+
 def refresh_environment() -> None:
     """Refresh the environment."""
     with warnings.catch_warnings():

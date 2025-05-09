@@ -23,7 +23,7 @@ from typing import (
     Union,
 )
 
-from .environment import in_virtualenv
+from .environment import in_virtualenv, is_root
 from .gen_seq_diagram import generate_sequence_diagram
 
 # pylint: disable=import-outside-toplevel
@@ -127,7 +127,8 @@ def install_requirements(
         # but it might fail if we don't
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        pip_install.append("--user")
+        if not is_root():
+            pip_install.append("--user")
     pip_install.extend(extra_requirements)
     # pylint: disable=too-many-try-statements
     try:
@@ -170,7 +171,8 @@ async def a_install_requirements(
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        pip_install.extend(["--user"])
+        if not is_root():
+            pip_install.extend(["--user"])
     pip_install.extend(extra_requirements)
     # pylint: disable=too-many-try-statements
     try:

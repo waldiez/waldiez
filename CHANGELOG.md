@@ -7,6 +7,20 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+## v0.4.7
+
+- Fixed a bug with flow not running if using a swarm chat.
+
+## v0.4.6
+
+- Updated jupyter dependencies to 4.4.2
+- UI: Fixed typos in predefined models
+- UI: Make modals resizable and draggable
+- VSCode: Fixed an issue with activating previously opened flows
+- Dependency updates
+- Other Minor UI changes
+- Other Minor Bug fixes
+
 ## v0.4.5
 
 - Minor UI changes
