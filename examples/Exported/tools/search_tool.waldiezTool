@@ -1,0 +1,16 @@
+{
+  "id": "ws-wh3PrdysHCUF6SE246vY9",
+  "type": "tool",
+  "name": "search_tool",
+  "description": "Search tool using Tavily AI",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-09-15T21:45:01.116Z",
+  "updatedAt": "2024-10-28T17:42:39.626Z",
+  "data": {
+    "content": "# filename: {search_tool}.py\n# pylint: disable=line-too-long\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n\nimport os\nfrom typing import Annotated\n\nfrom tavily import TavilyClient\n\ntavily = TavilyClient(api_key=os.environ[\"TAVILY_API_KEY\"])\n\n\ndef search_tool(query: Annotated[str, \"The search query\"]) -> Annotated[str, \"The search results\"]:\n    \"\"\"Search tool using Tavily AI.\"\"\"\n    return tavily.get_search_context(query=query, search_depth=\"advanced\")\n",
+    "secrets": {
+      "TAVILY_API_KEY": "REPLACE_ME"
+    }
+  }
+}

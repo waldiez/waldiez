@@ -1,6 +1,6 @@
 {
   "id": "ws-sKToUpnsHKAV7jglab1Te",
-  "type": "skill",
+  "type": "tool",
   "name": "get_stock_prices",
   "description": "Get the stock prices for the given stock symbols between the start and end dates.",
   "tags": [],

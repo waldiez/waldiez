@@ -1,0 +1,14 @@
+{
+  "id": "ws-gI5GZqizESno9c_BT1J-G",
+  "type": "tool",
+  "name": "get_legal_moves",
+  "description": "Get a list of legal chess moves.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2024-09-27T15:59:59.195Z",
+  "updatedAt": "2024-10-28T18:31:06.313Z",
+  "data": {
+    "content": "# filename: {get_legal_moves}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n# pylint: disable=global-statement\nfrom typing import Annotated\n\nimport chess\n\nif \"BOARD\" not in globals():\n    BOARD = chess.Board()\n    globals()[\"BOARD\"] = BOARD\nelse:\n    BOARD = globals()[\"BOARD\"]\n\n\ndef get_legal_moves() -> Annotated[str, \"A list of legal moves in UCI format\"]:\n    \"\"\"Get a list of legal moves.\"\"\"\n    return \"Possible moves are: \" + \",\".join(\n        [str(move) for move in BOARD.legal_moves]\n    )\n",
+    "secrets": {}
+  }
+}

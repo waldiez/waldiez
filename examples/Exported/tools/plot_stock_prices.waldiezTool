@@ -1,6 +1,6 @@
 {
   "id": "ws-QNNL0dh3pKBc65XAzX9nD",
-  "type": "skill",
+  "type": "tool",
   "name": "plot_stock_prices",
   "description": "Plot the stock prices for the given stock symbols.",
   "tags": [],
