@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Waldiez Skill model."""
+"""Waldiez Tool model."""
 
 import json
 import re
@@ -17,64 +17,64 @@ from ..common import (
     now,
     parse_code_string,
 )
-from .skill_data import WaldiezSkillData
-from .skill_type import WaldiezSkillType
+from .tool_data import WaldiezToolData
+from .tool_type import WaldiezToolType
 
-SHARED_SKILL_NAME = "waldiez_shared"
+SHARED_TOOL_NAME = "waldiez_shared"
 
 
-class WaldiezSkill(WaldiezBase):
-    """Waldiez Skill.
+class WaldiezTool(WaldiezBase):
+    """Waldiez Tool.
 
     Attributes
     ----------
     id : str
-        The ID of the skill.
-    type : Literal["skill"]
-        The type of the "node" in a graph: "skill".
+        The ID of the tool.
+    type : Literal["tool"]
+        The type of the "node" in a graph: "tool".
     name : str
-        The name of the skill.
+        The name of the tool.
     description : str
-        The description of the skill.
+        The description of the tool.
     tags : List[str]
-        The tags of the skill.
+        The tags of the tool.
     requirements : List[str]
-        The requirements of the skill.
+        The requirements of the tool.
     created_at : str
-        The date and time when the skill was created.
+        The date and time when the tool was created.
     updated_at : str
-        The date and time when the skill was last updated.
-    data : WaldiezSkillData
-        The data of the skill. See `WaldiezSkillData`.
+        The date and time when the tool was last updated.
+    data : WaldiezToolData
+        The data of the tool. See `WaldiezToolData`.
     """
 
     id: Annotated[
-        str, Field(..., title="ID", description="The ID of the skill.")
+        str, Field(..., title="ID", description="The ID of the tool.")
     ]
     type: Annotated[
-        Literal["skill"],
+        Literal["tool"],
         Field(
-            default="skill",
+            default="tool",
             title="Type",
             description="The type of the 'node' in a graph.",
         ),
     ]
     name: Annotated[
-        str, Field(..., title="Name", description="The name of the skill.")
+        str, Field(..., title="Name", description="The name of the tool.")
     ]
     description: Annotated[
         str,
         Field(
             ...,
             title="Description",
-            description="The description of the skill.",
+            description="The description of the tool.",
         ),
     ]
     tags: Annotated[
         List[str],
         Field(
             title="Tags",
-            description="The tags of the skill.",
+            description="The tags of the tool.",
             default_factory=list,
         ),
     ]
@@ -82,20 +82,20 @@ class WaldiezSkill(WaldiezBase):
         List[str],
         Field(
             title="Requirements",
-            description="The requirements of the skill.",
+            description="The requirements of the tool.",
             default_factory=list,
         ),
     ]
     data: Annotated[
-        WaldiezSkillData,
-        Field(..., title="Data", description="The data of the skill."),
+        WaldiezToolData,
+        Field(..., title="Data", description="The data of the tool."),
     ]
     created_at: Annotated[
         str,
         Field(
             default_factory=now,
             title="Created At",
-            description="The date and time when the skill was created.",
+            description="The date and time when the tool was created.",
         ),
     ]
     updated_at: Annotated[
@@ -103,13 +103,13 @@ class WaldiezSkill(WaldiezBase):
         Field(
             default_factory=now,
             title="Updated At",
-            description="The date and time when the skill was last updated.",
+            description="The date and time when the tool was last updated.",
         ),
     ]
 
     @staticmethod
-    def load(data_or_path: Union[str, Path, Dict[str, Any]]) -> "WaldiezSkill":
-        """Load a skill from a read-only file.
+    def load(data_or_path: Union[str, Path, Dict[str, Any]]) -> "WaldiezTool":
+        """Load a tool from a read-only file.
 
         Parameters
         ----------
@@ -118,8 +118,8 @@ class WaldiezSkill(WaldiezBase):
 
         Returns
         -------
-        WaldiezSkill
-            The skill.
+        WaldiezTool
+            The tool.
 
         Raises
         ------
@@ -129,7 +129,7 @@ class WaldiezSkill(WaldiezBase):
             If the JSON is invalid or the data is invalid.
         """
         if isinstance(data_or_path, dict):
-            return WaldiezSkill.model_validate(data_or_path)
+            return WaldiezTool.model_validate(data_or_path)
         if not isinstance(data_or_path, Path):
             data_or_path = Path(data_or_path)
         resolved = data_or_path.resolve()
@@ -140,86 +140,86 @@ class WaldiezSkill(WaldiezBase):
             try:
                 data_dict = json.loads(data_string)
             except BaseException as exc:  # pylint: disable=broad-except
-                raise ValueError(f"Invalid WaldiezSkill/JSON: {exc}") from exc
-            return WaldiezSkill.model_validate(data_dict)
+                raise ValueError(f"Invalid WaldiezTool/JSON: {exc}") from exc
+            return WaldiezTool.model_validate(data_dict)
 
     @property
-    def skill_type(self) -> WaldiezSkillType:
-        """Get the skill type.
+    def tool_type(self) -> WaldiezToolType:
+        """Get the tool type.
 
         Returns
         -------
-        WaldiezSkillType
-            The type of the skill:
+        WaldiezToolType
+            The type of the tool:
             [shared, custom, langchain, crewai].
         """
-        return self.data.skill_type
+        return self.data.tool_type
 
-    _skill_imports: Tuple[List[str], List[str]] = ([], [])
+    _tool_imports: Tuple[List[str], List[str]] = ([], [])
 
     def get_imports(self) -> Tuple[List[str], List[str]]:
-        """Get the skill imports.
+        """Get the tool imports.
 
         Returns
         -------
         Tuple[List[str], List[str]]
             The builtin and external imports.
         """
-        return self._skill_imports
+        return self._tool_imports
 
     @property
     def is_shared(self) -> bool:
-        """Check if the skill is shared.
+        """Check if the tool is shared.
 
         Returns
         -------
         bool
-            True if the skill is shared, False otherwise.
+            True if the tool is shared, False otherwise.
         """
-        return self.skill_type == "shared" or self.name == SHARED_SKILL_NAME
+        return self.tool_type == "shared" or self.name == SHARED_TOOL_NAME
 
     @property
     def is_interop(self) -> bool:
-        """Check if the skill is interoperability.
+        """Check if the tool is interoperability.
 
         Returns
         -------
         bool
-            True if the skill is interoperability, False otherwise.
+            True if the tool is interoperability, False otherwise.
         """
-        return self.skill_type in ("langchain", "crewai")
+        return self.tool_type in ("langchain", "crewai")
 
     def get_content(self) -> str:
-        """Get the content of the skill.
+        """Get the content of the tool.
 
         Returns
         -------
         str
-            The content of the skill.
+            The content of the tool.
         """
         if self.is_shared or self.is_interop:
             return self.data.content
         # if custom, only the function content
         return get_function(self.data.content, self.name)
 
-    def _validate_interop_skill(self) -> None:
-        """Validate the interoperability skill.
+    def _validate_interop_tool(self) -> None:
+        """Validate the interoperability tool.
 
         Raises
         ------
         ValueError
-            If the skill name is not in the content.
+            If the tool name is not in the content.
         """
         if self.is_interop:
             # we expect sth like:
-            # with single or double quotes for type={skill_type}
-            # {skill_name} = *.convert_tool(..., type="{skill_type}", ...)
+            # with single or double quotes for type={tool_type}
+            # {tool_name} = *.convert_tool(..., type="{tool_type}", ...)
             if f"{self.name} = " not in self.data.content:
                 raise ValueError(
-                    f"The skill name '{self.name}' is not in the content."
+                    f"The tool name '{self.name}' is not in the content."
                 )
             # we don't want the conversion to ag2 tool (we do it internally)
-            # or the skill registration (we do it after having the agent names)
+            # or the tool registration (we do it after having the agent names)
             # so no" .convert_tool(... type="...")
             # or .register_for_llm(...), .register_for_execution(...)
             to_exclude = [
@@ -230,27 +230,27 @@ class WaldiezSkill(WaldiezBase):
             for exclude in to_exclude:
                 if re.search(exclude, self.data.content):
                     raise ValueError(
-                        f"Invalid skill content: '{exclude}' is not allowed."
+                        f"Invalid tool content: '{exclude}' is not allowed."
                     )
 
-    def _validate_custom_skill(self) -> None:
-        """Validate a custom skill.
+    def _validate_custom_tool(self) -> None:
+        """Validate a custom tool.
 
         Raises
         ------
         ValueError
-            If the skill name is not in the content.
-            If the skill content is invalid.
+            If the tool name is not in the content.
+            If the tool content is invalid.
         """
         search = f"def {self.name}("
-        if self.skill_type == "custom" and not self.is_shared:
+        if self.tool_type == "custom" and not self.is_shared:
             if search not in self.data.content:
                 raise ValueError(
-                    f"The skill name '{self.name}' is not in the content."
+                    f"The tool name '{self.name}' is not in the content."
                 )
             error, tree = parse_code_string(self.data.content)
             if error is not None or tree is None:
-                raise ValueError(f"Invalid skill content: {error}")
+                raise ValueError(f"Invalid tool content: {error}")
 
     @model_validator(mode="after")
     def validate_data(self) -> Self:
@@ -258,23 +258,23 @@ class WaldiezSkill(WaldiezBase):
 
         Returns
         -------
-        WaldiezSkill
-            The skill.
+        WaldiezTool
+            The tool.
 
         Raises
         ------
         ValueError
-            If the skill name is not in the content.
-            If the skill content is invalid.
+            If the tool name is not in the content.
+            If the tool content is invalid.
         """
-        self._validate_custom_skill()
-        self._validate_interop_skill()
-        self._skill_imports = gather_code_imports(
+        self._validate_custom_tool()
+        self._validate_interop_tool()
+        self._tool_imports = gather_code_imports(
             self.data.content, self.is_interop
         )
         # remove the imports from the content
         # we 'll place them at the top of the file
-        all_imports = self._skill_imports[0] + self._skill_imports[1]
+        all_imports = self._tool_imports[0] + self._tool_imports[1]
         code_lines = self.data.content.splitlines()
         valid_lines = [
             line
@@ -292,10 +292,10 @@ class WaldiezSkill(WaldiezBase):
 
     @property
     def content(self) -> str:
-        """Get the content (source) of the skill."""
+        """Get the content (source) of the tool."""
         return self.data.content
 
     @property
     def secrets(self) -> Dict[str, str]:
-        """Get the secrets (environment variables) of the skill."""
+        """Get the secrets (environment variables) of the tool."""
         return self.data.secrets or {}

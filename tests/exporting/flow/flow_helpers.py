@@ -8,7 +8,7 @@ from typing_extensions import Literal
 
 from waldiez.models import (
     WaldiezAgentCodeExecutionConfig,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentNestedChatMessage,
     WaldiezAgents,
@@ -34,8 +34,8 @@ from waldiez.models import (
     WaldiezReasoningAgent,
     WaldiezReasoningAgentData,
     WaldiezReasoningAgentReasonConfig,
-    WaldiezSkill,
-    WaldiezSkillData,
+    WaldiezTool,
+    WaldiezToolData,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -82,72 +82,72 @@ def get_model(model_id: str = "wm-1") -> WaldiezModel:
     )
 
 
-def get_skill(skill_id: str = "ws-1") -> WaldiezSkill:
-    """Get a WaldiezSkill.
+def get_tool(tool_id: str = "ws-1") -> WaldiezTool:
+    """Get a WaldiezTool.
 
     Parameters
     ----------
-    skill_id : str, optional
-        The skill ID, by default "ws-1"
+    tool_id : str, optional
+        The tool ID, by default "ws-1"
 
     Returns
     -------
-    WaldiezSkill
-        A WaldiezSkill instance.
+    WaldiezTool
+        A WaldiezTool instance.
     """
-    return WaldiezSkill(
-        id=skill_id,
-        name="skill_name",
-        description="Skill Description",
-        tags=["skill"],
+    return WaldiezTool(
+        id=tool_id,
+        name="tool_name",
+        description="Tool Description",
+        tags=["tool"],
         requirements=["chess"],
-        type="skill",
+        type="tool",
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezSkillData(
+        data=WaldiezToolData(
             content=(
-                "def skill_name():\n"
-                '    """Skill Description."""\n'
-                "    return 'Skill Response'"
+                "def tool_name():\n"
+                '    """Tool Description."""\n'
+                "    return 'Tool Response'"
             ),
             secrets={
-                "SKILL_KEY": "skill_value",
+                "TOOL_KEY": "tool_value",
             },
         ),
     )
 
 
-def get_interop_skill(
-    skill_id: str = "ws-2",
-    skill_type: Literal["langchain", "crewai"] = "langchain",
-) -> WaldiezSkill:
-    """Get an interop skill.
+def get_interop_tool(
+    tool_id: str = "ws-2",
+    tool_type: Literal["langchain", "crewai"] = "langchain",
+) -> WaldiezTool:
+    """Get an interop tool.
 
     Parameters
     ----------
-    skill_id : str, optional
-        The skill ID, by default "ws-2"
-    skill_type : Literal["langchain", "crewai"], optional
-        The skill type, by default "langchain"
+    tool_id : str, optional
+        The tool ID, by default "ws-2"
+    tool_type : Literal["langchain", "crewai"], optional
+        The tool type, by default "langchain"
 
     Returns
     -------
-    WaldiezSkill
-        A WaldiezSkill instance.
+    WaldiezTool
+        A WaldiezTool instance.
     """
-    skill_name = f"{skill_type}_skill"
-    return WaldiezSkill(
-        id=skill_id,
-        name=skill_name,
-        description="Interop Skill Description",
-        tags=["interop_skill"],
+    tool_name = f"{tool_type}_tool"
+    return WaldiezTool(
+        id=tool_id,
+        name=tool_name,
+        description="Interop Tool Description",
+        tags=["interop_tool"],
         requirements=[],
-        type="skill",
+        type="tool",
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezSkillData(
-            content=(f"{skill_name} = lambda: 'Interop Skill Response'"),
-            skill_type=skill_type,
+        data=WaldiezToolData(
+            content=(f"{tool_name} = lambda: 'Interop Tool Response'"),
+            tool_type=tool_type,
             secrets={},
         ),
     )
@@ -195,8 +195,8 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[
-                WaldiezAgentLinkedSkill(
+            tools=[
+                WaldiezAgentLinkedTool(
                     id="ws-1",
                     executor_id="wa-2",
                 )
@@ -264,8 +264,8 @@ def get_assistant(agent_id: str = "wa-2") -> WaldiezAssistant:
                 method_content=assistant_termination,
             ),
             model_ids=["wm-1"],
-            skills=[
-                WaldiezAgentLinkedSkill(
+            tools=[
+                WaldiezAgentLinkedTool(
                     id="ws-1",
                     executor_id="wa-2",
                 ),
@@ -313,7 +313,7 @@ def get_rag_user(agent_id: str = "wa-3") -> WaldiezRagUserProxy:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
             retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 task="default",
@@ -397,7 +397,7 @@ def get_reasoning_agent(agent_id: str = "wa-4") -> WaldiezReasoningAgent:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
             verbose=True,
             reason_config=WaldiezReasoningAgentReasonConfig(
@@ -446,7 +446,7 @@ def get_captain_agent(agent_id: str = "wa-5") -> WaldiezCaptainAgent:
             method_content=None,
         ),
         model_ids=["wm-1"],
-        skills=[],
+        tools=[],
         nested_chats=[],
         agent_lib=EXAMPLE_AGENT_LIB,  # type: ignore
         tool_lib="default",
@@ -556,9 +556,9 @@ def get_flow(is_async: bool = False) -> WaldiezFlow:
         A WaldiezFlow instance.
     """
     model = get_model()
-    custom_skill = get_skill()
-    langchain_skill = get_interop_skill(skill_type="langchain")
-    crewai_skill = get_interop_skill(skill_id="ws-3", skill_type="crewai")
+    custom_tool = get_tool()
+    langchain_tool = get_interop_tool(tool_type="langchain")
+    crewai_tool = get_interop_tool(tool_id="ws-3", tool_type="crewai")
     user = get_user_proxy()
     assistant = get_assistant()
     rag_user = get_rag_user()
@@ -589,7 +589,7 @@ def get_flow(is_async: bool = False) -> WaldiezFlow:
             viewport={},
             agents=agents,
             models=[model],
-            skills=[custom_skill, langchain_skill, crewai_skill],
+            tools=[custom_tool, langchain_tool, crewai_tool],
             chats=chats,
         ),
     )

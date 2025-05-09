@@ -103,7 +103,7 @@ def get_flow_data(
     """
     item_type = data.get("type", "flow")
     if item_type != "flow":
-        # empty flow (from exported model/skill ?)
+        # empty flow (from exported model/tool ?)
         raise ValueError(f"Invalid flow type: {item_type}")
     from_args = {
         "id": flow_id,

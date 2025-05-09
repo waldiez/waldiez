@@ -4,7 +4,7 @@
 
 A Waldiez class contains all the information that is needed to generate
 and run an autogen workflow. It has the model/LLM configurations, the agent
-definitions and their optional additional skills to be used.
+definitions and their optional additional tools to be used.
 """
 
 import json
@@ -17,7 +17,7 @@ from .chat import WaldiezChat
 from .common import get_autogen_version
 from .flow import WaldiezFlow, get_flow_data
 from .model import WaldiezModel, get_models_extra_requirements
-from .skill import WaldiezSkill, get_skills_extra_requirements
+from .tool import WaldiezTool, get_tools_extra_requirements
 
 
 @dataclass(frozen=True, slots=True)
@@ -179,15 +179,15 @@ class Waldiez:
         yield from self.flow.data.agents.members
 
     @property
-    def skills(self) -> Iterator[WaldiezSkill]:
-        """Get the flow skills.
+    def tools(self) -> Iterator[WaldiezTool]:
+        """Get the flow tools.
 
         Yields
         ------
-        WaldiezSkill
-            The skills.
+        WaldiezTool
+            The tools.
         """
-        yield from self.flow.data.skills
+        yield from self.flow.data.tools
 
     @property
     def models(self) -> Iterator[WaldiezModel]:
@@ -276,8 +276,8 @@ class Waldiez:
             )
         )
         requirements.update(
-            get_skills_extra_requirements(
-                self.skills,
+            get_tools_extra_requirements(
+                self.tools,
                 autogen_version=autogen_version,
             )
         )
@@ -292,8 +292,8 @@ class Waldiez:
             The environment variables for the flow.
         """
         env_vars: List[Tuple[str, str]] = []
-        for skill in self.skills:
-            for secret_key, secret_value in skill.secrets.items():
+        for tool in self.tools:
+            for secret_key, secret_value in tool.secrets.items():
                 env_vars.append((secret_key, secret_value))
         for model in self.models:
             api_eny_key = model.api_key_env_key

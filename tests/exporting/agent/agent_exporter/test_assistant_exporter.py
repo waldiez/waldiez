@@ -20,11 +20,11 @@ def test_export_assistant(tmp_path: Path) -> None:
     """
     output_dir = tmp_path / "test_agent_exporter"
     output_dir.mkdir(exist_ok=True)
-    agent, skills, models = create_agent(1, "assistant")
+    agent, tools, models = create_agent(1, "assistant")
     exporter = AgentExporter(
         agent=agent,
         agent_names={agent.id: agent.name},
-        skill_names={skill.id: skill.name for skill in skills},
+        tool_names={tool.id: tool.name for tool in tools},
         models=(models, {model.id: model.name for model in models}),
         chats=([], {}),
         is_async=False,

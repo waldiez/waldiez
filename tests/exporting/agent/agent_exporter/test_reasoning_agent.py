@@ -13,14 +13,14 @@ from .common import create_agent
 
 def test_export_reasoning_agent() -> None:
     """Test exporting a reasoning agent."""
-    agent, skills, models = create_agent(1, "reasoning")
+    agent, tools, models = create_agent(1, "reasoning")
     output_dir = Path("test_reasoning_agent_exporter")
     output_dir.mkdir(exist_ok=True)
     model_names = {model.id: model.name for model in models}
     exporter = AgentExporter(
         agent=agent,
         agent_names={agent.id: agent.name},
-        skill_names={skill.id: skill.name for skill in skills},
+        tool_names={tool.id: tool.name for tool in tools},
         models=(models, model_names),
         chats=([], {}),
         is_async=False,

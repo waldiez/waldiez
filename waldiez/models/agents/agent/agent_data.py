@@ -11,7 +11,7 @@ from typing_extensions import Annotated, Literal
 from ...common import WaldiezBase
 from .code_execution import WaldiezAgentCodeExecutionConfig
 from .handoff import WaldiezAgentHandoff
-from .linked_skill import WaldiezAgentLinkedSkill
+from .linked_tool import WaldiezAgentLinkedTool
 from .nested_chat import WaldiezAgentNestedChat
 from .termination_message import WaldiezAgentTerminationMessage
 
@@ -36,8 +36,8 @@ class WaldiezAgentData(WaldiezBase):
         The message termination check to use (keyword, method, none)
     model_ids: List[str]
         A list of models (their ids) to link with the agent.
-    skills : List[WaldiezAgentLinkedSkill]
-        A list of skills (id and executor) to register.
+    tools : List[WaldiezAgentLinkedTool]
+        A list of tools (id and executor) to register.
     nested_chats : List[WaldiezAgentNestedChat]
         A list of nested chats (triggered_by, messages), to register.
     context_variables : Optional[Dict[str, Any]]
@@ -130,12 +130,12 @@ class WaldiezAgentData(WaldiezBase):
             alias="modelIds",
         ),
     ]
-    skills: Annotated[
-        List[WaldiezAgentLinkedSkill],
+    tools: Annotated[
+        List[WaldiezAgentLinkedTool],
         Field(
             default_factory=list,
-            title="Skills",
-            description=("A list of skills (id and executor) to register."),
+            title="Tools",
+            description=("A list of tools (id and executor) to register."),
         ),
     ]
     nested_chats: Annotated[

@@ -2,104 +2,104 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=line-too-long
 # flake8: noqa: E501
-"""Test waldiez.models.skill.*."""
+"""Test waldiez.models.tool.*."""
 
 import pytest
 
-from waldiez.models.skill import (
-    SHARED_SKILL_NAME,
-    WaldiezSkill,
-    WaldiezSkillData,
+from waldiez.models.tool import (
+    SHARED_TOOL_NAME,
+    WaldiezTool,
+    WaldiezToolData,
 )
 
 
-def test_waldiez_skill() -> None:
-    """Test WaldiezSkill."""
+def test_waldiez_tool() -> None:
+    """Test WaldiezTool."""
     # Given
-    skill_id = "ws-1"
-    name = "skill_name"
+    tool_id = "ws-1"
+    name = "tool_name"
     description = "description"
-    data = {"content": "def skill_name():\n    pass"}
+    data = {"content": "def tool_name():\n    pass"}
     # When
-    skill = WaldiezSkill(
-        id=skill_id,
+    tool = WaldiezTool(
+        id=tool_id,
         name=name,
         description=description,
         data=data,  # type: ignore
     )
     # Then
-    assert skill.id == skill_id
-    assert skill.name == name
-    assert skill.description == description
-    assert skill.content == data["content"]
-    assert not skill.secrets
-    assert not skill.tags
-    assert not skill.requirements
+    assert tool.id == tool_id
+    assert tool.name == name
+    assert tool.description == description
+    assert tool.content == data["content"]
+    assert not tool.secrets
+    assert not tool.tags
+    assert not tool.requirements
 
 
-def test_invalid_skill() -> None:
-    """Test invalid WaldiezSkill."""
+def test_invalid_tool() -> None:
+    """Test invalid WaldiezTool."""
     with pytest.raises(ValueError):
-        WaldiezSkill()
+        WaldiezTool()
 
     # Given
-    skill_id = "ws-1"
-    name = "skill_name"
+    tool_id = "ws-1"
+    name = "tool_name"
     description = "description"
-    data = {"content": "def skill_name(4):"}
+    data = {"content": "def tool_name(4):"}
     # Then
     with pytest.raises(ValueError):
-        WaldiezSkill(
-            id=skill_id,
+        WaldiezTool(
+            id=tool_id,
             name=name,
             description=description,
             data=data,  # type: ignore
         )
 
     # Given
-    skill_id = "ws-1"
-    name = "skill_name"
+    tool_id = "ws-1"
+    name = "tool_name"
     description = "description"
-    data = {"content": "def not_skill_name():\n    pass"}
+    data = {"content": "def not_tool_name():\n    pass"}
     # Then
     with pytest.raises(ValueError):
-        WaldiezSkill(
-            id=skill_id,
+        WaldiezTool(
+            id=tool_id,
             name=name,
             description=description,
             data=data,  # type: ignore
         )
 
 
-def test_shared_skill() -> None:
-    """Test shared skill."""
+def test_shared_tool() -> None:
+    """Test shared tool."""
     # When
-    skill = WaldiezSkill(
+    tool = WaldiezTool(
         id="ws-1",
-        type="skill",
+        type="tool",
         tags=[],
         requirements=[],
-        name=SHARED_SKILL_NAME,
+        name=SHARED_TOOL_NAME,
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
-        description="shared skill",
-        data=WaldiezSkillData(content="GLOBAL_VARIABLE = 5", secrets={}),
+        description="shared tool",
+        data=WaldiezToolData(content="GLOBAL_VARIABLE = 5", secrets={}),
     )
     # Then
-    assert skill.id == "ws-1"
-    assert skill.name == SHARED_SKILL_NAME
-    assert skill.description == "shared skill"
-    assert skill.content == "GLOBAL_VARIABLE = 5"
-    assert not skill.secrets
-    assert not skill.tags
-    assert not skill.requirements
-    assert skill.get_content() == "GLOBAL_VARIABLE = 5"
+    assert tool.id == "ws-1"
+    assert tool.name == SHARED_TOOL_NAME
+    assert tool.description == "shared tool"
+    assert tool.content == "GLOBAL_VARIABLE = 5"
+    assert not tool.secrets
+    assert not tool.tags
+    assert not tool.requirements
+    assert tool.get_content() == "GLOBAL_VARIABLE = 5"
 
 
-def test_langchain_skill() -> None:
-    """Test langchain skill."""
+def test_langchain_tool() -> None:
+    """Test langchain tool."""
     # When
-    skill_name = "wiki_tool"
+    tool_name = "wiki_tool"
     langchain_tool_content = """
 import os
 import sys
@@ -111,48 +111,48 @@ from langchain_community.utilities import WikipediaAPIWrapper
 api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)
 wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
 """
-    skill = WaldiezSkill(
+    tool = WaldiezTool(
         id="ws-1",
-        type="skill",
+        type="tool",
         tags=[],
         requirements=["wikipedia"],
-        name=skill_name,
+        name=tool_name,
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
-        description="langchain skill",
-        data=WaldiezSkillData(
-            skill_type="langchain",
+        description="langchain tool",
+        data=WaldiezToolData(
+            tool_type="langchain",
             content=langchain_tool_content,
             secrets={},
         ),
     )
     # Then
-    assert skill.id == "ws-1"
-    assert skill.name == skill_name
-    assert skill.description == "langchain skill"
-    assert skill.content == (
+    assert tool.id == "ws-1"
+    assert tool.name == tool_name
+    assert tool.description == "langchain tool"
+    assert tool.content == (
         "api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)\n"
         "wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)"
     )
-    assert not skill.secrets
-    assert not skill.tags
-    assert skill.requirements == ["wikipedia"]
-    assert skill.get_content() == skill.content
-    skill_imports = skill.get_imports()
-    assert skill_imports[1] == [
+    assert not tool.secrets
+    assert not tool.tags
+    assert tool.requirements == ["wikipedia"]
+    assert tool.get_content() == tool.content
+    tool_imports = tool.get_imports()
+    assert tool_imports[1] == [
         "from autogen.interop import Interoperability",
         "from langchain_community.tools import WikipediaQueryRun",
         "from langchain_community.utilities import WikipediaAPIWrapper",
     ]
-    assert skill_imports[0] == [
+    assert tool_imports[0] == [
         "import os",
         "import sys",
         "from typing import List",
     ]
 
 
-def test_crewai_skill() -> None:
-    """Test crewai skill."""
+def test_crewai_tool() -> None:
+    """Test crewai tool."""
     # When
     crewai_tool_content = """
 import os
@@ -162,43 +162,43 @@ from crewai_tools import ScrapeWebsiteTool
 scrape_tool = ScrapeWebsiteTool()
 
 """
-    skill = WaldiezSkill(
+    tool = WaldiezTool(
         id="ws-1",
-        type="skill",
+        type="tool",
         tags=[],
         requirements=["crewai"],
         name="scrape_tool",
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
-        description="crewai skill",
-        data=WaldiezSkillData(
-            skill_type="crewai",
+        description="crewai tool",
+        data=WaldiezToolData(
+            tool_type="crewai",
             content=crewai_tool_content,
             secrets={},
         ),
     )
     # Then
-    assert skill.id == "ws-1"
-    assert skill.name == "scrape_tool"
-    assert skill.description == "crewai skill"
-    assert skill.content == "scrape_tool = ScrapeWebsiteTool()"
-    assert not skill.secrets
-    assert not skill.tags
-    assert skill.requirements == ["crewai"]
-    assert skill.get_content() == skill.content
-    skill_imports = skill.get_imports()
-    assert skill_imports[0] == ["import os", "from typing import List"]
-    assert skill_imports[1] == [
+    assert tool.id == "ws-1"
+    assert tool.name == "scrape_tool"
+    assert tool.description == "crewai tool"
+    assert tool.content == "scrape_tool = ScrapeWebsiteTool()"
+    assert not tool.secrets
+    assert not tool.tags
+    assert tool.requirements == ["crewai"]
+    assert tool.get_content() == tool.content
+    tool_imports = tool.get_imports()
+    assert tool_imports[0] == ["import os", "from typing import List"]
+    assert tool_imports[1] == [
         "from autogen.interop import Interoperability",
         "from crewai_tools import ScrapeWebsiteTool",
     ]
 
 
-def test_pydantic_skill() -> None:
-    """Test pydantic skill."""
+def test_pydantic_tool() -> None:
+    """Test pydantic tool."""
     # Given
-    skill_id = "ws-1"
-    skill_name = "ag2_pydantic_ai_tool"
+    tool_id = "ws-1"
+    tool_name = "ag2_pydantic_ai_tool"
     description = "description"
     pydantic_ai_tool_content = '''
 
@@ -232,25 +232,25 @@ def ag2_pydantic_ai_tool() -> Tool:
 
 '''
     # When
-    skill = WaldiezSkill(
-        id=skill_id,
-        name=skill_name,
-        type="skill",
+    tool = WaldiezTool(
+        id=tool_id,
+        name=tool_name,
+        type="tool",
         tags=[],
         requirements=[],
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
         description=description,
-        data=WaldiezSkillData(
-            skill_type="custom",
+        data=WaldiezToolData(
+            tool_type="custom",
             content=pydantic_ai_tool_content,
             secrets={},
         ),
     )
     # Then
-    assert skill.id == skill_id
-    assert skill.name == skill_name
-    assert skill.description == description
+    assert tool.id == tool_id
+    assert tool.name == tool_name
+    assert tool.description == description
     content_without_imports = '''def ag2_pydantic_ai_tool() -> Tool:
     """Get the pydantic tool."""
 
@@ -272,14 +272,14 @@ def ag2_pydantic_ai_tool() -> Tool:
     interoperability = Interoperability()
     player = Player(name="John", age=25)
     return interoperability.convert_tool(pydantic_ai_tool, type="pydanticai", deps=player)'''
-    assert skill.content == content_without_imports
-    assert not skill.secrets
-    assert not skill.tags
-    assert not skill.requirements
-    assert skill.get_content() == skill.content
-    skill_imports = skill.get_imports()
-    assert not skill_imports[0]
-    assert skill_imports[1] == [
+    assert tool.content == content_without_imports
+    assert not tool.secrets
+    assert not tool.tags
+    assert not tool.requirements
+    assert tool.get_content() == tool.content
+    tool_imports = tool.get_imports()
+    assert not tool_imports[0]
+    assert tool_imports[1] == [
         "from autogen.interop import Interoperability",
         "from autogen.tools import Tool",
         "from pydantic import BaseModel",
@@ -288,10 +288,10 @@ def ag2_pydantic_ai_tool() -> Tool:
     ]
 
 
-def test_skill_without_interop_convert() -> None:
-    """Test skill without interop convert."""
+def test_tool_without_interop_convert() -> None:
+    """Test tool without interop convert."""
     # Given
-    skill_name = "wiki_tool"
+    tool_name = "wiki_tool"
     langchain_tool_content = """
 import os
 import sys
@@ -305,27 +305,27 @@ api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)
 wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
 """
     # Then
-    WaldiezSkill(
+    WaldiezTool(
         id="ws-1",
-        type="skill",
+        type="tool",
         tags=[],
         requirements=["wikipedia"],
-        name=skill_name,
+        name=tool_name,
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
-        description="langchain skill",
-        data=WaldiezSkillData(
-            skill_type="langchain",
+        description="langchain tool",
+        data=WaldiezToolData(
+            tool_type="langchain",
             content=langchain_tool_content,
             secrets={},
         ),
     )
 
 
-def test_skill_invalid_name() -> None:
-    """Test invalid skill name."""
+def test_tool_invalid_name() -> None:
+    """Test invalid tool name."""
     # When
-    skill_name = "invalid_name"
+    tool_name = "invalid_name"
     langchain_tool_content = """
 import os
 import sys
@@ -339,28 +339,28 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
 ag2_tool = Interoperability().convert_tool(wiki_tool, type="langchain")
 """
     with pytest.raises(ValueError):
-        WaldiezSkill(
+        WaldiezTool(
             id="ws-1",
-            type="skill",
+            type="tool",
             tags=[],
             requirements=["wikipedia"],
-            name=skill_name,
+            name=tool_name,
             created_at="2024-01-01T00:00:00Z",
             updated_at="2024-01-01T00:00:00Z",
-            description="langchain skill",
-            data=WaldiezSkillData(
-                skill_type="langchain",
+            description="langchain tool",
+            data=WaldiezToolData(
+                tool_type="langchain",
                 content=langchain_tool_content,
                 secrets={},
             ),
         )
 
 
-def test_custom_skill_content() -> None:
-    """Test custom skill content."""
+def test_custom_tool_content() -> None:
+    """Test custom tool content."""
     # Given
-    skill_id = "ws-1"
-    name = "custom_skill"
+    tool_id = "ws-1"
+    name = "custom_tool"
     description = "description"
     content = '''
 
@@ -371,39 +371,39 @@ import chess
 import numpy as np
 from nltk.tokenize import word_tokenize
 
-def custom_skill(text: str) -> List[str]:
+def custom_tool(text: str) -> List[str]:
     """Tokenize the text."""
     return word_tokenize(text)
 
 '''
     # When
-    skill = WaldiezSkill(
-        id=skill_id,
+    tool = WaldiezTool(
+        id=tool_id,
         name=name,
-        type="skill",
+        type="tool",
         tags=[],
         requirements=[],
         created_at="2024-01-01T00:00:00Z",
         updated_at="2024-01-01T00:00:00Z",
         description=description,
-        data=WaldiezSkillData(content=content, secrets={}),
+        data=WaldiezToolData(content=content, secrets={}),
     )
     # Then
-    assert skill.id == skill_id
-    assert skill.name == name
-    assert skill.description == description
-    assert not skill.secrets
-    assert not skill.tags
-    assert not skill.requirements
+    assert tool.id == tool_id
+    assert tool.name == name
+    assert tool.description == description
+    assert not tool.secrets
+    assert not tool.tags
+    assert not tool.requirements
     assert (
-        skill.get_content()
-        == '''def custom_skill(text: str) -> List[str]:
+        tool.get_content()
+        == '''def custom_tool(text: str) -> List[str]:
     """Tokenize the text."""
     return word_tokenize(text)'''
     )
-    skill_imports = skill.get_imports()
-    assert skill_imports[0] == ["import os", "from typing import List"]
-    assert skill_imports[1] == [
+    tool_imports = tool.get_imports()
+    assert tool_imports[0] == ["import os", "from typing import List"]
+    assert tool_imports[1] == [
         "import chess",
         "import numpy as np",
         "from nltk.tokenize import word_tokenize",

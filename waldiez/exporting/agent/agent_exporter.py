@@ -35,7 +35,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         agent_names: Dict[str, str],
         models: Tuple[List[WaldiezModel], Dict[str, str]],
         chats: Tuple[List[WaldiezChat], Dict[str, str]],
-        skill_names: Dict[str, str],
+        tool_names: Dict[str, str],
         is_async: bool,
         for_notebook: bool,
         arguments_resolver: Callable[[WaldiezAgent], List[str]],
@@ -53,8 +53,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
             All the models and the model ids to names mapping.
         chats : Tuple[List[WaldiezChat], Dict[str, str]]
             All the chats and the chat ids to names mapping.
-        skill_names : Dict[str, str]
-            The skill ids to names mapping.
+        tool_names : Dict[str, str]
+            The tool ids to names mapping.
         is_async : bool
             Whether the whole flow is async.
         for_notebook : bool
@@ -70,7 +70,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         self.output_dir = output_dir
         self.models = models[0]
         self.model_names = models[1]
-        self.skill_names = skill_names
+        self.tool_names = tool_names
         self.arguments_resolver = arguments_resolver
         self.chats = chats
         self.is_async = is_async
@@ -79,7 +79,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         self._code_execution = get_agent_code_execution_config(
             agent=self.agent,
             agent_name=self._agent_name,
-            skill_names=self.skill_names,
+            tool_names=self.tool_names,
         )
         # before_rag, retrieve_arg, rag_imports
         self._rag = get_rag_user_extras(
@@ -122,8 +122,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
         # if RAG is enabled, update the imports.
         if self._rag[2]:
             agent_imports.update(self._rag[2])
-        # if the agent has skills, add the register_function import.
-        if self.agent.data.skills:
+        # if the agent has tools, add the register_function import.
+        if self.agent.data.tools:
             agent_imports.add("from autogen import register_function")
         return sorted(
             [(import_string, position) for import_string in agent_imports],

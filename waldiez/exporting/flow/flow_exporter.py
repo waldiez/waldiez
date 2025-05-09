@@ -2,11 +2,11 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Flow Exporter class.
 
-- We gather all the exports (models, skills, agents, chats).
+- We gather all the exports (models, tools, agents, chats).
 
 - We first add all the imports from the above exports.
-- If we have skills, we include their imports.
-    (their files were generated when exporting the skills).
+- If we have tools, we include their imports.
+    (their files were generated when exporting the tools).
 - Then, we write the all model configs.
 - Next, we write the agent definitions
     (using the `llm_config=...` argument from the model exports).
@@ -41,7 +41,7 @@ from ..base import (
 )
 from ..chats import ChatsExporter
 from ..models import ModelsExporter
-from ..skills import SkillsExporter
+from ..tools import ToolsExporter
 from .utils import (
     add_after_agent_content,
     add_after_chat_content,
@@ -94,11 +94,11 @@ class FlowExporter(BaseExporter, ExporterMixin):
         self.flow_name = unique_names["flow_name"]
         self.agents = unique_names["agents"]
         self.models = unique_names["models"]
-        self.skills = unique_names["skills"]
+        self.tools = unique_names["tools"]
         self.chats = unique_names["chats"]
         self.agent_names = unique_names["agent_names"]
         self.model_names = unique_names["model_names"]
-        self.skill_names = unique_names["skill_names"]
+        self.tool_names = unique_names["tool_names"]
         self.chat_names = unique_names["chat_names"]
 
     def export_flow(self) -> ExporterReturnType:
@@ -110,21 +110,21 @@ class FlowExporter(BaseExporter, ExporterMixin):
             The exported flow.
         """
         models_output = self.export_models()
-        skills_output = self.export_skills()
+        tools_output = self.export_tools()
         chats_output = self.export_chats()
         env_vars = self.gather_environment_variables(
             model_env_vars=models_output["environment_variables"],
-            skill_env_vars=skills_output["environment_variables"],
+            tool_env_vars=tools_output["environment_variables"],
             chat_env_vars=chats_output["environment_variables"],
         )
         before_export = self.gather_exports(
             model_export=models_output["before_export"],
-            skill_export=skills_output["before_export"],
+            tool_export=tools_output["before_export"],
             chat_export=chats_output["before_export"],
         )
         after_export = self.gather_exports(
             model_export=models_output["after_export"],
-            skill_export=skills_output["after_export"],
+            tool_export=tools_output["after_export"],
             chat_export=chats_output["after_export"],
         )
         # agents last (to make sure we have any needed arguments)
@@ -135,7 +135,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
         )
         imports = gather_imports(
             model_imports=models_output["imports"],
-            skill_imports=skills_output["imports"],
+            tool_imports=tools_output["imports"],
             chat_imports=chats_output["imports"],
             agent_imports=agents_output["imports"],
         )
@@ -160,7 +160,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
         content = self.merge_exports(
             imports=all_imports,
             models_output=models_output["content"] or "",
-            skills_output=skills_output["content"] or "",
+            tools_output=tools_output["content"] or "",
             agents_content=agents_output["content"] or "",
             chats_content=chats_output["content"] or "",
             before_chats=before_chats,
@@ -177,7 +177,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
         self,
         imports: Tuple[str, ImportPosition],
         models_output: str,
-        skills_output: str,
+        tools_output: str,
         agents_content: str,
         chats_content: str,
         before_chats: str,
@@ -190,8 +190,8 @@ class FlowExporter(BaseExporter, ExporterMixin):
             The imports.
         models_output : str
             The models output.
-        skills_output : str
-            The skills output.
+        tools_output : str
+            The tools output.
         agents_content : str
             The agents content.
         chats_content : str
@@ -222,9 +222,9 @@ class FlowExporter(BaseExporter, ExporterMixin):
         if models_output:
             content += self.get_comment("models", self.for_notebook) + "\n"
             content += models_output + "\n"
-        if skills_output:
-            content += self.get_comment("skills", self.for_notebook) + "\n"
-            content += skills_output + "\n"
+        if tools_output:
+            content += self.get_comment("tools", self.for_notebook) + "\n"
+            content += tools_output + "\n"
         if agents_content:
             content += self.get_comment("agents", self.for_notebook) + "\n"
             content += agents_content + "\n"
@@ -263,7 +263,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
     @staticmethod
     def gather_environment_variables(
         model_env_vars: Optional[List[Tuple[str, str]]],
-        skill_env_vars: Optional[List[Tuple[str, str]]],
+        tool_env_vars: Optional[List[Tuple[str, str]]],
         chat_env_vars: Optional[List[Tuple[str, str]]],
     ) -> List[Tuple[str, str]]:
         """
@@ -273,8 +273,8 @@ class FlowExporter(BaseExporter, ExporterMixin):
         ----------
         model_env_vars : Optional[List[Tuple[str, str]]]
             The model environment variables.
-        skill_env_vars : Optional[List[Tuple[str, str]]]
-            The skill environment variables.
+        tool_env_vars : Optional[List[Tuple[str, str]]]
+            The tool environment variables.
         chat_env_vars : Optional[List[Tuple[str, str]]]
             The chat environment variables.
 
@@ -286,8 +286,8 @@ class FlowExporter(BaseExporter, ExporterMixin):
         all_env_vars: List[Tuple[str, str]] = []
         if model_env_vars:
             all_env_vars.extend(model_env_vars)
-        if skill_env_vars:
-            all_env_vars.extend(skill_env_vars)
+        if tool_env_vars:
+            all_env_vars.extend(tool_env_vars)
         if chat_env_vars:
             all_env_vars.extend(chat_env_vars)
         return all_env_vars
@@ -297,7 +297,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
         model_export: Optional[
             List[Tuple[str, Union[ExportPosition, AgentPosition]]]
         ],
-        skill_export: Optional[
+        tool_export: Optional[
             List[Tuple[str, Union[ExportPosition, AgentPosition]]]
         ],
         chat_export: Optional[
@@ -310,8 +310,8 @@ class FlowExporter(BaseExporter, ExporterMixin):
         ----------
         model_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The model exports.
-        skill_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
-            The skill exports.
+        tool_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+            The tool exports.
         chat_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The chat exports.
 
@@ -323,8 +323,8 @@ class FlowExporter(BaseExporter, ExporterMixin):
         all_exports: List[Tuple[str, Union[ExportPosition, AgentPosition]]] = []
         if model_export:
             all_exports.extend(model_export)
-        if skill_export:
-            all_exports.extend(skill_export)
+        if tool_export:
+            all_exports.extend(tool_export)
         if chat_export:
             all_exports.extend(chat_export)
         return all_exports
@@ -349,20 +349,20 @@ class FlowExporter(BaseExporter, ExporterMixin):
         )
         return exporter.export()
 
-    def export_skills(self) -> ExporterReturnType:
-        """Export the skills.
+    def export_tools(self) -> ExporterReturnType:
+        """Export the tools.
 
         Returns
         -------
         str
-            The exported skills.
+            The exported tools.
         """
-        exporter = SkillsExporter(
+        exporter = ToolsExporter(
             flow_name=self.flow_name,
             agents=self.agents,
             agent_names=self.agent_names,
-            skills=self.skills,
-            skill_names=self.skill_names,
+            tools=self.tools,
+            tool_names=self.tool_names,
             output_dir=self.output_dir,
         )
         return exporter.export()
@@ -436,7 +436,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
                 agent_names=self.agent_names,
                 models=(self.models, self.model_names),
                 chats=(self.chats, self.chat_names),
-                skill_names=self.skill_names,
+                tool_names=self.tool_names,
                 is_async=self.waldiez.is_async,
                 for_notebook=self.for_notebook,
                 output_dir=self.output_dir,

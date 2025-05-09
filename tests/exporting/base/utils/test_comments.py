@@ -16,7 +16,7 @@ def test_comment() -> None:
 def test_get_comment() -> None:
     """Test get_comment."""
     assert get_comment("agents", True) == "\n# ## Agents\n"
-    assert get_comment("skills", False) == "\n# Skills\n"
+    assert get_comment("tools", False) == "\n# Tools\n"
     assert get_comment("models", True) == "\n# ## Models\n"
     assert get_comment("nested", False) == "\n# Nested Chats\n"
     assert get_comment("run", True) == "\n# ## Run the flow\n"

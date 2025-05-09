@@ -13,7 +13,7 @@ from waldiez.models import (
     WaldiezModel,
     WaldiezRagUserProxy,
     WaldiezReasoningAgent,
-    WaldiezSkill,
+    WaldiezTool,
     WaldiezUserProxy,
 )
 
@@ -21,7 +21,7 @@ from waldiez.models import (
 def create_agent(
     counter: int,
     agent_type: WaldiezAgentType,
-) -> Tuple[WaldiezAgent, List[WaldiezSkill], List[WaldiezModel]]:
+) -> Tuple[WaldiezAgent, List[WaldiezTool], List[WaldiezModel]]:
     """Create an agent.
 
     Parameters
@@ -37,24 +37,24 @@ def create_agent(
         The agent.
     """
     # fmt: off
-    skill1 = WaldiezSkill(
+    tool1 = WaldiezTool(
         id=f"ws-{counter}_1",
-        name=f"skill{counter}_1",
-        description=f"skill{counter}_1 description",
+        name=f"tool{counter}_1",
+        description=f"tool{counter}_1 description",
         data={  # type: ignore
-            "content": f"def skill{counter}_1():" + "\n" + f'    return "skill body of skill{counter}_1"',
+            "content": f"def tool{counter}_1():" + "\n" + f'    return "tool body of tool{counter}_1"',
             "secrets": {
                 "SECRET_KEY_1": "SECRET_VALUE_1",
                 "SECRET_KEY_2": "SECRET_VALUE_2",
             },
         },
     )
-    skill2 = WaldiezSkill(
+    tool2 = WaldiezTool(
         id=f"ws-{counter}_2",
-        name=f"skill{counter}_2",
-        description=f"skill{counter}_2 description",
+        name=f"tool{counter}_2",
+        description=f"tool{counter}_2 description",
         data={  # type: ignore
-            "content": f"def skill{counter}_2():" + "\n" + f'    return "skill body of skill{counter}_2"',
+            "content": f"def tool{counter}_2():" + "\n" + f'    return "tool body of tool{counter}_2"',
             "secrets": {},
         },
     )
@@ -86,7 +86,7 @@ def create_agent(
         description=f"agent{counter} description",
         data={  # type: ignore
             "system_message": f"system message of agent {counter}",
-            "skills": [
+            "tools": [
                 {
                     "id": f"ws-{counter}_1",
                     "executor_id": f"wa-{counter}",
@@ -99,4 +99,4 @@ def create_agent(
             "model_ids": [f"wm-{counter}_1", f"wm-{counter}_2"],
         },
     )
-    return agent, [skill1, skill2], [model1, model2]
+    return agent, [tool1, tool2], [model1, model2]

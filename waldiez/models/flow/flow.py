@@ -285,11 +285,11 @@ class WaldiezFlow(WaldiezBase):
         - there are at least two agents
             - (or a single agent but not a group manager)
         - all the agents connect to at least one other agent
-        - all the linked agent skills are found in the flow
+        - all the linked agent tools are found in the flow
         - all the linked agent models are found in the flow
         - all the managers have at least one member in the chat group
         - the ordered flow (chats with position >=0) is not empty
-        - all agents' code execution config functions exist in the flow skills
+        - all agents' code execution config functions exist in the flow tools
         - if group chat flow, there is at least one group manager agent
         - if group chat flow, there is an initial group member agent
 
@@ -303,7 +303,7 @@ class WaldiezFlow(WaldiezBase):
         ValueError
             If the ordered flow is empty.
             If the model IDs are not unique.
-            If the skill IDs are not unique.
+            If the tool IDs are not unique.
             If the agents do not connect to any other node.
             If the manager's group chat has no members.
         """
@@ -313,8 +313,8 @@ class WaldiezFlow(WaldiezBase):
         if not self.ordered_flow:
             raise ValueError("The ordered flow is empty.")
         model_ids = self.validate_flow_models()
-        skills_ids = self.validate_flow_skills()
-        self.data.agents.validate_flow(model_ids, skills_ids)
+        tools_ids = self.validate_flow_tools()
+        self.data.agents.validate_flow(model_ids, tools_ids)
         self._validate_agent_connections()
         return self
 
@@ -336,23 +336,23 @@ class WaldiezFlow(WaldiezBase):
             raise ValueError("Model IDs must be unique.")
         return model_ids
 
-    def validate_flow_skills(self) -> List[str]:
-        """Validate the flow skills.
+    def validate_flow_tools(self) -> List[str]:
+        """Validate the flow tools.
 
         Returns
         -------
         List[str]
-            The list of skill IDs.
+            The list of tool IDs.
 
         Raises
         ------
         ValueError
-            If the skill IDs are not unique.
+            If the tool IDs are not unique.
         """
-        skill_ids = [skill.id for skill in self.data.skills]
-        if len(skill_ids) != len(set(skill_ids)):
-            raise ValueError("Skill IDs must be unique.")
-        return skill_ids
+        tool_ids = [tool.id for tool in self.data.tools]
+        if len(tool_ids) != len(set(tool_ids)):
+            raise ValueError("Tool IDs must be unique.")
+        return tool_ids
 
     def validate_single_agent_mode(self, member: WaldiezAgent) -> Self:
         """Flow validation for single agent mode.
@@ -372,7 +372,7 @@ class WaldiezFlow(WaldiezBase):
         ValueError
             - If the only agent is a group manager or a swarm agent.
             - If the model IDs are not unique.
-            - If the skill IDs are not unique.
+            - If the tool IDs are not unique.
         """
         if member.agent_type in ["group_manager", "swarm"]:
             raise ValueError(
@@ -380,7 +380,7 @@ class WaldiezFlow(WaldiezBase):
                 "the agent must not be a group manager or a swarm agent."
             )
         model_ids = self.validate_flow_models()
-        skills_ids = self.validate_flow_skills()
-        self.data.agents.validate_flow(model_ids, skills_ids)
+        tools_ids = self.validate_flow_tools()
+        self.data.agents.validate_flow(model_ids, tools_ids)
         self._single_agent_mode = True
         return self

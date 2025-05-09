@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Ensure unique names for agents, models, skills, and chats."""
+"""Ensure unique names for agents, models, tools, and chats."""
 
 from typing import Callable, Dict, List, TypedDict
 
@@ -9,7 +9,7 @@ from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
     WaldiezModel,
-    WaldiezSkill,
+    WaldiezTool,
 )
 
 
@@ -18,11 +18,11 @@ class ResultType(TypedDict):
 
     agent_names: Dict[str, str]
     model_names: Dict[str, str]
-    skill_names: Dict[str, str]
+    tool_names: Dict[str, str]
     chat_names: Dict[str, str]
     agents: List[WaldiezAgent]
     models: List[WaldiezModel]
-    skills: List[WaldiezSkill]
+    tools: List[WaldiezTool]
     chats: List[WaldiezChat]
     flow_name: str
 
@@ -34,7 +34,7 @@ def ensure_unique_names(
     max_length: int = 46,
     flow_name_max_length: int = 20,
 ) -> ResultType:
-    """Ensure unique names for agents, models, skills, and chats and flow.
+    """Ensure unique names for agents, models, tools, and chats and flow.
 
     Parameters
     ----------
@@ -50,16 +50,16 @@ def ensure_unique_names(
     Returns
     -------
     ResultType
-        The result with unique names for agents, models, skills, chats, flow.
+        The result with unique names for agents, models, tools, chats, flow.
     """
     all_names: Dict[str, str] = {}
     agent_names: Dict[str, str] = {}
     model_names: Dict[str, str] = {}
-    skill_names: Dict[str, str] = {}
+    tool_names: Dict[str, str] = {}
     chat_names: Dict[str, str] = {}
     agents: List[WaldiezAgent] = []
     models: List[WaldiezModel] = []
-    skills: List[WaldiezSkill] = []
+    tools: List[WaldiezTool] = []
     chats: List[WaldiezChat] = []
 
     for agent in waldiez.agents:
@@ -80,15 +80,15 @@ def ensure_unique_names(
         )
         model_names[model.id] = all_names[model.id]
         models.append(model)
-    for skill in waldiez.skills:
+    for tool in waldiez.tools:
         all_names = get_valid_instance_name(
-            (skill.id, skill.name),
+            (tool.id, tool.name),
             all_names,
             prefix="ws",
             max_length=max_length,
         )
-        skill_names[skill.id] = all_names[skill.id]
-        skills.append(skill)
+        tool_names[tool.id] = all_names[tool.id]
+        tools.append(tool)
     for chat in waldiez.flow.data.chats:
         all_names = get_valid_instance_name(
             (chat.id, chat.name), all_names, prefix="wc", max_length=max_length
@@ -105,11 +105,11 @@ def ensure_unique_names(
     result: ResultType = {
         "agent_names": agent_names,
         "model_names": model_names,
-        "skill_names": skill_names,
+        "tool_names": tool_names,
         "chat_names": chat_names,
         "agents": agents,
         "models": models,
-        "skills": skills,
+        "tools": tools,
         "chats": chats,
         "flow_name": flow_name,
     }

@@ -8,7 +8,7 @@ from waldiez.models.agents import (
     WaldiezAgent,
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
@@ -50,8 +50,8 @@ def test_waldiez_agent() -> None:
                 functions=["ws-1"],
             ),
             model_ids=["wm-1"],
-            skills=[
-                WaldiezAgentLinkedSkill(
+            tools=[
+                WaldiezAgentLinkedTool(
                     id="ws-1",
                     executor_id="wa-1",
                 )
@@ -66,20 +66,20 @@ def test_waldiez_agent() -> None:
     )
     assert agent.id == "wa-1"
     agent.validate_linked_models(["wm-1"])
-    agent.validate_linked_skills(skill_ids=["ws-1"], agent_ids=["wa-1"])
+    agent.validate_linked_tools(tool_ids=["ws-1"], agent_ids=["wa-1"])
     agent.validate_code_execution(
-        skill_ids=["ws-1"],
+        tool_ids=["ws-1"],
     )
     with pytest.raises(ValueError):
         agent.validate_code_execution(
-            skill_ids=["ws-2"],
+            tool_ids=["ws-2"],
         )
     with pytest.raises(ValueError):
         agent.validate_linked_models(["wm-2"])
     with pytest.raises(ValueError):
-        agent.validate_linked_skills(skill_ids=["ws-2"], agent_ids=["wa-1"])
+        agent.validate_linked_tools(tool_ids=["ws-2"], agent_ids=["wa-1"])
     with pytest.raises(ValueError):
-        agent.validate_linked_skills(skill_ids=["ws-1"], agent_ids=["wa-2"])
+        agent.validate_linked_tools(tool_ids=["ws-1"], agent_ids=["wa-2"])
 
 
 def test_agent_ag2_class() -> None:

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Run a waldiez flow.
 
-The flow is first converted to an autogen flow with agents, chats and skills.
+The flow is first converted to an autogen flow with agents, chats and tools.
 We then chown to temporary directory, call the flow's `main()` and
 return the results. Before running the flow, any additional environment
 variables specified in the waldiez file are set.

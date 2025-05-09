@@ -29,7 +29,7 @@ from waldiez.models import (
 def get_runnable_flow() -> WaldiezFlow:
     """Get a runnable WaldiezFlow instance.
 
-    without models and skills
+    without models and tools
 
     Returns
     -------
@@ -55,7 +55,7 @@ def get_runnable_flow() -> WaldiezFlow:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
         ),
         tags=["user"],
@@ -82,7 +82,7 @@ def get_runnable_flow() -> WaldiezFlow:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
         ),
         tags=["assistant"],
@@ -142,7 +142,7 @@ def get_runnable_flow() -> WaldiezFlow:
             viewport={},
             agents=agents,
             models=[],
-            skills=[],
+            tools=[],
             chats=[chat],
             is_async=False,
         ),
@@ -159,7 +159,7 @@ def get_runnable_flow() -> WaldiezFlow:
 def waldiez_flow() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance.
 
-    without models and skills
+    without models and tools
 
     Returns
     -------
@@ -173,7 +173,7 @@ def waldiez_flow() -> WaldiezFlow:
 def waldiez_flow_no_human_input() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance with no human input.
 
-    without models and skills
+    without models and tools
 
     Returns
     -------

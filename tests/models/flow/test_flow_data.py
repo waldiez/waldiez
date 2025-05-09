@@ -33,7 +33,7 @@ def test_waldiez_flow_data() -> None:
             "ragUserProxyAgents": [],
         },
         models=[],
-        skills=[],
+        tools=[],
         chats=[],
     )
     # Then
@@ -44,7 +44,7 @@ def test_waldiez_flow_data() -> None:
     assert len(flow_data.agents.assistantAgents) == 2
     assert not flow_data.agents.ragUserProxyAgents
     assert not flow_data.models
-    assert not flow_data.skills
+    assert not flow_data.tools
     assert not flow_data.chats
 
     with pytest.raises(ValueError):
@@ -59,7 +59,7 @@ def test_waldiez_flow_data() -> None:
                 "ragUserProxyAgents": [],
             },
             models=[],
-            skills=[],
+            tools=[],
             chats=[],
         )
     with pytest.raises(ValueError):
@@ -74,6 +74,6 @@ def test_waldiez_flow_data() -> None:
                 "ragUserProxyAgents": [],
             },
             models=[],
-            skills=[],
+            tools=[],
             chats=[],
         )

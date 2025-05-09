@@ -17,9 +17,9 @@ class WaldiezBase(BaseModel):
 
     model_config = ConfigDict(
         extra="ignore",
-        # treat `skillId` as `skill_id`
+        # treat `toolId` as `tool_id`
         alias_generator=to_camel,
-        # allow passing either `skill_id` or `skillId`
+        # allow passing either `tool_id` or `toolId`
         populate_by_name=True,
         # allow setting any attribute after initialization
         frozen=False,

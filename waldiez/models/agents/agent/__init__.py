@@ -21,7 +21,7 @@ from .handoff import (
     WaldiezStringLLMCondition,
     WaldiezTransitionTarget,
 )
-from .linked_skill import WaldiezAgentLinkedSkill
+from .linked_tool import WaldiezAgentLinkedTool
 from .nested_chat import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
 from .termination_message import (
     IS_TERMINATION_MESSAGE,
@@ -37,7 +37,7 @@ __all__ = [
     "WaldiezAgent",
     "WaldiezAgentCodeExecutionConfig",
     "WaldiezAgentData",
-    "WaldiezAgentLinkedSkill",
+    "WaldiezAgentLinkedTool",
     "WaldiezAgentNestedChat",
     "WaldiezAgentNestedChatMessage",
     "WaldiezAgentTerminationMessage",

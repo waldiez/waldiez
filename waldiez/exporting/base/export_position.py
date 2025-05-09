@@ -17,8 +17,8 @@ class ExportPositions(Enum):
         The imports section.
     MODELS : int
         The models section (define the llm_configs).
-    SKILLS : int
-        The skills section (generate the skill files, and import them)
+    TOOLS : int
+        The tools section (generate the tool files, and import them)
     AGENTS : int
         The agents section.
     CHATS : int
@@ -29,7 +29,7 @@ class ExportPositions(Enum):
 
     TOP = 0
     IMPORTS = 1
-    SKILLS = 2
+    TOOLS = 2
     MODELS = 3
     AGENTS = 4
     CHATS = 5

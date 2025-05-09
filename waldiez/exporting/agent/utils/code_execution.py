@@ -8,7 +8,7 @@ from waldiez.models import WaldiezAgent
 
 
 def get_agent_code_execution_config(
-    agent: WaldiezAgent, agent_name: str, skill_names: Dict[str, str]
+    agent: WaldiezAgent, agent_name: str, tool_names: Dict[str, str]
 ) -> Tuple[str, str, str]:
     """Get the code execution config for the agent.
 
@@ -18,8 +18,8 @@ def get_agent_code_execution_config(
         The agent.
     agent_name : str
         The agent name.
-    skill_names : Dict[str, str]
-        A mapping of skill id to skill name.
+    tool_names : Dict[str, str]
+        A mapping of tool id to tool name.
 
     Returns
     -------
@@ -50,9 +50,9 @@ def get_agent_code_execution_config(
         )
     if use_docker is False and agent.data.code_execution_config.functions:
         function_names = []
-        for skill_id in agent.data.code_execution_config.functions:
-            skill_name = skill_names[skill_id]
-            function_names.append(skill_name)
+        for tool_id in agent.data.code_execution_config.functions:
+            tool_name = tool_names[tool_id]
+            function_names.append(tool_name)
         if function_names:
             # pylint: disable=inconsistent-quotes
             function_names_string = ", ".join(function_names)

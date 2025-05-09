@@ -1,19 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Skills/tools related string generation functions.
+"""Tool related string generation functions.
 
 Functions
 ---------
-get_agent_skill_registration
-    Get an agent's skill registration string.
-export_skills
-    Get the skills content and secrets.
+get_agent_tool_registration
+    Get an agent's tool registration string.
+export_tools
+    Get the tools content and secrets.
 """
 
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
-from waldiez.models import WaldiezAgent, WaldiezSkill
+from waldiez.models import WaldiezAgent, WaldiezTool
 
 from ..base import (
     AgentPosition,
@@ -24,22 +24,22 @@ from ..base import (
     ExportPosition,
     ImportPosition,
 )
-from .utils import export_skills, get_agent_skill_registrations
+from .utils import export_tools, get_agent_tool_registrations
 
 
-class SkillsExporter(BaseExporter, ExporterMixin):
-    """Skill exporter."""
+class ToolsExporter(BaseExporter, ExporterMixin):
+    """Tool exporter."""
 
     def __init__(
         self,
         flow_name: str,
         agents: List[WaldiezAgent],
         agent_names: Dict[str, str],
-        skills: List[WaldiezSkill],
-        skill_names: Dict[str, str],
+        tools: List[WaldiezTool],
+        tool_names: Dict[str, str],
         output_dir: Optional[Union[str, Path]] = None,
     ) -> None:
-        """Initialize the skill exporter.
+        """Initialize the tool exporter.
 
         Parameters
         ----------
@@ -49,24 +49,24 @@ class SkillsExporter(BaseExporter, ExporterMixin):
             The agents.
         agent_names : Dict[str, str]
             The agent names.
-        skills : List[WaldiezSkill]
-            The skills.
-        skill_names : Dict[str, str]
-            The skill names.
+        tools : List[WaldiezTool]
+            The tools.
+        tool_names : Dict[str, str]
+            The tool names.
         output_dir : Optional[Union[str, Path]], optional
             The output directory if any, by default None
         """
         self.flow_name = flow_name
         self.agents = agents
         self.agent_names = agent_names
-        self.skills = skills
-        self.skill_names = skill_names
+        self.tools = tools
+        self.tool_names = tool_names
         self.output_dir = output_dir
-        self.skill_imports, self.skill_secrets, self.skills_contents = (
-            export_skills(
+        self.tool_imports, self.tool_secrets, self.tools_contents = (
+            export_tools(
                 flow_name=flow_name,
-                skills=skills,
-                skill_names=skill_names,
+                tools=tools,
+                tool_names=tool_names,
                 output_dir=output_dir,
             )
         )
@@ -79,7 +79,7 @@ class SkillsExporter(BaseExporter, ExporterMixin):
         List[Tuple[str, str]]
             The environment variables to set.
         """
-        return self.skill_secrets
+        return self.tool_secrets
 
     def get_imports(self) -> List[Tuple[str, ImportPosition]]:
         """Generate the imports string.
@@ -90,16 +90,16 @@ class SkillsExporter(BaseExporter, ExporterMixin):
             The exported imports and the position of the imports.
         """
         imports: List[Tuple[str, ImportPosition]] = []
-        if not self.skill_imports:
+        if not self.tool_imports:
             return imports
         # standard imports
-        for import_statement in self.skill_imports[0]:
+        for import_statement in self.tool_imports[0]:
             imports.append((import_statement, ImportPosition.BUILTINS))
         # third party imports
-        for import_statement in self.skill_imports[1]:
+        for import_statement in self.tool_imports[1]:
             imports.append((import_statement, ImportPosition.THIRD_PARTY))
         # secrets/local imports
-        for import_statement in self.skill_imports[2]:
+        for import_statement in self.tool_imports[2]:
             imports.append((import_statement, ImportPosition.LOCAL))
         return imports
 
@@ -122,7 +122,7 @@ class SkillsExporter(BaseExporter, ExporterMixin):
         Optional[str]
             The exported content.
         """
-        return self.skills_contents
+        return self.tools_contents
 
     def get_after_export(
         self,
@@ -138,11 +138,11 @@ class SkillsExporter(BaseExporter, ExporterMixin):
             Tuple[str, Union[ExportPosition, AgentPosition]]
         ] = []
         for agent in self.agents:
-            agent_registration = get_agent_skill_registrations(
+            agent_registration = get_agent_tool_registrations(
                 agent=agent,
                 agent_names=self.agent_names,
-                all_skills=self.skills,
-                skill_names=self.skill_names,
+                all_tools=self.tools,
+                tool_names=self.tool_names,
                 string_escape=self.string_escape,
             )
             if agent_registration:
@@ -153,12 +153,12 @@ class SkillsExporter(BaseExporter, ExporterMixin):
         return agent_registrations
 
     def export(self) -> ExporterReturnType:
-        """Export the skills.
+        """Export the tools.
 
         Returns
         -------
         ExporterReturnType
-            The exported skills content, the imports,
+            The exported tools content, the imports,
             the before export strings, the after export strings,
             and the environment variables.
         """

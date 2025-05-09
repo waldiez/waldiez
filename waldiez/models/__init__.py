@@ -5,7 +5,7 @@
 - Agents (Users, Assistants, Group Managers, etc.).
 - Chat (Messages, Summaries, etc.).
 - Model (LLM config, API type, etc.).
-- Skill (Skills/Tools to be registered).
+- Tool (Tools/Tools to be registered).
 - Flow (Flow of the conversation).
 - Methods (Method names, arguments, hints, etc.).
 - Waldiez (Main class to hold the flow).
@@ -15,7 +15,7 @@ from .agents import (
     WaldiezAgent,
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentNestedChatMessage,
     WaldiezAgents,
@@ -55,17 +55,17 @@ from .model import (
     WaldiezModelData,
     WaldiezModelPrice,
 )
-from .skill import SHARED_SKILL_NAME, WaldiezSkill, WaldiezSkillData
+from .tool import SHARED_TOOL_NAME, WaldiezTool, WaldiezToolData
 from .waldiez import Waldiez
 
 # pylint: disable=duplicate-code
 __all__ = [
-    "SHARED_SKILL_NAME",
+    "SHARED_TOOL_NAME",
     "Waldiez",
     "WaldiezAgent",
     "WaldiezAgentCodeExecutionConfig",
     "WaldiezAgentData",
-    "WaldiezAgentLinkedSkill",
+    "WaldiezAgentLinkedTool",
     "WaldiezAgentNestedChat",
     "WaldiezAgentNestedChatMessage",
     "WaldiezAgents",
@@ -93,8 +93,8 @@ __all__ = [
     "WaldiezReasoningAgent",
     "WaldiezReasoningAgentData",
     "WaldiezReasoningAgentReasonConfig",
-    "WaldiezSkill",
-    "WaldiezSkillData",
+    "WaldiezTool",
+    "WaldiezToolData",
     "WaldiezUserProxy",
     "WaldiezUserProxyData",
     "WaldiezRagUserProxyRetrieveConfig",

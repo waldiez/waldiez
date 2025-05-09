@@ -25,16 +25,16 @@ def test_ensure_unique_names() -> None:
     assert isinstance(result, dict)
     assert isinstance(result["agent_names"], dict)
     assert isinstance(result["model_names"], dict)
-    assert isinstance(result["skill_names"], dict)
+    assert isinstance(result["tool_names"], dict)
     assert isinstance(result["chat_names"], dict)
     assert isinstance(result["agents"], list)
     assert isinstance(result["models"], list)
-    assert isinstance(result["skills"], list)
+    assert isinstance(result["tools"], list)
     assert isinstance(result["chats"], list)
     assert isinstance(result["flow_name"], str)
     assert result["flow_name"] == waldiez_flow.name[:flow_name_max_length]
     result_dict: Dict[str, Any] = result  # type: ignore
-    for key in ["agent_names", "model_names", "skill_names", "chat_names"]:
+    for key in ["agent_names", "model_names", "tool_names", "chat_names"]:
         # key in dict: the "id" of the instance
         # value in dict: the "name" of the instance (trimmed if necessary)
         instance_thing_key = key.split("_", maxsplit=1)[0] + "s"

@@ -11,7 +11,7 @@ from ..agents import WaldiezAgents, WaldiezAssistant
 from ..chat import WaldiezChat
 from ..common import WaldiezBase
 from ..model import WaldiezModel
-from ..skill import WaldiezSkill
+from ..tool import WaldiezTool
 
 
 class WaldiezFlowData(WaldiezBase):
@@ -34,8 +34,8 @@ class WaldiezFlowData(WaldiezBase):
         See `WaldiezAgents` for more info.
     models : List[WaldiezModel]
         The models of the flow. See `WaldiezModel`.
-    skills : List[WaldiezSkill]
-        The skills of the flow. See `WaldiezSkill`.
+    tools : List[WaldiezTool]
+        The tools of the flow. See `WaldiezTool`.
     chats : List[WaldiezChat]
         The chats of the flow. See `WaldiezChat`.
     is_async : bool
@@ -87,11 +87,11 @@ class WaldiezFlowData(WaldiezBase):
             default_factory=list,
         ),
     ]
-    skills: Annotated[
-        List[WaldiezSkill],
+    tools: Annotated[
+        List[WaldiezTool],
         Field(
-            description="The skills of the flow",
-            title="Skills",
+            description="The tools of the flow",
+            title="Tools",
             default_factory=list,
         ),
     ]
@@ -201,7 +201,7 @@ class WaldiezFlowData(WaldiezBase):
                 captainAgents=[],
             ),
             models=[],
-            skills=[],
+            tools=[],
             chats=[],
             is_async=False,
             cache_seed=42,

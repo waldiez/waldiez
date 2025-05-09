@@ -125,19 +125,19 @@ class WaldiezAgents(WaldiezBase):
             raise ValueError("Agent IDs must be unique.")
         return self
 
-    def validate_flow(self, model_ids: List[str], skill_ids: List[str]) -> None:
+    def validate_flow(self, model_ids: List[str], tool_ids: List[str]) -> None:
         """Validate the flow of the agents.
 
         - Validate the linked models (the referenced model ids must exist).
-        - Validate the linked skills (the referenced skill ids must exist).
+        - Validate the linked tools (the referenced tool ids must exist).
         - Validate the code execution (the referenced functions must exist).
 
         Parameters
         ----------
         model_ids : List[str]
             The list of model IDs.
-        skill_ids : List[str]
-            The list of skill IDs.
+        tool_ids : List[str]
+            The list of tool IDs.
 
         Raises
         ------
@@ -147,8 +147,8 @@ class WaldiezAgents(WaldiezBase):
         all_agent_ids = [agent.id for agent in self.members]
         for agent in self.members:
             agent.validate_linked_models(model_ids)
-            agent.validate_linked_skills(skill_ids, agent_ids=all_agent_ids)
-            agent.validate_code_execution(skill_ids=skill_ids)
+            agent.validate_linked_tools(tool_ids, agent_ids=all_agent_ids)
+            agent.validate_code_execution(tool_ids=tool_ids)
             if agent.agent_type == "manager" and isinstance(
                 agent, WaldiezGroupManager
             ):

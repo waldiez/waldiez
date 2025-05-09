@@ -13,7 +13,7 @@ get_comment
 from typing_extensions import Literal
 
 CommentKey = Literal[
-    "agents", "imports", "skills", "models", "nested", "run", "logging"
+    "agents", "imports", "tools", "models", "nested", "run", "logging"
 ]
 """Possible keys for comments."""
 
@@ -57,7 +57,7 @@ def get_comment(
 
     Parameters
     ----------
-    key : "agents"|"imports"|"skills"|"models"|"nested"|"run"|"logging"
+    key : "agents"|"imports"|"tools"|"models"|"nested"|"run"|"logging"
         The key.
     for_notebook : bool
         Whether the comment is for a notebook.
@@ -73,9 +73,9 @@ def get_comment(
     >>> get_comment("agents", True)
 
     '## Agents'
-    >>> get_comment("skills", False)
+    >>> get_comment("tools", False)
 
-    '# Skills'
+    '# Tools'
     ```
     """
     # pylint: disable=too-many-return-statements
@@ -83,8 +83,8 @@ def get_comment(
         return "\n" + comment(for_notebook, 2) + "Agents\n"
     if key == "imports":
         return "\n" + comment(for_notebook, 2) + "Imports\n"
-    if key == "skills":
-        return "\n" + comment(for_notebook, 2) + "Skills\n"
+    if key == "tools":
+        return "\n" + comment(for_notebook, 2) + "Tools\n"
     if key == "models":
         return "\n" + comment(for_notebook, 2) + "Models\n"
     if key == "nested":

@@ -8,7 +8,7 @@ from waldiez.models.agents import (
     WaldiezUserProxy,
 )
 from waldiez.models.model import WaldiezModel
-from waldiez.models.skill import WaldiezSkill
+from waldiez.models.tool import WaldiezTool
 
 
 def test_waldiez_agents() -> None:
@@ -22,15 +22,15 @@ def test_waldiez_agents() -> None:
         requirements=[],
         data={},  # type: ignore
     )
-    skill = WaldiezSkill(
+    tool = WaldiezTool(
         id="wa-2",
-        name="skill",
-        type="skill",
-        description="Skill",
+        name="tool",
+        type="tool",
+        description="Tool",
         tags=[],
         requirements=[],
         data={  # type: ignore
-            "content": "def skill():\n    return 'skill'",
+            "content": "def tool():\n    return 'tool'",
         },
     )
     assistant = WaldiezAssistant(
@@ -43,8 +43,8 @@ def test_waldiez_agents() -> None:
         requirements=[],
         data={  # type: ignore
             "model_ids": [model.id],
-            "skills": [
-                {"id": skill.id, "executor_id": "wa-1"},
+            "tools": [
+                {"id": tool.id, "executor_id": "wa-1"},
             ],
         },
     )
@@ -67,4 +67,4 @@ def test_waldiez_agents() -> None:
     )
     assert agents.assistantAgents == [assistant]
     assert next(agents.members) == user
-    agents.validate_flow(model_ids=[model.id], skill_ids=[skill.id])
+    agents.validate_flow(model_ids=[model.id], tool_ids=[tool.id])

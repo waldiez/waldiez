@@ -26,8 +26,8 @@ from waldiez.models import (
     WaldiezReasoningAgent,
     WaldiezReasoningAgentData,
     WaldiezReasoningAgentReasonConfig,
-    WaldiezSkill,
-    WaldiezSkillData,
+    WaldiezTool,
+    WaldiezToolData,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -59,7 +59,7 @@ def test_waldiez_flow() -> None:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
         ),
     )
@@ -86,7 +86,7 @@ def test_waldiez_flow() -> None:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
         ),
     )
@@ -113,7 +113,7 @@ def test_waldiez_flow() -> None:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
             retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 task="code",
@@ -177,7 +177,7 @@ def test_waldiez_flow() -> None:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
             reason_config=WaldiezReasoningAgentReasonConfig(
                 method="beam_search",
@@ -277,17 +277,17 @@ def test_waldiez_flow() -> None:
             ),
         ),
     ]
-    skill = WaldiezSkill(
+    tool = WaldiezTool(
         id="ws-1",
-        name="skill_name",
-        type="skill",
-        description="Skill description",
-        tags=["skill"],
-        requirements=["skill"],
+        name="tool_name",
+        type="tool",
+        description="Tool description",
+        tags=["tool"],
+        requirements=["tool"],
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezSkillData(
-            content="def skill_name():\n    return 'Skill name'",
+        data=WaldiezToolData(
+            content="def tool_name():\n    return 'Tool name'",
             secrets={},
         ),
     )
@@ -321,7 +321,7 @@ def test_waldiez_flow() -> None:
         viewport={},
         agents=agents,
         models=[model],
-        skills=[skill],
+        tools=[tool],
         chats=chats,
         is_async=False,
     )
@@ -368,13 +368,13 @@ def test_waldiez_flow() -> None:
                 viewport={},
                 agents=agents,
                 models=[model],
-                skills=[skill],
+                tools=[tool],
                 chats=[],
                 is_async=False,
             ),
         )
     with pytest.raises(ValueError):
-        # not unique skill IDs
+        # not unique tool IDs
         WaldiezFlow(
             id="wf-2",
             name="flow",
@@ -391,7 +391,7 @@ def test_waldiez_flow() -> None:
                 viewport={},
                 agents=agents,
                 models=[],
-                skills=[skill, skill],
+                tools=[tool, tool],
                 chats=chats,
                 is_async=False,
             ),
@@ -415,7 +415,7 @@ def test_waldiez_flow() -> None:
                 viewport={},
                 agents=agents,
                 models=[model, model],
-                skills=[],
+                tools=[],
                 chats=chats,
                 is_async=False,
             ),
@@ -443,7 +443,7 @@ def test_waldiez_flow() -> None:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
         ),
     )
@@ -472,7 +472,7 @@ def test_waldiez_flow() -> None:
                 viewport={},
                 agents=agents2,
                 models=[model],
-                skills=[skill],
+                tools=[tool],
                 chats=chats,
                 is_async=False,
             ),
@@ -530,7 +530,7 @@ def test_waldiez_flow() -> None:
             viewport={},
             agents=agents3,
             models=[],
-            skills=[],
+            tools=[],
             chats=chats2,
             is_async=False,
         ),
@@ -563,7 +563,7 @@ def test_empty_flow() -> None:
                     captainAgents=[],
                 ),
                 models=[],
-                skills=[],
+                tools=[],
                 chats=[],
                 is_async=False,
             ),

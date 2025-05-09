@@ -172,7 +172,7 @@ def ensure_np_import(third_party_imports: List[str]) -> List[str]:
 
 def gather_imports(
     model_imports: Optional[List[Tuple[str, ImportPosition]]],
-    skill_imports: Optional[List[Tuple[str, ImportPosition]]],
+    tool_imports: Optional[List[Tuple[str, ImportPosition]]],
     chat_imports: Optional[List[Tuple[str, ImportPosition]]],
     agent_imports: Optional[List[Tuple[str, ImportPosition]]],
 ) -> List[Tuple[str, ImportPosition]]:
@@ -182,8 +182,8 @@ def gather_imports(
     ----------
     model_imports : Tuple[str, ImportPosition]
         The model imports.
-    skill_imports : Tuple[str, ImportPosition]
-        The skill imports.
+    tool_imports : Tuple[str, ImportPosition]
+        The tool imports.
     chat_imports : Tuple[str, ImportPosition]
         The chat imports.
     agent_imports : Tuple[str, ImportPosition]
@@ -204,8 +204,8 @@ def gather_imports(
         )
     if model_imports:
         all_imports.extend(model_imports)
-    if skill_imports:
-        all_imports.extend(skill_imports)
+    if tool_imports:
+        all_imports.extend(tool_imports)
     if chat_imports:
         all_imports.extend(chat_imports)
     if agent_imports:

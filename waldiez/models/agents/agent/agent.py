@@ -43,8 +43,8 @@ class WaldiezAgent(WaldiezBase):
 
     Functions
     ---------
-    validate_linked_skills(skill_ids: List[str], agent_ids: List[str])
-        Validate the skills linked to the agent.
+    validate_linked_tools(tool_ids: List[str], agent_ids: List[str])
+        Validate the tools linked to the agent.
     validate_linked_models(model_ids: List[str])
         Validate the models linked to the agent.
     """
@@ -219,32 +219,32 @@ class WaldiezAgent(WaldiezBase):
             imports.add("import ConversableAgent")
         return imports
 
-    def validate_linked_skills(
-        self, skill_ids: List[str], agent_ids: List[str]
+    def validate_linked_tools(
+        self, tool_ids: List[str], agent_ids: List[str]
     ) -> None:
-        """Validate the skills.
+        """Validate the tools.
 
         Parameters
         ----------
-        skill_ids : List[str]
-            The list of skill IDs.
+        tool_ids : List[str]
+            The list of tool IDs.
         agent_ids : List[str]
             The list of agent IDs.
 
         Raises
         ------
         ValueError
-            If a skill or agent is not found
+            If a tool or agent is not found
         """
-        # if the config dict has skills, make sure they can be found
-        for skill in self.data.skills:
-            if skill.id not in skill_ids:
+        # if the config dict has tools, make sure they can be found
+        for tool in self.data.tools:
+            if tool.id not in tool_ids:
                 raise ValueError(
-                    f"Skill '{skill.id}' not found in agent's {self.id} skills"
+                    f"Tool '{tool.id}' not found in agent's {self.id} tools"
                 )
-            if skill.executor_id not in agent_ids:
+            if tool.executor_id not in agent_ids:
                 raise ValueError(
-                    f"Agent '{skill.executor_id}' not found in agents"
+                    f"Agent '{tool.executor_id}' not found in agents"
                 )
 
     def validate_linked_models(self, model_ids: List[str]) -> None:
@@ -267,13 +267,13 @@ class WaldiezAgent(WaldiezBase):
                     f"Model '{model}' not found in agent's {self.id} models"
                 )
 
-    def validate_code_execution(self, skill_ids: List[str]) -> None:
+    def validate_code_execution(self, tool_ids: List[str]) -> None:
         """Validate the code execution config.
 
         Parameters
         ----------
-        skill_ids : List[str]
-            The list of skill IDs.
+        tool_ids : List[str]
+            The list of tool IDs.
 
         Raises
         ------
@@ -285,7 +285,7 @@ class WaldiezAgent(WaldiezBase):
             self.data.code_execution_config, WaldiezAgentCodeExecutionConfig
         ):
             for function in self.data.code_execution_config.functions:
-                if function not in skill_ids:
+                if function not in tool_ids:
                     raise ValueError(
-                        f"Function '{function}' not found in skills"
+                        f"Function '{function}' not found in tools"
                     )
