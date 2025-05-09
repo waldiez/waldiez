@@ -30,8 +30,8 @@ export const useSidebarView = (props: SidebarViewProps) => {
     const onShowModels = () => {
         onSelectNodeType("model");
     };
-    const onShowSkills = () => {
-        onSelectNodeType("skill");
+    const onShowTools = () => {
+        onSelectNodeType("tool");
     };
     const onUserDragStart = (event: React.DragEvent<HTMLDivElement>) => {
         onDragStart(event, "agent");
@@ -62,7 +62,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onCloseEditModal,
         onShowAgents,
         onShowModels,
-        onShowSkills,
+        onShowTools,
         onUserDragStart,
         onAssistantDragStart,
         onReasoningDragStart,

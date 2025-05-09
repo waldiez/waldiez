@@ -65,7 +65,7 @@ describe("WaldiezAgentAssistant", () => {
                 methodContent: null,
             },
             modelIds: ["1", "2"],
-            skills: [
+            tools: [
                 {
                     id: "1",
                     executorId: "2",
@@ -117,7 +117,7 @@ describe("WaldiezAgentAssistant", () => {
             methodContent: null,
         });
         expect(assistant.data.modelIds).toEqual(["1", "2"]);
-        expect(assistant.data.skills).toEqual([
+        expect(assistant.data.tools).toEqual([
             {
                 id: "1",
                 executorId: "2",

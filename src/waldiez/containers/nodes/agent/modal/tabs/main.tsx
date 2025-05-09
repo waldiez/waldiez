@@ -13,8 +13,8 @@ import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/m
 import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats";
 import { WaldiezAgentRagUser } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
 import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
-import { WaldiezAgentSkills } from "@waldiez/containers/nodes/agent/modal/tabs/skills";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
+import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 import { WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
 import {
     WaldiezNodeAgent,
@@ -23,7 +23,7 @@ import {
     WaldiezNodeAgentRagUserData,
     WaldiezNodeAgentReasoningData,
     WaldiezNodeModel,
-    WaldiezNodeSkill,
+    WaldiezNodeTool,
 } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
@@ -45,13 +45,13 @@ export const WaldiezNodeAgentModalTabs = ({
     const getAgentConnections = useWaldiez(s => s.getAgentConnections);
     const getAgents = useWaldiez(s => s.getAgents);
     const getModels = useWaldiez(s => s.getModels);
-    const getSkills = useWaldiez(s => s.getSkills);
+    const getTools = useWaldiez(s => s.getTools);
     // const getEdges = useWaldiez(s => s.getEdges);
     const uploadHandler = useWaldiez(s => s.onUpload);
     const agentConnections = getAgentConnections(id);
     const models = getModels() as WaldiezNodeModel[];
     const agents = getAgents() as WaldiezNodeAgent[];
-    const skills = getSkills() as WaldiezNodeSkill[];
+    const tools = getTools() as WaldiezNodeTool[];
     // const edges = getEdges() as WaldiezEdge[];
     const groupManagers = agents.filter(agent => agent.data.agentType === "group_manager");
     const connectionsCount = agentConnections.target.edges.length + agentConnections.source.edges.length;
@@ -116,7 +116,7 @@ export const WaldiezNodeAgentModalTabs = ({
                     <WaldiezAgentCodeExecution
                         id={id}
                         data={data}
-                        skills={skills}
+                        tools={tools}
                         onDataChange={onDataChange}
                     />
                 </div>
@@ -126,13 +126,13 @@ export const WaldiezNodeAgentModalTabs = ({
                     <WaldiezAgentModels id={id} data={data} models={models} onDataChange={onDataChange} />
                 </div>
             </TabItem>
-            <TabItem label="Skills" id={`wf-${flowId}-agent-skills-${id}`}>
+            <TabItem label="Tools" id={`wf-${flowId}-agent-tools-${id}`}>
                 <div className="modal-tab-body">
-                    <WaldiezAgentSkills
+                    <WaldiezAgentTools
                         id={id}
                         data={data}
                         agents={agents}
-                        skills={skills}
+                        tools={tools}
                         onDataChange={onDataChange}
                     />
                 </div>

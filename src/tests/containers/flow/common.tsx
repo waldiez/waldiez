@@ -63,26 +63,26 @@ export const captainDataTransfer = {
 export const renderFlow = (
     options: {
         withLinkedModels?: boolean;
-        withLinkedSkills?: boolean;
+        withLinkedTools?: boolean;
     } = {
         withLinkedModels: false,
-        withLinkedSkills: false,
+        withLinkedTools: false,
     },
 ) => {
-    const { withLinkedModels, withLinkedSkills } = options;
+    const { withLinkedModels, withLinkedTools } = options;
     let nodesToUse = [...nodes];
     if (withLinkedModels) {
         nodesToUse = nodes.map(node => {
             if (node.type !== "agent") {
                 return node;
             }
-            if (withLinkedSkills) {
+            if (withLinkedTools) {
                 return {
                     ...node,
                     data: {
                         ...node.data,
                         modelIds: ["model-0"],
-                        skills: [{ id: "skill-0", executorId: "agent-0" }],
+                        tools: [{ id: "tool-0", executorId: "agent-0" }],
                     },
                 };
             }
@@ -95,7 +95,7 @@ export const renderFlow = (
             };
         });
     }
-    if (withLinkedSkills) {
+    if (withLinkedTools) {
         nodesToUse = nodes.map(node => {
             if (node.type !== "agent") {
                 return node;
@@ -106,7 +106,7 @@ export const renderFlow = (
                     data: {
                         ...node.data,
                         modelIds: ["model-0"],
-                        skills: [{ id: "skill-0", executorId: "agent-0" }],
+                        tools: [{ id: "tool-0", executorId: "agent-0" }],
                     },
                 };
             }
@@ -114,7 +114,7 @@ export const renderFlow = (
                 ...node,
                 data: {
                     ...node.data,
-                    skills: [{ id: "skill-0", executorId: "agent-0" }],
+                    tools: [{ id: "tool-0", executorId: "agent-0" }],
                 },
             };
         });

@@ -7,4 +7,4 @@ export * from "@waldiez/store/utils/common";
 export * from "@waldiez/store/utils/edge";
 export * from "@waldiez/store/utils/flow";
 export * from "@waldiez/store/utils/model";
-export * from "@waldiez/store/utils/skill";
+export * from "@waldiez/store/utils/tool";

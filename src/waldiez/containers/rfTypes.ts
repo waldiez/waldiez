@@ -8,7 +8,7 @@ import {
     WaldiezEdgeHidden,
     WaldiezEdgeNested,
 } from "@waldiez/containers/edges";
-import { WaldiezNodeAgentView, WaldiezNodeModelView, WaldiezNodeSkillView } from "@waldiez/containers/nodes";
+import { WaldiezNodeAgentView, WaldiezNodeModelView, WaldiezNodeToolView } from "@waldiez/containers/nodes";
 
 export const edgeTypes = {
     chat: WaldiezEdgeChat,
@@ -20,5 +20,5 @@ export const edgeTypes = {
 export const nodeTypes = {
     agent: WaldiezNodeAgentView,
     model: WaldiezNodeModelView,
-    skill: WaldiezNodeSkillView,
+    tool: WaldiezNodeToolView,
 };

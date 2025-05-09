@@ -68,7 +68,7 @@ export const setViewPortTopLeft = (rfInstance?: ReactFlowInstance) => {
 export const reArrangeNodes = (
     nodes: Node[],
     flowId: string,
-    nodeType: "model" | "skill",
+    nodeType: "model" | "tool",
     rfInstance?: ReactFlowInstance,
 ) => {
     let nodesAdded = 0;

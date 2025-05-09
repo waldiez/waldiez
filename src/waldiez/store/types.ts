@@ -11,7 +11,7 @@ import {
     IWaldiezFlowStore,
     IWaldiezModelStore,
     IWaldiezNodeStore,
-    IWaldiezSkillStore,
+    IWaldiezToolStore,
 } from "@waldiez/types";
 
 export { createWaldiezStore };
@@ -76,13 +76,13 @@ export type ThingsToImport = {
     cacheSeed?: boolean | null;
     nodes: {
         models: Node[];
-        skills: Node[];
+        tools: Node[];
         agents: Node[];
     };
     edges: Edge[];
 };
 export type WaldiezState = WaldiezStoreProps &
-    IWaldiezSkillStore &
+    IWaldiezToolStore &
     IWaldiezEdgeStore &
     IWaldiezModelStore &
     IWaldiezAgentStore &

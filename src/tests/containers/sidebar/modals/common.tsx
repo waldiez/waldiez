@@ -58,7 +58,7 @@ const nodes = edges.map((edge, index) => {
             label: `Node ${index}`,
             agentType: index % 3 === 0 ? "user_proxy" : "assistant",
             nestedChats: [],
-            skills: [],
+            tools: [],
             modelIds: [],
             functions: [],
         },

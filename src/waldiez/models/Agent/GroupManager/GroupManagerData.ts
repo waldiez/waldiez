@@ -6,7 +6,7 @@ import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
     WaldiezAgentHumanInputMode,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
 } from "@waldiez/models/Agent/Common";
@@ -22,7 +22,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
  * @param termination - The termination message check of the agent
  * @param modelIds - The model ids of the agent
- * @param skills - The linked skills of the agent
+ * @param tools - The tools available to the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
  * @param contextVariables - The context variables of the agent
@@ -35,7 +35,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param sendIntroductions - The send introductions of the agent
  * @param initialAgentId - The id of the initial agent in the group
  * @see {@link WaldiezAgentData}
- * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentGroupManagerSpeakers}
@@ -60,7 +60,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
-            skills: WaldiezAgentLinkedSkill[];
+            tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
@@ -85,7 +85,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
+            tools: [],
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},

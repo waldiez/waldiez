@@ -34,10 +34,10 @@ describe("All", () => {
         removeTapHighlight();
         const agents = page.getByText(/Agents/i);
         const models = page.getByText(/Models/i);
-        const skills = page.getByText(/Skills/i);
+        const tools = page.getByText(/Tools/i);
         await expect.element(agents).toBeInTheDocument();
         await expect.element(models).toBeInTheDocument();
-        await expect.element(skills).toBeInTheDocument();
+        await expect.element(tools).toBeInTheDocument();
         expect(screen).toMatchSnapshot();
         await sleep(100);
         await userEvent.click(models);

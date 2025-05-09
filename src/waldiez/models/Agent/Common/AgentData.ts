@@ -5,7 +5,7 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentHumanInputMode,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
 } from "@waldiez/models/Agent/Common";
@@ -20,7 +20,7 @@ import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
  * @param maxConsecutiveAutoReply - Maximum consecutive auto reply
  * @param termination - Termination message check
  * @param modelIds - Model ids
- * @param skills - Linked skills
+ * @param tools - Tools available to the agent
  * @param parentId - Parent id
  * @param nestedChats - Nested chats
  * @param contextVariables - Context variables
@@ -28,7 +28,7 @@ import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentTerminationMessageCheck}
- * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentHandoff}
  */
@@ -40,7 +40,7 @@ export class WaldiezAgentData {
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
     modelIds: string[];
-    skills: WaldiezAgentLinkedSkill[];
+    tools: WaldiezAgentLinkedTool[];
     parentId?: string;
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables: Record<string, any>;
@@ -54,7 +54,7 @@ export class WaldiezAgentData {
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
-            skills: WaldiezAgentLinkedSkill[];
+            tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
@@ -72,7 +72,7 @@ export class WaldiezAgentData {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
+            tools: [],
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},
@@ -86,7 +86,7 @@ export class WaldiezAgentData {
         this.maxConsecutiveAutoReply = props.maxConsecutiveAutoReply;
         this.termination = props.termination;
         this.modelIds = props.modelIds;
-        this.skills = props.skills;
+        this.tools = props.tools;
         this.parentId = props.parentId;
         this.nestedChats = props.nestedChats;
         this.contextVariables = props.contextVariables;

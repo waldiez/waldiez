@@ -14,11 +14,11 @@ describe("WaldiezFlow Nodes and Edges", () => {
         fireEvent.click(screen.getByTestId("show-models"));
         fireEvent.click(screen.getByTestId("add-model-node"));
     });
-    it("should add a skill node", () => {
+    it("should add a tool node", () => {
         renderFlow();
-        expect(screen.queryByTestId("skill-0")).toBeNull();
-        fireEvent.click(screen.getByTestId("show-skills"));
-        fireEvent.click(screen.getByTestId("add-skill-node"));
+        expect(screen.queryByTestId("tool-0")).toBeNull();
+        fireEvent.click(screen.getByTestId("show-tools"));
+        fireEvent.click(screen.getByTestId("add-tool-node"));
     });
     it("should open edge edit modal on double click", async () => {
         act(() => {
@@ -45,26 +45,26 @@ describe("WaldiezFlow Nodes and Edges", () => {
         const linkedModelNameView = screen.getByTestId("agent-agent-0-linked-model-0");
         expect(linkedModelNameView.textContent).toBe("Model Node 0");
     });
-    it("should display the agents' linked skills", async () => {
+    it("should display the agents' linked tools", async () => {
         act(() => {
             renderFlow({
-                withLinkedSkills: true,
+                withLinkedTools: true,
             });
         });
-        const linkedSkillNameView = screen.getByTestId("agent-agent-0-linked-skill-0");
-        expect(linkedSkillNameView.textContent).toBe("Skill Node 0");
+        const linkedToolNameView = screen.getByTestId("agent-agent-0-linked-tool-0");
+        expect(linkedToolNameView.textContent).toBe("Tool Node 0");
     });
-    it("should display the agents' linked models and skills", async () => {
+    it("should display the agents' linked models and tools", async () => {
         act(() => {
             renderFlow({
                 withLinkedModels: true,
-                withLinkedSkills: true,
+                withLinkedTools: true,
             });
         });
         const linkedModelNameView = screen.getByTestId("agent-agent-0-linked-model-0");
         expect(linkedModelNameView.textContent).toBe("Model Node 0");
-        const linkedSkillNameView = screen.getByTestId("agent-agent-0-linked-skill-0");
-        expect(linkedSkillNameView.textContent).toBe("Skill Node 0");
+        const linkedToolNameView = screen.getByTestId("agent-agent-0-linked-tool-0");
+        expect(linkedToolNameView.textContent).toBe("Tool Node 0");
     });
     it("should update an agent's description", async () => {
         act(() => {

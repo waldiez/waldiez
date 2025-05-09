@@ -5,7 +5,7 @@
 import { AiFillCode } from "react-icons/ai";
 
 import { useWaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/hooks";
-import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeSkill } from "@waldiez/models";
+import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
 
@@ -21,7 +21,7 @@ export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
     const { id, flowId, data, isReadOnly } = props;
     const agentType = data.agentType;
     const agentModelsView = getAgentModelsView(id, data);
-    const agentSkillsView = getAgentSkillsView(id, data);
+    const agentToolsView = getAgentToolsView(id, data);
     const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
     // c8 ignore next 3
     if (agentType === "group_manager") {
@@ -30,7 +30,7 @@ export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
     return (
         <div className="agent-body">
             <div className="agent-models">{agentModelsView}</div>
-            <div className="agent-skills">{agentSkillsView}</div>
+            <div className="agent-tools">{agentToolsView}</div>
 
             <div className="flex-column flex-1 agent-description-view">
                 <label>Description:</label>
@@ -79,27 +79,27 @@ const getAgentModelsView = (id: string, data: WaldiezNodeAgentData) => {
     );
 };
 
-const getAgentSkillsView = (id: string, data: WaldiezNodeAgentData) => {
-    const getSkills = useWaldiez(s => s.getSkills);
-    const skills = getSkills() as WaldiezNodeSkill[];
-    const skillsCount = data.skills.length;
-    if (skillsCount === 0) {
-        return <div className="agent-skills-empty">No skills</div>;
+const getAgentToolsView = (id: string, data: WaldiezNodeAgentData) => {
+    const getTools = useWaldiez(s => s.getTools);
+    const tools = getTools() as WaldiezNodeTool[];
+    const toolsCount = data.tools.length;
+    if (toolsCount === 0) {
+        return <div className="agent-tools-empty">No tools</div>;
     }
     return (
-        <div className="agent-skills-preview">
-            {data.skills.map((linkedSkill, index) => {
-                const skill = skills.find(skill => skill.id === linkedSkill.id);
-                if (!skill) {
+        <div className="agent-tools-preview">
+            {data.tools.map((linkedTool, index) => {
+                const tool = tools.find(tool => tool.id === linkedTool.id);
+                if (!tool) {
                     return null;
                 }
                 return (
-                    <div key={skill.id} className="agent-skill-preview" data-testid="agent-skill-preview">
-                        <div className={"agent-skill-img"}>
+                    <div key={tool.id} className="agent-tool-preview" data-testid="agent-tool-preview">
+                        <div className={"agent-tool-img"}>
                             <AiFillCode />
                         </div>
-                        <div className="agent-skill-name" data-testid={`agent-${id}-linked-skill-${index}`}>
-                            {skill.data.label}
+                        <div className="agent-tool-name" data-testid={`agent-${id}-linked-tool-${index}`}>
+                            {tool.data.label}
                         </div>
                     </div>
                 );

@@ -6,7 +6,7 @@ import { Node } from "@xyflow/react";
 
 import {
     WaldiezAgentCodeExecutionConfig,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
     defaultReasonConfig,
@@ -73,7 +73,7 @@ const agentNodes: Node[] = edges.map((_, index) => {
     let codeExecutionConfig = false as WaldiezAgentCodeExecutionConfig;
     if (index === edgesCount - 1) {
         codeExecutionConfig = {
-            functions: ["skill-0"],
+            functions: ["tool-0"],
         };
     }
     const agentData = {
@@ -97,7 +97,7 @@ const agentNodes: Node[] = edges.map((_, index) => {
                 methodContent: null,
             } as WaldiezAgentTerminationMessageCheck,
             nestedChats,
-            skills: [{ id: "skill-0", executorId: "agent-2" }] as WaldiezAgentLinkedSkill[],
+            tools: [{ id: "tool-0", executorId: "agent-2" }] as WaldiezAgentLinkedTool[],
             modelIds: [] as string[],
             createdAt,
             updatedAt,
@@ -126,7 +126,7 @@ agentNodes.push({
         label: "Agent Node",
         agentType: "assistant",
         nestedChats: [] as WaldiezAgentNestedChat[],
-        skills: [] as WaldiezAgentLinkedSkill[],
+        tools: [] as WaldiezAgentLinkedTool[],
         modelIds: [] as string[],
         codeExecutionConfig: false as WaldiezAgentCodeExecutionConfig,
         termination: {
@@ -202,20 +202,20 @@ const modelNode2 = {
 
 export const modelNodes = [modelNode1, modelNode2];
 
-const skillNode1 = {
-    id: "skill-0",
-    type: "skill",
+const toolNode1 = {
+    id: "tool-0",
+    type: "tool",
     position: {
         x: 100,
         y: 100,
     },
     data: {
-        label: "Skill Node 0",
+        label: "Tool Node 0",
         description: "description",
         content: "content",
         secrets: {
-            skillSecretKey1: "skillSecretValue1",
-            skillSecretKey2: "skillSecretValue2",
+            toolSecretKey1: "toolSecretValue1",
+            toolSecretKey2: "toolSecretValue2",
         },
         requirements: [] as string[],
         tags: [] as string[],
@@ -223,20 +223,20 @@ const skillNode1 = {
         updatedAt,
     },
 };
-const skillNode2 = {
-    id: "skill-1",
-    type: "skill",
+const toolNode2 = {
+    id: "tool-1",
+    type: "tool",
     position: {
         x: 200,
         y: 200,
     },
     data: {
-        label: "Skill Node 1",
+        label: "Tool Node 1",
         description: "description",
         content: "content",
         secrets: {
-            skillSecretKey1: "skillSecretValue1",
-            skillSecretKey2: "skillSecretValue2",
+            toolSecretKey1: "toolSecretValue1",
+            toolSecretKey2: "toolSecretValue2",
         },
         requirements: [] as string[],
         tags: [] as string[],
@@ -244,6 +244,6 @@ const skillNode2 = {
         updatedAt,
     },
 };
-export const skillNodes = [skillNode1, skillNode2];
+export const toolNodes = [toolNode1, toolNode2];
 
-export const nodes = [...modelNodes, ...skillNodes, ...agentNodes];
+export const nodes = [...modelNodes, ...toolNodes, ...agentNodes];

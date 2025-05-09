@@ -17,8 +17,8 @@ import {
     getModelIds,
     getNestedChats,
     getParentId,
-    getSkills,
     getSystemMessage,
+    getTools,
 } from "@waldiez/models/mappers/agent/utils";
 
 describe("getAgentId", () => {
@@ -147,16 +147,16 @@ describe("getModelIds", () => {
     });
 });
 
-describe("getSkills", () => {
-    it("should return the skills", () => {
-        const skills = getSkills({
-            skills: [{ id: "skill-1", executorId: "wa-1" }],
+describe("getTools", () => {
+    it("should return the tools", () => {
+        const tools = getTools({
+            tools: [{ id: "tool-1", executorId: "wa-1" }],
         });
-        expect(skills).toEqual([{ id: "skill-1", executorId: "wa-1" }]);
+        expect(tools).toEqual([{ id: "tool-1", executorId: "wa-1" }]);
     });
     it("should return an empty array", () => {
-        const skills = getSkills({});
-        expect(skills).toEqual([]);
+        const tools = getTools({});
+        expect(tools).toEqual([]);
     });
 });
 

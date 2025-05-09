@@ -6,7 +6,7 @@ import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezNodeAgentType,
 } from "@waldiez/models/Agent/Common";
@@ -150,20 +150,20 @@ export const getModelIds = (data: Record<string, unknown>): string[] => {
     return modelIds;
 };
 
-export const getSkills = (data: Record<string, unknown>): WaldiezAgentLinkedSkill[] => {
-    let skills: WaldiezAgentLinkedSkill[] = [];
-    if ("skills" in data && Array.isArray(data.skills)) {
-        skills = data.skills.filter(
-            linkedSkill =>
-                typeof linkedSkill === "object" &&
-                linkedSkill &&
-                "id" in linkedSkill &&
-                "executorId" in linkedSkill &&
-                typeof linkedSkill.id === "string" &&
-                typeof linkedSkill.executorId === "string",
-        ) as WaldiezAgentLinkedSkill[];
+export const getTools = (data: Record<string, unknown>): WaldiezAgentLinkedTool[] => {
+    let tools: WaldiezAgentLinkedTool[] = [];
+    if ("tools" in data && Array.isArray(data.tools)) {
+        tools = data.tools.filter(
+            tool =>
+                typeof tool === "object" &&
+                tool &&
+                "id" in tool &&
+                "executorId" in tool &&
+                typeof tool.id === "string" &&
+                typeof tool.executorId === "string",
+        ) as WaldiezAgentLinkedTool[];
     }
-    return skills;
+    return tools;
 };
 
 export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNodeAgentType) => {

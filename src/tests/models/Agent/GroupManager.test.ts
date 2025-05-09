@@ -54,7 +54,7 @@ describe("WaldiezAgentGroupManager", () => {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
+            tools: [],
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},
@@ -93,7 +93,7 @@ describe("WaldiezAgentGroupManager", () => {
             methodContent: null,
         });
         expect(groupManager.data.modelIds).toEqual([]);
-        expect(groupManager.data.skills).toEqual([]);
+        expect(groupManager.data.tools).toEqual([]);
         expect(groupManager.tags).toEqual([]);
         expect(groupManager.requirements).toEqual([]);
         expect(groupManager.data.parentId).toBeUndefined();

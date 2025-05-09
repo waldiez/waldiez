@@ -7,7 +7,7 @@ import { Node } from "@xyflow/react";
 import { WaldiezAgentType } from "@waldiez/models";
 import { getIdFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
-const ValidChatTypesNODE_TYPES = ["model", "skill", "agent"];
+const ValidChatTypesNODE_TYPES = ["model", "tool", "agent"];
 const ValidAgentTypes: WaldiezAgentType[] = ["user_proxy", "assistant", "rag_user_proxy"];
 
 export const getNodes = (json: Record<string, unknown>) => {
@@ -104,7 +104,7 @@ const updateNodeLabel = (node: Node, json: Record<string, unknown>) => {
 };
 
 const updateNodes = (json: Record<string, unknown>, nodes: Node[]) => {
-    ["models", "skills"].forEach(key => {
+    ["models", "tools"].forEach(key => {
         if (!(key in json) || !Array.isArray(json[key])) {
             return;
         }

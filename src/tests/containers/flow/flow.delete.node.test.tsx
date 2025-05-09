@@ -32,15 +32,15 @@ describe("WaldiezFlow Delete Nodes", () => {
         fireEvent.click(deleteDiv as HTMLElement);
         expect(onChange).toHaveBeenCalled();
     });
-    it("should delete a skill node", async () => {
+    it("should delete a tool node", async () => {
         act(() => {
             renderFlow();
         });
-        fireEvent.click(screen.getByTestId("show-skills"));
-        fireEvent.click(screen.getByTestId("add-skill-node"));
-        const skillFooter = screen.getByTestId("skill-footer-skill-0");
-        expect(skillFooter).toBeTruthy();
-        const deleteDiv = screen.getByTestId("delete-node-skill-0");
+        fireEvent.click(screen.getByTestId("show-tools"));
+        fireEvent.click(screen.getByTestId("add-tool-node"));
+        const toolFooter = screen.getByTestId("tool-footer-tool-0");
+        expect(toolFooter).toBeTruthy();
+        const deleteDiv = screen.getByTestId("delete-node-tool-0");
         expect(deleteDiv).toBeTruthy();
         fireEvent.click(deleteDiv as HTMLElement);
         expect(onChange).toHaveBeenCalled();

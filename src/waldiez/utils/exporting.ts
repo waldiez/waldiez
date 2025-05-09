@@ -19,10 +19,10 @@ const isMac = () => {
     return navigator.userAgent.includes("Macintosh") || navigator.userAgent.includes("Mac OS X");
 };
 
-const getItemExtension = (itemType: "model" | "skill" | "agent" | "flow") => {
+const getItemExtension = (itemType: "model" | "tool" | "agent" | "flow") => {
     let extension = BASE_EXTENSION;
     if (itemType !== "flow") {
-        // .{BASE_EXTENSION}Model, .{BASE_EXTENSION}Skill, .{BASE_EXTENSION}Agent
+        // .{BASE_EXTENSION}Model, .{BASE_EXTENSION}Tool, .{BASE_EXTENSION}Agent
         extension += itemType.charAt(0).toUpperCase() + itemType.slice(1);
     }
     if (isMac()) {
@@ -41,7 +41,7 @@ const downloadFile = (blob: Blob, filename: string) => {
     URL.revokeObjectURL(url);
 };
 
-export const getFilenameForExporting = (baseName: string, itemType: "model" | "skill" | "agent" | "flow") => {
+export const getFilenameForExporting = (baseName: string, itemType: "model" | "tool" | "agent" | "flow") => {
     const extension = getItemExtension(itemType);
     let filename = baseName || "flow";
     if (filename.length < 3) {
@@ -67,7 +67,7 @@ const downloadZip = async (filename: string, contents: string, onError: () => vo
 
 export const exportItem = async (
     name: string,
-    itemType: "model" | "skill" | "agent" | "flow",
+    itemType: "model" | "tool" | "agent" | "flow",
     exporter: () => { [key: string]: unknown } | null,
     onNoItem: () => void = () => {
         console.error("No item to export");

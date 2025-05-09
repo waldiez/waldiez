@@ -50,7 +50,7 @@ export const useFlowModels = (props: {
                 models: selectedProps.nodes.models.some(model => model.id === node.id)
                     ? selectedProps.nodes.models.filter(model => model.id !== node.id)
                     : [...selectedProps.nodes.models, node],
-                skills: selectedProps.nodes.skills,
+                tools: selectedProps.nodes.tools,
                 agents: selectedProps.nodes.agents,
             },
         });
@@ -59,7 +59,7 @@ export const useFlowModels = (props: {
         onSelectedPropsChange({
             nodes: {
                 models: event.target.checked ? modelNodes! : [],
-                skills: selectedProps.nodes.skills,
+                tools: selectedProps.nodes.tools,
                 agents: selectedProps.nodes.agents,
             },
         });

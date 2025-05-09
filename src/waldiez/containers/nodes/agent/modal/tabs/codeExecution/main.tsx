@@ -10,7 +10,7 @@ import { WaldiezAgentCodeExecutionProps } from "@waldiez/containers/nodes/agent/
 const showDockerOption = false;
 
 export const WaldiezAgentCodeExecution = (props: WaldiezAgentCodeExecutionProps) => {
-    const { id, skills } = props;
+    const { id, tools } = props;
     const {
         data,
         codeExecutionValue,
@@ -83,7 +83,7 @@ export const WaldiezAgentCodeExecution = (props: WaldiezAgentCodeExecutionProps)
                             <div className="checkbox"></div>
                         </label>
                     </div>
-                    {!data.codeExecutionConfig?.useDocker && skills.length > 0 && (
+                    {!data.codeExecutionConfig?.useDocker && tools.length > 0 && (
                         <div className="codeExecution-functions">
                             <div className="agent-node-functions">
                                 <label htmlFor={`agent-code-execution-functions-${id}`}>Functions:</label>

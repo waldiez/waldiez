@@ -80,11 +80,11 @@ describe("WaldiezFlow", () => {
         fireEvent.click(screen.getByTestId("show-models"));
         expect(screen.getByTestId("add-model-node")).toBeTruthy();
     });
-    it("should switch to skills view", () => {
+    it("should switch to tools view", () => {
         renderFlow();
-        expect(screen.queryByTestId("add-skill-node")).toBeNull();
-        fireEvent.click(screen.getByTestId("show-skills"));
-        expect(screen.getByTestId("add-skill-node")).toBeTruthy();
+        expect(screen.queryByTestId("add-tool-node")).toBeNull();
+        fireEvent.click(screen.getByTestId("show-tools"));
+        expect(screen.getByTestId("add-tool-node")).toBeTruthy();
     });
     it("should handle export flow (download only)", async () => {
         act(() => {
@@ -167,17 +167,17 @@ describe("WaldiezFlow", () => {
         });
         expect(screen.queryByTestId("rf__node-model-0")).toBeNull();
     });
-    it("should delete a skill with Delete key", () => {
+    it("should delete a tool with Delete key", () => {
         act(() => {
             renderFlow();
         });
-        fireEvent.click(screen.getByTestId("show-skills"));
-        fireEvent.click(screen.getByTestId("add-skill-node"));
-        fireEvent.keyDown(screen.getByTestId("rf__node-skill-0"), {
+        fireEvent.click(screen.getByTestId("show-tools"));
+        fireEvent.click(screen.getByTestId("add-tool-node"));
+        fireEvent.keyDown(screen.getByTestId("rf__node-tool-0"), {
             key: "Delete",
             code: "Delete",
         });
-        expect(screen.queryByTestId("rf__node-skill-0")).toBeNull();
+        expect(screen.queryByTestId("rf__node-tool-0")).toBeNull();
     });
     it("should delete an edge with Delete key", () => {
         act(() => {
@@ -194,7 +194,7 @@ describe("WaldiezFlow", () => {
             renderFlow();
         });
         vi.advanceTimersByTime(200);
-        fireEvent.click(screen.getByTestId("show-skills"));
+        fireEvent.click(screen.getByTestId("show-tools"));
         const rfRoot = screen.getByTestId(`rf-root-${flowId}`);
         expect(rfRoot).toBeTruthy();
         const zoomInButton = rfRoot.querySelector(".react-flow__controls-zoomin");
@@ -214,10 +214,10 @@ describe("WaldiezFlow - ReadOnly", () => {
         fireEvent.click(screen.getByTestId("show-models"));
         expect(screen.queryByTestId("add-model-node")).toBeNull();
     });
-    it("should not show add skill node button", () => {
+    it("should not show add tool node button", () => {
         renderFlow(false, false, false, true);
-        fireEvent.click(screen.getByTestId("show-skills"));
-        expect(screen.queryByTestId("add-skill-node")).toBeNull();
+        fireEvent.click(screen.getByTestId("show-tools"));
+        expect(screen.queryByTestId("add-tool-node")).toBeNull();
     });
     it("should not show run button", () => {
         renderFlow(false, false, false, true);
@@ -244,14 +244,14 @@ describe("WaldiezFlow - ReadOnly", () => {
         });
         expect(screen.queryByTestId("rf__node-model-0")).toBeTruthy();
     });
-    it("should not delete skill node", () => {
+    it("should not delete tool node", () => {
         renderFlow(false, false, false, true);
-        fireEvent.click(screen.getByTestId("show-skills"));
-        fireEvent.keyDown(screen.getByTestId("rf__node-skill-0"), {
+        fireEvent.click(screen.getByTestId("show-tools"));
+        fireEvent.keyDown(screen.getByTestId("rf__node-tool-0"), {
             key: "Delete",
             code: "Delete",
         });
-        expect(screen.queryByTestId("rf__node-skill-0")).toBeTruthy();
+        expect(screen.queryByTestId("rf__node-tool-0")).toBeTruthy();
     });
     it("should not delete edge", () => {
         renderFlow(false, false, false, true);

@@ -14,7 +14,7 @@ import {
 } from "@waldiez/models/Agent";
 import { WaldiezChat } from "@waldiez/models/Chat";
 import { WaldiezModel } from "@waldiez/models/Model";
-import { WaldiezSkill } from "@waldiez/models/Skill";
+import { WaldiezTool } from "@waldiez/models/Tool";
 
 /**
  * Waldiez Flow Data
@@ -22,7 +22,7 @@ import { WaldiezSkill } from "@waldiez/models/Skill";
  * @param edges - The edges
  * @param agents - The agents
  * @param models - The models
- * @param skills - The skills
+ * @param tools - The tools
  * @param chats - The chats
  * @param isAsync - Is async
  * @param cacheSeed - The cache seed
@@ -31,7 +31,7 @@ import { WaldiezSkill } from "@waldiez/models/Skill";
  * @see {@link WaldiezAgentAssistant}
  * @see {@link WaldiezAgentRagUser}
  * @see {@link WaldiezModel}
- * @see {@link WaldiezSkill}
+ * @see {@link WaldiezTool}
  * @see {@link WaldiezChat}
  * @see {@link WaldiezFlowData}
  */
@@ -48,7 +48,7 @@ export class WaldiezFlowData {
         groupManagerAgents: WaldiezAgentGroupManager[];
     };
     models: WaldiezModel[];
-    skills: WaldiezSkill[];
+    tools: WaldiezTool[];
     chats: WaldiezChat[];
     isAsync?: boolean = false;
     cacheSeed?: number | null = 41;
@@ -68,7 +68,7 @@ export class WaldiezFlowData {
                 groupManagerAgents: WaldiezAgentGroupManager[];
             };
             models: WaldiezModel[];
-            skills: WaldiezSkill[];
+            tools: WaldiezTool[];
             chats: WaldiezChat[];
             isAsync?: boolean;
             cacheSeed?: number | null;
@@ -90,7 +90,7 @@ export class WaldiezFlowData {
                 groupManagerAgents: [],
             },
             models: [],
-            skills: [],
+            tools: [],
             chats: [],
             isAsync: false,
             cacheSeed: 42,
@@ -102,7 +102,7 @@ export class WaldiezFlowData {
         this.viewport = props.viewport;
         this.agents = props.agents;
         this.models = props.models;
-        this.skills = props.skills;
+        this.tools = props.tools;
         this.chats = props.chats;
         this.isAsync = props.isAsync;
         this.cacheSeed = props.cacheSeed;

@@ -21,7 +21,7 @@ import {
     getAgentNode,
     getModelNodes,
     getNestedChats,
-    getSkillNodes,
+    getToolNodes,
     updatedAt,
 } from "./data";
 
@@ -32,19 +32,19 @@ export const renderAgent = (
         nodeOverrides?: Partial<Node>;
         dataOverrides?: { [key: string]: any };
         includeModels?: boolean;
-        includeSkills?: boolean;
+        includeTools?: boolean;
         includeNestedChats?: boolean;
     } = {
         openModal: false,
         nodeOverrides: {},
         dataOverrides: {},
         includeModels: false,
-        includeSkills: false,
+        includeTools: false,
         includeNestedChats: false,
     },
     uploadsHandler: ((files: File[]) => Promise<string[]>) | null = null,
 ) => {
-    const { openModal, nodeOverrides, dataOverrides, includeModels, includeSkills, includeNestedChats } =
+    const { openModal, nodeOverrides, dataOverrides, includeModels, includeTools, includeNestedChats } =
         options;
     const agentNode = getAgentNode(type, nodeOverrides, dataOverrides);
     const nodeData = {
@@ -57,8 +57,8 @@ export const renderAgent = (
     if (includeModels) {
         flowNodes.push(...getModelNodes());
     }
-    if (includeSkills) {
-        flowNodes.push(...getSkillNodes());
+    if (includeTools) {
+        flowNodes.push(...getToolNodes());
     }
     if (includeNestedChats) {
         const { nodes, edges } = getNestedChats();

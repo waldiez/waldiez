@@ -16,7 +16,7 @@ export type WaldiezAgentHumanInputMode = "ALWAYS" | "NEVER" | "TERMINATE";
  * @param useDocker - Either boolean (to enable/disable) or string (to specify the images)
  * @param timeout - The timeout
  * @param lastNMessages - The last N messages
- * @param functions - The functions (skill ids) to use
+ * @param functions - The functions (tool ids) to use
  */
 export type WaldiezAgentCodeExecutionConfigDict = {
     workDir?: string;
@@ -67,11 +67,11 @@ export type WaldiezAgentTerminationMessageCheck = {
     methodContent: string | null;
 };
 /**
- * Waldiez agent linked skill.
- * @param id - The skill id
+ * Waldiez agent linked tools.
+ * @param id - The tools id
  * @param executorId - The executor (agent) id
  */
-export type WaldiezAgentLinkedSkill = {
+export type WaldiezAgentLinkedTool = {
     id: string;
     executorId: string;
 };
@@ -91,7 +91,7 @@ export type WaldiezAgentLinkedSkill = {
  * @param contextVariables - The context variables
  * @param handoffs - The handoffs
  * @param modelIds - The model ids
- * @param skills - The linked skills
+ * @param tools - The tools available to the agent
  * @param tags - The tags
  * @param requirements - The requirements
  * @param createdAt - The created at date
@@ -102,7 +102,7 @@ export type WaldiezAgentLinkedSkill = {
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentHandoff}
- * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentLinkedTool}
  */
 export type WaldiezAgentCommonData = {
     name: string;
@@ -120,7 +120,7 @@ export type WaldiezAgentCommonData = {
     handoffs: WaldiezAgentHandoff[];
     // links
     modelIds: string[];
-    skills: WaldiezAgentLinkedSkill[];
+    tools: WaldiezAgentLinkedTool[];
     // meta
     tags: string[];
     requirements: string[];

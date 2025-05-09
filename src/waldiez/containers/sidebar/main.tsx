@@ -22,7 +22,7 @@ export const SideBar = (props: SidebarViewProps) => {
         onCloseEditModal,
         onShowAgents,
         onShowModels,
-        onShowSkills,
+        onShowTools,
         onUserDragStart,
         onAssistantDragStart,
         onReasoningDragStart,
@@ -80,12 +80,12 @@ export const SideBar = (props: SidebarViewProps) => {
                     </li>
                     <li
                         className="clickable"
-                        data-node-type="skill"
-                        data-testid="show-skills"
-                        onClick={onShowSkills}
+                        data-node-type="tool"
+                        data-testid="show-tools"
+                        onClick={onShowTools}
                     >
                         <AiFillCode />
-                        {!isCollapsed && <span>Skills</span>}
+                        {!isCollapsed && <span>Tools</span>}
                     </li>
                     <li
                         className="clickable expandable"

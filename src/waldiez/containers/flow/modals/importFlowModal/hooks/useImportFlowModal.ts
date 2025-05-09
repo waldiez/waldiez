@@ -66,7 +66,7 @@ const initialState: ImportFlowState = {
         isAsync: false,
         nodes: {
             models: [],
-            skills: [],
+            tools: [],
             agents: [],
         },
         edges: [],

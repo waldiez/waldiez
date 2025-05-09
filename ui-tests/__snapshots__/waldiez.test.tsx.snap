@@ -112,8 +112,8 @@ exports[`All > should render Waldiez components 1`] = `
                 </li>
                 <li
                   class="clickable"
-                  data-node-type="skill"
-                  data-testid="show-skills"
+                  data-node-type="tool"
+                  data-testid="show-tools"
                 >
                   <svg
                     fill="currentColor"
@@ -129,7 +129,7 @@ exports[`All > should render Waldiez components 1`] = `
                     />
                   </svg>
                   <span>
-                    Skills
+                    Tools
                   </span>
                 </li>
                 <li
@@ -597,8 +597,8 @@ exports[`All > should render Waldiez components 1`] = `
               </li>
               <li
                 class="clickable"
-                data-node-type="skill"
-                data-testid="show-skills"
+                data-node-type="tool"
+                data-testid="show-tools"
               >
                 <svg
                   fill="currentColor"
@@ -614,7 +614,7 @@ exports[`All > should render Waldiez components 1`] = `
                   />
                 </svg>
                 <span>
-                  Skills
+                  Tools
                 </span>
               </li>
               <li

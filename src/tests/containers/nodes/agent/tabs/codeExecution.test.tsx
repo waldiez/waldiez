@@ -106,24 +106,24 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
                 codeExecutionConfig: {
                     ...codeExecutionOverrides,
                     useDocker: undefined,
-                    functions: ["test-skill1"],
+                    functions: ["test-tool1"],
                 },
             },
-            includeSkills: true,
+            includeTools: true,
         });
         goToCodeExecutionTab();
         const functionSelect = screen.getByLabelText("Functions:");
         selectEvent.openMenu(functionSelect);
-        await selectEvent.select(functionSelect, ["test skill1", "test skill2"]);
+        await selectEvent.select(functionSelect, ["test tool1", "test tool2"]);
         fireEvent.change(functionSelect, {
             target: [
                 {
-                    label: "test skill1",
-                    value: "test-skill1",
+                    label: "test tool1",
+                    value: "test-tool1",
                 },
                 {
-                    label: "test skill2",
-                    value: "test-skill2",
+                    label: "test tool2",
+                    value: "test-tool2",
                 },
             ],
         });

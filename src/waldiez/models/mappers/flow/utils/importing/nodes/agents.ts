@@ -21,7 +21,7 @@ export const getAgents = (
     json: Record<string, unknown>,
     nodes: Node[],
     modelIds: string[],
-    skillIds: string[],
+    toolIds: string[],
     chatIds: string[],
 ) => {
     if (!("agents" in json) || typeof json.agents !== "object") {
@@ -48,7 +48,7 @@ export const getAgents = (
             agentsJson,
             nodes,
             modelIds,
-            skillIds,
+            toolIds,
             chatIds,
         ) as WaldiezAgentUserProxy[],
         assistantAgents: getFlowAgents(
@@ -56,7 +56,7 @@ export const getAgents = (
             agentsJson,
             nodes,
             modelIds,
-            skillIds,
+            toolIds,
             chatIds,
         ) as WaldiezAgentAssistant[],
         ragUserProxyAgents: getFlowAgents(
@@ -64,7 +64,7 @@ export const getAgents = (
             agentsJson,
             nodes,
             modelIds,
-            skillIds,
+            toolIds,
             chatIds,
         ) as WaldiezAgentRagUser[],
         reasoningAgents: getFlowAgents(
@@ -72,7 +72,7 @@ export const getAgents = (
             agentsJson,
             nodes,
             modelIds,
-            skillIds,
+            toolIds,
             chatIds,
         ) as WaldiezAgentReasoning[],
         captainAgents: getFlowAgents(
@@ -80,7 +80,7 @@ export const getAgents = (
             agentsJson,
             nodes,
             modelIds,
-            skillIds,
+            toolIds,
             chatIds,
         ) as WaldiezAgentCaptain[],
         groupManagerAgents: getFlowAgents(
@@ -88,7 +88,7 @@ export const getAgents = (
             agentsJson,
             nodes,
             modelIds,
-            skillIds,
+            toolIds,
             chatIds,
         ) as WaldiezAgentGroupManager[],
     };
@@ -100,7 +100,7 @@ const getFlowAgents = (
     json: Record<string, unknown>,
     nodes: Node[],
     modelIds: string[],
-    skillIds: string[],
+    toolIds: string[],
     chatIds: string[],
 ) => {
     const keyToCheck = `${agentType}_agents`;
@@ -130,13 +130,13 @@ const getFlowAgents = (
             }
         }
     });
-    return validateAgents(agentType, agents, modelIds, skillIds, chatIds, nodeIds);
+    return validateAgents(agentType, agents, modelIds, toolIds, chatIds, nodeIds);
 };
 const validateAgents = (
     agentType: WaldiezAgentType,
     imported: WaldiezAgent[],
     modelIds: string[],
-    skillIds: string[],
+    toolIds: string[],
     chatIds: string[],
     nodeIds: string[],
 ) => {
@@ -145,7 +145,7 @@ const validateAgents = (
             return filterAgentModelIds(agent, modelIds);
         })
         .map(agent => {
-            return filterAgentSkills(agent, skillIds);
+            return filterAgentTools(agent, toolIds);
         })
         .map(agent => {
             return filterAgentNestedChats(agent, nodeIds, chatIds);
@@ -162,9 +162,9 @@ const filterAgentModelIds = (agent: WaldiezAgent, modelIds: string[]) => {
     return agent;
 };
 
-const filterAgentSkills = (agent: WaldiezAgent, skillIds: string[]) => {
-    const currentSkillIds = skillIds.filter(skillId => agent.data.skills.some(skill => skill.id === skillId));
-    agent.data.skills = agent.data.skills.filter(skill => currentSkillIds.includes(skill.id));
+const filterAgentTools = (agent: WaldiezAgent, toolIds: string[]) => {
+    const currentToolIds = toolIds.filter(toolId => agent.data.tools.some(tool => tool.id === toolId));
+    agent.data.tools = agent.data.tools.filter(tool => currentToolIds.includes(tool.id));
     return agent;
 };
 

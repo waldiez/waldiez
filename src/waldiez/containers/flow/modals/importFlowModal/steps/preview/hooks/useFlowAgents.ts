@@ -48,7 +48,7 @@ export const useFlowAgents = (props: {
         onSelectedPropsChange({
             nodes: {
                 models: selectedProps.nodes.models,
-                skills: selectedProps.nodes.skills,
+                tools: selectedProps.nodes.tools,
                 agents: selectedProps.nodes.agents.some(agent => agent.id === node.id)
                     ? selectedProps.nodes.agents.filter(agent => agent.id !== node.id)
                     : [...selectedProps.nodes.agents, node],
@@ -59,7 +59,7 @@ export const useFlowAgents = (props: {
         onSelectedPropsChange({
             nodes: {
                 models: selectedProps.nodes.models,
-                skills: selectedProps.nodes.skills,
+                tools: selectedProps.nodes.tools,
                 agents: event.target.checked ? agentNodes! : [],
             },
         });

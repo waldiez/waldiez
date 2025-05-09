@@ -7,7 +7,7 @@ import {
     WaldiezAgentData,
     WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
 } from "@waldiez/models/Agent/Common";
@@ -21,14 +21,14 @@ import {
  * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
  * @param termination - The termination message check of the agent
  * @param modelIds - The model ids of the agent
- * @param skills - The linked skills of the agent
+ * @param tools - The tools available to the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
  * @param contextVariables - The context variables of the agent
  * @param handoffs - The handoffs of the agent
  * @param rest - The rest of the agent data
  * @see {@link WaldiezAgentData}
- * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentHandoff}
@@ -43,7 +43,7 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
-            skills: WaldiezAgentLinkedSkill[];
+            tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
@@ -61,7 +61,7 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
+            tools: [],
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},

@@ -21,15 +21,15 @@ describe("WaldiezFlow Clone Nodes", () => {
         fireEvent.click(cloneDiv as HTMLElement);
         expect(onChange).toHaveBeenCalled();
     });
-    it("should clone a skill node", async () => {
+    it("should clone a tool node", async () => {
         act(() => {
             renderFlow();
         });
-        fireEvent.click(screen.getByTestId("show-skills"));
-        fireEvent.click(screen.getByTestId("add-skill-node"));
-        const skillFooter = screen.getByTestId("skill-footer-skill-0");
-        expect(skillFooter).toBeTruthy();
-        const cloneDiv = screen.getByTestId("clone-node-skill-0");
+        fireEvent.click(screen.getByTestId("show-tools"));
+        fireEvent.click(screen.getByTestId("add-tool-node"));
+        const toolFooter = screen.getByTestId("tool-footer-tool-0");
+        expect(toolFooter).toBeTruthy();
+        const cloneDiv = screen.getByTestId("clone-node-tool-0");
         expect(cloneDiv).toBeTruthy();
         fireEvent.click(cloneDiv as HTMLElement);
         expect(onChange).toHaveBeenCalled();

@@ -34,7 +34,7 @@ describe("WaldiezFlow", () => {
         expect(flow.data.agents.assistantAgents).toEqual([]);
         expect(flow.data.agents.ragUserProxyAgents).toEqual([]);
         expect(flow.data.models).toEqual([]);
-        expect(flow.data.skills).toEqual([]);
+        expect(flow.data.tools).toEqual([]);
         expect(flow.data.chats).toEqual([]);
         expect(flow.data.isAsync).toBe(false);
     });

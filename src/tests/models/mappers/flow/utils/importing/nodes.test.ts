@@ -74,7 +74,7 @@ describe("getNodes", () => {
                 },
                 {
                     id: "101113",
-                    type: "skill",
+                    type: "tool",
                     position: 4,
                     data: {},
                 },

@@ -82,7 +82,7 @@ export const emptyFlow: WaldiezFlow = {
             groupManagerAgents: [],
         },
         models: [],
-        skills: [],
+        tools: [],
         chats: [],
         isAsync: false,
         cacheSeed: 41,

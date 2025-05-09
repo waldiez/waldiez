@@ -53,7 +53,7 @@
   max-height: 30px;
 }
 
-.flow-wrapper .agent-skill-preview svg,
+.flow-wrapper .agent-tool-preview svg,
 .flow-wrapper .agent-model-preview img {
   width: 18px !important;
   max-width: 18px !important;
@@ -102,7 +102,7 @@
 }
 
 .flow-wrapper .agent-body .agent-models,
-.flow-wrapper .agent-body .agent-skills {
+.flow-wrapper .agent-body .agent-tools {
   width: auto;
   margin-top: 4px;
   margin-bottom: 4px;
@@ -135,7 +135,7 @@
   flex-direction: column;
 }
 
-.flow-wrapper .agent-panel-add-skill {
+.flow-wrapper .agent-panel-add-tool {
   display: flex;
   align-items: baseline;
 }
@@ -145,7 +145,7 @@
   margin-left: 8px;
 }
 
-.flow-wrapper .agent-panel-add-skill button {
+.flow-wrapper .agent-panel-add-tool button {
   border: 1px solid #007bff;
   margin-top: 5px;
 }
@@ -154,7 +154,7 @@
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.flow-wrapper .agent-panel-add-skill button:disabled {
+.flow-wrapper .agent-panel-add-tool button:disabled {
   border: none;
   color: #6c757d;
   cursor: not-allowed;
@@ -174,12 +174,12 @@
   color: #000;
 }
 
-.flow-wrapper .agent-panel-current-skills,
-.flow-wrapper .agent-panel-current-skills-heading {
+.flow-wrapper .agent-panel-current-tools,
+.flow-wrapper .agent-panel-current-tools-heading {
   margin: 10px 0;
 }
 
-.flow-wrapper .agent-panel-current-skill {
+.flow-wrapper .agent-panel-current-tool {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -187,27 +187,27 @@
   margin-bottom: 10px;
 }
 
-.flow-wrapper .agent-panel .agent-no-skills {
+.flow-wrapper .agent-panel .agent-no-tools {
   margin-bottom: 10px;
 }
 
-.flow-wrapper .agent-panel-current-skill-entry {
+.flow-wrapper .agent-panel-current-tool-entry {
   display: flex;
   align-items: center;
 }
 
-.flow-wrapper .agent-panel-add-skill .select {
+.flow-wrapper .agent-panel-add-tool .select {
   margin: 0 10px;
 }
 
-.flow-wrapper .agent-panel-current-skill .skill-item,
-.flow-wrapper .agent-panel-current-skill .agent-item {
+.flow-wrapper .agent-panel-current-tool .tool-item,
+.flow-wrapper .agent-panel-current-tool .agent-item {
   display: flex;
   align-items: center;
 }
 
-.flow-wrapper .agent-panel-current-skill .agent-name,
-.flow-wrapper .agent-panel-current-skill .skill-name {
+.flow-wrapper .agent-panel-current-tool .agent-name,
+.flow-wrapper .agent-panel-current-tool .tool-name {
   margin-right: 10px;
   padding: 10px;
   background-color: rgb(150 150 150 / 10%);
@@ -357,20 +357,20 @@
 }
 
 .flow-wrapper .agent-models-preview,
-.flow-wrapper .agent-skills-preview {
+.flow-wrapper .agent-tools-preview {
   display: flex;
   flex-direction: column;
 }
 
 .flow-wrapper .agent-model-preview,
-.flow-wrapper .agent-skill-preview {
+.flow-wrapper .agent-tool-preview {
   display: flex;
   align-items: center;
   margin-bottom: 4px;
 }
 
 .flow-wrapper .agent-model-preview .agent-model-img,
-.flow-wrapper .agent-skill-preview .agent-skill-img {
+.flow-wrapper .agent-tool-preview .agent-tool-img {
   display: flex;
 }
 

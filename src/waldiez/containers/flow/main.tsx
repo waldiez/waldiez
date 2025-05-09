@@ -41,7 +41,7 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
     const readOnly = useWaldiez(s => s.isReadOnly);
     const viewport = useWaldiez(s => s.viewport);
     const addModel = useWaldiez(s => s.addModel);
-    const addSkill = useWaldiez(s => s.addSkill);
+    const addTool = useWaldiez(s => s.addTool);
     const handleViewportChange = useWaldiez(s => s.onViewportChange);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
     const showNodes = useWaldiez(s => s.showNodes);
@@ -90,8 +90,8 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
         if (selectedNodeType.current === "model") {
             addModel();
             onFlowChanged();
-        } else if (selectedNodeType.current === "skill") {
-            addSkill();
+        } else if (selectedNodeType.current === "tool") {
+            addTool();
             onFlowChanged();
         }
     };

@@ -10,7 +10,7 @@ import {
     WaldiezFlow,
     WaldiezFlowData,
     WaldiezNodeModel,
-    WaldiezNodeSkill,
+    WaldiezNodeTool,
     emptyFlow,
 } from "@waldiez/models";
 import { agentMapper } from "@waldiez/models/mappers/agent";
@@ -19,7 +19,7 @@ import {
     exportAgent,
     exportChat,
     exportModel,
-    exportSkill,
+    exportTool,
     getAgentNodes,
     getAgents,
     getCacheSeed,
@@ -29,11 +29,11 @@ import {
     getIsAsync,
     getModels,
     getNodes,
-    getSkills,
+    getTools,
     importFlowMeta,
 } from "@waldiez/models/mappers/flow/utils";
 import { modelMapper } from "@waldiez/models/mappers/model";
-import { skillMapper } from "@waldiez/models/mappers/skill";
+import { toolMapper } from "@waldiez/models/mappers/tool";
 import { WaldiezChat, WaldiezFlowProps } from "@waldiez/types";
 
 export const flowMapper = {
@@ -115,12 +115,12 @@ const getFlowDataToImport = (json: Record<string, unknown>, _flowId: string) => 
     edges = chatsNEdges.edges;
     const chats = chatsNEdges.chats;
     const models = getModels(json, nodes);
-    const skills = getSkills(json, nodes);
+    const tools = getTools(json, nodes);
     const agents = getAgents(
         json,
         nodes,
         models.map(model => model.id),
-        skills.map(skill => skill.id),
+        tools.map(tool => tool.id),
         edges.map(edge => edge.id),
     );
 
@@ -129,7 +129,7 @@ const getFlowDataToImport = (json: Record<string, unknown>, _flowId: string) => 
         edges,
         agents,
         models,
-        skills,
+        tools,
         chats,
         isAsync,
         cacheSeed,
@@ -141,7 +141,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
     const nodes = flow.nodes || [];
     const flowEdges = (flow.edges || []) as WaldiezEdge[];
     const modelNodes = nodes.filter(node => node.type === "model") as WaldiezNodeModel[];
-    const skillNodes = nodes.filter(node => node.type === "skill") as WaldiezNodeSkill[];
+    const toolNodes = nodes.filter(node => node.type === "tool") as WaldiezNodeTool[];
     const {
         userAgentNodes,
         assistantAgentNodes,
@@ -181,7 +181,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             ),
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),
-        skills: skillNodes.map(skillNode => exportSkill(skillNode, nodes, hideSecrets)),
+        tools: toolNodes.map(toolNode => exportTool(toolNode, nodes, hideSecrets)),
         chats: flowEdges.map((edge, index) => exportChat(edge, flowEdges, index)),
         isAsync: flow.isAsync,
         cacheSeed: flow.cacheSeed,
@@ -194,8 +194,8 @@ const getRFNodes = (flow: WaldiezFlow, _edges: Edge[]) => {
     flow.data.models.forEach(model => {
         nodes.push(modelMapper.asNode(model));
     });
-    flow.data.skills.forEach(skill => {
-        nodes.push(skillMapper.asNode(skill));
+    flow.data.tools.forEach(tool => {
+        nodes.push(toolMapper.asNode(tool));
     });
     flow.data.agents.userProxyAgents.forEach(user => {
         nodes.push(agentMapper.asNode(user));

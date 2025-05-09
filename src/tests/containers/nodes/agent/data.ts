@@ -13,10 +13,10 @@ import {
     WaldiezEdge,
     WaldiezModelData,
     WaldiezNodeAgentType,
-    WaldiezSkillData,
+    WaldiezToolData,
     agentMapper,
     modelMapper,
-    skillMapper,
+    toolMapper,
 } from "@waldiez/models";
 
 export const agentId = "test-agent";
@@ -101,23 +101,23 @@ export const getAgentNode = (
     return { ...node, ...nodeOverrides } as Node;
 };
 
-export const getSkillNodes = () => {
-    const skillData = new WaldiezSkillData();
-    const skill1 = skillMapper.asNode(
-        skillMapper.importSkill({
-            ...skillData,
-            name: "test skill1",
+export const getToolNodes = () => {
+    const toolData = new WaldiezToolData();
+    const tool1 = toolMapper.asNode(
+        toolMapper.importTool({
+            ...toolData,
+            name: "test tool1",
         }),
     );
-    skill1.id = "test-skill1";
-    const skill2 = skillMapper.asNode(
-        skillMapper.importSkill({
-            ...skillData,
-            name: "test skill2",
+    tool1.id = "test-tool1";
+    const tool2 = toolMapper.asNode(
+        toolMapper.importTool({
+            ...toolData,
+            name: "test tool2",
         }),
     );
-    skill2.id = "test-skill2";
-    return [{ ...skill1 }, { ...skill2 }];
+    tool2.id = "test-tool2";
+    return [{ ...tool1 }, { ...tool2 }];
 };
 
 export const getModelNodes = () => {

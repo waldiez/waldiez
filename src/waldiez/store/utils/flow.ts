@@ -140,7 +140,7 @@ const selectivelyOverrideOrMergeFlow = (
     if (items.cacheSeed) {
         mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 41;
     }
-    const itemNodes: Node[] = [...items.nodes.models, ...items.nodes.skills, ...items.nodes.agents];
+    const itemNodes: Node[] = [...items.nodes.models, ...items.nodes.tools, ...items.nodes.agents];
     const itemNodeIds: string[] = itemNodes.map(node => node.id);
     const newFlowNodesToUse = newFlow.nodes.filter(node => itemNodeIds.includes(node.id));
     const mergedNodes: Node[] = items.override

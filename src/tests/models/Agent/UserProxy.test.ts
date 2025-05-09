@@ -50,7 +50,7 @@ describe("WaldiezAgentUserProxy", () => {
                 methodContent: null,
             },
             modelIds: ["1", "2"],
-            skills: [
+            tools: [
                 {
                     id: "1",
                     executorId: "2",
@@ -102,7 +102,7 @@ describe("WaldiezAgentUserProxy", () => {
             methodContent: null,
         });
         expect(userProxy.data.modelIds).toEqual(["1", "2"]);
-        expect(userProxy.data.skills).toEqual([
+        expect(userProxy.data.tools).toEqual([
             {
                 id: "1",
                 executorId: "2",

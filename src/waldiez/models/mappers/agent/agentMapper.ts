@@ -42,10 +42,10 @@ import {
     getReasonConfig,
     getRetrieveConfig,
     getSendIntroductions,
-    getSkills,
     getSpeakers,
     getSystemMessage,
     getTermination,
+    getTools,
     getVerbose,
 } from "@waldiez/models/mappers/agent/utils";
 import { getNodePositionFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
@@ -91,7 +91,7 @@ export const agentMapper = {
             maxConsecutiveAutoReply: data.maxConsecutiveAutoReply,
             termination: data.termination,
             modelIds: data.modelIds,
-            skills: data.skills,
+            tools: data.tools,
             parentId: data.parentId,
             nestedChats: data.nestedChats,
         };
@@ -162,7 +162,7 @@ const getCommonAgentData = (
     const maxConsecutiveAutoReply = getMaximumConsecutiveAutoReply(data);
     const termination = getTermination(data);
     const modelIds = getModelIds(data);
-    const skills = getSkills(data);
+    const tools = getTools(data);
     const parentId = getParentId(data, agentType);
     const nestedChats = getNestedChats(data);
     const contextVariables = getContextVariables(data);
@@ -175,7 +175,7 @@ const getCommonAgentData = (
         maxConsecutiveAutoReply,
         termination,
         modelIds,
-        skills,
+        tools,
         parentId,
         nestedChats,
         contextVariables,
@@ -261,7 +261,7 @@ const getAgentDataToImport = (
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     const agentCopy = { ...agent };
     agentCopy.data.modelIds = [];
-    agentCopy.data.skills = [];
+    agentCopy.data.tools = [];
     agentCopy.data.nestedChats = [];
     if (agentCopy.data.codeExecutionConfig) {
         agentCopy.data.codeExecutionConfig.functions = [];

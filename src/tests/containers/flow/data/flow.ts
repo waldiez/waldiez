@@ -16,11 +16,11 @@ import {
     WaldiezChat,
     WaldiezModel,
     WaldiezNodeAgentRagUserData,
-    WaldiezSkill,
+    WaldiezTool,
     agentMapper,
     chatMapper,
     modelMapper,
-    skillMapper,
+    toolMapper,
 } from "@waldiez/models";
 
 import { createdAt, description, flowId, name, requirements, tags, updatedAt } from "./common";
@@ -35,7 +35,7 @@ const agents = {
     reasoningAgents: [] as WaldiezAgentReasoning[],
 };
 const models = [] as WaldiezModel[];
-const skills = [] as WaldiezSkill[];
+const tools = [] as WaldiezTool[];
 
 /* eslint-disable max-statements */
 const nodesWithoutData = nodes.map((node: Node) => {
@@ -112,17 +112,17 @@ const nodesWithoutData = nodes.map((node: Node) => {
         };
         models.push(modelMapper.importModel(jsonData));
         return { ...node };
-    } else if (nodeType === "skill") {
-        const skillData = node.data as any;
+    } else if (nodeType === "tool") {
+        const toolData = node.data as any;
         const jsonData = {
             id: node.id,
             type: nodeType,
-            position: skillData.position,
-            data: { ...skillData },
+            position: toolData.position,
+            data: { ...toolData },
             createdAt,
             updatedAt,
         };
-        skills.push(skillMapper.importSkill(jsonData));
+        tools.push(toolMapper.importTool(jsonData));
         return { ...node };
     }
     const newNode = { ...node, data: {} };
@@ -165,7 +165,7 @@ export const flow = {
         },
         chats,
         models,
-        skills,
+        tools,
         agents,
     },
     createdAt,

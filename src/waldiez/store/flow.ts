@@ -9,7 +9,7 @@ import {
     loadFlow,
     reArrangeModels,
     reArrangeNodes,
-    reArrangeSkills,
+    reArrangeTools,
     resetEdgeOrdersAndPositions,
     resetEdgePrerequisites,
     setViewPortTopLeft,
@@ -44,7 +44,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
         this.set({ rfInstance: instance });
         if (!currentInstance) {
             reArrangeModels(this.get, this.set);
-            reArrangeSkills(this.get, this.set);
+            reArrangeTools(this.get, this.set);
         }
     };
     getFlowInfo = () => {
@@ -111,7 +111,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
     onViewportChange = (viewport: { x: number; y: number; zoom: number }, nodeType: WaldiezNodeType) => {
         const zoomChanged = viewport.zoom !== this.get().viewport?.zoom;
         if (zoomChanged) {
-            if (nodeType === "model" || nodeType === "skill") {
+            if (nodeType === "model" || nodeType === "tool") {
                 const { nodes, rfInstance, flowId } = this.get();
                 this.set({
                     nodes: reArrangeNodes(nodes, flowId, nodeType, rfInstance),
@@ -169,7 +169,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
         });
         resetEdgeOrdersAndPositions(this.get, this.set);
         reArrangeModels(this.get, this.set);
-        reArrangeSkills(this.get, this.set);
+        reArrangeTools(this.get, this.set);
         setTimeout(() => {
             rfInstance?.fitView({
                 includeHiddenNodes: false,

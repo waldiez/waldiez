@@ -138,7 +138,7 @@ describe("WaldiezAgentNode", () => {
                     useDocker: undefined,
                     timeout: 10,
                     lastNMessages: "auto",
-                    functions: ["skill1", "skill2"],
+                    functions: ["tool1", "tool2"],
                 },
             },
         });

@@ -5,14 +5,14 @@
 import { useState } from "react";
 
 import { MultiValue } from "@waldiez/components";
-import { WaldiezNodeAgentData, WaldiezNodeSkill } from "@waldiez/models";
+import { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
 
 export const useWaldiezAgentCodeExecution = (props: {
     data: WaldiezNodeAgentData;
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
-    skills: WaldiezNodeSkill[];
+    tools: WaldiezNodeTool[];
 }) => {
-    const { data, onDataChange, skills } = props;
+    const { data, onDataChange, tools } = props;
     const [localData, setLocalData] = useState<WaldiezNodeAgentData>(data);
     const onUseCodeExecutionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLocalData({
@@ -116,26 +116,26 @@ export const useWaldiezAgentCodeExecution = (props: {
             });
         }
     };
-    const getSkillName = (skillId: string) => {
-        const skill = skills.find(skill => skill.id === skillId);
-        return (skill?.data.label ?? "Unknown Skill") as string;
+    const getToolName = (toolId: string) => {
+        const tool = tools.find(tool => tool.id === toolId);
+        return (tool?.data.label ?? "Unknown Tool") as string;
     };
-    const codeExecutionFunctionOptions: { label: string; value: string }[] = skills.map(skill => ({
-        label: (skill.data.label ?? "Unknown Skill") as string,
-        value: skill.id,
+    const codeExecutionFunctionOptions: { label: string; value: string }[] = tools.map(tool => ({
+        label: (tool.data.label ?? "Unknown Tool") as string,
+        value: tool.id,
     }));
     const codeExecutionValue: { label: string; value: string }[] =
         data.codeExecutionConfig === false
             ? ([] as { label: string; value: string }[])
             : ((data.codeExecutionConfig?.functions ?? []).map(func => ({
-                  label: getSkillName(func),
+                  label: getToolName(func),
                   value: func,
               })) ?? ([] as { label: string; value: string }[]));
     return {
         data: localData,
         codeExecutionValue,
         codeExecutionFunctionOptions,
-        getSkillName,
+        getToolName,
         onUseCodeExecutionChange,
         onCodeExecutionWorkDirChange,
         onCodeExecutionLastNMessagesChange,

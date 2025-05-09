@@ -11,10 +11,10 @@ describe("Waldiez", () => {
         render(<Waldiez />);
         const agents = screen.getByText(/Agents/i);
         const models = screen.getByText(/Models/i);
-        const skills = screen.getByText(/Skills/i);
+        const tools = screen.getByText(/Tools/i);
         expect(agents).toBeInTheDocument();
         expect(models).toBeInTheDocument();
-        expect(skills).toBeInTheDocument();
+        expect(tools).toBeInTheDocument();
     });
     it("renders error boundary", () => {
         //eslint-disable-next-line

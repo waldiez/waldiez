@@ -7,7 +7,7 @@ import { FaFileExport, FaFileImport } from "react-icons/fa";
 export const getImportExportView: (
     flowId: string,
     itemId: string,
-    itemType: "model" | "skill" | "agent",
+    itemType: "model" | "tool" | "agent",
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onExport: () => Promise<void>,
 ) => React.ReactNode = (flowId, itemId, itemType, onImport, onExport) => {

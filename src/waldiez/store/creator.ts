@@ -12,7 +12,7 @@ import { WaldiezEdgeStore } from "@waldiez/store/edge";
 import { WaldiezFlowStore } from "@waldiez/store/flow";
 import { WaldiezModelStore } from "@waldiez/store/model";
 import { WaldiezNodeStore } from "@waldiez/store/node";
-import { WaldiezSkillStore } from "@waldiez/store/skill";
+import { WaldiezToolStore } from "@waldiez/store/tool";
 import { WaldiezState, WaldiezStoreProps } from "@waldiez/store/types";
 import { getId } from "@waldiez/utils";
 
@@ -66,7 +66,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 onConvert,
                 ...WaldiezAgentStore.create(get, set),
                 ...WaldiezModelStore.create(get, set),
-                ...WaldiezSkillStore.create(get, set),
+                ...WaldiezToolStore.create(get, set),
                 ...WaldiezNodeStore.create(get, set),
                 ...WaldiezEdgeStore.create(get, set),
                 ...WaldiezFlowStore.create(get, set),
