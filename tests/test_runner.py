@@ -56,7 +56,7 @@ class CustomIOStream(IOStream):
         str
             User input.
         """
-        with patch("builtins.input", return_value="User Input\n"):
+        with patch("builtins.input", return_value="User Input"):
             return input(prompt)
 
     def send(self, message: Any) -> None:
