@@ -4,12 +4,9 @@
 
 ## Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez
 
-Design AI Agents and translate a Waldiez flow to AG2:
+Design AI Agents and translate a Waldiez flow to [AG2](https://github.com/ag2ai/ag2/):
 
-<!-- markdownlint-disable MD034 -->
-https://github.com/user-attachments/assets/71d4b8d1-a24b-45ab-ab53-dfc193e8fcaa
-
-To a python script or a jupyter notebook with the corresponding [ag2](https://github.com/ag2ai/ag2/) agents and chats.
+<video src="https://github.com/user-attachments/assets/71d4b8d1-a24b-45ab-ab53-dfc193e8fcaa" controls="controls" autoplay="autoplay" loop="loop" muted="muted" playsinline="playsinline" width="100%" height="100%"></video>
 
 ## Features
 
