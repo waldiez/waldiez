@@ -61,7 +61,7 @@ def is_root() -> bool:
     bool
         True if running as root/administrator, False otherwise.
     """
-    # pylint: disable=import-outside-toplevel,line-too-long
+    # pylint: disable=import-outside-toplevel,line-too-long,no-member
     if os.name == "nt":
         try:
             import ctypes

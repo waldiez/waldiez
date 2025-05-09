@@ -8,10 +8,10 @@
 
 import json
 import queue
+import sys
 from typing import Callable
 from unittest.mock import MagicMock, patch
 
-import pytest
 from autogen.events import BaseEvent  # type: ignore
 
 from waldiez.io import StructuredIOStream
@@ -285,7 +285,9 @@ class TestStructuredIOStream:
         stderr_call = None
         for call_args in mock_print.call_args_list:
             args, kwargs = call_args
-            if kwargs.get("file") and "stderr" in str(kwargs["file"]):
+            if kwargs.get("file") is sys.stderr or "stderr" in str(
+                kwargs.get("file", "")
+            ):
                 stderr_call = call_args
                 break
 
@@ -346,8 +348,3 @@ class TestStructuredIOStream:
             in payload["data"]
         )
         assert kwargs == {"flush": True}
-
-
-if __name__ == "__main__":
-    # Run the tests with coverage
-    pytest.main(["-xvs", "--cov=structured_io", "--cov-report=term-missing"])

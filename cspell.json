@@ -185,6 +185,7 @@
         "qdrant",
         "rcfile",
         "RDPS",
+        "readlink",
         "redoc",
         "rendermime",
         "retrievechat",
@@ -221,9 +222,11 @@
         "tseslint",
         "typer",
         "tzdata",
+        "unicodeescape",
         "userns",
         "utcnow",
         "uvicorn",
+        "UXXXXXXXX",
         "vectordb",
         "venv",
         "vertexai",
@@ -251,8 +254,6 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": [
-        "/**"
-    ],
+    "files": ["/**"],
     "useGitignore": true
 }

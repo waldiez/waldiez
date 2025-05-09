@@ -10,9 +10,28 @@ import { render } from "vitest-browser-react";
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 describe("All", () => {
+    const removeTapHighlight = () => {
+        // it seems that chromium injects:
+        // '-webkit-tap-highlight-color: rgba(0, 0, 0, 0);'
+        // in the style attribute of some elements
+        // (in some cases)
+        // so the snapshots might be different
+        for (const el of document.querySelectorAll("[style]")) {
+            const original = el.getAttribute("style") ?? "";
+            const cleaned = original
+                .replace(/-webkit-tap-highlight-color:\s*rgba\(0,\s*0,\s*0,\s*0\);?/gi, "")
+                .trim();
+            if (cleaned) {
+                el.setAttribute("style", cleaned);
+            } else {
+                el.removeAttribute("style");
+            }
+        }
+    };
     // eslint-disable-next-line max-statements
     it("should render Waldiez components", async () => {
         const screen = render(<Waldiez flowId="test-flow" storageId="test-flow-storage" />);
+        removeTapHighlight();
         const agents = page.getByText(/Agents/i);
         const models = page.getByText(/Models/i);
         const skills = page.getByText(/Skills/i);

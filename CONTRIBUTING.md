@@ -337,7 +337,9 @@ You can run the full project build pipeline (React + Python) using the unified h
 
 ```shell
 # or ./scripts/do.{sh,ps1} all
-./do all
+python do.py all
+# or:
+node --import=tsx do.ts all
 ```
 
 This will:

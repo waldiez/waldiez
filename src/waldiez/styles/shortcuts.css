@@ -23,10 +23,6 @@
   height: 0 !important;
 }
 
-.flow-wrapper .transparent {
-  background-color: transparent;
-}
-
 .flow-wrapper label.hidden {
   display: block !important;
 }
