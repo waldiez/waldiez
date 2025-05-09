@@ -6,6 +6,7 @@
         "addgroup",
         "addopts",
         "adduser",
+        "ag2",
         "agentchat",
         "aiocsv",
         "aiofiles",
@@ -81,6 +82,7 @@
         "genhtml",
         "geninfo",
         "getbasetemp",
+        "getuid",
         "graphviz",
         "greut",
         "groq",
@@ -162,7 +164,6 @@
         "posttest",
         "psycopg",
         "pwsh",
-        "ag2",
         "pycache",
         "pydantic",
         "pydocstyle",
@@ -249,6 +250,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
