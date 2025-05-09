@@ -7,7 +7,7 @@ import { Node } from "@xyflow/react";
 import { WaldiezAgentType } from "@waldiez/models";
 import { getIdFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
-const ValidChatTypesNODE_TYPES = ["model", "tool", "agent"];
+const ValidChatTypes = ["model", "tool", "agent"];
 const ValidAgentTypes: WaldiezAgentType[] = ["user_proxy", "assistant", "rag_user_proxy"];
 
 export const getNodes = (json: Record<string, unknown>) => {
@@ -47,7 +47,7 @@ const isValidNode = (nodeJson: Record<string, unknown>) => {
     if (
         !("type" in nodeJson) ||
         typeof nodeJson.type !== "string" ||
-        !ValidChatTypesNODE_TYPES.includes(nodeJson.type)
+        !ValidChatTypes.includes(nodeJson.type)
     ) {
         return null;
     }

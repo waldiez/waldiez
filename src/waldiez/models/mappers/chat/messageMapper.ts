@@ -4,7 +4,7 @@
  */
 import { WaldiezMessage } from "@waldiez/models/Chat";
 
-const ValidChatTypesCHAT_MESSAGE_TYPES = ["string", "method", "rag_message_generator", "none"];
+const ValidChatMessageTypes = ["string", "method", "rag_message_generator", "none"];
 
 type ChatMessageType = "string" | "method" | "rag_message_generator" | "none";
 
@@ -46,7 +46,7 @@ const getEdgeMessage = (data: { [key: string]: any }) => {
 const getEdgeMessageType = (data: { [key: string]: any }) => {
     let type: ChatMessageType = "none";
     if ("type" in data && data.type) {
-        if (typeof data.type === "string" && ValidChatTypesCHAT_MESSAGE_TYPES.includes(data.type)) {
+        if (typeof data.type === "string" && ValidChatMessageTypes.includes(data.type)) {
             type = data.type as ChatMessageType;
         }
     }
