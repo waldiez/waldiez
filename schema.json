@@ -133,10 +133,10 @@
                         "$ref": "#/definitions/WaldiezModel"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezSkill"
+                        "$ref": "#/definitions/WaldiezTool"
                     }
                 },
                 "chats": {
@@ -155,7 +155,7 @@
                     "type": "boolean"
                 }
             },
-            "required": ["agents", "chats", "edges", "models", "nodes", "skills"]
+            "required": ["agents", "chats", "edges", "models", "nodes", "tools"]
         },
         "WaldiezAgentUserProxy": {
             "type": "object",
@@ -253,10 +253,10 @@
                         "type": "string"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
                     }
                 },
                 "parentId": {
@@ -287,9 +287,9 @@
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
-                "skills",
                 "systemMessage",
-                "termination"
+                "termination",
+                "tools"
             ],
             "description": "Waldiez User Proxy Agent Data."
         },
@@ -399,7 +399,7 @@
             "enum": ["found", "ending", "exact"],
             "description": "Termination criterion (if the termination type is \"keyword\")."
         },
-        "WaldiezAgentLinkedSkill": {
+        "WaldiezAgentLinkedTool": {
             "type": "object",
             "properties": {
                 "id": {
@@ -411,7 +411,7 @@
             },
             "required": ["id", "executorId"],
             "additionalProperties": false,
-            "description": "Waldiez agent linked skill."
+            "description": "Waldiez agent linked tools."
         },
         "WaldiezAgentNestedChat": {
             "type": "object",
@@ -752,10 +752,10 @@
                         "type": "string"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
                     }
                 },
                 "parentId": {
@@ -790,9 +790,9 @@
                 "maxConsecutiveAutoReply",
                 "modelIds",
                 "nestedChats",
-                "skills",
                 "systemMessage",
-                "termination"
+                "termination",
+                "tools"
             ],
             "additionalProperties": false,
             "description": "Waldiez Assistant Agent Data."
@@ -883,10 +883,10 @@
                         "type": "string"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
                     }
                 },
                 "parentId": {
@@ -921,9 +921,9 @@
                 "modelIds",
                 "nestedChats",
                 "retrieveConfig",
-                "skills",
                 "systemMessage",
-                "termination"
+                "termination",
+                "tools"
             ],
             "additionalProperties": false,
             "description": "Waldiez Rag User Agent Data."
@@ -1181,10 +1181,10 @@
                         "type": "string"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
                     }
                 },
                 "parentId": {
@@ -1222,9 +1222,9 @@
                 "modelIds",
                 "nestedChats",
                 "reasonConfig",
-                "skills",
                 "systemMessage",
                 "termination",
+                "tools",
                 "verbose"
             ],
             "additionalProperties": false,
@@ -1364,10 +1364,10 @@
                         "type": "string"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
                     }
                 },
                 "parentId": {
@@ -1417,10 +1417,10 @@
                 "maxTurns",
                 "modelIds",
                 "nestedChats",
-                "skills",
                 "systemMessage",
                 "termination",
-                "toolLib"
+                "toolLib",
+                "tools"
             ],
             "additionalProperties": false,
             "description": "Waldiez Captain Agent Data."
@@ -1527,10 +1527,10 @@
                         "type": "string"
                     }
                 },
-                "skills": {
+                "tools": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentLinkedSkill"
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
                     }
                 },
                 "parentId": {
@@ -1584,10 +1584,10 @@
                 "maxRound",
                 "modelIds",
                 "nestedChats",
-                "skills",
                 "speakers",
                 "systemMessage",
-                "termination"
+                "termination",
+                "tools"
             ],
             "additionalProperties": false,
             "description": "Waldiez Group Manager Agent Data."
@@ -1786,7 +1786,7 @@
             "required": ["promptPricePer1k", "completionTokenPricePer1k"],
             "additionalProperties": false
         },
-        "WaldiezSkill": {
+        "WaldiezTool": {
             "type": "object",
             "properties": {
                 "type": {
@@ -1820,7 +1820,7 @@
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/WaldiezSkillData"
+                    "$ref": "#/definitions/WaldiezToolData"
                 },
                 "rest": {
                     "type": "object",
@@ -1839,27 +1839,27 @@
                 "data"
             ],
             "additionalProperties": false,
-            "description": "Waldiez Skill"
+            "description": "Waldiez Tool"
         },
-        "WaldiezSkillData": {
+        "WaldiezToolData": {
             "type": "object",
             "properties": {
                 "content": {
                     "type": "string"
                 },
-                "skillType": {
-                    "$ref": "#/definitions/WaldiezSkillType"
+                "toolType": {
+                    "$ref": "#/definitions/WaldiezToolType"
                 },
                 "secrets": {
                     "type": "object",
                     "additionalProperties": {}
                 }
             },
-            "required": ["content", "skillType", "secrets"],
+            "required": ["content", "toolType", "secrets"],
             "additionalProperties": false,
-            "description": "Skill data."
+            "description": "Tool data."
         },
-        "WaldiezSkillType": {
+        "WaldiezToolType": {
             "type": "string",
             "enum": ["shared", "custom", "langchain", "crewai"]
         },

@@ -19,7 +19,7 @@ trim_trailing_whitespace = false
 indent_size = 2
 
 # Ignore:
-[{*.svg,*.waldiez,*.waldiezSkill,*.waldiezModel,*.waldiezAgent}]
+[{*.svg,*.waldiez,*.waldiezTool,*.waldiezModel,*.waldiezAgent}]
 charset = unset
 end_of_line = unset
 insert_final_newline = unset

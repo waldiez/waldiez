@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Check if we can load and convert the examples in the git repo.
 
-No model api keys or skill secrets files are checked.
+No model api keys or tool secrets files are checked.
 If conversion fails or if the outputs in
 ../.local/examples/[x]/[y].py are not as expected,
 something is wrong with latest changes in the codebase.

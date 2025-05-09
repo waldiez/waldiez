@@ -94,7 +94,7 @@ These properties define the basic identity and metadata of your flow:
 
 #### Monaco Editor Configuration
 
-Monaco editor is used for code editing in several components(like in a waldiez skill). You can either host the required files locally or use a CDN. The `monacoVsPath` prop allows you to specify the path to the Monaco editor files.
+Monaco editor is used for code editing in several components(like in a waldiez tool). You can either host the required files locally or use a CDN. The `monacoVsPath` prop allows you to specify the path to the Monaco editor files.
 
 ```tsx
 // In development, use local 'vs' folder in public directory
