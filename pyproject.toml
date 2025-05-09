@@ -159,15 +159,15 @@ docs = [
   "mkdocs-open-in-new-tab==1.0.8",
 ]
 jupyter = [
-  "waldiez_jupyter==0.4.6",
+  "waldiez_jupyter==0.4.7",
   "jupyterlab>=4.3.0",
   "jupyter_server==2.15.0",
 ]
 runner = [
-  "waldiez_runner==0.4.6; python_version >= '3.11'",
+  "waldiez_runner==0.4.7; python_version >= '3.11'",
 ]
 studio = [
-  "waldiez_studio==0.4.6",
+  "waldiez_studio==0.4.7",
 ]
 test = [
   "pytest==8.3.5",
