@@ -24,6 +24,7 @@
         "autogen",
         "autohiding",
         "automl",
+        "autoplay",
         "autorefs",
         "autouse",
         "BAAI",
@@ -250,6 +251,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
