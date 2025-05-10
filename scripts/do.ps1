@@ -84,6 +84,10 @@ function Invoke-Py {
         }
     }
     else {
+        if (-not (Get-Command hatch -ErrorAction SilentlyContinue)) {
+            Write-Error "HATCH_ENV_ACTIVE is set, but 'hatch' is not installed or not in PATH."
+            exit 1
+        }
         Update-Pip
         Write-Host "Installing requirements..." -ForegroundColor Cyan
         pip install -r $requirementsFiles[0] -r $requirementsFiles[1] -r $requirementsFiles[2]
@@ -97,7 +101,25 @@ function Invoke-Py {
         make some
     }
     else {
-        $pythonCmd = if (Get-Command uv -ErrorAction SilentlyContinue) {
+        $pythonCmd = if ($env:HATCH_ENV_ACTIVE) {
+            if (Get-Command hatch -ErrorAction SilentlyContinue) {
+                if (Get-Command python3 -ErrorAction SilentlyContinue) {
+                    "python3"
+                }
+                elseif (Get-Command python -ErrorAction SilentlyContinue) {
+                    "python"
+                }
+                else {
+                    Write-Error "No suitable Python interpreter found. Please install Python 3."
+                    exit 1
+                }
+            }
+            else {
+                Write-Error "HATCH_ENV_ACTIVE is set but 'hatch' is not available."
+                exit 1
+            }
+        }
+        elseif (Get-Command uv -ErrorAction SilentlyContinue) {
             "uv run"
         }
         elseif (Get-Command python3 -ErrorAction SilentlyContinue) {

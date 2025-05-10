@@ -80,8 +80,21 @@ do_py() {
         # fallback to python/python3
         scripts="clean.py format.py lint.py test.py build.py docs.py image.py"
         for script in $scripts; do
-            if command -v uv >/dev/null 2>&1; then
-                uv run "scripts/$script"
+            if [ -z "${HATCH_ENV_ACTIVE:-}" ]; then
+                if command -v uv >/dev/null 2>&1; then
+                    uv run "scripts/$script"
+                else
+                    if command -v python3 >/dev/null 2>&1; then
+                        python3 "scripts/$script"
+                    else
+                        if command -v python >/dev/null 2>&1; then
+                            python "scripts/$script"
+                        else
+                            echo "No suitable Python interpreter found. Please install Python 3."
+                            exit 1
+                        fi
+                    fi
+                fi
             else
                 if command -v python3 >/dev/null 2>&1; then
                     python3 "scripts/$script"
