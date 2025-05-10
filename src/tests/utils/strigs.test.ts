@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { capitalize, getDateString } from "@waldiez/utils";
+import { capitalize, getDateString, getFriendlyString } from "@waldiez/utils";
 
 describe("capitalize", () => {
     it("should capitalize the first letter", () => {
@@ -19,5 +19,24 @@ describe("getDateString", () => {
     it("should return a date string", () => {
         const date = new Date().toISOString();
         expect(getDateString(date)).toEqual(expect.any(String));
+    });
+});
+
+describe("getFriendlyString", () => {
+    it("should return a friendly string", () => {
+        const str = "hello world";
+        expect(getFriendlyString(str)).toBe("Hello World");
+    });
+    it("should handle dashes", () => {
+        const str = "hello-world";
+        expect(getFriendlyString(str)).toBe("Hello World");
+    });
+    it("should handle underscores", () => {
+        const str = "hello_world";
+        expect(getFriendlyString(str)).toBe("Hello World");
+    });
+    it("should handle camel case", () => {
+        const str = "helloWorld";
+        expect(getFriendlyString(str)).toBe("Hello World");
     });
 });
