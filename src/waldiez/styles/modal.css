@@ -124,7 +124,7 @@
   padding: 10px;
   margin-bottom: 10px;
   min-width: 320px;
-  min-height: 180px;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
 }
