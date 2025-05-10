@@ -57,7 +57,7 @@ export const useWaldiezAgentTermination = (props: {
     const onTerminationCriterionChange = (
         option: SingleValue<{
             label: string;
-            value: "found" | "ending" | "exact";
+            value: "found" | "ending" | "starting" | "exact";
         }>,
     ) => {
         if (option) {
@@ -146,13 +146,14 @@ export const useWaldiezAgentTermination = (props: {
 
 const terminationCriterionOptions: {
     label: string;
-    value: "found" | "ending" | "exact";
+    value: "found" | "ending" | "starting" | "exact";
 }[] = [
     { label: "Keyword is found", value: "found" },
     {
         label: "Keyword is the last word",
         value: "ending",
     },
+    { label: "Keyword is the first word", value: "starting" },
     { label: "Exact match", value: "exact" },
 ];
 

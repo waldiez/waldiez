@@ -48,8 +48,15 @@ def test_get_is_termination_message() -> None:
     )
     # pylint: disable=line-too-long
     agent_name = "agent_name"
+    expected_output_str = (
+        "lambda x: any(isinstance(x, dict) and "
+        'x.get("content", "") and '
+        'isinstance(x.get("content", ""), str) and '
+        'x.get("content", "") == keyword '
+        'for keyword in ["stop", "terminate"])'
+    )
     expected_output = (
-        'lambda x: any(x.get("content", "") == keyword for keyword in ["stop", "terminate"])',
+        expected_output_str,
         "",
     )
     # When
@@ -73,11 +80,17 @@ def test_get_is_termination_message() -> None:
         },
     )
     agent_name = "agent_name"
+    expected_output_str = (
+        "lambda x: any(isinstance(x, dict) and "
+        'x.get("content", "") and '
+        'isinstance(x.get("content", ""), str) and '
+        'keyword in x.get("content", "") '
+        'for keyword in ["terminate"])'
+    )
     expected_output = (
-        'lambda x: any(x.get("content", "") and keyword in x.get("content", "") for keyword in ["terminate"])',
+        expected_output_str,
         "",
     )
-    # When
     output = get_is_termination_message(
         agent=agent,
         agent_name=agent_name,
@@ -98,8 +111,47 @@ def test_get_is_termination_message() -> None:
         },
     )
     agent_name = "agent_name"
+    expected_output_str = (
+        "lambda x: any(isinstance(x, dict) and "
+        'x.get("content", "") and '
+        'isinstance(x.get("content", ""), str) and '
+        'x.get("content", "").endswith(keyword) '
+        'for keyword in ["stop", "terminate"])'
+    )
     expected_output = (
-        'lambda x: any(x.get("content", "") and x.get("content", "").endswith(keyword) for keyword in ["stop", "terminate"])',
+        expected_output_str,
+        "",
+    )
+    # When
+    output = get_is_termination_message(
+        agent=agent,
+        agent_name=agent_name,
+    )
+    # Then
+    assert output == expected_output
+    # Given
+    agent = WaldiezAgent(
+        id="wa-1",
+        name="agent_name",
+        agent_type="assistant",
+        data={  # type: ignore
+            "termination": {
+                "type": "keyword",
+                "criterion": "starting",
+                "keywords": ["start", "terminate"],
+            },
+        },
+    )
+    agent_name = "agent_name"
+    expected_output_str = (
+        "lambda x: any(isinstance(x, dict) and "
+        'x.get("content", "") and '
+        'isinstance(x.get("content", ""), str) and '
+        'x.get("content", "").startswith(keyword) '
+        'for keyword in ["start", "terminate"])'
+    )
+    expected_output = (
+        expected_output_str,
         "",
     )
     # When

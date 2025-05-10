@@ -39,11 +39,12 @@ export type WaldiezAgentCodeExecutionConfig = WaldiezAgentCodeExecutionConfigDic
 export type WaldiezAgentTypeTerminationTypeOption = "none" | "keyword" | "method";
 /**
  * Termination criterion (if the termination type is "keyword").
- * @param found - Termination when found
- * @param ending - Termination when ending
- * @param exact - Termination when exact
+ * @param found - Termination when the message contains the keyword
+ * @param ending - Termination when the message ends with the keyword
+ * @param starting - Termination when the message starts with the keyword
+ * @param exact - Termination when the message is exactly the keyword
  */
-export type WaldiezAgentTerminationCriterionOption = "found" | "ending" | "exact";
+export type WaldiezAgentTerminationCriterionOption = "found" | "ending" | "starting" | "exact";
 /**
  * Waldiez agent nested chat.
  * @param triggeredBy - The agent ids that trigger the nested chat

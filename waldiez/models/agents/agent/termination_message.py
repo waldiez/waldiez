@@ -65,7 +65,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         ),
     ]
     criterion: Annotated[
-        Optional[Literal["found", "ending", "exact"]],
+        Optional[Literal["found", "ending", "starting", "exact"]],
         Field(
             "exact",
             title="Criterion",
@@ -162,26 +162,34 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         """Validate the keyword termination configuration."""
         if not self.keywords:
             raise ValueError("Keywords are required for keyword termination.")
-        if self.criterion not in ["found", "ending", "exact"]:
+        if self.criterion not in ["found", "ending", "starting", "exact"]:
             raise ValueError(f"Invalid criterion: {self.criterion}")
         # pylint: disable=inconsistent-quotes
         keywords_str = ", ".join([f'"{keyword}"' for keyword in self.keywords])
+        common_start = (
+            "lambda x: any(isinstance(x, dict) and "
+            'x.get("content", "") and '
+            'isinstance(x.get("content", ""), str) and '
+        )
+        common_end = f"for keyword in [{keywords_str}])"
         if self.criterion == "found":
             self._string = (
-                'lambda x: any(x.get("content", "") and '
-                'keyword in x.get("content", "") '
-                f"for keyword in [{keywords_str}])"
+                f'{common_start}keyword in x.get("content", "") {common_end}'
             )
-        if self.criterion == "ending":
+        elif self.criterion == "ending":
             self._string = (
-                'lambda x: any(x.get("content", "") and '
-                'x.get("content", "").endswith(keyword) '
-                f"for keyword in [{keywords_str}])"
+                f'{common_start}x.get("content", "").endswith(keyword) '
+                f"{common_end}"
             )
-        if self.criterion == "exact":
+        elif self.criterion == "starting":
             self._string = (
-                'lambda x: any(x.get("content", "") == keyword '
-                f"for keyword in [{keywords_str}])"
+                f'{common_start}x.get("content", "").startswith(keyword) '
+                f"{common_end}"
+            )
+
+        elif self.criterion == "exact":
+            self._string = (
+                f'{common_start}x.get("content", "") == keyword {common_end}'
             )
 
     @model_validator(mode="after")
