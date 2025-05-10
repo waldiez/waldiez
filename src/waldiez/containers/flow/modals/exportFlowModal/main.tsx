@@ -125,42 +125,25 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
             title="Export Flow"
             dataTestId={`export-flow-modal-${flowId}`}
         >
-            <div className="modal-body padding-10">
-                <div className="flex flex-column full-width">
-                    <div className="margin-left-5 full-width">
-                        <label className="checkbox-label full-width">
-                            <span className="checkbox-label-view">
-                                <div>
-                                    Share this flow to{" "}
-                                    <a
-                                        href={HUB_URL}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="link"
-                                    >
-                                        Waldiez hub
-                                    </a>
-                                </div>
-                            </span>
-                            <input
-                                type="checkbox"
-                                checked={alsoUpload}
-                                onChange={onAlsoUploadChange}
-                                data-testid={`import-flow-modal-share-${flowId}`}
-                            />
-                            <div className="checkbox"></div>
-                        </label>
-                    </div>
-                    {/* <InfoCheckbox
-                            // label="Share to Hub"
-                            label={
-
-                            }
-                            info={"Check this box to upload the flow to waldiez hub."}
+            <div className="modal-body">
+                <div className="padding-10">
+                    <label className="checkbox-label">
+                        <span className="checkbox-label-view">
+                            <div>
+                                Share this flow to{" "}
+                                <a href={HUB_URL} target="_blank" rel="noopener noreferrer" className="link">
+                                    Waldiez hub
+                                </a>
+                            </div>
+                        </span>
+                        <input
+                            type="checkbox"
                             checked={alsoUpload}
                             onChange={onAlsoUploadChange}
-                            dataTestId={`import-flow-modal-share-${flowId}`}
-                        /> */}
+                            data-testid={`import-flow-modal-share-${flowId}`}
+                        />
+                        <div className="checkbox"></div>
+                    </label>
                     {alsoUpload && (
                         <div className="flex full-width flex-column">
                             <div className="margin-top-10 full-width">
@@ -177,13 +160,13 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
                             </div>
                             <div className="margin-top-10 margin-bottom-20 full-width">
                                 <div className="margin-bottom-10 padding-10 center">
-                                    Additional csv files to include:
+                                    Additional csv file (results.csv) to include:
                                 </div>
                                 <DropZone
                                     allowedFileExtensions={[".csv"]}
                                     flowId={flowId}
                                     onUpload={onAdditionalFilesUpload}
-                                    multiple={true}
+                                    multiple={false}
                                 />
                             </div>
                         </div>
