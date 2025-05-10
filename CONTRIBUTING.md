@@ -168,7 +168,10 @@ To generate build artifacts:
 hatch run build
 ```
 
-To generate documentation:
+To generate the documentation:
+
+> Note: For the "full" documentation (and the react related parts), we should first generate the React markdown files using `bun docs`.
+> Then, we can generate the full documentation using:
 
 ```shell
 hatch run docs
@@ -298,7 +301,7 @@ Full build pipeline (library + web app + archive):
 bun run build
 ```
 
-Build documentation:
+Build documentation (this will only generate the React markdown files in `docs/reference/react`):
 
 ```shell
 bun docs
@@ -333,13 +336,13 @@ You can also run partial cleaning scripts:
 
 ### 🔗 Combined Project Pipeline
 
-You can run the full project build pipeline (React + Python) using the unified helper:
+You can run the full project build pipeline (React + Python) using the unified helpers:
 
 ```shell
 # or ./scripts/do.{sh,ps1} all
 python do.py all
 # or:
-node --import=tsx do.ts all
+node --import=tsx do.ts all  # or npx tsx do.ts all
 ```
 
 This will:
