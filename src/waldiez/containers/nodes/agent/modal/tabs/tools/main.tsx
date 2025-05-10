@@ -21,11 +21,9 @@ export const WaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
         onRemoveTool,
     } = useWaldiezAgentTools(props);
     return (
-        <div className="agent-panel agent-tools-panel">
+        <div className="agent-panel agent-tools-panel margin-bottom-10">
             {tools.length === 0 ? (
-                <div className="agent-no-tools margin-top-10 margin-bottom-10">
-                    No tools found in the workspace
-                </div>
+                <div className="margin-top-10 margin-left-10">No tools found in the workspace</div>
             ) : (
                 <div>
                     <div className="agent-panel-add-tool">
