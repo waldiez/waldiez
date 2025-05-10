@@ -142,6 +142,7 @@ export const agentMapper = {
             type: "agent",
             data: nodeData,
             ...agent.rest,
+            parentId: agent.data.parentId,
             position: nodePosition,
         };
         if (skipLinks === true) {

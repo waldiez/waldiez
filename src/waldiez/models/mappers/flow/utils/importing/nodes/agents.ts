@@ -16,6 +16,7 @@ import {
 } from "@waldiez/models";
 import { agentMapper } from "@waldiez/models/mappers/agent";
 import { getIdFromJSON } from "@waldiez/models/mappers/common";
+import { toCamelCase } from "@waldiez/utils";
 
 export const getAgents = (
     json: Record<string, unknown>,
@@ -103,9 +104,12 @@ const getFlowAgents = (
     toolIds: string[],
     chatIds: string[],
 ) => {
-    const keyToCheck = `${agentType}_agents`;
+    let keyToCheck = `${agentType}_agents`;
     if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
-        return [] as WaldiezAgent[];
+        keyToCheck = toCamelCase(keyToCheck);
+        if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
+            return [] as WaldiezAgent[];
+        }
     }
     const jsonEntries = json[keyToCheck] as Record<string, unknown>[];
     const agents: WaldiezAgent[] = [];

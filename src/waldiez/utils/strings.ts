@@ -23,3 +23,20 @@ export const getFriendlyString = (str: string) => {
         .map(word => capitalize(word))
         .join(" ");
 };
+
+export const toCamelCase = (str: string) => {
+    return (
+        str
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
+            .replace(/([0-9])([A-Z])/g, "$1 $2")
+            .replace(/_/g, " ")
+            .replace(/-/g, " ")
+            .trim()
+            .toLowerCase()
+            .split(" ")
+            .map(word => capitalize(word))
+            .join("")
+            // first character to lowercase
+            .replace(/^[A-Z]/, match => match.toLowerCase())
+    );
+};

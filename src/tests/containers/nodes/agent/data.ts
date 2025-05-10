@@ -202,7 +202,6 @@ export const getGroupNodes = () => {
             agentType: "group_manager",
         }),
     );
-    console.error(group1);
     group1.data.label = "Group 1";
     group1.id = "test-group1";
     const group2 = agentMapper.asNode(

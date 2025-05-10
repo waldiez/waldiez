@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { capitalize, getDateString, getFriendlyString } from "@waldiez/utils";
+import { capitalize, getDateString, getFriendlyString, toCamelCase } from "@waldiez/utils";
 
 describe("capitalize", () => {
     it("should capitalize the first letter", () => {
@@ -38,5 +38,13 @@ describe("getFriendlyString", () => {
     it("should handle camel case", () => {
         const str = "helloWorld";
         expect(getFriendlyString(str)).toBe("Hello World");
+    });
+});
+
+describe("toCamelCase", () => {
+    it("should convert to camel case", () => {
+        expect(toCamelCase("user_proxy_agent")).toBe("userProxyAgent");
+        expect(toCamelCase("user-proxy-agent")).toBe("userProxyAgent");
+        expect(toCamelCase("rag user proxy agent")).toBe("ragUserProxyAgent");
     });
 });
