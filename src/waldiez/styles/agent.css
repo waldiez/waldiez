@@ -359,6 +359,9 @@
 .flow-wrapper .agent-model-preview,
 .flow-wrapper .agent-tools-preview {
   display: flex;
+}
+
+.flow-wrapper .agent-tools-preview {
   flex-direction: column;
 }
 
