@@ -5,7 +5,7 @@
 import { getId } from "@waldiez/utils";
 
 export const getIdFromJSON = (json: Record<string, unknown>): string => {
-    let id = `ws-${getId()}`;
+    let id = `wt-${getId()}`;
     if ("id" in json && typeof json.id === "string") {
         id = json.id;
     }

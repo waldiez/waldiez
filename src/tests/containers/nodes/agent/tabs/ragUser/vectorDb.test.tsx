@@ -14,9 +14,9 @@ const goToVectorDbTab = async (isQdrant: boolean = false) => {
     renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
     fireEvent.click(ragUserTab);
-    const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-vectorDb`);
+    const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-vectorDb`);
     fireEvent.click(vectorDbTab);
     if (isQdrant) {
         const vectorDbSelect = screen.getByLabelText("Vector DB:");
@@ -34,7 +34,7 @@ const goToVectorDbTab = async (isQdrant: boolean = false) => {
 describe("Rag User tab Vector DB", () => {
     it("should render the Rag User tab Vector DB", async () => {
         await goToVectorDbTab();
-        const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-vectorDb`);
+        const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-vectorDb`);
         expect(vectorDbTab).toBeInTheDocument();
     });
     it("should change the vector DB", async () => {

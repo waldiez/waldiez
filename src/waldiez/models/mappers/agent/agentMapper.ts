@@ -247,7 +247,7 @@ const getAgentDataToImport = (
     if (agentType === "group_manager") {
         return new WaldiezAgentGroupManagerData({
             ...data,
-            // TODO: get InitialAgentId
+            initialAgentId: getInitialAgentId(jsonData),
             maxRound: getGroupChatMaxRound(jsonData),
             adminName: getAdminName(jsonData),
             speakers: getSpeakers(jsonData),
@@ -258,6 +258,7 @@ const getAgentDataToImport = (
     return data;
 };
 
+// eslint-disable-next-line max-statements
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     const agentCopy = { ...agent };
     agentCopy.data.modelId = null;
@@ -279,6 +280,7 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
             allowRepeat: [],
             allowedOrDisallowedTransitions: {},
         };
+        (agentCopy as WaldiezNodeAgentGroupManager).data.initialAgentId = undefined;
     }
     return agentCopy;
 };

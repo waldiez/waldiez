@@ -7,6 +7,7 @@ import { Node } from "@xyflow/react";
 import {
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
+    WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentUserProxy,
     WaldiezChatData,
@@ -80,7 +81,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType: agentType,
                     ...dataOverrides,
                 }),
             );
@@ -89,7 +90,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType: agentType,
                     ...dataOverrides,
                 }),
             );
@@ -191,4 +192,26 @@ export const getConnectedAgents = () => {
 
 export const getNestedChats = () => {
     return getConnectedAgents();
+};
+
+export const getGroupNodes = () => {
+    const groupData = WaldiezAgentGroupManager.create("group_manager");
+    const group1 = agentMapper.asNode(
+        agentMapper.importAgent({
+            ...groupData,
+            agentType: "group_manager",
+        }),
+    );
+    console.error(group1);
+    group1.data.label = "Group 1";
+    group1.id = "test-group1";
+    const group2 = agentMapper.asNode(
+        agentMapper.importAgent({
+            ...groupData,
+            agentType: "group_manager",
+        }),
+    );
+    group2.data.label = "Group 2";
+    group2.id = "test-group2";
+    return [{ ...group1 }, { ...group2 }];
 };

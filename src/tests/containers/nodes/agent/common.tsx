@@ -19,12 +19,14 @@ import {
     createdAt,
     flowId,
     getAgentNode,
+    getGroupNodes,
     getModelNodes,
     getNestedChats,
     getToolNodes,
     updatedAt,
 } from "./data";
 
+// eslint-disable-next-line max-statements
 export const renderAgent = (
     type: WaldiezNodeAgentType,
     options: {
@@ -34,6 +36,7 @@ export const renderAgent = (
         includeModels?: boolean;
         includeTools?: boolean;
         includeNestedChats?: boolean;
+        includeGroups?: boolean;
     } = {
         openModal: false,
         nodeOverrides: {},
@@ -41,11 +44,19 @@ export const renderAgent = (
         includeModels: false,
         includeTools: false,
         includeNestedChats: false,
+        includeGroups: false,
     },
     uploadsHandler: ((files: File[]) => Promise<string[]>) | null = null,
 ) => {
-    const { openModal, nodeOverrides, dataOverrides, includeModels, includeTools, includeNestedChats } =
-        options;
+    const {
+        openModal,
+        nodeOverrides,
+        dataOverrides,
+        includeModels,
+        includeTools,
+        includeNestedChats,
+        includeGroups,
+    } = options;
     const agentNode = getAgentNode(type, nodeOverrides, dataOverrides);
     const nodeData = {
         ...agentNode.data,
@@ -64,6 +75,9 @@ export const renderAgent = (
         const { nodes, edges } = getNestedChats();
         flowNodes.push(...nodes);
         flowEdges.push(...edges);
+    }
+    if (includeGroups) {
+        flowNodes.push(...getGroupNodes());
     }
     act(() => {
         render(

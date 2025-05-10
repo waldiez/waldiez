@@ -26,7 +26,7 @@ export const toolMapper = {
     importTool: (json: unknown): WaldiezTool => {
         if (!json || typeof json !== "object") {
             return new WaldiezTool({
-                id: "ws-" + getId(),
+                id: "wt-" + getId(),
                 name: "new_tool",
                 description: "A new tool",
                 tags: [],

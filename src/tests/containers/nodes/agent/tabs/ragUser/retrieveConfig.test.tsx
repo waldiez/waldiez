@@ -30,20 +30,16 @@ const goToRetrieveConfigTab = async () => {
         },
         uploadsHandler,
     );
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
     fireEvent.click(ragUserTab);
-    const retrieveConfigTab = screen.getByTestId(
-        `tab-id-wf-${flowId}-agent-ragUser-${agentId}-retrieveConfig`,
-    );
+    const retrieveConfigTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-retrieveConfig`);
     fireEvent.click(retrieveConfigTab);
 };
 
 describe("Rag User tab Retrieve Config", () => {
     it("should render the Rag User tab Retrieve Config", async () => {
         await goToRetrieveConfigTab();
-        const retrieveConfigTab = screen.getByTestId(
-            `tab-id-wf-${flowId}-agent-ragUser-${agentId}-retrieveConfig`,
-        );
+        const retrieveConfigTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-retrieveConfig`);
         expect(retrieveConfigTab).toBeInTheDocument();
     });
     it("should change the task", async () => {

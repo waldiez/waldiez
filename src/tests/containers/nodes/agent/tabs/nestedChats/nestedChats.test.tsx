@@ -11,7 +11,7 @@ import { agentId, flowId } from "../../data";
 describe("Nested Chats tab main", () => {
     it("should not render the Nested Chats tab if the agent has no connections", async () => {
         renderAgent("user_proxy");
-        expect(screen.queryByTestId(`tab-id-wf-${flowId}-agent-nestedChats-${agentId}`)).toBeNull();
+        expect(screen.queryByTestId(`tab-id-wf-${flowId}-wa-${agentId}-nested`)).toBeNull();
     });
     it("should render the Nested Chats tab if the agent has connections", async () => {
         renderAgent("user_proxy", {
@@ -27,7 +27,7 @@ describe("Nested Chats tab main", () => {
             },
         });
         // Click on the Nested Chats tab
-        const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-nestedChats-${agentId}`);
+        const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-nested`);
         expect(nestedChatsTab).toBeInTheDocument();
         fireEvent.click(nestedChatsTab);
     });

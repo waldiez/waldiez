@@ -55,7 +55,7 @@ export class WaldiezTool {
 
     static create(): WaldiezTool {
         return new WaldiezTool({
-            id: `ws-${getId()}`,
+            id: `wt-${getId()}`,
             name: "new_tool",
             description: "A new tool",
             tags: [],

@@ -13,7 +13,7 @@ import { agentId, flowId } from "../data";
 
 const goToCodeExecutionTab = () => {
     // Click on the Code Execution tab
-    const codeExecutionTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-codeExecution-${agentId}`);
+    const codeExecutionTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-codeExecution`);
     expect(codeExecutionTab).toBeInTheDocument();
     fireEvent.click(codeExecutionTab);
 };

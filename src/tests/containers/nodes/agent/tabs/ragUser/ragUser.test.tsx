@@ -11,43 +11,41 @@ import { agentId, flowId } from "../../data";
 
 const goToRagTab = () => {
     renderAgent("rag_user_proxy", { openModal: true });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
     fireEvent.click(ragUserTab);
 };
 
 describe("Rag User tab main", () => {
     it("should render the Rag User tab", async () => {
         goToRagTab();
-        const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
+        const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
         expect(ragUserTab).toBeInTheDocument();
     });
     it("should render the Rag User sub-tabs", async () => {
         goToRagTab();
-        const configTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-retrieveConfig`);
+        const configTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-retrieveConfig`);
         expect(configTab).toBeInTheDocument();
-        const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-textSplit`);
+        const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-textSplit`);
         expect(textSplitTab).toBeInTheDocument();
-        const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-vectorDb`);
+        const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-vectorDb`);
         expect(vectorDbTab).toBeInTheDocument();
         const customFunctionsTab = screen.getByTestId(
-            `tab-id-wf-${flowId}-agent-ragUser-${agentId}-customFunctions`,
+            `tab-id-wf-${flowId}-wa-${agentId}-rag-customFunctions`,
         );
         expect(customFunctionsTab).toBeInTheDocument();
-        const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-advanced`);
+        const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-advanced`);
         expect(advancedTab).toBeInTheDocument();
     });
     // eslint-disable-next-line max-statements
     it("should change the active tab", async () => {
         goToRagTab();
-        const retrieveConfigTab = screen.getByTestId(
-            `tab-id-wf-${flowId}-agent-ragUser-${agentId}-retrieveConfig`,
-        );
-        const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-textSplit`);
-        const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-vectorDb`);
+        const retrieveConfigTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-retrieveConfig`);
+        const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-textSplit`);
+        const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-vectorDb`);
         const customFunctionsTab = screen.getByTestId(
-            `tab-id-wf-${flowId}-agent-ragUser-${agentId}-customFunctions`,
+            `tab-id-wf-${flowId}-wa-${agentId}-rag-customFunctions`,
         );
-        const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-advanced`);
+        const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-advanced`);
         expect(retrieveConfigTab).toBeInTheDocument();
         expect(textSplitTab).toBeInTheDocument();
         expect(vectorDbTab).toBeInTheDocument();

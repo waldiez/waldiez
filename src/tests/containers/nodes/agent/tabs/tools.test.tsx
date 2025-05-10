@@ -12,7 +12,7 @@ import { agentId, flowId } from "../data";
 
 const goToToolsTab = () => {
     // Click on the Tools tab
-    const toolsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-tools-${agentId}`);
+    const toolsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-tools`);
     expect(toolsTab).toBeInTheDocument();
     fireEvent.click(toolsTab);
 };
@@ -23,7 +23,6 @@ const toolOverrides = {
 
 describe("Tools tab", () => {
     it("should display the agent tools", async () => {
-        // renderAgent('user', true, toolOverrides, false, true);
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: toolOverrides,

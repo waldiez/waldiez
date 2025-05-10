@@ -27,6 +27,7 @@ const ValidAgentTypes: WaldiezNodeAgentType[] = [
     "captain",
     "rag_user_proxy",
     "reasoning",
+    "group_manager",
 ];
 export const getAgentId = (data: any, agentId?: string) => {
     let id = `wa-${getId()}`;

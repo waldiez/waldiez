@@ -150,7 +150,7 @@ export class WaldiezToolStore implements IWaldiezToolStore {
         const label = tool.data.label + " (copy)";
         const clonedTool = {
             ...tool,
-            id: `ws-${getId()}`,
+            id: `wt-${getId()}`,
             data: { ...tool.data, label, createdAt, updatedAt },
             position,
         };

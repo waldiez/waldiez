@@ -8,7 +8,7 @@ export const createdAt = new Date().toISOString();
 export const updatedAt = new Date().toISOString();
 
 export const flowId = "wf-1";
-export const toolId = "ws-1";
+export const toolId = "wt-1";
 export const toolData = {
     label: "label",
     description: "description",

@@ -63,9 +63,6 @@ export const AfterWork: React.FC<AfterWorkProps> = ({ target, agents, onChange, 
                 case "AskUserTarget":
                     onChange({ target_type: targetType });
                     break;
-                default:
-                    // TODO: handle other target types
-                    break;
             }
         }
     };

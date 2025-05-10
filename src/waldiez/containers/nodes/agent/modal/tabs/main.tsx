@@ -68,7 +68,7 @@ export const WaldiezNodeAgentModalTabs = ({
     };
     return (
         <TabItems activeTabIndex={activeTabIndex}>
-            <TabItem label="Agent" id={`wf-${flowId}-agent-config-${id}`}>
+            <TabItem label="Agent" id={`wf-${flowId}-wa-${id}-basic`}>
                 <div className="modal-tab-body">
                     <WaldiezAgentBasic
                         id={id}
@@ -79,7 +79,7 @@ export const WaldiezNodeAgentModalTabs = ({
                 </div>
             </TabItem>
             {isReasoning && (
-                <TabItem label="Reasoning" id={`wf-${flowId}-agent-reasoning-${id}`}>
+                <TabItem label="Reasoning" id={`wf-${flowId}-wa-${id}-reasoning`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentReasoning
                             id={id}
@@ -90,7 +90,7 @@ export const WaldiezNodeAgentModalTabs = ({
                 </TabItem>
             )}
             {isRagUser && (
-                <TabItem label="RAG" id={`wf-${flowId}-agent-ragUser-${id}`}>
+                <TabItem label="RAG" id={`wf-${flowId}-wa-${id}-rag`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentRagUser
                             id={id}
@@ -106,12 +106,12 @@ export const WaldiezNodeAgentModalTabs = ({
                     </div>
                 </TabItem>
             )}
-            <TabItem label="Termination" id={`wf-${flowId}-agent-termination-${id}`}>
+            <TabItem label="Termination" id={`wf-${flowId}-wa-${id}-termination`}>
                 <div className="modal-tab-body">
                     <WaldiezAgentTermination id={id} data={data} onDataChange={onDataChange} />
                 </div>
             </TabItem>
-            <TabItem label="Code Execution" id={`wf-${flowId}-agent-codeExecution-${id}`}>
+            <TabItem label="Code Execution" id={`wf-${flowId}-wa-${id}-codeExecution`}>
                 <div className="modal-tab-body">
                     <WaldiezAgentCodeExecution
                         id={id}
@@ -121,12 +121,12 @@ export const WaldiezNodeAgentModalTabs = ({
                     />
                 </div>
             </TabItem>
-            <TabItem label="Model" id={`wf-${flowId}-agent-model-${id}`}>
+            <TabItem label="Model" id={`wf-${flowId}-wa-${id}-model`}>
                 <div className="modal-tab-body">
                     <WaldiezAgentModels id={id} data={data} models={models} onDataChange={onDataChange} />
                 </div>
             </TabItem>
-            <TabItem label="Tools" id={`wf-${flowId}-agent-tools-${id}`}>
+            <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
                 <div className="modal-tab-body">
                     <WaldiezAgentTools
                         id={id}
@@ -139,7 +139,7 @@ export const WaldiezNodeAgentModalTabs = ({
             </TabItem>
 
             {showNestedChatsTab && (
-                <TabItem label="Nested chat" id={`wf-${flowId}-agent-nestedChats-${id}`}>
+                <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-nested`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentNestedChats
                             id={id}
@@ -151,7 +151,7 @@ export const WaldiezNodeAgentModalTabs = ({
                 </TabItem>
             )}
             {isCaptain && (
-                <TabItem label="Captain" id={`wf-${flowId}-agent-captain-${id}`}>
+                <TabItem label="Captain" id={`wf-${flowId}-wa-${id}-captain`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentCaptainTab
                             id={id}
@@ -163,7 +163,7 @@ export const WaldiezNodeAgentModalTabs = ({
                 </TabItem>
             )}
             {!isManager && groupManagers.length > 0 && (
-                <TabItem id={`wf-${flowId}-agent-group-${id}`} label="Group">
+                <TabItem id={`wf-${flowId}-wa-${id}-group`} label="Group">
                     <div className="modal-tab-body">
                         <WaldiezAgentGroup id={id} data={data} agents={agents} onDataChange={onDataChange} />
                     </div>

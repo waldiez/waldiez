@@ -14,16 +14,16 @@ const goToTextSplitTab = () => {
     renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
     fireEvent.click(ragUserTab);
-    const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-textSplit`);
+    const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-textSplit`);
     fireEvent.click(textSplitTab);
 };
 
 describe("Rag User tab Text Split", () => {
     it("should render the Rag User tab Text Split", () => {
         goToTextSplitTab();
-        const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-textSplit`);
+        const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-textSplit`);
         expect(textSplitTab).toBeInTheDocument();
     });
     it("should change the chunk token size", () => {

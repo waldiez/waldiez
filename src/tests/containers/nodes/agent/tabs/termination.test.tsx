@@ -13,7 +13,7 @@ import { agentId, flowId } from "../data";
 
 const goToTerminationTab = () => {
     // Click on the Termination tab
-    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-termination-${agentId}`);
+    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-termination`);
     expect(terminationTab).toBeInTheDocument();
     fireEvent.click(terminationTab);
 };

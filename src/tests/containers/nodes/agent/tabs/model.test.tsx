@@ -12,7 +12,7 @@ import { agentId, flowId } from "../data";
 
 const goToModelTab = () => {
     // Click on the Models tab
-    const modelsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-model-${agentId}`);
+    const modelsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-model`);
     expect(modelsTab).toBeInTheDocument();
     fireEvent.click(modelsTab);
 };

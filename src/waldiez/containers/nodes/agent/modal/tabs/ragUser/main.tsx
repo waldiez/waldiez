@@ -33,7 +33,7 @@ export const WaldiezAgentRagUser = (props: WaldiezAgentRagUserProps) => {
     return (
         <div className="agent-panel agent-ragUser-panel margin-bottom-10">
             <TabItems activeTabIndex={activeTabIndex}>
-                <TabItem label="Retrieve Config" id={`wf-${flowId}-agent-ragUser-${id}-retrieveConfig`}>
+                <TabItem label="Retrieve Config" id={`wf-${flowId}-wa-${id}-rag-retrieveConfig`}>
                     <WaldiezAgentRagUserRetrieveConfig
                         id={id}
                         flowId={flowId}
@@ -44,13 +44,13 @@ export const WaldiezAgentRagUser = (props: WaldiezAgentRagUserProps) => {
                         onFilesToUploadChange={onFilesToUploadChange}
                     />
                 </TabItem>
-                <TabItem label="Text splitting" id={`wf-${flowId}-agent-ragUser-${id}-textSplit`}>
+                <TabItem label="Text splitting" id={`wf-${flowId}-wa-${id}-rag-textSplit`}>
                     <WaldiezAgentRagUserTextSplit id={id} data={data} onDataChange={onDataChange} />
                 </TabItem>
-                <TabItem label="Vector DB Config" id={`wf-${flowId}-agent-ragUser-${id}-vectorDb`}>
+                <TabItem label="Vector DB Config" id={`wf-${flowId}-wa-${id}-rag-vectorDb`}>
                     <WaldiezAgentRagUserVectorDb id={id} data={data} onDataChange={onDataChange} />
                 </TabItem>
-                <TabItem label="Custom Functions" id={`wf-${flowId}-agent-ragUser-${id}-customFunctions`}>
+                <TabItem label="Custom Functions" id={`wf-${flowId}-wa-${id}-rag-customFunctions`}>
                     <WaldiezAgentRagUserCustomFunctions
                         id={id}
                         flowId={flowId}
@@ -59,7 +59,7 @@ export const WaldiezAgentRagUser = (props: WaldiezAgentRagUserProps) => {
                         onDataChange={onDataChange}
                     />
                 </TabItem>
-                <TabItem label="Advanced" id={`wf-${flowId}-agent-ragUser-${id}-advanced`}>
+                <TabItem label="Advanced" id={`wf-${flowId}-wa-${id}-rag-advanced`}>
                     <WaldiezAgentRagUserAdvanced id={id} data={data} onDataChange={onDataChange} />
                 </TabItem>
             </TabItems>

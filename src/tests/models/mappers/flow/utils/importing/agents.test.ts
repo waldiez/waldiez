@@ -64,7 +64,7 @@ describe("getAgents", () => {
             },
         };
         const nodes: any[] = [{ id: "wa-2", type: "agent", data: {} }];
-        const agents = getAgents(json, nodes, ["wm-1"], ["ws-1"], ["we-1"]);
+        const agents = getAgents(json, nodes, ["wm-1"], ["wt-1"], ["we-1"]);
         expect(agents).toEqual({
             userProxyAgents: [],
             assistantAgents: [],

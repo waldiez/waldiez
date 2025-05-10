@@ -12,7 +12,7 @@ import { agentId, flowId } from "../data";
 
 const goToReasoningTab = () => {
     // Click on the Reasoning tab
-    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-reasoning-${agentId}`);
+    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-reasoning`);
     expect(terminationTab).toBeInTheDocument();
     fireEvent.click(terminationTab);
 };

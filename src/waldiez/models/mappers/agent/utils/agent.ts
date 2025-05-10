@@ -7,6 +7,8 @@ import {
     WaldiezAgentAssistantData,
     WaldiezAgentCaptain,
     WaldiezAgentCaptainData,
+    WaldiezAgentGroupManager,
+    WaldiezAgentGroupManagerData,
     WaldiezAgentRagUser,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoning,
@@ -95,6 +97,20 @@ export const getAgent = (
             createdAt,
             updatedAt,
             data: data as WaldiezAgentCaptainData,
+            rest,
+        });
+    }
+    if (agentType === "group_manager") {
+        return new WaldiezAgentGroupManager({
+            id,
+            agentType,
+            name,
+            description,
+            tags,
+            requirements,
+            createdAt,
+            updatedAt,
+            data: data as WaldiezAgentGroupManagerData,
             rest,
         });
     }

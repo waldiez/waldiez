@@ -11,7 +11,7 @@ import { agentId, flowId } from "../data";
 
 const goToCaptainTab = () => {
     // Click on the Captain tab
-    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-captain-${agentId}`);
+    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-captain`);
     expect(terminationTab).toBeInTheDocument();
     fireEvent.click(terminationTab);
 };
@@ -33,22 +33,6 @@ describe("Captain tab", () => {
         expect(maxRoundInput).toHaveValue(20);
         submitAgentChanges();
     });
-    // it("should allow changing the max turns", async () => {
-    //     renderAgent("captain", {
-    //         openModal: true,
-    //     });
-    //     goToCaptainTab();
-
-    //     // Check that the max turns is 5 (default)
-    //     const maxTurnsInput = screen.getByTestId(`agent-captain-max-turns-${agentId}`);
-    //     expect(maxTurnsInput).toBeInTheDocument();
-    //     expect(maxTurnsInput).toHaveValue(5);
-    //     // Change the max turns
-    //     fireEvent.change(maxTurnsInput, { target: { value: "10" } });
-    //     // Check that the max turns has been changed
-    //     expect(maxTurnsInput).toHaveValue(10);
-    //     submitAgentChanges();
-    // });
     it("should allow enabling the agent library", async () => {
         renderAgent("captain", {
             openModal: true,

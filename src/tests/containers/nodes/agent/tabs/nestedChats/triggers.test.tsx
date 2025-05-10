@@ -24,7 +24,7 @@ const goToNestedChatsTab = () => {
         },
     });
     // Click on the Nested Chats tab
-    const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-nestedChats-${agentId}`);
+    const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-nested`);
     expect(nestedChatsTab).toBeInTheDocument();
     fireEvent.click(nestedChatsTab);
 };

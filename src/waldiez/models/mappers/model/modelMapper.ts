@@ -26,7 +26,7 @@ export const modelMapper = {
     importModel: (json: unknown): WaldiezModel => {
         if (!json || typeof json !== "object") {
             return new WaldiezModel({
-                id: "ws-" + getId(),
+                id: "wt-" + getId(),
                 name: "Model",
                 description: "A new model",
                 tags: [],

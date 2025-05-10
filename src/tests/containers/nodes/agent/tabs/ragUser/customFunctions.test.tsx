@@ -12,11 +12,9 @@ const goToCustomFunctionsTab = async () => {
     renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
     fireEvent.click(ragUserTab);
-    const customFunctionsTab = screen.getByTestId(
-        `tab-id-wf-${flowId}-agent-ragUser-${agentId}-customFunctions`,
-    );
+    const customFunctionsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-customFunctions`);
     fireEvent.click(customFunctionsTab);
 };
 
