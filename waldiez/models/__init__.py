@@ -3,9 +3,9 @@
 """Waldiez models.
 
 - Agents (Users, Assistants, Group Managers, etc.).
-- Chat (Messages, Summaries, etc.).
-- Model (LLM config, API type, etc.).
-- Tool (Tools/Tools to be registered).
+- Chats (Messages, Summaries, etc.).
+- Models (LLM config, API type, etc.).
+- Tools (Tools to be registered).
 - Flow (Flow of the conversation).
 - Methods (Method names, arguments, hints, etc.).
 - Waldiez (Main class to hold the flow).

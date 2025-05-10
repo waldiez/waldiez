@@ -10,7 +10,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import warnings
 from contextlib import asynccontextmanager, contextmanager
 from pathlib import Path
 from typing import (
@@ -123,7 +122,7 @@ def install_requirements(
     break_system_packages = ""
     if not in_virtualenv():  # it should
         # if not, let's try to install as user
-        # not sure if --break-system-packages is safe
+        # not sure if --break-system-packages is safe,
         # but it might fail if we don't
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
@@ -216,7 +215,7 @@ def after_run(
         The flow name.
     skip_mmd : bool, optional
         Whether to skip the mermaid sequence diagram generation,
-        by default False
+        by default, False
     """
     if isinstance(output_path, str):
         output_path = Path(output_path)
@@ -279,7 +278,7 @@ def copy_results(
         ):
             continue
         if item.is_file():
-            # let's also copy the tree of thoughts image
+            # let's also copy the "tree of thoughts" image
             # to the output directory
             if item.name.endswith("tree_of_thoughts.png") or item.name.endswith(
                 "reasoning_tree.json"
@@ -308,14 +307,9 @@ def get_printer() -> Callable[..., None]:
     Callable[..., None]
         The printer function.
     """
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            module="flaml",
-            message="^.*flaml.automl is not available.*$",
-        )
-        from autogen.io import IOStream  # type: ignore
+    from autogen.io import IOStream  # type: ignore
 
+    # noinspection PyUnboundLocalVariable
     printer = IOStream.get_default().print
 
     def safe_printer(*args: object, **kwargs: object) -> None:
@@ -349,7 +343,7 @@ def get_what_to_print(*args: object, **kwargs: object) -> Tuple[str, bool]:
     Parameters
     ----------
     args : object
-        The arguments.
+        The print arguments.
     kwargs : object
         The keyword arguments.
 

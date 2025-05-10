@@ -61,6 +61,7 @@ class WaldiezChatSummary(WaldiezBase):
         ),
     ]
 
+    # noinspection PyNestedDecorators
     @field_validator("method", mode="before")
     @classmethod
     def validate_summary_method(
@@ -86,6 +87,7 @@ class WaldiezChatSummary(WaldiezBase):
             return "reflection_with_llm"
         return value
 
+    # noinspection PyNestedDecorators
     @field_serializer("method")
     @classmethod
     def serialize_summary_method(

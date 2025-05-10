@@ -144,7 +144,7 @@ class WaldiezChatMessage(WaldiezBase):
             if not self.content:
                 self.content = ""
             if self.use_carryover:
-                content = get_last_carryover_method_content(
+                self.content = get_last_carryover_method_content(
                     text_content=self.content,
                 )
             content = self.content

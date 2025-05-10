@@ -13,6 +13,8 @@ from typer.models import CommandInfo
 HAVE_STUDIO = False
 studio_app: Callable[..., Any] | None = None
 
+# noinspection PyBroadException
+# pylint: disable=broad-exception-caught
 try:
     from waldiez_studio.cli import run  # type: ignore[unused-ignore, import-not-found, import-untyped]
 

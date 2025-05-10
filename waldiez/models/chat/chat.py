@@ -27,6 +27,7 @@ from .chat_nested import (
 )
 
 
+# noinspection PyUnresolvedReferences
 class WaldiezChat(WaldiezBase):
     """Chat class.
 
@@ -220,15 +221,21 @@ class WaldiezChat(WaldiezBase):
             function_name,
         )
 
-    def get_nested_chat_message_function(
-        self,
+    @staticmethod
+    def _get_nested_chat_function(
+        content: Optional[str],
+        function_name_base: str,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
     ) -> Tuple[str, str]:
-        """Get the nested chat message function.
+        """Get the nested chat function.
 
         Parameters
         ----------
+        content : str
+            The content for the function body.
+        function_name_base : str
+            The base name of the function.
         name_prefix : str
             The function name prefix.
         name_suffix : str
@@ -237,15 +244,11 @@ class WaldiezChat(WaldiezBase):
         Returns
         -------
         Tuple[str, str]
-            The nested chat message function and the function name.
+            The generated function and its name.
         """
-        if (
-            not self.nested_chat.message
-            or self.nested_chat.message.type in ("string", "none")
-            or not self.nested_chat.message_content
-        ):
+        if not content:
             return "", ""
-        function_name = NESTED_CHAT_MESSAGE
+        function_name = function_name_base
         if name_prefix:
             function_name = f"{name_prefix}_{function_name}"
         if name_suffix:
@@ -255,9 +258,22 @@ class WaldiezChat(WaldiezBase):
                 function_name=function_name,
                 function_args=NESTED_CHAT_ARGS,
                 function_types=NESTED_CHAT_TYPES,
-                function_body=self.nested_chat.message_content,
+                function_body=content,
             ),
             function_name,
+        )
+
+    def get_nested_chat_message_function(
+        self,
+        name_prefix: Optional[str] = None,
+        name_suffix: Optional[str] = None,
+    ) -> Tuple[str, str]:
+        """Get the nested chat message function."""
+        return self._get_nested_chat_function(
+            content=self.nested_chat.message_content,
+            function_name_base=NESTED_CHAT_MESSAGE,
+            name_prefix=name_prefix,
+            name_suffix=name_suffix,
         )
 
     def get_nested_chat_reply_function(
@@ -265,39 +281,12 @@ class WaldiezChat(WaldiezBase):
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
     ) -> Tuple[str, str]:
-        """Get the nested chat reply function.
-
-        Parameters
-        ----------
-        name_prefix : str
-            The function name prefix.
-        name_suffix : str
-            The function name suffix.
-
-        Returns
-        -------
-        Tuple[str, str]
-            The nested chat reply function and the function name.
-        """
-        if (
-            not self.nested_chat.reply
-            or self.nested_chat.reply.type in ("string", "none")
-            or not self.nested_chat.reply_content
-        ):
-            return "", ""
-        function_name = NESTED_CHAT_REPLY
-        if name_prefix:
-            function_name = f"{name_prefix}_{function_name}"
-        if name_suffix:
-            function_name = f"{function_name}_{name_suffix}"
-        return (
-            generate_function(
-                function_name=function_name,
-                function_args=NESTED_CHAT_ARGS,
-                function_types=NESTED_CHAT_TYPES,
-                function_body=self.nested_chat.reply_content,
-            ),
-            function_name,
+        """Get the nested chat reply function."""
+        return self._get_nested_chat_function(
+            content=self.nested_chat.reply_content,
+            function_name_base=NESTED_CHAT_REPLY,
+            name_prefix=name_prefix,
+            name_suffix=name_suffix,
         )
 
     def get_chat_args(

@@ -194,14 +194,15 @@ class WaldiezModel(WaldiezBase):
         Parameters
         ----------
         skip_price : bool, optional
-            Whether to skip the price, by default False
+            Whether to skip the price, by default, False
 
         Returns
         -------
         Dict[str, Any]
             The model's llm config dictionary.
         """
-        _llm_config: Dict[str, Any] = {}
+        # noinspection PyDictCreation
+        _llm_config = {}
         _llm_config["model"] = self.name
         for attr, atr_type in [
             ("base_url", str),

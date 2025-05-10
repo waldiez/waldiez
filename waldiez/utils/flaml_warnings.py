@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Try to suppress the annoying flaml.automl not being available warning."""
+"""Try to suppress the warning about flaml.automl not being available."""
 
 import logging
 

@@ -59,17 +59,6 @@ class WaldiezChatData(WaldiezBase):
         The real source of the chat (overrides the source).
     real_target : Optional[str]
         The real target of the chat (overrides the target).
-
-    Functions
-    ---------
-    validate_message(value: Any)
-        Validate the message.
-    validate_summary_method(value: Optional[WaldiezChatSummaryMethod])
-        Validate the summary method.
-    serialize_summary_method(value: Any, info: FieldSerializationInfo)
-        Serialize summary method.
-    get_chat_args()
-        Get the chat arguments to use in autogen.
     """
 
     name: Annotated[
@@ -300,6 +289,7 @@ class WaldiezChatData(WaldiezBase):
             self._message_content = error_or_body
         return self
 
+    # noinspection PyNestedDecorators
     @field_validator("message", mode="before")
     @classmethod
     def validate_message(cls, value: Any) -> WaldiezChatMessage:

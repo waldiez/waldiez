@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Run a waldiez flow.
 
-The flow is first converted to an autogen flow with agents, chats and tools.
+The flow is first converted to an autogen flow with agents, chats, and tools.
 We then chown to temporary directory, call the flow's `main()` and
 return the results. Before running the flow, any additional environment
 variables specified in the waldiez file are set.
@@ -15,8 +15,18 @@ import importlib.util
 import sys
 import tempfile
 from pathlib import Path
-from types import TracebackType
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Type, Union
+from types import ModuleType, TracebackType
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Type,
+    Union,
+)
 
 from .exporter import WaldiezExporter
 from .models.waldiez import Waldiez
@@ -169,6 +179,26 @@ class WaldiezRunner:
         if extra_requirements:
             await a_install_requirements(extra_requirements, printer)
 
+    def _before_run(
+        self,
+        temp_dir: Path,
+        file_name: str,
+        module_name: str,
+        printer: Callable[..., None],
+    ) -> Tuple[ModuleType, Dict[str, str]]:
+        self._exporter.export(Path(file_name))
+        spec = importlib.util.spec_from_file_location(
+            module_name, temp_dir / file_name
+        )
+        if not spec or not spec.loader:
+            raise ImportError("Could not import the flow")
+        sys.path.insert(0, str(temp_dir))
+        old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        printer("<Waldiez> - Starting workflow...")
+        return module, old_vars
+
     def _run(
         self,
         output_path: Optional[Union[str, Path]],
@@ -207,17 +237,12 @@ class WaldiezRunner:
             "ChatResult", List["ChatResult"], Dict[int, "ChatResult"]
         ] = []
         with chdir(to=temp_dir):
-            self._exporter.export(Path(file_name))
-            spec = importlib.util.spec_from_file_location(
-                module_name, temp_dir / file_name
+            module, old_vars = self._before_run(
+                temp_dir=temp_dir,
+                file_name=file_name,
+                module_name=module_name,
+                printer=printer,
             )
-            if not spec or not spec.loader:
-                raise ImportError("Could not import the flow")
-            sys.path.insert(0, str(temp_dir))
-            old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            printer("<Waldiez> - Starting workflow...")
             results = module.main()
             printer("<Waldiez> - Workflow finished")
             sys.path.pop(0)
@@ -256,17 +281,12 @@ class WaldiezRunner:
             "ChatResult", List["ChatResult"], Dict[int, "ChatResult"]
         ] = []
         async with a_chdir(to=temp_dir):
-            self._exporter.export(Path(file_name))
-            spec = importlib.util.spec_from_file_location(
-                module_name, temp_dir / file_name
+            module, old_vars = self._before_run(
+                temp_dir=temp_dir,
+                file_name=file_name,
+                module_name=module_name,
+                printer=printer,
             )
-            if not spec or not spec.loader:
-                raise ImportError("Could not import the flow")
-            sys.path.insert(0, str(temp_dir))
-            old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            printer("<Waldiez> - Starting workflow...")
             results = await module.main()
             sys.path.pop(0)
             reset_env_vars(old_vars)

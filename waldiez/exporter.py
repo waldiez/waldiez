@@ -61,13 +61,13 @@ class WaldiezExporter:
         ----------
         path : Union[str, Path]
             The path to export to.
-        force : bool, optional
+        force : bool, (optional)
             Override the output file if it already exists, by default False.
 
         Raises
         ------
         FileExistsError
-            If the file already exists and force is False.
+            If the file already exists, and force is False.
         IsADirectoryError
             If the output is a directory.
         ValueError
@@ -128,7 +128,7 @@ class WaldiezExporter:
         py_path.unlink(missing_ok=True)
 
     def to_py(self, path: Path) -> None:
-        """Export waldiez flow to python script.
+        """Export waldiez flow to a python script.
 
         Parameters
         ----------

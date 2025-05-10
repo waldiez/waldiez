@@ -52,7 +52,7 @@ app = typer.Typer(
     invoke_without_command=True,
     add_help_option=True,
     pretty_exceptions_enable=False,
-    epilog=("Use `waldiez [COMMAND] --help` for command-specific help. "),
+    epilog="Use `waldiez [COMMAND] --help` for command-specific help.",
 )
 
 
@@ -113,7 +113,7 @@ def run(
     waldiez = Waldiez.from_dict(data)
     runner = WaldiezRunner(waldiez)
     if waldiez.is_async:
-        results = anyio.run(runner.a_run, output_path)
+        results = anyio.run(runner.a_run, output_path, None)
     else:
         results = runner.run(output_path=output_path)
     logger = _get_logger()
@@ -230,7 +230,7 @@ def _get_logger(level: int = logging.INFO) -> logging.Logger:
     logging.Logger
         The logger.
     """
-    # check if we already have setup a config
+    # check if we already have set up a config
 
     if not logging.getLogger().handlers:
         logging.basicConfig(

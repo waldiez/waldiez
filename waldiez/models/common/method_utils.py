@@ -31,9 +31,11 @@ def is_standard_library(module_name: str) -> bool:
     """
     if module_name in sys.builtin_module_names:
         return True
+    # noinspection PyBroadException
+    # pylint: disable=broad-exception-caught
     try:
         spec = importlib.util.find_spec(module_name)
-    except BaseException:  # pylint: disable=broad-except
+    except BaseException:
         return False
     if spec is None or not spec.origin:
         return False
@@ -122,14 +124,15 @@ def gather_code_imports(
         third_party_imports.append(
             "from autogen.interop import Interoperability"
         )
-    # sorted_standard_lib_imports =  # first import x, then from a import b
+    # sorted_standard_lib_imports
+    # first import x, then `from a import b`
     sorted_standard_lib_imports = sorted(
-        [stmt for stmt in standard_lib_imports if stmt.startswith("import ")]
+        [stm for stm in standard_lib_imports if stm.startswith("import ")]
     ) + sorted(
         [stmt for stmt in standard_lib_imports if stmt.startswith("from ")]
     )
     sorted_third_party_imports = sorted(
-        [stmt for stmt in third_party_imports if stmt.startswith("import ")]
+        [stm for stm in third_party_imports if stm.startswith("import ")]
     ) + sorted(
         [stmt for stmt in third_party_imports if stmt.startswith("from ")]
     )
@@ -181,7 +184,7 @@ def _validate_function_body(
     ----------
     tree : ast.Module
         The ast module.
-    function_body : str
+    code_string : str
         The function body.
     function_name : str
         The expected method name.
@@ -277,7 +280,7 @@ def _get_function_body(
     Raises
     ------
     ValueError
-        If no body found in the function.
+        If the function's body is empty.
     """
     lines = code_string.splitlines()
     signature_start_line = node.lineno - 1

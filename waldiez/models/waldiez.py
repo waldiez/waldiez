@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez data class.
 
-A Waldiez class contains all the information that is needed to generate
+A Waldiez class contains all the information needed to generate
 and run an autogen workflow. It has the model/LLM configurations, the agent
 definitions and their optional additional tools to be used.
 """

@@ -13,6 +13,8 @@ import subprocess  # nosemgrep # nosec
 
 HAVE_JUPYTER = False
 
+# noinspection PyBroadException
+# pylint: disable=broad-exception-caught
 try:
     import waldiez_jupyter  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 

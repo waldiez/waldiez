@@ -43,6 +43,7 @@ class StructuredIOStream(IOStream):
             if not self.uploads_root.exists():
                 self.uploads_root.mkdir(parents=True, exist_ok=True)
 
+    # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
     def print(self, *args: Any, **kwargs: Any) -> None:
         """Structured print to stdout.
@@ -88,6 +89,8 @@ class StructuredIOStream(IOStream):
         user_input_raw = self._read_user_input(prompt, password, request_id)
         return self._handle_user_input(user_input_raw, request_id)
 
+    # noinspection PyMethodMayBeStatic
+    # pylint: disable=no-self-use
     def send(self, message: BaseEvent) -> None:
         """Structured sending of a BaseEvent.
 
@@ -105,6 +108,7 @@ class StructuredIOStream(IOStream):
         }
         print(json.dumps(payload), flush=True)
 
+    # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
     def _send_input_request(
         self,
@@ -179,6 +183,8 @@ class StructuredIOStream(IOStream):
             return user_input
         return self._parse_user_input(user_input, request_id)
 
+    # noinspection PyMethodMayBeStatic
+    # pylint: disable=no-self-use
     def _load_user_input(self, user_input_raw: str) -> str | dict[str, Any]:
         """Load user input from a raw string.
 
@@ -210,7 +216,7 @@ class StructuredIOStream(IOStream):
 
         Parameters
         ----------
-        user_input_raw : str
+        user_input : str
             The raw user input string.
         request_id : str
             The request ID to match against.
@@ -249,6 +255,8 @@ class StructuredIOStream(IOStream):
         self._log_mismatched_response(request_id, user_input)
         return "\n"
 
+    # noinspection PyMethodMayBeStatic
+    # pylint: disable=no-self-use
     def _log_mismatched_response(self, expected_id: str, response: Any) -> None:
         """Log information about mismatched response IDs.
 
@@ -340,9 +348,11 @@ class StructuredIOStream(IOStream):
             The file path of the stored image.
         """
         if uploads_root:
+            # noinspection PyBroadException
+            # pylint: disable=broad-exception-caught
             try:
                 pil_image = get_pil_image(image_data)
-            except BaseException:  # pylint: disable=broad-exception-caught
+            except BaseException:
                 return image_data
             if not base_name:
                 base_name = uuid4().hex

@@ -5,7 +5,7 @@
 """Try to install pysqlite3-binary.
 
 Highly recommended to be run in a virtual environment.
-'setuptools' and 'wheel' will also be installed if not already installed.
+We also install 'setuptools' and 'wheel' if not already installed.
 """
 
 import contextlib
@@ -75,11 +75,13 @@ def is_root() -> bool:
     """
     # pylint: disable=import-outside-toplevel,line-too-long,no-member
     if os.name == "nt":
+        # pylint: disable=broad-exception-caught
+        # noinspection PyBroadException
         try:
             import ctypes
 
             return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
-        except Exception:  # pylint: disable=broad-exception-caught
+        except Exception:
             return False
     else:
         return os.getuid() == 0
@@ -264,6 +266,7 @@ def check_pysqlite3() -> None:
         sys.modules["sqlite3"] = sys.modules["pysqlite3"]
 
 
+# noinspection SqlNoDataSourceInspection
 def test_sqlite_usage() -> None:
     """Test the usage of the sqlite3 module."""
     # pylint: disable=import-outside-toplevel, unused-import, line-too-long

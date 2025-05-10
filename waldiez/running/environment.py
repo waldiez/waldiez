@@ -35,11 +35,13 @@ def is_root() -> bool:
     """
     # pylint: disable=import-outside-toplevel,line-too-long,no-member
     if os.name == "nt":
+        # noinspection PyBroadException
+        # pylint: disable=broad-exception-caught
         try:
             import ctypes
 
             return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
-        except Exception:  # pylint: disable=broad-exception-caught
+        except Exception:
             return False
     else:
         return os.getuid() == 0
@@ -95,7 +97,7 @@ def refresh_environment() -> None:
                 Yields
                 ------
                 None
-                    Dummy value.
+                    Nothing.
                 """
                 yield
 

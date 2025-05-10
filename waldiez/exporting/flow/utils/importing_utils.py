@@ -39,6 +39,25 @@ COMMON_AUTOGEN_IMPORTS = [
 ]
 
 
+def get_sorted_imports(collected_imports: List[str]) -> List[str]:
+    """Get the sorted imports.
+
+    Parameters
+    ----------
+    collected_imports : List[str]
+        The collected imports.
+
+    Returns
+    -------
+    List[str]
+        The sorted imports.
+    """
+    sorted_imports = sorted(
+        [imp for imp in collected_imports if imp.startswith("import ")]
+    ) + sorted([imp for imp in collected_imports if imp.startswith("from ")])
+    return sorted_imports
+
+
 def sort_imports(
     all_imports: List[Tuple[str, ImportPosition]],
 ) -> Tuple[List[str], List[str], List[str], List[str], bool]:
@@ -74,16 +93,9 @@ def sort_imports(
             local_imports.append(import_string)
     autogen_imports = list(set(autogen_imports))
     third_party_imports = ensure_np_import(third_party_imports)
-    sorted_builtins = sorted(
-        [imp for imp in builtin_imports if imp.startswith("import ")]
-    ) + sorted([imp for imp in builtin_imports if imp.startswith("from ")])
-    sorted_third_party = sorted(
-        [imp for imp in third_party_imports if imp.startswith("import ")]
-    ) + sorted([imp for imp in third_party_imports if imp.startswith("from ")])
-    sorted_locals = sorted(
-        [imp for imp in local_imports if imp.startswith("import ")]
-    ) + sorted([imp for imp in local_imports if imp.startswith("from ")])
-
+    sorted_builtins = get_sorted_imports(builtin_imports)
+    sorted_third_party = get_sorted_imports(third_party_imports)
+    sorted_locals = get_sorted_imports(local_imports)
     return (
         sorted_builtins,
         sorted(autogen_imports),
@@ -119,7 +131,8 @@ def get_the_imports_string(
         got_import_autogen,
     ) = sort_imports(all_imports)
     # Get the final imports string.
-    # making sure, there are two lines after each import section
+    # Making sure that there are two lines
+    # after each import section
     # (builtin, third party, local)
     final_string = "\n".join(builtin_imports) + "\n"
     while not final_string.endswith("\n\n"):

@@ -63,11 +63,13 @@ def is_root() -> bool:
     """
     # pylint: disable=import-outside-toplevel,line-too-long,no-member
     if os.name == "nt":
+        # pylint: disable=broad-exception-caught
+        # noinspection PyBroadException
         try:
             import ctypes
 
             return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
-        except Exception:  # pylint: disable=broad-exception-caught
+        except Exception:
             return False
     else:
         return os.getuid() == 0
@@ -90,6 +92,7 @@ def in_virtualenv() -> bool:
 def install_rpds_py() -> None:
     """Install `rpds-py`."""
     command = PIP + ["install", "-qq"]
+    break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"

@@ -68,7 +68,7 @@ def process_events(df_events: pd.DataFrame) -> str:
     Parameters
     ----------
     df_events : pd.DataFrame
-        The DataFrame containing the events data.
+        The DataFrame containing the events' data.
 
     Returns
     -------
@@ -91,6 +91,7 @@ def process_events(df_events: pd.DataFrame) -> str:
             df_events["event_name"][i] != "reply_func_executed"
         ):
             sender = df_j["sender"]
+            # noinspection PyTypeChecker
             recipient = df_events["source_name"][i]
 
             # Extract message content if available
@@ -110,7 +111,7 @@ def process_events(df_events: pd.DataFrame) -> str:
             participants.add(recipient)
             participants.add(sender)
 
-            # Split message into main message and context
+            # Split into the main message and the context
             # if "Content" is present
             if "Content: " in message:
                 message_parts = message.split("Content: ")
@@ -155,7 +156,7 @@ def generate_sequence_diagram(
     Parameters
     ----------
     file_path : Union[str, Path]
-        The path to the JSON or CSV file containing the events data.
+        The path to the JSON or CSV file containing the events' data.
     output_path : Union[str, Path]
         The path to save the Mermaid diagram.
 

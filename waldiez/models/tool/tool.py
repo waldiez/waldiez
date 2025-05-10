@@ -220,8 +220,8 @@ class WaldiezTool(WaldiezBase):
                 )
             # we don't want the conversion to ag2 tool (we do it internally)
             # or the tool registration (we do it after having the agent names)
-            # so no" .convert_tool(... type="...")
-            # or .register_for_llm(...), .register_for_execution(...)
+            # so no `.convert_tool(... type="...")`
+            # or `.register_for_llm(...)`, `.register_for_execution(...)`
             to_exclude = [
                 r".convert_tool\(.+?type=",
                 rf"{self.name}.register_for_llm\(",
@@ -273,7 +273,7 @@ class WaldiezTool(WaldiezBase):
             self.data.content, self.is_interop
         )
         # remove the imports from the content
-        # we 'll place them at the top of the file
+        # we will place them at the top of the file
         all_imports = self._tool_imports[0] + self._tool_imports[1]
         code_lines = self.data.content.splitlines()
         valid_lines = [
