@@ -122,7 +122,18 @@ export const ChatAvailability: React.FC<{
                         <strong>Static LLM prompt</strong>: A fixed prompt sent to the LLM for evaluation.
                     </li>
                     <li>
-                        <strong>Dynamic LLM prompt</strong>: A context-aware prompt that includes variables.
+                        <strong>Dynamic LLM prompt</strong>: A context-aware prompt that includes variables,
+                        and will be evaluated by the LLM. The prompt can be customized based on the current
+                        context. <br />
+                        <em>Example:</em> (assuming user_name and num_orders exist in the context variables){" "}
+                        <br />
+                        <ul>
+                            <li>
+                                <code>
+                                    "User is {"{"}user_name{"}"} and has {"{"}num_orders{"}"} orders."
+                                </code>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <strong>Variable check</strong>: Checks if a specific context variable exists and is
