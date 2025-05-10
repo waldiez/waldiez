@@ -29,7 +29,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         agent_type="assistant",
         description="agent description",
         data={  # type: ignore
-            "model_ids": ["wm-1", "wm-2"],
+            "model_id": "wm-1",
         },
     )
     agent_names = {"wa-1": "agent1"}
@@ -106,7 +106,6 @@ def test_models_exporter(tmp_path: Path) -> None:
         "    llm_config={\n"
         '        "config_list": [\n'
         f"            {model1_name}_llm_config," + "\n"
-        f"            {model2_name}_llm_config," + "\n"
         "        ],\n"
         '        "cache_seed": 42,\n'
         "    },\n"
@@ -120,7 +119,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         agent_type="assistant",
         description="agent description",
         data={  # type: ignore
-            "model_ids": [],
+            "model_id": None,
         },
     )
     models_exporter = ModelsExporter(
@@ -158,7 +157,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         agent_type="assistant",
         description="agent description",
         data={  # type: ignore
-            "model_ids": [],
+            "model_id": None,
         },
     )
     models_exporter = ModelsExporter(

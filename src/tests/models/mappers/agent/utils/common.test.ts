@@ -14,7 +14,7 @@ import {
     getFallbackDescription,
     getHumanInputMode,
     getMaximumConsecutiveAutoReply,
-    getModelIds,
+    getModelId,
     getNestedChats,
     getParentId,
     getSystemMessage,
@@ -136,14 +136,14 @@ describe("getMaximumConsecutiveAutoReply", () => {
     });
 });
 
-describe("getModelIds", () => {
-    it("should return the model ids", () => {
-        const ids = getModelIds({ modelIds: ["model-1"] });
-        expect(ids).toEqual(["model-1"]);
+describe("getModelId", () => {
+    it("should return the model id", () => {
+        const ids = getModelId({ modelId: "model-1" });
+        expect(ids).toEqual("model-1");
     });
     it("should return an empty array", () => {
-        const ids = getModelIds({});
-        expect(ids).toEqual([]);
+        const ids = getModelId({});
+        expect(ids).toBeNull();
     });
 });
 

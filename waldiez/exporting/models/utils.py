@@ -87,19 +87,18 @@ def get_agent_llm_config_arg(
         The agent's llm config argument to use.
     """
     tab = "    " * tabs if tabs > 0 else ""
-    if not agent.data.model_ids:
+    if not agent.data.model_id:
         return f"{tab}llm_config=False," + "\n"
     content = f"{tab}llm_config=" + "{\n"
     content += f'{tab}    "config_list": ['
     got_at_least_one_model = False
     temperature: Optional[float] = None
-    for model_id in agent.data.model_ids:
-        model = next((m for m in all_models if m.id == model_id), None)
-        if model is not None:
-            temperature = model.data.temperature
-            model_name = model_names[model_id]
-            content += "\n" + f"{tab}        {model_name}_llm_config,"
-            got_at_least_one_model = True
+    model = next((m for m in all_models if m.id == agent.data.model_id), None)
+    if model is not None:
+        temperature = model.data.temperature
+        model_name = model_names[agent.data.model_id]
+        content += "\n" + f"{tab}        {model_name}_llm_config,"
+        got_at_least_one_model = True
     if not got_at_least_one_model:  # pragma: no cover
         return f"{tab}llm_config=False," + "\n"
     content += "\n" + f"{tab}    ]," + "\n"

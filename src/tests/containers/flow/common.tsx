@@ -81,7 +81,7 @@ export const renderFlow = (
                     ...node,
                     data: {
                         ...node.data,
-                        modelIds: ["model-0"],
+                        modelId: "model-0",
                         tools: [{ id: "tool-0", executorId: "agent-0" }],
                     },
                 };
@@ -90,7 +90,7 @@ export const renderFlow = (
                 ...node,
                 data: {
                     ...node.data,
-                    modelIds: ["model-0"],
+                    modelId: "model-0",
                 },
             };
         });
@@ -105,7 +105,7 @@ export const renderFlow = (
                     ...node,
                     data: {
                         ...node.data,
-                        modelIds: ["model-0"],
+                        modelId: "model-0",
                         tools: [{ id: "tool-0", executorId: "agent-0" }],
                     },
                 };

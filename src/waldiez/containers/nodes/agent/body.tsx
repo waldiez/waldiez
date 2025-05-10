@@ -20,7 +20,7 @@ type WaldiezNodeAgentBodyProps = {
 export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
     const { id, flowId, data, isReadOnly } = props;
     const agentType = data.agentType;
-    const agentModelsView = getAgentModelsView(id, data);
+    const agentModelView = getAgentModelView(id, data);
     const agentToolsView = getAgentToolsView(id, data);
     const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
     // c8 ignore next 3
@@ -29,7 +29,7 @@ export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
     }
     return (
         <div className="agent-body">
-            <div className="agent-models">{agentModelsView}</div>
+            <div className="agent-model">{agentModelView}</div>
             <div className="agent-tools">{agentToolsView}</div>
 
             <div className="flex-column flex-1 agent-description-view">
@@ -48,33 +48,24 @@ export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
         </div>
     );
 };
-const getAgentModelsView = (id: string, data: WaldiezNodeAgentData) => {
+const getAgentModelView = (id: string, data: WaldiezNodeAgentData) => {
     const getModels = useWaldiez(s => s.getModels);
     const models = getModels() as WaldiezNodeModel[];
-    const agentModelNames = data.modelIds
-        .map(modelId => models.find(model => model.id === modelId)?.data.label ?? "")
-        .filter(entry => entry !== "");
-    const agentWaldiezModelAPITypes = data.modelIds
-        .map(modelId => models.find(model => model.id === modelId)?.data.apiType ?? "")
-        .filter(entry => entry !== "");
-    const agentModelLogos = agentWaldiezModelAPITypes
-        .map(apiType => LOGOS[apiType] ?? "")
-        .filter(entry => entry !== "");
-    if (agentModelNames.length === 0) {
-        return <div className="agent-models-empty">No models</div>;
+    const agentModel = data.modelId ? models.find(model => model.id === data.modelId) : null;
+    if (!agentModel) {
+        return <div className="agent-model-empty">No model</div>;
     }
+    const agentModelName = agentModel.data.label;
+    const agentWaldiezModelAPIType = agentModel.data.apiType;
+    const agentModelLogo = LOGOS[agentWaldiezModelAPIType] ?? "";
     return (
-        <div className="agent-models-preview">
-            {agentModelNames.map((name, index) => (
-                <div key={name} className="agent-model-preview" data-testid="agent-model-preview">
-                    <div className={`agent-model-img ${agentWaldiezModelAPITypes[index]}`}>
-                        <img src={agentModelLogos[index]} title={name} alt={name} />
-                    </div>
-                    <div className="agent-model-name" data-testid={`agent-${id}-linked-model-${index}`}>
-                        {name}
-                    </div>
-                </div>
-            ))}
+        <div className="agent-model-preview">
+            <div className={`agent-model-img ${agentWaldiezModelAPIType}`}>
+                <img src={agentModelLogo} title={agentModelName} alt={agentModelName} />
+            </div>
+            <div className="agent-model-name" data-testid={`agent-${id}-linked-model`}>
+                {agentModelName}
+            </div>
         </div>
     );
 };

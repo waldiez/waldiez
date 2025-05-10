@@ -144,8 +144,8 @@ def get_llm_config(
     top_p: Optional[float] = 0.95
     max_tokens: Optional[int] = 2048
     config_dict: Dict[str, Any] = {}
-    if agent.data.model_ids:
-        waldiez_model = get_waldiez_model(agent.data.model_ids[0], all_models)
+    if agent.data.model_id:
+        waldiez_model = get_waldiez_model(agent.data.model_id, all_models)
         llm_config = waldiez_model.get_llm_config(skip_price=True)
         for key in ["temperature", "top_p", "max_tokens"]:
             if key not in llm_config:

@@ -34,8 +34,8 @@ class WaldiezAgentData(WaldiezBase):
         before ending the chat. Default: None (no limit).
     termination : WaldiezAgentTerminationMessage
         The message termination check to use (keyword, method, none)
-    model_ids: List[str]
-        A list of models (their ids) to link with the agent.
+    model_id: Optional[str]
+        The id of the model to link with the agent.
     tools : List[WaldiezAgentLinkedTool]
         A list of tools (id and executor) to register.
     nested_chats : List[WaldiezAgentNestedChat]
@@ -121,15 +121,18 @@ class WaldiezAgentData(WaldiezBase):
             default_factory=WaldiezAgentTerminationMessage,
         ),
     ]
-    model_ids: Annotated[
-        List[str],
+    model_id: Annotated[
+        Optional[str],
         Field(
-            default_factory=list,
-            title="Model IDs",
-            description="A list of models (their ids) to link with the agent.",
-            alias="modelIds",
+            None,
+            title="Model ID",
+            description=(
+                "The id of the model to link with the agent. "
+                "This is a reference to a model in the models registry."
+            ),
+            alias="modelId",
         ),
-    ]
+    ] = None
     tools: Annotated[
         List[WaldiezAgentLinkedTool],
         Field(

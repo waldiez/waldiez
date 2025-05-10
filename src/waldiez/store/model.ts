@@ -4,8 +4,13 @@
  */
 import { Node, ReactFlowInstance } from "@xyflow/react";
 
-import { WaldiezModel, WaldiezNodeAgent, WaldiezNodeModel, WaldiezNodeModelData } from "@waldiez/models";
-import { IWaldiezModelStore } from "@waldiez/models";
+import {
+    IWaldiezModelStore,
+    WaldiezModel,
+    WaldiezNodeAgent,
+    WaldiezNodeModel,
+    WaldiezNodeModelData,
+} from "@waldiez/models";
 import { modelMapper } from "@waldiez/models/mappers";
 import { getNewNodePosition, reArrangeModels, setViewPortTopLeft } from "@waldiez/store/utils";
 import { typeOfGet, typeOfSet } from "@waldiez/types";
@@ -169,12 +174,16 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         allNodes.forEach(node => {
             if (node.type === "agent") {
                 const agent = node as WaldiezNodeAgent;
-                const modelIds = agent.data.modelIds;
-                const newModelIds = modelIds.filter(id => id !== modelId);
-                newNodes.push({
-                    ...agent,
-                    data: { ...agent.data, modelIds: newModelIds },
-                });
+                if (agent.data.modelId === modelId) {
+                    // if the model is linked to the agent, remove the link
+                    newNodes.push({
+                        ...agent,
+                        data: { ...agent.data, modelId: null },
+                    });
+                } else {
+                    // if the model is not linked to the agent, keep the agent
+                    newNodes.push(agent);
+                }
             } else {
                 newNodes.push(node);
             }

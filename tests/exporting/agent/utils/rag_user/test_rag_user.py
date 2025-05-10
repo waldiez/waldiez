@@ -48,7 +48,7 @@ def _get_rag_user(
         tags=[],
         requirements=[],
         data=WaldiezRagUserProxyData(
-            model_ids=["wm-1"],
+            model_id="wm-1",
             retrieve_config=WaldiezRagUserProxyRetrieveConfig(
                 vector_db="chroma",
                 docs_path=[

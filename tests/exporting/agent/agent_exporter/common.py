@@ -96,7 +96,7 @@ def create_agent(
                     "executor_id": f"wa-{counter}",
                 },
             ],
-            "model_ids": [f"wm-{counter}_1", f"wm-{counter}_2"],
+            "model_id": f"wm-{counter}_1",
         },
     )
     return agent, [tool1, tool2], [model1, model2]

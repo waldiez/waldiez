@@ -194,7 +194,7 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
                 criterion="found",
                 method_content=None,
             ),
-            model_ids=[],
+            model_id=None,
             tools=[
                 WaldiezAgentLinkedTool(
                     id="ws-1",
@@ -263,7 +263,7 @@ def get_assistant(agent_id: str = "wa-2") -> WaldiezAssistant:
                 criterion="found",
                 method_content=assistant_termination,
             ),
-            model_ids=["wm-1"],
+            model_id="wm-1",
             tools=[
                 WaldiezAgentLinkedTool(
                     id="ws-1",
@@ -312,7 +312,7 @@ def get_rag_user(agent_id: str = "wa-3") -> WaldiezRagUserProxy:
                 keywords=["bye", "goodbye"],
                 method_content=None,
             ),
-            model_ids=[],
+            model_id="wm-1",
             tools=[],
             nested_chats=[],
             retrieve_config=WaldiezRagUserProxyRetrieveConfig(
@@ -396,7 +396,7 @@ def get_reasoning_agent(agent_id: str = "wa-4") -> WaldiezReasoningAgent:
                 keywords=["bye", "goodbye"],
                 method_content=None,
             ),
-            model_ids=[],
+            model_id=None,
             tools=[],
             nested_chats=[],
             verbose=True,
@@ -445,7 +445,7 @@ def get_captain_agent(agent_id: str = "wa-5") -> WaldiezCaptainAgent:
             keywords=["bye", "goodbye"],
             method_content=None,
         ),
-        model_ids=["wm-1"],
+        model_id=None,
         tools=[],
         nested_chats=[],
         agent_lib=EXAMPLE_AGENT_LIB,  # type: ignore

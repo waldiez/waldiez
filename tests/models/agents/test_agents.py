@@ -42,7 +42,7 @@ def test_waldiez_agents() -> None:
         tags=[],
         requirements=[],
         data={  # type: ignore
-            "model_ids": [model.id],
+            "model_id": model.id,
             "tools": [
                 {"id": tool.id, "executor_id": "wa-1"},
             ],

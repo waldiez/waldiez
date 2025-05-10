@@ -261,11 +261,11 @@ class WaldiezAgent(WaldiezBase):
             If a model is not found
         """
         # if the config dict has models, make sure they can be found
-        for model in self.data.model_ids:
-            if model not in model_ids:
-                raise ValueError(
-                    f"Model '{model}' not found in agent's {self.id} models"
-                )
+
+        if self.data.model_id and self.data.model_id not in model_ids:
+            raise ValueError(
+                f"Model '{self.data.model_id}' not found in models"
+            )
 
     def validate_code_execution(self, tool_ids: List[str]) -> None:
         """Validate the code execution config.

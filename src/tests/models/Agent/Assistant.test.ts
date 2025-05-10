@@ -64,7 +64,7 @@ describe("WaldiezAgentAssistant", () => {
                 criterion: "ending",
                 methodContent: null,
             },
-            modelIds: ["1", "2"],
+            modelId: "1",
             tools: [
                 {
                     id: "1",
@@ -116,7 +116,7 @@ describe("WaldiezAgentAssistant", () => {
             criterion: "ending",
             methodContent: null,
         });
-        expect(assistant.data.modelIds).toEqual(["1", "2"]);
+        expect(assistant.data.modelId).toEqual("1");
         expect(assistant.data.tools).toEqual([
             {
                 id: "1",

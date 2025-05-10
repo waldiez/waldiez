@@ -49,7 +49,7 @@ def test_waldiez_agent() -> None:
                 last_n_messages=5,
                 functions=["ws-1"],
             ),
-            model_ids=["wm-1"],
+            model_id="wm-1",
             tools=[
                 WaldiezAgentLinkedTool(
                     id="ws-1",

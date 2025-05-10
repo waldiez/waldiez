@@ -142,12 +142,12 @@ export const getMaximumConsecutiveAutoReply = (data: Record<string, unknown>): n
     return null;
 };
 
-export const getModelIds = (data: Record<string, unknown>): string[] => {
-    let modelIds: string[] = [];
-    if ("modelIds" in data && Array.isArray(data.modelIds)) {
-        modelIds = data.modelIds.filter(m => typeof m === "string") as string[];
+export const getModelId = (data: Record<string, unknown>): string | null | undefined => {
+    let modelId: string | null | undefined = null;
+    if ("modelId" in data && typeof data.modelId === "string") {
+        modelId = data.modelId;
     }
-    return modelIds;
+    return modelId;
 };
 
 export const getTools = (data: Record<string, unknown>): WaldiezAgentLinkedTool[] => {

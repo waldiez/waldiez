@@ -49,7 +49,7 @@ describe("WaldiezAgentUserProxy", () => {
                 criterion: null,
                 methodContent: null,
             },
-            modelIds: ["1", "2"],
+            modelId: "1",
             tools: [
                 {
                     id: "1",
@@ -101,7 +101,7 @@ describe("WaldiezAgentUserProxy", () => {
             criterion: null,
             methodContent: null,
         });
-        expect(userProxy.data.modelIds).toEqual(["1", "2"]);
+        expect(userProxy.data.modelId).toEqual("1");
         expect(userProxy.data.tools).toEqual([
             {
                 id: "1",

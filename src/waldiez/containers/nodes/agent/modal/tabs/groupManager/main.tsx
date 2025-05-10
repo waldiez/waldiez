@@ -16,7 +16,7 @@ import {
 } from "@waldiez/components";
 import { useGroupManagerTabs } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/hooks";
 import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
-import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
+import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/model";
 import { GroupChatSpeakerSelectionMethodOption } from "@waldiez/models";
 
 export const WaldiezNodeGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => {

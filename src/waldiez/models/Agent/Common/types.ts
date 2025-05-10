@@ -91,7 +91,7 @@ export type WaldiezAgentLinkedTool = {
  * @param nestedChats - The nested chats
  * @param contextVariables - The context variables
  * @param handoffs - The handoffs
- * @param modelIds - The model ids
+ * @param modelId - The agent's model id
  * @param tools - The tools available to the agent
  * @param tags - The tags
  * @param requirements - The requirements
@@ -120,7 +120,7 @@ export type WaldiezAgentCommonData = {
     contextVariables?: { [key: string]: unknown };
     handoffs: WaldiezAgentHandoff[];
     // links
-    modelIds: string[];
+    modelId?: string | null;
     tools: WaldiezAgentLinkedTool[];
     // meta
     tags: string[];

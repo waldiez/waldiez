@@ -101,7 +101,7 @@
   padding-bottom: 20px;
 }
 
-.flow-wrapper .agent-body .agent-models,
+.flow-wrapper .agent-body .agent-model,
 .flow-wrapper .agent-body .agent-tools {
   width: auto;
   margin-top: 4px;
@@ -356,7 +356,7 @@
   margin-bottom: 10px;
 }
 
-.flow-wrapper .agent-models-preview,
+.flow-wrapper .agent-model-preview,
 .flow-wrapper .agent-tools-preview {
   display: flex;
   flex-direction: column;

@@ -36,7 +36,7 @@ import {
     getInitialAgentId,
     getIsMultimodal,
     getMaximumConsecutiveAutoReply,
-    getModelIds,
+    getModelId,
     getNestedChats,
     getParentId,
     getReasonConfig,
@@ -90,7 +90,7 @@ export const agentMapper = {
             agentDefaultAutoReply: data.agentDefaultAutoReply,
             maxConsecutiveAutoReply: data.maxConsecutiveAutoReply,
             termination: data.termination,
-            modelIds: data.modelIds,
+            modelId: data.modelId,
             tools: data.tools,
             parentId: data.parentId,
             nestedChats: data.nestedChats,
@@ -161,7 +161,7 @@ const getCommonAgentData = (
     const agentDefaultAutoReply = getAgentDefaultAutoReply(data);
     const maxConsecutiveAutoReply = getMaximumConsecutiveAutoReply(data);
     const termination = getTermination(data);
-    const modelIds = getModelIds(data);
+    const modelId = getModelId(data);
     const tools = getTools(data);
     const parentId = getParentId(data, agentType);
     const nestedChats = getNestedChats(data);
@@ -174,7 +174,7 @@ const getCommonAgentData = (
         agentDefaultAutoReply,
         maxConsecutiveAutoReply,
         termination,
-        modelIds,
+        modelId,
         tools,
         parentId,
         nestedChats,
@@ -260,7 +260,7 @@ const getAgentDataToImport = (
 
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     const agentCopy = { ...agent };
-    agentCopy.data.modelIds = [];
+    agentCopy.data.modelId = null;
     agentCopy.data.tools = [];
     agentCopy.data.nestedChats = [];
     if (agentCopy.data.codeExecutionConfig) {
