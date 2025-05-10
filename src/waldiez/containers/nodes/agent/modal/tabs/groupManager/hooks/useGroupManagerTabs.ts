@@ -29,9 +29,14 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     };
     // const agentConnections = getAgentConnections(id);
     const groupMembers = getGroupMembers(id);
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onGroupNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLocalData(prev => ({ ...prev, groupName: event.target.value }));
         onDataChange({ groupName: event.target.value });
+    };
+    const onManagerNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newName = event.target.value;
+        setLocalData(prev => ({ ...prev, name: newName, label: newName }));
+        onDataChange({ name: newName, label: newName });
     };
     const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setLocalData(prev => ({ ...prev, description: event.target.value }));
@@ -159,7 +164,8 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
         initialAgent,
         initialAgentOptions,
         currentAfterWork,
-        onNameChange,
+        onGroupNameChange,
+        onManagerNameChange,
         onDescriptionChange,
         onSystemMessageChange,
         onMaxRoundChange,

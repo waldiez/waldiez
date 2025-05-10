@@ -9,9 +9,9 @@ import { TextInput } from "@waldiez/components/textInput";
 import { ConditionType, WaldiezEdgeData, WaldiezHandoffCondition } from "@waldiez/types";
 
 const conditionTypeMapping: Record<ConditionType, string> = {
+    string_context: "Variable check",
     string_llm: "Static LLM prompt",
     context_str_llm: "Dynamic LLM Prompt",
-    string_context: "Variable check",
     expression_context: "Expression check",
 };
 
@@ -51,6 +51,66 @@ export const ChatAvailability: React.FC<{
             onDataChange({ handoffCondition: null });
         }
     };
+    const onStringLLMPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (currentHandoffCondition?.condition_type === "string_llm") {
+            const prompt = event.target.value;
+            setCurrentHandoffCondition({
+                ...currentHandoffCondition,
+                prompt,
+            });
+            onDataChange({
+                handoffCondition: {
+                    ...currentHandoffCondition,
+                    prompt,
+                } as WaldiezHandoffCondition,
+            });
+        }
+    };
+    const onVariableNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (currentHandoffCondition?.condition_type === "string_context") {
+            const variableName = event.target.value;
+            setCurrentHandoffCondition({
+                ...currentHandoffCondition,
+                variable_name: variableName,
+            });
+            onDataChange({
+                handoffCondition: {
+                    ...currentHandoffCondition,
+                    variable_name: variableName,
+                } as WaldiezHandoffCondition,
+            });
+        }
+    };
+    const onExpressionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (currentHandoffCondition?.condition_type === "expression_context") {
+            const expression = event.target.value;
+            setCurrentHandoffCondition({
+                ...currentHandoffCondition,
+                expression,
+            });
+            onDataChange({
+                handoffCondition: {
+                    ...currentHandoffCondition,
+                    expression,
+                } as WaldiezHandoffCondition,
+            });
+        }
+    };
+    const onContextStrLLMPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        if (currentHandoffCondition?.condition_type === "context_str_llm") {
+            const contextStr = event.target.value;
+            setCurrentHandoffCondition({
+                ...currentHandoffCondition,
+                context_str: contextStr,
+            });
+            onDataChange({
+                handoffCondition: {
+                    ...currentHandoffCondition,
+                    context_str: contextStr,
+                } as WaldiezHandoffCondition,
+            });
+        }
+    };
     return (
         <div className="flex-column">
             <div className="info margin-bottom-5">
@@ -70,14 +130,40 @@ export const ChatAvailability: React.FC<{
                     </li>
                     <li>
                         <strong>Expression check</strong>: Evaluates a logical expression using context
-                        variables.
+                        variables. Expressions use{" "}
+                        <code>
+                            ${"{"}var_name{"}"}
+                        </code>{" "}
+                        syntax to reference variables, and support logical operators (<code>not</code>/
+                        <code>!</code>, <code>and</code>/<code>&amp;</code>, <code>or</code>/<code>|</code>),
+                        comparisons (<code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>,{" "}
+                        <code>&lt;=</code>, <code>==</code>, <code>!=</code>), and functions like{" "}
+                        <code>
+                            len(${"{"}var_name{"}"})
+                        </code>
+                        . Parentheses can be used for grouping.
+                        <br />
+                        <em>Examples:</em>
+                        <ul>
+                            <li>
+                                <code>
+                                    not ${"{"}logged_in{"}"} and ${"{"}is_admin{"}"} or ${"{"}guest_checkout
+                                    {"}"}
+                                </code>
+                            </li>
+                            <li>
+                                <code>
+                                    len(${"{"}orders{"}"}) &gt; 0 &amp; ${"{"}user_active{"}"}
+                                </code>
+                            </li>
+                            <li>
+                                <code>
+                                    len(${"{"}cart_items{"}"}) == 0 | ${"{"}checkout_started{"}"}
+                                </code>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
-                <p className="no-padding no-margin">
-                    The selected condition type will determine how the condition is evaluated. For example, if
-                    you choose "Static LLM prompt," you will need to provide a fixed prompt for the LLM to
-                    evaluate. If you choose "Variable check," you will specify the context variable to check.
-                </p>
             </div>
             <div>
                 <label className="checkbox-label">
@@ -118,12 +204,7 @@ export const ChatAvailability: React.FC<{
                                 title="LLM Prompt"
                                 placeholder="Enter the LLM prompt"
                                 value={currentHandoffCondition.prompt}
-                                onChange={e =>
-                                    setCurrentHandoffCondition({
-                                        ...currentHandoffCondition,
-                                        prompt: e.target.value,
-                                    })
-                                }
+                                onChange={onStringLLMPromptChange}
                                 data-testid={"llm-prompt-input"}
                             />
                         </div>
@@ -135,14 +216,9 @@ export const ChatAvailability: React.FC<{
                                 rows={2}
                                 className="margin-top-5"
                                 title="Prompt"
-                                placeholder="Enter the prompt"
+                                placeholder="Enter the prompt to evaluate"
                                 value={currentHandoffCondition.context_str}
-                                onChange={e =>
-                                    setCurrentHandoffCondition({
-                                        ...currentHandoffCondition,
-                                        context_str: e.target.value,
-                                    })
-                                }
+                                onChange={onContextStrLLMPromptChange}
                                 data-testid={"context-llm-prompt-input"}
                             />
                         </div>
@@ -152,14 +228,9 @@ export const ChatAvailability: React.FC<{
                             <TextInput
                                 label={"Variable Name:"}
                                 className="margin-top-5"
-                                placeholder="Enter the variable name"
+                                placeholder="Enter the variable name to check"
                                 value={currentHandoffCondition.variable_name}
-                                onChange={e =>
-                                    setCurrentHandoffCondition({
-                                        ...currentHandoffCondition,
-                                        variable_name: e.target.value,
-                                    })
-                                }
+                                onChange={onVariableNameChange}
                                 dataTestId={"variable-name-input"}
                             />
                         </div>
@@ -171,29 +242,11 @@ export const ChatAvailability: React.FC<{
                                 rows={2}
                                 className="margin-top-5"
                                 title="Expression"
-                                placeholder="Enter the expression"
+                                placeholder="Enter the expression to evaluate"
                                 value={currentHandoffCondition.expression}
-                                onChange={e =>
-                                    setCurrentHandoffCondition({
-                                        ...currentHandoffCondition,
-                                        expression: e.target.value,
-                                    })
-                                }
+                                onChange={onExpressionChange}
                                 data-testid={"expression-input"}
                             />
-                            {/* <input
-                                title="Expression"
-                                type="text"
-                                placeholder="Enter the expression"
-                                value={currentHandoffCondition.expression}
-                                onChange={e =>
-                                    setCurrentHandoffCondition({
-                                        ...currentHandoffCondition,
-                                        expression: e.target.value,
-                                    })
-                                }
-                                data-testid={"expression-input"}
-                            /> */}
                         </div>
                     )}
                 </div>

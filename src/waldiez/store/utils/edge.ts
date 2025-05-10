@@ -88,14 +88,13 @@ const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: 
     if (typeof sourceNode.data.agentType !== "string" || typeof targetNode.data.agentType !== "string") {
         showSnackbar({
             flowId,
-            message: `Cannot create a connection from ${sourceNode.data.label} to ${targetNode.data.label}`,
+            message: `Could not create a connection from ${sourceNode.data.label} to ${targetNode.data.label}`,
             level: "warning",
             details: "Invalid agent type",
             withCloseButton: true,
         });
         return true;
     }
-    const errorMessage = `Cannot create a connection from ${getFriendlyString(sourceNode.data.agentType)} to ${getFriendlyString(targetNode.data.agentType)}`;
     // only user sources to group manager, or group_manager (as source) to other nodes
     if (
         !sourceNode.data.parentId &&
@@ -103,9 +102,9 @@ const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: 
     ) {
         showSnackbar({
             flowId,
-            message: errorMessage,
+            message: `Invalid source agent type: ${getFriendlyString(sourceNode.data.agentType)}`,
             level: "warning",
-            details: `Invalid source agent type: ${getFriendlyString(sourceNode.data.agentType)}`,
+            details: undefined,
             withCloseButton: true,
         });
         return true;
@@ -114,9 +113,9 @@ const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: 
     if (!sourceNode.data.parentId && targetNode.data.parentId) {
         showSnackbar({
             flowId,
-            message: errorMessage,
+            message: "A connection from a non-group member to a group member is not allowed",
             level: "warning",
-            details: "A connection from a non-group member to a group member is not allowed",
+            details: undefined,
             withCloseButton: true,
         });
         return true;
@@ -127,9 +126,9 @@ const shouldNotCreateGroupEdge = (sourceNode: Node, targetNode: Node, allEdges: 
         if (edgesWithTheSameTarget.length > 0) {
             showSnackbar({
                 flowId,
-                message: errorMessage,
+                message: "A connection to this group manager already exists",
                 level: "warning",
-                details: "An connection already exists to this group manager",
+                details: undefined,
                 withCloseButton: true,
             });
             return true;

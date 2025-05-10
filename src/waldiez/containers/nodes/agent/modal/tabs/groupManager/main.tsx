@@ -16,9 +16,8 @@ import {
 } from "@waldiez/components";
 import { useGroupManagerTabs } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/hooks";
 import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
+import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
 import { GroupChatSpeakerSelectionMethodOption } from "@waldiez/models";
-
-import { WaldiezAgentModels } from "../models";
 
 export const WaldiezNodeGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => {
     const { isModalOpen, flowId, id } = props;
@@ -29,7 +28,8 @@ export const WaldiezNodeGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsPr
         initialAgent,
         initialAgentOptions,
         currentAfterWork,
-        onNameChange,
+        onGroupNameChange,
+        onManagerNameChange,
         onMaxRoundChange,
         onAddContextVariable,
         onDeleteContextVariable,
@@ -64,7 +64,7 @@ export const WaldiezNodeGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsPr
                     <TextInput
                         label="Group Name:"
                         value={data.groupName ?? ""}
-                        onChange={onNameChange}
+                        onChange={onGroupNameChange}
                         dataTestId={`agent-name-input-${id}`}
                     />
                     <label htmlFor={`wf-${flowId}-agent-config-${id}-select-initial-agent`}>
@@ -101,42 +101,55 @@ export const WaldiezNodeGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsPr
                 </div>
             </TabItem>
             <TabItem label={"Group Manager"} id={`wf-${flowId}-agent-group-manager-agent-${id}`}>
-                <WaldiezAgentModels
-                    id={id}
-                    data={props.data}
-                    models={models}
-                    onDataChange={props.onDataChange}
-                />
-                <label>Description:</label>
-                <textarea
-                    title="Agent description"
-                    rows={2}
-                    value={data.description}
-                    onChange={onDescriptionChange}
-                    data-testid={`agent-description-input-${id}`}
-                />
-                <label>System Message:</label>
-                <textarea
-                    title="System message"
-                    rows={2}
-                    value={data.systemMessage ?? ""}
-                    onChange={onSystemMessageChange}
-                    data-testid={`agent-system-message-input-${id}`}
-                />
-                <InfoCheckbox
-                    label="Send introductions"
-                    checked={data.sendIntroductions === true}
-                    info="Send a round of introductions at the start of the group chat, so agents know who they can speak to (default: False)"
-                    onChange={onSendIntroductionsChange}
-                    dataTestId={`manager-send-introductions-checkbox-${id}`}
-                />
-                <InfoCheckbox
-                    label="Enable clear history"
-                    checked={data.enableClearHistory === true}
-                    info="Enable the possibility to clear history of messages for agents manually by providing 'clear history' phrase in user prompt."
-                    onChange={onEnableClearHistoryChange}
-                    dataTestId={`manager-enable-clear-history-checkbox-${id}`}
-                />
+                <div className="modal-body">
+                    {models.length === 0 && <div className="margin-left-10 margin-top-10">Models:</div>}
+                    <WaldiezAgentModels
+                        id={id}
+                        data={props.data}
+                        models={models}
+                        onDataChange={props.onDataChange}
+                    />
+                    <div>
+                        <TextInput
+                            label="Group Manager's Name:"
+                            value={data.name ?? data.label ?? ""}
+                            onChange={onManagerNameChange}
+                            dataTestId={`agent-name-input-${id}`}
+                            placeholder="Group Manager Name"
+                            className="margin-top-5"
+                        />
+                    </div>
+                    <label>Description:</label>
+                    <textarea
+                        title="Agent description"
+                        rows={2}
+                        value={data.description}
+                        onChange={onDescriptionChange}
+                        data-testid={`agent-description-input-${id}`}
+                    />
+                    <label>System Message:</label>
+                    <textarea
+                        title="System message"
+                        rows={2}
+                        value={data.systemMessage ?? ""}
+                        onChange={onSystemMessageChange}
+                        data-testid={`agent-system-message-input-${id}`}
+                    />
+                    <InfoCheckbox
+                        label="Send introductions"
+                        checked={data.sendIntroductions === true}
+                        info="Send a round of introductions at the start of the group chat, so agents know who they can speak to (default: False)"
+                        onChange={onSendIntroductionsChange}
+                        dataTestId={`manager-send-introductions-checkbox-${id}`}
+                    />
+                    <InfoCheckbox
+                        label="Enable clear history"
+                        checked={data.enableClearHistory === true}
+                        info="Enable the possibility to clear history of messages for agents manually by providing 'clear history' phrase in user prompt."
+                        onChange={onEnableClearHistoryChange}
+                        dataTestId={`manager-enable-clear-history-checkbox-${id}`}
+                    />
+                </div>
             </TabItem>
             <TabItem label={"Speakers"} id={`wf-${flowId}-agent-group-manager-config-${id}`}>
                 <label className="hidden" htmlFor={`manager-speaker-selection-method-${id}`}></label>

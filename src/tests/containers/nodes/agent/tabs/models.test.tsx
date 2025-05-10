@@ -29,7 +29,7 @@ describe("Models tab", () => {
             includeModels: true,
         });
         goToModelsTab();
-        const modelSelect = screen.getByLabelText("Models to link to agent:");
+        const modelSelect = screen.getByLabelText("Models to be available for the agent:");
         expect(modelSelect).toBeInTheDocument();
         const modelsPanel = screen.getByTestId("agent-models-panel");
         expect(modelsPanel).toBeInTheDocument();
@@ -42,7 +42,7 @@ describe("Models tab", () => {
             includeModels: true,
         });
         goToModelsTab();
-        const modelSelect = screen.getByLabelText("Models to link to agent:");
+        const modelSelect = screen.getByLabelText("Models to be available for the agent:");
         expect(modelSelect).toBeInTheDocument();
         selectEvent.openMenu(modelSelect);
         // the ones below give:
@@ -72,7 +72,7 @@ describe("Models tab", () => {
             includeModels: true,
         });
         goToModelsTab();
-        const modelSelect = screen.getByLabelText("Models to link to agent:");
+        const modelSelect = screen.getByLabelText("Models to be available for the agent:");
         expect(modelSelect).toBeInTheDocument();
         selectEvent.openMenu(modelSelect);
         await selectEvent.select(modelSelect, ["test model1"]);
