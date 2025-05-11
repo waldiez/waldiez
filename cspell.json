@@ -101,6 +101,7 @@
         "iopub",
         "ipynb",
         "ipython",
+        "isinstance",
         "isort",
         "jlpm",
         "jpserver",
