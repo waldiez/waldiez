@@ -2,39 +2,79 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
 import { FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
 
 import { ChatUI, Modal } from "@waldiez/components";
 import { UserInputModalProps } from "@waldiez/containers/flow/modals/userInputModal/types";
 
-export const UserInputModal = (props: UserInputModalProps) => {
+/**
+ * Modal component for collecting user input with optional image upload
+ */
+export const UserInputModal = memo((props: UserInputModalProps) => {
     const { flowId, isOpen, inputPrompt, onUserInput } = props;
+
+    // State
     const [textInput, setTextInput] = useState("");
     const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    // Refs
     const inputRef = useRef<HTMLInputElement | null>(null);
+
+    // Reset input fields and focus when modal opens
     useEffect(() => {
         if (isOpen) {
             setTextInput("");
             setImagePreview(null);
-            if (inputRef.current) {
-                inputRef.current.focus();
-            }
+
+            // Focus input after render
+            setTimeout(() => {
+                inputRef.current?.focus();
+            }, 0);
         }
     }, [isOpen]);
-    const handleKeyDown = (event: KeyboardEvent) => {
+
+    /**
+     * Create an input response object with current data
+     */
+    const createInputResponse = useCallback(
+        (includeData = true) => ({
+            id: `${flowId}-${Date.now()}`,
+            request_id: inputPrompt.request_id,
+            type: "input_response" as const,
+            data: includeData
+                ? {
+                      text: textInput.trim() || null,
+                      image: imagePreview,
+                  }
+                : {},
+        }),
+        [flowId, inputPrompt.request_id, textInput, imagePreview],
+    );
+
+    /**
+     * Handle keyboard events
+     */
+    const handleKeyDown = useCallback((event: KeyboardEvent) => {
         if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
             handleSubmit();
         }
-    };
-    const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTextInput(event.target.value);
-    };
+    }, []);
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    /**
+     * Handle text input changes
+     */
+    const handleTextChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setTextInput(event.target.value);
+    }, []);
+
+    /**
+     * Handle image file selection
+     */
+    const handleImageChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -43,53 +83,78 @@ export const UserInputModal = (props: UserInputModalProps) => {
             };
             reader.readAsDataURL(file);
         }
+
+        // Reset the input value to allow selecting the same file again
         event.target.value = "";
         setIsFileSelectModalOpen(false);
-    };
-    const clearImage = () => {
+    }, []);
+
+    /**
+     * Clear selected image
+     */
+    const clearImage = useCallback(() => {
         setImagePreview(null);
-    };
-    const handleSubmit = () => {
-        onUserInput?.({
-            id: `${flowId}-${Date.now()}`,
-            request_id: inputPrompt.request_id,
-            type: "input_response",
-            data: {
-                text: textInput.trim() || null,
-                image: imagePreview,
-            },
-        });
+    }, []);
+
+    /**
+     * Submit user input
+     */
+    const handleSubmit = useCallback(() => {
+        onUserInput?.(createInputResponse());
+
+        // Reset input state
         setTextInput("");
         setImagePreview(null);
-    };
-    const handleClose = () => {
-        onUserInput({
-            id: `${flowId}-${Date.now()}`,
-            type: "input_response",
-            request_id: inputPrompt.request_id,
-            data: {},
-        });
+    }, [onUserInput, createInputResponse]);
+
+    /**
+     * Close modal
+     */
+    const handleClose = useCallback(() => {
+        onUserInput(createInputResponse(false));
+
+        // Reset input state
         setTextInput("");
         setImagePreview(null);
-    };
-    const openFileSelectModal = () => {
+    }, [onUserInput, createInputResponse]);
+
+    /**
+     * Handle file select modal interactions
+     */
+    const openFileSelectModal = useCallback(() => {
         setIsFileSelectModalOpen(true);
-    };
-    const closeFileSelectModal = () => {
+    }, []);
+
+    const closeFileSelectModal = useCallback(() => {
         setIsFileSelectModalOpen(false);
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    };
-    const handleCancel = (event: React.SyntheticEvent<HTMLDialogElement, Event> | KeyboardEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!isFileSelectModalOpen) {
-            handleClose();
-        } else {
-            setIsFileSelectModalOpen(false);
-        }
-    };
+
+        // Focus back on text input
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 0);
+    }, []);
+
+    /**
+     * Handle modal cancel
+     */
+    const handleCancel = useCallback(
+        (event: React.SyntheticEvent<HTMLDialogElement, Event> | KeyboardEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (isFileSelectModalOpen) {
+                setIsFileSelectModalOpen(false);
+            } else {
+                handleClose();
+            }
+        },
+        [isFileSelectModalOpen, handleClose],
+    );
+
+    // Generate unique IDs for accessibility
+    const inputId = `rf-${flowId}-user-input-modal-input`;
+    const imageInputId = `rf-${flowId}-user-input-modal-image`;
+    const modalTestId = `rf-${flowId}-user-input-modal`;
 
     return (
         <Modal
@@ -99,7 +164,7 @@ export const UserInputModal = (props: UserInputModalProps) => {
             onCancel={handleCancel}
             className="user-input-modal"
             hasMaximizeBtn={false}
-            dataTestId={`rf-${flowId}-user-input-modal`}
+            dataTestId={modalTestId}
         >
             <div className="modal-body">
                 {inputPrompt.previousMessages.length > 0 && (
@@ -110,7 +175,9 @@ export const UserInputModal = (props: UserInputModalProps) => {
                         />
                     </div>
                 )}
+
                 <div className="input-prompt">{inputPrompt.prompt}</div>
+
                 <div className="chat-input-container">
                     {imagePreview && (
                         <div className="chat-image-preview">
@@ -121,18 +188,20 @@ export const UserInputModal = (props: UserInputModalProps) => {
                                     className="chat-remove-image-button"
                                     onClick={clearImage}
                                     title="Remove Image"
+                                    aria-label="Remove uploaded image"
                                 >
                                     <FiX size={14} />
                                 </button>
                             </div>
                         </div>
                     )}
+
                     <input
                         type="text"
                         ref={inputRef}
                         placeholder="Enter your message here"
-                        id={`rf-${flowId}-user-input-modal-input`}
-                        data-testid={`rf-${flowId}-user-input-modal-input`}
+                        id={inputId}
+                        data-testid={inputId}
                         value={textInput}
                         onKeyDown={handleKeyDown}
                         onChange={handleTextChange}
@@ -142,14 +211,16 @@ export const UserInputModal = (props: UserInputModalProps) => {
                         autoCapitalize="none"
                         aria-label="User input"
                     />
+
                     <div className="chat-input-actions">
-                        <label htmlFor={`rf-${flowId}-user-input-modal-image`} className="chat-upload-button">
-                            <FiPaperclip size={18} />
+                        <label htmlFor={imageInputId} className="chat-upload-button">
+                            <FiPaperclip size={18} aria-hidden="true" />
+                            <span className="sr-only">Upload an image</span>
                             <input
                                 type="file"
                                 aria-label="Upload an image"
-                                id={`rf-${flowId}-user-input-modal-image`}
-                                data-testid={`rf-${flowId}-user-input-modal-image`}
+                                id={imageInputId}
+                                data-testid={imageInputId}
                                 accept="image/*"
                                 className="chat-upload-input"
                                 onChange={handleImageChange}
@@ -157,20 +228,23 @@ export const UserInputModal = (props: UserInputModalProps) => {
                                 onBlur={closeFileSelectModal}
                             />
                         </label>
+
                         <button
                             type="button"
                             title="Send"
                             onClick={handleSubmit}
-                            // let's allow empty messages to be sent
-                            // disabled={!textInput.trim() && !imagePreview}
                             className="chat-send-button"
                             data-testid={`rf-${flowId}-user-input-modal-submit`}
+                            aria-label="Send message"
                         >
-                            <IoIosSend size={20} />
+                            <IoIosSend size={20} aria-hidden="true" />
                         </button>
                     </div>
                 </div>
             </div>
         </Modal>
     );
-};
+});
+
+// Add display name for better debugging
+UserInputModal.displayName = "UserInputModal";

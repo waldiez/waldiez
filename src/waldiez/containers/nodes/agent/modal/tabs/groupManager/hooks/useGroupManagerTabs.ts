@@ -4,6 +4,8 @@
  */
 import { useState } from "react";
 
+import { nanoid } from "nanoid";
+
 import { SingleValue } from "@waldiez/components";
 import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
 import {
@@ -117,6 +119,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const addOrUpdateAfterWork = (target: WaldiezTransitionTarget) => {
         let newHandoffs = data.handoffs?.filter(handoff => handoff.after_work === undefined);
         const newHandoff = {
+            id: nanoid(),
             after_work: target,
             target_type: target.target_type,
             order: target.order,

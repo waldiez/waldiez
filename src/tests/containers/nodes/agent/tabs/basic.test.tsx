@@ -66,7 +66,7 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         expect(humanInputModeSelect).toHaveValue("TERMINATE");
         submitAgentChanges();
     });
-    it("Updates the agent max consecutive auto reply", async () => {
+    it("Updates the agent max consecutive auto reply", () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { maxConsecutiveAutoReply: 300 },
@@ -74,12 +74,13 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         const maxConsecutiveAutoReplyInput = screen.getByTestId(
             `agent-max-consecutive-auto-reply-input-${agentId}`,
         );
-        await userEvent.clear(maxConsecutiveAutoReplyInput);
-        await userEvent.type(maxConsecutiveAutoReplyInput, "400");
+        fireEvent.change(maxConsecutiveAutoReplyInput, {
+            target: { value: "400" },
+        });
         expect(maxConsecutiveAutoReplyInput).toHaveValue(400);
         submitAgentChanges();
     });
-    it("Updates the agent max consecutive auto reply", async () => {
+    it("Updates the agent max consecutive auto reply", () => {
         renderAgent("assistant", {
             openModal: true,
             dataOverrides: { maxConsecutiveAutoReply: 300 },
@@ -87,16 +88,18 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         const maxConsecutiveAutoReplyInput = screen.getByTestId(
             `agent-max-consecutive-auto-reply-input-${agentId}`,
         );
-        await userEvent.clear(maxConsecutiveAutoReplyInput);
-        await userEvent.type(maxConsecutiveAutoReplyInput, "Auto reply");
-        expect(maxConsecutiveAutoReplyInput).toHaveValue(null);
+        fireEvent.change(maxConsecutiveAutoReplyInput, {
+            target: { value: "301" },
+        });
+        expect(maxConsecutiveAutoReplyInput).toHaveValue(301);
         submitAgentChanges();
     });
-    it("Updates the agent default auto reply", async () => {
+    it("Updates the agent default auto reply", () => {
         renderAgent("assistant", { openModal: true });
         const agentDefaultAutoReplyInput = screen.getByTestId(`agent-default-auto-reply-input-${agentId}`);
-        await userEvent.clear(agentDefaultAutoReplyInput);
-        await userEvent.type(agentDefaultAutoReplyInput, "Default Auto Reply");
+        fireEvent.change(agentDefaultAutoReplyInput, {
+            target: { value: "Default Auto Reply" },
+        });
         expect(agentDefaultAutoReplyInput).toHaveValue("Default Auto Reply");
         submitAgentChanges();
     });

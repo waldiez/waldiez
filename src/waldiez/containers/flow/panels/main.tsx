@@ -9,11 +9,24 @@ import { FaCirclePlay, FaFileImport, FaMoon, FaPython, FaSun } from "react-icons
 import { MdIosShare } from "react-icons/md";
 import { SiJupyter } from "react-icons/si";
 
-import { WaldiezFlowPanelsProps } from "@waldiez/containers/flow/panels/types";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
+import { WaldiezNodeType } from "@waldiez/types";
 
-export const WaldiezFlowPanels = (props: WaldiezFlowPanelsProps) => {
+type WaldiezFlowPanelsProps = {
+    flowId: string;
+    skipExport?: boolean;
+    skipImport?: boolean;
+    skipHub?: boolean;
+    selectedNodeType: WaldiezNodeType;
+    onAddNode: () => void;
+    onRun: () => void;
+    onConvertToPy: () => void;
+    onConvertToIpynb: () => void;
+    onOpenImportModal: () => void;
+    onExport: (e: React.MouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
+};
+export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: WaldiezFlowPanelsProps) => {
     const {
         flowId,
         skipExport,

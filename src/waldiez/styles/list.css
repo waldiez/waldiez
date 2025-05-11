@@ -56,7 +56,8 @@
   border-radius: 5px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   cursor: pointer;
-  margin-right: 10px;
+
+  /* margin-right: 10px; */
 }
 
 .flow-wrapper .list-entry button:hover {

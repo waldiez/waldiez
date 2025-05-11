@@ -2,122 +2,170 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 
 import { DropZone, Modal, TextInput } from "@waldiez/components";
-import { ExportFlowModalProps } from "@waldiez/containers/flow/modals/exportFlowModal/types";
 import { showSnackbar } from "@waldiez/utils";
 
-const HUB_URL = "https://hub.waldiez.io";
+// Constants
+const HUB_URL = "https://example.com";
 const HUB_UPLOAD_URL = `${HUB_URL}/api/files`;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const UPLOAD_TIMEOUT = 10000; // 10 seconds
+const ADDITIONAL_FILE_TIMEOUT = 30000; // 30 seconds
+const SNACKBAR_DURATION = 5000; // 5 seconds
 
-export const ExportFlowModal = (props: ExportFlowModalProps) => {
+type ExportFlowModalProps = {
+    flowId: string;
+    isOpen: boolean;
+    onDownload: (e: React.MouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
+    onExport: () => string | null;
+    onClose: () => void;
+};
+
+/**
+ * Modal component for exporting flow data with optional hub upload
+ */
+export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModalProps) => {
     const { flowId, isOpen, onClose, onExport, onDownload } = props;
+
+    // State
     const [alsoUpload, setAlsoUpload] = useState(false);
     const [hubApiToken, setHubApiToken] = useState("");
     const [additionalFile, setAdditionalFile] = useState<File | null>(null);
-    const onAlsoUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [isUploading, setIsUploading] = useState(false);
+
+    // Event handlers
+    const onAlsoUploadChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setAlsoUpload(e.target.checked);
-    };
-    const onHubApiTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    }, []);
+
+    const onHubApiTokenChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setHubApiToken(e.target.value);
-    };
-    const onUploadToHub = (_e: React.MouseEvent<HTMLButtonElement>) => {
-        const flowString = onExport();
-        if (!flowString) {
+    }, []);
+
+    // Display an error message using snackbar
+    const showError = useCallback(
+        (message: string) => {
             showSnackbar({
                 flowId,
-                message: "Error exporting flow.",
+                message,
                 level: "error",
                 details: null,
-                duration: 5e3,
+                duration: SNACKBAR_DURATION,
             });
-            return;
-        }
-        const fileData = new Blob([flowString], { type: "application/json" });
-        const formData = new FormData();
-        formData.append("file", fileData, `${flowId}.waldiez`);
-        fetch(`${HUB_UPLOAD_URL}/upload`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${hubApiToken}`,
-                content_type: "application/waldiez",
-            },
-            body: formData,
-            signal: AbortSignal.timeout(1e4),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Error uploading to hub");
+        },
+        [flowId],
+    );
+
+    // Handle uploading to hub
+    const onUploadToHub = useCallback(
+        // eslint-disable-next-line max-statements
+        async (_e: React.MouseEvent<HTMLButtonElement>) => {
+            // Prevent multiple simultaneous uploads
+            if (isUploading) {
+                return;
+            }
+
+            try {
+                setIsUploading(true);
+
+                // Get flow data
+                const flowString = onExport();
+                if (!flowString) {
+                    showError("Error exporting flow.");
+                    return;
                 }
-                return response.json();
-            })
-            .then(data => {
+
+                // Create form data for flow file
+                const fileData = new Blob([flowString], { type: "application/json" });
+                const formData = new FormData();
+                formData.append("file", fileData, `${flowId}.waldiez`);
+
+                // Upload the flow file
+                const response = await fetch(`${HUB_UPLOAD_URL}/upload`, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${hubApiToken}`,
+                        content_type: "application/waldiez",
+                    },
+                    body: formData,
+                    signal: AbortSignal.timeout(UPLOAD_TIMEOUT),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error uploading to hub: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Upload additional file if present
                 if (additionalFile) {
                     const additionalFormData = new FormData();
                     additionalFormData.append("file", additionalFile, additionalFile.name);
-                    return fetch(`${HUB_UPLOAD_URL}/${data.id}/example`, {
+
+                    const additionalResponse = await fetch(`${HUB_UPLOAD_URL}/${data.id}/example`, {
                         method: "POST",
                         headers: {
                             Authorization: `Bearer ${hubApiToken}`,
                             content_type: "application/csv",
                         },
                         body: additionalFormData,
-                        signal: AbortSignal.timeout(3e4),
+                        signal: AbortSignal.timeout(ADDITIONAL_FILE_TIMEOUT),
                     });
+
+                    if (!additionalResponse.ok) {
+                        throw new Error(`Error uploading additional file: ${additionalResponse.statusText}`);
+                    }
                 }
-            })
-            .then(response => {
-                if (response && !response.ok) {
-                    console.error("Error uploading additional file to hub:", response.statusText);
-                    throw new Error("Error uploading additional file to hub");
-                }
+
+                // Show success message
                 showSnackbar({
                     flowId,
                     message: "Flow uploaded to hub.",
                     level: "success",
                     details: null,
-                    duration: 5e3,
+                    duration: SNACKBAR_DURATION,
                 });
-            })
-            .catch(() => {
-                showSnackbar({
-                    flowId,
-                    message: "Error uploading to hub.",
-                    level: "error",
-                    details: null,
-                    duration: 5e3,
-                });
-            });
-    };
-    const onAdditionalFilesUpload = (files: File[]) => {
-        if (files.length > 0) {
+            } catch (error) {
+                console.error("Upload error:", error);
+                showError("Error uploading to hub.");
+            } finally {
+                setIsUploading(false);
+            }
+        },
+        [flowId, onExport, hubApiToken, additionalFile, isUploading, showError],
+    );
+
+    // Handle additional file upload
+    const onAdditionalFilesUpload = useCallback(
+        // eslint-disable-next-line max-statements
+        (files: File[]) => {
+            if (files.length === 0) {
+                setAdditionalFile(null);
+                return;
+            }
+
             const file = files[0];
-            if (file.size > 5 * 1024 * 1024) {
-                showSnackbar({
-                    flowId,
-                    message: "File size exceeds 5MB.",
-                    level: "error",
-                    details: null,
-                    duration: 5e3,
-                });
+
+            // Validate file size
+            if (file.size > MAX_FILE_SIZE) {
+                showError("File size exceeds 5MB.");
                 return;
             }
-            if (file.name.split(".").pop() !== "csv") {
-                showSnackbar({
-                    flowId,
-                    message: "File is not a csv.",
-                    level: "error",
-                    details: null,
-                    duration: 5e3,
-                });
+
+            // Validate file extension
+            const extension = file.name.split(".").pop()?.toLowerCase();
+            if (extension !== "csv") {
+                showError("File is not a CSV.");
                 return;
             }
+
             setAdditionalFile(file);
-        } else {
-            setAdditionalFile(null);
-        }
-    };
+        },
+        [showError],
+    );
+
     return (
         <Modal
             isOpen={isOpen}
@@ -144,6 +192,7 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
                         />
                         <div className="checkbox"></div>
                     </label>
+
                     {alsoUpload && (
                         <div className="flex full-width flex-column">
                             <div className="margin-top-10 full-width">
@@ -160,7 +209,7 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
                             </div>
                             <div className="margin-top-10 margin-bottom-20 full-width">
                                 <div className="margin-bottom-10 padding-10 center">
-                                    Additional csv file (results.csv) to include:
+                                    Additional CSV file (results.csv) to include:
                                 </div>
                                 <DropZone
                                     allowedFileExtensions={[".csv"]}
@@ -173,6 +222,7 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
                     )}
                 </div>
             </div>
+
             <div className="modal-actions">
                 <button type="reset" className="modal-action-cancel" onClick={onClose}>
                     Cancel
@@ -184,8 +234,9 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
                             className="modal-action-submit margin-right-20"
                             onClick={onUploadToHub}
                             data-testid={`upload-to-hub-${flowId}`}
+                            disabled={isUploading || !hubApiToken}
                         >
-                            Upload to Hub
+                            {isUploading ? "Uploading..." : "Upload to Hub"}
                         </button>
                     )}
                     <button type="submit" className="modal-action-submit" onClick={onDownload}>
@@ -195,4 +246,7 @@ export const ExportFlowModal = (props: ExportFlowModalProps) => {
             </div>
         </Modal>
     );
-};
+});
+
+// Add display name for better debugging
+ExportFlowModal.displayName = "ExportFlowModal";

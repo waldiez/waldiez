@@ -4,6 +4,15 @@
  */
 import { FaFileExport, FaFileImport } from "react-icons/fa";
 
+/**
+ * Function to get the import/export view for a given item type
+ * @param flowId - The ID of the flow
+ * @param itemId - The ID of the item
+ * @param itemType - The type of the item (model, tool, or agent)
+ * @param onImport - Callback function to handle import action
+ * @param onExport - Callback function to handle export action
+ * @returns A React node representing the import/export view
+ */
 export const getImportExportView: (
     flowId: string,
     itemId: string,

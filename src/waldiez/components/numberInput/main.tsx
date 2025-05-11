@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React, { memo, useCallback, useMemo } from "react";
+
 import Slider from "rc-slider";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
@@ -25,7 +27,10 @@ type NumberInputProps = {
     dataTestId?: string;
 };
 
-export const NumberInput: React.FC<NumberInputProps> = (props: NumberInputProps) => {
+/**
+ * A slider input component with numeric value display and optional min/max labels
+ */
+export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
     const {
         value,
         label,
@@ -44,88 +49,131 @@ export const NumberInput: React.FC<NumberInputProps> = (props: NumberInputProps)
         dataTestId,
     } = props;
 
-    const handleChange = (value: number | number[]) => {
-        if (Array.isArray(value)) {
-            return;
-        }
-        if (value === max && setNullOnUpper) {
-            onChange(null);
-        } else if (value === min && setNullOnLower) {
-            onChange(null);
-        } else {
-            onChange(value);
-        }
-    };
-    const onNullValue = (onNull ?? setNullOnLower) ? min : setNullOnUpper ? max : min;
-    const getLabelValue = () => {
-        if (
-            (value === max || value === null || value === undefined) &&
-            (setNullOnUpper || onUpperLabel !== null)
-        ) {
+    // Calculate null value based on props
+    const onNullValue = useMemo(
+        () => ((onNull ?? setNullOnLower) ? min : setNullOnUpper ? max : min),
+        [onNull, setNullOnLower, setNullOnUpper, min, max],
+    );
+
+    // Determine current display value
+    const currentValue = useMemo(() => (value !== null ? value : onNullValue), [value, onNullValue]);
+
+    // Handle slider change
+    const handleChange = useCallback(
+        (newValue: number | number[]) => {
+            if (Array.isArray(newValue)) {
+                return;
+            }
+
+            if (newValue === max && setNullOnUpper) {
+                onChange(null);
+            } else if (newValue === min && setNullOnLower) {
+                onChange(null);
+            } else {
+                onChange(newValue);
+            }
+        },
+        [onChange, max, min, setNullOnUpper, setNullOnLower],
+    );
+
+    // Handle input change
+    const handleInputChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            try {
+                const newValue = forceInt ? parseInt(e.target.value, 10) : parseFloat(e.target.value);
+
+                if (!isNaN(newValue)) {
+                    handleChange(newValue);
+                }
+            } catch (_) {
+                // Silently ignore parse errors
+            }
+        },
+        [forceInt, handleChange],
+    );
+
+    // Generate the label value content
+    const getLabelValue = useCallback(() => {
+        // Show upper limit label when value is at max or null
+        if ((value === max || value === null) && (setNullOnUpper || onUpperLabel !== null)) {
             return onUpperLabel ?? "No limit";
-        } else if (
-            (value === min || value === null || value === undefined) &&
-            (setNullOnLower || onLowerLabel !== null)
-        ) {
+        }
+        // Show lower limit label when value is at min or null
+        else if ((value === min || value === null) && (setNullOnLower || onLowerLabel !== null)) {
             return onLowerLabel ?? "Not set";
-        } else {
+        }
+        // Show input field
+        else {
             return (
                 <input
-                    placeholder={value !== null ? `${value}` : `${onNullValue}`}
+                    placeholder={`${currentValue}`}
                     inputMode="decimal"
                     type="number"
                     min={min}
                     max={max}
                     step={step}
-                    value={value !== null ? value : onNullValue}
-                    onChange={e => {
-                        try {
-                            const newValue = forceInt
-                                ? parseInt(e.target.value, 10)
-                                : parseFloat(e.target.value);
-                            handleChange(newValue);
-                        } catch (_) {
-                            return;
-                        }
-                    }}
+                    value={currentValue}
+                    onChange={handleInputChange}
                     data-testid={dataTestId}
-                ></input>
+                />
             );
         }
-    };
+    }, [
+        value,
+        min,
+        max,
+        currentValue,
+        step,
+        onUpperLabel,
+        onLowerLabel,
+        setNullOnUpper,
+        setNullOnLower,
+        handleInputChange,
+        dataTestId,
+    ]);
 
-    const labelView = () => {
+    // Render label with or without info tooltip
+    const renderLabel = useMemo(() => {
         const labelValue = getLabelValue();
-        return labelInfo ? (
-            <div className="number-input-info-label-wrapper">
-                <InfoLabel
-                    label={
-                        <div className="number-input-info-label-inner">
-                            {label}&nbsp;&nbsp;{labelValue}
-                        </div>
-                    }
-                    info={labelInfo}
-                />
-            </div>
-        ) : (
+
+        if (labelInfo) {
+            return (
+                <div className="number-input-info-label-wrapper">
+                    <InfoLabel
+                        label={
+                            <div className="number-input-info-label-inner">
+                                {label}&nbsp;&nbsp;{labelValue}
+                            </div>
+                        }
+                        info={labelInfo}
+                    />
+                </div>
+            );
+        }
+
+        return (
             <div className="number-input-label-wrapper">
                 <label>
                     {label} {labelValue}
                 </label>
             </div>
         );
-    };
+    }, [label, getLabelValue, labelInfo]);
+
     return (
         <>
-            {labelView()}
+            {renderLabel}
             <Slider
                 min={min}
                 max={max}
                 step={step}
-                value={value !== null ? value : onNullValue}
+                value={currentValue}
                 onChange={handleChange}
                 disabled={disabled}
             />
         </>
     );
-};
+});
+
+// Add display name for better debugging
+NumberInput.displayName = "NumberInput";

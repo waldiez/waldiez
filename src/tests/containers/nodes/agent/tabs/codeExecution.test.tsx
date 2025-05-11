@@ -63,26 +63,29 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         expect(workDirInput).toHaveValue("/new/tmp");
         submitAgentChanges();
     });
-    it("It updates the last N messages", async () => {
+    it("It updates the last N messages", () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
         goToCodeExecutionTab();
         const lastNMessagesInput = screen.getByTestId(`agent-code-execution-last-n-messages-${agentId}`);
-        await userEvent.type(lastNMessagesInput, "5");
+        fireEvent.change(lastNMessagesInput, {
+            target: { value: "105" },
+        });
         expect(lastNMessagesInput).toHaveValue(105);
         submitAgentChanges();
     });
-    it("It updates the timeout", async () => {
+    it("It updates the timeout", () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
         goToCodeExecutionTab();
         const timeoutInput = screen.getByTestId(`agent-code-execution-timeout-${agentId}`);
-        await userEvent.clear(timeoutInput);
-        await userEvent.type(timeoutInput, "500");
+        fireEvent.change(timeoutInput, {
+            target: { value: "500" },
+        });
         expect(timeoutInput).toHaveValue(500);
         submitAgentChanges();
     });

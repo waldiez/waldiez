@@ -8,5 +8,6 @@ export type WaldiezAgentGroupProps = {
     id: string;
     data: WaldiezNodeAgentData;
     agents: WaldiezNodeAgent[];
+    darkMode: boolean;
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
 };

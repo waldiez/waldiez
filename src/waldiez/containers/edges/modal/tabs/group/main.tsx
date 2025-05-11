@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { memo, useCallback } from "react";
+
 import { TextInput } from "@waldiez/components";
 import { WaldiezEdgeData } from "@waldiez/models";
 
@@ -11,33 +13,63 @@ type WaldiezEdgeGroupTabProps = {
     onDataChange: (data: Partial<WaldiezEdgeData>) => void;
 };
 
-export const WaldiezEdgeGroupTab: React.FC<WaldiezEdgeGroupTabProps> = props => {
+/**
+ * Group edge tab component for editing group-specific edge properties
+ */
+export const WaldiezEdgeGroupTab = memo<WaldiezEdgeGroupTabProps>(props => {
     const { data, edgeId, onDataChange } = props;
-    const onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newLabel = event.target.value;
-        onDataChange({ label: newLabel });
-    };
-    const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const newDescription = event.target.value;
-        onDataChange({ description: newDescription });
-    };
+
+    /**
+     * Handle label change
+     */
+    const onLabelChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ label: event.target.value });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle description change
+     */
+    const onDescriptionChange = useCallback(
+        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            onDataChange({ description: event.target.value });
+        },
+        [onDataChange],
+    );
+
+    // Generate test IDs for consistent accessibility
+    const labelInputId = `edge-${edgeId}-label-input`;
+    const descriptionInputId = `edge-${edgeId}-description-input`;
+
     return (
         <div className="flex-column">
             <TextInput
                 label="Label:"
                 placeholder="Enter a label"
-                value={data.label}
+                value={data.label || ""}
                 onChange={onLabelChange}
-                dataTestId={`edge-${edgeId}-label-input`}
+                dataTestId={labelInputId}
+                aria-label="Edge label"
             />
-            <label>Description:</label>
-            <textarea
-                rows={2}
-                defaultValue={data.description}
-                placeholder="Enter a description"
-                onChange={onDescriptionChange}
-                data-testid={`edge-${edgeId}-description-input`}
-            />
+
+            <div className="margin-top-10">
+                <label htmlFor={descriptionInputId}>Description:</label>
+                <textarea
+                    id={descriptionInputId}
+                    rows={2}
+                    value={data.description || ""}
+                    placeholder="Enter a description"
+                    onChange={onDescriptionChange}
+                    data-testid={descriptionInputId}
+                    className="margin-top-5 full-width"
+                    aria-label="Edge description"
+                />
+            </div>
         </div>
     );
-};
+});
+
+// Add display name for better debugging
+WaldiezEdgeGroupTab.displayName = "WaldiezEdgeGroupTab";

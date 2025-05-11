@@ -2,42 +2,79 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { StringListProps } from "@waldiez/components/stringList/types";
 
+/**
+ * Custom hook for managing string list functionality
+ */
 export const useStringList = (props: StringListProps) => {
     const [newEntry, setNewEntry] = useState<string>("");
     const { onItemAdded, onItemChange, onItemDeleted } = props;
-    const onAddEntry = () => {
-        if (!onItemAdded) {
+
+    // Handler for adding a new entry
+    const onAddEntry = useCallback(() => {
+        if (!onItemAdded || !newEntry.trim()) {
             return;
         }
-        if (!newEntry) {
-            return;
-        }
+
         onItemAdded(newEntry);
         setNewEntry("");
-    };
-    const onDeleteEntry = (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (onItemDeleted) {
-            onItemDeleted(event.currentTarget.value);
-        }
-    };
-    const onEntryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const dataValue = event.currentTarget.getAttribute("data-value");
-        if (dataValue && onItemChange) {
-            onItemChange(dataValue, event.target.value);
-        }
-    };
-    const onNewEntryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    }, [newEntry, onItemAdded]);
+
+    // Handler for deleting an entry
+    const onDeleteEntry = useCallback(
+        (event: React.MouseEvent<HTMLButtonElement>) => {
+            if (!onItemDeleted) {
+                return;
+            }
+
+            const valueToDelete = event.currentTarget.value;
+            onItemDeleted(valueToDelete);
+        },
+        [onItemDeleted],
+    );
+
+    // Handler for changing an existing entry
+    const onEntryChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            if (!onItemChange) {
+                return;
+            }
+
+            const originalValue = event.currentTarget.getAttribute("data-value");
+            const newValue = event.target.value;
+
+            if (originalValue) {
+                onItemChange(originalValue, newValue);
+            }
+        },
+        [onItemChange],
+    );
+
+    // Handler for changing the new entry input
+    const onNewEntryChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setNewEntry(event.target.value);
-    };
+    }, []);
+
+    // Handler for key press events - allow Enter to add new item
+    const onNewEntryKeyPress = useCallback(
+        (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                onAddEntry();
+            }
+        },
+        [onAddEntry],
+    );
+
     return {
         newEntry,
         onAddEntry,
         onDeleteEntry,
         onEntryChange,
         onNewEntryChange,
+        onNewEntryKeyPress,
     };
 };

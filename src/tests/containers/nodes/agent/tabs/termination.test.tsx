@@ -155,7 +155,9 @@ describe("Termination tab", () => {
         // Change a termination keyword
         const terminationKeywordInput = screen.getByTestId("list-entry-item-termination-keyword-0");
         expect(terminationKeywordInput).toBeInTheDocument();
-        await userEvent.type(terminationKeywordInput, "_KEY");
+        await userEvent.clear(terminationKeywordInput);
+
+        fireEvent.change(terminationKeywordInput, { target: { value: "TERMINATE_KEY" } });
 
         // Check that the termination keyword has been changed
         expect(terminationKeywordInput).toHaveValue("TERMINATE_KEY");

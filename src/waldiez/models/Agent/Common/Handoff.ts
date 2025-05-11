@@ -166,6 +166,7 @@ export type WaldiezOnContextCondition = {
 /**
  * Waldiez agent handoff
  * A handoff that can be triggered by LLM or context conditions.
+ * @param id - Unique identifier for the handoff
  * @param llm_conditions - LLM conditions
  * @param context_conditions - Context conditions
  * @param after_work - After work target
@@ -175,6 +176,7 @@ export type WaldiezOnContextCondition = {
  * @see {@link WaldiezOnCondition}
  */
 export type WaldiezAgentHandoff = {
+    id: string;
     llm_conditions?: WaldiezOnCondition[];
     context_conditions?: WaldiezOnContextCondition[];
     after_work?: WaldiezTransitionTarget;

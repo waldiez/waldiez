@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, memo, useCallback, useEffect, useState } from "react";
 
 type CollapsibleProps = {
     title: string;
@@ -12,27 +12,41 @@ type CollapsibleProps = {
     fullWidth?: boolean;
     dataTestId?: string;
 };
-export const Collapsible: React.FC<CollapsibleProps> = props => {
-    const { title, children, dataTestId, fullWidth = false, expanded = false } = props;
+
+/**
+ * Collapsible component that can show/hide content
+ */
+export const Collapsible = memo<CollapsibleProps>(props => {
+    const { title, children, dataTestId, fullWidth = false, expanded = false, className = "" } = props;
+
     const [isOpen, setIsOpen] = useState(expanded);
 
+    // Sync with external expanded prop
     useEffect(() => {
         setIsOpen(expanded);
     }, [expanded]);
 
-    const onToggle = () => {
-        setIsOpen(!isOpen);
-    };
+    // Memoize toggle handler
+    const onToggle = useCallback(() => {
+        setIsOpen(prevIsOpen => !prevIsOpen);
+    }, []);
+
+    // Calculate CSS classes once
+    const containerClassName = `collapsible ${fullWidth ? "full-width" : ""} ${className}`.trim();
+    const headerClassName = `collapsible-header ${className}`.trim();
+
     return (
-        <div
-            className={`collapsible ${fullWidth && "full-width"} ${props.className || ""}`}
-            data-testid={dataTestId}
-        >
-            <div className={`collapsible-header ${props.className || ""}`} onClick={onToggle}>
+        <div className={containerClassName} data-testid={dataTestId}>
+            <div className={headerClassName} onClick={onToggle}>
                 <span>{title}</span>
-                <span className="margin-left-5">{isOpen ? "▲" : "▼"}</span>
+                <span className="margin-left-5" aria-hidden="true">
+                    {isOpen ? "▲" : "▼"}
+                </span>
             </div>
             {isOpen && <div className="collapsible-content">{children}</div>}
         </div>
     );
-};
+});
+
+// Add display name for better debugging
+Collapsible.displayName = "Collapsible";

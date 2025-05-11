@@ -4,6 +4,12 @@
  */
 import { WaldiezEdge } from "@waldiez/models";
 
+/**
+ * EdgeLabel component to display the label of a given edge
+ * @param edge - The edge object containing the label
+ * @param transform - The transformation string for positioning
+ * @returns The rendered label or null if no label is present
+ */
 export const EdgeLabel = ({ edge, transform }: { edge: WaldiezEdge | undefined; transform: string }) => {
     if (!edge) {
         return null;

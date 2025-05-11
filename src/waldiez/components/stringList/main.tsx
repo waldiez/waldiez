@@ -2,17 +2,60 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { memo, useMemo } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useStringList } from "@waldiez/components/stringList/hooks";
 import { StringListProps } from "@waldiez/components/stringList/types";
 
-export const StringList: React.FC<StringListProps> = (props: StringListProps) => {
-    const { viewLabel, viewLabelInfo, items, itemsType } = props;
-    const placeholder = props.placeholder || "...";
-    const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange } = useStringList(props);
-    const labelElement = typeof viewLabel === "function" ? viewLabel() : viewLabel;
+/**
+ * Component for displaying and managing a list of string values
+ */
+export const StringList = memo<StringListProps>((props: StringListProps) => {
+    const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
+
+    // Use custom hook for string list functionality
+    const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyPress } =
+        useStringList(props);
+
+    // Prepare label element
+    const labelElement = useMemo(
+        () => (typeof viewLabel === "function" ? viewLabel() : viewLabel),
+        [viewLabel],
+    );
+
+    // Render list items
+    const renderItems = useMemo(
+        () =>
+            items.map((item, index) => (
+                <div className="list-entry" key={`${itemsType}-${index}-${item}`}>
+                    <input
+                        placeholder={placeholder}
+                        type="text"
+                        value={item}
+                        data-value={item}
+                        onChange={onEntryChange}
+                        data-testid={`list-entry-item-${itemsType}-${index}`}
+                    />
+                    <button
+                        type="button"
+                        onClick={onDeleteEntry}
+                        value={item}
+                        title="Delete"
+                        aria-label={`Delete item: ${item}`}
+                        data-testid={`delete-list-entry-${itemsType}-${index}`}
+                    >
+                        <FaTrash />
+                    </button>
+                </div>
+            )),
+        [items, itemsType, placeholder, onEntryChange, onDeleteEntry],
+    );
+
+    // Determine if add button should be disabled
+    const isAddDisabled = !newEntry.trim();
+
     return (
         <div className="list-entries-view">
             {viewLabelInfo ? (
@@ -21,46 +64,34 @@ export const StringList: React.FC<StringListProps> = (props: StringListProps) =>
                 <label className="list-entries-label">{labelElement}</label>
             )}
 
+            {items.length > 0 && <div className="list-entries-list">{renderItems}</div>}
+
             <div className="list-entries-list">
-                {items?.map((item, index) => (
-                    <div className="list-entry" key={index}>
-                        <input
-                            placeholder={placeholder}
-                            type="text"
-                            value={item}
-                            data-value={item}
-                            onChange={onEntryChange}
-                            data-testid={`list-entry-item-${itemsType}-${index}`}
-                        />
-                        <button
-                            type="button"
-                            onClick={onDeleteEntry}
-                            value={item}
-                            title="Delete"
-                            data-testid={`delete-list-entry-${itemsType}-${index}`}
-                        >
-                            <FaTrash />
-                        </button>
-                    </div>
-                ))}
-            </div>
-            <div className="add-list-entry-view">
-                <input
-                    placeholder={placeholder}
-                    type="text"
-                    value={newEntry}
-                    onChange={onNewEntryChange}
-                    data-testid={`new-list-entry-${itemsType}-item`}
-                />
-                <button
-                    type="button"
-                    onClick={onAddEntry}
-                    title="Add"
-                    data-testid={`add-list-entry-${itemsType}-button`}
-                >
-                    <FaPlus />
-                </button>
+                <div className="add-list-entry-view">
+                    <input
+                        placeholder={placeholder}
+                        type="text"
+                        value={newEntry}
+                        onChange={onNewEntryChange}
+                        onKeyPress={onNewEntryKeyPress}
+                        data-testid={`new-list-entry-${itemsType}-item`}
+                        aria-label={`New ${itemsType} input`}
+                    />
+                    <button
+                        type="button"
+                        onClick={onAddEntry}
+                        title="Add"
+                        disabled={isAddDisabled}
+                        aria-label="Add item"
+                        data-testid={`add-list-entry-${itemsType}-button`}
+                    >
+                        <FaPlus />
+                    </button>
+                </div>
             </div>
         </div>
     );
-};
+});
+
+// Add display name for better debugging
+StringList.displayName = "StringList";

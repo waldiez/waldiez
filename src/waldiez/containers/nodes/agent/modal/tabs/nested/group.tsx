@@ -2,7 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { TabItem, TabItems } from "@waldiez/components";
+import { ChatAvailability, TabItem, TabItems } from "@waldiez/components";
+import { useNestedChatHandoff } from "@waldiez/containers/nodes/agent/modal/tabs/nested/hooks";
 import { WaldiezAgentNestedChat, WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
 
 type WaldiezAgentGroupNestedChatTabsProps = {
@@ -78,6 +79,13 @@ export const WaldiezAgentGroupNestedChatTabs: React.FC<WaldiezAgentGroupNestedCh
         newNestedChats[0].messages[index + 1] = temp;
         onDataChange({ nestedChats: structuredClone(newNestedChats), handoffs: [] });
     };
+    const { condition, onDataChange: onConditionChange } = useNestedChatHandoff({
+        handoffs: data.handoffs ?? [],
+        setHandoffs: updater => {
+            const newHandoffs = updater(data.handoffs ?? []);
+            onDataChange({ handoffs: structuredClone(newHandoffs) });
+        },
+    });
     return (
         <div className="agent-panel">
             <TabItems activeTabIndex={0}>
@@ -129,8 +137,7 @@ export const WaldiezAgentGroupNestedChatTabs: React.FC<WaldiezAgentGroupNestedCh
                     </div>
                 </TabItem>
                 <TabItem label="Availability" id={`wf-${flowId}-wa-${id}-nested-chat-availability`}>
-                    Availability check
-                    {/* <ChatAvailability data={edgeData} onDataChange={onEdgeDataChange} /> */}
+                    <ChatAvailability condition={condition} onDataChange={onConditionChange} />
                 </TabItem>
             </TabItems>
         </div>

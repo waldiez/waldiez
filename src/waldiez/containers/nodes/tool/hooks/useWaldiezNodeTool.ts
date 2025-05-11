@@ -4,7 +4,7 @@
  */
 import { Node } from "@xyflow/react";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { WaldiezNodeToolData } from "@waldiez/models";
@@ -12,12 +12,12 @@ import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
 import { exportItem, getDateString, importItem } from "@waldiez/utils";
 
+/**
+ * Custom hook for managing tool node state and operations
+ */
 export const useWaldiezNodeTool = (id: string, data: WaldiezNodeToolData) => {
+    // Get global state from store
     const flowId = useWaldiez(state => state.flowId);
-    const [isModalOpen, setModalOpen] = useState(false);
-    // tmp state to save on submit, discard on cancel
-    const [toolData, setToolData] = useState<WaldiezNodeToolData>(data);
-    const [isDirty, setIsDirty] = useState(false);
     const updateToolData = useWaldiez(state => state.updateToolData);
     const cloneTool = useWaldiez(s => s.cloneTool);
     const deleteTool = useWaldiez(s => s.deleteTool);
@@ -26,58 +26,128 @@ export const useWaldiezNodeTool = (id: string, data: WaldiezNodeToolData) => {
     const exportTool = useWaldiez(s => s.exportTool);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
     const { isDark } = useWaldiezTheme();
-    const updatedAt = getDateString(data.updatedAt);
-    const onOpen = () => {
+
+    // Local state
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [toolData, setToolData] = useState<WaldiezNodeToolData>(data);
+    const [isDirty, setIsDirty] = useState(false);
+
+    // Format last updated date
+    const updatedAt = useMemo(() => getDateString(data.updatedAt), [data.updatedAt]);
+
+    // Update local tool data when external data changes
+    useEffect(() => {
+        setToolData(data);
+        setIsDirty(false);
+    }, [data]);
+
+    /**
+     * Open the modal dialog
+     */
+    const onOpen = useCallback(() => {
         setModalOpen(true);
         setIsDirty(false);
-    };
-    const onClone = () => {
-        if (!isModalOpen) {
-            cloneTool(id);
-            onFlowChanged();
+    }, []);
+
+    /**
+     * Clone the current tool
+     */
+    const onClone = useCallback(() => {
+        if (isModalOpen) {
+            return;
         }
-    };
-    const onDelete = () => {
+
+        cloneTool(id);
+        onFlowChanged();
+    }, [isModalOpen, cloneTool, id, onFlowChanged]);
+
+    /**
+     * Delete the current tool
+     */
+    const onDelete = useCallback(() => {
         deleteTool(id);
         setIsDirty(false);
         onFlowChanged();
-    };
-    const onCancel = () => {
+    }, [deleteTool, id, onFlowChanged]);
+
+    /**
+     * Cancel changes and close modal
+     */
+    const onCancel = useCallback(() => {
         setToolData(data);
         setModalOpen(false);
         setIsDirty(false);
-    };
-    const onChange = (partialData: Partial<WaldiezNodeToolData>) => {
-        setToolData({ ...toolData, ...partialData });
-        setIsDirty(!isEqual({ ...toolData, ...partialData }, data));
-    };
-    const onExport = async () => {
-        await exportItem(data.label, "tool", exportTool.bind(null, id, true));
-    };
-    const onImportLoad = (tool: Node, jsonData: { [key: string]: unknown }) => {
-        const newTool = importTool(jsonData, id, tool?.position, false);
-        setToolData({ ...newTool.data });
-        setIsDirty(!isEqual(data, newTool.data));
-    };
-    const onImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-        importItem(event, getToolById.bind(null, id), onImportLoad);
-    };
-    const onSave = () => {
+    }, [data]);
+
+    /**
+     * Update tool data and check if it's different from original
+     */
+    const onChange = useCallback(
+        (partialData: Partial<WaldiezNodeToolData>) => {
+            setToolData(prevData => {
+                const newData = { ...prevData, ...partialData };
+                setIsDirty(!isEqual(newData, data));
+                return newData;
+            });
+        },
+        [data],
+    );
+
+    /**
+     * Export the tool to a file
+     */
+    const onExport = useCallback(async () => {
+        await exportItem(data.label, "tool", () => exportTool(id, true));
+    }, [data.label, exportTool, id]);
+
+    /**
+     * Process imported tool data
+     */
+    const onImportLoad = useCallback(
+        (tool: Node, jsonData: { [key: string]: unknown }) => {
+            const newTool = importTool(jsonData, id, tool?.position, false);
+            setToolData(newTool.data);
+            setIsDirty(!isEqual(data, newTool.data));
+        },
+        [importTool, id, data],
+    );
+
+    /**
+     * Handle file import
+     */
+    const onImport = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const getToolByIdBound = (toolId: string) => getToolById(toolId);
+            importItem(event, getToolByIdBound.bind(null, id), onImportLoad);
+        },
+        [getToolById, id, onImportLoad],
+    );
+
+    /**
+     * Save changes without closing the modal
+     */
+    const onSave = useCallback(() => {
         updateToolData(id, toolData);
+
+        // Refresh local state with the stored data
         const storedTool = getToolById(id);
-        const storedData = storedTool?.data;
-        if (storedData) {
-            setToolData(storedData as WaldiezNodeToolData);
+        if (storedTool?.data) {
+            setToolData(storedTool.data as WaldiezNodeToolData);
         }
+
         setIsDirty(false);
         onFlowChanged();
-        // setModalOpen(false);
-        // keep modal open after save
-    };
-    const onSaveAndClose = () => {
+        // Keep modal open after save
+    }, [updateToolData, id, toolData, getToolById, onFlowChanged]);
+
+    /**
+     * Save changes and close the modal
+     */
+    const onSaveAndClose = useCallback(() => {
         onSave();
         setModalOpen(false);
-    };
+    }, [onSave]);
+
     return {
         flowId,
         isModalOpen,

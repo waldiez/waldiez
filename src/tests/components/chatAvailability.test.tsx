@@ -8,44 +8,10 @@ import { describe, expect, it } from "vitest";
 import selectEvent from "react-select-event";
 
 import { ChatAvailability } from "@waldiez/components/chatAvailability";
-import { WaldiezEdgeData, WaldiezHandoffCondition } from "@waldiez/models";
-
-const defaultData: WaldiezEdgeData = {
-    label: "Chat",
-    description: "Chat",
-    position: 1,
-    order: 1,
-    clearHistory: false,
-    message: {
-        type: "string",
-        content: "Hello",
-        context: {},
-    },
-    summary: {
-        method: "reflectionWithLlm",
-        prompt: "Summarize the chat",
-        args: {},
-    },
-    nestedChat: {
-        message: null,
-        reply: null,
-    },
-    prerequisites: [],
-    maxTurns: null,
-    realSource: null,
-    realTarget: null,
-    sourceType: "user_proxy",
-    targetType: "assistant",
-    handoffCondition: null,
-    silent: false,
-};
+import { WaldiezHandoffCondition } from "@waldiez/models";
 
 const setup = (dataOverrides: WaldiezHandoffCondition | null = null, onDataChange = vi.fn()) => {
-    const data = {
-        ...defaultData,
-        handoffCondition: dataOverrides,
-    };
-    render(<ChatAvailability data={data} onDataChange={onDataChange} />);
+    render(<ChatAvailability condition={dataOverrides} onDataChange={onDataChange} />);
 };
 
 describe("ChatAvailability", () => {
@@ -68,7 +34,7 @@ describe("ChatAvailability", () => {
         // expect(screen.queryAllByRole("combobox")).toHaveLength(0);
         fireEvent.click(checkbox);
         // expect(screen.getByRole("combobox")).toBeInTheDocument();
-        expect(mock).toHaveBeenCalledWith({ handoffCondition: undefined });
+        expect(mock).toHaveBeenCalledWith(null);
     });
 
     it("shows select input when availability is enabled", async () => {
@@ -96,10 +62,8 @@ describe("ChatAvailability", () => {
         const input = screen.getByTestId("llm-prompt-input");
         fireEvent.change(input, { target: { value: "updated prompt" } });
         expect(mock).toHaveBeenCalledWith({
-            handoffCondition: {
-                condition_type: "string_llm",
-                prompt: "updated prompt",
-            },
+            condition_type: "string_llm",
+            prompt: "updated prompt",
         });
     });
 
@@ -109,10 +73,8 @@ describe("ChatAvailability", () => {
         const input = screen.getByTestId("context-llm-prompt-input");
         fireEvent.change(input, { target: { value: "context prompt" } });
         expect(mock).toHaveBeenCalledWith({
-            handoffCondition: {
-                condition_type: "context_str_llm",
-                context_str: "context prompt",
-            },
+            condition_type: "context_str_llm",
+            context_str: "context prompt",
         });
     });
 
@@ -122,10 +84,8 @@ describe("ChatAvailability", () => {
         const input = screen.getByTestId("variable-name-input");
         fireEvent.change(input, { target: { value: "user_logged_in" } });
         expect(mock).toHaveBeenCalledWith({
-            handoffCondition: {
-                condition_type: "string_context",
-                variable_name: "user_logged_in",
-            },
+            condition_type: "string_context",
+            variable_name: "user_logged_in",
         });
     });
 
@@ -135,10 +95,8 @@ describe("ChatAvailability", () => {
         const input = screen.getByTestId("expression-input");
         fireEvent.change(input, { target: { value: "len(${orders}) > 0" } });
         expect(mock).toHaveBeenCalledWith({
-            handoffCondition: {
-                condition_type: "expression_context",
-                expression: "len(${orders}) > 0",
-            },
+            condition_type: "expression_context",
+            expression: "len(${orders}) > 0",
         });
     });
 
@@ -147,6 +105,6 @@ describe("ChatAvailability", () => {
         setup({ condition_type: "string_llm", prompt: "..." }, mock);
         const select = screen.getByRole("combobox");
         selectEvent.clearFirst(select);
-        expect(mock).toHaveBeenCalledWith({ handoffCondition: null });
+        expect(mock).toHaveBeenCalledWith(null);
     });
 });

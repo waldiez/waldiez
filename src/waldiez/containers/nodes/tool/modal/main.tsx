@@ -9,7 +9,7 @@ import { getImportExportView } from "@waldiez/containers/nodes/common";
 import { WaldiezToolAdvancedTab, WaldiezToolBasicTab } from "@waldiez/containers/nodes/tool/modal/tabs";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 
-export const WaldiezNodeToolModal = (props: WaldiezNodeToolModalProps) => {
+export const WaldiezNodeToolModal: React.FC<WaldiezNodeToolModalProps> = props => {
     const {
         toolId,
         flowId,

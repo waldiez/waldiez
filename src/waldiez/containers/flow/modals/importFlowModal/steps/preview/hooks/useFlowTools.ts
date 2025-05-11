@@ -4,11 +4,14 @@
  */
 import { Node } from "@xyflow/react";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
 import { ThingsToImport } from "@waldiez/types";
 
+/**
+ * Custom hook for managing tool nodes selection in flow import
+ */
 export const useFlowTools = (props: {
     flowId: string;
     state: ImportFlowState;
@@ -16,54 +19,93 @@ export const useFlowTools = (props: {
 }) => {
     const { flowId, state, onStateChange } = props;
     const { selectedProps, loadedFlowData: flowData } = state;
-    const toolNodes = flowData?.nodes.filter(node => node.type === "tool");
-    useEffect(() => {
-        checkAllNoneIndeterminate();
-    }, [selectedProps]);
-    const onSelectedPropsChange = (thingsToImport: Partial<ThingsToImport>) => {
-        onStateChange({
-            selectedProps: {
-                ...selectedProps,
-                ...thingsToImport,
-            },
-        });
-    };
-    const checkAllNoneIndeterminate = () => {
+
+    // Extract tool nodes from flow data
+    const toolNodes = useMemo(
+        () => flowData?.nodes.filter(node => node.type === "tool") || [],
+        [flowData?.nodes],
+    );
+
+    /**
+     * Update selection options in state
+     */
+    const onSelectedPropsChange = useCallback(
+        (thingsToImport: Partial<ThingsToImport>) => {
+            onStateChange({
+                selectedProps: {
+                    ...selectedProps,
+                    ...thingsToImport,
+                },
+            });
+        },
+        [selectedProps, onStateChange],
+    );
+
+    /**
+     * Update checkbox indeterminate state
+     */
+    const checkAllNoneIndeterminate = useCallback(() => {
         const allNoneCheckbox = document.getElementById(
             `import-flow-modal-tools-all-none-${flowId}`,
         ) as HTMLInputElement;
-        if (allNoneCheckbox) {
-            const atLeastOneChecked = selectedProps.nodes.tools.length > 0;
-            if (atLeastOneChecked) {
-                const allChecked = selectedProps.nodes.tools.length === toolNodes?.length;
-                allNoneCheckbox.indeterminate = !allChecked;
-                allNoneCheckbox.checked = allChecked;
-            } else {
-                allNoneCheckbox.indeterminate = false;
-                allNoneCheckbox.checked = false;
-            }
+
+        if (!allNoneCheckbox) {
+            return;
         }
-    };
-    const onToolsChange = (node: Node) => {
-        onSelectedPropsChange({
-            nodes: {
-                models: selectedProps.nodes.models,
-                tools: selectedProps.nodes.tools.some(tool => tool.id === node.id)
-                    ? selectedProps.nodes.tools.filter(tool => tool.id !== node.id)
-                    : [...selectedProps.nodes.tools, node],
-                agents: selectedProps.nodes.agents,
-            },
-        });
-    };
-    const onAllNoneToolsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onSelectedPropsChange({
-            nodes: {
-                models: selectedProps.nodes.models,
-                tools: event.target.checked ? toolNodes! : [],
-                agents: selectedProps.nodes.agents,
-            },
-        });
-    };
+
+        const atLeastOneChecked = selectedProps.nodes.tools.length > 0;
+
+        if (atLeastOneChecked) {
+            const allChecked = selectedProps.nodes.tools.length === toolNodes.length;
+            allNoneCheckbox.indeterminate = !allChecked;
+            allNoneCheckbox.checked = allChecked;
+        } else {
+            allNoneCheckbox.indeterminate = false;
+            allNoneCheckbox.checked = false;
+        }
+    }, [flowId, selectedProps.nodes.tools.length, toolNodes.length]);
+
+    // Update indeterminate state when selections change
+    useEffect(() => {
+        checkAllNoneIndeterminate();
+    }, [checkAllNoneIndeterminate]);
+
+    /**
+     * Toggle a tool node selection
+     */
+    const onToolsChange = useCallback(
+        (node: Node) => {
+            const isSelected = selectedProps.nodes.tools.some(tool => tool.id === node.id);
+
+            onSelectedPropsChange({
+                nodes: {
+                    models: selectedProps.nodes.models,
+                    tools: isSelected
+                        ? selectedProps.nodes.tools.filter(tool => tool.id !== node.id)
+                        : [...selectedProps.nodes.tools, node],
+                    agents: selectedProps.nodes.agents,
+                },
+            });
+        },
+        [selectedProps.nodes, onSelectedPropsChange],
+    );
+
+    /**
+     * Select all or none of the tool nodes
+     */
+    const onAllNoneToolsChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onSelectedPropsChange({
+                nodes: {
+                    models: selectedProps.nodes.models,
+                    tools: event.target.checked ? toolNodes : [],
+                    agents: selectedProps.nodes.agents,
+                },
+            });
+        },
+        [toolNodes, selectedProps.nodes.models, selectedProps.nodes.agents, onSelectedPropsChange],
+    );
+
     return {
         toolNodes,
         onToolsChange,

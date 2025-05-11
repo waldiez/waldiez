@@ -2,31 +2,96 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { useCallback, useMemo } from "react";
+
 import { SingleValue } from "@waldiez/components";
 import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
 import { WaldiezChatLlmSummaryMethod, WaldiezEdgeType } from "@waldiez/models";
 
+// Constants moved outside of the component for better performance
+const SUMMARY_ROLE_OPTIONS = [
+    { label: "System", value: "system" },
+    { label: "user_proxy", value: "user_proxy" },
+    { label: "Assistant", value: "assistant" },
+];
+
+const SUMMARY_OPTIONS: { label: string; value: WaldiezChatLlmSummaryMethod }[] = [
+    { label: "None", value: null },
+    { label: "Reflection with LLM", value: "reflectionWithLlm" },
+    { label: "Last Message", value: "lastMsg" },
+];
+
+const EDGE_TYPE_OPTIONS: { label: string; value: WaldiezEdgeType }[] = [
+    { label: "Chat", value: "chat" },
+    { label: "Nested Chat", value: "nested" },
+];
+
+const SUMMARY_METHOD_MAPPING = {
+    reflectionWithLlm: "Reflection with LLM",
+    lastMsg: "Last Message",
+    none: "None",
+};
+
+/**
+ * Custom hook for managing the basic tab of the edge modal
+ */
 export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
     const { data, edgeType, onDataChange } = props;
-    const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onDataChange({ description: e.target.value });
-    };
-    const onLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onDataChange({ label: e.target.value });
-    };
-    const onClearHistoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onDataChange({ clearHistory: e.target.checked });
-    };
-    const onMaxTurnsChange = (value: number | null) => {
-        onDataChange({ maxTurns: value });
-    };
-    const onSummaryMethodChange = (
-        option: SingleValue<{
-            label: string;
-            value: WaldiezChatLlmSummaryMethod;
-        }>,
-    ) => {
-        if (option) {
+
+    /**
+     * Update the edge description
+     */
+    const onDescriptionChange = useCallback(
+        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            onDataChange({ description: e.target.value });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Update the edge label
+     */
+    const onLabelChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ label: e.target.value });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Toggle the clear history option
+     */
+    const onClearHistoryChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ clearHistory: e.target.checked });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Update the maximum number of turns
+     */
+    const onMaxTurnsChange = useCallback(
+        (value: number | null) => {
+            onDataChange({ maxTurns: value });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Update the summary method
+     */
+    const onSummaryMethodChange = useCallback(
+        (
+            option: SingleValue<{
+                label: string;
+                value: WaldiezChatLlmSummaryMethod;
+            }>,
+        ) => {
+            if (!option) {
+                return;
+            }
+
             onDataChange({
                 summary: {
                     method: option.value,
@@ -34,60 +99,96 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
                     args: data.summary.args,
                 },
             });
-        }
-    };
-    const onLlmPromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const currentArgs = data.summary.args;
-        onDataChange({
-            summary: {
-                method: data.summary.method,
-                prompt: e.target.value,
-                args: {
-                    ...currentArgs,
+        },
+        [onDataChange, data.summary.prompt, data.summary.args],
+    );
+
+    /**
+     * Update the LLM prompt for summary
+     */
+    const onLlmPromptChange = useCallback(
+        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            onDataChange({
+                summary: {
+                    method: data.summary.method,
+                    prompt: e.target.value,
+                    args: {
+                        ...data.summary.args,
+                    },
                 },
-            },
-        });
-    };
-    const onLlmSummaryRoleChange = (
-        option: SingleValue<{
-            label: string;
-            value: string;
-        }>,
-    ) => {
-        if (option) {
-            const currentArgs = data.summary.args;
+            });
+        },
+        [onDataChange, data.summary.method, data.summary.args],
+    );
+
+    /**
+     * Update the summary role
+     */
+    const onLlmSummaryRoleChange = useCallback(
+        (
+            option: SingleValue<{
+                label: string;
+                value: string;
+            }>,
+        ) => {
+            if (!option) {
+                return;
+            }
+
             onDataChange({
                 summary: {
                     method: data.summary.method,
                     prompt: data.summary.prompt,
                     args: {
-                        ...currentArgs,
+                        ...data.summary.args,
                         summary_role: option.value,
                     },
                 },
             });
-        }
-    };
-    const getEdgeSummaryLabel = () => {
-        const args = data.summary.args;
+        },
+        [onDataChange, data.summary.method, data.summary.prompt, data.summary.args],
+    );
+
+    /**
+     * Get the formatted summary role label
+     */
+    const getEdgeSummaryLabel = useCallback(() => {
+        const args = data.summary?.args || {};
+
         if ("summary_role" in args && ["system", "user", "assistant"].includes(args.summary_role)) {
             const role = args.summary_role;
             return role[0].toUpperCase() + role.slice(1);
         }
+
         return "System";
-    };
-    const summaryMethodLabel = summaryMethodMapping[data.summary?.method ?? "none"];
-    const summaryRoleValue = data.summary?.args?.summary_role ?? "system";
-    const summaryRoleLabel = getEdgeSummaryLabel();
-    const chatTypeLabel = edgeTypeOptions.find(option => option.value === edgeType)?.label as string;
-    const currentSelectedChatType = {
-        label: chatTypeLabel,
-        value: edgeType as WaldiezEdgeType,
-    };
+    }, [data.summary?.args]);
+
+    // Memoized derived values
+    const summaryMethodLabel = useMemo(
+        () => SUMMARY_METHOD_MAPPING[data.summary?.method ?? "none"],
+        [data.summary?.method],
+    );
+
+    const summaryRoleValue = useMemo(
+        () => data.summary?.args?.summary_role ?? "system",
+        [data.summary?.args?.summary_role],
+    );
+
+    const summaryRoleLabel = useMemo(() => getEdgeSummaryLabel(), [getEdgeSummaryLabel]);
+
+    const currentSelectedChatType = useMemo(() => {
+        const chatTypeLabel = EDGE_TYPE_OPTIONS.find(option => option.value === edgeType)?.label || "Chat";
+
+        return {
+            label: chatTypeLabel,
+            value: edgeType as WaldiezEdgeType,
+        };
+    }, [edgeType]);
+
     return {
-        summaryRoleOptions,
-        summaryOptions,
-        edgeTypeOptions,
+        summaryRoleOptions: SUMMARY_ROLE_OPTIONS,
+        summaryOptions: SUMMARY_OPTIONS,
+        edgeTypeOptions: EDGE_TYPE_OPTIONS,
         summaryMethodLabel,
         summaryRoleValue,
         summaryRoleLabel,
@@ -100,29 +201,4 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
         onLlmPromptChange,
         onLlmSummaryRoleChange,
     };
-};
-const summaryRoleOptions = [
-    { label: "System", value: "system" },
-    { label: "user_proxy", value: "user_proxy" },
-    { label: "Assistant", value: "assistant" },
-];
-const summaryOptions: {
-    label: string;
-    value: WaldiezChatLlmSummaryMethod;
-}[] = [
-    { label: "None", value: null },
-    { label: "Reflection with LLM", value: "reflectionWithLlm" },
-    { label: "Last Message", value: "lastMsg" },
-];
-const edgeTypeOptions: {
-    label: string;
-    value: WaldiezEdgeType;
-}[] = [
-    { label: "Chat", value: "chat" },
-    { label: "Nested Chat", value: "nested" },
-];
-const summaryMethodMapping = {
-    reflectionWithLlm: "Reflection with LLM",
-    lastMsg: "Last Message",
-    none: "None",
 };

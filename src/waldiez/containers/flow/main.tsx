@@ -4,7 +4,7 @@
  */
 import { Background, BackgroundVariant, Controls, ReactFlow, Viewport } from "@xyflow/react";
 
-import { useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import { ExportFlowModal, ImportFlowModal, UserInputModal } from "@waldiez/containers/flow/modals";
@@ -29,13 +29,22 @@ type WaldiezFlowViewProps = {
     skipHub?: boolean;
 };
 
-export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
+/**
+ * Main flow view component for the Waldiez application
+ */
+export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowViewProps) => {
     const { flowId, inputPrompt, onUserInput, skipExport, skipImport, skipHub } = props;
+
+    // Refs
     const rfParent = useRef<HTMLDivElement | null>(null);
     const selectedNodeType = useRef<WaldiezNodeType>("agent");
-    const [selectedNodeTypeToggle, setSelectedNodeTypeToggle] = useState(false);
+
+    // State
+    const [_selectedNodeTypeToggle, setSelectedNodeTypeToggle] = useState(false);
     const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
     const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
+
+    // Get global state from store
     const nodes = useWaldiez(s => s.nodes);
     const edges = useWaldiez(s => s.edges);
     const readOnly = useWaldiez(s => s.isReadOnly);
@@ -47,7 +56,15 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
     const showNodes = useWaldiez(s => s.showNodes);
     const onReconnect = useWaldiez(s => s.onReconnect);
     const onSave = useWaldiez(s => s.onSave);
+
+    // Theme settings
+    const { isDark } = useWaldiezTheme();
+    const colorMode = useMemo(() => (isDark ? "dark" : "light"), [isDark]);
+    const isReadOnly = readOnly === true;
+
+    // Use custom hooks
     const { onKeyDown } = useKeys(flowId, onSave);
+
     const {
         convertToPy,
         convertToIpynb,
@@ -60,33 +77,58 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
         onNodeDoubleClick,
         onEdgeDoubleClick,
     } = useFlowEvents(flowId);
+
+    // Initialize by showing agent nodes
     useEffect(() => {
         showNodes("agent");
-        // setSelectedNodeType("agent");
-    }, []);
-    const { isDark } = useWaldiezTheme();
-    const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
-    const colorMode = isDark ? "dark" : "light";
-    const setSelectedNodeType = (nodeType: WaldiezNodeType) => {
+    }, [showNodes]);
+
+    /**
+     * Change selected node type and update UI
+     */
+    const setSelectedNodeType = useCallback((nodeType: WaldiezNodeType) => {
         selectedNodeType.current = nodeType;
-        setSelectedNodeTypeToggle(!selectedNodeTypeToggle);
-    };
-    const onOpenImportModal = () => {
+        setSelectedNodeTypeToggle(prev => !prev);
+    }, []);
+
+    /**
+     * Open import modal
+     */
+    const onOpenImportModal = useCallback(() => {
         setIsImportModalOpen(true);
-    };
-    const onCloseImportModal = () => {
+    }, []);
+
+    /**
+     * Close import modal
+     */
+    const onCloseImportModal = useCallback(() => {
         setIsImportModalOpen(false);
-    };
-    const onCloseExportModal = () => {
+    }, []);
+
+    /**
+     * Close export modal
+     */
+    const onCloseExportModal = useCallback(() => {
         setIsExportModalOpen(false);
-    };
-    const onTypeShownChange = (nodeType: WaldiezNodeType) => {
-        if (selectedNodeType.current !== nodeType) {
-            setSelectedNodeType(nodeType);
-            showNodes(nodeType);
-        }
-    };
-    const onAddNode = () => {
+    }, []);
+
+    /**
+     * Change node type shown in the view
+     */
+    const onTypeShownChange = useCallback(
+        (nodeType: WaldiezNodeType) => {
+            if (selectedNodeType.current !== nodeType) {
+                setSelectedNodeType(nodeType);
+                showNodes(nodeType);
+            }
+        },
+        [setSelectedNodeType, showNodes],
+    );
+
+    /**
+     * Add a new node based on selected type
+     */
+    const onAddNode = useCallback(() => {
         if (selectedNodeType.current === "model") {
             addModel();
             onFlowChanged();
@@ -94,36 +136,62 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
             addTool();
             onFlowChanged();
         }
-    };
-    const onNewAgent = () => {
-        setTimeout(() => {
+    }, [addModel, addTool, onFlowChanged]);
+
+    /**
+     * Handle new agent added to the flow
+     */
+    const onNewAgent = useCallback(() => {
+        requestAnimationFrame(() => {
             if (selectedNodeType.current !== "agent") {
                 setSelectedNodeType("agent");
                 showNodes("agent");
             }
             onFlowChanged();
-        }, 1);
-    };
-    const onViewportChange = (viewport: Viewport) => {
-        handleViewportChange(viewport, selectedNodeType.current);
-        // onFlowChanged();
-    };
-    const handleExport = async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        // if skip hub, just export/download the flow
-        // else, show a modal with further options
-        if (skipHub) {
-            await onExport(e);
-        } else {
-            setIsExportModalOpen(true);
-        }
-    };
-    const handleExportToHub = () => {
+        });
+    }, [setSelectedNodeType, showNodes, onFlowChanged]);
+
+    /**
+     * Handle viewport changes
+     */
+    const onViewportChange = useCallback(
+        (viewport: Viewport) => {
+            handleViewportChange(viewport, selectedNodeType.current);
+        },
+        [handleViewportChange],
+    );
+
+    /**
+     * Handle export button click
+     */
+    const handleExport = useCallback(
+        async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+            if (skipHub) {
+                await onExport(e);
+            } else {
+                setIsExportModalOpen(true);
+            }
+        },
+        [skipHub, onExport],
+    );
+
+    /**
+     * Export flow for hub upload
+     */
+    const handleExportToHub = useCallback(() => {
         const exported = exportFlow(true, false) as unknown as {
             [key: string]: unknown;
         };
         return JSON.stringify(exported);
-    };
+    }, [exportFlow]);
+
+    // Get drag and drop handlers
     const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
+
+    // Memoize node and edge collections
+    const flowNodes = useMemo(() => nodes, [nodes]);
+    const flowEdges = useMemo(() => edges, [edges]);
+
     return (
         <div
             className={`flow-wrapper ${colorMode}`}
@@ -142,8 +210,8 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                         nodeTypes={nodeTypes}
                         edgeTypes={edgeTypes}
                         onInit={onFlowInit}
-                        nodes={nodes}
-                        edges={edges}
+                        nodes={flowNodes}
+                        edges={flowEdges}
                         onNodesChange={onNodesChange}
                         onEdgesChange={onEdgesChange}
                         deleteKeyCode={[]}
@@ -166,13 +234,6 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                         height={rfParent.current?.clientHeight}
                         onNodeDrag={onNodeDrag}
                         onNodeDragStop={onNodeDragStop}
-                        // fitView={true}
-                        // noPanClassName="no-pan"
-                        // noDragClassName="no-drag"
-                        // nodesDraggable
-                        // zoomOnScroll
-                        // panOnDrag
-                        // debug
                     >
                         <Controls showInteractive={true} />
                         <WaldiezFlowPanels
@@ -193,14 +254,17 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                     </ReactFlow>
                 </div>
             </div>
+
+            {/* Modals */}
             {onUserInput && inputPrompt && (
                 <UserInputModal
                     flowId={flowId}
-                    isOpen={inputPrompt !== null}
+                    isOpen={!!inputPrompt}
                     onUserInput={onUserInput}
                     inputPrompt={inputPrompt}
                 />
             )}
+
             {isImportModalOpen && (
                 <ImportFlowModal
                     flowId={flowId}
@@ -210,6 +274,7 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
                     onTypeShownChange={onTypeShownChange}
                 />
             )}
+
             {isExportModalOpen && (
                 <ExportFlowModal
                     flowId={flowId}
@@ -221,4 +286,7 @@ export const WaldiezFlowView = (props: WaldiezFlowViewProps) => {
             )}
         </div>
     );
-};
+});
+
+// Add display name for better debugging
+WaldiezFlowView.displayName = "WaldiezFlowView";

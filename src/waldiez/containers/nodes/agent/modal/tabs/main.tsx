@@ -196,7 +196,13 @@ export const WaldiezNodeAgentModalTabs = ({
             {!isManager && groupManagers.length > 0 && (
                 <TabItem id={`wf-${flowId}-wa-${id}-group`} label="Group">
                     <div className="modal-tab-body">
-                        <WaldiezAgentGroup id={id} data={data} agents={agents} onDataChange={onDataChange} />
+                        <WaldiezAgentGroup
+                            id={id}
+                            data={data}
+                            agents={agents}
+                            darkMode={isDarkMode}
+                            onDataChange={onDataChange}
+                        />
                     </div>
                 </TabItem>
             )}

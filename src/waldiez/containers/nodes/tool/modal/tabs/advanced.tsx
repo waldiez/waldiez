@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { useMemo } from "react";
+
 import { Dict, StringList } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
@@ -19,10 +21,13 @@ export const WaldiezToolAdvancedTab = (props: WaldiezNodeToolModalProps) => {
         onDeleteTag,
         onTagChange,
     } = useToolNodeModal(props);
-    const requirementsViewLabelInfo = () => (
-        <div>
-            Requirements to <span className="bold italic">pip install</span> for this tool
-        </div>
+    const requirementsViewLabelInfo = useMemo(
+        () => (
+            <div>
+                Requirements to <span className="bold italic">pip install</span> for this tool
+            </div>
+        ),
+        [],
     );
     return (
         <>

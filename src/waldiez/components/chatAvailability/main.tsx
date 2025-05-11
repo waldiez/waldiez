@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Select, SingleValue } from "@waldiez/components/select";
 import { TextInput } from "@waldiez/components/textInput";
-import { ConditionType, WaldiezEdgeData, WaldiezHandoffCondition } from "@waldiez/types";
+import { ConditionType, WaldiezHandoffCondition } from "@waldiez/types";
 
 const conditionTypeMapping: Record<ConditionType, string> = {
     string_context: "Variable check",
@@ -15,99 +15,207 @@ const conditionTypeMapping: Record<ConditionType, string> = {
     expression_context: "Expression check",
 };
 
+// Pre-define options outside component to avoid recreating on every render
+const conditionTypeOptions: { value: ConditionType; label: string }[] = [
+    { value: "string_llm", label: conditionTypeMapping.string_llm },
+    { value: "context_str_llm", label: conditionTypeMapping.context_str_llm },
+    { value: "string_context", label: conditionTypeMapping.string_context },
+    { value: "expression_context", label: conditionTypeMapping.expression_context },
+];
+
+// Types for condition field updates
+type ConditionFieldUpdater = {
+    field: string;
+    handler: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+};
+
 export const ChatAvailability: React.FC<{
-    data: WaldiezEdgeData;
-    onDataChange: (data: Partial<WaldiezEdgeData>) => void;
+    condition: WaldiezHandoffCondition | null;
+    onDataChange: (data: WaldiezHandoffCondition | null) => void;
 }> = props => {
-    const { data, onDataChange } = props;
-    const [enabled, setEnabled] = useState<boolean>(!!data.handoffCondition);
+    const { condition, onDataChange } = props;
+
+    // State
+    const [enabled, setEnabled] = useState<boolean>(!!condition);
     const [currentHandoffCondition, setCurrentHandoffCondition] = useState<WaldiezHandoffCondition | null>(
-        data.handoffCondition,
+        condition,
     );
-    const onHandoffConditionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const isChecked = event.target.checked;
-        setEnabled(isChecked);
-        if (!isChecked) {
-            onDataChange({ handoffCondition: undefined });
-        }
-    };
-    const conditionTypeOptions: { value: ConditionType; label: string }[] = [
-        { value: "string_llm", label: conditionTypeMapping.string_llm },
-        { value: "context_str_llm", label: conditionTypeMapping.context_str_llm },
-        { value: "string_context", label: conditionTypeMapping.string_context },
-        { value: "expression_context", label: conditionTypeMapping.expression_context },
-    ];
-    const onConditionTypeChange = (selectedOption: SingleValue<{ value: ConditionType; label: string }>) => {
-        if (selectedOption) {
-            const selectedConditionType = selectedOption.value;
-            setCurrentHandoffCondition({
-                condition_type: selectedConditionType,
-            } as WaldiezHandoffCondition);
-        } else {
+
+    // Effect to reset condition when disabled
+    useEffect(() => {
+        if (!enabled) {
             setCurrentHandoffCondition(null);
-            onDataChange({ handoffCondition: null });
         }
-    };
-    const onStringLLMPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (currentHandoffCondition?.condition_type === "string_llm") {
-            const prompt = event.target.value;
-            setCurrentHandoffCondition({
+    }, [enabled]);
+
+    // Effect to sync with external condition changes
+    useEffect(() => {
+        if (condition) {
+            setCurrentHandoffCondition(condition);
+            setEnabled(true);
+        } else {
+            setEnabled(false);
+        }
+    }, [condition]);
+
+    // Generic function to update condition fields
+    const updateConditionField = useCallback(
+        (field: string, value: string) => {
+            if (!currentHandoffCondition) {
+                return;
+            }
+
+            const updatedCondition = {
                 ...currentHandoffCondition,
-                prompt,
-            });
-            onDataChange({
-                handoffCondition: {
-                    ...currentHandoffCondition,
-                    prompt,
-                } as WaldiezHandoffCondition,
-            });
+                [field]: value,
+            } as WaldiezHandoffCondition;
+
+            setCurrentHandoffCondition(updatedCondition);
+            onDataChange(updatedCondition);
+        },
+        [currentHandoffCondition, onDataChange],
+    );
+
+    // Event handlers
+    const onHandoffConditionChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const isChecked = event.target.checked;
+            setEnabled(isChecked);
+
+            if (!isChecked) {
+                setCurrentHandoffCondition(null);
+                onDataChange(null);
+            }
+        },
+        [onDataChange],
+    );
+
+    const onConditionTypeChange = useCallback(
+        (selectedOption: SingleValue<{ value: ConditionType; label: string }>) => {
+            if (selectedOption) {
+                const selectedConditionType = selectedOption.value;
+                const newCondition = {
+                    condition_type: selectedConditionType,
+                } as WaldiezHandoffCondition;
+
+                setCurrentHandoffCondition(newCondition);
+                onDataChange(newCondition);
+            } else {
+                setCurrentHandoffCondition(null);
+                onDataChange(null);
+            }
+        },
+        [onDataChange],
+    );
+
+    // Field updaters for each condition type
+    const fieldUpdaters = useMemo<Record<ConditionType, ConditionFieldUpdater>>(
+        () => ({
+            string_llm: {
+                field: "prompt",
+                handler: e => updateConditionField("prompt", e.target.value),
+            },
+            context_str_llm: {
+                field: "context_str",
+                handler: e => updateConditionField("context_str", e.target.value),
+            },
+            string_context: {
+                field: "variable_name",
+                handler: e => updateConditionField("variable_name", e.target.value),
+            },
+            expression_context: {
+                field: "expression",
+                handler: e => updateConditionField("expression", e.target.value),
+            },
+        }),
+        [updateConditionField],
+    );
+
+    // Memoized selected condition type option
+    const selectedTypeOption = useMemo(
+        () =>
+            currentHandoffCondition?.condition_type
+                ? {
+                      label: conditionTypeMapping[currentHandoffCondition.condition_type],
+                      value: currentHandoffCondition.condition_type,
+                  }
+                : null,
+        [currentHandoffCondition?.condition_type],
+    );
+
+    // Helper function to render the appropriate input field based on condition type
+    const renderConditionInput = useCallback(() => {
+        if (!currentHandoffCondition?.condition_type) {
+            return null;
         }
-    };
-    const onVariableNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (currentHandoffCondition?.condition_type === "string_context") {
-            const variableName = event.target.value;
-            setCurrentHandoffCondition({
-                ...currentHandoffCondition,
-                variable_name: variableName,
-            });
-            onDataChange({
-                handoffCondition: {
-                    ...currentHandoffCondition,
-                    variable_name: variableName,
-                } as WaldiezHandoffCondition,
-            });
+
+        const conditionType = currentHandoffCondition.condition_type;
+        const updater = fieldUpdaters[conditionType];
+
+        switch (conditionType) {
+            case "string_llm":
+                return (
+                    <div className="margin-top-10">
+                        <label>LLM Prompt:</label>
+                        <div className="margin-top-5" />
+                        <textarea
+                            rows={2}
+                            title="LLM Prompt"
+                            placeholder="Enter the LLM prompt"
+                            value={currentHandoffCondition.prompt || ""}
+                            onChange={updater.handler}
+                            data-testid="llm-prompt-input"
+                        />
+                    </div>
+                );
+            case "context_str_llm":
+                return (
+                    <div className="margin-top-10">
+                        <label>Prompt:</label>
+                        <textarea
+                            rows={2}
+                            className="margin-top-5"
+                            title="Prompt"
+                            placeholder="Enter the prompt to evaluate"
+                            value={currentHandoffCondition.context_str || ""}
+                            onChange={updater.handler}
+                            data-testid="context-llm-prompt-input"
+                        />
+                    </div>
+                );
+            case "string_context":
+                return (
+                    <div className="margin-top-10">
+                        <TextInput
+                            label="Variable Name:"
+                            className="margin-top-5"
+                            placeholder="Enter the variable name to check"
+                            value={currentHandoffCondition.variable_name || ""}
+                            onChange={updater.handler}
+                            dataTestId="variable-name-input"
+                        />
+                    </div>
+                );
+            case "expression_context":
+                return (
+                    <div className="margin-top-10">
+                        <label>Expression:</label>
+                        <textarea
+                            rows={2}
+                            className="margin-top-5"
+                            title="Expression"
+                            placeholder="Enter the expression to evaluate"
+                            value={currentHandoffCondition.expression || ""}
+                            onChange={updater.handler}
+                            data-testid="expression-input"
+                        />
+                    </div>
+                );
+            default:
+                return null;
         }
-    };
-    const onExpressionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (currentHandoffCondition?.condition_type === "expression_context") {
-            const expression = event.target.value;
-            setCurrentHandoffCondition({
-                ...currentHandoffCondition,
-                expression,
-            });
-            onDataChange({
-                handoffCondition: {
-                    ...currentHandoffCondition,
-                    expression,
-                } as WaldiezHandoffCondition,
-            });
-        }
-    };
-    const onContextStrLLMPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (currentHandoffCondition?.condition_type === "context_str_llm") {
-            const contextStr = event.target.value;
-            setCurrentHandoffCondition({
-                ...currentHandoffCondition,
-                context_str: contextStr,
-            });
-            onDataChange({
-                handoffCondition: {
-                    ...currentHandoffCondition,
-                    context_str: contextStr,
-                } as WaldiezHandoffCondition,
-            });
-        }
-    };
+    }, [currentHandoffCondition, fieldUpdaters]);
+
     return (
         <div className="flex-column">
             <div className="info margin-bottom-5">
@@ -180,7 +288,7 @@ export const ChatAvailability: React.FC<{
                         type="checkbox"
                         checked={enabled}
                         onChange={onHandoffConditionChange}
-                        data-testid={"availability-enabled-checkbox"}
+                        data-testid="availability-enabled-checkbox"
                     />
                     <div className="checkbox"></div>
                 </label>
@@ -190,73 +298,13 @@ export const ChatAvailability: React.FC<{
                     <label className="hidden" htmlFor="select-condition-type" />
                     <Select
                         options={conditionTypeOptions}
-                        value={
-                            currentHandoffCondition?.condition_type
-                                ? {
-                                      label: conditionTypeMapping[currentHandoffCondition.condition_type],
-                                      value: currentHandoffCondition.condition_type,
-                                  }
-                                : null
-                        }
+                        value={selectedTypeOption}
                         onChange={onConditionTypeChange}
                         inputId="select-condition-type"
                         className="flex-1 margin-right-10"
                         isClearable
                     />
-                    {currentHandoffCondition?.condition_type === "string_llm" && (
-                        <div className="margin-top-10">
-                            <label>LLM Prompt:</label>
-                            <div className="margin-top-5" />
-                            <textarea
-                                rows={2}
-                                title="LLM Prompt"
-                                placeholder="Enter the LLM prompt"
-                                value={currentHandoffCondition.prompt}
-                                onChange={onStringLLMPromptChange}
-                                data-testid={"llm-prompt-input"}
-                            />
-                        </div>
-                    )}
-                    {currentHandoffCondition?.condition_type === "context_str_llm" && (
-                        <div className="margin-top-10">
-                            <label>Prompt:</label>
-                            <textarea
-                                rows={2}
-                                className="margin-top-5"
-                                title="Prompt"
-                                placeholder="Enter the prompt to evaluate"
-                                value={currentHandoffCondition.context_str}
-                                onChange={onContextStrLLMPromptChange}
-                                data-testid={"context-llm-prompt-input"}
-                            />
-                        </div>
-                    )}
-                    {currentHandoffCondition?.condition_type === "string_context" && (
-                        <div className="margin-top-10">
-                            <TextInput
-                                label={"Variable Name:"}
-                                className="margin-top-5"
-                                placeholder="Enter the variable name to check"
-                                value={currentHandoffCondition.variable_name}
-                                onChange={onVariableNameChange}
-                                dataTestId={"variable-name-input"}
-                            />
-                        </div>
-                    )}
-                    {currentHandoffCondition?.condition_type === "expression_context" && (
-                        <div className="margin-top-10">
-                            <label>Expression:</label>
-                            <textarea
-                                rows={2}
-                                className="margin-top-5"
-                                title="Expression"
-                                placeholder="Enter the expression to evaluate"
-                                value={currentHandoffCondition.expression}
-                                onChange={onExpressionChange}
-                                data-testid={"expression-input"}
-                            />
-                        </div>
-                    )}
+                    {renderConditionInput()}
                 </div>
             )}
         </div>

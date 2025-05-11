@@ -57,7 +57,7 @@ describe("Groups tab", () => {
         });
         goToGroupsTab();
         // select the group to join
-        const groupSelect = screen.getByLabelText("Group");
+        const groupSelect = screen.getByLabelText("Select Group");
         expect(groupSelect).toBeInTheDocument();
         selectEvent.openMenu(groupSelect);
         await selectEvent.select(groupSelect, "Group 2");
@@ -89,7 +89,7 @@ describe("Groups tab", () => {
         expect(leaveGroupButton).toBeInTheDocument();
         fireEvent.click(leaveGroupButton);
         // select the group to join
-        const groupSelect = screen.getByLabelText("Group");
+        const groupSelect = screen.getByLabelText("Select Group");
         expect(groupSelect).toBeInTheDocument();
         selectEvent.openMenu(groupSelect);
         await selectEvent.select(groupSelect, "Group 2");

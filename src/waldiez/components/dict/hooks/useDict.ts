@@ -2,86 +2,132 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { DictProps } from "@waldiez/components/dict/types";
 
+/**
+ * Custom hook for managing dictionary-like key-value pairs
+ */
 export const useDict = (props: DictProps) => {
     const { items, onUpdate, onDelete, onAdd, allowEmptyValues } = props;
-    const [visible, setVisible] = useState<{ [key: string]: boolean }>({});
-    // tmp state to save on submit, discard on cancel
+
+    // State for visibility toggle of values
+    const [visible, setVisible] = useState<Record<string, boolean>>({});
+
+    // State for items (key-value pairs)
     const [stateItems, setStateItems] = useState<[string, unknown][]>(Object.entries(items));
+
+    // State for new entry being added
     const [newEntry, setNewEntry] = useState<{ key: string; value: string }>({
         key: "",
         value: "",
     });
+
+    // Sync with props when items change
     useEffect(() => {
         setStateItems(Object.entries(items));
     }, [items]);
-    const onKeyChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-        setStateItems(
-            stateItems.map(([key, value], idx) => {
-                if (idx === index) {
-                    return [event.target.value, value];
-                }
-                return [key, value];
-            }),
+
+    // Handle key change for existing entry
+    const onKeyChange = useCallback((index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        const newKey = event.target.value;
+
+        setStateItems(prevItems =>
+            prevItems.map(([key, value], idx) => (idx === index ? [newKey, value] : [key, value])),
         );
-    };
-    const onValueChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-        setStateItems(
-            stateItems.map(([key, value], idx) => {
-                if (idx === index) {
-                    return [key, event.target.value];
-                }
-                return [key, value];
-            }),
+    }, []);
+
+    // Handle value change for existing entry
+    const onValueChange = useCallback((index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+
+        setStateItems(prevItems =>
+            prevItems.map(([key, value], idx) => (idx === index ? [key, newValue] : [key, value])),
         );
-    };
-    const onVisibilityChange = (key: string) => {
-        setVisible({
-            ...visible,
-            [key]: !visible[key],
-        });
-    };
-    const onAddEntry = () => {
+    }, []);
+
+    // Toggle visibility of a value
+    const onVisibilityChange = useCallback((key: string) => {
+        setVisible(prev => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    }, []);
+
+    // Add a new entry
+    const onAddEntry = useCallback(() => {
+        // Validate entry
         if (!newEntry.key) {
             return;
         }
+
         if (!allowEmptyValues && !newEntry.value) {
             return;
         }
+
+        // Update parent component
         onAdd(newEntry.key, newEntry.value);
+
+        // Update local state
+        setStateItems(prev => [...prev, [newEntry.key, newEntry.value]]);
+
+        // Reset new entry form
         setNewEntry({ key: "", value: "" });
-        setStateItems([...stateItems, [newEntry.key, newEntry.value]]);
-    };
-    const onNewEntryKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNewEntry({ ...newEntry, key: event.target.value });
-    };
-    const onNewEntryValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNewEntry({ ...newEntry, value: event.target.value });
-    };
-    const onDeleteEntry = (key: string) => {
-        onDelete(key);
-        setStateItems(stateItems.filter(([k]) => k !== key));
-    };
-    const onSaveEntry = () => {
-        const itemsToSend: { [key: string]: unknown } = {};
-        stateItems.forEach(([key, value]) => {
-            itemsToSend[key] = value;
-        });
+    }, [newEntry, allowEmptyValues, onAdd]);
+
+    // Handle key change for new entry
+    const onNewEntryKeyChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const newKey = event.target.value;
+        setNewEntry(prev => ({ ...prev, key: newKey }));
+    }, []);
+
+    // Handle value change for new entry
+    const onNewEntryValueChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        setNewEntry(prev => ({ ...prev, value: newValue }));
+    }, []);
+
+    // Delete an existing entry
+    const onDeleteEntry = useCallback(
+        (key: string) => {
+            // Update parent component
+            onDelete(key);
+
+            // Update local state
+            setStateItems(prev => prev.filter(([k]) => k !== key));
+        },
+        [onDelete],
+    );
+
+    // Save all changes
+    const onSaveEntry = useCallback(() => {
+        const itemsToSend = stateItems.reduce<Record<string, unknown>>((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+        }, {});
+
         onUpdate(itemsToSend);
-    };
-    const isDirty = (index: number) => {
-        if (index >= stateItems.length) {
-            return true;
-        }
-        const [key, value] = stateItems[index];
-        if (!(key in items)) {
-            return true;
-        }
-        return items[key] !== value;
-    };
+    }, [stateItems, onUpdate]);
+
+    // Check if an entry has been modified
+    const isDirty = useCallback(
+        (index: number) => {
+            if (index >= stateItems.length) {
+                return true;
+            }
+
+            const [key, value] = stateItems[index];
+
+            if (!(key in items)) {
+                return true;
+            }
+
+            return items[key] !== value;
+        },
+        [stateItems, items],
+    );
+
     return {
         stateItems,
         newEntry,
