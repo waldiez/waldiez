@@ -467,6 +467,9 @@
         "WaldiezAgentHandoff": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "llm_conditions": {
                     "type": "array",
                     "items": {
@@ -486,6 +489,7 @@
                     "type": "object"
                 }
             },
+            "required": ["id"],
             "additionalProperties": false,
             "description": "Waldiez agent handoff A handoff that can be triggered by LLM or context conditions."
         },

@@ -2,7 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Nested Chat."""
 
-
 from pydantic import Field
 from typing_extensions import Annotated
 

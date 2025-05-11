@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Handoff class."""
 
+import uuid
 from typing import Any, Optional, Union
 
 from pydantic import Field
@@ -209,6 +210,13 @@ class WaldiezOnContextCondition(WaldiezBase):
 class WaldiezAgentHandoff(WaldiezBase):
     """Handoff class for Waldiez agents."""
 
+    id: Annotated[
+        str,
+        Field(
+            default_factory=lambda: uuid.uuid4().hex,
+            description=("A unique identifier for the handoff. "),
+        ),
+    ]
     llm_conditions: Optional[list[WaldiezOnCondition]] = None
     context_conditions: Optional[list[WaldiezOnContextCondition]] = None
     after_work: Optional[WaldiezTransitionTarget] = None

@@ -2,7 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Tool model."""
 
-
 from pydantic import Field
 from typing_extensions import Annotated
 
