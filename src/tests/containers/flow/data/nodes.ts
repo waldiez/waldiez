@@ -107,7 +107,7 @@ const agentNodes: Node[] = edges.map((_, index) => {
         agentData.data.retrieveConfig = defaultRetrieveConfig;
     }
     if (agentType === "reasoning") {
-        agentData.data.reasoningConfig = defaultReasonConfig;
+        agentData.data.reasonConfig = defaultReasonConfig;
     }
     if (agentType === "captain") {
         agentData.data.toolLib = "default";

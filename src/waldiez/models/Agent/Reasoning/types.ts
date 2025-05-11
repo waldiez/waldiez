@@ -6,15 +6,15 @@ import { Node } from "@xyflow/react";
 
 import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
 
-export type ReasoningConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
-export type ReasoningConfigAnswerApproach = "pool" | "best";
+export type reasonConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
+export type reasonConfigAnswerApproach = "pool" | "best";
 export type WaldiezReasoningAgentReasonConfig = {
-    method: ReasoningConfigMethod;
+    method: reasonConfigMethod;
     maxDepth: number;
     forestSize: number;
     ratingScale: number;
     beamSize: number;
-    answerApproach: ReasoningConfigAnswerApproach;
+    answerApproach: reasonConfigAnswerApproach;
     nsim: number;
     explorationConstant: number;
 };

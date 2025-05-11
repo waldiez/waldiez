@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.exporting.base.BaseExporter."""
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, Optional, Tuple, Union
 
 import pytest
 
@@ -32,12 +32,12 @@ class DummyExporter(BaseExporter):
 
     def get_before_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Get before export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The before export.
         """
         # we expect an error here

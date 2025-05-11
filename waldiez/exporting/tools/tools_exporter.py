@@ -11,7 +11,7 @@ export_tools
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -33,10 +33,10 @@ class ToolsExporter(BaseExporter, ExporterMixin):
     def __init__(
         self,
         flow_name: str,
-        agents: List[WaldiezAgent],
-        agent_names: Dict[str, str],
-        tools: List[WaldiezTool],
-        tool_names: Dict[str, str],
+        agents: list[WaldiezAgent],
+        agent_names: dict[str, str],
+        tools: list[WaldiezTool],
+        tool_names: dict[str, str],
         output_dir: Optional[Union[str, Path]] = None,
     ) -> None:
         """Initialize the tool exporter.
@@ -45,13 +45,13 @@ class ToolsExporter(BaseExporter, ExporterMixin):
         ----------
         flow_name : str
             The name of the flow.
-        agents : List[WaldiezAgent]
+        agents : list[WaldiezAgent]
             The agents.
-        agent_names : Dict[str, str]
+        agent_names : dict[str, str]
             The agent names.
-        tools : List[WaldiezTool]
+        tools : list[WaldiezTool]
             The tools.
-        tool_names : Dict[str, str]
+        tool_names : dict[str, str]
             The tool names.
         output_dir : Optional[Union[str, Path]], optional
             The output directory if any, by default None
@@ -71,17 +71,17 @@ class ToolsExporter(BaseExporter, ExporterMixin):
             )
         )
 
-    def get_environment_variables(self) -> List[Tuple[str, str]]:
+    def get_environment_variables(self) -> list[Tuple[str, str]]:
         """Get the environment variables to set.
 
         Returns
         -------
-        List[Tuple[str, str]]
+        list[Tuple[str, str]]
             The environment variables to set.
         """
         return self.tool_secrets
 
-    def get_imports(self) -> List[Tuple[str, ImportPosition]]:
+    def get_imports(self) -> list[Tuple[str, ImportPosition]]:
         """Generate the imports string.
 
         Returns
@@ -89,7 +89,7 @@ class ToolsExporter(BaseExporter, ExporterMixin):
         Tuple[str, int]
             The exported imports and the position of the imports.
         """
-        imports: List[Tuple[str, ImportPosition]] = []
+        imports: list[Tuple[str, ImportPosition]] = []
         if not self.tool_imports:
             return imports
         # standard imports
@@ -105,12 +105,12 @@ class ToolsExporter(BaseExporter, ExporterMixin):
 
     def get_before_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content before the main export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content before the main export and its position.
         """
 
@@ -126,15 +126,15 @@ class ToolsExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content after the main export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content after the main export and its position.
         """
-        agent_registrations: List[
+        agent_registrations: list[
             Tuple[str, Union[ExportPosition, AgentPosition]]
         ] = []
         for agent in self.agents:

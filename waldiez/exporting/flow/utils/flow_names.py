@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Ensure unique names for agents, models, tools, and chats."""
 
-from typing import Callable, Dict, List, TypedDict
+from typing import Callable, TypedDict
 
 from waldiez.models import (
     Waldiez,
@@ -16,21 +16,21 @@ from waldiez.models import (
 class ResultType(TypedDict):
     """The result type for ensure_unique_names."""
 
-    agent_names: Dict[str, str]
-    model_names: Dict[str, str]
-    tool_names: Dict[str, str]
-    chat_names: Dict[str, str]
-    agents: List[WaldiezAgent]
-    models: List[WaldiezModel]
-    tools: List[WaldiezTool]
-    chats: List[WaldiezChat]
+    agent_names: dict[str, str]
+    model_names: dict[str, str]
+    tool_names: dict[str, str]
+    chat_names: dict[str, str]
+    agents: list[WaldiezAgent]
+    models: list[WaldiezModel]
+    tools: list[WaldiezTool]
+    chats: list[WaldiezChat]
     flow_name: str
 
 
 # pylint: disable=too-many-locals
 def ensure_unique_names(
     waldiez: Waldiez,
-    get_valid_instance_name: Callable[..., Dict[str, str]],
+    get_valid_instance_name: Callable[..., dict[str, str]],
     max_length: int = 46,
     flow_name_max_length: int = 20,
 ) -> ResultType:
@@ -40,7 +40,7 @@ def ensure_unique_names(
     ----------
     waldiez : Waldiez
         The Waldiez instance.
-    get_valid_instance_name : Callable[..., Dict[str, str]]
+    get_valid_instance_name : Callable[..., dict[str, str]]
         The function to get a valid instance name.
     max_length : int, optional
         The maximum length of the name, by default 64
@@ -52,15 +52,15 @@ def ensure_unique_names(
     ResultType
         The result with unique names for agents, models, tools, chats, flow.
     """
-    all_names: Dict[str, str] = {}
-    agent_names: Dict[str, str] = {}
-    model_names: Dict[str, str] = {}
-    tool_names: Dict[str, str] = {}
-    chat_names: Dict[str, str] = {}
-    agents: List[WaldiezAgent] = []
-    models: List[WaldiezModel] = []
-    tools: List[WaldiezTool] = []
-    chats: List[WaldiezChat] = []
+    all_names: dict[str, str] = {}
+    agent_names: dict[str, str] = {}
+    model_names: dict[str, str] = {}
+    tool_names: dict[str, str] = {}
+    chat_names: dict[str, str] = {}
+    agents: list[WaldiezAgent] = []
+    models: list[WaldiezModel] = []
+    tools: list[WaldiezTool] = []
+    chats: list[WaldiezChat] = []
 
     for agent in waldiez.agents:
         all_names = get_valid_instance_name(

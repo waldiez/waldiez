@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Reasoning agent data model."""
 
-from typing import Any, Dict
+from typing import Any
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -137,16 +137,16 @@ class WaldiezReasoningAgentData(WaldiezAgentData):
         """
         return self.reason_config.nsim
 
-    def get_reasoning_config(self) -> Dict[str, Any]:
+    def get_reasoning_config(self) -> dict[str, Any]:
         """Get the reasoning configuration based on the reason_config method.
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The reasoning configuration.
 
         """
-        reason_dict: Dict[str, Any] = {
+        reason_dict: dict[str, Any] = {
             "method": self.reason_config.method,
             "max_depth": self.reason_config.max_depth,
             "forest_size": self.reason_config.forest_size,

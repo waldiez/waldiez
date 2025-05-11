@@ -3,7 +3,7 @@
 # pylint: disable=too-many-locals
 """Nested chats exporting."""
 
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 from waldiez.models import (
     WaldiezAgent,
@@ -17,9 +17,9 @@ from .common import update_summary_chat_args
 
 def export_nested_chat_registration(
     agent: WaldiezAgent,
-    all_chats: List[WaldiezChat],
-    chat_names: Dict[str, str],
-    agent_names: Dict[str, str],
+    all_chats: list[WaldiezChat],
+    chat_names: dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     is_async: bool,
@@ -30,11 +30,11 @@ def export_nested_chat_registration(
     ----------
     agent : WaldiezAgent
         The agent.
-    all_chats : List[WaldiezChat]
+    all_chats : list[WaldiezChat]
         All the chats in the flow.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         The chat names.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         The agent names.
     serializer : Callable[..., str]
         The serializer to use to escape quotes in a string.
@@ -100,7 +100,7 @@ def export_nested_chat_registration(
 
 def get_nested_chat_trigger_agent_names(
     nested_chat: WaldiezAgentNestedChat,
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
 ) -> str:
     """Get the trigger agent names for the nested chat.
 
@@ -108,7 +108,7 @@ def get_nested_chat_trigger_agent_names(
     ----------
     nested_chat : WaldiezAgentNestedChat
         The nested chat.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
 
     Returns
@@ -126,8 +126,8 @@ def get_nested_chat_message_string(
     waldiez_chat: WaldiezChat,
     message: WaldiezAgentNestedChatMessage,
     agent: WaldiezAgent,
-    agent_names: Dict[str, str],
-    chat_names: Dict[str, str],
+    agent_names: dict[str, str],
+    chat_names: dict[str, str],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
 ) -> Tuple[str, Optional[str]]:
@@ -141,9 +141,9 @@ def get_nested_chat_message_string(
         The message.
     agent : WaldiezAgent
         The agent.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
     serializer : Callable[..., str]
         The function to serialize the chat arguments.
@@ -195,12 +195,12 @@ def get_nested_chat_message_string(
 def get_nested_chat_queue(
     nested_chat: WaldiezAgentNestedChat,
     agent: WaldiezAgent,
-    agent_names: Dict[str, str],
-    chat_names: Dict[str, str],
-    all_chats: List[WaldiezChat],
+    agent_names: dict[str, str],
+    chat_names: dict[str, str],
+    all_chats: list[WaldiezChat],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
-) -> Tuple[str, List[str]]:
+) -> Tuple[str, list[str]]:
     """Get the nested chat queue.
 
     Parameters
@@ -209,11 +209,11 @@ def get_nested_chat_queue(
         The nested chat.
     agent : WaldiezAgent
         The agent.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
-    all_chats : List[WaldiezChat]
+    all_chats : list[WaldiezChat]
         All the chats in the flow.
     serializer : Callable[..., str]
         The serializer to use to escape quotes in a string.
@@ -222,7 +222,7 @@ def get_nested_chat_queue(
 
     Returns
     -------
-    Tuple[str, List[str]]
+    Tuple[str, list[str]]
         The nested chat queue and the methods to include
         (methods: message string and method name if the message is a method).
     """
@@ -251,7 +251,7 @@ def get_nested_chat_queue(
 def get_chat_nested_string(
     chat: WaldiezChat,
     is_reply: bool,
-    chat_names: Dict[str, str],
+    chat_names: dict[str, str],
     string_escape: Callable[[str], str],
 ) -> Tuple[str, Optional[str]]:
     """Get the nested chat message.
@@ -262,7 +262,7 @@ def get_chat_nested_string(
         The chat.
     is_reply : bool
         Whether to use the nested chat's reply message or not.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
     string_escape : Callable[[str], str]
         The function to escape the string.

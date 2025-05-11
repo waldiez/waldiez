@@ -8,6 +8,7 @@ import {
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
+    WaldiezAgentUpdateSystemMessage,
     WaldiezNodeAgentType,
 } from "@waldiez/models/Agent/Common";
 import {
@@ -143,8 +144,8 @@ export const getMaximumConsecutiveAutoReply = (data: Record<string, unknown>): n
     return null;
 };
 
-export const getModelId = (data: Record<string, unknown>): string | null | undefined => {
-    let modelId: string | null | undefined = null;
+export const getModelId = (data: Record<string, unknown>): string | null => {
+    let modelId: string | null = null;
     if ("modelId" in data && typeof data.modelId === "string") {
         modelId = data.modelId;
     }
@@ -238,6 +239,50 @@ export const getHandoffs = (data: Record<string, unknown>): WaldiezAgentHandoff[
                 "context_conditions" in handoff &&
                 Array.isArray(handoff.context_conditions),
         ) as WaldiezAgentHandoff[];
+    }
+    return [];
+};
+
+export const getUpdateAgentStateBeforeReply = (
+    data: Record<string, unknown>,
+): WaldiezAgentUpdateSystemMessage[] => {
+    if (
+        "updateAgentStateBeforeReply" in data &&
+        typeof data.updateAgentStateBeforeReply === "object" &&
+        data.updateAgentStateBeforeReply
+    ) {
+        if ("type" in data.updateAgentStateBeforeReply && "content" in data.updateAgentStateBeforeReply) {
+            if (
+                typeof data.updateAgentStateBeforeReply.type === "string" &&
+                typeof data.updateAgentStateBeforeReply.content === "string"
+            ) {
+                if (data.updateAgentStateBeforeReply.type === "string") {
+                    return [
+                        {
+                            type: "string",
+                            content: data.updateAgentStateBeforeReply.content,
+                        },
+                    ];
+                } else if (data.updateAgentStateBeforeReply.type === "callable") {
+                    return [
+                        {
+                            type: "callable",
+                            content: data.updateAgentStateBeforeReply.content,
+                        },
+                    ];
+                }
+            }
+        } else if (Array.isArray(data.updateAgentStateBeforeReply)) {
+            return data.updateAgentStateBeforeReply.filter(
+                (update: any) =>
+                    typeof update === "object" &&
+                    update &&
+                    "type" in update &&
+                    typeof update.type === "string" &&
+                    "content" in update &&
+                    typeof update.content === "string",
+            ) as WaldiezAgentUpdateSystemMessage[];
+        }
     }
     return [];
 };

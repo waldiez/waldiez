@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """RAG User related exporting utils."""
 
-from typing import Callable, Dict, List, Set, Tuple, Union
+from typing import Callable, Set, Tuple, Union
 
 from waldiez.models import (
     WaldiezAgent,
@@ -17,7 +17,7 @@ from .vector_db import get_rag_user_vector_db_string
 def get_rag_user_extras(
     agent: WaldiezAgent,
     agent_name: str,
-    model_names: Dict[str, str],
+    model_names: dict[str, str],
     path_resolver: Callable[[str], str],
     serializer: Callable[..., str],
 ) -> Tuple[str, str, Set[str]]:
@@ -29,7 +29,7 @@ def get_rag_user_extras(
         The agent.
     agent_name : str
         The agent's name.
-    model_names : Dict[str, str]
+    model_names : dict[str, str]
         A mapping from model id to model name.
     path_resolver : Callable[[str], str]
         The path resolver function.
@@ -67,7 +67,7 @@ def get_rag_user_extras(
 def get_rag_user_retrieve_config_str(
     agent: WaldiezRagUserProxy,
     agent_name: str,
-    model_names: Dict[str, str],
+    model_names: dict[str, str],
     path_resolver: Callable[[str], str],
     serializer: Callable[..., str],
 ) -> Tuple[str, str, Set[str]]:
@@ -79,7 +79,7 @@ def get_rag_user_retrieve_config_str(
         The agent.
     agent_name : str
         The agent's name.
-    model_names : Dict[str, str]
+    model_names : dict[str, str]
         A mapping from model id to model name.
     path_resolver : Callable[[str], str]
         The path resolver function.
@@ -145,7 +145,7 @@ def get_rag_user_retrieve_config_str(
 def _get_model_arg(
     agent: WaldiezRagUserProxy,
     retrieve_config: WaldiezRagUserProxyRetrieveConfig,
-    model_names: Dict[str, str],
+    model_names: dict[str, str],
 ) -> str:  # pragma: no cover
     if agent.data.model_id:
         model_name = model_names[agent.data.model_id]
@@ -161,11 +161,11 @@ def _get_model_arg(
 def _get_args_dict(
     agent: WaldiezRagUserProxy,
     retrieve_config: WaldiezRagUserProxyRetrieveConfig,
-    model_names: Dict[str, str],
+    model_names: dict[str, str],
     path_resolver: Callable[[str], str],
-) -> Dict[str, Union[str, List[str]]]:
+) -> dict[str, Union[str, list[str]]]:
     model_arg = _get_model_arg(agent, retrieve_config, model_names)
-    args_dict: Dict[str, Union[str, List[str]]] = {
+    args_dict: dict[str, Union[str, list[str]]] = {
         "task": retrieve_config.task,
         "model": model_arg,
     }
@@ -180,7 +180,7 @@ def _get_args_dict(
         if arg_value is not None:
             args_dict[arg] = arg_value
             args_dict[arg] = getattr(retrieve_config, arg)
-    docs_path: Union[str, List[str]] = []
+    docs_path: Union[str, list[str]] = []
     if retrieve_config.docs_path:
         doc_paths = (
             retrieve_config.docs_path

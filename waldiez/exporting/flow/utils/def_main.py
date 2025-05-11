@@ -39,7 +39,7 @@ def get_def_main(
     content = ""
     if is_async:
         content += "async "
-    content += "def main() -> Union[ChatResult, List[ChatResult], Dict[int, ChatResult]]:\n"
+    content += "def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:\n"
     content += '    """Start chatting."""\n'
     content += f"    with Cache.disk(cache_seed={cache_seed}" + ") as cache:\n"
     content += f"{flow_chats}" + "\n"
@@ -54,7 +54,7 @@ def get_def_main(
     else:
         content += "def call_main() -> None:\n"
     content += '    """Run the main function and print the results."""\n'
-    content += "    results: Union[ChatResult, List[ChatResult], Dict[int, ChatResult]] = "
+    content += "    results: Union[ChatResult, list[ChatResult], dict[int, ChatResult]] = "
     if is_async:
         content += "await "
     content += "main()\n"

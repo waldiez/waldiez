@@ -3,7 +3,7 @@
 """Waldiez model model."""
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -11,7 +11,7 @@ from typing_extensions import Annotated, Literal
 from ..common import WaldiezBase, now
 from .model_data import WaldiezModelAPIType, WaldiezModelData
 
-DEFAULT_BASE_URLS: Dict[WaldiezModelAPIType, str] = {
+DEFAULT_BASE_URLS: dict[WaldiezModelAPIType, str] = {
     "deepseek": "https://api.deepseek.com/v1",
     "google": "https://generativelanguage.googleapis.com/v1beta",
     "anthropic": "https://api.anthropic.com/v1",
@@ -24,7 +24,7 @@ DEFAULT_BASE_URLS: Dict[WaldiezModelAPIType, str] = {
 
 
 # we can omit the base_url for these models
-MODEL_NEEDS_BASE_URL: Dict[WaldiezModelAPIType, bool] = {
+MODEL_NEEDS_BASE_URL: dict[WaldiezModelAPIType, bool] = {
     "openai": False,
     "azure": False,
     "google": False,
@@ -50,9 +50,9 @@ class WaldiezModel(WaldiezBase):
         The name of the model.
     description : str
         The description of the model.
-    tags : List[str]
+    tags : list[str]
         The tags of the model.
-    requirements : List[str]
+    requirements : list[str]
         The requirements of the model.
     created_at : str
         The date and time when the model was created.
@@ -86,7 +86,7 @@ class WaldiezModel(WaldiezBase):
         ),
     ]
     tags: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Tags",
@@ -94,7 +94,7 @@ class WaldiezModel(WaldiezBase):
         ),
     ]
     requirements: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Requirements",
@@ -175,7 +175,7 @@ class WaldiezModel(WaldiezBase):
         return api_key or "REPLACE_ME"
 
     @property
-    def price(self) -> Optional[List[float]]:
+    def price(self) -> Optional[list[float]]:
         """Get the model's price."""
         if self.data.price is None:
             return None
@@ -188,7 +188,7 @@ class WaldiezModel(WaldiezBase):
             ]
         return None
 
-    def get_llm_config(self, skip_price: bool = False) -> Dict[str, Any]:
+    def get_llm_config(self, skip_price: bool = False) -> dict[str, Any]:
         """Get the model's llm config.
 
         Parameters
@@ -198,7 +198,7 @@ class WaldiezModel(WaldiezBase):
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The model's llm config dictionary.
         """
         # noinspection PyDictCreation
@@ -226,20 +226,20 @@ class WaldiezModel(WaldiezBase):
 
 
 def set_default_base_url(
-    llm_config: Dict[str, Any], api_type: WaldiezModelAPIType
-) -> Dict[str, Any]:
+    llm_config: dict[str, Any], api_type: WaldiezModelAPIType
+) -> dict[str, Any]:
     """Set the default base url if not provided.
 
     Parameters
     ----------
-    llm_config : Dict[str, Any]
+    llm_config : dict[str, Any]
         The llm config dictionary.
     api_type : str
         The api type.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The llm config dictionary with the default base url set.
     """
     dict_copy = llm_config.copy()

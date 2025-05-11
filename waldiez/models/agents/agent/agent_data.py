@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common data structures for agents."""
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import ConfigDict, Field
 from pydantic.alias_generators import to_camel
@@ -14,8 +14,11 @@ from .handoff import WaldiezAgentHandoff
 from .linked_tool import WaldiezAgentLinkedTool
 from .nested_chat import WaldiezAgentNestedChat
 from .termination_message import WaldiezAgentTerminationMessage
+from .update_system_message import WaldiezAgentUpdateSystemMessage
 
 
+# noqa: E501
+# pylint: disable=line-too-long
 class WaldiezAgentData(WaldiezBase):
     """Waldiez Agent Data.
 
@@ -36,16 +39,21 @@ class WaldiezAgentData(WaldiezBase):
         The message termination check to use (keyword, method, none)
     model_id: Optional[str]
         The id of the model to link with the agent.
-    tools : List[WaldiezAgentLinkedTool]
+    tools : list[WaldiezAgentLinkedTool]
         A list of tools (id and executor) to register.
-    nested_chats : List[WaldiezAgentNestedChat]
+    nested_chats : list[WaldiezAgentNestedChat]
         A list of nested chats (triggered_by, messages), to register.
-    context_variables : Optional[Dict[str, Any]]
+    context_variables : Optional[dict[str, Any]]
         Context variables that provide a persistent context
         for the agent. Note: This will be a reference to a shared
         context for multi-agent chats. Behaves like a dictionary
         with keys and values (akin to dict[str, Any]).
-    handoffs : List[WaldiezAgentHandoff]
+    update_agent_state_before_reply : list[str |WaldiezAgentUpdateSystemMessage]
+        A list of functions, including UpdateSystemMessage,
+        called to update the agent's state before it replies.
+        Each function is called when the agent is selected
+        and before it speaks.
+    handoffs : list[WaldiezAgentHandoff]
         A list of handoffs (conditions, targets) to register.
     """
 
@@ -134,7 +142,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ] = None
     tools: Annotated[
-        List[WaldiezAgentLinkedTool],
+        list[WaldiezAgentLinkedTool],
         Field(
             default_factory=list,
             title="Tools",
@@ -142,7 +150,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ]
     nested_chats: Annotated[
-        List[WaldiezAgentNestedChat],
+        list[WaldiezAgentNestedChat],
         Field(
             default_factory=list,
             description=(
@@ -152,7 +160,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ]
     context_variables: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Field(
             default_factory=dict,
             title="Context variables",
@@ -166,12 +174,27 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ] = None
     handoffs: Annotated[
-        List[WaldiezAgentHandoff],
+        list[WaldiezAgentHandoff],
         Field(
             default_factory=list,
             title="Handoffs",
             description=(
                 "A list of handoffs (conditions, targets) to register."
             ),
+        ),
+    ] = []
+    update_agent_state_before_reply: Annotated[
+        list[Union[str, WaldiezAgentUpdateSystemMessage]],
+        Field(
+            title="Update Agent State Before Reply",
+            alias="updateAgentStateBeforeReply",
+            description=(
+                "A list of functions, including UpdateSystemMessage,"
+                "called to update the agent's state before it replies. "
+                " Each function is called when the agent is selected "
+                "and before it speaks. If not an UpdateSystemMessage, "
+                "it should be a skill id."
+            ),
+            default_factory=list,
         ),
     ] = []

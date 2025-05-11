@@ -173,7 +173,7 @@ A custom function to split a string into a list of strings. The default function
 #    chunk_mode: str = "multi_lines",
 #    must_break_at_empty_line: bool = True,
 #    overlap: int = 0,  # number of overlapping lines
-# ) -> List[str]:
+# ) -> list[str]:
 #    return text.split("\\n")
 #
 def custom_text_split_function(

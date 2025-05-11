@@ -15,14 +15,14 @@ def get_tools_extra_requirements(
 
     Parameters
     ----------
-    tools : List[WaldiezTool]
+    tools : list[WaldiezTool]
         The tools.
     autogen_version : str
         The ag2 version.
 
     Returns
     -------
-    List[str]
+    list[str]
         The tools extra requirements.
     """
     tool_requirements: Set[str] = set()

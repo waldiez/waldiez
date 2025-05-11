@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useWaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats/hooks";
-import { WaldiezAgentNestedChatsMessages } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats/messages";
-import { WaldiezAgentNestedChatsTriggers } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats/triggers";
-import { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats/types";
+import { useWaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested/hooks";
+import { WaldiezAgentNestedChatsMessages } from "@waldiez/containers/nodes/agent/modal/tabs/nested/messages";
+import { WaldiezAgentNestedChatsTriggers } from "@waldiez/containers/nodes/agent/modal/tabs/nested/triggers";
+import { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nested/types";
 
 export const WaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) => {
     const { id } = props;

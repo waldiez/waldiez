@@ -5,7 +5,7 @@
 import { useState } from "react";
 
 import { MultiValue, SingleValue } from "@waldiez/components";
-import { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats/types";
+import { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nested/types";
 import { WaldiezAgentNestedChat, WaldiezEdge } from "@waldiez/models";
 
 export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) => {
@@ -19,8 +19,8 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
         isReply: boolean;
     } | null>(null);
     const [selectedTriggers, setSelectedTriggers] = useState(chat.triggeredBy);
-    const sources = agentConnections.source;
-    const targets = agentConnections.target;
+    const sources = agentConnections.sources;
+    const targets = agentConnections.targets;
     const allNodes = [...new Map([...sources.nodes, ...targets.nodes].map(node => [node.id, node])).values()];
     const allEdges = sources.edges.concat(targets.edges);
     const triggerSelectOptions = allNodes.map(node => {

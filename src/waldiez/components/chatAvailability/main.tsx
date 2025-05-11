@@ -24,7 +24,6 @@ export const ChatAvailability: React.FC<{
     const [currentHandoffCondition, setCurrentHandoffCondition] = useState<WaldiezHandoffCondition | null>(
         data.handoffCondition,
     );
-    // const [selectedConditionType, setSelectedConditionType] = useState<ConditionType | null>(null);
     const onHandoffConditionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
         setEnabled(isChecked);
@@ -32,20 +31,18 @@ export const ChatAvailability: React.FC<{
             onDataChange({ handoffCondition: undefined });
         }
     };
-    const conditionOptions: { value: ConditionType; label: string }[] = [
+    const conditionTypeOptions: { value: ConditionType; label: string }[] = [
         { value: "string_llm", label: conditionTypeMapping.string_llm },
         { value: "context_str_llm", label: conditionTypeMapping.context_str_llm },
         { value: "string_context", label: conditionTypeMapping.string_context },
         { value: "expression_context", label: conditionTypeMapping.expression_context },
     ];
-    const onConditionChange = (selectedOption: SingleValue<{ value: ConditionType; label: string }>) => {
+    const onConditionTypeChange = (selectedOption: SingleValue<{ value: ConditionType; label: string }>) => {
         if (selectedOption) {
             const selectedConditionType = selectedOption.value;
             setCurrentHandoffCondition({
                 condition_type: selectedConditionType,
             } as WaldiezHandoffCondition);
-            // setSelectedConditionType(selectedOption.value);
-            // onDataChange({ handoffCondition: selectedOption.value });
         } else {
             setCurrentHandoffCondition(null);
             onDataChange({ handoffCondition: null });
@@ -190,9 +187,9 @@ export const ChatAvailability: React.FC<{
             </div>
             {enabled && (
                 <div className="flex-column margin-top-10">
-                    <label className="hidden" htmlFor="select-condition-category" />
+                    <label className="hidden" htmlFor="select-condition-type" />
                     <Select
-                        options={conditionOptions}
+                        options={conditionTypeOptions}
                         value={
                             currentHandoffCondition?.condition_type
                                 ? {
@@ -201,8 +198,8 @@ export const ChatAvailability: React.FC<{
                                   }
                                 : null
                         }
-                        onChange={onConditionChange}
-                        inputId="select-condition-category"
+                        onChange={onConditionTypeChange}
+                        inputId="select-condition-type"
                         className="flex-1 margin-right-10"
                         isClearable
                     />

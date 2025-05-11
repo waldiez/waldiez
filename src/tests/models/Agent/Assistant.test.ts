@@ -82,6 +82,7 @@ describe("WaldiezAgentAssistant", () => {
                 },
             ],
             contextVariables: {},
+            updateAgentStateBeforeReply: [],
             handoffs: [],
             isMultimodal: false,
         });

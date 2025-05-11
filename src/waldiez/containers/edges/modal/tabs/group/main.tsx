@@ -5,13 +5,13 @@
 import { TextInput } from "@waldiez/components";
 import { WaldiezEdgeData } from "@waldiez/models";
 
-type WaldiezEdgeGroupCommonTabProps = {
+type WaldiezEdgeGroupTabProps = {
     data: WaldiezEdgeData;
     edgeId: string;
     onDataChange: (data: Partial<WaldiezEdgeData>) => void;
 };
 
-export const WaldiezEdgeGroupCommonTab: React.FC<WaldiezEdgeGroupCommonTabProps> = props => {
+export const WaldiezEdgeGroupTab: React.FC<WaldiezEdgeGroupTabProps> = props => {
     const { data, edgeId, onDataChange } = props;
     const onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newLabel = event.target.value;

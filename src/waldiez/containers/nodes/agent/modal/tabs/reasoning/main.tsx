@@ -6,14 +6,14 @@ import { useState } from "react";
 
 import { InfoCheckbox, NumberInput, Select, SingleValue } from "@waldiez/components";
 import { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
-import { ReasoningConfigMethod } from "@waldiez/models";
+import { reasonConfigMethod } from "@waldiez/models";
 
 export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
     const { id, data, onDataChange } = props;
     const [localData, setLocalData] = useState(data);
 
     const reasoningMethodOptions: {
-        value: ReasoningConfigMethod;
+        value: reasonConfigMethod;
         label: string;
     }[] = [
         { value: "beam_search", label: "Beam Search" },
@@ -76,9 +76,7 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
         }
     };
 
-    const onReasoningMethodChange = (
-        option: SingleValue<{ value: ReasoningConfigMethod; label: string }>,
-    ) => {
+    const onReasoningMethodChange = (option: SingleValue<{ value: reasonConfigMethod; label: string }>) => {
         if (option) {
             onChange({
                 reasonConfig: {

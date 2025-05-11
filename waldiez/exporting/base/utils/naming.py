@@ -13,7 +13,7 @@ get_escaped_string
 """
 
 import re
-from typing import Dict, Tuple
+from typing import Tuple
 
 MAX_VARIABLE_LENGTH = 46
 
@@ -78,10 +78,10 @@ def get_valid_python_variable_name(
 
 def get_valid_instance_name(
     instance: Tuple[str, str],
-    current_names: Dict[str, str],
+    current_names: dict[str, str],
     prefix: str = "w",
     max_length: int = MAX_VARIABLE_LENGTH,
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """Get a valid instance name.
 
     If the instance id is already in the current names nothing is done.
@@ -92,7 +92,7 @@ def get_valid_instance_name(
     ----------
     instance : Tuple[str, str]
         The instance id and possible name.
-    current_names : Dict[str, str]
+    current_names : dict[str, str]
         The current names.
     prefix : str, optional
         The prefix to use if the name starts with a digit,
@@ -103,7 +103,7 @@ def get_valid_instance_name(
 
     Returns
     -------
-    Dict[str, str]
+    dict[str, str]
         The updated names.
     """
     instance_id, possible_name = instance[0], instance[1][:max_length]

@@ -4,7 +4,7 @@
 """Export agents."""
 
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Optional, Tuple, Union
 
 from waldiez.models import WaldiezAgent, WaldiezChat, WaldiezModel
 
@@ -32,13 +32,13 @@ class AgentExporter(BaseExporter, ExporterMixin):
     def __init__(
         self,
         agent: WaldiezAgent,
-        agent_names: Dict[str, str],
-        models: Tuple[List[WaldiezModel], Dict[str, str]],
-        chats: Tuple[List[WaldiezChat], Dict[str, str]],
-        tool_names: Dict[str, str],
+        agent_names: dict[str, str],
+        models: Tuple[list[WaldiezModel], dict[str, str]],
+        chats: Tuple[list[WaldiezChat], dict[str, str]],
+        tool_names: dict[str, str],
         is_async: bool,
         for_notebook: bool,
-        arguments_resolver: Callable[[WaldiezAgent], List[str]],
+        arguments_resolver: Callable[[WaldiezAgent], list[str]],
         output_dir: Optional[Union[str, Path]] = None,
     ) -> None:
         """Initialize the agents exporter.
@@ -47,13 +47,13 @@ class AgentExporter(BaseExporter, ExporterMixin):
         ----------
         agent : WaldiezAgent
             The agent to export.
-        agent_names : Dict[str, str]
+        agent_names : dict[str, str]
             The agent ids to names mapping.
-        models : Tuple[List[WaldiezModel], Dict[str, str]]
+        models : Tuple[list[WaldiezModel], dict[str, str]]
             All the models and the model ids to names mapping.
-        chats : Tuple[List[WaldiezChat], Dict[str, str]]
+        chats : Tuple[list[WaldiezChat], dict[str, str]]
             All the chats and the chat ids to names mapping.
-        tool_names : Dict[str, str]
+        tool_names : dict[str, str]
             The tool ids to names mapping.
         is_async : bool
             Whether the whole flow is async.
@@ -105,7 +105,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
             output_dir=self.output_dir,
         )
 
-    def get_imports(self) -> Optional[List[Tuple[str, ImportPosition]]]:
+    def get_imports(self) -> Optional[list[Tuple[str, ImportPosition]]]:
         """Get the imports.
 
         Returns
@@ -145,12 +145,12 @@ class AgentExporter(BaseExporter, ExporterMixin):
 
     def get_before_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content before the main export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content before the main export and its position.
         """
         before_agent_string = ""
@@ -171,12 +171,12 @@ class AgentExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content after the main export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content after the main export and its position.
         """
         after_agent_string = ""

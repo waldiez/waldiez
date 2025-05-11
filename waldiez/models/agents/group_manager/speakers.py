@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Group chat speakers."""
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -67,13 +67,13 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         Max retries for selecting a speaker.
     selection_mode : WaldiezGroupManagerSpeakersSelectionMode
         Selection mode.
-    allow_repeat : Union[bool, List[str]]
+    allow_repeat : Union[bool, list[str]]
         Allow repeat.
-    allowed_or_disallowed_transitions : Dict[str, List[str]]
+    allowed_or_disallowed_transitions : dict[str, list[str]]
         Allowed or disallowed transitions.
     transitions_type : WaldiezGroupManagerSpeakersTransitionsType
         The type of transition rules to use if
-        if a mapping (agent => List[agents]) is used:
+        if a mapping (agent => list[agents]) is used:
         `allowed` (default) or `disallowed`
     custom_method_string : Optional[str]
         The custom method string.
@@ -136,7 +136,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         ),
     ]
     allow_repeat: Annotated[
-        Union[bool, List[str]],
+        Union[bool, list[str]],
         Field(
             True,
             title="Allow repeat",
@@ -148,12 +148,12 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         ),
     ]
     allowed_or_disallowed_transitions: Annotated[
-        Dict[str, List[str]],
+        dict[str, list[str]],
         Field(
             default_factory=dict,
             title="Allowed or disallowed transitions",
             description=(
-                "A mapping (agent.id => List[agent.ids])"
+                "A mapping (agent.id => list[agent.ids])"
                 "with the allowed or disallowed transitions."
             ),
             alias="allowedOrDisallowedTransitions",
@@ -166,7 +166,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             title="Transitions type",
             description=(
                 "The type of transition rules to use if "
-                "if a mapping (agent => List[agents]) is used: "
+                "if a mapping (agent => list[agents]) is used: "
                 "`allowed` (default) or `disallowed`"
             ),
             alias="transitionsType",

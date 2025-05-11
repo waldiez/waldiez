@@ -3,7 +3,7 @@
 """Group chat manager agent."""
 
 import warnings
-from typing import List, Literal
+from typing import Literal
 
 from pydantic import Field, field_validator
 from typing_extensions import Annotated
@@ -29,7 +29,7 @@ class WaldiezGroupManager(WaldiezAgent):
 
     Functions
     ---------
-    validate_transitions(agent_ids: List[str])
+    validate_transitions(agent_ids: list[str])
         Validate the transitions.
     """
 
@@ -92,14 +92,14 @@ class WaldiezGroupManager(WaldiezAgent):
             )
         return "group_manager"
 
-    def validate_initial_agent_id(self, all_agent_ids: List[str]) -> None:
+    def validate_initial_agent_id(self, all_agent_ids: list[str]) -> None:
         """Validate the initial agent ID.
 
         The initial agent ID must be in the list of agent IDs.
 
         Parameters
         ----------
-        all_agent_ids : List[str]
+        all_agent_ids : list[str]
             The list of agent IDs.
 
         Raises
@@ -114,7 +114,7 @@ class WaldiezGroupManager(WaldiezAgent):
                 f"is not in the list of agent IDs: {all_agent_ids}"
             )
 
-    def validate_transitions(self, agent_ids: List[str]) -> None:
+    def validate_transitions(self, agent_ids: list[str]) -> None:
         """Validate the transitions.
 
         If the selection mode is `transition`:
@@ -126,7 +126,7 @@ class WaldiezGroupManager(WaldiezAgent):
 
         Parameters
         ----------
-        agent_ids : List[str]
+        agent_ids : list[str]
             The list of agent IDs.
 
         Raises

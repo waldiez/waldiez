@@ -5,7 +5,7 @@
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Tuple, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -36,9 +36,9 @@ class WaldiezTool(WaldiezBase):
         The name of the tool.
     description : str
         The description of the tool.
-    tags : List[str]
+    tags : list[str]
         The tags of the tool.
-    requirements : List[str]
+    requirements : list[str]
         The requirements of the tool.
     created_at : str
         The date and time when the tool was created.
@@ -71,7 +71,7 @@ class WaldiezTool(WaldiezBase):
         ),
     ]
     tags: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Tags",
             description="The tags of the tool.",
@@ -79,7 +79,7 @@ class WaldiezTool(WaldiezBase):
         ),
     ]
     requirements: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Requirements",
             description="The requirements of the tool.",
@@ -108,12 +108,12 @@ class WaldiezTool(WaldiezBase):
     ]
 
     @staticmethod
-    def load(data_or_path: Union[str, Path, Dict[str, Any]]) -> "WaldiezTool":
+    def load(data_or_path: Union[str, Path, dict[str, Any]]) -> "WaldiezTool":
         """Load a tool from a read-only file.
 
         Parameters
         ----------
-        data_or_path : Union[str, Path, Dict[str, Any]]
+        data_or_path : Union[str, Path, dict[str, Any]]
             The path to the read-only file or the loaded data.
 
         Returns
@@ -155,14 +155,14 @@ class WaldiezTool(WaldiezBase):
         """
         return self.data.tool_type
 
-    _tool_imports: Tuple[List[str], List[str]] = ([], [])
+    _tool_imports: Tuple[list[str], list[str]] = ([], [])
 
-    def get_imports(self) -> Tuple[List[str], List[str]]:
+    def get_imports(self) -> Tuple[list[str], list[str]]:
         """Get the tool imports.
 
         Returns
         -------
-        Tuple[List[str], List[str]]
+        Tuple[list[str], list[str]]
             The builtin and external imports.
         """
         return self._tool_imports
@@ -296,6 +296,6 @@ class WaldiezTool(WaldiezBase):
         return self.data.content
 
     @property
-    def secrets(self) -> Dict[str, str]:
+    def secrets(self) -> dict[str, str]:
         """Get the secrets (environment variables) of the tool."""
         return self.data.secrets or {}

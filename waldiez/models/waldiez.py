@@ -10,7 +10,7 @@ definitions and their optional additional tools to be used.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Iterator, Optional, Tuple, Union
 
 from .agents import WaldiezAgent, get_retrievechat_extra_requirements
 from .chat import WaldiezChat
@@ -32,18 +32,18 @@ class Waldiez:
     @classmethod
     def from_dict(
         cls,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         flow_id: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        requirements: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
+        requirements: Optional[list[str]] = None,
     ) -> "Waldiez":
         """Create a Waldiez from dict.
 
         Parameters
         ----------
-        data : Dict[str, Any]
+        data : dict[str, Any]
             The data.
         flow_id : Optional[str], optional
             The flow id, by default None (retrieved from data or generated).
@@ -51,9 +51,9 @@ class Waldiez:
             The name, by default None (retrieved from data).
         description : Optional[str], optional
             The description, by default None (retrieved from data).
-        tags : Optional[List[str]], optional
+        tags : Optional[list[str]], optional
             The tags, by default None (retrieved from data).
-        requirements : Optional[List[str]], optional
+        requirements : Optional[list[str]], optional
             The requirements, by default None (retrieved from data).
 
         Returns
@@ -77,8 +77,8 @@ class Waldiez:
         waldiez_file: Union[str, Path],
         name: Optional[str] = None,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        requirements: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
+        requirements: Optional[list[str]] = None,
     ) -> "Waldiez":
         """Load a Waldiez from a file.
 
@@ -90,9 +90,9 @@ class Waldiez:
             The name, by default None.
         description : Optional[str], optional
             The description, by default None.
-        tags : Optional[List[str]], optional
+        tags : Optional[list[str]], optional
             The tags, by default None.
-        requirements : Optional[List[str]], optional
+        requirements : Optional[list[str]], optional
             The requirements, by default None.
 
         Returns
@@ -105,7 +105,7 @@ class Waldiez:
         ValueError
             If the file is not found or invalid JSON.
         """
-        data: Dict[str, Any] = {}
+        data: dict[str, Any] = {}
         if not Path(waldiez_file).exists():
             raise ValueError(f"File not found: {waldiez_file}")
         with open(waldiez_file, "r", encoding="utf-8") as file:
@@ -163,7 +163,7 @@ class Waldiez:
         return any(agent.agent_type == "captain" for agent in self.agents)
 
     @property
-    def chats(self) -> List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    def chats(self) -> list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
         """Get the chats."""
         return self.flow.ordered_flow
 
@@ -211,7 +211,7 @@ class Waldiez:
         return self.flow.description or "Waldiez Flow description"
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         """Get the flow tags."""
         return self.flow.tags
 
@@ -231,7 +231,7 @@ class Waldiez:
         return self.flow.is_single_agent_mode
 
     @property
-    def requirements(self) -> List[str]:
+    def requirements(self) -> list[str]:
         """Get the flow requirements."""
         autogen_version = get_autogen_version()
         requirements_list = filter(
@@ -283,15 +283,15 @@ class Waldiez:
         )
         return sorted(requirements)
 
-    def get_flow_env_vars(self) -> List[Tuple[str, str]]:
+    def get_flow_env_vars(self) -> list[Tuple[str, str]]:
         """Get the flow environment variables.
 
         Returns
         -------
-        List[Tuple[str, str]]
+        list[Tuple[str, str]]
             The environment variables for the flow.
         """
-        env_vars: List[Tuple[str, str]] = []
+        env_vars: list[Tuple[str, str]] = []
         for tool in self.tools:
             for secret_key, secret_value in tool.secrets.items():
                 env_vars.append((secret_key, secret_value))

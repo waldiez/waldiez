@@ -82,8 +82,8 @@ export const useWaldiezNodeAgentModal = (
             sourcesOnly: false,
             targetsOnly: false,
         });
-        const sourceEdges = agentConnections.source.edges;
-        const targetEdges = agentConnections.target.edges;
+        const sourceEdges = agentConnections.sources.edges;
+        const targetEdges = agentConnections.targets.edges;
         const newLabel = agentData.label;
         const oldLabel = data.label;
         sourceEdges.forEach(sourceEdge => {
@@ -159,7 +159,7 @@ export const useWaldiezNodeAgentModal = (
         const agentConnections = getAgentConnections(id, {
             targetsOnly: true,
         });
-        agentConnections.target.edges.forEach(edge => {
+        agentConnections.targets.edges.forEach(edge => {
             updateEdgePath(edge.id, newAgentType);
         });
     };

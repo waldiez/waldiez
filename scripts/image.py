@@ -9,7 +9,6 @@ import shutil
 import subprocess  # nosemgrep # nosec
 import sys
 from pathlib import Path
-from typing import List
 
 try:
     from dotenv import load_dotenv
@@ -108,12 +107,12 @@ def get_container_cmd() -> str:
     return "docker"
 
 
-def run_command(command: List[str]) -> None:
+def run_command(command: list[str]) -> None:
     """Run a command.
 
     Parameters
     ----------
-    command : List[str]
+    command : list[str]
         The command to run.
 
     Raises
@@ -141,7 +140,7 @@ def build_image(
     image_platform: str,
     container_command: str,
     no_cache: bool,
-    build_args: List[str],
+    build_args: list[str],
 ) -> None:
     """Build the container image.
 
@@ -159,7 +158,7 @@ def build_image(
         The container command to use.
     no_cache : bool
         Do not use cache when building the image.
-    build_args : List[str]
+    build_args : list[str]
         Build arguments.
 
     Raises

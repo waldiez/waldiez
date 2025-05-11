@@ -16,11 +16,11 @@ NESTED_CHAT_ARGS = ["recipient", "messages", "sender", "config"]
 NESTED_CHAT_TYPES = (
     [
         "ConversableAgent",
-        "List[Dict[str, Any]]",
+        "list[dict[str, Any]]",
         "ConversableAgent",
-        "Dict[str, Any]",
+        "dict[str, Any]",
     ],
-    "Union[Dict[str, Any], str]",
+    "Union[dict[str, Any], str]",
 )
 
 
@@ -120,18 +120,21 @@ class WaldiezChatNested(WaldiezBase):
         ]:
             attr_value = getattr(self, attr)
             if attr_value is not None:
-                setattr(self, content_attr, attr_value.content_body)
-                if attr_value.type == "none":
-                    setattr(self, content_attr, "")
-                elif attr_value.type == "string":
-                    setattr(self, content_attr, attr_value.content)
-                elif attr_value.type == "method":
-                    setattr(
-                        self,
-                        content_attr,
-                        attr_value.validate_method(
-                            function_name=function_name,
-                            function_args=NESTED_CHAT_ARGS,
-                        ),
-                    )
+                if isinstance(attr_value, WaldiezChatMessage):
+                    setattr(self, content_attr, attr_value.content_body)
+                    if attr_value.type == "none":
+                        setattr(self, content_attr, "")
+                    elif attr_value.type == "string":
+                        setattr(self, content_attr, attr_value.content)
+                    elif attr_value.type == "method":
+                        setattr(
+                            self,
+                            content_attr,
+                            attr_value.validate_method(
+                                function_name=function_name,
+                                function_args=NESTED_CHAT_ARGS,
+                            ),
+                        )
+            elif isinstance(attr_value, str):
+                setattr(self, content_attr, attr_value)
         return self

@@ -11,7 +11,7 @@ export_tools
 """
 
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Optional, Tuple, Union
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -107,10 +107,10 @@ def _write_tool_secrets(
 
 def export_tools(
     flow_name: str,
-    tools: List[WaldiezTool],
-    tool_names: Dict[str, str],
+    tools: list[WaldiezTool],
+    tool_names: dict[str, str],
     output_dir: Optional[Union[str, Path]] = None,
-) -> Tuple[Tuple[List[str], List[str], List[str]], List[Tuple[str, str]], str]:
+) -> Tuple[Tuple[list[str], list[str], list[str]], list[Tuple[str, str]], str]:
     """Get the tools' contents and secrets.
 
     If `output_dir` is provided, the contents are saved to that directory.
@@ -119,22 +119,22 @@ def export_tools(
     ----------
     flow_name : str
         The name of the flow.
-    tools : List[WaldiezTool]
+    tools : list[WaldiezTool]
         The tools.
-    tool_names : Dict[str, str]
+    tool_names : dict[str, str]
         The tool names.
     output_dir : Optional[Union[str, Path]]
         The output directory to save the tools to.
 
     Returns
     -------
-    Tuple[Tuple[List[str], List[str], List[str]], List[Tuple[str, str]], str]
+    Tuple[Tuple[list[str], list[str], list[str]], list[Tuple[str, str]], str]
         - The tool imports to use in the main file.
         - The tool secrets to set as environment variables.
         - The tools contents.
     """
-    tool_imports: Tuple[List[str], List[str], List[str]] = ([], [], [])
-    tool_secrets: List[Tuple[str, str]] = []
+    tool_imports: Tuple[list[str], list[str], list[str]] = ([], [], [])
+    tool_secrets: list[Tuple[str, str]] = []
     tool_contents: str = ""
     # if the tool.is_shared,
     # its contents must be first (before the other tools)
@@ -179,7 +179,7 @@ def export_tools(
 
 def _add_interop_extras(
     tool: WaldiezTool,
-    tool_names: Dict[str, str],
+    tool_names: dict[str, str],
 ) -> str:
     """Add the interop conversion.
 
@@ -187,7 +187,7 @@ def _add_interop_extras(
     ----------
     tool : WaldiezTool
         The tool
-    tool_names : Dict[str, str]
+    tool_names : dict[str, str]
         The tool names.
 
     Returns
@@ -207,18 +207,18 @@ def _add_interop_extras(
 
 
 def _sort_imports(
-    tool_imports: Tuple[List[str], List[str], List[str]],
-) -> Tuple[List[str], List[str], List[str]]:
+    tool_imports: Tuple[list[str], list[str], list[str]],
+) -> Tuple[list[str], list[str], list[str]]:
     """Sort the imports.
 
     Parameters
     ----------
-    tool_imports : Tuple[List[str], List[str], List[str]]
+    tool_imports : Tuple[list[str], list[str], list[str]]
         The tool imports.
 
     Returns
     -------
-    Tuple[List[str], List[str], List[str]]
+    Tuple[list[str], list[str], list[str]]
         The sorted tool imports.
     """
     # "from x import y" and "import z"
@@ -270,9 +270,9 @@ def get_tool_secrets_import(flow_name: str, tool: WaldiezTool) -> str:
 
 def get_agent_tool_registrations(
     agent: WaldiezAgent,
-    agent_names: Dict[str, str],
-    all_tools: List[WaldiezTool],
-    tool_names: Dict[str, str],
+    agent_names: dict[str, str],
+    all_tools: list[WaldiezTool],
+    tool_names: dict[str, str],
     string_escape: Callable[[str], str],
 ) -> str:
     r"""Get the agent tool registrations.
@@ -326,11 +326,11 @@ def get_agent_tool_registrations(
     ----------
     agent : WaldiezAgent
         The agent.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
-    all_tools : List[WaldiezTool]
+    all_tools : list[WaldiezTool]
         All the tools in the flow.
-    tool_names : Dict[str, str]
+    tool_names : dict[str, str]
         A mapping of tool id to tool name.
     string_escape : Callable[[str], str]
         The string escape function.

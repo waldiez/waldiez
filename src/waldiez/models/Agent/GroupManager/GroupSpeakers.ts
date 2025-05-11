@@ -8,6 +8,16 @@ import {
     GroupChatSpeakerTransitionsType,
 } from "@waldiez/models/Agent/GroupManager/types";
 
+export const defaultGroupChatSpeakers = {
+    selectionMethod: "auto" as GroupChatSpeakerSelectionMethodOption,
+    selectionCustomMethod: "",
+    maxRetriesForSelecting: null,
+    selectionMode: "repeat" as GroupChatSpeakerSelectionMode,
+    allowRepeat: true,
+    allowedOrDisallowedTransitions: {},
+    transitionsType: "allowed" as GroupChatSpeakerTransitionsType,
+};
+
 export class WaldiezAgentGroupManagerSpeakers {
     selectionMethod: GroupChatSpeakerSelectionMethodOption;
     selectionCustomMethod: string;

@@ -5,7 +5,7 @@
 """The vector db config for the RAG user agent."""
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
@@ -36,7 +36,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
     wait_until_document_ready : Optional[float]
         Blocking call to wait until the database documents are ready (if `mongodb` is used).
         None, the default, means no wait.
-    metadata : Optional[Dict[str, Any]]
+    metadata : Optional[dict[str, Any]]
         The metadata to use for the vector db.
         Example: {"hnsw:space": "ip", "hnsw:construction_ef": 30, "hnsw:M": 32}
 
@@ -125,7 +125,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         ),
     ]
     metadata: Annotated[
-        Optional[Dict[str, Any]],
+        Optional[dict[str, Any]],
         Field(
             None,
             title="Metadata",

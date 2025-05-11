@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Reasoning agent model."""
 
-from typing import Any, Dict
+from typing import Any
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -32,7 +32,7 @@ class WaldiezReasoningAgent(WaldiezAgent):
         ),
     ]
 
-    def get_reasoning_config(self) -> Dict[str, Any]:
+    def get_reasoning_config(self) -> dict[str, Any]:
         """Get the reasoning configuration based on its method.
 
         Returns

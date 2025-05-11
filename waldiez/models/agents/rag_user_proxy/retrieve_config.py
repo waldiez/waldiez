@@ -4,7 +4,7 @@
 
 import os
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -18,7 +18,7 @@ WaldiezRagUserProxyVectorDb = Literal["chroma", "pgvector", "mongodb", "qdrant"]
 """Possible vector dbs for the retrieve chat."""
 WaldiezRagUserProxyChunkMode = Literal["multi_lines", "one_line"]
 """Possible chunk modes for the retrieve chat."""
-WaldiezRagUserProxyModels: Dict[WaldiezRagUserProxyVectorDb, str] = {
+WaldiezRagUserProxyModels: dict[WaldiezRagUserProxyVectorDb, str] = {
     "chroma": "all-MiniLM-L6-v2",
     "mongodb": "all-MiniLM-L6-v2",
     "pgvector": "all-MiniLM-L6-v2",
@@ -26,8 +26,8 @@ WaldiezRagUserProxyModels: Dict[WaldiezRagUserProxyVectorDb, str] = {
 }
 
 CUSTOM_EMBEDDING_FUNCTION = "custom_embedding_function"
-CUSTOM_EMBEDDING_FUNCTION_ARGS: List[str] = []
-CUSTOM_EMBEDDING_FUNCTION_TYPES: Tuple[List[str], str] = (
+CUSTOM_EMBEDDING_FUNCTION_ARGS: list[str] = []
+CUSTOM_EMBEDDING_FUNCTION_TYPES: Tuple[list[str], str] = (
     [],
     "Callable[..., Any]",
 )
@@ -48,7 +48,7 @@ CUSTOM_TEXT_SPLIT_FUNCTION_ARGS = [
 ]
 CUSTOM_TEXT_SPLIT_FUNCTION_TYPES = (
     ["str", "int", "str", "bool", "int"],
-    "List[str]",
+    "list[str]",
 )
 NOT_LOCAL = (
     "http://",
@@ -74,7 +74,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         The vector db for the retrieve chat.
     db_config : Annotated[WaldiezVectorDbConfig, Field]
         The config for the selected vector db.
-    docs_path : Optional[Union[str, List[str]]]
+    docs_path : Optional[Union[str, list[str]]]
         The path to the docs directory. It can also be the path to a single
         file, the url to a single file or a list of directories, files and
         urls. Default is None, which works only if the collection is already
@@ -147,7 +147,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         A custom function to split a string into a list of strings. Default is
         None, will use the default function in autogen.retrieve_utils.
         split_text_to_chunks.
-    custom_text_types : Optional[List[str]]
+    custom_text_types : Optional[list[str]]
         A list of file types to be processed. Default is autogen.retrieve_utils.
         TEXT_FORMATS. This only applies to files under the directories in
         docs_path. Explicitly included files and urls will be chunked
@@ -211,7 +211,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     docs_path: Annotated[
-        Optional[Union[str, List[str]]],
+        Optional[Union[str, list[str]]],
         Field(
             default=None,
             title="Docs Path",
@@ -447,7 +447,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     custom_text_types: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         Field(
             default=None,
             title="Custom Text Types",
@@ -721,7 +721,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
             if isinstance(self.docs_path, str)
             else self.docs_path
         )
-        paths: List[str] = []
+        paths: list[str] = []
         for path in doc_paths:
             resolved = path
             is_remote, is_raw = is_remote_path(resolved)

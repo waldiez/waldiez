@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get the standard imports for the flow exporter."""
 
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from waldiez.exporting.base import ImportPosition
 
@@ -39,17 +39,17 @@ COMMON_AUTOGEN_IMPORTS = [
 ]
 
 
-def get_sorted_imports(collected_imports: List[str]) -> List[str]:
+def get_sorted_imports(collected_imports: list[str]) -> list[str]:
     """Get the sorted imports.
 
     Parameters
     ----------
-    collected_imports : List[str]
+    collected_imports : list[str]
         The collected imports.
 
     Returns
     -------
-    List[str]
+    list[str]
         The sorted imports.
     """
     sorted_imports = sorted(
@@ -59,24 +59,24 @@ def get_sorted_imports(collected_imports: List[str]) -> List[str]:
 
 
 def sort_imports(
-    all_imports: List[Tuple[str, ImportPosition]],
-) -> Tuple[List[str], List[str], List[str], List[str], bool]:
+    all_imports: list[Tuple[str, ImportPosition]],
+) -> Tuple[list[str], list[str], list[str], list[str], bool]:
     """Sort the imports.
 
     Parameters
     ----------
-    all_imports : List[Tuple[str, ImportPosition]]
+    all_imports : list[Tuple[str, ImportPosition]]
         All the imports.
 
     Returns
     -------
-    Tuple[List[str], List[str], List[str], List[str], bool]
+    Tuple[list[str], list[str], list[str], list[str], bool]
         The sorted imports and a flag if we got `import autogen`.
     """
-    builtin_imports: List[str] = []
-    third_party_imports: List[str] = []
-    local_imports: List[str] = []
-    autogen_imports: List[str] = COMMON_AUTOGEN_IMPORTS.copy()
+    builtin_imports: list[str] = []
+    third_party_imports: list[str] = []
+    local_imports: list[str] = []
+    autogen_imports: list[str] = COMMON_AUTOGEN_IMPORTS.copy()
     got_import_autogen = False
     for import_string, position in all_imports:
         if "import autogen" in import_string:
@@ -106,14 +106,14 @@ def sort_imports(
 
 
 def get_the_imports_string(
-    all_imports: List[Tuple[str, ImportPosition]],
+    all_imports: list[Tuple[str, ImportPosition]],
     is_async: bool,
 ) -> str:
     """Get the final imports string.
 
     Parameters
     ----------
-    all_imports : List[Tuple[str, ImportPosition]]
+    all_imports : list[Tuple[str, ImportPosition]]
         All the imports.
     is_async : bool
         If the flow is async.
@@ -162,17 +162,17 @@ def get_the_imports_string(
     return final_string.replace("\n\n\n", "\n\n")  # avoid too many newlines
 
 
-def ensure_np_import(third_party_imports: List[str]) -> List[str]:
+def ensure_np_import(third_party_imports: list[str]) -> list[str]:
     """Ensure numpy is imported.
 
     Parameters
     ----------
-    third_party_imports : List[str]
+    third_party_imports : list[str]
         The third party imports.
 
     Returns
     -------
-    List[str]
+    list[str]
         The third party imports with numpy.
     """
     if (
@@ -184,11 +184,11 @@ def ensure_np_import(third_party_imports: List[str]) -> List[str]:
 
 
 def gather_imports(
-    model_imports: Optional[List[Tuple[str, ImportPosition]]],
-    tool_imports: Optional[List[Tuple[str, ImportPosition]]],
-    chat_imports: Optional[List[Tuple[str, ImportPosition]]],
-    agent_imports: Optional[List[Tuple[str, ImportPosition]]],
-) -> List[Tuple[str, ImportPosition]]:
+    model_imports: Optional[list[Tuple[str, ImportPosition]]],
+    tool_imports: Optional[list[Tuple[str, ImportPosition]]],
+    chat_imports: Optional[list[Tuple[str, ImportPosition]]],
+    agent_imports: Optional[list[Tuple[str, ImportPosition]]],
+) -> list[Tuple[str, ImportPosition]]:
     """Gather all the imports.
 
     Parameters
@@ -207,7 +207,7 @@ def gather_imports(
     Tuple[str, ImportPosition]
         The gathered imports.
     """
-    all_imports: List[Tuple[str, ImportPosition]] = []
+    all_imports: list[Tuple[str, ImportPosition]] = []
     for import_statement in BUILTIN_IMPORTS:
         all_imports.append(
             (
@@ -227,7 +227,7 @@ def gather_imports(
     # from typing import Annotated
     # from typing import Annotated, Any, Callable, Dict, ...Union
     all_typing_imports = TYPING_IMPORTS.copy()
-    final_imports: List[Tuple[str, ImportPosition]] = []
+    final_imports: list[Tuple[str, ImportPosition]] = []
     for import_statement, import_position in all_imports:
         if import_statement.startswith("from typing"):
             to_import = import_statement.split("import")[1].strip()

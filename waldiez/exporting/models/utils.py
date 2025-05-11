@@ -9,15 +9,15 @@ export_models
 """
 
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Optional
 
 from waldiez.models import WaldiezAgent, WaldiezModel
 
 
 def export_models(
     flow_name: str,
-    all_models: List[WaldiezModel],
-    model_names: Dict[str, str],
+    all_models: list[WaldiezModel],
+    model_names: dict[str, str],
     serializer: Callable[..., str],
     output_dir: Optional[Path] = None,
 ) -> str:
@@ -27,9 +27,9 @@ def export_models(
     ----------
     flow_name : str
         The name of the flow.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
-    model_names : Dict[str, str]
+    model_names : dict[str, str]
         A mapping of model ids to model names.
     serializer : Callable[..., str]
         The serializer function.
@@ -61,8 +61,8 @@ def export_models(
 
 def get_agent_llm_config_arg(
     agent: WaldiezAgent,
-    all_models: List[WaldiezModel],
-    model_names: Dict[str, str],
+    all_models: list[WaldiezModel],
+    model_names: dict[str, str],
     cache_seed: Optional[int],
     tabs: int = 1,
 ) -> str:
@@ -72,9 +72,9 @@ def get_agent_llm_config_arg(
     ----------
     agent : WaldiezAgent
         The agent.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
-    model_names : Dict[str, str]
+    model_names : dict[str, str]
         A mapping of model ids to model names.
     cache_seed : Optional[int]
         The cache seed.
@@ -111,8 +111,8 @@ def get_agent_llm_config_arg(
 
 def write_api_keys(
     flow_name: str,
-    all_models: List[WaldiezModel],
-    model_names: Dict[str, str],
+    all_models: list[WaldiezModel],
+    model_names: dict[str, str],
     output_dir: Path,
 ) -> None:
     """Write the api keys to a separate file.
@@ -121,9 +121,9 @@ def write_api_keys(
     ----------
     flow_name : str
         The name of the flow.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
-    model_names : Dict[str, str]
+    model_names : dict[str, str]
         A mapping of model ids to model names.
     output_dir : Path
         The output directory to write the api keys.

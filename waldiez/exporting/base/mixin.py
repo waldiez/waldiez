@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """The base exporter mixin."""
 
-from typing import Any, Dict, Tuple
+from typing import Any, Tuple
 
 from .utils import (
     CommentKey,
@@ -107,17 +107,17 @@ class ExporterMixin:
     @staticmethod
     def get_valid_instance_name(
         instance: Tuple[str, str],
-        current_names: Dict[str, str],
+        current_names: dict[str, str],
         prefix: str = "w",
         max_length: int = 64,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         """Get a valid instance name.
 
         Parameters
         ----------
         instance : Tuple[str, str]
             The instance id and possible name.
-        current_names : Dict[str, str]
+        current_names : dict[str, str]
             The current names.
         prefix : str, optional
             The prefix for the instance name, by default "w".
@@ -126,7 +126,7 @@ class ExporterMixin:
 
         Returns
         -------
-        Dict[str, str]
+        dict[str, str]
             The updated dictionary of current names.
         """
         return get_valid_instance_name(

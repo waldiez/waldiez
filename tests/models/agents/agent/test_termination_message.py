@@ -120,7 +120,7 @@ def test_waldiez_agent_get_termination_function() -> None:
     assert termination_function_tuple[1] == "pre_is_termination_message_post"
     assert termination_function_tuple[0] == (
         "def pre_is_termination_message_post(\n"
-        "    message: Dict[str, Any],\n"
+        "    message: dict[str, Any],\n"
         ") -> bool:\n"
         "    return False\n"
     )

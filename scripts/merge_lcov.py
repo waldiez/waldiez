@@ -8,18 +8,17 @@ import shutil
 import subprocess  # nosemgrep # nosec
 import sys
 from pathlib import Path
-from typing import List
 
 # pylint: disable=duplicate-code  # also in ./lint.py, ./format.py
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 
-def run_command(args: List[str]) -> None:
+def run_command(args: list[str]) -> None:
     """Run a command.
 
     Parameters
     ----------
-    args : List[str]
+    args : list[str]
         List of arguments to pass to the command.
     """
     args_str = " ".join(args)
@@ -34,12 +33,12 @@ def run_command(args: List[str]) -> None:
     )
 
 
-def is_lcov_2(lcov_cmd: List[str]) -> bool:
+def is_lcov_2(lcov_cmd: list[str]) -> bool:
     """Check if lcov is version 2 or later.
 
     Parameters
     ----------
-    lcov_cmd : List[str]
+    lcov_cmd : list[str]
         The lcov command.
 
     Returns
@@ -79,12 +78,12 @@ def keep_any_lcov(react_lcov: Path, python_lcov: Path) -> None:
         shutil.copyfile(python_lcov, ROOT_DIR / "coverage" / "lcov.info")
 
 
-def merge_lcov(lcov_cmd: List[str]) -> None:
+def merge_lcov(lcov_cmd: list[str]) -> None:
     """Merge lcov files.
 
     Parameters
     ----------
-    lcov_cmd : List[str]
+    lcov_cmd : list[str]
         The resolved lcov command.
     """
     react_lcov = ROOT_DIR / "coverage" / "react" / "lcov.info"
@@ -131,12 +130,12 @@ def merge_lcov(lcov_cmd: List[str]) -> None:
     )
 
 
-def get_windows_lcov_cmd() -> List[str]:
+def get_windows_lcov_cmd() -> list[str]:
     """Return the lcov command for Windows.
 
     Returns
     -------
-    List[str]
+    list[str]
         The lcov command for Windows if found, otherwise an empty list.
     """
     perl_path = Path("C:/Strawberry/perl/bin/perl.exe")
@@ -154,12 +153,12 @@ def get_windows_lcov_cmd() -> List[str]:
     return [str(perl_path), str(lcov_path)]
 
 
-def get_macos_lcov_cmd() -> List[str]:
+def get_macos_lcov_cmd() -> list[str]:
     """Return the lcov command for macOS.
 
     Returns
     -------
-    List[str]
+    list[str]
         The lcov command for macOS if found, otherwise an empty list.
     """
     if not shutil.which("lcov"):
@@ -170,12 +169,12 @@ def get_macos_lcov_cmd() -> List[str]:
     return ["lcov"]
 
 
-def get_linux_lcov_cmd() -> List[str]:
+def get_linux_lcov_cmd() -> list[str]:
     """Return the lcov command for Linux.
 
     Returns
     -------
-    List[str]
+    list[str]
         The lcov command for Linux if found, otherwise an empty list
     """
     if not shutil.which("lcov"):
@@ -188,12 +187,12 @@ def get_linux_lcov_cmd() -> List[str]:
     return ["lcov"]
 
 
-def get_lcov_cmd() -> List[str]:
+def get_lcov_cmd() -> list[str]:
     """Return the lcov command.
 
     Returns
     -------
-    List[str]
+    list[str]
         The lcov command if found, otherwise an empty list.
     """
     if shutil.which("lcov"):

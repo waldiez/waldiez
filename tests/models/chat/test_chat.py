@@ -203,8 +203,8 @@ def test_waldiez_chat_get_message_function() -> None:
         "def pre_callable_message_post(\n"
         "    sender: ConversableAgent,\n"
         "    recipient: ConversableAgent,\n"
-        "    context: Dict[str, Any],\n"
-        ") -> Union[Dict[str, Any], str]:\n"
+        "    context: dict[str, Any],\n"
+        ") -> Union[dict[str, Any], str]:\n"
         "    return 'custom message'\n"
     )
     message_function_tuple = chat.get_message_function(
@@ -279,10 +279,10 @@ def test_waldiez_chat_get_nested_chat_message_function() -> None:
     assert nested_chat_message_function[0] == (
         "def pre_nested_chat_message_post(\n"
         "    recipient: ConversableAgent,\n"
-        "    messages: List[Dict[str, Any]],\n"
+        "    messages: list[dict[str, Any]],\n"
         "    sender: ConversableAgent,\n"
-        "    config: Dict[str, Any],\n"
-        ") -> Union[Dict[str, Any], str]:\n"
+        "    config: dict[str, Any],\n"
+        ") -> Union[dict[str, Any], str]:\n"
         "    return 'custom message'\n"
     )
     nested_chat_message_function = chat.get_nested_chat_message_function(
@@ -357,10 +357,10 @@ def test_waldiez_chat_get_nested_chat_reply_function() -> None:
     assert nested_chat_reply_function[0] == (
         "def pre_nested_chat_reply_post(\n"
         "    recipient: ConversableAgent,\n"
-        "    messages: List[Dict[str, Any]],\n"
+        "    messages: list[dict[str, Any]],\n"
         "    sender: ConversableAgent,\n"
-        "    config: Dict[str, Any],\n"
-        ") -> Union[Dict[str, Any], str]:\n"
+        "    config: dict[str, Any],\n"
+        ") -> Union[dict[str, Any], str]:\n"
         "    return 'custom message'\n"
     )
     nested_chat_reply_function = chat.get_nested_chat_reply_function(

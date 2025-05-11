@@ -281,7 +281,7 @@ def test_get_custom_text_split_function() -> None:
         "    chunk_mode: str,\n"
         "    must_break_at_empty_line: bool,\n"
         "    overlap: int,\n"
-        ") -> List[str]:\n"
+        ") -> list[str]:\n"
         "    return [text]\n"
     )
     custom_text_split_function = config.get_custom_text_split_function()

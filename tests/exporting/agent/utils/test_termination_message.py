@@ -181,7 +181,7 @@ def test_get_is_termination_message() -> None:
         (
             "\n\n"
             "def is_termination_message_agent_name(\n"
-            "    message: Dict[str, Any],\n"
+            "    message: dict[str, Any],\n"
             ") -> bool:\n"
             "    return True\n\n"
         ),

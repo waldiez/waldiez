@@ -83,8 +83,8 @@ def callable_message(sender, recipient, context):
         f"def callable_message_{chat_name}("
         "\n    sender: ConversableAgent,"
         "\n    recipient: ConversableAgent,"
-        "\n    context: Dict[str, Any],"
-        "\n) -> Union[Dict[str, Any], str]:"
+        "\n    context: dict[str, Any],"
+        "\n) -> Union[dict[str, Any], str]:"
         "\n"
         '    return f"Hello to {recipient.name} from {sender.name}"\n'
     )
@@ -249,8 +249,8 @@ def test_chat_with_rag_and_carryover() -> None:
         "def callable_message_chat1(\n"
         "    sender: RetrieveUserProxyAgent,\n"
         "    recipient: ConversableAgent,\n"
-        "    context: Dict[str, Any],\n"
-        ") -> Union[Dict[str, Any], str]:"
+        "    context: dict[str, Any],\n"
+        ") -> Union[dict[str, Any], str]:"
         f"{expected_before_body}"
     )
     assert before_export is not None

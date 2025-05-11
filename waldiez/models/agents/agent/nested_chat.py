@@ -2,7 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Nested Chat."""
 
-from typing import List
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -42,15 +41,15 @@ class WaldiezAgentNestedChat(WaldiezBase):
 
     Attributes
     ----------
-    triggered_by : List[str]
+    triggered_by : list[str]
         A list of agent ids that trigger the nested chat.
-    messages : List[WaldiezAgentNestedChatMessage]
+    messages : list[WaldiezAgentNestedChatMessage]
         The list of messages (chat ids and 'is_reply'z)
         to include the in the nested chat registration.
     """
 
     triggered_by: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Triggered By",
             description=("A list of agent ids that trigger the nested chat."),
@@ -59,7 +58,7 @@ class WaldiezAgentNestedChat(WaldiezBase):
         ),
     ]
     messages: Annotated[
-        List[WaldiezAgentNestedChatMessage],
+        list[WaldiezAgentNestedChatMessage],
         Field(
             title="Messages",
             description=(

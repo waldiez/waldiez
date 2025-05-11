@@ -204,7 +204,7 @@ def test_waldiez_chat_data_message() -> None:
                 "n_results": 42,
                 "as_list": [1, 2, 3],
             },
-            "use_carryover": True,
+            "use_carryover": False,
         },
     }
     # Then
@@ -218,7 +218,7 @@ def test_waldiez_chat_data_message() -> None:
         "n_results": 42,
         "as_list": [1, 2, 3],
     }
-    assert chat_data.message.use_carryover is True
+    assert chat_data.message.use_carryover is False
 
 
 def test_waldiez_chat_summary() -> None:

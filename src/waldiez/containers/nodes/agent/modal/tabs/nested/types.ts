@@ -9,11 +9,11 @@ export type WaldiezAgentNestedChatsProps = {
     data: WaldiezNodeAgentData;
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
     agentConnections: {
-        source: {
+        sources: {
             nodes: WaldiezNodeAgent[];
             edges: WaldiezEdge[];
         };
-        target: {
+        targets: {
             nodes: WaldiezNodeAgent[];
             edges: WaldiezEdge[];
         };

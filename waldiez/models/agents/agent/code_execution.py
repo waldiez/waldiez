@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Code Execution Configuration."""
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -23,7 +23,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
         The timeout for the code execution. By default None (no timeout).
     last_n_messages : Optional[int]
         The chat's last n messages to consider for the code execution.
-    functions : Optional[List[str]]
+    functions : Optional[list[str]]
         If not using docker, a list of function ids to use.
     """
 
@@ -64,7 +64,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
         ),
     ]
     functions: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Functions",

@@ -46,6 +46,7 @@ import {
     getSystemMessage,
     getTermination,
     getTools,
+    getUpdateAgentStateBeforeReply,
     getVerbose,
 } from "@waldiez/models/mappers/agent/utils";
 import { getNodePositionFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
@@ -94,6 +95,9 @@ export const agentMapper = {
             tools: data.tools,
             parentId: data.parentId,
             nestedChats: data.nestedChats,
+            handoffs: data.handoffs,
+            contextVariables: data.contextVariables,
+            updateAgentStateBeforeReply: data.updateAgentStateBeforeReply,
         };
         updateAgentDataToExport(agentType, agentData, data);
         for (const key of [
@@ -167,6 +171,7 @@ const getCommonAgentData = (
     const parentId = getParentId(data, agentType);
     const nestedChats = getNestedChats(data);
     const contextVariables = getContextVariables(data);
+    const updateAgentStateBeforeReply = getUpdateAgentStateBeforeReply(data);
     const handoffs = getHandoffs(data);
     return new WaldiezAgentData({
         systemMessage,
@@ -180,6 +185,7 @@ const getCommonAgentData = (
         parentId,
         nestedChats,
         contextVariables,
+        updateAgentStateBeforeReply,
         handoffs,
     });
 };

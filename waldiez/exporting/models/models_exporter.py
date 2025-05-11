@@ -3,7 +3,7 @@
 """Export models (llm_configs)."""
 
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from waldiez.models import WaldiezAgent, WaldiezModel
 
@@ -26,10 +26,10 @@ class ModelsExporter(BaseExporter, ExporterMixin):
     def __init__(
         self,
         flow_name: str,
-        agents: List[WaldiezAgent],
-        agent_names: Dict[str, str],
-        models: List[WaldiezModel],
-        model_names: Dict[str, str],
+        agents: list[WaldiezAgent],
+        agent_names: dict[str, str],
+        models: list[WaldiezModel],
+        model_names: dict[str, str],
         for_notebook: bool,
         cache_seed: Optional[int],
         output_dir: Optional[Union[str, Path]] = None,
@@ -38,13 +38,13 @@ class ModelsExporter(BaseExporter, ExporterMixin):
 
         Parameters
         ----------
-        agents : List[WaldiezAgent]
+        agents : list[WaldiezAgent]
             The agents.
-        agent_names : Dict[str, str]
+        agent_names : dict[str, str]
             The agent names.
-        models : List[WaldiezModel]
+        models : list[WaldiezModel]
             The models.
-        model_names : Dict[str, str]
+        model_names : dict[str, str]
             The model names.
         for_notebook : bool
             Whether the export is for a notebook or not.
@@ -78,7 +78,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         # fmt: off
         """Generate the after export strings.
 
@@ -106,11 +106,11 @@ class ModelsExporter(BaseExporter, ExporterMixin):
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported after export strings and their positions.
         """
         # fmt: on
-        agent_llm_config_args: List[
+        agent_llm_config_args: list[
             Tuple[str, Union[ExportPosition, AgentPosition]]
         ] = []
         for agent in self.agents:
@@ -148,12 +148,12 @@ class ModelsExporter(BaseExporter, ExporterMixin):
             self.get_imports()
         return self._exported_string
 
-    def get_environment_variables(self) -> Optional[List[Tuple[str, str]]]:
+    def get_environment_variables(self) -> Optional[list[Tuple[str, str]]]:
         """Get the environment variables to set.
 
         Returns
         -------
-        Optional[List[Tuple[str, str]]
+        Optional[list[Tuple[str, str]]
             The environment variables to set.
         """
         env_vars = []

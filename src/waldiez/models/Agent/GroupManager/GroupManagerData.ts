@@ -9,6 +9,7 @@ import {
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
+    WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common";
 import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
 import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupManager/GroupSpeakers";
@@ -26,6 +27,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
  * @param contextVariables - The context variables of the agent
+ * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
  * @param handoffs - The handoffs of the agent
  * @param groupName - The name of the group that the agent manages
  * @param maxRound - The maximum number of rounds for the group chat this agent manages
@@ -41,6 +43,8 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @see {@link WaldiezAgentGroupManagerSpeakers}
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentHandoff}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
  */
 export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
     maxRound: number;
@@ -59,11 +63,12 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             agentDefaultAutoReply: string | null;
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
-            modelId?: string | null;
+            modelId: string | null;
             tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
+            updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
             handoffs: WaldiezAgentHandoff[];
             maxRound: number;
             adminName: string | null;
@@ -89,6 +94,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},
+            updateAgentStateBeforeReply: [],
             handoffs: [],
             maxRound: 20,
             adminName: null,

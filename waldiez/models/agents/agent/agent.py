@@ -3,7 +3,7 @@
 """Base agent class to be inherited by all agents."""
 
 import warnings
-from typing import List, Set
+from typing import Set
 
 from pydantic import Field, field_validator
 from typing_extensions import Annotated, Literal
@@ -29,9 +29,9 @@ class WaldiezAgent(WaldiezBase):
         The name of the agent.
     description : str
         The description of the agent.
-    tags : List[str]
+    tags : list[str]
         Tags for this agent.
-    requirements : List[str]
+    requirements : list[str]
         Python requirements for the agent.
     created_at : str
         The date and time when the agent was created.
@@ -43,9 +43,9 @@ class WaldiezAgent(WaldiezBase):
 
     Functions
     ---------
-    validate_linked_tools(tool_ids: List[str], agent_ids: List[str])
+    validate_linked_tools(tool_ids: list[str], agent_ids: list[str])
         Validate the tools linked to the agent.
-    validate_linked_models(model_ids: List[str])
+    validate_linked_models(model_ids: list[str])
         Validate the models linked to the agent.
     """
 
@@ -83,7 +83,7 @@ class WaldiezAgent(WaldiezBase):
         ),
     ]
     tags: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Tags",
             description="Tags of the agent",
@@ -91,7 +91,7 @@ class WaldiezAgent(WaldiezBase):
         ),
     ]
     requirements: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Requirements",
             description="Python requirements for the agent",
@@ -220,15 +220,15 @@ class WaldiezAgent(WaldiezBase):
         return imports
 
     def validate_linked_tools(
-        self, tool_ids: List[str], agent_ids: List[str]
+        self, tool_ids: list[str], agent_ids: list[str]
     ) -> None:
         """Validate the tools.
 
         Parameters
         ----------
-        tool_ids : List[str]
+        tool_ids : list[str]
             The list of tool IDs.
-        agent_ids : List[str]
+        agent_ids : list[str]
             The list of agent IDs.
 
         Raises
@@ -247,12 +247,12 @@ class WaldiezAgent(WaldiezBase):
                     f"Agent '{tool.executor_id}' not found in agents"
                 )
 
-    def validate_linked_models(self, model_ids: List[str]) -> None:
+    def validate_linked_models(self, model_ids: list[str]) -> None:
         """Validate the models.
 
         Parameters
         ----------
-        model_ids : List[str]
+        model_ids : list[str]
             The list of model IDs.
 
         Raises
@@ -267,12 +267,12 @@ class WaldiezAgent(WaldiezBase):
                 f"Model '{self.data.model_id}' not found in models"
             )
 
-    def validate_code_execution(self, tool_ids: List[str]) -> None:
+    def validate_code_execution(self, tool_ids: list[str]) -> None:
         """Validate the code execution config.
 
         Parameters
         ----------
-        tool_ids : List[str]
+        tool_ids : list[str]
             The list of tool IDs.
 
         Raises

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat model."""
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional, Tuple
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -138,7 +138,7 @@ class WaldiezChat(WaldiezBase):
         return self.data.get_chat_id()
 
     @property
-    def prerequisites(self) -> List[int]:
+    def prerequisites(self) -> list[int]:
         """Get the chat prerequisites."""
         return self.data.get_prerequisites()
 
@@ -157,12 +157,12 @@ class WaldiezChat(WaldiezBase):
         """
         self.data.set_chat_id(value)
 
-    def set_prerequisites(self, value: List[int]) -> None:
+    def set_prerequisites(self, value: list[int]) -> None:
         """Set the chat prerequisites.
 
         Parameters
         ----------
-        value : List[int]
+        value : list[int]
             The chat prerequisites.
         """
         self.data.set_prerequisites(value)
@@ -268,7 +268,29 @@ class WaldiezChat(WaldiezBase):
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
     ) -> Tuple[str, str]:
-        """Get the nested chat message function."""
+        """Get the nested chat message function.
+
+        Parameters
+        ----------
+        name_prefix : str
+            The function name prefix.
+        name_suffix : str
+            The function name suffix.
+
+        Returns
+        -------
+        Tuple[str, str]
+            The nested chat message function and the function name.
+        """
+        if not self.nested_chat.message or (
+            self.nested_chat.message.use_carryover is False
+            and self.nested_chat.message.type
+            in (
+                "string",
+                "none",
+            )
+        ):
+            return "", ""
         return self._get_nested_chat_function(
             content=self.nested_chat.message_content,
             function_name_base=NESTED_CHAT_MESSAGE,
@@ -281,7 +303,29 @@ class WaldiezChat(WaldiezBase):
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
     ) -> Tuple[str, str]:
-        """Get the nested chat reply function."""
+        """Get the nested chat reply function.
+
+        Parameters
+        ----------
+        name_prefix : str
+            The function name prefix.
+        name_suffix : str
+            The function name suffix.
+
+        Returns
+        -------
+        Tuple[str, str]
+            The nested chat reply function and the function name.
+        """
+        if not self.nested_chat.reply or (
+            self.nested_chat.reply.use_carryover is False
+            and self.nested_chat.reply.type
+            in (
+                "string",
+                "none",
+            )
+        ):
+            return "", ""
         return self._get_nested_chat_function(
             content=self.nested_chat.reply_content,
             function_name_base=NESTED_CHAT_REPLY,
@@ -293,7 +337,7 @@ class WaldiezChat(WaldiezBase):
         self,
         for_queue: bool,
         sender: Optional[WaldiezAgent] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get the chat arguments to use in autogen.
 
         Parameters
@@ -320,7 +364,7 @@ class WaldiezChat(WaldiezBase):
                 args_dict["n_results"] = n_results
         return args_dict
 
-    def model_dump(self, **kwargs: Any) -> Dict[str, Any]:
+    def model_dump(self, **kwargs: Any) -> dict[str, Any]:
         """Dump the model to a dict including the chat attributes.
 
         Parameters
@@ -330,7 +374,7 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The model dump with the chat attributes.
         """
         dump = super().model_dump(**kwargs)

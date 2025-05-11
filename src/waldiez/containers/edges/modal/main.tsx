@@ -8,7 +8,7 @@ import { FaTrashCan } from "react-icons/fa6";
 import { ChatAvailability, Modal, TabItem, TabItems } from "@waldiez/components";
 import { useWaldiezEdgeModal } from "@waldiez/containers/edges/modal/hooks";
 import { WaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic";
-import { WaldiezEdgeGroupCommonTab } from "@waldiez/containers/edges/modal/tabs/group";
+import { WaldiezEdgeGroupTab } from "@waldiez/containers/edges/modal/tabs/group";
 import { WaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/message";
 import { WaldiezEdgeNestedTab } from "@waldiez/containers/edges/modal/tabs/nested";
 import { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
@@ -69,7 +69,7 @@ export const WaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
                 {edgeType === "group" ? (
                     <TabItems activeTabIndex={activeTabIndex}>
                         <TabItem label="Properties" id={`we-${flowId}-edge-properties-${edgeId}`}>
-                            <WaldiezEdgeGroupCommonTab
+                            <WaldiezEdgeGroupTab
                                 edgeId={edgeId}
                                 data={edgeData}
                                 onDataChange={onDataChange}

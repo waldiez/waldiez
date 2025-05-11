@@ -2,25 +2,25 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Dictionary related utilities."""
 
-from typing import Any, Dict
+from typing import Any
 
 
-def update_dict(original: Dict[str, Any]) -> Dict[str, Any]:
+def update_dict(original: dict[str, Any]) -> dict[str, Any]:
     """
 
     Try to determine the type of the dictionary values.
 
     Parameters
     ----------
-    original : Dict[str, Any]
+    original : dict[str, Any]
         The original dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The updated dictionary with values converted to the detected types.
     """
-    new_dict: Dict[str, Any] = {}
+    new_dict: dict[str, Any] = {}
     for key, value in original.items():
         value_lower = str(value).lower()
         if value_lower in ("none", "null"):

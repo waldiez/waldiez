@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez flow model."""
 
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -27,9 +27,9 @@ class WaldiezFlow(WaldiezBase):
         The name of the flow.
     description : str
         The description of the flow.
-    tags : List[str]
+    tags : list[str]
         The tags of the flow.
-    requirements : List[str]
+    requirements : list[str]
         The requirements of the flow.
     storage_id : str
         The storage ID of the flow (ignored, UI related).
@@ -74,7 +74,7 @@ class WaldiezFlow(WaldiezBase):
         ),
     ]
     tags: Annotated[
-        List[str],
+        list[str],
         Field(
             description="The tags of the flow",
             title="Tags",
@@ -82,7 +82,7 @@ class WaldiezFlow(WaldiezBase):
         ),
     ]
     requirements: Annotated[
-        List[str],
+        list[str],
         Field(
             description="The requirements of the flow",
             title="Requirements",
@@ -123,7 +123,7 @@ class WaldiezFlow(WaldiezBase):
         ),
     ]
     _ordered_flow: Optional[
-        List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+        list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
     ] = None
     _single_agent_mode: bool = False
 
@@ -163,7 +163,7 @@ class WaldiezFlow(WaldiezBase):
     @property
     def ordered_flow(
         self,
-    ) -> List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
         """Get the ordered flow."""
         if not self._ordered_flow:
             self._ordered_flow = self._get_flow_order()
@@ -213,12 +213,12 @@ class WaldiezFlow(WaldiezBase):
 
     def _get_flow_order(
         self,
-    ) -> List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
         """Get the ordered flow."""
         # in the chats, there is the 'order' field, we use this,
         # we only keep the ones with order >=0
         # and sort them by this property
-        ordered_flow: List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]] = []
+        ordered_flow: list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]] = []
         for chat in self.data.chats:
             if chat.data.order < 0:
                 continue
@@ -235,7 +235,7 @@ class WaldiezFlow(WaldiezBase):
 
     def get_agent_connections(
         self, agent_id: str, all_chats: bool = True
-    ) -> List[str]:
+    ) -> list[str]:
         """Get the agent connections.
 
         Parameters
@@ -248,10 +248,10 @@ class WaldiezFlow(WaldiezBase):
 
         Returns
         -------
-        List[str]
+        list[str]
             The list of agent ids that the agent with the given ID connects to.
         """
-        connections: List[str] = []
+        connections: list[str] = []
         if all_chats:
             for chat in self.data.chats:
                 if chat.source == agent_id:
@@ -318,12 +318,12 @@ class WaldiezFlow(WaldiezBase):
         self._validate_agent_connections()
         return self
 
-    def validate_flow_models(self) -> List[str]:
+    def validate_flow_models(self) -> list[str]:
         """Validate the flow models.
 
         Returns
         -------
-        List[str]
+        list[str]
             The list of model IDs.
 
         Raises
@@ -336,12 +336,12 @@ class WaldiezFlow(WaldiezBase):
             raise ValueError("Model IDs must be unique.")
         return model_ids
 
-    def validate_flow_tools(self) -> List[str]:
+    def validate_flow_tools(self) -> list[str]:
         """Validate the flow tools.
 
         Returns
         -------
-        List[str]
+        list[str]
             The list of tool IDs.
 
         Raises

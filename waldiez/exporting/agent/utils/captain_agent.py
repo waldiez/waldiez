@@ -6,7 +6,7 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 from waldiez.models import (
     WaldiezAgent,
@@ -18,8 +18,8 @@ from waldiez.models import (
 
 def get_captain_agent_extras(
     agent: WaldiezAgent,
-    agent_names: Dict[str, str],
-    all_models: List[WaldiezModel],
+    agent_names: dict[str, str],
+    all_models: list[WaldiezModel],
     serializer: Callable[..., str],
     output_dir: Optional[Union[str, Path]],
 ) -> str:
@@ -29,9 +29,9 @@ def get_captain_agent_extras(
     ----------
     agent : WaldiezAgent
         The agent.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent ids to agent names.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
     serializer : Callable[..., str]
         The serializer to use.
@@ -76,9 +76,9 @@ def get_captain_agent_extras(
 def generate_nested_config(
     agent: WaldiezCaptainAgent,
     agent_name: str,
-    all_models: List[WaldiezModel],
+    all_models: list[WaldiezModel],
     save_path: str,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Generate the nested config for the captain agent.
 
     Parameters
@@ -87,14 +87,14 @@ def generate_nested_config(
         The captain agent.
     agent_name : str
         The agent name.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
     save_path : str
         The path to save the nested config.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The nested config.
     """
     config_file_or_env_name = f"{agent_name}_llm_config.json"
@@ -123,27 +123,27 @@ def generate_nested_config(
 
 def get_llm_config(
     agent: WaldiezAgent,
-    all_models: List[WaldiezModel],
-) -> Dict[str, Any]:
+    all_models: list[WaldiezModel],
+) -> dict[str, Any]:
     """Get the config list environment variable name and its dict value.
 
     Parameters
     ----------
     agent : WaldiezAgent
         The agent.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
 
     Returns
     -------
-    Dict[str, str]
+    dict[str, str]
         The llm config dict.
     """
     model_name = "gpt-4o"
     temperature: Optional[float] = 1
     top_p: Optional[float] = 0.95
     max_tokens: Optional[int] = 2048
-    config_dict: Dict[str, Any] = {}
+    config_dict: dict[str, Any] = {}
     if agent.data.model_id:
         waldiez_model = get_waldiez_model(agent.data.model_id, all_models)
         llm_config = waldiez_model.get_llm_config(skip_price=True)
@@ -170,20 +170,20 @@ def get_llm_config(
 
 def get_auto_build_build_config(
     agent: WaldiezAgent,
-    llm_config: Dict[str, Any],
-) -> Dict[str, Any]:
+    llm_config: dict[str, Any],
+) -> dict[str, Any]:
     """Get the auto build build config.
 
     Parameters
     ----------
     agent : WaldiezAgent
         The agent.
-    llm_config : Dict[str, Any]
+    llm_config : dict[str, Any]
         The llm config.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The auto build build config.
     """
     coding = False
@@ -216,7 +216,7 @@ def get_auto_build_build_config(
 
 
 def get_waldiez_model(
-    model_id: str, all_models: List[WaldiezModel]
+    model_id: str, all_models: list[WaldiezModel]
 ) -> WaldiezModel:
     """Get the model name from the model id.
 
@@ -224,7 +224,7 @@ def get_waldiez_model(
     ----------
     model_id : str
         The model id.
-    all_models : List[WaldiezModel]
+    all_models : list[WaldiezModel]
         All the models in the flow.
 
     Returns

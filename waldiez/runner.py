@@ -19,8 +19,6 @@ from types import ModuleType, TracebackType
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Dict,
-    List,
     Optional,
     Set,
     Tuple,
@@ -67,8 +65,8 @@ class WaldiezRunner:
         waldiez_file: Union[str, Path],
         name: Optional[str] = None,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        requirements: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
+        requirements: Optional[list[str]] = None,
     ) -> "WaldiezRunner":
         """Create a WaldiezRunner instance from a file.
 
@@ -80,9 +78,9 @@ class WaldiezRunner:
             The name of the Waldiez, by default None.
         description : Optional[str], optional
             The description of the Waldiez, by default None.
-        tags : Optional[List[str]], optional
+        tags : Optional[list[str]], optional
             The tags of the Waldiez, by default None.
-        requirements : Optional[List[str]], optional
+        requirements : Optional[list[str]], optional
             The requirements of the Waldiez, by default None.
 
         Returns
@@ -185,7 +183,7 @@ class WaldiezRunner:
         file_name: str,
         module_name: str,
         printer: Callable[..., None],
-    ) -> Tuple[ModuleType, Dict[str, str]]:
+    ) -> Tuple[ModuleType, dict[str, str]]:
         self._exporter.export(Path(file_name))
         spec = importlib.util.spec_from_file_location(
             module_name, temp_dir / file_name
@@ -204,7 +202,7 @@ class WaldiezRunner:
         output_path: Optional[Union[str, Path]],
         uploads_root: Optional[Union[str, Path]],
         skip_mmd: bool = False,
-    ) -> Union["ChatResult", List["ChatResult"], Dict[int, "ChatResult"]]:
+    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow.
 
         Parameters
@@ -218,7 +216,7 @@ class WaldiezRunner:
 
         Returns
         -------
-        Union[ChatResult, List[ChatResult]]
+        Union[ChatResult, list[ChatResult]]
             The result(s) of the chat(s).
         """
         temp_dir = Path(tempfile.mkdtemp())
@@ -234,7 +232,7 @@ class WaldiezRunner:
             "you might need to restart the kernel."
         )
         results: Union[
-            "ChatResult", List["ChatResult"], Dict[int, "ChatResult"]
+            "ChatResult", list["ChatResult"], dict[int, "ChatResult"]
         ] = []
         with chdir(to=temp_dir):
             module, old_vars = self._before_run(
@@ -263,7 +261,7 @@ class WaldiezRunner:
         output_path: Optional[Union[str, Path]],
         uploads_root: Optional[Union[str, Path]],
         skip_mmd: bool = False,
-    ) -> Union["ChatResult", List["ChatResult"], Dict[int, "ChatResult"]]:
+    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow asynchronously."""
         temp_dir = Path(tempfile.mkdtemp())
         file_name = before_run(output_path, uploads_root)
@@ -278,7 +276,7 @@ class WaldiezRunner:
             "you might need to restart the kernel."
         )
         results: Union[
-            "ChatResult", List["ChatResult"], Dict[int, "ChatResult"]
+            "ChatResult", list["ChatResult"], dict[int, "ChatResult"]
         ] = []
         async with a_chdir(to=temp_dir):
             module, old_vars = self._before_run(
@@ -306,7 +304,7 @@ class WaldiezRunner:
         output_path: Optional[Union[str, Path]] = None,
         uploads_root: Optional[Union[str, Path]] = None,
         skip_mmd: bool = False,
-    ) -> Union["ChatResult", List["ChatResult"], Dict[int, "ChatResult"]]:
+    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow.
 
         Parameters
@@ -320,7 +318,7 @@ class WaldiezRunner:
 
         Returns
         -------
-        Union["ChatResult", List["ChatResult"], Dict[int, "ChatResult"]]
+        Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]
             The result(s) of the chat(s).
 
         Raises
@@ -352,7 +350,7 @@ class WaldiezRunner:
         self,
         output_path: Optional[Union[str, Path]] = None,
         uploads_root: Optional[Union[str, Path]] = None,
-    ) -> Union["ChatResult", List["ChatResult"], Dict[int, "ChatResult"]]:
+    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow asynchronously.
 
         Parameters
@@ -364,7 +362,7 @@ class WaldiezRunner:
 
         Returns
         -------
-        Union[ChatResult, List[ChatResult]], Dict[int, ChatResult]
+        Union[ChatResult, list[ChatResult]], dict[int, ChatResult]
             The result(s) of the chat(s).
 
         Raises

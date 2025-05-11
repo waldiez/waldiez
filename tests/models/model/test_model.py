@@ -3,7 +3,6 @@
 """Test waldiez.models.model.WaldiezModel."""
 
 import os
-from typing import List
 
 import pytest
 
@@ -214,7 +213,7 @@ def test_waldiez_invalid_model() -> None:
 def test_waldiez_model_use_default_base_url() -> None:
     """Test WaldiezModel use default base url."""
     # Given
-    api_types: List[WaldiezModelAPIType] = [
+    api_types: list[WaldiezModelAPIType] = [
         "openai",
         "azure",
         "google",

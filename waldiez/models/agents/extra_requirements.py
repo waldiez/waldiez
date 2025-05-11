@@ -4,7 +4,7 @@
 
 # pylint: disable=line-too-long
 import platform
-from typing import Iterator, List, Set
+from typing import Iterator, Set
 
 from .agent import WaldiezAgent
 from .rag_user_proxy import WaldiezRagUserProxy
@@ -17,7 +17,7 @@ def get_retrievechat_extra_requirements(
 
     Parameters
     ----------
-    agents : List[WaldiezAgent]
+    agents : list[WaldiezAgent]
         The flow agents.
 
     Returns
@@ -57,12 +57,12 @@ def get_retrievechat_extra_requirements(
     return rag_requirements
 
 
-def get_captain_agent_extra_requirements() -> List[str]:
+def get_captain_agent_extra_requirements() -> list[str]:
     """Get the captain agent extra requirements.
 
     Returns
     -------
-    List[str]
+    list[str]
         The captain agent extra requirements.
     """
     # https://github.com/ag2ai/ag2/blob/main/autogen/agentchat/contrib/captainagent/tools/requirements.txt  # noqa: E501

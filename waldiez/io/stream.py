@@ -195,7 +195,7 @@ class StructuredIOStream(IOStream):
 
         Returns
         -------
-        str | Dict[str, Any]
+        str | dict[str, Any]
             The loaded user input, either as a string or a dictionary.
         """
         try:

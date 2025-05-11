@@ -3,7 +3,7 @@
 # flake8: noqa: E501
 """Waldiez Model Data."""
 
-from typing import Dict, Optional
+from typing import Optional
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -65,7 +65,7 @@ class WaldiezModelData(WaldiezBase):
         The top p of the model, by default None.
     max_tokens : Optional[int]
         The max tokens of the model, by default None.
-    default_headers : Dict[str, str]
+    default_headers : dict[str, str]
         The default headers of the model.
     price : Optional[WaldiezModelPrice]
         The price of the model, by default None.
@@ -135,7 +135,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     default_headers: Annotated[
-        Dict[str, str],
+        dict[str, str],
         Field(
             alias="defaultHeaders",
             default_factory=dict,

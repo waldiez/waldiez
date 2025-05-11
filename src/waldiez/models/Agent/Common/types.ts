@@ -30,6 +30,14 @@ export type WaldiezAgentCodeExecutionConfigDict = {
  * either a {@link WaldiezAgentCodeExecutionConfigDict} or false (to disable)
  */
 export type WaldiezAgentCodeExecutionConfig = WaldiezAgentCodeExecutionConfigDict | false;
+
+export type WaldiezAgentUpdateSystemMessageType = "string" | "callable";
+
+export type WaldiezAgentUpdateSystemMessage = {
+    type: WaldiezAgentUpdateSystemMessageType;
+    content: string;
+};
+
 /**
  * Termination type.
  * @param none - No termination
@@ -118,6 +126,7 @@ export type WaldiezAgentCommonData = {
     termination: WaldiezAgentTerminationMessageCheck;
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables?: { [key: string]: unknown };
+    updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
     handoffs: WaldiezAgentHandoff[];
     // links
     modelId?: string | null;

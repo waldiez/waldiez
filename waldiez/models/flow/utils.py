@@ -4,7 +4,7 @@
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from ..agents import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
 from ..chat import WaldiezChat
@@ -24,25 +24,25 @@ def id_factory() -> str:
 
 
 def merge_nested_chat_messages(
-    agent_nested_chat_messages: List[WaldiezAgentNestedChatMessage],
-    all_connections: List[WaldiezChat],
-) -> List[WaldiezAgentNestedChat]:
+    agent_nested_chat_messages: list[WaldiezAgentNestedChatMessage],
+    all_connections: list[WaldiezChat],
+) -> list[WaldiezAgentNestedChat]:
     """Merge the nested chat messages.
 
     Parameters
     ----------
-    all_connections : List[WaldiezChat]
+    all_connections : list[WaldiezChat]
         The connections.
-    agent_nested_chat_messages : List[WaldiezAgentNestedChatMessage]
+    agent_nested_chat_messages : list[WaldiezAgentNestedChatMessage]
         The agent's nested chat messages.
 
     Returns
     -------
-    List[WaldiezAgentNestedChat]
+    list[WaldiezAgentNestedChat]
         The merged nested chat with all the messages.
     """
     nested_chat = WaldiezAgentNestedChat(triggered_by=[], messages=[])
-    chat_ids_added: List[str] = []
+    chat_ids_added: list[str] = []
     for message in agent_nested_chat_messages:
         chat = next((c for c in all_connections if c.id == message.id), None)
         if chat and chat.id not in chat_ids_added:
@@ -67,18 +67,18 @@ def merge_nested_chat_messages(
 
 
 def get_flow_data(
-    data: Dict[str, Any],
+    data: dict[str, Any],
     flow_id: Optional[str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
-    tags: Optional[List[str]] = None,
-    requirements: Optional[List[str]] = None,
-) -> Dict[str, Any]:
+    tags: Optional[list[str]] = None,
+    requirements: Optional[list[str]] = None,
+) -> dict[str, Any]:
     """Get the flow from the passed data dict.
 
     Parameters
     ----------
-    data : Dict[str, Any]
+    data : dict[str, Any]
         The data dict.
     flow_id : Optional[str], optional
         The flow ID, by default None.
@@ -86,14 +86,14 @@ def get_flow_data(
         The flow name, by default None.
     description : Optional[str], optional
         The flow description, by default None.
-    tags : Optional[List[str]], optional
+    tags : Optional[list[str]], optional
         The flow tags, by default None.
-    requirements : Optional[List[str]], optional
+    requirements : Optional[list[str]], optional
         The flow requirements, by default None.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The flow data.
 
     Raises

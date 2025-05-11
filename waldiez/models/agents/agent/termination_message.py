@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Termination Message Check."""
 
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -12,7 +12,7 @@ from ...common import WaldiezBase, check_function, generate_function
 IS_TERMINATION_MESSAGE = "is_termination_message"
 IS_TERMINATION_MESSAGE_ARGS = ["message"]
 IS_TERMINATION_MESSAGE_TYPES = (
-    ["Dict[str, Any]"],
+    ["dict[str, Any]"],
     "bool",
 )
 
@@ -24,7 +24,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
     ----------
     type : Literal["none", "keyword", "method"]
         The type of the termination check to use: "none", "keyword", "method"
-    keywords : List[str]
+    keywords : list[str]
         If the type is "keyword", the keywords to search in the message.
     criterion : Optional[Literal["found", "ending", "exact"]] = None
         If the type is "keyword", the criterion to use (e.g.: in, endswith, ==)
@@ -54,7 +54,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         ),
     ]
     keywords: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Keywords",

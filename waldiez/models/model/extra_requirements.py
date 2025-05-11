@@ -14,14 +14,14 @@ def get_models_extra_requirements(
 
     Parameters
     ----------
-    models : List[WaldiezModel]
+    models : list[WaldiezModel]
         The models.
     autogen_version : str
         The autogen version.
 
     Returns
     -------
-    List[str]
+    list[str]
         The models extra requirements.
     """
     model_requirements: Set[str] = set()

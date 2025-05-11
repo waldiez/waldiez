@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Base class to inherit from."""
 
-from typing import Any, Dict
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
@@ -25,7 +25,7 @@ class WaldiezBase(BaseModel):
         frozen=False,
     )
 
-    def model_dump(self, **kwargs: Any) -> Dict[str, Any]:
+    def model_dump(self, **kwargs: Any) -> dict[str, Any]:
         """Dump the model to a dictionary.
 
         Parameters
@@ -35,7 +35,7 @@ class WaldiezBase(BaseModel):
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The dictionary representation of the model.
         """
         by_alias = kwargs.pop("by_alias", None)

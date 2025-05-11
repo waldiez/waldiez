@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat summary options."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from pydantic import (
     Field,
@@ -32,7 +32,7 @@ class WaldiezChatSummary(WaldiezBase):
         The method to use for the LLM summary. Defaults to "last_msg".
     prompt : str
         The prompt for the LLM summary method.
-    args : Optional[Dict[str, Any]]
+    args : Optional[dict[str, Any]]
         The additional arguments for the LLM summary method, by default None.
     """
 
@@ -53,7 +53,7 @@ class WaldiezChatSummary(WaldiezBase):
         ),
     ]
     args: Annotated[
-        Dict[str, str],
+        dict[str, str],
         Field(
             title="Arguments",
             description="The additional arguments for the LLM summary method.",

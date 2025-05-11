@@ -76,11 +76,11 @@ export const getAgentConnections = (
         }
     }
     return {
-        source: {
+        sources: {
             nodes: sourceConnectedNodes as WaldiezNodeAgent[],
             edges: sourceConnectionEdges as WaldiezEdge[],
         },
-        target: {
+        targets: {
             nodes: targetConnectedNodes as WaldiezNodeAgent[],
             edges: targetConnectionEdges as WaldiezEdge[],
         },

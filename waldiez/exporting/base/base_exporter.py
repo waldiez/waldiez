@@ -3,7 +3,7 @@
 """Base exporter class to be inherited by all exporters."""
 
 import abc
-from typing import Any, List, Optional, Tuple, TypedDict, Union
+from typing import Any, Optional, Tuple, TypedDict, Union
 
 from .agent_position import AgentPosition
 from .export_position import ExportPosition
@@ -19,24 +19,24 @@ class ExporterReturnType(TypedDict):
     ----------
     content : Optional[str]
         The exported content.
-    imports : Optional[List[Tuple[str, ImportPosition]]]
+    imports : Optional[list[Tuple[str, ImportPosition]]]
         The additional imports required for the exported content.
-    environment_variables : Optional[List[Tuple[str, str]]]
+    environment_variables : Optional[list[Tuple[str, str]]]
         The environment variables to set.
-    before_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+    before_export : Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
         The exported content before the main export and its position.
-    after_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+    after_export : Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
         The exported content after the main export and its position.
     """
 
     content: Optional[str]
-    imports: Optional[List[Tuple[str, ImportPosition]]]
-    environment_variables: Optional[List[Tuple[str, str]]]
+    imports: Optional[list[Tuple[str, ImportPosition]]]
+    environment_variables: Optional[list[Tuple[str, str]]]
     before_export: Optional[
-        List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        list[Tuple[str, Union[ExportPosition, AgentPosition]]]
     ]
     after_export: Optional[
-        List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        list[Tuple[str, Union[ExportPosition, AgentPosition]]]
     ]
 
 
@@ -56,7 +56,7 @@ class BaseExporter(abc.ABC):
         """
         raise NotImplementedError("Method not implemented.")
 
-    def get_environment_variables(self) -> Optional[List[Tuple[str, str]]]:
+    def get_environment_variables(self) -> Optional[list[Tuple[str, str]]]:
         """Get the environment variables to set.
 
         Returns
@@ -65,7 +65,7 @@ class BaseExporter(abc.ABC):
             The environment variables to set if any.
         """
 
-    def get_imports(self) -> Optional[List[Tuple[str, ImportPosition]]]:
+    def get_imports(self) -> Optional[list[Tuple[str, ImportPosition]]]:
         """Generate the imports string for the exporter.
 
         Returns
@@ -76,12 +76,12 @@ class BaseExporter(abc.ABC):
 
     def get_before_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content before the main export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content before the main export and its position.
         """
 
@@ -98,12 +98,12 @@ class BaseExporter(abc.ABC):
 
     def get_after_export(
         self,
-    ) -> Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content after the main export.
 
         Returns
         -------
-        Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content after the main export and its position.
         """
 

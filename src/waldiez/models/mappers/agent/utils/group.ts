@@ -140,7 +140,7 @@ const getAllowedOrDisallowedTransitions = (json: Record<string, unknown>): { [ke
         typeof json.allowedOrDisallowedTransitions === "object" &&
         json.allowedOrDisallowedTransitions
     ) {
-        // dist[str, List[str]]
+        // dist[str, list[str]]
         const transitions: { [key: string]: string[] } = {};
         for (const [key, value] of Object.entries(json.allowedOrDisallowedTransitions)) {
             if (typeof key === "string" && Array.isArray(value)) {

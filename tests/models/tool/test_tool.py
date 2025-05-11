@@ -371,7 +371,7 @@ import chess
 import numpy as np
 from nltk.tokenize import word_tokenize
 
-def custom_tool(text: str) -> List[str]:
+def custom_tool(text: str) -> list[str]:
     """Tokenize the text."""
     return word_tokenize(text)
 
@@ -397,7 +397,7 @@ def custom_tool(text: str) -> List[str]:
     assert not tool.requirements
     assert (
         tool.get_content()
-        == '''def custom_tool(text: str) -> List[str]:
+        == '''def custom_tool(text: str) -> list[str]:
     """Tokenize the text."""
     return word_tokenize(text)'''
     )

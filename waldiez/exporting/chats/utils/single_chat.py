@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Utilities for exporting a single chat in a flow."""
 
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Optional, Tuple
 
 from waldiez.models import (
     WaldiezAgent,
@@ -20,8 +20,8 @@ def export_single_chat(
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
     chat: WaldiezChat,
-    agent_names: Dict[str, str],
-    chat_names: Dict[str, str],
+    agent_names: dict[str, str],
+    chat_names: dict[str, str],
     serializer: Callable[[str], str],
     string_escape: Callable[[str], str],
     tabs: int,
@@ -37,9 +37,9 @@ def export_single_chat(
         The recipient.
     chat : WaldiezChat
         The chat.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
     serializer : Callable[[str], str]
         The serializer function to escape quotes in a string.
@@ -123,9 +123,9 @@ def get_simple_chat_string(
     chat: WaldiezChat,
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
-    agent_names: Dict[str, str],
-    chat_names: Dict[str, str],
-    chat_args: Dict[str, Any],
+    agent_names: dict[str, str],
+    chat_names: dict[str, str],
+    chat_args: dict[str, Any],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     tabs: int,
@@ -141,11 +141,11 @@ def get_simple_chat_string(
         The sender.
     recipient : WaldiezAgent
         The recipient.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
-    chat_args : Dict[str, Any]
+    chat_args : dict[str, Any]
         The chat arguments.
     serializer : Callable[[str], str]
         The serializer function to escape quotes in a string.
@@ -197,7 +197,7 @@ def get_empty_simple_chat_string(
     chat: WaldiezChat,
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
     string_escape: Callable[[str], str],
     tab: str,
     is_async: bool,
@@ -212,7 +212,7 @@ def get_empty_simple_chat_string(
         The sender.
     recipient : WaldiezAgent
         The recipient.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
     string_escape : Callable[[str], str]
         The string escape function.
@@ -250,7 +250,7 @@ def get_empty_simple_chat_string(
 def get_chat_message(
     tab: str,
     chat: WaldiezChat,
-    chat_names: Dict[str, str],
+    chat_names: dict[str, str],
     sender: WaldiezAgent,
     sender_name: str,
     string_escape: Callable[[str], str],
@@ -263,7 +263,7 @@ def get_chat_message(
         The tab string.
     chat : WaldiezChat
         The chat.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
     sender : WaldiezAgent
         The sender.

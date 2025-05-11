@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Utils to generate the content of a flow."""
 
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Optional
 
 from waldiez.models import Waldiez
 
@@ -85,7 +85,7 @@ PYLINT_RULES = [
 
 
 def get_pylint_ignore_comment(
-    notebook: bool, rules: Optional[List[str]] = None
+    notebook: bool, rules: Optional[list[str]] = None
 ) -> str:
     """Get the pylint ignore comment string.
 
@@ -93,7 +93,7 @@ def get_pylint_ignore_comment(
     ----------
     notebook : bool
         Whether the comment is for a notebook.
-    rules : Optional[List[str]], optional
+    rules : Optional[list[str]], optional
         The pylint rules to ignore, by default None.
 
     Returns
@@ -119,7 +119,7 @@ def get_pylint_ignore_comment(
 
 def get_after_run_content(
     waldiez: Waldiez,
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
     tabs: int,
 ) -> str:
     """Get content to add after the flow is run.
@@ -128,7 +128,7 @@ def get_after_run_content(
     ----------
     waldiez : Waldiez
         The waldiez object.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         The dictionary of agent names and their corresponding ids
     tabs : int
         The number of tabs to add before the content.

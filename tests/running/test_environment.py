@@ -93,20 +93,20 @@ def test_reset_env_vars() -> None:
     os.environ.pop("FLOW_ENV_VAR")
 
 
-# def set_env_vars(flow_env_vars: List[Tuple[str, str]]) -> Dict[str, str]:
+# def set_env_vars(flow_env_vars: list[Tuple[str, str]]) -> dict[str, str]:
 #     """Set environment variables and return the old ones (if any).
 
 #     Parameters
 #     ----------
-#     flow_env_vars : List[Tuple[str, str]]
+#     flow_env_vars : list[Tuple[str, str]]
 #         The environment variables to set.
 
 #     Returns
 #     -------
-#     Dict[str, str]
+#     dict[str, str]
 #         The old environment variables.
 #     """
-#     old_vars: Dict[str, str] = {}
+#     old_vars: dict[str, str] = {}
 #     for var_key, var_value in flow_env_vars:
 #         if var_key:
 #             current = os.environ.get(var_key, "")
@@ -115,12 +115,12 @@ def test_reset_env_vars() -> None:
 #     return old_vars
 
 
-# def reset_env_vars(old_vars: Dict[str, str]) -> None:
+# def reset_env_vars(old_vars: dict[str, str]) -> None:
 #     """Reset the environment variables.
 
 #     Parameters
 #     ----------
-#     old_vars : Dict[str, str]
+#     old_vars : dict[str, str]
 #         The old environment variables.
 #     """
 #     for var_key, var_value in old_vars.items():

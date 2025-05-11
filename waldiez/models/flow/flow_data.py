@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez flow data."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
@@ -19,24 +19,24 @@ class WaldiezFlowData(WaldiezBase):
 
     Attributes
     ----------
-    nodes : List[Dict[str, Any]]
+    nodes : list[dict[str, Any]]
         The nodes of the flow. We ignore this (UI-related)
-    edges : List[Dict[str, Any]]
+    edges : list[dict[str, Any]]
         The edges of the flow. We ignore this (UI-related)
-    viewport : Dict[str, Any]
+    viewport : dict[str, Any]
         The viewport of the flow. We ignore this (UI-related)
     agents : WaldiezAgents
         The agents of the flow:
-        users: List[WaldiezUserProxy]
-        assistants: List[WaldiezAssistant]
-        managers: List[WaldiezGroupManager]
-        rag_users : List[WaldiezRagUserProxy]
+        users: list[WaldiezUserProxy]
+        assistants: list[WaldiezAssistant]
+        managers: list[WaldiezGroupManager]
+        rag_users : list[WaldiezRagUserProxy]
         See `WaldiezAgents` for more info.
-    models : List[WaldiezModel]
+    models : list[WaldiezModel]
         The models of the flow. See `WaldiezModel`.
-    tools : List[WaldiezTool]
+    tools : list[WaldiezTool]
         The tools of the flow. See `WaldiezTool`.
-    chats : List[WaldiezChat]
+    chats : list[WaldiezChat]
         The chats of the flow. See `WaldiezChat`.
     is_async : bool
         Whether the flow is asynchronous or not.
@@ -47,7 +47,7 @@ class WaldiezFlowData(WaldiezBase):
     # the ones below (nodes,edges, viewport) we ignore
     # (they for graph connections, positions, etc.)
     nodes: Annotated[
-        List[Dict[str, Any]],
+        list[dict[str, Any]],
         Field(
             default_factory=list,
             title="Nodes",
@@ -55,7 +55,7 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     edges: Annotated[
-        List[Dict[str, Any]],
+        list[dict[str, Any]],
         Field(
             default_factory=list,
             title="Edges",
@@ -63,7 +63,7 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     viewport: Annotated[
-        Dict[str, Any],
+        dict[str, Any],
         Field(
             default_factory=dict,
             title="Viewport",
@@ -80,7 +80,7 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     models: Annotated[
-        List[WaldiezModel],
+        list[WaldiezModel],
         Field(
             description="The models of the flow",
             title="Models",
@@ -88,7 +88,7 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     tools: Annotated[
-        List[WaldiezTool],
+        list[WaldiezTool],
         Field(
             description="The tools of the flow",
             title="Tools",
@@ -96,7 +96,7 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     chats: Annotated[
-        List[WaldiezChat],
+        list[WaldiezChat],
         Field(
             description="The chats of the flow",
             title="Chats",
@@ -156,7 +156,7 @@ class WaldiezFlowData(WaldiezBase):
         #         prerequisites.append((chat_id, pre_chat_id))
         #    return prerequisites
         # ```
-        id_to_chat_id: Dict[str, int] = {}
+        id_to_chat_id: dict[str, int] = {}
         for index, chat in enumerate(self.chats):
             id_to_chat_id[chat.id] = index
             chat.set_chat_id(index)

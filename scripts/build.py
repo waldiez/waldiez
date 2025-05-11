@@ -6,7 +6,6 @@ import shutil
 import subprocess  # nosemgrep # nosec
 import sys
 from pathlib import Path
-from typing import List
 
 HAD_TO_MODIFY_SYS_PATH = False
 
@@ -19,12 +18,12 @@ except ImportError:
     HAD_TO_MODIFY_SYS_PATH = True
 
 
-def get_caller() -> List[str]:
+def get_caller() -> list[str]:
     """Get the caller to use for a command.
 
     Returns
     -------
-    List[str]
+    list[str]
         The caller to use for a command.
     """
     if prefer_uv():

@@ -4,7 +4,7 @@
 # pylint: disable=too-many-locals,too-many-statements,line-too-long
 """Common functions for testing waldiez.exporting.agent.AgentExporter."""
 
-from typing import List, Tuple, Type
+from typing import Tuple, Type
 
 from waldiez.models import (
     WaldiezAgent,
@@ -21,7 +21,7 @@ from waldiez.models import (
 def create_agent(
     counter: int,
     agent_type: WaldiezAgentType,
-) -> Tuple[WaldiezAgent, List[WaldiezTool], List[WaldiezModel]]:
+) -> Tuple[WaldiezAgent, list[WaldiezTool], list[WaldiezModel]]:
     """Create an agent.
 
     Parameters

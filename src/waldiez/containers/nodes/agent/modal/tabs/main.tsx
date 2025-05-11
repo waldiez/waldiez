@@ -10,13 +10,17 @@ import { WaldiezAgentCaptainTab } from "@waldiez/containers/nodes/agent/modal/ta
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
 import { WaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/model";
-import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats";
+import {
+    WaldiezAgentGroupNestedChatTabs,
+    WaldiezAgentNestedChats,
+} from "@waldiez/containers/nodes/agent/modal/tabs/nested";
 import { WaldiezAgentRagUser } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
 import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 import { WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
 import {
+    WaldiezEdge,
     WaldiezNodeAgent,
     WaldiezNodeAgentCaptainData,
     WaldiezNodeAgentData,
@@ -39,6 +43,7 @@ export const WaldiezNodeAgentModalTabs = ({
     onFilesToUploadChange,
 }: WaldiezNodeAgentModalTabsProps) => {
     const isManager = dataProp.agentType === "group_manager";
+    const isGroupMember = dataProp.agentType !== "group_manager" && !!dataProp.parentId;
     const isRagUser = dataProp.agentType === "rag_user_proxy";
     const isReasoning = dataProp.agentType === "reasoning";
     const isCaptain = dataProp.agentType === "captain";
@@ -54,8 +59,19 @@ export const WaldiezNodeAgentModalTabs = ({
     const tools = getTools() as WaldiezNodeTool[];
     // const edges = getEdges() as WaldiezEdge[];
     const groupManagers = agents.filter(agent => agent.data.agentType === "group_manager");
-    const connectionsCount = agentConnections.target.edges.length + agentConnections.source.edges.length;
-    const showNestedChatsTab = connectionsCount > 0;
+    const connectionsCount = agentConnections.targets.edges.length + agentConnections.sources.edges.length;
+    const showNestedChatsTab = !isGroupMember && connectionsCount > 0;
+    let showGroupNestedChatTab = false;
+    let groupMembers: WaldiezNodeAgent[] = [];
+    let connectionsOutsideGroup: WaldiezEdge[] = [];
+    if (isGroupMember) {
+        groupMembers = agents.filter(agent => agent.data.parentId === dataProp.parentId);
+        // check if the member has connections (targets) outside the group
+        connectionsOutsideGroup = agentConnections.targets.edges.filter(
+            edge => groupMembers.findIndex(member => member.id === edge.target) === -1,
+        );
+        showGroupNestedChatTab = connectionsOutsideGroup.length > 0;
+    }
     const uploadsEnabled = !!uploadHandler;
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     useEffect(() => {
@@ -146,6 +162,21 @@ export const WaldiezNodeAgentModalTabs = ({
                             data={data as WaldiezNodeAgentData}
                             onDataChange={onDataChange}
                             agentConnections={agentConnections}
+                        />
+                    </div>
+                </TabItem>
+            )}
+            {isGroupMember && showGroupNestedChatTab && (
+                <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-group-nested`}>
+                    <div className="modal-tab-body">
+                        <WaldiezAgentGroupNestedChatTabs
+                            id={id}
+                            flowId={flowId}
+                            darkMode={isDarkMode}
+                            data={data as WaldiezNodeAgentData}
+                            agentConnections={agentConnections}
+                            edges={connectionsOutsideGroup}
+                            onDataChange={onDataChange}
                         />
                     </div>
                 </TabItem>

@@ -8,6 +8,7 @@ import {
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
+    WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common";
 import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
 
@@ -31,6 +32,7 @@ import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
  * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentHandoff}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
  */
 export class WaldiezAgentData {
     systemMessage: string | null;
@@ -39,11 +41,12 @@ export class WaldiezAgentData {
     agentDefaultAutoReply: string | null;
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
-    modelId?: string | null;
+    modelId: string | null;
     tools: WaldiezAgentLinkedTool[];
     parentId?: string;
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables: Record<string, any>;
+    updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
     handoffs: WaldiezAgentHandoff[];
     constructor(
         props: {
@@ -53,11 +56,12 @@ export class WaldiezAgentData {
             agentDefaultAutoReply: string | null;
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
-            modelId?: string | null;
+            modelId: string | null;
             tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
+            updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
             handoffs: WaldiezAgentHandoff[];
         } = {
             humanInputMode: "NEVER",
@@ -76,6 +80,7 @@ export class WaldiezAgentData {
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},
+            updateAgentStateBeforeReply: [],
             handoffs: [],
         },
     ) {
@@ -90,6 +95,7 @@ export class WaldiezAgentData {
         this.parentId = props.parentId;
         this.nestedChats = props.nestedChats;
         this.contextVariables = props.contextVariables;
+        this.updateAgentStateBeforeReply = props.updateAgentStateBeforeReply;
         this.handoffs = props.handoffs;
     }
 }

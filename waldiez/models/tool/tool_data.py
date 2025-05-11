@@ -2,7 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Tool model."""
 
-from typing import Dict
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -20,7 +19,7 @@ class WaldiezToolData(WaldiezBase):
         The type of the tool: shared, custom, langchain, crewai.
     content : str
         The content (source code) of the tool.
-    secrets : Dict[str, str]
+    secrets : dict[str, str]
         The secrets (environment variables) of the tool.
     """
 
@@ -44,7 +43,7 @@ class WaldiezToolData(WaldiezBase):
         ),
     ]
     secrets: Annotated[
-        Dict[str, str],
+        dict[str, str],
         Field(
             default_factory=dict,
             title="Secrets",

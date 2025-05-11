@@ -312,7 +312,7 @@ def custom_text_split_function_rag_user(
     chunk_mode: str,
     must_break_at_empty_line: bool,
     overlap: int,
-) -> List[str]:
+) -> list[str]:
     return text.split()
 
 """

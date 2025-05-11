@@ -8,7 +8,6 @@ import subprocess  # nosemgrep # nosec
 import sys
 from importlib.metadata import version as package_version
 from pathlib import Path
-from typing import List
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -89,12 +88,12 @@ def get_executable() -> str:
     return sys.executable
 
 
-def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:
+def run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
     """Run a command.
 
     Parameters
     ----------
-    args : List[str]
+    args : list[str]
         List of arguments to pass to the command.
     cwd : Path
         Directory to run the command in. Defaults to the root directory.

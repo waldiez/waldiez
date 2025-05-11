@@ -7,7 +7,7 @@ import importlib.util
 import sys
 import sysconfig
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import parso
 import parso.python
@@ -76,7 +76,7 @@ def parse_code_string(
 def gather_code_imports(
     code_string: str,
     is_interop: bool,
-) -> Tuple[List[str], List[str]]:
+) -> Tuple[list[str], list[str]]:
     """Gather the imports from the code string.
 
     Parameters
@@ -88,11 +88,11 @@ def gather_code_imports(
 
     Returns
     -------
-    Tuple[List[str], List[str]]
+    Tuple[list[str], list[str]]
         The standard library imports and the third party imports.
     """
-    standard_lib_imports: List[str] = []
-    third_party_imports: List[str] = []
+    standard_lib_imports: list[str] = []
+    third_party_imports: list[str] = []
     tree = parso.parse(code_string)  # type: ignore
     for node in tree.iter_imports():
         if node.type == "import_name":
@@ -142,7 +142,7 @@ def gather_code_imports(
 def check_function(
     code_string: str,
     function_name: str,
-    function_args: List[str],
+    function_args: list[str],
 ) -> Tuple[bool, str]:
     """Check the function.
 
@@ -152,7 +152,7 @@ def check_function(
         The code string to check.
     function_name : str
         The expected method name.
-    function_args : List[str]
+    function_args : list[str]
         The expected method arguments.
 
     Returns
@@ -176,7 +176,7 @@ def _validate_function_body(
     tree: ast.Module,
     code_string: str,
     function_name: str,
-    function_args: List[str],
+    function_args: list[str],
 ) -> Tuple[bool, str]:
     """Get the function body.
 
@@ -188,7 +188,7 @@ def _validate_function_body(
         The function body.
     function_name : str
         The expected method name.
-    function_args : List[str]
+    function_args : list[str]
         The expected method arguments.
 
     Returns
@@ -304,8 +304,8 @@ def _get_function_body(
 
 def generate_function(
     function_name: str,
-    function_args: List[str],
-    function_types: Tuple[List[str], str],
+    function_args: list[str],
+    function_types: Tuple[list[str], str],
     function_body: str,
     types_as_comments: bool = False,
 ) -> str:
@@ -315,9 +315,9 @@ def generate_function(
     ----------
     function_name : str
         The function name.
-    function_args : List[str]
+    function_args : list[str]
         The function arguments.
-    function_types : Tuple[List[str], str]
+    function_types : Tuple[list[str], str]
         The function types.
     function_body : str
         The function body.

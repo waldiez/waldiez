@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Utility functions for exporting sequential chats."""
 
-from typing import Callable, Dict, List, Tuple
+from typing import Callable, Tuple
 
 from waldiez.models import (
     WaldiezAgent,
@@ -15,9 +15,9 @@ from .common import get_chat_message_string, update_summary_chat_args
 
 
 def export_sequential_chat(
-    main_chats: List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
-    chat_names: Dict[str, str],
-    agent_names: Dict[str, str],
+    main_chats: list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
+    chat_names: dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     tabs: int,
@@ -27,11 +27,11 @@ def export_sequential_chat(
 
     Parameters
     ----------
-    main_chats : List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+    main_chats : list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
         The main chats.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
     serializer : Callable[..., str]
         The serializer function to escape quotes in a string.
@@ -139,8 +139,8 @@ def _get_chat_dict_string(
     chat: WaldiezChat,
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
-    chat_names: Dict[str, str],
-    agent_names: Dict[str, str],
+    chat_names: dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     tabs: int,
@@ -159,9 +159,9 @@ def _get_chat_dict_string(
         The sender.
     recipient : WaldiezAgent
         The recipient.
-    chat_names : Dict[str, str]
+    chat_names : dict[str, str]
         A mapping of chat id to chat name.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         A mapping of agent id to agent name.
     serializer : Callable[[str], str]
         The function to serialize the dictionaries or lists.

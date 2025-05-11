@@ -67,6 +67,7 @@ describe("WaldiezAgentUserProxy", () => {
                 },
             ],
             contextVariables: {},
+            updateAgentStateBeforeReply: [],
             handoffs: [],
         });
         const userProxy = new WaldiezAgentUserProxy({

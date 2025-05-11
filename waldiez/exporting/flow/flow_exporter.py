@@ -24,7 +24,7 @@
 
 from functools import partial
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from waldiez.models import Waldiez, WaldiezAgent
 
@@ -262,28 +262,28 @@ class FlowExporter(BaseExporter, ExporterMixin):
 
     @staticmethod
     def gather_environment_variables(
-        model_env_vars: Optional[List[Tuple[str, str]]],
-        tool_env_vars: Optional[List[Tuple[str, str]]],
-        chat_env_vars: Optional[List[Tuple[str, str]]],
-    ) -> List[Tuple[str, str]]:
+        model_env_vars: Optional[list[Tuple[str, str]]],
+        tool_env_vars: Optional[list[Tuple[str, str]]],
+        chat_env_vars: Optional[list[Tuple[str, str]]],
+    ) -> list[Tuple[str, str]]:
         """
         Gather all the environment variables.
 
         Parameters
         ----------
-        model_env_vars : Optional[List[Tuple[str, str]]]
+        model_env_vars : Optional[list[Tuple[str, str]]]
             The model environment variables.
-        tool_env_vars : Optional[List[Tuple[str, str]]]
+        tool_env_vars : Optional[list[Tuple[str, str]]]
             The tool environment variables.
-        chat_env_vars : Optional[List[Tuple[str, str]]]
+        chat_env_vars : Optional[list[Tuple[str, str]]]
             The chat environment variables.
 
         Returns
         -------
-        List[Tuple[str, str]]
+        list[Tuple[str, str]]
             The gathered environment variables.
         """
-        all_env_vars: List[Tuple[str, str]] = []
+        all_env_vars: list[Tuple[str, str]] = []
         if model_env_vars:
             all_env_vars.extend(model_env_vars)
         if tool_env_vars:
@@ -295,32 +295,32 @@ class FlowExporter(BaseExporter, ExporterMixin):
     @staticmethod
     def gather_exports(
         model_export: Optional[
-            List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+            list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         ],
         tool_export: Optional[
-            List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+            list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         ],
         chat_export: Optional[
-            List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+            list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         ],
-    ) -> List[Tuple[str, Union[ExportPosition, AgentPosition]]]:
+    ) -> list[Tuple[str, Union[ExportPosition, AgentPosition]]]:
         """Gather all (but agents) the before or after exports.
 
         Parameters
         ----------
-        model_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        model_export : Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The model exports.
-        tool_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        tool_export : Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The tool exports.
-        chat_export : Optional[List[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        chat_export : Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
             The chat exports.
 
         Returns
         -------
-        List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        list[Tuple[str, Union[ExportPosition, AgentPosition]]]
             The gathered exports.
         """
-        all_exports: List[Tuple[str, Union[ExportPosition, AgentPosition]]] = []
+        all_exports: list[Tuple[str, Union[ExportPosition, AgentPosition]]] = []
         if model_export:
             all_exports.extend(model_export)
         if tool_export:
@@ -369,24 +369,24 @@ class FlowExporter(BaseExporter, ExporterMixin):
 
     @staticmethod
     def gather_agent_arguments(
-        before_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
-        after_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
-    ) -> List[Tuple[str, AgentPosition]]:
+        before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+        after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    ) -> list[Tuple[str, AgentPosition]]:
         """Gather the agent arguments.
 
         Parameters
         ----------
-        before_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
             The before export.
-        after_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
             The after export.
 
         Returns
         -------
-        List[Tuple[str, AgentPosition]]
+        list[Tuple[str, AgentPosition]]
             The gathered agent arguments.
         """
-        exported_with_agent_arg: List[Tuple[str, AgentPosition]] = []
+        exported_with_agent_arg: list[Tuple[str, AgentPosition]] = []
         for before in before_export:
             position = before[1]
             if (
@@ -405,16 +405,16 @@ class FlowExporter(BaseExporter, ExporterMixin):
 
     def export_agents(
         self,
-        before_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
-        after_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
+        before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+        after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
     ) -> ExporterReturnType:
         """Export the agents.
 
         Parameters
         ----------
-        before_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
             The before export.
-        after_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+        after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
             The after export.
 
         Returns
@@ -471,20 +471,20 @@ class FlowExporter(BaseExporter, ExporterMixin):
 
     @staticmethod
     def agent_arguments_resolver(
-        additional_exports: List[Tuple[str, AgentPosition]], agent: WaldiezAgent
-    ) -> List[str]:
+        additional_exports: list[Tuple[str, AgentPosition]], agent: WaldiezAgent
+    ) -> list[str]:
         """Resolve the arguments for the agent.
 
         Parameters
         ----------
-        additional_exports : List[Tuple[str, AgentPosition]]
+        additional_exports : list[Tuple[str, AgentPosition]]
             The additional exports.
         agent : WaldiezAgent
             The agent.
 
         Returns
         -------
-        List[str]
+        list[str]
             The arguments for the agent.
         """
         return [x[0] for x in additional_exports if x[1].agent == agent]

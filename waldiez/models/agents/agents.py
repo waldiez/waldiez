@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez agents model."""
 
-from typing import Iterator, List
+from typing import Iterator
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
@@ -22,22 +22,22 @@ class WaldiezAgents(WaldiezBase):
 
     Attributes
     ----------
-    userProxyAgents : List[WaldiezUserProxy]
+    userProxyAgents : list[WaldiezUserProxy]
         User proxy agents.
-    assistantAgents : List[WaldiezAssistant]
+    assistantAgents : list[WaldiezAssistant]
         Assistant agents.
-    ragUserProxyAgents : List[WaldiezRagUserProxy]
+    ragUserProxyAgents : list[WaldiezRagUserProxy]
         RAG user proxy agents.
-    reasoningAgents : List[WaldiezReasoningAgent]
+    reasoningAgents : list[WaldiezReasoningAgent]
         Reasoning agents.
-    captainAgents : List[WaldiezCaptainAgent]
+    captainAgents : list[WaldiezCaptainAgent]
         Captain agents.
-    groupManagerAgents : List[WaldiezGroupManager]
+    groupManagerAgents : list[WaldiezGroupManager]
         Group manager agents.
     """
 
     userProxyAgents: Annotated[
-        List[WaldiezUserProxy],
+        list[WaldiezUserProxy],
         Field(
             title="User Proxy Agents.",
             description="The User proxy agents in the flow.",
@@ -45,7 +45,7 @@ class WaldiezAgents(WaldiezBase):
         ),
     ]
     assistantAgents: Annotated[
-        List[WaldiezAssistant],
+        list[WaldiezAssistant],
         Field(
             title="Assistant Agents.",
             description="The assistant agents in the flow.",
@@ -53,7 +53,7 @@ class WaldiezAgents(WaldiezBase):
         ),
     ]
     ragUserProxyAgents: Annotated[
-        List[WaldiezRagUserProxy],
+        list[WaldiezRagUserProxy],
         Field(
             title="RAG Users Proxy agents.",
             description="The RAG user proxy agents in the flow.",
@@ -61,7 +61,7 @@ class WaldiezAgents(WaldiezBase):
         ),
     ]
     reasoningAgents: Annotated[
-        List[WaldiezReasoningAgent],
+        list[WaldiezReasoningAgent],
         Field(
             title="Reasoning Agents.",
             description="The Reasoning agents in the flow.",
@@ -69,7 +69,7 @@ class WaldiezAgents(WaldiezBase):
         ),
     ]
     captainAgents: Annotated[
-        List[WaldiezCaptainAgent],
+        list[WaldiezCaptainAgent],
         Field(
             title="Captain Agents.",
             description="The Captain agents in the flow.",
@@ -77,7 +77,7 @@ class WaldiezAgents(WaldiezBase):
         ),
     ]
     groupManagerAgents: Annotated[
-        List[WaldiezGroupManager],
+        list[WaldiezGroupManager],
         Field(
             title="Group Manager Agents.",
             description="The Group manager agents in the flow.",
@@ -125,7 +125,7 @@ class WaldiezAgents(WaldiezBase):
             raise ValueError("Agent IDs must be unique.")
         return self
 
-    def validate_flow(self, model_ids: List[str], tool_ids: List[str]) -> None:
+    def validate_flow(self, model_ids: list[str], tool_ids: list[str]) -> None:
         """Validate the flow of the agents.
 
         - Validate the linked models (the referenced model ids must exist).
@@ -134,9 +134,9 @@ class WaldiezAgents(WaldiezBase):
 
         Parameters
         ----------
-        model_ids : List[str]
+        model_ids : list[str]
             The list of model IDs.
-        tool_ids : List[str]
+        tool_ids : list[str]
             The list of tool IDs.
 
         Raises

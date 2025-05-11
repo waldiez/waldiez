@@ -32,11 +32,11 @@ export interface IWaldiezAgentStore {
             targetsOnly?: boolean;
         },
     ) => {
-        source: {
+        sources: {
             nodes: WaldiezNodeAgent[];
             edges: WaldiezEdge[];
         };
-        target: {
+        targets: {
             nodes: WaldiezNodeAgent[];
             edges: WaldiezEdge[];
         };

@@ -5,7 +5,7 @@
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, Set, Union
+from typing import Any, Set, Union
 
 import pandas as pd
 
@@ -38,7 +38,7 @@ def escape_mermaid_text(text: str) -> str:
     return output
 
 
-def get_json_state(json_state: Any) -> Dict[str, Any]:
+def get_json_state(json_state: Any) -> dict[str, Any]:
     """Get the JSON state of the event.
 
     Parameters

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Handle agent contents before and after the agent(s) exports."""
 
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 
 from waldiez.exporting.base import (
     AgentPosition,
@@ -15,7 +15,7 @@ from waldiez.models import WaldiezAgent
 
 def add_after_all_agents_content(
     agents_contents: str,
-    after_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
 ) -> str:
     """Add the after all agents content.
 
@@ -23,7 +23,7 @@ def add_after_all_agents_content(
     ----------
     agents_contents : str
         The agents content.
-    after_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         The after export.
 
     Returns
@@ -49,7 +49,7 @@ def add_after_all_agents_content(
 
 def add_before_all_agents_content(
     agents_contents: str,
-    before_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
 ) -> str:
     """Add the before all agents content.
 
@@ -57,7 +57,7 @@ def add_before_all_agents_content(
     ----------
     agents_contents : str
         The agents content.
-    before_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         The before export.
 
     Returns
@@ -81,7 +81,7 @@ def add_before_all_agents_content(
 
 def add_before_agent_content(
     agent_content: str,
-    before_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
     agent: WaldiezAgent,
 ) -> str:
     """Add the before agent content.
@@ -90,7 +90,7 @@ def add_before_agent_content(
     ----------
     agent_content : str
         The agent content.
-    before_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         The before export.
     agent : WaldiezAgent
         The agent.
@@ -115,7 +115,7 @@ def add_before_agent_content(
 
 def add_after_agent_content(
     agent_content: str,
-    after_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
     agent: WaldiezAgent,
 ) -> str:
     """Add the after agent content.
@@ -124,7 +124,7 @@ def add_after_agent_content(
     ----------
     agent_content : str
         The agent content.
-    after_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         The after export.
     agent : WaldiezAgent
         The agent.
@@ -148,19 +148,19 @@ def add_after_agent_content(
 
 
 def gather_agent_outputs(
-    before_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
-    after_export: List[Tuple[str, Union[ExportPosition, AgentPosition]]],
-    agent_outputs: List[ExporterReturnType],
+    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    agent_outputs: list[ExporterReturnType],
 ) -> ExporterReturnType:
     """Gather all the agent outputs.
 
     Parameters
     ----------
-    before_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         The before export.
-    after_export : List[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
         The after export.
-    agent_outputs : List[ExporterReturnType]
+    agent_outputs : list[ExporterReturnType]
         The agent outputs.
 
     Returns

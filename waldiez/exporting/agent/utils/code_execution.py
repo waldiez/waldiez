@@ -2,13 +2,13 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Code execution related functions for exporting agents."""
 
-from typing import Dict, Tuple
+from typing import Tuple
 
 from waldiez.models import WaldiezAgent
 
 
 def get_agent_code_execution_config(
-    agent: WaldiezAgent, agent_name: str, tool_names: Dict[str, str]
+    agent: WaldiezAgent, agent_name: str, tool_names: dict[str, str]
 ) -> Tuple[str, str, str]:
     """Get the code execution config for the agent.
 
@@ -18,7 +18,7 @@ def get_agent_code_execution_config(
         The agent.
     agent_name : str
         The agent name.
-    tool_names : Dict[str, str]
+    tool_names : dict[str, str]
         A mapping of tool id to tool name.
 
     Returns

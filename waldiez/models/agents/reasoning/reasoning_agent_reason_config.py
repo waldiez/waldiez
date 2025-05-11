@@ -7,7 +7,7 @@ from typing_extensions import Annotated, Literal
 
 from ...common import WaldiezBase
 
-ReasoningConfigMethod = Literal["beam_search", "mcts", "lats", "dfs"]
+ReasonConfigMethod = Literal["beam_search", "mcts", "lats", "dfs"]
 """Possible reasoning methods."""
 
 
@@ -37,7 +37,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
     """
 
     method: Annotated[
-        ReasoningConfigMethod,
+        ReasonConfigMethod,
         Field(
             "beam_search",
             title="Method",

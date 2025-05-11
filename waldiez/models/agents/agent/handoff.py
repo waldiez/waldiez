@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Handoff class."""
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -58,7 +58,7 @@ class WaldiezRandomAgentTarget(WaldiezBase):
         ),
     ]
     target: Annotated[
-        List[str],
+        list[str],
         Field(
             ...,
             ge=2,
@@ -154,7 +154,7 @@ class WaldiezStringLLMCondition(WaldiezBase):
 
     condition_type: Literal["string_llm"]
     prompt: str
-    data: Dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
 
 
 class WaldiezContextStrLLMCondition(WaldiezBase):
@@ -162,7 +162,7 @@ class WaldiezContextStrLLMCondition(WaldiezBase):
 
     condition_type: Literal["context_str_llm"]
     context_str: str
-    data: Dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
 
 
 LLMCondition = Annotated[
@@ -183,7 +183,7 @@ class WaldiezExpressionContextCondition(WaldiezBase):
 
     condition_type: Literal["expression_context"]
     expression: str
-    data: Dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
 
 
 ContextCondition = Annotated[
@@ -209,10 +209,10 @@ class WaldiezOnContextCondition(WaldiezBase):
 class WaldiezAgentHandoff(WaldiezBase):
     """Handoff class for Waldiez agents."""
 
-    llm_conditions: Optional[List[WaldiezOnCondition]] = None
-    context_conditions: Optional[List[WaldiezOnContextCondition]] = None
+    llm_conditions: Optional[list[WaldiezOnCondition]] = None
+    context_conditions: Optional[list[WaldiezOnContextCondition]] = None
     after_work: Optional[WaldiezTransitionTarget] = None
-    explicit_tool_handoff_info: Optional[Dict[str, Any]] = None
+    explicit_tool_handoff_info: Optional[dict[str, Any]] = None
 
 
 WaldiezHandoffCondition = Union[WaldiezOnCondition, WaldiezOnContextCondition]

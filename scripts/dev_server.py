@@ -12,7 +12,7 @@ import logging
 import sys
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Set
 
 import nest_asyncio  # type: ignore
 import websockets
@@ -102,7 +102,7 @@ class OutgoingMessage(ModelBase):
     type: OutgoingAction
     success: bool
     message: str | None = None
-    filePaths: List[str] | None = None
+    filePaths: list[str] | None = None
 
 
 class AsyncIOWebsockets(IOStream):
@@ -303,7 +303,7 @@ class WaldiezDevServer:
         self,
         websocket: websockets.ServerConnection,
         action: IncomingAction,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> None:
         """Handle an action from the client.
 
@@ -313,7 +313,7 @@ class WaldiezDevServer:
             The WebSocket connection to handle.
         action : IncomingAction
             The action to handle.
-        data : Dict[str, Any]
+        data : dict[str, Any]
             The data associated with the action.
         """
         message: OutgoingMessage
@@ -406,7 +406,7 @@ class WaldiezDevServer:
     async def handle_upload(
         self,
         websocket: websockets.ServerConnection,
-        files: List[Dict[str, str]],
+        files: list[dict[str, str]],
     ) -> OutgoingMessage:
         """Handle an 'upload' action with base64-encoded files.
 
@@ -414,7 +414,7 @@ class WaldiezDevServer:
         ----------
         websocket : websockets.ServerConnection
             The WebSocket connection to handle.
-        files : List[Dict[str, str]]
+        files : list[dict[str, str]]
             List of files to upload, each with a 'name' and 'content' field.
 
         Returns

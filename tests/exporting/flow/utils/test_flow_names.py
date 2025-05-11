@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.exporting.flow.utils.flow_names."""
 
-from typing import Any, Dict
+from typing import Any
 
 from waldiez.exporting.base.mixin import ExporterMixin
 from waldiez.exporting.flow.utils.flow_names import ensure_unique_names
@@ -33,7 +33,7 @@ def test_ensure_unique_names() -> None:
     assert isinstance(result["chats"], list)
     assert isinstance(result["flow_name"], str)
     assert result["flow_name"] == waldiez_flow.name[:flow_name_max_length]
-    result_dict: Dict[str, Any] = result  # type: ignore
+    result_dict: dict[str, Any] = result  # type: ignore
     for key in ["agent_names", "model_names", "tool_names", "chat_names"]:
         # key in dict: the "id" of the instance
         # value in dict: the "name" of the instance (trimmed if necessary)
@@ -48,7 +48,7 @@ def test_ensure_unique_names() -> None:
                 if instance.id == instance_id
             ]
             item = item_in_list[0]
-            item_dump: Dict[str, Any] = item.model_dump()
+            item_dump: dict[str, Any] = item.model_dump()
             item_name = item_dump.get("name", "")
             assert item_name
             prefix = f"w{key[0]}"

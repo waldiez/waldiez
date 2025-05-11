@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Helpers for getting a flow."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from typing_extensions import Literal
 
@@ -465,7 +465,7 @@ def get_captain_agent(agent_id: str = "wa-5") -> WaldiezCaptainAgent:
     )
 
 
-def get_chats(count: int = 4) -> List[WaldiezChat]:
+def get_chats(count: int = 4) -> list[WaldiezChat]:
     """Get a list of WaldiezChat instances.
 
     Parameters
@@ -475,7 +475,7 @@ def get_chats(count: int = 4) -> List[WaldiezChat]:
 
     Returns
     -------
-    List[WaldiezChat]
+    list[WaldiezChat]
         A list of WaldiezChat instances
     """
     chats = []
@@ -485,7 +485,7 @@ def get_chats(count: int = 4) -> List[WaldiezChat]:
     )
     for index in range(count):
         chat_id = f"wc-{index + 1}"
-        context: Dict[str, Any] = {}
+        context: dict[str, Any] = {}
         if index in (0, 3):
             context["problem"] = "Solve tha task."
         if index == 3:

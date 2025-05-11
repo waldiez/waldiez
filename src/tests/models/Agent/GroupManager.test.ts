@@ -58,6 +58,7 @@ describe("WaldiezAgentGroupManager", () => {
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},
+            updateAgentStateBeforeReply: [],
             handoffs: [],
             maxRound: 1,
             adminName: "admin",

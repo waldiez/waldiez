@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Chat data model."""
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
@@ -51,7 +51,7 @@ class WaldiezChatData(WaldiezBase):
         The maximum number of turns for the chat, by default None (no limit).
     silent : Optional[bool], optional
         Whether to run the chat silently, by default None (ignored).
-    summary_args : Optional[Dict[str, Any]]
+    summary_args : Optional[dict[str, Any]]
         The summary args to use in autogen.
     handoff_condition : Optional[WaldiezHandoffCondition], optional
         The handoff condition to use, by default None (for group chat).
@@ -148,7 +148,7 @@ class WaldiezChatData(WaldiezBase):
         ),
     ]
     prerequisites: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Prerequisites",
             description="The prerequisites (chat ids) for the chat (if async).",
@@ -210,7 +210,7 @@ class WaldiezChatData(WaldiezBase):
     ] = None
     _message_content: Optional[str] = None
     _chat_id: int = 0
-    _prerequisites: List[int] = []
+    _prerequisites: list[int] = []
 
     @property
     def message_content(self) -> Optional[str]:
@@ -237,22 +237,22 @@ class WaldiezChatData(WaldiezBase):
         """
         self._chat_id = value
 
-    def get_prerequisites(self) -> List[int]:
+    def get_prerequisites(self) -> list[int]:
         """Get the chat prerequisites.
 
         Returns
         -------
-        List[int]
+        list[int]
             The chat prerequisites (if async).
         """
         return self._prerequisites
 
-    def set_prerequisites(self, value: List[int]) -> None:
+    def set_prerequisites(self, value: list[int]) -> None:
         """Set the chat prerequisites.
 
         Parameters
         ----------
-        value : List[int]
+        value : list[int]
             The chat prerequisites to set.
         """
         self._prerequisites = value
@@ -330,35 +330,35 @@ class WaldiezChatData(WaldiezBase):
         return value
 
     @property
-    def summary_args(self) -> Optional[Dict[str, Any]]:
+    def summary_args(self) -> Optional[dict[str, Any]]:
         """Get the summary args."""
         if self.summary.method not in (
             "reflection_with_llm",
             "reflectionWithLlm",
         ):
             return None
-        args: Dict[str, Any] = {}
+        args: dict[str, Any] = {}
         if self.summary.prompt:
             args["summary_prompt"] = self.summary.prompt
         if self.summary.args:
             args.update(self.summary.args)
         return args
 
-    def _get_context_args(self) -> Dict[str, Any]:
+    def _get_context_args(self) -> dict[str, Any]:
         """Get the context arguments to use in autogen.
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The dictionary to use for generating the kwargs.
         """
-        extra_args: Dict[str, Any] = {}
+        extra_args: dict[str, Any] = {}
         if not isinstance(self.message, WaldiezChatMessage):  # pragma: no cover
             return extra_args
         extra_args.update(update_dict(self.message.context))
         return extra_args
 
-    def get_chat_args(self, for_queue: bool) -> Dict[str, Any]:
+    def get_chat_args(self, for_queue: bool) -> dict[str, Any]:
         """Get the chat arguments to use in autogen.
 
         Without the 'message' key.
@@ -370,10 +370,10 @@ class WaldiezChatData(WaldiezBase):
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The dictionary to pass as kwargs.
         """
-        args: Dict[str, Any] = {}
+        args: dict[str, Any] = {}
         if self.summary.method:
             args["summary_method"] = self.summary.method
         if self.summary_args:

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez captain agent data."""
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -25,7 +25,7 @@ class WaldiezCaptainAgentData(WaldiezAgentData):
     """
 
     agent_lib: Annotated[
-        List[WaldiezCaptainAgentLibEntry],
+        list[WaldiezCaptainAgentLibEntry],
         Field(
             default_factory=list,
             title="Agent lib",

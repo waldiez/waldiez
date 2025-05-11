@@ -2,7 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.exporting.base.utils.naming.*."""
 
-from typing import Dict
 
 from waldiez.exporting.base.utils.naming import (
     get_valid_instance_name,
@@ -74,7 +73,7 @@ def test_get_valid_instance_name() -> None:
     """Test get_valid_instance_name."""
     # Given
     instance = ("id1", "agent 1")
-    current_names: Dict[str, str] = {}
+    current_names: dict[str, str] = {}
     # When
     result = get_valid_instance_name(instance, current_names)
     # Then

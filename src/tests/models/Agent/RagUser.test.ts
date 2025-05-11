@@ -52,6 +52,7 @@ describe("WaldiezAgentRagUser", () => {
             contextVariables: {},
             handoffs: [],
             retrieveConfig: defaultRetrieveConfig,
+            updateAgentStateBeforeReply: [],
         });
         const ragUser = new WaldiezAgentRagUser({
             id: "1",

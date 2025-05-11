@@ -268,6 +268,12 @@
                 "contextVariables": {
                     "type": "object"
                 },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
@@ -282,10 +288,12 @@
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
+                "modelId",
                 "nestedChats",
                 "systemMessage",
                 "termination",
-                "tools"
+                "tools",
+                "updateAgentStateBeforeReply"
             ],
             "description": "Waldiez User Proxy Agent Data."
         },
@@ -438,6 +446,23 @@
             "required": ["triggeredBy", "messages"],
             "additionalProperties": false,
             "description": "Waldiez agent nested chat."
+        },
+        "WaldiezAgentUpdateSystemMessage": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/WaldiezAgentUpdateSystemMessageType"
+                },
+                "content": {
+                    "type": "string"
+                }
+            },
+            "required": ["type", "content"],
+            "additionalProperties": false
+        },
+        "WaldiezAgentUpdateSystemMessageType": {
+            "type": "string",
+            "enum": ["string", "callable"]
         },
         "WaldiezAgentHandoff": {
             "type": "object",
@@ -763,6 +788,12 @@
                 "contextVariables": {
                     "type": "object"
                 },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
@@ -781,10 +812,12 @@
                 "humanInputMode",
                 "isMultimodal",
                 "maxConsecutiveAutoReply",
+                "modelId",
                 "nestedChats",
                 "systemMessage",
                 "termination",
-                "tools"
+                "tools",
+                "updateAgentStateBeforeReply"
             ],
             "additionalProperties": false,
             "description": "Waldiez Assistant Agent Data."
@@ -890,6 +923,12 @@
                 "contextVariables": {
                     "type": "object"
                 },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
@@ -907,11 +946,13 @@
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
+                "modelId",
                 "nestedChats",
                 "retrieveConfig",
                 "systemMessage",
                 "termination",
-                "tools"
+                "tools",
+                "updateAgentStateBeforeReply"
             ],
             "additionalProperties": false,
             "description": "Waldiez Rag User Agent Data."
@@ -1184,6 +1225,12 @@
                 "contextVariables": {
                     "type": "object"
                 },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
@@ -1204,11 +1251,13 @@
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
+                "modelId",
                 "nestedChats",
                 "reasonConfig",
                 "systemMessage",
                 "termination",
                 "tools",
+                "updateAgentStateBeforeReply",
                 "verbose"
             ],
             "additionalProperties": false,
@@ -1218,7 +1267,7 @@
             "type": "object",
             "properties": {
                 "method": {
-                    "$ref": "#/definitions/ReasoningConfigMethod"
+                    "$ref": "#/definitions/reasonConfigMethod"
                 },
                 "maxDepth": {
                     "type": "number"
@@ -1233,7 +1282,7 @@
                     "type": "number"
                 },
                 "answerApproach": {
-                    "$ref": "#/definitions/ReasoningConfigAnswerApproach"
+                    "$ref": "#/definitions/reasonConfigAnswerApproach"
                 },
                 "nsim": {
                     "type": "number"
@@ -1254,11 +1303,11 @@
             ],
             "additionalProperties": false
         },
-        "ReasoningConfigMethod": {
+        "reasonConfigMethod": {
             "type": "string",
             "enum": ["beam_search", "mcts", "lats", "dfs"]
         },
-        "ReasoningConfigAnswerApproach": {
+        "reasonConfigAnswerApproach": {
             "type": "string",
             "enum": ["pool", "best"]
         },
@@ -1363,6 +1412,12 @@
                 "contextVariables": {
                     "type": "object"
                 },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
@@ -1396,11 +1451,13 @@
                 "maxConsecutiveAutoReply",
                 "maxRound",
                 "maxTurns",
+                "modelId",
                 "nestedChats",
                 "systemMessage",
                 "termination",
                 "toolLib",
-                "tools"
+                "tools",
+                "updateAgentStateBeforeReply"
             ],
             "additionalProperties": false,
             "description": "Waldiez Captain Agent Data."
@@ -1522,6 +1579,12 @@
                 "contextVariables": {
                     "type": "object"
                 },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
@@ -1559,11 +1622,13 @@
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "maxRound",
+                "modelId",
                 "nestedChats",
                 "speakers",
                 "systemMessage",
                 "termination",
-                "tools"
+                "tools",
+                "updateAgentStateBeforeReply"
             ],
             "additionalProperties": false,
             "description": "Waldiez Group Manager Agent Data."
