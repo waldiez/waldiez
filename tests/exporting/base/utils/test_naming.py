@@ -2,7 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.exporting.base.utils.naming.*."""
 
-
 from waldiez.exporting.base.utils.naming import (
     get_valid_instance_name,
     get_valid_python_variable_name,
