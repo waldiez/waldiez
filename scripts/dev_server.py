@@ -10,6 +10,7 @@ import base64
 import json
 import logging
 import sys
+import traceback
 import uuid
 from pathlib import Path
 from typing import Any, Set
@@ -116,7 +117,7 @@ class AsyncIOWebsockets(IOStream):
         websocket : websockets.ServerConnection
             The WebSocket connection to handle.
         """
-        super().__init__(websocket)
+        super().__init__()
         self.websocket = websocket
 
     def print(self, *args: Any, **kwargs: Any) -> None:
@@ -364,7 +365,7 @@ class WaldiezDevServer:
                 runner.run()
         except Exception as e:
             to_log = f"Error running flow: {e}"
-            logger.error(to_log)
+            logger.error(traceback.format_exc())
             return OutgoingMessage(
                 type="runResult", success=False, message=to_log
             )
