@@ -110,19 +110,33 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
             }
             this.set({
                 nodes: this.get()
-                    .nodes.map(node => {
+                    .nodes.filter(node => !idsToRemove.includes(node.id))
+                    .map(node => {
                         if (idsToResetParent.includes(node.id)) {
                             node.parentId = undefined;
                             node.data.parentId = undefined;
                             node.extent = undefined;
                         }
                         return node;
-                    })
-                    .filter(node => !idsToRemove.includes(node.id)),
-                // remove all edges that are connected to the deleted agent
-                edges: this.get().edges.filter(
-                    edge => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target),
-                ),
+                    }),
+                edges: this.get()
+                    // remove all edges that are connected to the deleted agent
+                    .edges.filter(
+                        edge => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target),
+                    )
+                    // change the type of the edge to "chat" if an edge is connected to a group member
+                    .map(edge => {
+                        if (
+                            idsToResetParent.includes(edge.source) ||
+                            idsToResetParent.includes(edge.target)
+                        ) {
+                            return {
+                                ...edge,
+                                type: "chat",
+                            };
+                        }
+                        return edge;
+                    }),
                 updatedAt: new Date().toISOString(),
             });
         } else {
