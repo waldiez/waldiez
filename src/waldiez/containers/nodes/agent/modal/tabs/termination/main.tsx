@@ -51,15 +51,16 @@ export const WaldiezAgentTermination = memo((props: WaldiezAgentTerminationProps
     /**
      * Current selected termination criterion value
      */
-    const terminationCriterionValue = useMemo(
-        () => ({
-            label:
-                terminationCriterionOptions.find(option => option.value === data.termination?.criterion)
-                    ?.label ?? "Keyword is found",
-            value: data.termination.criterion ?? "found",
-        }),
-        [data.termination.criterion, terminationCriterionOptions],
-    );
+    const terminationCriterionValue = useMemo(() => {
+        const entry = terminationCriterionOptions.find(option => option.value === data.termination.criterion);
+        if (!entry) {
+            return undefined;
+        }
+        return {
+            label: entry.label,
+            value: entry.value,
+        };
+    }, [data.termination.criterion, terminationCriterionOptions]);
 
     /**
      * Flag to show method editor
