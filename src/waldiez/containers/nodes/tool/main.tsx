@@ -10,12 +10,13 @@ import { useWaldiezNodeTool } from "@waldiez/containers/nodes/tool/hooks";
 import { WaldiezNodeToolModal } from "@waldiez/containers/nodes/tool/modal";
 import { WaldiezNodeTool } from "@waldiez/models";
 
-export const WaldiezNodeToolView = ({ id, data }: NodeProps<WaldiezNodeTool>) => {
+export const WaldiezNodeToolView = (props: NodeProps<WaldiezNodeTool>) => {
+    const { id } = props;
     const {
         flowId,
         isModalOpen,
         isDirty,
-        toolData,
+        toolData: data,
         isDark,
         updatedAt,
         onOpen,
@@ -27,7 +28,7 @@ export const WaldiezNodeToolView = ({ id, data }: NodeProps<WaldiezNodeTool>) =>
         onChange,
         onExport,
         onImport,
-    } = useWaldiezNodeTool(id, data);
+    } = useWaldiezNodeTool(props.id, props.data);
     return (
         <div className={isModalOpen ? "tool-node nodrag nowheel" : "tool-node nodrag"}>
             <div className="tool-header">
@@ -42,7 +43,7 @@ export const WaldiezNodeToolView = ({ id, data }: NodeProps<WaldiezNodeTool>) =>
                 >
                     <FaGear />
                 </div>
-                <div id={`node-label-${id}`} data-testid={`node-label-${id}`} className="node-label">
+                <div data-testid={`node-label-${id}`} className="node-label">
                     {data.label}
                 </div>
             </div>
@@ -77,7 +78,7 @@ export const WaldiezNodeToolView = ({ id, data }: NodeProps<WaldiezNodeTool>) =>
             <WaldiezNodeToolModal
                 toolId={id}
                 flowId={flowId}
-                data={toolData}
+                data={data}
                 isModalOpen={isModalOpen}
                 darkMode={isDark}
                 isDirty={isDirty}

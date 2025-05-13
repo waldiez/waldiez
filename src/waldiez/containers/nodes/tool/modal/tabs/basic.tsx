@@ -4,7 +4,7 @@
  */
 import { memo, useCallback, useMemo } from "react";
 
-import { Editor, Select, SingleValue } from "@waldiez/components";
+import { Editor, Select, SingleValue, TextareaInput } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import { WaldiezToolType } from "@waldiez/models";
@@ -90,7 +90,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             <div className="margin-bottom-10">
                 <label htmlFor={descriptionInputId}>Description:</label>
                 <div className="margin-top-10" />
-                <textarea
+                <TextareaInput
                     title="Description"
                     rows={2}
                     value={data.description || ""}

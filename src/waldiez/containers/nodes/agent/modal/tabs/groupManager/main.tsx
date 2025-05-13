@@ -13,6 +13,7 @@ import {
     TabItem,
     TabItems,
     TextInput,
+    TextareaInput,
 } from "@waldiez/components";
 import { useGroupManagerTabs } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/hooks";
 import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
@@ -170,7 +171,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
 
                     {/* Description */}
                     <label htmlFor={`agent-description-input-${id}`}>Description:</label>
-                    <textarea
+                    <TextareaInput
                         id={`agent-description-input-${id}`}
                         title="Agent description"
                         rows={2}
@@ -182,7 +183,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
 
                     {/* System Message */}
                     <label htmlFor={`agent-system-message-input-${id}`}>System Message:</label>
-                    <textarea
+                    <TextareaInput
                         id={`agent-system-message-input-${id}`}
                         title="System message"
                         rows={2}

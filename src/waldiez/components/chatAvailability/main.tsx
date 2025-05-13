@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Select, SingleValue } from "@waldiez/components/select";
 import { TextInput } from "@waldiez/components/textInput";
+import { TextareaInput } from "@waldiez/components/textareaInput";
 import { ConditionType, WaldiezHandoffCondition } from "@waldiez/types";
 
 const conditionTypeMapping: Record<ConditionType, string> = {
@@ -158,7 +159,7 @@ export const ChatAvailability: React.FC<{
                     <div className="margin-top-10">
                         <label>LLM Prompt:</label>
                         <div className="margin-top-5" />
-                        <textarea
+                        <TextareaInput
                             rows={2}
                             title="LLM Prompt"
                             placeholder="Enter the LLM prompt"
@@ -172,7 +173,7 @@ export const ChatAvailability: React.FC<{
                 return (
                     <div className="margin-top-10">
                         <label>Prompt:</label>
-                        <textarea
+                        <TextareaInput
                             rows={2}
                             className="margin-top-5"
                             title="Prompt"
@@ -200,7 +201,7 @@ export const ChatAvailability: React.FC<{
                 return (
                     <div className="margin-top-10">
                         <label>Expression:</label>
-                        <textarea
+                        <TextareaInput
                             rows={2}
                             className="margin-top-5"
                             title="Expression"

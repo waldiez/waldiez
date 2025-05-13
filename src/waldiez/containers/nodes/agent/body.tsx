@@ -5,6 +5,7 @@
 import { memo, useMemo } from "react";
 import { AiFillCode } from "react-icons/ai";
 
+import { TextareaInput } from "@waldiez/components";
 import { useWaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
@@ -44,11 +45,11 @@ export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
 
             <div className="flex-column flex-1 agent-description-view">
                 <label htmlFor={`flow-${flowId}-agent-description-${id}`}>Description:</label>
-                <textarea
+                <TextareaInput
                     title="Agent description"
                     className="nodrag nopan"
                     rows={2}
-                    defaultValue={data.description}
+                    value={data.description}
                     onChange={onDescriptionChange}
                     readOnly={isReadOnly}
                     id={`flow-${flowId}-agent-description-${id}`}

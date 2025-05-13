@@ -4,7 +4,7 @@
  */
 import { memo } from "react";
 
-import { InfoCheckbox, InfoLabel } from "@waldiez/components";
+import { InfoCheckbox, InfoLabel, TextareaInput } from "@waldiez/components";
 import { useWaldiezAgentRagUserAdvanced } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/advanced/hooks";
 import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
 
@@ -42,10 +42,10 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     info="The customized prompt for the retrieve chat. Default is None."
                 />
 
-                <textarea
+                <TextareaInput
                     title="Customized prompt"
                     rows={2}
-                    defaultValue={retrieveConfig.customizedPrompt ?? ""}
+                    value={retrieveConfig.customizedPrompt ?? ""}
                     onChange={onCustomizedPromptChange}
                     data-testid={`rag-customized-prompt-${id}`}
                     aria-label="Customized prompt for RAG"

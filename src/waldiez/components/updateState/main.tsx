@@ -4,7 +4,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Editor, Select, SingleValue } from "@waldiez/components";
+import { Editor, Select, SingleValue, TextareaInput } from "@waldiez/components";
 import { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models";
 
 type WaldiezAgentUpdateStateProps = {
@@ -224,7 +224,7 @@ export const WaldiezAgentUpdateState: React.FC<WaldiezAgentUpdateStateProps> = p
                         />
                         <label>Message update</label>
                         {selectedType === "string" ? (
-                            <textarea
+                            <TextareaInput
                                 rows={4}
                                 value={stringContent}
                                 placeholder="Enter a string template with {variable}s"

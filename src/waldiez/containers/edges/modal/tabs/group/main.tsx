@@ -4,7 +4,7 @@
  */
 import { memo, useCallback } from "react";
 
-import { TextInput } from "@waldiez/components";
+import { TextInput, TextareaInput } from "@waldiez/components";
 import { WaldiezEdgeData } from "@waldiez/models";
 
 type WaldiezEdgeGroupTabProps = {
@@ -56,7 +56,7 @@ export const WaldiezEdgeGroupTab = memo<WaldiezEdgeGroupTabProps>(props => {
 
             <div className="margin-top-10">
                 <label htmlFor={descriptionInputId}>Description:</label>
-                <textarea
+                <TextareaInput
                     id={descriptionInputId}
                     rows={2}
                     value={data.description || ""}

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { InfoLabel, NumberInput, Select, TextInput } from "@waldiez/components";
+import { InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic/hooks";
 import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
 
@@ -49,9 +49,9 @@ export const WaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
                 dataTestId={`edge-${edgeId}-label-input`}
             />
             <label>Description:</label>
-            <textarea
+            <TextareaInput
                 rows={2}
-                defaultValue={data.description}
+                value={data.description}
                 placeholder="Enter a description"
                 onChange={onDescriptionChange}
                 data-testid={`edge-${edgeId}-description-input`}
@@ -120,10 +120,10 @@ export const WaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
                         label="Summary Prompt:"
                         info="The prompt to be used for the summary generation."
                     />
-                    <textarea
+                    <TextareaInput
                         placeholder="Enter the summary prompt"
                         rows={2}
-                        defaultValue={data.summary.prompt}
+                        value={data.summary.prompt}
                         onChange={onLlmPromptChange}
                         data-testid={`edge-${edgeId}-llm-prompt-input`}
                     />

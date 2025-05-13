@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { InfoCheckbox, InfoLabel, NumberInput, Select, TextInput } from "@waldiez/components";
+import { InfoCheckbox, InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic/hooks";
 import {
     WaldiezAgentHumanInputMode,
@@ -104,7 +104,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
 
             {/* Description textarea */}
             <label htmlFor={`agent-description-input-${id}`}>Description:</label>
-            <textarea
+            <TextareaInput
                 id={`agent-description-input-${id}`}
                 title="Agent description"
                 rows={2}
@@ -116,7 +116,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
 
             {/* System message textarea */}
             <label htmlFor={`agent-system-message-input-${id}`}>System Message:</label>
-            <textarea
+            <TextareaInput
                 id={`agent-system-message-input-${id}`}
                 title="System message"
                 rows={2}

@@ -9,6 +9,7 @@ import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useMessageInput } from "@waldiez/components/messageInput/hooks";
 import { MessageInputProps } from "@waldiez/components/messageInput/types";
 import { Select } from "@waldiez/components/select";
+import { TextareaInput } from "@waldiez/components/textareaInput";
 import { WaldiezMessageType } from "@waldiez/models";
 
 export const MessageInput: React.FC<MessageInputProps> = (props: MessageInputProps) => {
@@ -77,11 +78,11 @@ export const MessageInput: React.FC<MessageInputProps> = (props: MessageInputPro
             {labelView}
             {current.type === "string" && (
                 <div className="full-width">
-                    <textarea
+                    <TextareaInput
                         placeholder="Enter the message"
                         className="fill-available"
                         rows={3}
-                        defaultValue={current.content ?? ""}
+                        value={current.content ?? ""}
                         onChange={onContentUpdate}
                         data-testid="message-text"
                     />
@@ -94,11 +95,11 @@ export const MessageInput: React.FC<MessageInputProps> = (props: MessageInputPro
                     </div>
                     <label>Problem:</label>
                     <div className="full-width">
-                        <textarea
+                        <TextareaInput
                             placeholder="Enter the problem"
                             rows={3}
                             className="fill-available"
-                            defaultValue={String(current.context.problem ?? "")}
+                            value={String(current.context.problem ?? "")}
                             onChange={onRagProblemUpdate}
                             data-testid="rag-message-generator-problem"
                         />

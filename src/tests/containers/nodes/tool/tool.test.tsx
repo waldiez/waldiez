@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -191,7 +191,7 @@ describe("WaldiezNodeTool advanced tab", () => {
 });
 
 describe("WaldiezNodeTool modal actions", () => {
-    it("should discard changes on cancel", () => {
+    it("should discard changes on cancel", async () => {
         renderToolNode(false, true);
         const openButton = screen.getByTestId(`open-tool-node-modal-${toolId}`);
         fireEvent.click(openButton);
@@ -200,7 +200,9 @@ describe("WaldiezNodeTool modal actions", () => {
         fireEvent.change(descriptionInput, {
             target: { value: "new description" },
         });
-        expect(descriptionInput).toHaveValue("new description");
+        await waitFor(() => {
+            expect(descriptionInput).toHaveValue("new description");
+        });
         const cancelButton = screen.getByTestId(`modal-cancel-btn-${toolId}`);
         fireEvent.click(cancelButton);
         // re open modal
@@ -208,7 +210,7 @@ describe("WaldiezNodeTool modal actions", () => {
         // check if changes are discarded
         expect(descriptionInput).toHaveValue(toolData.description);
     });
-    it("should save changes on submit", () => {
+    it("should save changes on submit", async () => {
         renderToolNode(false, true);
         const openButton = screen.getByTestId(`open-tool-node-modal-${toolId}`);
         fireEvent.click(openButton);
@@ -217,7 +219,9 @@ describe("WaldiezNodeTool modal actions", () => {
         fireEvent.change(descriptionInput, {
             target: { value: "new description" },
         });
-        expect(descriptionInput).toHaveValue("new description");
+        await waitFor(() => {
+            expect(descriptionInput).toHaveValue("new description");
+        });
         const submitButton = screen.getByTestId(`modal-submit-btn-${toolId}`);
         fireEvent.click(submitButton);
         // re open modal

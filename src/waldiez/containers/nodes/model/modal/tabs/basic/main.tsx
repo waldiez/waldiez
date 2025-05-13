@@ -5,7 +5,7 @@
 import { memo, useMemo } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { Collapsible, InfoLabel, Select } from "@waldiez/components";
+import { Collapsible, InfoLabel, Select, TextareaInput } from "@waldiez/components";
 import { useModelModalBasicTab } from "@waldiez/containers/nodes/model/modal/tabs/basic/hooks";
 import { ModelSelector } from "@waldiez/containers/nodes/model/modal/tabs/basic/selectModel";
 import { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/basic/types";
@@ -122,7 +122,7 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
             <div className="margin-top-10">
                 <label htmlFor={descriptionInputId}>Description:</label>
                 <div className="margin-top-10" />
-                <textarea
+                <TextareaInput
                     id={descriptionInputId}
                     title="Model description"
                     rows={2}

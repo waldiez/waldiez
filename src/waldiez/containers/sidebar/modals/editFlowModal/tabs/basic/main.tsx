@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { TextareaInput } from "@waldiez/components";
 import { HandleASyncChatOrderAndPrerequisites } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/asyncChat";
 import { HandleSyncChatOrder } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/syncChat";
 import { EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/types";
@@ -34,7 +35,7 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
                 data-testid={`edit-flow-${flowId}-name-input`}
             />
             <label htmlFor={`rf-${flowId}-edit-flow-modal-description`}>Description</label>
-            <textarea
+            <TextareaInput
                 id={`rf-${flowId}-edit-flow-modal-description`}
                 placeholder="Flow description"
                 rows={2}
