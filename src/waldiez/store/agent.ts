@@ -132,6 +132,7 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                         ) {
                             return {
                                 ...edge,
+                                animated: false,
                                 type: "chat",
                             };
                         }
