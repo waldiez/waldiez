@@ -45,7 +45,6 @@ export default defineConfig(({ command }) => ({
         minify: "terser" as const,
         rollupOptions: {
             external: [
-                /src\/index\.dev\.tsx$/,
                 "jszip",
                 "react",
                 "react-dom",
