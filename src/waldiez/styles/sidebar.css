@@ -4,8 +4,7 @@
  */
 .flow-wrapper .flow-main .sidebar {
   padding: 0;
-
-  /* font-size: small; */
+  font-size: small;
   display: flex;
   flex-direction: column;
   height: 100%;
