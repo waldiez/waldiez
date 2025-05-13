@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic";
@@ -38,12 +38,12 @@ import { useWaldiez } from "@waldiez/store";
 export const WaldiezNodeAgentModalTabs = memo(
     ({
         id,
-        data: dataProp,
+        data,
         flowId,
         isModalOpen,
         isDarkMode,
         filesToUpload,
-        onDataChange: onDataChangeProp,
+        onDataChange,
         onAgentTypeChange,
         onFilesToUploadChange,
     }: WaldiezNodeAgentModalTabsProps) => {
@@ -55,9 +55,8 @@ export const WaldiezNodeAgentModalTabs = memo(
         const getEdges = useWaldiez(s => s.getEdges);
         const uploadHandler = useWaldiez(s => s.onUpload);
 
-        // Track local state
+        // Track active tab index
         const [activeTabIndex, setActiveTabIndex] = useState(0);
-        const [data, setLocalData] = useState<WaldiezNodeAgentData>(dataProp);
 
         /**
          * Reset active tab when modal opens/closes
@@ -66,27 +65,16 @@ export const WaldiezNodeAgentModalTabs = memo(
             setActiveTabIndex(0);
         }, [isModalOpen]);
 
-        /**
-         * Handle data changes and propagate them up
-         */
-        const onDataChange = useCallback(
-            (newData: Partial<WaldiezNodeAgentData>) => {
-                setLocalData(prevData => ({ ...prevData, ...newData }));
-                onDataChangeProp(newData);
-            },
-            [onDataChangeProp],
-        );
-
         // Compute agent type flags
         const agentTypeInfo = useMemo(
             () => ({
-                isManager: dataProp.agentType === "group_manager",
-                isGroupMember: dataProp.agentType !== "group_manager" && !!dataProp.parentId,
-                isRagUser: dataProp.agentType === "rag_user_proxy",
-                isReasoning: dataProp.agentType === "reasoning",
-                isCaptain: dataProp.agentType === "captain",
+                isManager: data.agentType === "group_manager",
+                isGroupMember: data.agentType !== "group_manager" && !!data.parentId,
+                isRagUser: data.agentType === "rag_user_proxy",
+                isReasoning: data.agentType === "reasoning",
+                isCaptain: data.agentType === "captain",
             }),
-            [dataProp.agentType, dataProp.parentId],
+            [data.agentType, data.parentId],
         );
 
         // Extract agent type flags for readability
@@ -119,7 +107,7 @@ export const WaldiezNodeAgentModalTabs = memo(
 
             if (isGroupMember) {
                 // Find members of the same group
-                groupMembers = agents.filter(agent => agent.data.parentId === dataProp.parentId);
+                groupMembers = agents.filter(agent => agent.data.parentId === data.parentId);
 
                 // Find connections outside the group
                 connectionsOutsideGroup = agentConnections.targets.edges.filter(
@@ -154,7 +142,7 @@ export const WaldiezNodeAgentModalTabs = memo(
             getTools,
             id,
             isGroupMember,
-            dataProp.parentId,
+            data.parentId,
             uploadHandler,
         ]);
 
