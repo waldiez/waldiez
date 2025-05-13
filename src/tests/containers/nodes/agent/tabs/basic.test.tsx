@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -31,25 +30,34 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
     it("Updates the agent name", async () => {
         renderAgent("user_proxy", { openModal: true });
         const nameInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        await userEvent.clear(nameInput);
-        await userEvent.type(nameInput, "New Name");
-        expect(nameInput).toHaveValue("New Name");
+        fireEvent.change(nameInput, {
+            target: { value: "New Name" },
+        });
+        await waitFor(() => {
+            expect(nameInput).toHaveValue("New Name");
+        });
         submitAgentChanges();
     });
     it("Updates the agent description", async () => {
         renderAgent("user_proxy", { openModal: true });
         const descriptionInput = screen.getByTestId(`agent-description-input-${agentId}`);
-        await userEvent.clear(descriptionInput);
-        await userEvent.type(descriptionInput, "New Description");
-        expect(descriptionInput).toHaveValue("New Description");
+        fireEvent.change(descriptionInput, {
+            target: { value: "New Description" },
+        });
+        await waitFor(() => {
+            expect(descriptionInput).toHaveValue("New Description");
+        });
         submitAgentChanges();
     });
     it("Updates the agent system message", async () => {
         renderAgent("user_proxy", { openModal: true });
         const systemMessageInput = screen.getByTestId(`agent-system-message-input-${agentId}`);
-        await userEvent.clear(systemMessageInput);
-        await userEvent.type(systemMessageInput, "New System Message");
-        expect(systemMessageInput).toHaveValue("New System Message");
+        fireEvent.change(systemMessageInput, {
+            target: { value: "New System Message" },
+        });
+        await waitFor(() => {
+            expect(systemMessageInput).toHaveValue("New System Message");
+        });
         submitAgentChanges();
     });
     it("Updates the agent human input mode", async () => {
@@ -63,10 +71,12 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
                 value: "TERMINATE",
             },
         });
-        expect(humanInputModeSelect).toHaveValue("TERMINATE");
+        await waitFor(() => {
+            expect(humanInputModeSelect).toHaveValue("TERMINATE");
+        });
         submitAgentChanges();
     });
-    it("Updates the agent max consecutive auto reply", () => {
+    it("Updates the agent max consecutive auto reply", async () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { maxConsecutiveAutoReply: 300 },
@@ -77,10 +87,12 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         fireEvent.change(maxConsecutiveAutoReplyInput, {
             target: { value: "400" },
         });
-        expect(maxConsecutiveAutoReplyInput).toHaveValue(400);
+        await waitFor(() => {
+            expect(maxConsecutiveAutoReplyInput).toHaveValue(400);
+        });
         submitAgentChanges();
     });
-    it("Updates the agent max consecutive auto reply", () => {
+    it("Updates the agent max consecutive auto reply", async () => {
         renderAgent("assistant", {
             openModal: true,
             dataOverrides: { maxConsecutiveAutoReply: 300 },
@@ -91,16 +103,21 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         fireEvent.change(maxConsecutiveAutoReplyInput, {
             target: { value: "301" },
         });
-        expect(maxConsecutiveAutoReplyInput).toHaveValue(301);
+        await waitFor(() => {
+            expect(maxConsecutiveAutoReplyInput).toHaveValue(301);
+        });
         submitAgentChanges();
     });
-    it("Updates the agent default auto reply", () => {
+    it("Updates the agent default auto reply", async () => {
         renderAgent("assistant", { openModal: true });
         const agentDefaultAutoReplyInput = screen.getByTestId(`agent-default-auto-reply-input-${agentId}`);
         fireEvent.change(agentDefaultAutoReplyInput, {
             target: { value: "Default Auto Reply" },
         });
-        expect(agentDefaultAutoReplyInput).toHaveValue("Default Auto Reply");
+        await waitFor(() => {
+            // Check that the default auto reply has been changed
+            expect(agentDefaultAutoReplyInput).toHaveValue("Default Auto Reply");
+        });
         submitAgentChanges();
     });
 });

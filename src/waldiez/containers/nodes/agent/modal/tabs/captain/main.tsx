@@ -19,11 +19,10 @@ const TOOLS_LINK = "https://github.com/ag2ai/ag2/tree/main/autogen/agentchat/con
  * Handles agent library, tool library, and max round settings
  */
 export const WaldiezAgentCaptainTab = memo((props: WaldiezAgentCaptainTabProps) => {
-    const { id, flowId } = props;
+    const { id, data, flowId } = props;
 
     const {
         agentLib,
-        agentData,
         enableAgentLib,
         onEnableAgentLibChange,
         onFileUpload,
@@ -37,7 +36,7 @@ export const WaldiezAgentCaptainTab = memo((props: WaldiezAgentCaptainTabProps) 
             <NumberInput
                 label="Max Round"
                 labelInfo="The maximum number of conversation rounds to be used in the generated groupchat."
-                value={agentData.maxRound}
+                value={data.maxRound}
                 onChange={onMaxRoundChange}
                 dataTestId={`agent-captain-max-round-${id}`}
                 min={1}
@@ -50,7 +49,7 @@ export const WaldiezAgentCaptainTab = memo((props: WaldiezAgentCaptainTabProps) 
                 dataTestId={`tool-lib-${id}`}
                 label="Include tool lib"
                 info="If enabled, the agents will be equipped with several tools"
-                checked={agentData.toolLib === "default"}
+                checked={data.toolLib === "default"}
                 onChange={onToolLibChange}
                 aria-label="Include tool library"
             />

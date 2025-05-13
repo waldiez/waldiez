@@ -18,10 +18,9 @@ const SHOW_DOCKER_OPTION = false;
  */
 // eslint-disable-next-line complexity
 export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionProps) => {
-    const { id, tools } = props;
+    const { id, data, tools } = props;
 
     const {
-        data,
         codeExecutionValue,
         codeExecutionFunctionOptions,
         onUseCodeExecutionChange,

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { SingleValue } from "@waldiez/components";
 import { WaldiezNodeAgentData } from "@waldiez/models";
@@ -57,9 +57,6 @@ export const useWaldiezAgentTermination = (props: {
     // Get theme settings
     const { isDark } = useWaldiezTheme();
 
-    // Local state
-    const [localData, setLocalData] = useState<WaldiezNodeAgentData>(data);
-
     /**
      * Get the default termination method content
      */
@@ -84,20 +81,13 @@ export const useWaldiezAgentTermination = (props: {
             if (!option) {
                 return;
             }
-
             const type = option.value;
-
-            setLocalData(prevData => ({
-                ...prevData,
-                termination: {
-                    ...prevData.termination,
-                    type,
-                },
-            }));
-
             onDataChange({
                 termination: {
                     ...data.termination,
+                    keywords: type === "keyword" ? data.termination.keywords : [],
+                    methodContent: type === "method" ? defaultTerminationMethodContent : "",
+                    criterion: type === "keyword" ? data.termination.criterion : "found",
                     type,
                 },
             });
@@ -113,14 +103,6 @@ export const useWaldiezAgentTermination = (props: {
             if (!content) {
                 return;
             }
-
-            setLocalData(prevData => ({
-                ...prevData,
-                termination: {
-                    ...prevData.termination,
-                    methodContent: content,
-                },
-            }));
 
             onDataChange({
                 termination: {
@@ -148,14 +130,6 @@ export const useWaldiezAgentTermination = (props: {
 
             const criterion = option.value;
 
-            setLocalData(prevData => ({
-                ...prevData,
-                termination: {
-                    ...prevData.termination,
-                    criterion,
-                },
-            }));
-
             onDataChange({
                 termination: {
                     ...data.termination,
@@ -171,14 +145,6 @@ export const useWaldiezAgentTermination = (props: {
      */
     const onAddTerminationKeyword = useCallback(
         (keyword: string) => {
-            setLocalData(prevData => ({
-                ...prevData,
-                termination: {
-                    ...prevData.termination,
-                    keywords: [...prevData.termination.keywords, keyword],
-                },
-            }));
-
             onDataChange({
                 termination: {
                     ...data.termination,
@@ -194,14 +160,6 @@ export const useWaldiezAgentTermination = (props: {
      */
     const onDeleteTerminationKeyword = useCallback(
         (keyword: string) => {
-            setLocalData(prevData => ({
-                ...prevData,
-                termination: {
-                    ...prevData.termination,
-                    keywords: prevData.termination.keywords.filter(k => k !== keyword),
-                },
-            }));
-
             onDataChange({
                 termination: {
                     ...data.termination,
@@ -217,16 +175,6 @@ export const useWaldiezAgentTermination = (props: {
      */
     const onTerminationKeywordChange = useCallback(
         (oldKeyword: string, newKeyword: string) => {
-            setLocalData(prevData => ({
-                ...prevData,
-                termination: {
-                    ...prevData.termination,
-                    keywords: prevData.termination.keywords.map(keyword =>
-                        keyword === oldKeyword ? newKeyword : keyword,
-                    ),
-                },
-            }));
-
             onDataChange({
                 termination: {
                     ...data.termination,
@@ -240,7 +188,7 @@ export const useWaldiezAgentTermination = (props: {
     );
 
     return {
-        data: localData,
+        data,
         terminationCriterionOptions,
         terminationTypeOptions,
         defaultTerminationMethodContent,

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { SingleValue } from "@waldiez/components/select";
 import { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
@@ -11,9 +11,6 @@ import { reasonConfigMethod } from "@waldiez/types";
 export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
     // Props
     const { data, onDataChange } = props;
-
-    // Local state
-    const [localData, setLocalData] = useState(data);
 
     /**
      * Options for reasoning method dropdown
@@ -69,28 +66,23 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
      * Method to check if current reasoning method requires simulation settings
      */
     const isSimulationBasedMethod = useMemo(
-        () => ["mcts", "lats"].includes(localData.reasonConfig.method),
-        [localData.reasonConfig.method],
+        () => ["mcts", "lats"].includes(data.reasonConfig.method),
+        [data.reasonConfig.method],
     );
 
     /**
      * Method to check if current reasoning method is beam search
      */
     const isBeamSearch = useMemo(
-        () => localData.reasonConfig.method === "beam_search",
-        [localData.reasonConfig.method],
+        () => data.reasonConfig.method === "beam_search",
+        [data.reasonConfig.method],
     );
 
     /**
      * Generic change handler for updating state
      */
     const onChange = useCallback(
-        (partialData: Partial<typeof localData>) => {
-            setLocalData(prevData => ({
-                ...prevData,
-                ...partialData,
-            }));
-
+        (partialData: Partial<typeof data>) => {
             onDataChange({
                 ...partialData,
             });
@@ -119,13 +111,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (option) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         answerApproach: option.value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -136,13 +128,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (value !== null) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         forestSize: value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -153,13 +145,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (option) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         method: option.value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -170,13 +162,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (value !== null) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         maxDepth: value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -187,13 +179,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (value !== null) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         ratingScale: value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -204,13 +196,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (value !== null) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         beamSize: value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -221,13 +213,13 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (value !== null) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         nsim: value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     /**
@@ -238,29 +230,22 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
             if (value !== null) {
                 onChange({
                     reasonConfig: {
-                        ...localData.reasonConfig,
+                        ...data.reasonConfig,
                         explorationConstant: value,
                     },
                 });
             }
         },
-        [onChange, localData.reasonConfig],
+        [onChange, data.reasonConfig],
     );
 
     return {
-        // Props
-        data: localData,
-        onDataChange: onChange,
-
-        // State
         reasoningMethodOptions,
         answerApproachOptions,
         isSimulationBasedMethod,
         isBeamSearch,
         reasoningMethodValue,
         answerApproachValue,
-
-        // Handlers
         onVerboseChange,
         onAnswerApproachChange,
         onForestSizeChange,

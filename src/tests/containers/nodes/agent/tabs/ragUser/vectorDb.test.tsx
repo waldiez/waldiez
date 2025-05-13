@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -18,6 +18,10 @@ const goToVectorDbTab = async (isQdrant: boolean = false) => {
     fireEvent.click(ragUserTab);
     const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-vectorDb`);
     fireEvent.click(vectorDbTab);
+    await waitFor(() => {
+        const vectorDbSelect = screen.getByLabelText("Vector DB:");
+        expect(vectorDbSelect).toBeInTheDocument();
+    });
     if (isQdrant) {
         const vectorDbSelect = screen.getByLabelText("Vector DB:");
         selectEvent.openMenu(vectorDbSelect);
@@ -49,83 +53,111 @@ describe("Rag User tab Vector DB", () => {
                 value: "qdrant",
             },
         });
+        await waitFor(() => {
+            const qdrantInput = screen.getByTestId(
+                `rag-vector-db-connection-url-${agentId}`,
+            ) as HTMLInputElement;
+            expect(qdrantInput).toBeInTheDocument();
+        });
         submitAgentChanges();
     });
     it("should change the model", async () => {
         await goToVectorDbTab();
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-model-${agentId}`)).toBeInTheDocument();
+        });
         const modelInput = screen.getByTestId(`rag-vector-db-model-${agentId}`) as HTMLInputElement;
-        expect(modelInput).toBeInTheDocument();
         fireEvent.change(modelInput, { target: { value: "model" } });
         submitAgentChanges();
     });
     it("should change the Qdrant use memory", async () => {
         await goToVectorDbTab(true);
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-use-memory-${agentId}`)).toBeInTheDocument();
+        });
         const useMemoryCheckbox = screen.getByTestId(
             `rag-vector-db-use-memory-${agentId}`,
         ) as HTMLInputElement;
-        expect(useMemoryCheckbox).toBeInTheDocument();
         fireEvent.click(useMemoryCheckbox);
         submitAgentChanges();
     });
     it("should change the Qdrant use local storage", async () => {
         await goToVectorDbTab(true);
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-use-local-storage-${agentId}`)).toBeInTheDocument();
+        });
         const useLocalStorageCheckbox = screen.getByTestId(
             `rag-vector-db-use-local-storage-${agentId}`,
         ) as HTMLInputElement;
-        expect(useLocalStorageCheckbox).toBeInTheDocument();
         fireEvent.click(useLocalStorageCheckbox);
         submitAgentChanges();
     });
     it("should change the Qdrant local storage path", async () => {
         await goToVectorDbTab(true);
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-use-local-storage-${agentId}`)).toBeInTheDocument();
+        });
         const useLocalStorageCheckbox = screen.getByTestId(
             `rag-vector-db-use-local-storage-${agentId}`,
         ) as HTMLInputElement;
         fireEvent.click(useLocalStorageCheckbox);
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-local-storage-path-${agentId}`)).toBeInTheDocument();
+        });
         const localStoragePathInput = screen.getByTestId(
             `rag-vector-db-local-storage-path-${agentId}`,
         ) as HTMLInputElement;
-        expect(localStoragePathInput).toBeInTheDocument();
         fireEvent.change(localStoragePathInput, { target: { value: "path" } });
         submitAgentChanges();
     });
     it("should change the Qdrant connection URL", async () => {
         await goToVectorDbTab(true);
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-connection-url-${agentId}`)).toBeInTheDocument();
+        });
         const connectionUrlInput = screen.getByTestId(
             `rag-vector-db-connection-url-${agentId}`,
         ) as HTMLInputElement;
-        expect(connectionUrlInput).toBeInTheDocument();
         fireEvent.change(connectionUrlInput, { target: { value: "url" } });
         submitAgentChanges();
     });
     it("should change the Chroma use local storage", async () => {
         await goToVectorDbTab();
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-use-local-storage-${agentId}`)).toBeInTheDocument();
+        });
         const useLocalStorageCheckbox = screen.getByTestId(
             `rag-vector-db-use-local-storage-${agentId}`,
         ) as HTMLInputElement;
-        expect(useLocalStorageCheckbox).toBeInTheDocument();
         fireEvent.click(useLocalStorageCheckbox);
         submitAgentChanges();
     });
     it("should change the Chroma local storage path", async () => {
         await goToVectorDbTab();
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-use-local-storage-${agentId}`)).toBeInTheDocument();
+        });
         const useLocalStorageCheckbox = screen.getByTestId(
             `rag-vector-db-use-local-storage-${agentId}`,
         ) as HTMLInputElement;
         fireEvent.click(useLocalStorageCheckbox);
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-local-storage-path-${agentId}`)).toBeInTheDocument();
+        });
         const localStoragePathInput = screen.getByTestId(
             `rag-vector-db-local-storage-path-${agentId}`,
         ) as HTMLInputElement;
-        expect(localStoragePathInput).toBeInTheDocument();
         fireEvent.change(localStoragePathInput, { target: { value: "path" } });
         submitAgentChanges();
     });
     it("should change the connection URL", async () => {
         await goToVectorDbTab();
+        await waitFor(() => {
+            expect(screen.queryByTestId(`rag-vector-db-connection-url-${agentId}`)).toBeInTheDocument();
+        });
         const connectionUrlInput = screen.getByTestId(
             `rag-vector-db-connection-url-${agentId}`,
         ) as HTMLInputElement;
-        expect(connectionUrlInput).toBeInTheDocument();
         fireEvent.change(connectionUrlInput, { target: { value: "url" } });
         submitAgentChanges();
     });

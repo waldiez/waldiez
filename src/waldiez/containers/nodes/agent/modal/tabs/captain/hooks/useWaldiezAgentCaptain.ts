@@ -15,7 +15,6 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
     const { data, onDataChange } = props;
 
     // Local state
-    const [agentData, setAgentData] = useState(data);
     const [enableAgentLib, setEnableAgentLib] = useState(data.agentLib.length > 0);
     const [agentLib, setAgentLib] = useState<WaldiezCaptainAgentLibEntry[]>(data.agentLib);
 
@@ -23,7 +22,6 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
      * Sync local state with props when data changes
      */
     useEffect(() => {
-        setAgentData(data);
         // setEnableAgentLib(data.agentLib.length > 0);
         setAgentLib(data.agentLib);
     }, [data]);
@@ -32,12 +30,7 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
      * Generic handler for updating state and propagating changes
      */
     const onChange = useCallback(
-        (partialData: Partial<typeof agentData>) => {
-            setAgentData(prevData => ({
-                ...prevData,
-                ...partialData,
-            }));
-
+        (partialData: Partial<typeof data>) => {
             onDataChange({
                 ...partialData,
             });
@@ -164,7 +157,6 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
     );
 
     return {
-        agentData,
         agentLib,
         enableAgentLib,
         onEnableAgentLibChange,

@@ -24,10 +24,9 @@ type WaldiezAgentBasicProps = {
  * Handles name, description, system message, and various behavior options
  */
 export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
-    const { id } = props;
+    const { id, data } = props;
 
     const {
-        data,
         onRagChange,
         onMultimodalChange,
         onNameChange,

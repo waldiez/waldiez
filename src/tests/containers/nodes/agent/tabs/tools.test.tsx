@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -46,10 +46,10 @@ describe("Tools tab", () => {
         const removeToolButton = screen.getByTestId(`remove-agent-tool-${agentId}-0`);
         expect(removeToolButton).toBeInTheDocument();
         fireEvent.click(removeToolButton);
-        const toolName = screen.queryByTestId(`tool-name-${agentId}-0`);
-        expect(toolName).toBeNull();
-        const agentName = screen.queryByTestId(`agent-name-${agentId}-0`);
-        expect(agentName).toBeNull();
+        await waitFor(() => {
+            expect(screen.queryByTestId(`tool-name-${agentId}-0`)).toBeNull();
+            expect(screen.queryByTestId(`agent-name-${agentId}-0`)).toBeNull();
+        });
         submitAgentChanges();
     });
     it("should allow adding agent tools", async () => {
@@ -70,12 +70,14 @@ describe("Tools tab", () => {
         const addToolButton = screen.getByTestId(`add-agent-tool-${agentId}`);
         expect(addToolButton).toBeInTheDocument();
         fireEvent.click(addToolButton);
-        const toolName = screen.getByTestId(`tool-name-${agentId}-1`);
-        expect(toolName).toBeInTheDocument();
-        expect(toolName).toHaveTextContent("test tool2");
-        const agentName = screen.getByTestId(`agent-name-${agentId}-1`);
-        expect(agentName).toBeInTheDocument();
-        expect(agentName).toHaveTextContent("user_proxy");
+        await waitFor(() => {
+            const toolName = screen.getByTestId(`tool-name-${agentId}-1`);
+            expect(toolName).toBeInTheDocument();
+            expect(toolName).toHaveTextContent("test tool2");
+            const agentName = screen.getByTestId(`agent-name-${agentId}-1`);
+            expect(agentName).toBeInTheDocument();
+            expect(agentName).toHaveTextContent("user_proxy");
+        });
         submitAgentChanges();
     });
     it("should show a message if there are no tools", async () => {

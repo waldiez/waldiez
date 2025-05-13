@@ -83,6 +83,9 @@ describe("Rag User tab Retrieve Config", () => {
         expect(addDocsPathButton).toBeInTheDocument();
         fireEvent.click(addDocsPathButton);
         submitAgentChanges();
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-rag-doc-0")).not.toBeNull();
+        });
         const deleteDocsPathButton = screen.getByTestId("delete-list-entry-rag-doc-0");
         expect(deleteDocsPathButton).toBeInTheDocument();
         fireEvent.click(deleteDocsPathButton);
@@ -100,6 +103,9 @@ describe("Rag User tab Retrieve Config", () => {
         const addDocsPathButton = screen.getByTestId("add-list-entry-rag-doc-button");
         expect(addDocsPathButton).toBeInTheDocument();
         fireEvent.click(addDocsPathButton);
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-rag-doc-0")).not.toBeNull();
+        });
         const docsPathItemInput = screen.getByTestId("list-entry-item-rag-doc-0") as HTMLInputElement;
         expect(docsPathItemInput).toBeInTheDocument();
         fireEvent.change(docsPathItemInput, {
@@ -155,6 +161,9 @@ describe("Rag User tab Retrieve Config", () => {
                 files,
             },
         });
+        await waitFor(() => {
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).not.toBeNull();
+        });
         const removeFileButton = screen.getByTestId("delete-list-entry-rag-doc-0");
         expect(removeFileButton).toBeInTheDocument();
         submitAgentChanges();
@@ -188,8 +197,10 @@ describe("Rag User tab Retrieve Config", () => {
                 files,
             },
         });
-        expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).not.toBeNull();
-        expect(screen.queryByTestId("delete-list-entry-rag-doc-1")).toBeNull();
+        await waitFor(() => {
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).not.toBeNull();
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-1")).toBeNull();
+        });
     });
     it("should open the upload dialog", async () => {
         await goToRetrieveConfigTab();
@@ -211,10 +222,18 @@ describe("Rag User tab Retrieve Config", () => {
                 value: "new-docs-path",
             },
         });
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-rag-doc-0")).not.toBeNull();
+        });
         const addDocsPathButton = screen.getByTestId("add-list-entry-rag-doc-button");
         fireEvent.click(addDocsPathButton);
+        await waitFor(() => {
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).not.toBeNull();
+        });
         const removeFileButton = screen.getByTestId("delete-list-entry-rag-doc-0");
         fireEvent.click(removeFileButton);
-        submitAgentChanges();
+        await waitFor(() => {
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).toBeNull();
+        });
     });
 });

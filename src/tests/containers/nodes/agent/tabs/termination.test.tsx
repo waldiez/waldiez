@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
@@ -64,15 +64,19 @@ describe("Termination tab", () => {
         // Check that the termination type has been changed
         expect(terminationTypeSelect).toHaveValue("method");
 
+        await waitFor(() => {
+            expect(screen.queryByTestId("mocked-monaco-editor")).toBeInTheDocument();
+        });
         // Change the termination method
         const terminationMethodEditor = screen.getByTestId("mocked-monaco-editor");
-        expect(terminationMethodEditor).toBeInTheDocument();
-        await userEvent.type(terminationMethodEditor, 'print("Hello, World!")');
+        // expect(terminationMethodEditor).toBeInTheDocument();
         fireEvent.change(terminationMethodEditor, {
             target: { value: 'print("Hello, World!")' },
         });
         // Check that the termination method has been changed
-        expect(terminationMethodEditor).toHaveValue('print("Hello, World!")');
+        await waitFor(() => {
+            expect(terminationMethodEditor).toHaveValue('print("Hello, World!")');
+        });
         submitAgentChanges();
     });
 
@@ -89,20 +93,23 @@ describe("Termination tab", () => {
         fireEvent.change(terminationTypeSelect, {
             target: { label: "Keyword", value: "keyword" },
         });
-
-        // Check that the termination type has been changed
-        expect(terminationTypeSelect).toHaveValue("keyword");
+        await waitFor(() => {
+            // Check that the termination type has been changed
+            expect(terminationTypeSelect).toHaveValue("keyword");
+            expect(screen.queryByLabelText("Termination Criterion:")).toBeInTheDocument();
+        });
 
         // Select the termination criterion
         const terminationCriterionSelect = screen.getByLabelText("Termination Criterion:");
-        expect(terminationCriterionSelect).toBeInTheDocument();
         await selectEvent.select(terminationCriterionSelect, "Keyword is the last word");
         fireEvent.change(terminationCriterionSelect, {
             target: { label: "Keyword is the last word", value: "ending" },
         });
 
-        // Check that the termination criterion has been changed
-        expect(terminationCriterionSelect).toHaveValue("ending");
+        await waitFor(() => {
+            // Check that the termination criterion has been changed
+            expect(terminationCriterionSelect).toHaveValue("ending");
+        });
         submitAgentChanges();
     });
 
@@ -116,11 +123,16 @@ describe("Termination tab", () => {
         // Add a termination keyword
         const terminationKeywordInput = screen.getByTestId("new-list-entry-termination-keyword-item");
         expect(terminationKeywordInput).toBeInTheDocument();
-        await userEvent.type(terminationKeywordInput, "STOP");
+        fireEvent.change(terminationKeywordInput, {
+            target: { value: "STOP" },
+        });
         const addTerminationKeywordButton = screen.getByTestId("add-list-entry-termination-keyword-button");
         expect(addTerminationKeywordButton).toBeInTheDocument();
         fireEvent.click(addTerminationKeywordButton);
 
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-termination-keyword-2")).toBeInTheDocument();
+        });
         // Check that the termination keyword has been added
         const terminationKeyword = screen.getByTestId("list-entry-item-termination-keyword-2");
         expect(terminationKeyword).toHaveValue("STOP");
@@ -139,9 +151,9 @@ describe("Termination tab", () => {
         expect(deleteTerminationKeywordButton).toBeInTheDocument();
         fireEvent.click(deleteTerminationKeywordButton);
 
-        // Check that the termination keyword has been deleted
-        const terminationKeyword = screen.queryByTestId("list-entry-item-termination-keyword-1");
-        expect(terminationKeyword).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-termination-keyword-1")).not.toBeInTheDocument();
+        });
         submitAgentChanges();
     });
 
@@ -159,7 +171,9 @@ describe("Termination tab", () => {
 
         fireEvent.change(terminationKeywordInput, { target: { value: "TERMINATE_KEY" } });
 
-        // Check that the termination keyword has been changed
-        expect(terminationKeywordInput).toHaveValue("TERMINATE_KEY");
+        await waitFor(() => {
+            // Check that the termination keyword has been changed
+            expect(terminationKeywordInput).toHaveValue("TERMINATE_KEY");
+        });
     });
 });

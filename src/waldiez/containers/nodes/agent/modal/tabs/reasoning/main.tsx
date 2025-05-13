@@ -13,9 +13,8 @@ import { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/moda
  * Manages reasoning methods, depth, forest size, and other algorithm-specific parameters
  */
 export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) => {
-    const { id } = props;
+    const { id, data } = props;
     const {
-        data,
         reasoningMethodOptions,
         reasoningMethodValue,
         answerApproachOptions,

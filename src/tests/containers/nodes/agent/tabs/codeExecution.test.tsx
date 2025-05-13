@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -36,7 +35,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         expect(toggle).toBeInTheDocument();
         expect(toggle).not.toBeChecked(); // no code execution
     });
-    it("It toggles the code execution", () => {
+    it("It toggles the code execution", async () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
@@ -46,10 +45,13 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         expect(toggle).toBeInTheDocument();
         expect(toggle).toBeChecked();
         fireEvent.click(toggle);
-        expect(toggle).not.toBeChecked();
+        await waitFor(() => {
+            expect(toggle).not.toBeChecked();
+        });
         fireEvent.click(toggle);
-        expect(toggle).toBeChecked();
-        submitAgentChanges();
+        await waitFor(() => {
+            expect(toggle).toBeChecked();
+        });
     });
     it("It updates the working directory", async () => {
         renderAgent("assistant", {
@@ -58,12 +60,15 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         });
         goToCodeExecutionTab();
         const workDirInput = screen.getByTestId(`agent-code-execution-work-dir-${agentId}`);
-        await userEvent.clear(workDirInput);
-        await userEvent.type(workDirInput, "/new/tmp");
-        expect(workDirInput).toHaveValue("/new/tmp");
+        fireEvent.change(workDirInput, {
+            target: { value: "/new/tmp" },
+        });
+        await waitFor(() => {
+            expect(workDirInput).toHaveValue("/new/tmp");
+        });
         submitAgentChanges();
     });
-    it("It updates the last N messages", () => {
+    it("It updates the last N messages", async () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
@@ -73,10 +78,12 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         fireEvent.change(lastNMessagesInput, {
             target: { value: "105" },
         });
-        expect(lastNMessagesInput).toHaveValue(105);
+        await waitFor(() => {
+            expect(lastNMessagesInput).toHaveValue(105);
+        });
         submitAgentChanges();
     });
-    it("It updates the timeout", () => {
+    it("It updates the timeout", async () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
@@ -86,10 +93,12 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         fireEvent.change(timeoutInput, {
             target: { value: "500" },
         });
-        expect(timeoutInput).toHaveValue(500);
+        await waitFor(() => {
+            expect(timeoutInput).toHaveValue(500);
+        });
         submitAgentChanges();
     });
-    it("It toggles the use docker", () => {
+    it("It toggles the use docker", async () => {
         renderAgent("user_proxy", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
@@ -99,7 +108,9 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         expect(useDockerToggle).toBeInTheDocument();
         expect(useDockerToggle).toBeChecked();
         fireEvent.click(useDockerToggle);
-        expect(useDockerToggle).not.toBeChecked();
+        await waitFor(() => {
+            expect(useDockerToggle).not.toBeChecked();
+        });
         submitAgentChanges();
     });
     it("It updates the functions", async () => {

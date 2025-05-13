@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { nanoid } from "nanoid";
 
@@ -12,7 +12,6 @@ import {
     GroupChatSpeakerSelectionMethodOption,
     WaldiezAgentGroupManagerSpeakers,
     WaldiezNodeAgent,
-    WaldiezNodeAgentGroupManagerData,
     WaldiezTransitionTarget,
 } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
@@ -23,9 +22,6 @@ import { useWaldiez } from "@waldiez/store";
  */
 export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => {
     const { id, data, onDataChange } = props;
-
-    // Local state
-    const [localData, setLocalData] = useState<WaldiezNodeAgentGroupManagerData>(data);
 
     // Store selectors
     const getGroupMembers = useWaldiez(s => s.getGroupMembers);
@@ -38,8 +34,8 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const models = useMemo(() => getModels(), [getModels]);
     const groupMembers = useMemo(() => getGroupMembers(id), [getGroupMembers, id]);
     const currentInitialAgent = useMemo(
-        () => (localData.initialAgentId ? getAgentById(localData.initialAgentId) : undefined),
-        [localData.initialAgentId, getAgentById],
+        () => (data.initialAgentId ? getAgentById(data.initialAgentId) : undefined),
+        [data.initialAgentId, getAgentById],
     );
 
     /**
@@ -78,12 +74,10 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      */
     const setSpeakerData = useCallback(
         (speakerData: Partial<WaldiezAgentGroupManagerSpeakers>) => {
-            const newSpeakerData = { ...localData.speakers, ...speakerData };
-
-            setLocalData(prev => ({ ...prev, speakers: newSpeakerData }));
+            const newSpeakerData = { ...data.speakers, ...speakerData };
             onDataChange({ speakers: newSpeakerData });
         },
-        [localData.speakers, onDataChange],
+        [data.speakers, onDataChange],
     );
 
     /**
@@ -92,8 +86,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onGroupNameChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const groupName = event.target.value;
-
-            setLocalData(prev => ({ ...prev, groupName }));
             onDataChange({ groupName });
         },
         [onDataChange],
@@ -105,8 +97,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onManagerNameChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const newName = event.target.value;
-
-            setLocalData(prev => ({ ...prev, name: newName, label: newName }));
             onDataChange({ name: newName, label: newName });
         },
         [onDataChange],
@@ -118,8 +108,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onDescriptionChange = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) => {
             const description = event.target.value;
-
-            setLocalData(prev => ({ ...prev, description }));
             onDataChange({ description });
         },
         [onDataChange],
@@ -131,8 +119,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onSystemMessageChange = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) => {
             const systemMessage = event.target.value;
-
-            setLocalData(prev => ({ ...prev, systemMessage }));
             onDataChange({ systemMessage });
         },
         [onDataChange],
@@ -144,7 +130,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onMaxRoundChange = useCallback(
         (value: number | null) => {
             if (value !== null && value > 0) {
-                setLocalData(prev => ({ ...prev, maxRound: value }));
                 onDataChange({ maxRound: value });
             }
         },
@@ -156,28 +141,24 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      */
     const onAddContextVariable = useCallback(
         (key: string, value: string) => {
-            const newContextVariables = { ...localData.contextVariables, [key]: value };
+            const newContextVariables = { ...data.contextVariables, [key]: value };
 
-            setLocalData(prev => ({ ...prev, contextVariables: newContextVariables }));
             onDataChange({ contextVariables: newContextVariables });
         },
-        [localData.contextVariables, onDataChange],
+        [data.contextVariables, onDataChange],
     );
 
     const onDeleteContextVariable = useCallback(
         (key: string) => {
-            const newContextVariables = { ...localData.contextVariables };
+            const newContextVariables = { ...data.contextVariables };
             delete newContextVariables[key];
-
-            setLocalData(prev => ({ ...prev, contextVariables: newContextVariables }));
             onDataChange({ contextVariables: newContextVariables });
         },
-        [localData.contextVariables, onDataChange],
+        [data.contextVariables, onDataChange],
     );
 
     const onUpdateContextVariable = useCallback(
         (items: { [key: string]: unknown }) => {
-            setLocalData(prev => ({ ...prev, contextVariables: items }));
             onDataChange({ contextVariables: items });
         },
         [onDataChange],
@@ -189,13 +170,11 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onInitialAgentChange = useCallback(
         (option: SingleValue<{ label: string; value: WaldiezNodeAgent }>) => {
             if (!option) {
-                setLocalData(prev => ({ ...prev, initialAgentId: undefined }));
                 onDataChange({ initialAgentId: undefined });
                 return;
             }
 
             const initialAgentId = option.value.id;
-            setLocalData(prev => ({ ...prev, initialAgentId }));
             onDataChange({ initialAgentId });
         },
         [onDataChange],
@@ -207,8 +186,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onEnableClearHistoryChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const enableClearHistory = event.target.checked;
-
-            setLocalData(prev => ({ ...prev, enableClearHistory }));
             onDataChange({ enableClearHistory });
         },
         [onDataChange],
@@ -220,8 +197,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const onSendIntroductionsChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const sendIntroductions = event.target.checked;
-
-            setLocalData(prev => ({ ...prev, sendIntroductions }));
             onDataChange({ sendIntroductions });
         },
         [onDataChange],
@@ -258,8 +233,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      */
     const removeAfterWork = useCallback(() => {
         const newHandoffs = data.handoffs?.filter(handoff => !handoff.after_work);
-
-        setLocalData(prev => ({ ...prev, handoffs: newHandoffs }));
         onDataChange({
             ...data,
             handoffs: newHandoffs,
@@ -291,8 +264,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
             } else {
                 newHandoffs = [newHandoff];
             }
-
-            setLocalData(prev => ({ ...prev, handoffs: newHandoffs }));
             onDataChange({
                 ...data,
                 handoffs: newHandoffs,
@@ -316,7 +287,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     );
 
     return {
-        data: localData,
         models,
         groupMembers,
         initialAgent,

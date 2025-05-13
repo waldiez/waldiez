@@ -24,11 +24,10 @@ import { GroupChatSpeakerSelectionMethodOption } from "@waldiez/models";
  * Provides tabs for group settings, manager settings, speaker selection, and after-work actions
  */
 export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerTabsProps) => {
-    const { isModalOpen, flowId, id } = props;
+    const { isModalOpen, flowId, id, data } = props;
 
     // Get hook data and handlers
     const {
-        data,
         groupMembers,
         models,
         initialAgent,

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import { MultiValue } from "@waldiez/components";
 import { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
@@ -17,10 +17,6 @@ export const useWaldiezAgentCodeExecution = (props: {
     tools: WaldiezNodeTool[];
 }) => {
     const { data, onDataChange, tools } = props;
-
-    // Local state
-    const [localData, setLocalData] = useState<WaldiezNodeAgentData>(data);
-
     /**
      * Get tool name by ID
      */
@@ -65,12 +61,6 @@ export const useWaldiezAgentCodeExecution = (props: {
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const checked = event.target.checked;
             const newConfig = checked ? { ...data.codeExecutionConfig } : false;
-
-            setLocalData(prevData => ({
-                ...prevData,
-                codeExecutionConfig: newConfig,
-            }));
-
             onDataChange({
                 codeExecutionConfig: newConfig,
             });
@@ -84,15 +74,6 @@ export const useWaldiezAgentCodeExecution = (props: {
     const onCodeExecutionWorkDirChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const workDir = event.target.value;
-
-            setLocalData(prevData => ({
-                ...prevData,
-                codeExecutionConfig:
-                    typeof prevData.codeExecutionConfig === "object"
-                        ? { ...prevData.codeExecutionConfig, workDir }
-                        : { workDir },
-            }));
-
             onDataChange({
                 codeExecutionConfig:
                     typeof data.codeExecutionConfig === "object"
@@ -109,15 +90,6 @@ export const useWaldiezAgentCodeExecution = (props: {
     const onCodeExecutionLastNMessagesChange = useCallback(
         (value: number | "auto" | null) => {
             const lastNMessages = value ?? 0;
-
-            setLocalData(prevData => ({
-                ...prevData,
-                codeExecutionConfig:
-                    typeof prevData.codeExecutionConfig === "object"
-                        ? { ...prevData.codeExecutionConfig, lastNMessages }
-                        : { lastNMessages },
-            }));
-
             onDataChange({
                 codeExecutionConfig:
                     typeof data.codeExecutionConfig === "object"
@@ -134,15 +106,6 @@ export const useWaldiezAgentCodeExecution = (props: {
     const onCodeExecutionTimeoutChange = useCallback(
         (value: number | null) => {
             const timeout = value ?? 0;
-
-            setLocalData(prevData => ({
-                ...prevData,
-                codeExecutionConfig:
-                    typeof prevData.codeExecutionConfig === "object"
-                        ? { ...prevData.codeExecutionConfig, timeout }
-                        : { timeout },
-            }));
-
             onDataChange({
                 codeExecutionConfig:
                     typeof data.codeExecutionConfig === "object"
@@ -159,15 +122,6 @@ export const useWaldiezAgentCodeExecution = (props: {
     const onCodeExecutionUseDockerChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const useDocker = event.target.checked;
-
-            setLocalData(prevData => ({
-                ...prevData,
-                codeExecutionConfig:
-                    typeof prevData.codeExecutionConfig === "object"
-                        ? { ...prevData.codeExecutionConfig, useDocker }
-                        : { useDocker },
-            }));
-
             onDataChange({
                 codeExecutionConfig:
                     typeof data.codeExecutionConfig === "object"
@@ -191,18 +145,8 @@ export const useWaldiezAgentCodeExecution = (props: {
             if (!newValue) {
                 return;
             }
-
             const selectedFunctions = Array.isArray(newValue) ? newValue : [newValue];
             const selectedFunctionIds = selectedFunctions.map(f => f?.value as string).filter(Boolean);
-
-            setLocalData(prevData => ({
-                ...prevData,
-                codeExecutionConfig:
-                    typeof prevData.codeExecutionConfig === "object"
-                        ? { ...prevData.codeExecutionConfig, functions: selectedFunctionIds }
-                        : { functions: selectedFunctionIds },
-            }));
-
             onDataChange({
                 codeExecutionConfig:
                     typeof data.codeExecutionConfig === "object"
@@ -214,7 +158,6 @@ export const useWaldiezAgentCodeExecution = (props: {
     );
 
     return {
-        data: localData,
         codeExecutionValue,
         codeExecutionFunctionOptions,
         getToolName,

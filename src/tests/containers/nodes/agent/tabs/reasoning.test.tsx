@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -30,8 +30,10 @@ describe("Reasoning tab", () => {
         expect(verboseCheckbox).toBeChecked();
         // Turn on the verbose setting
         fireEvent.click(verboseCheckbox);
-        // Check that the verbose setting is off
-        expect(verboseCheckbox).not.toBeChecked();
+        await waitFor(() => {
+            // Check that the verbose setting is off
+            expect(verboseCheckbox).not.toBeChecked();
+        });
         submitAgentChanges();
     });
     it("should allow changing the reasoning method", async () => {
@@ -48,8 +50,10 @@ describe("Reasoning tab", () => {
         fireEvent.change(reasoningMethodSelect, {
             target: { label: "Monte Carlo Tree Search", value: "mcts" },
         });
-        // Check that the reasoning method has been changed
-        expect(reasoningMethodSelect).toHaveValue("mcts");
+        await waitFor(() => {
+            // Check that the reasoning method has been changed
+            expect(reasoningMethodSelect).toHaveValue("mcts");
+        });
         submitAgentChanges();
     });
     it("should allow changing the max depth", async () => {
@@ -63,8 +67,10 @@ describe("Reasoning tab", () => {
         expect(maxDepthInput).toBeInTheDocument();
         expect(maxDepthInput).not.toHaveValue(5);
         fireEvent.change(maxDepthInput, { target: { value: 5 } });
-        // Check that the max depth has been changed
-        expect(maxDepthInput).toHaveValue(5);
+        await waitFor(() => {
+            // Check that the max depth has been changed
+            expect(maxDepthInput).toHaveValue(5);
+        });
         submitAgentChanges();
     });
     it("should allow changing the forest size", async () => {
@@ -78,8 +84,10 @@ describe("Reasoning tab", () => {
         expect(forestSizeInput).toBeInTheDocument();
         expect(forestSizeInput).not.toHaveValue(6);
         fireEvent.change(forestSizeInput, { target: { value: 6 } });
-        // Check that the forest size has been changed
-        expect(forestSizeInput).toHaveValue(6);
+        await waitFor(() => {
+            // Check that the forest size has been changed
+            expect(forestSizeInput).toHaveValue(6);
+        });
         submitAgentChanges();
     });
     it("should allow changing the rating scale", async () => {
@@ -93,8 +101,10 @@ describe("Reasoning tab", () => {
         expect(ratingScaleInput).toBeInTheDocument();
         expect(ratingScaleInput).not.toHaveValue(7);
         fireEvent.change(ratingScaleInput, { target: { value: 7 } });
-        // Check that the rating scale has been changed
-        expect(ratingScaleInput).toHaveValue(7);
+        await waitFor(() => {
+            // Check that the rating scale has been changed
+            expect(ratingScaleInput).toHaveValue(7);
+        });
         submitAgentChanges();
     });
     it("should allow changing the beam size", async () => {
@@ -108,8 +118,10 @@ describe("Reasoning tab", () => {
         expect(beamSizeInput).toBeInTheDocument();
         expect(beamSizeInput).not.toHaveValue(8);
         fireEvent.change(beamSizeInput, { target: { value: 8 } });
-        // Check that the beam size has been changed
-        expect(beamSizeInput).toHaveValue(8);
+        await waitFor(() => {
+            // Check that the beam size has been changed
+            expect(beamSizeInput).toHaveValue(8);
+        });
         submitAgentChanges();
     });
     it("should allow changing the answer approach", async () => {
@@ -126,8 +138,10 @@ describe("Reasoning tab", () => {
         fireEvent.change(answerApproachSelect, {
             target: { label: "Best", value: "best" },
         });
-        // Check that the answer approach has been changed
-        expect(answerApproachSelect).toHaveValue("best");
+        await waitFor(() => {
+            // Check that the answer approach has been changed
+            expect(answerApproachSelect).toHaveValue("best");
+        });
         submitAgentChanges();
     });
     it("should allow changing the number of simulations", async () => {
@@ -144,14 +158,19 @@ describe("Reasoning tab", () => {
         fireEvent.change(reasoningMethodSelect, {
             target: { label: "Monte Carlo Tree Search", value: "mcts" },
         });
-
+        await waitFor(() => {
+            // Check that the reasoning method has been changed
+            expect(screen.getByLabelText("Number of Simulations:")).toBeInTheDocument();
+        });
         // Change the number of simulations
         const nsimInput = screen.getByLabelText("Number of Simulations:");
-        expect(nsimInput).toBeInTheDocument();
         expect(nsimInput).not.toHaveValue(9);
         fireEvent.change(nsimInput, { target: { value: 9 } });
-        // Check that the number of simulations has been changed
-        expect(nsimInput).toHaveValue(9);
+
+        await waitFor(() => {
+            // Check that the number of simulations has been changed
+            expect(nsimInput).toHaveValue(9);
+        });
         submitAgentChanges();
     });
     it("should allow changing the exploration constant", async () => {
@@ -169,13 +188,18 @@ describe("Reasoning tab", () => {
             target: { label: "Language Agent Tree Search", value: "lats" },
         });
 
+        await waitFor(() => {
+            // Check that the reasoning method has been changed
+            expect(screen.getByLabelText("Exploration Constant:")).toBeInTheDocument();
+        });
         // Change the exploration constant
         const explorationConstantInput = screen.getByLabelText("Exploration Constant:");
-        expect(explorationConstantInput).toBeInTheDocument();
         expect(explorationConstantInput).not.toHaveValue(2.71);
         fireEvent.change(explorationConstantInput, { target: { value: 2.71 } });
-        // Check that the exploration constant has been changed
-        expect(explorationConstantInput).toHaveValue(2.71);
+        await waitFor(() => {
+            // Check that the exploration constant has been changed
+            expect(explorationConstantInput).toHaveValue(2.71);
+        });
         submitAgentChanges();
     });
 });

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo } from "react";
 
 import { Select, SingleValue } from "@waldiez/components";
 import { WaldiezNodeAgentData, WaldiezNodeModel } from "@waldiez/types";
@@ -21,9 +21,6 @@ type WaldiezAgentModelProps = {
 export const WaldiezAgentModel = memo((props: WaldiezAgentModelProps) => {
     const { id, data, models, onDataChange } = props;
 
-    // Local state
-    const [localData, setLocalData] = useState(data);
-
     /**
      * Generate model options for the dropdown
      */
@@ -40,20 +37,20 @@ export const WaldiezAgentModel = memo((props: WaldiezAgentModelProps) => {
      * Get the currently selected model
      */
     const selectedModel = useMemo(() => {
-        if (!localData.modelId) {
+        if (!data.modelId) {
             return null;
         }
 
-        const selectedModelData = models.find(model => model.id === localData.modelId);
+        const selectedModelData = models.find(model => model.id === data.modelId);
         if (!selectedModelData) {
             return null;
         }
 
         return {
             label: selectedModelData.data.label as string,
-            value: localData.modelId,
+            value: data.modelId,
         };
-    }, [localData.modelId, models]);
+    }, [data.modelId, models]);
 
     /**
      * Handle model selection change
@@ -62,19 +59,8 @@ export const WaldiezAgentModel = memo((props: WaldiezAgentModelProps) => {
         (option: SingleValue<{ label: string; value: string }>) => {
             if (option) {
                 const modelId = option.value;
-
-                setLocalData(prevData => ({
-                    ...prevData,
-                    modelId,
-                }));
-
                 onDataChange({ modelId });
             } else {
-                setLocalData(prevData => ({
-                    ...prevData,
-                    modelId: null,
-                }));
-
                 onDataChange({ modelId: null });
             }
         },

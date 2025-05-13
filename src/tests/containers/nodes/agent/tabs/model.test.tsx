@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -45,15 +45,6 @@ describe("Models tab", () => {
         const modelSelect = screen.getByLabelText("Model to use:");
         expect(modelSelect).toBeInTheDocument();
         selectEvent.openMenu(modelSelect);
-        // the ones below give:
-        // Warning: The current testing environment is not configured to support act(...)
-        //
-        // - await waitFor(async () => {
-        //     await selectEvent.clearAll(modelSelect);
-        // });
-        // - await selectEvent.clearAll(modelSelect);
-        // :(
-        // let's find the button that removes the current model instead
         const modelsPanel = screen.getByTestId("agent-model-panel");
         expect(modelsPanel).toBeInTheDocument();
         expect(modelsPanel.querySelector(".w-select__single-value")).toHaveTextContent("test model1");
@@ -64,7 +55,9 @@ describe("Models tab", () => {
         fireEvent.change(modelSelect, {
             target: [{ label: "test-model2", value: "test model2" }],
         });
-        expect(modelsPanel.querySelector(".w-select__single-value")).toHaveTextContent("test model2");
+        await waitFor(() => {
+            expect(modelsPanel.querySelector(".w-select__single-value")).toHaveTextContent("test model2");
+        });
         submitAgentChanges();
     });
 });
