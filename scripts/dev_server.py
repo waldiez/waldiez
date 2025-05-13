@@ -182,7 +182,7 @@ class AsyncIOWebsockets(IOStream):
         response = asyncio.run(self.websocket.recv())
         if isinstance(response, bytes):
             response = response.decode("utf-8")
-        logger.info("Got input: %s ...", response[:100])
+        logger.info("Got input: %s ...", response[:300])
         try:
             response_dict = json.loads(response)
         except json.JSONDecodeError:
