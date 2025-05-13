@@ -206,9 +206,12 @@ const WaldiezWrapper: React.FC<IWaldiezWrapperProps> = ({ waldiezProps, wsUrl = 
     // Handler for onUpload
     const handleUpload = useCallback(
         async (files: File[]): Promise<string[]> => {
-            if (!wsRef.current) {
-                setError("WebSocket not connected");
-                return [];
+            if (!wsRef.current || !connected) {
+                // setError("WebSocket not connected");
+                // mock if not connected
+                return new Promise(resolve => {
+                    resolve(files.map(file => `/path/to/${file.name}`));
+                });
             }
 
             // Convert File objects to base64 strings
