@@ -55,14 +55,30 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
     );
 
     /**
+     * Submit user input
+     */
+    const handleSubmit = useCallback(() => {
+        onUserInput?.(createInputResponse());
+
+        setTimeout(() => {
+            // Reset input state
+            setTextInput("");
+            setImagePreview(null);
+        }, 10);
+    }, [onUserInput, createInputResponse]);
+
+    /**
      * Handle keyboard events
      */
-    const handleKeyDown = useCallback((event: KeyboardEvent) => {
-        if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            handleSubmit();
-        }
-    }, []);
+    const handleKeyDown = useCallback(
+        (event: KeyboardEvent) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                handleSubmit();
+            }
+        },
+        [handleSubmit],
+    );
 
     /**
      * Handle text input changes
@@ -95,17 +111,6 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
     const clearImage = useCallback(() => {
         setImagePreview(null);
     }, []);
-
-    /**
-     * Submit user input
-     */
-    const handleSubmit = useCallback(() => {
-        onUserInput?.(createInputResponse());
-
-        // Reset input state
-        setTextInput("");
-        setImagePreview(null);
-    }, [onUserInput, createInputResponse]);
 
     /**
      * Close modal
