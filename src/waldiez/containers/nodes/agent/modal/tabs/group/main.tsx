@@ -2,12 +2,29 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { AfterWork, Select, TabItem, TabItems, WaldiezAgentUpdateState } from "@waldiez/components";
-import { useWaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group/hooks";
-import { WaldiezAgentGroupProps } from "@waldiez/containers/nodes/agent/modal/tabs/group/types";
+import { memo, useMemo } from "react";
 
-export const WaldiezAgentGroup = (props: WaldiezAgentGroupProps) => {
-    const { id, data, darkMode, onDataChange } = props;
+import { AfterWork, Handoffs, Select, TabItem, TabItems, WaldiezAgentUpdateState } from "@waldiez/components";
+import { useWaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group/hooks";
+import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
+
+type WaldiezAgentGroupProps = {
+    id: string;
+    data: WaldiezNodeAgentData;
+    agents: WaldiezNodeAgent[];
+    edges: WaldiezEdge[];
+    darkMode: boolean;
+    onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
+};
+
+/**
+ * Component for managing agent group membership and related settings
+ * Handles joining/leaving groups and configuring group-specific behavior
+ */
+export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
+    const { id, data, darkMode, agents, edges, onDataChange } = props;
+
+    // Use the hook for group-related state and handlers
     const {
         groupOptions,
         currentGroupManager,
@@ -16,86 +33,146 @@ export const WaldiezAgentGroup = (props: WaldiezAgentGroupProps) => {
         onSelectGroupChange,
         onJoinGroup,
         onLeaveGroup,
+        onAfterWorkChange,
     } = useWaldiezAgentGroup(props);
+
+    /**
+     * Current selected group value for the dropdown
+     */
+    const selectedGroupValue = useMemo(
+        () =>
+            selectedGroup
+                ? {
+                      label: selectedGroup.data.label,
+                      value: selectedGroup,
+                  }
+                : null,
+        [selectedGroup],
+    );
+
+    /**
+     * Determine if group tabs should be shown
+     */
+    const showGroupTabs = !!currentGroupManager;
+
+    /**
+     * Join button disabled state
+     */
+    const isJoinButtonDisabled = selectedGroup === null;
+
+    /**
+     * Get the current after work target from handoffs
+     */
+    const afterWorkTarget = useMemo(() => data.handoffs?.[0]?.after_work, [data.handoffs]);
+
     return (
-        <TabItems activeTabIndex={0}>
-            <TabItem id={`wa-${id}-group-membership`} label="Membership">
-                <div className="agent-panel agent-group-panel margin-top-10 margin-bottom-10">
-                    <div className="info margin-bottom-10">Should this agent be part of a group chat?</div>
-                    {!currentGroupManager ? (
-                        <div className="agent-panel-select-group">
-                            <label className="hidden" htmlFor={`agent-select-group-${id}`}>
-                                Select Group
-                            </label>
-                            <div className="flex space-between">
-                                <Select
-                                    options={groupOptions}
-                                    value={
-                                        selectedGroup
-                                            ? {
-                                                  label: selectedGroup.data.label,
-                                                  value: selectedGroup,
-                                              }
-                                            : null
-                                    }
-                                    onChange={onSelectGroupChange}
-                                    inputId={`agent-select-group-${id}`}
-                                    className="flex-1 margin-right-10"
-                                />
-                                <button
-                                    type="button"
-                                    title="Join group"
-                                    className="agent-panel-select-group-action"
-                                    onClick={onJoinGroup}
-                                    disabled={selectedGroup === null}
-                                    data-testid={`join-group-button-agent-${id}`}
-                                >
-                                    Join group
-                                </button>
-                            </div>
+        <div className="agent-panel agent-group-panel">
+            <TabItems activeTabIndex={0}>
+                {/* Membership Tab */}
+                <TabItem id={`wa-${id}-group-membership`} label="Membership">
+                    <div style={{ padding: "1rem" }} data-testid={`agent-group-panel-${id}`}>
+                        <div className="info margin-bottom-10">
+                            Should this agent be part of a group chat?
                         </div>
-                    ) : (
-                        <div className="flex space-between">
-                            <div className="agent-panel-group-label" data-testid={`group-label-agent-${id}`}>
-                                {currentGroupManager.data.label}
+                        {/* Not in a group: Show group selection dropdown */}
+                        {!showGroupTabs ? (
+                            <div>
+                                <label htmlFor={`agent-select-group-${id}`}>Group:</label>
+                                <div className="margin-top-10" />
+                                <div className="flex space-between">
+                                    <Select
+                                        options={groupOptions}
+                                        value={selectedGroupValue}
+                                        onChange={onSelectGroupChange}
+                                        inputId={`agent-select-group-${id}`}
+                                        className="flex-1 margin-right-10"
+                                        aria-label="Select a group to join"
+                                    />
+
+                                    <button
+                                        type="button"
+                                        title="Join group"
+                                        className="agent-panel-select-group-action"
+                                        onClick={onJoinGroup}
+                                        disabled={isJoinButtonDisabled}
+                                        data-testid={`join-group-button-agent-${id}`}
+                                        aria-label="Join selected group"
+                                    >
+                                        Join group
+                                    </button>
+                                </div>
                             </div>
-                            <div className="agent-panel-group-actions">
-                                <button
-                                    title="Leave group"
-                                    type="button"
-                                    className="agent-panel-group-action"
-                                    onClick={onLeaveGroup}
-                                    data-testid={`leave-group-button-agent-${id}`}
+                        ) : (
+                            /* In a group: Show group info and leave button */
+                            <div className="flex space-between current-group-info">
+                                <div
+                                    className="agent-panel-group-label"
+                                    data-testid={`group-label-agent-${id}`}
                                 >
-                                    Leave group
-                                </button>
+                                    {currentGroupManager.data.label}
+                                </div>
+
+                                <div className="agent-panel-group-actions">
+                                    <button
+                                        title="Leave group"
+                                        type="button"
+                                        className="agent-panel-group-action"
+                                        onClick={onLeaveGroup}
+                                        data-testid={`leave-group-button-agent-${id}`}
+                                        aria-label="Leave current group"
+                                    >
+                                        Leave group
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </div>
-            </TabItem>
-            {currentGroupManager && (
-                <TabItem id={`wa-${id}-group-handoffs`} label="Handoffs">
-                    Handoffs
-                </TabItem>
-            )}
-            {currentGroupManager && (
-                <TabItem id={`wa-${id}-group-update-state`} label="State">
-                    <WaldiezAgentUpdateState data={data} darkMode={darkMode} onDataChange={onDataChange} />
-                </TabItem>
-            )}
-            {currentGroupManager && (
-                <TabItem label={"Afterwards"} id={`wa-${id}-after-work`}>
-                    <div className="modal-body">
-                        <AfterWork
-                            target={undefined}
-                            agents={groupMembers}
-                            onChange={() => {}}
-                            isForGroupChat
-                        />
+                        )}
                     </div>
                 </TabItem>
-            )}
-        </TabItems>
+
+                {/* Handoffs Tab - Only shown when in a group */}
+                {showGroupTabs && (
+                    <TabItem id={`wa-${id}-group-handoffs`} label="Handoffs">
+                        <Handoffs
+                            agents={agents}
+                            edges={edges}
+                            id={id}
+                            data={data}
+                            onDataChange={onDataChange}
+                        />
+                    </TabItem>
+                )}
+
+                {/* State Tab - Only shown when in a group */}
+                {showGroupTabs && (
+                    <TabItem id={`wa-${id}-group-update-state`} label="State">
+                        <WaldiezAgentUpdateState
+                            data={data}
+                            darkMode={darkMode}
+                            onDataChange={onDataChange}
+                        />
+                    </TabItem>
+                )}
+
+                {/* Afterwards Tab - Only shown when in a group */}
+                {showGroupTabs && (
+                    <TabItem label="Afterwards" id={`wa-${id}-after-work`}>
+                        <div
+                            style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
+                            data-testid={`after-work-panel-${id}`}
+                        >
+                            <AfterWork
+                                target={afterWorkTarget}
+                                agents={groupMembers}
+                                onChange={onAfterWorkChange}
+                                isForGroupChat={false}
+                                aria-label="After work configuration"
+                            />
+                        </div>
+                    </TabItem>
+                )}
+            </TabItems>
+        </div>
     );
-};
+});
+
+WaldiezAgentGroup.displayName = "WaldiezAgentGroup";

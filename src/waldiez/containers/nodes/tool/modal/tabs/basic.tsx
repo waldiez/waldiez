@@ -53,16 +53,15 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     const contentEditorId = `tool-content-editor-${toolId}`;
 
     return (
-        <div className="flex-column margin-top-10">
+        <div className="flex-column">
             <div className="info margin-bottom-10">
                 Enter the tool details below. You can follow the instructions for each tool type in the
                 comments of the content editor.
             </div>
 
             <div className="margin-bottom-10">
-                <label htmlFor={typeSelectId} className="margin-bottom-5">
-                    Type:
-                </label>
+                <label htmlFor={typeSelectId}>Type:</label>
+                <div className="margin-top-10" />
                 <Select
                     inputId={typeSelectId}
                     options={TOOL_TYPE_OPTIONS}
@@ -74,9 +73,8 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             </div>
 
             <div className="margin-bottom-10">
-                <label htmlFor={labelInputId} className="margin-bottom-5">
-                    Name:
-                </label>
+                <label htmlFor={labelInputId}>Name:</label>
+                <div className="margin-top-10" />
                 <input
                     title="Name"
                     type="text"
@@ -90,9 +88,8 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             </div>
 
             <div className="margin-bottom-10">
-                <label htmlFor={descriptionInputId} className="margin-bottom-5">
-                    Description:
-                </label>
+                <label htmlFor={descriptionInputId}>Description:</label>
+                <div className="margin-top-10" />
                 <textarea
                     title="Description"
                     rows={2}
@@ -106,9 +103,8 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             </div>
 
             <div>
-                <label htmlFor={contentEditorId} className="margin-bottom-5">
-                    Content:
-                </label>
+                <label htmlFor={contentEditorId}>Content:</label>
+                <div className="margin-top-10" />
                 <Editor
                     value={data.content || ""}
                     onChange={onToolContentChange}

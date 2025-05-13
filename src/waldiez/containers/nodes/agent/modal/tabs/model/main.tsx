@@ -2,59 +2,99 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 
 import { Select, SingleValue } from "@waldiez/components";
-import { WaldiezAgentModelsProps } from "@waldiez/containers/nodes/agent/modal/tabs/model/types";
+import { WaldiezNodeAgentData, WaldiezNodeModel } from "@waldiez/types";
 
-export const WaldiezAgentModels = (props: WaldiezAgentModelsProps) => {
+type WaldiezAgentModelProps = {
+    id: string;
+    data: WaldiezNodeAgentData;
+    models: WaldiezNodeModel[];
+    onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
+};
+
+/**
+ * Component for selecting a model to use with an agent
+ * Allows choosing from available models in the workspace
+ */
+export const WaldiezAgentModel = memo((props: WaldiezAgentModelProps) => {
     const { id, data, models, onDataChange } = props;
+
+    // Local state
     const [localData, setLocalData] = useState(data);
-    const modelOptions = models.map(model => {
-        return {
-            label: model.data.label as string,
-            value: model.id,
-        };
-    });
-    const selectedModel = localData.modelId
-        ? {
-              label: models.find(model => model.id === localData.modelId)?.data.label as string,
-              value: localData.modelId,
-          }
-        : null;
-    const onModelChange = (option: SingleValue<{ label: string; value: string }>) => {
-        if (option) {
-            const modelId = option.value;
-            setLocalData({
-                ...localData,
-                modelId,
-            });
-            onDataChange({ modelId });
-        } else {
-            setLocalData({
-                ...localData,
-                modelId: null,
-            });
-            onDataChange({ modelId: null });
+
+    /**
+     * Generate model options for the dropdown
+     */
+    const modelOptions = useMemo(
+        () =>
+            models.map(model => ({
+                label: model.data.label as string,
+                value: model.id,
+            })),
+        [models],
+    );
+
+    /**
+     * Get the currently selected model
+     */
+    const selectedModel = useMemo(() => {
+        if (!localData.modelId) {
+            return null;
         }
-    };
+
+        const selectedModelData = models.find(model => model.id === localData.modelId);
+        if (!selectedModelData) {
+            return null;
+        }
+
+        return {
+            label: selectedModelData.data.label as string,
+            value: localData.modelId,
+        };
+    }, [localData.modelId, models]);
+
+    /**
+     * Handle model selection change
+     */
+    const onModelChange = useCallback(
+        (option: SingleValue<{ label: string; value: string }>) => {
+            if (option) {
+                const modelId = option.value;
+
+                setLocalData(prevData => ({
+                    ...prevData,
+                    modelId,
+                }));
+
+                onDataChange({ modelId });
+            } else {
+                setLocalData(prevData => ({
+                    ...prevData,
+                    modelId: null,
+                }));
+
+                onDataChange({ modelId: null });
+            }
+        },
+        [onDataChange],
+    );
+
     return (
         <div className="agent-panel agent-model-panel margin-bottom-10" data-testid="agent-model-panel">
-            {models.length === 0 ? (
-                <div className="margin-top-10 margin-left-10">No models found in the workspace</div>
-            ) : (
-                <>
-                    <label htmlFor={`select-agent-model-${id}`}>Model to use:</label>
-                    <Select
-                        options={modelOptions}
-                        value={selectedModel}
-                        onChange={onModelChange}
-                        isMulti={false}
-                        inputId={`select-agent-model-${id}`}
-                        isClearable
-                    />
-                </>
-            )}
+            <label htmlFor={`select-agent-model-${id}`}>Model to use:</label>
+            <Select
+                options={modelOptions}
+                value={selectedModel}
+                onChange={onModelChange}
+                isMulti={false}
+                inputId={`select-agent-model-${id}`}
+                isClearable
+                aria-label="Select model for agent"
+            />
         </div>
     );
-};
+});
+
+WaldiezAgentModel.displayName = "WaldiezAgentModel";

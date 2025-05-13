@@ -16,7 +16,7 @@ export const InfoCheckbox: React.FC<InfoCheckboxProps> = (props: InfoCheckboxPro
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;
     return (
-        <div className="info-label">
+        <div className="info-label tooltip-bottom">
             <label className="checkbox-label">
                 <div className="checkbox-label-view">{labelElement}</div>
                 <input type="checkbox" checked={checked} onChange={onChange} data-testid={dataTestId} />

@@ -193,6 +193,7 @@ describe("getNestedChats", () => {
                 {
                     triggeredBy: ["wa-1"],
                     messages: [{ id: "wa-2", isReply: false }],
+                    order: 0,
                 },
             ],
         });
@@ -200,11 +201,18 @@ describe("getNestedChats", () => {
             {
                 triggeredBy: ["wa-1"],
                 messages: [{ id: "wa-2", isReply: false }],
+                order: 0,
             },
         ]);
     });
     it("should return an empty array", () => {
         const chats = getNestedChats({});
-        expect(chats).toEqual([]);
+        expect(chats).toEqual([
+            {
+                triggeredBy: [],
+                messages: [],
+                order: 0,
+            },
+        ]);
     });
 });

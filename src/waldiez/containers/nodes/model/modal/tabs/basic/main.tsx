@@ -95,7 +95,8 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
                     title="Useful Links"
                     expanded={false}
                     fullWidth
-                    className="transparent no-padding color-info margin-top-5 margin-bottom-5"
+                    className="transparent color-info no-padding margin-top-5 margin-bottom-5"
+                    contentClassName="background-info"
                 >
                     {usefulLinks}
                 </Collapsible>
@@ -105,6 +106,7 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
 
             <div className="margin-top-10">
                 <label htmlFor={nameInputId}>Name:</label>
+                <div className="margin-top-10" />
                 <input
                     id={nameInputId}
                     type="text"
@@ -119,6 +121,7 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
 
             <div className="margin-top-10">
                 <label htmlFor={descriptionInputId}>Description:</label>
+                <div className="margin-top-10" />
                 <textarea
                     id={descriptionInputId}
                     title="Model description"
@@ -131,7 +134,7 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
                 />
             </div>
 
-            <div className="margin-top-10">
+            <div className="margin-top-0">
                 <InfoLabel
                     label="Model Type:"
                     info="API type to use for the model. Use 'other' for custom openai compatible models"
@@ -152,7 +155,7 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
                 />
             </div>
 
-            <div className="margin-top-10">
+            <div className="margin-top-0">
                 <InfoLabel label="API Key:" info={apiKeyInfo} />
                 <div className="flex full-width">
                     <input
@@ -178,7 +181,7 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
                 </div>
             </div>
 
-            <div className="margin-top-10">
+            <div className="margin-top-0">
                 <InfoLabel label="Base URL:" info="Model's base URL (including version)" />
                 {urlIsEditable ? (
                     <input

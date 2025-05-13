@@ -30,13 +30,13 @@
 }
 
 .flow-wrapper.light .collapsible {
-  background-color: #f1f1f1;
+  background-color: #f8f9fa;
   color: #444;
-  border: 1px solid #f1f1f1;
+  border: 1px solid #f8f9fa;
 }
 
 .flow-wrapper.light .collapsible-content {
-  background-color: #fefefe;
+  background-color: #f8f9fa;
   color: #141414;
 }
 
@@ -46,23 +46,23 @@
 }
 
 .flow-wrapper.dark .collapsible {
-  background-color: #444;
-  border: 1px solid #444;
+  background-color: #222;
+  border: 1px solid #222;
   color: #f1f1f1;
 }
 
 .flow-wrapper.dark .collapsible-content {
-  background-color: #333;
+  background-color: #232323;
 }
 
 .flow-wrapper.dark .collapsible-toggle {
-  background-color: #444;
+  background-color: #232323;
   color: #f1f1f1;
 }
 
 .flow-wrapper.light .collapsible-header {
-  background-color: #f1f1f1;
-  color: #444;
+  background-color: #f4f4f4;
+  color: #232323;
 }
 
 .flow-wrapper.light .collapsible.active,

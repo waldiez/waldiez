@@ -27,7 +27,13 @@ const baseData = {
     handoffs: [],
     updateAgentStateBeforeReply: [],
     parentId: undefined,
-    nestedChats: [],
+    nestedChats: [
+        {
+            messages: [],
+            triggeredBy: [],
+            order: 0,
+        },
+    ],
 };
 
 const createAgentJson = ({

@@ -26,7 +26,21 @@ type TextInputProps = {
 /**
  * Text input component with optional password visibility toggle and info label
  */
-export const TextInput = memo<TextInputProps>((props: TextInputProps) => {
+export const TextInput = memo<{
+    label: string | React.JSX.Element;
+    value: string | null;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    onNull?: string;
+    disabled?: boolean;
+    labelInfo?: string | React.JSX.Element | null;
+    dataTestId?: string;
+    style?: React.CSSProperties;
+    isPassword?: boolean;
+    fullWidth?: boolean;
+    className?: string;
+    labelClassName?: string;
+}>((props: TextInputProps) => {
     const {
         label,
         value,

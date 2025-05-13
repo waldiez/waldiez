@@ -11,7 +11,7 @@
   height: fit-content;
   max-width: 90vw;
   max-height: 90vh;
-  min-width: 300px;
+  min-width: 320px;
   min-height: 200px;
   border-radius: 8px;
   padding: 0;
@@ -130,7 +130,7 @@
 }
 
 .flow-wrapper.dark .modal-content {
-  background-color: #333;
+  background-color: #262626;
   color: #eee !important;
 }
 
@@ -177,6 +177,18 @@
   flex: 1;
   justify-content: space-between;
   min-height: 0;
+  border-radius: 8px;
+}
+
+/* Agent panel container */
+.flow-wrapper.light .modal-body {
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+.flow-wrapper.dark .modal-body {
+  padding: 10px;
+  background-color: #1e1e1e;
 }
 
 .flow-wrapper .modal-actions > .modal-action-submit,
@@ -227,7 +239,7 @@
 }
 
 .flow-wrapper.dark .modal {
-  background-color: #333;
+  background-color: #262626;
   color: #fff !important;
   border: 1px solid #444;
 }

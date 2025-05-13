@@ -135,7 +135,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         }
 
         setIsDirty(false);
-        onClose();
+        // onClose();
     }, [edgeData, edgeType, edge, edgeId, updateEdgeData, updateEdgeType, onClose]);
 
     return {

@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+
+/* stylelint-disable selector-class-pattern */
 .flow-wrapper .select,
 .flow-wrapper .select * {
   outline: none;
@@ -49,4 +51,90 @@
 .flow-wrapper.dark .w-select__multi-value__remove {
   background-color: #2a2a2a;
   color: #f8f8f8;
+}
+
+.flow-wrapper.light .select__multi-value {
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.flow-wrapper.light .select__multi-value__label {
+  color: #495057;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.flow-wrapper.light .select__multi-value__remove {
+  color: #6c757d;
+  padding: 0 0.4rem;
+  cursor: pointer;
+}
+
+.flow-wrapper.dark .select__multi-value__remove {
+  color: #a0a0a0;
+  padding: 0 0.4rem;
+  cursor: pointer;
+}
+
+.flow-wrapper.light .select__multi-value__remove:hover {
+  background-color: #ced4da;
+  color: #495057;
+  border-radius: 0 4px 4px 0;
+}
+
+.flow-wrapper.dark .select__multi-value {
+  background-color: #333;
+  border-radius: 4px;
+}
+
+.flow-wrapper.dark .select__multi-value__label {
+  color: #d1d5db;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.flow-wrapper.dark .select__multi-value__remove:hover {
+  background-color: #444;
+  color: #d1d5db;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Additional styling for the React-Select component in dark mode */
+.flow-wrapper.dark .select__control {
+  background-color: #292929;
+  border-color: #3a3a3a;
+}
+
+.flow-wrapper.dark .select__control:hover {
+  border-color: #505050;
+}
+
+.flow-wrapper.dark .select__control--is-focused {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.flow-wrapper.dark .select__menu {
+  background-color: #333;
+}
+
+.flow-wrapper.dark .select__option {
+  background-color: #333;
+  color: #d1d5db;
+}
+
+.flow-wrapper.dark .select__option--is-focused {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.flow-wrapper.dark .select__option--is-selected {
+  background-color: #2563eb;
+  color: white;
+}
+
+.flow-wrapper.dark .select__input-container,
+.flow-wrapper.dark .select__placeholder,
+.flow-wrapper.dark .select__single-value {
+  color: #d1d5db;
 }

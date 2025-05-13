@@ -2,144 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Editor, Select, SingleValue } from "@waldiez/components";
 import { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models";
 
-type WaldiezAgentUpdateState = {
+type WaldiezAgentUpdateStateProps = {
     data: WaldiezNodeAgentData;
     onDataChange: (data: Partial<WaldiezNodeAgentData>) => void;
     darkMode: boolean;
-};
-
-export const WaldiezAgentUpdateState: React.FC<WaldiezAgentUpdateState> = (
-    props: WaldiezAgentUpdateState,
-) => {
-    const { data, onDataChange, darkMode } = props;
-    const [selectedUpdateSystemMessageType, setSelectedUpdateSystemMessageType] =
-        useState<WaldiezAgentUpdateSystemMessageType>(
-            data.updateAgentStateBeforeReply.length > 0 ? data.updateAgentStateBeforeReply[0].type : "string",
-        );
-    const [enabled, setEnabled] = useState<boolean>(data.updateAgentStateBeforeReply.length > 0);
-    // just one for now.
-    const updateSystemMessageTypeOptions: {
-        label: string;
-        value: WaldiezAgentUpdateSystemMessageType;
-    }[] = [
-        { label: "String", value: "string" },
-        { label: "Function", value: "callable" },
-    ];
-    const updateSystemMessageTypeOptionsLabel: Record<WaldiezAgentUpdateSystemMessageType, string> = {
-        string: "String",
-        callable: "Function",
-    };
-    const onEnabledChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setEnabled(event.target.checked);
-        if (!event.target.checked) {
-            onDataChange({ updateAgentStateBeforeReply: [] });
-        } else {
-            onDataChange({
-                updateAgentStateBeforeReply: [{ type: "string", content: "" }],
-            });
-        }
-    };
-    const currentUpdateAgentStateBeforeReply =
-        data.updateAgentStateBeforeReply.length > 0
-            ? data.updateAgentStateBeforeReply[0]
-            : {
-                  type: "string" as WaldiezAgentUpdateSystemMessageType,
-                  content: "",
-              };
-    const onUpdateSystemMessageTypeChange = (
-        option: SingleValue<{ label: string; value: WaldiezAgentUpdateSystemMessageType }>,
-    ) => {
-        if (option) {
-            setSelectedUpdateSystemMessageType(option.value);
-            onDataChange({
-                updateAgentStateBeforeReply: [
-                    {
-                        type: option.value,
-                        content:
-                            option.value === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
-                    },
-                ],
-            });
-        }
-    };
-    const onUpdateSystemMessageStringChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onDataChange({
-            updateAgentStateBeforeReply: [
-                {
-                    type: "string",
-                    content: event.target.value,
-                },
-            ],
-        });
-    };
-    const onUpdateSystemMessageCallableChange = (value: string | undefined) => {
-        onDataChange({
-            updateAgentStateBeforeReply: [
-                {
-                    type: "callable",
-                    content: value ?? "",
-                },
-            ],
-        });
-    };
-    return (
-        <div className="agent-panel agent-swarm-update-state-panel">
-            <div className="info margin-bottom-10">
-                You can update the agent's system message before replying. This can be useful if you need to
-                control the system message based on the current conversation context. If enabled, it can be a
-                string or a function. If a string, it will be used as a template and substitute the context
-                variables. If a function, it should accept the agent and messages as arguments and return a
-                string.
-            </div>
-            <div className="flex-column">
-                <label className="checkbox-label enable-checkbox">
-                    <div className="checkbox-label-view">Update system message before reply</div>
-                    <input
-                        type="checkbox"
-                        checked={enabled}
-                        onChange={onEnabledChange}
-                        data-testid="enable-update-system-message"
-                    />
-                    <div className="checkbox"></div>
-                </label>
-                {enabled && (
-                    <>
-                        <label>Message update type</label>
-                        <Select
-                            options={updateSystemMessageTypeOptions}
-                            value={{
-                                label: updateSystemMessageTypeOptionsLabel[selectedUpdateSystemMessageType],
-                                value: selectedUpdateSystemMessageType,
-                            }}
-                            onChange={onUpdateSystemMessageTypeChange}
-                        />
-                        <label>Message update</label>
-                        {currentUpdateAgentStateBeforeReply.type === "string" && (
-                            <textarea
-                                rows={4}
-                                defaultValue={currentUpdateAgentStateBeforeReply.content}
-                                placeholder="Enter a string template with {variable}s"
-                                onChange={onUpdateSystemMessageStringChange}
-                                data-testid="update-system-message-string"
-                            />
-                        )}
-                        {currentUpdateAgentStateBeforeReply.type === "callable" && (
-                            <Editor
-                                value={currentUpdateAgentStateBeforeReply.content}
-                                onChange={onUpdateSystemMessageCallableChange}
-                                darkMode={darkMode}
-                            />
-                        )}
-                    </>
-                )}
-            </div>
-        </div>
-    );
 };
 
 export const CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT = `"""Custom update system message function."""
@@ -161,3 +32,216 @@ def custom_update_system_message(
 ) -> str:
     ...
 `;
+
+export const WaldiezAgentUpdateState: React.FC<WaldiezAgentUpdateStateProps> = props => {
+    const { data, onDataChange, darkMode } = props;
+
+    /**
+     * Determine if update config exists
+     */
+    const hasUpdateConfig = useMemo(
+        () => data.updateAgentStateBeforeReply.length > 0,
+        [data.updateAgentStateBeforeReply],
+    );
+
+    /**
+     * Get the current config or a default
+     */
+    const currentConfig = useMemo(
+        () =>
+            hasUpdateConfig
+                ? data.updateAgentStateBeforeReply[0]
+                : { type: "string" as WaldiezAgentUpdateSystemMessageType, content: "" },
+        [hasUpdateConfig, data.updateAgentStateBeforeReply],
+    );
+
+    /**
+     * Local state
+     */
+    const [enabled, setEnabled] = useState<boolean>(hasUpdateConfig);
+    const [selectedType, setSelectedType] = useState<WaldiezAgentUpdateSystemMessageType>(currentConfig.type);
+
+    /**
+     * Sync local state with props when props change
+     */
+    useEffect(() => {
+        setEnabled(hasUpdateConfig);
+        if (hasUpdateConfig) {
+            setSelectedType(currentConfig.type);
+        }
+    }, [hasUpdateConfig, currentConfig.type]);
+
+    /**
+     * Options for dropdown
+     */
+    const updateSystemMessageTypeOptions = useMemo(
+        () => [
+            { label: "Text", value: "string" as WaldiezAgentUpdateSystemMessageType },
+            { label: "Function", value: "callable" as WaldiezAgentUpdateSystemMessageType },
+        ],
+        [],
+    );
+
+    /**
+     * Current selected option
+     */
+    const selectedOption = useMemo(
+        () => updateSystemMessageTypeOptions.find(opt => opt.value === selectedType),
+        [updateSystemMessageTypeOptions, selectedType],
+    );
+
+    /**
+     * Handle enable/disable toggle
+     */
+    const onEnabledChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const isEnabled = event.target.checked;
+            setEnabled(isEnabled);
+
+            if (!isEnabled) {
+                // Clear configuration when disabled
+                onDataChange({ updateAgentStateBeforeReply: [] });
+            } else {
+                // Create default configuration when enabled
+                // Maintain previously selected type if toggling back on
+                const type = selectedType;
+                const content = type === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT;
+
+                onDataChange({
+                    updateAgentStateBeforeReply: [{ type, content }],
+                });
+            }
+        },
+        [onDataChange, selectedType],
+    );
+
+    /**
+     * Handle type change
+     */
+    const onUpdateSystemMessageTypeChange = useCallback(
+        (option: SingleValue<{ label: string; value: WaldiezAgentUpdateSystemMessageType }>) => {
+            if (!option) {
+                onDataChange({
+                    updateAgentStateBeforeReply: [],
+                });
+                return;
+            }
+
+            const newType = option.value;
+            setSelectedType(newType);
+
+            // Update content based on type
+            const content = newType === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT;
+
+            onDataChange({
+                updateAgentStateBeforeReply: [{ type: newType, content }],
+            });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle string content change
+     */
+    const onUpdateSystemMessageStringChange = useCallback(
+        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            onDataChange({
+                updateAgentStateBeforeReply: [
+                    {
+                        type: "string",
+                        content: event.target.value,
+                    },
+                ],
+            });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle function content change
+     */
+    const onUpdateSystemMessageCallableChange = useCallback(
+        (value: string | undefined) => {
+            onDataChange({
+                updateAgentStateBeforeReply: [
+                    {
+                        type: "callable",
+                        content: value ?? CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
+                    },
+                ],
+            });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Current content for string editor
+     */
+    const stringContent = useMemo(
+        () => (hasUpdateConfig && currentConfig.type === "string" ? currentConfig.content : ""),
+        [hasUpdateConfig, currentConfig],
+    );
+
+    /**
+     * Current content for callable editor
+     */
+    const callableContent = useMemo(
+        () =>
+            hasUpdateConfig && currentConfig.type === "callable"
+                ? currentConfig.content
+                : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
+        [hasUpdateConfig, currentConfig],
+    );
+
+    return (
+        <div className="agent-panel agent-swarm-update-state-panel">
+            <div className="info margin-bottom-10">
+                You can update the agent's system message before replying. This can be useful if you need to
+                control the system message based on the current conversation context. If enabled, it can be a
+                string or a function. If text, it will be used as a template and substitute the context
+                variables. If a function, it should accept the agent and messages as arguments and return a
+                string.
+            </div>
+            <div className="flex-column">
+                <label className="checkbox-label enable-checkbox">
+                    <div className="checkbox-label-view">Update system message before reply</div>
+                    <input
+                        type="checkbox"
+                        checked={enabled}
+                        onChange={onEnabledChange}
+                        data-testid="enable-update-system-message"
+                    />
+                    <div className="checkbox"></div>
+                </label>
+                {enabled && (
+                    <>
+                        <label>Message update type</label>
+                        <Select
+                            options={updateSystemMessageTypeOptions}
+                            value={selectedOption}
+                            onChange={onUpdateSystemMessageTypeChange}
+                            data-testid="update-system-message-type-select"
+                        />
+                        <label>Message update</label>
+                        {selectedType === "string" ? (
+                            <textarea
+                                rows={4}
+                                value={stringContent}
+                                placeholder="Enter a string template with {variable}s"
+                                onChange={onUpdateSystemMessageStringChange}
+                                data-testid="update-system-message-string"
+                            />
+                        ) : (
+                            <Editor
+                                value={callableContent}
+                                onChange={onUpdateSystemMessageCallableChange}
+                                darkMode={darkMode}
+                                data-testid="update-system-message-callable"
+                            />
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
+    );
+};

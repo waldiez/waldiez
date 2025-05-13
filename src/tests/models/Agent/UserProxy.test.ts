@@ -64,6 +64,7 @@ describe("WaldiezAgentUserProxy", () => {
                         { id: "1", isReply: false },
                         { id: "2", isReply: true },
                     ],
+                    order: 0,
                 },
             ],
             contextVariables: {},
@@ -121,6 +122,7 @@ describe("WaldiezAgentUserProxy", () => {
                     { id: "1", isReply: false },
                     { id: "2", isReply: true },
                 ],
+                order: 0,
             },
         ]);
     });

@@ -11,6 +11,10 @@
   align-items: center;
 }
 
+.flow-wrapper.light .drop_zone {
+  background-color: #fff;
+}
+
 .flow-wrapper .drop_zone .drop_zone_content {
   display: flex;
   flex-direction: column;
@@ -32,5 +36,5 @@
 
 .flow-wrapper.light .drop_zone.drag-over,
 .flow-wrapper.light .drop_zone:hover {
-  background-color: #f8f8f8;
+  background-color: #f8f9fa;
 }

@@ -32,7 +32,7 @@ const goToNestedChatsTab = () => {
 describe("Nested Chats tab triggers", () => {
     it("should add a new trigger", async () => {
         goToNestedChatsTab();
-        const selectTrigger = screen.getByLabelText("Triggers");
+        const selectTrigger = screen.getByLabelText("Triggered by:");
         expect(selectTrigger).toBeInTheDocument();
         selectEvent.openMenu(selectTrigger);
         await selectEvent.select(selectTrigger, ["Agent 0", "Agent 1"]);

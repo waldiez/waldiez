@@ -2,25 +2,69 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { memo, useMemo } from "react";
+
 import { InfoCheckbox, InfoLabel, Select } from "@waldiez/components";
 import { useWaldiezAgentRagUserTextSplit } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/textSplit/hooks";
 import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
 
-export const WaldiezAgentRagUserTextSplit = (props: {
+/**
+ * Chunk mode options for the dropdown
+ */
+const chunkModeOptions = [
+    { label: "Multi Lines", value: "multi_lines" as const },
+    { label: "One Line", value: "one_line" as const },
+];
+
+/**
+ * Mapping of chunk mode values to display labels
+ */
+const chunkModeValuesMap = {
+    multi_lines: "Multi Lines",
+    one_line: "One Line",
+};
+
+type WaldiezAgentRagUserTextSplitProps = {
     id: string;
     data: WaldiezNodeAgentRagUserData;
     onDataChange: (data: WaldiezNodeAgentData) => void;
-}) => {
+};
+
+/**
+ * Component for configuring text splitting settings for RAG
+ * Handles token sizes, chunk modes, and splitting behavior
+ */
+export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserTextSplitProps) => {
     const { id, data } = props;
     const { retrieveConfig } = data;
+
+    // Use the hook for handlers
     const {
         onChunkTokenSizeChange,
         onContextMaxTokensChange,
         onChunkModeChange,
         onMustBreakAtEmptyLineChange,
     } = useWaldiezAgentRagUserTextSplit(props);
+
+    /**
+     * Current chunk mode value for the dropdown
+     */
+    const chunkModeValue = useMemo(
+        () => ({
+            label: chunkModeValuesMap[retrieveConfig.chunkMode],
+            value: retrieveConfig.chunkMode,
+        }),
+        [retrieveConfig.chunkMode],
+    );
+
+    /**
+     * Determine if empty line break settings should be shown
+     */
+    const showEmptyLineBreak = retrieveConfig.chunkMode === "multi_lines";
+
     return (
-        <>
+        <div className="text-split-config" data-testid={`rag-text-split-config-${id}`}>
+            {/* Chunk Token Size */}
             <div className="flex-column">
                 <InfoLabel
                     label="Chunk Token Size:"
@@ -29,14 +73,19 @@ export const WaldiezAgentRagUserTextSplit = (props: {
                         "If not provided, a default size `max_tokens * 0.4` will be used."
                     }
                 />
+
                 <input
                     title="Chunk token size"
                     type="number"
                     value={retrieveConfig.chunkTokenSize ?? ""}
                     onChange={onChunkTokenSizeChange}
                     data-testid={`rag-chunk-token-size-${id}`}
+                    id={`rag-chunk-token-size-${id}`}
+                    aria-label="Chunk token size"
                 />
             </div>
+
+            {/* Context Max Tokens */}
             <div className="flex-column">
                 <InfoLabel
                     label="Context Max Tokens:"
@@ -45,14 +94,19 @@ export const WaldiezAgentRagUserTextSplit = (props: {
                         "If not provided, a default size `max_tokens * 0.8` will be used."
                     }
                 />
+
                 <input
                     title="Context max tokens"
                     type="number"
                     value={retrieveConfig.contextMaxTokens ?? ""}
                     onChange={onContextMaxTokensChange}
                     data-testid={`rag-context-max-tokens-${id}`}
+                    id={`rag-context-max-tokens-${id}`}
+                    aria-label="Context maximum tokens"
                 />
             </div>
+
+            {/* Chunk Mode */}
             <div className="flex-column">
                 <InfoLabel
                     label="Chunk Mode:"
@@ -62,20 +116,22 @@ export const WaldiezAgentRagUserTextSplit = (props: {
                         'If not provided, a default mode "Multi Lines" will be used.'
                     }
                 />
+
                 <label className="hidden" htmlFor={`rag-chunk-mode-${id}`}>
                     Chunk Mode
                 </label>
+
                 <Select
                     options={chunkModeOptions}
-                    value={{
-                        label: chunkModeValuesMap[retrieveConfig.chunkMode],
-                        value: retrieveConfig.chunkMode,
-                    }}
+                    value={chunkModeValue}
                     onChange={onChunkModeChange}
                     inputId={`rag-chunk-mode-${id}`}
+                    aria-label="Select chunk mode"
                 />
             </div>
-            {retrieveConfig.chunkMode === "multi_lines" && (
+
+            {/* Must Break at Empty Line (only for multi_lines mode) */}
+            {showEmptyLineBreak && (
                 <div className="flex-column">
                     <InfoCheckbox
                         label="Must Break at Empty Line "
@@ -86,18 +142,12 @@ export const WaldiezAgentRagUserTextSplit = (props: {
                         checked={retrieveConfig.mustBreakAtEmptyLine}
                         onChange={onMustBreakAtEmptyLineChange}
                         dataTestId={`rag-must-break-at-empty-line-${id}`}
+                        aria-label="Must break at empty line"
                     />
                 </div>
             )}
-        </>
+        </div>
     );
-};
-const chunkModeOptions: { label: string; value: "multi_lines" | "one_line" }[] = [
-    { label: "Multi Lines", value: "multi_lines" },
-    { label: "One Line", value: "one_line" },
-];
+});
 
-const chunkModeValuesMap = {
-    multi_lines: "Multi Lines",
-    one_line: "One Line",
-};
+WaldiezAgentRagUserTextSplit.displayName = "WaldiezAgentRagUserTextSplit";

@@ -45,22 +45,28 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
             <div className="modal-body">
                 <TabItems activeTabIndex={activeTabIndex}>
                     <TabItem label="Basic" id={`model-config-basic-${modelId}`}>
-                        <WaldiezNodeModelModalBasicTab
-                            id={modelId}
-                            data={data}
-                            onDataChange={onDataChange}
-                            onLogoChange={onLogoChange}
-                        />
+                        <div className="model-panel">
+                            <WaldiezNodeModelModalBasicTab
+                                id={modelId}
+                                data={data}
+                                onDataChange={onDataChange}
+                                onLogoChange={onLogoChange}
+                            />
+                        </div>
                     </TabItem>
                     <TabItem label="Advanced" id={`model-config-advanced-${modelId}`}>
-                        <WaldiezNodeModelModalAdvancedTab data={data} onDataChange={onDataChange} />
+                        <div className="model-panel">
+                            <WaldiezNodeModelModalAdvancedTab data={data} onDataChange={onDataChange} />
+                        </div>
                     </TabItem>
                     <TabItem label="Price" id={`model-config-price-${modelId}`}>
-                        <WaldiezNodeModelModalPriceTab
-                            modelId={modelId}
-                            data={data}
-                            onDataChange={onDataChange}
-                        />
+                        <div className="model-panel">
+                            <WaldiezNodeModelModalPriceTab
+                                modelId={modelId}
+                                data={data}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
                     </TabItem>
                 </TabItems>
                 <div className="modal-actions">

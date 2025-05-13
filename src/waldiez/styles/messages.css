@@ -3,11 +3,27 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 .color-info {
-  color: #004085 !important;
+  color: #ebf5ff !important;
 }
 
 .flow-wrapper.dark .color-info {
-  color: #cce5ff !important;
+  color: #ebf5ff !important;
+}
+
+.background-info {
+  background-color: #cce5ff !important;
+}
+
+.background-success {
+  background-color: #d4edda !important;
+}
+
+.background-warning {
+  background-color: #fff3cd !important;
+}
+
+.background-error {
+  background-color: #f8d7da !important;
 }
 
 .color-success {
@@ -30,9 +46,22 @@
   border-radius: 4px;
 }
 
+.flow-wrapper .info a {
+  color: #004085;
+}
+
 .flow-wrapper.dark .info {
-  background-color: #20558f;
-  color: #cce5ff;
+  color: #ebf5ff;
+  background-color: #1e2a3a;
+  border: 1px solid #374151;
+}
+
+.flow-wrapper.dark .info a {
+  color: #ebf5ff;
+}
+
+.flow-wrapper.dark .background-info {
+  background-color: #1e2a3a !important;
 }
 
 .flow-wrapper .success {

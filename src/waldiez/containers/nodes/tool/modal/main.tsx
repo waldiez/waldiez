@@ -41,10 +41,14 @@ export const WaldiezNodeToolModal: React.FC<WaldiezNodeToolModalProps> = props =
             <div className="modal-body">
                 <TabItems activeTabIndex={activeTabIndex}>
                     <TabItem label="Basic" id={`tool-basic-tab-${toolId}`}>
-                        <WaldiezToolBasicTab {...props} />
+                        <div className="tool-panel">
+                            <WaldiezToolBasicTab {...props} />
+                        </div>
                     </TabItem>
                     <TabItem label="Advanced" id={`tool-advanced-tab-${toolId}`}>
-                        <WaldiezToolAdvancedTab {...props} />
+                        <div className="tool-panel">
+                            <WaldiezToolAdvancedTab {...props} />
+                        </div>
                     </TabItem>
                 </TabItems>
             </div>

@@ -104,7 +104,7 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         if (agent) {
             const idsToRemove = [id]; // let's keep the group members
             const idsToResetParent: string[] = [];
-            if (agent.type === "group_manager") {
+            if (agent.data.agentType === "group_manager") {
                 const groupMembers = this.getGroupMembers(id);
                 idsToResetParent.push(...groupMembers.map(member => member.id));
             }
@@ -113,6 +113,7 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                     .nodes.map(node => {
                         if (idsToResetParent.includes(node.id)) {
                             node.parentId = undefined;
+                            node.data.parentId = undefined;
                             node.extent = undefined;
                         }
                         return node;

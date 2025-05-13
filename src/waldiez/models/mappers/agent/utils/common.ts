@@ -192,11 +192,26 @@ export const getParentId = (
     }
     return undefined;
 };
+
+const getNestedChatOrder = (chat: Record<string, unknown>): number => {
+    if ("order" in chat && typeof chat.order === "number") {
+        return chat.order;
+    }
+    if ("order" in chat && typeof chat.order === "string") {
+        try {
+            const order = parseInt(chat.order, 10);
+            if (!isNaN(order)) {
+                return order;
+            }
+        } catch (_) {
+            // Ignore parsing error
+        }
+    }
+    return 0;
+};
+
+// eslint-disable-next-line max-statements
 export const getNestedChats = (data: Record<string, unknown>): WaldiezAgentNestedChat[] => {
-    // old version: [{ triggeredBy: [{id: string, isReply: boolean}], messages: [{ id: string, isReply: boolean }] }]
-    // new version: [{ triggeredBy: string[], messages: [{ id: string, isReply: boolean }] }]
-    // in the old version, the id is the id of the chat (not the agent :( )
-    // in the new version, the id is the id of the agent (that can trigger the nested chat)
     const chats: WaldiezAgentNestedChat[] = [];
     if ("nestedChats" in data && Array.isArray(data.nestedChats)) {
         for (const chat of data.nestedChats) {
@@ -215,8 +230,15 @@ export const getNestedChats = (data: Record<string, unknown>): WaldiezAgentNeste
                         typeof message.isReply === "boolean",
                 ) as { id: string; isReply: boolean }[];
             }
-            chats.push({ triggeredBy, messages });
+            chats.push({ triggeredBy, messages, order: getNestedChatOrder(chat) });
         }
+    }
+    if (chats.length === 0) {
+        chats.push({
+            triggeredBy: [],
+            messages: [],
+            order: 0,
+        });
     }
     return chats;
 };

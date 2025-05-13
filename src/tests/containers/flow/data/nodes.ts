@@ -67,6 +67,7 @@ const agentNodes: Node[] = edges.map((_, index) => {
                     isReply: true,
                 },
             ],
+            order: 0,
         });
         addedNestedChat = true;
     }
@@ -125,7 +126,7 @@ agentNodes.push({
     data: {
         label: "Agent Node",
         agentType: "assistant",
-        nestedChats: [] as WaldiezAgentNestedChat[],
+        nestedChats: [],
         tools: [] as WaldiezAgentLinkedTool[],
         modelIds: [] as string[],
         codeExecutionConfig: false as WaldiezAgentCodeExecutionConfig,

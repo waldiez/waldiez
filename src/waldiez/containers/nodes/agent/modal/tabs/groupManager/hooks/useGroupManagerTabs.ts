@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { nanoid } from "nanoid";
 
@@ -17,149 +17,304 @@ import {
 } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
+/**
+ * Custom hook for managing Waldiez Group Manager Tab functionality
+ * Handles group settings, context variables, agent selection, and transitions
+ */
 export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => {
     const { id, data, onDataChange } = props;
+
+    // Local state
     const [localData, setLocalData] = useState<WaldiezNodeAgentGroupManagerData>(data);
-    // const getAgentConnections = useWaldiez(s => s.getAgentConnections);
+
+    // Store selectors
     const getGroupMembers = useWaldiez(s => s.getGroupMembers);
     const getAgentById = useWaldiez(s => s.getAgentById);
     const getModels = useWaldiez(s => s.getModels);
-    const setSpeakerData = (speakerData: Partial<WaldiezAgentGroupManagerSpeakers>) => {
-        const newSpeakerData = { ...localData.speakers, ...speakerData };
-        setLocalData(prev => ({ ...prev, speakers: newSpeakerData }));
-        onDataChange({ speakers: newSpeakerData });
-    };
-    // const agentConnections = getAgentConnections(id);
-    const groupMembers = getGroupMembers(id);
-    const onGroupNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLocalData(prev => ({ ...prev, groupName: event.target.value }));
-        onDataChange({ groupName: event.target.value });
-    };
-    const onManagerNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newName = event.target.value;
-        setLocalData(prev => ({ ...prev, name: newName, label: newName }));
-        onDataChange({ name: newName, label: newName });
-    };
-    const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setLocalData(prev => ({ ...prev, description: event.target.value }));
-        onDataChange({ description: event.target.value });
-    };
-    const onSystemMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setLocalData(prev => ({ ...prev, systemMessage: event.target.value }));
-        onDataChange({ systemMessage: event.target.value });
-    };
-    const onMaxRoundChange = (value: number | null) => {
-        if (value !== null && value > 0) {
-            setLocalData(prev => ({ ...prev, maxRound: value }));
-            onDataChange({ maxRound: value });
-        }
-    };
-    const onAddContextVariable = (key: string, value: string) => {
-        const newContextVariables = { ...localData.contextVariables, [key]: value };
-        const newData = { ...localData, contextVariables: newContextVariables };
-        setLocalData(newData);
-        onDataChange({ contextVariables: newContextVariables });
-    };
-    const onDeleteContextVariable = (key: string) => {
-        const newContextVariables = { ...localData.contextVariables };
-        delete newContextVariables[key];
-        const newData = { ...localData, contextVariables: newContextVariables };
-        setLocalData(newData);
-        onDataChange({ contextVariables: newContextVariables });
-    };
-    const onUpdateContextVariable = (items: { [key: string]: unknown }) => {
-        const newData = { ...localData, contextVariables: items };
-        setLocalData(newData);
-        onDataChange({ contextVariables: items });
-    };
-    const onInitialAgentChange = (option: SingleValue<{ label: string; value: WaldiezNodeAgent }>) => {
-        if (!option) {
-            setLocalData(prev => ({ ...prev, initialAgentId: undefined }));
-            onDataChange({ initialAgentId: undefined });
-            return;
-        }
-        setLocalData(prev => ({ ...prev, initialAgentId: option.value.id }));
-        onDataChange({ initialAgentId: option.value.id });
-    };
-    const onEnableClearHistoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLocalData(prev => ({ ...prev, enableClearHistory: event.target.checked }));
-        onDataChange({ enableClearHistory: event.target.checked });
-    };
-    const onSendIntroductionsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLocalData(prev => ({ ...prev, sendIntroductions: event.target.checked }));
-        onDataChange({ sendIntroductions: event.target.checked });
-    };
-    const onMaxRetriesForSelectingChange = (value: number | null) => {
-        setSpeakerData({ maxRetriesForSelecting: value });
-    };
-    const onSpeakerSelectionMethodChange = (
-        option: {
-            label: string;
-            value: GroupChatSpeakerSelectionMethodOption;
-        } | null,
-    ) => {
-        const newMethod = option?.value ?? undefined;
-        setSpeakerData({ selectionMethod: newMethod });
-        // setSpeakerData({ selectionMethod: value !== null ? value : undefined });
-    };
-    const currentAfterWorkFilter = data.handoffs?.filter(handoff => handoff?.after_work !== undefined);
-    // there should be only one after work
-    const currentAfterWork =
-        currentAfterWorkFilter && currentAfterWorkFilter.length > 0
+
+    /**
+     * Get models, group members and current agent from store
+     */
+    const models = useMemo(() => getModels(), [getModels]);
+    const groupMembers = useMemo(() => getGroupMembers(id), [getGroupMembers, id]);
+    const currentInitialAgent = useMemo(
+        () => (localData.initialAgentId ? getAgentById(localData.initialAgentId) : undefined),
+        [localData.initialAgentId, getAgentById],
+    );
+
+    /**
+     * Derived data for dropdowns and selections
+     */
+    const initialAgent = useMemo(
+        () =>
+            currentInitialAgent
+                ? {
+                      label: currentInitialAgent.data.label,
+                      value: currentInitialAgent,
+                  }
+                : undefined,
+        [currentInitialAgent],
+    );
+
+    const initialAgentOptions = useMemo(
+        () =>
+            groupMembers.map(agent => ({
+                label: agent.data.label,
+                value: agent,
+            })),
+        [groupMembers],
+    );
+
+    const currentAfterWork = useMemo(() => {
+        const currentAfterWorkFilter = data.handoffs?.filter(handoff => handoff?.after_work !== undefined);
+        // There should be only one after work
+        return currentAfterWorkFilter && currentAfterWorkFilter.length > 0
             ? currentAfterWorkFilter[0].after_work
             : undefined;
-    const removeAfterWork = () => {
-        const newHandoffs = data.handoffs?.filter(handoff => !handoff.after_work);
-        setLocalData(prev => ({ ...prev, handoffs: newHandoffs }));
-        props.onDataChange({
-            ...data,
-            handoffs: newHandoffs,
-        });
-    };
-    const addOrUpdateAfterWork = (target: WaldiezTransitionTarget) => {
-        let newHandoffs = data.handoffs?.filter(handoff => handoff.after_work === undefined);
-        const newHandoff = {
-            id: nanoid(),
-            after_work: target,
-            target_type: target.target_type,
-            order: target.order,
-        };
-        if (newHandoffs) {
-            const existingHandoffIndex = newHandoffs.findIndex(handoff => handoff.after_work !== undefined);
-            if (existingHandoffIndex !== -1) {
-                newHandoffs[existingHandoffIndex] = newHandoff;
-            } else {
-                newHandoffs.push(newHandoff);
+    }, [data.handoffs]);
+
+    /**
+     * Update speaker data
+     */
+    const setSpeakerData = useCallback(
+        (speakerData: Partial<WaldiezAgentGroupManagerSpeakers>) => {
+            const newSpeakerData = { ...localData.speakers, ...speakerData };
+
+            setLocalData(prev => ({ ...prev, speakers: newSpeakerData }));
+            onDataChange({ speakers: newSpeakerData });
+        },
+        [localData.speakers, onDataChange],
+    );
+
+    /**
+     * Handle group name changes
+     */
+    const onGroupNameChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const groupName = event.target.value;
+
+            setLocalData(prev => ({ ...prev, groupName }));
+            onDataChange({ groupName });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle manager name changes
+     */
+    const onManagerNameChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const newName = event.target.value;
+
+            setLocalData(prev => ({ ...prev, name: newName, label: newName }));
+            onDataChange({ name: newName, label: newName });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle description changes
+     */
+    const onDescriptionChange = useCallback(
+        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            const description = event.target.value;
+
+            setLocalData(prev => ({ ...prev, description }));
+            onDataChange({ description });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle system message changes
+     */
+    const onSystemMessageChange = useCallback(
+        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+            const systemMessage = event.target.value;
+
+            setLocalData(prev => ({ ...prev, systemMessage }));
+            onDataChange({ systemMessage });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle max round changes
+     */
+    const onMaxRoundChange = useCallback(
+        (value: number | null) => {
+            if (value !== null && value > 0) {
+                setLocalData(prev => ({ ...prev, maxRound: value }));
+                onDataChange({ maxRound: value });
             }
-        } else {
-            newHandoffs = [newHandoff];
-        }
-        console.log("newHandoffs", newHandoffs);
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle context variable operations
+     */
+    const onAddContextVariable = useCallback(
+        (key: string, value: string) => {
+            const newContextVariables = { ...localData.contextVariables, [key]: value };
+
+            setLocalData(prev => ({ ...prev, contextVariables: newContextVariables }));
+            onDataChange({ contextVariables: newContextVariables });
+        },
+        [localData.contextVariables, onDataChange],
+    );
+
+    const onDeleteContextVariable = useCallback(
+        (key: string) => {
+            const newContextVariables = { ...localData.contextVariables };
+            delete newContextVariables[key];
+
+            setLocalData(prev => ({ ...prev, contextVariables: newContextVariables }));
+            onDataChange({ contextVariables: newContextVariables });
+        },
+        [localData.contextVariables, onDataChange],
+    );
+
+    const onUpdateContextVariable = useCallback(
+        (items: { [key: string]: unknown }) => {
+            setLocalData(prev => ({ ...prev, contextVariables: items }));
+            onDataChange({ contextVariables: items });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle initial agent changes
+     */
+    const onInitialAgentChange = useCallback(
+        (option: SingleValue<{ label: string; value: WaldiezNodeAgent }>) => {
+            if (!option) {
+                setLocalData(prev => ({ ...prev, initialAgentId: undefined }));
+                onDataChange({ initialAgentId: undefined });
+                return;
+            }
+
+            const initialAgentId = option.value.id;
+            setLocalData(prev => ({ ...prev, initialAgentId }));
+            onDataChange({ initialAgentId });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle clear history toggle changes
+     */
+    const onEnableClearHistoryChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const enableClearHistory = event.target.checked;
+
+            setLocalData(prev => ({ ...prev, enableClearHistory }));
+            onDataChange({ enableClearHistory });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle send introductions toggle changes
+     */
+    const onSendIntroductionsChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const sendIntroductions = event.target.checked;
+
+            setLocalData(prev => ({ ...prev, sendIntroductions }));
+            onDataChange({ sendIntroductions });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Handle max retries for selecting changes
+     */
+    const onMaxRetriesForSelectingChange = useCallback(
+        (value: number | null) => {
+            setSpeakerData({ maxRetriesForSelecting: value });
+        },
+        [setSpeakerData],
+    );
+
+    /**
+     * Handle speaker selection method changes
+     */
+    const onSpeakerSelectionMethodChange = useCallback(
+        (
+            option: {
+                label: string;
+                value: GroupChatSpeakerSelectionMethodOption;
+            } | null,
+        ) => {
+            const selectionMethod = option?.value ?? undefined;
+            setSpeakerData({ selectionMethod });
+        },
+        [setSpeakerData],
+    );
+
+    /**
+     * Remove after work transition
+     */
+    const removeAfterWork = useCallback(() => {
+        const newHandoffs = data.handoffs?.filter(handoff => !handoff.after_work);
+
         setLocalData(prev => ({ ...prev, handoffs: newHandoffs }));
-        props.onDataChange({
+        onDataChange({
             ...data,
             handoffs: newHandoffs,
         });
-    };
-    const onAfterWorkChange = (target: WaldiezTransitionTarget | undefined) => {
-        if (!target) {
-            removeAfterWork();
-        } else {
-            addOrUpdateAfterWork(target);
-        }
-    };
-    const models = getModels();
-    const currentInitialAgent = localData.initialAgentId ? getAgentById(localData.initialAgentId) : undefined;
-    const initialAgent = currentInitialAgent
-        ? {
-              label: currentInitialAgent.data.label,
-              value: currentInitialAgent,
-          }
-        : undefined;
-    const initialAgentOptions = groupMembers.map(agent => ({
-        label: agent.data.label,
-        value: agent,
-    }));
+    }, [data, onDataChange]);
+
+    /**
+     * Add or update after work transition
+     */
+    const addOrUpdateAfterWork = useCallback(
+        (target: WaldiezTransitionTarget) => {
+            let newHandoffs = data.handoffs?.filter(handoff => handoff.after_work === undefined);
+            const newHandoff = {
+                id: nanoid(),
+                after_work: target,
+                target_type: target.target_type,
+                order: target.order,
+            };
+
+            if (newHandoffs) {
+                const existingHandoffIndex = newHandoffs.findIndex(
+                    handoff => handoff.after_work !== undefined,
+                );
+                if (existingHandoffIndex !== -1) {
+                    newHandoffs[existingHandoffIndex] = newHandoff;
+                } else {
+                    newHandoffs.push(newHandoff);
+                }
+            } else {
+                newHandoffs = [newHandoff];
+            }
+
+            setLocalData(prev => ({ ...prev, handoffs: newHandoffs }));
+            onDataChange({
+                ...data,
+                handoffs: newHandoffs,
+            });
+        },
+        [data, onDataChange],
+    );
+
+    /**
+     * Handle after work changes
+     */
+    const onAfterWorkChange = useCallback(
+        (target: WaldiezTransitionTarget | undefined) => {
+            if (!target) {
+                removeAfterWork();
+            } else {
+                addOrUpdateAfterWork(target);
+            }
+        },
+        [removeAfterWork, addOrUpdateAfterWork],
+    );
+
     return {
         data: localData,
         models,

@@ -78,7 +78,13 @@ export class WaldiezAgentData {
             modelId: null,
             tools: [],
             parentId: undefined,
-            nestedChats: [],
+            nestedChats: [
+                {
+                    messages: [],
+                    triggeredBy: [],
+                    order: 0,
+                },
+            ],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
             handoffs: [],

@@ -11,7 +11,7 @@ import { WaldiezChatLlmSummaryMethod, WaldiezEdgeType } from "@waldiez/models";
 // Constants moved outside of the component for better performance
 const SUMMARY_ROLE_OPTIONS = [
     { label: "System", value: "system" },
-    { label: "user_proxy", value: "user_proxy" },
+    { label: "User", value: "user" },
     { label: "Assistant", value: "assistant" },
 ];
 

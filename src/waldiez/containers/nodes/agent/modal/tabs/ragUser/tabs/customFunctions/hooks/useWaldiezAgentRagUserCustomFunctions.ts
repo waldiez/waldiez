@@ -2,58 +2,114 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import { useCallback } from "react";
 
+import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+
+/**
+ * Custom hook for managing custom functions configuration for RAG
+ * Handles embedding, token counting, and text splitting functions
+ */
 export const useWaldiezAgentRagUserCustomFunctions = (props: {
     data: WaldiezNodeAgentRagUserData;
-    onDataChange: (data: WaldiezNodeAgentRagUserData) => void;
+    onDataChange: (data: WaldiezNodeAgentData) => void;
 }) => {
     const { data, onDataChange } = props;
-    const setRetrieveConfigConfigData = (
-        partialData: Partial<WaldiezNodeAgentRagUserData["retrieveConfig"]>,
-    ) => {
-        onDataChange({
-            ...data,
-            retrieveConfig: {
-                ...data.retrieveConfig,
-                ...partialData,
-            },
-        });
-    };
-    const onUseCustomEmbeddingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRetrieveConfigConfigData({
-            useCustomEmbedding: event.target.checked,
-        });
-    };
-    const onEmbeddingFunctionChange = (value: string | undefined) => {
-        setRetrieveConfigConfigData({
-            embeddingFunction: value,
-        });
-    };
-    const onUseCustomTokenCountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRetrieveConfigConfigData({
-            useCustomTokenCount: event.target.checked,
-        });
-    };
-    const onCustomTokenCountFunctionChange = (value: string | undefined) => {
-        if (value) {
-            setRetrieveConfigConfigData({
-                customTokenCountFunction: value,
+
+    /**
+     * Update retrieve config with partial data
+     */
+    const setRetrieveConfigConfigData = useCallback(
+        (partialData: Partial<WaldiezNodeAgentRagUserData["retrieveConfig"]>) => {
+            onDataChange({
+                ...data,
+                retrieveConfig: {
+                    ...data.retrieveConfig,
+                    ...partialData,
+                },
             });
-        }
-    };
-    const onUseCustomTextSplitChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRetrieveConfigConfigData({
-            useCustomTextSplit: event.target.checked,
-        });
-    };
-    const onCustomTextSplitFunctionChange = (value: string | undefined) => {
-        if (value) {
+        },
+        [data, onDataChange],
+    );
+
+    /**
+     * Handle custom embedding toggle
+     */
+    const onUseCustomEmbeddingChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
             setRetrieveConfigConfigData({
-                customTextSplitFunction: value,
+                useCustomEmbedding: event.target.checked,
             });
-        }
-    };
+        },
+        [setRetrieveConfigConfigData],
+    );
+
+    /**
+     * Handle embedding function content changes
+     */
+    const onEmbeddingFunctionChange = useCallback(
+        (value: string | undefined) => {
+            if (value !== undefined) {
+                setRetrieveConfigConfigData({
+                    embeddingFunction: value,
+                });
+            }
+        },
+        [setRetrieveConfigConfigData],
+    );
+
+    /**
+     * Handle custom token count toggle
+     */
+    const onUseCustomTokenCountChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setRetrieveConfigConfigData({
+                useCustomTokenCount: event.target.checked,
+            });
+        },
+        [setRetrieveConfigConfigData],
+    );
+
+    /**
+     * Handle token count function content changes
+     */
+    const onCustomTokenCountFunctionChange = useCallback(
+        (value: string | undefined) => {
+            if (value !== undefined) {
+                setRetrieveConfigConfigData({
+                    customTokenCountFunction: value,
+                });
+            }
+        },
+        [setRetrieveConfigConfigData],
+    );
+
+    /**
+     * Handle custom text split toggle
+     */
+    const onUseCustomTextSplitChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setRetrieveConfigConfigData({
+                useCustomTextSplit: event.target.checked,
+            });
+        },
+        [setRetrieveConfigConfigData],
+    );
+
+    /**
+     * Handle text split function content changes
+     */
+    const onCustomTextSplitFunctionChange = useCallback(
+        (value: string | undefined) => {
+            if (value !== undefined) {
+                setRetrieveConfigConfigData({
+                    customTextSplitFunction: value,
+                });
+            }
+        },
+        [setRetrieveConfigConfigData],
+    );
+
     return {
         onUseCustomEmbeddingChange,
         onEmbeddingFunctionChange,

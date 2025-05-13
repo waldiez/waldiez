@@ -9,6 +9,7 @@ export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";
 export { DropZone } from "@waldiez/components/dropZone";
 export { Editor } from "@waldiez/components/editor";
+export { Handoffs } from "@waldiez/components/handoffs";
 export { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 export { InfoLabel } from "@waldiez/components/infoLabel";
 export { MessageInput } from "@waldiez/components/messageInput";

@@ -31,14 +31,65 @@
 
 .flow-wrapper .tab-btn {
   font: inherit;
-  padding: 0.75em 1em;
-  background-color: transparent !important;
+  padding: 0.75rem;
   border-width: 0 0 1px;
-  border-radius: unset !important;
   cursor: pointer;
   color: inherit;
   white-space: nowrap;
   box-shadow: none !important;
+}
+
+.flow-wrapper.light .tab-btn {
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.flow-wrapper.dark .tab-btn {
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #a0a0a0;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 0.5rem;
+  border-bottom: 1px solid #222;
+}
+
+.flow-wrapper.light .tab-btn:hover {
+  color: #495057;
+}
+
+.flow-wrapper.light .tab-btn.active {
+  color: #0d6efd;
+  border-bottom-color: #0d6efd;
+}
+
+.flow-wrapper.dark .tab-btn:hover {
+  color: #d1d5db;
+}
+
+.flow-wrapper.dark .tab-btn.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+/* Tab content */
+.flow-wrapper.light .tab-content {
+  padding: 1rem;
+}
+
+.flow-wrapper.dark .tab-content {
+  padding: 1rem;
 }
 
 .flow-wrapper .tab-panel {
@@ -57,14 +108,6 @@
   color: #888;
 }
 
-.flow-wrapper.light .tab-btn {
-  border-bottom: 1px solid #eee;
-}
-
-.flow-wrapper.dark .tab-btn {
-  border-bottom: 1px solid #222;
-}
-
 /* stylelint-disable-next-line selector-class-pattern */
 .flow-wrapper.light .tab-btn--active {
   color: black !important;
@@ -74,5 +117,30 @@
 /* stylelint-disable-next-line selector-class-pattern */
 .flow-wrapper.dark .tab-btn--active {
   color: white !important;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #444;
+}
+
+/* Tab container styling */
+.flow-wrapper.light .tab-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.flow-wrapper.dark .tab-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.flow-wrapper.light .tab-navigation {
+  display: flex;
+  border-bottom: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+}
+
+.flow-wrapper.dark .tab-navigation {
+  display: flex;
+  border-bottom: 1px solid #2c2c2c;
+  background-color: #1e1e1e;
 }

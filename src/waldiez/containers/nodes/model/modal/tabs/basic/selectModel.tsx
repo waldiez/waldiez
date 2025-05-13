@@ -95,8 +95,9 @@ export const ModelSelector = memo((props: IModelSelectorProps) => {
     };
 
     return (
-        <div className="margin-bottom-10">
+        <div className="margin-bottom-5">
             <label htmlFor="predefined-models-select">Predefined models:</label>
+            <div className="margin-top-10" />
             <Select
                 ref={ref}
                 inputId="predefined-models-select"

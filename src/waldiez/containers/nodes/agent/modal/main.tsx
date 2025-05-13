@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { memo, useCallback, useMemo } from "react";
+
 import { Modal } from "@waldiez/components";
 import { useWaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal/hooks";
 import {
@@ -22,8 +24,14 @@ type WaldiezNodeAgentModalProps = {
     onClose: () => void;
 };
 
-export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
+/**
+ * Modal component for editing Waldiez Node Agent properties
+ * Handles different views based on agent type and manages save/cancel operations
+ */
+export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) => {
     const { id, data, isOpen, onClose } = props;
+
+    // Use the modal hook for state and operations
     const {
         flowId,
         isDirty,
@@ -38,18 +46,80 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
         onSave,
         onCancel,
     } = useWaldiezNodeAgentModal(id, isOpen, data, onClose);
-    const onSaveAndClose = () => {
+
+    /**
+     * Handle save and close button click
+     */
+    const onSaveAndClose = useCallback(() => {
         onSave();
         onClose();
-    };
-    const importExportView =
-        data.agentType !== "group_manager"
-            ? getImportExportView(flowId, id, "agent", onImport, onExport)
-            : undefined;
-    const modalTitle =
-        data.agentType === "group_manager"
-            ? (agentData as WaldiezAgentGroupManagerData).groupName
-            : agentData.label;
+    }, [onSave, onClose]);
+
+    /**
+     * Get the import/export view based on agent type
+     */
+    const importExportView = useMemo(
+        () =>
+            data.agentType !== "group_manager"
+                ? getImportExportView(flowId, id, "agent", onImport, onExport)
+                : undefined,
+        [data.agentType, flowId, id, onImport, onExport],
+    );
+
+    /**
+     * Determine modal title based on agent type
+     */
+    const modalTitle = useMemo(
+        () =>
+            data.agentType === "group_manager"
+                ? (agentData as WaldiezAgentGroupManagerData).groupName
+                : agentData.label,
+        [data.agentType, agentData],
+    );
+
+    /**
+     * Determine which tab component to render based on agent type
+     */
+    const tabComponent = useMemo(() => {
+        if (data.agentType === "group_manager") {
+            return (
+                <WaldiezNodeGroupManagerTabs
+                    isModalOpen={isOpen}
+                    flowId={flowId}
+                    id={id}
+                    data={agentData as WaldiezNodeAgentGroupManagerData}
+                    onDataChange={onDataChange}
+                    isDarkMode={isDarkMode}
+                />
+            );
+        }
+
+        return (
+            <WaldiezNodeAgentModalTabs
+                id={id}
+                flowId={flowId}
+                data={agentData}
+                isDarkMode={isDarkMode}
+                onDataChange={onDataChange}
+                isModalOpen={isOpen}
+                onAgentTypeChange={onAgentTypeChange}
+                filesToUpload={filesToUpload}
+                onFilesToUploadChange={onFilesToUploadChange}
+            />
+        );
+    }, [
+        data.agentType,
+        isOpen,
+        flowId,
+        id,
+        agentData,
+        onDataChange,
+        isDarkMode,
+        onAgentTypeChange,
+        filesToUpload,
+        onFilesToUploadChange,
+    ]);
+
     return (
         <Modal
             title={modalTitle}
@@ -61,30 +131,7 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
             hasUnsavedChanges={isDirty}
             preventCloseIfUnsavedChanges
         >
-            <div className="modal-body">
-                {data.agentType === "group_manager" ? (
-                    <WaldiezNodeGroupManagerTabs
-                        isModalOpen={isOpen}
-                        flowId={flowId}
-                        id={id}
-                        data={agentData as WaldiezNodeAgentGroupManagerData}
-                        onDataChange={onDataChange}
-                        isDarkMode={isDarkMode}
-                    />
-                ) : (
-                    <WaldiezNodeAgentModalTabs
-                        id={id}
-                        flowId={flowId}
-                        data={agentData}
-                        isDarkMode={isDarkMode}
-                        onDataChange={onDataChange}
-                        isModalOpen={isOpen}
-                        onAgentTypeChange={onAgentTypeChange}
-                        filesToUpload={filesToUpload}
-                        onFilesToUploadChange={onFilesToUploadChange}
-                    />
-                )}
-            </div>
+            <div className="modal-body">{tabComponent}</div>
             <div className="modal-actions">
                 <button
                     className="modal-action-cancel"
@@ -92,6 +139,7 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
                     data-testid={`cancel-agent-data-${id}`}
                     type="button"
                     title="Cancel"
+                    aria-label="Cancel"
                 >
                     Cancel
                 </button>
@@ -103,6 +151,7 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
                         onClick={onSaveAndClose}
                         data-testid={`submit-and-close-agent-data-${id}`}
                         disabled={!isDirty}
+                        aria-label="Save and Close"
                     >
                         Save & Close
                     </button>
@@ -113,6 +162,7 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
                         onClick={onSave}
                         data-testid={`submit-agent-data-${id}`}
                         disabled={!isDirty}
+                        aria-label="Save"
                     >
                         Save
                     </button>
@@ -120,4 +170,6 @@ export const WaldiezNodeAgentModal = (props: WaldiezNodeAgentModalProps) => {
             </div>
         </Modal>
     );
-};
+});
+
+WaldiezNodeAgentModal.displayName = "WaldiezNodeAgentModal";

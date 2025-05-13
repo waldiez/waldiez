@@ -15,8 +15,6 @@
 }
 
 .flow-wrapper .info-label {
-  /* display: flex;
-  align-items: center; */
   position: relative;
   display: inline-block;
   width: 100%;
@@ -58,9 +56,6 @@
 .flow-wrapper .info-label .info-description {
   display: none;
   width: auto;
-  color: #004085;
-  background-color: #cce5ff;
-  font-size: unset;
   padding: 4px;
   position: absolute;
   bottom: 100%;
@@ -69,14 +64,21 @@
   z-index: 1;
 }
 
-.flow-wrapper.dark .info-label .info-description {
-  background-color: #20558f;
-  color: #cce5ff;
+.info-label .info-description.show {
+  display: unset;
 }
 
-/* .info-label .info-description.show {
-  display: unset;
-} */
+.flow-wrapper.light .info-label .info-description {
+  color: #004085;
+  background-color: #cce5ff;
+  border: 1px solid #b8daff;
+}
+
+.flow-wrapper.dark .info-label .info-description {
+  color: #cce5ff;
+  background-color: #1e2a3a;
+  border: 1px solid #374151;
+}
 
 /* on info-icon hover */
 .flow-wrapper .info-label .info-icon:hover {

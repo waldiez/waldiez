@@ -100,6 +100,7 @@ export const agentMapper = {
             updateAgentStateBeforeReply: data.updateAgentStateBeforeReply,
         };
         updateAgentDataToExport(agentType, agentData, data);
+        ensureOneNestedChatExists(agentData);
         for (const key of [
             "description",
             "name",
@@ -155,6 +156,19 @@ export const agentMapper = {
         return agentNode;
     },
 };
+
+const ensureOneNestedChatExists = (data: any) => {
+    if (!data.nestedChats || data.nestedChats.length === 0) {
+        data.nestedChats = [
+            {
+                messages: [],
+                triggeredBy: [],
+                order: 0,
+            },
+        ];
+    }
+};
+
 // eslint-disable-next-line max-statements
 const getCommonAgentData = (
     data: Record<string, unknown>,

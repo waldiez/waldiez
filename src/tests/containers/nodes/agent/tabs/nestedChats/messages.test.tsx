@@ -19,6 +19,7 @@ const goToNestedChatsTab = (isReply: boolean, skipMessages: boolean = false) => 
                 {
                     triggeredBy: ["test-agent0"],
                     messages: skipMessages ? [] : [{ id: "test-edge-1", isReply }],
+                    order: 0,
                 },
             ],
         },

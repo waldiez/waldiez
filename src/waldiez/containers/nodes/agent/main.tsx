@@ -4,7 +4,7 @@
  */
 import { NodeResizer } from "@xyflow/react";
 
-import { useCallback, useState } from "react";
+import { useMemo } from "react";
 
 import { WaldiezEdgeModal } from "@waldiez/containers/edges/modal";
 import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
@@ -16,52 +16,60 @@ import { WaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal";
 import { WaldiezNodeAgentProps } from "@waldiez/containers/nodes/agent/types";
 import { AGENT_COLORS } from "@waldiez/theme";
 
-export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
+/**
+ * Component for rendering a Waldiez Agent Node
+ * Handles node appearance, drag interactions, and modal management
+ */
+export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
     const { id, data } = props;
     const agentType = data.agentType;
+
+    // Use the node agent hook for core functionality
     const {
         edge,
         flowId,
         isReadOnly,
         isNodeModalOpen,
         isEdgeModalOpen,
+        isModalOpen,
+        isDragging,
+        onDragOver,
+        onDragLeave,
+        onDrop,
         onOpenNodeModal,
         onCloseNodeModal,
         onOpenEdgeModal,
         onCloseEdgeModal,
         onEdgeConnection,
     } = useWaldiezNodeAgent();
-    const [isDragging, setIsDragging] = useState(false);
-    const isModalOpen = isNodeModalOpen || isEdgeModalOpen;
-    let className = isModalOpen ? "nodrag nowheel" : "";
-    if (!data.parentId) {
-        className += `agent-node ${agentType}`;
-    } else {
-        className += `agent-node ${agentType} group-member`;
-    }
-    if (agentType === "group_manager" && isDragging) {
-        className += " dragging";
-    }
-    const handleClassNameBase = data.parentId
-        ? "group-member "
-        : agentType === "group_manager"
-          ? "group-manager "
-          : "";
-    const minWidth = agentType === "group_manager" ? 490 : 210;
-    const minHeight = agentType === "group_manager" ? 330 : 210;
-    const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-    }, []);
-    const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-    }, []);
-    const onDrop = useCallback((_: React.DragEvent<HTMLDivElement>) => {
-        setIsDragging(false);
-    }, []);
+
+    // Dynamic class name generation
+    const className = useMemo(() => {
+        let classes = isModalOpen ? "nodrag nowheel " : "";
+
+        if (!data.parentId) {
+            classes += `agent-node ${agentType}`;
+        } else {
+            classes += `agent-node ${agentType} group-member`;
+        }
+
+        if (agentType === "group_manager" && isDragging) {
+            classes += " dragging";
+        }
+
+        return classes;
+    }, [isModalOpen, data.parentId, agentType, isDragging]);
+
+    // Handle class name calculation
+    const handleClassNameBase = useMemo(
+        () => (data.parentId ? "group-member " : agentType === "group_manager" ? "group-manager " : ""),
+        [data.parentId, agentType],
+    );
+
+    // Node size constraints
+    const minWidth = useMemo(() => (agentType === "group_manager" ? 490 : 210), [agentType]);
+    const minHeight = useMemo(() => (agentType === "group_manager" ? 330 : 210), [agentType]);
+
     return (
         <div
             className={className}
@@ -109,7 +117,7 @@ export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
                 onClick={onOpenEdgeModal}
                 data-edge-node-id={id}
                 data-edge-id=""
-            ></button>
+            />
             {edge && isEdgeModalOpen && !isNodeModalOpen && (
                 <WaldiezEdgeModal isOpen={isEdgeModalOpen} edgeId={edge.id} onClose={onCloseEdgeModal} />
             )}

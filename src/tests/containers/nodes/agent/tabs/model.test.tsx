@@ -67,11 +67,4 @@ describe("Models tab", () => {
         expect(modelsPanel.querySelector(".w-select__single-value")).toHaveTextContent("test model2");
         submitAgentChanges();
     });
-    it("should show a message if there are no models", async () => {
-        renderAgent("user_proxy", {
-            openModal: true,
-        });
-        goToModelTab();
-        expect(screen.getByText("No models found in the workspace")).toBeInTheDocument();
-    });
 });

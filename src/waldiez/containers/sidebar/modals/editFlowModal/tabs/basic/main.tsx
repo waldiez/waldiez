@@ -22,10 +22,11 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
     };
     const edgesCount = sortedEdges.length + remainingEdges.length;
     return (
-        <div className="modal-body agent-panel agent-config-panel" id={`rf-${flowId}-edit-flow-modal`}>
+        <div className="modal-body" id={`rf-${flowId}-edit-flow-modal`}>
             <label htmlFor={`rf-${flowId}-edit-flow-modal-name`}>Name</label>
             <input
                 type="text"
+                className="margin-right--20"
                 id={`rf-${flowId}-edit-flow-modal-name`}
                 placeholder="Flow name"
                 value={name}

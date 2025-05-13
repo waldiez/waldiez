@@ -295,7 +295,9 @@ export const ChatAvailability: React.FC<{
             </div>
             {enabled && (
                 <div className="flex-column margin-top-10">
-                    <label className="hidden" htmlFor="select-condition-type" />
+                    <label className="hidden" htmlFor="select-condition-type">
+                        Condition Type
+                    </label>
                     <Select
                         options={conditionTypeOptions}
                         value={selectedTypeOption}

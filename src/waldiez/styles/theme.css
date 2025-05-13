@@ -115,23 +115,3 @@
 .flow-wrapper.light input[type="number"]::-webkit-outer-spin-button {
   color-scheme: light;
 }
-
-.flow-wrapper.dark .flow-order-add-button {
-  background-color: #222;
-  color: #fefefe;
-}
-
-.flow-wrapper.light .flow-order-add-button {
-  background-color: #fefefe;
-  color: #141414;
-}
-
-.flow-wrapper.dark .flow-order-item-actions button {
-  background-color: #222;
-  color: #fefefe;
-}
-
-.flow-wrapper.light .flow-order-item-actions button {
-  background-color: #fefefe;
-  color: #141414;
-}

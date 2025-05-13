@@ -8,7 +8,7 @@ import { DropZone, Modal, TextInput } from "@waldiez/components";
 import { showSnackbar } from "@waldiez/utils";
 
 // Constants
-const HUB_URL = "https://example.com";
+const HUB_URL = "https://hub.waldiez.io";
 const HUB_UPLOAD_URL = `${HUB_URL}/api/files`;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const UPLOAD_TIMEOUT = 10000; // 10 seconds

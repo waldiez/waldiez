@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { memo, useMemo } from "react";
 import { AiFillCode } from "react-icons/ai";
 
 import { useWaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/hooks";
@@ -17,23 +18,32 @@ type WaldiezNodeAgentBodyProps = {
     isReadOnly: boolean;
 };
 
-export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
+/**
+ * Component for rendering the body section of a Waldiez Node Agent
+ * Displays model information, tools, and a description editor
+ */
+export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
     const { id, flowId, data, isReadOnly } = props;
     const agentType = data.agentType;
-    const agentModelView = getAgentModelView(id, data);
-    const agentToolsView = getAgentToolsView(id, data);
-    const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
-    // c8 ignore next 3
+
+    // If this is a group manager, don't render anything
     if (agentType === "group_manager") {
         return null;
     }
+
+    const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
+
+    // Get model and tools views via hooks
+    const agentModelView = useAgentModelView(id, data);
+    const agentToolsView = useAgentToolsView(id, data);
+
     return (
         <div className="agent-body">
             <div className="agent-model">{agentModelView}</div>
             <div className="agent-tools">{agentToolsView}</div>
 
             <div className="flex-column flex-1 agent-description-view">
-                <label>Description:</label>
+                <label htmlFor={`flow-${flowId}-agent-description-${id}`}>Description:</label>
                 <textarea
                     title="Agent description"
                     className="nodrag nopan"
@@ -47,54 +57,75 @@ export const WaldiezNodeAgentBody = (props: WaldiezNodeAgentBodyProps) => {
             </div>
         </div>
     );
-};
-const getAgentModelView = (id: string, data: WaldiezNodeAgentData) => {
+});
+
+WaldiezNodeAgentBody.displayName = "WaldiezNodeAgentBody";
+
+/**
+ * Custom hook for rendering the agent's model information
+ */
+const useAgentModelView = (id: string, data: WaldiezNodeAgentData) => {
     const getModels = useWaldiez(s => s.getModels);
-    const models = getModels() as WaldiezNodeModel[];
-    const agentModel = data.modelId ? models.find(model => model.id === data.modelId) : null;
-    if (!agentModel) {
-        return <div className="agent-model-empty">No model</div>;
-    }
-    const agentModelName = agentModel.data.label;
-    const agentWaldiezModelAPIType = agentModel.data.apiType;
-    const agentModelLogo = LOGOS[agentWaldiezModelAPIType] ?? "";
-    return (
-        <div className="agent-model-preview">
-            <div className={`agent-model-img ${agentWaldiezModelAPIType}`}>
-                <img src={agentModelLogo} title={agentModelName} alt={agentModelName} />
+
+    return useMemo(() => {
+        const models = getModels() as WaldiezNodeModel[];
+        const agentModel = data.modelId ? models.find(model => model.id === data.modelId) : null;
+
+        if (!agentModel) {
+            return <div className="agent-model-empty">No model</div>;
+        }
+
+        const agentModelName = agentModel.data.label;
+        const agentWaldiezModelAPIType = agentModel.data.apiType;
+        const agentModelLogo = LOGOS[agentWaldiezModelAPIType] ?? "";
+
+        return (
+            <div className="agent-model-preview">
+                <div className={`agent-model-img ${agentWaldiezModelAPIType}`}>
+                    <img src={agentModelLogo} title={agentModelName} alt={agentModelName} />
+                </div>
+                <div className="agent-model-name" data-testid={`agent-${id}-linked-model`}>
+                    {agentModelName}
+                </div>
             </div>
-            <div className="agent-model-name" data-testid={`agent-${id}-linked-model`}>
-                {agentModelName}
-            </div>
-        </div>
-    );
+        );
+    }, [getModels, data.modelId, id]);
 };
 
-const getAgentToolsView = (id: string, data: WaldiezNodeAgentData) => {
+/**
+ * Custom hook for rendering the agent's tools
+ */
+const useAgentToolsView = (id: string, data: WaldiezNodeAgentData) => {
     const getTools = useWaldiez(s => s.getTools);
-    const tools = getTools() as WaldiezNodeTool[];
-    const toolsCount = data.tools.length;
-    if (toolsCount === 0) {
-        return <div className="agent-tools-empty">No tools</div>;
-    }
-    return (
-        <div className="agent-tools-preview">
-            {data.tools.map((linkedTool, index) => {
-                const tool = tools.find(tool => tool.id === linkedTool.id);
-                if (!tool) {
-                    return null;
-                }
-                return (
-                    <div key={tool.id} className="agent-tool-preview" data-testid="agent-tool-preview">
-                        <div className={"agent-tool-img"}>
-                            <AiFillCode />
+
+    return useMemo(() => {
+        const tools = getTools() as WaldiezNodeTool[];
+        const toolsCount = data.tools.length;
+
+        if (toolsCount === 0) {
+            return <div className="agent-tools-empty">No tools</div>;
+        }
+
+        return (
+            <div className="agent-tools-preview">
+                {data.tools.map((linkedTool, index) => {
+                    const tool = tools.find(tool => tool.id === linkedTool.id);
+                    if (!tool) {
+                        return null;
+                    }
+
+                    return (
+                        <div key={tool.id} className="agent-tool-preview" data-testid="agent-tool-preview">
+                            <div className="agent-tool-img">
+                                <AiFillCode aria-hidden="true" />
+                            </div>
+                            <div className="agent-tool-name" data-testid={`agent-${id}-linked-tool-${index}`}>
+                                {tool.data.label}
+                            </div>
                         </div>
-                        <div className="agent-tool-name" data-testid={`agent-${id}-linked-tool-${index}`}>
-                            {tool.data.label}
-                        </div>
-                    </div>
-                );
-            })}
-        </div>
-    );
+                    );
+                })}
+            </div>
+        );
+    }, [getTools, data.tools, id]);
 };

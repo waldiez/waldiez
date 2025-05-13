@@ -140,11 +140,6 @@
   align-items: baseline;
 }
 
-.flow-wrapper .nested-chat-remove button,
-.flow-wrapper .nested-chat-reorder button {
-  margin-left: 8px;
-}
-
 .flow-wrapper .agent-panel-add-tool button {
   border: 1px solid #007bff;
   margin-top: 5px;
@@ -276,74 +271,6 @@
 .flow-wrapper.dark .agent-node.reasoning,
 .flow-wrapper.dark .agent-node.captain {
   background-color: #222 !important;
-}
-
-.flow-wrapper .nested-chats-add-message {
-  display: flex;
-  align-items: center;
-}
-
-.flow-wrapper .nested-chats-add-message .nested-chat-recipients {
-  flex: 1;
-}
-
-.flow-wrapper .nested-chat-select-trigger-view {
-  display: flex;
-  align-items: center;
-}
-
-.flow-wrapper .nested-chat-select-trigger {
-  flex: 1;
-  margin-right: 10px;
-}
-
-.flow-wrapper .nested-chat-triggers {
-  margin-top: 10px;
-}
-
-.flow-wrapper .nested-chat-triggers-label,
-.flow-wrapper .nested-chat-messages-label {
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.flow-wrapper .nested-chat-current-triggers,
-.flow-wrapper .nested-chat-registered-messages {
-  display: flex;
-  flex-direction: column;
-}
-
-.flow-wrapper .nested-chat-registered-messages {
-  margin-bottom: 10px;
-}
-
-.flow-wrapper .nested-chat-messages-label {
-  margin-bottom: -10px;
-}
-
-.flow-wrapper .nested-chat-trigger-entry,
-.flow-wrapper .nested-chat-registered-message {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 0 0 8px;
-  margin-bottom: 10px;
-}
-
-.flow-wrapper .nested-chat-registered .nested-chat-triggered-by-value,
-.flow-wrapper .nested-chat-registered .nested-chat-recipient-value {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border-radius: 2px;
-  background-color: rgb(150 150 150 / 10%);
-  padding: 3px;
-  padding-left: 6px;
-  box-sizing: border-box;
-}
-
-.flow-wrapper .nested-chat-message-actions {
-  display: flex;
 }
 
 .flow-wrapper .codeExecution-checkbox {

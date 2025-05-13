@@ -1,0 +1,419 @@
+/* stylelint-disable no-descending-specificity */
+
+/* Chat Flow Order Container */
+.flow-wrapper.light .flow-chat-order-wrapper {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Info text */
+.flow-wrapper.light .flow-chat-order-wrapper .info {
+  color: #333;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  margin-bottom: 0.75rem;
+}
+
+/* Individual chat order item */
+.flow-wrapper.light .flow-order-item-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #fff;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+.flow-wrapper.light .flow-order-item-wrapper:hover {
+  border-color: #adb5bd;
+  box-shadow: 0 2px 4px rgb(0 0 0 /10%);
+}
+
+/* Chat order item content */
+.flow-wrapper.light .flow-order-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Chat name */
+.flow-wrapper.light .flow-order-item-entry {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #343a40;
+}
+
+/* Actions container */
+.flow-wrapper.light .flow-order-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Action buttons */
+.flow-wrapper.light .flow-order-item-action {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.flow-wrapper.light .flow-order-item-action:hover {
+  color: #0d6efd;
+  background-color: #f0f0f0;
+}
+
+/* Remove button */
+.flow-wrapper.light .flow-order-item-action:last-child {
+  margin-left: 0.25rem;
+}
+
+/* Add wrapper */
+.flow-wrapper.light .flow-order-add-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.flow-wrapper.light .margin-right-10 {
+  margin-right: 10px;
+}
+
+.flow-wrapper.light .flex-1 {
+  flex: 1;
+}
+
+/* Add button */
+.flow-wrapper.light .flow-order-add-button {
+  padding: 0.375rem 0.75rem;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.flow-wrapper.light .flow-order-add-button:hover:not(:disabled) {
+  background-color: #0b5ed7;
+}
+
+.flow-wrapper.light .flow-order-add-button:disabled {
+  background-color: #b6d4fe;
+  cursor: not-allowed;
+}
+
+.flow-wrapper.light .hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Dark Theme */
+.flow-wrapper.dark .flow-chat-order-wrapper {
+  padding: 1rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Info text */
+.flow-wrapper.dark .flow-chat-order-wrapper .info {
+  color: #ccc;
+  background-color: #292929;
+  border: 1px solid #3a3a3a;
+  margin-bottom: 0.75rem;
+}
+
+/* Individual chat order item */
+.flow-wrapper.dark .flow-order-item-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #292929;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #3a3a3a;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.flow-wrapper.dark .flow-order-item-wrapper:hover {
+  border-color: #505050;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+}
+
+/* Chat order item content */
+.flow-wrapper.dark .flow-order-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Chat name */
+.flow-wrapper.dark .flow-order-item-entry {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+/* Actions container */
+.flow-wrapper.dark .flow-order-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Action buttons */
+.flow-wrapper.dark .flow-order-item-action {
+  background: none;
+  border: none;
+  background-color: #222;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.flow-wrapper.dark .flow-order-item-action:hover {
+  color: #3b82f6;
+  background-color: #333;
+}
+
+/* Remove button */
+.flow-wrapper.dark .flow-order-item-action:last-child {
+  margin-left: 0.25rem;
+}
+
+/* Add wrapper */
+.flow-wrapper.dark .flow-order-add-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.flow-wrapper.dark .margin-right-10 {
+  margin-right: 10px;
+}
+
+.flow-wrapper.dark .flex-1 {
+  flex: 1;
+}
+
+/* Add button */
+.flow-wrapper.dark .flow-order-add-button {
+  padding: 0.375rem 0.75rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.flow-wrapper.dark .flow-order-add-button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.flow-wrapper.dark .flow-order-add-button:disabled {
+  background-color: #3b82f680;
+  cursor: not-allowed;
+}
+
+/* Chat Prerequisites Container */
+.flow-wrapper.light .flow-chat-prerequisites-wrapper {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Info text */
+.flow-wrapper.light .flow-chat-prerequisites-wrapper .info {
+  color: #333;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  margin-bottom: 0.75rem;
+}
+
+/* Individual chat prerequisites item */
+.flow-wrapper.light .flow-chat-prerequisites {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: #fff;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+.flow-wrapper.light .flow-chat-prerequisites:hover {
+  border-color: #adb5bd;
+  box-shadow: 0 2px 4px rgb(0 0 0 /10%);
+}
+
+/* Chat source name */
+.flow-wrapper.light .flow-chat-prerequisite-source {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #343a40;
+  margin-bottom: 0.75rem;
+}
+
+/* Prerequisites actions container */
+.flow-wrapper.light .flow-chat-prerequisite-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Label for prerequisites */
+.flow-wrapper.light .flow-chat-prerequisite-actions label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #495057;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Select container */
+.flow-wrapper.light .flow-chat-prerequisite-actions .react-select {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Remove button container */
+.flow-wrapper.light .flow-chat-remove {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Remove button */
+.flow-wrapper.light .flow-chat-remove .flow-order-item-action {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.flow-wrapper.light .flow-chat-remove .flow-order-item-action:hover {
+  color: #dc3545;
+  background-color: #f0f0f0;
+}
+
+/* Dark Theme */
+.flow-wrapper.dark .flow-chat-prerequisites-wrapper {
+  padding: 1rem;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Info text */
+.flow-wrapper.dark .flow-chat-prerequisites-wrapper .info {
+  color: #ccc;
+  background-color: #292929;
+  border: 1px solid #3a3a3a;
+  margin-bottom: 0.75rem;
+}
+
+/* Individual chat prerequisites item */
+.flow-wrapper.dark .flow-chat-prerequisites {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: #292929;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #3a3a3a;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.flow-wrapper.dark .flow-chat-prerequisites:hover {
+  border-color: #505050;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+}
+
+/* Chat source name */
+.flow-wrapper.dark .flow-chat-prerequisite-source {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+  margin-bottom: 0.75rem;
+}
+
+/* Prerequisites actions container */
+.flow-wrapper.dark .flow-chat-prerequisite-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Label for prerequisites */
+.flow-wrapper.dark .flow-chat-prerequisite-actions label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #c0c0c0;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Select container */
+.flow-wrapper.dark .flow-chat-prerequisite-actions .react-select {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Remove button container */
+.flow-wrapper.dark .flow-chat-remove {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Remove button */
+.flow-wrapper.dark .flow-chat-remove .flow-order-item-action {
+  background: none;
+  border: none;
+  background-color: #222;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.flow-wrapper.dark .flow-chat-remove .flow-order-item-action:hover {
+  color: #f87171;
+  background-color: #333;
+}

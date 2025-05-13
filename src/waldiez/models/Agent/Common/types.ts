@@ -57,10 +57,12 @@ export type WaldiezAgentTerminationCriterionOption = "found" | "ending" | "start
  * Waldiez agent nested chat.
  * @param triggeredBy - The agent ids that trigger the nested chat
  * @param messages - The messages to include in the chat queue
+ * @param order - The order of the nested chat (if used as a handoff target)
  */
 export type WaldiezAgentNestedChat = {
     triggeredBy: string[];
     messages: { id: string; isReply: boolean }[];
+    order: number;
 };
 /**
  * Waldiez agent termination message check.

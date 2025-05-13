@@ -7,6 +7,7 @@ import { ReactNode, memo, useCallback, useEffect, useState } from "react";
 type CollapsibleProps = {
     title: string;
     className?: string;
+    contentClassName?: string;
     children: ReactNode;
     expanded?: boolean;
     fullWidth?: boolean;
@@ -17,7 +18,15 @@ type CollapsibleProps = {
  * Collapsible component that can show/hide content
  */
 export const Collapsible = memo<CollapsibleProps>(props => {
-    const { title, children, dataTestId, fullWidth = false, expanded = false, className = "" } = props;
+    const {
+        title,
+        children,
+        dataTestId,
+        fullWidth = false,
+        expanded = false,
+        className = "",
+        contentClassName = "",
+    } = props;
 
     const [isOpen, setIsOpen] = useState(expanded);
 
@@ -43,7 +52,7 @@ export const Collapsible = memo<CollapsibleProps>(props => {
                     {isOpen ? "▲" : "▼"}
                 </span>
             </div>
-            {isOpen && <div className="collapsible-content">{children}</div>}
+            {isOpen && <div className={`collapsible-content ${contentClassName || ""}`}>{children}</div>}
         </div>
     );
 });
