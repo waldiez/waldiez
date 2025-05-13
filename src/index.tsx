@@ -124,12 +124,20 @@ const defaultWaldiezProps: Partial<WaldiezProps> = {
     storageId: flowId,
     monacoVsPath: vsPath,
     viewport: undefined,
-    ...(!USE_DEV_SERVER
+    ...(isProd
         ? {
-              // Only include these handlers if not using the dev server
-              ...devHandlers,
+              onChange: null,
+              onSave: null,
+              onRun: null,
+              onConvert: null,
+              onUpload: null,
           }
-        : {}),
+        : !USE_DEV_SERVER
+          ? {
+                // Only include these handlers if not using the dev server
+                ...devHandlers,
+            }
+          : {}),
 };
 
 /**
