@@ -1,1 +1,241 @@
-{"id":"pOJZM5ua6aKQZufIalIHltN0npgApKbe","type":"flow","storageId":"id-275bec96-d329-4339-8a97-694c98b12365","name":"Standup Comedians 2","description":"Standup comedians without user input.","tags":["standup","comedy"],"requirements":[],"createdAt":"2025-01-30T09:02:29.602Z","updatedAt":"2025-01-30T09:02:35.864Z","data":{"nodes":[{"id":"wm-0iyd8tEVJf8tOBxGpxyu5","type":"model","position":{"x":0,"y":10},"measured":{"width":182,"height":182},"selected":false,"hidden":true},{"id":"wa-U4ui55M3QKChKotgdJ4l_","type":"agent","position":{"x":960,"y":285},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-PTUtCyA83vnrU0U7qyvfP","type":"agent","position":{"x":315,"y":330},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false}],"edges":[{"id":"we-JqOVghVNhrt_xEViw7iPM","source":"wa-PTUtCyA83vnrU0U7qyvfP","target":"wa-U4ui55M3QKChKotgdJ4l_","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#66bc57","width":10,"height":10},"style":{"stroke":"#66bc57","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-PTUtCyA83vnrU0U7qyvfP","targetHandle":"agent-handle-left-target-wa-U4ui55M3QKChKotgdJ4l_","type":"chat"}],"viewport":{"x":398,"y":-10,"zoom":1},"agents":{"users":[],"assistants":[{"type":"agent","name":"Cathy","description":"Cathy is a standup comedian","tags":[],"requirements":[],"createdAt":"2024-10-28T07:52:16.374Z","updatedAt":"2024-10-28T07:52:51.507Z","data":{"systemMessage":"Your name is Cathy and you are a standup comedian","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-0iyd8tEVJf8tOBxGpxyu5"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-U4ui55M3QKChKotgdJ4l_","agentType":"assistant"},{"type":"agent","name":"Joe","description":"Joe is a standup comedian","tags":[],"requirements":[],"createdAt":"2024-10-28T07:52:54.935Z","updatedAt":"2024-10-28T07:53:37.744Z","data":{"systemMessage":"Your name is Joe and you are a standup comedian. Start the next joke from the previous punchline.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-0iyd8tEVJf8tOBxGpxyu5"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-PTUtCyA83vnrU0U7qyvfP","agentType":"assistant"}],"managers":[],"rag_users":[],"swarm_agents":[],"reasoning_agents":[]},"models":[{"id":"wm-0iyd8tEVJf8tOBxGpxyu5","type":"model","name":"gpt-3.5-turbo","description":"OpenAI GPT-3.5","tags":[],"requirements":[],"createdAt":"2024-10-28T07:51:28.827Z","updatedAt":"2024-10-28T07:52:10.234Z","data":{"apiKey":"REPLACE_ME","apiType":"openai","apiVersion":null,"baseUrl":null,"temperature":0.3,"topP":null,"maxTokens":null,"defaultHeaders":{},"price":{"promptPricePer1k":null,"completionTokenPricePer1k":null}}}],"tools":[],"chats":[{"id":"we-JqOVghVNhrt_xEViw7iPM","data":{"source":"wa-PTUtCyA83vnrU0U7qyvfP","target":"wa-U4ui55M3QKChKotgdJ4l_","name":"Joe => Cathy","order":0,"description":"Joe starts the chat.","position":1,"clearHistory":false,"maxTurns":3,"message":{"type":"string","content":"Hi Cathy, I'm Joe. Let's keep the jokes rolling.","context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}}],"isAsync":false}}
+{
+  "id": "wf-0qlIi5lX3LrSnjUs8gmcA",
+  "type": "flow",
+  "storageId": "wf-0qlIi5lX3LrSnjUs8gmcA",
+  "name": "Standup comedians 2",
+  "description": "Standup comedians without user input.",
+  "tags": [
+    "standup",
+    "commedy"
+  ],
+  "requirements": [],
+  "createdAt": "2025-05-13T10:49:00.617Z",
+  "updatedAt": "2025-05-13T10:53:38.652Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+        "type": "agent",
+        "position": {
+          "x": 210,
+          "y": 285
+        },
+        "measured": {
+          "width": 200,
+          "height": 206
+        },
+        "className": "",
+        "hidden": false,
+        "selected": true,
+        "dragging": false
+      },
+      {
+        "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+        "type": "agent",
+        "position": {
+          "x": 630,
+          "y": 240
+        },
+        "measured": {
+          "width": 200,
+          "height": 206
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "we-1747132917885akpyJYGf7eC2gGaL_TByh",
+        "source": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+        "target": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+        "targetHandle": "agent-handle-left-target-wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+        "type": "chat"
+      }
+    ],
+    "viewport": {
+      "x": 122.5,
+      "y": 185.5,
+      "zoom": 1
+    },
+    "agents": {
+      "userProxyAgents": [],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Joe",
+          "description": "Joe is a standup comedian.",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-13T10:37:38.672Z",
+          "updatedAt": "2025-05-13T10:37:38.672Z",
+          "data": {
+            "systemMessage": "Your name is Joe and you are a standup comedian. Start the next joke from the previous punchline.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Cathy",
+          "description": "Cathy is a standup comedian.",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-13T10:39:11.423Z",
+          "updatedAt": "2025-05-13T10:39:11.423Z",
+          "data": {
+            "systemMessage": "Your name is Cathy and you are a standup comedian.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "groupManagerAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+        "type": "model",
+        "name": "gpt-3.5-turbo",
+        "description": "gpt-3.5-turbo",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-13T10:38:10.009Z",
+        "updatedAt": "2025-05-13T10:45:28.628Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "we-1747132917885akpyJYGf7eC2gGaL_TByh",
+        "data": {
+          "source": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+          "target": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Joe => Cathy",
+          "order": 0,
+          "description": "Joe starts the chat.",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 3,
+          "message": {
+            "type": "string",
+            "content": "Hi Cathy, I'm Joe. Let's keep the jokes rolling!",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 41
+  }
+}
