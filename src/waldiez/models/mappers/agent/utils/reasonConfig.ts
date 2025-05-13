@@ -43,18 +43,18 @@ export const getReasonConfig: (json: { [key: string]: any }) => WaldiezReasoning
         return defaultReasonConfig;
     }
     return {
-        method: getreasonConfigMethod(jsonData),
-        maxDepth: getreasonConfigMaxDepth(jsonData),
-        forestSize: getreasonConfigForestSize(jsonData),
-        ratingScale: getreasonConfigRatingScale(jsonData),
-        beamSize: getreasonConfigBeamSize(jsonData),
-        answerApproach: getreasonConfigAnswerApproach(jsonData),
-        nsim: getreasonConfigNsim(jsonData),
-        explorationConstant: getreasonConfigExplorationConstant(jsonData),
+        method: getReasonConfigMethod(jsonData),
+        maxDepth: getReasonConfigMaxDepth(jsonData),
+        forestSize: getReasonConfigForestSize(jsonData),
+        ratingScale: getReasonConfigRatingScale(jsonData),
+        beamSize: getReasonConfigBeamSize(jsonData),
+        answerApproach: getReasonConfigAnswerApproach(jsonData),
+        nsim: getReasonConfigNsim(jsonData),
+        explorationConstant: getReasonConfigExplorationConstant(jsonData),
     };
 };
 
-const getreasonConfigMethod = (data: Record<string, unknown>): "beam_search" | "mcts" | "lats" | "dfs" => {
+const getReasonConfigMethod = (data: Record<string, unknown>): "beam_search" | "mcts" | "lats" | "dfs" => {
     if (
         "method" in data &&
         typeof data.method === "string" &&
@@ -65,35 +65,35 @@ const getreasonConfigMethod = (data: Record<string, unknown>): "beam_search" | "
     return "beam_search";
 };
 
-const getreasonConfigMaxDepth = (data: Record<string, unknown>): number => {
+const getReasonConfigMaxDepth = (data: Record<string, unknown>): number => {
     if ("maxDepth" in data && typeof data.maxDepth === "number") {
         return data.maxDepth;
     }
     return 3;
 };
 
-const getreasonConfigForestSize = (data: Record<string, unknown>): number => {
+const getReasonConfigForestSize = (data: Record<string, unknown>): number => {
     if ("forestSize" in data && typeof data.forestSize === "number") {
         return data.forestSize;
     }
     return 1;
 };
 
-const getreasonConfigRatingScale = (data: Record<string, unknown>): number => {
+const getReasonConfigRatingScale = (data: Record<string, unknown>): number => {
     if ("ratingScale" in data && typeof data.ratingScale === "number") {
         return data.ratingScale;
     }
     return 10;
 };
 
-const getreasonConfigBeamSize = (data: Record<string, unknown>): number => {
+const getReasonConfigBeamSize = (data: Record<string, unknown>): number => {
     if ("beamSize" in data && typeof data.beamSize === "number") {
         return data.beamSize;
     }
     return 3;
 };
 
-const getreasonConfigAnswerApproach = (data: Record<string, unknown>): "pool" | "best" => {
+const getReasonConfigAnswerApproach = (data: Record<string, unknown>): "pool" | "best" => {
     if (
         "answerApproach" in data &&
         typeof data.answerApproach === "string" &&
@@ -104,14 +104,14 @@ const getreasonConfigAnswerApproach = (data: Record<string, unknown>): "pool" | 
     return "pool";
 };
 
-const getreasonConfigNsim = (data: Record<string, unknown>): number => {
+const getReasonConfigNsim = (data: Record<string, unknown>): number => {
     if ("nsim" in data && typeof data.nsim === "number") {
         return data.nsim;
     }
     return 3;
 };
 
-const getreasonConfigExplorationConstant = (data: Record<string, unknown>): number => {
+const getReasonConfigExplorationConstant = (data: Record<string, unknown>): number => {
     if ("explorationConstant" in data && typeof data.explorationConstant === "number") {
         return data.explorationConstant;
     }
