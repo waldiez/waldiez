@@ -212,7 +212,6 @@ class WaldiezDevServer:
         """
         logger.info("Handling run action")
         await self.handle_save(websocket, flow)
-        default_steam = IOStream.get_default()
         try:
             runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
             io_steam = AsyncWebsocketsIOStream(
@@ -233,8 +232,6 @@ class WaldiezDevServer:
             return OutgoingMessage(
                 type="runResult", success=False, message=to_log
             )
-        finally:
-            IOStream.set_default(default_steam)
         return OutgoingMessage(
             type="runResult", success=True, message="Flow executed successfully"
         )
