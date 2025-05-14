@@ -222,7 +222,7 @@ class WaldiezDevServer:
             )
             with IOStream.set_default(io_steam):
                 runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
-                if runner.waldiez.is_async:
+                if runner.is_async:
                     await runner.a_run()
                 else:
                     runner.run()

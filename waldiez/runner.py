@@ -142,6 +142,11 @@ class WaldiezRunner:
         return self._waldiez
 
     @property
+    def is_async(self) -> bool:
+        """Check if the workflow is async."""
+        return self.waldiez.is_async
+
+    @property
     def running(self) -> bool:
         """Get the running status."""
         return self._running
