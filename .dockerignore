@@ -4,7 +4,7 @@
 !package.json
 !waldiez/
 !pyproject.toml
-!requirements/main.txt
+!requirements/*.txt
 !LICENSE
 !NOTICE.md
 !README.md

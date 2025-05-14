@@ -75,7 +75,7 @@ class TestStructuredIOStream:
         assert kwargs == {"flush": True}
 
     @patch("builtins.print")
-    @patch("waldiez.io.stream.getpass")
+    @patch("waldiez.io.structured.getpass")
     def test_input_password(
         self,
         mock_getpass: MagicMock,

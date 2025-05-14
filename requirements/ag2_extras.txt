@@ -12,8 +12,10 @@ ag2[mistral]==0.9.1.post0
 ag2[neo4j]==0.9.1.post0 ;sys_platform != 'win32'
 ag2[neo4j]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
 ag2[ollama]==0.9.1.post0
+ag2[redis]==0.9.1.post0
 ag2[together]==0.9.1.post0 ;sys_platform != 'win32'
 ag2[together]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[websockets]==0.9.1.post0
 ag2[websurfer]==0.9.1.post0
 beautifulsoup4
 chromadb>=0.5.10 ;sys_platform != 'win32'

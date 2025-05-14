@@ -11,13 +11,11 @@ import json
 import logging
 import sys
 import traceback
-import uuid
 from pathlib import Path
 from typing import Any, Set
 
 import nest_asyncio  # type: ignore
 import websockets
-from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 from pydantic import BaseModel, ConfigDict
 from typing_extensions import Literal
@@ -28,7 +26,7 @@ except ImportError:
     sys.path.insert(0, str(Path(__file__).parent.parent))
     from waldiez import WaldiezExporter, WaldiezRunner
 
-from waldiez.io import StructuredIOStream
+from waldiez.io.ws import AsyncWebsocketsIOStream
 
 nest_asyncio.apply()
 logging.basicConfig(level=logging.INFO)
@@ -59,37 +57,6 @@ class ModelBase(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
 
-class UserInputPrompt(ModelBase):
-    """User input prompt model."""
-
-    type: str = "input"
-    request_id: str
-    prompt: str
-
-
-class UserInputData(ModelBase):
-    """Use's input data model."""
-
-    text: str | None = None
-    image: str | None = None
-
-
-class UserResponse(ModelBase):
-    """User response model."""
-
-    id: str
-    type: str = "input_response"
-    request_id: str
-    data: UserInputData
-
-
-class PrintMessage(ModelBase):
-    """Message to be printed."""
-
-    type: str = "print"
-    message: str
-
-
 class IncomingMessage(ModelBase):
     """Incoming message model."""
 
@@ -104,165 +71,6 @@ class OutgoingMessage(ModelBase):
     success: bool
     message: str | None = None
     filePaths: list[str] | None = None
-
-
-class AsyncIOWebsockets(IOStream):
-    """AsyncIO WebSocket class to handle communication."""
-
-    def __init__(
-        self,
-        websocket: websockets.ServerConnection,
-        is_async: bool = False,
-    ) -> None:
-        """Initialize the AsyncIOWebsockets instance.
-
-        Parameters
-        ----------
-        websocket : websockets.ServerConnection
-            The WebSocket connection to handle.
-        is_async : bool
-            Whether the connection is asynchronous.
-        """
-        super().__init__()
-        self.websocket = websocket
-        self.is_async = is_async
-
-    def set_async(self, is_async: bool) -> None:
-        """Set the async mode.
-
-        Parameters
-        ----------
-        is_async : bool
-            Whether the connection is asynchronous.
-        """
-        self.is_async = is_async
-
-    def print(self, *args: Any, **kwargs: Any) -> None:
-        """Print to the WebSocket connection.
-
-        Parameters
-        ----------
-        args : tuple
-            The arguments to print.
-        kwargs : dict
-            The keyword arguments to print.
-        """
-        sep = kwargs.get("sep", " ")
-        end = kwargs.get("end", "\n")
-        msg = sep.join(str(arg) for arg in args) + end
-        message_dump = PrintMessage(message=msg).model_dump(mode="json")
-        json_dump = json.dumps(message_dump)
-        # let's also actual print
-        print(json_dump)
-        asyncio.run(
-            self.websocket.send(json_dump),
-        )
-
-    def send(self, message: BaseEvent) -> None:
-        """Send a message to the WebSocket connection.
-
-        Parameters
-        ----------
-        message : str
-            The message to send.
-        """
-        message_dump = message.model_dump(mode="json")
-        json_dump = json.dumps(message_dump)
-        # let's also actual print
-        print(json_dump)
-        asyncio.run(
-            self.websocket.send(json_dump),
-        )
-
-    def input(self, prompt: str = "", *, password: bool = False) -> str:
-        """Sync-compatible input (will run the async version in the loop).
-
-        Parameters
-        ----------
-        prompt : str
-            The prompt to display.
-        password : bool
-            Whether to hide the input.
-
-        Returns
-        -------
-        str
-            The user input.
-        """
-        coro = self.a_input(prompt, password=password)
-        if self.is_async:
-            # conversable_agent has:
-            # iostream = IOStream.get_default()
-            # reply = await iostream.input(prompt)  # ? await ?
-            return coro  # type: ignore
-        try:
-            return asyncio.run(coro)
-        except RuntimeError:
-            loop = asyncio.get_event_loop()
-            future = asyncio.run_coroutine_threadsafe(coro, loop)
-            return future.result()
-
-    async def a_input(self, prompt: str = "", *, password: bool = False) -> str:
-        """Get input from the WebSocket connection.
-
-        Parameters
-        ----------
-        prompt : str
-            The prompt to display.
-        password : bool
-            Whether to hide the input.
-
-        Returns
-        -------
-        str
-            The user input.
-        """
-        request_id = uuid.uuid4().hex
-        prompt = UserInputPrompt(
-            prompt=prompt, request_id=request_id
-        ).model_dump_json()
-        await self.websocket.send(prompt)
-        # asyncio.run(
-        #     self.websocket.send(prompt),
-        # )
-        response = await self.websocket.recv()
-        # response = asyncio.run(self.websocket.recv())
-        if isinstance(response, bytes):
-            response = response.decode("utf-8")
-        logger.info("Got input: %s ...", response[:300])
-        try:
-            response_dict = json.loads(response)
-        except json.JSONDecodeError:
-            return response
-        if "action" in response_dict and "input" in response_dict:
-            try:
-                user_response = UserResponse.model_validate(
-                    response_dict["input"]
-                )
-            except Exception:
-                logger.error("Error parsing user input response: %s", response)
-                return response
-        else:
-            return "\n"
-        if user_response.request_id != request_id:
-            logger.error(
-                "Invalid input request_id. Expecting %s, got: %s",
-                request_id,
-                user_response.request_id,
-            )
-            return "\n"
-        response_str = user_response.data.text or ""
-        if user_response.data.image:
-            image = StructuredIOStream.get_image(
-                uploads_root=UPLOADS_DIR,
-                image_data=user_response.data.image,
-                base_name=request_id,
-            )
-            response_str = f"{response_str} <img {image}>"
-            # response_str = f"{response_str} <img {user_response.data.image}>"
-        if not response_str:
-            response_str = "\n"
-        return response_str
 
 
 class WaldiezDevServer:
@@ -407,8 +215,11 @@ class WaldiezDevServer:
         default_steam = IOStream.get_default()
         try:
             runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
-            io_steam = AsyncIOWebsockets(
-                websocket, is_async=runner.waldiez.is_async
+            io_steam = AsyncWebsocketsIOStream(
+                websocket,
+                is_async=runner.waldiez.is_async,
+                uploads_root=UPLOADS_DIR,
+                verbose=True,
             )
             with IOStream.set_default(io_steam):
                 runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")

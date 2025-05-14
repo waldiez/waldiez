@@ -12,9 +12,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --upgrade pip build
 
 WORKDIR /tmp
-COPY requirements/main.txt /tmp/requirements.txt
-RUN pip install -r /tmp/requirements.txt && \
-    rm -rf /root/.cache/pip /tmp/requirements.txt
+COPY requirements/main.txt /tmp/main.txt
+COPY requirements/redis.txt /tmp/redis.txt
+COPY requirements/websockets.txt /tmp/websockets.txt
+RUN pip install -r /tmp/main.txt && \
+    pip install -r /tmp/redis.txt && \
+    pip install -r /tmp/websockets.txt && \
+    rm -rf /root/.cache/pip /tmp/main.txt /tmp/redis.txt /tmp/websockets.txt
 
 WORKDIR /app
 COPY . /app
@@ -26,11 +30,6 @@ RUN python -m build --wheel --outdir dist
 # Final image
 #####################################################################################
 FROM python:3.12-slim
-
-LABEL maintainer="waldiez <development@waldiez.io>"
-LABEL org.opencontainers.image.source="quay.io/waldiez/waldiez"
-LABEL org.opencontainers.image.title="waldiez/waldiez"
-LABEL org.opencontainers.image.description="Python 3.12-slim image with waldiez"
 
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -50,7 +49,10 @@ RUN apt update && \
     rm -rf /var/cache/apt/archives/*
 
 COPY --from=builder /app/dist/*.whl /tmp/
-RUN pip install /tmp/*.whl && \
+RUN pip install --upgrade pip && \
+    file_name=$(ls /tmp/*.whl) && \
+    echo "Installing $file_name" && \
+    pip install $file_name[redis,websockets] && \
     rm -rf /root/.cache/pip /tmp/*.whl
 
 WORKDIR /app

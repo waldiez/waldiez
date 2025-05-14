@@ -7,7 +7,6 @@ import json
 import queue
 import sys
 import threading
-from datetime import datetime, timezone
 from getpass import getpass
 from pathlib import Path
 from typing import Any
@@ -17,16 +16,7 @@ from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
-
-def now() -> str:
-    """Get the current time in ISO format.
-
-    Returns
-    -------
-    str
-        The current time in ISO format.
-    """
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+from .common import PrintMessage, UserInputRequest, gen_id, now
 
 
 class StructuredIOStream(IOStream):
@@ -57,13 +47,11 @@ class StructuredIOStream(IOStream):
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
         message = sep.join(map(str, args)) + end
-
-        payload = {
-            "type": "print",
-            "id": uuid4().hex,
-            "timestamp": now(),
-            "data": message,
-        }
+        payload = PrintMessage(
+            id=uuid4().hex,
+            timestamp=now(),
+            data=message,
+        ).model_dump(mode="json")
         flush = kwargs.get("flush", False)
         print(json.dumps(payload), flush=flush)
 
@@ -102,7 +90,7 @@ class StructuredIOStream(IOStream):
         message_dump = message.model_dump(mode="json")
         payload = {
             "type": message_dump.get("type", "event"),
-            "id": uuid4().hex,
+            "id": gen_id(),
             "timestamp": now(),
             "data": message_dump,
         }
@@ -116,13 +104,11 @@ class StructuredIOStream(IOStream):
         request_id: str,
         password: bool,
     ) -> None:
-        payload = {
-            "type": "input_request",
-            "request_id": request_id,
-            "timestamp": now(),
-            "prompt": prompt,
-            "password": password,
-        }
+        payload = UserInputRequest(
+            request_id=request_id,
+            prompt=prompt,
+            password=password,
+        ).model_dump(mode="json")
         print(json.dumps(payload), flush=True)
 
     def _read_user_input(

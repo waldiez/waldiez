@@ -1,4 +1,7 @@
 -r main.txt
+ag2[redis]==0.9.1.post0
+ag2[websockets]==0.9.1.post0
+fakeredis>=2.28.1
 jsonschema==4.23.0
 pytest-asyncio==0.26.0
 pytest-cov==6.1.1
