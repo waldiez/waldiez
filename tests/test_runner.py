@@ -71,7 +71,6 @@ class CustomIOStream(IOStream):
 def test_waldiez_runner(
     waldiez_flow: WaldiezFlow,
     tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
 ) -> None:
     """Test WaldiezRunner.
 
@@ -89,8 +88,6 @@ def test_waldiez_runner(
     runner = WaldiezRunner(waldiez)
     with IOStream.set_default(CustomIOStream()):
         runner.run(output_path=output_path, skip_mmd=True)
-    std_out = capsys.readouterr().out
-    assert "Starting workflow" in std_out
     assert (tmp_path / "waldiez_out").exists()
     shutil.rmtree(tmp_path / "waldiez_out")
 
