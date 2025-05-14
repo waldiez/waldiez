@@ -1,13 +1,13 @@
 {
-  "id": "id-831012af-8b69-4b04-8ef4-891894b91e4a",
+  "id": "id-ec1a5113-d1f7-4352-b8bd-3bcacff27a50",
   "type": "flow",
   "storageId": "wf-174722982344559JIMglxStKZOzxp5PXYW}",
   "name": "innovator",
   "description": "A waldiez flow that provides innovative ideas based on recent arxiv papers.",
   "tags": [],
   "requirements": [],
-  "createdAt": "2025-05-14T14:09:30.114Z",
-  "updatedAt": "2025-05-14T14:24:28.158Z",
+  "createdAt": "2025-05-14T14:27:27.662Z",
+  "updatedAt": "2025-05-14T14:33:31.161Z",
   "data": {
     "nodes": [
       {
@@ -36,7 +36,7 @@
           "height": 182
         },
         "selected": false,
-        "hidden": true
+        "hidden": false
       },
       {
         "id": "wa-1747147320991PdqWGNJ1ghErYMoxV1FJO",
@@ -51,7 +51,7 @@
         },
         "selected": false,
         "dragging": false,
-        "hidden": false
+        "hidden": true
       },
       {
         "id": "wa-1747147323059iAJ-kmksXTkdJHMe8ixtc",
@@ -66,7 +66,7 @@
         },
         "selected": false,
         "dragging": false,
-        "hidden": false
+        "hidden": true
       },
       {
         "id": "1747147450805z64e_Ozvf3F67CywB-aX5",
@@ -81,7 +81,7 @@
         },
         "selected": false,
         "dragging": false,
-        "hidden": false
+        "hidden": true
       },
       {
         "id": "wa-17471476969197JhmOxwi1fGE69zWdgiki",
@@ -95,7 +95,7 @@
           "height": 16
         },
         "selected": false,
-        "hidden": false
+        "hidden": true
       },
       {
         "id": "wa-1747147668832ZixXclnJTIyUZp57AKqAy",
@@ -110,7 +110,7 @@
         },
         "selected": false,
         "dragging": false,
-        "hidden": false
+        "hidden": true
       }
     ],
     "edges": [
@@ -180,9 +180,9 @@
       }
     ],
     "viewport": {
-      "x": 129.67275747508307,
-      "y": -26.122923588039868,
-      "zoom": 0.8471760797342193
+      "x": 20,
+      "y": 40,
+      "zoom": 1.0385906040268456
     },
     "agents": {
       "users": [
@@ -370,15 +370,15 @@
       {
         "id": "ws-1747147290306EwQ97YnLGFhYwfXsdENxm",
         "type": "model",
-        "name": "meta/llama-3.3-70b-instruct",
+        "name": "gpt-4",
         "description": "A new model",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-13T14:41:30.306Z",
-        "updatedAt": "2025-05-14T14:24:28.158Z",
+        "updatedAt": "2025-05-14T14:31:30.882Z",
         "data": {
           "apiKey": "REPLACE_ME",
-          "apiType": "nim",
+          "apiType": "openai",
           "apiVersion": null,
           "baseUrl": null,
           "temperature": null,
