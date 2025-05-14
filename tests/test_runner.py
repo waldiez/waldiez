@@ -80,8 +80,6 @@ def test_waldiez_runner(
         A WaldiezFlow instance.
     tmp_path : Path
         Pytest fixture to create temporary directory.
-    capsys : pytest.CaptureFixture[Optional[str]]
-        Pytest fixture to capture stdout and stderr.
     """
     waldiez = Waldiez.from_dict(data=waldiez_flow.model_dump(by_alias=True))
     output_path = tmp_path / "output.py"
