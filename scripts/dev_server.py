@@ -190,19 +190,17 @@ class AsyncIOWebsockets(IOStream):
             The user input.
         """
         coro = self.a_input(prompt, password=password)
+        if self.is_async:
+            # conversable_agent has:
+            # iostream = IOStream.get_default()
+            # reply = await iostream.input(prompt)  # ? await ?
+            return coro  # type: ignore
         try:
-            loop = asyncio.get_running_loop()
-            if loop.is_running():
-                if self.is_async:
-                    # conversable_agent has:
-                    # iostream = IOStream.get_default()
-                    # reply = await iostream.input(prompt)  # ? await ?
-                    # self._human_input.append(reply)
-                    return coro  # type: ignore
-                return asyncio.run(coro)
+            return asyncio.run(coro)
         except RuntimeError:
-            pass  # no running loop
-        return asyncio.run(coro)
+            loop = asyncio.get_event_loop()
+            future = asyncio.run_coroutine_threadsafe(coro, loop)
+            return future.result()
 
     async def a_input(self, prompt: str = "", *, password: bool = False) -> str:
         """Get input from the WebSocket connection.
