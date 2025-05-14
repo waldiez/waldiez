@@ -1,13 +1,13 @@
 {
-  "id": "id-bfdf4e95-79de-4920-ab78-b5fa62e3bf0d",
+  "id": "id-831012af-8b69-4b04-8ef4-891894b91e4a",
   "type": "flow",
-  "storageId": "wf-1747145098669Z_7figthXUt6Im4Zj3TaQ}",
+  "storageId": "wf-174722982344559JIMglxStKZOzxp5PXYW}",
   "name": "innovator",
   "description": "A waldiez flow that provides innovative ideas based on recent arxiv papers.",
   "tags": [],
   "requirements": [],
-  "createdAt": "2025-05-13T15:23:47.291Z",
-  "updatedAt": "2025-05-14T14:01:08.472Z",
+  "createdAt": "2025-05-14T14:09:30.114Z",
+  "updatedAt": "2025-05-14T14:24:28.158Z",
   "data": {
     "nodes": [
       {
@@ -21,21 +21,7 @@
           "width": 182,
           "height": 182
         },
-        "selected": false,
-        "hidden": true
-      },
-      {
-        "id": "ws-174714788834484P_xLCpPJavk58zgEhaH",
-        "type": "model",
-        "position": {
-          "x": 240,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
+        "selected": true,
         "hidden": true
       },
       {
@@ -194,9 +180,9 @@
       }
     ],
     "viewport": {
-      "x": -22.209731543624116,
-      "y": 10.455536912751654,
-      "zoom": 1.0385906040268456
+      "x": 129.67275747508307,
+      "y": -26.122923588039868,
+      "zoom": 0.8471760797342193
     },
     "agents": {
       "users": [
@@ -251,7 +237,7 @@
               "methodContent": null
             },
             "modelIds": [
-              "ws-174714788834484P_xLCpPJavk58zgEhaH"
+              "ws-1747147290306EwQ97YnLGFhYwfXsdENxm"
             ],
             "skills": [
               {
@@ -352,7 +338,7 @@
               "methodContent": null
             },
             "modelIds": [
-              "ws-174714788834484P_xLCpPJavk58zgEhaH"
+              "ws-1747147290306EwQ97YnLGFhYwfXsdENxm"
             ],
             "skills": [],
             "parentId": null,
@@ -384,39 +370,15 @@
       {
         "id": "ws-1747147290306EwQ97YnLGFhYwfXsdENxm",
         "type": "model",
-        "name": "gpt-4",
+        "name": "meta/llama-3.3-70b-instruct",
         "description": "A new model",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-13T14:41:30.306Z",
-        "updatedAt": "2025-05-13T15:24:02.241Z",
+        "updatedAt": "2025-05-14T14:24:28.158Z",
         "data": {
           "apiKey": "REPLACE_ME",
-          "apiType": "openai",
-          "apiVersion": null,
-          "baseUrl": null,
-          "temperature": null,
-          "topP": null,
-          "maxTokens": null,
-          "defaultHeaders": {},
-          "price": {
-            "promptPricePer1k": null,
-            "completionTokenPricePer1k": null
-          }
-        }
-      },
-      {
-        "id": "ws-174714788834484P_xLCpPJavk58zgEhaH",
-        "type": "model",
-        "name": "gpt-4o",
-        "description": "A new model",
-        "tags": [],
-        "requirements": [],
-        "createdAt": "2025-05-13T14:51:28.344Z",
-        "updatedAt": "2025-05-13T15:24:11.156Z",
-        "data": {
-          "apiKey": "REPLACE_ME",
-          "apiType": "openai",
+          "apiType": "nim",
           "apiVersion": null,
           "baseUrl": null,
           "temperature": null,
@@ -435,13 +397,13 @@
         "id": "ws-174722995042744roqOwqTAhlu4-yb8xiN",
         "type": "skill",
         "name": "get_papers",
-        "description": "Use this function to retrieve papers from arxiv. The args are search_query (str): Name of topic of interest (e.g., 'agents') max_returns (int): number of papers returned",
+        "description": "Use this function to retrieve papers from arxiv. The args are search_query (str): Name of topic of interest (e.g., 'agents') max_returns (int): number of papers to be retrieved (e.g., 3)",
         "tags": [],
         "requirements": [
           "arxiv"
         ],
         "createdAt": "2025-05-14T13:39:10.427Z",
-        "updatedAt": "2025-05-14T13:58:51.951Z",
+        "updatedAt": "2025-05-14T14:23:47.929Z",
         "data": {
           "content": "def get_papers(search_query: str, max_results: int) ->  Annotated[str, \"list of papers\"]:\n    \"\"\"\n    return list of papers based on the user topic.\n    \n    Args:\n        search_query (str): Name of topic of interest (e.g., 'agents')\n        max_returns (int): number of papers returned\n    \"\"\"\n    import arxiv\n\n    results = []\n\n    # Search for recent papers on the topic\n    search = arxiv.Search(\n        query=search_query,\n        max_results=max_results,\n        sort_by=arxiv.SortCriterion.SubmittedDate,\n        sort_order=arxiv.SortOrder.Descending\n    )\n\n    # Retrieve and print the paper details\n    for result in search.results():\n        print(f\"Title: {result.title}\")\n        print(f\"Authors: {', '.join(author.name for author in result.authors)}\")\n        print(f\"Published: {result.published}\")\n        print(f\"Summary: {result.summary}\")\n        print(f\"PDF URL: {result.pdf_url}\\n\")\n        results.append(result.summary)\n\n    return results\n    \n",
           "skillType": "custom",
