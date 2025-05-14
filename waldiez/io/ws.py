@@ -174,21 +174,21 @@ class AsyncWebsocketsIOStream(IOStream):
                 user_response = UserResponse.model_validate(response["input"])
             except Exception:  # pylint: disable=broad-exception-caught
                 LOG.error("Error parsing user input response: %s", response)
-                return "\n"
+                return ""
         else:
             # check if already in a UserResponse format
             try:
                 user_response = UserResponse.model_validate(response)
             except Exception:  # pylint: disable=broad-exception-caught
                 LOG.error("Error parsing user input response: %s", response)
-                return "\n"
+                return ""
         if user_response.request_id != request_id:
             LOG.error(
                 "Invalid input request_id. Expecting %s, got: %s",
                 request_id,
                 user_response.request_id,
             )
-            return "\n"
+            return ""
         response_str = user_response.data.text or ""
         if user_response.data.image:
             image = StructuredIOStream.get_image(
@@ -198,6 +198,4 @@ class AsyncWebsocketsIOStream(IOStream):
             )
             response_str = f"{response_str} <img {image}>"
             # response_str = f"{response_str} <img {user_response.data.image}>"
-        if not response_str:
-            response_str = "\n"
         return response_str

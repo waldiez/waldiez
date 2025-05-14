@@ -129,7 +129,7 @@ class StructuredIOStream(IOStream):
                 )
                 input_queue.put(user_input)
             except EOFError:
-                input_queue.put("\n")
+                input_queue.put("")
 
         input_thread = threading.Thread(target=read_input, daemon=True)
         input_thread.start()
@@ -138,7 +138,7 @@ class StructuredIOStream(IOStream):
             return input_queue.get(timeout=self.timeout)
         except queue.Empty:
             self._send_timeout_message(request_id)
-            return "\n"
+            return ""
 
     def _send_timeout_message(self, request_id: str) -> None:
         timeout_payload = {
@@ -226,7 +226,7 @@ class StructuredIOStream(IOStream):
                     )
             if not data or not isinstance(data, (str, dict)):
                 # No / invalid data provided in the response
-                return "\n"
+                return ""
             # Process different data types
             if isinstance(data, str):
                 # double inner dumped?
@@ -239,7 +239,7 @@ class StructuredIOStream(IOStream):
             return str(data)  # pragma: no cover
         # This response doesn't match our request_id, log and return empty
         self._log_mismatched_response(request_id, user_input)
-        return "\n"
+        return ""
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use

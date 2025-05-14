@@ -164,7 +164,7 @@ class TestStructuredIOStream:
         assert "No input received after" in payload["data"]
 
         # Verify empty result
-        assert result == "\n"
+        assert result == ""
 
     @patch("builtins.print")
     @patch("builtins.input")
@@ -185,8 +185,8 @@ class TestStructuredIOStream:
         with patch("threading.Thread", side_effect=mock_thread_func):
             result = self.stream.input("Enter text: ")
 
-        # Verify the result is newline
-        assert result == "\n"
+        # Verify the result is empty
+        assert result == ""
 
     @patch("builtins.print")
     def test_send(self, mock_print: MagicMock) -> None:
@@ -246,12 +246,12 @@ class TestStructuredIOStream:
         # Test with JSON that has no data
         json_input = json.dumps({"request_id": "test_id"})
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "\n"
+        assert result == ""
 
         # Test with JSON that has empty data
         json_input = json.dumps({"request_id": "test_id", "data": {}})
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "\n"
+        assert result == ""
 
         # Test with double-dumped JSON
         json_input = json.dumps(
@@ -300,8 +300,8 @@ class TestStructuredIOStream:
         assert "mismatched request_id" in payload["data"]["message"]
         assert payload["data"]["details"]["expected_id"] == "test_id"
 
-        # Result should be newline
-        assert result == "\n"
+        # Result should be empty
+        assert result == ""
 
     def test_handle_user_input_json_error(self) -> None:
         """Test parsing input with invalid JSON."""

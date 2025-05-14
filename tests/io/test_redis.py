@@ -147,7 +147,7 @@ def test_input_timeout(fake_redis: fakeredis.FakeRedis) -> None:
     stream.redis = fake_redis
 
     result = stream.input("Enter something:")
-    assert result == "\n"
+    assert result == ""
 
 
 def test_parse_pubsub_input() -> None:
