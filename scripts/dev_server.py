@@ -109,16 +109,33 @@ class OutgoingMessage(ModelBase):
 class AsyncIOWebsockets(IOStream):
     """AsyncIO WebSocket class to handle communication."""
 
-    def __init__(self, websocket: websockets.ServerConnection) -> None:
+    def __init__(
+        self,
+        websocket: websockets.ServerConnection,
+        is_async: bool = False,
+    ) -> None:
         """Initialize the AsyncIOWebsockets instance.
 
         Parameters
         ----------
         websocket : websockets.ServerConnection
             The WebSocket connection to handle.
+        is_async : bool
+            Whether the connection is asynchronous.
         """
         super().__init__()
         self.websocket = websocket
+        self.is_async = is_async
+
+    def set_async(self, is_async: bool) -> None:
+        """Set the async mode.
+
+        Parameters
+        ----------
+        is_async : bool
+            Whether the connection is asynchronous.
+        """
+        self.is_async = is_async
 
     def print(self, *args: Any, **kwargs: Any) -> None:
         """Print to the WebSocket connection.
@@ -158,6 +175,36 @@ class AsyncIOWebsockets(IOStream):
         )
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
+        """Sync-compatible input (will run the async version in the loop).
+
+        Parameters
+        ----------
+        prompt : str
+            The prompt to display.
+        password : bool
+            Whether to hide the input.
+
+        Returns
+        -------
+        str
+            The user input.
+        """
+        coro = self.a_input(prompt, password=password)
+        try:
+            loop = asyncio.get_running_loop()
+            if loop.is_running():
+                if self.is_async:
+                    # conversable_agent has:
+                    # iostream = IOStream.get_default()
+                    # reply = await iostream.input(prompt)  # ? await ?
+                    # self._human_input.append(reply)
+                    return coro  # type: ignore
+                return asyncio.run(coro)
+        except RuntimeError:
+            pass  # no running loop
+        return asyncio.run(coro)
+
+    async def a_input(self, prompt: str = "", *, password: bool = False) -> str:
         """Get input from the WebSocket connection.
 
         Parameters
@@ -176,10 +223,12 @@ class AsyncIOWebsockets(IOStream):
         prompt = UserInputPrompt(
             prompt=prompt, request_id=request_id
         ).model_dump_json()
-        asyncio.run(
-            self.websocket.send(prompt),
-        )
-        response = asyncio.run(self.websocket.recv())
+        await self.websocket.send(prompt)
+        # asyncio.run(
+        #     self.websocket.send(prompt),
+        # )
+        response = await self.websocket.recv()
+        # response = asyncio.run(self.websocket.recv())
         if isinstance(response, bytes):
             response = response.decode("utf-8")
         logger.info("Got input: %s ...", response[:300])
@@ -359,10 +408,16 @@ class WaldiezDevServer:
         await self.handle_save(websocket, flow)
         default_steam = IOStream.get_default()
         try:
-            io_steam = AsyncIOWebsockets(websocket)
+            runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
+            io_steam = AsyncIOWebsockets(
+                websocket, is_async=runner.waldiez.is_async
+            )
             with IOStream.set_default(io_steam):
                 runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
-                runner.run()
+                if runner.waldiez.is_async:
+                    await runner.a_run()
+                else:
+                    runner.run()
         except Exception as e:
             to_log = f"Error running flow: {e}"
             logger.error(traceback.format_exc())
