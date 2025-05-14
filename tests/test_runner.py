@@ -6,7 +6,6 @@
 import shutil
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
 import pytest
 from autogen.io import IOStream  # type: ignore
@@ -56,8 +55,7 @@ class CustomIOStream(IOStream):
         str
             User input.
         """
-        with patch("builtins.input", return_value="User Input"):
-            return input(prompt)
+        return "User Input"
 
     def send(self, message: Any) -> None:
         """Send data.
