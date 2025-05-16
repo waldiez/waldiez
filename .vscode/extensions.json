@@ -4,6 +4,7 @@
         "waldiez.waldiez-vscode",
         "searking.preview-vscode",
         "bierner.markdown-mermaid",
-        "bpruitt-goddard.mermaid-markdown-syntax-highlighting"
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "charliermarsh.ruff"
     ]
 }
