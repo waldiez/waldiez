@@ -29,3 +29,5 @@ export const InfoLabel: React.FC<InfoLabelProps> = (props: InfoLabelProps) => {
         </div>
     );
 };
+
+InfoLabel.displayName = "InfoLabel";

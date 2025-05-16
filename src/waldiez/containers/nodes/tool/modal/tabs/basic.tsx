@@ -117,5 +117,4 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     );
 });
 
-// Add display name for better debugging
 WaldiezToolBasicTab.displayName = "WaldiezToolBasicTab";

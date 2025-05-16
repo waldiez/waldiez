@@ -27,3 +27,5 @@ export const InfoCheckbox: React.FC<InfoCheckboxProps> = (props: InfoCheckboxPro
         </div>
     );
 };
+
+InfoCheckbox.displayName = "InfoCheckbox";

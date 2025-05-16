@@ -251,5 +251,4 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
     );
 });
 
-// Add display name for better debugging
 UserInputModal.displayName = "UserInputModal";

@@ -212,5 +212,4 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
     );
 });
 
-// Add display name for better debugging
 WaldiezNodeModelModalBasicTab.displayName = "WaldiezNodeModelModalBasicTab";

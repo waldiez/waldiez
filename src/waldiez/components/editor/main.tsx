@@ -35,3 +35,5 @@ export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
         </div>
     );
 };
+
+Editor.displayName = "Editor";

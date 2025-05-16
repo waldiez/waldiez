@@ -32,6 +32,17 @@
   max-width: none !important;
   max-height: none !important;
 }
+.modal-minimized {
+  height: fit-content !important;
+  max-height: fit-content !important;
+  min-height: 0 !important;
+  resize: none !important;
+  overflow: hidden;
+}
+
+.modal-minimized .modal-content.hidden {
+  display: none;
+}
 
 .modal-header {
   display: flex;

@@ -71,5 +71,4 @@ export const WaldiezEdgeGroupTab = memo<WaldiezEdgeGroupTabProps>(props => {
     );
 });
 
-// Add display name for better debugging
 WaldiezEdgeGroupTab.displayName = "WaldiezEdgeGroupTab";

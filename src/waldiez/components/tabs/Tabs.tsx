@@ -110,6 +110,5 @@ export const TabItems = memo<TabItemsProps>((props: TabItemsProps) => {
     );
 });
 
-// Add display names for better debugging
 TabItem.displayName = "TabItem";
 TabItems.displayName = "TabItems";

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Editor, Select, SingleValue, TextareaInput } from "@waldiez/components";
 import { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models";
 
-type WaldiezAgentUpdateStateProps = {
+type UpdateStateProps = {
     data: WaldiezNodeAgentData;
     onDataChange: (data: Partial<WaldiezNodeAgentData>) => void;
     darkMode: boolean;
@@ -33,7 +33,7 @@ def custom_update_system_message(
     ...
 `;
 
-export const WaldiezAgentUpdateState: React.FC<WaldiezAgentUpdateStateProps> = props => {
+export const UpdateState: React.FC<UpdateStateProps> = props => {
     const { data, onDataChange, darkMode } = props;
 
     /**
@@ -245,3 +245,5 @@ export const WaldiezAgentUpdateState: React.FC<WaldiezAgentUpdateStateProps> = p
         </div>
     );
 };
+
+UpdateState.displayName = "UpdateState";

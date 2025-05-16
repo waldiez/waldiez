@@ -177,6 +177,5 @@ export const Wizard = memo<WizardProps>((props: WizardProps) => {
     );
 });
 
-// Add display names for better debugging
 WizardStep.displayName = "WizardStep";
 Wizard.displayName = "Wizard";

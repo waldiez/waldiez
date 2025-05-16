@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { AfterWork, Handoffs, Select, TabItem, TabItems, WaldiezAgentUpdateState } from "@waldiez/components";
+import { AfterWork, Handoffs, Select, TabItem, TabItems, UpdateState } from "@waldiez/components";
 import { useWaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group/hooks";
 import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
 
@@ -145,11 +145,7 @@ export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
                 {/* State Tab - Only shown when in a group */}
                 {showGroupTabs && (
                     <TabItem id={`wa-${id}-group-update-state`} label="State">
-                        <WaldiezAgentUpdateState
-                            data={data}
-                            darkMode={darkMode}
-                            onDataChange={onDataChange}
-                        />
+                        <UpdateState data={data} darkMode={darkMode} onDataChange={onDataChange} />
                     </TabItem>
                 )}
 

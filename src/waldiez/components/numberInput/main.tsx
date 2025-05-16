@@ -175,5 +175,4 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
     );
 });
 
-// Add display name for better debugging
 NumberInput.displayName = "NumberInput";

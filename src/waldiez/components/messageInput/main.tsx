@@ -165,3 +165,5 @@ const MessageOptionsMapping = {
     rag_message_generator: "Use RAG Message Generator",
     method: "Method",
 };
+
+MessageInput.displayName = "MessageInput";

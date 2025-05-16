@@ -91,3 +91,5 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) =>
         </>
     );
 };
+
+ChatUI.displayName = "ChatUI";

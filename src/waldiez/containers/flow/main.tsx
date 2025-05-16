@@ -288,5 +288,4 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
     );
 });
 
-// Add display name for better debugging
 WaldiezFlowView.displayName = "WaldiezFlowView";

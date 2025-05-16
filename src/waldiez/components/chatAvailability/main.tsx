@@ -313,3 +313,5 @@ export const ChatAvailability: React.FC<{
         </div>
     );
 };
+
+ChatAvailability.displayName = "ChatAvailability";

@@ -114,5 +114,4 @@ export const ModelSelector = memo((props: IModelSelectorProps) => {
     );
 });
 
-// Add display name for better debugging
 ModelSelector.displayName = "ModelSelector";

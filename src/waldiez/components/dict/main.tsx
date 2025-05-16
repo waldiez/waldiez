@@ -119,3 +119,5 @@ export const Dict: React.FC<DictProps> = (props: DictProps) => {
         </div>
     );
 };
+
+Dict.displayName = "Dict";

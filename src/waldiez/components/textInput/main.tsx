@@ -132,5 +132,4 @@ export const TextInput = memo<{
     );
 });
 
-// Add display name for better debugging
 TextInput.displayName = "TextInput";

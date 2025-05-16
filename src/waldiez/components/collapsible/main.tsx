@@ -57,5 +57,4 @@ export const Collapsible = memo<CollapsibleProps>(props => {
     );
 });
 
-// Add display name for better debugging
 Collapsible.displayName = "Collapsible";

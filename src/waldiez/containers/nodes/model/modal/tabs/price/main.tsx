@@ -82,5 +82,4 @@ export const WaldiezNodeModelModalPriceTab = memo((props: WaldiezNodeModelModalP
     );
 });
 
-// Add display name for better debugging
 WaldiezNodeModelModalPriceTab.displayName = "WaldiezNodeModelModalPriceTab";

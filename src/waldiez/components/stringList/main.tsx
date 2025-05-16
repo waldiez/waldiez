@@ -93,5 +93,4 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
     );
 });
 
-// Add display name for better debugging
 StringList.displayName = "StringList";

@@ -248,5 +248,4 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
     );
 });
 
-// Add display name for better debugging
 WaldiezEdgeModal.displayName = "WaldiezEdgeModal";

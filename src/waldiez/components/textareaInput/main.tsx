@@ -71,3 +71,5 @@ export const TextareaInput: React.FC<{
 
     return <textarea ref={ref} value={value} onChange={handleChange} {...props} />;
 };
+
+TextareaInput.displayName = "TextareaInput";

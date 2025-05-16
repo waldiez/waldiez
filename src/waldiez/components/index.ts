@@ -21,5 +21,5 @@ export { TabItem, TabItems } from "@waldiez/components/tabs";
 export { TextareaInput } from "@waldiez/components/textareaInput";
 export { TextInput } from "@waldiez/components/textInput";
 export type * from "@waldiez/components/types";
-export { WaldiezAgentUpdateState } from "@waldiez/components/updateState";
+export { UpdateState } from "@waldiez/components/updateState";
 export { Wizard, WizardStep } from "@waldiez/components/wizard";

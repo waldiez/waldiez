@@ -31,3 +31,5 @@ export const DropZone: React.FC<DropZoneProps> = (props: DropZoneProps) => {
         </div>
     );
 };
+
+DropZone.displayName = "DropZone";
