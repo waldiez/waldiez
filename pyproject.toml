@@ -207,7 +207,7 @@ waldiez = "waldiez.cli:app"
 
 [tool.hatch.envs.default]
 python = "3.12"
-dependencies = ["waldiez[dev,test,docs]"]
+dependencies = ["waldiez[dev,test,docs,ag2_extras,redis,websockets]"]
 
 [tool.hatch.envs.default.scripts]
 test = """pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests"""
