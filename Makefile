@@ -30,6 +30,7 @@ help:
 	@echo " test-exporting   Run the tests for exporting"
 	@echo " test-running     Run the tests for running"
 	@echo " test-io          Run the tests for the IO stream"
+	@echo " test-schema      Run the tests for the schema"
 	@echo " build            Build the python package"
 	@echo " docs             Generate the python documentation"
 	@echo " docs-live        Generate the documentation in 'live' mode"
@@ -105,6 +106,14 @@ test_io:
 .PHONY: test-io
 test-io: test_io
 
+.PHONY: test_schema
+test_schema:
+	pytest \
+		-c pyproject.toml -vv \
+		${.TESTS_DIR}/test_schema.py
+
+.PHONY: test-schema
+test-schema: test_schema
 
 .PHONY: build
 build:
