@@ -169,7 +169,6 @@ const ensureOneNestedChatExists = (data: any) => {
     }
 };
 
-// eslint-disable-next-line max-statements
 const getCommonAgentData = (
     data: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -203,7 +202,7 @@ const getCommonAgentData = (
         handoffs,
     });
 };
-// eslint-disable-next-line max-statements
+
 const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     const toExclude = ["id", "name", "description", "tags", "requirements", "createdAt", "updatedAt", "data"];
     if (agentType === "rag_user_proxy") {
@@ -231,7 +230,6 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     return toExclude;
 };
 
-// eslint-disable-next-line max-statements
 const getAgentDataToImport = (
     jsonData: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -279,7 +277,6 @@ const getAgentDataToImport = (
     return data;
 };
 
-// eslint-disable-next-line max-statements
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     const agentCopy = { ...agent };
     agentCopy.data.modelId = null;

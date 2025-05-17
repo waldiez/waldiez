@@ -37,7 +37,7 @@ export const WizardStep = memo<WizardStepProps>((props: WizardStepProps) => {
 /**
  * Wizard component that handles multi-step processes with navigation
  */
-// eslint-disable-next-line max-statements
+
 export const Wizard = memo<WizardProps>((props: WizardProps) => {
     const {
         children,

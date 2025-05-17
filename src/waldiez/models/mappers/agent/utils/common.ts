@@ -210,7 +210,6 @@ const getNestedChatOrder = (chat: Record<string, unknown>): number => {
     return 0;
 };
 
-// eslint-disable-next-line max-statements
 export const getNestedChats = (data: Record<string, unknown>): WaldiezAgentNestedChat[] => {
     const chats: WaldiezAgentNestedChat[] = [];
     if ("nestedChats" in data && Array.isArray(data.nestedChats)) {

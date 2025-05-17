@@ -264,7 +264,7 @@ const validateDirectModel = async (
  * @param modelName - Model name to validate
  * @returns Validation result
  */
-// eslint-disable-next-line max-statements
+
 const validateFallbackModel = async (
     url: string,
     headers: Record<string, string>,

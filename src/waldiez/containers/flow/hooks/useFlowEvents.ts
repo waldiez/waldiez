@@ -38,7 +38,6 @@ export const useFlowEvents = (flowId: string) => {
      * Initialize flow with proper view and settings
      */
     const onFlowInit = useCallback(
-        // eslint-disable-next-line max-statements
         (instance: ReactFlowInstance) => {
             const rootDiv = getFlowRoot(flowId);
             const noInteractivity = isReadOnly || (skipImport === true && skipExport === true);

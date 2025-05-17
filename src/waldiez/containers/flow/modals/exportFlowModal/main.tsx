@@ -139,7 +139,6 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
 
     // Handle additional file upload
     const onAdditionalFilesUpload = useCallback(
-        // eslint-disable-next-line max-statements
         (files: File[]) => {
             if (files.length === 0) {
                 setAdditionalFile(null);

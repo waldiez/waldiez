@@ -28,7 +28,7 @@ describe("All", () => {
             }
         }
     };
-    // eslint-disable-next-line max-statements
+
     it("should render Waldiez components", async () => {
         const screen = render(<Waldiez flowId="test-flow" storageId="test-flow-storage" />);
         removeTapHighlight();
