@@ -10,7 +10,6 @@ import { WaldiezChatMessage, WaldiezChatMessageType, WaldiezMediaContent } from 
 
 import { DataContent } from "./types";
 
-/* eslint-disable max-statements,complexity */
 export const useWaldiezMessages = ({
     inputRequestId,
 }: {
@@ -51,6 +50,28 @@ export const useWaldiezMessages = ({
         }
     }, []);
 
+    const extractChatData = (input: unknown): WaldiezMediaContent[] => {
+        if (typeof input === "string") {
+            return [{ type: "text", text: input }];
+        }
+
+        if (Array.isArray(input)) {
+            return input.map(item => getChatContent(item));
+        }
+
+        if (typeof input === "object" && input !== null) {
+            // If already a known media content object
+            if ("type" in input && typeof (input as any).type === "string") {
+                return [getChatContent(input)];
+            }
+
+            // Unknown object → JSON stringified
+            return [{ type: "text", text: JSON.stringify(input) }];
+        }
+
+        return [{ type: "text", text: JSON.stringify(input) }];
+    };
+
     // Chat message creation
     const makeChatMessage = useCallback(
         (rawContent: DataContent, type: string = "text"): WaldiezChatMessage => {
@@ -61,55 +82,18 @@ export const useWaldiezMessages = ({
 
             let chatData: WaldiezMediaContent[] = [];
 
-            if (
-                typeof rawContent === "object" &&
-                rawContent !== null &&
-                "content" in rawContent &&
-                typeof rawContent.content === "object" &&
-                rawContent.content !== null &&
-                "content" in rawContent.content
-            ) {
-                // Handle nested content
-                const nestedContent = (rawContent.content as any).content;
-
-                if (typeof nestedContent === "string") {
-                    // Simple text content
-                    chatData = [{ type: "text", text: nestedContent }];
-                } else if (Array.isArray(nestedContent)) {
-                    // Array of content items
-                    chatData = nestedContent.map(item => getChatContent(item));
-                } else if (typeof nestedContent === "object" && nestedContent !== null) {
-                    // Single content item as object
-                    chatData = [getChatContent(nestedContent)];
-                } else {
-                    // Fallback
-                    chatData = [{ type: "text", text: JSON.stringify(nestedContent) }];
-                }
-            }
-            // Handle other cases
-            else if (typeof rawContent === "object" && rawContent !== null && "content" in rawContent) {
+            if (typeof rawContent === "string") {
+                chatData = extractChatData(rawContent);
+            } else if (typeof rawContent === "object" && rawContent !== null && "content" in rawContent) {
                 const inner = (rawContent as any).content;
 
-                if (Array.isArray(inner)) {
-                    chatData = inner.map(item => getChatContent(item));
-                } else if (typeof inner === "string") {
-                    chatData = [{ type: "text", text: inner }];
-                } else if (
-                    typeof inner === "object" &&
-                    inner !== null &&
-                    "type" in inner &&
-                    typeof inner.type === "string"
-                ) {
-                    chatData = [getChatContent(inner)];
+                if (typeof inner === "object" && inner !== null && "content" in inner) {
+                    chatData = extractChatData(inner.content);
                 } else {
-                    chatData = [
-                        { type: "text", text: typeof inner === "string" ? inner : JSON.stringify(inner) },
-                    ];
+                    chatData = extractChatData(inner);
                 }
-            } else if (typeof rawContent === "string") {
-                chatData = [{ type: "text", text: rawContent }];
             } else {
-                chatData = [{ type: "text", text: JSON.stringify(rawContent) }];
+                chatData = extractChatData(rawContent);
             }
 
             return {
@@ -126,63 +110,37 @@ export const useWaldiezMessages = ({
     );
 
     const getChatParticipants = useCallback(
-        (
-            content: DataContent,
-        ): {
-            sender?: string;
-            recipient?: string;
-        } => {
-            let sender: string | undefined;
-            let recipient: string | undefined;
+        (content: DataContent): { sender?: string; recipient?: string } => {
+            const extract = (obj: any): { sender?: string; recipient?: string } => {
+                const sender = typeof obj?.sender === "string" ? obj.sender : undefined;
+                const recipient = typeof obj?.recipient === "string" ? obj.recipient : undefined;
+                return { sender, recipient };
+            };
 
-            // Check if content is an object with sender/recipient
+            // Handle string: try to parse as JSON
+            if (typeof content === "string") {
+                try {
+                    return getChatParticipants(JSON.parse(content));
+                } catch {
+                    return { sender: undefined, recipient: undefined };
+                }
+            }
+
+            // Handle array: look at first item
+            if (Array.isArray(content) && content.length > 0) {
+                return getChatParticipants(content[0]);
+            }
+
+            // Handle object
             if (typeof content === "object" && content !== null) {
-                if ("sender" in content && typeof content.sender === "string") {
-                    sender = content.sender;
-                }
-                if ("recipient" in content && typeof content.recipient === "string") {
-                    recipient = content.recipient;
-                }
-                if (sender && recipient) {
+                const { sender, recipient } = extract(content);
+                if (sender || recipient) {
                     return { sender, recipient };
                 }
 
-                // Check nested content
+                // Recurse into `content` property if present
                 if ("content" in content && typeof content.content === "object" && content.content !== null) {
                     return getChatParticipants(content.content as DataContent);
-                }
-            }
-
-            // Check if content is an array
-            if (Array.isArray(content) && content.length > 0) {
-                const firstItem = content[0];
-                if (typeof firstItem === "object" && firstItem !== null) {
-                    if ("sender" in firstItem && typeof firstItem.sender === "string") {
-                        sender = firstItem.sender;
-                    }
-                    if ("recipient" in firstItem && typeof firstItem.recipient === "string") {
-                        recipient = firstItem.recipient;
-                    }
-                }
-
-                // Try to parse string as JSON
-                if (typeof firstItem === "string") {
-                    try {
-                        const parsedContent = JSON.parse(firstItem);
-                        return getChatParticipants(parsedContent);
-                    } catch (_) {
-                        // Ignore JSON parse errors
-                    }
-                }
-            }
-
-            // Try to parse string as JSON
-            if (typeof content === "string") {
-                try {
-                    const parsedContent = JSON.parse(content);
-                    return getChatParticipants(parsedContent);
-                } catch (_) {
-                    // Ignore JSON parse errors
                 }
             }
 
