@@ -2,102 +2,235 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/**
+ * Supported media types
+ */
+export type WaldiezMediaType = "text" | "image" | "video" | "audio" | "file" | "document" | (string & {});
 
 /**
- * WaldiezMessageBase
- * @param id - The id of the message
- * @param timestamp - The timestamp of the message
- * @param type - The type of the message (print/error/input_request...)
- * @param request_id - The request id of the message (if type is input_request)
- * @param password - The password of the message (if type is input_request)
+ * Media content wrapper
  */
-export type WaldiezMessageBase = {
+export type WaldiezMediaContent =
+    | {
+          type: "text";
+          text: string;
+      }
+    | {
+          type: "image";
+          image: {
+              url?: string;
+              file?: File;
+              alt?: string;
+          };
+      }
+    | {
+          type: "image_url";
+          image_url: {
+              url?: string;
+              file?: File;
+              alt?: string;
+          };
+      }
+    | {
+          type: "video";
+          video: {
+              url?: string;
+              file?: File;
+              duration?: number;
+              thumbnailUrl?: string;
+              mimeType?: string;
+          };
+      }
+    | {
+          type: "audio";
+          audio: {
+              url?: string;
+              file?: File;
+              duration?: number;
+              transcript?: string;
+          };
+      }
+    | {
+          type: "file" | "document";
+          file: {
+              url?: string;
+              file?: File;
+              name: string;
+              size?: number;
+              type?: string;
+              previewUrl?: string;
+          };
+      };
+
+export type WaldiezChatMessageType =
+    | "user"
+    | "agent"
+    | "system"
+    | "input_request"
+    | "input_response"
+    | "error"
+    | "print"
+    | "text"
+    | (string & {}); // other types that may come from chat events
+
+/**
+ * WaldiezChatMessage structure
+ * @param id - Unique identifier for the message
+ * @param timestamp - Timestamp of the message
+ * @param type - Type of the message (e.g., user, agent, system)
+ * @param content - Content of the message (text, image, audio, etc.)
+ * @param sender - Sender of the message (optional)
+ * @param recipient - Recipient of the message (optional)
+ * @param request_id - ID of the request associated with the message (optional)
+ * @param metadata - Additional metadata associated with the message (optional)
+ */
+export type WaldiezChatMessageCommon = {
     id: string;
-    timestamp: string;
-    type: string; // print/error/input_request...
-    request_id?: string; // if type is input_request
-    password?: boolean;
-};
-
-// Content structure for structured content (text, images, etc.)
-/**
- * WaldiezContentItem
- * @param type - The type of the content item (text, image_url, etc.)
- * @param text - The text content (if type is "text")
- * @param image_url - The image URL (if type is "image_url")
- * @param rest - ([key: string]: any) - Any other data
- */
-export type WaldiezContentItem = {
-    type: "text" | "image_url" | string;
-    text?: string;
-    image_url?: {
-        url: string;
-    };
-    [key: string]: any; // Allow for other properties
-};
-
-/**
- * WaldiezMessageData
- * @param content - The content of the message (string or array of WaldiezContentItem)
- * @param sender - The sender of the message
- * @param recipient - The recipient of the message
- * @param rest - ([key: string]: any) - Any other data
- * @see {@link WaldiezContentItem}
- */
-export type WaldiezMessageData = {
-    content: string | WaldiezContentItem[];
+    timestamp: string | number;
+    type: WaldiezChatMessageType;
     sender?: string;
     recipient?: string;
-    [key: string]: any; // Allow for other metadata
+    request_id?: string;
+} & {
+    [key: string]: any;
 };
 
+export type WaldiezChatMessage = WaldiezChatMessageCommon & {
+    content:
+        | WaldiezMediaContent
+        | WaldiezMediaContent[]
+        | { content: WaldiezMediaContent | WaldiezMediaContent[] | string }
+        | string;
+};
 /**
- * WaldiezPreviousMessage
- * @param id - The id of the message
- * @param timestamp - The timestamp of the message
- * @param type - The type of the message (print/error/input_request...)
- * @param request_id - The request id of the message (if type is input_request)
- * @param password - The password of the message (if type is input_request)
- * @param data - The data of the message (if type is print)
- * @param content - The content of the message (if type is print)
- * @param sender - The sender of the message (if type is print)
- * @param recipient - The recipient of the message (if type is print)
- * @param rest - ([key: string]: any) - Any other data
- * @see {@link WaldiezMessageBase}
- * @see {@link WaldiezMessageData}
+ * User input response to a specific request
+ * @param id - Unique identifier for the message
+ * @param timestamp - Timestamp of the message
+ * @param type - Type of the message (input_response)
+ * @param data - The data of the message (text, image, etc.)
+ * @param sender - Sender of the message (optional)
+ * @param recipient - Recipient of the message (optional)
+ * @param request_id - ID of the request associated with the message (optional)
+ * @param metadata - Additional metadata associated with the message (optional)
  */
-export type WaldiezPreviousMessage = WaldiezMessageBase & {
-    data: string | WaldiezMessageData | { [key: string]: any };
+export type WaldiezChatUserInput = WaldiezChatMessageCommon & {
+    type: "input_response";
+    data: string | { content: WaldiezMediaContent } | { content: WaldiezMediaContent }[];
 };
 
 /**
- * WaldiezChatMessage
- * @param id - The id of the message
- * @param timestamp - The timestamp of the message
- * @param type - The type of the message (print/error/input_request...)
- * @param request_id - The request id of the message (if type is input_request)
- * @param password - The password of the message (if type is input_request)
- * @param content - The content of the message (string or React.ReactNode)
- * @param sender - The sender of the message
- * @param recipient - The recipient of the message
- * @see {@link WaldiezMessageBase}
- * @see {@link WaldiezPreviousMessage}
- * @see {@link WaldiezContentItem}
- * @see {@link WaldiezMessageData}
+ * Error information structure
+ * @param message - Error message
+ * @param code - Optional error code
  */
-export type WaldiezChatMessage = WaldiezMessageBase & {
-    content: string | React.ReactNode;
-    sender?: string;
-    recipient?: string;
+export type WaldiezChatError = {
+    message: string;
+    code?: string;
 };
 
 /**
- * WaldiezChatUIProps
- * @param messages - The messages to display in the chat UI
- * @param userParticipants - The set of user participants (names of senders considered as "user_proxy")
- * @see {@link WaldiezPreviousMessage}
+ * Streaming event structure
+ * @param type - Type of the event (start, chunk, end)
+ * @param messageId - ID of the message associated with the event
+ * @param chunk - Optional chunk of data (for chunk events)
+ */
+
+export type WaldiezStreamEvent =
+    | { type: "start"; messageId: string }
+    | { type: "chunk"; messageId: string; chunk: string }
+    | { type: "end"; messageId: string };
+
+/**
+ * Chat handlers type
+ * @param onUserInput - Callback for user input
+ * @param onChatMessage - Callback for chat messages
+ * @param onMediaUpload - Callback for media uploads
+ * @param onChatError - Callback for chat errors
+ * @param onMessageStreamEvent - Callback for message stream events
+ */
+export type WaldiezChatHandlers = {
+    onUserInput?: (input: WaldiezChatUserInput) => void;
+    onChatMessage?: (message: WaldiezChatMessage) => void;
+    onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
+    onChatError?: (error: WaldiezChatError) => void;
+    onMessageStreamEvent?: (event: WaldiezStreamEvent) => void;
+};
+
+/**
+ * Chat media configuration
+ * @param allowedTypes - Allowed media types for upload
+ * @param maxFileSize - Maximum file size for uploads (in bytes)
+ * @param processAudio - Whether to process audio files
+ * @param transcribeAudio - Whether to transcribe audio files
+ * @param previewDocuments - Whether to preview document files
+ * @param acceptedMimeTypes - Accepted MIME types for each media type
+ */
+export type WaldiezMediaConfig = {
+    allowedTypes: WaldiezMediaType[];
+    maxFileSize?: number;
+    processAudio?: boolean;
+    transcribeAudio?: boolean;
+    previewDocuments?: boolean;
+    acceptedMimeTypes?: Record<WaldiezMediaType, string[]>;
+};
+
+/**
+ * Active request information
+ * @param request_id - ID of the request
+ * @param prompt - Prompt associated with the request
+ * @param acceptedMediaTypes - Accepted media types for the request
+ */
+export type WaldiezActiveRequest = {
+    request_id: string;
+    prompt: string;
+    acceptedMediaTypes?: WaldiezMediaType[];
+};
+
+/**
+ * Chat configuration type
+ * @param showUI - Whether to display the chat UI
+ * @param messages - Array of chat messages
+ * @param userParticipants - Set of user participants
+ * @param activeRequest - Active request information (if any)
+ * @param error - Error information (if any)
+ * @param handlers - Chat-specific handlers
+ * @param mediaConfig - Media handling configuration
+ */
+export type WaldiezChatConfig = {
+    // Whether to display the chat UI
+    showUI: boolean;
+
+    // Chat content
+    messages: WaldiezChatMessage[];
+    userParticipants: string[];
+
+    // Current input request (if any)
+    activeRequest?: WaldiezActiveRequest;
+
+    // Error display (if any)
+    error?: WaldiezChatError;
+
+    // Chat-specific handlers
+    handlers?: WaldiezChatHandlers;
+
+    // Media handling configuration
+    mediaConfig?: WaldiezMediaConfig;
+};
+
+/**
+ * Chat UI component props
+ * @param messages - Array of chat messages
+ * @param userParticipants - Set of user participants
+ * @param activeRequest - Active request information (if any)
+ * @param error - Error information (if any)
+ * @param handlers - Chat-specific handlers
+ * @param mediaConfig - Media handling configuration
  */
 export type ChatUIProps = {
-    messages: WaldiezPreviousMessage[];
-    userParticipants: Set<string>; // Names of senders considered as "user_proxy"
+    messages: WaldiezChatMessage[];
+    userParticipants: string[];
+    handlers?: WaldiezChatHandlers;
+    activeRequest?: WaldiezActiveRequest;
+    error?: WaldiezChatError;
+    mediaConfig?: WaldiezMediaConfig;
 };

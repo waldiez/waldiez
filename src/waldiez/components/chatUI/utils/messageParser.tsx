@@ -9,7 +9,7 @@ import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
 const parseStructuredContent = (items: any[], onImageClick: (url: string) => void) => (
     <div className="structured-content">
         {items.map((item, idx) => {
-            if (item.type === "text") {
+            if (item.type === "text" && item.text.trim().length > 0) {
                 return <span key={`text-${idx}`}>{item.text}</span>;
             }
             if (item.type === "image_url" && item.image_url?.url) {
@@ -19,6 +19,16 @@ const parseStructuredContent = (items: any[], onImageClick: (url: string) => voi
                         src={item.image_url.url}
                         className="chat-image"
                         onClick={() => onImageClick(item.image_url.url)}
+                    />
+                );
+            }
+            if (item.type === "image" && item.image?.url) {
+                return (
+                    <ImageWithRetry
+                        key={`img-${idx}`}
+                        src={item.image.url}
+                        className="chat-image"
+                        onClick={() => onImageClick(item.image.url)}
                     />
                 );
             }
@@ -61,6 +71,7 @@ const parseTextWithImages = (text: string, onImageClick: (url: string) => void) 
 };
 
 export const parseMessageContent = (data: any, onImageClick: (url: string) => void): React.ReactNode => {
+    console.log("Parsing message content:", data);
     if (typeof data === "string") {
         try {
             const parsed = JSON.parse(data);
@@ -70,10 +81,12 @@ export const parseMessageContent = (data: any, onImageClick: (url: string) => vo
         } catch {
             return parseTextWithImages(data, onImageClick);
         }
-    } else if (data.content) {
+    } else if ("content" in data && data.content) {
         return Array.isArray(data.content)
             ? parseStructuredContent(data.content, onImageClick)
             : parseTextWithImages(String(data.content), onImageClick);
+    } else if (Array.isArray(data)) {
+        return parseStructuredContent(data, onImageClick);
     }
-    return JSON.stringify(data);
+    return parseTextWithImages(String(data.content), onImageClick);
 };

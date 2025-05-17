@@ -7,13 +7,14 @@ import { FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
 
 import { ChatUI, Modal } from "@waldiez/components";
-import { UserInputModalProps } from "@waldiez/containers/flow/modals/userInputModal/types";
+import { ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/types";
 
 /**
  * Modal component for collecting user input with optional image upload
  */
-export const UserInputModal = memo((props: UserInputModalProps) => {
-    const { flowId, isOpen, inputPrompt, onUserInput } = props;
+// eslint-disable-next-line complexity
+export const ChatModal = memo((props: ChatModalProps) => {
+    const { flowId, chat } = props;
 
     // State
     const [textInput, setTextInput] = useState("");
@@ -25,47 +26,64 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
 
     // Reset input fields and focus when modal opens
     useEffect(() => {
-        if (isOpen) {
+        if (chat?.showUI) {
             setTextInput("");
             setImagePreview(null);
 
             // Focus input after render
             setTimeout(() => {
-                inputRef.current?.focus();
+                if (chat.activeRequest?.request_id) {
+                    inputRef.current?.focus();
+                }
             }, 0);
         }
-    }, [isOpen]);
+    }, [chat]);
 
     /**
      * Create an input response object with current data
      */
     const createInputResponse = useCallback(
-        (includeData = true) => ({
-            id: `${flowId}-${Date.now()}`,
-            request_id: inputPrompt.request_id,
-            type: "input_response" as const,
-            data: includeData
-                ? {
-                      text: textInput.trim() || null,
-                      image: imagePreview,
-                  }
-                : {},
-        }),
-        [flowId, inputPrompt.request_id, textInput, imagePreview],
+        (includeData = true) => {
+            const data = [];
+            if (includeData) {
+                data.push({
+                    content: {
+                        type: "text" as const,
+                        text: textInput.trim(),
+                    },
+                });
+                if (imagePreview) {
+                    data.push({
+                        content: {
+                            type: "image_url" as const,
+                            image_url: { url: imagePreview },
+                        },
+                    });
+                }
+            }
+            return {
+                id: `${flowId}-${Date.now()}`,
+                request_id: chat?.activeRequest?.request_id || "",
+                type: "input_response" as const,
+                timestamp: new Date().toISOString(),
+                data,
+            };
+        },
+        [flowId, chat?.activeRequest, textInput, imagePreview],
     );
 
     /**
      * Submit user input
      */
     const handleSubmit = useCallback(() => {
-        onUserInput?.(createInputResponse());
+        chat?.handlers?.onUserInput?.(createInputResponse());
 
         setTimeout(() => {
             // Reset input state
             setTextInput("");
             setImagePreview(null);
         }, 10);
-    }, [onUserInput, createInputResponse]);
+    }, [chat?.handlers?.onUserInput, createInputResponse]);
 
     /**
      * Handle keyboard events
@@ -116,12 +134,12 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
      * Close modal
      */
     const handleClose = useCallback(() => {
-        onUserInput(createInputResponse(false));
+        // chat?.handlers?.onUserInput?(createInputResponse(false));
 
         // Reset input state
         setTextInput("");
         setImagePreview(null);
-    }, [onUserInput, createInputResponse]);
+    }, []);
 
     /**
      * Handle file select modal interactions
@@ -161,27 +179,31 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
     const imageInputId = `rf-${flowId}-user-input-modal-image`;
     const modalTestId = `rf-${flowId}-user-input-modal`;
 
+    // console.log("Chat Modal Rendered, messages:", chat?.messages);
+
     return (
         <Modal
-            title="User Input"
-            isOpen={isOpen}
+            title="Chat"
+            isOpen={chat?.showUI === true || (!!chat?.messages && chat?.messages.length > 0)}
             onClose={handleClose}
             onCancel={handleCancel}
             className="user-input-modal"
-            hasMaximizeBtn={false}
+            hasMaximizeBtn={true}
+            hasCloseBtn={chat?.showUI === false}
             dataTestId={modalTestId}
         >
             <div className="modal-body">
-                {inputPrompt.previousMessages.length > 0 && (
+                {chat?.messages && chat.messages.length > 0 && (
                     <div className="chat-wrapper" data-flow-id={flowId}>
                         <ChatUI
-                            messages={inputPrompt.previousMessages}
-                            userParticipants={inputPrompt.userParticipants}
+                            messages={chat.messages}
+                            userParticipants={chat.userParticipants}
+                            activeRequest={chat.activeRequest}
                         />
                     </div>
                 )}
 
-                <div className="input-prompt">{inputPrompt.prompt}</div>
+                <div className="input-prompt">{chat?.activeRequest?.prompt}</div>
 
                 <div className="chat-input-container">
                     {imagePreview && (
@@ -208,6 +230,7 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
                         id={inputId}
                         data-testid={inputId}
                         value={textInput}
+                        disabled={chat?.activeRequest?.request_id === undefined}
                         onKeyDown={handleKeyDown}
                         onChange={handleTextChange}
                         className="chat-text-input"
@@ -220,9 +243,10 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
                     <div className="chat-input-actions">
                         <label htmlFor={imageInputId} className="chat-upload-button">
                             <FiPaperclip size={18} aria-hidden="true" />
-                            <span className="sr-only">Upload an image</span>
+                            <span className="hidden">Upload an image</span>
                             <input
                                 type="file"
+                                disabled={chat?.activeRequest?.request_id === undefined}
                                 aria-label="Upload an image"
                                 id={imageInputId}
                                 data-testid={imageInputId}
@@ -237,6 +261,7 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
                         <button
                             type="button"
                             title="Send"
+                            disabled={chat?.activeRequest?.request_id === undefined}
                             onClick={handleSubmit}
                             className="chat-send-button"
                             data-testid={`rf-${flowId}-user-input-modal-submit`}
@@ -251,4 +276,4 @@ export const UserInputModal = memo((props: UserInputModalProps) => {
     );
 });
 
-UserInputModal.displayName = "UserInputModal";
+ChatModal.displayName = "ChatModal";

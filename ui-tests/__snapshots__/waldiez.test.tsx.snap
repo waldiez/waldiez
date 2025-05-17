@@ -492,6 +492,154 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
           </div>
         </div>
+        <dialog
+          class="modal no-wheel no-pan no-drag user-input-modal"
+          data-testid="rf-test-flow-user-input-modal"
+          style="top: 50px; left: 10px;"
+        >
+          <div
+            class="modal-header"
+          >
+            <div />
+            <h3
+              class="modal-title"
+            >
+              Chat
+            </h3>
+            <div
+              class="modal-header-actions"
+            >
+              <div
+                class="modal-minimize-btn clickable"
+                role="button"
+                title="Minimize"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"
+                  />
+                </svg>
+              </div>
+              <div
+                class="modal-fullscreen-btn clickable"
+                role="button"
+                title="Maximize"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="modal-content "
+          >
+            <div
+              class="modal-body"
+            >
+              <div
+                class="input-prompt"
+              />
+              <div
+                class="chat-input-container"
+              >
+                <input
+                  aria-label="User input"
+                  autocapitalize="none"
+                  autocomplete="off"
+                  autocorrect="off"
+                  class="chat-text-input"
+                  data-testid="rf-test-flow-user-input-modal-input"
+                  disabled=""
+                  id="rf-test-flow-user-input-modal-input"
+                  placeholder="Enter your message here"
+                  type="text"
+                  value=""
+                />
+                <div
+                  class="chat-input-actions"
+                >
+                  <label
+                    class="chat-upload-button"
+                    for="rf-test-flow-user-input-modal-image"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="18"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="18"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
+                      />
+                    </svg>
+                    <span
+                      class="hidden"
+                    >
+                      Upload an image
+                    </span>
+                    <input
+                      accept="image/*"
+                      aria-label="Upload an image"
+                      class="chat-upload-input"
+                      data-testid="rf-test-flow-user-input-modal-image"
+                      disabled=""
+                      id="rf-test-flow-user-input-modal-image"
+                      type="file"
+                    />
+                  </label>
+                  <button
+                    aria-label="Send message"
+                    class="chat-send-button"
+                    data-testid="rf-test-flow-user-input-modal-submit"
+                    disabled=""
+                    title="Send"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="currentColor"
+                      height="20"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 512 512"
+                      width="20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M435.9 64.9l-367.1 160c-6.5 3.1-6.3 12.4.3 15.3l99.3 56.1c5.9 3.3 13.2 2.6 18.3-1.8l195.8-168.8c1.3-1.1 4.4-3.2 5.6-2 1.3 1.3-.7 4.3-1.8 5.6L216.9 320.1c-4.7 5.3-5.4 13.1-1.6 19.1l64.9 104.1c3.2 6.3 12.3 6.2 15.2-.2L447.2 76c3.3-7.2-4.2-14.5-11.3-11.1z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
       </div>
     </div>
   </body>,
@@ -977,6 +1125,154 @@ exports[`All > should render Waldiez components 1`] = `
           </div>
         </div>
       </div>
+      <dialog
+        class="modal no-wheel no-pan no-drag user-input-modal"
+        data-testid="rf-test-flow-user-input-modal"
+        style="top: 50px; left: 10px;"
+      >
+        <div
+          class="modal-header"
+        >
+          <div />
+          <h3
+            class="modal-title"
+          >
+            Chat
+          </h3>
+          <div
+            class="modal-header-actions"
+          >
+            <div
+              class="modal-minimize-btn clickable"
+              role="button"
+              title="Minimize"
+            >
+              <svg
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 512 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"
+                />
+              </svg>
+            </div>
+            <div
+              class="modal-fullscreen-btn clickable"
+              role="button"
+              title="Maximize"
+            >
+              <svg
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 448 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal-content "
+        >
+          <div
+            class="modal-body"
+          >
+            <div
+              class="input-prompt"
+            />
+            <div
+              class="chat-input-container"
+            >
+              <input
+                aria-label="User input"
+                autocapitalize="none"
+                autocomplete="off"
+                autocorrect="off"
+                class="chat-text-input"
+                data-testid="rf-test-flow-user-input-modal-input"
+                disabled=""
+                id="rf-test-flow-user-input-modal-input"
+                placeholder="Enter your message here"
+                type="text"
+                value=""
+              />
+              <div
+                class="chat-input-actions"
+              >
+                <label
+                  class="chat-upload-button"
+                  for="rf-test-flow-user-input-modal-image"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="none"
+                    height="18"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
+                    />
+                  </svg>
+                  <span
+                    class="hidden"
+                  >
+                    Upload an image
+                  </span>
+                  <input
+                    accept="image/*"
+                    aria-label="Upload an image"
+                    class="chat-upload-input"
+                    data-testid="rf-test-flow-user-input-modal-image"
+                    disabled=""
+                    id="rf-test-flow-user-input-modal-image"
+                    type="file"
+                  />
+                </label>
+                <button
+                  aria-label="Send message"
+                  class="chat-send-button"
+                  data-testid="rf-test-flow-user-input-modal-submit"
+                  disabled=""
+                  title="Send"
+                  type="button"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="20"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 512 512"
+                    width="20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M435.9 64.9l-367.1 160c-6.5 3.1-6.3 12.4.3 15.3l99.3 56.1c5.9 3.3 13.2 2.6 18.3-1.8l195.8-168.8c1.3-1.1 4.4-3.2 5.6-2 1.3 1.3-.7 4.3-1.8 5.6L216.9 320.1c-4.7 5.3-5.4 13.1-1.6 19.1l64.9 104.1c3.2 6.3 12.3 6.2 15.2-.2L447.2 76c3.3-7.2-4.2-14.5-11.3-11.1z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </dialog>
     </div>
   </div>,
   "debug": [Function],

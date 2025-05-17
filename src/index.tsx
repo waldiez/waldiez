@@ -13,7 +13,7 @@ import ReactDOM from "react-dom/client";
 import { nanoid } from "nanoid";
 
 import "./index.css";
-import WaldiezWrapper from "./index.dev";
+import { WaldiezWrapper } from "./wrapped";
 
 /**
  * Environment Configuration
@@ -47,7 +47,7 @@ if (vsPath === "") {
  */
 const devHandlers = {
     // Log changes to the flow
-    onChange: null,
+    onChange: undefined,
 
     // Handle save requests (triggered by Ctrl+S/Cmd+S)
     onSave: (flowString: string) => {
@@ -91,12 +91,6 @@ const devHandlers = {
             });
         });
     },
-
-    // Default input prompt is null (no prompt shown)
-    inputPrompt: null,
-
-    // Log user input
-    onUserInput: null,
 };
 
 /**
@@ -126,11 +120,11 @@ const defaultWaldiezProps: Partial<WaldiezProps> = {
     viewport: undefined,
     ...(isProd
         ? {
-              onChange: null,
-              onSave: null,
-              onRun: null,
-              onConvert: null,
-              onUpload: null,
+              onChange: undefined,
+              onSave: undefined,
+              onRun: undefined,
+              onConvert: undefined,
+              onUpload: undefined,
           }
         : !USE_DEV_SERVER
           ? {

@@ -102,7 +102,7 @@ export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezP
     const nodes = props.nodes ?? [];
     const edges = props.edges ?? [];
     const readOnly = props.readOnly ?? false;
-    const { inputPrompt, monacoVsPath, onUserInput } = props;
+    const { monacoVsPath, chat } = props;
     useEffect(() => {
         checkInitialBodyThemeClass();
         checkInitialBodySidebarClass();
@@ -131,11 +131,10 @@ export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezP
                             >
                                 <WaldiezFlowView
                                     flowId={flowId}
-                                    inputPrompt={inputPrompt}
                                     skipImport={skipImport}
                                     skipExport={skipExport}
                                     skipHub={skipHub}
-                                    onUserInput={onUserInput}
+                                    chat={chat}
                                 />
                             </WaldiezProvider>
                         </SidebarProvider>

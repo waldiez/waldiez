@@ -75,7 +75,19 @@
                     }
                 },
                 "viewport": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number"
+                        },
+                        "y": {
+                            "type": "number"
+                        },
+                        "zoom": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
                 },
                 "agents": {
                     "type": "object",

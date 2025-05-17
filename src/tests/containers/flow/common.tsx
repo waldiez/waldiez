@@ -141,7 +141,7 @@ export const renderFlow = (
                             onConvert={onConvert}
                             onSave={onSave}
                         >
-                            <WaldiezFlowView flowId={flowId} onUserInput={onUserInput} inputPrompt={null} />
+                            <WaldiezFlowView flowId={flowId} />
                         </WaldiezProvider>
                     </SidebarProvider>
                 </ReactFlowProvider>

@@ -14,7 +14,7 @@ const initialState: ImportFlowState = {
     loadedFlowData: null,
     selectedProps: {
         everything: true,
-        override: false,
+        override: true,
         name: false,
         description: false,
         tags: false,

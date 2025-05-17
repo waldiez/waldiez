@@ -13,7 +13,7 @@ import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
-import { WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/types";
+import { WaldiezChatMessage, WaldiezChatUserInput } from "@waldiez/types";
 
 import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "../data";
 
@@ -25,9 +25,9 @@ export const renderFlow = (
     singleAgent: boolean = false,
     noAgents: boolean = false,
     options: {
-        onUserInput?: (userInput: WaldiezUserInput) => void;
+        onUserInput?: (userInput: WaldiezChatUserInput) => void;
         request_id?: string;
-        previousMessages?: WaldiezPreviousMessage[];
+        previousMessages?: WaldiezChatMessage[];
     } = {
         onUserInput: undefined,
         request_id: "request_id",
@@ -38,7 +38,7 @@ export const renderFlow = (
     const edgesToUse = singleAgent ? [] : edges;
     const Wrapper = () => {
         const [isUserInputModalOpen, setIsUserInputModalOpen] = useState<boolean>(includeUserInput);
-        const onUserInputCb = (_: WaldiezUserInput) => {
+        const onUserInputCb = (_: WaldiezChatUserInput) => {
             setIsUserInputModalOpen(false);
             if (options.onUserInput) {
                 options.onUserInput(_);
@@ -47,7 +47,7 @@ export const renderFlow = (
         const userInputProp = {
             ...userInput,
             previousMessages: options.previousMessages || [],
-            userParticipants: new Set(["user_proxy"]),
+            userParticipants: ["user_proxy"],
         };
         return (
             <WaldiezThemeProvider>
@@ -71,10 +71,33 @@ export const renderFlow = (
                             >
                                 <WaldiezFlowView
                                     flowId={flowId}
-                                    onUserInput={onUserInputCb}
-                                    inputPrompt={
-                                        includeUserInput && isUserInputModalOpen ? userInputProp : null
+                                    chat={
+                                        includeUserInput
+                                            ? {
+                                                  showUI: isUserInputModalOpen,
+                                                  messages: options.previousMessages || [],
+                                                  userParticipants: userInputProp.userParticipants,
+                                                  activeRequest: {
+                                                      request_id:
+                                                          options.request_id || userInputProp.request_id,
+                                                      prompt: userInputProp.prompt,
+                                                  },
+                                                  handlers: {
+                                                      onUserInput: onUserInputCb,
+                                                      onChatMessage: () => {
+                                                          // Handle chat message
+                                                      },
+                                                      onChatError: () => {
+                                                          // Handle chat error
+                                                      },
+                                                  },
+                                              }
+                                            : undefined
                                     }
+                                    // onUserInput={onUserInputCb}
+                                    // inputPrompt={
+                                    //     includeUserInput && isUserInputModalOpen ? userInputProp : null
+                                    // }
                                 />
                             </WaldiezProvider>
                         </SidebarProvider>

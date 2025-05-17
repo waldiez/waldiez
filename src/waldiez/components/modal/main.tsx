@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import React, { memo, useRef } from "react";
-import { FaCircleXmark, FaCompress, FaExpand, FaMinus } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
 import { renderConfirmationContent } from "@waldiez/components/modal/confirmation";
 import { useModal } from "@waldiez/components/modal/hooks";
@@ -94,7 +94,7 @@ export const Modal = memo<ModalProps>(props => {
                             title={isMinimized ? "Restore" : "Minimize"}
                             onClick={onToggleMinimize}
                         >
-                            <FaMinus />
+                            {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
                         </div>
                     )}
                     {hasMaximizeBtn && (

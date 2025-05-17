@@ -4,7 +4,7 @@
  */
 import { useCallback, useRef } from "react";
 
-export const useImageRetry = (maxRetries = 2, retryDelay = 1000) => {
+export const useImageRetry = (maxRetries = 3, retryDelay = 1000) => {
     const retries = useRef(new Map<string, number>());
 
     const registerImage = useCallback(

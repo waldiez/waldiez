@@ -7,23 +7,17 @@ import { Background, BackgroundVariant, Controls, ReactFlow, Viewport } from "@x
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
-import { ExportFlowModal, ImportFlowModal, UserInputModal } from "@waldiez/containers/flow/modals";
+import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";
 import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar } from "@waldiez/containers/sidebar";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import { WaldiezNodeType, WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/types";
+import { WaldiezChatConfig, WaldiezNodeType } from "@waldiez/types";
 
 type WaldiezFlowViewProps = {
     flowId: string;
-    onUserInput?: ((input: WaldiezUserInput) => void) | null;
-    inputPrompt?: {
-        previousMessages: WaldiezPreviousMessage[];
-        prompt: string;
-        request_id: string;
-        userParticipants: Set<string>;
-    } | null;
+    chat?: WaldiezChatConfig;
     skipImport?: boolean;
     skipExport?: boolean;
     skipHub?: boolean;
@@ -33,7 +27,7 @@ type WaldiezFlowViewProps = {
  * Main flow view component for the Waldiez application
  */
 export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowViewProps) => {
-    const { flowId, inputPrompt, onUserInput, skipExport, skipImport, skipHub } = props;
+    const { flowId, skipExport, skipImport, skipHub, chat } = props;
 
     // Refs
     const rfParent = useRef<HTMLDivElement | null>(null);
@@ -256,14 +250,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
             </div>
 
             {/* Modals */}
-            {onUserInput && inputPrompt && (
-                <UserInputModal
-                    flowId={flowId}
-                    isOpen={!!inputPrompt}
-                    onUserInput={onUserInput}
-                    inputPrompt={inputPrompt}
-                />
-            )}
+            <ChatModal flowId={flowId} chat={chat} />
 
             {isImportModalOpen && (
                 <ImportFlowModal

@@ -15,7 +15,7 @@ import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider, setIsDarkMode } from "@waldiez/theme";
 
-import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "./data";
+import { agentNodes, createdAt, edges, flowId, nodes, updatedAt } from "./data";
 
 const onRun = vi.fn();
 const onChange = vi.fn();
@@ -53,8 +53,20 @@ const renderFlow = (
                         >
                             <WaldiezFlowView
                                 flowId={flowId}
-                                onUserInput={onUserInput}
-                                inputPrompt={includeUserInput ? userInput : null}
+                                chat={
+                                    includeUserInput
+                                        ? {
+                                              showUI: false,
+                                              messages: [],
+                                              userParticipants: ["user_proxy"],
+                                              activeRequest: undefined,
+                                              error: undefined,
+                                              handlers: {
+                                                  onUserInput,
+                                              },
+                                          }
+                                        : undefined
+                                }
                                 skipHub={skipHub}
                             />
                         </WaldiezProvider>

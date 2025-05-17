@@ -2,12 +2,21 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageModal } from "@waldiez/components/chatUI/imageModal";
-import { ChatUIProps, WaldiezChatMessage, WaldiezPreviousMessage } from "@waldiez/components/chatUI/types";
+import { ChatUIProps, WaldiezChatMessage } from "@waldiez/components/chatUI/types";
 import { parseMessageContent } from "@waldiez/components/chatUI/utils";
+
+type ChatUIMessage = {
+    id: string;
+    timestamp: string | number;
+    type: string;
+    sender?: string;
+    recipient?: string;
+    node: ReactNode;
+};
 
 export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -20,26 +29,18 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) =>
     useEffect(() => resetRetries(), [messages.length, resetRetries]);
 
     const processMessage = useCallback(
-        (msg: WaldiezPreviousMessage): WaldiezChatMessage => {
-            const { id, timestamp, type, data } = msg;
+        (msg: WaldiezChatMessage): ChatUIMessage => {
+            const { id, timestamp, type, content, sender, recipient } = msg;
 
-            const sender =
-                data && typeof data === "object" && "sender" in data ? (data.sender as string) : undefined;
+            const node = parseMessageContent(content, openImagePreview);
 
-            const recipient =
-                data && typeof data === "object" && "recipient" in data
-                    ? (data.recipient as string)
-                    : undefined;
-
-            const content = parseMessageContent(data, openImagePreview);
-
-            return { id, timestamp, type, sender, recipient, content };
+            return { id, timestamp, type, sender, recipient, node };
         },
         [openImagePreview],
     );
     const getMessageClass = useCallback(
-        (msg: WaldiezChatMessage) => {
-            if (msg.sender && userParticipants.has(msg.sender)) {
+        (msg: ChatUIMessage) => {
+            if (msg.sender && userParticipants.includes(msg.sender)) {
                 return "user-message";
             }
             if (msg.type === "error") {
@@ -65,7 +66,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) =>
                 });
             }
         }, 100);
-    }, [processedMessages]);
+    }, [messages]);
 
     return (
         <>
@@ -82,7 +83,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) =>
                                 {new Date(msg.timestamp).toLocaleTimeString()}
                             </span>
                         </div>
-                        <div className="message-content">{msg.content}</div>
+                        <div className="message-content">{msg.node}</div>
                     </div>
                 ))}
             </div>

@@ -4,41 +4,24 @@
  */
 import { Edge, Node, ReactFlowJsonObject, Viewport } from "@xyflow/react";
 
-import type {
-    WaldiezChatMessage,
-    WaldiezContentItem,
-    WaldiezMessageBase,
-    WaldiezMessageData,
-    WaldiezPreviousMessage,
-} from "@waldiez/components/types";
+import { WaldiezChatConfig } from "@waldiez/components/types";
 
+export type {
+    WaldiezActiveRequest,
+    WaldiezChatConfig,
+    WaldiezChatError,
+    WaldiezChatHandlers,
+    WaldiezChatMessage,
+    WaldiezChatMessageCommon,
+    WaldiezChatMessageType,
+    WaldiezChatUserInput,
+    WaldiezMediaConfig,
+    WaldiezMediaContent,
+    WaldiezMediaType,
+    WaldiezStreamEvent,
+} from "@waldiez/components/types";
 export type * from "@waldiez/models";
 export type * from "@waldiez/store";
-export type {
-    WaldiezChatMessage,
-    WaldiezContentItem,
-    WaldiezMessageBase,
-    WaldiezMessageData,
-    WaldiezPreviousMessage,
-};
-
-/**
- * WaldiezUserInput
- * @param id - The id of the user input
- * @param type - The type of the user input
- * @param request_id - The id of the request
- * @param data - The data of the user input
- */
-export type WaldiezUserInput = {
-    id: string;
-    type: "input_response";
-    request_id: string;
-    data: {
-        text?: string | null;
-        image?: string | File | null;
-        // to add more types here in the future (audio?)
-    };
-};
 
 /**
  * WaldiezFlowProps
@@ -74,7 +57,7 @@ export type WaldiezFlowProps = ReactFlowJsonObject & {
  * @param edges - The edges of the flow
  * @param viewport - The viewport of the flow
  * @param monacoVsPath - The path to the monaco vs code editor
- * @param inputPrompt - The input prompt for the flow. See {@link WaldiezPreviousMessage}
+ * @param chat - The chat configuration @see {@link WaldiezChatConfig}
  * @param readOnly - Whether the flow is read only or not
  * @param skipImport - Whether to skip import or not
  * @param skipExport - Whether to skip export or not
@@ -82,29 +65,24 @@ export type WaldiezFlowProps = ReactFlowJsonObject & {
  * @param onUpload - The function to call when uploading files
  * @param onChange - The function to call when changing the flow
  * @param onRun - The function to call when running the flow
- * @param onUserInput - The function to call when user input is required. See {@link WaldiezUserInput}
  * @param onConvert - The function to call when converting the flow
  * @param onSave - The function to call when saving the flow
+ * @see {@link WaldiezFlowProps}
+ * @see {@link WaldiezChatConfig}
  */
 export type WaldiezProps = WaldiezFlowProps & {
     nodes: Node[];
     edges: Edge[];
     viewport?: Viewport;
-    monacoVsPath?: string | null;
-    inputPrompt?: {
-        previousMessages: WaldiezPreviousMessage[];
-        request_id: string;
-        prompt: string;
-        userParticipants: Set<string>;
-    } | null;
-    readOnly?: boolean | null;
-    skipImport?: boolean | null;
-    skipExport?: boolean | null;
-    skipHub?: boolean | null;
-    onUpload?: ((files: File[]) => Promise<string[]>) | null;
-    onChange?: ((flow: string) => void) | null;
-    onRun?: ((flow: string) => void) | null;
-    onUserInput?: ((input: WaldiezUserInput) => void) | null;
-    onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
-    onSave?: ((flow: string) => void) | null;
+    monacoVsPath?: string;
+    chat?: WaldiezChatConfig;
+    readOnly?: boolean;
+    skipImport?: boolean;
+    skipExport?: boolean;
+    skipHub?: boolean;
+    onUpload?: (files: File[]) => Promise<string[]>;
+    onChange?: (flow: string) => void;
+    onRun?: (flow: string) => void;
+    onConvert?: (flow: string, to: "py" | "ipynb") => void;
+    onSave?: (flow: string) => void;
 };
