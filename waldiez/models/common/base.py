@@ -39,11 +39,14 @@ class WaldiezBase(BaseModel):
             The dictionary representation of the model.
         """
         by_alias = kwargs.pop("by_alias", None)
+        mode = kwargs.pop("mode", None)
+        if mode is None:
+            mode = "json"
         if by_alias is None:
             by_alias = True
         if not isinstance(by_alias, bool):
             by_alias = True
-        return super().model_dump(by_alias=by_alias, **kwargs)
+        return super().model_dump(by_alias=by_alias, mode=mode, **kwargs)
 
     def model_dump_json(self, **kwargs: Any) -> str:
         """Dump the model to a JSON string.
