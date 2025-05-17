@@ -140,7 +140,7 @@ const defaultConfig = eslintTs.config({
         complexity: ["error", 20],
         "max-depth": ["error", 4],
         "max-nested-callbacks": ["error", 4],
-        "max-statements": ["error", 11, { ignoreTopLevelFunctions: true }],
+        "max-statements": ["error", 15, { ignoreTopLevelFunctions: true }],
         "max-lines": ["error", { max: 400, skipBlankLines: true, skipComments: true }],
         "max-lines-per-function": ["error", { max: 300, skipBlankLines: true, skipComments: true }],
         "headers/header-format": [
