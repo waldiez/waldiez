@@ -9,7 +9,7 @@ import { InfoLabel } from "@waldiez/components/infoLabel";
 
 type TextInputProps = {
     label: string | React.JSX.Element;
-    value: string | null;
+    value: string | undefined | null;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     onNull?: string;
@@ -28,7 +28,7 @@ type TextInputProps = {
  */
 export const TextInput = memo<{
     label: string | React.JSX.Element;
-    value: string | null;
+    value: string | undefined | null;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     onNull?: string;

@@ -305,6 +305,7 @@
 }
 
 .flow-wrapper.dark .agent-model-preview .agent-model-img.other img,
+.flow-wrapper.dark .agent-model-preview .agent-model-img.bedrock img,
 .flow-wrapper.dark .agent-model-preview .agent-model-img.openai img {
   filter: invert(1);
 }

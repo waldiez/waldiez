@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Dict, NumberInput, StringList } from "@waldiez/components";
+import { Dict, NumberInput, StringList, TextInput } from "@waldiez/components";
 import { useModelModalAdvancedTab } from "@waldiez/containers/nodes/model/modal/tabs/advanced/hooks";
 import { WaldiezNodeModelModalAdvancedTabProps } from "@waldiez/containers/nodes/model/modal/tabs/advanced/types";
 
 export const WaldiezNodeModelModalAdvancedTab = (props: WaldiezNodeModelModalAdvancedTabProps) => {
     const { data } = props;
-    const { temperature, topP, maxTokens, defaultHeaders, tags } = data;
+    const { temperature, topP, maxTokens, defaultHeaders, tags, apiType } = data;
     const {
         onTemperatureChange,
         onTopPChange,
@@ -19,7 +19,13 @@ export const WaldiezNodeModelModalAdvancedTab = (props: WaldiezNodeModelModalAdv
         onAddTag,
         onUpdateTag,
         onDeleteTag,
+        onAwsAccessKeyChange,
+        onAwsSecretKeyChange,
+        onAwsRegionChange,
+        onAwsProfileNameChange,
+        onAwsSessionTokenChange,
     } = useModelModalAdvancedTab(props);
+    console.log(data.aws);
     return (
         <div className="flex-column">
             <NumberInput
@@ -59,6 +65,31 @@ export const WaldiezNodeModelModalAdvancedTab = (props: WaldiezNodeModelModalAdv
                 onLowerLabel="No limit"
                 dataTestId="model-modal-max-tokens"
             />
+            {apiType === "bedrock" && (
+                <>
+                    <TextInput
+                        value={data.aws?.accessKey}
+                        label="AWS Access Key:"
+                        onChange={onAwsAccessKeyChange}
+                    />
+                    <TextInput
+                        value={data.aws?.secretKey}
+                        label="AWS Secret Key:"
+                        onChange={onAwsSecretKeyChange}
+                    />
+                    <TextInput value={data.aws?.region} label={"AWS Region:"} onChange={onAwsRegionChange} />
+                    <TextInput
+                        value={data.aws?.profileName}
+                        label={"AWS Profile Name:"}
+                        onChange={onAwsProfileNameChange}
+                    />
+                    <TextInput
+                        value={data.aws?.sessionToken}
+                        label={"AWS Session Token:"}
+                        onChange={onAwsSessionTokenChange}
+                    />
+                </>
+            )}
             <Dict
                 viewLabel="Default Headers:"
                 viewLabelInfo="Optional headers to be included in every request"

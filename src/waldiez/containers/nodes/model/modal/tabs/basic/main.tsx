@@ -45,7 +45,6 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
     const onPredefineSelected = useMemo(
         () => (selected?: { label: string; apiType: WaldiezModelAPIType }) => {
             if (!selected) {
-                onDataChange({ label: "", apiType: "other" });
                 return;
             }
 
@@ -154,32 +153,33 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
                     className="full-width"
                 />
             </div>
-
-            <div className="margin-top-0">
-                <InfoLabel label="API Key:" info={apiKeyInfo} />
-                <div className="flex full-width">
-                    <input
-                        id={apiKeyInputId}
-                        className="flex-1 margin-right-10"
-                        type={apiKeyVisible ? "text" : "password"}
-                        value={apiKey || ""}
-                        placeholder={apiKeyEnv}
-                        onChange={onApiKeyChange}
-                        data-testid="model-api-key-input"
-                        aria-label="API key"
-                    />
-                    <button
-                        type="button"
-                        className="visibilityWrapperBtn"
-                        onClick={onApiKeyVisibleChange}
-                        title={apiKeyVisible ? "Hide API key" : "Show API key"}
-                        aria-label={apiKeyVisible ? "Hide API key" : "Show API key"}
-                        data-testid={`visibility-apiKey-model-${id}`}
-                    >
-                        {apiKeyVisible ? <FaEyeSlash /> : <FaEye />}
-                    </button>
+            {apiType !== "bedrock" && (
+                <div className="margin-top-0">
+                    <InfoLabel label="API Key:" info={apiKeyInfo} />
+                    <div className="flex full-width">
+                        <input
+                            id={apiKeyInputId}
+                            className="flex-1 margin-right-10"
+                            type={apiKeyVisible ? "text" : "password"}
+                            value={apiKey || ""}
+                            placeholder={apiKeyEnv}
+                            onChange={onApiKeyChange}
+                            data-testid="model-api-key-input"
+                            aria-label="API key"
+                        />
+                        <button
+                            type="button"
+                            className="visibilityWrapperBtn"
+                            onClick={onApiKeyVisibleChange}
+                            title={apiKeyVisible ? "Hide API key" : "Show API key"}
+                            aria-label={apiKeyVisible ? "Hide API key" : "Show API key"}
+                            data-testid={`visibility-apiKey-model-${id}`}
+                        >
+                            {apiKeyVisible ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div className="margin-top-0">
                 <InfoLabel label="Base URL:" info="Model's base URL (including version)" />

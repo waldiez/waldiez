@@ -9,7 +9,7 @@ from pydantic import Field
 from typing_extensions import Annotated, Literal
 
 from ..common import WaldiezBase, now
-from .model_data import WaldiezModelAPIType, WaldiezModelData
+from .model_data import WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelData
 
 DEFAULT_BASE_URLS: dict[WaldiezModelAPIType, str] = {
     "deepseek": "https://api.deepseek.com/v1",
@@ -222,6 +222,9 @@ class WaldiezModel(WaldiezBase):
             value = getattr(self, attr)
             if value:
                 _llm_config[attr] = value
+        if self.data.api_type == "bedrock":
+            _llm_config.pop("base_url", None)
+            return set_bedrock_aws_config(_llm_config, self.data.aws)
         return set_default_base_url(_llm_config, self.data.api_type)
 
 
@@ -251,4 +254,54 @@ def set_default_base_url(
         and MODEL_NEEDS_BASE_URL.get(api_type, True) is False
     ):
         dict_copy.pop("base_url", None)
+    return dict_copy
+
+
+def set_bedrock_aws_config(
+    llm_config: dict[str, Any],
+    aws_config: Optional[WaldiezModelAWS],
+) -> dict[str, Any]:
+    """Set the AWS config for Bedrock.
+
+    Parameters
+    ----------
+    llm_config : dict[str, Any]
+        The llm config dictionary.
+    aws_config : Optional[WaldiezModelAWS]
+        The passed aws config if any.
+
+    Returns
+    -------
+    dict[str, Any]
+        The llm config dictionary with the AWS config set.
+    """
+    dict_copy = llm_config.copy()
+    aws_params = [
+        "access_key",
+        "secret_key",
+        "session_token",
+        "profile_name",
+        "region",
+    ]
+
+    extra_args = {}
+    for param in aws_params:
+        config_key = f"aws_{param}"
+        env_var = f"AWS_{param.upper()}"
+
+        # First try to get from aws_config
+        value = getattr(aws_config, param, "") if aws_config else ""
+
+        # If not found, try environment variable
+        if not value:
+            value = os.environ.get(env_var, "")
+
+        # Add to extra_args if value exists
+        if value:
+            extra_args[config_key] = value
+
+    # Update llm_config with extra_args
+    if extra_args:
+        dict_copy.update(extra_args)
+
     return dict_copy

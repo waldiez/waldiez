@@ -24,20 +24,22 @@ export const getApiTypeLabel = (text: WaldiezModelAPIType) => {
 };
 export const apiTypeOptions: { label: string; value: WaldiezModelAPIType }[] = [
     { label: "OpenAI", value: "openai" },
-    { label: "Azure", value: "azure" },
-    { label: "Gemini", value: "google" },
     { label: "Claude", value: "anthropic" },
+    { label: "NIM", value: "nim" },
+    { label: "Gemini", value: "google" },
     { label: "Cohere", value: "cohere" },
     { label: "DeepSeek", value: "deepseek" },
     { label: "Mistral", value: "mistral" },
+    { label: "Azure", value: "azure" },
     { label: "Groq", value: "groq" },
     { label: "Together", value: "together" },
-    { label: "NIM", value: "nim" },
+    { label: "Bedrock", value: "bedrock" },
     { label: "Other", value: "other" },
 ];
 export const apiKeyEnvs = {
     openai: "OPENAI_API_KEY",
     azure: "AZURE_API_KEY",
+    bedrock: "BEDROCK_API_KEY", // not used (use AWS_...)
     deepseek: "DEEPSEEK_API_KEY",
     google: "GOOGLE_GEMINI_API_KEY",
     anthropic: "ANTHROPIC_API_KEY",

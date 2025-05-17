@@ -33,7 +33,7 @@ def get_models_extra_requirements(
         "groq",
         "anthropic",
         "cohere",
-        "bedrock",  # we might add this later
+        "bedrock",
     ]
     for model in models:
         for requirement in model.requirements:
@@ -46,12 +46,3 @@ def get_models_extra_requirements(
                 f"ag2[{model.data.api_type}]=={autogen_version}"
             )
     return model_requirements
-
-
-# for bedrock, there are some additional params needed
-# (both here and on the ui part):
-# aws_region (mandatory)
-# aws_access_key (or environment variable: AWS_ACCESS_KEY)
-# aws_secret_key (or environment variable: AWS_SECRET_KEY)
-# aws_session_token (or environment variable: AWS_SESSION_TOKEN)
-# aws_profile_name

@@ -2,7 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezModelAPIType, WaldiezNodeModelData } from "@waldiez/models";
+import { awsSignatureUtils } from "@waldiez/containers/nodes/model/utils/awsSignature";
+import { WaldiezModelAPIType, WaldiezModelAWS, WaldiezNodeModelData } from "@waldiez/models";
 
 /**
  * Validation message enum for model validation
@@ -46,6 +47,7 @@ export const baseUrlsMapping: Record<WaldiezModelAPIType, string> = {
     groq: "https://api.groq.com/openai/v1",
     together: "https://api.together.xyz/v1",
     nim: "https://integrate.api.nvidia.com/v1",
+    bedrock: "https://bedrock.{region}.amazonaws.com",
     azure: "",
     other: "",
 };
@@ -65,6 +67,7 @@ const modelListPaths: Record<WaldiezModelAPIType, string> = {
     together: "/models",
     nim: "/models",
     other: "/v1/models",
+    bedrock: "",
 };
 
 /**
@@ -104,6 +107,9 @@ export const validateModel = async (model: WaldiezNodeModelData): Promise<Valida
     // Choose validation strategy based on API type
     if (model.apiType === "azure") {
         return validateAzureModel(url, headers, model.label.trim());
+    }
+    if (model.apiType === "bedrock") {
+        return validateBedrockModel(headers, model.label.trim(), model.aws);
     }
 
     if (supportsDirectLookup.includes(model.apiType)) {
@@ -226,6 +232,46 @@ const validateAzureModel = async (
         return found
             ? { success: true, message: ValidationMessage.ValidationSuccess }
             : { success: false, message: ValidationMessage.ModelNotFound };
+    } catch (error) {
+        return handleFetchError(error);
+    }
+};
+/**
+ * Validate a bedrock model
+ * @param headers - Request headers
+ * @param modelName - Model name to validate
+ * @param aws - AWS configuration
+ * @returns Validation result
+ */
+const validateBedrockModel = async (
+    additionalHeaders: Record<string, string>,
+    modelName: string,
+    aws?: WaldiezModelAWS | null,
+) => {
+    const configValidation = validateAwsConfig(aws);
+    if (!configValidation.success) {
+        return configValidation;
+    }
+    const { region, accessKey, secretKey, sessionToken } = aws!;
+    const service = "bedrock";
+    const url = `https://${service}.${region}.amazonaws.com/foundation-models/${encodeURIComponent(modelName)}`;
+    const method = "GET";
+    try {
+        const headers = await awsSignatureUtils.signRequest(
+            method,
+            url,
+            region!,
+            service,
+            accessKey!,
+            secretKey!,
+            sessionToken,
+            additionalHeaders,
+        );
+        const response = await fetchWithTimeout(url, {
+            method,
+            headers,
+        });
+        return await parseBedrockResponse(response, modelName, region!);
     } catch (error) {
         return handleFetchError(error);
     }
@@ -356,6 +402,84 @@ const handleFetchError = (error: unknown): ValidationResult => {
         message: errorMessage,
         details,
     };
+};
+
+/**
+ * Validate AWS configuration
+ * @param aws - AWS configuration
+ * @returns Validation result
+ */
+const validateAwsConfig = (aws?: WaldiezModelAWS | null): ValidationResult => {
+    if (!aws) {
+        return {
+            success: false,
+            message: ValidationMessage.ModelFetchFailed,
+            details: "Missing AWS configuration",
+        };
+    }
+
+    const { region, accessKey, secretKey } = aws;
+
+    if (!region || !accessKey || !secretKey) {
+        return {
+            success: false,
+            message: ValidationMessage.ModelFetchFailed,
+            details: "Missing required AWS credentials (region, accessKey, or secretKey)",
+        };
+    }
+
+    return {
+        success: true,
+        message: ValidationMessage.ValidationSuccess,
+    };
+};
+
+/**
+ * Parse Bedrock API response
+ */
+const parseBedrockResponse = async (
+    response: Response,
+    modelName: string,
+    region: string,
+): Promise<ValidationResult> => {
+    if (response.ok) {
+        return {
+            success: true,
+            message: ValidationMessage.ValidationSuccess,
+            details: `Model ${modelName} is available in region ${region}`,
+        };
+    }
+
+    // Handle error responses
+    if (response.status === 404) {
+        return {
+            success: false,
+            message: ValidationMessage.ModelNotFound,
+            details: `Model ${modelName} not found in region ${region}`,
+        };
+    } else if (response.status === 403) {
+        return {
+            success: false,
+            message: ValidationMessage.ApiError,
+            details: `Not authorized to access model ${modelName} in region ${region}`,
+        };
+    }
+
+    // Try to get more details from the error response
+    try {
+        const errorData = await response.text();
+        return {
+            success: false,
+            message: ValidationMessage.ApiError,
+            details: `Error (${response.status}): ${errorData}`,
+        };
+    } catch (_) {
+        return {
+            success: false,
+            message: ValidationMessage.ApiError,
+            details: `Error (${response.status})`,
+        };
+    }
 };
 /*
 |**Tested**| **Provider**     | **List Models Endpoint**                     | **Get Specific Model Endpoint**             | **Auth Header**             | **Documentation Link**                                                                 |

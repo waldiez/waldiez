@@ -12,7 +12,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Optional, Tuple, Union
 
-from .agents import WaldiezAgent, get_retrievechat_extra_requirements
+from .agents import (
+    WaldiezAgent,
+    get_captain_agent_extra_requirements,
+    get_retrievechat_extra_requirements,
+)
 from .chat import WaldiezChat
 from .common import get_autogen_version
 from .flow import WaldiezFlow, get_flow_data
@@ -251,23 +255,7 @@ class Waldiez:
         if self.has_multimodal_agents:
             requirements.add(f"ag2[lmm]=={autogen_version}")
         if self.has_captain_agents:
-            # pysqlite3-binary might not get installed on windows
-            captain_extras = [
-                "chromadb",
-                "sentence-transformers",
-                "huggingface-hub",
-                # tools:
-                "pillow",
-                "markdownify",
-                "arxiv",
-                "pymupdf",
-                "wikipedia-api",
-                "easyocr",
-                "python-pptx",
-                "openai-whisper",
-                "pandas",
-                "scipy",
-            ]
+            captain_extras = get_captain_agent_extra_requirements()
             requirements.update(captain_extras)
         requirements.update(
             get_models_extra_requirements(

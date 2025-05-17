@@ -5,6 +5,7 @@
 import {
     WaldiezModel,
     WaldiezModelAPIType,
+    WaldiezModelAWS,
     WaldiezModelData,
     WaldiezModelPrice,
     WaldiezNodeModel,
@@ -66,16 +67,11 @@ export const modelMapper = {
         });
     },
     exportModel: (modelNode: WaldiezNodeModel, replaceSecrets: boolean) => {
-        const defaultHeaders = { ...modelNode.data.defaultHeaders };
-        if (replaceSecrets) {
-            for (const key in defaultHeaders) {
-                if (typeof defaultHeaders[key] === "string") {
-                    defaultHeaders[key] = "REPLACE_ME";
-                }
-            }
-        }
         const apiKey = modelNode.data.apiKey ? (replaceSecrets ? "REPLACE_ME" : modelNode.data.apiKey) : null;
         const rest = getRestFromJSON(modelNode, ["id", "type", "parentId", "data"]);
+        const { defaultHeaders, extras, aws } = replaceSecrets
+            ? replaceModelSecrets(modelNode)
+            : modelNode.data;
         return {
             id: modelNode.id,
             type: "model",
@@ -93,6 +89,8 @@ export const modelMapper = {
                 temperature: modelNode.data.temperature,
                 topP: modelNode.data.topP,
                 maxTokens: modelNode.data.maxTokens,
+                aws,
+                extras,
                 defaultHeaders,
                 price: modelNode.data.price,
             },
@@ -124,6 +122,41 @@ export const modelMapper = {
         };
     },
 };
+
+const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
+    const defaultHeaders = { ...modelNode.data.defaultHeaders };
+    const extras = { ...modelNode.data.extras };
+    const aws: { [key: string]: string | undefined | null } = {
+        ...(modelNode.data.aws || {
+            region: null,
+            accessKey: null,
+            secretKey: null,
+            sessionToken: null,
+            profileName: null,
+        }),
+    };
+    for (const key in defaultHeaders) {
+        if (typeof defaultHeaders[key] === "string") {
+            defaultHeaders[key] = "REPLACE_ME";
+        }
+    }
+    for (const key in extras) {
+        if (typeof extras[key] === "string") {
+            extras[key] = "REPLACE_ME";
+        }
+    }
+    for (const key in aws) {
+        if (typeof aws[key] === "string") {
+            aws[key] = "REPLACE_ME";
+        }
+    }
+    return {
+        defaultHeaders,
+        extras,
+        aws,
+    };
+};
+
 const getModelName = (name: string | null, json: Record<string, unknown>): string => {
     let modelName = name ?? "Model";
     if ("name" in json && typeof json.name === "string") {
@@ -156,6 +189,7 @@ const getApiType = (json: Record<string, unknown>): WaldiezModelAPIType => {
         [
             "openai",
             "azure",
+            "bedrock",
             "deepseek",
             "google",
             "anthropic",
@@ -218,6 +252,62 @@ const getDefaultHeaders = (
     return defaultHeaders;
 };
 
+const getExtras = (json: Record<string, unknown>): { [key: string]: unknown } => {
+    let extras: { [key: string]: unknown } = {};
+    if ("extras" in json && typeof json.extras === "object") {
+        extras = json.extras as { [key: string]: unknown };
+    }
+    return extras;
+};
+
+const getAWSRegion = (json: Record<string, unknown>): string | null => {
+    let region: string | null = null;
+    if ("region" in json && typeof json.region === "string") {
+        region = json.region;
+    }
+    return region;
+};
+const getAWSAccessKey = (json: Record<string, unknown>): string | null => {
+    let accessKey: string | null = null;
+    if ("accessKey" in json && typeof json.accessKey === "string") {
+        accessKey = json.accessKey;
+    }
+    return accessKey;
+};
+const getAWSSecretKey = (json: Record<string, unknown>): string | null => {
+    let secretKey: string | null = null;
+    if ("secretKey" in json && typeof json.secretKey === "string") {
+        secretKey = json.secretKey;
+    }
+    return secretKey;
+};
+
+const getAWSSessionToken = (json: Record<string, unknown>): string | null => {
+    let sessionToken: string | null = null;
+    if ("sessionToken" in json && typeof json.sessionToken === "string") {
+        sessionToken = json.sessionToken;
+    }
+    return sessionToken;
+};
+
+const getAWS = (json: Record<string, unknown>): WaldiezModelAWS | undefined | null => {
+    const aws: WaldiezModelAWS | undefined | null = {
+        region: null,
+        accessKey: null,
+        secretKey: null,
+        sessionToken: null,
+        profileName: null,
+    };
+    if ("aws" in json && typeof json.aws === "object" && json.aws) {
+        aws.region = getAWSRegion(json.aws as Record<string, unknown>);
+        aws.accessKey = getAWSAccessKey(json.aws as Record<string, unknown>);
+        aws.secretKey = getAWSSecretKey(json.aws as Record<string, unknown>);
+        aws.sessionToken = getAWSSessionToken(json.aws as Record<string, unknown>);
+        aws.profileName = getAWSRegion(json.aws as Record<string, unknown>);
+    }
+    return aws;
+};
+
 const getPrice = (json: Record<string, unknown>): WaldiezModelPrice => {
     const price: WaldiezModelPrice = {
         promptPricePer1k: null,
@@ -263,6 +353,8 @@ const getModelData = (jsonData: Record<string, unknown>): WaldiezModelData => {
     const temperature = getTemperature(jsonData);
     const topP = getTopP(jsonData);
     const maxTokens = getMaxTokens(jsonData);
+    const aws = getAWS(jsonData);
+    const extras = getExtras(jsonData);
     const defaultHeaders = getDefaultHeaders(jsonData);
     const price = getPrice(jsonData);
     const data = new WaldiezModelData({
@@ -273,6 +365,8 @@ const getModelData = (jsonData: Record<string, unknown>): WaldiezModelData => {
         temperature,
         topP,
         maxTokens,
+        aws,
+        extras,
         defaultHeaders,
         price,
     });

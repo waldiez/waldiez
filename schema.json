@@ -1784,6 +1784,20 @@
                 "maxTokens": {
                     "type": ["number", "null"]
                 },
+                "aws": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezModelAWS"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "extras": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
                 "defaultHeaders": {
                     "type": "object",
                     "additionalProperties": {}
@@ -1800,6 +1814,7 @@
                 "temperature",
                 "topP",
                 "maxTokens",
+                "extras",
                 "defaultHeaders",
                 "price"
             ],
@@ -1812,6 +1827,7 @@
                 "openai",
                 "azure",
                 "deepseek",
+                "bedrock",
                 "google",
                 "anthropic",
                 "cohere",
@@ -1821,6 +1837,28 @@
                 "nim",
                 "other"
             ]
+        },
+        "WaldiezModelAWS": {
+            "type": "object",
+            "properties": {
+                "region": {
+                    "type": ["string", "null"]
+                },
+                "accessKey": {
+                    "type": ["string", "null"]
+                },
+                "secretKey": {
+                    "type": ["string", "null"]
+                },
+                "sessionToken": {
+                    "type": ["string", "null"]
+                },
+                "profileName": {
+                    "type": ["string", "null"]
+                }
+            },
+            "additionalProperties": false,
+            "description": "AWS related fields"
         },
         "WaldiezModelPrice": {
             "type": "object",
@@ -1833,7 +1871,8 @@
                 }
             },
             "required": ["promptPricePer1k", "completionTokenPricePer1k"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "Price related fields"
         },
         "WaldiezTool": {
             "type": "object",

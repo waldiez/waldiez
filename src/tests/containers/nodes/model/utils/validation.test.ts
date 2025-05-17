@@ -18,6 +18,7 @@ describe("validateModel", () => {
         apiType: "other",
         description: "Test model",
         apiVersion: "v1",
+        extras: {},
         defaultHeaders: {},
         temperature: 0.7,
         topP: 1,

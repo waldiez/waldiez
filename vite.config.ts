@@ -134,7 +134,7 @@ export default defineConfig(({ command }) => ({
             include: ["src/**/*"],
             exclude: [
                 "**/types.ts",
-                "src/index.dev.tsx",
+                "src/wrapped/**",
                 "src/waldiez/docs.ts",
                 "src/index.tsx",
                 "**/tests/**",

@@ -14,6 +14,7 @@ export const modelLinks: Record<WaldiezModelAPIType, string> = {
     nim: "https://docs.nvidia.com/nim/large-language-models/latest/models.html",
     mistral: "https://docs.mistral.ai/getting-started/models/models_overview/",
     azure: "https://learn.microsoft.com/en-us/azure/cognitive-services/openai/concepts/models",
+    bedrock: "https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html",
     groq: "",
     other: "",
 };
@@ -259,6 +260,7 @@ export const predefinedModels: Record<WaldiezModelAPIType, { label: string; valu
     together: predefinedTogetherIModels,
     nim: predefinedNIMModels,
     mistral: predefinedMistralModels,
+    bedrock: [],
     azure: [],
     groq: [],
     other: [],

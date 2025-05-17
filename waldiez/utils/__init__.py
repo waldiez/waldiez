@@ -5,13 +5,11 @@
 from .cli_extras import add_cli_extras
 from .conflict_checker import check_conflicts
 from .flaml_warnings import check_flaml_warnings
-from .pysqlite3_checker import check_pysqlite3
 from .rdps_checker import check_rpds_py
 
 __all__ = [
     "check_conflicts",
     "check_flaml_warnings",
     "add_cli_extras",
-    "check_pysqlite3",
     "check_rpds_py",
 ]

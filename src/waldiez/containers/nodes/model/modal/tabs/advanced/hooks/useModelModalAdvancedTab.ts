@@ -55,6 +55,39 @@ export const useModelModalAdvancedTab = (props: WaldiezNodeModelModalAdvancedTab
     );
 
     /**
+     * Handle AWS credentials changes
+     */
+    const onAwsAccessKeyChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ aws: { ...data.aws, accessKey: event.target.value } });
+        },
+        [data.aws, onDataChange],
+    );
+    const onAwsSecretKeyChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ aws: { ...data.aws, secretKey: event.target.value } });
+        },
+        [data.aws, onDataChange],
+    );
+    const onAwsRegionChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ aws: { ...data.aws, region: event.target.value } });
+        },
+        [data.aws, onDataChange],
+    );
+    const onAwsProfileNameChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ aws: { ...data.aws, profileName: event.target.value } });
+        },
+        [data.aws, onDataChange],
+    );
+    const onAwsSessionTokenChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            onDataChange({ aws: { ...data.aws, sessionToken: event.target.value } });
+        },
+        [data.aws, onDataChange],
+    );
+    /**
      * Update all headers at once
      */
     const onUpdateHeaders = useCallback(
@@ -137,6 +170,11 @@ export const useModelModalAdvancedTab = (props: WaldiezNodeModelModalAdvancedTab
         onTemperatureChange,
         onTopPChange,
         onMaxTokensChange,
+        onAwsAccessKeyChange,
+        onAwsSecretKeyChange,
+        onAwsRegionChange,
+        onAwsProfileNameChange,
+        onAwsSessionTokenChange,
         onUpdateHeaders,
         onDeleteHeader,
         onAddHeader,

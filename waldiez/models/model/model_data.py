@@ -21,9 +21,74 @@ WaldiezModelAPIType = Literal[
     "together",
     "nim",
     "cohere",
+    "bedrock",
     "other",
 ]
 """Possible API types for the model."""
+
+
+class WaldiezModelAWS(WaldiezBase):
+    """AWS related parameters.
+
+    Attributes
+    ----------
+    region : Optional[str]
+        The AWS region, by default None.
+    access_key : Optional[str]
+        The AWS access key, by default None.
+    secret_key : Optional[str]
+        The AWS secret access key, by default None.
+    session_token : Optional[str]
+        The AWS session token, by default None.
+    profile_name : Optional[str]
+        The AWS profile name, by default Nonde.
+    """
+
+    region: Annotated[
+        Optional[str],
+        Field(
+            None,
+            alias="region",
+            title="Region",
+            description="The AWS region",
+        ),
+    ] = None
+    access_key: Annotated[
+        Optional[str],
+        Field(
+            None,
+            alias="accessKey",
+            title="Access Ke",
+            description="The AWS access key",
+        ),
+    ] = None
+    secret_key: Annotated[
+        Optional[str],
+        Field(
+            None,
+            alias="secretKey",
+            title="Secret Key",
+            description="The AWS secret key",
+        ),
+    ] = None
+    session_token: Annotated[
+        Optional[str],
+        Field(
+            None,
+            alias="sessionToken",
+            title="Session Token",
+            description="The AWS session token",
+        ),
+    ] = None
+    profile_name: Annotated[
+        Optional[str],
+        Field(
+            None,
+            alias="profileName",
+            title="Profile Name",
+            description="The AWS Profile name to use",
+        ),
+    ] = None
 
 
 class WaldiezModelPrice(WaldiezBase):
@@ -65,6 +130,9 @@ class WaldiezModelData(WaldiezBase):
         The top p of the model, by default None.
     max_tokens : Optional[int]
         The max tokens of the model, by default None.
+    aws : Optional[WaldiezModelAWS]
+    extras: dict[str, str]
+        Any extra attributes to include in the LLM Config.
     default_headers : dict[str, str]
         The default headers of the model.
     price : Optional[WaldiezModelPrice]
@@ -134,6 +202,24 @@ class WaldiezModelData(WaldiezBase):
             description="The max tokens of the model",
         ),
     ]
+    aws: Annotated[
+        Optional[WaldiezModelAWS],
+        Field(
+            None,
+            alias="aws",
+            title="AWS",
+            description="The AWS related parameters",
+        ),
+    ] = None
+    extras: Annotated[
+        dict[str, str],
+        Field(
+            alias="extras",
+            default_factory=dict,
+            title="Extras",
+            description="Any extra attributes to include in the LLM Config",
+        ),
+    ] = {}
     default_headers: Annotated[
         dict[str, str],
         Field(
@@ -142,7 +228,7 @@ class WaldiezModelData(WaldiezBase):
             title="Default Headers",
             description="The default headers of the model",
         ),
-    ]
+    ] = {}
     price: Annotated[
         Optional[WaldiezModelPrice],
         Field(None, title="Price", description="The price of the model"),

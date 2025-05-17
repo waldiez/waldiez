@@ -38,6 +38,7 @@
   height: auto;
 }
 
+.flow-wrapper .model-logo.bedrock img,
 .flow-wrapper .model-logo.other img,
 .flow-wrapper .model-logo.openai img {
   width: 20px !important;
@@ -130,6 +131,7 @@
 }
 
 .flow-wrapper.dark .model-logo.other img,
+.flow-wrapper.dark .model-logo.bedrock img,
 .flow-wrapper.dark .model-logo.openai img {
   filter: invert(1);
 }

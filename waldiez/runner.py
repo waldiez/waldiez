@@ -40,7 +40,6 @@ from .running import (
     reset_env_vars,
     set_env_vars,
 )
-from .utils import check_pysqlite3
 
 if TYPE_CHECKING:
     from autogen import ChatResult  # type: ignore
@@ -162,8 +161,6 @@ class WaldiezRunner:
         extra_requirements = {
             req for req in self.waldiez.requirements if req not in sys.modules
         }
-        if self.waldiez.has_captain_agents:
-            check_pysqlite3()
         return extra_requirements
 
     def install_requirements(self) -> None:

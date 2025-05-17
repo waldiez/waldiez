@@ -192,6 +192,14 @@ describe("modelMapper", () => {
                 temperature: 0.5,
                 topP: 0.9,
                 maxTokens: 100,
+                aws: {
+                    accessKey: null,
+                    profileName: null,
+                    region: null,
+                    secretKey: null,
+                    sessionToken: null,
+                },
+                extras: {},
                 defaultHeaders: { key: "value" },
                 price: {
                     promptPricePer1k: 1,

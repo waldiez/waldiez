@@ -40,7 +40,6 @@ export const WaldiezNodeModelView = ({ id, data }: NodeProps<WaldiezNodeModel>) 
                     role="button"
                     title="Edit"
                     className="clickable"
-                    // id={`open-model-node-modal-${id}`}
                     data-node-id={id}
                     data-testid={`open-model-node-modal-${id}`}
                     onClick={onOpen}

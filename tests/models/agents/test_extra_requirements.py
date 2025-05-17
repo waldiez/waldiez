@@ -55,7 +55,7 @@ def test_get_retrievechat_extra_requirements() -> None:
     ]
     agents_iter: Iterator[WaldiezAgent] = iter(agents_list)
     expected_packages = [
-        "protobuf==4.25.3",
+        "protobuf==5.29.3",
         "chromadb>=0.5.23",
         "sentence_transformers",
         "pypdf",

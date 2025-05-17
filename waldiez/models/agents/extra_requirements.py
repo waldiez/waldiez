@@ -3,7 +3,6 @@
 """Extra requirements for agents."""
 
 # pylint: disable=line-too-long
-import platform
 from typing import Iterator, Set
 
 from .agent import WaldiezAgent
@@ -26,10 +25,9 @@ def get_retrievechat_extra_requirements(
         The retrievechat extra requirements.
     """
     # https://github.com/ag2ai/ag2/blob/main/pyproject.toml
-    # with chromadb relaxed
-    # to avoid conflicts with other extras and (later) allow py3.13
+    # with chromadb and sentence_transdormers relaxed
     rag_requirements: Set[str] = {
-        "protobuf==4.25.3",
+        "protobuf==5.29.3",
         "chromadb>=0.5.23",
         "sentence_transformers",
         "pypdf",
@@ -74,17 +72,14 @@ def get_captain_agent_extra_requirements() -> list[str]:
         "easyocr",
         "python-pptx",
         "openai-whisper",
-        "pandas",
         "scipy",
-        # "sentence-transformers", also in agent_requirements
+        # "pandas", also in agent_requirements below
+        # "sentence-transformers", also in agent_requirements below
     ]
     agent_requirements = [
+        "pandas",
         "chromadb",
         "sentence-transformers",
         "huggingface-hub",
     ]
-    if platform.system() == "Linux":
-        agent_requirements.append("pysqlite3-binary")
-    # on windows and OSX, installing pysqlite3-binary seem to fail in some cases
-    # we can handle/install if needed in waldiez.utils.pysqlite3_checker
     return tool_requirements + agent_requirements
