@@ -5,7 +5,6 @@
 import asyncio
 import json
 import logging
-import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -20,8 +19,11 @@ except ImportError as error:
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
-from .common import UserResponse
-from .structured import StructuredIOStream
+from .models import (
+    UserInputData,
+    UserResponse,
+)
+from .utils import get_image, now
 
 LOG = logging.getLogger(__name__)
 
@@ -95,7 +97,7 @@ class AsyncWebsocketsIOStream(IOStream):
         message_dump = message.model_dump(mode="json")
         json_dump = json.dumps(message_dump)
         if self.verbose:
-            LOG.info(json_dump)
+            LOG.info("sending: \n%s\n", json_dump)
         asyncio.run(
             self.websocket.send(json_dump),
         )
@@ -148,8 +150,8 @@ class AsyncWebsocketsIOStream(IOStream):
         prompt_dump = json.dumps(
             {
                 "id": request_id,
-                "time": int(time.time() * 1_000_000),
-                "type": "input",
+                "timestamp": now(),
+                "type": "input_request",
                 "request_id": request_id,
                 "prompt": prompt,
                 "password": password,
@@ -165,37 +167,146 @@ class AsyncWebsocketsIOStream(IOStream):
         try:
             response_dict = json.loads(response)
         except json.JSONDecodeError:
-            return response
+            return response if isinstance(response, str) else str(response)
+        if not isinstance(response_dict, dict):
+            LOG.error("Invalid input response: %s", response)
+            return ""
         return self._parse_response(response_dict, request_id)
 
     def _parse_response(self, response: dict[str, Any], request_id: str) -> str:
-        if "input" in response:
-            try:
-                user_response = UserResponse.model_validate(response["input"])
-            except Exception:  # pylint: disable=broad-exception-caught
-                LOG.error("Error parsing user input response: %s", response)
-                return ""
-        else:
-            # check if already in a UserResponse format
-            try:
-                user_response = UserResponse.model_validate(response)
-            except Exception:  # pylint: disable=broad-exception-caught
-                LOG.error("Error parsing user input response: %s", response)
-                return ""
+        """Parse the response from the WebSocket connection.
+
+        Parameters
+        ----------
+        response : dict
+            The response from the WebSocket connection.
+        request_id : str
+            The request ID of the input request.
+        """
+        if "data" in response:
+            response_data = response["data"]
+            if isinstance(response, str):  # double dumped?
+                try:
+                    response_data = json.loads(response_data)
+                except json.JSONDecodeError:
+                    pass
+                else:
+                    response["data"] = response_data
+        try:
+            user_response = UserResponse.model_validate(response)
+        except Exception as error:  # pylint: disable=broad-exception-caught
+            LOG.error("Error parsing user input response: %s", error)
+            return ""
         if user_response.request_id != request_id:
             LOG.error(
-                "Invalid input request_id. Expecting %s, got: %s",
-                request_id,
+                "User response request ID mismatch: %s != %s",
                 user_response.request_id,
+                request_id,
             )
             return ""
-        response_str = user_response.data.text or ""
-        if user_response.data.image:
-            image = StructuredIOStream.get_image(
+        return self.get_response_text(user_response, request_id)
+
+    # pylint: disable=too-many-return-statements
+    def get_content_string(
+        self, user_response_data: UserInputData, request_id: str
+    ) -> str:
+        """Get the string content from the user input data.
+
+        Parameters
+        ----------
+        user_response_data : UserInputData
+            The user input data to parse.
+        request_id : str
+            The request ID of the input request.
+
+        Returns
+        -------
+        str
+            The string content of the user input data.
+        """
+        if user_response_data.content.type == "text":
+            return user_response_data.content.text
+        if user_response_data.content.type == "image_url":
+            if not user_response_data.content.image_url:
+                return ""
+            image_url = user_response_data.content.image_url
+            if not image_url or not image_url.url:
+                return ""
+            image = get_image(
                 uploads_root=self.uploads_root,
-                image_data=user_response.data.image,
+                image_data=image_url.url,
                 base_name=request_id,
             )
-            response_str = f"{response_str} <img {image}>"
-            # response_str = f"{response_str} <img {user_response.data.image}>"
+            return f"<img {image}>"
+        if user_response_data.content.type == "image":
+            if not user_response_data.content.image:
+                return ""
+            image_data = (
+                user_response_data.content.image.file
+                or user_response_data.content.image.url
+            )
+            if not image_data:
+                return ""
+            image = get_image(
+                uploads_root=self.uploads_root,
+                image_data=image_data,
+                base_name=request_id,
+            )
+            return f"<img {image}>"
+        # if user_response_data.content.type == "audio":
+        #     audio = StructuredIOStream.get_audio(
+        #         uploads_root=self.uploads_root,
+        #         audio_data=user_response_data.content.audio.file,
+        #         base_name=request_id,
+        #     )
+        #     return f"<audio {audio}>"
+        # if user_response_data.content.type == "video":
+        #     video = StructuredIOStream.get_video(
+        #         uploads_root=self.uploads_root,
+        #         video_data=user_response_data.content.video.file,
+        #         base_name=request_id,
+        #     )
+        #     return f"<video {video}>"
+        # if user_response_data.content.type == "file":
+        #     file = StructuredIOStream.get_file(
+        #         uploads_root=self.uploads_root,
+        #         file_data=user_response_data.content.file.file,
+        #         base_name=request_id,
+        #     )
+        #     return f"<file {file}>"...
+        LOG.error(
+            "Unknown content type: %s",
+            user_response_data.content.type,
+        )
+        return ""
+
+    def get_response_text(
+        self, user_response: UserResponse, request_id: str
+    ) -> str:
+        """Get the text content from the user response.
+
+        Parameters
+        ----------
+        user_response : UserResponse
+            The user response to parse.
+        request_id : str
+            The request ID of the input request.
+
+        Returns
+        -------
+        str
+            The text data of the user response.
+        """
+        response_str = ""
+        if isinstance(user_response.data, str):
+            return user_response.data
+        if isinstance(user_response.data, list):
+            for entry in user_response.data:
+                if isinstance(entry, str):
+                    response_str += entry
+                else:
+                    response_str += self.get_content_string(entry, request_id)
+            return response_str
+        if isinstance(user_response.data, UserInputData):
+            return self.get_content_string(user_response.data, request_id)
         return response_str

@@ -204,14 +204,15 @@ class TestStructuredIOStream:
         assert payload["type"] == "test_event"
         assert isinstance(payload["id"], str)
         assert isinstance(payload["timestamp"], str)
-        assert payload["data"]["content"] == "test message"
+        payload_data = json.loads(payload["data"])
+        assert payload_data["content"] == "test message"
         assert kwargs == {"flush": True}
 
     def test_handle_user_input_plain_text(self) -> None:
         """Test parsing plain text input."""
         # Test with plain text (non-JSON)
         result = self.stream._handle_user_input("Hello world", "test_id")
-        assert result == "Hello world"
+        assert result.to_string() == "Hello world"
 
     def test_handle_user_input_json_response(self) -> None:
         """Test parsing JSON response input."""
@@ -220,7 +221,7 @@ class TestStructuredIOStream:
             {"request_id": "test_id", "data": "JSON response"}
         )
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "JSON response"
+        assert result.to_string() == "JSON response"
 
         # Test with JSON that has matching request_id and dict data
         json_input = json.dumps(
@@ -230,7 +231,7 @@ class TestStructuredIOStream:
             }
         )
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "<img src='test.jpg'> Hello"
+        assert result.to_string() == "<img src='test.jpg'> Hello"
 
         # Test with JSON that has text/image outside of data
         json_input = json.dumps(
@@ -241,24 +242,24 @@ class TestStructuredIOStream:
             }
         )
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "<img src='outside.jpg'> Hello outside"
+        assert result.to_string() == "<img src='outside.jpg'> Hello outside"
 
         # Test with JSON that has no data
         json_input = json.dumps({"request_id": "test_id"})
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == ""
+        assert result.to_string() == ""
 
         # Test with JSON that has empty data
         json_input = json.dumps({"request_id": "test_id", "data": {}})
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == ""
+        assert result.to_string() == ""
 
         # Test with double-dumped JSON
         json_input = json.dumps(
             {"request_id": "test_id", "data": json.dumps("Hello, world!")}
         )
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "Hello, world!"
+        assert result.to_string() == "Hello, world!"
 
         json_input = json.dumps(
             {
@@ -269,7 +270,7 @@ class TestStructuredIOStream:
             }
         )
         result = self.stream._handle_user_input(json_input, "test_id")
-        assert result == "<img src='double.jpg'> Hello"
+        assert result.to_string() == "<img src='double.jpg'> Hello"
 
     @patch("builtins.print")
     def test_handle_user_input_mismatched_request_id(
@@ -301,14 +302,14 @@ class TestStructuredIOStream:
         assert payload["data"]["details"]["expected_id"] == "test_id"
 
         # Result should be empty
-        assert result == ""
+        assert result.to_string() == ""
 
     def test_handle_user_input_json_error(self) -> None:
         """Test parsing input with invalid JSON."""
         # Test with invalid JSON
         invalid_json = "{invalid: json"
         result = self.stream._handle_user_input(invalid_json, "test_id")
-        assert result == invalid_json
+        assert result.to_string() == invalid_json
 
     def test_format_multimedia_response(self) -> None:
         """Test formatting multimedia response."""

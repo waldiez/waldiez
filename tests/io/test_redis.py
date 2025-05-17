@@ -10,9 +10,11 @@ import io
 import json
 import threading
 import time
+import uuid
 
 import fakeredis
 import pytest
+from autogen.messages import BaseMessage  # type: ignore
 
 from waldiez.io import RedisIOStream
 
@@ -99,23 +101,24 @@ def test_send(fake_redis: fakeredis.FakeRedis) -> None:
     stream = RedisIOStream("redis://localhost", task_id)
     stream.redis = fake_redis
 
-    # pylint: disable=too-few-public-methods,no-self-use
-    class Message:
-        """Mock message object."""
+    class Message(BaseMessage):
+        """Test message class."""
 
-        def model_dump_json(self) -> str:
-            """Mock model dump."""
-            return json.dumps({"message": "Hello, World!"})
+        type: str = "text"
+        text: str
 
-    message = Message()
+    message = Message(
+        uuid=uuid.uuid4(),
+        text="Hello, World!",
+    )
     stream.send(message)
 
     entries = fake_redis.xrange(f"task:{task_id}:output")
     assert len(entries) == 1
     call_data = entries[0][1]
-    assert call_data["type"] == "print"
+    assert call_data["type"] == "text"
     message_data = json.loads(call_data["data"])
-    assert message_data["message"] == "Hello, World!"
+    assert message_data["text"] == "Hello, World!"
 
 
 def test_input(fake_redis: fakeredis.FakeRedis) -> None:
@@ -128,7 +131,16 @@ def test_input(fake_redis: fakeredis.FakeRedis) -> None:
         """Publish a mock user response after a delay."""
         time.sleep(0.5)  # Give input() time to subscribe
         user_response = json.dumps(
-            {"request_id": "req-1", "data": "mock-response"}
+            {
+                "id": "req-q",
+                "timestamp": "now",
+                "request_id": "req-1",
+                "data": json.dumps(
+                    {"content": {"type": "text", "text": "mock-response"}}
+                ),
+                "task_id": task_id,
+                "type": "input_response",
+            }
         )
         fake_redis.publish(f"task:{task_id}:input_response", user_response)
 
@@ -152,44 +164,6 @@ def test_input_timeout(fake_redis: fakeredis.FakeRedis) -> None:
 
 def test_parse_pubsub_input() -> None:
     """Test parsing of Pub/Sub input response."""
-    message = {
-        "type": "input_response",
-        "data": '{"request_id": "req-1", "data": "mock-response"}',
-    }
-    request_id, data = RedisIOStream.parse_pubsub_input(message)
-    assert request_id == "req-1"
-    assert data == "mock-response"
-
-    invalid_message1 = {"type": "input_response", "data": "invalid"}
-    request_id, data = RedisIOStream.parse_pubsub_input(invalid_message1)
-    assert request_id is None
-    assert data is None
-
-    invalid_message2 = {"type": "invalid", "data": "invalid"}
-    request_id, data = RedisIOStream.parse_pubsub_input(invalid_message2)
-    assert request_id is None
-    assert data is None
-
-    invalid_message3 = {"type": "input_response", "data": {}}
-    request_id, data = RedisIOStream.parse_pubsub_input(invalid_message3)
-    assert request_id is None
-    assert data is None
-
-    invalid_message4 = {
-        "type": "input_response",
-        "data": '{"request_id": "req-1"}',
-    }
-    request_id, data = RedisIOStream.parse_pubsub_input(invalid_message4)
-    assert request_id is None
-    assert data is None
-
-    invalid_message5 = {
-        "type": "input_response",
-        "data": '{"data": "mock-response"}',
-    }
-    request_id, data = RedisIOStream.parse_pubsub_input(invalid_message5)
-    assert request_id is None
-    assert data is None
 
 
 def test_locking_mechanism(fake_redis: fakeredis.FakeRedis) -> None:

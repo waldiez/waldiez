@@ -38,16 +38,18 @@ Message Formats:
 
 Print messages:
 {
+    "id": "abc123",
     "type": "print",
-    "timestamp": 1711210101210,
+    "timestamp": "2023-10-01T12:34:56.789Z",
     "task_id": "abc123",
     "data": "Your log message"
 }
 
 Input request messages:
 {
+    "id": "abc123",
     "type": "input_request",
-    "timestamp": 1711210101210,
+    "timestamp": "2023-10-01T12:34:56.789Z",
     "task_id": "abc123",
     "request_id": "req-uuid",
     "data": "Enter your name:",
@@ -56,19 +58,22 @@ Input request messages:
 
 Input response messages:
 {
+    "id": "abc123",
     "type": "input_response",
-    "timestamp": 1711210101210,
+    "timestamp": "2023-10-01T12:34:56.789Z",
     "task_id": "abc123",
     "request_id": "req-uuid",
     "data": "John Doe"
 }
 """
+# TODO: handle image and other types
 
 import json
 import logging
 import time
 import traceback as tb
 import uuid
+from pathlib import Path
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
@@ -77,7 +82,6 @@ from typing import (
     Callable,
     Dict,
     Optional,
-    Tuple,
     Type,
 )
 
@@ -90,6 +94,15 @@ except ImportError as error:
     ) from error
 from autogen.io import IOStream  # type: ignore
 from autogen.messages import BaseMessage  # type: ignore
+
+from .models import (
+    PrintMessage,
+    TextMediaContent,
+    UserInputData,
+    UserInputRequest,
+    UserResponse,
+)
+from .utils import gen_id, now
 
 if TYPE_CHECKING:
     Redis = redis.Redis[bytes]
@@ -118,11 +131,12 @@ class RedisIOStream(IOStream):
         self,
         redis_url: str = "redis://localhost:6379/0",
         task_id: str | None = None,
-        input_timeout: int = 180,
+        input_timeout: int = 120,
         max_stream_size: int = 1000,
         on_input_request: Optional[Callable[[str, str, str], None]] = None,
         on_input_response: Optional[Callable[[str, str], None]] = None,
         redis_connection_kwargs: Dict[str, Any] | None = None,
+        uploads_root: Path | str | None = None,
     ) -> None:
         """Initialize the Redis I/O stream.
 
@@ -145,6 +159,11 @@ class RedisIOStream(IOStream):
             Additional Redis connection kwargs, to be used with `redis.Redis.from_url`,
             by default None.
             See: https://redis-py.readthedocs.io/en/stable/connections.html#redis.Redis.from_url
+        max_stream_size : int, optional
+            The maximum number of entries per stream, by default 1000.
+        uploads_root : Path | str | None, optional
+            The root directory for uploads, by default None.
+            If provided, it will be resolved to an absolute path.
         """
         self.redis = Redis.from_url(redis_url, **redis_connection_kwargs or {})
         self.task_id = task_id or uuid.uuid4().hex
@@ -156,6 +175,11 @@ class RedisIOStream(IOStream):
         self.input_request_channel = f"task:{self.task_id}:input_request"
         self.input_response_channel = f"task:{self.task_id}:input_response"
         self.common_output_stream = "task-output"
+        self.uploads_root = (
+            Path(uploads_root).resolve() if uploads_root else None
+        )
+        if self.uploads_root and not self.uploads_root.exists():
+            self.uploads_root.mkdir(parents=True, exist_ok=True)
 
     def __enter__(self) -> "RedisIOStream":
         """Enable context manager usage."""
@@ -237,9 +261,11 @@ class RedisIOStream(IOStream):
         payload : Dict[str, Any]
             The message to print.
         """
-        payload["id"] = self.task_id  # compat
+        if "id" not in payload:
+            payload["id"] = gen_id()
         payload["task_id"] = self.task_id
-        payload["timestamp"] = int(time.time() * 1_000_000)
+        if "timestamp" not in payload:
+            payload["timestamp"] = now()
         self._print_to_task_output(payload)
         self._print_to_common_output(payload)
 
@@ -263,10 +289,10 @@ class RedisIOStream(IOStream):
                 message += io_value
         end = kwargs.get("end", "\n")
         message += end
-        payload = {
-            "type": "print",
-            "data": message,
-        }
+        print_message = PrintMessage(
+            data=message,
+        )
+        payload = print_message.model_dump(mode="json")
         self._print(payload)
 
     def send(self, message: BaseMessage) -> None:
@@ -277,11 +303,16 @@ class RedisIOStream(IOStream):
         message : Dict[str, Any]
             The message to send.
         """
-        payload = {
-            "type": "print",
-            "data": message.model_dump_json(),
-        }
-        self._print(payload)
+        message_dump = message.model_dump(mode="json")
+        message_type = message_dump.get("type", None)
+        if not message_type:
+            message_type = message.__class__.__name__
+        self._print(
+            {
+                "type": message_type,
+                "data": json.dumps(message_dump),
+            }
+        )
 
     def input(
         self,
@@ -306,13 +337,15 @@ class RedisIOStream(IOStream):
         str
             The received user input, or empty string if timeout occurs.
         """
-        request_id = request_id or uuid.uuid4().hex
-        payload = {
-            "type": "input_request",
-            "data": prompt,
-            "password": str(password),
-            "request_id": request_id,
-        }
+        request_id = request_id or gen_id()
+        input_request = UserInputRequest(
+            request_id=request_id,
+            prompt=prompt,
+            password=password,
+        )
+        payload = input_request.model_dump(mode="json")
+        payload["password"] = str(password).lower()
+        payload["task_id"] = self.task_id
         LOG.debug("Requesting input via Pub/Sub: %s", payload)
         self._print(payload)
         RedisIOStream.try_do(
@@ -325,11 +358,16 @@ class RedisIOStream(IOStream):
         user_input = self._wait_for_input(request_id)
         if self.on_input_response:
             self.on_input_response(user_input, self.task_id)
-        payload = {
-            "request_id": request_id,
-            "type": "input_response",
-            "data": user_input,
-        }
+        text_response = UserInputData(content=TextMediaContent(text=user_input))
+        user_response = UserResponse(
+            type="input_response",
+            request_id=request_id,
+            data=[text_response],
+        )
+        payload = user_response.model_dump(mode="json")
+        # no nested dicts :(
+        payload["data"] = json.dumps(payload["data"])
+        payload["task_id"] = self.task_id
         LOG.debug("Sending input response: %s", payload)
         self._print(payload)
         return user_input
@@ -359,17 +397,17 @@ class RedisIOStream(IOStream):
                     time.sleep(0.1)
                     continue
                 LOG.debug("Received message: %s", message)
-                request_id, user_input = self.parse_pubsub_input(message)
-                if not request_id or request_id != input_request_id:
+                response = self.parse_pubsub_input(message)
+                if not response or response.request_id != input_request_id:
                     continue
 
                 if self._acquire_lock(lock_key):
                     try:
-                        if self._is_request_processed(request_id):
+                        if self._is_request_processed(response.request_id):
                             continue
 
-                        self._mark_request_processed(request_id)
-                        return user_input or ""
+                        self._mark_request_processed(response.request_id)
+                        return self._get_user_input(response)
                     finally:
                         self._release_lock(lock_key)
         except BaseException:  # pragma: no cover
@@ -382,6 +420,41 @@ class RedisIOStream(IOStream):
             self.input_timeout,
             self.task_id,
         )
+        return ""
+
+    # pylint:disable=no-self-use
+    def _get_user_input(self, response: UserResponse) -> str:
+        """Get user input from the response.
+
+        Parameters
+        ----------
+        response : UserResponse
+            The user response.
+
+        Returns
+        -------
+        str
+            The user input.
+        """
+        if not response.data:
+            return ""
+        if isinstance(response.data, str):
+            return response.data
+        text_parts: list[str] = []
+        # TODO: handle other types
+        if isinstance(response.data, list):
+            for entry in response.data:
+                if isinstance(entry, TextMediaContent):
+                    text_parts.append(entry.text)
+            return " ".join(text_parts) if text_parts else ""
+        if isinstance(response.data.content, list):
+            for entry in response.data.content:
+                if isinstance(entry, TextMediaContent):
+                    text_parts.append(entry.text)
+                # ...
+            return " ".join(text_parts) if text_parts else ""
+        if response.data.content.type == "text":
+            return response.data.content.text
         return ""
 
     def _acquire_lock(self, lock_key: str, lock_expiry: int = 10) -> bool:
@@ -416,10 +489,11 @@ class RedisIOStream(IOStream):
             {request_id: int(time.time() * 1_000_000)},
         )
 
+    # pylint: disable=too-many-return-statements,too-complex
     @staticmethod
     def parse_pubsub_input(
         message: Dict[str, Any],
-    ) -> Tuple[Optional[str], Optional[str]]:
+    ) -> UserResponse | None:
         """Extract request ID and user input from a message.
 
         Parameters
@@ -429,34 +503,39 @@ class RedisIOStream(IOStream):
 
         Returns
         -------
-        Tuple[Optional[str], Optional[str]]
-            The request ID and user's input.
+        UserResponse
+            The parsed user response.
         """
-        message_data = message.get("data", "{}")
+        if not isinstance(message, dict):
+            LOG.error("Invalid message format: %s", message)
+            return None
+        if "data" not in message:
+            LOG.error("Missing 'data' in message: %s", message)
+            return None
+        message_data = message.get("data", {})
+        if isinstance(message_data, str):
+            try:
+                message_data = json.loads(message_data)
+            except json.JSONDecodeError:
+                LOG.error("Invalid JSON in message data: %s", message_data)
+                return None
+        if not isinstance(message_data, dict):
+            LOG.error("Invalid message data format: %s", message_data)
+            return None
+        if "request_id" not in message_data:
+            LOG.error("Missing 'request_id' in message data: %s", message_data)
+            return None
+        if "data" in message_data:
+            try:
+                message_data["data"] = json.loads(message_data["data"])
+            except json.JSONDecodeError:
+                LOG.error("Invalid JSON in message data: %s", message_data)
+                return None
         try:
-            message_dict = json.loads(message_data)
-        except (json.JSONDecodeError, TypeError, ValueError):
-            return None, None
-        if not isinstance(message_dict, dict):
-            return None, None
-        if "request_id" not in message_dict:
-            return None, None
-        if "data" not in message_dict:
-            return None, None
-        user_input = str(message_dict.get("data", ""))
-        if user_input.lower() in [
-            "",
-            "\n",
-            "/\\n",
-            '""',
-            "''",
-            '"/\\n"',
-            "'/\\n'",
-            "none",
-            "null",
-        ]:
-            user_input = ""
-        return message_dict["request_id"], user_input
+            return UserResponse.model_validate(message_data)
+        except Exception:  # pylint: disable=broad-exception-caught
+            LOG.error("Error parsing user input response: %s", message_data)
+            return None
 
     @staticmethod
     def try_do(func: Callable[..., Any], *args: Any, **kwargs: Any) -> None:

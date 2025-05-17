@@ -12,11 +12,11 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
-from .common import PrintMessage, UserInputRequest, gen_id, now
+from .models import PrintMessage, UserInputRequest, UserResponse
+from .utils import gen_id, get_image, now
 
 
 class StructuredIOStream(IOStream):
@@ -75,7 +75,8 @@ class StructuredIOStream(IOStream):
 
         self._send_input_request(prompt, request_id, password)
         user_input_raw = self._read_user_input(prompt, password, request_id)
-        return self._handle_user_input(user_input_raw, request_id)
+        response = self._handle_user_input(user_input_raw, request_id)
+        return response.to_string()
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
@@ -92,7 +93,7 @@ class StructuredIOStream(IOStream):
             "type": message_dump.get("type", "event"),
             "id": gen_id(),
             "timestamp": now(),
-            "data": message_dump,
+            "data": json.dumps(message_dump),  # no nested dict (like in redis)
         }
         print(json.dumps(payload), flush=True)
 
@@ -142,6 +143,7 @@ class StructuredIOStream(IOStream):
 
     def _send_timeout_message(self, request_id: str) -> None:
         timeout_payload = {
+            "id": gen_id(),
             "type": "timeout",
             "request_id": request_id,
             "timestamp": now(),
@@ -149,7 +151,9 @@ class StructuredIOStream(IOStream):
         }
         print(json.dumps(timeout_payload), flush=True)
 
-    def _handle_user_input(self, user_input_raw: str, request_id: str) -> str:
+    def _handle_user_input(
+        self, user_input_raw: str, request_id: str
+    ) -> UserResponse:
         """Handle user input and return the appropriate response.
 
         Parameters
@@ -161,12 +165,12 @@ class StructuredIOStream(IOStream):
 
         Returns
         -------
-        str
-            The parsed user input, or an empty string if not valid.
+        UserResponse
+            The structured user response.
         """
         user_input = self._load_user_input(user_input_raw)
         if isinstance(user_input, str):
-            return user_input
+            return UserResponse(data=user_input, request_id=request_id)
         return self._parse_user_input(user_input, request_id)
 
     # noinspection PyMethodMayBeStatic
@@ -193,11 +197,17 @@ class StructuredIOStream(IOStream):
             return user_input_raw
         if not isinstance(response, dict):
             return str(response)
+        if "data" in response and isinstance(response["data"], str):
+            # double inner dumped?
+            try:
+                response["data"] = json.loads(response["data"])
+            except json.JSONDecodeError:
+                pass
         return response
 
     def _parse_user_input(
         self, user_input: dict[str, Any], request_id: str
-    ) -> str:
+    ) -> UserResponse:
         """Parse user input and return the appropriate response.
 
         Parameters
@@ -209,37 +219,49 @@ class StructuredIOStream(IOStream):
 
         Returns
         -------
-        str
-            The parsed user input, or an empty string if not valid.
+        UserResponse
+            The structured user response.
         """
-        # pylint: disable=too-many-try-statements
         # Load the user input
-        # response = self._load_user_input(user_input_raw)
         if user_input.get("request_id") == request_id:
             # We have a valid response to our request
             data = user_input.get("data")
             if not data:
                 # let's check if text|image keys are sent (outside data)
                 if "image" in user_input or "text" in user_input:
-                    return self._format_multimedia_response(
-                        request_id=request_id, data=user_input
+                    return UserResponse(
+                        request_id=request_id,
+                        data=self._format_multimedia_response(
+                            request_id=request_id, data=user_input
+                        ),
                     )
             if not data or not isinstance(data, (str, dict)):
                 # No / invalid data provided in the response
-                return ""
+                return UserResponse(
+                    request_id=request_id,
+                    data="",
+                )
             # Process different data types
             if isinstance(data, str):
                 # double inner dumped?
                 data = self._load_user_input(data)
             if isinstance(data, dict):
-                return self._format_multimedia_response(
-                    request_id=request_id, data=data
+                return UserResponse(
+                    data=self._format_multimedia_response(
+                        request_id=request_id, data=data
+                    ),
+                    request_id=request_id,
                 )
             # For other types (lists, numbers, booleans), convert to string
-            return str(data)  # pragma: no cover
+            return UserResponse(
+                data=str(data), request_id=request_id
+            )  # pragma: no cover
         # This response doesn't match our request_id, log and return empty
         self._log_mismatched_response(request_id, user_input)
-        return ""
+        return UserResponse(
+            request_id=request_id,
+            data="",
+        )
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
@@ -297,7 +319,7 @@ class StructuredIOStream(IOStream):
         # Handle image if present
         if "image" in data and data["image"]:
             image_data = data["image"]
-            image = self.get_image(self.uploads_root, image_data, request_id)
+            image = get_image(self.uploads_root, image_data, request_id)
             img_tag = f"<img {image}>"
             result.append(img_tag)
 
@@ -310,40 +332,3 @@ class StructuredIOStream(IOStream):
             return ""
         # Join with a space
         return " ".join(result)
-
-    @staticmethod
-    def get_image(
-        uploads_root: Path | None,
-        image_data: str,
-        base_name: str | None = None,
-    ) -> str:
-        """Store the image data in a file and return the file path.
-
-        Parameters
-        ----------
-        uploads_root : Path | None
-            The root directory for storing images, optional.
-        image_data : str
-            The base64-encoded image data.
-        base_name : str | None
-            The base name for the image file, optional.
-
-        Returns
-        -------
-        str
-            The file path of the stored image.
-        """
-        if uploads_root:
-            # noinspection PyBroadException
-            # pylint: disable=broad-exception-caught
-            try:
-                pil_image = get_pil_image(image_data)
-            except BaseException:
-                return image_data
-            if not base_name:
-                base_name = uuid4().hex
-            file_name = f"{base_name}.png"
-            file_path = uploads_root / file_name
-            pil_image.save(file_path, format="PNG")
-            return str(file_path)
-        return image_data

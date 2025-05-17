@@ -12,16 +12,28 @@ and have them in the optional requirements in the package.
 
 from typing import Any
 
-from .common import (
+from .models import (
+    AudioContent,
+    AudioMediaContent,
+    FileContent,
+    FileMediaContent,
+    ImageContent,
+    ImageMediaContent,
+    ImageUrlMediaContent,
+    MediaContent,
+    MessageType,
     PrintMessage,
+    TextMediaContent,
     UserInputData,
     UserInputRequest,
     UserResponse,
+    VideoContent,
+    VideoMediaContent,
 )
 from .structured import StructuredIOStream
 
 try:
-    from .redis import RedisIOStream
+    from .redis import RedisIOStream  # type: ignore[no-redef,unused-ignore]
 except ImportError:
 
     class RedisIOStream:  # type: ignore[no-redef,unused-ignore]
@@ -44,7 +56,9 @@ except ImportError:
 
 
 try:
-    from .ws import AsyncWebsocketsIOStream
+    from .ws import (
+        AsyncWebsocketsIOStream,  # type: ignore[no-redef,unused-ignore]
+    )
 except ImportError:
 
     class AsyncWebsocketsIOStream:  # type: ignore[no-redef,unused-ignore]
@@ -74,4 +88,16 @@ __all__ = [
     "PrintMessage",
     "RedisIOStream",
     "AsyncWebsocketsIOStream",
+    "MessageType",
+    "MediaContent",
+    "TextMediaContent",
+    "ImageMediaContent",
+    "ImageUrlMediaContent",
+    "ImageContent",
+    "FileMediaContent",
+    "FileContent",
+    "AudioMediaContent",
+    "AudioContent",
+    "VideoMediaContent",
+    "VideoContent",
 ]
