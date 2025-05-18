@@ -26,7 +26,8 @@ import { WaldiezWrapper } from "./wrapped";
  * If VITE_USE_DEV_SERVER is set to "true", make sure the dev server is running (../scripts/dev_server.py).
  */
 const isProd = import.meta.env.PROD;
-const USE_DEV_SERVER = import.meta.env.VITE_USE_DEV_SERVER === "true" && !isProd;
+const isTesting = import.meta.env.NODE_ENV === "test";
+const USE_DEV_SERVER = !isTesting && import.meta.env.VITE_USE_DEV_SERVER === "true" && !isProd;
 const DEFAULT_WS_URL = import.meta.env.VITE_DEV_WS_URL || "ws://localhost:7654";
 
 /**
