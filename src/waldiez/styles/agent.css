@@ -301,6 +301,14 @@
   display: flex;
 }
 
+.flow-wrapper .agent-model-preview .agent-model-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
 .flow-wrapper.dark .agent-model-preview .agent-model-img.other img,
 .flow-wrapper.dark .agent-model-preview .agent-model-img.bedrock img,
 .flow-wrapper.dark .agent-model-preview .agent-model-img.openai img {

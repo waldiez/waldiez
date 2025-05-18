@@ -12,10 +12,7 @@ import { useWaldiezWrapper } from "./hooks";
 
 type WaldiezWrapperProps = {
     // Original Waldiez props that will be passed to the component
-    waldiezProps: Omit<
-        WaldiezProps,
-        "onRun" | "onSave" | "onUpload" | "onConvert" | "onUserInput" | "inputPrompt"
-    >;
+    waldiezProps: Omit<WaldiezProps, "onRun" | "onSave" | "onUpload" | "onConvert" | "chat">;
     // WebSocket connection URL
     wsUrl?: string;
 };

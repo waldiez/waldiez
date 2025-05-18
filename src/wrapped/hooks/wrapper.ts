@@ -116,9 +116,18 @@ export const useWaldiezWrapper = ({
             case "termination":
                 handleFlowTermination(data);
                 break;
-            // default:
-            //     console.warn("Unknown message type:", data.type);
-            //     break;
+            case "error":
+                setIsRunning(false);
+                setInputPrompt(undefined);
+                handleFlowError(data);
+                break;
+            case "runResult":
+                setIsRunning(false);
+                setInputPrompt(undefined);
+                if (data.success === false) {
+                    handleFlowError(data);
+                }
+                break;
         }
     };
     const { getNewChatMessage } = useWaldiezMessages({
@@ -167,6 +176,28 @@ export const useWaldiezWrapper = ({
                 ],
             };
             setMessages(prevMessages => [...prevMessages, terminationMessage]);
+        }
+        setIsRunning(false);
+        setInputPrompt(undefined);
+    };
+    /**
+     * Handle flow error
+     */
+    const handleFlowError = (data: WebSocketResponse) => {
+        if (data.message && typeof data.message === "string") {
+            const errorMessage: WaldiezChatMessage = {
+                id: nanoid(),
+                timestamp: new Date().toISOString(),
+                type: "error",
+                content: [
+                    {
+                        type: "text",
+                        text: data.message,
+                    },
+                ],
+            };
+            setError(data.message);
+            setMessages(prevMessages => [...prevMessages, errorMessage]);
         }
         setIsRunning(false);
         setInputPrompt(undefined);
