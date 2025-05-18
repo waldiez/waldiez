@@ -48,9 +48,6 @@ repos:
           - "-rn"
           - "-sn"
           - "--rcfile=pyproject.toml"
-
-  - repo: local
-    hooks:
       - id: mypy
         name: mypy
         entry: mypy
@@ -59,3 +56,8 @@ repos:
         args:
           - "--config"
           - "pyproject.toml"
+      - id: header
+        name: header
+        language: system
+        types: [python]
+        entry: python scripts/header.py
