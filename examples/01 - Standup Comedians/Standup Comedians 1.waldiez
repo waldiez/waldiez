@@ -1,7 +1,7 @@
 {
-  "id": "wf-afNcgmS6Z2oOL8lKDWTMn",
+  "id": "wf-osoltxd5mw7QJIKrEZgbD",
   "type": "flow",
-  "storageId": "wf-afNcgmS6Z2oOL8lKDWTMn",
+  "storageId": "wf-osoltxd5mw7QJIKrEZgbD",
   "name": "Standup comedians 1",
   "description": "Standup comedians with user input.",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-13T10:37:31.004Z",
-  "updatedAt": "2025-05-13T10:42:23.418Z",
+  "updatedAt": "2025-05-18T11:03:59.895Z",
   "data": {
     "nodes": [
       {
@@ -37,11 +37,11 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
         "className": "",
         "hidden": false,
-        "selected": true,
+        "selected": false,
         "dragging": false
       },
       {
@@ -53,11 +53,12 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
-        "selected": false,
+        "selected": true,
         "dragging": false,
-        "className": ""
+        "className": "",
+        "hidden": false
       }
     ],
     "edges": [
@@ -66,7 +67,6 @@
         "source": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
         "target": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
         "hidden": false,
-        "type": "chat",
         "animated": false,
         "selected": false,
         "markerEnd": {
@@ -80,12 +80,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
-        "targetHandle": "agent-handle-left-target-wa-1747132751423TuUidB_jxVHLPGQ4htC1d"
+        "targetHandle": "agent-handle-left-target-wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+        "type": "chat"
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
+      "x": 119,
+      "y": 42,
       "zoom": 1
     },
     "agents": {
@@ -93,7 +94,6 @@
       "assistantAgents": [
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Joe",
           "description": "Joe is a standup comedian.",
           "tags": [],
@@ -112,7 +112,9 @@
               "criterion": null,
               "methodContent": null
             },
-            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "modelIds": [
+              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -126,11 +128,11 @@
             "updateAgentStateBeforeReply": [],
             "isMultimodal": false
           },
-          "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0"
+          "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Cathy",
           "description": "Cathy is a standup comedian.",
           "tags": [],
@@ -149,7 +151,9 @@
               "criterion": null,
               "methodContent": null
             },
-            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "modelIds": [
+              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -163,7 +167,8 @@
             "updateAgentStateBeforeReply": [],
             "isMultimodal": false
           },
-          "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d"
+          "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+          "agentType": "assistant"
         }
       ],
       "ragUserProxyAgents": [],
@@ -180,7 +185,7 @@
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-13T10:38:10.009Z",
-        "updatedAt": "2025-05-13T10:38:38.748Z",
+        "updatedAt": "2025-05-18T11:03:44.707Z",
         "data": {
           "apiKey": "REPLACE_ME",
           "apiType": "openai",
@@ -189,6 +194,14 @@
           "temperature": null,
           "topP": null,
           "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
           "defaultHeaders": {},
           "price": {
             "promptPricePer1k": null,
@@ -234,7 +247,6 @@
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": 41
+    "isAsync": false
   }
 }

@@ -1,7 +1,7 @@
 {
-  "id": "wf-DueAxlSyuH0fWLsJmqWVm",
+  "id": "wf-osoltxd5mw7QJIKrEZgbD",
   "type": "flow",
-  "storageId": "wf-DueAxlSyuH0fWLsJmqWVm",
+  "storageId": "wf-osoltxd5mw7QJIKrEZgbD",
   "name": "Standup comedians 3",
   "description": "Standup comedians without user input, with termination keywords.",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-13T10:49:00.617Z",
-  "updatedAt": "2025-05-13T11:01:53.544Z",
+  "updatedAt": "2025-05-18T11:09:19.533Z",
   "data": {
     "nodes": [
       {
@@ -37,7 +37,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
         "className": "",
         "hidden": false,
@@ -53,9 +53,9 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
-        "selected": false,
+        "selected": true,
         "dragging": false,
         "className": "",
         "hidden": false
@@ -114,7 +114,9 @@
               "criterion": "found",
               "methodContent": null
             },
-            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "modelIds": [
+              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -153,7 +155,9 @@
               "criterion": "found",
               "methodContent": null
             },
-            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "modelIds": [
+              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -185,7 +189,7 @@
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-13T10:38:10.009Z",
-        "updatedAt": "2025-05-13T10:56:41.205Z",
+        "updatedAt": "2025-05-18T11:09:09.653Z",
         "data": {
           "apiKey": "REPLACE_ME",
           "apiType": "openai",
@@ -194,6 +198,14 @@
           "temperature": null,
           "topP": null,
           "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
           "defaultHeaders": {},
           "price": {
             "promptPricePer1k": null,
@@ -239,7 +251,6 @@
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": 41
+    "isAsync": false
   }
 }

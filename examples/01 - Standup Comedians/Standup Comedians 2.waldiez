@@ -1,7 +1,7 @@
 {
-  "id": "wf-0qlIi5lX3LrSnjUs8gmcA",
+  "id": "wf-osoltxd5mw7QJIKrEZgbD",
   "type": "flow",
-  "storageId": "wf-0qlIi5lX3LrSnjUs8gmcA",
+  "storageId": "wf-osoltxd5mw7QJIKrEZgbD",
   "name": "Standup comedians 2",
   "description": "Standup comedians without user input.",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-13T10:49:00.617Z",
-  "updatedAt": "2025-05-13T10:53:38.652Z",
+  "updatedAt": "2025-05-18T11:06:55.886Z",
   "data": {
     "nodes": [
       {
@@ -37,11 +37,11 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
         "className": "",
         "hidden": false,
-        "selected": true,
+        "selected": false,
         "dragging": false
       },
       {
@@ -53,9 +53,9 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
-        "selected": false,
+        "selected": true,
         "dragging": false,
         "className": "",
         "hidden": false
@@ -85,8 +85,8 @@
       }
     ],
     "viewport": {
-      "x": 122.5,
-      "y": 185.5,
+      "x": 20,
+      "y": 40,
       "zoom": 1
     },
     "agents": {
@@ -112,7 +112,9 @@
               "criterion": null,
               "methodContent": null
             },
-            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "modelIds": [
+              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -149,7 +151,9 @@
               "criterion": null,
               "methodContent": null
             },
-            "modelId": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+            "modelIds": [
+              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -181,7 +185,7 @@
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-13T10:38:10.009Z",
-        "updatedAt": "2025-05-13T10:45:28.628Z",
+        "updatedAt": "2025-05-18T11:06:37.254Z",
         "data": {
           "apiKey": "REPLACE_ME",
           "apiType": "openai",
@@ -190,6 +194,14 @@
           "temperature": null,
           "topP": null,
           "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
           "defaultHeaders": {},
           "price": {
             "promptPricePer1k": null,
@@ -235,7 +247,6 @@
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": 41
+    "isAsync": false
   }
 }
