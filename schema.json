@@ -248,8 +248,11 @@
                 "termination": {
                     "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
                 },
-                "modelId": {
-                    "type": ["string", "null"]
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tools": {
                     "type": "array",
@@ -289,7 +292,7 @@
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
-                "modelId",
+                "modelIds",
                 "nestedChats",
                 "systemMessage",
                 "termination",
@@ -775,8 +778,11 @@
                 "termination": {
                     "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
                 },
-                "modelId": {
-                    "type": ["string", "null"]
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tools": {
                     "type": "array",
@@ -820,7 +826,7 @@
                 "humanInputMode",
                 "isMultimodal",
                 "maxConsecutiveAutoReply",
-                "modelId",
+                "modelIds",
                 "nestedChats",
                 "systemMessage",
                 "termination",
@@ -910,8 +916,11 @@
                 "termination": {
                     "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
                 },
-                "modelId": {
-                    "type": ["string", "null"]
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tools": {
                     "type": "array",
@@ -954,7 +963,7 @@
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
-                "modelId",
+                "modelIds",
                 "nestedChats",
                 "retrieveConfig",
                 "systemMessage",
@@ -1212,8 +1221,11 @@
                 "termination": {
                     "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
                 },
-                "modelId": {
-                    "type": ["string", "null"]
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tools": {
                     "type": "array",
@@ -1259,7 +1271,7 @@
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
-                "modelId",
+                "modelIds",
                 "nestedChats",
                 "reasonConfig",
                 "systemMessage",
@@ -1399,8 +1411,11 @@
                 "termination": {
                     "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
                 },
-                "modelId": {
-                    "type": ["string", "null"]
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tools": {
                     "type": "array",
@@ -1459,7 +1474,7 @@
                 "maxConsecutiveAutoReply",
                 "maxRound",
                 "maxTurns",
-                "modelId",
+                "modelIds",
                 "nestedChats",
                 "systemMessage",
                 "termination",
@@ -1566,8 +1581,11 @@
                 "termination": {
                     "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
                 },
-                "modelId": {
-                    "type": ["string", "null"]
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "tools": {
                     "type": "array",
@@ -1630,7 +1648,7 @@
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
                 "maxRound",
-                "modelId",
+                "modelIds",
                 "nestedChats",
                 "speakers",
                 "systemMessage",
