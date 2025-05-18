@@ -12,7 +12,7 @@ import { ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/types"
 /**
  * Modal component for collecting user input with optional image upload
  */
-// eslint-disable-next-line complexity
+
 export const ChatModal = memo((props: ChatModalProps) => {
     const { flowId, chat } = props;
 
@@ -134,11 +134,10 @@ export const ChatModal = memo((props: ChatModalProps) => {
      * Close modal
      */
     const handleClose = useCallback(() => {
-        // chat?.handlers?.onUserInput?(createInputResponse(false));
-
         // Reset input state
         setTextInput("");
         setImagePreview(null);
+        chat?.handlers?.onClose?.();
     }, []);
 
     /**
@@ -175,19 +174,19 @@ export const ChatModal = memo((props: ChatModalProps) => {
     );
 
     // Generate unique IDs for accessibility
-    const inputId = `rf-${flowId}-user-input-modal-input`;
-    const imageInputId = `rf-${flowId}-user-input-modal-image`;
-    const modalTestId = `rf-${flowId}-user-input-modal`;
-
-    // console.log("Chat Modal Rendered, messages:", chat?.messages);
+    const inputId = `rf-${flowId}-chat-modal-input`;
+    const imageInputId = `rf-${flowId}-chat-modal-image`;
+    const modalTestId = `rf-${flowId}-chat-modal`;
+    const isModalOpen = chat?.showUI === true || (chat !== undefined && chat.messages.length > 0);
 
     return (
         <Modal
+            id={modalTestId}
             title="Chat"
-            isOpen={chat?.showUI === true || (!!chat?.messages && chat?.messages.length > 0)}
+            isOpen={isModalOpen}
             onClose={handleClose}
             onCancel={handleCancel}
-            className="user-input-modal"
+            className="chat-modal"
             hasMaximizeBtn={true}
             hasCloseBtn={chat?.showUI === false}
             dataTestId={modalTestId}
@@ -264,7 +263,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
                             disabled={chat?.activeRequest?.request_id === undefined}
                             onClick={handleSubmit}
                             className="chat-send-button"
-                            data-testid={`rf-${flowId}-user-input-modal-submit`}
+                            data-testid={`rf-${flowId}-chat-modal-submit`}
                             aria-label="Send message"
                         >
                             <IoIosSend size={20} aria-hidden="true" />

@@ -211,6 +211,7 @@ export const useModal = (props: {
 
     // Effect to open/close the modal when isOpen changes
     useEffect(() => {
+        // console.log("Modal open state changed:", isOpen);
         setModalOpen(isOpen);
     }, [isOpen, setModalOpen]);
 

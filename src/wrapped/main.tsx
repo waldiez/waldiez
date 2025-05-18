@@ -27,7 +27,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
     // Use the custom hook to get state and actions
     const [
         { messages, userParticipants, isRunning, inputPrompt },
-        { handleRun, handleSave, handleUpload, handleConvert, handleUserInput },
+        { handleRun, handleSave, handleUpload, handleConvert, handleUserInput, reset },
     ] = useWaldiezWrapper({ wsUrl });
 
     // Assemble props for the Waldiez component
@@ -44,6 +44,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
             activeRequest: inputPrompt,
             handlers: {
                 onUserInput: handleUserInput,
+                onClose: reset,
             },
         },
     };

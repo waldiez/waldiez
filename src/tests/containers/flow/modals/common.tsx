@@ -37,9 +37,9 @@ export const renderFlow = (
     const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0]] : nodes;
     const edgesToUse = singleAgent ? [] : edges;
     const Wrapper = () => {
-        const [isUserInputModalOpen, setIsUserInputModalOpen] = useState<boolean>(includeUserInput);
+        const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(includeUserInput);
         const onUserInputCb = (_: WaldiezChatUserInput) => {
-            setIsUserInputModalOpen(false);
+            setIsChatModalOpen(false);
             if (options.onUserInput) {
                 options.onUserInput(_);
             }
@@ -74,7 +74,7 @@ export const renderFlow = (
                                     chat={
                                         includeUserInput
                                             ? {
-                                                  showUI: isUserInputModalOpen,
+                                                  showUI: isChatModalOpen,
                                                   messages: options.previousMessages || [],
                                                   userParticipants: userInputProp.userParticipants,
                                                   activeRequest: {
@@ -84,11 +84,8 @@ export const renderFlow = (
                                                   },
                                                   handlers: {
                                                       onUserInput: onUserInputCb,
-                                                      onChatMessage: () => {
-                                                          // Handle chat message
-                                                      },
-                                                      onChatError: () => {
-                                                          // Handle chat error
+                                                      onClose: () => {
+                                                          setIsChatModalOpen(false);
                                                       },
                                                   },
                                               }

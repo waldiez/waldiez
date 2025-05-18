@@ -49,12 +49,12 @@
   height: 100%;
 }
 
-.flow-wrapper .user-input-modal .input-prompt {
+.flow-wrapper .chat-modal .input-prompt {
   margin: 10px 4px;
 }
 
 .flow-wrapper .edit-flow-modal .modal-actions,
-.flow-wrapper .user-input-modal .modal-actions {
+.flow-wrapper .chat-modal .modal-actions {
   margin-top: 1rem;
 }
 

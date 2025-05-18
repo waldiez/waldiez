@@ -493,8 +493,9 @@ exports[`All > should render Waldiez components 1`] = `
           </div>
         </div>
         <dialog
-          class="modal no-wheel no-pan no-drag user-input-modal"
-          data-testid="rf-test-flow-user-input-modal"
+          class="modal no-wheel no-pan no-drag chat-modal"
+          data-testid="rf-test-flow-chat-modal"
+          id="rf-test-flow-chat-modal"
           style="top: 50px; left: 10px;"
         >
           <div
@@ -567,9 +568,9 @@ exports[`All > should render Waldiez components 1`] = `
                   autocomplete="off"
                   autocorrect="off"
                   class="chat-text-input"
-                  data-testid="rf-test-flow-user-input-modal-input"
+                  data-testid="rf-test-flow-chat-modal-input"
                   disabled=""
-                  id="rf-test-flow-user-input-modal-input"
+                  id="rf-test-flow-chat-modal-input"
                   placeholder="Enter your message here"
                   type="text"
                   value=""
@@ -579,7 +580,7 @@ exports[`All > should render Waldiez components 1`] = `
                 >
                   <label
                     class="chat-upload-button"
-                    for="rf-test-flow-user-input-modal-image"
+                    for="rf-test-flow-chat-modal-image"
                   >
                     <svg
                       aria-hidden="true"
@@ -606,16 +607,16 @@ exports[`All > should render Waldiez components 1`] = `
                       accept="image/*"
                       aria-label="Upload an image"
                       class="chat-upload-input"
-                      data-testid="rf-test-flow-user-input-modal-image"
+                      data-testid="rf-test-flow-chat-modal-image"
                       disabled=""
-                      id="rf-test-flow-user-input-modal-image"
+                      id="rf-test-flow-chat-modal-image"
                       type="file"
                     />
                   </label>
                   <button
                     aria-label="Send message"
                     class="chat-send-button"
-                    data-testid="rf-test-flow-user-input-modal-submit"
+                    data-testid="rf-test-flow-chat-modal-submit"
                     disabled=""
                     title="Send"
                     type="button"
@@ -1126,8 +1127,9 @@ exports[`All > should render Waldiez components 1`] = `
         </div>
       </div>
       <dialog
-        class="modal no-wheel no-pan no-drag user-input-modal"
-        data-testid="rf-test-flow-user-input-modal"
+        class="modal no-wheel no-pan no-drag chat-modal"
+        data-testid="rf-test-flow-chat-modal"
+        id="rf-test-flow-chat-modal"
         style="top: 50px; left: 10px;"
       >
         <div
@@ -1200,9 +1202,9 @@ exports[`All > should render Waldiez components 1`] = `
                 autocomplete="off"
                 autocorrect="off"
                 class="chat-text-input"
-                data-testid="rf-test-flow-user-input-modal-input"
+                data-testid="rf-test-flow-chat-modal-input"
                 disabled=""
-                id="rf-test-flow-user-input-modal-input"
+                id="rf-test-flow-chat-modal-input"
                 placeholder="Enter your message here"
                 type="text"
                 value=""
@@ -1212,7 +1214,7 @@ exports[`All > should render Waldiez components 1`] = `
               >
                 <label
                   class="chat-upload-button"
-                  for="rf-test-flow-user-input-modal-image"
+                  for="rf-test-flow-chat-modal-image"
                 >
                   <svg
                     aria-hidden="true"
@@ -1239,16 +1241,16 @@ exports[`All > should render Waldiez components 1`] = `
                     accept="image/*"
                     aria-label="Upload an image"
                     class="chat-upload-input"
-                    data-testid="rf-test-flow-user-input-modal-image"
+                    data-testid="rf-test-flow-chat-modal-image"
                     disabled=""
-                    id="rf-test-flow-user-input-modal-image"
+                    id="rf-test-flow-chat-modal-image"
                     type="file"
                   />
                 </label>
                 <button
                   aria-label="Send message"
                   class="chat-send-button"
-                  data-testid="rf-test-flow-user-input-modal-submit"
+                  data-testid="rf-test-flow-chat-modal-submit"
                   disabled=""
                   title="Send"
                   type="button"

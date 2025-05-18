@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
 import { renderConfirmationContent } from "@waldiez/components/modal/confirmation";
@@ -32,6 +32,7 @@ type ModalProps = {
 export const Modal = memo<ModalProps>(props => {
     const {
         id,
+        isOpen,
         dataTestId = "modal-dialog",
         beforeTitle,
         title,
@@ -72,6 +73,14 @@ export const Modal = memo<ModalProps>(props => {
     ]
         .filter(Boolean)
         .join(" ");
+
+    useEffect(() => {
+        if (isOpen) {
+            modalRef.current?.showModal();
+        } else {
+            modalRef.current?.close();
+        }
+    }, [isOpen]);
 
     return (
         <dialog

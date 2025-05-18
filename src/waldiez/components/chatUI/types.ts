@@ -143,17 +143,16 @@ export type WaldiezStreamEvent =
 /**
  * Chat handlers type
  * @param onUserInput - Callback for user input
- * @param onChatMessage - Callback for chat messages
  * @param onMediaUpload - Callback for media uploads
  * @param onChatError - Callback for chat errors
  * @param onMessageStreamEvent - Callback for message stream events
  */
 export type WaldiezChatHandlers = {
     onUserInput?: (input: WaldiezChatUserInput) => void;
-    onChatMessage?: (message: WaldiezChatMessage) => void;
     onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
     onChatError?: (error: WaldiezChatError) => void;
     onMessageStreamEvent?: (event: WaldiezStreamEvent) => void;
+    onClose?: () => void;
 };
 
 /**

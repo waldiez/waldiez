@@ -274,6 +274,7 @@
   color: #ff6b6b;
 }
 
+.flow-wrapper .system-message,
 .flow-wrapper .request-message {
   align-self: center;
   background-color: #e6f7ff;
@@ -283,6 +284,7 @@
   font-weight: 500;
 }
 
+.flow-wrapper .system-message,
 .flow-wrapper.dark .request-message {
   background-color: rgb(24 144 255 / 20%);
   color: #69c0ff;

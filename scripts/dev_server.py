@@ -9,6 +9,7 @@ import asyncio
 import base64
 import json
 import logging
+import os
 import sys
 import traceback
 from pathlib import Path
@@ -28,7 +29,7 @@ except ImportError:
 
 from waldiez.io.ws import AsyncWebsocketsIOStream
 
-nest_asyncio.apply()
+nest_asyncio.apply()  # pyright: ignore
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("waldiez-dev-server")
 
@@ -40,7 +41,7 @@ SAVE_PATH = MY_DIR / "save"
 UPLOADS_DIR = MY_DIR / "uploads"
 PUBLIC_DIR = ROOT_DIR / "public"
 if PUBLIC_DIR.exists():
-    UPLOADS_DIR = PUBLIC_DIR / "uploads"
+    UPLOADS_DIR = PUBLIC_DIR / "uploads"  # pyright: ignore
 # Create directories if they don't exist
 SAVE_PATH.mkdir(exist_ok=True, parents=True)
 UPLOADS_DIR.mkdir(exist_ok=True, parents=True)
@@ -286,7 +287,7 @@ class WaldiezDevServer:
         """
         to_log = f"Handling upload action for {len(files)} files"
         logger.info(to_log)
-        file_paths = []
+        file_paths: list[str] = []
 
         for file_data in files:
             filename = file_data.get("name")
@@ -398,14 +399,33 @@ class WaldiezDevServer:
             await asyncio.Future()  # Run forever
 
 
+def get_default_dev_port() -> int:
+    """Get the development port from the environment variable or default value.
+
+    Returns
+    -------
+    int
+        The development port.
+    """
+    fallback_port = int(os.environ.get("DEV_PORT", "7654"))
+    dev_ws_url = os.environ.get("VITE_DEV_WS_URL", "")
+    if dev_ws_url:
+        try:
+            return int(dev_ws_url.split(":")[-1])
+        except ValueError:
+            logger.error("Invalid port number in VITE_DEV_WS_URL")
+            return fallback_port
+    return fallback_port
+
+
 if __name__ == "__main__":
-    DEV_PORT = 7654
+    dev_port = get_default_dev_port()
     if "--port" in sys.argv:
         try:
             port_index = sys.argv.index("--port") + 1
-            DEV_PORT = int(sys.argv[port_index])
+            dev_port = int(sys.argv[port_index])  # pyright: ignore
         except (ValueError, IndexError):
             logger.error("Invalid port number provided.")
             sys.exit(1)
-    server = WaldiezDevServer(port=DEV_PORT)
+    server = WaldiezDevServer(port=dev_port)
     asyncio.run(server.serve())

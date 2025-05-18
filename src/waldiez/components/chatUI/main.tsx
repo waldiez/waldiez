@@ -49,6 +49,9 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, userParticipants }) =>
             if (msg.type === "input_request") {
                 return "request-message";
             }
+            if (["system", "termination"].includes(msg.type)) {
+                return "system-message";
+            }
             return "assistant-message"; // generic class for non-user senders
         },
         [userParticipants],

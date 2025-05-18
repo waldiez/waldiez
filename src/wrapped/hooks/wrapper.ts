@@ -114,9 +114,11 @@ export const useWaldiezWrapper = ({
                 console.log("Input response received:", data.response);
                 break;
             case "termination":
-                console.log("flow terminated:", data);
-                setIsRunning(false);
+                handleFlowTermination(data);
                 break;
+            // default:
+            //     console.warn("Unknown message type:", data.type);
+            //     break;
         }
     };
     const { getNewChatMessage } = useWaldiezMessages({
@@ -142,6 +144,33 @@ export const useWaldiezWrapper = ({
         }
     };
 
+    /**
+     * Handle flow termination
+     */
+    const handleFlowTermination = (data: WebSocketResponse) => {
+        if (
+            data.content &&
+            typeof data.content === "object" &&
+            data.content !== null &&
+            "termination_reason" in data.content &&
+            typeof data.content.termination_reason === "string"
+        ) {
+            const terminationMessage: WaldiezChatMessage = {
+                id: nanoid(),
+                timestamp: new Date().toISOString(),
+                type: "system",
+                content: [
+                    {
+                        type: "text",
+                        text: data.content.termination_reason,
+                    },
+                ],
+            };
+            setMessages(prevMessages => [...prevMessages, terminationMessage]);
+        }
+        setIsRunning(false);
+        setInputPrompt(undefined);
+    };
     /**
      * Handle input request messages
      */

@@ -22,7 +22,7 @@ export const useWebSocketActions = ({
     isRunning: boolean;
     setError: (error: string | null) => void;
     reset: () => void;
-    setIsRunning: (isRunning: boolean) => void;
+    setIsRunning: React.Dispatch<React.SetStateAction<boolean>>;
     setInputPrompt: (prompt: any) => void;
 }) => {
     /**
@@ -49,7 +49,7 @@ export const useWebSocketActions = ({
 
             wsRef.current.send(JSON.stringify(message));
         },
-        [connected, isRunning],
+        [connected, isRunning, reset, setIsRunning],
     );
 
     /**
