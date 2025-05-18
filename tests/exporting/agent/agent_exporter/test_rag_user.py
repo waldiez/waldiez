@@ -60,7 +60,7 @@ def test_export_rag_user() -> None:
         f"{tab}is_termination_msg=None," + "\n"
         f"{tab}retrieve_config={{" + "\n"
         f'{tab}{tab}"task": "default",' + "\n"
-        f'{tab}{tab}"model": "model1_1",' + "\n"
+        f'{tab}{tab}"model": "all-MiniLM-L6-v2",' + "\n"
         f'{tab}{tab}"customized_answer_prefix": "",' + "\n"
         f'{tab}{tab}"new_docs": True,' + "\n"
         f'{tab}{tab}"update_context": True,' + "\n"

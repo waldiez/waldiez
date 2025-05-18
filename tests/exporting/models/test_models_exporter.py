@@ -29,7 +29,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         agent_type="assistant",
         description="agent description",
         data={  # type: ignore
-            "model_id": "wm-1",
+            "model_ids": ["wm-1"],
         },
     )
     agent_names = {"wa-1": "agent1"}
@@ -119,7 +119,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         agent_type="assistant",
         description="agent description",
         data={  # type: ignore
-            "model_id": None,
+            "model_ids": [],
         },
     )
     models_exporter = ModelsExporter(
@@ -157,7 +157,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         agent_type="assistant",
         description="agent description",
         data={  # type: ignore
-            "model_id": None,
+            "model_ids": [],
         },
     )
     models_exporter = ModelsExporter(

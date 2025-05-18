@@ -58,7 +58,7 @@ def test_waldiez_flow() -> None:
                 keywords=["TERMINATE"],
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
         ),
@@ -85,7 +85,7 @@ def test_waldiez_flow() -> None:
                 keywords=["TERMINATE"],
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
         ),
@@ -112,7 +112,7 @@ def test_waldiez_flow() -> None:
                 keywords=["TERMINATE"],
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
             retrieve_config=WaldiezRagUserProxyRetrieveConfig(
@@ -176,7 +176,7 @@ def test_waldiez_flow() -> None:
                 keywords=["TERMINATE"],
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
             reason_config=WaldiezReasoningAgentReasonConfig(
@@ -327,6 +327,7 @@ def test_waldiez_flow() -> None:
     )
     # When
     flow1 = WaldiezFlow(
+        id="wf-1",
         name="flow",
         type="flow",
         description="Flow",
@@ -442,7 +443,7 @@ def test_waldiez_flow() -> None:
                 keywords=["TERMINATE"],
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
         ),

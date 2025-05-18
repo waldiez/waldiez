@@ -54,7 +54,7 @@ def get_runnable_flow() -> WaldiezFlow:
                 criterion="found",
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
         ),
@@ -81,7 +81,7 @@ def get_runnable_flow() -> WaldiezFlow:
                 criterion="found",
                 method_content=None,
             ),
-            model_id=None,
+            model_ids=[],
             tools=[],
             nested_chats=[],
         ),
@@ -227,8 +227,8 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
             requirements=[],
             created_at="2021-01-01T00:00:00.000Z",
             updated_at="2021-01-01T00:00:00.000Z",
-            data=WaldiezCaptainAgentData(
-                model_id="wm-1",
+            data=WaldiezCaptainAgentData(  # pyright: ignore
+                model_ids=["wm-1"],
             ),
         )
     ]

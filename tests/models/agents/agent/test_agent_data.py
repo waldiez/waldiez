@@ -22,7 +22,7 @@ def test_waldiez_agent_data() -> None:
             criterion=None,
             method_content=None,
         ),
-        model_id="wm-1",
+        model_ids=["wm-1"],
         tools=[],
         nested_chats=[],
     )
@@ -35,7 +35,7 @@ def test_waldiez_agent_data() -> None:
     assert not agent_data.termination.keywords
     assert agent_data.termination.criterion is None
     assert agent_data.termination.method_content is None
-    assert agent_data.model_id == "wm-1"
+    assert agent_data.model_ids[0] == "wm-1"
     assert not agent_data.tools
     assert not agent_data.nested_chats
 
@@ -54,7 +54,7 @@ def test_is_multimodal() -> None:
             criterion=None,
             method_content=None,
         ),
-        model_id="wm-1",
+        model_ids=["wm-1"],
         tools=[],
         nested_chats=[],
         is_multimodal=True,

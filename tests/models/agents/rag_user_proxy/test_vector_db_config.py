@@ -30,7 +30,7 @@ def test_waldiez_rag_user_vector_db_config() -> None:
     assert vector_db_config.connection_url is None
     assert vector_db_config.wait_until_index_ready is None
     assert vector_db_config.wait_until_document_ready is None
-    assert vector_db_config.metadata == {}
+    assert not vector_db_config.metadata
 
 
 def test_waldiez_rag_user_vector_db_config_local_storage() -> None:
@@ -54,7 +54,7 @@ def test_waldiez_rag_user_vector_db_config_local_storage() -> None:
     assert vector_db_config.connection_url is None
     assert vector_db_config.wait_until_index_ready is None
     assert vector_db_config.wait_until_document_ready is None
-    assert vector_db_config.metadata == {}
+    assert not vector_db_config.metadata
 
     with pytest.raises(ValueError):
         WaldiezRagUserProxyVectorDbConfig(

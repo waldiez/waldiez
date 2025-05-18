@@ -49,7 +49,7 @@ def test_waldiez_agent() -> None:
                 last_n_messages=5,
                 functions=["ws-1"],
             ),
-            model_id="wm-1",
+            model_ids=["wm-1"],
             tools=[
                 WaldiezAgentLinkedTool(
                     id="ws-1",
@@ -84,26 +84,26 @@ def test_waldiez_agent() -> None:
 
 def test_agent_ag2_class() -> None:
     """Test WaldiezAgent.ag2_class."""
-    user_proxy = WaldiezUserProxy(
+    user_proxy = WaldiezUserProxy(  # pyright: ignore
         id="wa-1",
         name="user_proxy",
     )
-    assistant = WaldiezAssistant(
+    assistant = WaldiezAssistant(  # pyright: ignore
         id="wa-2",
         name="assistant",
     )
-    rag_user = WaldiezRagUserProxy(
+    rag_user = WaldiezRagUserProxy(  # pyright: ignore
         id="wa-4",
         name="rag_user",
     )
-    multimodal_agent = WaldiezAssistant(
+    multimodal_agent = WaldiezAssistant(  # pyright: ignore
         id="wa-5",
         name="multimodal_agent",
-        data=WaldiezAssistantData(
+        data=WaldiezAssistantData(  # pyright: ignore
             is_multimodal=True,
         ),
     )
-    reasoning_agent = WaldiezReasoningAgent(
+    reasoning_agent = WaldiezReasoningAgent(  # pyright: ignore
         id="wa-7",
         name="reasoning_agent",
     )
@@ -116,26 +116,26 @@ def test_agent_ag2_class() -> None:
 
 def test_agent_ag2_imports() -> None:
     """Test WaldiezAgent.ag2_imports."""
-    user_proxy = WaldiezUserProxy(
+    user_proxy = WaldiezUserProxy(  # pyright: ignore
         id="wa-1",
         name="user_proxy",
     )
-    assistant = WaldiezAssistant(
+    assistant = WaldiezAssistant(  # pyright: ignore
         id="wa-2",
         name="assistant",
     )
-    rag_user = WaldiezRagUserProxy(
+    rag_user = WaldiezRagUserProxy(  # pyright: ignore
         id="wa-4",
         name="rag_user",
     )
-    multimodal_agent = WaldiezAssistant(
+    multimodal_agent = WaldiezAssistant(  # pyright: ignore
         id="wa-5",
         name="multimodal_agent",
-        data=WaldiezAssistantData(
+        data=WaldiezAssistantData(  # pyright: ignore
             is_multimodal=True,
         ),
     )
-    reasoning_agent = WaldiezReasoningAgent(
+    reasoning_agent = WaldiezReasoningAgent(  # pyright: ignore
         id="wa-7",
         name="reasoning_agent",
     )

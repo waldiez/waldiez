@@ -19,7 +19,7 @@ def test_waldiez_group_manager() -> None:
         },
     )
     assert group_manager.data.human_input_mode == "NEVER"
-    assert group_manager.agent_type == "manager"
+    assert group_manager.agent_type == "group_manager"
 
     group_manager.validate_transitions(agent_ids=["wa-1"])
 
