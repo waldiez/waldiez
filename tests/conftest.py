@@ -3,6 +3,8 @@
 """Common fixtures for tests."""
 
 import os
+from pathlib import Path
+from typing import Generator
 
 import pytest
 
@@ -24,6 +26,8 @@ from waldiez.models import (
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
+
+ROOT_DIR = Path(__file__).parent.parent
 
 
 def get_runnable_flow() -> WaldiezFlow:
@@ -153,6 +157,26 @@ def get_runnable_flow() -> WaldiezFlow:
         updated_at="2021-01-01T00:00:00.000Z",
     )
     return flow
+
+
+@pytest.fixture(scope="session", autouse=True)
+def before_and_after_tests() -> Generator[None, None, None]:
+    """Fixture to run before and after all tests.
+
+    Yields
+    ------
+    None
+        Nothing.
+    """
+    # Code to run before all tests
+    print("Running setup before all tests...")
+
+    yield
+    if (ROOT_DIR / "flow_name.mmd").exists():  # leftover?
+        try:
+            (ROOT_DIR / "flow_name.mmd").unlink()
+        except OSError:
+            pass
 
 
 @pytest.fixture(scope="function")
