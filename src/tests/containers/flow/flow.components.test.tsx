@@ -36,13 +36,13 @@ describe("WaldiezFlow Nodes and Edges", () => {
         fireEvent.click(screen.getByTestId("rf__edge-edge-1"));
         expect(onChange).toHaveBeenCalled();
     });
-    it("should display the agent's linked model", async () => {
+    it("should display the agent's linked models", async () => {
         act(() => {
             renderFlow({
                 withLinkedModels: true,
             });
         });
-        const linkedModelNameView = screen.getByTestId("agent-agent-0-linked-model");
+        const linkedModelNameView = screen.getByTestId("agent-agent-0-linked-model-0");
         expect(linkedModelNameView.textContent).toBe("Model Node 0");
     });
     it("should display the agents' linked tools", async () => {
@@ -61,7 +61,7 @@ describe("WaldiezFlow Nodes and Edges", () => {
                 withLinkedTools: true,
             });
         });
-        const linkedModelNameView = screen.getByTestId("agent-agent-0-linked-model");
+        const linkedModelNameView = screen.getByTestId("agent-agent-0-linked-model-0");
         expect(linkedModelNameView.textContent).toBe("Model Node 0");
         const linkedToolNameView = screen.getByTestId("agent-agent-0-linked-tool-0");
         expect(linkedToolNameView.textContent).toBe("Tool Node 0");

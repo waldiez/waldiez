@@ -126,14 +126,14 @@ export const getModelNodes = () => {
     const model1 = modelMapper.asNode(
         modelMapper.importModel({
             ...modelData,
-            name: "test model1",
+            name: "test model 1",
         }),
     );
     model1.id = "test-model1";
     const model2 = modelMapper.asNode(
         modelMapper.importModel({
             ...modelData,
-            name: "test model2",
+            name: "test model 2",
         }),
     );
     model2.id = "test-model2";

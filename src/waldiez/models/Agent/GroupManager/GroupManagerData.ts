@@ -22,7 +22,7 @@ import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupMan
  * @param agentDefaultAutoReply - The default auto reply of the agent
  * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
  * @param termination - The termination message check of the agent
- * @param modelId - The agent's model id
+ * @param modelIds - The agent's model ids
  * @param tools - The tools available to the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
@@ -63,7 +63,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
             agentDefaultAutoReply: string | null;
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
-            modelId: string | null;
+            modelIds: string[];
             tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
@@ -89,7 +89,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
                 criterion: null,
                 methodContent: null,
             },
-            modelId: null,
+            modelIds: [],
             tools: [],
             parentId: undefined,
             nestedChats: [

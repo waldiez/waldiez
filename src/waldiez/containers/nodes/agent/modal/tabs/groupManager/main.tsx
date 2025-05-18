@@ -17,7 +17,7 @@ import {
 } from "@waldiez/components";
 import { useGroupManagerTabs } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/hooks";
 import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
-import { WaldiezAgentModel } from "@waldiez/containers/nodes/agent/modal/tabs/model";
+import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
 import { GroupChatSpeakerSelectionMethodOption } from "@waldiez/models";
 
 /**
@@ -145,9 +145,9 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
             {/* Group Manager Tab */}
             <TabItem label="Group Manager" id={`wf-${flowId}-agent-group-manager-agent-${id}`}>
                 <div className="modal-body agent-panel">
-                    {/* Model Selection */}
+                    {/* Models Selection */}
                     <div>
-                        <WaldiezAgentModel
+                        <WaldiezAgentModels
                             id={id}
                             data={props.data}
                             models={models}

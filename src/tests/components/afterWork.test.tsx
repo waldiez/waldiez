@@ -41,7 +41,7 @@ const agents: WaldiezNodeAgent[] = [
             handoffs: [],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
-            modelId: null,
+            modelIds: [],
         },
     },
     {
@@ -74,7 +74,7 @@ const agents: WaldiezNodeAgent[] = [
             handoffs: [],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
-            modelId: null,
+            modelIds: [],
         },
     },
 ];

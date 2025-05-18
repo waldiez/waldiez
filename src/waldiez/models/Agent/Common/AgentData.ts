@@ -20,7 +20,7 @@ import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
  * @param agentDefaultAutoReply - Default auto reply
  * @param maxConsecutiveAutoReply - Maximum consecutive auto reply
  * @param termination - Termination message check
- * @param modelId - The agent's model id
+ * @param modelIds - The agent's model ids
  * @param tools - Tools available to the agent
  * @param parentId - Parent id
  * @param nestedChats - Nested chats
@@ -41,7 +41,7 @@ export class WaldiezAgentData {
     agentDefaultAutoReply: string | null;
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
-    modelId: string | null;
+    modelIds: string[];
     tools: WaldiezAgentLinkedTool[];
     parentId?: string;
     nestedChats: WaldiezAgentNestedChat[];
@@ -56,7 +56,7 @@ export class WaldiezAgentData {
             agentDefaultAutoReply: string | null;
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
-            modelId: string | null;
+            modelIds: string[];
             tools: WaldiezAgentLinkedTool[];
             parentId?: string;
             nestedChats: WaldiezAgentNestedChat[];
@@ -75,7 +75,7 @@ export class WaldiezAgentData {
                 criterion: null,
                 methodContent: null,
             },
-            modelId: null,
+            modelIds: [],
             tools: [],
             parentId: undefined,
             nestedChats: [
@@ -96,7 +96,7 @@ export class WaldiezAgentData {
         this.agentDefaultAutoReply = props.agentDefaultAutoReply;
         this.maxConsecutiveAutoReply = props.maxConsecutiveAutoReply;
         this.termination = props.termination;
-        this.modelId = props.modelId;
+        this.modelIds = props.modelIds;
         this.tools = props.tools;
         this.parentId = props.parentId;
         this.nestedChats = props.nestedChats;

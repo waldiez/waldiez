@@ -9,7 +9,7 @@ import { WaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/ba
 import { WaldiezAgentCaptainTab } from "@waldiez/containers/nodes/agent/modal/tabs/captain";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
 import { WaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group";
-import { WaldiezAgentModel } from "@waldiez/containers/nodes/agent/modal/tabs/model";
+import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
 import {
     WaldiezAgentGroupNestedChatTabs,
     WaldiezAgentNestedChats,
@@ -225,10 +225,10 @@ export const WaldiezNodeAgentModalTabs = memo(
                     </div>
                 </TabItem>
 
-                {/* Model Tab - Always visible */}
-                <TabItem label="Model" id={`wf-${flowId}-wa-${id}-model`}>
+                {/* Models Tab - Always visible */}
+                <TabItem label="Models" id={`wf-${flowId}-wa-${id}-models`}>
                     <div className="modal-tab-body">
-                        <WaldiezAgentModel id={id} data={data} models={models} onDataChange={onDataChange} />
+                        <WaldiezAgentModels id={id} data={data} models={models} onDataChange={onDataChange} />
                     </div>
                 </TabItem>
 

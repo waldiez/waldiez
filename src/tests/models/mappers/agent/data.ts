@@ -21,7 +21,7 @@ const baseData = {
         criterion: null,
         methodContent: null,
     },
-    modelId: null,
+    modelIds: [],
     tools: [],
     contextVariables: {},
     handoffs: [],

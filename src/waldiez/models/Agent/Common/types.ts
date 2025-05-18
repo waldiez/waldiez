@@ -101,7 +101,7 @@ export type WaldiezAgentLinkedTool = {
  * @param nestedChats - The nested chats
  * @param contextVariables - The context variables
  * @param handoffs - The handoffs
- * @param modelId - The agent's model id
+ * @param modelIds - The agent's model ids
  * @param tools - The tools available to the agent
  * @param tags - The tags
  * @param requirements - The requirements
@@ -131,7 +131,7 @@ export type WaldiezAgentCommonData = {
     updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
     handoffs: WaldiezAgentHandoff[];
     // links
-    modelId?: string | null;
+    modelIds: string[];
     tools: WaldiezAgentLinkedTool[];
     // meta
     tags: string[];

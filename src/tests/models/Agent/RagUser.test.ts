@@ -45,7 +45,7 @@ describe("WaldiezAgentRagUser", () => {
                 criterion: null,
                 methodContent: null,
             },
-            modelId: null,
+            modelIds: [],
             tools: [],
             parentId: undefined,
             nestedChats: [],

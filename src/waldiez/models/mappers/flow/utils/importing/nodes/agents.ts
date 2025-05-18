@@ -161,10 +161,8 @@ const validateAgents = (
 };
 
 const filterAgentModelIds = (agent: WaldiezAgent, modelIds: string[]) => {
-    if (agent.data.modelId) {
-        if (!modelIds.includes(agent.data.modelId)) {
-            agent.data.modelId = null;
-        }
+    if (agent.data.modelIds) {
+        agent.data.modelIds = agent.data.modelIds.filter(modelId => modelIds.includes(modelId));
     }
     return agent;
 };

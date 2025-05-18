@@ -174,11 +174,11 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         allNodes.forEach(node => {
             if (node.type === "agent") {
                 const agent = node as WaldiezNodeAgent;
-                if (agent.data.modelId === modelId) {
+                if (agent.data.modelIds.includes(modelId)) {
                     // if the model is linked to the agent, remove the link
                     newNodes.push({
                         ...agent,
-                        data: { ...agent.data, modelId: null },
+                        data: { ...agent.data, modelIds: agent.data.modelIds.filter(id => id !== modelId) },
                     });
                 } else {
                     // if the model is not linked to the agent, keep the agent

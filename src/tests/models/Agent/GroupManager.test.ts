@@ -53,7 +53,7 @@ describe("WaldiezAgentGroupManager", () => {
                 criterion: null,
                 methodContent: null,
             },
-            modelId: null,
+            modelIds: [],
             tools: [],
             parentId: undefined,
             nestedChats: [],
@@ -93,7 +93,7 @@ describe("WaldiezAgentGroupManager", () => {
             criterion: null,
             methodContent: null,
         });
-        expect(groupManager.data.modelId).toBeNull();
+        expect(groupManager.data.modelIds).toEqual([]);
         expect(groupManager.data.tools).toEqual([]);
         expect(groupManager.tags).toEqual([]);
         expect(groupManager.requirements).toEqual([]);

@@ -144,12 +144,16 @@ export const getMaximumConsecutiveAutoReply = (data: Record<string, unknown>): n
     return null;
 };
 
-export const getModelId = (data: Record<string, unknown>): string | null => {
-    let modelId: string | null = null;
-    if ("modelId" in data && typeof data.modelId === "string") {
-        modelId = data.modelId;
+export const getModelIds = (data: Record<string, unknown>): string[] => {
+    const modelIds: string[] = [];
+    if ("modelIds" in data && Array.isArray(data.modelIds)) {
+        for (const modelId of data.modelIds) {
+            if (typeof modelId === "string") {
+                modelIds.push(modelId);
+            }
+        }
     }
-    return modelId;
+    return modelIds;
 };
 
 export const getTools = (data: Record<string, unknown>): WaldiezAgentLinkedTool[] => {

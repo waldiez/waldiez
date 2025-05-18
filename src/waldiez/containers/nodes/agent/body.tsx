@@ -70,27 +70,33 @@ const useAgentModelView = (id: string, data: WaldiezNodeAgentData) => {
 
     return useMemo(() => {
         const models = getModels() as WaldiezNodeModel[];
-        const agentModel = data.modelId ? models.find(model => model.id === data.modelId) : null;
-
-        if (!agentModel) {
-            return <div className="agent-model-empty">No model</div>;
+        const agentModelNames = data.modelIds
+            .map(modelId => models.find(model => model.id === modelId)?.data.label ?? "")
+            .filter(entry => entry !== "");
+        const agentWaldiezModelAPITypes = data.modelIds
+            .map(modelId => models.find(model => model.id === modelId)?.data.apiType ?? "")
+            .filter(entry => entry !== "");
+        const agentModelLogos = agentWaldiezModelAPITypes
+            .map(apiType => LOGOS[apiType] ?? "")
+            .filter(entry => entry !== "");
+        if (agentModelNames.length === 0) {
+            return <div className="agent-models-empty">No models</div>;
         }
-
-        const agentModelName = agentModel.data.label;
-        const agentWaldiezModelAPIType = agentModel.data.apiType;
-        const agentModelLogo = LOGOS[agentWaldiezModelAPIType] ?? "";
-
         return (
-            <div className="agent-model-preview">
-                <div className={`agent-model-img ${agentWaldiezModelAPIType}`}>
-                    <img src={agentModelLogo} title={agentModelName} alt={agentModelName} />
-                </div>
-                <div className="agent-model-name" data-testid={`agent-${id}-linked-model`}>
-                    {agentModelName}
-                </div>
+            <div className="agent-models-preview">
+                {agentModelNames.map((name, index) => (
+                    <div key={name} className="agent-model-preview" data-testid="agent-model-preview">
+                        <div className={`agent-model-img ${agentWaldiezModelAPITypes[index]}`}>
+                            <img src={agentModelLogos[index]} title={name} alt={name} />
+                        </div>
+                        <div className="agent-model-name" data-testid={`agent-${id}-linked-model-${index}`}>
+                            {name}
+                        </div>
+                    </div>
+                ))}
             </div>
         );
-    }, [getModels, data.modelId, id]);
+    }, [getModels, data.modelIds, id]);
 };
 
 /**
