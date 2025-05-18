@@ -352,6 +352,7 @@ class WaldiezRunner:
         self,
         output_path: Optional[Union[str, Path]] = None,
         uploads_root: Optional[Union[str, Path]] = None,
+        skip_mmd: bool = False,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow asynchronously.
 
@@ -361,6 +362,8 @@ class WaldiezRunner:
             The output path, by default None.
         uploads_root : Optional[Union[str, Path]], optional
             The uploads root, to get user-uploaded files, by default None.
+        skip_mmd : bool, optional
+            Whether to skip the Mermaid diagram generation, by default False.
 
         Returns
         -------
@@ -377,6 +380,6 @@ class WaldiezRunner:
         self._running = True
         file_path = output_path or self._file_path
         try:
-            return await self._a_run(file_path, uploads_root)
+            return await self._a_run(file_path, uploads_root, skip_mmd)
         finally:
             self._running = False
