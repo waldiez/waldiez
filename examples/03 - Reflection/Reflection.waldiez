@@ -1,1 +1,707 @@
-{"id":"ie5JNxqy17FsDeG9zhgMN39IbFAD0wi9","type":"flow","storageId":"id-839ea839-b729-4950-8d7b-8c3898059fbf","name":"Reflection","description":"Reflection and Blog post Writing","tags":["Reflection","Blog post","Blog"],"requirements":[],"createdAt":"2025-01-30T09:01:49.999Z","updatedAt":"2025-01-30T09:01:58.985Z","data":{"nodes":[{"id":"wm-q9pCa-FMKoDx7mg9CnLSE","type":"model","position":{"x":0,"y":10},"measured":{"width":182,"height":182},"selected":false,"hidden":true},{"id":"wa-a8RbKi_KiGIhcq-gE78yX","type":"agent","position":{"x":375,"y":-60},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-KctrqMP6HkdGOPUvy08MV","type":"agent","position":{"x":-60,"y":300},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-8t3PrPuCNYcNWt0UGeO-Z","type":"agent","position":{"x":840,"y":0},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-JBOm7Ym5M5UgIDFy_pjkY","type":"agent","position":{"x":840,"y":225},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-Pim-mlD2C_CyhovWdL-Ll","type":"agent","position":{"x":840,"y":450},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-HmTaBbmSpfQxxxehWak4N","type":"agent","position":{"x":840,"y":675},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false}],"edges":[{"id":"we-ywH7FWbguevbtIgQetpJV","source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-a8RbKi_KiGIhcq-gE78yX","hidden":false,"animated":false,"selected":false,"style":{"stroke":"#66bc57","strokeWidth":3},"markerEnd":{"type":"arrowclosed","color":"#66bc57","width":10,"height":10},"sourceHandle":"agent-handle-right-source-wa-KctrqMP6HkdGOPUvy08MV","targetHandle":"agent-handle-left-target-wa-a8RbKi_KiGIhcq-gE78yX","type":"chat"},{"id":"we-lkx8JRqjUA3UkOH_QQcUO","source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-8t3PrPuCNYcNWt0UGeO-Z","hidden":false,"animated":true,"selected":false,"style":{"stroke":"#66bc57","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-KctrqMP6HkdGOPUvy08MV","targetHandle":"agent-handle-left-target-wa-8t3PrPuCNYcNWt0UGeO-Z","type":"nested"},{"id":"we-xnCAL69RytzBOQBGji2MW","source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-JBOm7Ym5M5UgIDFy_pjkY","hidden":false,"animated":true,"selected":false,"style":{"stroke":"#66bc57","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-KctrqMP6HkdGOPUvy08MV","targetHandle":"agent-handle-left-target-wa-JBOm7Ym5M5UgIDFy_pjkY","type":"nested"},{"id":"we-K7wvwRsCuAohDuvE83cHS","source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-Pim-mlD2C_CyhovWdL-Ll","hidden":false,"animated":true,"selected":false,"style":{"stroke":"#66bc57","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-KctrqMP6HkdGOPUvy08MV","targetHandle":"agent-handle-left-target-wa-Pim-mlD2C_CyhovWdL-Ll","type":"nested"},{"id":"we-v8-MOqqmY5PG7NpOzrpS2","source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-HmTaBbmSpfQxxxehWak4N","hidden":false,"animated":true,"selected":false,"style":{"stroke":"#66bc57","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-KctrqMP6HkdGOPUvy08MV","targetHandle":"agent-handle-left-target-wa-HmTaBbmSpfQxxxehWak4N","type":"nested"}],"viewport":{"x":665.9952392840382,"y":100.76139055605906,"zoom":0.7813278801723174},"agents":{"users":[],"assistants":[{"type":"agent","name":"Wtiter","description":"Writes blog posts.","tags":[],"requirements":[],"createdAt":"2024-09-27T15:26:47.499Z","updatedAt":"2024-09-27T15:54:07.155Z","data":{"systemMessage":"You are a writer. You write engaging and concise blog post (with title) on given topics. You must polish your writing based on the feedback you receive and give a refined version. Only return your final work without additional comments.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-q9pCa-FMKoDx7mg9CnLSE"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-a8RbKi_KiGIhcq-gE78yX","agentType":"assistant"},{"type":"agent","name":"Critic","description":"Reviews the work of the writer.","tags":[],"requirements":[],"createdAt":"2024-09-27T15:27:28.641Z","updatedAt":"2024-09-27T15:39:05.477Z","data":{"systemMessage":"You are a critic. You review the work of the writer and provide constructive feedback to help improve the quality of the content.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-q9pCa-FMKoDx7mg9CnLSE"],"tools":[],"parentId":null,"nestedChats":[{"triggeredBy":["wa-a8RbKi_KiGIhcq-gE78yX"],"messages":[{"id":"we-lkx8JRqjUA3UkOH_QQcUO","isReply":false},{"id":"we-xnCAL69RytzBOQBGji2MW","isReply":false},{"id":"we-K7wvwRsCuAohDuvE83cHS","isReply":false},{"id":"we-v8-MOqqmY5PG7NpOzrpS2","isReply":false}]}]},"id":"wa-KctrqMP6HkdGOPUvy08MV","agentType":"assistant"},{"type":"agent","name":"SEO reviewer","description":"SEO reviewer","tags":[],"requirements":[],"createdAt":"2024-09-27T15:28:16.660Z","updatedAt":"2024-09-27T15:54:07.155Z","data":{"systemMessage":"You are an SEO reviewer, known for your ability to optimize content for search engines, ensuring that it ranks well and attracts organic traffic. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-q9pCa-FMKoDx7mg9CnLSE"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-8t3PrPuCNYcNWt0UGeO-Z","agentType":"assistant"},{"type":"agent","name":"Legal reviewer","description":"Legal reviewer","tags":[],"requirements":[],"createdAt":"2024-09-27T15:28:57.390Z","updatedAt":"2024-09-27T15:54:07.155Z","data":{"systemMessage":"You are a legal reviewer, known for your ability to ensure that content is legally compliant and free from any potential legal issues. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-q9pCa-FMKoDx7mg9CnLSE"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-JBOm7Ym5M5UgIDFy_pjkY","agentType":"assistant"},{"type":"agent","name":"Ethics reviewer","description":"Ethics reviewer","tags":[],"requirements":[],"createdAt":"2024-09-27T15:29:34.889Z","updatedAt":"2024-09-27T15:54:07.155Z","data":{"systemMessage":"You are an ethics reviewer, known for your ability to ensure that content is ethically sound and free from any potential ethical issues. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-q9pCa-FMKoDx7mg9CnLSE"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-Pim-mlD2C_CyhovWdL-Ll","agentType":"assistant"},{"type":"agent","name":"Meta reviewer","description":"Meta reviewer","tags":[],"requirements":[],"createdAt":"2024-09-27T15:30:18.491Z","updatedAt":"2024-09-27T15:54:07.155Z","data":{"systemMessage":"You are a meta reviewer, you aggregate and review the work of other reviewers and give a final suggestion on the content.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-q9pCa-FMKoDx7mg9CnLSE"],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-HmTaBbmSpfQxxxehWak4N","agentType":"assistant"}],"managers":[],"rag_users":[],"swarm_agents":[],"reasoning_agents":[]},"models":[{"id":"wm-q9pCa-FMKoDx7mg9CnLSE","type":"model","name":"gpt-3.5-turbo","description":"OpenAI GPT-3.5","tags":[],"requirements":[],"createdAt":"2024-10-28T07:23:33.793Z","updatedAt":"2024-10-28T18:22:32.861Z","data":{"apiKey":"REPLACE_ME","apiType":"openai","apiVersion":null,"baseUrl":null,"temperature":0.5,"topP":null,"maxTokens":null,"defaultHeaders":{},"price":{"promptPricePer1k":null,"completionTokenPricePer1k":null}}}],"tools":[],"chats":[{"id":"we-ywH7FWbguevbtIgQetpJV","data":{"source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-a8RbKi_KiGIhcq-gE78yX","name":"Critic => Wtiter","order":0,"description":"New connection","position":1,"clearHistory":true,"maxTurns":2,"message":{"type":"string","content":"Write a concise but engaging blog post about DeepLearning.AI. Make sure the blog post is within 100 words.","context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-lkx8JRqjUA3UkOH_QQcUO","data":{"source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-8t3PrPuCNYcNWt0UGeO-Z","name":"Critic => SEO reviewer","order":-1,"description":"New connection","position":1,"clearHistory":true,"maxTurns":1,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":{"type":"method","use_carryover":false,"content":"\"\"\"Custom nested chat message function.\"\"\"\n# provide the message to be sent from the sender to the recipient in a nested chat\n# complete the `nested_chat_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the final message.\n# example:\n# def nested_chat_message(recipient, messages, sender, config):\n#    # type: (ConversableAgent, Optional[list[dict]], Optional[ConversableAgent], Optional[dict]) -> str | dict\n#    return f\"\"\"Review the following content.\n#            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n#\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n","context":{}},"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-xnCAL69RytzBOQBGji2MW","data":{"source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-JBOm7Ym5M5UgIDFy_pjkY","name":"Critic => Legal reviewer","order":-1,"description":"New connection","position":1,"clearHistory":true,"maxTurns":1,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":{"type":"method","use_carryover":false,"content":"\"\"\"Custom nested chat message function.\"\"\"\n# provide the message to be sent from the sender to the recipient in a nested chat\n# complete the `nested_chat_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the final message.\n# example:\n# def nested_chat_message(recipient, messages, sender, config):\n#    # type: (ConversableAgent, Optional[list[dict]], Optional[ConversableAgent], Optional[dict]) -> str | dict\n#    return f\"\"\"Review the following content.\n#            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n#\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n","context":{}},"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-K7wvwRsCuAohDuvE83cHS","data":{"source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-Pim-mlD2C_CyhovWdL-Ll","name":"Critic => Ethics reviewer","order":-1,"description":"New connection","position":3,"clearHistory":true,"maxTurns":1,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":{"type":"method","use_carryover":false,"content":"\"\"\"Custom nested chat message function.\"\"\"\n# provide the message to be sent from the sender to the recipient in a nested chat\n# complete the `nested_chat_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the final message.\n# example:\n# def nested_chat_message(recipient, messages, sender, config):\n#    # type: (ConversableAgent, Optional[list[dict]], Optional[ConversableAgent], Optional[dict]) -> str | dict\n#    return f\"\"\"Review the following content.\n#            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n#\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n","context":{}},"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-v8-MOqqmY5PG7NpOzrpS2","data":{"source":"wa-KctrqMP6HkdGOPUvy08MV","target":"wa-HmTaBbmSpfQxxxehWak4N","name":"Critic => Meta reviewer","order":-1,"description":"New connection","position":4,"clearHistory":true,"maxTurns":1,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":{"type":"string","use_carryover":false,"content":"Aggregate feedback from all reviewers and give final suggestions on the writing.","context":{}},"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}}],"isAsync":false}}
+{
+  "id": "wf-khwQ0W00rRZPEhhB_r_WA",
+  "type": "flow",
+  "storageId": "wf-khwQ0W00rRZPEhhB_r_WA",
+  "name": "Reflection",
+  "description": "Reflection and Blog post Writing",
+  "tags": [
+    "Reflection",
+    "Blog post"
+  ],
+  "requirements": [],
+  "createdAt": "2025-05-18T16:49:59.873Z",
+  "updatedAt": "2025-05-18T17:08:59.068Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1747587060899_OiOkM6DMCWEySy0RXtwu",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
+        "type": "agent",
+        "position": {
+          "x": 510,
+          "y": -165
+        },
+        "measured": {
+          "width": 200,
+          "height": 212
+        },
+        "selected": false,
+        "hidden": false,
+        "className": "",
+        "dragging": false
+      },
+      {
+        "id": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
+        "type": "agent",
+        "position": {
+          "x": 510,
+          "y": 90
+        },
+        "measured": {
+          "width": 200,
+          "height": 212
+        },
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1747587121881_z5Y971nA86t3GHAjWwuA",
+        "type": "agent",
+        "position": {
+          "x": 510,
+          "y": 345
+        },
+        "measured": {
+          "width": 200,
+          "height": 212
+        },
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1747587163482cY8jFkfB079xEe8mI77M2",
+        "type": "agent",
+        "position": {
+          "x": 510,
+          "y": 585
+        },
+        "measured": {
+          "width": 200,
+          "height": 212
+        },
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "type": "agent",
+        "position": {
+          "x": 75,
+          "y": 210
+        },
+        "measured": {
+          "width": 200,
+          "height": 212
+        },
+        "selected": true,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1747587231249CS8kwY_f_NdENhVDsPdDW",
+        "type": "agent",
+        "position": {
+          "x": -300,
+          "y": 240
+        },
+        "measured": {
+          "width": 200,
+          "height": 212
+        },
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      }
+    ],
+    "edges": [
+      {
+        "id": "we-174758729031787ySRT6YrNGz58-rWLSQv",
+        "source": "1747587231249CS8kwY_f_NdENhVDsPdDW",
+        "target": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-1747587231249CS8kwY_f_NdENhVDsPdDW",
+        "targetHandle": "agent-handle-left-target-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "type": "chat"
+      },
+      {
+        "id": "we-1747587341567Vf6ZV_ahewHcJSZoPOmXD",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "targetHandle": "agent-handle-left-target-wa-1747587027822eX627_nqb5tWvkkUUq44W",
+        "type": "nested"
+      },
+      {
+        "id": "we-17475873447682tBCgW-7BLtRBvGvyt2_q",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "targetHandle": "agent-handle-left-target-17475870887015fT9HMRt7Op1Y2l0EDLSc",
+        "type": "nested"
+      },
+      {
+        "id": "we-1747587347416ekDsyp52ZXSq7dJmGw13v",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "1747587121881_z5Y971nA86t3GHAjWwuA",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "targetHandle": "agent-handle-left-target-1747587121881_z5Y971nA86t3GHAjWwuA",
+        "type": "nested"
+      },
+      {
+        "id": "we-1747587350867T7Yogz9BL_p963ijyxCPs",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "1747587163482cY8jFkfB079xEe8mI77M2",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "targetHandle": "agent-handle-left-target-1747587163482cY8jFkfB079xEe8mI77M2",
+        "type": "nested"
+      }
+    ],
+    "viewport": {
+      "x": 488.1018711018711,
+      "y": 151.83264033264035,
+      "zoom": 0.7141372141372141
+    },
+    "agents": {
+      "userProxyAgents": [],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "SEO reviewer",
+          "description": "SEO reviewer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-18T16:50:27.822Z",
+          "updatedAt": "2025-05-18T16:50:27.822Z",
+          "data": {
+            "systemMessage": "You are an SEO reviewer, known for your ability to optimize content for search engines, ensuring that it ranks well and attracts organic traffic. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747587060899_OiOkM6DMCWEySy0RXtwu"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Legal Reviewer",
+          "description": "Legal Reviewer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-18T16:50:27.822Z",
+          "updatedAt": "2025-05-18T16:50:27.822Z",
+          "data": {
+            "systemMessage": "You are a legal reviewer, known for your ability to ensure that content is legally compliant and free from any potential legal issues. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747587060899_OiOkM6DMCWEySy0RXtwu"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Ethics Reviewer",
+          "description": "Ethics Reviewer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-18T16:50:27.822Z",
+          "updatedAt": "2025-05-18T16:50:27.822Z",
+          "data": {
+            "systemMessage": "You are an ethics reviewer, known for your ability to ensure that content is ethically sound and free from any potential ethical issues. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747587060899_OiOkM6DMCWEySy0RXtwu"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "1747587121881_z5Y971nA86t3GHAjWwuA",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Meta Reviewer",
+          "description": "Meta Reviewer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-18T16:50:27.822Z",
+          "updatedAt": "2025-05-18T16:50:27.822Z",
+          "data": {
+            "systemMessage": "You are a meta reviewer, you aggregate and review the work of other reviewers and give a final suggestion on the content.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747587060899_OiOkM6DMCWEySy0RXtwu"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "1747587163482cY8jFkfB079xEe8mI77M2",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Writer",
+          "description": "Writer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-18T16:50:27.822Z",
+          "updatedAt": "2025-05-18T16:50:27.822Z",
+          "data": {
+            "systemMessage": "You are a writer. You write engaging and concise blog posts (with title) on given topics. You must polish your writing based on the feedback you receive and give a refined version. Only return your final work without additional comments.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747587060899_OiOkM6DMCWEySy0RXtwu"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "triggeredBy": [
+                  "1747587231249CS8kwY_f_NdENhVDsPdDW"
+                ],
+                "messages": [
+                  {
+                    "id": "we-1747587341567Vf6ZV_ahewHcJSZoPOmXD",
+                    "isReply": false
+                  },
+                  {
+                    "id": "we-17475873447682tBCgW-7BLtRBvGvyt2_q",
+                    "isReply": false
+                  },
+                  {
+                    "id": "we-1747587347416ekDsyp52ZXSq7dJmGw13v",
+                    "isReply": false
+                  },
+                  {
+                    "id": "we-1747587350867T7Yogz9BL_p963ijyxCPs",
+                    "isReply": false
+                  }
+                ],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Critic",
+          "description": "Critic",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-18T16:50:27.822Z",
+          "updatedAt": "2025-05-18T16:50:27.822Z",
+          "data": {
+            "systemMessage": "You are a critic. You review the work of the writer and provide constructive feedback to help improve the quality of the content.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747587060899_OiOkM6DMCWEySy0RXtwu"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "isMultimodal": false
+          },
+          "id": "1747587231249CS8kwY_f_NdENhVDsPdDW",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "groupManagerAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1747587060899_OiOkM6DMCWEySy0RXtwu",
+        "type": "model",
+        "name": "gpt-3.5-turbo",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-18T16:51:00.899Z",
+        "updatedAt": "2025-05-18T16:51:17.464Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "we-174758729031787ySRT6YrNGz58-rWLSQv",
+        "data": {
+          "source": "1747587231249CS8kwY_f_NdENhVDsPdDW",
+          "target": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Critic => Writer",
+          "order": 0,
+          "description": "New connection",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 2,
+          "message": {
+            "type": "string",
+            "content": "Write a concise but engaging blog post about DeepLearning.AI. Make sure the blog post is within 100 words.",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "we-1747587341567Vf6ZV_ahewHcJSZoPOmXD",
+        "data": {
+          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+          "target": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Writer => SEO reviewer",
+          "order": -1,
+          "description": "New connection",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "\"\"\"Custom nested chat message function.\"\"\"\n# provide the message to be sent from the sender to the recipient in a nested chat\n# complete the `nested_chat_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the final message.\n# example:\n# def nested_chat_message(recipient, messages, sender, config):\n#    # type: (ConversableAgent, Optional[list[dict]], Optional[ConversableAgent], Optional[dict]) -> str | dict\n#    return f\"\"\"Review the following content.\n#            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n#\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n        \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "we-17475873447682tBCgW-7BLtRBvGvyt2_q",
+        "data": {
+          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+          "target": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Writer => Legal Reviewer",
+          "order": -1,
+          "description": "New connection",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "\"\"\"Custom nested chat message function.\"\"\"\n# provide the message to be sent from the sender to the recipient in a nested chat\n# complete the `nested_chat_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the final message.\n# example:\n# def nested_chat_message(recipient, messages, sender, config):\n#    # type: (ConversableAgent, Optional[list[dict]], Optional[ConversableAgent], Optional[dict]) -> str | dict\n#    return f\"\"\"Review the following content.\n#            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n#\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n        \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "we-1747587347416ekDsyp52ZXSq7dJmGw13v",
+        "data": {
+          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+          "target": "1747587121881_z5Y971nA86t3GHAjWwuA",
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Writer => Ethics Reviewer",
+          "order": -1,
+          "description": "New connection",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "\"\"\"Custom nested chat message function.\"\"\"\n# provide the message to be sent from the sender to the recipient in a nested chat\n# complete the `nested_chat_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the final message.\n# example:\n# def nested_chat_message(recipient, messages, sender, config):\n#    # type: (ConversableAgent, Optional[list[dict]], Optional[ConversableAgent], Optional[dict]) -> str | dict\n#    return f\"\"\"Review the following content.\n#            \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n#\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n        \\n\\n {recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "we-1747587350867T7Yogz9BL_p963ijyxCPs",
+        "data": {
+          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+          "target": "1747587163482cY8jFkfB079xEe8mI77M2",
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Writer => Meta Reviewer",
+          "order": -1,
+          "description": "New connection",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "string",
+              "useCarryover": false,
+              "content": "Aggregate feedback from all reviewers and give final suggestions on the writing.",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false
+  }
+}
