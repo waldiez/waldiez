@@ -53,6 +53,22 @@ export const useWebSocketActions = ({
     );
 
     /**
+     * Handle stop action
+     */
+    const handleStop = useCallback(() => {
+        if (!wsRef.current) {
+            setError("WebSocket not connected");
+            return;
+        }
+
+        const message: WebSocketMessage = {
+            action: "stop",
+        };
+
+        wsRef.current.send(JSON.stringify(message));
+    }, [connected]);
+
+    /**
      * Handle save action
      */
     const handleSave = useCallback(
@@ -167,6 +183,7 @@ export const useWebSocketActions = ({
     );
     return {
         handleRun,
+        handleStop,
         handleSave,
         handleUpload,
         handleConvert,

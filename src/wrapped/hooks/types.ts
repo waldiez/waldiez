@@ -5,7 +5,7 @@
 import { WaldiezChatMessage, WaldiezChatUserInput } from "@waldiez/types";
 
 export type WebSocketMessage = {
-    action: "run" | "save" | "upload" | "convert" | "userInput" | "getInputPrompt";
+    action: "run" | "stop" | "save" | "upload" | "convert" | "userInput" | "getInputPrompt";
     flow?: string;
     files?: {
         name: string;
@@ -48,6 +48,7 @@ export type WaldiezWrapperState = {
 
 export type WaldiezWrapperActions = {
     handleRun: (flow: string) => void;
+    handleStop: () => void;
     handleSave: (flow: string) => void;
     handleUpload: (files: File[]) => Promise<string[]>;
     handleConvert: (flow: string, to: "py" | "ipynb") => void;

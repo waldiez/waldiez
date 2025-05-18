@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
+import { FaStop } from "react-icons/fa";
 import { FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
 
@@ -13,6 +14,7 @@ import { ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/types"
  * Modal component for collecting user input with optional image upload
  */
 
+// eslint-disable-next-line complexity
 export const ChatModal = memo((props: ChatModalProps) => {
     const { flowId, chat } = props;
 
@@ -178,7 +180,16 @@ export const ChatModal = memo((props: ChatModalProps) => {
     const imageInputId = `rf-${flowId}-chat-modal-image`;
     const modalTestId = `rf-${flowId}-chat-modal`;
     const isModalOpen = chat?.showUI === true || (chat !== undefined && chat.messages.length > 0);
-
+    const lefticon = chat?.handlers?.onInterrupt ? (
+        <div
+            role="button"
+            className="chat-modal-action clickable"
+            onClick={chat.handlers.onInterrupt}
+            title="Interrupt"
+        >
+            <FaStop size={18} />
+        </div>
+    ) : undefined;
     return (
         <Modal
             id={modalTestId}
@@ -186,6 +197,8 @@ export const ChatModal = memo((props: ChatModalProps) => {
             isOpen={isModalOpen}
             onClose={handleClose}
             onCancel={handleCancel}
+            beforeTitle={lefticon}
+            // beforeTitle
             className="chat-modal"
             hasMaximizeBtn={true}
             hasCloseBtn={chat?.showUI === false}

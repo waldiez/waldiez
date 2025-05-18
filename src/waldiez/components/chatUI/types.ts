@@ -145,6 +145,7 @@ export type WaldiezStreamEvent =
  * @param onUserInput - Callback for user input
  * @param onMediaUpload - Callback for media uploads
  * @param onChatError - Callback for chat errors
+ * @param onInterrupt - Callback for interrupt events
  * @param onMessageStreamEvent - Callback for message stream events
  */
 export type WaldiezChatHandlers = {
@@ -152,6 +153,7 @@ export type WaldiezChatHandlers = {
     onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
     onChatError?: (error: WaldiezChatError) => void;
     onMessageStreamEvent?: (event: WaldiezStreamEvent) => void;
+    onInterrupt?: () => void;
     onClose?: () => void;
 };
 

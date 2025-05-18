@@ -289,15 +289,16 @@ export const useWaldiezWrapper = ({
         expectingUserInput.current = false;
     };
 
-    const { handleRun, handleSave, handleUpload, handleConvert, handleUserInput } = useWebSocketActions({
-        wsRef,
-        connected,
-        isRunning,
-        setError,
-        reset,
-        setIsRunning,
-        setInputPrompt,
-    });
+    const { handleRun, handleSave, handleUpload, handleConvert, handleUserInput, handleStop } =
+        useWebSocketActions({
+            wsRef,
+            connected,
+            isRunning,
+            setError,
+            reset,
+            setIsRunning,
+            setInputPrompt,
+        });
 
     // Return state and actions
     return [
@@ -311,6 +312,7 @@ export const useWaldiezWrapper = ({
         },
         {
             handleRun,
+            handleStop,
             handleSave,
             handleUpload,
             handleConvert,
