@@ -1,8 +1,8 @@
 {
-  "id": "wf-FkiasS112X8yayEnXzDq_",
+  "id": "wf-DH-IS-WY1d05XXSQ_GUXg",
   "type": "flow",
-  "storageId": "wf-FkiasS112X8yayEnXzDq_",
-  "name": "On-boarding",
+  "storageId": "wf-DH-IS-WY1d05XXSQ_GUXg",
+  "name": "On-boarding Async",
   "description": "Async version of Sequential Chats and Customer Onboarding",
   "tags": [
     "Sequential",
@@ -12,7 +12,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-13T17:13:16.174Z",
-  "updatedAt": "2025-05-13T19:07:45.032Z",
+  "updatedAt": "2025-05-18T16:22:25.852Z",
   "data": {
     "nodes": [
       {
@@ -26,7 +26,7 @@
           "width": 182,
           "height": 182
         },
-        "selected": true,
+        "selected": false,
         "hidden": true,
         "className": ""
       },
@@ -54,7 +54,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 226
         },
         "selected": false,
         "dragging": false,
@@ -71,7 +71,7 @@
         "hidden": false,
         "measured": {
           "width": 200,
-          "height": 206
+          "height": 229
         },
         "selected": false,
         "dragging": false,
@@ -85,8 +85,8 @@
           "y": 600
         },
         "measured": {
-          "width": 216,
-          "height": 216
+          "width": 254,
+          "height": 229
         },
         "hidden": false,
         "selected": false,
@@ -102,8 +102,8 @@
         },
         "hidden": false,
         "measured": {
-          "width": 216,
-          "height": 216
+          "width": 200,
+          "height": 229
         },
         "selected": false,
         "dragging": false,
@@ -176,8 +176,8 @@
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
+      "x": 8,
+      "y": -28,
       "zoom": 1
     },
     "agents": {
@@ -202,7 +202,7 @@
               "criterion": null,
               "methodContent": null
             },
-            "modelId": null,
+            "modelIds": [],
             "tools": [],
             "nestedChats": [
               {
@@ -242,7 +242,9 @@
               "criterion": "exact",
               "methodContent": ""
             },
-            "modelId": "wt-1747156596117Ev5hW8VuHKdeHpHL9BpGa",
+            "modelIds": [
+              "wt-1747156596117Ev5hW8VuHKdeHpHL9BpGa"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -281,7 +283,9 @@
               "criterion": "exact",
               "methodContent": ""
             },
-            "modelId": "wt-1747156399822sVYQN6gP7MfakZrh1PeoE",
+            "modelIds": [
+              "wt-1747156399822sVYQN6gP7MfakZrh1PeoE"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -320,7 +324,9 @@
               "criterion": "exact",
               "methodContent": ""
             },
-            "modelId": "wt-1747156399822sVYQN6gP7MfakZrh1PeoE",
+            "modelIds": [
+              "wt-1747156399822sVYQN6gP7MfakZrh1PeoE"
+            ],
             "tools": [],
             "nestedChats": [
               {
@@ -361,6 +367,14 @@
           "temperature": null,
           "topP": null,
           "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
           "defaultHeaders": {},
           "price": {
             "promptPricePer1k": null,
@@ -385,6 +399,14 @@
           "temperature": null,
           "topP": null,
           "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
           "defaultHeaders": {},
           "price": {
             "promptPricePer1k": null,
@@ -506,7 +528,6 @@
         }
       }
     ],
-    "isAsync": true,
-    "cacheSeed": 41
+    "isAsync": true
   }
 }
