@@ -33,7 +33,7 @@ class WaldiezGroupManager(WaldiezAgent):
         Validate the transitions.
     """
 
-    agent_type: Annotated[
+    agent_type: Annotated[  # pyright: ignore
         Literal["group_manager", "manager"],
         Field(
             "manager",
@@ -43,13 +43,13 @@ class WaldiezGroupManager(WaldiezAgent):
             ),
             alias="agentType",
         ),
-    ]
-    data: Annotated[
+    ] = "group_manager"
+    data: Annotated[  # pyright: ignore
         WaldiezGroupManagerData,
         Field(
             title="Data",
             description="The group manager agent's data",
-            default_factory=WaldiezGroupManagerData,
+            default_factory=WaldiezGroupManagerData,  # pyright: ignore
         ),
     ]
 

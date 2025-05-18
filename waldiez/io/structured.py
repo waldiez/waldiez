@@ -89,7 +89,7 @@ class StructuredIOStream(IOStream):
             The message to send.
         """
         message_dump = message.model_dump(mode="json")
-        payload = {
+        payload: dict[str, Any] = {
             "type": message_dump.get("type", "event"),
             "id": gen_id(),
             "timestamp": now(),
@@ -188,6 +188,7 @@ class StructuredIOStream(IOStream):
         str | dict[str, Any]
             The loaded user input, either as a string or a dictionary.
         """
+        response: str | dict[str, Any] = user_input_raw
         try:
             # Attempt to parse the input as JSON
             response = json.loads(user_input_raw)
@@ -248,7 +249,8 @@ class StructuredIOStream(IOStream):
             if isinstance(data, dict):
                 return UserResponse(
                     data=self._format_multimedia_response(
-                        request_id=request_id, data=data
+                        request_id=request_id,
+                        data=data,  # pyright: ignore
                     ),
                     request_id=request_id,
                 )
@@ -276,7 +278,7 @@ class StructuredIOStream(IOStream):
             The response received
         """
         # Create a log message
-        log_payload = {
+        log_payload: dict[str, Any] = {
             "type": "warning",
             "id": uuid4().hex,
             "timestamp": now(),

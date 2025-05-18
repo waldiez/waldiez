@@ -164,6 +164,7 @@ class AsyncWebsocketsIOStream(IOStream):
             response = response.decode("utf-8")
         if self.verbose:
             LOG.info("Got input: %s ...", response[:300])
+        response_dict: dict[str, Any] | str
         try:
             response_dict = json.loads(response)
         except json.JSONDecodeError:
@@ -307,6 +308,6 @@ class AsyncWebsocketsIOStream(IOStream):
                 else:
                     response_str += self.get_content_string(entry, request_id)
             return response_str
-        if isinstance(user_response.data, UserInputData):
+        if isinstance(user_response.data, UserInputData):  # pyright: ignore
             return self.get_content_string(user_response.data, request_id)
         return response_str

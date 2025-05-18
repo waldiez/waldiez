@@ -147,8 +147,8 @@ def _get_model_arg(
     retrieve_config: WaldiezRagUserProxyRetrieveConfig,
     model_names: dict[str, str],
 ) -> str:  # pragma: no cover
-    if agent.data.model_id:
-        model_name = model_names[agent.data.model_id]
+    if agent.data.model_ids:
+        model_name = model_names[agent.data.model_ids[0]]
         new_model_name = f"{model_name}"
         return f"{new_model_name}"
     if retrieve_config.model in model_names:

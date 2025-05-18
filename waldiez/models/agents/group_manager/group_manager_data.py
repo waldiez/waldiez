@@ -42,7 +42,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
     human_input_mode: Annotated[
         Literal["ALWAYS", "NEVER", "TERMINATE"],
         Field(
-            "NEVER",
+            default="NEVER",
             title="Human input mode",
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
@@ -51,7 +51,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
     max_round: Annotated[
         int,
         Field(
-            20,
+            default=20,
             title="Max round",
             description="The maximum number of rounds to have in the group.",
             alias="maxRound",
@@ -60,7 +60,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
     admin_name: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             title="Group Admin name",
             description=(
                 "The name of the group's admin. "
@@ -74,13 +74,13 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         Field(
             title="Speakers",
             description="The rules for the speaker selection and repetition",
-            default_factory=WaldiezGroupManagerSpeakers,
+            default_factory=WaldiezGroupManagerSpeakers,  # pyright: ignore
         ),
     ]
     enable_clear_history: Annotated[
         Optional[bool],
         Field(
-            None,
+            default=None,
             title="Enable clear history",
             description="Enable clearing hte history in the chat group.",
             alias="enableClearHistory",
@@ -89,7 +89,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
     send_introductions: Annotated[
         bool,
         Field(
-            False,
+            default=False,
             title="Send Introductions",
             description="Send the group members' introductions.",
             alias="sendIntroductions",
@@ -98,7 +98,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
     group_name: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             title="Group name",
             description="The name of the group.",
             alias="groupName",

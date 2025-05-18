@@ -59,7 +59,7 @@ class WaldiezAgent(WaldiezBase):
             title="Type",
             description="The type of the 'node' in a graph.",
         ),
-    ]
+    ] = "agent"
     agent_type: Annotated[
         WaldiezAgentType,
         Field(
@@ -77,7 +77,7 @@ class WaldiezAgent(WaldiezBase):
     description: Annotated[
         str,
         Field(
-            "Agent's description",
+            default="Agent's description",
             title="Description",
             description="The description of the agent",
         ),
@@ -89,7 +89,7 @@ class WaldiezAgent(WaldiezBase):
             description="Tags of the agent",
             default_factory=list,
         ),
-    ]
+    ] = []
     requirements: Annotated[
         list[str],
         Field(
@@ -97,7 +97,7 @@ class WaldiezAgent(WaldiezBase):
             description="Python requirements for the agent",
             default_factory=list,
         ),
-    ]
+    ] = []
     created_at: Annotated[
         str,
         Field(
@@ -119,7 +119,7 @@ class WaldiezAgent(WaldiezBase):
         Field(
             title="Data",
             description="The data (properties) of the agent",
-            default_factory=WaldiezAgentData,
+            default_factory=WaldiezAgentData,  # pyright: ignore
         ),
     ]
 
@@ -252,7 +252,7 @@ class WaldiezAgent(WaldiezBase):
 
         Parameters
         ----------
-        model_ids : list[str]
+        model_ids : List[str]
             The list of model IDs.
 
         Raises
@@ -261,11 +261,11 @@ class WaldiezAgent(WaldiezBase):
             If a model is not found
         """
         # if the config dict has models, make sure they can be found
-
-        if self.data.model_id and self.data.model_id not in model_ids:
-            raise ValueError(
-                f"Model '{self.data.model_id}' not found in models"
-            )
+        for model in self.data.model_ids:
+            if model not in model_ids:
+                raise ValueError(
+                    f"Model '{model}' not found in agent's {self.id} models"
+                )
 
     def validate_code_execution(self, tool_ids: list[str]) -> None:
         """Validate the code execution config.

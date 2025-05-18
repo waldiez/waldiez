@@ -37,8 +37,8 @@ class WaldiezAgentData(WaldiezBase):
         before ending the chat. Default: None (no limit).
     termination : WaldiezAgentTerminationMessage
         The message termination check to use (keyword, method, none)
-    model_id: Optional[str]
-        The id of the model to link with the agent.
+    model_ids: List[str]
+        The ids of the models to link with the agent.
     tools : list[WaldiezAgentLinkedTool]
         A list of tools (id and executor) to register.
     nested_chats : list[WaldiezAgentNestedChat]
@@ -74,7 +74,7 @@ class WaldiezAgentData(WaldiezBase):
             description="The agent's system message.",
             alias="systemMessage",
         ),
-    ]
+    ] = None
     human_input_mode: Annotated[
         Literal["ALWAYS", "NEVER", "TERMINATE"],
         Field(
@@ -83,7 +83,7 @@ class WaldiezAgentData(WaldiezBase):
             description="The human input mode to use for the agent.",
             alias="humanInputMode",
         ),
-    ]
+    ] = "NEVER"
     code_execution_config: Annotated[
         Union[WaldiezAgentCodeExecutionConfig, Literal[False]],
         Field(
@@ -95,7 +95,7 @@ class WaldiezAgentData(WaldiezBase):
             ),
             alias="codeExecutionConfig",
         ),
-    ]
+    ] = False
     agent_default_auto_reply: Annotated[
         Optional[str],
         Field(
@@ -106,7 +106,7 @@ class WaldiezAgentData(WaldiezBase):
             ),
             alias="agentDefaultAutoReply",
         ),
-    ]
+    ] = None
     max_consecutive_auto_reply: Annotated[
         Optional[int],
         Field(
@@ -118,7 +118,7 @@ class WaldiezAgentData(WaldiezBase):
             ),
             alias="maxConsecutiveAutoReply",
         ),
-    ]
+    ] = None
     termination: Annotated[
         WaldiezAgentTerminationMessage,
         Field(
@@ -129,18 +129,18 @@ class WaldiezAgentData(WaldiezBase):
             default_factory=WaldiezAgentTerminationMessage,
         ),
     ]
-    model_id: Annotated[
-        Optional[str],
+    model_ids: Annotated[
+        list[str],
         Field(
-            None,
+            default_factory=list,
             title="Model ID",
             description=(
                 "The id of the model to link with the agent. "
                 "This is a reference to a model in the models registry."
             ),
-            alias="modelId",
+            alias="modelIds",
         ),
-    ] = None
+    ] = []
     tools: Annotated[
         list[WaldiezAgentLinkedTool],
         Field(
@@ -148,7 +148,7 @@ class WaldiezAgentData(WaldiezBase):
             title="Tools",
             description=("A list of tools (id and executor) to register."),
         ),
-    ]
+    ] = []
     nested_chats: Annotated[
         list[WaldiezAgentNestedChat],
         Field(
@@ -158,11 +158,11 @@ class WaldiezAgentData(WaldiezBase):
             ),
             alias="nestedChats",
         ),
-    ]
+    ] = []
     context_variables: Annotated[
-        Optional[dict[str, Any]],
+        dict[str, Any],
         Field(
-            default_factory=dict,
+            default_factory=dict,  # pyright: ignore
             title="Context variables",
             description=(
                 "Context variables that provide a persistent context "
@@ -172,7 +172,7 @@ class WaldiezAgentData(WaldiezBase):
             ),
             alias="contextVariables",
         ),
-    ] = None
+    ] = {}
     handoffs: Annotated[
         list[WaldiezAgentHandoff],
         Field(

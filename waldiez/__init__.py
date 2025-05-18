@@ -22,10 +22,11 @@ except ImportError:  # pragma: no cover
     )
     __version__ = "dev"
 
-__WALDIEZ_INITIALIZED = False
+# pylint: disable=invalid-name
+__waldiez_initialized = False
 
-if not __WALDIEZ_INITIALIZED:
-    __WALDIEZ_INITIALIZED = True
+if not __waldiez_initialized:
+    __waldiez_initialized = True
     check_conflicts()
     check_flaml_warnings()
     check_rpds_py()

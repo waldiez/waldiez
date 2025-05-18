@@ -182,7 +182,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
     task: Annotated[
         WaldiezRagUserProxyTask,
         Field(
-            "default",
+            default="default",
             title="Task",
             description=(
                 "The task of the retrieve chat. "
@@ -193,15 +193,15 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "the response."
             ),
         ),
-    ]
+    ] = "default"
     vector_db: Annotated[
         WaldiezRagUserProxyVectorDb,
         Field(
-            "chroma",
+            default="chroma",
             title="Vector DB",
             description="The vector db for the retrieve chat.",
         ),
-    ]
+    ] = "chroma"
     db_config: Annotated[
         WaldiezRagUserProxyVectorDbConfig,
         Field(
@@ -222,7 +222,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "only if the collection is already created."
             ),
         ),
-    ]
+    ] = None
     new_docs: Annotated[
         bool,
         Field(
@@ -236,7 +236,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "hash value of the content."
             ),
         ),
-    ]
+    ] = True
     model: Annotated[
         Optional[str],
         Field(
@@ -247,7 +247,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "we check for models linked to the agent."
             ),
         ),
-    ]
+    ] = None
     chunk_token_size: Annotated[
         Optional[int],
         Field(
@@ -259,7 +259,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "will be used."
             ),
         ),
-    ]
+    ] = None
     context_max_tokens: Annotated[
         Optional[int],
         Field(
@@ -271,7 +271,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "will be used."
             ),
         ),
-    ]
+    ] = None
     chunk_mode: Annotated[
         WaldiezRagUserProxyChunkMode,
         Field(
@@ -283,8 +283,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "a default mode multi_lines will be used."
             ),
         ),
-    ]
-
+    ] = "multi_lines"
     must_break_at_empty_line: Annotated[
         bool,
         Field(
@@ -295,7 +294,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "If chunk_mode is 'one_line', this parameter will be ignored."
             ),
         ),
-    ]
+    ] = True
     use_custom_embedding: Annotated[
         bool,
         Field(
@@ -307,7 +306,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "provided."
             ),
         ),
-    ]
+    ] = False
     embedding_function: Annotated[
         Optional[str],
         Field(
@@ -322,7 +321,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "https://docs.trychroma.com/guides/embeddings."
             ),
         ),
-    ]
+    ] = None
     customized_prompt: Annotated[
         Optional[str],
         Field(
@@ -332,7 +331,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "The customized prompt for the retrieve chat. Default is None."
             ),
         ),
-    ]
+    ] = None
     customized_answer_prefix: Annotated[
         Optional[str],
         Field(
@@ -344,7 +343,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "not in the answer, Update Context will be triggered."
             ),
         ),
-    ]
+    ] = ""
     update_context: Annotated[
         bool,
         Field(
@@ -355,7 +354,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "retrieval. Default is True."
             ),
         ),
-    ]
+    ] = True
     collection_name: Annotated[
         str,
         Field(
@@ -366,7 +365,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "a default name autogen-docs will be used."
             ),
         ),
-    ]
+    ] = "autogen-docs"
     get_or_create: Annotated[
         bool,
         Field(
@@ -376,7 +375,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "Whether to get the collection if it exists. Default is False."
             ),
         ),
-    ]
+    ] = False
     overwrite: Annotated[
         bool,
         Field(
@@ -394,7 +393,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 " otherwise it raise a ValueError."
             ),
         ),
-    ]
+    ] = False
     use_custom_token_count: Annotated[
         bool,
         Field(
@@ -406,7 +405,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "custom_token_count_function should be provided."
             ),
         ),
-    ]
+    ] = False
     custom_token_count_function: Annotated[
         Optional[str],
         Field(
@@ -421,7 +420,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "tiktoken, which may not be accurate for non-OpenAI models."
             ),
         ),
-    ]
+    ] = None
     use_custom_text_split: Annotated[
         bool,
         Field(
@@ -433,7 +432,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "custom_text_split_function should be provided."
             ),
         ),
-    ]
+    ] = False
     custom_text_split_function: Annotated[
         Optional[str],
         Field(
@@ -445,7 +444,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "autogen.retrieve_utils.split_text_to_chunks."
             ),
         ),
-    ]
+    ] = None
     custom_text_types: Annotated[
         Optional[list[str]],
         Field(
@@ -459,7 +458,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "chunked regardless of their types."
             ),
         ),
-    ]
+    ] = None
     recursive: Annotated[
         bool,
         Field(
@@ -470,7 +469,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "Default is True."
             ),
         ),
-    ]
+    ] = True
     distance_threshold: Annotated[
         float,
         Field(
@@ -482,7 +481,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "Will be ignored if < 0. Default is -1."
             ),
         ),
-    ]
+    ] = -1
     n_results: Annotated[
         Optional[int],
         Field(
@@ -494,7 +493,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
                 "Use None or <1 to return all results."
             ),
         ),
-    ]
+    ] = None
     _embedding_function_string: Optional[str] = None
 
     _token_count_function_string: Optional[str] = None

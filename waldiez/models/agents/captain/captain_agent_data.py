@@ -36,7 +36,7 @@ class WaldiezCaptainAgentData(WaldiezAgentData):
     tool_lib: Annotated[
         Optional[Literal["default"]],
         Field(
-            None,
+            default=None,
             title="Tool lib",
             description="Whether to use the default tool lib",
             alias="toolLib",
@@ -45,7 +45,7 @@ class WaldiezCaptainAgentData(WaldiezAgentData):
     max_round: Annotated[
         int,
         Field(
-            10,
+            default=10,
             title="Max round",
             description="The maximum number of rounds in a group chat",
             alias="maxRound",
@@ -54,7 +54,7 @@ class WaldiezCaptainAgentData(WaldiezAgentData):
     max_turns: Annotated[
         int,
         Field(
-            5,
+            default=5,
             title="Max turns",
             description="The maximum number of turns for a chat",
             alias="maxTurns",

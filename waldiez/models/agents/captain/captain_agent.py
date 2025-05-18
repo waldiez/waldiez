@@ -26,20 +26,20 @@ class WaldiezCaptainAgent(WaldiezAgent):
         The captain agent's data.
     """
 
-    agent_type: Annotated[
+    agent_type: Annotated[  # pyright: ignore
         Literal["captain"],
         Field(
-            "captain",
+            default="captain",
             title="Agent type",
             description="The agent type: 'captain' for a captain agent",
             alias="agentType",
         ),
-    ]
-    data: Annotated[
+    ] = "captain"
+    data: Annotated[  # pyright: ignore
         WaldiezCaptainAgentData,
         Field(
             title="Data",
             description="The captain agent's data",
-            default_factory=WaldiezCaptainAgentData,
+            default_factory=WaldiezCaptainAgentData,  # pyright: ignore
         ),
     ]

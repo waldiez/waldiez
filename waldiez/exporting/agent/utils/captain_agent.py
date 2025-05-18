@@ -105,7 +105,7 @@ def generate_nested_config(
         config_file_or_env_path, "w", encoding="utf-8", newline="\n"
     ) as f:
         json.dump(llm_config, f, ensure_ascii=False, indent=4)
-    nested_config = {
+    nested_config: dict[str, Any] = {
         "autobuild_init_config": {
             "config_file_or_env": config_file_or_env_name,
             "builder_model": llm_config["config_list"][0]["model"],
@@ -144,8 +144,8 @@ def get_llm_config(
     top_p: Optional[float] = 0.95
     max_tokens: Optional[int] = 2048
     config_dict: dict[str, Any] = {}
-    if agent.data.model_id:
-        waldiez_model = get_waldiez_model(agent.data.model_id, all_models)
+    if agent.data.model_ids:
+        waldiez_model = get_waldiez_model(agent.data.model_ids[0], all_models)
         llm_config = waldiez_model.get_llm_config(skip_price=True)
         for key in ["temperature", "top_p", "max_tokens"]:
             if key not in llm_config:
@@ -187,7 +187,7 @@ def get_auto_build_build_config(
         The auto build build config.
     """
     coding = False
-    code_execution_config = {
+    code_execution_config: dict[str, Any] = {
         "timeout": 300,
         "work_dir": "groupchat",
         "last_n_messages": 1,

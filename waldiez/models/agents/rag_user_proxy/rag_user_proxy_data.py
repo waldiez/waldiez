@@ -23,12 +23,13 @@ class WaldiezRagUserProxyData(WaldiezUserProxyData):
 
     """
 
+    # pylint: disable=line-too-long
     retrieve_config: Annotated[
         WaldiezRagUserProxyRetrieveConfig,
         Field(
             title="Retrieve Config",
             description="The RAG user agent's retrieve config",
-            default_factory=WaldiezRagUserProxyRetrieveConfig,
+            default_factory=WaldiezRagUserProxyRetrieveConfig,  # pyright: ignore  # noqa: E501
             alias="retrieveConfig",
         ),
     ]

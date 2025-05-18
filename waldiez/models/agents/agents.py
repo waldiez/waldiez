@@ -43,7 +43,7 @@ class WaldiezAgents(WaldiezBase):
             description="The User proxy agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
     assistantAgents: Annotated[
         list[WaldiezAssistant],
         Field(
@@ -51,7 +51,7 @@ class WaldiezAgents(WaldiezBase):
             description="The assistant agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
     ragUserProxyAgents: Annotated[
         list[WaldiezRagUserProxy],
         Field(
@@ -59,7 +59,7 @@ class WaldiezAgents(WaldiezBase):
             description="The RAG user proxy agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
     reasoningAgents: Annotated[
         list[WaldiezReasoningAgent],
         Field(
@@ -67,7 +67,7 @@ class WaldiezAgents(WaldiezBase):
             description="The Reasoning agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
     captainAgents: Annotated[
         list[WaldiezCaptainAgent],
         Field(
@@ -75,7 +75,7 @@ class WaldiezAgents(WaldiezBase):
             description="The Captain agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
     groupManagerAgents: Annotated[
         list[WaldiezGroupManager],
         Field(
@@ -83,7 +83,7 @@ class WaldiezAgents(WaldiezBase):
             description="The Group manager agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
 
     @property
     def members(self) -> Iterator[WaldiezAgent]:

@@ -28,7 +28,7 @@ def update_summary_chat_args(
     if "summary_args" in chat_args and isinstance(
         chat_args["summary_args"], dict
     ):
-        for key, value in chat_args["summary_args"].items():
+        for key, value in chat_args["summary_args"].items():  # pyright: ignore
             if isinstance(value, str):
                 chat_args["summary_args"][key] = string_escape(value)
     return chat_args

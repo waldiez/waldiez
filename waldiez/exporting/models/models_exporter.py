@@ -3,7 +3,7 @@
 """Export models (llm_configs)."""
 
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezModel
 
@@ -78,7 +78,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         # fmt: off
         """Generate the after export strings.
 
@@ -111,7 +111,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
         """
         # fmt: on
         agent_llm_config_args: list[
-            Tuple[str, Union[ExportPosition, AgentPosition]]
+            tuple[str, Union[ExportPosition, AgentPosition]]
         ] = []
         for agent in self.agents:
             agent_llm_config_args.append(
@@ -148,7 +148,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
             self.get_imports()
         return self._exported_string
 
-    def get_environment_variables(self) -> Optional[list[Tuple[str, str]]]:
+    def get_environment_variables(self) -> Optional[list[tuple[str, str]]]:
         """Get the environment variables to set.
 
         Returns
@@ -156,7 +156,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
         Optional[list[Tuple[str, str]]
             The environment variables to set.
         """
-        env_vars = []
+        env_vars: list[tuple[str, str]] = []
         for model in self.models:
             if model.api_key:
                 env_vars.append((model.api_key_env_key, model.api_key))

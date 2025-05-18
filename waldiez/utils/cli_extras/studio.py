@@ -10,7 +10,7 @@ from typing import Any, Callable
 import typer
 from typer.models import CommandInfo
 
-HAVE_STUDIO = False
+_have_studio = False
 studio_app: Callable[..., Any] | None = None
 
 # noinspection PyBroadException
@@ -18,9 +18,9 @@ studio_app: Callable[..., Any] | None = None
 try:
     from waldiez_studio.cli import run  # type: ignore[unused-ignore, import-not-found, import-untyped]
 
-    studio_app = run
+    studio_app = run  # pyright: ignore
 
-    HAVE_STUDIO = True
+    _have_studio = True
 except BaseException:
     pass
 
@@ -33,7 +33,7 @@ def add_studio_cli(app: typer.Typer) -> None:
     app : typer.Typer
         The Typer app to add the studio command to.
     """
-    if HAVE_STUDIO:
+    if _have_studio:
         app.registered_commands.append(
             CommandInfo(name="studio", callback=studio_app)
         )

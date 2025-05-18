@@ -6,7 +6,7 @@
 import sys
 from importlib.metadata import PackageNotFoundError, version
 
-__WALDIEZ_CHECKED_FOR_CONFLICTS = False
+__waldiez_checked_confilcts = False  # pylint: disable=invalid-name
 
 
 # fmt: off
@@ -33,7 +33,7 @@ def _check_conflicts() -> None:  # pragma: no cover
 def check_conflicts() -> None:  # pragma: no cover
     """Check for conflicts with 'autogen-agentchat' package."""
     # pylint: disable=global-statement
-    global __WALDIEZ_CHECKED_FOR_CONFLICTS
-    if __WALDIEZ_CHECKED_FOR_CONFLICTS is False:
+    global __waldiez_checked_confilcts
+    if __waldiez_checked_confilcts is False:
+        __waldiez_checked_confilcts = True
         _check_conflicts()
-        __WALDIEZ_CHECKED_FOR_CONFLICTS = True

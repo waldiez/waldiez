@@ -14,7 +14,7 @@ from .reasoning_agent_data import WaldiezReasoningAgentData
 class WaldiezReasoningAgent(WaldiezAgent):
     """Reasoning agent model."""
 
-    agent_type: Annotated[
+    agent_type: Annotated[  # pyright: ignore
         Literal["reasoning"],
         Field(
             "reasoning",
@@ -23,12 +23,12 @@ class WaldiezReasoningAgent(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[
+    data: Annotated[  # pyright: ignore
         WaldiezReasoningAgentData,
         Field(
             title="Data",
             description="The reasoning agent's data",
-            default_factory=WaldiezReasoningAgentData,
+            default_factory=WaldiezReasoningAgentData,  # pyright: ignore
         ),
     ]
 

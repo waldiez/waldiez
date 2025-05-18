@@ -46,7 +46,7 @@ def is_rpds_py_installed() -> bool:
         True if `rpds-py` is installed, False otherwise.
     """
     try:
-        import rpds  # noqa: F401
+        import rpds  # noqa: F401  # pyright: ignore
 
         return True
     except ImportError:

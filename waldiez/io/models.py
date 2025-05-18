@@ -7,6 +7,7 @@ import json
 from typing import (
     Annotated,
     Any,
+    Callable,
     Literal,
     Optional,
     Type,
@@ -320,7 +321,7 @@ class UserInputData(BaseModel):
 
         # If it's a dictionary, check if it has a 'type' field
         if isinstance(v, dict):
-            return cls._content_from_dict(v)
+            return cls._content_from_dict(v)  # pyright: ignore
 
         # It is's a list
         if isinstance(v, list):
@@ -362,14 +363,18 @@ class UserResponse(StructuredBase):
             return value
 
         # Handle different input types
-        handlers = {
+        handlers: dict[Callable[..., Any], Any] = {
             str: cls._handle_string,
             dict: cls._handle_dict,
             list: cls._handle_list,
         }
 
         # Get the handler for this type, or use default handler
-        handler = handlers.get(type(value), cls._handle_default)  # type: ignore
+        # pylint: disable=line-too-long
+        handler = handlers.get(
+            type(value),  # pyright: ignore  # noqa: E501
+            cls._handle_default,
+        )
         return handler(value)
 
     @classmethod
@@ -388,7 +393,10 @@ class UserResponse(StructuredBase):
         """
         return isinstance(value, (str, UserInputData)) or (
             isinstance(value, list)
-            and all(isinstance(item, UserInputData) for item in value)
+            and all(
+                isinstance(item, UserInputData)
+                for item in value  # pyright: ignore
+            )
         )
 
     @classmethod
@@ -415,9 +423,9 @@ class UserResponse(StructuredBase):
                 return parsed_value
             # Otherwise process it based on its type
             if isinstance(parsed_value, dict):
-                return cls._handle_dict(parsed_value)
+                return cls._handle_dict(parsed_value)  # pyright: ignore
             if isinstance(parsed_value, list):
-                return cls._handle_list(parsed_value)
+                return cls._handle_list(parsed_value)  # pyright: ignore
             # For simple values like numbers or booleans
             return str(parsed_value)
         except json.JSONDecodeError:
@@ -483,14 +491,14 @@ class UserResponse(StructuredBase):
         Union[UserInputData, List[UserInputData]]
             Processed result - single item if list has only one element
         """
-        result = []
+        result: list[Any] = []
 
         for item in value:
             # Handle different item types
             if isinstance(item, UserInputData):
                 result.append(item)
             elif isinstance(item, dict):
-                result.append(cls._handle_dict(item))
+                result.append(cls._handle_dict(item))  # pyright: ignore
             elif isinstance(item, str):
                 result.append(cls._create_text_input(item))
             else:

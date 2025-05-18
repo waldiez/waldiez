@@ -22,7 +22,7 @@ class WaldiezReasoningAgentData(WaldiezAgentData):
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
         ),
-    ]
+    ] = "NEVER"
     verbose: Annotated[
         bool,
         Field(
@@ -30,7 +30,7 @@ class WaldiezReasoningAgentData(WaldiezAgentData):
             title="Verbose",
             description="Whether to show intermediate steps",
         ),
-    ]
+    ] = True
     reason_config: Annotated[
         WaldiezReasoningAgentReasonConfig,
         Field(

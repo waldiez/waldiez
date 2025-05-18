@@ -55,9 +55,9 @@ def get_item_string(item: Any, tabs: int = 1) -> str:
     next_indent = (
         " " * 4 * (tabs + 1)
     )  # Number of spaces corresponding to the next tab level
+    items: list[str] = []
     if isinstance(item, dict):
-        items = []
-        for key, value in item.items():
+        for key, value in item.items():  # pyright: ignore
             items.append(
                 f'{next_indent}"{key}": {get_item_string(value, tabs + 1)}'
             )
@@ -66,8 +66,7 @@ def get_item_string(item: Any, tabs: int = 1) -> str:
         to_return = "\n" + items_string + "\n" + indent
         return f"{{{to_return}}}"
     if isinstance(item, list):
-        items = []
-        for sub_item in item:
+        for sub_item in item:  # pyright: ignore
             items.append(f"{next_indent}{get_item_string(sub_item, tabs + 1)}")
         # python3.10? f-string expression part cannot include a backslash
         items_string = ",\n".join(items)

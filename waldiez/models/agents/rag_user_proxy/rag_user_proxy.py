@@ -29,7 +29,7 @@ class WaldiezRagUserProxy(WaldiezAgent):
         The RAG user agent's retrieve config.
     """
 
-    agent_type: Annotated[
+    agent_type: Annotated[  # pyright: ignore
         Literal["rag_user", "rag_user_proxy"],
         Field(
             "rag_user_proxy",
@@ -41,14 +41,14 @@ class WaldiezRagUserProxy(WaldiezAgent):
             ),
             alias="agentType",
         ),
-    ]
+    ] = "rag_user_proxy"
 
-    data: Annotated[
+    data: Annotated[  # pyright: ignore
         WaldiezRagUserProxyData,
         Field(
             title="Data",
             description="The RAG user agent's data",
-            default_factory=WaldiezRagUserProxyData,
+            default_factory=WaldiezRagUserProxyData,  # pyright: ignore
         ),
     ]
 

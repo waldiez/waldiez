@@ -49,7 +49,7 @@ def get_agent_code_execution_config(
             f"    timeout={agent.data.code_execution_config.timeout}," + "\n"
         )
     if use_docker is False and agent.data.code_execution_config.functions:
-        function_names = []
+        function_names: list[str] = []
         for tool_id in agent.data.code_execution_config.functions:
             tool_name = tool_names[tool_id]
             function_names.append(tool_name)

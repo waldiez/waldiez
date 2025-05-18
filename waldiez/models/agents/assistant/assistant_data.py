@@ -31,7 +31,7 @@ class WaldiezAssistantData(WaldiezAgentData):
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
         ),
-    ]
+    ] = "NEVER"
     is_multimodal: Annotated[
         bool,
         Field(

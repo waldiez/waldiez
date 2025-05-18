@@ -52,7 +52,7 @@ def get_json_state(json_state: Any) -> dict[str, Any]:
         The JSON state of the event.
     """
     if isinstance(json_state, dict):
-        return json_state
+        return json_state  # pyright: ignore
     if isinstance(json_state, str):
         try:
             return json.loads(json_state)
@@ -83,7 +83,7 @@ def process_events(df_events: pd.DataFrame) -> str:
     seq_text = SEQ_TXT
 
     # Loop through each event in the DataFrame
-    for i in range(len(df_events["json_state"])):
+    for i in range(len(df_events["json_state"])):  # pyright: ignore
         # Parse the JSON state of the event
         df_j = get_json_state(df_events["json_state"][i])
         # Skip events that are not relevant (e.g., replies or missing messages)
@@ -92,23 +92,24 @@ def process_events(df_events: pd.DataFrame) -> str:
         ):
             sender = df_j["sender"]
             # noinspection PyTypeChecker
-            recipient = df_events["source_name"][i]
+            recipient = df_events["source_name"][i]  # pyright: ignore
 
             # Extract message content if available
             if (
                 isinstance(df_j["message"], dict)
                 and "content" in df_j["message"]
             ):
-                message = "Content: " + str(df_j["message"]["content"])
+                content = str(df_j["message"]["content"])  # pyright: ignore
+                message = "Content: " + content
             else:
-                message = str(df_j["message"])
+                message = str(df_j["message"])  # pyright: ignore
 
             # Escape the message for Mermaid compatibility and
             # truncate long messages
             message = escape_mermaid_text(message)
 
             # Add sender and recipient to participants set
-            participants.add(recipient)
+            participants.add(recipient)  # pyright: ignore
             participants.add(sender)
 
             # Split into the main message and the context
@@ -177,9 +178,9 @@ def generate_sequence_diagram(
     is_csv = file_path.suffix == ".csv"
     try:
         if is_csv:
-            df_events = pd.read_csv(file_path)
+            df_events = pd.read_csv(file_path)  # pyright: ignore
         else:
-            df_events = pd.read_json(file_path)
+            df_events = pd.read_json(file_path)  # pyright: ignore
     except pd.errors.EmptyDataError:
         return
 

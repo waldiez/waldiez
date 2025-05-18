@@ -59,29 +59,35 @@ def refresh_environment() -> None:
         # default code execution with docker
         # temp (until we handle/detect docker setup)
         os.environ["AUTOGEN_USE_DOCKER"] = "0"
-        # we might get:
-        # module 'numpy' has no attribute '_no_nep50_warning'
-        # in autogen/agentchat/contrib/captainagent/tool_retriever.py
-        os.environ["NEP50_DEPRECATION_WARNING"] = "0"
-        os.environ["NEP50_DISABLE_WARNING"] = "1"
-        os.environ["NPY_PROMOTION_STATE"] = "weak"
-        import numpy as np
+        try_handle_the_np_thing()
 
-        if not hasattr(np, "_no_pep50_warning"):
-            import contextlib
 
-            @contextlib.contextmanager
-            def _np_no_nep50_warning() -> Generator[None, None, None]:
-                """Avoid no_nep50 warning.
+def try_handle_the_np_thing() -> None:
+    """Try to handle the numpy deprecation warning."""
+    # we might get:
+    # module 'numpy' has no attribute '_no_nep50_warning'
+    # (sentnence_transformers?)
+    # in autogen/agentchat/contrib/captainagent/tool_retriever.py
+    os.environ["NEP50_DEPRECATION_WARNING"] = "0"
+    os.environ["NEP50_DISABLE_WARNING"] = "1"
+    os.environ["NPY_PROMOTION_STATE"] = "weak"
+    import numpy as np
 
-                Yields
-                ------
-                None
-                    Nothing.
-                """
-                yield
+    if not hasattr(np, "_no_pep50_warning"):
+        import contextlib
 
-            setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
+        @contextlib.contextmanager
+        def _np_no_nep50_warning() -> Generator[None, None, None]:
+            """Avoid no_nep50 warning.
+
+            Yields
+            ------
+            None
+                Nothing.
+            """
+            yield
+
+        setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
 
 
 def set_env_vars(flow_env_vars: list[Tuple[str, str]]) -> dict[str, str]:

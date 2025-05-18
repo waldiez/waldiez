@@ -80,7 +80,6 @@ from typing import (
     Any,
     Awaitable,
     Callable,
-    Dict,
     Optional,
     Type,
 )
@@ -135,7 +134,7 @@ class RedisIOStream(IOStream):
         max_stream_size: int = 1000,
         on_input_request: Optional[Callable[[str, str, str], None]] = None,
         on_input_response: Optional[Callable[[str, str], None]] = None,
-        redis_connection_kwargs: Dict[str, Any] | None = None,
+        redis_connection_kwargs: dict[str, Any] | None = None,
         uploads_root: Path | str | None = None,
     ) -> None:
         """Initialize the Redis I/O stream.
@@ -155,7 +154,7 @@ class RedisIOStream(IOStream):
         on_input_response : Optional[Callable[[str, str], None]], optional
             Callback for input response, by default None.
             parameters: user_input, task_id
-        redis_connection_kwargs : Dict[str, Any] | None, optional
+        redis_connection_kwargs : dict[str, Any] | None, optional
             Additional Redis connection kwargs, to be used with `redis.Redis.from_url`,
             by default None.
             See: https://redis-py.readthedocs.io/en/stable/connections.html#redis.Redis.from_url
@@ -215,7 +214,7 @@ class RedisIOStream(IOStream):
         """Close the Redis client."""
         RedisIOStream.try_do(self.redis.close)
 
-    def _print_to_task_output(self, payload: Dict[str, Any]) -> None:
+    def _print_to_task_output(self, payload: dict[str, Any]) -> None:
         """Print message to the task output stream.
 
         Parameters
@@ -227,14 +226,14 @@ class RedisIOStream(IOStream):
         """
         LOG.debug("Sending print message: %s", payload)
         RedisIOStream.try_do(
-            self.redis.xadd,
+            self.redis.xadd,  # pyright: ignore
             self.task_output_stream,
             payload,
             maxlen=self.max_stream_size,
             approximate=True,
         )
 
-    def _print_to_common_output(self, payload: Dict[str, Any]) -> None:
+    def _print_to_common_output(self, payload: dict[str, Any]) -> None:
         """Print message to the common output stream.
 
         Parameters
@@ -246,19 +245,19 @@ class RedisIOStream(IOStream):
         """
         LOG.debug("Sending print message: %s", payload)
         RedisIOStream.try_do(
-            self.redis.xadd,
+            self.redis.xadd,  # pyright: ignore
             self.common_output_stream,
             payload,
             maxlen=self.max_stream_size,
             approximate=True,
         )
 
-    def _print(self, payload: Dict[str, Any]) -> None:
+    def _print(self, payload: dict[str, Any]) -> None:
         """Print message to Redis streams.
 
         Parameters
         ----------
-        payload : Dict[str, Any]
+        payload : dict[str, Any]
             The message to print.
         """
         if "id" not in payload:
@@ -300,7 +299,7 @@ class RedisIOStream(IOStream):
 
         Parameters
         ----------
-        message : Dict[str, Any]
+        message : dict[str, Any]
             The message to send.
         """
         message_dump = message.model_dump(mode="json")
@@ -492,13 +491,13 @@ class RedisIOStream(IOStream):
     # pylint: disable=too-many-return-statements,too-complex
     @staticmethod
     def parse_pubsub_input(
-        message: Dict[str, Any],
+        message: dict[str, Any] | None,
     ) -> UserResponse | None:
         """Extract request ID and user input from a message.
 
         Parameters
         ----------
-        message : Dict[str, Any]
+        message : dict[str, Any]
             The message to parse.
 
         Returns
@@ -512,7 +511,7 @@ class RedisIOStream(IOStream):
         if "data" not in message:
             LOG.error("Missing 'data' in message: %s", message)
             return None
-        message_data = message.get("data", {})
+        message_data = message.get("data", {})  # pyright: ignore
         if isinstance(message_data, str):
             try:
                 message_data = json.loads(message_data)
@@ -523,18 +522,23 @@ class RedisIOStream(IOStream):
             LOG.error("Invalid message data format: %s", message_data)
             return None
         if "request_id" not in message_data:
-            LOG.error("Missing 'request_id' in message data: %s", message_data)
+            to_log = f"Missing 'request_id' in message data: {message_data}"
+            LOG.error(to_log)
             return None
         if "data" in message_data:
             try:
-                message_data["data"] = json.loads(message_data["data"])
+                message_data["data"] = json.loads(
+                    message_data["data"],  # pyright: ignore
+                )
             except json.JSONDecodeError:
-                LOG.error("Invalid JSON in message data: %s", message_data)
+                to_log = f"Invalid JSON in message data: {message_data}"
+                LOG.error(to_log)
                 return None
         try:
             return UserResponse.model_validate(message_data)
         except Exception:  # pylint: disable=broad-exception-caught
-            LOG.error("Error parsing user input response: %s", message_data)
+            to_log = f"Error parsing user input response: {message_data}"
+            LOG.error(to_log)
             return None
 
     @staticmethod
@@ -708,7 +712,10 @@ class RedisIOStream(IOStream):
         """
         for key in redis_client.scan_iter("task:*:output", count=100):
             RedisIOStream.try_do(
-                redis_client.xtrim, key, maxlen=maxlen, approximate=approximate
+                redis_client.xtrim,  # pyright: ignore
+                key,
+                maxlen=maxlen,
+                approximate=approximate,
             )
 
     @staticmethod
@@ -781,7 +788,7 @@ class RedisIOStream(IOStream):
         ):
             before = await redis_client.xlen(key)
             await RedisIOStream.a_try_do(
-                redis_client.xtrim,
+                redis_client.xtrim,  # pyright: ignore
                 key,
                 maxlen=maxlen,
                 approximate=approximate,

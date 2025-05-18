@@ -51,7 +51,7 @@ def export_nested_chat_registration(
     if not agent.data.nested_chats:
         return ""
     content = ""
-    extra_contents = []
+    extra_contents: list[str] = []
     agent_name = agent_names[agent.id]
     use_suffix = len(agent.data.nested_chats) > 1
     for index, entry in enumerate(agent.data.nested_chats):
@@ -226,7 +226,7 @@ def get_nested_chat_queue(
         The nested chat queue and the methods to include
         (methods: message string and method name if the message is a method).
     """
-    message_methods_to_include = []
+    message_methods_to_include: list[str] = []
     chat_messages_str = "[\n"
     for message in nested_chat.messages:
         waldiez_chat = next(chat for chat in all_chats if chat.id == message.id)

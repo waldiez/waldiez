@@ -52,7 +52,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 "none, keyword, method"
             ),
         ),
-    ]
+    ] = "none"
     keywords: Annotated[
         list[str],
         Field(
@@ -63,7 +63,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 " the keywords to search in the message."
             ),
         ),
-    ]
+    ] = []
     criterion: Annotated[
         Optional[Literal["found", "ending", "starting", "exact"]],
         Field(
@@ -74,7 +74,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 "the criterion to use (e.g.: in, endswith, ==)"
             ),
         ),
-    ]
+    ] = "exact"
     method_content: Annotated[
         Optional[str],
         Field(
@@ -87,7 +87,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 "bool (whether the message is a termination message or not.)"
             ),
         ),
-    ]
+    ] = None
 
     _string: str = "None"
 

@@ -24,7 +24,7 @@ class WaldiezUserProxy(WaldiezAgent):
         The user proxy agent's data
     """
 
-    agent_type: Annotated[
+    agent_type: Annotated[  # pyright: ignore
         Literal["user", "user_proxy"],
         Field(
             "user_proxy",
@@ -37,11 +37,11 @@ class WaldiezUserProxy(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[
+    data: Annotated[  # pyright: ignore
         WaldiezUserProxyData,
         Field(
             title="Data",
             description="The user proxy agent's data",
-            default_factory=WaldiezUserProxyData,
+            default_factory=WaldiezUserProxyData,  # pyright: ignore
         ),
     ]
