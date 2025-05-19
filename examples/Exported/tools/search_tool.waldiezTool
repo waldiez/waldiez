@@ -1,16 +1,31 @@
 {
-  "id": "ws-wh3PrdysHCUF6SE246vY9",
+  "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
   "type": "tool",
   "name": "search_tool",
   "description": "Search tool using Tavily AI",
-  "tags": [],
-  "requirements": [],
-  "createdAt": "2024-09-15T21:45:01.116Z",
-  "updatedAt": "2024-10-28T17:42:39.626Z",
+  "tags": [
+    "Tavily"
+  ],
+  "requirements": [
+    "tavily-python"
+  ],
+  "createdAt": "2025-05-19T16:10:56.207Z",
+  "updatedAt": "2025-05-19T16:16:40.656Z",
   "data": {
-    "content": "# filename: {search_tool}.py\n# pylint: disable=line-too-long\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n\nimport os\nfrom typing import Annotated\n\nfrom tavily import TavilyClient\n\ntavily = TavilyClient(api_key=os.environ[\"TAVILY_API_KEY\"])\n\n\ndef search_tool(query: Annotated[str, \"The search query\"]) -> Annotated[str, \"The search results\"]:\n    \"\"\"Search tool using Tavily AI.\"\"\"\n    return tavily.get_search_context(query=query, search_depth=\"advanced\")\n",
+    "content": "\"\"\"Search tool using tavily.\"\"\"\n\ndef search_tool(query: str) -> str:\n    \"\"\"Search tool using tavily.\n\n    Args:\n        query (str): The search query\n\n    Returns:\n        str: The search results\n    \"\"\"\n    from tavily import TavilyClient\n\n    tavily = TavilyClient(api_key=os.environ[\"TAVILY_API_KEY\"])\n    return tavily.get_search_context(query=query, search_depth=\"advanced\")\n",
+    "toolType": "custom",
     "secrets": {
       "TAVILY_API_KEY": "REPLACE_ME"
     }
-  }
+  },
+  "position": {
+    "x": 0,
+    "y": 10
+  },
+  "measured": {
+    "width": 182,
+    "height": 182
+  },
+  "selected": true,
+  "hidden": false
 }
