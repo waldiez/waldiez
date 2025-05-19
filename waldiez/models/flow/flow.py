@@ -271,6 +271,12 @@ class WaldiezFlow(WaldiezBase):
 
     def _validate_agent_connections(self) -> None:
         for agent in self.data.agents.members:
+            if agent.is_group_member:
+                # group members are allowed
+                # to not connect to any other node
+                # the group manager will take care of
+                # the agent/speaker connections
+                continue
             if not any(
                 agent.id in (chat.source, chat.target)
                 for chat in self.data.chats
@@ -373,14 +379,13 @@ class WaldiezFlow(WaldiezBase):
         Raises
         ------
         ValueError
-            - If the only agent is a group manager or a swarm agent.
+            - If the only agent is a group manager.
             - If the model IDs are not unique.
             - If the tool IDs are not unique.
         """
         if member.agent_type in ["group_manager", "swarm"]:
             raise ValueError(
-                "In single agent mode, "
-                "the agent must not be a group manager or a swarm agent."
+                "In single agent mode, the agent must not be a group manager."
             )
         model_ids = self.validate_flow_models()
         tools_ids = self.validate_flow_tools()

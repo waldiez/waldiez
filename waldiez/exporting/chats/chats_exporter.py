@@ -109,7 +109,10 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         """
         if len(self.main_chats) == 1:
             _, sender, recipient = self.main_chats[0]
-            if sender.agent_type == "swarm" or recipient.agent_type == "swarm":
+            if (
+                recipient.agent_type == "group_manager"
+                or sender.is_group_member
+            ):
                 import_string = (
                     "from autogen.agentchat import initiate_group_chat"
                 )
@@ -176,7 +179,10 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         # let's use one string for all nested chat registrations
         nested_chat_registrations = ""
         for agent in self.all_agents:
-            if agent.agent_type != "swarm":
+            if (
+                agent.agent_type != "group_manager"
+                and not agent.is_group_member
+            ):
                 registration_string = export_nested_chat_registration(
                     agent=agent,
                     all_chats=self.all_chats,
