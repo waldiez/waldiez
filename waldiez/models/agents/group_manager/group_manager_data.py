@@ -82,7 +82,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         Field(
             default=None,
             title="Enable clear history",
-            description="Enable clearing hte history in the chat group.",
+            description="Enable clearing the history in the chat group.",
             alias="enableClearHistory",
         ),
     ] = None
