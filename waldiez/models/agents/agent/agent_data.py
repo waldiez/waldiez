@@ -198,3 +198,14 @@ class WaldiezAgentData(WaldiezBase):
             default_factory=list,
         ),
     ] = []
+    parent_id: Annotated[
+        Optional[str],
+        Field(
+            None,
+            title="Parent ID",
+            description=(
+                "The id of the parent agent. This is used for group chats."
+            ),
+            alias="parentId",
+        ),
+    ] = None

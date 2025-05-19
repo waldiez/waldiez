@@ -261,7 +261,7 @@
                     }
                 },
                 "parentId": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "nestedChats": {
                     "type": "array",
@@ -791,7 +791,7 @@
                     }
                 },
                 "parentId": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "nestedChats": {
                     "type": "array",
@@ -929,7 +929,7 @@
                     }
                 },
                 "parentId": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "nestedChats": {
                     "type": "array",
@@ -1234,7 +1234,7 @@
                     }
                 },
                 "parentId": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "nestedChats": {
                     "type": "array",
@@ -1424,7 +1424,7 @@
                     }
                 },
                 "parentId": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "nestedChats": {
                     "type": "array",
@@ -1594,7 +1594,7 @@
                     }
                 },
                 "parentId": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "nestedChats": {
                     "type": "array",

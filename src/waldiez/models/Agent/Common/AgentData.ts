@@ -43,7 +43,7 @@ export class WaldiezAgentData {
     termination: WaldiezAgentTerminationMessageCheck;
     modelIds: string[];
     tools: WaldiezAgentLinkedTool[];
-    parentId?: string;
+    parentId?: string | null;
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables: Record<string, any>;
     updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
@@ -58,7 +58,7 @@ export class WaldiezAgentData {
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
             tools: WaldiezAgentLinkedTool[];
-            parentId?: string;
+            parentId?: string | null;
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
             updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];

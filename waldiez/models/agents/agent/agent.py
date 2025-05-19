@@ -167,6 +167,20 @@ class WaldiezAgent(WaldiezBase):
         return v
 
     @property
+    def is_group_member(self) -> bool:
+        """Check if the agent is a group member.
+
+        Returns
+        -------
+        bool
+            True if the agent is a group member, False otherwise.
+        """
+        return (
+            self.agent_type != "group_manager"
+            and self.data.parent_id is not None
+        )
+
+    @property
     def ag2_class(self) -> str:
         """Return the AG2 class of the agent."""
         class_name = "ConversableAgent"
