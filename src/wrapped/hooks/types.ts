@@ -53,5 +53,6 @@ export type WaldiezWrapperActions = {
     handleUpload: (files: File[]) => Promise<string[]>;
     handleConvert: (flow: string, to: "py" | "ipynb") => void;
     handleUserInput: (input: WaldiezChatUserInput) => void;
+    sendMessage: (data: unknown) => void;
     reset: () => void;
 };

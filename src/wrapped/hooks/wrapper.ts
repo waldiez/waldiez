@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { nanoid } from "nanoid";
 
@@ -11,6 +11,7 @@ import { WaldiezChatMessage, WaldiezChatMessageType } from "@waldiez/types";
 import { useWebSocketActions } from "./actions";
 import { useWaldiezMessages } from "./messages";
 import { DataContent, WaldiezWrapperActions, WaldiezWrapperState, WebSocketResponse } from "./types";
+import { useWebsocket } from "./ws";
 
 /**
  * Main hook for WaldiezWrapper component
@@ -20,13 +21,11 @@ export const useWaldiezWrapper = ({
 }: {
     wsUrl: string;
 }): [WaldiezWrapperState, WaldiezWrapperActions] => {
-    const wsRef = useRef<WebSocket | undefined>(undefined);
     const inputRequestId = useRef<string | undefined>(undefined);
     const expectingUserInput = useRef<boolean>(false);
     const [userParticipants, setUserParticipants] = useState<string[]>([]);
     const [isRunning, setIsRunning] = useState(false);
     const [messages, setMessages] = useState<WaldiezChatMessage[]>([]);
-    const [connected, setConnected] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [inputPrompt, setInputPrompt] = useState<
         | {
@@ -36,55 +35,8 @@ export const useWaldiezWrapper = ({
           }
         | undefined
     >(undefined);
-
-    // WebSocket connection
-    const connectWebSocket = useCallback(() => {
-        // Clean up existing connection if any
-        if (wsRef.current) {
-            try {
-                wsRef.current.close();
-            } catch (_) {
-                // Ignore errors during cleanup
-            }
-            wsRef.current = undefined;
-        }
-        const ws = new WebSocket(wsUrl);
-
-        ws.onopen = () => {
-            console.log("WebSocket connection established");
-            setConnected(true);
-            setError(null);
-        };
-
-        ws.onclose = () => {
-            console.log("WebSocket connection closed");
-            setConnected(false);
-        };
-
-        ws.onerror = error => {
-            console.error("WebSocket error:", error);
-            setError("Failed to connect to the WebSocket server");
-        };
-
-        ws.onmessage = event => {
-            onWsMessage(event);
-        };
-        wsRef.current = ws;
-    }, [wsUrl]);
-
-    useEffect(() => {
-        connectWebSocket();
-        setIsRunning(false);
-
-        return () => {
-            if (wsRef.current) {
-                wsRef.current.close();
-                wsRef.current = undefined;
-            }
-        };
-    }, [connectWebSocket]);
     /**
-     * Handle WebSocket messages
+     * On WebSocket message handler
      */
     const onWsMessage = useCallback((event: MessageEvent) => {
         try {
@@ -289,6 +241,11 @@ export const useWaldiezWrapper = ({
         expectingUserInput.current = false;
     };
 
+    const { wsRef, sendMessage, connected } = useWebsocket({
+        wsUrl,
+        onWsMessage,
+    });
+
     const { handleRun, handleSave, handleUpload, handleConvert, handleUserInput, handleStop } =
         useWebSocketActions({
             wsRef,
@@ -317,6 +274,7 @@ export const useWaldiezWrapper = ({
             handleUpload,
             handleConvert,
             handleUserInput,
+            sendMessage,
             reset,
         },
     ];

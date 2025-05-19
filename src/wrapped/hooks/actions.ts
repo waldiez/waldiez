@@ -49,7 +49,7 @@ export const useWebSocketActions = ({
 
             wsRef.current.send(JSON.stringify(message));
         },
-        [connected, isRunning, reset, setIsRunning],
+        [connected, isRunning],
     );
 
     /**

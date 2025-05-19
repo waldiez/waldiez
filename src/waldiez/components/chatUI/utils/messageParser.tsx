@@ -70,7 +70,7 @@ const parseTextWithImages = (text: string, onImageClick: (url: string) => void) 
 };
 
 export const parseMessageContent = (data: any, onImageClick: (url: string) => void): React.ReactNode => {
-    console.log("Parsing message content:", data);
+    // console.log("Parsing message content:", data);
     if (typeof data === "string") {
         try {
             const parsed = JSON.parse(data);
