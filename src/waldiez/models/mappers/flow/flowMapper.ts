@@ -163,6 +163,9 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             return edgeCopy;
         }),
         agents: {
+            groupManagerAgents: groupManagerAgentNodes.map(groupManagerAgentNode =>
+                exportAgent(groupManagerAgentNode, nodes, skipLinks),
+            ),
             userProxyAgents: userAgentNodes.map(userAgentNode =>
                 exportAgent(userAgentNode, nodes, skipLinks),
             ),
@@ -175,9 +178,6 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             ),
             captainAgents: captainAgentNodes.map(captainAgentNode =>
                 exportAgent(captainAgentNode, nodes, skipLinks),
-            ),
-            groupManagerAgents: groupManagerAgentNodes.map(groupManagerAgentNode =>
-                exportAgent(groupManagerAgentNode, nodes, skipLinks),
             ),
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),
@@ -196,6 +196,10 @@ const getRFNodes = (flow: WaldiezFlow, _edges: Edge[]) => {
     });
     flow.data.tools.forEach(tool => {
         nodes.push(toolMapper.asNode(tool));
+    });
+    // managers first (so that the parent id (if any) in the rest can be determined)
+    flow.data.agents.groupManagerAgents.forEach(groupManagerAgent => {
+        nodes.push(agentMapper.asNode(groupManagerAgent));
     });
     flow.data.agents.userProxyAgents.forEach(user => {
         nodes.push(agentMapper.asNode(user));

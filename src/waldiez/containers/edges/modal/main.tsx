@@ -146,7 +146,17 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                                 onDataChange={onDataChange}
                             />
                         </TabItem>
-
+                        {groupChatType === "toManager" && (
+                            <TabItem label="Message" id={tabIds.message}>
+                                <WaldiezEdgeMessageTab
+                                    edgeId={edgeId}
+                                    data={edgeData}
+                                    darkMode={isDark}
+                                    skipRagOption
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
+                        )}
                         {groupChatType === "nested" && (
                             <TabItem label="Nested Chat" id={tabIds.nested}>
                                 <WaldiezEdgeNestedTab

@@ -184,6 +184,8 @@ export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNo
         fallbackName = "Reasoning Agent";
     } else if (agentType === "captain") {
         fallbackName = "Captain";
+    } else if (agentType === "group_manager") {
+        fallbackName = "Group Manager";
     }
     return getNameFromJSON(data, fallbackName)!;
 };
