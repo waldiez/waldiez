@@ -4,6 +4,7 @@
 # flake8: noqa: E501
 # pylint: disable=import-error,import-outside-toplevel,too-few-public-methods,broad-except
 # isort: skip_file
+# pyright: reportReturnType=none
 """Generate requirements/*.txt files from pyproject.toml."""
 
 import os
@@ -11,7 +12,7 @@ import re
 import subprocess  # nosemgrep # nosec
 import sys
 from pathlib import Path
-from typing import Any, Protocol, Tuple
+from typing import Any, Protocol
 
 
 ROOT_DIR = Path(__file__).parent.parent
@@ -116,7 +117,10 @@ def get_package_name(requirement: str) -> str:
     return re.split(r"[<=>;]", requirement)[0]
 
 
-def _write_main_txt(project_dir: Path, main_requirements: list[str]) -> None:
+def _write_main_txt(
+    project_dir: Path,
+    main_requirements: list[str],
+) -> None:
     """Write the main requirements file."""
     with open(
         project_dir / "requirements" / "main.txt",
@@ -151,8 +155,9 @@ def _write_extra_txt(
 
 
 def _write_requirements_txt(
-    project_dir: Path, toml_data: dict[str, Any]
-) -> Tuple[bool, list[str]]:
+    project_dir: Path,
+    toml_data: dict[str, Any],
+) -> tuple[bool, list[str]]:
     """Write requirements/*.txt file.
 
     Parameters
@@ -164,32 +169,76 @@ def _write_requirements_txt(
 
     Returns
     -------
-    Tuple[bool, list[str]]
+    tuple[bool, list[str]]
         A tuple of whether the main requirements were found and
         a list of extra keys.
     """
     has_main = True
+    main_requirements: list[str] = []
     try:
         main_requirements = toml_data["project"]["dependencies"]
     except KeyError:
         has_main = False
     try:
-        extra_requirements = toml_data["project"]["optional-dependencies"]
+        extra_requirements: dict[str, Any] = toml_data["project"][
+            "optional-dependencies"
+        ]
     except KeyError:
         extra_requirements = {}
     if not os.path.exists(project_dir / "requirements"):
         os.makedirs(project_dir / "requirements")
     if has_main:
         _write_main_txt(project_dir, main_requirements)
-    extra_keys = []
+    extra_keys: list[str] = []
     for extra in extra_requirements:
         if extra in EXCLUDED_EXTRAS:
             continue
         extra_keys.append(extra)
         _write_extra_txt(
-            project_dir, extra, extra_requirements[extra], has_main
+            project_dir,
+            extra,
+            extra_requirements[extra],
+            has_main,
         )
     return has_main, extra_keys
+
+
+def install_requirements(
+    include_main: bool,
+    file_names: list[str],
+) -> None:
+    """Install requirements from requirements/*.txt files.
+
+    Parameters
+    ----------
+    include_main : bool
+        Whether to include the main requirements.
+    file_names : list[str]
+        The list of file names to install
+    """
+    to_install: list[str] = [
+        "-r",
+        os.path.join("requirements", "all.txt"),
+    ]
+    if not include_main:
+        to_install = []
+        for key in file_names:
+            to_install.extend(
+                ["-r", os.path.join("requirements", f"{key}.txt")]
+            )
+    subprocess.run(  # nosemgrep # nosec
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+        ]
+        + to_install,
+        cwd=ROOT_DIR,
+        stdout=sys.stdout,
+        stderr=subprocess.STDOUT,
+        check=True,
+    )
 
 
 def main() -> None:
@@ -215,26 +264,7 @@ def main() -> None:
     for file in os.listdir(ROOT_DIR / "requirements"):
         print(f"  - {file}")
     if "--install" in sys.argv:
-        to_install = ["-r", os.path.join("requirements", "all.txt")]
-        if not has_main:
-            to_install = []
-            for key in keys:
-                to_install.extend(
-                    ["-r", os.path.join("requirements", f"{key}.txt")]
-                )
-        subprocess.run(  # nosemgrep # nosec
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-            ]
-            + to_install,
-            cwd=ROOT_DIR,
-            stdout=sys.stdout,
-            stderr=subprocess.STDOUT,
-            check=True,
-        )
+        install_requirements(has_main, keys)
 
 
 if __name__ == "__main__":

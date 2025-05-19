@@ -9,7 +9,6 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +22,7 @@ DIRECTORIES_TO_SCAN = [
 ]
 
 
-def get_first_lines(file_path: str) -> Tuple[str, str, str]:
+def get_first_lines(file_path: str) -> tuple[str, str, str]:
     """Get the first two lines of a file.
 
     Parameters
@@ -33,7 +32,7 @@ def get_first_lines(file_path: str) -> Tuple[str, str, str]:
 
     Returns
     -------
-    Tuple[str, str, str]
+    tuple[str, str, str]
         The first two lines and the remaining content.
 
     Raises
