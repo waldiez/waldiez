@@ -393,7 +393,13 @@ class WaldiezDevServer:
 
     async def serve(self) -> None:
         """Start the WebSocket server."""
-        async with websockets.serve(self.handler, self.host, self.port):
+        async with websockets.serve(
+            self.handler,
+            self.host,
+            self.port,
+            ping_timeout=None,
+            ping_interval=None,
+        ):
             to_log = f"Server started at ws://{self.host}:{self.port}"
             logger.info(to_log)
             await asyncio.Future()  # Run forever
