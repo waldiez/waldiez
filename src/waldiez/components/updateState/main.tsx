@@ -194,7 +194,7 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
     );
 
     return (
-        <div className="agent-panel agent-swarm-update-state-panel">
+        <div className="agent-panel agent-update-state-panel">
             <div className="info margin-bottom-10">
                 You can update the agent's system message before replying. This can be useful if you need to
                 control the system message based on the current conversation context. If enabled, it can be a
