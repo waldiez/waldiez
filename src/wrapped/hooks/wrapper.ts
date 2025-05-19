@@ -57,6 +57,7 @@ export const useWaldiezWrapper = ({
         switch (data.type) {
             case "text":
             case "print":
+            case "tool_call":
                 handleTextOrPrint(data);
                 break;
             case "input_request":
@@ -210,6 +211,13 @@ export const useWaldiezWrapper = ({
             "sender" in data.content &&
             typeof data.content.sender === "string"
         ) {
+            if (
+                "role" in data.content &&
+                typeof data.content.role === "string" &&
+                data.content.role !== "user"
+            ) {
+                return;
+            }
             if (!userParticipants.includes(data.content.sender)) {
                 setUserParticipants(prev => [...prev, (data.content as any).sender]);
             }
