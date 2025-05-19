@@ -82,9 +82,12 @@ class AsyncWebsocketsIOStream(IOStream):
         )
         if self.verbose:
             LOG.info(json_dump)
-        asyncio.run(
-            self.websocket.send(json_dump),
-        )
+        try:
+            asyncio.run(
+                self.websocket.send(json_dump),
+            )
+        except BaseException as error:  # pylint: disable=broad-exception-caught
+            LOG.error("Error sending message: %s", error)
 
     def send(self, message: BaseEvent) -> None:
         """Send a message to the WebSocket connection.
@@ -98,9 +101,12 @@ class AsyncWebsocketsIOStream(IOStream):
         json_dump = json.dumps(message_dump)
         if self.verbose:
             LOG.info("sending: \n%s\n", json_dump)
-        asyncio.run(
-            self.websocket.send(json_dump),
-        )
+        try:
+            asyncio.run(
+                self.websocket.send(json_dump),
+            )
+        except BaseException as error:  # pylint: disable=broad-exception-caught
+            LOG.error("Error sending message: %s", error)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
         """Sync-compatible input (will run the async version in the loop).
