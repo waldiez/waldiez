@@ -4,6 +4,7 @@
 
 import json
 import os
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
@@ -98,18 +99,25 @@ def generate_nested_config(
         The nested config.
     """
     config_file_or_env_name = f"{agent_name}_llm_config.json"
-    llm_config = get_llm_config(agent, all_models)
+    llm_config_list = get_llm_configs(agent, all_models)
     os.makedirs(save_path, exist_ok=True)
     config_file_or_env_path = os.path.join(save_path, config_file_or_env_name)
     with open(
         config_file_or_env_path, "w", encoding="utf-8", newline="\n"
     ) as f:
-        json.dump(llm_config, f, ensure_ascii=False, indent=4)
+        json.dump(llm_config_list, f, ensure_ascii=False, indent=4)
+    llm_config = llm_config_list[0]
+    if "temperature" not in llm_config:
+        llm_config["temperature"] = 1
+    if "top_p" not in llm_config:
+        llm_config["top_p"] = 0.95
+    if "max_tokens" not in llm_config:
+        llm_config["max_tokens"] = 2048
     nested_config: dict[str, Any] = {
         "autobuild_init_config": {
             "config_file_or_env": config_file_or_env_name,
-            "builder_model": llm_config["config_list"][0]["model"],
-            "agent_model": llm_config["config_list"][0]["model"],
+            "builder_model": llm_config["model"],
+            "agent_model": llm_config["model"],
         },
         "autobuild_build_config": get_auto_build_build_config(
             agent, llm_config
@@ -121,10 +129,10 @@ def generate_nested_config(
     return nested_config
 
 
-def get_llm_config(
+def get_llm_configs(
     agent: WaldiezAgent,
     all_models: list[WaldiezModel],
-) -> dict[str, Any]:
+) -> list[dict[str, Any]]:
     """Get the config list environment variable name and its dict value.
 
     Parameters
@@ -139,33 +147,28 @@ def get_llm_config(
     dict[str, str]
         The llm config dict.
     """
-    model_name = "gpt-4o"
-    temperature: Optional[float] = 1
-    top_p: Optional[float] = 0.95
-    max_tokens: Optional[int] = 2048
-    config_dict: dict[str, Any] = {}
-    if agent.data.model_ids:
-        waldiez_model = get_waldiez_model(agent.data.model_ids[0], all_models)
-        llm_config = waldiez_model.get_llm_config(skip_price=True)
-        for key in ["temperature", "top_p", "max_tokens"]:
-            if key not in llm_config:
-                llm_config[key] = None
-        temp = llm_config.pop("temperature", None)
-        config_dict = {
-            "config_list": [llm_config],
-        }
-        if temp is not None:
-            config_dict["temperature"] = temp
-            return config_dict
-    config_dict = {
-        "model": model_name,
-        "top_p": top_p,
-        "max_tokens": max_tokens,
-    }
-    return {
-        "config_list": [config_dict],
-        "temperature": temperature,
-    }
+    temperature: float = 1
+    top_p: float = 0.95
+    max_tokens: int = 2048
+    models_in_list: list[WaldiezModel] = []
+    config_list: list[dict[str, Any]] = []
+    for model_id in agent.data.model_ids:
+        model = get_waldiez_model(model_id, all_models)
+        if model not in models_in_list:
+            models_in_list.append(model)
+            llm_config = model.get_llm_config(skip_price=True)
+            config_list.append(llm_config)
+    if not config_list:
+        default_model = get_default_model(uuid.uuid4().hex)
+        default_llm_config = default_model.get_llm_config(skip_price=True)
+        if "temperature" not in default_llm_config:
+            default_llm_config["temperature"] = temperature
+        if "top_p" not in default_llm_config:
+            default_llm_config["top_p"] = top_p
+        if "max_tokens" not in default_llm_config:
+            default_llm_config["max_tokens"] = max_tokens
+        config_list.append(default_llm_config)
+    return config_list
 
 
 def get_auto_build_build_config(
@@ -207,12 +210,53 @@ def get_auto_build_build_config(
     return {
         "default_llm_config": {
             "temperature": llm_config["temperature"],
-            "top_p": llm_config["config_list"][0]["top_p"],
-            "max_tokens": llm_config["config_list"][0]["max_tokens"],
+            "top_p": llm_config["top_p"],
+            "max_tokens": llm_config["max_tokens"],
         },
         "code_execution_config": code_execution_config,
         "coding": coding,
     }
+
+
+def get_default_model(model_id: str) -> WaldiezModel:
+    """Get the default model.
+
+    Parameters
+    ----------
+    model_id : str
+        The model's id.
+
+    Returns
+    -------
+    WaldiezModel
+        The default model.
+    """
+    now = (
+        datetime.now(tz=timezone.utc)
+        .isoformat(timespec="milliseconds")
+        .replace("+00:00", "Z")
+    )
+    return WaldiezModel(
+        id=model_id,
+        type="model",
+        name="gpt-4o",
+        description="The GPT-4o model.",
+        tags=["gpt-4o"],
+        requirements=[],
+        created_at=now,
+        updated_at=now,
+        data=WaldiezModelData(
+            api_type="openai",
+            temperature=1,
+            top_p=0.95,
+            max_tokens=2048,
+            base_url=None,
+            api_key=None,
+            api_version=None,
+            default_headers={},
+            price=None,
+        ),
+    )
 
 
 def get_waldiez_model(
@@ -235,29 +279,30 @@ def get_waldiez_model(
     for model in all_models:
         if model.id == model_id:
             return model
-    now = (
-        datetime.now(tz=timezone.utc)
-        .isoformat(timespec="milliseconds")
-        .replace("+00:00", "Z")
-    )
-    return WaldiezModel(
-        id=model_id,
-        type="model",
-        name="gpt-4o",
-        description="The GPT-4o model.",
-        tags=["gpt-4o"],
-        requirements=[],
-        created_at=now,
-        updated_at=now,
-        data=WaldiezModelData(
-            api_type="openai",
-            temperature=1,
-            top_p=0.95,
-            max_tokens=2048,
-            base_url=None,
-            api_key=os.environ.get("OPENAI_API_KEY", "REPLACE_ME"),
-            api_version=None,
-            default_headers={},
-            price=None,
-        ),
-    )
+    return get_default_model(model_id)
+
+
+# DEFAULT_NESTED_CONFIG = {
+#         "autobuild_init_config": {
+#             "config_file_or_env": "OAI_CONFIG_LIST",
+#             "builder_model": "gpt-4o",
+#             "agent_model": "gpt-4o",
+#         },
+#         "autobuild_build_config": {
+#             "default_llm_config": {
+#                   "temperature": 1,
+#                   "top_p": 0.95,
+#                   "max_tokens": 2048
+#             },
+#             "code_execution_config": {
+#                 "timeout": 300,
+#                 "work_dir": "groupchat",
+#                 "last_n_messages": 1,
+#                 "use_docker": False,
+#             },
+#             "coding": True,
+#         },
+#         "group_chat_config": {"max_round": 10},
+#         "group_chat_llm_config": None,
+#         "max_turns": 5,
+#     }

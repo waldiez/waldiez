@@ -103,12 +103,12 @@ def test_models_exporter(tmp_path: Path) -> None:
     after_export = models_exporter.get_after_export()
     assert after_export is not None
     assert after_export[0][0] == (
-        "    llm_config={\n"
-        '        "config_list": [\n'
+        "    llm_config=autogen.LLMConfig(\n"
+        "        config_list=[\n"
         f"            {model1_name}_llm_config," + "\n"
         "        ],\n"
-        '        "cache_seed": 42,\n'
-        "    },\n"
+        "        cache_seed=42,\n"
+        "    ),\n"
     )
     assert (output_dir / f"{flow_name}_api_keys.py").exists()
     shutil.rmtree(output_dir)
