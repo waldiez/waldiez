@@ -3,12 +3,12 @@
 """Get qdrant db related imports and content."""
 
 from pathlib import Path
-from typing import Set, Tuple
+from typing import Set
 
 from waldiez.models import WaldiezRagUserProxy
 
 
-def _get_qdrant_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
+def _get_qdrant_client_string(agent: WaldiezRagUserProxy) -> tuple[str, str]:
     """Get the QdrantVectorDB client string.
 
     Parameters
@@ -20,7 +20,7 @@ def _get_qdrant_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
 
     Returns
     -------
-    Tuple[str, str, str]
+    tuple[str, str, str]
         The 'client' argument, and the module to import.
     """
     to_import: str = "from qdrant_client import QdrantClient"
@@ -45,7 +45,7 @@ def _get_qdrant_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
 
 def _get_qdrant_embedding_function_string(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> Tuple[str, str, str]:
+) -> tuple[str, str, str]:
     """Get the QdrantVectorDB embedding function string.
 
     Parameters
@@ -57,7 +57,7 @@ def _get_qdrant_embedding_function_string(
 
     Returns
     -------
-    Tuple[str, str, str]
+    tuple[str, str, str]
         The 'embedding_function', the module to import
         and the custom_embedding_function if used.
     """
@@ -84,7 +84,7 @@ def _get_qdrant_embedding_function_string(
 
 def get_qdrant_db_args(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> Tuple[str, Set[str], str]:
+) -> tuple[str, Set[str], str]:
     """Get the kwargs to use for QdrantVectorDB.
 
     Parameters
@@ -96,7 +96,7 @@ def get_qdrant_db_args(
 
     Returns
     -------
-    Tuple[str, Set[str], str]
+    tuple[str, Set[str], str]
         The kwargs to use, the imports and the embedding function body if used.
     """
     client_str, to_import_client = _get_qdrant_client_string(agent)

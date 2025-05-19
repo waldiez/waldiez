@@ -11,7 +11,7 @@ export_tools
 """
 
 from pathlib import Path
-from typing import Callable, Optional, Tuple, Union
+from typing import Callable, Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -110,7 +110,7 @@ def export_tools(
     tools: list[WaldiezTool],
     tool_names: dict[str, str],
     output_dir: Optional[Union[str, Path]] = None,
-) -> Tuple[Tuple[list[str], list[str], list[str]], list[Tuple[str, str]], str]:
+) -> tuple[tuple[list[str], list[str], list[str]], list[tuple[str, str]], str]:
     """Get the tools' contents and secrets.
 
     If `output_dir` is provided, the contents are saved to that directory.
@@ -128,13 +128,13 @@ def export_tools(
 
     Returns
     -------
-    Tuple[Tuple[list[str], list[str], list[str]], list[Tuple[str, str]], str]
+    tuple[tuple[list[str], list[str], list[str]], list[tuple[str, str]], str]
         - The tool imports to use in the main file.
         - The tool secrets to set as environment variables.
         - The tools contents.
     """
-    tool_imports: Tuple[list[str], list[str], list[str]] = ([], [], [])
-    tool_secrets: list[Tuple[str, str]] = []
+    tool_imports: tuple[list[str], list[str], list[str]] = ([], [], [])
+    tool_secrets: list[tuple[str, str]] = []
     tool_contents: str = ""
     # if the tool.is_shared,
     # its contents must be first (before the other tools)
@@ -207,18 +207,18 @@ def _add_interop_extras(
 
 
 def _sort_imports(
-    tool_imports: Tuple[list[str], list[str], list[str]],
-) -> Tuple[list[str], list[str], list[str]]:
+    tool_imports: tuple[list[str], list[str], list[str]],
+) -> tuple[list[str], list[str], list[str]]:
     """Sort the imports.
 
     Parameters
     ----------
-    tool_imports : Tuple[list[str], list[str], list[str]]
+    tool_imports : tuple[list[str], list[str], list[str]]
         The tool imports.
 
     Returns
     -------
-    Tuple[list[str], list[str], list[str]]
+    tuple[list[str], list[str], list[str]]
         The sorted tool imports.
     """
     # "from x import y" and "import z"

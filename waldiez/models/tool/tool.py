@@ -5,7 +5,7 @@
 import json
 import re
 from pathlib import Path
-from typing import Any, Tuple, Union
+from typing import Any, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -155,14 +155,14 @@ class WaldiezTool(WaldiezBase):
         """
         return self.data.tool_type
 
-    _tool_imports: Tuple[list[str], list[str]] = ([], [])
+    _tool_imports: tuple[list[str], list[str]] = ([], [])
 
-    def get_imports(self) -> Tuple[list[str], list[str]]:
+    def get_imports(self) -> tuple[list[str], list[str]]:
         """Get the tool imports.
 
         Returns
         -------
-        Tuple[list[str], list[str]]
+        tuple[list[str], list[str]]
             The builtin and external imports.
         """
         return self._tool_imports

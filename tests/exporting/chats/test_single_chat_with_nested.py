@@ -13,6 +13,7 @@ from waldiez.models import (
     WaldiezChatData,
     WaldiezChatMessage,
     WaldiezChatNested,
+    WaldiezChatSummary,
 )
 
 
@@ -76,6 +77,8 @@ def test_single_chat_with_nested() -> None:
             source_type="assistant",
             target_type="assistant",
             order=1,
+            nested_chat=WaldiezChatNested(),
+            summary=WaldiezChatSummary(),
             message=WaldiezChatMessage(
                 type="string",
                 content="Hello wa-2 from wa-1",
@@ -96,6 +99,7 @@ def test_single_chat_with_nested() -> None:
             source_type="assistant",
             target_type="assistant",
             order=-1,
+            summary=WaldiezChatSummary(),
             message=WaldiezChatMessage(
                 type="none",
                 content=None,
@@ -154,6 +158,7 @@ def nested_chat_message(recipient, messages, sender, config):
                     context={},
                 ),
             ),
+            summary=WaldiezChatSummary(),
         ),
     )
     agent_names = {
@@ -189,7 +194,7 @@ def nested_chat_message(recipient, messages, sender, config):
     assert after_export is not None
     after_export_str, _ = after_export[0]
     excepted_after_string = """
-agent3_chat_queue = [
+agent3_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
         "chat_id": 0,
@@ -198,14 +203,14 @@ agent3_chat_queue = [
     },
 ]
 
-agent3.register_nested_chats(
+agent3.register_nested_chats(  # pyright: ignore
     trigger=["agent1"],
     chat_queue=agent3_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
 
-agent4_chat_queue = [
+agent4_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
         "chat_id": 0,
@@ -215,7 +220,7 @@ agent4_chat_queue = [
     },
 ]
 
-agent4.register_nested_chats(
+agent4.register_nested_chats(  # pyright: ignore
     trigger=["agent2"],
     chat_queue=agent4_chat_queue,
     use_async=False,

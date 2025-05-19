@@ -13,12 +13,12 @@ import tempfile
 from contextlib import asynccontextmanager, contextmanager
 from pathlib import Path
 from typing import (
+    Any,
     AsyncIterator,
     Callable,
     Iterator,
     Optional,
     Set,
-    Tuple,
     Union,
 )
 
@@ -312,7 +312,7 @@ def get_printer() -> Callable[..., None]:
     # noinspection PyUnboundLocalVariable
     printer = IOStream.get_default().print
 
-    def safe_printer(*args: object, **kwargs: object) -> None:
+    def safe_printer(*args: Any, **kwargs: Any) -> None:
         try:
             printer(*args, **kwargs)
         except UnicodeEncodeError:
@@ -337,7 +337,7 @@ def get_printer() -> Callable[..., None]:
     return safe_printer
 
 
-def get_what_to_print(*args: object, **kwargs: object) -> Tuple[str, bool]:
+def get_what_to_print(*args: object, **kwargs: object) -> tuple[str, bool]:
     """Get what to print.
 
     Parameters
@@ -349,7 +349,7 @@ def get_what_to_print(*args: object, **kwargs: object) -> Tuple[str, bool]:
 
     Returns
     -------
-    Tuple[str, bool]
+    tuple[str, bool]
         The message and whether to flush.
     """
     sep = kwargs.get("sep", " ")

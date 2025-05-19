@@ -83,36 +83,36 @@ class WaldiezChatData(WaldiezBase):
     description: Annotated[
         str,
         Field(
-            ...,
+            default="A new chat",
             title="Description",
             description="The description of the chat.",
         ),
-    ]
+    ] = "A new chat"
     position: Annotated[
         int,
         Field(
-            -1,
+            default=-1,
             title="Position",
             description="The position of the chat in the flow (Ignored).",
         ),
-    ]
+    ] = -1
     order: Annotated[
         int,
         Field(
-            -1,
+            default=-1,
             title="Order",
             description="The order of the chat in the flow.",
         ),
-    ]
+    ] = -1
     clear_history: Annotated[
         Optional[bool],
         Field(
-            None,
+            default=None,
             alias="clearHistory",
             title="Clear History",
             description="Whether to clear the chat history.",
         ),
-    ]
+    ] = None
     message: Annotated[
         Union[str, WaldiezChatMessage],
         Field(
@@ -141,12 +141,12 @@ class WaldiezChatData(WaldiezBase):
     max_turns: Annotated[
         Optional[int],
         Field(
-            None,
+            default=None,
             alias="maxTurns",
             title="Max Turns",
             description="The maximum number of turns for the chat.",
         ),
-    ]
+    ] = None
     prerequisites: Annotated[
         list[str],
         Field(
@@ -154,33 +154,33 @@ class WaldiezChatData(WaldiezBase):
             description="The prerequisites (chat ids) for the chat (if async).",
             default_factory=list,
         ),
-    ]
+    ] = []
     silent: Annotated[
         Optional[bool],
         Field(
-            None,
+            default=None,
             title="Silent",
             description="Whether to run the chat silently.",
         ),
-    ]
+    ] = None
     real_source: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             alias="realSource",
             title="Real Source",
             description="The real source of the chat (overrides the source).",
         ),
-    ]
+    ] = None
     real_target: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             alias="realTarget",
             title="Real Target",
             description="The real target of the chat (overrides the target).",
         ),
-    ]
+    ] = None
     source_type: Annotated[
         WaldiezAgentType,
         Field(

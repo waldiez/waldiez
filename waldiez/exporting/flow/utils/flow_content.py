@@ -25,6 +25,7 @@ def get_py_content_start(waldiez: Waldiez) -> str:
     content = "#!/usr/bin/env python\n"
     content += "# flake8: noqa: E501\n"
     content += get_pylint_ignore_comment(False)
+    content += get_pyright_ignore_comment(False)
     content += "# cspell: disable\n"
     content += f'"""{waldiez.name}.' + "\n\n"
     content += f"{waldiez.description}" + "\n\n"
@@ -64,6 +65,7 @@ def get_ipynb_content_start(
         # fmt: on
     content += "# flake8: noqa: E501"
     content += get_pylint_ignore_comment(True)
+    content += get_pyright_ignore_comment(True)
     content += "# cspell: disable\n"
     return content
 
@@ -81,6 +83,15 @@ PYLINT_RULES = [
     "missing-param-doc",
     "missing-return-doc",
     "ungrouped-imports",
+    "unnecessary-lambda-assignment",
+]
+PYRIGHT_RULES = [
+    "reportUnusedImport",
+    "reportMissingTypeStubs",
+    "reportUnknownArgumentType",
+    "reportUnknownMemberType",
+    "reportUnknownLambdaType",
+    "reportUnnecessaryIsInstance",
 ]
 
 
@@ -112,6 +123,39 @@ def get_pylint_ignore_comment(
     if not rules:
         rules = PYLINT_RULES
     line = "# pylint: disable=" + ",".join(rules)
+    if notebook is True:
+        line = "\n" + line
+    return line + "\n"
+
+
+def get_pyright_ignore_comment(
+    notebook: bool, rules: Optional[list[str]] = None
+) -> str:
+    """Get the pyright ignore comment string.
+
+    Parameters
+    ----------
+    notebook : bool
+        Whether the comment is for a notebook.
+    rules : Optional[list[str]], optional
+        The pyright rules to ignore, by default None.
+
+    Returns
+    -------
+    str
+        The pyright ignore comment string.
+
+    Example
+    -------
+    ```python
+    >>> get_pyright_ignore_comment(True, ["reportUnusedImport", "reportMissingTypeStubs"])
+
+    # pyright: reportUnusedImport=false, reportMissingTypeStubs=false
+    ```
+    """
+    if not rules:
+        rules = PYRIGHT_RULES
+    line = "# pyright: " + ",".join([f"{rule}=false" for rule in rules])
     if notebook is True:
         line = "\n" + line
     return line + "\n"
@@ -157,7 +201,7 @@ def get_after_run_content(
 {space}{tab}pass
 {space}# save the tree to json
 {space}try:
-{space}{tab}data = {agent_name}._root.to_dict()  # pylint: disable=protected-access
+{space}{tab}data = {agent_name}._root.to_dict()  # pylint: disable=protected-access  # pyright: ignore
 {space}{tab}with open("{agent_name}_reasoning_tree.json", "w", encoding="utf-8") as f:
 {space}{tab}{tab}json.dump(data, f)
 {space}except BaseException:

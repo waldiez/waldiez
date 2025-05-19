@@ -48,7 +48,7 @@ def test_export_assistant(tmp_path: Path) -> None:
         "    max_consecutive_auto_reply=None,\n"
         "    default_auto_reply=None,\n"
         "    code_execution_config=False,\n"
-        "    is_termination_msg=None,\n"
+        "    is_termination_msg=None,  # pyright: ignore\n"
         "    llm_config='model-config'\n"
         ")"
     )

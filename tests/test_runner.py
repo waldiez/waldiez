@@ -183,6 +183,6 @@ def test_get_printer(capsys: pytest.CaptureFixture[str]) -> None:
         invalid_encoded = "This is an invalid encoded string".encode("cp1252")
         printer(invalid_encoded)
         assert "This is an invalid encoded string" in capsys.readouterr().out
-    with IOStream.set_default(BadIOStream()):
+    with IOStream.set_default(BadIOStream()):  # pyright: ignore
         printer1 = get_printer()
         printer1(invalid_str)

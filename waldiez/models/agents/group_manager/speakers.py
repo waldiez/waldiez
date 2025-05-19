@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Group chat speakers."""
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -190,7 +190,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the custom method function.
 
         Parameters
@@ -202,7 +202,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The custom method function and the function name.
         """
         function_name = CUSTOM_SPEAKER_SELECTION

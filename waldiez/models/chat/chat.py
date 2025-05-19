@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat model."""
 
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -172,7 +172,7 @@ class WaldiezChat(WaldiezBase):
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
         is_rag: bool = False,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the message function.
 
         Parameters
@@ -186,7 +186,7 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The message function and the function name.
         """
         if self.message.type in ("string", "none") or (
@@ -227,7 +227,7 @@ class WaldiezChat(WaldiezBase):
         function_name_base: str,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the nested chat function.
 
         Parameters
@@ -243,7 +243,7 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The generated function and its name.
         """
         if not content:
@@ -267,7 +267,7 @@ class WaldiezChat(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the nested chat message function.
 
         Parameters
@@ -279,7 +279,7 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The nested chat message function and the function name.
         """
         if not self.nested_chat.message or (
@@ -302,7 +302,7 @@ class WaldiezChat(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the nested chat reply function.
 
         Parameters
@@ -314,7 +314,7 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The nested chat reply function and the function name.
         """
         if not self.nested_chat.reply or (

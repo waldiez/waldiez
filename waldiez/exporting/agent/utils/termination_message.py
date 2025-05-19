@@ -2,14 +2,12 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get the `is_termination_message` check for the agent."""
 
-from typing import Tuple
-
 from waldiez.models import WaldiezAgent
 
 
 def get_is_termination_message(
     agent: WaldiezAgent, agent_name: str
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Get the `is_termination_message` argument and content (if any).
 
     Parameters
@@ -21,7 +19,7 @@ def get_is_termination_message(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         - The termination function name or lambda or None.
         - The termination function definition and content if any.
 

@@ -3,12 +3,12 @@
 """Get chroma db related imports and content."""
 
 from pathlib import Path
-from typing import Set, Tuple
+from typing import Set
 
 from waldiez.models import WaldiezRagUserProxy
 
 
-def _get_chroma_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
+def _get_chroma_client_string(agent: WaldiezRagUserProxy) -> tuple[str, str]:
     """Get the ChromaVectorDB client string.
 
     Parameters
@@ -20,7 +20,7 @@ def _get_chroma_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The 'client' and what to import.
     """
     # TODO: also check `connection_url` (chroma in client-server mode)
@@ -47,7 +47,7 @@ def _get_chroma_client_string(agent: WaldiezRagUserProxy) -> Tuple[str, str]:
 
 def _get_chroma_embedding_function_string(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> Tuple[str, str, str]:
+) -> tuple[str, str, str]:
     """Get the ChromaVectorDB embedding function string.
 
     Parameters
@@ -59,7 +59,7 @@ def _get_chroma_embedding_function_string(
 
     Returns
     -------
-    Tuple[str, str, str]
+    tuple[str, str, str]
         The 'embedding_function', the import and the custom embedding function.
     """
     to_import = ""
@@ -85,7 +85,7 @@ def _get_chroma_embedding_function_string(
 
 def get_chroma_db_args(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> Tuple[str, Set[str], str, str]:
+) -> tuple[str, Set[str], str, str]:
     """Get the 'kwargs to use for ChromaVectorDB.
 
     Parameters
@@ -97,7 +97,7 @@ def get_chroma_db_args(
 
     Returns
     -------
-    Tuple[str, Set[str], str]
+    tuple[str, Set[str], str]
 
         - The 'kwargs' string.
         - What to import.

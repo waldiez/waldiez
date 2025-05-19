@@ -114,16 +114,23 @@ class WaldiezExporter:
             for_notebook=True,
         )
         output = exporter.export()
-        content = output["content"]
-        if not content:
+        content_str = output["content"]
+        if not content_str:
             raise RuntimeError("Could not generate notebook")
         py_path = path.with_suffix(".tmp.py")
         with open(py_path, "w", encoding="utf-8", newline="\n") as f:
-            f.write(content)
+            f.write(content_str)
         with open(py_path, "r", encoding="utf-8") as py_out:
-            content = jupytext.read(py_out, fmt="py:light")
+            jp_content = jupytext.read(  # pyright: ignore
+                py_out,
+                fmt="py:light",
+            )
         ipynb_path = str(py_path).replace(".tmp.py", ".tmp.ipynb")
-        jupytext.write(content, ipynb_path, fmt="ipynb")
+        jupytext.write(  # pyright: ignore
+            jp_content,
+            ipynb_path,
+            fmt="ipynb",
+        )
         Path(ipynb_path).rename(ipynb_path.replace(".tmp.ipynb", ".ipynb"))
         py_path.unlink(missing_ok=True)
 

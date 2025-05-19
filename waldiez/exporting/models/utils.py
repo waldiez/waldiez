@@ -53,7 +53,9 @@ def export_models(
             f'"get_{flow_name}_model_api_key("{model_name}")"',
             f'get_{flow_name}_model_api_key("{model_name}")',
         )
-        content += "\n" + f"{model_name}_llm_config = {model_dict_str}" + "\n"
+        content += (
+            f"\n{model_name}_llm_config: dict[str, Any] = {model_dict_str}\n"
+        )
     if output_dir:
         write_api_keys(flow_name, all_models, model_names, output_dir)
     return content
@@ -88,7 +90,7 @@ def get_agent_llm_config_arg(
     """
     tab = "    " * tabs if tabs > 0 else ""
     if not agent.data.model_ids:
-        return f"{tab}llm_config=False," + "\n"
+        return f"{tab}llm_config=False,  # pyright: ignore" + "\n"
     content = f"{tab}llm_config=" + "{\n"
     content += f'{tab}    "config_list": ['
     got_at_least_one_model = False
@@ -101,7 +103,7 @@ def get_agent_llm_config_arg(
             content += "\n" + f"{tab}        {model_name}_llm_config,"
             got_at_least_one_model = True
     if not got_at_least_one_model:  # pragma: no cover
-        return f"{tab}llm_config=False," + "\n"
+        return f"{tab}llm_config=False,  # pyright: ignore" + "\n"
     content += "\n" + f"{tab}    ]," + "\n"
     content += f'{tab}    "cache_seed": {cache_seed},' + "\n"
     if temperature is not None:

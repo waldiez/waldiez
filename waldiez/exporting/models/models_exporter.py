@@ -106,7 +106,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported after export strings and their positions.
         """
         # fmt: on
@@ -153,7 +153,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
 
         Returns
         -------
-        Optional[list[Tuple[str, str]]
+        Optional[list[tuple[str, str]]
             The environment variables to set.
         """
         env_vars: list[tuple[str, str]] = []

@@ -4,7 +4,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Update the agent's system message before they reply."""
 
-from typing import Optional, Tuple
+from typing import Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -82,7 +82,7 @@ class WaldiezAgentUpdateSystemMessage(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the update function content.
 
         Parameters
@@ -94,7 +94,7 @@ class WaldiezAgentUpdateSystemMessage(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The update function and the function name.
 
         """

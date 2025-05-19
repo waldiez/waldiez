@@ -4,7 +4,14 @@
 
 from waldiez.exporting.agent.utils.reasoning import get_reasoning_agent_extras
 from waldiez.exporting.base import ExporterMixin
-from waldiez.models import WaldiezAgent, WaldiezReasoningAgent
+from waldiez.models import (
+    WaldiezAgent,
+    WaldiezAgentData,
+    WaldiezAgentTerminationMessage,
+    WaldiezReasoningAgent,
+    WaldiezReasoningAgentData,
+    WaldiezReasoningAgentReasonConfig,
+)
 
 
 def test_get_reasoning_agent_extras() -> None:
@@ -13,7 +20,13 @@ def test_get_reasoning_agent_extras() -> None:
     agent: WaldiezAgent = WaldiezAgent(
         id="wa-1",
         name="agent1",
+        description="agent description",
+        created_at="2024-01-01T00:00:00Z",
+        updated_at="2024-01-01T00:00:00Z",
         agent_type="assistant",
+        data=WaldiezAgentData(
+            termination=WaldiezAgentTerminationMessage(),
+        ),
     )
     # When
     reasoning_agent_extras = get_reasoning_agent_extras(
@@ -27,6 +40,13 @@ def test_get_reasoning_agent_extras() -> None:
     agent = WaldiezReasoningAgent(
         id="wa-2",
         name="agent2",
+        description="agent description",
+        created_at="2024-01-01T00:00:00Z",
+        updated_at="2024-01-01T00:00:00Z",
+        data=WaldiezReasoningAgentData(
+            termination=WaldiezAgentTerminationMessage(),
+            reason_config=WaldiezReasoningAgentReasonConfig(),
+        ),
     )
     # When
     reasoning_agent_extras = get_reasoning_agent_extras(

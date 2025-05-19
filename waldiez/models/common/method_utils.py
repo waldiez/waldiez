@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pyright: reportUnknownMemberType=false,reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false
 """Function related utilities."""
 
 import ast
@@ -7,11 +9,11 @@ import importlib.util
 import sys
 import sysconfig
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 
 import parso
-import parso.python
-import parso.tree
+import parso.python  # pyright: ignore
+import parso.tree  # pyright: ignore
 
 MAX_VAR_NAME_LENGTH = 64
 
@@ -49,7 +51,7 @@ def is_standard_library(module_name: str) -> bool:
 
 def parse_code_string(
     code_string: str,
-) -> Tuple[Optional[str], Optional[ast.Module]]:
+) -> tuple[Optional[str], Optional[ast.Module]]:
     """Parse the code string.
 
     Parameters
@@ -59,7 +61,7 @@ def parse_code_string(
 
     Returns
     -------
-    Tuple[Optional[str], Optional[ast.Module]]
+    tuple[Optional[str], Optional[ast.Module]]
         If valid, None and the ast module.
         If invalid, the error message and None.
     """
@@ -76,7 +78,7 @@ def parse_code_string(
 def gather_code_imports(
     code_string: str,
     is_interop: bool,
-) -> Tuple[list[str], list[str]]:
+) -> tuple[list[str], list[str]]:
     """Gather the imports from the code string.
 
     Parameters
@@ -88,7 +90,7 @@ def gather_code_imports(
 
     Returns
     -------
-    Tuple[list[str], list[str]]
+    tuple[list[str], list[str]]
         The standard library imports and the third party imports.
     """
     standard_lib_imports: list[str] = []
@@ -143,7 +145,7 @@ def check_function(
     code_string: str,
     function_name: str,
     function_args: list[str],
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Check the function.
 
     Parameters
@@ -157,7 +159,7 @@ def check_function(
 
     Returns
     -------
-    Tuple[bool, str]
+    tuple[bool, str]
         If valid, True and the function body (only), no extra lines.
         If invalid, False and the error message.
     """
@@ -177,7 +179,7 @@ def _validate_function_body(
     code_string: str,
     function_name: str,
     function_args: list[str],
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Get the function body.
 
     Parameters
@@ -193,7 +195,7 @@ def _validate_function_body(
 
     Returns
     -------
-    Tuple[bool, str]
+    tuple[bool, str]
         If valid, True and the function body (only), no extra lines.
         If invalid, False and the error message.
     """
@@ -305,7 +307,7 @@ def _get_function_body(
 def generate_function(
     function_name: str,
     function_args: list[str],
-    function_types: Tuple[list[str], str],
+    function_types: tuple[list[str], str],
     function_body: str,
     types_as_comments: bool = False,
 ) -> str:
@@ -317,7 +319,7 @@ def generate_function(
         The function name.
     function_args : list[str]
         The function arguments.
-    function_types : Tuple[list[str], str]
+    function_types : tuple[list[str], str]
         The function types.
     function_body : str
         The function body.

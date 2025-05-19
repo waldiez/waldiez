@@ -11,7 +11,7 @@ export_tools
 """
 
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -71,25 +71,25 @@ class ToolsExporter(BaseExporter, ExporterMixin):
             )
         )
 
-    def get_environment_variables(self) -> list[Tuple[str, str]]:
+    def get_environment_variables(self) -> list[tuple[str, str]]:
         """Get the environment variables to set.
 
         Returns
         -------
-        list[Tuple[str, str]]
+        list[tuple[str, str]]
             The environment variables to set.
         """
         return self.tool_secrets
 
-    def get_imports(self) -> list[Tuple[str, ImportPosition]]:
+    def get_imports(self) -> list[tuple[str, ImportPosition]]:
         """Generate the imports string.
 
         Returns
         -------
-        Tuple[str, int]
+        tuple[str, int]
             The exported imports and the position of the imports.
         """
-        imports: list[Tuple[str, ImportPosition]] = []
+        imports: list[tuple[str, ImportPosition]] = []
         if not self.tool_imports:
             return imports
         # standard imports
@@ -105,12 +105,12 @@ class ToolsExporter(BaseExporter, ExporterMixin):
 
     def get_before_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content before the main export.
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content before the main export and its position.
         """
 
@@ -126,16 +126,16 @@ class ToolsExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content after the main export.
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content after the main export and its position.
         """
         agent_registrations: list[
-            Tuple[str, Union[ExportPosition, AgentPosition]]
+            tuple[str, Union[ExportPosition, AgentPosition]]
         ] = []
         for agent in self.agents:
             agent_registration = get_agent_tool_registrations(

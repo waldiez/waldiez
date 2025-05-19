@@ -4,7 +4,7 @@
 """Export agents."""
 
 from pathlib import Path
-from typing import Callable, Optional, Tuple, Union
+from typing import Callable, Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezChat, WaldiezModel
 
@@ -33,8 +33,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
         self,
         agent: WaldiezAgent,
         agent_names: dict[str, str],
-        models: Tuple[list[WaldiezModel], dict[str, str]],
-        chats: Tuple[list[WaldiezChat], dict[str, str]],
+        models: tuple[list[WaldiezModel], dict[str, str]],
+        chats: tuple[list[WaldiezChat], dict[str, str]],
         tool_names: dict[str, str],
         is_async: bool,
         for_notebook: bool,
@@ -49,9 +49,9 @@ class AgentExporter(BaseExporter, ExporterMixin):
             The agent to export.
         agent_names : dict[str, str]
             The agent ids to names mapping.
-        models : Tuple[list[WaldiezModel], dict[str, str]]
+        models : tuple[list[WaldiezModel], dict[str, str]]
             All the models and the model ids to names mapping.
-        chats : Tuple[list[WaldiezChat], dict[str, str]]
+        chats : tuple[list[WaldiezChat], dict[str, str]]
             All the chats and the chat ids to names mapping.
         tool_names : dict[str, str]
             The tool ids to names mapping.
@@ -105,12 +105,12 @@ class AgentExporter(BaseExporter, ExporterMixin):
             output_dir=self.output_dir,
         )
 
-    def get_imports(self) -> Optional[list[Tuple[str, ImportPosition]]]:
+    def get_imports(self) -> Optional[list[tuple[str, ImportPosition]]]:
         """Get the imports.
 
         Returns
         -------
-        Optional[Tuple[str, ImportPosition]]
+        Optional[tuple[str, ImportPosition]]
             The imports.
         """
         position = ImportPosition.THIRD_PARTY
@@ -145,12 +145,12 @@ class AgentExporter(BaseExporter, ExporterMixin):
 
     def get_before_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content before the main export.
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content before the main export and its position.
         """
         before_agent_string = ""
@@ -171,12 +171,12 @@ class AgentExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content after the main export.
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content after the main export and its position.
         """
         after_agent_string = ""
@@ -220,7 +220,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
     max_consecutive_auto_reply={agent.data.max_consecutive_auto_reply},
     default_auto_reply={default_auto_reply},
     code_execution_config={code_execution_arg},
-    is_termination_msg={is_termination},{extras}
+    is_termination_msg={is_termination},  # pyright: ignore{extras}
 """
         # e.g. llm_config=...
         other_args = self.arguments_resolver(agent)

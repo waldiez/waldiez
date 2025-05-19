@@ -3,7 +3,7 @@
 # pylint: disable=too-many-locals
 """Nested chats exporting."""
 
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional
 
 from waldiez.models import (
     WaldiezAgent,
@@ -75,9 +75,9 @@ def export_nested_chat_registration(
             if use_suffix
             else f"{agent_name}_chat_queue"
         )
-        content += f"{var_name} = {chat_queue}" + "\n"
+        content += f"{var_name}: list[dict[str, Any]] = {chat_queue}" + "\n"
         content += f"""
-{agent_name}.register_nested_chats(
+{agent_name}.register_nested_chats(  # pyright: ignore
     trigger={trigger_names},
     chat_queue={var_name},
     use_async={is_async},
@@ -130,7 +130,7 @@ def get_nested_chat_message_string(
     chat_names: dict[str, str],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
-) -> Tuple[str, Optional[str]]:
+) -> tuple[str, Optional[str]]:
     """Get the nested chat message string.
 
     Parameters
@@ -152,7 +152,7 @@ def get_nested_chat_message_string(
 
     Returns
     -------
-    Tuple[str, Optional[str]]
+    tuple[str, Optional[str]]
         The message string and the method name if the message is a method.
     """
     sender_name: Optional[str] = None
@@ -200,7 +200,7 @@ def get_nested_chat_queue(
     all_chats: list[WaldiezChat],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
-) -> Tuple[str, list[str]]:
+) -> tuple[str, list[str]]:
     """Get the nested chat queue.
 
     Parameters
@@ -222,7 +222,7 @@ def get_nested_chat_queue(
 
     Returns
     -------
-    Tuple[str, list[str]]
+    tuple[str, list[str]]
         The nested chat queue and the methods to include
         (methods: message string and method name if the message is a method).
     """
@@ -253,7 +253,7 @@ def get_chat_nested_string(
     is_reply: bool,
     chat_names: dict[str, str],
     string_escape: Callable[[str], str],
-) -> Tuple[str, Optional[str]]:
+) -> tuple[str, Optional[str]]:
     """Get the nested chat message.
 
     Parameters
@@ -269,7 +269,7 @@ def get_chat_nested_string(
 
     Returns
     -------
-    Tuple[str, Optional[str]]
+    tuple[str, Optional[str]]
         If the message is a string, the message content and None.
         If the message is a method, the method name and the method content.
         If the message is None, 'None' and None.

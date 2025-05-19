@@ -21,7 +21,6 @@ from typing import (
     Callable,
     Optional,
     Set,
-    Tuple,
     Type,
     Union,
 )
@@ -185,7 +184,7 @@ class WaldiezRunner:
         file_name: str,
         module_name: str,
         printer: Callable[..., None],
-    ) -> Tuple[ModuleType, dict[str, str]]:
+    ) -> tuple[ModuleType, dict[str, str]]:
         self._exporter.export(Path(file_name))
         spec = importlib.util.spec_from_file_location(
             module_name, temp_dir / file_name

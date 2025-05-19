@@ -39,19 +39,19 @@ class WaldiezChatSummary(WaldiezBase):
     method: Annotated[
         Optional[WaldiezChatSummaryMethod],
         Field(
-            "last_msg",
+            default="last_msg",
             title="Method",
             description="The method to use for the LLM summary.",
         ),
-    ]
+    ] = "last_msg"
     prompt: Annotated[
         str,
         Field(
-            "",
+            default="Summarize the conversation.",
             title="Prompt",
             description="The prompt for the LLM summary method.",
         ),
-    ]
+    ] = "Summarize the conversation."
     args: Annotated[
         dict[str, str],
         Field(
@@ -59,7 +59,7 @@ class WaldiezChatSummary(WaldiezBase):
             description="The additional arguments for the LLM summary method.",
             default_factory=dict,
         ),
-    ]
+    ] = {}
 
     # noinspection PyNestedDecorators
     @field_validator("method", mode="before")

@@ -57,7 +57,7 @@ def test_export_rag_user() -> None:
         f"{tab}max_consecutive_auto_reply=None," + "\n"
         f"{tab}default_auto_reply=None," + "\n"
         f"{tab}code_execution_config=False," + "\n"
-        f"{tab}is_termination_msg=None," + "\n"
+        f"{tab}is_termination_msg=None,  # pyright: ignore" + "\n"
         f"{tab}retrieve_config={{" + "\n"
         f'{tab}{tab}"task": "default",' + "\n"
         f'{tab}{tab}"model": "all-MiniLM-L6-v2",' + "\n"

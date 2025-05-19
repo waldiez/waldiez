@@ -45,7 +45,7 @@ def test_export_reasoning_agent() -> None:
         "    max_consecutive_auto_reply=None,\n"
         "    default_auto_reply=None,\n"
         "    code_execution_config=False,\n"
-        "    is_termination_msg=None,\n"
+        "    is_termination_msg=None,  # pyright: ignore\n"
         "    verbose=True,\n"
         "    reason_config={\n"
         '        "method": "beam_search",\n'

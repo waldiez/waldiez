@@ -6,7 +6,7 @@
 import os
 import sys
 import warnings
-from typing import Generator, Tuple
+from typing import Generator
 
 
 def in_virtualenv() -> bool:
@@ -90,12 +90,12 @@ def try_handle_the_np_thing() -> None:
         setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
 
 
-def set_env_vars(flow_env_vars: list[Tuple[str, str]]) -> dict[str, str]:
+def set_env_vars(flow_env_vars: list[tuple[str, str]]) -> dict[str, str]:
     """Set environment variables and return the old ones (if any).
 
     Parameters
     ----------
-    flow_env_vars : list[Tuple[str, str]]
+    flow_env_vars : list[tuple[str, str]]
         The environment variables to set.
 
     Returns

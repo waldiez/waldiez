@@ -10,7 +10,7 @@ definitions and their optional additional tools to be used.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterator, Optional, Tuple, Union
+from typing import Any, Iterator, Optional
 
 from .agents import (
     WaldiezAgent,
@@ -78,7 +78,7 @@ class Waldiez:
     @classmethod
     def load(
         cls,
-        waldiez_file: Union[str, Path],
+        waldiez_file: str | Path,
         name: Optional[str] = None,
         description: Optional[str] = None,
         tags: Optional[list[str]] = None,
@@ -167,7 +167,7 @@ class Waldiez:
         return any(agent.agent_type == "captain" for agent in self.agents)
 
     @property
-    def chats(self) -> list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    def chats(self) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
         """Get the chats."""
         return self.flow.ordered_flow
 
@@ -271,15 +271,15 @@ class Waldiez:
         )
         return sorted(requirements)
 
-    def get_flow_env_vars(self) -> list[Tuple[str, str]]:
+    def get_flow_env_vars(self) -> list[tuple[str, str]]:
         """Get the flow environment variables.
 
         Returns
         -------
-        list[Tuple[str, str]]
+        list[tuple[str, str]]
             The environment variables for the flow.
         """
-        env_vars: list[Tuple[str, str]] = []
+        env_vars: list[tuple[str, str]] = []
         for tool in self.tools:
             for secret_key, secret_value in tool.secrets.items():
                 env_vars.append((secret_key, secret_value))

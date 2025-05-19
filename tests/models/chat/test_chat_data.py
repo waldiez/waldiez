@@ -3,10 +3,16 @@
 
 """Test waldiez.models.chat.chat_data.*."""
 
+from typing import Any
+
 import pytest
 
-from waldiez.models.chat.chat_data import WaldiezChatData
-from waldiez.models.chat.chat_message import WaldiezChatMessage
+from waldiez.models.chat import (
+    WaldiezChatData,
+    WaldiezChatMessage,
+    WaldiezChatNested,
+    WaldiezChatSummary,
+)
 
 
 def test_waldiez_chat_data() -> None:
@@ -109,6 +115,8 @@ def test_waldiez_chat_data_message() -> None:
         position=0,
         clear_history=False,
         message="Hello there",
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -179,6 +187,8 @@ def test_waldiez_chat_data_message() -> None:
             content="Hello there",
             context={},
         ),
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -186,7 +196,7 @@ def test_waldiez_chat_data_message() -> None:
     assert chat_data.message.content == "Hello there"
 
     # Given
-    chat_data_dict = {
+    chat_data_dict: dict[str, Any] = {
         "name": "chat_data",
         "description": "Chat data",
         "source": "wa-1",
@@ -208,7 +218,7 @@ def test_waldiez_chat_data_message() -> None:
         },
     }
     # Then
-    chat_data = WaldiezChatData(**chat_data_dict)  # type: ignore
+    chat_data = WaldiezChatData(**chat_data_dict)  # pyright: ignore
     assert isinstance(chat_data.message, WaldiezChatMessage)
     assert chat_data.message.type == "string"
     assert chat_data.message.content == "text message"
@@ -234,10 +244,12 @@ def test_waldiez_chat_summary() -> None:
         position=0,
         clear_history=False,
         message="Hello there",
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
     )
     # Then
     assert chat_data.summary.method == "last_msg"
-    assert chat_data.summary_args is None
+    assert not chat_data.summary_args
     model_dump = chat_data.model_dump(by_alias=True)
     assert model_dump["summary"]["method"] == "lastMsg"
     # Given
@@ -256,7 +268,11 @@ def test_waldiez_chat_summary() -> None:
         },
     )
     # Then
-    assert not chat_data.summary_args
+    assert chat_data.summary_args
+    assert (
+        chat_data.summary_args["summary_prompt"]
+        == "Summarize the conversation."
+    )
     model_dump = chat_data.model_dump(by_alias=True)
     assert model_dump["summary"]["method"] == "reflectionWithLlm"
     # Given

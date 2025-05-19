@@ -4,7 +4,7 @@
 
 import os
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -27,7 +27,7 @@ WaldiezRagUserProxyModels: dict[WaldiezRagUserProxyVectorDb, str] = {
 
 CUSTOM_EMBEDDING_FUNCTION = "custom_embedding_function"
 CUSTOM_EMBEDDING_FUNCTION_ARGS: list[str] = []
-CUSTOM_EMBEDDING_FUNCTION_TYPES: Tuple[list[str], str] = (
+CUSTOM_EMBEDDING_FUNCTION_TYPES: tuple[list[str], str] = (
     [],
     "Callable[..., Any]",
 )
@@ -537,7 +537,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Generate the custom embedding function.
 
         Parameters
@@ -549,7 +549,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The custom embedding function and the function name.
         """
         function_name = CUSTOM_EMBEDDING_FUNCTION
@@ -571,7 +571,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Generate the custom token count function.
 
         Parameters
@@ -583,7 +583,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The custom token count function and the function name.
         """
         function_name = CUSTOM_TOKEN_COUNT_FUNCTION
@@ -605,7 +605,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Generate the custom text split function.
 
         Parameters
@@ -617,7 +617,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The custom text split function and the function name.
         """
         function_name = CUSTOM_TEXT_SPLIT_FUNCTION
@@ -789,7 +789,7 @@ def string_represents_folder(path: str) -> bool:
     return not os.path.splitext(path)[1]
 
 
-def is_remote_path(path: str) -> Tuple[bool, bool]:
+def is_remote_path(path: str) -> tuple[bool, bool]:
     """Check if a path is a remote path.
 
     Parameters
@@ -799,7 +799,7 @@ def is_remote_path(path: str) -> Tuple[bool, bool]:
 
     Returns
     -------
-    Tuple[bool, bool]
+    tuple[bool, bool]
         If the path is a remote path and if it's a raw string.
     """
     is_raw = path.startswith(("r'", 'r"'))

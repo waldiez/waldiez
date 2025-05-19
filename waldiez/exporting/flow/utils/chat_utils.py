@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Utilities for chat content after exporting."""
 
-from typing import Tuple, Union
-
 from waldiez.exporting.base import (
     AgentPosition,
     ExportPosition,
@@ -13,7 +11,7 @@ from waldiez.exporting.base import (
 
 def add_before_chat_content(
     chat_content: str,
-    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    before_export: list[tuple[str, ExportPosition | AgentPosition]],
 ) -> str:
     """Add the before chat content.
 
@@ -21,7 +19,7 @@ def add_before_chat_content(
     ----------
     chat_content : str
         The chat content.
-    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[tuple[str, ExportPosition | AgentPosition]]
         The before export.
 
     Returns
@@ -43,7 +41,7 @@ def add_before_chat_content(
 
 def add_after_chat_content(
     chat_content: str,
-    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    after_export: list[tuple[str, ExportPosition | AgentPosition]],
 ) -> str:
     """Add the after chat content.
 
@@ -51,7 +49,7 @@ def add_after_chat_content(
     ----------
     chat_content : str
         The chat content.
-    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[tuple[str, ExportPosition | AgentPosition]]
         The after export.
 
     Returns

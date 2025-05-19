@@ -2,20 +2,19 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Handle agent contents before and after the agent(s) exports."""
 
-from typing import Tuple, Union
-
 from waldiez.exporting.base import (
     AgentPosition,
     AgentPositions,
     ExporterReturnType,
     ExportPosition,
+    ImportPosition,
 )
 from waldiez.models import WaldiezAgent
 
 
 def add_after_all_agents_content(
     agents_contents: str,
-    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    after_export: list[tuple[str, ExportPosition | AgentPosition]],
 ) -> str:
     """Add the after all agents content.
 
@@ -23,7 +22,7 @@ def add_after_all_agents_content(
     ----------
     agents_contents : str
         The agents content.
-    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[tuple[str, ExportPosition | AgentPosition]]
         The after export.
 
     Returns
@@ -49,7 +48,7 @@ def add_after_all_agents_content(
 
 def add_before_all_agents_content(
     agents_contents: str,
-    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    before_export: list[tuple[str, ExportPosition | AgentPosition]],
 ) -> str:
     """Add the before all agents content.
 
@@ -57,7 +56,7 @@ def add_before_all_agents_content(
     ----------
     agents_contents : str
         The agents content.
-    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[tuple[str, ExportPosition | AgentPosition]]
         The before export.
 
     Returns
@@ -81,7 +80,7 @@ def add_before_all_agents_content(
 
 def add_before_agent_content(
     agent_content: str,
-    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    before_export: list[tuple[str, ExportPosition | AgentPosition]],
     agent: WaldiezAgent,
 ) -> str:
     """Add the before agent content.
@@ -90,7 +89,7 @@ def add_before_agent_content(
     ----------
     agent_content : str
         The agent content.
-    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[tuple[str, ExportPosition | AgentPosition]]
         The before export.
     agent : WaldiezAgent
         The agent.
@@ -115,7 +114,7 @@ def add_before_agent_content(
 
 def add_after_agent_content(
     agent_content: str,
-    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    after_export: list[tuple[str, ExportPosition | AgentPosition]],
     agent: WaldiezAgent,
 ) -> str:
     """Add the after agent content.
@@ -124,7 +123,7 @@ def add_after_agent_content(
     ----------
     agent_content : str
         The agent content.
-    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[tuple[str, ExportPosition | AgentPosition]]
         The after export.
     agent : WaldiezAgent
         The agent.
@@ -148,17 +147,17 @@ def add_after_agent_content(
 
 
 def gather_agent_outputs(
-    before_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
-    after_export: list[Tuple[str, Union[ExportPosition, AgentPosition]]],
+    before_export: list[tuple[str, ExportPosition | AgentPosition]],
+    after_export: list[tuple[str, ExportPosition | AgentPosition]],
     agent_outputs: list[ExporterReturnType],
 ) -> ExporterReturnType:
     """Gather all the agent outputs.
 
     Parameters
     ----------
-    before_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    before_export : list[tuple[str, ExportPosition | AgentPosition]]
         The before export.
-    after_export : list[Tuple[str, Union[ExportPosition, AgentPosition]]]
+    after_export : list[tuple[str, ExportPosition | AgentPosition]]
         The after export.
     agent_outputs : list[ExporterReturnType]
         The agent outputs.
@@ -169,10 +168,10 @@ def gather_agent_outputs(
         The gathered agent outputs.
     """
     agents_contents = ""
-    agents_imports = []
-    agents_before_export = []
-    agents_after_export = []
-    agents_env_vars = []
+    agents_imports: list[tuple[str, ImportPosition]] = []
+    agents_before_export: list[tuple[str, ExportPosition | AgentPosition]] = []
+    agents_after_export: list[tuple[str, ExportPosition | AgentPosition]] = []
+    agents_env_vars: list[tuple[str, str]] = []
     for output in agent_outputs:
         if output["content"]:
             agents_contents += output["content"]

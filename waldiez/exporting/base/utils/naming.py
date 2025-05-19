@@ -13,7 +13,6 @@ get_escaped_string
 """
 
 import re
-from typing import Tuple
 
 MAX_VARIABLE_LENGTH = 46
 
@@ -77,7 +76,7 @@ def get_valid_python_variable_name(
 
 
 def get_valid_instance_name(
-    instance: Tuple[str, str],
+    instance: tuple[str, str],
     current_names: dict[str, str],
     prefix: str = "w",
     max_length: int = MAX_VARIABLE_LENGTH,
@@ -90,7 +89,7 @@ def get_valid_instance_name(
 
     Parameters
     ----------
-    instance : Tuple[str, str]
+    instance : tuple[str, str]
         The instance id and possible name.
     current_names : dict[str, str]
         The current names.

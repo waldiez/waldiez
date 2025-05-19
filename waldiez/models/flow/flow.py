@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez flow model."""
 
-from typing import Optional, Tuple
+from typing import Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -123,7 +123,7 @@ class WaldiezFlow(WaldiezBase):
         ),
     ]
     _ordered_flow: Optional[
-        list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+        list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
     ] = None
     _single_agent_mode: bool = False
 
@@ -163,7 +163,7 @@ class WaldiezFlow(WaldiezBase):
     @property
     def ordered_flow(
         self,
-    ) -> list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
         """Get the ordered flow."""
         if not self._ordered_flow:
             self._ordered_flow = self._get_flow_order()
@@ -203,6 +203,9 @@ class WaldiezFlow(WaldiezBase):
         """
         return WaldiezFlow(
             id=id_factory(),
+            storage_id=id_factory(),
+            created_at=now(),
+            updated_at=now(),
             type="flow",
             name="Default Flow",
             description="Default Flow",
@@ -213,12 +216,12 @@ class WaldiezFlow(WaldiezBase):
 
     def _get_flow_order(
         self,
-    ) -> list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
         """Get the ordered flow."""
         # in the chats, there is the 'order' field, we use this,
         # we only keep the ones with order >=0
         # and sort them by this property
-        ordered_flow: list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]] = []
+        ordered_flow: list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]] = []
         for chat in self.data.chats:
             if chat.data.order < 0:
                 continue

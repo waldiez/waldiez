@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get the standard imports for the flow exporter."""
 
-from typing import Optional, Tuple
+from typing import Optional
 
 from waldiez.exporting.base import ImportPosition
 
@@ -59,18 +59,18 @@ def get_sorted_imports(collected_imports: list[str]) -> list[str]:
 
 
 def sort_imports(
-    all_imports: list[Tuple[str, ImportPosition]],
-) -> Tuple[list[str], list[str], list[str], list[str], bool]:
+    all_imports: list[tuple[str, ImportPosition]],
+) -> tuple[list[str], list[str], list[str], list[str], bool]:
     """Sort the imports.
 
     Parameters
     ----------
-    all_imports : list[Tuple[str, ImportPosition]]
+    all_imports : list[tuple[str, ImportPosition]]
         All the imports.
 
     Returns
     -------
-    Tuple[list[str], list[str], list[str], list[str], bool]
+    tuple[list[str], list[str], list[str], list[str], bool]
         The sorted imports and a flag if we got `import autogen`.
     """
     builtin_imports: list[str] = []
@@ -106,14 +106,14 @@ def sort_imports(
 
 
 def get_the_imports_string(
-    all_imports: list[Tuple[str, ImportPosition]],
+    all_imports: list[tuple[str, ImportPosition]],
     is_async: bool,
 ) -> str:
     """Get the final imports string.
 
     Parameters
     ----------
-    all_imports : list[Tuple[str, ImportPosition]]
+    all_imports : list[tuple[str, ImportPosition]]
         All the imports.
     is_async : bool
         If the flow is async.
@@ -184,30 +184,30 @@ def ensure_np_import(third_party_imports: list[str]) -> list[str]:
 
 
 def gather_imports(
-    model_imports: Optional[list[Tuple[str, ImportPosition]]],
-    tool_imports: Optional[list[Tuple[str, ImportPosition]]],
-    chat_imports: Optional[list[Tuple[str, ImportPosition]]],
-    agent_imports: Optional[list[Tuple[str, ImportPosition]]],
-) -> list[Tuple[str, ImportPosition]]:
+    model_imports: Optional[list[tuple[str, ImportPosition]]],
+    tool_imports: Optional[list[tuple[str, ImportPosition]]],
+    chat_imports: Optional[list[tuple[str, ImportPosition]]],
+    agent_imports: Optional[list[tuple[str, ImportPosition]]],
+) -> list[tuple[str, ImportPosition]]:
     """Gather all the imports.
 
     Parameters
     ----------
-    model_imports : Tuple[str, ImportPosition]
+    model_imports : tuple[str, ImportPosition]
         The model imports.
-    tool_imports : Tuple[str, ImportPosition]
+    tool_imports : tuple[str, ImportPosition]
         The tool imports.
-    chat_imports : Tuple[str, ImportPosition]
+    chat_imports : tuple[str, ImportPosition]
         The chat imports.
-    agent_imports : Tuple[str, ImportPosition]
+    agent_imports : tuple[str, ImportPosition]
         The agent imports.
 
     Returns
     -------
-    Tuple[str, ImportPosition]
+    tuple[str, ImportPosition]
         The gathered imports.
     """
-    all_imports: list[Tuple[str, ImportPosition]] = []
+    all_imports: list[tuple[str, ImportPosition]] = []
     for import_statement in BUILTIN_IMPORTS:
         all_imports.append(
             (
@@ -227,7 +227,7 @@ def gather_imports(
     # from typing import Annotated
     # from typing import Annotated, Any, Callable, Dict, ...Union
     all_typing_imports = TYPING_IMPORTS.copy()
-    final_imports: list[Tuple[str, ImportPosition]] = []
+    final_imports: list[tuple[str, ImportPosition]] = []
     for import_statement, import_position in all_imports:
         if import_statement.startswith("from typing"):
             to_import = import_statement.split("import")[1].strip()

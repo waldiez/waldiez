@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Utilities for exporting a single chat in a flow."""
 
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, Optional
 
 from waldiez.models import (
     WaldiezAgent,
@@ -26,7 +26,7 @@ def export_single_chat(
     string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Get the chat string when there is only one chat in the flow.
 
     Parameters
@@ -52,7 +52,7 @@ def export_single_chat(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The chat string and additional methods string if any
 
     Example
@@ -130,7 +130,7 @@ def get_simple_chat_string(
     string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Get the chat string when there are chat arguments.
 
     Parameters
@@ -158,7 +158,7 @@ def get_simple_chat_string(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The chat string and additional methods string if any.
     """
     tab = "    " * tabs
@@ -201,7 +201,7 @@ def get_empty_simple_chat_string(
     string_escape: Callable[[str], str],
     tab: str,
     is_async: bool,
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Get the chat string when there are no chat arguments.
 
     Parameters
@@ -223,7 +223,7 @@ def get_empty_simple_chat_string(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The chat string and additional methods string if any
     """
     sender_name = agent_names[sender.id]
@@ -254,7 +254,7 @@ def get_chat_message(
     sender: WaldiezAgent,
     sender_name: str,
     string_escape: Callable[[str], str],
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Get the chat message string.
 
     Parameters
@@ -274,7 +274,7 @@ def get_chat_message(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The message argument and additional methods string if any.
     """
     additional_methods_string = ""

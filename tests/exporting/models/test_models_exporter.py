@@ -68,19 +68,19 @@ def test_models_exporter(tmp_path: Path) -> None:
     )
     generated_string = models_exporter.generate()
     expected = f"""
-{model1_name}_llm_config = {{
+{model1_name}_llm_config: dict[str, Any] = {{
     "model": "{model1_name}",
     "api_type": "anthropic",
     "api_key": get_{flow_name}_model_api_key("{model1_name}")
 }}
 
-{model2_name}_llm_config = {{
+{model2_name}_llm_config: dict[str, Any] = {{
     "model": "{model2_name}",
     "api_key": get_{flow_name}_model_api_key("{model2_name}"),
     "base_url": "{DEFAULT_BASE_URLS["nim"]}"
 }}
 
-{model3_name}_llm_config = {{
+{model3_name}_llm_config: dict[str, Any] = {{
     "model": "{model3_name}",
     "api_type": "google",
     "api_key": get_{flow_name}_model_api_key("{model3_name}")
@@ -118,6 +118,8 @@ def test_models_exporter(tmp_path: Path) -> None:
         name="agent1",
         agent_type="assistant",
         description="agent description",
+        created_at="2024-01-01T00:00:00Z",
+        updated_at="2024-01-01T00:00:00Z",
         data={  # type: ignore
             "model_ids": [],
         },
@@ -173,4 +175,4 @@ def test_models_exporter(tmp_path: Path) -> None:
     models_exporter.get_imports()
     after_export = models_exporter.get_after_export()
     assert after_export is not None
-    assert after_export[0][0] == "    llm_config=False,\n"
+    assert after_export[0][0] == "    llm_config=False,  # pyright: ignore\n"

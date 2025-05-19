@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Termination Message Check."""
 
-from typing import Optional, Tuple
+from typing import Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -95,7 +95,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the termination function.
 
         Parameters
@@ -107,7 +107,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The termination function and the function name.
         """
         function_name = "is_termination_message"

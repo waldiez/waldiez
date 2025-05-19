@@ -5,7 +5,7 @@
 """Test waldiez.exporting.agents.rag_user.rag_user.*."""
 
 import os
-from typing import Optional, Tuple
+from typing import Optional
 
 from waldiez.exporting.agent.utils.rag_user.rag_user import (
     get_rag_user_extras,
@@ -22,7 +22,7 @@ from waldiez.models import (
 # pylint: disable=line-too-long
 
 
-def _get_a_doc_path() -> Tuple[str, str]:
+def _get_a_doc_path() -> tuple[str, str]:
     """Get a doc path."""
     path = "/home/username/Documents/ A New Folder"
     if os.name == "nt":

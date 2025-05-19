@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Vector DB exporting utils for RAG user agents."""
 
-from typing import Any, Set, Tuple
+from typing import Any, Set
 
 from waldiez.models import WaldiezRagUserProxy
 
@@ -48,7 +48,7 @@ def _get_metadata_arg(
 def get_rag_user_vector_db_string(
     agent: WaldiezRagUserProxy,
     agent_name: str,
-) -> Tuple[str, str, Set[str]]:
+) -> tuple[str, str, Set[str]]:
     """Get the RAG user vector db string.
 
     The vector db can be one of the following:
@@ -69,7 +69,7 @@ def get_rag_user_vector_db_string(
 
     Returns
     -------
-    Tuple[str, str, Set[str]]
+    tuple[str, str, Set[str]]
         The content before the arg if any, the arg and the related imports.
     """
     before = ""

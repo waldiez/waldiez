@@ -9,6 +9,7 @@ from waldiez.models import (
     WaldiezAgent,
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
+    WaldiezAgentTerminationMessage,
 )
 
 
@@ -18,8 +19,12 @@ def test_get_agent_code_execution_config() -> None:
     agent = WaldiezAgent(
         id="wa-1",
         name="agent1",
+        description="agent description",
+        created_at="2024-01-01T00:00:00Z",
+        updated_at="2024-01-01T00:00:00Z",
         agent_type="assistant",
         data=WaldiezAgentData(
+            termination=WaldiezAgentTerminationMessage(),
             code_execution_config=WaldiezAgentCodeExecutionConfig(
                 use_docker=None,
                 work_dir="work_dir",
@@ -32,7 +37,7 @@ def test_get_agent_code_execution_config() -> None:
     expected_executor = (
         "agent1_executor = LocalCommandLineCodeExecutor(\n"
         '    work_dir="work_dir",\n'
-        "    timeout=10.0,\n"
+        "    timeout=10,\n"
         "    functions=[tool1],\n"
         ")\n\n"
     )
@@ -54,8 +59,13 @@ def test_get_agent_code_execution_config_no_code_execution() -> None:
     agent = WaldiezAgent(
         id="wa-1",
         name="agent1",
+        description="agent description",
+        created_at="2024-01-01T00:00:00Z",
+        updated_at="2024-01-01T00:00:00Z",
         agent_type="assistant",
-        data=WaldiezAgentData(),
+        data=WaldiezAgentData(
+            termination=WaldiezAgentTerminationMessage(),
+        ),
     )
     expected_executor = ""
     expected_arg = "False"

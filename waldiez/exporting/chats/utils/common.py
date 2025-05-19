@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common utilities for exporting chats."""
 
-from typing import Any, Callable, Optional, Tuple
+from typing import Any, Callable, Optional
 
 from waldiez.models import WaldiezAgent, WaldiezChat
 
@@ -39,7 +39,7 @@ def get_chat_message_string(
     chat: WaldiezChat,
     chat_names: dict[str, str],
     string_escape: Callable[[str], str],
-) -> Tuple[str, Optional[str]]:
+) -> tuple[str, Optional[str]]:
     """Get the agent's message as a string.
 
     Parameters
@@ -55,7 +55,7 @@ def get_chat_message_string(
 
     Returns
     -------
-    Tuple[str, Optional[str]]
+    tuple[str, Optional[str]]
         If the message is a string, the message content and None.
         If the message is a method, the method name and the method content.
         If the message is None, 'None' and None.

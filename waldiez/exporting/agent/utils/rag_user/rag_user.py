@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """RAG User related exporting utils."""
 
-from typing import Callable, Set, Tuple, Union
+from typing import Callable, Set, Union
 
 from waldiez.models import (
     WaldiezAgent,
@@ -20,7 +20,7 @@ def get_rag_user_extras(
     model_names: dict[str, str],
     path_resolver: Callable[[str], str],
     serializer: Callable[..., str],
-) -> Tuple[str, str, Set[str]]:
+) -> tuple[str, str, Set[str]]:
     """Get the RAG user extra argument, imports and content before the agent.
 
     Parameters
@@ -38,7 +38,7 @@ def get_rag_user_extras(
 
     Returns
     -------
-    Tuple[str, str, Set[str]]
+    tuple[str, str, Set[str]]
         The content before the agent, the retrieve arg and the db imports.
     """
     before_agent_string = ""
@@ -70,7 +70,7 @@ def get_rag_user_retrieve_config_str(
     model_names: dict[str, str],
     path_resolver: Callable[[str], str],
     serializer: Callable[..., str],
-) -> Tuple[str, str, Set[str]]:
+) -> tuple[str, str, Set[str]]:
     """Get the RAG user retrieve config string.
 
     Parameters
@@ -88,7 +88,7 @@ def get_rag_user_retrieve_config_str(
 
     Returns
     -------
-    Tuple[str, str, Set[str]]
+    tuple[str, str, Set[str]]
         The content before the args, the args and the imports.
     """
     # e.g. user_agent = RetrieveUserProxyAgent(

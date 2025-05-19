@@ -106,7 +106,7 @@ def get_tool(tool_id: str = "ws-1") -> WaldiezTool:
         updated_at="2021-01-01T00:00:00.000Z",
         data=WaldiezToolData(
             content=(
-                "def tool_name():\n"
+                "def tool_name() -> str:\n"
                 '    """Tool Description."""\n'
                 "    return 'Tool Response'"
             ),

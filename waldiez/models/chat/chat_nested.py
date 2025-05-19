@@ -38,19 +38,19 @@ class WaldiezChatNested(WaldiezBase):
     message: Annotated[
         Optional[WaldiezChatMessage],
         Field(
-            None,
+            default=None,
             title="Message",
             description="The message in a nested chat (sender -> recipient).",
         ),
-    ]
+    ] = None
     reply: Annotated[
         Optional[WaldiezChatMessage],
         Field(
-            None,
+            default=None,
             title="Reply",
             description="The reply in a nested chat (recipient -> sender).",
         ),
-    ]
+    ] = None
 
     _message_content: Optional[str] = None
     _reply_content: Optional[str] = None

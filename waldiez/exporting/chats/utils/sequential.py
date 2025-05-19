@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Utility functions for exporting sequential chats."""
 
-from typing import Callable, Tuple
+from typing import Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -15,19 +15,19 @@ from .common import get_chat_message_string, update_summary_chat_args
 
 
 def export_sequential_chat(
-    main_chats: list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
+    main_chats: list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
     chat_names: dict[str, str],
     agent_names: dict[str, str],
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     r"""Get the chats content, when there are more than one chats in the flow.
 
     Parameters
     ----------
-    main_chats : list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+    main_chats : list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
         The main chats.
     chat_names : dict[str, str]
         A mapping of chat id to chat name.
@@ -44,7 +44,7 @@ def export_sequential_chat(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The main chats content and additional methods string if any.
 
     Example
@@ -144,7 +144,7 @@ def _get_chat_dict_string(
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     tabs: int,
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Get a chat dictionary string.
 
     If the chat message is a separate method and not a string or a lambda,
@@ -172,7 +172,7 @@ def _get_chat_dict_string(
 
     Returns
     -------
-    Tuple[str, str]
+    tuple[str, str]
         The chat dictionary string and additional methods string if any.
     """
     tab = "    " * tabs

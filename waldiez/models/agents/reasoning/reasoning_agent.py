@@ -22,7 +22,7 @@ class WaldiezReasoningAgent(WaldiezAgent):
             description="The agent type in a graph: 'reasoning'",
             alias="agentType",
         ),
-    ]
+    ] = "reasoning"
     data: Annotated[  # pyright: ignore
         WaldiezReasoningAgentData,
         Field(

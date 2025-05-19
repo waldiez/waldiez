@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Chats exporter."""
 
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezChat
 
@@ -38,7 +38,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         agent_names: dict[str, str],
         all_chats: list[WaldiezChat],
         chat_names: dict[str, str],
-        main_chats: list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
+        main_chats: list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
         for_notebook: bool,
         is_async: bool,
     ):
@@ -54,7 +54,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             All the chats in the flow.
         chat_names : dict[str, str]
             A mapping of chat id to chat name.
-        main_chats : list[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+        main_chats : list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
             The main chats in the flow.
         for_notebook : bool
             Whether the export is for a notebook.
@@ -99,7 +99,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             is_async=self.is_async,
         )
 
-    def get_imports(self) -> Optional[list[Tuple[str, ImportPosition]]]:
+    def get_imports(self) -> Optional[list[tuple[str, ImportPosition]]]:
         """Get the imports string.
 
         Returns
@@ -143,15 +143,15 @@ class ChatsExporter(BaseExporter, ExporterMixin):
 
     def get_before_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content before the main export.
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content before the main export and its position.
         """
-        before: list[Tuple[str, Union[ExportPosition, AgentPosition]]] = []
+        before: list[tuple[str, Union[ExportPosition, AgentPosition]]] = []
         if self._generated is False:
             self._export_chats()
             self._generated = True
@@ -163,15 +163,15 @@ class ChatsExporter(BaseExporter, ExporterMixin):
 
     def get_after_export(
         self,
-    ) -> Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]:
+    ) -> Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]:
         """Generate the content after the main export.
 
         Returns
         -------
-        Optional[list[Tuple[str, Union[ExportPosition, AgentPosition]]]]
+        Optional[list[tuple[str, Union[ExportPosition, AgentPosition]]]]
             The exported content after the main export and its position.
         """
-        after: list[Tuple[str, Union[ExportPosition, AgentPosition]]] = []
+        after: list[tuple[str, Union[ExportPosition, AgentPosition]]] = []
         # not per agent, we might have references to agents not yet defined.
         # let's use one string for all nested chat registrations
         nested_chat_registrations = ""
