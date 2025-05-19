@@ -1,1 +1,256 @@
-{"id":"AY8EdrDODCkCBlfJwPmyJEKNmbOj6CTr","type":"flow","storageId":"wf-1737845721904Fwn1CiwGcbNYhBEqxVz68}","name":"Chain-of-Thought Reasoning with DFS","description":"Chain-of-Thought Reasoning with DFS","tags":["reasoning","chain of thought","depth-first search","dfs"],"requirements":[],"createdAt":"2025-01-30T08:59:22.183Z","updatedAt":"2025-01-30T08:59:30.674Z","data":{"nodes":[{"id":"ws-1737845846103mlNyQV9t2AEWnx5GpqLNs","type":"model","position":{"x":0,"y":10},"measured":{"width":182,"height":182},"selected":true,"hidden":true},{"id":"wa-1737904747483LqNzWhHA1A0zdP-HfFvsG","type":"agent","position":{"x":-135,"y":270},"hidden":false,"measured":{"width":206,"height":214},"selected":false,"dragging":false},{"id":"wa-17379047099536ThEQStf746npMXh7YOvI","type":"agent","position":{"x":285,"y":195},"hidden":false,"measured":{"width":206,"height":215},"selected":false,"dragging":false}],"edges":[{"id":"we-1737904754802BGWqHZhW3oqZ7aT9pjCWH","source":"wa-1737904747483LqNzWhHA1A0zdP-HfFvsG","target":"wa-17379047099536ThEQStf746npMXh7YOvI","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#bc76f5","width":10,"height":10},"style":{"stroke":"#bc76f5","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-1737904747483LqNzWhHA1A0zdP-HfFvsG","targetHandle":"agent-handle-left-target-wa-17379047099536ThEQStf746npMXh7YOvI","type":"chat"}],"viewport":{"x":960.5,"y":65,"zoom":1},"agents":{"users":[{"type":"agent","name":"User","description":"A new User agent","tags":[],"requirements":[],"createdAt":"2025-01-26T15:19:07.483Z","updatedAt":"2025-01-26T15:19:07.483Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":10,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":[],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-1737904747483LqNzWhHA1A0zdP-HfFvsG","agentType":"user"}],"assistants":[],"managers":[],"rag_users":[],"swarm_agents":[],"reasoning_agents":[{"type":"agent","name":"reason_agent","description":"A reasoning agent that answers math questions.","tags":[],"requirements":[],"createdAt":"2025-01-26T15:18:29.953Z","updatedAt":"2025-01-26T15:18:29.953Z","data":{"systemMessage":"answer math questions","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["ws-1737845846103mlNyQV9t2AEWnx5GpqLNs"],"tools":[],"parentId":null,"nestedChats":[],"verbose":true,"reasonConfig":{"method":"dfs","max_depth":3,"forest_size":1,"rating_scale":10,"beam_size":3,"answer_approach":"pool","nsim":3,"exploration_constant":1.41}},"id":"wa-17379047099536ThEQStf746npMXh7YOvI","agentType":"reasoning"}]},"models":[{"id":"ws-1737845846103mlNyQV9t2AEWnx5GpqLNs","type":"model","name":"gemini-1.5-flash","description":"gemini-1.5-flash","tags":[],"requirements":[],"createdAt":"2025-01-25T22:57:26.103Z","updatedAt":"2025-01-27T15:07:46.208Z","data":{"apiKey":"REPLACE_ME","apiType":"google","apiVersion":null,"baseUrl":null,"temperature":null,"topP":null,"maxTokens":null,"defaultHeaders":{},"price":{"promptPricePer1k":null,"completionTokenPricePer1k":null}}}],"tools":[],"chats":[{"id":"we-1737904754802BGWqHZhW3oqZ7aT9pjCWH","data":{"source":"wa-1737904747483LqNzWhHA1A0zdP-HfFvsG","target":"wa-17379047099536ThEQStf746npMXh7YOvI","name":"User => reason_agent","order":0,"description":"New connection","position":1,"clearHistory":true,"maxTurns":null,"message":{"type":"string","content":"What is the expected maximum dice value if you can roll a 6-sided dice three times?","context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}}],"isAsync":false}}
+{
+  "id": "wf-YM1cHk-mrU8LadWaeWQ_k",
+  "type": "flow",
+  "storageId": "wf-YM1cHk-mrU8LadWaeWQ_k",
+  "name": "Chain-of-Thought Reasoning with DFS",
+  "description": "Chain-of-Thought Reasoning with DFS",
+  "tags": [
+    "reasoning",
+    "chain of thought",
+    "depth-first search",
+    "dfs"
+  ],
+  "requirements": [],
+  "createdAt": "2025-05-19T14:03:53.279Z",
+  "updatedAt": "2025-05-19T14:08:01.592Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1747663530794zAOnQE1LFL77-gKYUiw9F",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wa-1747663611288peWUClnOTiu5rptUsflff",
+        "type": "agent",
+        "position": {
+          "x": 207,
+          "y": 206
+        },
+        "measured": {
+          "width": 200,
+          "height": 227
+        },
+        "selected": false
+      },
+      {
+        "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+        "type": "agent",
+        "position": {
+          "x": 632,
+          "y": 193
+        },
+        "measured": {
+          "width": 200,
+          "height": 231
+        },
+        "selected": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "we-17476636171152CjWNQUo9267esOKhBdke",
+        "source": "wa-1747663611288peWUClnOTiu5rptUsflff",
+        "target": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+        "hidden": false,
+        "type": "chat",
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1747663611288peWUClnOTiu5rptUsflff",
+        "targetHandle": "agent-handle-left-target-wa-17476636145686Psj3iVNybSHDgSqAShDm"
+      }
+    ],
+    "viewport": {
+      "x": 20,
+      "y": 40,
+      "zoom": 1
+    },
+    "agents": {
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "agentType": "user_proxy",
+          "name": "User proxy",
+          "description": "A new User proxy agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T14:06:51.288Z",
+          "updatedAt": "2025-05-19T14:06:51.288Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": []
+          },
+          "id": "wa-1747663611288peWUClnOTiu5rptUsflff"
+        }
+      ],
+      "assistantAgents": [],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [
+        {
+          "type": "agent",
+          "agentType": "reasoning",
+          "name": "Reasoning",
+          "description": "A new Reasoning agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T14:06:54.568Z",
+          "updatedAt": "2025-05-19T14:06:54.568Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747663530794zAOnQE1LFL77-gKYUiw9F"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "order": 0
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "verbose": true,
+            "reasonConfig": {
+              "method": "beam_search",
+              "maxDepth": 3,
+              "forestSize": 1,
+              "ratingScale": 10,
+              "beamSize": 3,
+              "answerApproach": "pool",
+              "nsim": 3,
+              "explorationConstant": 1.41
+            }
+          },
+          "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm"
+        }
+      ],
+      "captainAgents": [],
+      "groupManagerAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1747663530794zAOnQE1LFL77-gKYUiw9F",
+        "type": "model",
+        "name": "gemini-2.0-flash",
+        "description": "gemini-2.0-flash",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T14:05:30.795Z",
+        "updatedAt": "2025-05-19T14:06:46.419Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "google",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "accessKey": null,
+            "profileName": null,
+            "region": null,
+            "secretKey": null,
+            "sessionToken": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "we-17476636171152CjWNQUo9267esOKhBdke",
+        "data": {
+          "source": "wa-1747663611288peWUClnOTiu5rptUsflff",
+          "target": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+          "sourceType": "user_proxy",
+          "targetType": "reasoning",
+          "name": "User proxy => Reasoning",
+          "order": 0,
+          "description": "New connection",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "What is the expected maximum dice value if you can roll a 6-sided dice three times?",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "handoffCondition": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 41
+  }
+}
