@@ -54,6 +54,13 @@ export const useWaldiezWrapper = ({
         // other types to check:
         // termination_and_human_reply_no_input
         // using_auto_reply
+        // # {"type": "group_chat_run_chat", "content":
+        // #    {"uuid": "3f2d491e-deb3-4f28-8991-cb8eb67ea3a6",
+        // #    "speaker": "executor", "silent": false}}
+        //
+        // # {"type": "generate_code_execution_reply", "content":
+        // #    {"uuid": "af6e6cfd-edf6-4785-a490-97358ae3d306",
+        // #   "code_blocks": ["md"], "sender": "manager", "recipient": "executor"}}
         switch (data.type) {
             case "text":
             case "print":
