@@ -4,6 +4,7 @@
 """Common utilities for the I/O extensions."""
 
 import json
+from pathlib import Path
 from typing import (
     Annotated,
     Any,
@@ -17,7 +18,7 @@ from typing import (
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from .utils import gen_id, now
+from .utils import gen_id, get_image, now
 
 MessageType = Literal[
     "input_request",
@@ -110,12 +111,69 @@ class TextMediaContent(BaseModel):
     type: Literal["text"] = "text"
     text: str
 
+    # pylint: disable=unused-argument
+    def to_string(
+        self,
+        uploads_root: Path | None = None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        return self.text
+
 
 class ImageMediaContent(BaseModel):
     """Image media content."""
 
     type: Literal["image"] = "image"
     image: ImageContent
+
+    def to_string(
+        self,
+        uploads_root: Path | None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        if self.image.url:
+            image = get_image(
+                uploads_root=uploads_root,
+                image_data=self.image.url,
+                base_name=base_name,
+            )
+            return f"<img {image}>"
+        if self.image.file:
+            image = get_image(
+                uploads_root=uploads_root,
+                image_data=self.image.file,
+                base_name=base_name,
+            )
+            return f"<img {image}>"
+        return str(self.image.file)
 
 
 class ImageUrlMediaContent(BaseModel):
@@ -124,12 +182,72 @@ class ImageUrlMediaContent(BaseModel):
     type: Literal["image_url"] = "image_url"
     image_url: ImageContent
 
+    def to_string(
+        self,
+        uploads_root: Path | None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        if self.image_url.url:
+            image = get_image(
+                uploads_root=uploads_root,
+                image_data=self.image_url.url,
+                base_name=base_name,
+            )
+            return f"<img {image}>"
+        if self.image_url.file:
+            image = get_image(
+                uploads_root=uploads_root,
+                image_data=self.image_url.file,
+                base_name=base_name,
+            )
+            return f"<img {image}>"
+        return str(self.image_url.file)
+
 
 class VideoMediaContent(BaseModel):
     """Video media content."""
 
     type: Literal["video"] = "video"
     video: VideoContent
+
+    def to_string(
+        self,
+        uploads_root: Path | None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        if self.video.url:
+            return f"<video src='{self.video.url}'></video>"
+        if self.video.file:
+            return f"<video src='{self.video.file}'></video>"
+        return str(self.video.file)
 
 
 class AudioMediaContent(BaseModel):
@@ -138,12 +256,62 @@ class AudioMediaContent(BaseModel):
     type: Literal["audio"] = "audio"
     audio: AudioContent
 
+    def to_string(
+        self,
+        uploads_root: Path | None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        if self.audio.url:
+            return f"<audio src='{self.audio.url}'></audio>"
+        if self.audio.file:
+            return f"<audio src='{self.audio.file}'></audio>"
+        return str(self.audio.file)
+
 
 class FileMediaContent(BaseModel):
     """File media content."""
 
     type: Literal["file", "document"]
     file: FileContent
+
+    def to_string(
+        self,
+        uploads_root: Path | None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        if self.file.url:
+            return f"<a href='{self.file.url}'>{self.file.name}</a>"
+        if self.file.file:
+            return f"<a href='{self.file.file}'>{self.file.name}</a>"
+        return str(self.file.file)
 
 
 MediaContent = Union[
@@ -225,6 +393,27 @@ class UserInputData(BaseModel):
         MediaContent,
         Field(discriminator="type"),
     ]
+
+    def to_string(
+        self,
+        uploads_root: Path | None = None,
+        base_name: str | None = None,
+    ) -> str:
+        """Convert the content to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the image file, optional.
+
+        Returns
+        -------
+        str
+            The string representation of the content.
+        """
+        return self.content.to_string(uploads_root, base_name)
 
     @classmethod
     def _content_from_string(cls, value: str) -> MediaContent:
@@ -541,8 +730,19 @@ class UserResponse(StructuredBase):
         """
         return UserInputData(content=TextMediaContent(text=text))
 
-    def to_string(self) -> str:
+    def to_string(
+        self,
+        uploads_root: Path | None = None,
+        base_name: str | None = None,
+    ) -> str:
         """Convert the response to a string.
+
+        Parameters
+        ----------
+        uploads_root : Path | None
+            The root directory for storing images, optional.
+        base_name : str | None
+            The base name for the file, optional.
 
         Returns
         -------
@@ -550,22 +750,17 @@ class UserResponse(StructuredBase):
             The string representation of the response.
         """
         if isinstance(self.data, list):
-            return " ".join(
-                [
-                    (
-                        item.content.text
-                        if isinstance(item.content, TextMediaContent)
-                        else str(item)
+            string = ""
+            for item in self.data:
+                string += (
+                    item.to_string(
+                        uploads_root=uploads_root, base_name=base_name
                     )
-                    for item in self.data
-                ]
-            )
+                    + " "
+                )
+            # return " ".join([item.to_string() for item in self.data])
         if isinstance(self.data, UserInputData):
-            return (
-                self.data.content.text
-                if isinstance(self.data.content, TextMediaContent)
-                else str(self.data)
-            )
+            return self.data.to_string()
         return str(self.data)
 
 
