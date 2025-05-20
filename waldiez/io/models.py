@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pylint: disable=unused-argument
 """Common utilities for the I/O extensions."""
 
 import json
@@ -111,7 +112,6 @@ class TextMediaContent(BaseModel):
     type: Literal["text"] = "text"
     text: str
 
-    # pylint: disable=unused-argument
     def to_string(
         self,
         uploads_root: Path | None = None,
@@ -761,6 +761,8 @@ class UserResponse(StructuredBase):
             return string.strip()
         if isinstance(self.data, UserInputData):
             return self.data.to_string()
+        if isinstance(self.data, str):  # pyright: ignore
+            return self.data
         return json.dumps(self.data)
 
 

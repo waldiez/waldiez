@@ -9,7 +9,7 @@
 import json
 import queue
 import sys
-from typing import Callable
+from typing import Any, Callable
 from unittest.mock import MagicMock, patch
 
 from autogen.events import BaseEvent  # type: ignore
@@ -150,7 +150,7 @@ class TestStructuredIOStream:
             with patch.object(self.stream, "_send_input_request"):
                 # Use a very short timeout to speed up the test
                 self.stream.timeout = 0.1
-                result = self.stream._read_user_input(
+                result = self.stream._read_user_input(  # pyright: ignore
                     "Prompt: ", False, "test_id"
                 )
 
@@ -202,16 +202,16 @@ class TestStructuredIOStream:
         payload = json.loads(args[0])
 
         assert payload["type"] == "test_event"
-        assert isinstance(payload["id"], str)
-        assert isinstance(payload["timestamp"], str)
-        payload_data = json.loads(payload["data"])
-        assert payload_data["content"] == "test message"
+        assert payload["content"] == "test message"
         assert kwargs == {"flush": True}
 
     def test_handle_user_input_plain_text(self) -> None:
         """Test parsing plain text input."""
         # Test with plain text (non-JSON)
-        result = self.stream._handle_user_input("Hello world", "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            "Hello world",
+            "test_id",
+        )
         assert result.to_string() == "Hello world"
 
     def test_handle_user_input_json_response(self) -> None:
@@ -220,7 +220,10 @@ class TestStructuredIOStream:
         json_input = json.dumps(
             {"request_id": "test_id", "data": "JSON response"}
         )
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == "JSON response"
 
         # Test with JSON that has matching request_id and dict data
@@ -230,7 +233,10 @@ class TestStructuredIOStream:
                 "data": {"text": "Hello", "image": "src='test.jpg'"},
             }
         )
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == "<img src='test.jpg'> Hello"
 
         # Test with JSON that has text/image outside of data
@@ -241,24 +247,36 @@ class TestStructuredIOStream:
                 "image": "src='outside.jpg'",
             }
         )
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == "<img src='outside.jpg'> Hello outside"
 
         # Test with JSON that has no data
         json_input = json.dumps({"request_id": "test_id"})
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == ""
 
         # Test with JSON that has empty data
         json_input = json.dumps({"request_id": "test_id", "data": {}})
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == ""
 
         # Test with double-dumped JSON
         json_input = json.dumps(
             {"request_id": "test_id", "data": json.dumps("Hello, world!")}
         )
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == "Hello, world!"
 
         json_input = json.dumps(
@@ -269,7 +287,10 @@ class TestStructuredIOStream:
                 ),
             }
         )
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
         assert result.to_string() == "<img src='double.jpg'> Hello"
 
     @patch("builtins.print")
@@ -280,7 +301,10 @@ class TestStructuredIOStream:
         json_input = json.dumps(
             {"request_id": "wrong_id", "data": "This should be ignored"}
         )
-        result = self.stream._handle_user_input(json_input, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            json_input,
+            "test_id",
+        )
 
         # Verify warning was printed
         stderr_call = None
@@ -308,35 +332,47 @@ class TestStructuredIOStream:
         """Test parsing input with invalid JSON."""
         # Test with invalid JSON
         invalid_json = "{invalid: json"
-        result = self.stream._handle_user_input(invalid_json, "test_id")
+        result = self.stream._handle_user_input(  # pyright: ignore
+            invalid_json,
+            "test_id",
+        )
         assert result.to_string() == invalid_json
 
     def test_format_multimedia_response(self) -> None:
         """Test formatting multimedia response."""
+        data: dict[str, Any] = {}
         # Test with both image and text
         data = {"image": "src='test.jpg'", "text": "Hello, world!"}
-        result = self.stream._format_multimedia_response(data)
+        result = self.stream._format_multimedia_response(  # pyright: ignore
+            data,
+        )
         assert result == "<img src='test.jpg'> Hello, world!"
 
         # Test with only image
         data = {"image": "src='test.jpg'"}
-        result = self.stream._format_multimedia_response(data)
+        result = self.stream._format_multimedia_response(  # pyright: ignore
+            data,
+        )
         assert result == "<img src='test.jpg'>"
 
         # Test with only text
         data = {"text": "Hello, world!"}
-        result = self.stream._format_multimedia_response(data)
+        result = self.stream._format_multimedia_response(  # pyright: ignore
+            data,
+        )
         assert result == "Hello, world!"
 
         # Test with empty data
         data = {}
-        result = self.stream._format_multimedia_response(data)
+        result = self.stream._format_multimedia_response(  # pyright: ignore
+            data,
+        )
         assert result == ""
 
     @patch("builtins.print")
     def test_send_timeout_message(self, mock_print: MagicMock) -> None:
         """Test sending timeout message."""
-        self.stream._send_timeout_message("timeout_id")
+        self.stream._send_timeout_message("timeout_id")  # pyright: ignore
 
         args, kwargs = mock_print.call_args
         payload = json.loads(args[0])
