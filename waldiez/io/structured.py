@@ -15,7 +15,11 @@ from uuid import uuid4
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
-from .models import PrintMessage, UserInputRequest, UserResponse
+from .models import (
+    PrintMessage,
+    UserInputRequest,
+    UserResponse,
+)
 from .utils import gen_id, get_image, now
 
 
@@ -167,9 +171,8 @@ class StructuredIOStream(IOStream):
             return UserResponse(data=user_input, request_id=request_id)
         return self._parse_user_input(user_input, request_id)
 
-    # noinspection PyMethodMayBeStatic
-    # pylint: disable=no-self-use
-    def _load_user_input(self, user_input_raw: str) -> str | dict[str, Any]:
+    @staticmethod
+    def _load_user_input(user_input_raw: str) -> str | dict[str, Any]:
         """Load user input from a raw string.
 
         Parameters
@@ -237,39 +240,63 @@ class StructuredIOStream(IOStream):
                             request_id=request_id, data=user_input
                         ),
                     )
-            actual_data: str | dict[str, Any] | None = None
-            if isinstance(data, list) and len(data) == 1:  # pyright: ignore
-                actual_data = data[0]  # pyright: ignore
-            else:
-                actual_data = data  # pyright: ignore
-            if not actual_data or not isinstance(actual_data, (str, dict)):
+            if isinstance(data, list):
+                return self._handle_list_response(
+                    data,  # pyright: ignore
+                    request_id=request_id,
+                )
+            if not data or not isinstance(data, (str, dict)):
                 # No / invalid data provided in the response
                 return UserResponse(
                     request_id=request_id,
                     data="",
                 )
             # Process different data types
-            if isinstance(actual_data, str):
+            if isinstance(data, str):
                 # double inner dumped?
-                actual_data = self._load_user_input(actual_data)
-            if isinstance(actual_data, dict):
+                data = self._load_user_input(data)
+            if isinstance(data, dict):
                 return UserResponse(
                     data=self._format_multimedia_response(
                         request_id=request_id,
-                        data=actual_data,  # pyright: ignore
+                        data=data,  # pyright: ignore
                     ),
                     request_id=request_id,
                 )
             # For other types (numbers, bools ,...),
             #  let's just convert to string
             return UserResponse(
-                data=str(actual_data), request_id=request_id
+                data=str(data), request_id=request_id
             )  # pragma: no cover
         # This response doesn't match our request_id, log and return empty
         self._log_mismatched_response(request_id, user_input)
         return UserResponse(
             request_id=request_id,
             data="",
+        )
+
+    def _handle_list_response(
+        self,
+        data: list[dict[str, Any]],
+        request_id: str,
+    ) -> UserResponse:
+        if len(data) == 0:  # pyright: ignore
+            # Empty list, return empty response
+            return UserResponse(
+                request_id=request_id,
+                data="",
+            )
+        return UserResponse(
+            request_id=request_id,
+            data=" ".join(  # TODO: maybe split it to list of mediaContent?
+                [
+                    self._format_multimedia_response(
+                        request_id=request_id,
+                        data=entry,  # pyright: ignore
+                    )
+                    for entry in data  # pyright: ignore
+                ]
+            ),
         )
 
     # noinspection PyMethodMayBeStatic
@@ -324,11 +351,6 @@ class StructuredIOStream(IOStream):
             The formatted string with image tags and text.
         """
         result: list[str] = []
-        # "id":"id-98be6dcd-deac-4b68-8cd0-9ca3323c6c4f-1747748365442",
-        # "request_id":"4c02ff7a30054b289b7b59ae7b880a30",
-        # "type":"input_response",
-        # "timestamp":"2025-05-20T13:39:25.442Z",
-        # "data":[{"content":{"type":"text","text":"hey!!!!"}}]}
         if "content" in data and isinstance(data["content"], dict):
             return self._format_multimedia_response(
                 data=data["content"],  # pyright: ignore
