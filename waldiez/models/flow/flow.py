@@ -285,11 +285,11 @@ class WaldiezFlow(WaldiezBase):
         agent = self.get_agent_by_id(group_manager_id)
         if agent.agent_type not in ("group_manager", "manager"):
             return []
-        connections = self.get_agent_connections(
-            group_manager_id,
-            all_chats=True,
-        )
-        return [self.get_agent_by_id(member_id) for member_id in connections]
+        return [
+            agent
+            for agent in self.data.agents.members
+            if agent.data.parent_id == group_manager_id
+        ]
 
     def _get_flow_order(
         self,
