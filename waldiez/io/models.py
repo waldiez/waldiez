@@ -761,7 +761,7 @@ class UserResponse(StructuredBase):
             return string.strip()
         if isinstance(self.data, UserInputData):
             return self.data.to_string()
-        return str(self.data)
+        return json.dumps(self.data)
 
 
 def detect_media_type(value: dict[str, Any]) -> MediaType:
