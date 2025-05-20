@@ -350,6 +350,7 @@ class WaldiezDevServer:
             return OutgoingMessage(
                 type="convertResult", success=False, message=to_log
             )
+        logger.info("Flow converted to %s", output_path)
         return OutgoingMessage(
             type="convertResult",
             success=True,
