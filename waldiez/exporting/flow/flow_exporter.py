@@ -454,17 +454,17 @@ class FlowExporter(BaseExporter, ExporterMixin):
             before_agent_export = agent_output["before_export"]
             if before_agent_export:
                 before_export.extend(before_agent_export)
-            if agent_content:
-                agent_content = add_before_agent_content(
-                    agent_content,
-                    before_export,
-                    agent,
-                )
-                agent_content = add_after_agent_content(
-                    agent_content,
-                    after_export,
-                    agent,
-                )
+            # if agent_content:
+            agent_content = add_before_agent_content(
+                agent_content,
+                before_export,
+                agent,
+            )
+            agent_content = add_after_agent_content(
+                agent_content,
+                after_export,
+                agent,
+            )
             agent_output["content"] = agent_content
             agent_outputs.append(agent_output)
         return gather_agent_outputs(

@@ -119,7 +119,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
             serializer=self.serializer,
             output_dir=self.output_dir,
         )
-        # either the croup chat definition and the group chat argument
+        # either the group chat definition and the group chat argument
         # or the group pattern (so no agent is defined)
         # (or nothing if not a group manager)
         self._group = get_group_manager_extras(
@@ -183,6 +183,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
             before_agent_string += self._code_execution[0]
         if self._termination[1]:
             before_agent_string += self._termination[1]
+        if self._group[0]:
+            before_agent_string += self._group[0]
         if self._rag[0]:
             before_agent_string += self._rag[0]
         if before_agent_string:
@@ -223,7 +225,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
             The exported agent.
         """
         if self._group[0] and not self._group[1]:
-            # pattern usage (no agent defined)
+            # pattern usage (no need to defaine an agent)
             return None
         agent = self.agent
         agent_name = self._agent_name
@@ -290,10 +292,12 @@ class AgentExporter(BaseExporter, ExporterMixin):
                         AgentPosition(None, AgentPositions.AFTER_ALL, 0),
                     )
                 )
+        before_export = self.get_before_export()
+        imports = self.get_imports()
         return {
             "content": content,
-            "imports": self.get_imports(),
+            "imports": imports,
             "environment_variables": [],
-            "before_export": self.get_before_export(),
+            "before_export": before_export,
             "after_export": after_export,
         }
