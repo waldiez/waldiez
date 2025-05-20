@@ -65,6 +65,8 @@ from .utils import (
 class FlowExporter(BaseExporter, ExporterMixin):
     """Flow exporter."""
 
+    _initialized = False
+
     def __init__(
         self,
         waldiez: Waldiez,
@@ -436,9 +438,11 @@ class FlowExporter(BaseExporter, ExporterMixin):
                 agent_names=self.agent_names,
                 models=(self.models, self.model_names),
                 chats=(self.chats, self.chat_names),
+                initial_chats=self.waldiez.initial_chats,
                 tool_names=self.tool_names,
                 is_async=self.waldiez.is_async,
                 for_notebook=self.for_notebook,
+                group_chat_members=self.waldiez.get_group_chat_members(agent),
                 output_dir=self.output_dir,
                 arguments_resolver=arguments_resolver,
             )
@@ -502,7 +506,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
             agent_names=self.agent_names,
             all_chats=self.chats,
             chat_names=self.chat_names,
-            main_chats=self.waldiez.chats,
+            main_chats=self.waldiez.initial_chats,
             for_notebook=self.for_notebook,
             is_async=self.waldiez.is_async,
         )

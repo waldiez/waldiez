@@ -25,6 +25,8 @@ def test_export_rag_user() -> None:
         chats=([], {}),
         is_async=False,
         for_notebook=False,
+        group_chat_members=[],
+        initial_chats=[],
         arguments_resolver=lambda _agent: [
             "    llm_config='model-config'",
         ],

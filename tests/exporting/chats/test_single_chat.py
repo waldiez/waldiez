@@ -10,6 +10,7 @@ from waldiez.models import (
     WaldiezChat,
     WaldiezChatData,
     WaldiezChatMessage,
+    WaldiezChatNested,
     WaldiezChatSummary,
     WaldiezRagUserProxy,
 )
@@ -61,6 +62,7 @@ def callable_message(sender, recipient, context):
                 use_carryover=True,
                 context={"variable1": "value1", "n_results": 2},
             ),
+            nested_chat=WaldiezChatNested(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -70,7 +72,13 @@ def callable_message(sender, recipient, context):
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
-        main_chats=[(chat, agent1, agent2)],
+        main_chats=[
+            {
+                "chat": chat,
+                "source": agent1,
+                "target": agent2,
+            }
+        ],
         for_notebook=False,
         is_async=False,
     )
@@ -152,6 +160,7 @@ def test_empty_chat() -> None:
                 use_carryover=False,
                 context={},
             ),
+            nested_chat=WaldiezChatNested(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -161,7 +170,13 @@ def test_empty_chat() -> None:
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
-        main_chats=[(chat, agent1, agent2)],
+        main_chats=[
+            {
+                "chat": chat,
+                "source": agent1,
+                "target": agent2,
+            }
+        ],
         for_notebook=False,
         is_async=False,
     )
@@ -226,6 +241,7 @@ def test_chat_with_rag_and_carryover() -> None:
                     "model": "one/model/name",
                 },
             ),
+            nested_chat=WaldiezChatNested(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -235,7 +251,13 @@ def test_chat_with_rag_and_carryover() -> None:
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
-        main_chats=[(chat, agent1, agent2)],
+        main_chats=[
+            {
+                "chat": chat,
+                "source": agent1,
+                "target": agent2,
+            }
+        ],
         for_notebook=False,
         is_async=False,
     )
@@ -325,6 +347,7 @@ def test_chat_with_rag_no_carryover() -> None:
                     "key1": "value1",
                 },
             ),
+            nested_chat=WaldiezChatNested(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -334,7 +357,13 @@ def test_chat_with_rag_no_carryover() -> None:
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
-        main_chats=[(chat, agent1, agent2)],
+        main_chats=[
+            {
+                "chat": chat,
+                "source": agent1,
+                "target": agent2,
+            }
+        ],
         for_notebook=False,
         is_async=False,
     )

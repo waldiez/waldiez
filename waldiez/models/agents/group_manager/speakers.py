@@ -87,16 +87,16 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
     selection_method: Annotated[
         WaldiezGroupManagerSpeakersSelectionMethod,
         Field(
-            "auto",
+            default="auto",
             title="Selection Method",
             description="The next speaker selection method",
             alias="selectionMethod",
         ),
-    ]
+    ] = "auto"
     selection_custom_method: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             title="Method for custom selection.",
             description=(
                 "If the method for the speaker selection if `custom`"
@@ -109,11 +109,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="selectionCustomMethod",
         ),
-    ]
+    ] = None
     max_retries_for_selecting: Annotated[
         Optional[int],
         Field(
-            None,
+            default=None,
             title="Max retries for a selecting",
             description=(
                 "The maximum number of retries for the group manager "
@@ -121,11 +121,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="maxRetriesForSelecting",
         ),
-    ]
+    ] = None
     selection_mode: Annotated[
         WaldiezGroupManagerSpeakersSelectionMode,
         Field(
-            "repeat",
+            default="repeat",
             title="Selection Mode",
             description=(
                 "The method to use for selecting a next speaker: "
@@ -134,11 +134,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="selectionMode",
         ),
-    ]
+    ] = "repeat"
     allow_repeat: Annotated[
         Union[bool, list[str]],
         Field(
-            True,
+            default=True,
             title="Allow repeat",
             description=(
                 "The speakers' repetition mode: "
@@ -146,7 +146,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="allowRepeat",
         ),
-    ]
+    ] = True
     allowed_or_disallowed_transitions: Annotated[
         dict[str, list[str]],
         Field(
@@ -158,11 +158,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="allowedOrDisallowedTransitions",
         ),
-    ]
+    ] = {}
     transitions_type: Annotated[
         WaldiezGroupManagerSpeakersTransitionsType,
         Field(
-            "allowed",
+            default="allowed",
             title="Transitions type",
             description=(
                 "The type of transition rules to use if "
@@ -171,7 +171,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="transitionsType",
         ),
-    ]
+    ] = "allowed"
 
     _custom_method_string: Optional[str] = None
 

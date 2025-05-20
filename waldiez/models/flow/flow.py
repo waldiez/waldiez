@@ -11,7 +11,7 @@ from ..agents import WaldiezAgent, WaldiezGroupManager
 from ..chat import WaldiezChat
 from ..common import WaldiezBase, now
 from .flow_data import WaldiezFlowData
-from .utils import id_factory
+from .utils import WaldiezAgentConnection, id_factory
 
 
 class WaldiezFlow(WaldiezBase):
@@ -122,9 +122,7 @@ class WaldiezFlow(WaldiezBase):
             description="The date and time when the flow was last updated.",
         ),
     ]
-    _ordered_flow: Optional[
-        list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
-    ] = None
+    _ordered_flow: Optional[list[WaldiezAgentConnection]] = None
     _single_agent_mode: bool = False
     _is_group_chat: bool = False
 
@@ -164,7 +162,7 @@ class WaldiezFlow(WaldiezBase):
     @property
     def ordered_flow(
         self,
-    ) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow."""
         if not self._ordered_flow:
             self._ordered_flow = self._get_flow_order()
@@ -260,35 +258,74 @@ class WaldiezFlow(WaldiezBase):
                 if chat.target == agent_id:
                     connections.append(chat.source)
         else:
-            for _, source, target in self.ordered_flow:
+            for entry in self.ordered_flow:
+                source = entry["source"]
+                target = entry["target"]
                 if source.id == agent_id:
                     connections.append(target.id)
                 if target.id == agent_id:
                     connections.append(source.id)
         return connections
 
+    def get_group_chat_members(
+        self, group_manager_id: str
+    ) -> list[WaldiezAgent]:
+        """Get the group chat members.
+
+        Parameters
+        ----------
+        group_manager_id : str
+            The ID of the group manager.
+
+        Returns
+        -------
+        list[WaldiezAgent]
+            The list of group chat members.
+        """
+        agent = self.get_agent_by_id(group_manager_id)
+        if agent.agent_type not in ("group_manager", "manager"):
+            return []
+        connections = self.get_agent_connections(
+            group_manager_id,
+            all_chats=True,
+        )
+        return [self.get_agent_by_id(member_id) for member_id in connections]
+
     def _get_flow_order(
         self,
-    ) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow."""
         if self._is_group_chat:
             return self._get_group_chat_flow()
         # in the chats, there is the 'order' field, we use this,
         # we only keep the ones with order >=0
         # and sort them by this property
-        ordered_flow: list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]] = []
+        ordered_flow: list[WaldiezAgentConnection] = []
         for chat in self.data.chats:
             if chat.data.order < 0:
                 continue
             source = self.get_agent_by_id(chat.source)
             target = self.get_agent_by_id(chat.target)
-            ordered_flow.append((chat, source, target))
+            ordered_flow.append(
+                {
+                    "source": source,
+                    "target": target,
+                    "chat": chat,
+                }
+            )
+            # ordered_flow.append((chat, source, target))
         if not ordered_flow:
             if len(self.data.chats) == 1:
                 chat = self.data.chats[0]
                 source = self.get_agent_by_id(chat.source)
                 target = self.get_agent_by_id(chat.target)
-                ordered_flow.append((chat, source, target))
+                ordered_flow.append(
+                    {
+                        "source": source,
+                        "target": target,
+                        "chat": chat,
+                    }
+                )
         return ordered_flow
 
     def get_root_group_manager(self) -> WaldiezGroupManager:
@@ -311,7 +348,7 @@ class WaldiezFlow(WaldiezBase):
 
     def _get_group_chat_flow(
         self,
-    ) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow for group chat.
 
         Returns
@@ -334,9 +371,9 @@ class WaldiezFlow(WaldiezBase):
         #     max_rounds=10
         # )
         # in the second case, the chat would be:
-        # user.initiate_chat(manager...)
+        # user.initiate_chat(manager, ...)
         user_agent: Optional[WaldiezAgent] = None
-        chat_to_manager: Optional[WaldiezChat] = None
+        to_root_manager: Optional[WaldiezChat] = None
         root_manager: WaldiezGroupManager = self.get_root_group_manager()
         for chat in self.data.chats:
             if chat.target == root_manager.id:
@@ -344,16 +381,16 @@ class WaldiezFlow(WaldiezBase):
                 source = self.get_agent_by_id(chat.source)
                 if source.is_user:
                     user_agent = source
-                    chat_to_manager = chat
+                    to_root_manager = chat
                     break
-        if not chat_to_manager or not user_agent:
+        if not to_root_manager or not user_agent:
             return []
         return [
-            (
-                chat_to_manager,
-                user_agent,
-                root_manager,
-            )
+            {
+                "source": user_agent,
+                "target": root_manager,
+                "chat": to_root_manager,
+            }
         ]
 
     def _validate_agent_connections(self) -> None:
@@ -500,13 +537,13 @@ class WaldiezFlow(WaldiezBase):
                 "The flow is a group chat but has no members in the group."
             )
         # check if the group manager agents are the flow
-        group_manger_ids = [
+        group_manager_ids = [
             agent.id for agent in self.data.agents.groupManagerAgents
         ]
         all_members_ids = [agent.id for agent in all_members]
         if not all(
             group_manager_id in all_members_ids
-            for group_manager_id in group_manger_ids
+            for group_manager_id in group_manager_ids
         ):
             raise ValueError(
                 "The flow is a group chat but the group manager agents are not "

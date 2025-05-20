@@ -17,9 +17,8 @@ from .agents import (
     get_captain_agent_extra_requirements,
     get_retrievechat_extra_requirements,
 )
-from .chat import WaldiezChat
 from .common import get_autogen_version
-from .flow import WaldiezFlow, get_flow_data
+from .flow import WaldiezAgentConnection, WaldiezFlow, get_flow_data
 from .model import WaldiezModel, get_models_extra_requirements
 from .tool import WaldiezTool, get_tools_extra_requirements
 
@@ -167,7 +166,9 @@ class Waldiez:
         return any(agent.agent_type == "captain" for agent in self.agents)
 
     @property
-    def chats(self) -> list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    def initial_chats(
+        self,
+    ) -> list[WaldiezAgentConnection]:
         """Get the chats."""
         return self.flow.ordered_flow
 
@@ -289,3 +290,20 @@ class Waldiez:
             if api_eny_key and api_key:
                 env_vars.append((api_eny_key, api_key))
         return env_vars
+
+    def get_group_chat_members(self, agent: WaldiezAgent) -> list[WaldiezAgent]:
+        """Get the chat members that connect to a group chat manager agent.
+
+        Parameters
+        ----------
+        agent : WaldiezAgent
+            The agent (group chat manager).
+
+        Returns
+        -------
+        List[WaldiezAgent]
+            The group chat members.
+        """
+        if agent.agent_type not in ("manager", "group_manager"):
+            return []
+        return self.flow.get_group_chat_members(agent.id)

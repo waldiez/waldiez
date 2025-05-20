@@ -6,7 +6,7 @@
 
 from typing import Optional, Union
 
-from waldiez.models import WaldiezAgent, WaldiezChat
+from waldiez.models import WaldiezAgent, WaldiezAgentConnection, WaldiezChat
 
 from ..base import (
     AgentPosition,
@@ -38,7 +38,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         agent_names: dict[str, str],
         all_chats: list[WaldiezChat],
         chat_names: dict[str, str],
-        main_chats: list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
+        main_chats: list[WaldiezAgentConnection],
         for_notebook: bool,
         is_async: bool,
     ):
@@ -76,7 +76,9 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         """Export the chats content."""
         if len(self.main_chats) == 1:
             main_chat = self.main_chats[0]
-            chat, sender, recipient = main_chat
+            chat = main_chat["chat"]
+            sender = main_chat["source"]
+            recipient = main_chat["target"]
             self._chat_string, self._before_chat = export_single_chat(
                 sender=sender,
                 recipient=recipient,
@@ -108,7 +110,8 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             The imports string.
         """
         if len(self.main_chats) == 1:
-            _, sender, recipient = self.main_chats[0]
+            sender = self.main_chats[0]["source"]
+            recipient = self.main_chats[0]["target"]
             if (
                 recipient.agent_type == "group_manager"
                 or sender.is_group_member

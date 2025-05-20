@@ -174,7 +174,11 @@ def nested_chat_message(recipient, messages, sender, config):
         all_chats=[chat1, chat2, chat3],
         chat_names=chat_names,
         main_chats=[
-            (chat1, agent1, agent2),
+            {
+                "chat": chat1,
+                "source": agent1,
+                "target": agent2,
+            }
         ],
         for_notebook=False,
         is_async=False,

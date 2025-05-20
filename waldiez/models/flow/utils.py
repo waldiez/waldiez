@@ -4,9 +4,13 @@
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Optional
+from typing import Any, Optional, TypedDict
 
-from ..agents import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
+from ..agents import (
+    WaldiezAgent,
+    WaldiezAgentNestedChat,
+    WaldiezAgentNestedChatMessage,
+)
 from ..chat import WaldiezChat
 
 
@@ -105,7 +109,7 @@ def get_flow_data(
     if item_type != "flow":
         # empty flow (from exported model/tool ?)
         raise ValueError(f"Invalid flow type: {item_type}")
-    from_args = {
+    from_args: dict[str, Any] = {
         "id": flow_id,
         "name": name,
         "description": description,
@@ -124,3 +128,11 @@ def get_flow_data(
     if "requirements" not in data:
         data["requirements"] = []
     return data
+
+
+class WaldiezAgentConnection(TypedDict):
+    """Agent connection."""
+
+    source: WaldiezAgent
+    target: WaldiezAgent
+    chat: WaldiezChat

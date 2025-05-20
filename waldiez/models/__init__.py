@@ -15,6 +15,7 @@ from .agents import (
     WaldiezAgent,
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
+    WaldiezAgentHandoff,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentNestedChatMessage,
@@ -26,6 +27,13 @@ from .agents import (
     WaldiezCaptainAgent,
     WaldiezCaptainAgentData,
     WaldiezCaptainAgentLibEntry,
+    WaldiezGroupManager,
+    WaldiezGroupManagerData,
+    WaldiezGroupManagerSpeakers,
+    WaldiezGroupManagerSpeakersSelectionMethod,
+    WaldiezGroupManagerSpeakersSelectionMode,
+    WaldiezGroupManagerSpeakersTransitionsType,
+    WaldiezGroupOrNestedTarget,
     WaldiezRagUserProxy,
     WaldiezRagUserProxyChunkMode,
     WaldiezRagUserProxyData,
@@ -48,7 +56,7 @@ from .chat import (
     WaldiezChatSummary,
     WaldiezChatSummaryMethod,
 )
-from .flow import WaldiezFlow, WaldiezFlowData
+from .flow import WaldiezAgentConnection, WaldiezFlow, WaldiezFlowData
 from .model import (
     WaldiezModel,
     WaldiezModelAPIType,
@@ -64,7 +72,9 @@ __all__ = [
     "Waldiez",
     "WaldiezAgent",
     "WaldiezAgentCodeExecutionConfig",
+    "WaldiezAgentConnection",
     "WaldiezAgentData",
+    "WaldiezAgentHandoff",
     "WaldiezAgentLinkedTool",
     "WaldiezAgentNestedChat",
     "WaldiezAgentNestedChatMessage",
@@ -103,4 +113,11 @@ __all__ = [
     "WaldiezRagUserProxyVectorDb",
     "WaldiezRagUserProxyVectorDbConfig",
     "WaldiezRagUserProxyModels",
+    "WaldiezGroupManager",
+    "WaldiezGroupManagerData",
+    "WaldiezGroupManagerSpeakers",
+    "WaldiezGroupManagerSpeakersSelectionMethod",
+    "WaldiezGroupManagerSpeakersSelectionMode",
+    "WaldiezGroupManagerSpeakersTransitionsType",
+    "WaldiezGroupOrNestedTarget",
 ]

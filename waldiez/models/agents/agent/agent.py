@@ -176,9 +176,19 @@ class WaldiezAgent(WaldiezBase):
             True if the agent is a group member, False otherwise.
         """
         return (
-            self.agent_type != "group_manager"
+            self.agent_type not in ("group_manager", "manager")
             and self.data.parent_id is not None
         )
+
+    def is_group_manager(self) -> bool:
+        """Check if the agent is a group manager.
+
+        Returns
+        -------
+        bool
+            True if the agent is a group manager, False otherwise.
+        """
+        return self.agent_type in ("group_manager", "manager")
 
     @property
     def is_user(self) -> bool:

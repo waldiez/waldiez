@@ -30,7 +30,9 @@ def test_export_user(tmp_path: Path) -> None:
         agent_names={agent.id: agent.name},
         tool_names={tool.id: tool.name for tool in tools},
         models=(models, model_names),
+        initial_chats=[],
         for_notebook=False,
+        group_chat_members=[],
         arguments_resolver=lambda _agent: [
             "    llm_config='model-config'",
         ],

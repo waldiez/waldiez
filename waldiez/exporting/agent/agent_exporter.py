@@ -6,7 +6,12 @@
 from pathlib import Path
 from typing import Callable, Optional, Union
 
-from waldiez.models import WaldiezAgent, WaldiezChat, WaldiezModel
+from waldiez.models import (
+    WaldiezAgent,
+    WaldiezAgentConnection,
+    WaldiezChat,
+    WaldiezModel,
+)
 
 from ..base import (
     AgentPosition,
@@ -20,6 +25,7 @@ from ..base import (
 from .utils import (
     get_agent_code_execution_config,
     get_captain_agent_extras,
+    get_group_manager_extras,
     get_is_termination_message,
     get_rag_user_extras,
     get_reasoning_agent_extras,
@@ -29,6 +35,7 @@ from .utils import (
 class AgentExporter(BaseExporter, ExporterMixin):
     """Agents exporter."""
 
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def __init__(
         self,
         agent: WaldiezAgent,
@@ -38,6 +45,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
         tool_names: dict[str, str],
         is_async: bool,
         for_notebook: bool,
+        initial_chats: list[WaldiezAgentConnection],
+        group_chat_members: list[WaldiezAgent],
         arguments_resolver: Callable[[WaldiezAgent], list[str]],
         output_dir: Optional[Union[str, Path]] = None,
     ) -> None:
@@ -59,6 +68,10 @@ class AgentExporter(BaseExporter, ExporterMixin):
             Whether the whole flow is async.
         for_notebook : bool
             Whether the exporter is for a notebook.
+        initial_chats : list[WaldiezAgentConnection]
+            The initial chats.
+        group_chat_members : list[WaldiezAgent]
+            The group chat members (if the agent is a group manager).
         output_dir : Optional[Union[str, Path]], optional
             The output directory, by default None
         """
@@ -74,6 +87,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
         self.arguments_resolver = arguments_resolver
         self.chats = chats
         self.is_async = is_async
+        self.initial_chats = initial_chats
+        self.group_chat_members = group_chat_members
         self._agent_name = agent_names[agent.id]
         # content, argument, import
         self._code_execution = get_agent_code_execution_config(
@@ -103,6 +118,13 @@ class AgentExporter(BaseExporter, ExporterMixin):
             all_models=self.models,
             serializer=self.serializer,
             output_dir=self.output_dir,
+        )
+        self._group_manager = get_group_manager_extras(
+            agent=self.agent,
+            initial_chats=self.initial_chats,
+            group_chat_members=self.group_chat_members,
+            agent_names=self.agent_names,
+            serializer=self.serializer,
         )
 
     def get_imports(self) -> Optional[list[tuple[str, ImportPosition]]]:

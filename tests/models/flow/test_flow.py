@@ -536,7 +536,9 @@ def test_waldiez_flow() -> None:
             is_async=False,
         ),
     )
-    assert flow.ordered_flow == [(chats2[0], user, assistant)]
+    assert flow.ordered_flow == [
+        {"chat": chats2[0], "source": user, "target": assistant}
+    ]
 
 
 def test_empty_flow() -> None:

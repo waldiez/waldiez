@@ -49,7 +49,7 @@ class WaldiezFlowData(WaldiezBase):
         The seed for the cache. If None, the seed is not set. Default is 41.
     """
 
-    # the ones below (nodes,edges, viewport) we ignore
+    # we ignore the three below (nodes, edges, viewport)
     # (they for graph connections, positions, etc.)
     nodes: Annotated[
         list[dict[str, Any]],
@@ -58,7 +58,7 @@ class WaldiezFlowData(WaldiezBase):
             title="Nodes",
             description="The nodes of the flow",
         ),
-    ]
+    ] = []
     edges: Annotated[
         list[dict[str, Any]],
         Field(
@@ -66,7 +66,7 @@ class WaldiezFlowData(WaldiezBase):
             title="Edges",
             description="The edges of the flow",
         ),
-    ]
+    ] = []
     viewport: Annotated[
         dict[str, Any],
         Field(
@@ -74,7 +74,7 @@ class WaldiezFlowData(WaldiezBase):
             title="Viewport",
             description="The viewport of the flow",
         ),
-    ]
+    ] = {}
     # these are the ones we use.
     agents: Annotated[
         WaldiezAgents,
@@ -91,7 +91,7 @@ class WaldiezFlowData(WaldiezBase):
             title="Models",
             default_factory=list,
         ),
-    ]
+    ] = []
     tools: Annotated[
         list[WaldiezTool],
         Field(
@@ -99,7 +99,7 @@ class WaldiezFlowData(WaldiezBase):
             title="Tools",
             default_factory=list,
         ),
-    ]
+    ] = []
     chats: Annotated[
         list[WaldiezChat],
         Field(
@@ -107,23 +107,23 @@ class WaldiezFlowData(WaldiezBase):
             title="Chats",
             default_factory=list,
         ),
-    ]
+    ] = []
     is_async: Annotated[
         bool,
         Field(
-            False,
+            default=False,
             description="Whether the flow is asynchronous or not",
             title="Is Async",
         ),
-    ]
+    ] = False
     cache_seed: Annotated[
         Optional[int],
         Field(
-            41,
+            42,
             alias="cacheSeed",
             description=(
                 "The seed for the cache. If None, the seed is not set."
-                "Default is 41."
+                "Default is 42."
             ),
             title="Cache Seed",
         ),

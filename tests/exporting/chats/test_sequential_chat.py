@@ -5,9 +5,12 @@
 from waldiez.exporting.chats import ChatsExporter
 from waldiez.models import (
     WaldiezAgent,
+    WaldiezAgentConnection,
     WaldiezChat,
     WaldiezChatData,
     WaldiezChatMessage,
+    WaldiezChatNested,
+    WaldiezChatSummary,
 )
 
 
@@ -53,6 +56,8 @@ def test_sequential_chat() -> None:
                 type="string",
                 content="Hello, how are you?",
             ),
+            nested_chat=WaldiezChatNested(),
+            summary=WaldiezChatSummary(),
         ),
     )
     chat2 = WaldiezChat(
@@ -68,6 +73,8 @@ def test_sequential_chat() -> None:
                 type="string",
                 content="Hello, how are you?",
             ),
+            nested_chat=WaldiezChatNested(),
+            summary=WaldiezChatSummary(),
         ),
     )
     agent_names = {
@@ -76,7 +83,19 @@ def test_sequential_chat() -> None:
         "wa-3": agent3_name,
     }
     chat_names = {"wc-1": chat1_name, "wc-2": chat2_name}
-    main_chats = [(chat1, agent1, agent2), (chat2, agent2, agent3)]
+    # main_chats = [(chat1, agent1, agent2), (chat2, agent2, agent3)]
+    main_chats: list[WaldiezAgentConnection] = [
+        {
+            "chat": chat1,
+            "source": agent1,
+            "target": agent2,
+        },
+        {
+            "chat": chat2,
+            "source": agent2,
+            "target": agent3,
+        },
+    ]
     exporter = ChatsExporter(
         all_agents=[agent1, agent2, agent3],
         agent_names=agent_names,

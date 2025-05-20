@@ -5,8 +5,7 @@
 from typing import Callable
 
 from waldiez.models import (
-    WaldiezAgent,
-    WaldiezChat,
+    WaldiezAgentConnection,
     WaldiezChatMessage,
     WaldiezRagUserProxy,
 )
@@ -15,7 +14,7 @@ from .common import get_chat_message_string, update_summary_chat_args
 
 
 def export_sequential_chat(
-    main_chats: list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]],
+    main_chats: list[WaldiezAgentConnection],
     chat_names: dict[str, str],
     agent_names: dict[str, str],
     serializer: Callable[..., str],
@@ -27,7 +26,7 @@ def export_sequential_chat(
 
     Parameters
     ----------
-    main_chats : list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+    main_chats : list[WaldiezAgentConnection]
         The main chats.
     chat_names : dict[str, str]
         A mapping of chat id to chat name.
@@ -117,12 +116,10 @@ def export_sequential_chat(
     content = "\n"
     additional_methods_string = ""
     content += _get_initiate_chats_line(tab, is_async)
-    for chat, sender, recipient in main_chats:
+    for connection in main_chats:
         chat_string, additional_methods = _get_chat_dict_string(
-            chat=chat,
             chat_names=chat_names,
-            sender=sender,
-            recipient=recipient,
+            connection=connection,
             agent_names=agent_names,
             serializer=serializer,
             string_escape=string_escape,
@@ -136,9 +133,7 @@ def export_sequential_chat(
 
 # pylint: disable=too-many-locals
 def _get_chat_dict_string(
-    chat: WaldiezChat,
-    sender: WaldiezAgent,
-    recipient: WaldiezAgent,
+    connection: WaldiezAgentConnection,
     chat_names: dict[str, str],
     agent_names: dict[str, str],
     serializer: Callable[..., str],
@@ -153,12 +148,8 @@ def _get_chat_dict_string(
 
     Parameters
     ----------
-    chat : WaldiezChat
-        The chat.
-    sender : WaldiezAgent
-        The sender.
-    recipient : WaldiezAgent
-        The recipient.
+    connection : WaldiezAgentConnection
+        The connection object containing the chat and agents.
     chat_names : dict[str, str]
         A mapping of chat id to chat name.
     agent_names : dict[str, str]
@@ -176,6 +167,9 @@ def _get_chat_dict_string(
         The chat dictionary string and additional methods string if any.
     """
     tab = "    " * tabs
+    chat = connection["chat"]
+    sender = connection["source"]
+    recipient = connection["target"]
     chat_args = chat.get_chat_args(for_queue=True, sender=sender)
     chat_args = update_summary_chat_args(chat_args, string_escape)
     chat_string = "{"

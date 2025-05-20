@@ -43,7 +43,7 @@ def test_waldiez(tmp_path: Path) -> None:
     assert "chromadb>=0.5.23" in waldiez2.requirements
     assert "TOOL_KEY" in tool.secrets
     assert "TOOL_KEY" == waldiez2.get_flow_env_vars()[0][0]
-    assert waldiez2.chats
+    assert waldiez2.initial_chats
 
 
 def test_waldiez_errors(tmp_path: Path) -> None:
