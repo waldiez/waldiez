@@ -28,7 +28,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const onConvert = props.onConvert ?? null;
     const rfInstance = props.rfInstance;
     const isAsync = props.isAsync ?? false;
-    const cacheSeed = props.cacheSeed ?? 41;
+    const cacheSeed = props.cacheSeed ?? 42;
     const store = useMemo(() => {
         storeRef.current = createWaldiezStore({
             flowId,

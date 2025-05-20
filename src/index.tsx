@@ -115,7 +115,7 @@ const flowId = `wf-${nanoid()}`;
 const defaultWaldiezProps: Partial<WaldiezProps> = {
     flowId,
     isAsync: false,
-    cacheSeed: 41,
+    cacheSeed: 42,
     storageId: flowId,
     monacoVsPath: vsPath,
     viewport: undefined,

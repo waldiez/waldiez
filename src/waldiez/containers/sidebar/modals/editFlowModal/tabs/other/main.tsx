@@ -33,7 +33,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
         });
     };
     const onCacheSeedToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onDataChange({ cacheSeed: e.target.checked ? null : 41 });
+        onDataChange({ cacheSeed: e.target.checked ? null : 42 });
     };
     const onCacheSeedValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -69,7 +69,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
                     <input
                         type="number"
                         step={1}
-                        placeholder="41"
+                        placeholder="42"
                         value={cacheSeed}
                         onChange={onCacheSeedValueChange}
                         data-testid={`edit-flow-${flowId}-cache-seed-input`}

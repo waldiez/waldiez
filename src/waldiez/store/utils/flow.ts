@@ -104,7 +104,7 @@ export const loadFlow: (
                   tags: mergeTags(currentFlow.tags, newFlow.tags),
                   requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
                   isAsync: newFlow.isAsync ?? currentFlow.isAsync,
-                  cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 41,
+                  cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42,
                   nodes: mergedNodes,
                   edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges),
               };
@@ -138,7 +138,7 @@ const selectivelyOverrideOrMergeFlow = (
         mergedFlow.isAsync = newFlow.isAsync ?? currentFlow.isAsync;
     }
     if (items.cacheSeed) {
-        mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 41;
+        mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42;
     }
     const itemNodes: Node[] = [...items.nodes.models, ...items.nodes.tools, ...items.nodes.agents];
     const itemNodeIds: string[] = itemNodes.map(node => node.id);

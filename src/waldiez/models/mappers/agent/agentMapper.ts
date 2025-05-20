@@ -272,6 +272,7 @@ const getAgentDataToImport = (
             speakers: getSpeakers(jsonData),
             enableClearHistory: getEnableClearHistory(jsonData),
             sendIntroductions: getSendIntroductions(jsonData),
+            groupName: getGroupName(jsonData),
         });
     }
     return data;

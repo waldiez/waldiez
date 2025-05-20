@@ -70,7 +70,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             createdAt,
             updatedAt,
             isAsync: isAsync ?? false,
-            cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 41,
+            cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 42,
         };
     };
     onFlowChanged = () => {
