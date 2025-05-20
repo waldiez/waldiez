@@ -2,12 +2,11 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Export group manager and group chat to string."""
 
-from typing import Callable, Dict, Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 from waldiez.models import (
     WaldiezAgent,
     WaldiezAgentConnection,
-    WaldiezChat,
     WaldiezGroupManager,
 )
 
@@ -16,7 +15,7 @@ def get_group_manager_extras(
     agent: WaldiezAgent,
     initial_chats: list[WaldiezAgentConnection],
     group_chat_members: list[WaldiezAgent],
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
 ) -> Tuple[str, str]:
     """Get the group manager extra string and custom selection method if any.
@@ -29,7 +28,7 @@ def get_group_manager_extras(
         The initial chats.
     group_chat_members : list[WaldiezAgent]
         The group members.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         The agent names.
     serializer : Callable[..., str]
         The serializer function.
@@ -48,7 +47,9 @@ def get_group_manager_extras(
         # we use the group pattern(ag2 creates a manager automatically)
         return (
             _get_group_manager_pattern(
-                group_chat_members=group_chat_members, manager=agent
+                group_chat_members=group_chat_members,
+                manager=agent,
+                agent_names=agent_names,
             ),
             "",
         )
@@ -68,8 +69,8 @@ def get_group_manager_extras(
             _get_group_manager_pattern(
                 group_chat_members=group_chat_members,
                 manager=agent,
+                agent_names=agent_names,
                 user=first_chat_params["source"],
-                chat=first_chat,
             ),
             "",
         )
@@ -99,8 +100,8 @@ def get_group_manager_extras(
 def _get_group_manager_pattern(
     manager: WaldiezGroupManager,
     group_chat_members: list[WaldiezAgent],
+    agent_names: dict[str, str],
     user: Optional[WaldiezAgent] = None,
-    chat: Optional[WaldiezChat] = None,
 ) -> str:
     """Get the group manager pattern.
 
@@ -110,6 +111,8 @@ def _get_group_manager_pattern(
         The group manager.
     group_chat_members : list[WaldiezAgent]
         The group members.
+    agent_names : dict[str, str]
+        The agent id to name mapping.
     user : Optional[WaldiezAgent], optional
         The user agent, by default None
     chat : Optional[WaldiezChat], optional
@@ -118,8 +121,28 @@ def _get_group_manager_pattern(
     Returns
     -------
     str
-        The group manager pattern.
+        The group manager pattern definition string.
     """
+    # possible arguments (ag2's base Pattern class):
+    #   initial_agent: "ConversableAgent",
+    #   agents: list["ConversableAgent"],
+    #   user_agent: Optional["ConversableAgent"] = None,
+    #   group_manager_args: Optional[dict[str, Any]] = None,
+    #   context_variables: Optional[ContextVariables] = None,
+    #   exclude_transit_message: bool = True,
+    #   summary_method: Optional[Union[str, Callable[..., Any]]] = "last_msg",
+    #
+    #   group_after_work: Optional[TransitionTarget] = None,
+    #     this is used only if the pattern is not:
+    #   -  a "ManualPattern" (group_after_work = AskUserTarget())
+    #   -  an "AutoPattern" (
+    #         group_manager_after_work = \
+    #           GroupManagerTarget(selection_message=selection_message)
+    #    otherwise it defaults to "TerminateTarget()"
+
+    #  AutoPattern specific:
+    #  selection_message: Optional[GroupManagerSelectionMessage] = None,
+    #
     # ag2 example:
     #     pattern = AutoPattern(
     #     initial_agent=triage_agent,  # Agent that starts the conversation
@@ -127,13 +150,67 @@ def _get_group_manager_pattern(
     #     user_agent=user,
     #     group_manager_args={"llm_config": llm_config}
     # )
-    return ""
+    pattern_class_name = _get_group_pattern_class_name(manager)
+    manager_name = agent_names[manager.id]
+    initial_agent_name = agent_names[manager.data.initial_agent_id]
+    agents_string = ", ".join(
+        agent_names[agent.id] for agent in group_chat_members
+    )
+    pattern_string = f"{pattern_class_name}(" + "\n"
+    pattern_string += f"    initial_agent={initial_agent_name}," + "\n"
+    pattern_string += f"    agents=[{agents_string}]," + "\n"
+    if user:
+        pattern_string += f"    user_agent={agent_names[user.id]}," + "\n"
+    pattern_string += (
+        f'    group_manager_args={{"llm_config": {manager_name}_llm_config}},'
+        + "\n"
+    )
+    if manager.data.context_variables:
+        ctx_string = ""
+        for key, value in manager.data.context_variables.items():
+            if isinstance(value, str):
+                ctx_string += f'    "{key}": "{value}",' + "\n"
+            else:
+                ctx_string += f"    {key}: {value}," + "\n"
+        pattern_string += "    context_variables={" + "\n"
+        pattern_string += ctx_string
+        pattern_string += "    }," + "\n"
+    pattern_string += ")"
+    return pattern_string
+
+
+def _get_group_pattern_class_name(manger: WaldiezGroupManager) -> str:
+    """Get the group pattern class name.
+
+    Parameters
+    ----------
+    manager : WaldiezGroupManager
+        The group manager.
+
+    Returns
+    -------
+    str
+        The group pattern class name.
+    """
+    if manger.data.speakers.selection_method == "auto":
+        return "AutoPattern"
+    if manger.data.speakers.selection_method == "manual":
+        return "ManualPattern"
+    if manger.data.speakers.selection_method == "round_robin":
+        return "RoundRobinPattern"
+    if manger.data.speakers.selection_method == "random":
+        return "RandomPattern"
+    if manger.data.speakers.selection_method == "default":
+        return "DefaultPattern"
+    # no "custom" for pattern
+    # (this is only used if we don't use patterns for group chats)
+    return "AutoPattern"
 
 
 def _get_group_manager_extras(
     agent: WaldiezGroupManager,
     group_members: list[WaldiezAgent],
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
 ) -> Tuple[str, str, Optional[str]]:
     """Get the group manager extra string and custom selection method if any.
@@ -144,7 +221,7 @@ def _get_group_manager_extras(
         The agent.
     group_members : list[WaldiezAgent]
         The group members.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         The agent names.
     serializer : Callable[..., str]
         The serializer function.
@@ -186,7 +263,7 @@ def _get_group_manager_extras(
 
 def _get_group_chat_speakers_string(
     agent: WaldiezGroupManager,
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
 ) -> Tuple[str, Optional[str]]:
     """Get the group chat speakers string.
@@ -195,7 +272,7 @@ def _get_group_chat_speakers_string(
     ----------
     agent : WaldiezGroupManager
         The agent.
-    agent_names : Dict[str, str]
+    agent_names : dict[str, str]
         The agent names.
     serializer : Callable[..., str]
         The serializer function.
@@ -251,7 +328,7 @@ def _get_group_chat_speakers_string(
 
 
 def _get_speakers_selection_repeat_string(
-    agent: WaldiezGroupManager, agent_names: Dict[str, str]
+    agent: WaldiezGroupManager, agent_names: dict[str, str]
 ) -> str:
     speakers_string = ""
     if isinstance(agent.data.speakers.allow_repeat, bool):
@@ -271,7 +348,7 @@ def _get_speakers_selection_repeat_string(
 
 def _get_speakers_selection_transition_string(
     agent: WaldiezGroupManager,
-    agent_names: Dict[str, str],
+    agent_names: dict[str, str],
     serializer: Callable[..., str],
 ) -> str:
     speakers_string = ""

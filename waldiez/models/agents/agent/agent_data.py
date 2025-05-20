@@ -2,13 +2,13 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common data structures for agents."""
 
-from typing import Any, Optional, Union
+from typing import Any, Optional, Self, Union
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
 from typing_extensions import Annotated, Literal
 
-from ...common import WaldiezBase
+from ...common import WaldiezBase, update_dict
 from .code_execution import WaldiezAgentCodeExecutionConfig
 from .handoff import WaldiezAgentHandoff
 from .linked_tool import WaldiezAgentLinkedTool
@@ -209,3 +209,16 @@ class WaldiezAgentData(WaldiezBase):
             alias="parentId",
         ),
     ] = None
+
+    @model_validator(mode="after")
+    def update_context_variables(self) -> Self:
+        """Update the context variables.
+
+        Returns
+        -------
+        Self
+            The updated instance of the class.
+        """
+        context_vars = update_dict(self.context_variables)
+        self.context_variables = context_vars
+        return self

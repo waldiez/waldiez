@@ -119,7 +119,10 @@ class AgentExporter(BaseExporter, ExporterMixin):
             serializer=self.serializer,
             output_dir=self.output_dir,
         )
-        self._group_manager = get_group_manager_extras(
+        # either the croup chat definition and the group chat argument
+        # or the group pattern (so no agent is defined)
+        # (or nothing if not a group manager)
+        self._group = get_group_manager_extras(
             agent=self.agent,
             initial_chats=self.initial_chats,
             group_chat_members=self.group_chat_members,
@@ -219,18 +222,24 @@ class AgentExporter(BaseExporter, ExporterMixin):
         Optional[str]
             The exported agent.
         """
+        if self._group[0] and not self._group[1]:
+            # pattern usage (no agent defined)
+            return None
         agent = self.agent
         agent_name = self._agent_name
         retrieve_arg = self._rag[1]
         is_termination = self._termination[0]
         code_execution_arg = self._code_execution[1]
+        group_chat_arg = self._group[1]
         system_message_arg = self.get_system_message_arg()
         default_auto_reply: str = '""'
         if agent.data.agent_default_auto_reply:
             default_auto_reply = (
                 f'"{self.string_escape(agent.data.agent_default_auto_reply)}"'
             )
-        extras = f"{retrieve_arg}{self._reasoning}{self._captain}"
+        extras = (
+            f"{group_chat_arg}{retrieve_arg}{self._reasoning}{self._captain}"
+        )
         ag2_class = self.agent.ag2_class
         if agent.agent_type == "swarm":
             # SwarmAgent is deprecated.
@@ -262,10 +271,9 @@ class AgentExporter(BaseExporter, ExporterMixin):
             The exported agent.
         """
         agent_string = self.generate() or ""
-        is_group_manager = self.agent.agent_type == "group_manager"
         after_export = self.get_after_export() or []
         content: Optional[str] = agent_string
-        if is_group_manager and agent_string:
+        if self.agent.is_group_manager() and agent_string:
             content = None
             # make sure the group manager is defined
             # after the rest of the agents.
@@ -275,9 +283,13 @@ class AgentExporter(BaseExporter, ExporterMixin):
             # '    agents=[assistant, rag_user],
             # '    enable_clear_history=True,
             # ...
-            after_export.append(
-                (agent_string, AgentPosition(None, AgentPositions.AFTER_ALL, 0))
-            )
+            if self._group[1]:  # group chat and argument
+                after_export.append(
+                    (
+                        agent_string,
+                        AgentPosition(None, AgentPositions.AFTER_ALL, 0),
+                    )
+                )
         return {
             "content": content,
             "imports": self.get_imports(),

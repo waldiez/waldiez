@@ -202,16 +202,17 @@ class WaldiezModel(WaldiezBase):
             The model's llm config dictionary.
         """
         # noinspection PyDictCreation
-        _llm_config = {}
+        _llm_config: dict[str, Any] = {}
         _llm_config["model"] = self.name
-        for attr, atr_type in [
+        optionals: list[tuple[str, type]] = [
             ("base_url", str),
             ("max_tokens", int),
             # ("temperature", float),
             ("top_p", float),
             ("api_version", str),
             ("default_headers", dict),
-        ]:
+        ]
+        for attr, atr_type in optionals:
             value = getattr(self.data, attr)
             if value and isinstance(value, atr_type):
                 _llm_config[attr] = value
@@ -284,7 +285,7 @@ def set_bedrock_aws_config(
         "region",
     ]
 
-    extra_args = {}
+    extra_args: dict[str, Any] = {}
     for param in aws_params:
         config_key = f"aws_{param}"
         env_var = f"AWS_{param.upper()}"
