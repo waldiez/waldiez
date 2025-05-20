@@ -162,6 +162,7 @@ class StructuredIOStream(IOStream):
         UserResponse
             The structured user response.
         """
+        print(f"Got user_input: {user_input_raw[:100]}")
         user_input = self._load_user_input(user_input_raw)
         if isinstance(user_input, str):
             return UserResponse(data=user_input, request_id=request_id)
@@ -237,6 +238,8 @@ class StructuredIOStream(IOStream):
                             request_id=request_id, data=user_input
                         ),
                     )
+            if isinstance(data, list) and len(data) == 1:
+                data = data[0]
             if not data or not isinstance(data, (str, dict)):
                 # No / invalid data provided in the response
                 return UserResponse(
