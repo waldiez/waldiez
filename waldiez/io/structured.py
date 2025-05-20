@@ -235,7 +235,6 @@ class StructuredIOStream(IOStream):
         if user_input.get("request_id") == request_id:
             # We have a valid response to our request
             data = user_input.get("data")
-            print("data", data)
             if not data:
                 # let's check if text|image keys are sent (outside data)
                 if "image" in user_input or "text" in user_input:
@@ -298,7 +297,7 @@ class StructuredIOStream(IOStream):
                 content = UserInputData.model_validate(entry)
                 input_data.append(content)
             except Exception as error:  # pylint: disable=broad-exception-caught
-                print({"type": "error", "message": str(error)})
+                print({"type": "error", "message": str(error)}, file=sys.stderr)
                 continue
         if not input_data:
             # No valid data in the list, return empty response
