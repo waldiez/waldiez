@@ -89,13 +89,7 @@ class StructuredIOStream(IOStream):
             The message to send.
         """
         message_dump = message.model_dump(mode="json")
-        payload: dict[str, Any] = {
-            "type": message_dump.get("type", "event"),
-            "id": gen_id(),
-            "timestamp": now(),
-            "data": json.dumps(message_dump),  # no nested dict (like in redis)
-        }
-        print(json.dumps(payload), flush=True)
+        print(json.dumps(message_dump), flush=True)
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
@@ -196,6 +190,13 @@ class StructuredIOStream(IOStream):
             # If it's not valid JSON, return as is
             # This allows for backwards compatibility with raw text input
             return user_input_raw
+        if isinstance(response, str):
+            # double inner dumped?
+            try:
+                response = json.loads(response)
+            except json.JSONDecodeError:
+                # If it's not valid JSON, return as is
+                return response
         if not isinstance(response, dict):
             return str(response)
         if "data" in response and isinstance(response["data"], str):
