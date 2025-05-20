@@ -17,6 +17,7 @@ from autogen.io import IOStream  # type: ignore
 
 from .models import (
     PrintMessage,
+    UserInputData,
     UserInputRequest,
     UserResponse,
 )
@@ -231,6 +232,7 @@ class StructuredIOStream(IOStream):
         if user_input.get("request_id") == request_id:
             # We have a valid response to our request
             data = user_input.get("data")
+            print("data", data)
             if not data:
                 # let's check if text|image keys are sent (outside data)
                 if "image" in user_input or "text" in user_input:
@@ -286,22 +288,28 @@ class StructuredIOStream(IOStream):
                 request_id=request_id,
                 data="",
             )
+
+        input_data: list[UserInputData] = []
+        for entry in data:  # pyright: ignore
+            try:
+                content = UserInputData.model_validate(entry)
+                input_data.append(content)
+            except Exception as error:  # pylint: disable=broad-exception-caught
+                print({"type": "error", "message": str(error)})
+                continue
+        if not input_data:
+            # No valid data in the list, return empty response
+            return UserResponse(
+                request_id=request_id,
+                data="",
+            )
         return UserResponse(
             request_id=request_id,
-            data=" ".join(  # TODO: maybe split it to list of mediaContent?
-                [
-                    self._format_multimedia_response(
-                        request_id=request_id,
-                        data=entry,  # pyright: ignore
-                    )
-                    for entry in data  # pyright: ignore
-                ]
-            ),
+            data=input_data,
         )
 
-    # noinspection PyMethodMayBeStatic
-    # pylint: disable=no-self-use
-    def _log_mismatched_response(self, expected_id: str, response: Any) -> None:
+    @staticmethod
+    def _log_mismatched_response(expected_id: str, response: Any) -> None:
         """Log information about mismatched response IDs.
 
         Parameters
