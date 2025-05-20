@@ -144,8 +144,8 @@ export const useFlowEvents = (flowId: string) => {
             return false;
         }
 
-        // Check for at least 2 agents
         const allAgents = getAgents();
+        // Check for at least 2 agents
         const agentsCount = allAgents.length;
 
         if (agentsCount < 2) {
@@ -159,7 +159,11 @@ export const useFlowEvents = (flowId: string) => {
             });
             return false;
         }
-
+        // check group moanager
+        const groupManager = allAgents.find(agent => agent.data.agentType === "group_manager");
+        if (groupManager) {
+            return true;
+        }
         // Check for complete edge connections
         const { used, remaining } = getFlowEdges();
         return used.length > 0 && remaining.length === 0;
