@@ -162,7 +162,7 @@ class StructuredIOStream(IOStream):
         UserResponse
             The structured user response.
         """
-        print(f"Got user_input: {user_input_raw[:100]}")
+        print(f"Got user_input: {user_input_raw[:500]}")
         user_input = self._load_user_input(user_input_raw)
         if isinstance(user_input, str):
             return UserResponse(data=user_input, request_id=request_id)
