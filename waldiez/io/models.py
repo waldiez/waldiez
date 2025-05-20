@@ -758,7 +758,7 @@ class UserResponse(StructuredBase):
                     )
                     + " "
                 )
-            # return " ".join([item.to_string() for item in self.data])
+            return string.strip()
         if isinstance(self.data, UserInputData):
             return self.data.to_string()
         return str(self.data)
