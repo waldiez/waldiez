@@ -162,7 +162,6 @@ class StructuredIOStream(IOStream):
         UserResponse
             The structured user response.
         """
-        print(f"Got user_input: {user_input_raw[:500]}")
         user_input = self._load_user_input(user_input_raw)
         if isinstance(user_input, str):
             return UserResponse(data=user_input, request_id=request_id)
@@ -238,29 +237,33 @@ class StructuredIOStream(IOStream):
                             request_id=request_id, data=user_input
                         ),
                     )
-            if isinstance(data, list) and len(data) == 1:
-                data = data[0]
-            if not data or not isinstance(data, (str, dict)):
+            actual_data: str | dict[str, Any] | None = None
+            if isinstance(data, list) and len(data) == 1:  # pyright: ignore
+                actual_data = data[0]  # pyright: ignore
+            else:
+                actual_data = data  # pyright: ignore
+            if not actual_data or not isinstance(actual_data, (str, dict)):
                 # No / invalid data provided in the response
                 return UserResponse(
                     request_id=request_id,
                     data="",
                 )
             # Process different data types
-            if isinstance(data, str):
+            if isinstance(actual_data, str):
                 # double inner dumped?
-                data = self._load_user_input(data)
-            if isinstance(data, dict):
+                actual_data = self._load_user_input(actual_data)
+            if isinstance(actual_data, dict):
                 return UserResponse(
                     data=self._format_multimedia_response(
                         request_id=request_id,
-                        data=data,  # pyright: ignore
+                        data=actual_data,  # pyright: ignore
                     ),
                     request_id=request_id,
                 )
-            # For other types (lists, numbers, booleans), convert to string
+            # For other types (numbers, bools ,...),
+            #  let's just convert to string
             return UserResponse(
-                data=str(data), request_id=request_id
+                data=str(actual_data), request_id=request_id
             )  # pragma: no cover
         # This response doesn't match our request_id, log and return empty
         self._log_mismatched_response(request_id, user_input)
@@ -321,6 +324,16 @@ class StructuredIOStream(IOStream):
             The formatted string with image tags and text.
         """
         result: list[str] = []
+        # "id":"id-98be6dcd-deac-4b68-8cd0-9ca3323c6c4f-1747748365442",
+        # "request_id":"4c02ff7a30054b289b7b59ae7b880a30",
+        # "type":"input_response",
+        # "timestamp":"2025-05-20T13:39:25.442Z",
+        # "data":[{"content":{"type":"text","text":"hey!!!!"}}]}
+        if "content" in data and isinstance(data["content"], dict):
+            return self._format_multimedia_response(
+                data=data["content"],  # pyright: ignore
+                request_id=request_id,
+            )
 
         # Handle image if present
         if "image" in data and data["image"]:
