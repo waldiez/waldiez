@@ -7,9 +7,14 @@ from typing import Any, Optional
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents import WaldiezAgents, WaldiezAssistant
+from ..agents import (
+    WaldiezAgents,
+    WaldiezAgentTerminationMessage,
+    WaldiezAssistant,
+    WaldiezAssistantData,
+)
 from ..chat import WaldiezChat
-from ..common import WaldiezBase
+from ..common import WaldiezBase, now
 from ..model import WaldiezModel
 from ..tool import WaldiezTool
 
@@ -165,7 +170,7 @@ class WaldiezFlowData(WaldiezBase):
         # also update the chat prerequisites (if async)
         #  we have ids(str), not chat_ids(int)
         for chat in self.chats:
-            chat_prerequisites = []
+            chat_prerequisites: list[int] = []
             for chat_id in chat.data.prerequisites:
                 if chat_id not in id_to_chat_id:  # pragma: no cover
                     raise ValueError(
@@ -175,8 +180,8 @@ class WaldiezFlowData(WaldiezBase):
             chat.set_prerequisites(chat_prerequisites)
         return self
 
-    @staticmethod
-    def default() -> "WaldiezFlowData":
+    @classmethod
+    def default(cls) -> "WaldiezFlowData":
         """Create a default flow data.
 
         Returns
@@ -184,7 +189,7 @@ class WaldiezFlowData(WaldiezBase):
         WaldiezFlowData
             The default flow data.
         """
-        return WaldiezFlowData(
+        return cls(
             nodes=[],
             edges=[],
             viewport={},
@@ -194,6 +199,11 @@ class WaldiezFlowData(WaldiezBase):
                     WaldiezAssistant(
                         id="assistant",
                         name="Assistant",
+                        created_at=now(),
+                        updated_at=now(),
+                        data=WaldiezAssistantData(
+                            termination=WaldiezAgentTerminationMessage()
+                        ),
                     )
                 ],
                 ragUserProxyAgents=[],

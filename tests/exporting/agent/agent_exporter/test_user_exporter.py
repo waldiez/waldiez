@@ -49,7 +49,7 @@ def test_export_user(tmp_path: Path) -> None:
         '    system_message="system message of agent 1",\n'
         '    human_input_mode="ALWAYS",\n'
         "    max_consecutive_auto_reply=None,\n"
-        "    default_auto_reply=None,\n"
+        '    default_auto_reply="",\n'
         "    code_execution_config=False,\n"
         "    is_termination_msg=None,  # pyright: ignore\n"
         "    llm_config='model-config'\n"

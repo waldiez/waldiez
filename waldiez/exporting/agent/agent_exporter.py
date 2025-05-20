@@ -203,7 +203,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         is_termination = self._termination[0]
         code_execution_arg = self._code_execution[1]
         system_message_arg = self.get_system_message_arg()
-        default_auto_reply: str = "None"
+        default_auto_reply: str = '""'
         if agent.data.agent_default_auto_reply:
             default_auto_reply = (
                 f'"{self.string_escape(agent.data.agent_default_auto_reply)}"'

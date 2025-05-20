@@ -81,7 +81,7 @@ class WaldiezAgent(WaldiezBase):
             title="Description",
             description="The description of the agent",
         ),
-    ]
+    ] = "Agent's description"
     tags: Annotated[
         list[str],
         Field(
@@ -181,6 +181,22 @@ class WaldiezAgent(WaldiezBase):
         )
 
     @property
+    def is_user(self) -> bool:
+        """Check if the agent is a user.
+
+        Returns
+        -------
+        bool
+            True if the agent is a user, False otherwise.
+        """
+        return self.agent_type in (
+            "user",
+            "user_proxy",
+            "rag_user",
+            "rag_user_proxy",
+        )
+
+    @property
     def ag2_class(self) -> str:
         """Return the AG2 class of the agent."""
         class_name = "ConversableAgent"
@@ -197,6 +213,8 @@ class WaldiezAgent(WaldiezBase):
             class_name = "ReasoningAgent"
         if self.agent_type == "captain":
             class_name = "CaptainAgent"
+        if self.agent_type == "group_manager":
+            class_name = "GroupChatManager"
         return class_name
 
     @property
@@ -229,8 +247,8 @@ class WaldiezAgent(WaldiezBase):
                 "from autogen.agentchat.contrib.captainagent "
                 "import CaptainAgent"
             )
-        else:  # pragma: no cover
-            imports.add("import ConversableAgent")
+        elif agent_class == "GroupChatManager":
+            imports.add("from autogen import GroupChat, GroupChatManager")
         return imports
 
     def validate_linked_tools(

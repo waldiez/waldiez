@@ -55,7 +55,7 @@ def test_export_rag_user() -> None:
         f'{tab}system_message="system message of agent 1",' + "\n"
         f'{tab}human_input_mode="ALWAYS",' + "\n"
         f"{tab}max_consecutive_auto_reply=None," + "\n"
-        f"{tab}default_auto_reply=None," + "\n"
+        f'{tab}default_auto_reply="",' + "\n"
         f"{tab}code_execution_config=False," + "\n"
         f"{tab}is_termination_msg=None,  # pyright: ignore" + "\n"
         f"{tab}retrieve_config={{" + "\n"

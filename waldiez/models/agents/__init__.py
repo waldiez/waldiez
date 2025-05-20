@@ -39,6 +39,17 @@ from .extra_requirements import (
     get_captain_agent_extra_requirements,
     get_retrievechat_extra_requirements,
 )
+from .group_manager import (
+    CUSTOM_SPEAKER_SELECTION,
+    CUSTOM_SPEAKER_SELECTION_ARGS,
+    CUSTOM_SPEAKER_SELECTION_TYPES,
+    WaldiezGroupManager,
+    WaldiezGroupManagerData,
+    WaldiezGroupManagerSpeakers,
+    WaldiezGroupManagerSpeakersSelectionMethod,
+    WaldiezGroupManagerSpeakersSelectionMode,
+    WaldiezGroupManagerSpeakersTransitionsType,
+)
 from .rag_user_proxy import (
     CUSTOM_EMBEDDING_FUNCTION,
     CUSTOM_EMBEDDING_FUNCTION_ARGS,
@@ -80,6 +91,9 @@ __all__ = [
     "CUSTOM_TOKEN_COUNT_FUNCTION",
     "CUSTOM_TOKEN_COUNT_FUNCTION_ARGS",
     "CUSTOM_TOKEN_COUNT_FUNCTION_TYPES",
+    "CUSTOM_SPEAKER_SELECTION",
+    "CUSTOM_SPEAKER_SELECTION_ARGS",
+    "CUSTOM_SPEAKER_SELECTION_TYPES",
     "WaldiezAgent",
     "WaldiezAgentType",
     "WaldiezAgents",
@@ -120,4 +134,10 @@ __all__ = [
     "WaldiezStringContextCondition",
     "WaldiezStringLLMCondition",
     "WaldiezTransitionTarget",
+    "WaldiezGroupManager",
+    "WaldiezGroupManagerData",
+    "WaldiezGroupManagerSpeakers",
+    "WaldiezGroupManagerSpeakersSelectionMethod",
+    "WaldiezGroupManagerSpeakersSelectionMode",
+    "WaldiezGroupManagerSpeakersTransitionsType",
 ]

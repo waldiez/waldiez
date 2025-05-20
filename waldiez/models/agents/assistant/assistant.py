@@ -32,7 +32,7 @@ class WaldiezAssistant(WaldiezAgent):
             description="The agent type in a graph: 'assistant'",
             alias="agentType",
         ),
-    ]
+    ] = "assistant"
     data: Annotated[  # pyright: ignore
         WaldiezAssistantData,
         Field(

@@ -109,9 +109,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         Field(
             ...,
             title="Initial agent ID",
-            description=(
-                "The ID of the initial agent to be added to the group."
-            ),
+            description="The ID of the agent that starts the conversation.",
             alias="initialAgentId",
         ),
     ]
