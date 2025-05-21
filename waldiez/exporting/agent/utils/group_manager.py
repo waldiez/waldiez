@@ -80,11 +80,13 @@ def get_group_manager_extras(
     group_chat_arg = ""
     before_agent_string = ""
     custom_speaker_selection: Optional[str] = None
+    user_agent = first_chat_params["source"]
     group_chat_string, group_chat_name, custom_speaker_selection = (
         _get_group_manager_extras(
             agent=agent,
-            group_members=group_chat_members + [first_chat_params["source"]],
+            group_members=group_chat_members + [user_agent],
             agent_names=agent_names,
+            admin_name=agent_names[user_agent.id],
             serializer=serializer,
         )
     )
@@ -211,6 +213,7 @@ def _get_group_manager_extras(
     agent: WaldiezGroupManager,
     group_members: list[WaldiezAgent],
     agent_names: dict[str, str],
+    admin_name: str,
     serializer: Callable[..., str],
 ) -> Tuple[str, str, Optional[str]]:
     """Get the group manager extra string and custom selection method if any.
@@ -223,6 +226,8 @@ def _get_group_manager_extras(
         The group members.
     agent_names : dict[str, str]
         The agent names.
+    admin_name : str
+        The admin name.
     serializer : Callable[..., str]
         The serializer function.
 
@@ -253,6 +258,8 @@ def _get_group_manager_extras(
         group_chat_string += f"    max_round={agent.data.max_round}," + "\n"
     if agent.data.admin_name:
         group_chat_string += f'    admin_name="{agent.data.admin_name}",' + "\n"
+    else:
+        group_chat_string += f'    admin_name="{admin_name}",' + "\n"
     extra_group_chat_string, custom_selection_method = (
         _get_group_chat_speakers_string(agent, agent_names, serializer)
     )
