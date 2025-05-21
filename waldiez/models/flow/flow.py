@@ -164,7 +164,7 @@ class WaldiezFlow(WaldiezBase):
         self,
     ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow."""
-        if not self._ordered_flow:
+        if self._ordered_flow is None:
             self._ordered_flow = self._get_flow_order()
         return self._ordered_flow
 

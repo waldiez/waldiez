@@ -72,6 +72,7 @@ def callable_message(sender, recipient, context):
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
+        root_group_manager=None,
         main_chats=[
             {
                 "chat": chat,
@@ -170,6 +171,7 @@ def test_empty_chat() -> None:
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
+        root_group_manager=None,
         main_chats=[
             {
                 "chat": chat,
@@ -250,6 +252,7 @@ def test_chat_with_rag_and_carryover() -> None:
         all_agents=[agent1, agent2],
         agent_names=agent_names,
         all_chats=[chat],
+        root_group_manager=None,
         chat_names=chat_names,
         main_chats=[
             {
@@ -357,6 +360,7 @@ def test_chat_with_rag_no_carryover() -> None:
         agent_names=agent_names,
         all_chats=[chat],
         chat_names=chat_names,
+        root_group_manager=None,
         main_chats=[
             {
                 "chat": chat,

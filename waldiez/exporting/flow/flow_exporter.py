@@ -26,7 +26,7 @@ from functools import partial
 from pathlib import Path
 from typing import Optional, Union
 
-from waldiez.models import Waldiez, WaldiezAgent
+from waldiez.models import Waldiez, WaldiezAgent, WaldiezGroupManager
 
 from ..agent import AgentExporter
 from ..base import (
@@ -442,6 +442,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
                 tool_names=self.tool_names,
                 is_async=self.waldiez.is_async,
                 for_notebook=self.for_notebook,
+                cache_seed=self.waldiez.cache_seed,
                 group_chat_members=self.waldiez.get_group_chat_members(agent),
                 output_dir=self.output_dir,
                 arguments_resolver=arguments_resolver,
@@ -501,12 +502,16 @@ class FlowExporter(BaseExporter, ExporterMixin):
         str
             The exported chats.
         """
+        root_group_manager: Optional[WaldiezGroupManager] = None
+        if len(self.waldiez.initial_chats) == 0:
+            root_group_manager = self.waldiez.get_root_group_manager()
         exporter = ChatsExporter(
             all_agents=self.agents,
             agent_names=self.agent_names,
             all_chats=self.chats,
             chat_names=self.chat_names,
             main_chats=self.waldiez.initial_chats,
+            root_group_manager=root_group_manager,
             for_notebook=self.for_notebook,
             is_async=self.waldiez.is_async,
         )

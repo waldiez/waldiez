@@ -6,7 +6,12 @@
 
 from typing import Optional, Union
 
-from waldiez.models import WaldiezAgent, WaldiezAgentConnection, WaldiezChat
+from waldiez.models import (
+    WaldiezAgent,
+    WaldiezAgentConnection,
+    WaldiezChat,
+    WaldiezGroupManager,
+)
 
 from ..base import (
     AgentPosition,
@@ -19,6 +24,7 @@ from ..base import (
     ImportPosition,
 )
 from .utils import (
+    export_group_chats,
     export_nested_chat_registration,
     export_sequential_chat,
     export_single_chat,
@@ -39,6 +45,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         all_chats: list[WaldiezChat],
         chat_names: dict[str, str],
         main_chats: list[WaldiezAgentConnection],
+        root_group_manager: Optional[WaldiezGroupManager],
         for_notebook: bool,
         is_async: bool,
     ):
@@ -56,6 +63,8 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             A mapping of chat id to chat name.
         main_chats : list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
             The main chats in the flow.
+        root_group_manager : Optional[WaldiezGroupManager]
+            The root group manager.
         for_notebook : bool
             Whether the export is for a notebook.
         is_async : bool
@@ -66,6 +75,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         self.main_chats = main_chats
         self.all_chats = all_chats
         self.chat_names = chat_names
+        self.root_group_manager = root_group_manager
         self.for_notebook = for_notebook
         self.is_async = is_async
         self._chat_string = None
@@ -74,11 +84,43 @@ class ChatsExporter(BaseExporter, ExporterMixin):
 
     def _export_chats(self) -> None:
         """Export the chats content."""
+        if len(self.main_chats) == 0:
+            if not self.root_group_manager:
+                self._chat_string = ""
+                self._before_chat = None
+                return
+            self._chat_string = export_group_chats(
+                agent_names=self.agent_names,
+                manager=self.root_group_manager,
+                intial_chat=None,
+                string_escape=self.string_escape,
+                tabs=1 if self.for_notebook else 2,
+                is_async=self.is_async,
+            )
+            self._before_chat = None
+            return
         if len(self.main_chats) == 1:
             main_chat = self.main_chats[0]
             chat = main_chat["chat"]
             sender = main_chat["source"]
             recipient = main_chat["target"]
+            if (
+                isinstance(recipient, WaldiezGroupManager)
+                and chat.message.type != "method"
+            ):
+                chat_massage_string: str | None = None
+                if chat.message.type == "string":
+                    chat_massage_string = chat.message.content
+                self._chat_string = export_group_chats(
+                    agent_names=self.agent_names,
+                    manager=recipient,
+                    intial_chat=chat_massage_string,
+                    string_escape=self.string_escape,
+                    tabs=1 if self.for_notebook else 2,
+                    is_async=self.is_async,
+                )
+                self._before_chat = None
+                return
             self._chat_string, self._before_chat = export_single_chat(
                 sender=sender,
                 recipient=recipient,
@@ -101,6 +143,27 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             is_async=self.is_async,
         )
 
+    def is_group_patterned(self) -> bool:
+        """Check if the chats are group patterned.
+
+        Returns
+        -------
+        bool
+            True if the chats are group patterned, False otherwise.
+        """
+        if len(self.main_chats) == 0 and self.root_group_manager is not None:
+            return True
+        if len(self.main_chats) == 1:
+            main_chat = self.main_chats[0]
+            sender = main_chat["source"]
+            recipient = main_chat["target"]
+            if (
+                recipient.agent_type == "group_manager"
+                or sender.is_group_member
+            ):
+                return True
+        return False
+
     def get_imports(self) -> Optional[list[tuple[str, ImportPosition]]]:
         """Get the imports string.
 
@@ -109,21 +172,17 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         str
             The imports string.
         """
-        if len(self.main_chats) == 1:
-            sender = self.main_chats[0]["source"]
-            recipient = self.main_chats[0]["target"]
-            if (
-                recipient.agent_type == "group_manager"
-                or sender.is_group_member
-            ):
+        if self.is_group_patterned():
+            if self.is_async:
+                import_string = (
+                    "from autogen.agentchat import a_initiate_group_chat"
+                )
+            else:
                 import_string = (
                     "from autogen.agentchat import initiate_group_chat"
                 )
-                if self.is_async:
-                    import_string = (
-                        "from autogen.agentchat import a_initiate_group_chat"
-                    )
-                return [(import_string, ImportPosition.THIRD_PARTY)]
+            return [(import_string, ImportPosition.THIRD_PARTY)]
+        if len(self.main_chats) == 1:
             # no additional imports, it is `sender.initiate_chat(....)`
             return None
         if self.is_async:

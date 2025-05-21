@@ -15,7 +15,7 @@ from ..base import (
     ExporterReturnType,
     ExportPosition,
 )
-from .utils import export_models, get_agent_llm_config_arg
+from .utils import export_models
 
 
 class ModelsExporter(BaseExporter, ExporterMixin):
@@ -116,7 +116,7 @@ class ModelsExporter(BaseExporter, ExporterMixin):
         for agent in self.agents:
             agent_llm_config_args.append(
                 (
-                    get_agent_llm_config_arg(
+                    self.get_agent_llm_config_arg(
                         agent,
                         all_models=self.models,
                         model_names=self.model_names,

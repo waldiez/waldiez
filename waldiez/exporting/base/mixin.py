@@ -7,6 +7,7 @@ from typing import Any
 from .utils import (
     CommentKey,
     comment,
+    get_agent_llm_config_arg,
     get_comment,
     get_escaped_string,
     get_item_string,
@@ -134,4 +135,44 @@ class ExporterMixin:
             current_names=current_names,
             prefix=prefix,
             max_length=max_length,
+        )
+
+    @staticmethod
+    def get_agent_llm_config_arg(
+        agent: Any,
+        all_models: list[Any],
+        model_names: dict[str, str],
+        cache_seed: int | None,
+        as_dict: bool | None = False,
+        tabs: int = 1,
+    ) -> str:
+        """Get the string representation of the agent's llm config argument.
+
+        Parameters
+        ----------
+        agent : Any
+            The agent.
+        all_models : list[Any]
+            All the models in the flow.
+        model_names : dict[str, str]
+            A mapping of model ids to model names.
+        cache_seed : int, optional
+            The cache seed to use, by default None.
+        as_dict : bool, optional
+            Whether to return the argument as a dictionary, by default False.
+        tabs : int, optional
+            The number of tabs for indentation, by default 1.
+
+        Returns
+        -------
+        str
+            The agent's llm config argument to use.
+        """
+        return get_agent_llm_config_arg(
+            agent=agent,
+            all_models=all_models,
+            model_names=model_names,
+            cache_seed=cache_seed,
+            as_dict=bool(as_dict),
+            tabs=tabs,
         )

@@ -14,6 +14,7 @@ from typing import Any, Iterator, Optional
 
 from .agents import (
     WaldiezAgent,
+    WaldiezGroupManager,
     get_captain_agent_extra_requirements,
     get_retrievechat_extra_requirements,
 )
@@ -290,6 +291,21 @@ class Waldiez:
             if api_eny_key and api_key:
                 env_vars.append((api_eny_key, api_key))
         return env_vars
+
+    def get_root_group_manager(self) -> WaldiezGroupManager:
+        """Get the root group manager agent.
+
+        Returns
+        -------
+        WaldiezGroupManager
+            The root group manager agent.
+
+        Raises
+        ------
+        ValueError
+            If the root group manager agent is not found.
+        """
+        return self.flow.get_root_group_manager()
 
     def get_group_chat_members(self, agent: WaldiezAgent) -> list[WaldiezAgent]:
         """Get the chat members that connect to a group chat manager agent.

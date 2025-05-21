@@ -173,6 +173,7 @@ def nested_chat_message(recipient, messages, sender, config):
         agent_names=agent_names,
         all_chats=[chat1, chat2, chat3],
         chat_names=chat_names,
+        root_group_manager=None,
         main_chats=[
             {
                 "chat": chat1,

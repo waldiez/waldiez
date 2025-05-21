@@ -11,7 +11,7 @@ export_models
 from pathlib import Path
 from typing import Callable, Optional
 
-from waldiez.models import WaldiezAgent, WaldiezModel
+from waldiez.models import WaldiezModel
 
 
 def export_models(
@@ -58,57 +58,6 @@ def export_models(
         )
     if output_dir:
         write_api_keys(flow_name, all_models, model_names, output_dir)
-    return content
-
-
-def get_agent_llm_config_arg(
-    agent: WaldiezAgent,
-    all_models: list[WaldiezModel],
-    model_names: dict[str, str],
-    cache_seed: Optional[int],
-    tabs: int = 1,
-) -> str:
-    """Get the string representation of the agent's llm config argument.
-
-    Parameters
-    ----------
-    agent : WaldiezAgent
-        The agent.
-    all_models : list[WaldiezModel]
-        All the models in the flow.
-    model_names : dict[str, str]
-        A mapping of model ids to model names.
-    cache_seed : Optional[int]
-        The cache seed.
-    tabs : int, optional
-        The number of tabs for indentation, by default 1.
-
-    Returns
-    -------
-    str
-        The agent's llm config argument to use.
-    """
-    tab = "    " * tabs if tabs > 0 else ""
-    if not agent.data.model_ids:
-        return f"{tab}llm_config=False,  # pyright: ignore" + "\n"
-    content = f"{tab}llm_config=autogen.LLMConfig(" + "\n"
-    content += f"{tab}    config_list=["
-    got_at_least_one_model = False
-    temperature: Optional[float] = None
-    for model_id in agent.data.model_ids:
-        model = next((m for m in all_models if m.id == model_id), None)
-        if model is not None:
-            temperature = model.data.temperature
-            model_name = model_names[model_id]
-            content += "\n" + f"{tab}        {model_name}_llm_config,"
-            got_at_least_one_model = True
-    if not got_at_least_one_model:  # pragma: no cover
-        return f"{tab}llm_config=False,  # pyright: ignore" + "\n"
-    content += "\n" + f"{tab}    ]," + "\n"
-    content += f"{tab}    cache_seed={cache_seed}," + "\n"
-    if temperature is not None:
-        content += f"{tab}    temperature={temperature}," + "\n"
-    content += tab + "),\n"
     return content
 
 

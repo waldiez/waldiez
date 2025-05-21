@@ -24,6 +24,7 @@ def test_export_rag_user() -> None:
         tool_names={tool.id: tool.name for tool in tools},
         chats=([], {}),
         is_async=False,
+        cache_seed=None,
         for_notebook=False,
         group_chat_members=[],
         initial_chats=[],

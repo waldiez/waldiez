@@ -31,6 +31,7 @@ def test_export_user(tmp_path: Path) -> None:
         tool_names={tool.id: tool.name for tool in tools},
         models=(models, model_names),
         initial_chats=[],
+        cache_seed=None,
         for_notebook=False,
         group_chat_members=[],
         arguments_resolver=lambda _agent: [

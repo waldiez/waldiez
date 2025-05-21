@@ -2,11 +2,13 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Utils for exporting chats."""
 
+from .group import export_group_chats
 from .nested import export_nested_chat_registration
 from .sequential import export_sequential_chat
 from .single_chat import export_single_chat
 
 __all__ = [
+    "export_group_chats",
     "export_nested_chat_registration",
     "export_sequential_chat",
     "export_single_chat",

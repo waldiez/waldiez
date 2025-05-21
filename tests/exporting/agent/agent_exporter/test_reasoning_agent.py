@@ -24,6 +24,7 @@ def test_export_reasoning_agent() -> None:
         models=(models, model_names),
         chats=([], {}),
         is_async=False,
+        cache_seed=None,
         for_notebook=False,
         initial_chats=[],
         group_chat_members=[],

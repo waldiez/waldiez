@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=too-many-locals
 """Export group manager and group chat to string."""
 
 from typing import Callable, Optional, Tuple
@@ -9,6 +10,7 @@ from waldiez.models import (
     WaldiezAgentConnection,
     WaldiezGroupManager,
 )
+from waldiez.models.model.model import WaldiezModel
 
 
 def get_group_manager_extras(
@@ -16,9 +18,25 @@ def get_group_manager_extras(
     initial_chats: list[WaldiezAgentConnection],
     group_chat_members: list[WaldiezAgent],
     agent_names: dict[str, str],
+    model_names: dict[str, str],
     serializer: Callable[..., str],
-) -> Tuple[str, str]:
-    """Get the group manager extra string and custom selection method if any.
+    all_models: list[WaldiezModel],
+    llm_config_getter: Callable[
+        [
+            WaldiezAgent,
+            list[WaldiezModel],
+            dict[str, str],
+            Optional[int],
+            Optional[bool],
+        ],
+        str,
+    ],
+    cache_seed: Optional[int] = None,
+) -> Tuple[str, str, str]:
+    """Get the group manager extras.
+
+    The content before, the group chat argument (if any) and the
+    additional import (if pattern is used).
 
     Parameters
     ----------
@@ -30,29 +48,49 @@ def get_group_manager_extras(
         The group members.
     agent_names : dict[str, str]
         The agent names.
+    model_names : dict[str, str]
+        The model names.
     serializer : Callable[..., str]
         The serializer function.
+    all_models : list[WaldiezModel]
+        The list of all models.
+    llm_config_getter : Callable[
+            [
+                WaldiezAgent,
+                list[WaldiezModel],
+                dict[str, str],
+                Optional[int],
+                Optional[bool],
+            ],
+            str,
+        ]
+        The function to get the llm config.
+    cache_seed : Optional[int], optional
+        The cache seed, by default None
 
     Returns
     -------
-    Tuple[str, str]
-        The content before the agent string and the group chat argument.
+    Tuple[str, str, str]
+        The content before the agent string, the group chat argument
+        and the additional import.
     """
     if not isinstance(agent, WaldiezGroupManager):
         # we are not dealing with a group manager
         # we can use the group pattern (ag2 creates a manager automatically)
-        return "", ""
+        return "", "", ""
     if not initial_chats:
         # no chat from user to manager,
         # we use the group pattern(ag2 creates a manager automatically)
-        return (
-            _get_group_manager_pattern(
-                group_chat_members=group_chat_members,
-                manager=agent,
-                agent_names=agent_names,
-            ),
-            "",
+        pattern, extra_import = _get_group_manager_pattern(
+            group_chat_members=group_chat_members,
+            manager=agent,
+            agent_names=agent_names,
+            all_models=all_models,
+            model_names=model_names,
+            llm_config_getter=llm_config_getter,
+            cache_seed=cache_seed,
         )
+        return pattern, "", extra_import
     first_chat_params = initial_chats[0]
     first_chat = first_chat_params["chat"]
     if (
@@ -65,15 +103,17 @@ def get_group_manager_extras(
         #     messages=...,  # the fist chat message (not a method)
         #     max_rounds=10
         # )
-        return (
-            _get_group_manager_pattern(
-                group_chat_members=group_chat_members,
-                manager=agent,
-                agent_names=agent_names,
-                user=first_chat_params["source"],
-            ),
-            "",
+        pattern, extra_import = _get_group_manager_pattern(
+            group_chat_members=group_chat_members,
+            manager=agent,
+            agent_names=agent_names,
+            model_names=model_names,
+            user=first_chat_params["source"],
+            all_models=all_models,
+            llm_config_getter=llm_config_getter,
+            cache_seed=cache_seed,
         )
+        return pattern, "", extra_import
     # else, we cannot use the group pattern (we cannot have as message a method)
     # we need to create a group chat and a manager and start the chat like:
     # user.initiate_chat(manager, ...)  # we can use a method here
@@ -96,15 +136,28 @@ def get_group_manager_extras(
         before_agent_string += f"{custom_speaker_selection}" + "\n"
     if group_chat_string:
         before_agent_string += group_chat_string
-    return before_agent_string, group_chat_arg
+    return before_agent_string, group_chat_arg, ""
 
 
 def _get_group_manager_pattern(
     manager: WaldiezGroupManager,
     group_chat_members: list[WaldiezAgent],
     agent_names: dict[str, str],
+    all_models: list[WaldiezModel],
+    model_names: dict[str, str],
+    llm_config_getter: Callable[
+        [
+            WaldiezAgent,
+            list[WaldiezModel],
+            dict[str, str],
+            Optional[int],
+            Optional[bool],
+        ],
+        str,
+    ],
     user: Optional[WaldiezAgent] = None,
-) -> str:
+    cache_seed: Optional[int] = None,
+) -> tuple[str, str]:
     """Get the group manager pattern.
 
     Parameters
@@ -115,6 +168,23 @@ def _get_group_manager_pattern(
         The group members.
     agent_names : dict[str, str]
         The agent id to name mapping.
+    all_models : list[WaldiezModel]
+        The list of all models.
+    model_names : dict[str, str]
+        The model id to name mapping.
+    llm_config_getter : Callable[
+        [
+            WaldiezAgent,
+            list[WaldiezModel],
+            dict[str, str],
+            Optional[int],
+            Optional[bool],
+        ],
+        str,
+    ]
+        The function to get the llm config.
+    cache_seed : Optional[int], optional
+        The cache seed, by default None
     user : Optional[WaldiezAgent], optional
         The user agent, by default None
     chat : Optional[WaldiezChat], optional
@@ -153,20 +223,28 @@ def _get_group_manager_pattern(
     #     group_manager_args={"llm_config": llm_config}
     # )
     pattern_class_name = _get_group_pattern_class_name(manager)
+    extra_import = (
+        f"from autogen.agentchat.group.patterns import {pattern_class_name}"
+    )
     manager_name = agent_names[manager.id]
     initial_agent_name = agent_names[manager.data.initial_agent_id]
     agents_string = ", ".join(
         agent_names[agent.id] for agent in group_chat_members
     )
-    pattern_string = f"{pattern_class_name}(" + "\n"
+    pattern_string = "\n" + f"{manager_name}_pattern = "
+    pattern_string += f"{pattern_class_name}(" + "\n"
     pattern_string += f"    initial_agent={initial_agent_name}," + "\n"
     pattern_string += f"    agents=[{agents_string}]," + "\n"
     if user:
         pattern_string += f"    user_agent={agent_names[user.id]}," + "\n"
-    pattern_string += (
-        f'    group_manager_args={{"llm_config": {manager_name}_llm_config}},'
-        + "\n"
+    llm_config_arg = llm_config_getter(
+        manager,
+        all_models,
+        model_names,
+        cache_seed,
+        True,
     )
+    pattern_string += f"    group_manager_args={{\n{llm_config_arg}    }},\n"
     if manager.data.context_variables:
         ctx_string = ""
         for key, value in manager.data.context_variables.items():
@@ -178,7 +256,7 @@ def _get_group_manager_pattern(
         pattern_string += ctx_string
         pattern_string += "    }," + "\n"
     pattern_string += ")"
-    return pattern_string
+    return pattern_string, extra_import
 
 
 def _get_group_pattern_class_name(manger: WaldiezGroupManager) -> str:

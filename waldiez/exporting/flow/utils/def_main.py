@@ -41,7 +41,10 @@ def get_def_main(
         content += "async "
     content += "def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:\n"
     content += '    """Start chatting."""\n'
-    content += f"    with Cache.disk(cache_seed={cache_seed}" + ") as cache:\n"
+    content += (
+        f"    with Cache.disk(cache_seed={cache_seed}"
+        ") as cache:  # pyright: ignore\n"
+    )
     content += f"{flow_chats}" + "\n"
     if is_async:
         content += "    await stop_logging()"

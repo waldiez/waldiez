@@ -45,6 +45,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         tool_names: dict[str, str],
         is_async: bool,
         for_notebook: bool,
+        cache_seed: Optional[int],
         initial_chats: list[WaldiezAgentConnection],
         group_chat_members: list[WaldiezAgent],
         arguments_resolver: Callable[[WaldiezAgent], list[str]],
@@ -68,6 +69,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
             Whether the whole flow is async.
         for_notebook : bool
             Whether the exporter is for a notebook.
+        cache_seed : Optional[int]
+            The cache seed if any, by default None
         initial_chats : list[WaldiezAgentConnection]
             The initial chats.
         group_chat_members : list[WaldiezAgent]
@@ -87,6 +90,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         self.arguments_resolver = arguments_resolver
         self.chats = chats
         self.is_async = is_async
+        self.cache_seed = cache_seed
         self.initial_chats = initial_chats
         self.group_chat_members = group_chat_members
         self._agent_name = agent_names[agent.id]
@@ -122,11 +126,16 @@ class AgentExporter(BaseExporter, ExporterMixin):
         # either the group chat definition and the group chat argument
         # or the group pattern (so no agent is defined)
         # (or nothing if not a group manager)
+        # and the extra import (pattern class to use) if pattern is used.
         self._group = get_group_manager_extras(
             agent=self.agent,
             initial_chats=self.initial_chats,
             group_chat_members=self.group_chat_members,
             agent_names=self.agent_names,
+            all_models=self.models,
+            model_names=self.model_names,
+            llm_config_getter=self.get_agent_llm_config_arg,
+            cache_seed=self.cache_seed,
             serializer=self.serializer,
         )
 
@@ -150,6 +159,9 @@ class AgentExporter(BaseExporter, ExporterMixin):
         # if the agent has tools, add the register_function import.
         if self.agent.data.tools:
             agent_imports.add("from autogen import register_function")
+        if self._group[2]:
+            # if we use a group pattern, let's import the one we need.
+            agent_imports.add(self._group[2])
         return sorted(
             [(import_string, position) for import_string in agent_imports],
             key=lambda x: x[0],
