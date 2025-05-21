@@ -57,7 +57,7 @@ class StructuredIOStream(IOStream):
             timestamp=now(),
             data=message,
         ).model_dump(mode="json")
-        flush = kwargs.get("flush", False)
+        flush = kwargs.get("flush", True)
         print(json.dumps(payload), flush=flush)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:

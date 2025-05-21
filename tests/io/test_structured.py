@@ -62,17 +62,17 @@ class TestStructuredIOStream:
         assert isinstance(payload["id"], str)
         assert isinstance(payload["timestamp"], str)
         assert payload["data"] == "Hello, world!\n"
-        assert kwargs == {"flush": False}
+        assert kwargs == {"flush": True}
 
         # Test with multiple arguments and custom sep/end
         mock_print.reset_mock()
-        self.stream.print("Hello", "world", sep="-", end="!", flush=True)
+        self.stream.print("Hello", "world", sep="-", end="!", flush=False)
 
         args, kwargs = mock_print.call_args
         payload = json.loads(args[0])
 
         assert payload["data"] == "Hello-world!"
-        assert kwargs == {"flush": True}
+        assert kwargs == {"flush": False}
 
     @patch("builtins.print")
     @patch("waldiez.io.structured.getpass")
