@@ -64,7 +64,7 @@ export const useWaldiezWrapper = ({
                 handleInputRequest(data);
                 break;
             case "input_response":
-                console.log("Input response received:", data.response);
+                // console.log("Input response received:", data.response);
                 break;
             case "group_chat_run_chat":
                 handleGroupChatRunChat(data);

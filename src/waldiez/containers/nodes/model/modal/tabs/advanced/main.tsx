@@ -25,7 +25,6 @@ export const WaldiezNodeModelModalAdvancedTab = (props: WaldiezNodeModelModalAdv
         onAwsProfileNameChange,
         onAwsSessionTokenChange,
     } = useModelModalAdvancedTab(props);
-    console.log(data.aws);
     return (
         <div className="flex-column">
             <NumberInput

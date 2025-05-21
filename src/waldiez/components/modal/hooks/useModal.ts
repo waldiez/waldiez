@@ -110,7 +110,6 @@ export const useModal = (props: {
     // Handle modal closing
     const handleCloseModal = useCallback(() => {
         if (cannotClose && !showConfirmation) {
-            console.log(isMinimized);
             setShowConfirmation(true);
             if (isMinimized) {
                 onToggleMinimize();
