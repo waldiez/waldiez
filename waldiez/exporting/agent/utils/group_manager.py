@@ -83,7 +83,7 @@ def get_group_manager_extras(
     group_chat_string, group_chat_name, custom_speaker_selection = (
         _get_group_manager_extras(
             agent=agent,
-            group_members=group_chat_members,
+            group_members=group_chat_members + [first_chat_params["source"]],
             agent_names=agent_names,
             serializer=serializer,
         )
