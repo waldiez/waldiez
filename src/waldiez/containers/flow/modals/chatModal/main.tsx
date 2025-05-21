@@ -220,25 +220,24 @@ export const ChatModal = memo((props: ChatModalProps) => {
                 )}
 
                 <div className="input-prompt">{chat?.activeRequest?.prompt}</div>
-
-                <div className="chat-input-container">
-                    {imagePreview && (
-                        <div className="chat-image-preview">
-                            <div className="chat-image-wrapper">
-                                <img src={imagePreview} alt="Preview" className="chat-preview-image" />
-                                <button
-                                    type="button"
-                                    className="chat-remove-image-button"
-                                    onClick={clearImage}
-                                    title="Remove Image"
-                                    aria-label="Remove uploaded image"
-                                >
-                                    <FiX size={14} />
-                                </button>
+                {chat?.activeRequest?.request_id !== undefined && (
+                    <div className="chat-input-container">
+                        {imagePreview && (
+                            <div className="chat-image-preview">
+                                <div className="chat-image-wrapper">
+                                    <img src={imagePreview} alt="Preview" className="chat-preview-image" />
+                                    <button
+                                        type="button"
+                                        className="chat-remove-image-button"
+                                        onClick={clearImage}
+                                        title="Remove Image"
+                                        aria-label="Remove uploaded image"
+                                    >
+                                        <FiX size={14} />
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    {chat?.activeRequest?.request_id !== undefined && (
+                        )}
                         <div className="chat-input-field-container">
                             {chat?.activeRequest?.password === true ? (
                                 <div className="password-toggle-container">
@@ -288,38 +287,41 @@ export const ChatModal = memo((props: ChatModalProps) => {
                                 />
                             )}
                         </div>
-                    )}
-                    <div className="chat-input-actions">
-                        <label htmlFor={imageInputId} className="chat-upload-button">
-                            <FiPaperclip size={18} aria-hidden="true" />
-                            <span className="hidden">Upload an image</span>
-                            <input
-                                type="file"
-                                disabled={chat?.activeRequest?.request_id === undefined}
-                                aria-label="Upload an image"
-                                id={imageInputId}
-                                data-testid={imageInputId}
-                                accept="image/*"
-                                className="chat-upload-input"
-                                onChange={handleImageChange}
-                                onClick={openFileSelectModal}
-                                onBlur={closeFileSelectModal}
-                            />
-                        </label>
 
-                        <button
-                            type="button"
-                            title="Send"
-                            disabled={chat?.activeRequest?.request_id === undefined}
-                            onClick={handleSubmit}
-                            className="chat-send-button"
-                            data-testid={`rf-${flowId}-chat-modal-submit`}
-                            aria-label="Send message"
-                        >
-                            <IoIosSend size={20} aria-hidden="true" />
-                        </button>
+                        {chat?.activeRequest?.request_id !== undefined && (
+                            <div className="chat-input-actions">
+                                <label htmlFor={imageInputId} className="chat-upload-button">
+                                    <FiPaperclip size={18} aria-hidden="true" />
+                                    <span className="hidden">Upload an image</span>
+                                    <input
+                                        type="file"
+                                        disabled={chat?.activeRequest?.request_id === undefined}
+                                        aria-label="Upload an image"
+                                        id={imageInputId}
+                                        data-testid={imageInputId}
+                                        accept="image/*"
+                                        className="chat-upload-input"
+                                        onChange={handleImageChange}
+                                        onClick={openFileSelectModal}
+                                        onBlur={closeFileSelectModal}
+                                    />
+                                </label>
+
+                                <button
+                                    type="button"
+                                    title="Send"
+                                    disabled={chat?.activeRequest?.request_id === undefined}
+                                    onClick={handleSubmit}
+                                    className="chat-send-button"
+                                    data-testid={`rf-${flowId}-chat-modal-submit`}
+                                    aria-label="Send message"
+                                >
+                                    <IoIosSend size={20} aria-hidden="true" />
+                                </button>
+                            </div>
+                        )}
                     </div>
-                </div>
+                )}
             </div>
         </Modal>
     );
