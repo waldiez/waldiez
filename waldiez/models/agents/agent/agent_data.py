@@ -2,11 +2,11 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common data structures for agents."""
 
-from typing import Any, Optional, Self, Union
+from typing import Any, Optional, Union
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
-from typing_extensions import Annotated, Literal
+from typing_extensions import Annotated, Literal, Self
 
 from ...common import WaldiezBase, update_dict
 from .code_execution import WaldiezAgentCodeExecutionConfig
