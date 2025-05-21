@@ -5,12 +5,21 @@
 import React from "react";
 
 import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
+import { Markdown } from "@waldiez/components/markdown";
 
-const parseStructuredContent = (items: any[], onImageClick: (url: string) => void) => (
+const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick: (url: string) => void) => (
     <div className="structured-content">
         {items.map((item, idx) => {
             if (item.type === "text" && item.text.trim().length > 0) {
-                return <span key={`text-${idx}`}>{item.text}</span>;
+                return (
+                    <Markdown
+                        key={`text-${idx}`}
+                        content={item.text}
+                        isDarkMode={isDarkMode}
+                        onImageClick={onImageClick}
+                    />
+                );
+                // return <span key={`text-${idx}`}>{item.text}</span>;
             }
             if (item.type === "image_url" && item.image_url?.url) {
                 return (
@@ -37,7 +46,7 @@ const parseStructuredContent = (items: any[], onImageClick: (url: string) => voi
     </div>
 );
 
-const parseTextWithImages = (text: string, onImageClick: (url: string) => void) => {
+const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (url: string) => void) => {
     const regex = /\[Image:\s*(.+?)\]/g;
     const parts: React.ReactNode[] = [];
     let lastIdx = 0;
@@ -47,7 +56,15 @@ const parseTextWithImages = (text: string, onImageClick: (url: string) => void) 
         const [_placeholder, url] = match;
         const textBefore = text.slice(lastIdx, match.index);
         if (textBefore) {
-            parts.push(<span key={`text-${lastIdx}`}>{textBefore}</span>);
+            parts.push(
+                <Markdown
+                    key={`text-${lastIdx}`}
+                    content={textBefore}
+                    isDarkMode={isDarkMode}
+                    onImageClick={onImageClick}
+                />,
+            );
+            // parts.push(<span key={`text-${lastIdx}`}>{textBefore}</span>);
         }
 
         parts.push(
@@ -69,23 +86,26 @@ const parseTextWithImages = (text: string, onImageClick: (url: string) => void) 
     return <div className="content-with-images">{parts}</div>;
 };
 
-export const parseMessageContent = (data: any, onImageClick: (url: string) => void): React.ReactNode => {
-    // console.log("Parsing message content:", data);
+export const parseMessageContent = (
+    data: any,
+    isDarkMode: boolean,
+    onImageClick: (url: string) => void,
+): React.ReactNode => {
     if (typeof data === "string") {
         try {
             const parsed = JSON.parse(data);
             return Array.isArray(parsed)
-                ? parseStructuredContent(parsed, onImageClick)
-                : parseTextWithImages(data, onImageClick);
+                ? parseStructuredContent(parsed, isDarkMode, onImageClick)
+                : parseTextWithImages(data, isDarkMode, onImageClick);
         } catch {
-            return parseTextWithImages(data, onImageClick);
+            return parseTextWithImages(data, isDarkMode, onImageClick);
         }
     } else if ("content" in data && data.content) {
         return Array.isArray(data.content)
-            ? parseStructuredContent(data.content, onImageClick)
-            : parseTextWithImages(String(data.content), onImageClick);
+            ? parseStructuredContent(data.content, isDarkMode, onImageClick)
+            : parseTextWithImages(String(data.content), isDarkMode, onImageClick);
     } else if (Array.isArray(data)) {
-        return parseStructuredContent(data, onImageClick);
+        return parseStructuredContent(data, isDarkMode, onImageClick);
     }
-    return parseTextWithImages(String(data.content), onImageClick);
+    return parseTextWithImages(String(data.content), isDarkMode, onImageClick);
 };

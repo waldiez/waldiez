@@ -1,0 +1,452 @@
+/* Markdown styling that works with the existing flow-wrapper structure */
+
+/* Base container */
+.flow-wrapper .markdown-renderer {
+  width: 100%;
+  font-size: inherit;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Light/Dark mode variables */
+.flow-wrapper.light .markdown-renderer {
+  --md-text: #333;
+  --md-link: #0366d6;
+  --md-code-bg: rgba(0, 0, 0, 0.05);
+  --md-blockquote-border: #ddd;
+  --md-blockquote-text: #666;
+  --md-table-border: #e1e4e8;
+  --md-table-bg-alt: #f6f8fa;
+  --md-pre-bg: #f5f5f5;
+  --md-code-block-header: #e9ecef;
+  --md-heading-border: #eaecef;
+}
+
+.flow-wrapper.dark .markdown-renderer {
+  --md-text: #eee;
+  --md-link: #58a6ff;
+  --md-code-bg: rgba(255, 255, 255, 0.1);
+  --md-blockquote-border: #444;
+  --md-blockquote-text: #aaa;
+  --md-table-border: #444;
+  --md-table-bg-alt: #21262d;
+  --md-pre-bg: #282c34;
+  --md-code-block-header: #21252b;
+  --md-heading-border: #30363d;
+}
+
+/* Headings */
+.flow-wrapper .markdown-h1,
+.flow-wrapper .markdown-h2,
+.flow-wrapper .markdown-h3,
+.flow-wrapper .markdown-h4,
+.flow-wrapper .markdown-h5,
+.flow-wrapper .markdown-h6 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--md-text);
+}
+
+.flow-wrapper .markdown-h1 {
+  font-size: 1.4em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid var(--md-heading-border);
+}
+
+.flow-wrapper .markdown-h2 {
+  font-size: 1.3em;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid var(--md-heading-border);
+}
+
+.flow-wrapper .markdown-h3 {
+  font-size: 1.2em;
+}
+
+.flow-wrapper .markdown-h4 {
+  font-size: 1.1em;
+}
+
+.flow-wrapper .markdown-h5 {
+  font-size: 1em;
+}
+
+.flow-wrapper .markdown-h6 {
+  font-size: 0.9em;
+  color: var(--md-blockquote-text);
+}
+
+/* Paragraphs */
+.flow-wrapper .markdown-p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Lists */
+.flow-wrapper .markdown-ul,
+.flow-wrapper .markdown-ol {
+  padding-left: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.flow-wrapper .markdown-li {
+  margin-bottom: 0.25em;
+}
+
+.flow-wrapper .markdown-li .markdown-p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+/* Blockquotes */
+.flow-wrapper .markdown-blockquote {
+  margin: 0.5em 0;
+  padding-left: 1em;
+  color: var(--md-blockquote-text);
+  border-left: 3px solid var(--md-blockquote-border);
+}
+
+/* Code blocks */
+.flow-wrapper .markdown-pre {
+  margin: 0.5em 0;
+  padding: 0.8em;
+  background-color: var(--md-pre-bg);
+  border-radius: 6px;
+  overflow: auto;
+  max-width: 100%;
+  width: auto;
+  display: block;
+}
+
+.flow-wrapper .markdown-code {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  white-space: pre;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.flow-wrapper .markdown-inline-code {
+  background-color: var(--md-code-bg);
+  border-radius: 3px;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+}
+
+.flow-wrapper .markdown-code-block-wrapper {
+  margin: 0.75em 0;
+  border-radius: 6px;
+  overflow: hidden;
+  max-width: 100%;
+  width: auto;
+  display: block;
+}
+
+.flow-wrapper .markdown-code-block-header {
+  display: flex;
+  align-items: center;
+  padding: 0.4em 0.8em;
+  background-color: var(--md-code-block-header);
+  font-size: 0.8em;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.flow-wrapper .markdown-code-language {
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Fix pre and code overflow */
+.flow-wrapper .message-content .markdown-pre,
+.flow-wrapper .message-content .markdown-code,
+.flow-wrapper .message-content .markdown-code-block-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Tables */
+.flow-wrapper .markdown-table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  overflow-x: auto;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.flow-wrapper .markdown-table th,
+.flow-wrapper .markdown-table td {
+  border: 1px solid var(--md-table-border);
+  padding: 0.4em 0.6em;
+}
+
+.flow-wrapper .markdown-table th {
+  font-weight: 600;
+}
+
+.flow-wrapper .markdown-table tr {
+  background-color: transparent;
+  border-top: 1px solid var(--md-table-border);
+}
+
+.flow-wrapper .markdown-table tr:nth-child(2n) {
+  background-color: var(--md-table-bg-alt);
+}
+
+/* Links */
+.flow-wrapper .markdown-link {
+  color: var(--md-link);
+  text-decoration: none;
+}
+
+.flow-wrapper .markdown-link:hover {
+  text-decoration: underline;
+}
+
+/* Images - use existing .chat-image class */
+.flow-wrapper .markdown-image {
+  /* Inherits from .chat-image */
+  max-width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Horizontal rule */
+.flow-wrapper .markdown-hr {
+  height: 1px;
+  margin: 1em 0;
+  background-color: var(--md-table-border);
+  border: none;
+}
+
+/* Adjust for message bubbles */
+.flow-wrapper .user-message .markdown-link {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.flow-wrapper .user-message .markdown-blockquote {
+  border-left-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.flow-wrapper .user-message .markdown-inline-code {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .flow-wrapper .markdown-table {
+    font-size: 0.9em;
+  }
+
+  .flow-wrapper .markdown-pre {
+    padding: 0.6em;
+  }
+
+  .flow-wrapper .markdown-h1 {
+    font-size: 1.3em;
+  }
+
+  .flow-wrapper .markdown-h2 {
+    font-size: 1.2em;
+  }
+}
+
+/* Basic syntax highlighting for code blocks */
+.flow-wrapper .language-js .keyword,
+.flow-wrapper .language-javascript .keyword,
+.flow-wrapper .language-typescript .keyword,
+.flow-wrapper .language-jsx .keyword,
+.flow-wrapper .language-tsx .keyword {
+  color: #569cd6;
+}
+
+.flow-wrapper.dark .language-js .keyword,
+.flow-wrapper.dark .language-javascript .keyword,
+.flow-wrapper.dark .language-typescript .keyword,
+.flow-wrapper.dark .language-jsx .keyword,
+.flow-wrapper.dark .language-tsx .keyword {
+  color: #569cd6;
+}
+
+.flow-wrapper .language-js .string,
+.flow-wrapper .language-javascript .string,
+.flow-wrapper .language-typescript .string,
+.flow-wrapper .language-jsx .string,
+.flow-wrapper .language-tsx .string {
+  color: #ce9178;
+}
+
+.flow-wrapper.dark .language-js .string,
+.flow-wrapper.dark .language-javascript .string,
+.flow-wrapper.dark .language-typescript .string,
+.flow-wrapper.dark .language-jsx .string,
+.flow-wrapper.dark .language-tsx .string {
+  color: #ce9178;
+}
+
+.flow-wrapper .language-js .comment,
+.flow-wrapper .language-javascript .comment,
+.flow-wrapper .language-typescript .comment,
+.flow-wrapper .language-jsx .comment,
+.flow-wrapper .language-tsx .comment {
+  color: #6a9955;
+}
+
+.flow-wrapper.dark .language-js .comment,
+.flow-wrapper.dark .language-javascript .comment,
+.flow-wrapper.dark .language-typescript .comment,
+.flow-wrapper.dark .language-jsx .comment,
+.flow-wrapper.dark .language-tsx .comment {
+  color: #6a9955;
+}
+
+.flow-wrapper .markdown-code-language {
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Tables */
+.flow-wrapper .markdown-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0;
+  overflow-x: auto;
+  display: block;
+}
+
+.flow-wrapper .markdown-table th,
+.flow-wrapper .markdown-table td {
+  border: 1px solid var(--md-table-border);
+  padding: 0.4em 0.6em;
+}
+
+.flow-wrapper .markdown-table th {
+  font-weight: 600;
+}
+
+.flow-wrapper .markdown-table tr {
+  background-color: transparent;
+  border-top: 1px solid var(--md-table-border);
+}
+
+.flow-wrapper .markdown-table tr:nth-child(2n) {
+  background-color: var(--md-table-bg-alt);
+}
+
+/* Links */
+.flow-wrapper .markdown-link {
+  color: var(--md-link);
+  text-decoration: none;
+}
+
+.flow-wrapper .markdown-link:hover {
+  text-decoration: underline;
+}
+
+/* Images - use existing .chat-image class */
+.flow-wrapper .markdown-image {
+  /* Inherits from .chat-image */
+  max-width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Horizontal rule */
+.flow-wrapper .markdown-hr {
+  height: 1px;
+  margin: 1em 0;
+  background-color: var(--md-table-border);
+  border: none;
+}
+
+/* Adjust for message bubbles */
+.flow-wrapper .user-message .markdown-link {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.flow-wrapper .user-message .markdown-blockquote {
+  border-left-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.flow-wrapper .user-message .markdown-inline-code {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .flow-wrapper .markdown-table {
+    font-size: 0.9em;
+  }
+
+  .flow-wrapper .markdown-pre {
+    padding: 0.6em;
+  }
+
+  .flow-wrapper .markdown-h1 {
+    font-size: 1.3em;
+  }
+
+  .flow-wrapper .markdown-h2 {
+    font-size: 1.2em;
+  }
+}
+
+/* Basic syntax highlighting for code blocks */
+.flow-wrapper .language-js .keyword,
+.flow-wrapper .language-javascript .keyword,
+.flow-wrapper .language-typescript .keyword,
+.flow-wrapper .language-jsx .keyword,
+.flow-wrapper .language-tsx .keyword {
+  color: #569cd6;
+}
+
+.flow-wrapper.dark .language-js .keyword,
+.flow-wrapper.dark .language-javascript .keyword,
+.flow-wrapper.dark .language-typescript .keyword,
+.flow-wrapper.dark .language-jsx .keyword,
+.flow-wrapper.dark .language-tsx .keyword {
+  color: #569cd6;
+}
+
+.flow-wrapper .language-js .string,
+.flow-wrapper .language-javascript .string,
+.flow-wrapper .language-typescript .string,
+.flow-wrapper .language-jsx .string,
+.flow-wrapper .language-tsx .string {
+  color: #ce9178;
+}
+
+.flow-wrapper.dark .language-js .string,
+.flow-wrapper.dark .language-javascript .string,
+.flow-wrapper.dark .language-typescript .string,
+.flow-wrapper.dark .language-jsx .string,
+.flow-wrapper.dark .language-tsx .string {
+  color: #ce9178;
+}
+
+.flow-wrapper .language-js .comment,
+.flow-wrapper .language-javascript .comment,
+.flow-wrapper .language-typescript .comment,
+.flow-wrapper .language-jsx .comment,
+.flow-wrapper .language-tsx .comment {
+  color: #6a9955;
+}
+
+.flow-wrapper.dark .language-js .comment,
+.flow-wrapper.dark .language-javascript .comment,
+.flow-wrapper.dark .language-typescript .comment,
+.flow-wrapper.dark .language-jsx .comment,
+.flow-wrapper.dark .language-tsx .comment {
+  color: #6a9955;
+}

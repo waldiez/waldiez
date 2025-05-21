@@ -250,7 +250,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
             </div>
 
             {/* Modals */}
-            <ChatModal flowId={flowId} chat={chat} />
+            <ChatModal flowId={flowId} chat={chat} isDarkMode={isDark} />
 
             {isImportModalOpen && (
                 <ImportFlowModal

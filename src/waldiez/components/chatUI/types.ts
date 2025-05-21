@@ -237,6 +237,7 @@ export type WaldiezChatConfig = {
 export type ChatUIProps = {
     messages: WaldiezChatMessage[];
     userParticipants: string[];
+    isDarkMode: boolean;
     handlers?: WaldiezChatHandlers;
     activeRequest?: WaldiezActiveRequest;
     error?: WaldiezChatError;

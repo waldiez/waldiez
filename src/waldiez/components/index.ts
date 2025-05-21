@@ -12,6 +12,7 @@ export { Editor } from "@waldiez/components/editor";
 export { Handoffs } from "@waldiez/components/handoffs";
 export { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 export { InfoLabel } from "@waldiez/components/infoLabel";
+export { Markdown } from "@waldiez/components/markdown";
 export { MessageInput } from "@waldiez/components/messageInput";
 export { Modal } from "@waldiez/components/modal";
 export { NumberInput } from "@waldiez/components/numberInput";

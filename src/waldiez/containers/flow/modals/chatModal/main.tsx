@@ -4,7 +4,7 @@
  */
 import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
 import { FaStop } from "react-icons/fa";
-import { FiPaperclip, FiX } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
 
 import { ChatUI, Modal } from "@waldiez/components";
@@ -22,6 +22,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     const [textInput, setTextInput] = useState("");
     const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     // Refs
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -33,13 +34,15 @@ export const ChatModal = memo((props: ChatModalProps) => {
             setImagePreview(null);
 
             // Focus input after render
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 if (chat.activeRequest?.request_id) {
                     inputRef.current?.focus();
+                } else {
+                    inputRef.current?.blur();
                 }
-            }, 0);
+            });
         }
-    }, [chat]);
+    }, [chat?.showUI, chat?.activeRequest?.request_id, chat?.messages]);
 
     /**
      * Create an input response object with current data
@@ -208,6 +211,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
                 {chat?.messages && chat.messages.length > 0 && (
                     <div className="chat-wrapper" data-flow-id={flowId}>
                         <ChatUI
+                            isDarkMode={false}
                             messages={chat.messages}
                             userParticipants={chat.userParticipants}
                             activeRequest={chat.activeRequest}
@@ -234,24 +238,57 @@ export const ChatModal = memo((props: ChatModalProps) => {
                             </div>
                         </div>
                     )}
-
-                    <input
-                        type="text" // TODO: check activeRequest type(if password, we 'll add a show/hide button)
-                        ref={inputRef}
-                        placeholder="Enter your message here"
-                        id={inputId}
-                        data-testid={inputId}
-                        value={textInput}
-                        disabled={chat?.activeRequest?.request_id === undefined}
-                        onKeyDown={handleKeyDown}
-                        onChange={handleTextChange}
-                        className="chat-text-input"
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="none"
-                        aria-label="User input"
-                    />
-
+                    {chat?.activeRequest?.request_id !== undefined && (
+                        <div className="chat-input-field-container">
+                            {chat?.activeRequest?.password === true ? (
+                                <div className="password-toggle-container">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        ref={inputRef}
+                                        placeholder="Enter your password"
+                                        id={inputId}
+                                        data-testid={inputId}
+                                        value={textInput}
+                                        disabled={chat?.activeRequest?.request_id === undefined}
+                                        onKeyDown={handleKeyDown}
+                                        onChange={handleTextChange}
+                                        className="chat-text-input password-input"
+                                        autoComplete="off"
+                                        autoCorrect="off"
+                                        autoCapitalize="none"
+                                        aria-label="Password input"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-toggle-button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        title={showPassword ? "Hide password" : "Show password"}
+                                        aria-label={showPassword ? "Hide password" : "Show password"}
+                                        disabled={chat?.activeRequest?.request_id === undefined}
+                                    >
+                                        {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                                    </button>
+                                </div>
+                            ) : (
+                                <input
+                                    type="text"
+                                    ref={inputRef}
+                                    placeholder="Enter your message here"
+                                    id={inputId}
+                                    data-testid={inputId}
+                                    value={textInput}
+                                    disabled={chat?.activeRequest?.request_id === undefined}
+                                    onKeyDown={handleKeyDown}
+                                    onChange={handleTextChange}
+                                    className="chat-text-input"
+                                    autoComplete="off"
+                                    autoCorrect="off"
+                                    autoCapitalize="none"
+                                    aria-label="User input"
+                                />
+                            )}
+                        </div>
+                    )}
                     <div className="chat-input-actions">
                         <label htmlFor={imageInputId} className="chat-upload-button">
                             <FiPaperclip size={18} aria-hidden="true" />
