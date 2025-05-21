@@ -190,6 +190,7 @@ export type WaldiezMediaConfig = {
 export type WaldiezActiveRequest = {
     request_id: string;
     prompt: string;
+    password?: boolean;
     acceptedMediaTypes?: WaldiezMediaType[];
 };
 

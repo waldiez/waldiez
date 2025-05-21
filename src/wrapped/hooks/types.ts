@@ -42,7 +42,7 @@ export type WaldiezWrapperState = {
     inputPrompt?: {
         prompt: string;
         request_id: string;
-        password?: string | boolean;
+        password?: boolean;
     };
 };
 

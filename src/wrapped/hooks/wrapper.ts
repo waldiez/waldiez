@@ -31,7 +31,7 @@ export const useWaldiezWrapper = ({
         | {
               prompt: string;
               request_id: string;
-              password?: string | boolean;
+              password?: boolean;
           }
         | undefined
     >(undefined);
@@ -54,13 +54,6 @@ export const useWaldiezWrapper = ({
         // other types to check:
         // termination_and_human_reply_no_input
         // using_auto_reply
-        // # {"type": "group_chat_run_chat", "content":
-        // #    {"uuid": "3f2d491e-deb3-4f28-8991-cb8eb67ea3a6",
-        // #    "speaker": "executor", "silent": false}}
-        //
-        // # {"type": "generate_code_execution_reply", "content":
-        // #    {"uuid": "af6e6cfd-edf6-4785-a490-97358ae3d306",
-        // #   "code_blocks": ["md"], "sender": "manager", "recipient": "executor"}}
         switch (data.type) {
             case "text":
             case "print":
@@ -72,6 +65,12 @@ export const useWaldiezWrapper = ({
                 break;
             case "input_response":
                 console.log("Input response received:", data.response);
+                break;
+            case "group_chat_run_chat":
+                handleGroupChatRunChat(data);
+                break;
+            case "generate_code_execution_reply":
+                handleGenerateCodeExecutionReply(data);
                 break;
             case "termination":
                 handleFlowTermination(data);
@@ -110,6 +109,74 @@ export const useWaldiezWrapper = ({
             data.message.trim().replace("\n", "") === "<Waldiez> - Workflow finished"
         ) {
             setIsRunning(false);
+        }
+    };
+
+    /**
+     * Handle group chat run chat messages
+     */
+    const handleGroupChatRunChat = (data: WebSocketResponse) => {
+        // # {"type": "group_chat_run_chat", "content":
+        // #    {"uuid": "3f2d491e-deb3-4f28-8991-cb8eb67ea3a6",
+        // #    "speaker": "executor", "silent": false}}
+        //
+        if (
+            data.content &&
+            typeof data.content === "object" &&
+            data.content !== null &&
+            "uuid" in data.content &&
+            typeof data.content.uuid === "string" &&
+            "speaker" in data.content &&
+            typeof data.content.speaker === "string"
+        ) {
+            const chatMessage: WaldiezChatMessage = {
+                id: nanoid(),
+                timestamp: new Date().toISOString(),
+                type: "system",
+                content: [
+                    {
+                        type: "text",
+                        text: "Group chat run",
+                    },
+                ],
+                sender: data.content.speaker,
+            };
+            setMessages(prevMessages => [...prevMessages, chatMessage]);
+        }
+    };
+
+    /**
+     * Handle generate code execution reply messages
+     */
+    const handleGenerateCodeExecutionReply = (data: WebSocketResponse) => {
+        // # {"type": "generate_code_execution_reply", "content":
+        // #    {"uuid": "af6e6cfd-edf6-4785-a490-97358ae3d306",
+        // #   "code_blocks": ["md"], "sender": "manager", "recipient": "executor"}}
+        if (
+            data.content &&
+            typeof data.content === "object" &&
+            data.content !== null &&
+            "uuid" in data.content &&
+            typeof data.content.uuid === "string" &&
+            "sender" in data.content &&
+            typeof data.content.sender === "string" &&
+            "recipient" in data.content &&
+            typeof data.content.recipient === "string"
+        ) {
+            const chatMessage: WaldiezChatMessage = {
+                id: nanoid(),
+                timestamp: new Date().toISOString(),
+                type: "system",
+                content: [
+                    {
+                        type: "text",
+                        text: "Generate code execution reply",
+                    },
+                ],
+                sender: data.content.sender,
+                recipient: data.content.recipient,
+            };
+            setMessages(prevMessages => [...prevMessages, chatMessage]);
         }
     };
 

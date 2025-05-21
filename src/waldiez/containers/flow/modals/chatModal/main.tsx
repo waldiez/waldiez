@@ -236,7 +236,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
                     )}
 
                     <input
-                        type="text"
+                        type="text" // TODO: check activeRequest type(if password, we 'll add a show/hide button)
                         ref={inputRef}
                         placeholder="Enter your message here"
                         id={inputId}
