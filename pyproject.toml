@@ -162,6 +162,7 @@ dev = [
   "types-redis==4.6.0.20241004",
   "types-toml==0.10.8.20240310",
   "types-requests==2.32.0.20250328",
+  "watchdog==6.0.0",
 ]
 docs = [
   "mdx-include==1.4.2",

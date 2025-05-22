@@ -11,6 +11,7 @@ import json
 import logging
 import os
 import sys
+import threading
 import traceback
 from pathlib import Path
 from typing import Any, Set
@@ -20,6 +21,8 @@ import websockets
 from autogen.io import IOStream  # type: ignore
 from pydantic import BaseModel, ConfigDict
 from typing_extensions import Literal
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
+from watchdog.observers import Observer
 
 try:
     from waldiez import WaldiezExporter, WaldiezRunner
@@ -72,6 +75,38 @@ class OutgoingMessage(ModelBase):
     success: bool
     message: str | None = None
     filePaths: list[str] | None = None
+
+
+class ReloadHandler(FileSystemEventHandler):
+    """Handler to reload the server on file changes."""
+
+    def __init__(self) -> None:
+        """Initialize the handler."""
+        self.debounce_timer: threading.Timer | None = None
+
+    def on_modified(self, event: FileSystemEvent) -> None:
+        """Handle file modification events.
+
+        Parameters
+        ----------
+        event : FileSystemEvent
+            The file system event to handle.
+        """
+        if event.is_directory or not str(event.src_path).endswith(".py"):
+            return
+
+        # Debounce rapid file changes
+        if self.debounce_timer:
+            self.debounce_timer.cancel()
+        self.debounce_timer = threading.Timer(0.5, self._trigger_restart)
+        self.debounce_timer.start()
+
+    def _trigger_restart(self) -> None:
+        """Trigger a restart of the server."""
+        logger.info("Files changed, restarting...")
+        os.execv(  # nosemgrep # nosec
+            sys.executable, [sys.executable] + sys.argv
+        )
 
 
 class WaldiezDevServer:
@@ -433,7 +468,8 @@ def get_default_dev_port() -> int:
     return fallback_port
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Get the port to use and start the server."""
     dev_port = get_default_dev_port()
     if "--port" in sys.argv:
         try:
@@ -442,5 +478,17 @@ if __name__ == "__main__":
         except (ValueError, IndexError):
             logger.error("Invalid port number provided.")
             sys.exit(1)
+    if "--reload" in sys.argv:
+        logger.info("Reload mode enabled")
+        event_handler = ReloadHandler()
+        observer = Observer()
+        observer.schedule(
+            event_handler, str(ROOT_DIR / "waldiez"), recursive=True
+        )
+        observer.start()
     server = WaldiezDevServer(port=dev_port)
     asyncio.run(server.serve())
+
+
+if __name__ == "__main__":
+    main()

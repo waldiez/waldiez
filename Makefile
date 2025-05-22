@@ -35,6 +35,7 @@ help:
 	@echo " docs             Generate the python documentation"
 	@echo " docs-live        Generate the documentation in 'live' mode"
 	@echo " images           Build the podman/docker images"
+	@echo " dev              Start both python and react dev servers"
 	@echo " some             Run some (not all) of the above"
 
 
@@ -138,3 +139,7 @@ requirements:
 
 .PHONY: some
 some: clean format lint test build docs image
+
+.PHONY: dev
+dev:
+	$(PYTHON) scripts/dev.py
