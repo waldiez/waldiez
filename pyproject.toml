@@ -243,6 +243,7 @@ hatch run lint-pylint
 
 docs = "mkdocs build -d site"
 build = "python -m build --wheel --sdist --outdir out/dist"
+image = "python scripts/image.py"
 
 check = """
 hatch run format
@@ -259,7 +260,10 @@ hatch run docs
 hatch run build
 """
 
-all = "hatch run release"
+all = """
+hatch run release
+hatch run image
+"""
 
 [tool.hatch.envs.test]
 inherit = true
