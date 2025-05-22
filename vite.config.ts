@@ -121,7 +121,7 @@ export default defineConfig(({ command }) => ({
         externalizeDeps(),
         dts({
             insertTypesEntry: true,
-            // rollupTypes: true,
+            rollupTypes: true,
             tsconfigPath: "./tsconfig.build.json",
         }),
     ],
