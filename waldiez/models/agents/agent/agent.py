@@ -180,6 +180,7 @@ class WaldiezAgent(WaldiezBase):
             and self.data.parent_id is not None
         )
 
+    @property
     def is_group_manager(self) -> bool:
         """Check if the agent is a group manager.
 
@@ -215,7 +216,7 @@ class WaldiezAgent(WaldiezBase):
                 class_name = "MultimodalConversableAgent"
             else:
                 class_name = "AssistantAgent"
-        if self.agent_type in ("user", "user_proxy"):
+        if self.is_user:
             class_name = "UserProxyAgent"
         if self.agent_type in ("rag_user", "rag_user_proxy"):
             class_name = "RetrieveUserProxyAgent"
@@ -223,7 +224,7 @@ class WaldiezAgent(WaldiezBase):
             class_name = "ReasoningAgent"
         if self.agent_type == "captain":
             class_name = "CaptainAgent"
-        if self.agent_type == "group_manager":
+        if self.is_group_manager:
             class_name = "GroupChatManager"
         return class_name
 
@@ -236,8 +237,6 @@ class WaldiezAgent(WaldiezBase):
             imports.add("from autogen import AssistantAgent")
         elif agent_class == "UserProxyAgent":
             imports.add("from autogen import UserProxyAgent")
-        elif agent_class == "GroupChatManager":
-            imports.add("from autogen import GroupChatManager")
         elif agent_class == "RetrieveUserProxyAgent":
             imports.add(
                 "from autogen.agentchat.contrib.retrieve_user_proxy_agent "
@@ -258,7 +257,10 @@ class WaldiezAgent(WaldiezBase):
                 "import CaptainAgent"
             )
         elif agent_class == "GroupChatManager":
-            imports.add("from autogen import GroupChat, GroupChatManager")
+            imports.add("from autogen import GroupChat")
+            imports.add("from autogen.agentchat import GroupChatManager")
+            imports.add("from autogen.agentchat.group import ContextVariables")
+            # add more
         return imports
 
     def validate_linked_tools(

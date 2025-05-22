@@ -287,7 +287,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         agent_string = self.generate() or ""
         after_export = self.get_after_export() or []
         content: Optional[str] = agent_string
-        if self.agent.is_group_manager() and agent_string:
+        if self.agent.is_group_manager and agent_string:
             content = None
             # make sure the group manager is defined
             # after the rest of the agents.

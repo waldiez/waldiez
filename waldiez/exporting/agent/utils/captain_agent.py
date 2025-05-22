@@ -38,11 +38,8 @@ def get_captain_agent_extras(
         The serializer to use.
     output_dir : Optional[Union[str, Path]]
         The output directory to save the agent lib and nested config.
-    llm_config_getter : Callable[
-        [WaldiezAgent, list[WaldiezModel], Optional[int]], str]
-        The function to get the llm config.
-        It should take the agent, all models and cache seed as arguments.
-        It should return the llm config as a string.
+    serializer : Callable[..., str]
+        The serializer to use.
 
     Returns
     -------

@@ -2,9 +2,11 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.exporting.flow.utils.flow_content."""
 
-from waldiez.exporting.flow.utils.flow_content import (
+from waldiez.exporting.flow.utils.comments import (
     PYLINT_RULES,
+    PYRIGHT_RULES,
     get_pylint_ignore_comment,
+    get_pyright_ignore_comment,
 )
 
 
@@ -36,4 +38,25 @@ def test_get_pylint_ignore_comment() -> None:
     )
     assert get_pylint_ignore_comment(False, ["line-too-long"]) == (
         "# pylint: disable=line-too-long\n"
+    )
+
+
+def test_get_pyright_ignore_comment() -> None:
+    """Test get_pyright_ignore_comment."""
+    no_rules_string = ",".join(PYRIGHT_RULES)
+    assert (
+        get_pyright_ignore_comment() == f"# pyright: report={no_rules_string}"
+    )
+    assert (
+        get_pyright_ignore_comment()
+        == "\n" + f"# pyright: report={no_rules_string}"
+    )
+    assert get_pyright_ignore_comment(
+        ["reportUnusedImport", "reportUnknownArgumentType"]
+    ) == ("\n# pyright: report=reportUnusedImport,reportUnknownArgumentType")
+    assert get_pyright_ignore_comment(["reportUnusedImport"]) == (
+        "# pyright: report=reportUnusedImport"
+    )
+    assert get_pyright_ignore_comment(["reportUnknownArgumentType"]) == (
+        "\n# pyright: report=reportUnknownArgumentType"
     )
