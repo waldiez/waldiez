@@ -465,11 +465,13 @@
                 }
             },
             "required": ["type", "content"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "System message for agent update."
         },
         "WaldiezAgentUpdateSystemMessageType": {
             "type": "string",
-            "enum": ["string", "callable"]
+            "enum": ["string", "callable"],
+            "description": "System message type."
         },
         "WaldiezAgentHandoff": {
             "type": "object",
@@ -1100,7 +1102,8 @@
                 "distanceThreshold",
                 "nResults"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "WaldiezRagUserRetrieveConfig Configuration for the RAG user."
         },
         "WaldiezVectorDbConfig": {
             "type": "object",
@@ -1139,7 +1142,8 @@
                 }
             },
             "required": ["model", "useMemory", "useLocalStorage", "localStoragePath", "connectionUrl"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "WaldiezVectorDbConfig Configuration for the vector database."
         },
         "WaldiezAgentReasoning": {
             "type": "object",
@@ -1321,15 +1325,18 @@
                 "nsim",
                 "explorationConstant"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "WaldiezReasoningAgentReasonConfig The configuration for the reasoning agent."
         },
         "reasonConfigMethod": {
             "type": "string",
-            "enum": ["beam_search", "mcts", "lats", "dfs"]
+            "enum": ["beam_search", "mcts", "lats", "dfs"],
+            "description": "reasonConfigMethod The method used for reasoning. It can be one of the following:\n- \"beam_search\"\n- \"mcts\"\n- \"lats\"\n- \"dfs\""
         },
         "reasonConfigAnswerApproach": {
             "type": "string",
-            "enum": ["pool", "best"]
+            "enum": ["pool", "best"],
+            "description": "reasonConfigAnswerApproach The approach used for answering. It can be one of the following:\n- \"pool\"\n- \"best\""
         },
         "WaldiezAgentCaptain": {
             "type": "object",
@@ -1499,7 +1506,8 @@
                 }
             },
             "required": ["name", "description", "systemMessage"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "WaldiezCaptainAgentLibEntry Represents an entry in the agent library for the captain agent."
         },
         "WaldiezAgentGroupManager": {
             "type": "object",
@@ -1709,19 +1717,23 @@
                 "allowedOrDisallowedTransitions",
                 "transitionsType"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "WaldiezAgentGroupManagerSpeakers"
         },
         "GroupChatSpeakerSelectionMethodOption": {
             "type": "string",
-            "enum": ["default", "auto", "manual", "random", "round_robin"]
+            "enum": ["default", "auto", "manual", "random", "round_robin"],
+            "description": "GroupChatSpeakerSelectionMethodOption The method used to select the speaker in a group chat. It can be one of the following:\n- \"default\": The default method.\n- \"auto\": The automatic method.\n- \"manual\": The manual method.\n- \"random\": The random method.\n- \"round_robin\": The round robin method."
         },
         "GroupChatSpeakerSelectionMode": {
             "type": "string",
-            "enum": ["repeat", "transition"]
+            "enum": ["repeat", "transition"],
+            "description": "GroupChatSpeakerSelectionMode The mode used to select the speaker in a group chat. It can be one of the following:\n- \"repeat\": The repeat mode.\n- \"transition\": The transition mode."
         },
         "GroupChatSpeakerTransitionsType": {
             "type": "string",
-            "enum": ["allowed", "disallowed"]
+            "enum": ["allowed", "disallowed"],
+            "description": "GroupChatSpeakerTransitionsType The type of transitions for the speaker in a group chat. It can be one of the following:\n- \"allowed\": The transitions are allowed.\n- \"disallowed\": The transitions are disallowed."
         },
         "WaldiezModel": {
             "type": "object",
@@ -2123,7 +2135,8 @@
         },
         "WaldiezMessageType": {
             "type": "string",
-            "enum": ["string", "method", "rag_message_generator", "none"]
+            "enum": ["string", "method", "rag_message_generator", "none"],
+            "description": "WaldiezMessageType Represents the type of message used in the chat."
         },
         "WaldiezChatSummary": {
             "type": "object",
@@ -2144,7 +2157,8 @@
         },
         "WaldiezChatLlmSummaryMethod": {
             "type": ["string", "null"],
-            "enum": ["reflectionWithLlm", "lastMsg", null]
+            "enum": ["reflectionWithLlm", "lastMsg", null],
+            "description": "WaldiezChatLlmSummaryMethod Represents the method used to summarize the chat."
         },
         "WaldiezHandoffCondition": {
             "anyOf": [
