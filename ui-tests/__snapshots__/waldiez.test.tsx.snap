@@ -496,7 +496,7 @@ exports[`All > should render Waldiez components 1`] = `
           class="modal no-wheel no-pan no-drag chat-modal"
           data-testid="rf-test-flow-chat-modal"
           id="rf-test-flow-chat-modal"
-          style="top: 50px; left: 10px;"
+          style="top: 20px; left: 10px;"
         >
           <div
             class="modal-header"
@@ -1051,7 +1051,7 @@ exports[`All > should render Waldiez components 1`] = `
         class="modal no-wheel no-pan no-drag chat-modal"
         data-testid="rf-test-flow-chat-modal"
         id="rf-test-flow-chat-modal"
-        style="top: 50px; left: 10px;"
+        style="top: 20px; left: 10px;"
       >
         <div
           class="modal-header"
