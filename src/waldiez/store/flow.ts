@@ -178,7 +178,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
                 // maxZoom: rfInstance?.getZoom(),
                 // minZoom: rfInstance?.getZoom(),
             });
-        }, 100);
+        }, 200);
     };
     exportFlow = (hideSecrets: boolean) => {
         const {
