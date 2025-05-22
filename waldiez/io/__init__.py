@@ -21,7 +21,6 @@ from .models import (
     ImageMediaContent,
     ImageUrlMediaContent,
     MediaContent,
-    MessageType,
     PrintMessage,
     TextMediaContent,
     UserInputData,
@@ -31,10 +30,11 @@ from .models import (
     VideoMediaContent,
 )
 from .structured import StructuredIOStream
+from .utils import MediaType, MessageType
 
 try:
     from .redis import RedisIOStream  # type: ignore[no-redef,unused-ignore]
-except ImportError:
+except ImportError:  # pragma: no cover
 
     class RedisIOStream:  # type: ignore[no-redef,unused-ignore]
         """Dummy class for RedisIOStream."""
@@ -59,7 +59,7 @@ try:
     from .ws import (
         AsyncWebsocketsIOStream,  # type: ignore[no-redef,unused-ignore]
     )
-except ImportError:
+except ImportError:  # pragma: no cover
 
     class AsyncWebsocketsIOStream:  # type: ignore[no-redef,unused-ignore]
         """Dummy class for AsyncWebsocketsIOStream just for the linters."""
@@ -89,6 +89,7 @@ __all__ = [
     "RedisIOStream",
     "AsyncWebsocketsIOStream",
     "MessageType",
+    "MediaType",
     "MediaContent",
     "TextMediaContent",
     "ImageMediaContent",

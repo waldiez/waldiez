@@ -4,68 +4,7 @@
 # flake8: noqa: E501
 # pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
 
-"""A Redis I/O stream for handling print and input messages.
-
-This module provides a Redis I/O stream for structured messaging.
-It is designed to be used with tasks that require input/output handling.
-
-Output
-
-    - Task-specific output stream:    `task:{task_id}:output`
-    - Shared/global output stream:   `task-output`
-
-    All print messages, input requests, and input responses are also written to both output streams.
-
-Input Handling (via Pub/Sub)
-
-    Two separate channels are used for input flow:
-
-    - Input request channel:   `task:{task_id}:input_request`
-        - Published by the task when input is required
-        - Consumed by WebSocket/UI or external tools
-
-    - Input response channel:  `task:{task_id}:input_response`
-        - Published by WebSocket or HTTP clients with the user's input
-        - Consumed by the task (which is waiting on the response)
-
-Message Structure
-
-All messages are structured JSON payloads with a common schema:
-
-All print and input-related messages are also broadcast to both streams.
-
-Message Formats:
-
-Print messages:
-{
-    "id": "abc123",
-    "type": "print",
-    "timestamp": "2023-10-01T12:34:56.789Z",
-    "task_id": "abc123",
-    "data": "Your log message"
-}
-
-Input request messages:
-{
-    "id": "abc123",
-    "type": "input_request",
-    "timestamp": "2023-10-01T12:34:56.789Z",
-    "task_id": "abc123",
-    "request_id": "req-uuid",
-    "data": "Enter your name:",
-    "password": "False"
-}
-
-Input response messages:
-{
-    "id": "abc123",
-    "type": "input_response",
-    "timestamp": "2023-10-01T12:34:56.789Z",
-    "task_id": "abc123",
-    "request_id": "req-uuid",
-    "data": "John Doe"
-}
-"""
+"""A Redis I/O stream for handling print and input messages."""
 # TODO: handle image and other types
 
 import json

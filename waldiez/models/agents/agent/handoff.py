@@ -27,7 +27,18 @@ __all__ = [
 
 
 class WaldiezAgentTarget(WaldiezBase):
-    """Agent target for handoff."""
+    """Agent target for handoff.
+
+    Attributes
+    ----------
+    target_type : Literal["AgentTarget"]
+        The type of the transition target.
+    target : str
+        The agent id to transfer control to.
+    order : int
+        The order of the target in the list of targets.
+        If -1, the order is automatically determined by the json data.
+    """
 
     target_type: Annotated[
         Literal["AgentTarget"],
@@ -49,7 +60,18 @@ class WaldiezAgentTarget(WaldiezBase):
 
 
 class WaldiezRandomAgentTarget(WaldiezBase):
-    """Random agent target for handoff."""
+    """Random agent target for handoff.
+
+    Attributes
+    ----------
+    target_type : Literal["RandomAgentTarget"]
+        The type of the transition target.
+    target : list[str]
+        A list of agent ids to randomly select from.
+    order : int
+        The order of the target in the list of targets.
+        If -1, the order is automatically determined by the json data.
+    """
 
     target_type: Annotated[
         Literal["RandomAgentTarget"],
@@ -62,7 +84,7 @@ class WaldiezRandomAgentTarget(WaldiezBase):
         list[str],
         Field(
             ...,
-            ge=2,
+            min_length=2,
             description=(
                 "A list of agent ids to randomly select from. "
                 "The list must contain at least 2 agents."
@@ -82,7 +104,24 @@ class WaldiezRandomAgentTarget(WaldiezBase):
 
 
 class WaldiezSimpleTarget(WaldiezBase):
-    """Simple target for handoff."""
+    """Simple target for handoff.
+
+    Attributes
+    ----------
+    target_type : Literal[
+        "AskUserTarget",
+        "GroupManagerTarget",
+        "RevertToUserTarget",
+        "StayTarget",
+        "TerminateTarget"
+    ]
+        The type of the transition target.
+    order : int
+        The order of the target in the list of targets.
+        If -1, the order is automatically determined by the json data.
+    target : str
+        The id of the group or nested chat to transfer control to.
+    """
 
     target_type: Annotated[
         Literal[
@@ -109,7 +148,17 @@ class WaldiezSimpleTarget(WaldiezBase):
 
 
 class WaldiezGroupOrNestedTarget(WaldiezBase):
-    """Group or nested chat target for handoff."""
+    """Group or nested chat target for handoff.
+
+    Attributes
+    ----------
+    target_type : Literal["GroupChatTarget", "NestedChatTarget"]
+        The type of the transition target.
+    target : str
+        The id of the group or nested chat to transfer control to.
+    order : int
+        The order of the target in the list of targets.
+    """
 
     target_type: Annotated[
         Literal["GroupChatTarget", "NestedChatTarget"],

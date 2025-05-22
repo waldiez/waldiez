@@ -161,7 +161,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
             agent_imports.add("from autogen import register_function")
         if self._group[2]:
             # if we use a group pattern, let's import the one we need.
-            agent_imports.add(self._group[2])
+            agent_imports.update(self._group[2])
         return sorted(
             [(import_string, position) for import_string in agent_imports],
             key=lambda x: x[0],

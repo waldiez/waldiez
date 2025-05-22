@@ -6,8 +6,27 @@
 import uuid
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Literal, Union
 
 from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
+
+MessageType = Literal[
+    "input_request",
+    "input_response",
+    "print",
+    "input",
+]
+"""Possible message types for the structured I/O stream."""
+
+MediaType = Union[
+    Literal["text"],
+    Literal["image"],
+    Literal["image_url"],
+    Literal["video"],
+    Literal["audio"],
+    Literal["file", "document"],
+]
+"""Possible media types for the structured I/O stream."""
 
 
 def gen_id() -> str:
@@ -30,6 +49,46 @@ def now() -> str:
         The current time as an ISO string.
     """
     return datetime.now().isoformat()
+
+
+def detect_media_type(value: dict[str, Any]) -> MediaType:
+    """Detect mediatype from dict.
+
+    Either using the 'type' field or by checking the keys.
+
+    Parameters
+    ----------
+    value : dict[str, Any]
+        The input dictionary
+
+    Returns
+    -------
+    MediaType
+        The detected media type
+
+    Raises
+    ------
+    ValueError
+        If the media type is not valid or not found.
+    """
+    valid_types = (
+        "text",
+        "image",
+        "image_url",
+        "video",
+        "audio",
+        "file",
+        "document",
+    )
+    if "type" in value:
+        content_type = value["type"]
+        if content_type not in valid_types:
+            raise ValueError(f"Invalid media type: {content_type}")
+        return content_type
+    for valid_type in valid_types:
+        if valid_type in value:
+            return valid_type  # type: ignore
+    raise ValueError(f"No type in value: {value}.")
 
 
 def get_image(
