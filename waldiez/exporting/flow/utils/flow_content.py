@@ -1,12 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# flake8: noqa: E501
 # pylint: disable=line-too-long
+# flake8: noqa: E501
 """Utils to generate the content of a flow."""
 
-from typing import Callable, Optional
+from typing import Callable
 
 from waldiez.models import Waldiez
+
+from .comments import get_pylint_ignore_comment, get_pyright_ignore_comment
 
 
 def get_py_content_start(waldiez: Waldiez) -> str:
@@ -25,7 +27,7 @@ def get_py_content_start(waldiez: Waldiez) -> str:
     content = "#!/usr/bin/env python\n"
     content += "# flake8: noqa: E501\n"
     content += get_pylint_ignore_comment(False)
-    content += get_pyright_ignore_comment(False)
+    content += get_pyright_ignore_comment()
     content += "# cspell: disable\n"
     content += f'"""{waldiez.name}.' + "\n\n"
     content += f"{waldiez.description}" + "\n\n"
@@ -61,104 +63,14 @@ def get_ipynb_content_start(
     requirements = " ".join(waldiez.requirements)
     if requirements:
         # fmt: off
-        content += "# " + f"!{{sys.executable}} -m pip install -q {requirements}" + "\n"
+        # pylint: disable=line-too-long
+        content += "# " + f"!{{sys.executable}} -m pip install -q {requirements}" + "\n"  # noqa: E501
         # fmt: on
     content += "# flake8: noqa: E501"
     content += get_pylint_ignore_comment(True)
-    content += get_pyright_ignore_comment(True)
+    content += get_pyright_ignore_comment()
     content += "# cspell: disable\n"
     return content
-
-
-PYLINT_RULES = [
-    "line-too-long",
-    "unknown-option-value",
-    "unused-argument",
-    "unused-import",
-    "unused-variable",
-    "invalid-name",
-    "import-error",
-    "inconsistent-quotes",
-    "missing-function-docstring",
-    "missing-param-doc",
-    "missing-return-doc",
-    "ungrouped-imports",
-    "unnecessary-lambda-assignment",
-]
-PYRIGHT_RULES = [
-    "reportUnusedImport",
-    "reportMissingTypeStubs",
-    "reportUnknownArgumentType",
-    "reportUnknownMemberType",
-    "reportUnknownLambdaType",
-    "reportUnnecessaryIsInstance",
-]
-
-
-def get_pylint_ignore_comment(
-    notebook: bool, rules: Optional[list[str]] = None
-) -> str:
-    """Get the pylint ignore comment string.
-
-    Parameters
-    ----------
-    notebook : bool
-        Whether the comment is for a notebook.
-    rules : Optional[list[str]], optional
-        The pylint rules to ignore, by default None.
-
-    Returns
-    -------
-    str
-        The pylint ignore comment string.
-
-    Example
-    -------
-    ```python
-    >>> get_pylint_ignore_comment(True, ["invalid-name", "line-too-long"])
-
-    # pylint: disable=invalid-name, line-too-long
-    ```
-    """
-    if not rules:
-        rules = PYLINT_RULES
-    line = "# pylint: disable=" + ",".join(rules)
-    if notebook is True:
-        line = "\n" + line
-    return line + "\n"
-
-
-def get_pyright_ignore_comment(
-    notebook: bool, rules: Optional[list[str]] = None
-) -> str:
-    """Get the pyright ignore comment string.
-
-    Parameters
-    ----------
-    notebook : bool
-        Whether the comment is for a notebook.
-    rules : Optional[list[str]], optional
-        The pyright rules to ignore, by default None.
-
-    Returns
-    -------
-    str
-        The pyright ignore comment string.
-
-    Example
-    -------
-    ```python
-    >>> get_pyright_ignore_comment(True, ["reportUnusedImport", "reportMissingTypeStubs"])
-
-    # pyright: reportUnusedImport=false, reportMissingTypeStubs=false
-    ```
-    """
-    if not rules:
-        rules = PYRIGHT_RULES
-    line = "# pyright: " + ",".join([f"{rule}=false" for rule in rules])
-    if notebook is True:
-        line = "\n" + line
-    return line + "\n"
 
 
 def get_after_run_content(
@@ -211,7 +123,7 @@ def get_after_run_content(
 
 
 def get_np_no_nep50_handle() -> str:
-    """Handle catching the "module numpy has no attribute _no_pep50_warning" error.
+    """Handle the "module numpy has no attribute _no_pep50_warning" error.
 
     Returns
     -------
