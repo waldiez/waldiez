@@ -187,6 +187,20 @@ export const WaldiezNodeAgentModalTabs = memo(
                     </TabItem>
                 )}
 
+                {/* Captain Tab - Only visible for captain agents */}
+                {isCaptain && (
+                    <TabItem label="Captain" id={`wf-${flowId}-wa-${id}-captain`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentCaptainTab
+                                id={id}
+                                flowId={flowId}
+                                data={data as WaldiezNodeAgentCaptainData}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+
                 {/* RAG Tab - Only for RAG user proxy agents */}
                 {isRagUser && (
                     <TabItem label="RAG" id={`wf-${flowId}-wa-${id}-rag`}>
@@ -270,20 +284,6 @@ export const WaldiezNodeAgentModalTabs = memo(
                                 data={data as WaldiezNodeAgentData}
                                 agentConnections={agentConnections}
                                 edges={connectionsOutsideGroup}
-                                onDataChange={onDataChange}
-                            />
-                        </div>
-                    </TabItem>
-                )}
-
-                {/* Captain Tab - Only visible for captain agents */}
-                {isCaptain && (
-                    <TabItem label="Captain" id={`wf-${flowId}-wa-${id}-captain`}>
-                        <div className="modal-tab-body">
-                            <WaldiezAgentCaptainTab
-                                id={id}
-                                flowId={flowId}
-                                data={data as WaldiezNodeAgentCaptainData}
                                 onDataChange={onDataChange}
                             />
                         </div>

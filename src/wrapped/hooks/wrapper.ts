@@ -2,11 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable max-lines-per-function */
 import { useCallback, useRef, useState } from "react";
 
 import { nanoid } from "nanoid";
 
 import { WaldiezChatMessage, WaldiezChatMessageType } from "@waldiez/types";
+import { showSnackbar } from "@waldiez/utils";
 
 import { useWebSocketActions } from "./actions";
 import { useWaldiezMessages } from "./messages";
@@ -17,8 +19,10 @@ import { useWebsocket } from "./ws";
  * Main hook for WaldiezWrapper component
  */
 export const useWaldiezWrapper = ({
+    flowId,
     wsUrl = "ws://localhost:8765",
 }: {
+    flowId: string;
     wsUrl: string;
 }): [WaldiezWrapperState, WaldiezWrapperActions] => {
     const inputRequestId = useRef<string | undefined>(undefined);
@@ -55,6 +59,12 @@ export const useWaldiezWrapper = ({
         // termination_and_human_reply_no_input
         // using_auto_reply
         switch (data.type) {
+            case "saveResult":
+                handleSaveResult(data);
+                break;
+            case "convertResult":
+                handleConvertResult(data);
+                break;
             case "text":
             case "print":
             case "tool_call":
@@ -92,6 +102,55 @@ export const useWaldiezWrapper = ({
     const { getNewChatMessage } = useWaldiezMessages({
         inputRequestId,
     });
+
+    /**
+     * Handle save result messages
+     */
+    const handleSaveResult = (data: WebSocketResponse) => {
+        if (data.success === false) {
+            showSnackbar({
+                message: "Error saving file",
+                details: data.message || null,
+                level: "error",
+                flowId,
+                withCloseButton: true,
+                duration: 3000,
+            });
+        } else {
+            showSnackbar({
+                message: "File saved successfully",
+                details: data.filePaths?.join(", ") || null,
+                level: "success",
+                flowId,
+                withCloseButton: true,
+                duration: 3000,
+            });
+        }
+    };
+    /**
+     * Handle convert result messages
+     */
+    const handleConvertResult = (data: WebSocketResponse) => {
+        if (data.success === false) {
+            showSnackbar({
+                message: "Error converting file",
+                details: data.message || null,
+                level: "error",
+                flowId,
+                withCloseButton: true,
+                duration: 3000,
+            });
+        } else {
+            showSnackbar({
+                message: "File converted successfully",
+                details: data.filePaths?.join(", ") || null,
+                level: "success",
+                flowId,
+                withCloseButton: true,
+                duration: 3000,
+            });
+        }
+    };
     /**
      * Handle text or print messages
      */
@@ -224,6 +283,14 @@ export const useWaldiezWrapper = ({
                 ],
             };
             setError(data.message);
+            showSnackbar({
+                message: "Error",
+                details: data.message,
+                level: "error",
+                flowId,
+                withCloseButton: true,
+                duration: 3000,
+            });
             setMessages(prevMessages => [...prevMessages, errorMessage]);
         }
         setIsRunning(false);

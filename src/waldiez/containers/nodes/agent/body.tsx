@@ -47,7 +47,7 @@ export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
                 <label htmlFor={`flow-${flowId}-agent-description-${id}`}>Description:</label>
                 <TextareaInput
                     title="Agent description"
-                    className="nodrag nopan"
+                    className="nodrag nopan agent-description-no-modal"
                     rows={2}
                     value={data.description}
                     onChange={onDescriptionChange}

@@ -9,8 +9,8 @@
   width: 50vw;
   margin: 0 auto;
   height: fit-content;
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 95vw;
+  max-height: 95vh;
   min-width: 320px;
   min-height: 200px;
   border-radius: 8px;
@@ -18,6 +18,10 @@
   box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
   z-index: 1000;
   cursor: default !important;
+}
+
+.flow-wrapper .agent-node .modal {
+  width: fit-content;
 }
 
 .modal-fullscreen {
@@ -32,6 +36,7 @@
   max-width: none !important;
   max-height: none !important;
 }
+
 .modal-minimized {
   height: fit-content !important;
   max-height: fit-content !important;

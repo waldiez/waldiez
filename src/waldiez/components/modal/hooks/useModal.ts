@@ -22,14 +22,11 @@ export const useModal = (props: {
         onCancel,
         modalRef,
     } = props;
-    // Refs
-    // const modalRef = useRef<HTMLDialogElement>(null);
-    // const dragRef = useRef<HTMLDivElement>(null);
     // State
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isFullScreen, setFullScreen] = useState(false);
     const [isMinimized, setMinimized] = useState(false);
-    const [position, setPosition] = useState({ x: 10, y: 50 });
+    const [position, setPosition] = useState({ x: 10, y: 20 });
     const [dragging, setDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [preMinimizeHeight, setPreMinimizeHeight] = useState<string>("");

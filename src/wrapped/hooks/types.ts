@@ -30,6 +30,7 @@ export type WebSocketResponse = {
     outputPath?: string;
     response?: string;
     prompt?: string;
+    success?: boolean;
     [key: string]: unknown;
 };
 

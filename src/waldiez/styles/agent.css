@@ -125,9 +125,12 @@
 
 .flow-wrapper .agent-node textarea {
   width: 100% !important;
-  height: calc(100% - 10px) !important;
   resize: none;
   box-sizing: border-box;
+}
+
+.agent-description-no-modal {
+  height: calc(100% - 10px) !important;
 }
 
 .flow-wrapper .agent-panel {

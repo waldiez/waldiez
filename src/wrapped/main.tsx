@@ -25,7 +25,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
     const [
         { messages, userParticipants, isRunning, inputPrompt },
         { handleRun, handleSave, handleUpload, handleConvert, handleUserInput, reset },
-    ] = useWaldiezWrapper({ wsUrl });
+    ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId });
 
     // Assemble props for the Waldiez component
     const completeProps: WaldiezProps = {

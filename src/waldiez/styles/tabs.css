@@ -8,6 +8,8 @@
   -webkit-overflow-scrolling: touch;
   /* stylelint-disable-next-line csstree/validator */
   -ms-overflow-style: -ms-autohiding-scrollbar;
+  width: fit-content;
+  min-width: 100%;
 }
 
 .flow-wrapper .tab-list::-webkit-scrollbar {
@@ -40,7 +42,7 @@
 }
 
 .flow-wrapper.light .tab-btn {
-  padding: 0.75rem;
+  padding: 0.75rem 0.5rem;
   background: none;
   border: none;
   font-size: 0.9rem;
@@ -48,7 +50,7 @@
   color: #6c757d;
   cursor: pointer;
   transition: all 0.2s;
-  margin-right: 0.5rem;
+  margin-right: 0.2rem;
   border-bottom: 1px solid #eee;
 }
 
