@@ -153,6 +153,8 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                                     data={edgeData}
                                     darkMode={isDark}
                                     skipRagOption
+                                    skipCarryoverOption
+                                    skipContextVarsOption
                                     onDataChange={onDataChange}
                                 />
                             </TabItem>

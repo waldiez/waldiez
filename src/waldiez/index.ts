@@ -20,6 +20,9 @@ export type {
     WaldiezMediaType,
     WaldiezStreamEvent,
 } from "@waldiez/components/types";
+export type * from "@waldiez/models/types";
+export type * from "@waldiez/store/types";
+
 export { Waldiez };
 export type { WaldiezFlowProps, WaldiezProps };
 

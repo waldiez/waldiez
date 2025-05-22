@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable tsdoc/syntax */
 import React, { memo, useEffect, useRef } from "react";
 import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
@@ -28,6 +29,22 @@ type ModalProps = {
 
 /**
  * Draggable and resizable modal component with confirmation dialog for unsaved changes
+ * @param props - Props for the Modal component
+ * @param props.id - Optional ID for the modal
+ * @param props.dataTestId - Optional data-testid for testing
+ * @param props.beforeTitle - Optional content to display before the title
+ * @param props.title - Title of the modal
+ * @param props.isOpen - Boolean indicating if the modal is open
+ * @param props.hasCloseBtn - Boolean indicating if the close button is visible
+ * @param props.hasMaximizeBtn - Boolean indicating if the maximize button is visible
+ * @param props.hasMinimizeBtn - Boolean indicating if the minimize button is visible
+ * @param props.onClose - Callback function for closing the modal
+ * @param props.onSaveAndClose - Callback function for saving and closing the modal
+ * @param props.onCancel - Callback function for canceling the modal
+ * @param props.children - Content to display inside the modal
+ * @param props.className - Optional additional CSS classes for the modal
+ * @param props.hasUnsavedChanges - Boolean indicating if there are unsaved changes
+ * @param props.preventCloseIfUnsavedChanges - Boolean indicating if the modal should prevent closing if there are unsaved changes
  */
 export const Modal = memo<ModalProps>(props => {
     const {

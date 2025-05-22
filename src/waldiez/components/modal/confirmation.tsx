@@ -2,6 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable tsdoc/syntax */
+
+/**
+ * Confirmation modal content for unsaved changes
+ * @param props - Props for the confirmation modal
+ * @param props.onSaveAndClose - Optional callback for saving and closing the modal
+ * @param props.hideConfirmation - Callback to hide the confirmation modal
+ * @param props.handleSaveAndClose - Callback to handle saving and closing the modal
+ * @param props.handleCloseModal - Callback to handle closing the modal
+ */
 export const renderConfirmationContent = (props: {
     onSaveAndClose?: () => void;
     hideConfirmation: () => void;

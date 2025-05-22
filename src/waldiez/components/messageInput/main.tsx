@@ -10,9 +10,48 @@ import { useMessageInput } from "@waldiez/components/messageInput/hooks";
 import { MessageInputProps } from "@waldiez/components/messageInput/types";
 import { Select } from "@waldiez/components/select";
 import { TextareaInput } from "@waldiez/components/textareaInput";
-import { WaldiezMessageType } from "@waldiez/models";
+import { WaldiezMessage, WaldiezMessageType } from "@waldiez/models";
 
-export const MessageInput: React.FC<MessageInputProps> = (props: MessageInputProps) => {
+/* eslint-disable tsdoc/syntax */
+/**
+ * MessageInput component for selecting and editing message types and content
+ * @param props - Props for the MessageInput component
+ * @param props.current - The current message object
+ * @param props.darkMode - Boolean indicating if dark mode is enabled
+ * @param props.defaultContent - The default content for the message
+ * @param props.selectLabel - Label for the message type select input
+ * @param props.includeContext - Boolean indicating if context variables should be included
+ * @param props.skipRagOption - Boolean indicating if the RAG option should be skipped
+ * @param props.skipCarryoverOption - Boolean indicating if the carryover option should be skipped
+ * @param props.selectTestId - Test ID for the message type select input
+ * @param props.notNoneLabel - Optional label for the message input when type is not "none"
+ * @param props.notNoneLabelInfo - Optional info for the message input when type is not "none"
+ * @param props.skipNone - Boolean indicating if the "none" option should be skipped
+ * @param props.onTypeChange - Callback function for when the message type changes
+ * @param props.onMessageChange - Callback function for when the message content changes
+ * @param props.onAddContextEntry - Callback function for adding a context entry
+ * @param props.onRemoveContextEntry - Callback function for removing a context entry
+ * @param props.onUpdateContextEntries - Callback function for updating context entries
+ * @see {@link MessageInputProps}
+ */
+export const MessageInput: React.FC<MessageInputProps> = (props: {
+    current: WaldiezMessage;
+    darkMode: boolean;
+    defaultContent: string;
+    selectLabel: string;
+    includeContext: boolean;
+    skipRagOption: boolean;
+    skipCarryoverOption: boolean;
+    selectTestId: string;
+    notNoneLabel?: string;
+    notNoneLabelInfo?: string;
+    skipNone?: boolean;
+    onTypeChange: (type: WaldiezMessageType) => void;
+    onMessageChange: (message: WaldiezMessage) => void;
+    onAddContextEntry?: (key: string, value: string) => void;
+    onRemoveContextEntry?: (key: string) => void;
+    onUpdateContextEntries?: (entries: Record<string, unknown>) => void;
+}) => {
     const {
         current,
         darkMode,

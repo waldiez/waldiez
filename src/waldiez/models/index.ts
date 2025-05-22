@@ -9,4 +9,4 @@ export * from "@waldiez/models/mappers";
 export * from "@waldiez/models/Model";
 export * from "@waldiez/models/Stores";
 export * from "@waldiez/models/Tool";
-export type WaldiezNodeType = "agent" | "model" | "tool";
+export type * from "@waldiez/models/types";

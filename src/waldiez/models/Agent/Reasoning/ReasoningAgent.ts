@@ -19,7 +19,6 @@ import { WaldiezAgentReasoningData } from "@waldiez/models/Agent/Reasoning/Reaso
  * @param data - The data of the agent. See {@link WaldiezAgentReasoningData}
  * @param rest - Any other data
  */
-
 export class WaldiezAgentReasoning extends WaldiezAgent {
     data: WaldiezAgentReasoningData;
     agentType: WaldiezNodeAgentType = "reasoning";

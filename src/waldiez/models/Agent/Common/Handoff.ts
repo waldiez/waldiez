@@ -8,15 +8,15 @@ import { ConditionCategory, ConditionType } from "@waldiez/models/Agent/Common/t
  * Waldiez Handoff transition target
  * The target of a handoff transition.
  * It can be one of the following:
- * - `AgentTarget`: A specific agent target.
- * - `RandomAgentTarget`: A random agent target.
- * - `GroupChatTarget`: A group chat target.
- * - `NestedChatTarget`: A nested chat target.
- * - `AskUserTarget`: Ask the user for input.
- * - `GroupManagerTarget`: A group manager target.
- * - `RevertToUserTarget`: Revert to the user.
- * - `StayTarget`: Stay in the current state.
- * - `TerminateTarget`: Terminate the conversation.
+ * @param AgentTarget - A specific agent target.
+ * @param RandomAgentTarget - A random agent target.
+ * @param GroupChatTarget - A group chat target.
+ * @param NestedChatTarget - A nested chat target.
+ * @param AskUserTarget - Ask the user for input.
+ * @param GroupManagerTarget - A group manager target.
+ * @param RevertToUserTarget - Revert to the user.
+ * @param StayTarget - Stay in the current state.
+ * @param TerminateTarget - Terminate the conversation.
  * @param target_type - Type of the target
  * @param target - Target string
  * @param order - Order of the target

@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable complexity */
 import diff from "microdiff";
 import { temporal } from "zundo";
 
@@ -16,7 +17,14 @@ import { WaldiezToolStore } from "@waldiez/store/tool";
 import { WaldiezState, WaldiezStoreProps } from "@waldiez/store/types";
 import { getId } from "@waldiez/utils";
 
-// eslint-disable-next-line complexity
+/**
+ * createWaldiezStore
+ * Creates a new Waldiez zustand store.
+ * @param props - The props to create the store with
+ * @see {@link WaldiezStoreProps}
+ * @see {@link WaldiezState}
+ * @returns A new Waldiez store
+ */
 export const createWaldiezStore = (props: WaldiezStoreProps) => {
     const {
         flowId = `wf-${getId()}`,

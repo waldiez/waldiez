@@ -4,6 +4,15 @@
  */
 import { WaldiezMessageType } from "@waldiez/models/Chat/types";
 
+/**
+ * WaldiezMessage
+ * Represents a message in the Waldiez chat system.
+ * @param type - The type of the message
+ * @param content - The content of the message
+ * @param useCarryover - Whether to use carryover for the message
+ * @param context - The context of the message
+ * @see {@link WaldiezMessageType}
+ */
 export class WaldiezMessage {
     type: WaldiezMessageType;
     content: string | null;

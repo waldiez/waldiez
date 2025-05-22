@@ -8,6 +8,9 @@ export type * from "@waldiez/models/Agent/Common/Handoff";
 
 /**
  * Human input mode.
+ * @param ALWAYS - Always ask for human input
+ * @param NEVER - Never ask for human input
+ * @param TERMINATE - Ask for human input only when the turn is terminated (no more actions)
  */
 export type WaldiezAgentHumanInputMode = "ALWAYS" | "NEVER" | "TERMINATE";
 /**
@@ -31,8 +34,18 @@ export type WaldiezAgentCodeExecutionConfigDict = {
  */
 export type WaldiezAgentCodeExecutionConfig = WaldiezAgentCodeExecutionConfigDict | false;
 
+/**
+ * System message type.
+ * @param string - String
+ * @param callable - Callable
+ */
 export type WaldiezAgentUpdateSystemMessageType = "string" | "callable";
 
+/**
+ * System message for agent update.
+ * @param type - The type of the system message {@link WaldiezAgentUpdateSystemMessageType}
+ * @param content - The content of the system message
+ */
 export type WaldiezAgentUpdateSystemMessage = {
     type: WaldiezAgentUpdateSystemMessageType;
     content: string;
@@ -88,9 +101,9 @@ export type WaldiezAgentLinkedTool = {
 };
 /**
  * Waldiez agent common (for all agent types) data.
- * @param name - The name
- * @param description - The description
- * @param parentId - The parent id
+ * @param name - The name of the agent
+ * @param description - The description of the agent
+ * @param parentId - The parent id of the agent (if in a group)
  * @param agentType - The agent type
  * @param systemMessage - The system message
  * @param humanInputMode - The human input mode
@@ -100,6 +113,7 @@ export type WaldiezAgentLinkedTool = {
  * @param termination - The termination message check
  * @param nestedChats - The nested chats
  * @param contextVariables - The context variables
+ * @param updateAgentStateBeforeReply - Optional handler to update the agent state before replying
  * @param handoffs - The handoffs
  * @param modelIds - The agent's model ids
  * @param tools - The tools available to the agent
@@ -114,6 +128,7 @@ export type WaldiezAgentLinkedTool = {
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentHandoff}
  * @see {@link WaldiezAgentLinkedTool}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
  */
 export type WaldiezAgentCommonData = {
     name: string;
@@ -168,6 +183,18 @@ export type WaldiezAgentType =
  */
 export type WaldiezNodeAgentType = WaldiezAgentType;
 
+/**
+ * Waldiez Condition Category.
+ * @param llm - LLM condition
+ * @param context - Context condition
+ */
 export type ConditionCategory = "llm" | "context";
 
+/**
+ * Waldiez Condition Type.
+ * @param string_llm - String LLM condition
+ * @param context_str_llm - Context string LLM condition
+ * @param string_context - String context condition
+ * @param expression_context - Expression context condition
+ */
 export type ConditionType = "string_llm" | "context_str_llm" | "string_context" | "expression_context";

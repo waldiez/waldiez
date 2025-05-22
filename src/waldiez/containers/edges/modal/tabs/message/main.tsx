@@ -7,7 +7,7 @@ import { useWaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/m
 import { WaldiezEdgeMessageTabProps } from "@waldiez/containers/edges/modal/tabs/message/types";
 
 export const WaldiezEdgeMessageTab: React.FC<WaldiezEdgeMessageTabProps> = props => {
-    const { edgeId, data, darkMode, skipRagOption, skipCarryoverOption } = props;
+    const { edgeId, data, darkMode, skipRagOption, skipCarryoverOption, skipContextVarsOption } = props;
     const {
         onMessageTypeChange,
         onMessageChange,
@@ -15,24 +15,28 @@ export const WaldiezEdgeMessageTab: React.FC<WaldiezEdgeMessageTabProps> = props
         onRemoveMessageContextEntry,
         onUpdateMessageContextEntries,
     } = useWaldiezEdgeMessageTab(props);
+    const noOp = () => {};
+    const handlAddContextEntry = skipContextVarsOption === true ? noOp : onAddMessageContextEntry;
+    const handleRemoveContextEntry = skipContextVarsOption === true ? noOp : onRemoveMessageContextEntry;
+    const handleUpdateContextEntries = skipContextVarsOption === true ? noOp : onUpdateMessageContextEntries;
     return (
         <div className="margin-top-10">
             <MessageInput
                 darkMode={darkMode}
                 current={data.message}
-                skipRagOption={skipRagOption}
-                skipCarryoverOption={skipCarryoverOption || false}
+                skipRagOption={skipRagOption === true}
+                skipCarryoverOption={skipCarryoverOption === true}
                 selectLabel="Message Type:"
                 selectTestId={`select-message-type-${edgeId}`}
                 defaultContent={DEFAULT_METHOD_MESSAGE_CONTENT}
                 notNoneLabel="Message:"
                 notNoneLabelInfo="The message to be used when the chat is initiated."
-                includeContext={true}
+                includeContext={skipContextVarsOption !== true}
                 onTypeChange={onMessageTypeChange}
                 onMessageChange={onMessageChange}
-                onAddContextEntry={onAddMessageContextEntry}
-                onRemoveContextEntry={onRemoveMessageContextEntry}
-                onUpdateContextEntries={onUpdateMessageContextEntries}
+                onAddContextEntry={handlAddContextEntry}
+                onRemoveContextEntry={handleRemoveContextEntry}
+                onUpdateContextEntries={handleUpdateContextEntries}
             />
         </div>
     );

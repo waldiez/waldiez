@@ -4,11 +4,31 @@
  */
 /**
  * Supported media types
+ * @param text - Text content
+ * @param image - Image content
+ * @param video - Video content
+ * @param audio - Audio content
+ * @param file - File content
+ * @param document - Document content
+ * @param string - Other string types
  */
 export type WaldiezMediaType = "text" | "image" | "video" | "audio" | "file" | "document" | (string & {});
 
 /**
  * Media content wrapper
+ * @param type - Type of the media content (text, image, video, audio, file)
+ * @param text - Text content (if type is "text")
+ * @param image - Image content (if type is "image")
+ * @param video - Video content (if type is "video")
+ * @param audio - Audio content (if type is "audio")
+ * @param file - File content (if type is "file" or "document")
+ * @param url - URL of the media content
+ * @param file - File object of the media content
+ * @param alt - Alt text for the image
+ * @param duration - Duration of the video or audio content
+ * @param mimeType - MIME type of the video or audio content
+ * @param name - Name of the file
+ * @param size - Size of the file
  */
 export type WaldiezMediaContent =
     | {
@@ -62,6 +82,26 @@ export type WaldiezMediaContent =
           };
       };
 
+/**
+ * Supported message types
+ * @param user - User message
+ * @param agent - Agent message
+ * @param system - System message
+ * @param input_request - Input request message
+ * @param input_response - Input response message
+ * @param tool_call - Tool call message
+ * @param tool_response - Tool response message
+ * @param group_chat_run_chat - Group chat run chat message
+ * @param generate_code_execution_reply - Generate code execution reply message
+ * @param termination_and_human_reply_no_input - Termination and human reply without input
+ * @param using_auto_reply - Using auto reply message
+ * @param execute_function - Execute function message
+ * @param generate_code_execution_reply - Generate code execution reply message
+ * @param error - Error message
+ * @param print - Print message
+ * @param text - Text message
+ * @param string - Other string types
+ */
 export type WaldiezChatMessageType =
     | "user"
     | "agent"
@@ -70,6 +110,8 @@ export type WaldiezChatMessageType =
     | "input_response"
     | "tool_call"
     | "tool_response"
+    | "group_chat_run_chat"
+    | "generate_code_execution_reply"
     | "termination_and_human_reply_no_input"
     | "using_auto_reply"
     | "execute_function"
@@ -101,6 +143,19 @@ export type WaldiezChatMessageCommon = {
     [key: string]: any;
 };
 
+/**
+ * WaldiezChatMessage structure
+ * @param id - Unique identifier for the message
+ * @param timestamp - Timestamp of the message
+ * @param type - Type of the message (e.g., user, agent, system)
+ * @param content - Content of the message (text, image, audio, etc.)
+ * @param sender - Sender of the message (optional)
+ * @param recipient - Recipient of the message (optional)
+ * @param request_id - ID of the request associated with the message (optional)
+ * @param metadata - Additional metadata associated with the message (optional)
+ * @see {@link WaldiezChatMessageCommon}
+ * @see {@link WaldiezMediaContent}
+ */
 export type WaldiezChatMessage = WaldiezChatMessageCommon & {
     content:
         | WaldiezMediaContent
@@ -140,7 +195,6 @@ export type WaldiezChatError = {
  * @param messageId - ID of the message associated with the event
  * @param chunk - Optional chunk of data (for chunk events)
  */
-
 export type WaldiezStreamEvent =
     | { type: "start"; messageId: string }
     | { type: "chunk"; messageId: string; chunk: string }

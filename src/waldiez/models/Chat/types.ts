@@ -7,8 +7,27 @@ import { Edge } from "@xyflow/react";
 import { WaldiezAgentType, WaldiezHandoffCondition } from "@waldiez/models/Agent/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 
+export type { WaldiezMessage };
+
+/**
+ * WaldiezMessageType
+ * Represents the type of message used in the chat.
+ * @param string - A string message
+ * @param method - A method message
+ * @param rag_message_generator - A message generator for RAG (Retrieval-Augmented Generation)
+ * @param none - No message
+ * @see {@link WaldiezMessage}
+ */
 export type WaldiezMessageType = "string" | "method" | "rag_message_generator" | "none";
 
+/**
+ * WaldiezChatLlmSummaryMethod
+ * Represents the method used to summarize the chat.
+ * @param reflectionWithLlm - Reflection with LLM (Language Model)
+ * @param lastMsg - Last message
+ * @param null - No method
+ * @see {@link WaldiezMessage}
+ */
 export type WaldiezChatLlmSummaryMethod = "reflectionWithLlm" | "lastMsg" | null;
 
 /**
@@ -107,6 +126,31 @@ export type WaldiezEdgeData = WaldiezChatDataCommon & {
     label: string;
 };
 
+/**
+ * Waldiez Edge Type
+ * @param chat - Chat type
+ * @param nested - Nested type
+ * @param group - Group type
+ * @param hidden - Hidden type
+ */
 export type WaldiezEdgeType = "chat" | "nested" | "group" | "hidden";
+
+/**
+ * Waldiez Group Chat Type
+ * @param toManager - To manager type
+ * @param nested - Nested type
+ * @param handoff - Handoff type
+ * @param fromManager - From manager type
+ * @param none - None type
+ */
 export type WaldiezGroupChatType = "toManager" | "nested" | "handoff" | "fromManager" | "none";
+
+/**
+ * Waldiez Edge
+ * The react-flow edge component for a chat.
+ * @param data - The data of the edge
+ * @param type - The type of the edge
+ * @see {@link WaldiezEdgeData}
+ * @see {@link WaldiezEdgeType}
+ */
 export type WaldiezEdge = Edge<WaldiezEdgeData, WaldiezEdgeType>;
