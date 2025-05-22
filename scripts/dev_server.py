@@ -264,7 +264,13 @@ class WaldiezDevServer:
             f.write(flow)
         to_log = f"Flow saved to {dot_waldiez_path}"
         logger.info(to_log)
-        return OutgoingMessage(type="saveResult", success=True, message=to_log)
+        relative_to_cwd = str(dot_waldiez_path).replace(os.getcwd(), "")
+        return OutgoingMessage(
+            type="saveResult",
+            success=True,
+            filePaths=[relative_to_cwd],
+            message=to_log,
+        )
 
     async def handle_upload(
         self,
@@ -351,9 +357,11 @@ class WaldiezDevServer:
                 type="convertResult", success=False, message=to_log
             )
         logger.info("Flow converted to %s", output_path)
+        relative_to_cwd = str(output_path).replace(os.getcwd(), "")
         return OutgoingMessage(
             type="convertResult",
             success=True,
+            filePaths=[relative_to_cwd],
             message=f"Flow converted successfully to {output_path}",
         )
 
