@@ -68,21 +68,38 @@ do_py() {
                 echo "Installing requirements..."
                 pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
             fi
+        else
+            # Activate existing venv
+            if [ -f .venv/bin/activate ]; then
+                # shellcheck disable=SC1091
+                . .venv/bin/activate
+            else
+                echo "Activation script not found at .venv/bin/activate"
+                exit 1
+            fi
+            PATH="$(pwd)/.venv/bin:${PATH}"
         fi
-    else
-        pip install --upgrade pip
-        echo "Installing requirements..."
-        pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
-    fi
-    if command -v make >/dev/null 2>&1; then
-        make some
-    else
-        # fallback to python/python3
-        scripts="clean.py format.py lint.py test.py build.py docs.py image.py"
-        for script in $scripts; do
-            if [ -z "${HATCH_ENV_ACTIVE:-}" ]; then
-                if command -v uv >/dev/null 2>&1; then
-                    uv run "scripts/$script"
+        if command -v make >/dev/null 2>&1; then
+            make some
+        else
+            # fallback to python/python3
+            scripts="clean.py format.py lint.py test.py build.py docs.py image.py"
+            for script in $scripts; do
+                if [ -z "${HATCH_ENV_ACTIVE:-}" ]; then
+                    if command -v uv >/dev/null 2>&1; then
+                        uv run "scripts/$script"
+                    else
+                        if command -v python3 >/dev/null 2>&1; then
+                            python3 "scripts/$script"
+                        else
+                            if command -v python >/dev/null 2>&1; then
+                                python "scripts/$script"
+                            else
+                                echo "No suitable Python interpreter found. Please install Python 3."
+                                exit 1
+                            fi
+                        fi
+                    fi
                 else
                     if command -v python3 >/dev/null 2>&1; then
                         python3 "scripts/$script"
@@ -95,19 +112,13 @@ do_py() {
                         fi
                     fi
                 fi
-            else
-                if command -v python3 >/dev/null 2>&1; then
-                    python3 "scripts/$script"
-                else
-                    if command -v python >/dev/null 2>&1; then
-                        python "scripts/$script"
-                    else
-                        echo "No suitable Python interpreter found. Please install Python 3."
-                        exit 1
-                    fi
-                fi
-            fi
-        done
+            done
+        fi
+    else
+        pip install --upgrade pip
+        echo "Installing requirements..."
+        pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+        hatch run all
     fi
 }
 

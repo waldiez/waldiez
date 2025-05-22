@@ -46,105 +46,131 @@ function New-Venv {
         exit 1
     }
 }
-
 function Invoke-Py {
     if (-not $env:HATCH_ENV_ACTIVE) {
         if (-not (Test-Path "$ROOT_DIR/.venv")) {
             if (Get-Command uv -ErrorAction SilentlyContinue) {
                 uv sync
                 uv pip install --upgrade pip
-            }
-            else {
-                New-Venv
-            }
-        }
-
-        $activateScript = if ($IsWindows) {
-            Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "Scripts", "Activate.ps1"
-        }
-        else {
-            Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "bin", "activate.ps1"
-        }
-
-        if (Test-Path $activateScript) {
-            . $activateScript
-        }
-        else {
-            Write-Error "Activation script not found at $activateScript"
-            exit 1
-        }
-        $env:PATH = "$ROOT_DIR/.venv/Scripts;$env:PATH"
-
-        Update-Pip
-        Write-Host "Installing requirements..." -ForegroundColor Cyan
-        pip install -r $requirementsFiles[0] -r $requirementsFiles[1] -r $requirementsFiles[2]
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error "Failed to install requirements"
-            exit 1
-        }
-    }
-    else {
-        if (-not (Get-Command hatch -ErrorAction SilentlyContinue)) {
-            Write-Error "HATCH_ENV_ACTIVE is set, but 'hatch' is not installed or not in PATH."
-            exit 1
-        }
-        Update-Pip
-        Write-Host "Installing requirements..." -ForegroundColor Cyan
-        pip install -r $requirementsFiles[0] -r $requirementsFiles[1] -r $requirementsFiles[2]
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error "Failed to install requirements"
-            exit 1
-        }
-    }
-
-    if (Get-Command make -ErrorAction SilentlyContinue) {
-        make some
-    }
-    else {
-        $pythonCmd = if ($env:HATCH_ENV_ACTIVE) {
-            if (Get-Command hatch -ErrorAction SilentlyContinue) {
-                if (Get-Command python3 -ErrorAction SilentlyContinue) {
-                    "python3"
-                }
-                elseif (Get-Command python -ErrorAction SilentlyContinue) {
-                    "python"
+                
+                $activateScript = if ($IsWindows) {
+                    Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "Scripts", "Activate.ps1"
                 }
                 else {
-                    Write-Error "No suitable Python interpreter found. Please install Python 3."
+                    Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "bin", "activate.ps1"
+                }
+
+                if (Test-Path $activateScript) {
+                    . $activateScript
+                }
+                else {
+                    Write-Error "Activation script not found at $activateScript"
+                    exit 1
+                }
+                $env:PATH = "$ROOT_DIR/.venv/Scripts;$env:PATH"
+                
+                Write-Host "Installing requirements..." -ForegroundColor Cyan
+                uv pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Error "Failed to install requirements"
                     exit 1
                 }
             }
             else {
-                Write-Error "HATCH_ENV_ACTIVE is set but 'hatch' is not available."
-                exit 1
+                New-Venv
+                
+                $activateScript = if ($IsWindows) {
+                    Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "Scripts", "Activate.ps1"
+                }
+                else {
+                    Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "bin", "activate.ps1"
+                }
+
+                if (Test-Path $activateScript) {
+                    . $activateScript
+                }
+                else {
+                    Write-Error "Activation script not found at $activateScript"
+                    exit 1
+                }
+                $env:PATH = "$ROOT_DIR/.venv/Scripts;$env:PATH"
+                
+                Update-Pip
+                Write-Host "Installing requirements..." -ForegroundColor Cyan
+                pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Error "Failed to install requirements"
+                    exit 1
+                }
             }
-        }
-        elseif (Get-Command uv -ErrorAction SilentlyContinue) {
-            "uv run"
-        }
-        elseif (Get-Command python3 -ErrorAction SilentlyContinue) {
-            "python3"
-        }
-        elseif (Get-Command python -ErrorAction SilentlyContinue) {
-            "python"
         }
         else {
-            Write-Error "No suitable Python interpreter found. Please install Python 3."
-            exit 1
-        }
-        $scripts = @("clean.py", "format.py", "lint.py", "test.py", "build.py", "docs.py", "image.py")
-        foreach ($script in $scripts) {
-            $scriptPath = Join-Path -Path $ROOT_DIR -ChildPath "scripts" -AdditionalChildPath $script
-            if ($pythonCmd -eq "uv run") {
-                & uv run $scriptPath
+            # Activate existing venv
+            $activateScript = if ($IsWindows) {
+                Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "Scripts", "Activate.ps1"
+            }
+            if (Test-Path $activateScript) {
+                . $activateScript
             }
             else {
-                & $pythonCmd $scriptPath
+                Write-Error "Activation script not found at $activateScript"
+                exit 1
+            }
+            $env:PATH = "$ROOT_DIR/.venv/Scripts;$env:PATH"
+        }
+
+        if (Get-Command make -ErrorAction SilentlyContinue) {
+            make some
+        }
+        else {
+            $scripts = @("clean.py", "format.py", "lint.py", "test.py", "build.py", "docs.py", "image.py")
+            foreach ($script in $scripts) {
+                $scriptPath = Join-Path -Path $ROOT_DIR -ChildPath "scripts" -AdditionalChildPath $script
+                
+                if (-not $env:HATCH_ENV_ACTIVE) {
+                    if (Get-Command uv -ErrorAction SilentlyContinue) {
+                        uv run $scriptPath
+                    }
+                    else {
+                        if (Get-Command python3 -ErrorAction SilentlyContinue) {
+                            python3 $scriptPath
+                        }
+                        elseif (Get-Command python -ErrorAction SilentlyContinue) {
+                            python $scriptPath
+                        }
+                        else {
+                            Write-Error "No suitable Python interpreter found. Please install Python 3."
+                            exit 1
+                        }
+                    }
+                }
+                else {
+                    if (Get-Command python3 -ErrorAction SilentlyContinue) {
+                        python3 $scriptPath
+                    }
+                    elseif (Get-Command python -ErrorAction SilentlyContinue) {
+                        python $scriptPath
+                    }
+                    else {
+                        Write-Error "No suitable Python interpreter found. Please install Python 3."
+                        exit 1
+                    }
+                }
             }
         }
     }
+    else {
+        # We are in a hatch environment
+        pip install --upgrade pip
+        Write-Host "Installing requirements..." -ForegroundColor Cyan
+        pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to install requirements"
+            exit 1
+        }
+        hatch run all
+    }
 }
-
 function Invoke-React {
     if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
         Write-Error "bun is not installed. Please install bun first."
