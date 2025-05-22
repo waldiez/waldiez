@@ -6,6 +6,9 @@ import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
 
 export type * from "@waldiez/models/Agent/Common/Handoff";
 
+export type { WaldiezAgent } from "@waldiez/models/Agent/Common/Agent";
+export type { WaldiezAgentData } from "@waldiez/models/Agent/Common/AgentData";
+
 /**
  * Human input mode.
  * @param ALWAYS - Always ask for human input

@@ -593,7 +593,7 @@
                     "additionalProperties": false
                 }
             ],
-            "description": "Waldiez Handoff transition target The target of a handoff transition. It can be one of the following:\n- `AgentTarget`: A specific agent target.\n- `RandomAgentTarget`: A random agent target.\n- `GroupChatTarget`: A group chat target.\n- `NestedChatTarget`: A nested chat target.\n- `AskUserTarget`: Ask the user for input.\n- `GroupManagerTarget`: A group manager target.\n- `RevertToUserTarget`: Revert to the user.\n- `StayTarget`: Stay in the current state.\n- `TerminateTarget`: Terminate the conversation."
+            "description": "The type of target in a handoff transition."
         },
         "WaldiezLLMCondition": {
             "anyOf": [
@@ -1331,12 +1331,12 @@
         "reasonConfigMethod": {
             "type": "string",
             "enum": ["beam_search", "mcts", "lats", "dfs"],
-            "description": "reasonConfigMethod The method used for reasoning. It can be one of the following:\n- \"beam_search\"\n- \"mcts\"\n- \"lats\"\n- \"dfs\""
+            "description": "reasonConfigMethod The method used for reasoning. It can be \"beam_search\", \"mcts\", \"lats\", or \"dfs\"."
         },
         "reasonConfigAnswerApproach": {
             "type": "string",
             "enum": ["pool", "best"],
-            "description": "reasonConfigAnswerApproach The approach used for answering. It can be one of the following:\n- \"pool\"\n- \"best\""
+            "description": "reasonConfigAnswerApproach The approach used for answering. It can be \"pool\" or \"best\"."
         },
         "WaldiezAgentCaptain": {
             "type": "object",
@@ -1723,17 +1723,17 @@
         "GroupChatSpeakerSelectionMethodOption": {
             "type": "string",
             "enum": ["default", "auto", "manual", "random", "round_robin"],
-            "description": "GroupChatSpeakerSelectionMethodOption The method used to select the speaker in a group chat. It can be one of the following:\n- \"default\": The default method.\n- \"auto\": The automatic method.\n- \"manual\": The manual method.\n- \"random\": The random method.\n- \"round_robin\": The round robin method."
+            "description": "The method used to select the speaker in a group chat."
         },
         "GroupChatSpeakerSelectionMode": {
             "type": "string",
             "enum": ["repeat", "transition"],
-            "description": "GroupChatSpeakerSelectionMode The mode used to select the speaker in a group chat. It can be one of the following:\n- \"repeat\": The repeat mode.\n- \"transition\": The transition mode."
+            "description": "The mode used to select the speaker in a group chat. It can be one \"repeat\" or \"transition\"."
         },
         "GroupChatSpeakerTransitionsType": {
             "type": "string",
             "enum": ["allowed", "disallowed"],
-            "description": "GroupChatSpeakerTransitionsType The type of transitions for the speaker in a group chat. It can be one of the following:\n- \"allowed\": The transitions are allowed.\n- \"disallowed\": The transitions are disallowed."
+            "description": "GroupChatSpeakerTransitionsType The type of transitions for the speaker in a group chat. It can be \"allowed\" or \"disallowed\"."
         },
         "WaldiezModel": {
             "type": "object",
@@ -1866,7 +1866,8 @@
                 "together",
                 "nim",
                 "other"
-            ]
+            ],
+            "description": "WaldiezModelAPIType Represents the type of API used for the model."
         },
         "WaldiezModelAWS": {
             "type": "object",
@@ -1979,7 +1980,8 @@
         },
         "WaldiezToolType": {
             "type": "string",
-            "enum": ["shared", "custom", "langchain", "crewai"]
+            "enum": ["shared", "custom", "langchain", "crewai"],
+            "description": "WaldiezToolType Represents the type of tool used in Waldiez."
         },
         "WaldiezChat": {
             "type": "object",
@@ -2131,7 +2133,8 @@
                 }
             },
             "required": ["type", "content", "context"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "description": "WaldiezMessage Represents a message in the Waldiez chat system."
         },
         "WaldiezMessageType": {
             "type": "string",

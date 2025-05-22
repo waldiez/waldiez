@@ -9,7 +9,7 @@ import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
 /**
  * reasonConfigMethod
  * The method used for reasoning.
- * It can be one of the following:
+ * It can be "beam_search", "mcts", "lats", or "dfs".
  * @param beam_search - The beam search method.
  * @param mcts - The Monte Carlo Tree Search method.
  * @param lats - The LATS method.
@@ -21,7 +21,7 @@ export type reasonConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
 /**
  * reasonConfigAnswerApproach
  * The approach used for answering.
- * It can be one of the following:
+ * It can be "pool" or "best".
  * @param pool - The pool approach.
  * @param best - The best approach.
  * @see {@link WaldiezReasoningAgentReasonConfig}
@@ -31,12 +31,12 @@ export type reasonConfigAnswerApproach = "pool" | "best";
 /**
  * WaldiezReasoningAgentReasonConfig
  * The configuration for the reasoning agent.
- * @param method - The method used for reasoning. See {@link reasonConfigMethod}
+ * @param method - The method used for reasoning.
  * @param maxDepth - The maximum depth of the reasoning tree.
  * @param forestSize - The size of the reasoning forest.
  * @param ratingScale - The rating scale for the reasoning.
  * @param beamSize - The size of the beam for beam search.
- * @param answerApproach - The approach used for answering. See {@link reasonConfigAnswerApproach}
+ * @param answerApproach - The approach used for answering.
  * @param nsim - The number of simulations for MCTS.
  * @param explorationConstant - The exploration constant for MCTS.
  * @see {@link reasonConfigMethod}
