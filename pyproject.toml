@@ -241,6 +241,11 @@ hatch run lint-ruff
 hatch run lint-pylint
 """
 
+forlint = """
+hatch run format
+hatch run lint
+"""
+
 docs = "mkdocs build -d site"
 build = "python -m build --wheel --sdist --outdir out/dist"
 image = "python scripts/image.py"
@@ -252,6 +257,8 @@ hatch run test
 """
 
 matrix-test = "hatch run test:test"
+# alias
+test-matrix = "hatch run test:test"
 
 release = """
 hatch run check
