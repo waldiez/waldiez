@@ -43,20 +43,15 @@ def test_get_pylint_ignore_comment() -> None:
 
 def test_get_pyright_ignore_comment() -> None:
     """Test get_pyright_ignore_comment."""
-    no_rules_string = ",".join(PYRIGHT_RULES)
+    no_rules_string = ",".join([f"{rule}=false" for rule in PYRIGHT_RULES])
     assert (
-        get_pyright_ignore_comment() == f"# pyright: report={no_rules_string}"
-    )
-    assert (
-        get_pyright_ignore_comment()
-        == "\n" + f"# pyright: report={no_rules_string}"
+        get_pyright_ignore_comment() == f"# pyright: {no_rules_string}" + "\n"
     )
     assert get_pyright_ignore_comment(
         ["reportUnusedImport", "reportUnknownArgumentType"]
-    ) == ("\n# pyright: report=reportUnusedImport,reportUnknownArgumentType")
-    assert get_pyright_ignore_comment(["reportUnusedImport"]) == (
-        "# pyright: report=reportUnusedImport"
+    ) == (
+        "# pyright: reportUnusedImport=false,reportUnknownArgumentType=false\n"
     )
-    assert get_pyright_ignore_comment(["reportUnknownArgumentType"]) == (
-        "\n# pyright: report=reportUnknownArgumentType"
+    assert get_pyright_ignore_comment(["reportUnusedImport"]) == (
+        "# pyright: reportUnusedImport=false\n"
     )
