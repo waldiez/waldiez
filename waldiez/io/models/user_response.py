@@ -1,13 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-
-"""User response models and validation."""
+"""User response model and validation."""
 
 import json
 from pathlib import Path
 from typing import Any, Callable, Union
 
-from pydantic import field_validator
+from pydantic import ValidationError, field_validator
 
 from ..utils import MessageType
 from .base import StructuredBase
@@ -20,10 +19,10 @@ class UserResponse(StructuredBase):
 
     request_id: str
     type: MessageType = "input_response"
-    data: Union[str, UserInputData, list[UserInputData]]
+    data: UserInputData | list[UserInputData] | str
 
-    @classmethod
     @field_validator("data", mode="before")
+    @classmethod
     def validate_data(
         cls, value: Any
     ) -> Union[str, UserInputData, list[UserInputData]]:
@@ -31,48 +30,43 @@ class UserResponse(StructuredBase):
 
         Parameters
         ----------
-        value: Any
-            The input value to validate
+        value : Any
+            The value to validate.
 
         Returns
         -------
-        Union[str, UserInputData, List[UserInputData]]
-            The validated data
+        Union[str, UserInputData, list[UserInputData]]
+            The validated value.
+
+        Raises
+        ------
+        ValueError
+            If the value is not valid.
         """
-        # Handle already correct types
         if cls._is_valid_type(value):
             return value
 
-        # Handle different input types
-        handlers: dict[Callable[..., Any], Any] = {
+        handlers: dict[
+            type,
+            Callable[[Any], Union[str, UserInputData, list[UserInputData]]],
+        ] = {
             str: cls._handle_string,
             dict: cls._handle_dict,
             list: cls._handle_list,
         }
 
-        # Get the handler for this type, or use default handler
-        # pylint: disable=line-too-long
+        value_type = type(value)  # pyright: ignore
         handler = handlers.get(
-            type(value),  # pyright: ignore  # noqa: E501
+            value_type,  # pyright: ignore
             cls._handle_default,
         )
-        return handler(value)
+        result = handler(value)
+        return result
 
     @classmethod
     def _is_valid_type(cls, value: Any) -> bool:
-        """Check if value is already a valid type.
-
-        Parameters
-        ----------
-        value: Any
-            The value to check
-
-        Returns
-        -------
-        bool
-            True if the value is already a valid type
-        """
-        return isinstance(value, (str, UserInputData)) or (
+        """Check if value is already a valid type."""
+        return isinstance(value, UserInputData) or (
             isinstance(value, list)
             and all(
                 isinstance(item, UserInputData)
@@ -88,94 +82,52 @@ class UserResponse(StructuredBase):
 
         Parameters
         ----------
-        value: str
-            The string input
+        value : str
+            The string value to handle.
 
         Returns
         -------
-        Union[str, UserInputData, List[UserInputData]]
-            Processed result
+        Union[str, UserInputData, list[UserInputData]]
+            The handled value.
         """
         # pylint: disable=too-many-try-statements
         try:
             parsed_value = json.loads(value)
-            # If it parsed to a string, return it directly
-            if isinstance(parsed_value, str):
-                return parsed_value
-            # Otherwise process it based on its type
             if isinstance(parsed_value, dict):
                 return cls._handle_dict(parsed_value)  # pyright: ignore
             if isinstance(parsed_value, list):
                 return cls._handle_list(parsed_value)  # pyright: ignore
-            # For simple values like numbers or booleans
-            return str(parsed_value)
+            return cls._create_text_input(str(parsed_value))
         except json.JSONDecodeError:
-            # Not valid JSON, return original string
-            return value
+            return cls._create_text_input(value)
 
     @classmethod
     def _handle_dict(cls, value: dict[str, Any]) -> UserInputData:
-        """Handle dictionary input.
-
-        Parameters
-        ----------
-        value: dict
-            The dictionary input
-
-        Returns
-        -------
-        UserInputData
-            Processed result
-        """
-        # pylint: disable=broad-exception-caught
         if "content" in value:
-            try:
-                return UserInputData(content=value["content"])
-            except Exception:
-                # If that fails, try validating content directly
-                try:
-                    content = UserInputData.validate_content(value["content"])
-                    return UserInputData(content=content)
-                except Exception:
-                    # Last resort: treat as text
-                    return UserInputData(
-                        content=TextMediaContent(
-                            text=f"Invalid content: {json.dumps(value)[:100]}.."
-                        )
-                    )
+            return cls._try_parse_user_input(value)
 
-        # Try without content field
         try:
-            content = UserInputData.validate_content(value)
-            return UserInputData(content=content)
-        except Exception:
-            # Last resort: treat as text
-            return UserInputData(
-                content=TextMediaContent(
-                    text=f"Invalid data: {json.dumps(value)[:100]}..."
-                )
-            )
+            return UserInputData(content=value)  # type: ignore
+        except (ValueError, TypeError, ValidationError):
+            return cls._create_invalid_input(value, label="Invalid data")
+
+    @classmethod
+    def _try_parse_user_input(cls, value: dict[str, Any]) -> UserInputData:
+        try:
+            return UserInputData(content=value["content"])
+        except (KeyError, ValueError, TypeError, ValidationError):
+            try:
+                return UserInputData(content=value)  # type: ignore
+            except (ValueError, TypeError, ValidationError):
+                return cls._create_invalid_input(value, label="Invalid content")
 
     @classmethod
     def _handle_list(
         cls, value: list[Any]
     ) -> Union[UserInputData, list[UserInputData]]:
-        """Handle list input.
-
-        Parameters
-        ----------
-        value: list
-            The list input
-
-        Returns
-        -------
-        Union[UserInputData, List[UserInputData]]
-            Processed result - single item if list has only one element
-        """
-        result: list[Any] = []
+        result: list[UserInputData] = []
 
         for item in value:
-            # Handle different item types
             if isinstance(item, UserInputData):
                 result.append(item)
             elif isinstance(item, dict):
@@ -185,74 +137,64 @@ class UserResponse(StructuredBase):
             else:
                 result.append(cls._create_text_input(str(item)))
 
-        # If there's only one item, return it directly
-        if len(result) == 1:
-            return result[0]
-        return result
+        return result[0] if len(result) == 1 else result
 
     @classmethod
     def _handle_default(cls, value: Any) -> UserInputData:
-        """Handle any other type of input.
-
-        Parameters
-        ----------
-        value: Any
-            The input
-
-        Returns
-        -------
-        UserInputData
-            Processed result
-        """
         return cls._create_text_input(str(value))
 
     @classmethod
     def _create_text_input(cls, text: str) -> UserInputData:
-        """Create a text input.
-
-        Parameters
-        ----------
-        text: str
-            The text
-
-        Returns
-        -------
-        UserInputData
-            UserInputData with text content
-        """
         return UserInputData(content=TextMediaContent(text=text))
+
+    @classmethod
+    def _create_invalid_input(cls, raw: Any, label: str) -> UserInputData:
+        try:
+            preview = json.dumps(raw)[:100]
+        except (TypeError, ValueError):
+            preview = str(raw)[:100]
+        return UserInputData(
+            content=TextMediaContent(text=f"{label}: {preview}...")
+        )
 
     def to_string(
         self,
         uploads_root: Path | None = None,
         base_name: str | None = None,
     ) -> str:
-        """Convert the response to a string.
+        """Convert the UserResponse to a string.
 
         Parameters
         ----------
         uploads_root : Path | None
             The root directory for storing images, optional.
         base_name : str | None
-            The base name for the file, optional.
+            The base name for the image file, optional.
 
         Returns
         -------
         str
-            The string representation of the response.
+            The string representation of the UserResponse.
         """
         if isinstance(self.data, list):
-            string = ""
-            for item in self.data:
-                string += (
+            return " ".join(
+                (
                     item.to_string(
                         uploads_root=uploads_root, base_name=base_name
                     )
-                    + " "
+                    if hasattr(item, "to_string")
+                    else str(item)
                 )
-            return string.strip()
+                for item in self.data
+            )
         if isinstance(self.data, UserInputData):
-            return self.data.to_string()
+            return self.data.to_string(
+                uploads_root=uploads_root, base_name=base_name
+            )
         if isinstance(self.data, str):  # pyright: ignore
             return self.data
-        return json.dumps(self.data)
+        return (
+            json.dumps(self.data)
+            if hasattr(self.data, "__dict__")
+            else str(self.data)
+        )

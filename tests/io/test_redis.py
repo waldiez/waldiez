@@ -39,9 +39,9 @@ def test_print(fake_redis: fakeredis.FakeRedis) -> None:
 
     stream.print("Hello", "World")
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")
-    assert len(entries) == 1
-    call_data = entries[0][1]
+    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World\n"
 
@@ -54,9 +54,9 @@ def test_print_with_file_invalid(fake_redis: fakeredis.FakeRedis) -> None:
 
     stream.print("Hello", "World", file="output.txt")
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")
-    assert len(entries) == 1
-    call_data = entries[0][1]
+    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World\n"
 
@@ -71,9 +71,11 @@ def test_print_with_file_string_io(fake_redis: fakeredis.FakeRedis) -> None:
     output.write(" Hello, World!")
     stream.print("Hello", "World", file=output)
     # also check this is published to Redis
-    entries = fake_redis.xrange(f"task:{task_id}:output")
-    assert len(entries) == 1
-    call_data = entries[0][1]
+    entries = fake_redis.xrange(  # pyright: ignore
+        f"task:{task_id}:output",
+    )
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World Hello, World!\n"
 
@@ -88,9 +90,11 @@ def test_print_with_file_bytes_io(fake_redis: fakeredis.FakeRedis) -> None:
     output.write(b" Hello, World!")
     stream.print("Hello", "World", file=output)
     # also check this is published to Redis
-    entries = fake_redis.xrange(f"task:{task_id}:output")
-    assert len(entries) == 1
-    call_data = entries[0][1]
+    entries = fake_redis.xrange(  # pyright: ignore
+        f"task:{task_id}:output",
+    )
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World Hello, World!\n"
 
@@ -113,11 +117,13 @@ def test_send(fake_redis: fakeredis.FakeRedis) -> None:
     )
     stream.send(message)
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")
-    assert len(entries) == 1
-    call_data = entries[0][1]
+    entries = fake_redis.xrange(  # pyright: ignore
+        f"task:{task_id}:output",
+    )
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
     assert call_data["type"] == "text"
-    message_data = json.loads(call_data["data"])
+    message_data = json.loads(call_data["data"])  # pyright: ignore
     assert message_data["text"] == "Hello, World!"
 
 
@@ -174,10 +180,10 @@ def test_locking_mechanism(fake_redis: fakeredis.FakeRedis) -> None:
     stream = RedisIOStream("redis://localhost", task_id, input_timeout=1)
     stream.redis = fake_redis
     # pylint: disable=protected-access
-    assert stream._acquire_lock(lock_key) is True
-    assert stream._acquire_lock(lock_key) is False
-    stream._release_lock(lock_key)
-    assert stream._acquire_lock(lock_key) is True
+    assert stream._acquire_lock(lock_key) is True  # pyright: ignore
+    assert stream._acquire_lock(lock_key) is False  # pyright: ignore
+    stream._release_lock(lock_key)  # pyright: ignore
+    assert stream._acquire_lock(lock_key) is True  # pyright: ignore
 
 
 def test_context_manager(fake_redis: fakeredis.FakeRedis) -> None:
@@ -189,9 +195,9 @@ def test_context_manager(fake_redis: fakeredis.FakeRedis) -> None:
     stream.redis = fake_redis
 
     with stream as io_stream:
-        assert io_stream._acquire_lock(lock_key) is True
+        assert io_stream._acquire_lock(lock_key) is True  # pyright: ignore
 
-    assert io_stream._acquire_lock(lock_key) is False
+    assert io_stream._acquire_lock(lock_key) is False  # pyright: ignore
 
 
 def test_cleanup_processed_task_requests(
@@ -260,7 +266,7 @@ def test_trim_task_output_streams(fake_redis: fakeredis.FakeRedis) -> None:
     stream_key = f"task:{task_id}:output"
 
     for i in range(20):
-        fake_redis.xadd(stream_key, {"data": f"msg-{i}"})
+        fake_redis.xadd(stream_key, {"data": f"msg-{i}"})  # pyright: ignore
 
     assert fake_redis.xlen(stream_key) == 20
 
@@ -344,7 +350,10 @@ async def test_a_trim_task_output_streams(
     stream_key = f"task:{task_id}:output"
 
     for i in range(20):
-        await a_fake_redis.xadd(stream_key, {"data": f"msg-{i}"})
+        await a_fake_redis.xadd(  # pyright: ignore
+            stream_key,
+            {"data": f"msg-{i}"},
+        )
 
     assert await a_fake_redis.xlen(stream_key) == 20
 

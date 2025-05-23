@@ -13,6 +13,12 @@ from typing_extensions import Annotated
 from ..utils import detect_media_type
 from .constants import CONTENT_MAPPING, MediaContent
 from .content.audio import AudioMediaContent
+from .content.base import (
+    AudioContent,
+    FileContent,
+    ImageContent,
+    VideoContent,
+)
 from .content.file import FileMediaContent
 from .content.image import ImageMediaContent, ImageUrlMediaContent
 from .content.text import TextMediaContent
@@ -24,7 +30,10 @@ class UserInputData(BaseModel):
 
     content: Annotated[
         MediaContent,
-        Field(discriminator="type"),
+        Field(
+            description="The content of the input data.",
+            title="Content",
+        ),
     ]
 
     def to_string(
@@ -49,7 +58,19 @@ class UserInputData(BaseModel):
         return self.content.to_string(uploads_root, base_name)
 
     @classmethod
-    def _content_from_string(cls, value: str) -> MediaContent:
+    def content_from_string(cls, value: str) -> MediaContent:
+        """Convert a string to the appropriate MediaContent type.
+
+        Parameters
+        ----------
+        value : str
+            The input string
+
+        Returns
+        -------
+        MediaContent
+            the appropriate MediaContent.
+        """
         try:
             parsed = json.loads(value)
         except json.JSONDecodeError:
@@ -59,7 +80,7 @@ class UserInputData(BaseModel):
         return cls.validate_content(parsed)
 
     @classmethod
-    def _content_from_dict(cls, value: dict[str, Any]) -> MediaContent:
+    def content_from_dict(cls, value: dict[str, Any]) -> MediaContent:
         """Convert a dictionary to the appropriate MediaContent type.
 
         Parameters
@@ -71,6 +92,12 @@ class UserInputData(BaseModel):
         -------
         MediaContent
             the appropriate MediaContent.
+
+        Raises
+        ------
+        ValueError
+            If the content type is not supported or
+            if any required field is missing.
         """
         content_type = detect_media_type(value)
 
@@ -93,8 +120,33 @@ class UserInputData(BaseModel):
                 if field == mapping["required_field"]:
                     return mapping["cls"](**{field: value[field]})
                 # If we need field name conversion (e.g., url -> image_url)
+                # Handle simple string URLs by wrapping in
+                # appropriate Content object
+                field_value = value[field]
+                if mapping["required_field"] in [
+                    "image_url",
+                    "image",
+                ] and isinstance(field_value, str):
+                    field_value = ImageContent(url=field_value)
+                elif mapping["required_field"] == "video" and isinstance(
+                    field_value, str
+                ):
+                    field_value = VideoContent(url=field_value)
+                elif mapping["required_field"] == "audio" and isinstance(
+                    field_value, str
+                ):
+                    field_value = AudioContent(url=field_value)
+                elif mapping["required_field"] == "file" and isinstance(
+                    field_value, str
+                ):
+                    # For file content, we need a name -
+                    #  use the URL as name if it's a string
+                    field_value = FileContent(name=field_value, url=field_value)
+
                 return mapping["cls"](
-                    **{mapping["required_field"]: value[field]}
+                    **{
+                        mapping["required_field"]: field_value,
+                    }  # pyright: ignore
                 )
 
         raise ValueError(
@@ -102,8 +154,8 @@ class UserInputData(BaseModel):
             f" '{content_type}' in: {value}"
         )
 
-    @classmethod
     @field_validator("content", mode="before")
+    @classmethod
     def validate_content(cls, v: Any) -> MediaContent:  # noqa: C901,D102
         """Validate the input data content.
 
@@ -137,11 +189,11 @@ class UserInputData(BaseModel):
 
         # If it's a string, check if it is a dumped one
         if isinstance(v, str):
-            return cls._content_from_string(v)
+            return cls.content_from_string(v)
 
         # If it's a dictionary, check if it has a 'type' field
         if isinstance(v, dict):
-            return cls._content_from_dict(v)  # pyright: ignore
+            return cls.content_from_dict(v)  # pyright: ignore
 
         # If it's a list
         if isinstance(v, list):
