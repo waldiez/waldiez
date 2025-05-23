@@ -30,9 +30,12 @@ bun add @waldiez/react
     "react-fast-compare": "^3.2.2",
     "react-hotkeys-hook": "^5.1.0",
     "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
     "react-select": "^5.10.1",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
     "zundo": "^2.3.0",
-    "zustand": "^5.0.4"
+    "zustand": "^5.0.5"
 }
 ```
 
