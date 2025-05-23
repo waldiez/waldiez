@@ -83,8 +83,15 @@ export const Modal = memo<ModalProps>(props => {
     // don't let fit-content to resize the modal once it is open
     useLayoutEffect(() => {
         if (isOpen && modalRef.current) {
-            const width = modalRef.current.getBoundingClientRect().width;
-            setLockedWidth(`${width}px`);
+            const measure = () => {
+                if (modalRef.current) {
+                    const width = modalRef.current.getBoundingClientRect().width;
+                    setLockedWidth(`${width}px`);
+                }
+            };
+            // Use rAF for more reliability, especially with animations
+            const raf = requestAnimationFrame(measure);
+            return () => cancelAnimationFrame(raf);
         }
         if (!isOpen) {
             setLockedWidth(undefined);
