@@ -103,6 +103,7 @@ def test_sequential_chat() -> None:
         chat_names=chat_names,
         main_chats=main_chats,
         root_group_manager=None,
+        cache_seed=42,
         for_notebook=False,
         is_async=False,
     )

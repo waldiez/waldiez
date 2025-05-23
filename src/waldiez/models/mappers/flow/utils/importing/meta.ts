@@ -84,7 +84,7 @@ export const getIsAsync = (json: Record<string, unknown>) => {
 };
 
 export const getCacheSeed = (json: Record<string, unknown>) => {
-    let cacheSeed: number | null = 42;
+    let cacheSeed: number | null = null;
     if ("cacheSeed" in json) {
         if (typeof json.cacheSeed === "number") {
             cacheSeed = parseInt(`${json.cacheSeed}`, 10);

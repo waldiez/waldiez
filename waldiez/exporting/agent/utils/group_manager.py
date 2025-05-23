@@ -250,7 +250,9 @@ def _get_group_manager_pattern(
     pattern_string += f"    group_manager_args={{\n{llm_config_arg}    }},\n"
     if should_check_for_after_work(pattern_class_name):
         after_work_arg, extra_import = get_group_after_work_arg(
-            manager, agent_names=agent_names
+            manager,
+            agent_names=agent_names,
+            group_chat_members=group_chat_members,
         )
         if extra_import:
             extra_imports.add(extra_import)
@@ -295,6 +297,7 @@ def should_check_for_after_work(
 def get_group_after_work_arg(
     manager: WaldiezGroupManager,
     agent_names: dict[str, str],
+    group_chat_members: list[WaldiezAgent],
 ) -> tuple[str, str]:
     """Get the group after work argument and additional import if any.
 
@@ -304,6 +307,8 @@ def get_group_after_work_arg(
         The group manager.
     agent_names : dict[str, str]
         The agent names.
+    group_chat_members : list[WaldiezAgent]
+        The group members.
 
     Returns
     -------
@@ -319,13 +324,16 @@ def get_group_after_work_arg(
     after_work_transition = after_work_handoffs[0].after_work
     if not after_work_transition:
         return empty
-    return get_after_work_target(after_work_transition, agent_names)
+    return get_after_work_target(
+        after_work_transition, agent_names, group_chat_members
+    )
 
 
 # pylint: disable=too-many-return-statements
 def get_after_work_target(
     target: WaldiezTransitionTarget,
     agent_names: dict[str, str],
+    group_chat_members: list[WaldiezAgent],
 ) -> tuple[str, str]:
     """Get the after work target and additional import if any.
 
@@ -335,6 +343,8 @@ def get_after_work_target(
         The target.
     agent_names : dict[str, str]
         The agent names.
+    group_chat_members : list[WaldiezAgent]
+        The group members.
 
     Returns
     -------
@@ -370,6 +380,10 @@ def get_after_work_target(
             "import RandomAgentTarget"
         )
         target_names = [agent_names[agent_id] for agent_id in target.target]
+        if not target_names:
+            target_names = [
+                agent_names[agent.id] for agent in group_chat_members
+            ]
         target_names_str = ", ".join(target_names)
         return (
             f"RandomAgentTarget(agents=[{target_names_str}])",

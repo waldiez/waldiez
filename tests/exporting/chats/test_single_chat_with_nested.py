@@ -174,6 +174,7 @@ def nested_chat_message(recipient, messages, sender, config):
         all_chats=[chat1, chat2, chat3],
         chat_names=chat_names,
         root_group_manager=None,
+        cache_seed=42,
         main_chats=[
             {
                 "chat": chat1,

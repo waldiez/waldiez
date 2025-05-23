@@ -8,7 +8,10 @@ from typing import Optional
 
 
 def get_def_main(
-    flow_chats: str, after_run: str, is_async: bool, cache_seed: Optional[int]
+    flow_chats: str,
+    after_run: str,
+    is_async: bool,
+    cache_seed: Optional[int],
 ) -> str:
     """Get the main function.
 
@@ -41,17 +44,20 @@ def get_def_main(
         content += "async "
     content += "def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:\n"
     content += '    """Start chatting."""\n'
-    content += (
-        f"    with Cache.disk(cache_seed={cache_seed}"
-        ") as cache:  # pyright: ignore\n"
-    )
+    space = "    "
+    if cache_seed is not None:
+        content += (
+            f"    with Cache.disk(cache_seed={cache_seed}"
+            ") as cache:  # pyright: ignore\n"
+        )
+        space = f"{space}    "
     content += f"{flow_chats}" + "\n"
     if is_async:
-        content += "    await stop_logging()"
+        content += f"{space}await stop_logging()"
     else:
-        content += "    stop_logging()"
+        content += f"{space}stop_logging()"
     content += after_run
-    content += "\n    return results\n\n\n"
+    content += "\n" + f"{space}return results\n\n\n"
     if is_async:
         content += "async def call_main():\n"
     else:

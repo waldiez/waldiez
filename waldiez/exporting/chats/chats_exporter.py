@@ -31,12 +31,14 @@ from .utils import (
 )
 
 
+# pylint: disable=too-many-instance-attributes
 class ChatsExporter(BaseExporter, ExporterMixin):
     """Chats exporter."""
 
     _chat_string: Optional[str]
     _before_chat: Optional[str]
     _generated: bool
+    _cache_seed: Optional[int]
 
     def __init__(
         self,
@@ -48,6 +50,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         root_group_manager: Optional[WaldiezGroupManager],
         for_notebook: bool,
         is_async: bool,
+        cache_seed: Optional[int],
     ):
         """Initialize the chats exporter.
 
@@ -69,6 +72,8 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             Whether the export is for a notebook.
         is_async : bool
             Whether the chat is asynchronous.
+        cache_seed : Optional[int]
+            The seed for the cache. If None, cache should be disabled.
         """
         self.all_agents = all_agents
         self.agent_names = agent_names
@@ -80,10 +85,14 @@ class ChatsExporter(BaseExporter, ExporterMixin):
         self.is_async = is_async
         self._chat_string = None
         self._before_chat = None
+        self._cache_seed = cache_seed
         self._generated = False
 
     def _export_chats(self) -> None:
         """Export the chats content."""
+        chat_tabs = 0 if self.for_notebook else 1
+        if self._cache_seed is not None:
+            chat_tabs += 1
         if len(self.main_chats) == 0:
             if not self.root_group_manager:
                 self._chat_string = ""
@@ -94,7 +103,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
                 manager=self.root_group_manager,
                 intial_chat=None,
                 string_escape=self.string_escape,
-                tabs=1 if self.for_notebook else 2,
+                tabs=chat_tabs,
                 is_async=self.is_async,
             )
             self._before_chat = None
@@ -116,7 +125,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
                     manager=recipient,
                     intial_chat=chat_massage_string,
                     string_escape=self.string_escape,
-                    tabs=1 if self.for_notebook else 2,
+                    tabs=chat_tabs,
                     is_async=self.is_async,
                 )
                 self._before_chat = None
@@ -129,7 +138,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
                 chat_names=self.chat_names,
                 serializer=self.serializer,
                 string_escape=self.string_escape,
-                tabs=1 if self.for_notebook else 2,
+                tabs=chat_tabs,
                 is_async=self.is_async,
             )
             return
@@ -139,7 +148,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             chat_names=self.chat_names,
             serializer=self.serializer,
             string_escape=self.string_escape,
-            tabs=1 if self.for_notebook else 2,
+            tabs=chat_tabs,
             is_async=self.is_async,
         )
 

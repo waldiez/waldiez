@@ -250,10 +250,11 @@ class FlowExporter(BaseExporter, ExporterMixin):
         else:
             if chats_content.startswith("\n"):
                 chats_content = chats_content[1:]
-            content += (
-                "\n" + f"with Cache.disk(cache_seed={cache_seed}) as cache:"
-                "\n" + chats_content + "\n"
-            )
+            if cache_seed is not None:
+                content += (
+                    "\n" + f"with Cache.disk(cache_seed={cache_seed}) as cache:"
+                    "\n" + chats_content + "\n"
+                )
             if is_async:
                 content += "await stop_logging()"
             else:
@@ -514,6 +515,7 @@ class FlowExporter(BaseExporter, ExporterMixin):
             root_group_manager=root_group_manager,
             for_notebook=self.for_notebook,
             is_async=self.waldiez.is_async,
+            cache_seed=self.waldiez.cache_seed,
         )
         output = exporter.export()
         chat_contents = output["content"] or ""
