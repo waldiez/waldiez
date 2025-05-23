@@ -140,6 +140,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
                 string_escape=self.string_escape,
                 tabs=chat_tabs,
                 is_async=self.is_async,
+                skip_cache=self._cache_seed is None,
             )
             return
         self._chat_string, self._before_chat = export_sequential_chat(
@@ -150,6 +151,7 @@ class ChatsExporter(BaseExporter, ExporterMixin):
             string_escape=self.string_escape,
             tabs=chat_tabs,
             is_async=self.is_async,
+            skip_cache=self._cache_seed is None,
         )
 
     def is_group_patterned(self) -> bool:

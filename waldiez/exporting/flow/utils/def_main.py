@@ -56,8 +56,10 @@ def get_def_main(
         content += f"{space}await stop_logging()"
     else:
         content += f"{space}stop_logging()"
-    content += after_run
-    content += "\n" + f"{space}return results\n\n\n"
+    content += after_run + "\n"
+    if cache_seed is not None:
+        space = space[4:]
+    content += f"{space}return results\n\n\n"
     if is_async:
         content += "async def call_main():\n"
     else:

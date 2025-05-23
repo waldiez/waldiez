@@ -21,6 +21,7 @@ def export_sequential_chat(
     string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
+    skip_cache: bool,
 ) -> tuple[str, str]:
     r"""Get the chats content, when there are more than one chats in the flow.
 
@@ -40,6 +41,8 @@ def export_sequential_chat(
         The number of tabs to use for indentation.
     is_async : bool
         Whether the chat is asynchronous.
+    skip_cache : bool
+        Whether to skip the cache argument.
 
     Returns
     -------
@@ -124,6 +127,7 @@ def export_sequential_chat(
             serializer=serializer,
             string_escape=string_escape,
             tabs=tabs + 1,
+            skip_cache=skip_cache,
         )
         additional_methods_string += additional_methods
         content += "\n" + f"{tab}    {chat_string}"
@@ -139,6 +143,7 @@ def _get_chat_dict_string(
     serializer: Callable[..., str],
     string_escape: Callable[[str], str],
     tabs: int,
+    skip_cache: bool,
 ) -> tuple[str, str]:
     """Get a chat dictionary string.
 
@@ -160,6 +165,8 @@ def _get_chat_dict_string(
         The function to escape the string.
     tabs : int
         The number of tabs to use for indentation.
+    skip_cache : bool
+        Whether to skip the cache argument.
 
     Returns
     -------
@@ -175,7 +182,8 @@ def _get_chat_dict_string(
     chat_string = "{"
     chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
     chat_string += "\n" + f'{tab}    "recipient": {agent_names[recipient.id]},'
-    chat_string += "\n" + f'{tab}    "cache": cache,'
+    if skip_cache is False:
+        chat_string += "\n" + f'{tab}    "cache": cache,'
     additional_methods_string = ""
     for key, value in chat_args.items():
         if isinstance(value, str):

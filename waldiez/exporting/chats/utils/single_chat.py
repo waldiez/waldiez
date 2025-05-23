@@ -26,6 +26,7 @@ def export_single_chat(
     string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
+    skip_cache: bool,
 ) -> tuple[str, str]:
     """Get the chat string when there is only one chat in the flow.
 
@@ -49,6 +50,8 @@ def export_single_chat(
         The number of tabs to use for indentation.
     is_async : bool
         Whether the chat is asynchronous.
+    skip_cache : bool
+        Whether to skip the cache argument.
 
     Returns
     -------
@@ -103,6 +106,7 @@ def export_single_chat(
             string_escape=string_escape,
             tab=tab,
             is_async=is_async,
+            skip_cache=skip_cache,
         )
     return get_simple_chat_string(
         chat=chat,
@@ -115,6 +119,7 @@ def export_single_chat(
         string_escape=string_escape,
         tabs=tabs,
         is_async=is_async,
+        skip_cache=skip_cache,
     )
 
 
@@ -130,6 +135,7 @@ def get_simple_chat_string(
     string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
+    skip_cache: bool,
 ) -> tuple[str, str]:
     """Get the chat string when there are chat arguments.
 
@@ -155,6 +161,8 @@ def get_simple_chat_string(
         The number of tabs to use for indentation.
     is_async : bool
         Whether the chat is asynchronous.
+    skip_cache : bool
+        Whether to skip the cache argument.
 
     Returns
     -------
@@ -170,7 +178,8 @@ def get_simple_chat_string(
     recipient_name = agent_names[recipient.id]
     chat_string = "\n" + f"{tab}results = {sender_name}.{initiate}(" + "\n"
     chat_string += f"{tab}    {recipient_name},"
-    chat_string += "\n" + f"{tab}    cache=cache,"
+    if not skip_cache:
+        chat_string += "\n" + f"{tab}    cache=cache,"
     for key, value in chat_args.items():
         if isinstance(value, str):
             chat_string += "\n" + f'{tab}    {key}="{value}",'
@@ -201,6 +210,7 @@ def get_empty_simple_chat_string(
     string_escape: Callable[[str], str],
     tab: str,
     is_async: bool,
+    skip_cache: bool,
 ) -> tuple[str, str]:
     """Get the chat string when there are no chat arguments.
 
@@ -220,6 +230,8 @@ def get_empty_simple_chat_string(
         The tab string.
     is_async : bool
         Whether the chat is asynchronous.
+    skip_cache : bool
+        Whether to skip the cache argument.
 
     Returns
     -------
@@ -233,7 +245,8 @@ def get_empty_simple_chat_string(
     initiate = "a_initiate_chat" if is_async else "initiate_chat"
     content = "\n" + f"{tab}results = {sender_name}.{initiate}(" + "\n"
     content += f"{tab}    {recipient_name}," + "\n"
-    content += f"{tab}    cache=cache," + "\n"
+    if not skip_cache:
+        content += f"{tab}    cache=cache," + "\n"
     message_arg, _ = get_chat_message(
         tab=tab,
         chat=chat,
