@@ -22,6 +22,7 @@
 
 .flow-wrapper .agent-node .modal {
   width: fit-content;
+  min-width: 50vw;
 }
 
 .modal-fullscreen {

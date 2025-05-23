@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import React, { memo, useEffect, useRef } from "react";
+import React, { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
 import { renderConfirmationContent } from "@waldiez/components/modal/confirmation";
@@ -63,6 +63,7 @@ export const Modal = memo<ModalProps>(props => {
     // Refs
     const modalRef = useRef<HTMLDialogElement | null>(null);
     const dragRef = useRef<HTMLDivElement | null>(null);
+    const [lockedWidth, setLockedWidth] = useState<string | undefined>(undefined);
 
     const {
         showConfirmation,
@@ -79,6 +80,26 @@ export const Modal = memo<ModalProps>(props => {
         onMouseDown,
     } = useModal({ ...props, modalRef });
 
+    // don't let fit-content to resize the modal once it is open
+    useLayoutEffect(() => {
+        if (isOpen && modalRef.current) {
+            const width = modalRef.current.getBoundingClientRect().width;
+            setLockedWidth(`${width}px`);
+        }
+        if (!isOpen) {
+            setLockedWidth(undefined);
+        }
+    }, [isOpen]);
+
+    // Handle modal open/close state
+    useEffect(() => {
+        if (isOpen) {
+            modalRef.current?.showModal();
+        } else {
+            modalRef.current?.close();
+        }
+    }, [isOpen]);
+
     // Compute CSS classes
     const modalClasses = [
         "modal",
@@ -91,14 +112,6 @@ export const Modal = memo<ModalProps>(props => {
         .filter(Boolean)
         .join(" ");
 
-    useEffect(() => {
-        if (isOpen) {
-            modalRef.current?.showModal();
-        } else {
-            modalRef.current?.close();
-        }
-    }, [isOpen]);
-
     return (
         <dialog
             ref={modalRef}
@@ -107,7 +120,10 @@ export const Modal = memo<ModalProps>(props => {
             onKeyDown={onKeyDown}
             onCancel={handleCancel}
             className={modalClasses}
-            style={!isFullScreen ? { top: position.y, left: position.x } : undefined}
+            style={{
+                ...(lockedWidth ? { width: lockedWidth } : {}),
+                ...(isFullScreen ? {} : { top: position.y, left: position.x }),
+            }}
         >
             <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
                 <div>{beforeTitle}</div>
