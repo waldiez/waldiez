@@ -16,7 +16,7 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
     const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
 
     // Use custom hook for string list functionality
-    const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyPress } =
+    const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } =
         useStringList(props);
 
     // Prepare label element
@@ -28,28 +28,31 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
     // Render list items
     const renderItems = useMemo(
         () =>
-            items.map((item, index) => (
-                <div className="list-entry" key={`${itemsType}-${index}-${item}`}>
-                    <input
-                        placeholder={placeholder}
-                        type="text"
-                        value={item}
-                        data-value={item}
-                        onChange={onEntryChange}
-                        data-testid={`list-entry-item-${itemsType}-${index}`}
-                    />
-                    <button
-                        type="button"
-                        onClick={onDeleteEntry}
-                        value={item}
-                        title="Delete"
-                        aria-label={`Delete item: ${item}`}
-                        data-testid={`delete-list-entry-${itemsType}-${index}`}
-                    >
-                        <FaTrash />
-                    </button>
-                </div>
-            )),
+            items.map((item, index) => {
+                return (
+                    <div className="list-entry" key={`${itemsType}-${index}`}>
+                        <input
+                            placeholder={placeholder}
+                            type="text"
+                            value={item}
+                            data-index={index}
+                            // data-value={item}
+                            onChange={onEntryChange}
+                            data-testid={`list-entry-item-${itemsType}-${index}`}
+                        />
+                        <button
+                            type="button"
+                            onClick={onDeleteEntry}
+                            value={item}
+                            title="Delete"
+                            aria-label={`Delete item: ${item}`}
+                            data-testid={`delete-list-entry-${itemsType}-${index}`}
+                        >
+                            <FaTrash />
+                        </button>
+                    </div>
+                );
+            }),
         [items, itemsType, placeholder, onEntryChange, onDeleteEntry],
     );
 
@@ -73,7 +76,7 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
                         type="text"
                         value={newEntry}
                         onChange={onNewEntryChange}
-                        onKeyPress={onNewEntryKeyPress}
+                        onKeyDown={onNewEntryKeyDown}
                         data-testid={`new-list-entry-${itemsType}-item`}
                         aria-label={`New ${itemsType} input`}
                     />

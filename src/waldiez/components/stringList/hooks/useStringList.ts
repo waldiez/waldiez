@@ -11,7 +11,7 @@ import { StringListProps } from "@waldiez/components/stringList/types";
  */
 export const useStringList = (props: StringListProps) => {
     const [newEntry, setNewEntry] = useState<string>("");
-    const { onItemAdded, onItemChange, onItemDeleted } = props;
+    const { items, onItemAdded, onItemChange, onItemDeleted } = props;
 
     // Handler for adding a new entry
     const onAddEntry = useCallback(() => {
@@ -42,15 +42,15 @@ export const useStringList = (props: StringListProps) => {
             if (!onItemChange) {
                 return;
             }
-
-            const originalValue = event.currentTarget.getAttribute("data-value");
+            const index = parseInt(event.currentTarget.getAttribute("data-index") || "0");
             const newValue = event.target.value;
+            const originalValue = items[index];
 
-            if (originalValue) {
+            if (originalValue !== undefined && originalValue !== null) {
                 onItemChange(originalValue, newValue);
             }
         },
-        [onItemChange],
+        [onItemChange, items],
     );
 
     // Handler for changing the new entry input
@@ -58,8 +58,8 @@ export const useStringList = (props: StringListProps) => {
         setNewEntry(event.target.value);
     }, []);
 
-    // Handler for key press events - allow Enter to add new item
-    const onNewEntryKeyPress = useCallback(
+    // Handler for key down events - allow Enter to add new item
+    const onNewEntryKeyDown = useCallback(
         (event: React.KeyboardEvent<HTMLInputElement>) => {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -75,6 +75,6 @@ export const useStringList = (props: StringListProps) => {
         onDeleteEntry,
         onEntryChange,
         onNewEntryChange,
-        onNewEntryKeyPress,
+        onNewEntryKeyDown,
     };
 };
