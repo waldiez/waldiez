@@ -65,6 +65,10 @@ export const useWaldiezWrapper = ({
             case "convertResult":
                 handleConvertResult(data);
                 break;
+            case "select_speaker":
+            case "select_speaker_invalid_input":
+                handleSelectSpeaker(data);
+                break;
             case "text":
             case "print":
             case "tool_call":
@@ -237,6 +241,45 @@ export const useWaldiezWrapper = ({
             };
             setMessages(prevMessages => [...prevMessages, chatMessage]);
         }
+    };
+
+    /**
+     * Handle select speaker messages
+     */
+    const handleSelectSpeaker = (data: WebSocketResponse) => {
+        if (
+            data.content &&
+            typeof data.content === "object" &&
+            data.content !== null &&
+            "uuid" in data.content &&
+            typeof data.content.uuid === "string" &&
+            "agents" in data.content &&
+            Array.isArray(data.content.agents) &&
+            data.content.agents.every(agent => typeof agent === "string")
+        ) {
+            const chatMessage: WaldiezChatMessage = {
+                id: data.content.uuid,
+                timestamp: new Date().toISOString(),
+                type: "system",
+                content: [
+                    {
+                        type: "text",
+                        text: get_speakerSelectionMd(data.content.agents),
+                    },
+                ],
+            };
+            setMessages(prevMessages => [...prevMessages, chatMessage]);
+        }
+    };
+
+    /**
+     * Get speaker selection markdown
+     */
+    const get_speakerSelectionMd = (agents: string[]): string => {
+        const agentList = agents.map((agent, index) => {
+            return `- ${index + 1}. ${agent}`;
+        });
+        return `Select a speaker from the list below:\n\n${agentList.join("\n")}`;
     };
 
     /**
