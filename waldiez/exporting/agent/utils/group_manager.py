@@ -226,9 +226,9 @@ def _get_group_manager_pattern(
     #     group_manager_args={"llm_config": llm_config}
     # )
     pattern_class_name = _get_group_pattern_class_name(manager)
-    extra_imports = set(
+    extra_imports = {
         f"from autogen.agentchat.group.patterns import {pattern_class_name}"
-    )
+    }
     manager_name = agent_names[manager.id]
     initial_agent_name = agent_names[manager.data.initial_agent_id]
     agents_string = ", ".join(
