@@ -262,7 +262,7 @@ def _get_group_manager_pattern(
             if isinstance(value, str):
                 ctx_string += f'        "{key}": "{value}",' + "\n"
             else:
-                ctx_string += f'         "{key}": {value},' + "\n"
+                ctx_string += f'        "{key}": {value},' + "\n"
         pattern_string += "    context_variables=ContextVariables(data={\n"
         pattern_string += ctx_string
         pattern_string += "    }),\n"
