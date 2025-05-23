@@ -4,10 +4,10 @@
  */
 import { useCallback } from "react";
 
+import { showSnackbar } from "@waldiez/components";
 import { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
 import { flowMapper } from "@waldiez/models/mappers";
 import { ImportedFlow, ThingsToImport } from "@waldiez/types";
-import { showSnackbar } from "@waldiez/utils";
 
 /**
  * Custom hook for handling flow loading functionality in import flow modal

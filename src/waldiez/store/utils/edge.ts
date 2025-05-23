@@ -4,6 +4,7 @@
  */
 import { Connection, Edge, MarkerType, Node } from "@xyflow/react";
 
+import { showSnackbar } from "@waldiez/components";
 import {
     WaldiezChat,
     WaldiezChatData,
@@ -14,7 +15,7 @@ import {
 } from "@waldiez/models";
 import { AGENT_COLORS } from "@waldiez/theme";
 import { WaldiezNodeAgent, WaldiezNodeAgentData, typeOfGet, typeOfSet } from "@waldiez/types";
-import { getFriendlyString, getId, showSnackbar } from "@waldiez/utils";
+import { getFriendlyString, getId } from "@waldiez/utils";
 
 export const edgeCommonStyle = (edgeType: WaldiezEdgeType, color: string) => ({
     markerEnd:

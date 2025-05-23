@@ -3,3 +3,4 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 export type * from "@waldiez/components/chatUI/types";
+export type * from "@waldiez/components/snackbar/types";

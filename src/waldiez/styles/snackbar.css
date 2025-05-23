@@ -1,10 +1,8 @@
-/**
- * SPDX-License-Identifier: Apache-2.0
+/* SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-.flow-wrapper .snackbar {
-  display: none;
+.snackbar {
   position: fixed;
   bottom: 0;
   right: 0;
@@ -15,78 +13,144 @@
   border-radius: 5px;
   box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
   max-width: 300px;
-}
-
-.flow-wrapper .snackbar.show {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
   display: block;
+  font-family: inherit;
 }
 
-.flow-wrapper .snackbar.show .message {
-  margin-right: 20px;
+.snackbar.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.flow-wrapper .snackbar .close {
+.snackbar.hide {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.snackbar .message {
+  margin-right: 30px;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.snackbar.with-details .message {
+  margin-bottom: 10px;
+}
+
+/* Close button */
+.snackbar .close {
   position: absolute;
   top: 0;
   right: 0;
   padding: 15px;
   cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 0 5px 0 0;
+  transition: background-color 0.2s ease;
 }
 
-.flow-wrapper .snackbar .close:hover {
-  background-color: #444;
+.snackbar .close:hover,
+.snackbar .close:focus {
+  background-color: rgba(0, 0, 0, 0.1);
+  outline: none;
 }
 
-.flow-wrapper .snackbar.error {
+.snackbar .close:focus {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Details section */
+.snackbar details {
+  margin-top: 10px;
+}
+
+.snackbar details summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 5px 0;
+  outline: none;
+  border-radius: 3px;
+}
+
+.snackbar details summary:hover,
+.snackbar details summary:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 5px;
+}
+
+.snackbar details .details-content {
+  margin-top: 5px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Error level */
+.snackbar.error {
   background-color: #d32f2f;
 }
 
-.flow-wrapper .snackbar.error .close:hover {
-  background-color: #f00;
+.snackbar.error .close:hover,
+.snackbar.error .close:focus {
+  background-color: rgba(255, 0, 0, 0.2);
 }
 
-.flow-wrapper .snackbar.success {
+/* Success level */
+.snackbar.success {
   background-color: #38903d;
 }
 
-.flow-wrapper .snackbar.success .close:hover {
-  background-color: #2e7d32;
+.snackbar.success .close:hover,
+.snackbar.success .close:focus {
+  background-color: rgba(46, 125, 50, 0.3);
 }
 
-.flow-wrapper .snackbar.warning {
+/* Warning level */
+.snackbar.warning {
   background-color: #fbc02d;
   color: #000 !important;
 }
 
-.flow-wrapper .snackbar.warning .close:hover {
-  background-color: #f9a825;
+.snackbar.warning .close:hover,
+.snackbar.warning .close:focus {
+  background-color: rgba(249, 168, 37, 0.3);
 }
 
-.flow-wrapper .snackbar.info {
+.snackbar.warning .close {
+  color: #000;
+}
+
+.snackbar.warning details .details-content {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000;
+}
+
+/* Info level */
+.snackbar.info {
   background-color: #1866b3;
 }
 
-.flow-wrapper .snackbar.info .close:hover {
-  background-color: #0d47a1;
+.snackbar.info .close:hover,
+.snackbar.info .close:focus {
+  background-color: rgba(13, 71, 161, 0.3);
 }
 
-.flow-wrapper.dark .sidebar-toggle-button div {
-  background-color: #666;
-}
-
-.flow-wrapper.light .sidebar-toggle-button div {
-  background-color: #bbb;
-}
-
-.flow-wrapper.dark .sidebar-toggle-button:hover div {
-  background-color: #eee;
-}
-
-.flow-wrapper.light .sidebar-toggle-button:hover div {
-  background-color: #111;
-}
-
-/* Snackbar inside modal */
+/* Snackbar inside modal (if you portal into modal-content) */
 dialog .modal-content .snackbar {
   position: absolute;
   bottom: 15px;
@@ -94,14 +158,13 @@ dialog .modal-content .snackbar {
   z-index: 10001;
   margin: 0;
   max-width: calc(100% - 30px);
-  animation: slide-up 0.3s ease;
 }
 
 dialog .modal-content .snackbar.show {
-  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
 dialog .modal-content .snackbar .close {
   padding: 10px;
 }
@@ -110,14 +173,35 @@ dialog .modal-content .snackbar.warning {
   color: #000 !important;
 }
 
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .snackbar {
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    margin: 10px 0;
+  }
+  dialog .modal-content .snackbar {
+    left: 15px;
+    right: 15px;
+    max-width: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .snackbar {
+    border: 2px solid currentColor;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .snackbar .close:focus {
+    box-shadow: inset 0 0 0 3px currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .snackbar {
+    transition: none;
   }
 }

@@ -6,9 +6,10 @@ import { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyflow/r
 
 import { useCallback, useMemo } from "react";
 
+import { showSnackbar } from "@waldiez/components";
 import { WaldiezEdge } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
-import { exportItem, getFlowRoot, showSnackbar } from "@waldiez/utils";
+import { exportItem, getFlowRoot } from "@waldiez/utils";
 
 /**
  * Custom hook for managing flow events and interactions

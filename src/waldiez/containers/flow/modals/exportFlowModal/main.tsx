@@ -4,8 +4,7 @@
  */
 import { memo, useCallback, useState } from "react";
 
-import { DropZone, Modal, TextInput } from "@waldiez/components";
-import { showSnackbar } from "@waldiez/utils";
+import { DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
 
 // Constants
 const HUB_URL = "https://hub.waldiez.io";

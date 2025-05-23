@@ -7,11 +7,12 @@ import { Node } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
+import { showSnackbar } from "@waldiez/components/snackbar";
 import { validateModel } from "@waldiez/containers/nodes/model/utils";
 import { WaldiezNodeModelData } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
-import { exportItem, importItem, showSnackbar } from "@waldiez/utils";
+import { exportItem, importItem } from "@waldiez/utils";
 
 /**
  * Custom hook for managing model node state and operations

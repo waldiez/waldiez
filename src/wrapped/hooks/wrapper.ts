@@ -7,8 +7,8 @@ import { useCallback, useRef, useState } from "react";
 
 import { nanoid } from "nanoid";
 
+import { showSnackbar } from "@waldiez/components";
 import { WaldiezChatMessage, WaldiezChatMessageType } from "@waldiez/types";
-import { showSnackbar } from "@waldiez/utils";
 
 import { useWebSocketActions } from "./actions";
 import { useWaldiezMessages } from "./messages";
@@ -114,7 +114,7 @@ export const useWaldiezWrapper = ({
                 level: "error",
                 flowId,
                 withCloseButton: true,
-                duration: 3000,
+                duration: 300000000,
             });
         } else {
             showSnackbar({
@@ -123,7 +123,7 @@ export const useWaldiezWrapper = ({
                 level: "success",
                 flowId,
                 withCloseButton: true,
-                duration: 3000,
+                duration: 300000000,
             });
         }
     };

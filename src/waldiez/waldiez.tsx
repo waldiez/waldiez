@@ -19,6 +19,7 @@ import "rc-slider/assets/index.css";
 
 import { loader } from "@monaco-editor/react";
 
+import { SnackbarProvider } from "@waldiez/components/snackbar";
 import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
@@ -115,33 +116,35 @@ export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezP
         }
     }, [monacoVsPath]);
     return (
-        <WaldiezThemeProvider>
-            <ErrorBoundary fallbackRender={fallbackRender}>
-                <HotkeysProvider initiallyActiveScopes={[flowId]}>
-                    <ReactFlowProvider>
-                        <SidebarProvider>
-                            <WaldiezProvider
-                                {...props}
-                                flowId={flowId}
-                                nodes={nodes}
-                                edges={edges}
-                                isReadOnly={readOnly}
-                                skipImport={skipImport}
-                                skipExport={skipExport}
-                            >
-                                <WaldiezFlowView
+        <SnackbarProvider>
+            <WaldiezThemeProvider>
+                <ErrorBoundary fallbackRender={fallbackRender}>
+                    <HotkeysProvider initiallyActiveScopes={[flowId]}>
+                        <ReactFlowProvider>
+                            <SidebarProvider>
+                                <WaldiezProvider
+                                    {...props}
                                     flowId={flowId}
+                                    nodes={nodes}
+                                    edges={edges}
+                                    isReadOnly={readOnly}
                                     skipImport={skipImport}
                                     skipExport={skipExport}
-                                    skipHub={skipHub}
-                                    chat={chat}
-                                />
-                            </WaldiezProvider>
-                        </SidebarProvider>
-                    </ReactFlowProvider>
-                </HotkeysProvider>
-            </ErrorBoundary>
-        </WaldiezThemeProvider>
+                                >
+                                    <WaldiezFlowView
+                                        flowId={flowId}
+                                        skipImport={skipImport}
+                                        skipExport={skipExport}
+                                        skipHub={skipHub}
+                                        chat={chat}
+                                    />
+                                </WaldiezProvider>
+                            </SidebarProvider>
+                        </ReactFlowProvider>
+                    </HotkeysProvider>
+                </ErrorBoundary>
+            </WaldiezThemeProvider>
+        </SnackbarProvider>
     );
 };
 
