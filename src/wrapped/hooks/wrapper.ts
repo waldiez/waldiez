@@ -114,7 +114,7 @@ export const useWaldiezWrapper = ({
                 level: "error",
                 flowId,
                 withCloseButton: true,
-                duration: 300000000,
+                duration: 5000,
             });
         } else {
             showSnackbar({
@@ -123,7 +123,7 @@ export const useWaldiezWrapper = ({
                 level: "success",
                 flowId,
                 withCloseButton: true,
-                duration: 300000000,
+                duration: 3000,
             });
         }
     };
