@@ -13,14 +13,11 @@ export const SidebarProvider: React.FC<{
     const initiallyCollapsed = typeof collapsed === "boolean" ? collapsed : getIsSidebarCollapsedFromBody();
     const [isCollapsed, setIsCollapsed] = useState(initiallyCollapsed);
     useEffect(() => {
-        setSidebarCollapsedToBody(getIsSidebarCollapsedFromBody());
-    }, []);
+        setSidebarCollapsedToBody(isCollapsed);
+    }, [isCollapsed]);
 
     const toggleSidebar = () => {
-        setIsCollapsed(prev => {
-            setSidebarCollapsedToBody(!prev);
-            return !prev;
-        });
+        setIsCollapsed(prev => !prev);
     };
 
     return (

@@ -123,7 +123,6 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onReasoningDragStart,
         onCaptainDragStart,
         onManagerDragStart,
-        // Add the map of handlers for more flexibility
         agentDragHandlers,
     };
 };
