@@ -28,7 +28,9 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DOT_LOCAL = ROOT_DIR / ".local"
 DOT_LOCAL.mkdir(exist_ok=True, parents=True)
 
-REPO_URL = "https://raw.githubusercontent.com/waldiez/examples/refs/heads/main"
+REPO_URL = (
+    "https://raw.githubusercontent.com/waldiez/waldiez/refs/heads/next/examples"
+)
 EXAMPLES = [
     "01 - Standup Comedians/Standup Comedians 1.waldiez",
     "01 - Standup Comedians/Standup Comedians 2.waldiez",
@@ -38,13 +40,12 @@ EXAMPLES = [
     "03 - Reflection/Reflection.waldiez",
     "04 - Tools/Tool Use.waldiez",
     "05 - Coding/Coding.waldiez",
-    "06 - Planning/Planning 1.waldiez",
-    "06 - Planning/Planning 2.waldiez",
-    "07 - Group chat with RAG/RAG.waldiez",
-    "08 - ReAct using Tavily/ReAct.waldiez",
-    "09 - AutoDefence/AutoDefense Flow.waldiez",
-    "10 - Travel Planning/Travel Planning.waldiez",
-    "11 - Swarm/Swarm.waldiez",
+    # "06 - Planning/Planning 1.waldiez",
+    # "07 - Group chat with RAG/RAG.waldiez",
+    # "08 - ReAct using Tavily/ReAct.waldiez",
+    # "09 - AutoDefence/AutoDefense Flow.waldiez",
+    # "10 - Travel Planning/Travel Planning.waldiez",
+    # "11 - Swarm/Swarm.waldiez",
     "12 - Reasoning/Chain-of-Thought Reasoning with DFS.waldiez",
     "13 - Captain/1 - Simple.waldiez",
     "13 - Captain/2 - With agent lib.waldiez",

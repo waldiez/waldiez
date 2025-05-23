@@ -247,6 +247,7 @@ forlint = """
 hatch run format
 hatch run lint
 """
+smoke = "python scripts/smoke.py"
 
 docs = "mkdocs build -d site"
 build = "python -m build --wheel --sdist --outdir out/dist"
@@ -256,6 +257,7 @@ check = """
 hatch run format
 hatch run lint
 hatch run test
+hatch run smoke
 """
 
 matrix-test = "hatch run test:test"
