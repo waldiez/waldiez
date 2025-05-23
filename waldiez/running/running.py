@@ -6,6 +6,7 @@ import asyncio
 import datetime
 import io
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -70,6 +71,23 @@ async def a_chdir(to: Union[str, Path]) -> AsyncIterator[None]:
         yield
     finally:
         os.chdir(old_cwd)
+
+
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences from text.
+
+    Parameters
+    ----------
+    text : str
+        The text to strip.
+
+    Returns
+    -------
+    str
+        The text without ANSI escape sequences.
+    """
+    ansi_pattern = re.compile(r"\x1b\[[0-9;]*m|\x1b\[.*?[@-~]")
+    return ansi_pattern.sub("", text)
 
 
 def before_run(
@@ -138,10 +156,10 @@ def install_requirements(
         ) as proc:
             if proc.stdout:
                 for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
-                    printer(line.strip())
+                    printer(strip_ansi(line.strip()))
             if proc.stderr:
                 for line in io.TextIOWrapper(proc.stderr, encoding="utf-8"):
-                    printer(line.strip())
+                    printer(strip_ansi(line.strip()))
     finally:
         if not in_virtualenv():
             # restore the old env var
@@ -182,10 +200,10 @@ async def a_install_requirements(
         )
         if proc.stdout:
             async for line in proc.stdout:
-                printer(line.decode().strip())
+                printer(strip_ansi(line.decode().strip()))
         if proc.stderr:
             async for line in proc.stderr:
-                printer(line.decode().strip())
+                printer(strip_ansi(line.decode().strip()))
     finally:
         if not in_virtualenv():
             if break_system_packages:
