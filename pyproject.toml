@@ -3,7 +3,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatchling==1.27.0",
-  "hatch-nodejs-version",
+  "hatch-nodejs-version==0.3.2",
 ]
 [project]
 classifiers = [
@@ -25,7 +25,7 @@ dependencies = [
   "aiofiles==24.1.0",
   "aiosqlite==0.21.0",
   "asyncer==0.0.8",
-  "numpy<=2.2.5",
+  "numpy<=2.2.6",
   "nest_asyncio==1.6.0",
   "graphviz==0.20.3",
   "pandas>=2",
@@ -35,6 +35,7 @@ dependencies = [
   "pydantic>=2.10.2,<3",
   "typer>=0.9,<0.16",
   # until this: https://github.com/fastapi/typer/pull/1145
+  # or this: https://github.com/fastapi/typer/pull/1222
   "click<8.2",
   "httpx<1",
 ]
@@ -121,6 +122,7 @@ ag2_extras = [
   "beautifulsoup4",
   "sentence-transformers ;sys_platform == 'linux'",
   "huggingface-hub",
+  "hf-xet>=1.1.2,<2.0.0; platform_machine == 'x86_64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'ARM64' or platform_machine == 'aarch64'",
   "qdrant-client[fastembed] ;sys_platform != 'win32'",
   "qdrant-client[fastembed] ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "pgvector>=0.4.0",
@@ -152,16 +154,16 @@ dev = [
   "pandas-stubs==2.2.3.250308",
   "pre-commit==4.2.0",
   "pydocstyle==6.3.0",
-  "pylint==3.3.6",
+  "pylint==3.3.7",
   "python-dotenv==1.1.0",
-  "ruff==0.11.9",
+  "ruff==0.11.11",
   "types-pyyaml==6.0.12.20250402",
   "yamllint==1.37.1",
   "toml==0.10.2; python_version <= '3.10'",
-  "types-jsonschema==4.23.0.20241208",
+  "types-jsonschema==4.23.0.20250516",
   "types-redis==4.6.0.20241004",
   "types-toml==0.10.8.20240310",
-  "types-requests==2.32.0.20250328",
+  "types-requests==2.32.0.20250515",
   "watchdog==6.0.0",
 ]
 docs = [
@@ -174,7 +176,7 @@ docs = [
   "mkdocs-minify-html-plugin==0.3.1",
   "mkdocstrings[crystal,python]==0.29.1",
   "mkdocstrings-python==1.16.10",
-  "mkdocs-awesome-nav",
+  "mkdocs-awesome-nav==3.1.2",
   "mkdocs-open-in-new-tab==1.0.8",
 ]
 jupyter = [

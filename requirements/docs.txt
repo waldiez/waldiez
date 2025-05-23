@@ -1,7 +1,7 @@
 -r main.txt
 mdx-include==1.4.2
 mdx_truly_sane_lists==1.3
-mkdocs-awesome-nav
+mkdocs-awesome-nav==3.1.2
 mkdocs-jupyter==0.25.1
 mkdocs-macros-plugin==1.3.7
 mkdocs-material==9.6.14
