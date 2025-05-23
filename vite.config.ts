@@ -86,6 +86,7 @@ export default defineConfig(({ command }) => ({
                     "react-icons/md": "reactIconsMd",
                     "@monaco-editor/react": "react$1",
                     react: "react",
+                    "react-dom": "reactDom",
                     zustand: "zustand",
                     zundo: "zundo",
                     jszip: "jszip",
@@ -152,8 +153,11 @@ export default defineConfig(({ command }) => ({
             all: true,
         },
         onConsoleLog(log: string, type: "stdout" | "stderr"): boolean | void {
-            // const logLower = log.toLowerCase();
+            // execpted warnings
+            // snackbar provider might not be mounted (we only render specific components in some tests)
+            const isSnackbarNotMounted = log.includes("SnackbarProvider is not mounted");
             const isNotFound = log.includes("not found");
+            const isNoItemToExport = log.includes("No item to export");
             // svg circle:
             // Warning: Received NaN for the `x` attribute.
             // Warning: Received NaN for the `y` attribute.
@@ -161,23 +165,24 @@ export default defineConfig(({ command }) => ({
             // Warning: Received NaN for the `cx` attribute.
             // Warning: Received NaN for the `cy` attribute.
             const isReceivedNaNRexExp = /Received NaN for the `(.*)` attribute/;
+            // let's keep the act warnings, they might be useful
             // Warning: An update to x inside a test was not wrapped in act(...).
-            const isNoActWarning = log.includes(
-                "When testing, code that causes React state updates should be wrapped into act",
-            );
+            const isNoActWarning =
+                log.includes("should be wrapped into act") || log.includes("configured to support act(...)");
             // SyntaxError: Unexpected token 'o', "not a json" is not valid JSON
             // SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
             const isNotValidJSON = log.includes("SyntaxError: Expected property name or '}' in JSON");
             const isReceivedNaN = isReceivedNaNRexExp.test(log);
             const isErrorBoundary = log.includes("Cannot read properties of undefined (reading 'x')");
-            if (
-                type === "stderr" &&
-                (isNotFound || isErrorBoundary || isReceivedNaN || isNoActWarning || isNotValidJSON)
-            ) {
-                // we expect these warnings in `non-browser` tests
-                return false;
-            }
-            return true;
+            const shouldBeignored =
+                isNotFound ||
+                isNoItemToExport ||
+                isErrorBoundary ||
+                isReceivedNaN ||
+                isNoActWarning ||
+                isNotValidJSON ||
+                isSnackbarNotMounted;
+            return type === "stderr" && !shouldBeignored;
         },
         // global test setup
         setupFiles: isBrowserTest ? [] : ["./vitest.setup.tsx"],

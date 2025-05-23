@@ -35,6 +35,18 @@ export default defineConfig(({ command }) => {
                         }
                     },
                 },
+                onwarn(warning, warn) {
+                    // Suppress specific "empty chunk" harmless warnings
+                    if (
+                        warning.code === "EMPTY_BUNDLE" &&
+                        (warning.message.includes("micromark-extension-gfm-tagfilter") ||
+                            warning.message.includes("micromark-util-encode") ||
+                            warning.message.includes("zwitch"))
+                    ) {
+                        return;
+                    }
+                    warn(warning);
+                },
             },
         },
         resolve: {
