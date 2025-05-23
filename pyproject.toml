@@ -211,9 +211,9 @@ dependencies = ["waldiez[dev,test,docs,ag2_extras,redis,websockets]"]
 
 [tool.hatch.envs.default.scripts]
 test = """pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests"""
-test-models = "pytest -c pyproject.toml -vv tests/models"
-test-exporting = "pytest -c pyproject.toml -vv tests/exporting"
-test-io = "pytest -c pyproject.toml -vv tests/io"
+test-models = "pytest -c pyproject.toml --cov=waldiez/models --cov-branch --cov-report=term-missing -vv tests/models"
+test-exporting = "pytest -c pyproject.toml --cov=waldiez/exporting --cov-branch --cov-report=term-missing -vv tests/exporting"
+test-io = "pytest -c pyproject.toml -ss --cov=waldiez/io --cov-branch --cov-report=term-missing -vv tests/io"
 
 format-black = "black --config pyproject.toml waldiez tests scripts"
 format-autoflake = "autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive waldiez tests scripts"
