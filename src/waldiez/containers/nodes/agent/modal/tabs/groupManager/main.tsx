@@ -88,7 +88,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
     /**
      * Determine if "Afterwards" tab should be shown
      */
-    const showAfterwardsTab = data.speakers?.selectionMethod === "default";
+    const showAfterwardsTab = !["manual", "auto"].includes(data.speakers?.selectionMethod); // === "default";
 
     return (
         <TabItems activeTabIndex={activeTabIndex}>
