@@ -7,6 +7,13 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+- Breaking news and changes.
+- Many ui changes, including a chat ui for running a flow.
+- Image usage support with ag2 Multimodal agent.
+- Swarm depraction and migration to group chats as in ag2.
+- Several bun fixes.
+- Dependency upates.
+
 ## v0.4.7
 
 - Fixed a bug with flow not running if using a swarm chat.
