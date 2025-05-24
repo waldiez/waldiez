@@ -296,6 +296,7 @@ class WaldiezFlow(WaldiezBase):
     ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow."""
         if self._is_group_chat:
+            print("Group chat flow detected, using group chat flow.")
             return self._get_group_chat_flow()
         # in the chats, there is the 'order' field, we use this,
         # we only keep the ones with order >=0
@@ -441,15 +442,16 @@ class WaldiezFlow(WaldiezBase):
             If the manager's group chat has no members.
         """
         all_members = list(self.data.agents.members)
+        self._validate_group_chat(all_members)
         if len(all_members) == 1:
             return self._validate_single_agent_mode(all_members[0])
-        if not self.ordered_flow:
+        ordered_flow = self.ordered_flow  # could be empty (if group chat)
+        if not ordered_flow and self._ordered_flow is None:
             raise ValueError("The ordered flow is empty.")
         model_ids = self._validate_flow_models()
         tools_ids = self._validate_flow_tools()
         self.data.agents.validate_flow(model_ids, tools_ids)
         self._validate_agent_connections()
-        self._validate_group_chat(all_members)
         return self
 
     def _validate_flow_models(self) -> list[str]:

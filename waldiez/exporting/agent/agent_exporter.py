@@ -26,6 +26,7 @@ from .utils import (
     get_agent_code_execution_config,
     get_captain_agent_extras,
     get_group_manager_extras,
+    get_group_member_extras,
     get_is_termination_message,
     get_rag_user_extras,
     get_reasoning_agent_extras,
@@ -127,7 +128,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         # or the group pattern (so no agent is defined)
         # (or nothing if not a group manager)
         # and the extra import (pattern class to use) if pattern is used.
-        self._group = get_group_manager_extras(
+        self._group_manager_extras = get_group_manager_extras(
             agent=self.agent,
             initial_chats=self.initial_chats,
             group_chat_members=self.group_chat_members,
@@ -137,6 +138,18 @@ class AgentExporter(BaseExporter, ExporterMixin):
             llm_config_getter=self.get_agent_llm_config_arg,
             cache_seed=self.cache_seed,
             serializer=self.serializer,
+        )
+        # extra agent args,
+        # before the agent and
+        # after the agent (like handoff registrations)
+        self._group_member_extras = get_group_member_extras(
+            agent=self.agent,
+            chats=self.chats,
+            agent_names=self.agent_names,
+            tool_names=self.tool_names,
+            is_async=self.is_async,
+            serializer=self.serializer,
+            string_escape=self.string_escape,
         )
 
     def get_imports(self) -> Optional[list[tuple[str, ImportPosition]]]:
@@ -159,9 +172,9 @@ class AgentExporter(BaseExporter, ExporterMixin):
         # if the agent has tools, add the register_function import.
         if self.agent.data.tools:
             agent_imports.add("from autogen import register_function")
-        if self._group[2]:
+        if self._group_manager_extras[2]:
             # if we use a group pattern, let's import the one we need.
-            agent_imports.update(self._group[2])
+            agent_imports.update(self._group_manager_extras[2])
         return sorted(
             [(import_string, position) for import_string in agent_imports],
             key=lambda x: x[0],
@@ -195,8 +208,8 @@ class AgentExporter(BaseExporter, ExporterMixin):
             before_agent_string += self._code_execution[0]
         if self._termination[1]:
             before_agent_string += self._termination[1]
-        if self._group[0]:
-            before_agent_string += self._group[0]
+        if self._group_manager_extras[0]:
+            before_agent_string += self._group_manager_extras[0]
         if self._rag[0]:
             before_agent_string += self._rag[0]
         if before_agent_string:
@@ -236,7 +249,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         Optional[str]
             The exported agent.
         """
-        if self._group[0] and not self._group[1]:
+        if self._group_manager_extras[0] and not self._group_manager_extras[1]:
             # pattern usage (no need to defaine an agent)
             return None
         agent = self.agent
@@ -244,7 +257,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
         retrieve_arg = self._rag[1]
         is_termination = self._termination[0]
         code_execution_arg = self._code_execution[1]
-        group_chat_arg = self._group[1]
+        group_chat_arg = self._group_manager_extras[1]
         system_message_arg = self.get_system_message_arg()
         default_auto_reply: str = '""'
         if agent.data.agent_default_auto_reply:
@@ -297,7 +310,7 @@ class AgentExporter(BaseExporter, ExporterMixin):
             # '    agents=[assistant, rag_user],
             # '    enable_clear_history=True,
             # ...
-            if self._group[1]:  # group chat and argument
+            if self._group_manager_extras[1]:  # group chat and argument
                 after_export.append(
                     (
                         agent_string,

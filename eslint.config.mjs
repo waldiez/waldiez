@@ -8,6 +8,7 @@ import { default as eslint, default as eslintJs } from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import headers from "eslint-plugin-headers";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import reactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 import eslintPluginTsDoc from "eslint-plugin-tsdoc";
 import path from "path";
@@ -55,6 +56,7 @@ const defaultConfig = eslintTs.config({
         "react-refresh": eslintPluginReactRefresh,
         import: legacyPlugin("eslint-plugin-import", "import"),
         tsdoc: eslintPluginTsDoc,
+        "react-hooks": reactHooks,
         headers,
     },
     rules: {
@@ -105,6 +107,8 @@ const defaultConfig = eslintTs.config({
                 },
             },
         ],
+        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/rules-of-hooks": "error",
         "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [

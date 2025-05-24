@@ -356,7 +356,7 @@ def get_after_work_target(
     if target.target_type == "AskUserTarget":
         return "AskUserTarget()", f"{_IMPORT_PREFIX} import AskUserTarget"
     if target.target_type == "AgentTarget":
-        target_name = agent_names[target.target]
+        target_name = agent_names[target.value]
         return (
             f"AgentTarget(agent={target_name})",
             f"{_IMPORT_PREFIX} import AgentTarget",
@@ -379,7 +379,7 @@ def get_after_work_target(
             f"{_IMPORT_PREFIX}.targets.transition_target "
             "import RandomAgentTarget"
         )
-        target_names = [agent_names[agent_id] for agent_id in target.target]
+        target_names = [agent_names[agent_id] for agent_id in target.value]
         if not target_names:
             target_names = [
                 agent_names[agent.id] for agent in group_chat_members

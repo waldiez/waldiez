@@ -6,7 +6,7 @@ import { useCallback, useMemo } from "react";
 
 import { nanoid } from "nanoid";
 
-import type { WaldiezAgentHandoff, WaldiezHandoffCondition, WaldiezLLMCondition } from "@waldiez/types";
+import type { WaldiezAgentHandoff, WaldiezHandoffCondition, WaldiezLLMBasedCondition } from "@waldiez/types";
 
 type UseNestedChatHandoffOptions = {
     handoffs: WaldiezAgentHandoff[];
@@ -17,8 +17,8 @@ export const useNestedChatHandoff = ({ handoffs, setHandoffs }: UseNestedChatHan
     const handoff = useMemo(() => {
         return handoffs.find(handoff => {
             const inConditions = [
-                ...(handoff.llm_conditions ?? []),
-                ...(handoff.context_conditions ?? []),
+                ...(handoff.llm_transitions ?? []),
+                ...(handoff.context_transitions ?? []),
             ].some(c => c.target.target_type === "NestedChatTarget");
 
             const inAfterWork = handoff.after_work?.target_type === "NestedChatTarget";
@@ -28,7 +28,9 @@ export const useNestedChatHandoff = ({ handoffs, setHandoffs }: UseNestedChatHan
     }, [handoffs]);
 
     const condition = useMemo(() => {
-        return handoff?.llm_conditions?.[0]?.condition ?? handoff?.context_conditions?.[0]?.condition ?? null;
+        return (
+            handoff?.llm_transitions?.[0]?.condition ?? handoff?.context_transitions?.[0]?.condition ?? null
+        );
     }, [handoff]);
 
     const onDataChange = useCallback(
@@ -59,7 +61,7 @@ export const useNestedChatHandoff = ({ handoffs, setHandoffs }: UseNestedChatHan
     return { condition, onDataChange };
 };
 
-const isLLM = (cond: WaldiezHandoffCondition | null): cond is WaldiezLLMCondition => {
+const isLLM = (cond: WaldiezHandoffCondition | null): cond is WaldiezLLMBasedCondition => {
     return (
         cond !== null && (cond.condition_type === "string_llm" || cond.condition_type === "context_str_llm")
     );
@@ -68,13 +70,13 @@ const isLLM = (cond: WaldiezHandoffCondition | null): cond is WaldiezLLMConditio
 const createNewHandoff = (condition: WaldiezHandoffCondition): WaldiezAgentHandoff => {
     const newTarget = {
         target_type: "NestedChatTarget",
-        target: nanoid(),
+        value: nanoid(),
     } as const;
 
     return {
         id: nanoid(),
-        llm_conditions: isLLM(condition) ? [{ target: newTarget, condition }] : [],
-        context_conditions: !isLLM(condition) ? [{ target: newTarget, condition }] : [],
+        llm_transitions: isLLM(condition) ? [{ target: newTarget, condition }] : [],
+        context_transitions: !isLLM(condition) ? [{ target: newTarget, condition }] : [],
         after_work: newTarget,
     };
 };
@@ -87,8 +89,8 @@ const updateHandoff = (
     if (updated === null) {
         return {
             ...handoff,
-            llm_conditions: filterOutNestedChatTargets(handoff.llm_conditions),
-            context_conditions: filterOutNestedChatTargets(handoff.context_conditions),
+            llm_transitions: filterOutNestedChatTargets(handoff.llm_transitions),
+            context_transitions: filterOutNestedChatTargets(handoff.context_transitions),
         };
     }
 
@@ -99,18 +101,18 @@ const updateHandoff = (
     if (isLLM(updated)) {
         return {
             ...handoff,
-            llm_conditions: [
-                ...filterOutNestedChatTargets(handoff.llm_conditions),
+            llm_transitions: [
+                ...filterOutNestedChatTargets(handoff.llm_transitions),
                 { target, condition: updated },
             ],
-            context_conditions: filterOutNestedChatTargets(handoff.context_conditions),
+            context_transitions: filterOutNestedChatTargets(handoff.context_transitions),
         };
     } else {
         return {
             ...handoff,
-            llm_conditions: filterOutNestedChatTargets(handoff.llm_conditions),
-            context_conditions: [
-                ...filterOutNestedChatTargets(handoff.context_conditions),
+            llm_transitions: filterOutNestedChatTargets(handoff.llm_transitions),
+            context_transitions: [
+                ...filterOutNestedChatTargets(handoff.context_transitions),
                 { target, condition: updated },
             ],
         };
@@ -123,8 +125,8 @@ const filterOutNestedChatTargets = (conditions: any[] = []) => {
 
 const findOrCreateNestedChatTarget = (handoff: WaldiezAgentHandoff) => {
     const target =
-        handoff.llm_conditions?.find(c => c.target.target_type === "NestedChatTarget")?.target ??
-        handoff.context_conditions?.find(c => c.target.target_type === "NestedChatTarget")?.target ??
+        handoff.llm_transitions?.find(c => c.target.target_type === "NestedChatTarget")?.target ??
+        handoff.context_transitions?.find(c => c.target.target_type === "NestedChatTarget")?.target ??
         (handoff.after_work?.target_type === "NestedChatTarget" ? handoff.after_work : undefined);
 
     return (

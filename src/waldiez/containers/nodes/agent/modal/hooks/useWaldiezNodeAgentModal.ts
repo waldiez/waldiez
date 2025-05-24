@@ -251,17 +251,6 @@ export const useWaldiezNodeAgentModal = (
     );
 
     /**
-     * Handle import loading
-     */
-    const onImportLoad = useCallback(
-        (agent: Node, jsonData: { [key: string]: unknown }) => {
-            const newAgent = importAgent(jsonData, id, true, agent?.position, false);
-            onDataChange({ ...newAgent.data });
-        },
-        [id, importAgent],
-    );
-
-    /**
      * Convert agent to RAG user type
      */
     const toRagUser = useCallback(() => {
@@ -317,6 +306,41 @@ export const useWaldiezNodeAgentModal = (
     }, [agentData, submitRagUser, submit]);
 
     /**
+     * Handle save and close button click
+     */
+    const onSaveAndClose = useCallback(() => {
+        onSave();
+        onClose();
+    }, [onSave, onClose]);
+
+    /**
+     * Handle data changes in the form
+     */
+    const onDataChange = useCallback(
+        (partialData: Partial<WaldiezNodeAgentData>) => {
+            const dirty = !isEqual({ ...agentData, ...partialData }, data);
+            // Use setTimeout to ensure state updates don't conflict
+            setTimeout(() => {
+                setAgentData(prevData => ({ ...prevData, ...partialData }));
+            }, 10);
+
+            setIsDirty(dirty);
+        },
+        [agentData, data],
+    );
+
+    /**
+     * Handle import loading
+     */
+    const onImportLoad = useCallback(
+        (agent: Node, jsonData: { [key: string]: unknown }) => {
+            const newAgent = importAgent(jsonData, id, true, agent?.position, false);
+            onDataChange({ ...newAgent.data });
+        },
+        [id, importAgent, onDataChange],
+    );
+
+    /**
      * Handle import button change
      */
     const onImport = useCallback(
@@ -352,23 +376,6 @@ export const useWaldiezNodeAgentModal = (
         setIsDirty(false);
         onClose();
     }, [id, getAgentById, onClose]);
-
-    /**
-     * Handle data changes in the form
-     */
-    const onDataChange = useCallback(
-        (partialData: Partial<WaldiezNodeAgentData>) => {
-            const dirty = !isEqual({ ...agentData, ...partialData }, data);
-
-            // Use setTimeout to ensure state updates don't conflict
-            setTimeout(() => {
-                setAgentData(prevData => ({ ...prevData, ...partialData }));
-            }, 10);
-
-            setIsDirty(dirty);
-        },
-        [agentData, data],
-    );
 
     /**
      * Handle agent type changes
@@ -411,6 +418,7 @@ export const useWaldiezNodeAgentModal = (
         onImport,
         onExport,
         onSave,
+        onSaveAndClose,
         onCancel,
     };
 };

@@ -9,12 +9,14 @@ from .code_execution import WaldiezAgentCodeExecutionConfig
 from .handoff import (
     WaldiezAgentHandoff,
     WaldiezAgentTarget,
+    WaldiezContextBasedCondition,
+    WaldiezContextBasedTransition,
     WaldiezContextStrLLMCondition,
     WaldiezExpressionContextCondition,
     WaldiezGroupOrNestedTarget,
     WaldiezHandoffCondition,
-    WaldiezOnCondition,
-    WaldiezOnContextCondition,
+    WaldiezLLMBasedCondition,
+    WaldiezLLMBasedTransition,
     WaldiezRandomAgentTarget,
     WaldiezSimpleTarget,
     WaldiezStringContextCondition,
@@ -28,6 +30,10 @@ from .termination_message import (
     IS_TERMINATION_MESSAGE_ARGS,
     IS_TERMINATION_MESSAGE_TYPES,
     WaldiezAgentTerminationMessage,
+)
+from .update_system_message import (
+    WaldiezAgentUpdateFunctionType,
+    WaldiezAgentUpdateSystemMessage,
 )
 
 __all__ = [
@@ -48,11 +54,15 @@ __all__ = [
     "WaldiezExpressionContextCondition",
     "WaldiezGroupOrNestedTarget",
     "WaldiezHandoffCondition",
-    "WaldiezOnCondition",
-    "WaldiezOnContextCondition",
+    "WaldiezLLMBasedCondition",
+    "WaldiezContextBasedCondition",
+    "WaldiezLLMBasedTransition",
+    "WaldiezContextBasedTransition",
     "WaldiezRandomAgentTarget",
     "WaldiezSimpleTarget",
     "WaldiezStringContextCondition",
     "WaldiezStringLLMCondition",
     "WaldiezTransitionTarget",
+    "WaldiezAgentUpdateSystemMessage",
+    "WaldiezAgentUpdateFunctionType",
 ]

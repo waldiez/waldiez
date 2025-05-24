@@ -5,9 +5,9 @@
 import {
     ValidTransitionTargetTypes,
     WaldiezAgentHandoff,
+    WaldiezContextBasedTransition,
     WaldiezHandoffCondition,
-    WaldiezOnCondition,
-    WaldiezOnContextCondition,
+    WaldiezLLMBasedTransition,
     WaldiezTransitionTarget,
 } from "@waldiez/models/Agent/Common";
 
@@ -68,7 +68,7 @@ const isValidCondition = (obj: unknown): obj is WaldiezHandoffCondition => {
     }
 };
 
-const isValidOnCondition = (obj: unknown): obj is WaldiezOnCondition => {
+const isValidLLMBasedTransition = (obj: unknown): obj is WaldiezLLMBasedTransition => {
     if (!obj || typeof obj !== "object") {
         return false;
     }
@@ -84,7 +84,7 @@ const isValidOnCondition = (obj: unknown): obj is WaldiezOnCondition => {
     );
 };
 
-const isValidOnContextCondition = (obj: unknown): obj is WaldiezOnContextCondition => {
+const isValidContextBasedTransition = (obj: unknown): obj is WaldiezContextBasedTransition => {
     if (!obj || typeof obj !== "object") {
         return false;
     }
@@ -113,22 +113,22 @@ const isValidHandoff = (obj: unknown): obj is WaldiezAgentHandoff => {
         return false;
     }
 
-    // Validate optional llm_conditions
-    if ("llm_conditions" in handoff) {
-        if (!Array.isArray(handoff.llm_conditions)) {
+    // Validate optional llm_transitions
+    if ("llm_transitions" in handoff) {
+        if (!Array.isArray(handoff.llm_transitions)) {
             return false;
         }
-        if (!handoff.llm_conditions.every(isValidOnCondition)) {
+        if (!handoff.llm_transitions.every(isValidLLMBasedTransition)) {
             return false;
         }
     }
 
-    // Validate optional context_conditions
-    if ("context_conditions" in handoff) {
-        if (!Array.isArray(handoff.context_conditions)) {
+    // Validate optional context_transitions
+    if ("context_transitions" in handoff) {
+        if (!Array.isArray(handoff.context_transitions)) {
             return false;
         }
-        if (!handoff.context_conditions.every(isValidOnContextCondition)) {
+        if (!handoff.context_transitions.every(isValidContextBasedTransition)) {
             return false;
         }
     }

@@ -14,8 +14,10 @@ import shutil
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import urllib3
+from jsonschema import validate
 from urllib3 import Timeout
 
 try:
@@ -51,6 +53,20 @@ EXAMPLES = [
     "13 - Captain/2 - With agent lib.waldiez",
     "13 - Captain/3 - With agent lib and tool lib.waldiez",
 ]
+
+
+def load_shared_schema() -> dict[str, Any]:
+    """Load the shared with ts schema.
+
+    Returns
+    -------
+    dict[str, Any]
+        The shared with ts schema.
+    """
+    schema_path = Path(__file__).parent.parent / "schema.json"
+    with open(schema_path, "r", encoding="utf-8") as schema_file:
+        schema = json.load(schema_file)
+    return schema
 
 
 def download_example(
@@ -114,6 +130,28 @@ def move_to_dot_local(
         shutil.move(api_keys_path, dst)
 
 
+def validate_example(example_path: str) -> None:
+    """Validate the example against the shared schema.
+
+    Parameters
+    ----------
+    example_path : str
+        The path to the example.
+
+    Raises
+    ------
+    AssertionError
+        If the example is not valid.
+    """
+    with open(example_path, "r", encoding="utf-8") as file:
+        flow_data = json.load(file)
+    shared_schema = load_shared_schema()
+    try:
+        validate(instance=flow_data, schema=shared_schema)
+    except Exception as e:
+        raise AssertionError(f"Example {example_path} is not valid: {e}") from e
+
+
 def convert_examples() -> None:
     """Check if we can load and convert the examples in the git repo.
 
@@ -132,6 +170,8 @@ def convert_examples() -> None:
         os.makedirs(os.path.dirname(example_path), exist_ok=True)
         print(f"Downloading {example} ...")
         download_example(http, example_url, example_path)
+        print(f"Validating {example} ...")
+        validate_example(example_path)
         print(f"Converting {example} ...")
         flow = WaldiezExporter.load(Path(example_path))
         output_path = example_path.replace(".waldiez", ".py")
@@ -140,6 +180,7 @@ def convert_examples() -> None:
             # pylint: disable=broad-exception-raised
             raise Exception(f"Failed to convert {example}")
         move_to_dot_local(example_dir, example_path, flow.waldiez.name)
+        print(f"Example {example} looks good ...\n")
     shutil.rmtree(temp_dir)
 
 

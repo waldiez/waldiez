@@ -47,31 +47,31 @@ export const useHandoffOrdering = (
 
             // Process all handoffs to update orders
             newHandoffs.forEach(handoff => {
-                if (!handoff.llm_conditions) {
+                if (!handoff.llm_transitions) {
                     return;
                 }
 
-                handoff.llm_conditions.forEach(condition => {
+                handoff.llm_transitions.forEach(transition => {
                     // Check for item1
                     if (
                         (item1.target.target_type === "AgentTarget" &&
-                            condition.target.target_type === "AgentTarget" &&
-                            condition.target.target === item1.target.target) ||
+                            transition.target.target_type === "AgentTarget" &&
+                            transition.target.value === item1.target.value) ||
                         (item1.target.target_type === "NestedChatTarget" &&
-                            condition.target.target_type === "NestedChatTarget")
+                            transition.target.target_type === "NestedChatTarget")
                     ) {
-                        condition.target.order = order2;
+                        transition.target.order = order2;
                     }
 
                     // Check for item2
                     if (
                         (item2.target.target_type === "AgentTarget" &&
-                            condition.target.target_type === "AgentTarget" &&
-                            condition.target.target === item2.target.target) ||
+                            transition.target.target_type === "AgentTarget" &&
+                            transition.target.value === item2.target.value) ||
                         (item2.target.target_type === "NestedChatTarget" &&
-                            condition.target.target_type === "NestedChatTarget")
+                            transition.target.target_type === "NestedChatTarget")
                     ) {
-                        condition.target.order = order1;
+                        transition.target.order = order1;
                     }
                 });
             });
@@ -85,22 +85,22 @@ export const useHandoffOrdering = (
 
             // Check if handoffs exist for these items
             const hasHandoffForItem1 = newHandoffs.some(h =>
-                h.llm_conditions?.some(
+                h.llm_transitions?.some(
                     c =>
                         (item1.target.target_type === "AgentTarget" &&
                             c.target.target_type === "AgentTarget" &&
-                            c.target.target === item1.target.target) ||
+                            c.target.value === item1.target.value) ||
                         (item1.target.target_type === "NestedChatTarget" &&
                             c.target.target_type === "NestedChatTarget"),
                 ),
             );
 
             const hasHandoffForItem2 = newHandoffs.some(h =>
-                h.llm_conditions?.some(
+                h.llm_transitions?.some(
                     c =>
                         (item2.target.target_type === "AgentTarget" &&
                             c.target.target_type === "AgentTarget" &&
-                            c.target.target === item2.target.target) ||
+                            c.target.value === item2.target.value) ||
                         (item2.target.target_type === "NestedChatTarget" &&
                             c.target.target_type === "NestedChatTarget"),
                 ),
@@ -110,7 +110,7 @@ export const useHandoffOrdering = (
             if (!hasHandoffForItem1 && item1.target.target_type === "AgentTarget") {
                 newHandoffs.push({
                     id: `handoff-${item1.id}`,
-                    llm_conditions: [
+                    llm_transitions: [
                         {
                             target: {
                                 ...item1.target,
@@ -118,7 +118,7 @@ export const useHandoffOrdering = (
                             },
                             condition: {
                                 condition_type: "string_llm",
-                                prompt: `Handoff to agent ${getAgentName(item1.target.target)}`,
+                                prompt: `Handoff to agent ${getAgentName(item1.target.value)}`,
                             },
                         },
                     ],
@@ -129,7 +129,7 @@ export const useHandoffOrdering = (
             if (!hasHandoffForItem2 && item2.target.target_type === "AgentTarget") {
                 newHandoffs.push({
                     id: `handoff-${item2.id}`,
-                    llm_conditions: [
+                    llm_transitions: [
                         {
                             target: {
                                 ...item2.target,
@@ -137,7 +137,7 @@ export const useHandoffOrdering = (
                             },
                             condition: {
                                 condition_type: "string_llm",
-                                prompt: `Handoff to agent ${getAgentName(item2.target.target)}`,
+                                prompt: `Handoff to agent ${getAgentName(item2.target.value)}`,
                             },
                         },
                     ],
@@ -156,11 +156,11 @@ export const useHandoffOrdering = (
 
                 newHandoffs.push({
                     id: "handoff-nested-chat",
-                    llm_conditions: [
+                    llm_transitions: [
                         {
                             target: {
                                 target_type: "NestedChatTarget",
-                                target: "nested-chat",
+                                value: "nested-chat",
                                 order: nestedChatOrder,
                             },
                             condition: {

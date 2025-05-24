@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { SingleValue } from "@waldiez/components";
@@ -46,9 +46,6 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     });
     const isEdgesDirty = !isEqual(sortedEdgesState, sortedEdges);
     const [isDirty, setIsDirty] = useState<boolean>(isDataDirty || isEdgesDirty);
-    useEffect(() => {
-        reset();
-    }, [isOpen]);
     const onSubmit = () => {
         updateFlowInfo(flowData);
         if (!flowData.isAsync) {
@@ -70,7 +67,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         onFlowChanged();
         setIsDirty(false);
     };
-    const reset = () => {
+    const reset = useCallback(() => {
         const { name, description, requirements, tags, isAsync, cacheSeed } = getFlowInfo();
         setFlowData({
             name,
@@ -84,7 +81,10 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         setSortedEdgesState(used);
         setRemainingEdgeState(remaining);
         setIsDirty(false);
-    };
+    }, [getFlowEdges, getFlowInfo]);
+    useEffect(() => {
+        reset();
+    }, [isOpen, reset]);
     const onCancel = () => {
         reset();
         onClose();

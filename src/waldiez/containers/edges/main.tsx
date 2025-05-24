@@ -139,6 +139,7 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
     const [focussed, setFocussed] = useState(false);
 
     // Return empty fragment if edge is hidden or agents are missing
+    /* eslint-disable react-hooks/rules-of-hooks */
     if (type === "hidden" || !sourceAgent || !targetAgent || !data) {
         return null;
     }

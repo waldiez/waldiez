@@ -13,16 +13,18 @@ import { WaldiezAgentToolsProps } from "@waldiez/containers/nodes/agent/modal/ta
  * Allows adding, viewing, and removing tools with their executors
  */
 export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
-    const { id, data, tools } = props;
+    const { id, data, tools, skipExecutor } = props;
 
     const {
         toolOptions,
         agentOptions,
         selectedTool,
+        selectedTools,
         selectedExecutor,
         getToolName,
         getAgentName,
         onSelectedToolChange,
+        onSelectedToolsChange,
         onSelectedExecutorChange,
         onAddTool,
         onRemoveTool,
@@ -33,6 +35,25 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
         return (
             <div className="agent-panel agent-tools-panel margin-bottom-10">
                 <div className="margin-top-10 margin-left-10">No tools found in the workspace</div>
+            </div>
+        );
+    }
+
+    if (skipExecutor === true) {
+        return (
+            <div className="agent-panel agent-tools-panel margin-bottom-10">
+                <div className="agent-panel-select-tools">
+                    <label htmlFor={`select-agent-tools-${id}`}>Tools:</label>
+                    <Select
+                        options={toolOptions}
+                        onChange={onSelectedToolsChange}
+                        value={selectedTools}
+                        isMulti={true}
+                        isClearable={true}
+                        inputId={`select-agent-tool-${id}`}
+                        aria-label="Select tools"
+                    />
+                </div>
             </div>
         );
     }

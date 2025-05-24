@@ -109,7 +109,7 @@ export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezP
         checkInitialBodySidebarClass();
         // make sure no leftover lock
         window.localStorage.removeItem(`snackbar-${flowId}.lock`);
-    }, []);
+    }, [flowId]);
     useEffect(() => {
         if (monacoVsPath) {
             loader.config({ paths: { vs: monacoVsPath } });

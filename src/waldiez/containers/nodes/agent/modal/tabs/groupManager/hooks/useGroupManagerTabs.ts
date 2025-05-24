@@ -248,8 +248,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
             const newHandoff = {
                 id: nanoid(),
                 after_work: target,
-                target_type: target.target_type,
-                order: target.order,
             };
 
             if (newHandoffs) {

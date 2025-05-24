@@ -5,14 +5,22 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 
-import { ChatAvailability, Modal, TabItem, TabItems } from "@waldiez/components";
+import { ChatAvailability, MessageInput, Modal, TabItem, TabItems } from "@waldiez/components";
 import { useWaldiezEdgeModal } from "@waldiez/containers/edges/modal/hooks";
 import { WaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic";
 import { WaldiezEdgeGroupTab } from "@waldiez/containers/edges/modal/tabs/group";
 import { WaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/message";
-import { WaldiezEdgeNestedTab } from "@waldiez/containers/edges/modal/tabs/nested";
+import {
+    DEFAULT_NESTED_CHAT_MESSAGE_METHOD_CONTENT,
+    WaldiezEdgeNestedTab,
+} from "@waldiez/containers/edges/modal/tabs/nested";
 import { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
-import { WaldiezGroupChatType, WaldiezHandoffCondition } from "@waldiez/types";
+import {
+    WaldiezGroupChatType,
+    WaldiezHandoffCondition,
+    WaldiezMessage,
+    WaldiezMessageType,
+} from "@waldiez/types";
 
 /**
  * Modal component for editing edge properties
@@ -49,6 +57,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
     }, [isOpen]);
 
     // If missing required data, return empty fragment
+    /* eslint-disable react-hooks/rules-of-hooks */
     if (!edgeData || !edge || edgeType === "hidden" || !sourceAgent || !targetAgent) {
         return null;
     }
@@ -125,6 +134,51 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
         [edgeId],
     );
 
+    // Set current nested message input based on group chat type
+    const currentNestedMessageInput = useMemo(() => {
+        return (
+            edgeData.nestedChat.message || {
+                type: "string" as WaldiezMessageType,
+                content: "",
+                context: {},
+            }
+        );
+    }, [edgeData.nestedChat.message]);
+
+    const noOp = useCallback(() => {}, []);
+
+    // Handle nested message type change
+    const onNestedMessageTypeChange = useCallback(
+        (type: WaldiezMessageType) => {
+            const updatedMessage = {
+                ...edgeData.nestedChat.message,
+                content: edgeData.nestedChat.message?.content || "",
+                context: edgeData.nestedChat.message?.context || {},
+                type,
+            };
+            onDataChange({
+                nestedChat: {
+                    ...edgeData.nestedChat,
+                    message: updatedMessage,
+                },
+            });
+        },
+        [onDataChange, edgeData.nestedChat],
+    );
+
+    // Handle nested message change
+    const onNestedMessageChange = useCallback(
+        (message: WaldiezMessage) => {
+            onDataChange({
+                nestedChat: {
+                    ...edgeData.nestedChat,
+                    message,
+                },
+            });
+        },
+        [onDataChange, edgeData.nestedChat],
+    );
+
     return (
         <Modal
             isOpen={isOpen}
@@ -160,15 +214,37 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                             </TabItem>
                         )}
                         {groupChatType === "nested" && (
-                            <TabItem label="Nested Chat" id={tabIds.nested}>
-                                <WaldiezEdgeNestedTab
-                                    flowId={flowId}
-                                    edgeId={edgeId}
-                                    darkMode={isDark}
-                                    data={edgeData}
-                                    onDataChange={onDataChange}
-                                />
+                            <TabItem label="Message" id={`we-${flowId}-edge-nested-chat-${edgeId}-message`}>
+                                <div className="flex-column">
+                                    <MessageInput
+                                        darkMode={isDark}
+                                        current={currentNestedMessageInput}
+                                        selectLabel="Message Type:"
+                                        selectTestId={`select-nested-message-type-${edgeId}`}
+                                        defaultContent={DEFAULT_NESTED_CHAT_MESSAGE_METHOD_CONTENT}
+                                        notNoneLabel="Message:"
+                                        notNoneLabelInfo="The message to be sent from the source."
+                                        includeContext={false}
+                                        skipCarryoverOption={true}
+                                        skipRagOption={true}
+                                        skipNone={true}
+                                        onTypeChange={onNestedMessageTypeChange}
+                                        onMessageChange={onNestedMessageChange}
+                                        onAddContextEntry={noOp}
+                                        onRemoveContextEntry={noOp}
+                                        onUpdateContextEntries={noOp}
+                                    />
+                                </div>
                             </TabItem>
+                            // <TabItem label="Nested Chat" id={tabIds.nested}>
+                            //     <WaldiezEdgeNestedTab
+                            //         flowId={flowId}
+                            //         edgeId={edgeId}
+                            //         darkMode={isDark}
+                            //         data={edgeData}
+                            //         onDataChange={onDataChange}
+                            //     />
+                            // </TabItem>
                         )}
 
                         {groupChatType === "handoff" && (

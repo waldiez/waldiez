@@ -48,6 +48,7 @@ export const useWaldiezMessages = ({
                 };
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const extractChatData = (input: unknown): WaldiezMediaContent[] => {
@@ -106,6 +107,7 @@ export const useWaldiezMessages = ({
                 content: chatData,
             };
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
     );
 
@@ -178,6 +180,7 @@ export const useWaldiezMessages = ({
         const chatMessage = makeChatMessage(data, type);
         processImagePlaceholders(chatMessage);
         return chatMessage;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return {
         getNewChatMessage,

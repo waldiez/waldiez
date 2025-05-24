@@ -185,19 +185,3 @@ export type WaldiezAgentType =
  * @param group_manager - Group manager
  */
 export type WaldiezNodeAgentType = WaldiezAgentType;
-
-/**
- * Waldiez Condition Category.
- * @param llm - LLM condition
- * @param context - Context condition
- */
-export type ConditionCategory = "llm" | "context";
-
-/**
- * Waldiez Condition Type.
- * @param string_llm - String LLM condition
- * @param context_str_llm - Context string LLM condition
- * @param string_context - String context condition
- * @param expression_context - Expression context condition
- */
-export type ConditionType = "string_llm" | "context_str_llm" | "string_context" | "expression_context";

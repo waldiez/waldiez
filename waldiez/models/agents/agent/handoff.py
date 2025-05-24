@@ -5,7 +5,7 @@
 import uuid
 from typing import Any, Optional, Union
 
-from pydantic import Field
+from pydantic import ConfigDict, Field
 from typing_extensions import Annotated, Literal
 
 from ...common import WaldiezBase
@@ -20,9 +20,13 @@ __all__ = [
     "WaldiezContextStrLLMCondition",
     "WaldiezStringContextCondition",
     "WaldiezExpressionContextCondition",
-    "WaldiezOnCondition",
-    "WaldiezOnContextCondition",
+    "WaldiezLLMBasedTransition",
+    "WaldiezContextBasedTransition",
     "WaldiezAgentHandoff",
+    "WaldiezHandoffCondition",
+    "WaldiezHandoffTransition",
+    "WaldiezLLMBasedCondition",
+    "WaldiezContextBasedCondition",
 ]
 
 
@@ -33,7 +37,7 @@ class WaldiezAgentTarget(WaldiezBase):
     ----------
     target_type : Literal["AgentTarget"]
         The type of the transition target.
-    target : str
+    value : str
         The agent id to transfer control to.
     order : int
         The order of the target in the list of targets.
@@ -44,7 +48,7 @@ class WaldiezAgentTarget(WaldiezBase):
         Literal["AgentTarget"],
         Field("AgentTarget", description="The type of the transition target."),
     ]
-    target: Annotated[
+    value: Annotated[
         str, Field(description="The agent id to transfer control to.")
     ]
     order: Annotated[
@@ -66,7 +70,7 @@ class WaldiezRandomAgentTarget(WaldiezBase):
     ----------
     target_type : Literal["RandomAgentTarget"]
         The type of the transition target.
-    target : list[str]
+    value : list[str]
         A list of agent ids to randomly select from.
     order : int
         The order of the target in the list of targets.
@@ -80,7 +84,7 @@ class WaldiezRandomAgentTarget(WaldiezBase):
             description="The type of the transition target.",
         ),
     ]
-    target: Annotated[
+    value: Annotated[
         list[str],
         Field(
             ...,
@@ -154,7 +158,7 @@ class WaldiezGroupOrNestedTarget(WaldiezBase):
     ----------
     target_type : Literal["GroupChatTarget", "NestedChatTarget"]
         The type of the transition target.
-    target : str
+    value : str
         The id of the group or nested chat to transfer control to.
     order : int
         The order of the target in the list of targets.
@@ -167,7 +171,7 @@ class WaldiezGroupOrNestedTarget(WaldiezBase):
             description="The type of the transition target.",
         ),
     ]
-    target: Annotated[
+    value: Annotated[
         str,
         Field(
             ...,
@@ -215,7 +219,7 @@ class WaldiezContextStrLLMCondition(WaldiezBase):
     data: dict[str, Any] = Field(default_factory=dict)
 
 
-LLMCondition = Annotated[
+WaldiezLLMBasedCondition = Annotated[
     Union[WaldiezStringLLMCondition, WaldiezContextStrLLMCondition],
     Field(discriminator="condition_type"),
 ]
@@ -236,24 +240,36 @@ class WaldiezExpressionContextCondition(WaldiezBase):
     data: dict[str, Any] = Field(default_factory=dict)
 
 
-ContextCondition = Annotated[
+WaldiezContextBasedCondition = Annotated[
     Union[WaldiezStringContextCondition, WaldiezExpressionContextCondition],
     Field(discriminator="condition_type"),
 ]
 
 
-class WaldiezOnCondition(WaldiezBase):
+# Union type for just the condition types (without targets)
+WaldiezHandoffCondition = Union[
+    WaldiezLLMBasedCondition, WaldiezContextBasedCondition
+]
+
+
+class WaldiezLLMBasedTransition(WaldiezBase):
     """Condition wrapper for LLM conditions."""
 
     target: WaldiezTransitionTarget
-    condition: LLMCondition
+    condition: WaldiezLLMBasedCondition
 
 
-class WaldiezOnContextCondition(WaldiezBase):
+class WaldiezContextBasedTransition(WaldiezBase):
     """Condition wrapper for context conditions."""
 
     target: WaldiezTransitionTarget
-    condition: ContextCondition
+    condition: WaldiezContextBasedCondition
+
+
+# Union type for complete transitions (condition + target)
+WaldiezHandoffTransition = Union[
+    WaldiezLLMBasedTransition, WaldiezContextBasedTransition
+]
 
 
 class WaldiezAgentHandoff(WaldiezBase):
@@ -266,10 +282,10 @@ class WaldiezAgentHandoff(WaldiezBase):
             description=("A unique identifier for the handoff. "),
         ),
     ]
-    llm_conditions: Optional[list[WaldiezOnCondition]] = None
-    context_conditions: Optional[list[WaldiezOnContextCondition]] = None
+    llm_transitions: Optional[list[WaldiezLLMBasedTransition]] = None
+    context_transitions: Optional[list[WaldiezContextBasedTransition]] = None
     after_work: Optional[WaldiezTransitionTarget] = None
-    explicit_tool_handoff_info: Optional[dict[str, Any]] = None
 
-
-WaldiezHandoffCondition = Union[WaldiezOnCondition, WaldiezOnContextCondition]
+    model_config = ConfigDict(
+        extra="allow",
+    )

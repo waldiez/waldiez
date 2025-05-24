@@ -36,9 +36,9 @@ const targetTypesToExcludeForGroupChat: TransitionTargetType[] = [
  */
 const targetsToLabelsMapping: Record<TransitionTargetType, string> = {
     AgentTarget: "Pass the floor to another agent",
+    RevertToUserTarget: "Revert to the user agent",
     RandomAgentTarget: "Choose a random agent",
     AskUserTarget: "Ask the user",
-    RevertToUserTarget: "Return to a user agent if one is available",
     TerminateTarget: "Terminate the flow",
     GroupChatTarget: "Group Chat", // assuming? the afterWork is for an agent and: either not in a group chat or a second group chat exists
     NestedChatTarget: "Trigger a nested chat", // assuming a nested exists
@@ -57,10 +57,10 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
             target?.target_type,
         );
         const [selectedAgentTargetId, setSelectedAgentTargetId] = useState<string | undefined>(
-            target?.target_type === "AgentTarget" ? target.target : undefined,
+            target?.target_type === "AgentTarget" ? target.value : undefined,
         );
         const [selectedRandomAgentTargetIds, setSelectedRandomAgentTargetIds] = useState<string[]>(
-            target?.target_type === "RandomAgentTarget" ? target.target : [],
+            target?.target_type === "RandomAgentTarget" ? target.value : [],
         );
 
         /**
@@ -149,7 +149,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                         if (selectedAgentTargetId) {
                             onChange({
                                 target_type: targetType,
-                                target: selectedAgentTargetId,
+                                value: selectedAgentTargetId,
                             });
                         }
                         break;
@@ -163,13 +163,13 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                         if (selectedRandomAgentTargetIds.length > 0) {
                             onChange({
                                 target_type: targetType,
-                                target: selectedRandomAgentTargetIds,
+                                value: selectedRandomAgentTargetIds,
                             });
                         }
                         break;
                 }
             },
-            [onChange, selectedAgentTargetId],
+            [onChange, selectedAgentTargetId, selectedRandomAgentTargetIds],
         );
         /**
          * Handle agent selection for AgentTarget
@@ -184,7 +184,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
 
                 onChange({
                     target_type: "AgentTarget",
-                    target: selectedOption.value,
+                    value: selectedOption.value,
                 });
             },
             [onChange, selectedTargetType],
@@ -199,7 +199,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                 setSelectedRandomAgentTargetIds(selectedIds);
                 onChange({
                     target_type: "RandomAgentTarget",
-                    target: selectedIds,
+                    value: selectedIds,
                 });
             },
             [onChange, selectedTargetType],

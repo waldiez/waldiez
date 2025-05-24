@@ -41,7 +41,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
             const node = parseMessageContent(content, isDarkMode, openImagePreview);
             return { id, timestamp, type, sender, recipient, node };
         },
-        [openImagePreview],
+        [openImagePreview, isDarkMode],
     );
 
     // Calculate message classes - memoized for performance

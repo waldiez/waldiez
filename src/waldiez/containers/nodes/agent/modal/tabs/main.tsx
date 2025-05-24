@@ -254,6 +254,7 @@ export const WaldiezNodeAgentModalTabs = memo(
                             data={data}
                             agents={agents}
                             tools={tools}
+                            skipExecutor={isGroupMember}
                             onDataChange={onDataChange}
                         />
                     </div>

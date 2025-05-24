@@ -46,21 +46,24 @@ export const useModal = (props: {
             modalRef.current.style.width = "";
             modalRef.current.style.height = "";
         }
-    }, []);
+    }, [modalRef]);
 
     // Control modal open/close state
-    const setModalOpen = useCallback((open: boolean) => {
-        const modalElement = modalRef.current;
-        if (!modalElement) {
-            return;
-        }
+    const setModalOpen = useCallback(
+        (open: boolean) => {
+            const modalElement = modalRef.current;
+            if (!modalElement) {
+                return;
+            }
 
-        if (open) {
-            modalElement.showModal();
-        } else {
-            modalElement.close();
-        }
-    }, []);
+            if (open) {
+                modalElement.showModal();
+            } else {
+                modalElement.close();
+            }
+        },
+        [modalRef],
+    );
 
     // Toggle fullscreen mode
     const onToggleFullScreen = useCallback(() => {
@@ -72,7 +75,7 @@ export const useModal = (props: {
             }
         }
         setFullScreen(prev => !prev);
-    }, [isMinimized, preMinimizeHeight]);
+    }, [modalRef, isMinimized, preMinimizeHeight]);
 
     // Toggle minimized mode
     const onToggleMinimize = useCallback(() => {
@@ -97,7 +100,7 @@ export const useModal = (props: {
             }
             return !prev;
         });
-    }, [isFullScreen, preMinimizeHeight]);
+    }, [modalRef, isMinimized, isFullScreen, preMinimizeHeight]);
 
     // Hide confirmation dialog
     const hideConfirmation = useCallback(() => {
@@ -117,7 +120,15 @@ export const useModal = (props: {
         resetModalState();
         onClose?.();
         setModalOpen(false);
-    }, [isMinimized, cannotClose, showConfirmation, resetModalState, onClose, setModalOpen]);
+    }, [
+        isMinimized,
+        cannotClose,
+        showConfirmation,
+        onToggleMinimize,
+        resetModalState,
+        onClose,
+        setModalOpen,
+    ]);
 
     // Handle save and close
     const handleSaveAndClose = useCallback(() => {
@@ -168,7 +179,7 @@ export const useModal = (props: {
                 y: e.clientY - top,
             });
         },
-        [isFullScreen],
+        [isFullScreen, modalRef],
     );
 
     const handleMouseMove = useCallback(

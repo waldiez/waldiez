@@ -92,7 +92,7 @@ export const useWaldiezAgentTermination = (props: {
                 },
             });
         },
-        [data.termination, onDataChange],
+        [data.termination, onDataChange, defaultTerminationMethodContent],
     );
 
     /**

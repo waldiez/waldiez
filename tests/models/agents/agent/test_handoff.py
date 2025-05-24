@@ -12,11 +12,11 @@ from pydantic import ValidationError
 from waldiez.models.agents.agent.handoff import (
     WaldiezAgentHandoff,
     WaldiezAgentTarget,
+    WaldiezContextBasedTransition,
     WaldiezContextStrLLMCondition,
     WaldiezExpressionContextCondition,
     WaldiezGroupOrNestedTarget,
-    WaldiezOnCondition,
-    WaldiezOnContextCondition,
+    WaldiezLLMBasedTransition,
     WaldiezRandomAgentTarget,
     WaldiezSimpleTarget,
     WaldiezStringContextCondition,
@@ -30,17 +30,15 @@ class TestWaldiezAgentTarget:
     def test_valid_agent_target(self) -> None:
         """Test creating a valid agent target."""
         target = WaldiezAgentTarget(
-            target_type="AgentTarget", target="agent123", order=1
+            target_type="AgentTarget", value="agent123", order=1
         )
         assert target.target_type == "AgentTarget"
-        assert target.target == "agent123"
+        assert target.value == "agent123"
         assert target.order == 1
 
     def test_agent_target_default_order(self) -> None:
         """Test default order value."""
-        target = WaldiezAgentTarget(
-            target_type="AgentTarget", target="agent123"
-        )
+        target = WaldiezAgentTarget(target_type="AgentTarget", value="agent123")
         assert target.order == -1
 
     def test_agent_target_validation_error(self) -> None:
@@ -48,7 +46,7 @@ class TestWaldiezAgentTarget:
         with pytest.raises(ValidationError):  # Wrong type
             WaldiezAgentTarget(
                 target_type="InvalidType",  # type: ignore
-                target="agent123",
+                value="agent123",
             )
 
     def test_agent_target_missing_required_field(self) -> None:
@@ -64,32 +62,32 @@ class TestWaldiezRandomAgentTarget:
         """Test creating a valid random agent target."""
         target = WaldiezRandomAgentTarget(
             target_type="RandomAgentTarget",
-            target=["agent1", "agent2", "agent3"],
+            value=["agent1", "agent2", "agent3"],
             order=2,
         )
         assert target.target_type == "RandomAgentTarget"
-        assert target.target == ["agent1", "agent2", "agent3"]
+        assert target.value == ["agent1", "agent2", "agent3"]
         assert target.order == 2
 
     def test_random_agent_target_minimum_agents(self) -> None:
         """Test minimum of 2 agents required."""
         target = WaldiezRandomAgentTarget(
-            target_type="RandomAgentTarget", target=["agent1", "agent2"]
+            target_type="RandomAgentTarget", value=["agent1", "agent2"]
         )
-        assert len(target.target) == 2
+        assert len(target.value) == 2
 
     def test_random_agent_target_too_few_agents(self) -> None:
         """Test validation error with too few agents."""
         with pytest.raises(ValidationError):
             WaldiezRandomAgentTarget(
                 target_type="RandomAgentTarget",
-                target=["agent1"],  # Only 1 agent, need at least 2
+                value=["agent1"],  # Only 1 agent, need at least 2
             )
 
     def test_random_agent_target_empty_list(self) -> None:
         """Test validation error with empty list."""
         with pytest.raises(ValidationError):
-            WaldiezRandomAgentTarget(target_type="RandomAgentTarget", target=[])
+            WaldiezRandomAgentTarget(target_type="RandomAgentTarget", value=[])
 
 
 class TestWaldiezSimpleTarget:
@@ -161,10 +159,10 @@ class TestWaldiezGroupOrNestedTarget:
             The type of the target.
         """
         target = WaldiezGroupOrNestedTarget(
-            target_type=target_type, target="group123", order=3
+            target_type=target_type, value="group123", order=3
         )
         assert target.target_type == target_type
-        assert target.target == "group123"
+        assert target.value == "group123"
         assert target.order == 3
 
     def test_group_or_nested_target_missing_target(self) -> None:
@@ -179,7 +177,7 @@ class TestWaldiezGroupOrNestedTarget:
         with pytest.raises(ValidationError):  # Invalid target type
             WaldiezGroupOrNestedTarget(
                 target_type="InvalidChatTarget",  # type: ignore
-                target="group123",
+                value="group123",
             )
 
 
@@ -275,68 +273,66 @@ class TestWaldiezExpressionContextCondition:
         assert condition.data == {}
 
 
-class TestWaldiezOnCondition:
-    """Test WaldiezOnCondition class."""
+class TestWaldiezLLMBasedTransition:
+    """Test WaldiezLLMBasedTransition class."""
 
-    def test_valid_on_condition_with_string_llm(self) -> None:
-        """Test creating valid on condition with string LLM condition."""
-        target = WaldiezAgentTarget(
-            target_type="AgentTarget", target="agent123"
-        )
+    def test_valid_llm_transition_with_string_llm(self) -> None:
+        """Test creating valid llm transition with string LLM condition."""
+        target = WaldiezAgentTarget(target_type="AgentTarget", value="agent123")
         llm_condition = WaldiezStringLLMCondition(
             condition_type="string_llm",
             prompt="Should we continue?",
         )
-        on_condition = WaldiezOnCondition(
+        llm_transition = WaldiezLLMBasedTransition(
             target=target, condition=llm_condition
         )
-        assert on_condition.target == target
-        assert on_condition.condition == llm_condition
+        assert llm_transition.target == target
+        assert llm_transition.condition == llm_condition
 
-    def test_valid_on_condition_with_context_str_llm(self) -> None:
-        """Test creating valid on condition with ctx string LLM condition."""
+    def test_valid_llm_stransition_with_context_str_llm(self) -> None:
+        """Test creating valid llm transition with ctx string LLM condition."""
         target = WaldiezSimpleTarget(target_type="TerminateTarget")
         llm_condition = WaldiezContextStrLLMCondition(
             condition_type="context_str_llm", context_str="conversation_state"
         )
-        on_condition = WaldiezOnCondition(
+        llm_transition = WaldiezLLMBasedTransition(
             target=target, condition=llm_condition
         )
-        assert on_condition.target == target
-        assert on_condition.condition == llm_condition
+        assert llm_transition.target == target
+        assert llm_transition.condition == llm_condition
 
 
-class TestWaldiezOnContextCondition:
-    """Test WaldiezOnContextCondition class."""
+class TestWaldiezContextBasedTransition:
+    """Test WaldiezContextBasedTransition class."""
 
-    def test_valid_on_context_condition_with_string(self) -> None:
-        """Test creating valid on context condition with string condition."""
+    def test_valid_context_transition_with_string(self) -> None:
+        """Test creating valid context transition with string condition."""
         target = WaldiezRandomAgentTarget(
-            target_type="RandomAgentTarget", target=["agent1", "agent2"]
+            target_type="RandomAgentTarget", value=["agent1", "agent2"]
         )
         context_condition = WaldiezStringContextCondition(
             condition_type="string_context", variable_name="should_escalate"
         )
-        on_context_condition = WaldiezOnContextCondition(
+        context_transition = WaldiezContextBasedTransition(
             target=target, condition=context_condition
         )
-        assert on_context_condition.target == target
-        assert on_context_condition.condition == context_condition
+        assert context_transition.target == target
+        assert context_transition.condition == context_condition
 
-    def test_valid_on_context_condition_with_expression(self) -> None:
-        """Test creating valid on context condition with expr condition."""
+    def test_valid_context_transition_with_expression(self) -> None:
+        """Test creating valid context transition with expr condition."""
         target = WaldiezGroupOrNestedTarget(
-            target_type="GroupChatTarget", target="support_group"
+            target_type="GroupChatTarget", value="support_group"
         )
         context_condition = WaldiezExpressionContextCondition(
             condition_type="expression_context",
             expression="priority == 'high'",
         )
-        on_context_condition = WaldiezOnContextCondition(
+        context_transition = WaldiezContextBasedTransition(
             target=target, condition=context_condition
         )
-        assert on_context_condition.target == target
-        assert on_context_condition.condition == context_condition
+        assert context_transition.target == target
+        assert context_transition.condition == context_condition
 
 
 class TestWaldiezAgentHandoff:
@@ -351,10 +347,9 @@ class TestWaldiezAgentHandoff:
         assert len(handoff.id) == 32  # hex UUID length
 
         # Optional fields should be None
-        assert handoff.llm_conditions is None
-        assert handoff.context_conditions is None
+        assert handoff.llm_transitions is None
+        assert handoff.context_transitions is None
         assert handoff.after_work is None
-        assert handoff.explicit_tool_handoff_info is None
 
     def test_agent_handoff_with_custom_id(self) -> None:
         """Test creating agent handoff with custom ID."""
@@ -362,57 +357,57 @@ class TestWaldiezAgentHandoff:
         handoff = WaldiezAgentHandoff(id=custom_id)
         assert handoff.id == custom_id
 
-    def test_agent_handoff_with_llm_conditions(self) -> None:
-        """Test agent handoff with LLM conditions."""
+    def test_agent_handoff_with_llm_transitions(self) -> None:
+        """Test agent handoff with LLM transitions."""
         target = WaldiezAgentTarget(
-            target_type="AgentTarget", target="escalation_agent"
+            target_type="AgentTarget", value="escalation_agent"
         )
         llm_condition = WaldiezStringLLMCondition(
             condition_type="string_llm", prompt="Should we escalate this issue?"
         )
-        on_condition = WaldiezOnCondition(
+        transition = WaldiezLLMBasedTransition(
             target=target,
             condition=llm_condition,
         )
 
         handoff = WaldiezAgentHandoff(
             id=uuid.uuid4().hex,
-            llm_conditions=[on_condition],
+            llm_transitions=[transition],
         )
-        assert handoff.llm_conditions is not None
-        assert len(handoff.llm_conditions) == 1
+        assert handoff.llm_transitions is not None
+        assert len(handoff.llm_transitions) == 1
         # pylint: disable=unsubscriptable-object
-        first_condition = handoff.llm_conditions[0]
-        assert isinstance(first_condition, WaldiezOnCondition)
-        assert first_condition.target == target
-        assert first_condition.condition == llm_condition
+        first_transition = handoff.llm_transitions[0]
+        assert isinstance(first_transition, WaldiezLLMBasedTransition)
+        assert first_transition.target == target
+        assert first_transition.condition == llm_condition
 
-    def test_agent_handoff_with_context_conditions(self) -> None:
-        """Test agent handoff with context conditions."""
+    def test_agent_handoff_with_context_transitions(self) -> None:
+        """Test agent handoff with context transitions."""
         target = WaldiezSimpleTarget(target_type="TerminateTarget")
         context_condition = WaldiezStringContextCondition(
             condition_type="string_context", variable_name="is_complete"
         )
-        on_context_condition = WaldiezOnContextCondition(
+        context_transition = WaldiezContextBasedTransition(
             target=target, condition=context_condition
         )
 
         handoff = WaldiezAgentHandoff(
             id=uuid.uuid4().hex,
-            context_conditions=[on_context_condition],
+            context_transitions=[context_transition],
         )
-        assert handoff.context_conditions is not None
-        assert len(handoff.context_conditions) == 1
+        assert handoff.context_transitions is not None
+        assert len(handoff.context_transitions) == 1
         # pylint: disable=unsubscriptable-object
-        first_condition = handoff.context_conditions[0]
-        assert isinstance(first_condition, WaldiezOnContextCondition)
-        assert first_condition.target == target
-        assert first_condition.condition == context_condition
+        first_transition = handoff.context_transitions[0]
+        assert isinstance(first_transition, WaldiezContextBasedTransition)
+        assert first_transition.target == target
+        assert first_transition.condition == context_condition
 
     def test_agent_handoff_with_after_work_target(self) -> None:
         """Test agent handoff with after_work target."""
         after_work_target = WaldiezGroupOrNestedTarget(
-            target_type="NestedChatTarget", target="cleanup_chat"
+            target_type="NestedChatTarget", value="cleanup_chat"
         )
 
         handoff = WaldiezAgentHandoff(
@@ -421,30 +416,16 @@ class TestWaldiezAgentHandoff:
 
         assert handoff.after_work == after_work_target
 
-    def test_agent_handoff_with_explicit_tool_info(self) -> None:
-        """Test agent handoff with explicit tool handoff info."""
-        tool_info: dict[str, Any] = {
-            "tool_name": "database_query",
-            "parameters": {"table": "users", "limit": 100},
-        }
-
-        handoff = WaldiezAgentHandoff(
-            id=uuid.uuid4().hex,
-            explicit_tool_handoff_info=tool_info,
-        )
-
-        assert handoff.explicit_tool_handoff_info == tool_info
-
     def test_complex_agent_handoff(self) -> None:
         """Test complex agent handoff with all components."""
         # Create targets
         agent_target = WaldiezAgentTarget(
-            target_type="AgentTarget", target="specialist_agent", order=1
+            target_type="AgentTarget", value="specialist_agent", order=1
         )
 
         random_target = WaldiezRandomAgentTarget(
             target_type="RandomAgentTarget",
-            target=["agent1", "agent2", "agent3"],
+            value=["agent1", "agent2", "agent3"],
             order=2,
         )
 
@@ -461,13 +442,14 @@ class TestWaldiezAgentHandoff:
             data={"threshold": 3},
         )
 
-        # Create condition wrappers
-        on_llm_condition = WaldiezOnCondition(
+        # Create transitions
+        llm_transition = WaldiezLLMBasedTransition(
             target=agent_target, condition=llm_condition
         )
 
-        on_context_condition = WaldiezOnContextCondition(
-            target=random_target, condition=context_condition
+        context_transition = WaldiezContextBasedTransition(
+            target=random_target,
+            condition=context_condition,
         )
 
         # Create after work target
@@ -478,60 +460,63 @@ class TestWaldiezAgentHandoff:
         # Create handoff
         handoff = WaldiezAgentHandoff(
             id=uuid.uuid4().hex,
-            llm_conditions=[on_llm_condition],
-            context_conditions=[on_context_condition],
+            llm_transitions=[llm_transition],
+            context_transitions=[context_transition],
             after_work=after_work,
-            explicit_tool_handoff_info={"cleanup": True},
         )
 
         # Verify all components
-        assert handoff.llm_conditions is not None
-        assert len(handoff.llm_conditions) == 1
-        assert handoff.context_conditions is not None
-        assert len(handoff.context_conditions) == 1
+        assert handoff.llm_transitions is not None
+        assert len(handoff.llm_transitions) == 1
+        assert handoff.context_transitions is not None
+        assert len(handoff.context_transitions) == 1
         assert handoff.after_work == after_work
-        assert handoff.explicit_tool_handoff_info == {"cleanup": True}
 
         # Verify nested structure
         # pylint: disable=unsubscriptable-object
-        first_llm_condition = handoff.llm_conditions[0]
-        assert isinstance(first_llm_condition, WaldiezOnCondition)
-        assert first_llm_condition.target == agent_target
-        assert first_llm_condition.condition == llm_condition
+        first_llm_transition = handoff.llm_transitions[0]
+        assert isinstance(first_llm_transition, WaldiezLLMBasedTransition)
+        assert first_llm_transition.target == agent_target
+        assert first_llm_transition.condition == llm_condition
         assert isinstance(
-            first_llm_condition.condition, WaldiezContextStrLLMCondition
+            first_llm_transition.condition, WaldiezContextStrLLMCondition
         )
         assert (
-            first_llm_condition.condition.context_str
+            first_llm_transition.condition.context_str
             == "conversation_complexity"
         )
-        assert first_llm_condition.condition.data == {"temperature": 0.3}
-        assert isinstance(first_llm_condition.target, WaldiezAgentTarget)
-        assert first_llm_condition.target.target == "specialist_agent"
-        assert first_llm_condition.target.target_type == "AgentTarget"
-        assert first_llm_condition.target.order == 1
+        assert first_llm_transition.condition.data == {"temperature": 0.3}
+        assert isinstance(first_llm_transition.target, WaldiezAgentTarget)
+        assert first_llm_transition.target.value == "specialist_agent"
+        assert first_llm_transition.target.target_type == "AgentTarget"
+        assert first_llm_transition.target.order == 1
         # pylint: disable=unsubscriptable-object
-        first_context_condition = handoff.context_conditions[0]
-        assert isinstance(first_context_condition, WaldiezOnContextCondition)
-        assert first_context_condition.target == random_target
-        assert first_context_condition.condition == context_condition
+        first_context_transition = handoff.context_transitions[0]
         assert isinstance(
-            first_context_condition.condition, WaldiezExpressionContextCondition
+            first_context_transition, WaldiezContextBasedTransition
+        )
+        assert first_context_transition.target == random_target
+        assert first_context_transition.condition == context_condition
+        assert isinstance(
+            first_context_transition.condition,
+            WaldiezExpressionContextCondition,
         )
         assert (
-            first_context_condition.condition.expression == "urgency_level > 3"
+            first_context_transition.condition.expression == "urgency_level > 3"
         )
-        assert first_context_condition.condition.data == {"threshold": 3}
+        assert first_context_transition.condition.data == {"threshold": 3}
         assert isinstance(
-            first_context_condition.target, WaldiezRandomAgentTarget
+            first_context_transition.target, WaldiezRandomAgentTarget
         )
-        assert first_context_condition.target.target == [
+        assert first_context_transition.target.value == [
             "agent1",
             "agent2",
             "agent3",
         ]
-        assert first_context_condition.target.target_type == "RandomAgentTarget"
-        assert first_context_condition.target.order == 2
+        assert (
+            first_context_transition.target.target_type == "RandomAgentTarget"
+        )
+        assert first_context_transition.target.order == 2
 
 
 class TestTransitionTargetDiscrimination:
@@ -541,7 +526,7 @@ class TestTransitionTargetDiscrimination:
         """Test that agent targets are properly discriminated."""
         data: dict[str, Any] = {
             "target_type": "AgentTarget",
-            "target": "agent123",
+            "value": "agent123",
             "order": 1,
         }
 
@@ -553,7 +538,7 @@ class TestTransitionTargetDiscrimination:
         """Test that random agent targets are properly discriminated."""
         data: dict[str, Any] = {
             "target_type": "RandomAgentTarget",
-            "target": ["agent1", "agent2"],
+            "value": ["agent1", "agent2"],
             "order": 1,
         }
 
@@ -571,7 +556,7 @@ class TestTransitionTargetDiscrimination:
         """Test that group targets are properly discriminated."""
         data: dict[str, Any] = {
             "target_type": "GroupChatTarget",
-            "target": "group123",
+            "value": "group123",
             "order": 1,
         }
 
@@ -594,11 +579,11 @@ class TestEdgeCases:
     def test_empty_lists_in_handoff(self) -> None:
         """Test handoff with empty condition lists."""
         handoff = WaldiezAgentHandoff(
-            id=uuid.uuid4().hex, llm_conditions=[], context_conditions=[]
+            id=uuid.uuid4().hex, llm_transitions=[], context_transitions=[]
         )
 
-        assert not handoff.llm_conditions
-        assert not handoff.context_conditions
+        assert not handoff.llm_transitions
+        assert not handoff.context_transitions
 
     def test_large_data_dictionaries(self) -> None:
         """Test handling of large data dictionaries."""
@@ -616,14 +601,14 @@ class TestEdgeCases:
         special_chars = "Hello! @#$%^&*()_+-=[]{}|;:,.<>?"
 
         target = WaldiezAgentTarget(
-            target_type="AgentTarget", target=special_chars
+            target_type="AgentTarget", value=special_chars
         )
 
-        assert target.target == special_chars
+        assert target.value == special_chars
 
     def test_unicode_characters(self) -> None:
         """Test handling of unicode characters."""
-        unicode_text = "Hello 世界 🌍 café naïve résumé"
+        unicode_text = "Hello 世界 🌍 café naïve résumé σήμερα"
 
         condition = WaldiezStringLLMCondition(
             condition_type="string_llm", prompt=unicode_text

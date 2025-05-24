@@ -52,6 +52,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
             onConvert,
         });
         return storeRef.current;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flowId]);
     return <WaldiezContext.Provider value={store}>{children}</WaldiezContext.Provider>;
 }

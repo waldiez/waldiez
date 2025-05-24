@@ -45,7 +45,7 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
                 },
             });
         },
-        [data.retrieveConfig.dbConfig, setRetrieveConfigConfigData],
+        [data, setRetrieveConfigConfigData],
     );
 
     /**

@@ -117,41 +117,6 @@ export const getRealTarget = (data: { [key: string]: any }) => {
     return realTarget;
 };
 
-/*
-export type WaldiezStringLLMCondition = {
-    condition_type: "string_llm";
-    prompt: string;
-    data?: Record<string, any>;
-};
-export type WaldiezContextStrLLMCondition = {
-    condition_type: "context_str_llm";
-    context_str: string;
-    data?: Record<string, any>;
-};
-export type WaldiezLLMCondition = WaldiezStringLLMCondition | WaldiezContextStrLLMCondition;
-export type WaldiezStringContextCondition = {
-    condition_type: "string_context";
-    variable_name: string;
-};
-export type WaldiezExpressionContextCondition = {
-    condition_type: "expression_context";
-    expression: string;
-    data?: Record<string, any>;
-};
-export type WaldiezContextCondition = WaldiezStringContextCondition | WaldiezExpressionContextCondition;
-export type WaldiezHandoffCondition = WaldiezLLMCondition | WaldiezContextCondition;
-export type ConditionCategory = "llm" | "context";
-export const ValidConditionCategories: ConditionCategory[] = ["llm", "context"];
-export type ConditionType = "string_llm" | "context_str_llm" | "string_context" | "expression_context";
-export const ValidConditionTypes: ConditionType[] = [
-    "string_llm",
-    "context_str_llm",
-    "string_context",
-    "expression_context",
-];
-
-*/
-
 const getStringLLMCondition = (data: { [key: string]: any }) => {
     let condition: WaldiezHandoffCondition | null = null;
     if ("condition_type" in data && data.condition_type === "string_llm") {

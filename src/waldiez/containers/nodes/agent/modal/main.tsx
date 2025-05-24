@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback, useMemo } from "react";
+import { memo, useMemo } from "react";
 
 import { Modal } from "@waldiez/components";
 import { useWaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal/hooks";
@@ -44,16 +44,9 @@ export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) =>
         onImport,
         onExport,
         onSave,
+        onSaveAndClose,
         onCancel,
     } = useWaldiezNodeAgentModal(id, isOpen, data, onClose);
-
-    /**
-     * Handle save and close button click
-     */
-    const onSaveAndClose = useCallback(() => {
-        onSave();
-        onClose();
-    }, [onSave, onClose]);
 
     /**
      * Get the import/export view based on agent type

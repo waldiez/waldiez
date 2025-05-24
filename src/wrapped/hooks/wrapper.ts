@@ -50,6 +50,7 @@ export const useWaldiezWrapper = ({
         } catch (error) {
             console.error("Error parsing WebSocket message:", error);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     /**
      * Handle WebSocket messages

@@ -160,7 +160,8 @@ export const useWebsocket = (props: {
                 }
             }
         }
-    }, [wsUrl, handleMessage, closeExistingConnection]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [wsUrl]);
 
     const sendMessage = useCallback((data: unknown) => {
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -174,6 +175,7 @@ export const useWebsocket = (props: {
             }
         }
         return false;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // SINGLE COMBINED EFFECT to handle both mounting and URL changes

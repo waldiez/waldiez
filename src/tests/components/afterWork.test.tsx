@@ -147,12 +147,12 @@ describe("AfterWork", () => {
 
         expect(mock).toHaveBeenCalledWith({
             target_type: "AgentTarget",
-            target: "agent-1",
+            value: "agent-1",
         });
     });
     it("changes the selected agent ID", async () => {
         const mock = vi.fn();
-        setup({ target_type: "AgentTarget", target: "agent-1" }, mock);
+        setup({ target_type: "AgentTarget", value: "agent-1" }, mock);
         // no need to click the checkbox (already checked, since we are passing target)
 
         const select = screen.getByLabelText("Action to perform after work:");
@@ -165,13 +165,13 @@ describe("AfterWork", () => {
 
         expect(mock).toHaveBeenCalledWith({
             target_type: "AgentTarget",
-            target: "agent-2",
+            value: "agent-2",
         });
     });
 
     it("renders with existing AgentTarget", () => {
         const mock = vi.fn();
-        setup({ target_type: "AgentTarget", target: "agent-2" }, mock);
+        setup({ target_type: "AgentTarget", value: "agent-2" }, mock);
         expect(screen.getByLabelText("Agent to pass the floor to:")).toBeInTheDocument();
     });
 

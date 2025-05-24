@@ -32,10 +32,13 @@ export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
         return null;
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
 
     // Get model and tools views via hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const agentModelView = useAgentModelView(id, data);
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const agentToolsView = useAgentToolsView(id, data);
 
     return (

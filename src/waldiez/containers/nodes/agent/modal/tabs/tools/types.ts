@@ -9,5 +9,6 @@ export type WaldiezAgentToolsProps = {
     data: WaldiezNodeAgentData;
     tools: WaldiezNodeTool[];
     agents: WaldiezNodeAgent[];
+    skipExecutor?: boolean;
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
 };

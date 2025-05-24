@@ -479,42 +479,39 @@
                 "id": {
                     "type": "string"
                 },
-                "llm_conditions": {
+                "llm_transitions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezOnCondition"
+                        "$ref": "#/definitions/WaldiezLLMBasedTransition"
                     }
                 },
-                "context_conditions": {
+                "context_transitions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezOnContextCondition"
+                        "$ref": "#/definitions/WaldiezContextBasedTransition"
                     }
                 },
                 "after_work": {
                     "$ref": "#/definitions/WaldiezTransitionTarget"
-                },
-                "explicit_tool_handoff_info": {
-                    "type": "object"
                 }
             },
             "required": ["id"],
-            "additionalProperties": false,
+            "additionalProperties": {},
             "description": "Waldiez agent handoff A handoff that can be triggered by LLM or context conditions."
         },
-        "WaldiezOnCondition": {
+        "WaldiezLLMBasedTransition": {
             "type": "object",
             "properties": {
                 "target": {
                     "$ref": "#/definitions/WaldiezTransitionTarget"
                 },
                 "condition": {
-                    "$ref": "#/definitions/WaldiezLLMCondition"
+                    "$ref": "#/definitions/WaldiezLLMBasedCondition"
                 }
             },
             "required": ["target", "condition"],
             "additionalProperties": false,
-            "description": "Waldiez on condition A condition that triggers a handoff to a target based on LLM evaluation."
+            "description": "Condition wrapper for LLM conditions. Matches the Python WaldiezLLMBasedCondition class."
         },
         "WaldiezTransitionTarget": {
             "anyOf": [
@@ -525,14 +522,14 @@
                             "type": "string",
                             "const": "AgentTarget"
                         },
-                        "target": {
+                        "value": {
                             "type": "string"
                         },
                         "order": {
                             "type": "number"
                         }
                     },
-                    "required": ["target_type", "target"],
+                    "required": ["target_type", "value"],
                     "additionalProperties": false
                 },
                 {
@@ -542,7 +539,7 @@
                             "type": "string",
                             "const": "RandomAgentTarget"
                         },
-                        "target": {
+                        "value": {
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -552,7 +549,7 @@
                             "type": "number"
                         }
                     },
-                    "required": ["target_type", "target"],
+                    "required": ["target_type", "value"],
                     "additionalProperties": false
                 },
                 {
@@ -562,14 +559,14 @@
                             "type": "string",
                             "enum": ["GroupChatTarget", "NestedChatTarget"]
                         },
-                        "target": {
+                        "value": {
                             "type": "string"
                         },
                         "order": {
                             "type": "number"
                         }
                     },
-                    "required": ["target_type", "target"],
+                    "required": ["target_type", "value"],
                     "additionalProperties": false
                 },
                 {
@@ -595,7 +592,7 @@
             ],
             "description": "The type of target in a handoff transition."
         },
-        "WaldiezLLMCondition": {
+        "WaldiezLLMBasedCondition": {
             "anyOf": [
                 {
                     "$ref": "#/definitions/WaldiezStringLLMCondition"
@@ -642,21 +639,21 @@
             "additionalProperties": false,
             "description": "Waldiez ContextStr LLM condition A `ContextStr` object with context variable placeholders that  will be substituted before being evaluated by an LLM."
         },
-        "WaldiezOnContextCondition": {
+        "WaldiezContextBasedTransition": {
             "type": "object",
             "properties": {
                 "target": {
                     "$ref": "#/definitions/WaldiezTransitionTarget"
                 },
                 "condition": {
-                    "$ref": "#/definitions/WaldiezContextCondition"
+                    "$ref": "#/definitions/WaldiezContextBasedCondition"
                 }
             },
             "required": ["target", "condition"],
             "additionalProperties": false,
-            "description": "Waldiez on context condition A condition that triggers a handoff to a target based on context evaluation."
+            "description": "Condition wrapper for context conditions. Matches the Python WaldiezContextBasedCondition class."
         },
-        "WaldiezContextCondition": {
+        "WaldiezContextBasedCondition": {
             "anyOf": [
                 {
                     "$ref": "#/definitions/WaldiezStringContextCondition"
@@ -2166,13 +2163,13 @@
         "WaldiezHandoffCondition": {
             "anyOf": [
                 {
-                    "$ref": "#/definitions/WaldiezLLMCondition"
+                    "$ref": "#/definitions/WaldiezLLMBasedCondition"
                 },
                 {
-                    "$ref": "#/definitions/WaldiezContextCondition"
+                    "$ref": "#/definitions/WaldiezContextBasedCondition"
                 }
             ],
-            "description": "Waldiez LLM or context condition A condition that can be evaluated by an LLM or against context variables."
+            "description": "Waldiez Handoff condition A condition that can be evaluated by an LLM or against context variables."
         }
     },
     "title": "Waldiez Flow",

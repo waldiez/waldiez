@@ -88,7 +88,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             setTextInput("");
             setImagePreview(null);
         }, 10);
-    }, [chat?.handlers?.onUserInput, createInputResponse]);
+    }, [chat?.handlers, createInputResponse]);
 
     /**
      * Handle keyboard events
@@ -143,7 +143,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
         setTextInput("");
         setImagePreview(null);
         chat?.handlers?.onClose?.();
-    }, []);
+    }, [chat?.handlers]);
 
     /**
      * Handle file select modal interactions

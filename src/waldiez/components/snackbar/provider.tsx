@@ -48,13 +48,17 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         });
     }, [queues, active]);
 
+    const handleClose = useCallback((flowId: string) => {
+        setActive(a => ({ ...a, [flowId]: null }));
+    }, []);
+
     // Auto-dismiss logic per flowId
     useEffect(() => {
         Object.entries(active).forEach(([flowId, snackbar]) => {
             if (!snackbar) {
                 return;
             }
-            const { duration = 3000, withCloseButton } = snackbar;
+            const { duration, withCloseButton } = snackbar;
             if (!withCloseButton || duration !== undefined) {
                 if (timeouts.current[flowId]) {
                     clearTimeout(timeouts.current[flowId]);
@@ -68,11 +72,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             Object.values(timeouts.current).forEach(clearTimeout);
             timeouts.current = {};
         };
-    }, [active]);
-
-    const handleClose = useCallback((flowId: string) => {
-        setActive(a => ({ ...a, [flowId]: null }));
-    }, []);
+    }, [active, handleClose]);
 
     // Renders snackbars into their appropriate flow-root, fallback to body
     return (

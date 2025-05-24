@@ -4,6 +4,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { MultiValue } from "@waldiez/components";
 import { WaldiezAgentToolsProps } from "@waldiez/containers/nodes/agent/modal/tabs/tools/types";
 import { WaldiezAgentLinkedTool, WaldiezNodeAgent, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
@@ -29,30 +30,66 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
         value: WaldiezNodeAgent;
     } | null>(null);
 
-    const currentTools = data.tools;
-
     /**
      * Clean up tools that have been deleted from the workspace
      */
     useEffect(() => {
-        // If a tool was removed from the workspace but still linked to the agent, remove it
+        // If a tool was removed from the workspace but still linked to the agent,
+        // let's remove it
         const currentToolIds = tools.map(tool => tool.id);
-        const newTools = currentTools.filter(tool => currentToolIds.includes(tool.id));
+        const newTools = data.tools.filter(tool => currentToolIds.includes(tool.id));
 
-        if (newTools.length !== currentTools.length) {
+        if (newTools.length !== data.tools.length) {
             updateAgentData(id, { tools: newTools });
         }
-    }, [tools, currentTools, updateAgentData, id]);
+    }, [tools, data.tools, updateAgentData, id]);
+
+    // const currentTools = data.tools;
+
+    const selectedTools = useMemo(
+        () =>
+            data.tools.map(tool => {
+                const toolFound = tools.find(t => t.id === tool.id);
+                if (!toolFound) {
+                    return null;
+                }
+                return {
+                    label: toolFound.data.label as string,
+                    value: toolFound,
+                };
+            }),
+        [data.tools, tools],
+    );
+
+    const onSelectedToolsChange = useCallback(
+        (newValue: MultiValue<{ label: string; value: WaldiezNodeTool } | null>) => {
+            if (!newValue || newValue.length === 0) {
+                onDataChange({ tools: [] });
+            } else {
+                onDataChange({
+                    tools: newValue
+                        .filter(tool => tool !== null)
+                        .map(tool => ({
+                            id: tool.value.id,
+                            executorId: id,
+                        })),
+                });
+            }
+        },
+        [onDataChange, id],
+    );
 
     /**
      * Generate tool options for select dropdown
      */
     const toolOptions = useMemo(
         () =>
-            tools.map(tool => ({
-                label: (tool.data.label as string) ?? "Unknown tool",
-                value: tool,
-            })),
+            tools
+                .filter(tool => tool.data.toolType !== "shared")
+                .map(tool => ({
+                    label: (tool.data.label as string) ?? "Unknown tool",
+                    value: tool,
+                })),
         [tools],
     );
 
@@ -108,7 +145,7 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
         const linkedToolExecutor = selectedExecutor.value;
 
         // Check if tool already exists with this executor
-        const toolAlready = currentTools.find(
+        const toolAlready = data.tools.find(
             entry => entry.executorId === linkedToolExecutor.id && entry.id === linkedTool.id,
         );
 
@@ -119,34 +156,36 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
                 executorId: linkedToolExecutor.id,
             };
 
-            const newTools = [...currentTools, newTool];
+            const newTools = [...data.tools, newTool];
             onDataChange({ tools: newTools });
 
             // Reset selections
             setSelectedTool(null);
             setSelectedExecutor(null);
         }
-    }, [selectedTool, selectedExecutor, currentTools, onDataChange]);
+    }, [selectedTool, selectedExecutor, data.tools, onDataChange]);
 
     /**
      * Remove tool at specified index
      */
     const onRemoveTool = useCallback(
         (index: number) => {
-            const newTools = currentTools.filter((_, i) => i !== index);
+            const newTools = data.tools.filter((_, i) => i !== index);
             onDataChange({ tools: newTools });
         },
-        [currentTools, onDataChange],
+        [data.tools, onDataChange],
     );
 
     return {
         toolOptions,
         agentOptions,
         selectedTool,
+        selectedTools,
         selectedExecutor,
         getToolName,
         getAgentName,
         onSelectedToolChange: setSelectedTool,
+        onSelectedToolsChange,
         onSelectedExecutorChange: setSelectedExecutor,
         onAddTool,
         onRemoveTool,

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get the standard imports for the flow exporter."""
 
-from typing import Optional
+from typing import Optional, Set
 
 from waldiez.exporting.base import ImportPosition
 
@@ -91,7 +91,7 @@ def sort_imports(
             third_party_imports.append(import_string)
         elif position == ImportPosition.LOCAL:
             local_imports.append(import_string)
-    autogen_imports = list(set(autogen_imports))
+    autogen_imports = clean_and_group_autogen_imports(autogen_imports)
     third_party_imports = ensure_np_import(third_party_imports)
     sorted_builtins = get_sorted_imports(builtin_imports)
     sorted_third_party = get_sorted_imports(third_party_imports)
@@ -103,6 +103,62 @@ def sort_imports(
         sorted_locals,
         got_import_autogen,
     )
+
+
+def clean_and_group_autogen_imports(autogen_imports: list[str]) -> list[str]:
+    """Cleanup and group autogen imports.
+
+    Parameters
+    ----------
+    autogen_imports : list[str]
+        List of autogen import statements
+
+    Returns
+    -------
+    list[str]
+        Cleaned and grouped autogen imports
+    """
+    # Group imports by module path
+    import_groups: dict[str, Set[str]] = {}
+    direct_imports: Set[str] = set()
+
+    for imp in autogen_imports:
+        imp = imp.strip()
+        if not imp:
+            continue
+
+        if imp.startswith("import autogen"):
+            direct_imports.add(imp)
+            continue
+
+        # Parse "from autogen.module import items"
+        if imp.startswith("from autogen"):
+            parts = imp.split(" import ")
+            if len(parts) == 2:
+                module_path = parts[0]  # "from autogen.module"
+                items = parts[1].strip()
+
+                if module_path not in import_groups:
+                    import_groups[module_path] = set()
+
+                # Handle multiple imports in one line
+                for item in items.split(","):
+                    import_groups[module_path].add(item.strip())
+
+    # Build cleaned import list
+    cleaned_imports: list[str] = []
+
+    # Add direct imports first
+    cleaned_imports.extend(sorted(direct_imports))
+
+    # Add grouped imports, sorted by module path
+    for module_path in sorted(import_groups.keys()):
+        sorted_items = sorted(import_groups[module_path])
+        items_str = ", ".join(sorted_items)
+        import_statement = f"{module_path} import {items_str}"
+        cleaned_imports.append(import_statement)
+
+    return cleaned_imports
 
 
 def get_the_imports_string(

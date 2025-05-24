@@ -243,7 +243,7 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
                 nestedChats: [newChat],
             });
         },
-        [chat.messages, onDataChange],
+        [chat.messages, chat.order, onDataChange],
     );
 
     /**

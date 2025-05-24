@@ -49,7 +49,7 @@ export const useWebSocketActions = ({
 
             wsRef.current.send(JSON.stringify(message));
         },
-        [connected, isRunning],
+        [isRunning, setError, reset, setIsRunning, wsRef],
     );
 
     /**
@@ -66,7 +66,7 @@ export const useWebSocketActions = ({
         };
 
         wsRef.current.send(JSON.stringify(message));
-    }, [connected]);
+    }, [setError, wsRef]);
 
     /**
      * Handle save action
@@ -85,7 +85,7 @@ export const useWebSocketActions = ({
 
             wsRef.current.send(JSON.stringify(message));
         },
-        [connected],
+        [setError, wsRef],
     );
 
     /**
@@ -143,7 +143,7 @@ export const useWebSocketActions = ({
                 wsRef.current?.send(JSON.stringify(message));
             });
         },
-        [connected],
+        [wsRef, connected],
     );
 
     /**
@@ -164,7 +164,7 @@ export const useWebSocketActions = ({
 
             wsRef.current.send(JSON.stringify(message));
         },
-        [connected],
+        [setError, wsRef],
     );
     /**
      * Handle user input
@@ -179,7 +179,7 @@ export const useWebSocketActions = ({
             // Clear the input prompt after sending
             setInputPrompt(undefined);
         },
-        [connected],
+        [setError, wsRef, setInputPrompt],
     );
     return {
         handleRun,

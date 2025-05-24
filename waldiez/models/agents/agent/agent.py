@@ -12,6 +12,7 @@ from ....models.common import WaldiezBase, now
 from .agent_data import WaldiezAgentData
 from .agent_type import WaldiezAgentType
 from .code_execution import WaldiezAgentCodeExecutionConfig
+from .handoff import WaldiezAgentHandoff
 
 
 class WaldiezAgent(WaldiezBase):
@@ -208,9 +209,18 @@ class WaldiezAgent(WaldiezBase):
         )
 
     @property
+    def handoffs(self) -> list[WaldiezAgentHandoff]:
+        """Return the handoffs of the agent."""
+        return self.data.handoffs
+
+    @property
     def ag2_class(self) -> str:
         """Return the AG2 class of the agent."""
         class_name = "ConversableAgent"
+        if self.is_group_member:
+            if getattr(self.data, "is_multimodal", False) is True:
+                class_name = "MultimodalConversableAgent"
+            return class_name
         if self.agent_type == "assistant":
             if getattr(self.data, "is_multimodal", False) is True:
                 class_name = "MultimodalConversableAgent"

@@ -29,18 +29,17 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
         return clientRect.width > 0 && clientRect.height > 0;
     };
     {
-        !isReadOnly &&
-            useHotkeys(
-                "mod+z",
-                () => {
-                    if (pastStates.length > 0) {
-                        if (isFlowVisible()) {
-                            undo();
-                        }
+        useHotkeys(
+            "mod+z",
+            () => {
+                if (pastStates.length > 0) {
+                    if (isFlowVisible()) {
+                        undo();
                     }
-                },
-                { scopes: flowId },
-            );
+                }
+            },
+            { scopes: flowId },
+        );
         useHotkeys(
             ["shift+mod+z", "mod+y"],
             () => {
@@ -54,6 +53,7 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
         );
     }
     if (listenForSave) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useHotkeys(
             "mod+s",
             event => {

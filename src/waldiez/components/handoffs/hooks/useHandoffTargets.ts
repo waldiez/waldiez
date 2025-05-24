@@ -20,7 +20,7 @@ export const useHandoffTargets = (
     const handoffs = useMemo(() => data.handoffs || [], [data.handoffs]);
     const afterWorkHandoff = useMemo(() => handoffs.find(handoff => handoff.after_work), [handoffs]);
     const llmHandoffs = useMemo(
-        () => handoffs.filter(h => h.llm_conditions && h.llm_conditions?.length > 0),
+        () => handoffs.filter(h => h.llm_transitions && h.llm_transitions?.length > 0),
         [handoffs],
     );
 
@@ -35,7 +35,7 @@ export const useHandoffTargets = (
 
         // Get orders from handoffs
         llmHandoffs.forEach(handoff => {
-            handoff.llm_conditions?.forEach(condition => {
+            handoff.llm_transitions?.forEach(condition => {
                 if (condition.target.target_type === "AgentTarget") {
                     // @ts-expect-error generic target
                     const edge = groupEdges.find(e => e.target === condition.target.target);
@@ -107,7 +107,7 @@ export const useHandoffTargets = (
                 id: edge.id,
                 target: {
                     target_type: "AgentTarget",
-                    target: edge.target,
+                    value: edge.target,
                     order,
                 } as WaldiezTransitionTarget,
             };
@@ -126,7 +126,7 @@ export const useHandoffTargets = (
             id: "nested-chat",
             target: {
                 target_type: "NestedChatTarget",
-                target: "nested-chat",
+                value: "nested-chat",
                 order,
             } as WaldiezTransitionTarget,
         };
@@ -148,8 +148,8 @@ export const useHandoffTargets = (
                 return "";
             }
 
-            if (target.target_type === "AgentTarget" && target.target) {
-                return `Agent: ${getAgentName(target.target)}`;
+            if (target.target_type === "AgentTarget" && target.value) {
+                return `Agent: ${getAgentName(target.value)}`;
             }
 
             if (target.target_type === "NestedChatTarget") {
@@ -167,8 +167,8 @@ export const useHandoffTargets = (
                 return "";
             }
 
-            if (target.target_type === "AgentTarget" && target.target) {
-                return `Agent: ${getAgentName(target.target)}`;
+            if (target.target_type === "AgentTarget" && target.value) {
+                return `Agent: ${getAgentName(target.value)}`;
             }
 
             const typeMap: Record<string, string> = {
