@@ -46,58 +46,64 @@ export const EditFlowModal = (props: EditFlowModalProps) => {
             hasUnsavedChanges={isDirty}
             preventCloseIfUnsavedChanges
         >
-            <TabItems activeTabIndex={0}>
-                <TabItem label="Properties" id={`rf-${flowId}-edit-flow-modal`}>
-                    <EditFlowModalModalTabBasic
-                        flowId={flowId}
-                        data={flowData}
-                        remainingEdges={remainingEdgesState}
-                        sortedEdges={sortedEdgesState}
-                        selectedNewEdge={selectedNewEdge}
-                        onPrerequisitesChange={onPrerequisitesChange}
-                        onSelectedNewEdgeChange={onSelectedNewEdgeChange}
-                        onAddEdge={onAddEdge}
-                        onRemoveEdge={onRemoveEdge}
-                        onMoveEdgeUp={onMoveEdgeUp}
-                        onMoveEdgeDown={onMoveEdgeDown}
-                        onDataChange={onDataChange}
-                    />
-                </TabItem>
-                <TabItem label="Other" id={`rf-${flowId}-edit-flow-modal-extras`}>
-                    <EditFlowModalModalTabOther flowId={flowId} data={flowData} onDataChange={onDataChange} />
-                </TabItem>
-            </TabItems>
-            <div className="modal-actions">
-                <button
-                    className="modal-action-cancel"
-                    onClick={onCancel}
-                    data-testid="edit-flow-cancel-button"
-                    type="button"
-                    title="Cancel"
-                >
-                    Cancel
-                </button>
-                <div className="flex-row">
+            <div className="modal-body padding-10">
+                <TabItems activeTabIndex={0}>
+                    <TabItem label="Properties" id={`rf-${flowId}-edit-flow-modal`}>
+                        <EditFlowModalModalTabBasic
+                            flowId={flowId}
+                            data={flowData}
+                            remainingEdges={remainingEdgesState}
+                            sortedEdges={sortedEdgesState}
+                            selectedNewEdge={selectedNewEdge}
+                            onPrerequisitesChange={onPrerequisitesChange}
+                            onSelectedNewEdgeChange={onSelectedNewEdgeChange}
+                            onAddEdge={onAddEdge}
+                            onRemoveEdge={onRemoveEdge}
+                            onMoveEdgeUp={onMoveEdgeUp}
+                            onMoveEdgeDown={onMoveEdgeDown}
+                            onDataChange={onDataChange}
+                        />
+                    </TabItem>
+                    <TabItem label="Other" id={`rf-${flowId}-edit-flow-modal-extras`}>
+                        <EditFlowModalModalTabOther
+                            flowId={flowId}
+                            data={flowData}
+                            onDataChange={onDataChange}
+                        />
+                    </TabItem>
+                </TabItems>
+                <div className="modal-actions">
                     <button
-                        title="Save & Close"
+                        className="modal-action-cancel"
+                        onClick={onCancel}
+                        data-testid="edit-flow-cancel-button"
                         type="button"
-                        className="modal-action-submit margin-right-10 "
-                        onClick={onSaveAndClose}
-                        data-testid={`modal-submit-and-close-btn-${flowId}`}
-                        disabled={!isDirty}
+                        title="Cancel"
                     >
-                        Save & Close
+                        Cancel
                     </button>
-                    <button
-                        type="button"
-                        title="Save"
-                        className="modal-action-submit"
-                        onClick={onSubmit}
-                        data-testid="edit-flow-submit-button"
-                        disabled={!isDirty}
-                    >
-                        Save
-                    </button>
+                    <div className="flex-row">
+                        <button
+                            title="Save & Close"
+                            type="button"
+                            className="modal-action-submit margin-right-10 "
+                            onClick={onSaveAndClose}
+                            data-testid={`modal-submit-and-close-btn-${flowId}`}
+                            disabled={!isDirty}
+                        >
+                            Save & Close
+                        </button>
+                        <button
+                            type="button"
+                            title="Save"
+                            className="modal-action-submit"
+                            onClick={onSubmit}
+                            data-testid="edit-flow-submit-button"
+                            disabled={!isDirty}
+                        >
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </Modal>

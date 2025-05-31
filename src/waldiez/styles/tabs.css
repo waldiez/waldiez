@@ -33,37 +33,30 @@
 
 .flow-wrapper .tab-btn {
   font: inherit;
-  padding: 0.75rem;
+  padding: 0.75rem 0.5rem;
   border-width: 0 0 1px;
   cursor: pointer;
   color: inherit;
   white-space: nowrap;
   box-shadow: none !important;
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+  margin-right: 0.2rem;
 }
 
 .flow-wrapper.light .tab-btn {
-  padding: 0.75rem 0.5rem;
-  background: none;
-  border: none;
-  font-size: 0.9rem;
-  font-weight: 500;
   color: #6c757d;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-right: 0.2rem;
+  border: none;
   border-bottom: 1px solid #eee;
 }
 
 .flow-wrapper.dark .tab-btn {
-  padding: 0.75rem;
-  background: none;
   border: none;
-  font-size: 0.9rem;
-  font-weight: 500;
   color: #a0a0a0;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-right: 0.5rem;
   border-bottom: 1px solid #222;
 }
 

@@ -203,8 +203,8 @@ export const useModal = (props: {
     // Effect for drag event listeners
     useEffect(() => {
         if (dragging) {
-            document.addEventListener("mousemove", handleMouseMove);
-            document.addEventListener("mouseup", handleMouseUp);
+            document.addEventListener("mousemove", handleMouseMove, { passive: true });
+            document.addEventListener("mouseup", handleMouseUp, { passive: true });
         } else {
             document.removeEventListener("mousemove", handleMouseMove);
             document.removeEventListener("mouseup", handleMouseUp);

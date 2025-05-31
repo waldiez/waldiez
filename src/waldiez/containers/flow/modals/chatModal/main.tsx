@@ -183,7 +183,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     const imageInputId = `rf-${flowId}-chat-modal-image`;
     const modalTestId = `rf-${flowId}-chat-modal`;
     const isModalOpen = chat?.showUI === true || (chat !== undefined && chat.messages.length > 0);
-    const lefticon = chat?.handlers?.onInterrupt ? (
+    const leftIcon = chat?.handlers?.onInterrupt ? (
         <div
             role="button"
             className="chat-modal-action clickable"
@@ -200,8 +200,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             isOpen={isModalOpen}
             onClose={handleClose}
             onCancel={handleCancel}
-            beforeTitle={lefticon}
-            // beforeTitle
+            beforeTitle={leftIcon}
             className="chat-modal"
             hasMaximizeBtn={true}
             hasCloseBtn={chat?.showUI === false}

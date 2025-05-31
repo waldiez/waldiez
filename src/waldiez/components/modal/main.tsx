@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable tsdoc/syntax */
 import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
@@ -27,25 +26,9 @@ type ModalProps = {
     preventCloseIfUnsavedChanges?: boolean;
 };
 
-/**
- * Draggable and resizable modal component with confirmation dialog for unsaved changes
- * @param props - Props for the Modal component
- * @param props.id - Optional ID for the modal
- * @param props.dataTestId - Optional data-testid for testing
- * @param props.beforeTitle - Optional content to display before the title
- * @param props.title - Title of the modal
- * @param props.isOpen - Boolean indicating if the modal is open
- * @param props.hasCloseBtn - Boolean indicating if the close button is visible
- * @param props.hasMaximizeBtn - Boolean indicating if the maximize button is visible
- * @param props.hasMinimizeBtn - Boolean indicating if the minimize button is visible
- * @param props.onClose - Callback function for closing the modal
- * @param props.onSaveAndClose - Callback function for saving and closing the modal
- * @param props.onCancel - Callback function for canceling the modal
- * @param props.children - Content to display inside the modal
- * @param props.className - Optional additional CSS classes for the modal
- * @param props.hasUnsavedChanges - Boolean indicating if there are unsaved changes
- * @param props.preventCloseIfUnsavedChanges - Boolean indicating if the modal should prevent closing if there are unsaved changes
- */
+// Account for modal padding: header, borders, content padding
+const MODAL_CHROME_WIDTH = 40;
+
 export const Modal = memo<ModalProps>(props => {
     const {
         id,
@@ -60,7 +43,8 @@ export const Modal = memo<ModalProps>(props => {
         className = "",
         onSaveAndClose,
     } = props;
-    // Refs
+
+    // Refs and local state for width management
     const modalRef = useRef<HTMLDialogElement | null>(null);
     const dragRef = useRef<HTMLDivElement | null>(null);
     const [lockedWidth, setLockedWidth] = useState<string | undefined>(undefined);
@@ -90,87 +74,71 @@ export const Modal = memo<ModalProps>(props => {
         }
     }, [isOpen]);
 
-    // Lock width on first render
+    // Initial width locking when modal opens
     useLayoutEffect(() => {
         if (isOpen && modalRef.current && !lockedWidth) {
-            const measure = () => {
+            const measureAndLockWidth = () => {
                 if (modalRef.current) {
                     const width = modalRef.current.getBoundingClientRect().width;
-                    const tabButtons = modalRef.current.querySelectorAll(".tab-btn");
-                    setLockedWidth(`${width}px`);
-                    setTabCount(tabButtons.length);
+                    if (width > 0) {
+                        setLockedWidth(`${width}px`);
+
+                        // Set initial tab count
+                        const tabButtons = modalRef.current.querySelectorAll(".tab-btn");
+                        setTabCount(tabButtons.length);
+                    } else {
+                        // Width still 0, try again next frame
+                        requestAnimationFrame(measureAndLockWidth);
+                    }
                 }
             };
-            const raf = requestAnimationFrame(measure);
-            return () => cancelAnimationFrame(raf);
+
+            requestAnimationFrame(measureAndLockWidth);
         }
 
+        // Cleanup when modal closes
         if (!isOpen) {
             setLockedWidth(undefined);
             setTabCount(0);
         }
     }, [isOpen, lockedWidth]);
 
-    const resizeBasedOnTabsList = useCallback(
-        (tabList: HTMLElement) => {
-            if (!modalRef.current || !tabList || !lockedWidth) {
-                return;
-            }
-            const tabListWidth = tabList.scrollWidth;
-            const currentModalWidth = parseFloat(lockedWidth);
-            const modalPadding = 20;
-            const requiredModalWidth = tabListWidth + modalPadding;
+    // Check if modal needs to grow for new tabs
+    const checkTabSpaceAndResize = useCallback(() => {
+        if (!modalRef.current || !lockedWidth) {
+            return;
+        }
 
-            if (requiredModalWidth > currentModalWidth) {
-                // Tabs need more space - resize modal
-                setLockedWidth(`${requiredModalWidth}px`);
-            }
-        },
-        [lockedWidth],
-    );
+        const tabList = modalRef.current.querySelector(".tab-list") as HTMLElement;
+        if (!tabList) {
+            return;
+        }
 
+        const tabListWidth = tabList.scrollWidth;
+        const currentModalWidth = parseFloat(lockedWidth);
+
+        const requiredModalWidth = tabListWidth + MODAL_CHROME_WIDTH;
+
+        if (requiredModalWidth > currentModalWidth) {
+            console.debug(
+                `Expanding modal: tabs need ${tabListWidth}px, modal needs ${requiredModalWidth}px`,
+            );
+            setLockedWidth(`${requiredModalWidth}px`);
+        }
+    }, [lockedWidth]);
+
+    // Monitor tab count changes and resize if needed
     useLayoutEffect(() => {
         if (isOpen && modalRef.current && lockedWidth) {
             const currentTabCount = modalRef.current.querySelectorAll(".tab-btn").length;
 
             if (currentTabCount !== tabCount) {
-                // Get the actual width needed by the tab list
-                const tabList = modalRef.current.querySelector(".tab-list") as HTMLElement;
-                if (tabList) {
-                    resizeBasedOnTabsList(tabList);
-                } else {
-                    modalRef.current.style.width = "";
-                    const naturalWidth = modalRef.current.getBoundingClientRect().width;
-                    const currentWidth = parseFloat(lockedWidth);
-
-                    if (naturalWidth > currentWidth) {
-                        setLockedWidth(`${naturalWidth}px`);
-                    }
-                }
+                console.debug(`Tab count changed: ${tabCount} → ${currentTabCount}`);
                 setTabCount(currentTabCount);
+                checkTabSpaceAndResize();
             }
         }
-    }, [children, isOpen, tabCount, lockedWidth, resizeBasedOnTabsList]);
-
-    // Handle manual resizing
-    useLayoutEffect(() => {
-        if (isOpen && modalRef.current && lockedWidth) {
-            const resizeObserver = new ResizeObserver(entries => {
-                for (const entry of entries) {
-                    if (entry.target === modalRef.current) {
-                        // Guard against jsdom/test environment
-                        const newWidth = entry.contentRect?.width;
-                        if (newWidth !== undefined) {
-                            setLockedWidth(`${newWidth}px`);
-                        }
-                    }
-                }
-            });
-
-            resizeObserver.observe(modalRef.current);
-            return () => resizeObserver.disconnect();
-        }
-    }, [isOpen, lockedWidth]);
+    }, [children, isOpen, tabCount, lockedWidth, checkTabSpaceAndResize]);
 
     // Compute CSS classes
     const modalClasses = [
@@ -197,55 +165,57 @@ export const Modal = memo<ModalProps>(props => {
                 ...(isFullScreen ? {} : { top: position.y, left: position.x }),
             }}
         >
-            <div className="modal-wrapper">
-                <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
-                    <div>{beforeTitle}</div>
-                    <h3 className="modal-title">{title}</h3>
-                    <div className="modal-header-actions">
-                        {hasMinimizeBtn && (
-                            <div
-                                className="modal-minimize-btn clickable"
-                                role="button"
-                                title={isMinimized ? "Restore" : "Minimize"}
-                                onClick={onToggleMinimize}
-                            >
-                                {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
-                            </div>
-                        )}
-                        {hasMaximizeBtn && (
-                            <div
-                                className="modal-fullscreen-btn clickable"
-                                role="button"
-                                title={isFullScreen ? "Restore" : "Maximize"}
-                                onClick={onToggleFullScreen}
-                            >
-                                {isFullScreen ? <FaCompress /> : <FaExpand />}
-                            </div>
-                        )}
-                        {hasCloseBtn && (
-                            <div
-                                className="modal-close-btn clickable"
-                                role="button"
-                                title="Close"
-                                data-testid="modal-close-btn"
-                                onClick={handleCloseModal}
-                            >
-                                <FaCircleXmark />
-                            </div>
-                        )}
+            <form>
+                <div className="modal-wrapper">
+                    <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
+                        <div>{beforeTitle}</div>
+                        <h3 className="modal-title">{title}</h3>
+                        <div className="modal-header-actions">
+                            {hasMinimizeBtn && (
+                                <div
+                                    className="modal-minimize-btn clickable"
+                                    role="button"
+                                    title={isMinimized ? "Restore" : "Minimize"}
+                                    onClick={onToggleMinimize}
+                                >
+                                    {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
+                                </div>
+                            )}
+                            {hasMaximizeBtn && (
+                                <div
+                                    className="modal-fullscreen-btn clickable"
+                                    role="button"
+                                    title={isFullScreen ? "Restore" : "Maximize"}
+                                    onClick={onToggleFullScreen}
+                                >
+                                    {isFullScreen ? <FaCompress /> : <FaExpand />}
+                                </div>
+                            )}
+                            {hasCloseBtn && (
+                                <div
+                                    className="modal-close-btn clickable"
+                                    role="button"
+                                    title="Close"
+                                    data-testid="modal-close-btn"
+                                    onClick={handleCloseModal}
+                                >
+                                    <FaCircleXmark />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
+                        {showConfirmation
+                            ? renderConfirmationContent({
+                                  onSaveAndClose,
+                                  hideConfirmation,
+                                  handleSaveAndClose,
+                                  handleCloseModal,
+                              })
+                            : children}
                     </div>
                 </div>
-                <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
-                    {showConfirmation
-                        ? renderConfirmationContent({
-                              onSaveAndClose,
-                              hideConfirmation,
-                              handleSaveAndClose,
-                              handleCloseModal,
-                          })
-                        : children}
-                </div>
-            </div>
+            </form>
         </dialog>
     );
 });

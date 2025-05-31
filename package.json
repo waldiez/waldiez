@@ -64,7 +64,7 @@
         "prettier": "prettier \"**/*{.ts,.tsx,.css,.json,.md}\" --write --list-different",
         "prettier:check": "prettier \"src/**/*{.ts,.tsx,.css,.json,.md}\" --check",
         "stylelint": "bun stylelint:check --fix --ignore-path .gitignore",
-        "stylelint:check": "stylelint --ignore-path .gitignore --cache **/*.css",
+        "stylelint:check": "stylelint --ignore-path .gitignore --cache \"**/*.css\"",
         "prepack": "bun scripts/mkdir.ts --path ./out/archive --parents && bun scripts/pack.ts --before",
         "postpack": "bun scripts/pack.ts --after",
         "archive": "bun pm pack --destination ./out/archive",

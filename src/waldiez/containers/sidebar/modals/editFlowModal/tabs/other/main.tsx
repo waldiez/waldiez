@@ -50,7 +50,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
     );
     return (
         <div
-            className="modal-body agent-panel agent-config-panel"
+            className="padding-left-10 padding-right-10"
             data-testid={`edit-flow-${flowId}-modal-other-view`}
         >
             <label className="checkbox-label margin-left-5">
