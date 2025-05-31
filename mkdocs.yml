@@ -115,6 +115,7 @@ plugins:
             group_by_category: false
             show_category_heading: true
             inherited_members: false
+            separate_signature: true
   - tags
   - blog:
       blog_dir: blog
