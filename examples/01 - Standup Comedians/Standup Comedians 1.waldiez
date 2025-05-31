@@ -1,7 +1,7 @@
 {
-  "id": "wf-osoltxd5mw7QJIKrEZgbD",
+  "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "type": "flow",
-  "storageId": "wf-osoltxd5mw7QJIKrEZgbD",
+  "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "Standup comedians 1",
   "description": "Standup comedians with user input.",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-13T10:37:31.004Z",
-  "updatedAt": "2025-05-18T11:03:59.895Z",
+  "updatedAt": "2025-05-31T15:39:45.152Z",
   "data": {
     "nodes": [
       {
@@ -37,7 +37,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 229
+          "height": 215
         },
         "className": "",
         "hidden": false,
@@ -53,9 +53,9 @@
         },
         "measured": {
           "width": 200,
-          "height": 229
+          "height": 215
         },
-        "selected": true,
+        "selected": false,
         "dragging": false,
         "className": "",
         "hidden": false
@@ -85,11 +85,12 @@
       }
     ],
     "viewport": {
-      "x": 119,
-      "y": 42,
-      "zoom": 1
+      "x": 89.32208903797653,
+      "y": -25.1098600633444,
+      "zoom": 1.1390806644624651
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [],
       "assistantAgents": [
         {
@@ -120,12 +121,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
@@ -159,12 +168,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
@@ -173,8 +190,7 @@
       ],
       "ragUserProxyAgents": [],
       "reasoningAgents": [],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -241,7 +257,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }

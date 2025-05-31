@@ -1,7 +1,7 @@
 {
-  "id": "wf-osoltxd5mw7QJIKrEZgbD",
+  "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "type": "flow",
-  "storageId": "wf-osoltxd5mw7QJIKrEZgbD",
+  "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "Standup comedians 2",
   "description": "Standup comedians without user input.",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-13T10:49:00.617Z",
-  "updatedAt": "2025-05-18T11:06:55.886Z",
+  "updatedAt": "2025-05-31T15:40:20.655Z",
   "data": {
     "nodes": [
       {
@@ -85,11 +85,12 @@
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
-      "zoom": 1
+      "x": -82.83270167056946,
+      "y": -172.81745172798855,
+      "zoom": 1.4659845669719795
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [],
       "assistantAgents": [
         {
@@ -120,12 +121,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
@@ -159,12 +168,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
@@ -173,8 +190,7 @@
       ],
       "ragUserProxyAgents": [],
       "reasoningAgents": [],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -241,7 +257,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
