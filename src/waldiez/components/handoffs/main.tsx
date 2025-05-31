@@ -49,10 +49,14 @@ export const Handoffs = memo((props: HandoffProps) => {
                         {/* Display ordered handoffs section - includes both direct connections and nested chats */}
                         {orderedTransitionTargets.length > 0 && (
                             <div className="handoffs-section">
-                                <h4 className="handoffs-section-title">Handoff Order</h4>
+                                <h4 className="handoffs-section-title">Handoffs</h4>
                                 <p className="handoff-order-instructions">
-                                    Use the up and down arrows to reorder handoffs. The ordering determines
-                                    the sequence in which handoffs are considered.
+                                    If the group's speakers selection mode allows it (e.g. set to{" "}
+                                    <em>
+                                        <b>default</b>
+                                    </em>
+                                    ), you can use the up and down arrows to reorder handoffs. The ordering
+                                    will then determine the sequence in which handoffs are processed.
                                 </p>
                                 <div className="handoff-list">
                                     {orderedTransitionTargets.map((item, index) => (

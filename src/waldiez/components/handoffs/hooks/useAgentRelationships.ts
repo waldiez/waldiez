@@ -71,6 +71,7 @@ export const useAgentRelationships = (
         }
 
         // If existing chat exists and has messages, preserve it
+        // we only want to know if there are existing chats with messages
         if (existingChats.length > 0 && existingChats[0].messages.length > 0) {
             return existingChats;
         }

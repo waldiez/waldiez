@@ -34,18 +34,20 @@ export const useHandoffs = (
         // Initialize ordered targets
         const orderedTargets: WaldiezOrderedHandoffTransitionTarget[] = [];
         const processedEdges = new Set<string>();
+        const nestedChatId = "nested-chat";
+        const hasNestedChat = nestedChats.length > 0 && nestedChats.some(chat => chat.messages.length > 0);
 
         // Process ordered handoffs from data.handoffs
         data.handoffs.forEach((id, index) => {
-            if (id === "nested-chat") {
+            if (id === nestedChatId) {
                 // Handle nested chat
-                if (nestedChats) {
+                if (hasNestedChat) {
                     const newTarget: WaldiezTransitionTarget = {
                         targetType: "NestedChatTarget",
-                        value: ["nested-chat"],
+                        value: [nestedChatId],
                     };
                     orderedTargets.push({
-                        id: "nested-chat",
+                        id: nestedChatId,
                         ...newTarget,
                         value: [getTransitionTargetName(newTarget)],
                         order: index,
@@ -87,13 +89,13 @@ export const useHandoffs = (
         });
 
         // Add nested chat if it exists but isn't in data.handoffs
-        if (nestedChats && !data.handoffs.includes("nested-chat")) {
+        if (hasNestedChat && !data.handoffs.includes(nestedChatId)) {
             const newTarget: WaldiezTransitionTarget = {
                 targetType: "NestedChatTarget",
                 value: [],
             };
             orderedTargets.push({
-                id: "nested-chat",
+                id: nestedChatId,
                 ...newTarget,
                 value: [getTransitionTargetName(newTarget)],
                 order: orderedTargets.length,
