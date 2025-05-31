@@ -26,6 +26,8 @@ except ImportError:
     sys.path.append(str(Path(__file__).resolve().parents[1]))
     from waldiez.exporter import WaldiezExporter
 
+from waldiez.exporting.core import DefaultLogger
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
 DOT_LOCAL = ROOT_DIR / ".local"
 DOT_LOCAL.mkdir(exist_ok=True, parents=True)
@@ -44,7 +46,7 @@ EXAMPLES = [
     "05 - Coding/Coding.waldiez",
     # "06 - Planning/Planning 1.waldiez",
     # "07 - Group chat with RAG/RAG.waldiez",
-    # "08 - ReAct using Tavily/ReAct.waldiez",
+    "08 - ReAct using Tavily/ReAct.waldiez",
     # "09 - AutoDefence/AutoDefense Flow.waldiez",
     # "10 - Travel Planning/Travel Planning.waldiez",
     # "11 - Swarm/Swarm.waldiez",
@@ -53,6 +55,9 @@ EXAMPLES = [
     "13 - Captain/2 - With agent lib.waldiez",
     "13 - Captain/3 - With agent lib and tool lib.waldiez",
 ]
+
+
+LOG = DefaultLogger()
 
 
 def load_shared_schema() -> dict[str, Any]:
@@ -119,6 +124,10 @@ def move_to_dot_local(
     shutil.move(example_path, dot_local_path)
     dot_local_py_path = dot_local_path.replace(".waldiez", ".py")
     shutil.move(example_path.replace(".waldiez", ".py"), dot_local_py_path)
+    dot_local_ipynb_path = dot_local_path.replace(".waldiez", ".ipynb")
+    shutil.move(
+        example_path.replace(".waldiez", ".ipynb"), dot_local_ipynb_path
+    )
     # check for {flow_name}_api_keys.py
     flow_name_ = flow_name.replace(" ", "_").replace("-", "_").lower()
     example_path_dir = os.path.dirname(example_path)
@@ -128,6 +137,14 @@ def move_to_dot_local(
         if os.path.exists(dst):
             os.remove(dst)
         shutil.move(api_keys_path, dst)
+    secrets_ending = "_secrets.py"
+    for file in os.listdir(example_path_dir):
+        if file.endswith(secrets_ending):
+            src = os.path.join(example_path_dir, file)
+            dst = os.path.join(dot_local_dir, file)
+            if os.path.exists(dst):
+                os.remove(dst)
+            shutil.move(src, dst)
 
 
 def validate_example(example_path: str) -> None:
@@ -168,19 +185,25 @@ def convert_examples() -> None:
         example_url = f"{REPO_URL}/{example}"
         example_path = os.path.join(temp_dir, example)
         os.makedirs(os.path.dirname(example_path), exist_ok=True)
-        print(f"Downloading {example} ...")
+        LOG.info(f"Downloading {example} ...")  # noqa: G004
         download_example(http, example_url, example_path)
-        print(f"Validating {example} ...")
+        LOG.info(f"Validating {example} ...")  # noqa: G004
         validate_example(example_path)
-        print(f"Converting {example} ...")
-        flow = WaldiezExporter.load(Path(example_path))
-        output_path = example_path.replace(".waldiez", ".py")
-        WaldiezExporter.export(flow, output_path)
-        if not os.path.exists(output_path):
+        LOG.info(f"Converting {example} to py...")  # noqa: G004
+        exporter = WaldiezExporter.load(Path(example_path))
+        output_py_path = example_path.replace(".waldiez", ".py")
+        exporter.export(output_py_path, True)
+        if not os.path.exists(output_py_path):
             # pylint: disable=broad-exception-raised
             raise Exception(f"Failed to convert {example}")
-        move_to_dot_local(example_dir, example_path, flow.waldiez.name)
-        print(f"Example {example} looks good ...\n")
+        LOG.info(f"Converting {example} to ipynb...")  # noqa: G004
+        output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
+        exporter.export(output_ipynb_path, True)
+        if not os.path.exists(output_ipynb_path):
+            # pylint: disable=broad-exception-raised
+            raise Exception(f"Failed to convert {example} to ipynb")
+        move_to_dot_local(example_dir, example_path, exporter.waldiez.name)
+        LOG.info(f"Example {example} looks good ...")  # noqa: G004
     shutil.rmtree(temp_dir)
 
 
