@@ -1,7 +1,7 @@
 {
-  "id": "wf-n3NEHpF57GnBy7wIqIu99",
+  "id": "wf-57v7v5V-k6fIlTP5E6QFL",
   "type": "flow",
-  "storageId": "wf-n3NEHpF57GnBy7wIqIu99",
+  "storageId": "wf-57v7v5V-k6fIlTP5E6QFL",
   "name": "3 - With agent lib and tool lib",
   "description": "Using CaptainAgent with agent library and tool library. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-both-agent-library-and-tool-library>",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-19T09:58:46.340Z",
-  "updatedAt": "2025-05-19T10:33:45.378Z",
+  "updatedAt": "2025-05-31T16:07:37.491Z",
   "data": {
     "nodes": [
       {
@@ -52,7 +52,8 @@
           "width": 200,
           "height": 245
         },
-        "selected": false
+        "selected": false,
+        "hidden": false
       }
     ],
     "edges": [
@@ -79,11 +80,12 @@
       }
     ],
     "viewport": {
-      "x": 84.17645263671875,
-      "y": 42,
-      "zoom": 1
+      "x": -222.62977083267708,
+      "y": -235.3689516129033,
+      "zoom": 1.5040322580645162
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [
         {
           "type": "agent",
@@ -111,12 +113,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
-            "updateAgentStateBeforeReply": []
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
           },
           "id": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
           "agentType": "user_proxy"
@@ -154,12 +164,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "agentLib": [
               {
                 "name": "Environmental_Scientist",
@@ -259,8 +277,7 @@
           "id": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
           "agentType": "captain"
         }
-      ],
-      "groupManagerAgents": []
+      ]
     },
     "models": [
       {
@@ -327,13 +344,20 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": 41
+    "isAsync": false
   }
 }

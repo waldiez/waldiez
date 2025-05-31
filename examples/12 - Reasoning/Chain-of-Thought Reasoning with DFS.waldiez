@@ -1,7 +1,7 @@
 {
-  "id": "wf-YM1cHk-mrU8LadWaeWQ_k",
+  "id": "wf-1olHWN_NvlfwsHwhc5PwK",
   "type": "flow",
-  "storageId": "wf-YM1cHk-mrU8LadWaeWQ_k",
+  "storageId": "wf-1olHWN_NvlfwsHwhc5PwK",
   "name": "Chain-of-Thought Reasoning with DFS",
   "description": "Chain-of-Thought Reasoning with DFS",
   "tags": [
@@ -12,7 +12,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-19T14:03:53.279Z",
-  "updatedAt": "2025-05-19T14:08:01.592Z",
+  "updatedAt": "2025-05-31T16:05:41.938Z",
   "data": {
     "nodes": [
       {
@@ -38,9 +38,10 @@
         },
         "measured": {
           "width": 200,
-          "height": 227
+          "height": 211
         },
-        "selected": false
+        "selected": false,
+        "hidden": false
       },
       {
         "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
@@ -51,9 +52,10 @@
         },
         "measured": {
           "width": 200,
-          "height": 231
+          "height": 215
         },
-        "selected": false
+        "selected": false,
+        "hidden": false
       }
     ],
     "edges": [
@@ -62,7 +64,6 @@
         "source": "wa-1747663611288peWUClnOTiu5rptUsflff",
         "target": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
         "hidden": false,
-        "type": "chat",
         "animated": false,
         "selected": false,
         "markerEnd": {
@@ -76,19 +77,20 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-1747663611288peWUClnOTiu5rptUsflff",
-        "targetHandle": "agent-handle-left-target-wa-17476636145686Psj3iVNybSHDgSqAShDm"
+        "targetHandle": "agent-handle-left-target-wa-17476636145686Psj3iVNybSHDgSqAShDm",
+        "type": "chat"
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
-      "zoom": 1
+      "x": -259.6128,
+      "y": -177.572,
+      "zoom": 1.7904
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [
         {
           "type": "agent",
-          "agentType": "user_proxy",
           "name": "User proxy",
           "description": "A new User proxy agent",
           "tags": [],
@@ -113,14 +115,23 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
-            "updateAgentStateBeforeReply": []
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
           },
-          "id": "wa-1747663611288peWUClnOTiu5rptUsflff"
+          "id": "wa-1747663611288peWUClnOTiu5rptUsflff",
+          "agentType": "user_proxy"
         }
       ],
       "assistantAgents": [],
@@ -128,7 +139,6 @@
       "reasoningAgents": [
         {
           "type": "agent",
-          "agentType": "reasoning",
           "name": "Reasoning",
           "description": "A new Reasoning agent",
           "tags": [],
@@ -155,12 +165,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "verbose": true,
             "reasonConfig": {
               "method": "beam_search",
@@ -173,11 +191,11 @@
               "explorationConstant": 1.41
             }
           },
-          "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm"
+          "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+          "agentType": "reasoning"
         }
       ],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -198,11 +216,11 @@
           "topP": null,
           "maxTokens": null,
           "aws": {
-            "accessKey": null,
-            "profileName": null,
             "region": null,
+            "accessKey": null,
             "secretKey": null,
-            "sessionToken": null
+            "sessionToken": null,
+            "profileName": null
           },
           "extras": {},
           "defaultHeaders": {},
@@ -244,13 +262,20 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": 41
+    "isAsync": false
   }
 }

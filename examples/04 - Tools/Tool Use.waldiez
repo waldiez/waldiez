@@ -1,7 +1,7 @@
 {
-  "id": "wf-5XbDO0E_l4ZSmIHjdD1eZ",
+  "id": "wf-afhmSNzq3QHTSjqYUhtAF",
   "type": "flow",
-  "storageId": "wf-5XbDO0E_l4ZSmIHjdD1eZ",
+  "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Tool Use",
   "description": "Tool Use and Conversational Chess",
   "tags": [],
@@ -9,7 +9,7 @@
     "chess"
   ],
   "createdAt": "2025-05-19T05:29:44.181Z",
-  "updatedAt": "2025-05-19T06:13:56.208Z",
+  "updatedAt": "2025-05-31T16:01:21.910Z",
   "data": {
     "nodes": [
       {
@@ -81,7 +81,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 244
+          "height": 230
         },
         "className": "",
         "selected": false,
@@ -97,7 +97,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 244
+          "height": 230
         },
         "className": "",
         "selected": false,
@@ -113,7 +113,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 226
+          "height": 211
         },
         "selected": true,
         "dragging": false,
@@ -175,11 +175,12 @@
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
-      "zoom": 1
+      "x": 32.29245283018861,
+      "y": -113.05660377358492,
+      "zoom": 1.1603773584905661
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [
         {
           "type": "agent",
@@ -225,12 +226,20 @@
                     "isReply": true
                   }
                 ],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
-            "updateAgentStateBeforeReply": []
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
           },
           "id": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
           "agentType": "user_proxy"
@@ -279,12 +288,20 @@
                     "isReply": true
                   }
                 ],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
-            "updateAgentStateBeforeReply": []
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
           },
           "id": "1747633035639vcXujJkXlY_IOT7CJWFml",
           "agentType": "user_proxy"
@@ -317,12 +334,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
@@ -331,8 +356,7 @@
       ],
       "ragUserProxyAgents": [],
       "reasoningAgents": [],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -445,7 +469,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
@@ -479,7 +511,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
@@ -513,7 +553,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }

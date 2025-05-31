@@ -1,7 +1,7 @@
 {
-  "id": "wf-khwQ0W00rRZPEhhB_r_WA",
+  "id": "wf-afhmSNzq3QHTSjqYUhtAF",
   "type": "flow",
-  "storageId": "wf-khwQ0W00rRZPEhhB_r_WA",
+  "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Reflection",
   "description": "Reflection and Blog post Writing",
   "tags": [
@@ -10,7 +10,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-18T16:49:59.873Z",
-  "updatedAt": "2025-05-18T17:08:59.068Z",
+  "updatedAt": "2025-05-31T16:00:50.789Z",
   "data": {
     "nodes": [
       {
@@ -37,7 +37,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 212
+          "height": 215
         },
         "selected": false,
         "hidden": false,
@@ -53,7 +53,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 212
+          "height": 215
         },
         "selected": false,
         "hidden": false,
@@ -69,7 +69,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 212
+          "height": 215
         },
         "selected": false,
         "hidden": false,
@@ -85,7 +85,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 212
+          "height": 215
         },
         "selected": false,
         "hidden": false,
@@ -101,7 +101,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 212
+          "height": 215
         },
         "selected": true,
         "hidden": false,
@@ -117,7 +117,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 212
+          "height": 215
         },
         "selected": false,
         "hidden": false,
@@ -209,11 +209,12 @@
       }
     ],
     "viewport": {
-      "x": 488.1018711018711,
-      "y": 151.83264033264035,
-      "zoom": 0.7141372141372141
+      "x": 539.8523316062176,
+      "y": 167.15544041450775,
+      "zoom": 0.6373056994818653
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [],
       "assistantAgents": [
         {
@@ -244,12 +245,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
@@ -283,12 +292,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
@@ -322,12 +339,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "1747587121881_z5Y971nA86t3GHAjWwuA",
@@ -361,12 +386,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "1747587163482cY8jFkfB079xEe8mI77M2",
@@ -419,12 +452,20 @@
                     "isReply": false
                   }
                 ],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
@@ -458,12 +499,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "1747587231249CS8kwY_f_NdENhVDsPdDW",
@@ -472,8 +521,7 @@
       ],
       "ragUserProxyAgents": [],
       "reasoningAgents": [],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -540,7 +588,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
@@ -579,7 +635,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
@@ -618,7 +682,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
@@ -657,7 +729,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
@@ -696,7 +776,15 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }

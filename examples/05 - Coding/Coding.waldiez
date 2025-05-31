@@ -1,7 +1,7 @@
 {
-  "id": "wf-D8JmaI2mwKLNzIacKkOBK",
+  "id": "wf-afhmSNzq3QHTSjqYUhtAF",
   "type": "flow",
-  "storageId": "wf-D8JmaI2mwKLNzIacKkOBK",
+  "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Coding",
   "description": "Coding and Financial Analysis",
   "tags": [
@@ -9,23 +9,9 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-19T14:14:02.364Z",
-  "updatedAt": "2025-05-19T15:51:01.693Z",
+  "updatedAt": "2025-05-31T16:01:49.106Z",
   "data": {
     "nodes": [
-      {
-        "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
-        "type": "tool",
-        "position": {
-          "x": 0,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
-        "hidden": true
-      },
       {
         "id": "wt-17476641001906-adc7jh4Ymj_JpZyxnHq",
         "type": "model",
@@ -42,6 +28,20 @@
         "className": ""
       },
       {
+        "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
         "id": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
         "type": "agent",
         "position": {
@@ -50,7 +50,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 227
+          "height": 211
         },
         "className": "",
         "selected": false,
@@ -66,7 +66,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 231
+          "height": 215
         },
         "selected": false,
         "hidden": false,
@@ -98,11 +98,12 @@
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
-      "zoom": 1
+      "x": -220.9256198347108,
+      "y": -326.0198347107438,
+      "zoom": 1.8495867768595042
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [
         {
           "type": "agent",
@@ -136,12 +137,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
-            "updateAgentStateBeforeReply": []
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
           },
           "id": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
           "agentType": "user_proxy"
@@ -181,12 +190,20 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
           "id": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
@@ -195,8 +212,7 @@
       ],
       "ragUserProxyAgents": [],
       "reasoningAgents": [],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -279,13 +295,20 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": null
+    "isAsync": false
   }
 }

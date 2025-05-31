@@ -1,7 +1,7 @@
 {
-  "id": "wf-mshCeGWjeR_iZO2taT0jH",
+  "id": "wf-1olHWN_NvlfwsHwhc5PwK",
   "type": "flow",
-  "storageId": "wf-mshCeGWjeR_iZO2taT0jH",
+  "storageId": "wf-1olHWN_NvlfwsHwhc5PwK",
   "name": "ReAct",
   "description": "ReAct using Tavily",
   "tags": [
@@ -10,9 +10,24 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-19T16:10:23.312Z",
-  "updatedAt": "2025-05-19T16:22:17.940Z",
+  "updatedAt": "2025-05-31T16:05:10.778Z",
   "data": {
     "nodes": [
+      {
+        "id": "wt-17476714424401l6MzsQpNv8Kqw6rvYywn",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
       {
         "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
         "type": "tool",
@@ -37,7 +52,7 @@
         },
         "measured": {
           "width": 200,
-          "height": 227
+          "height": 211
         },
         "hidden": false,
         "selected": false,
@@ -53,26 +68,11 @@
         },
         "measured": {
           "width": 200,
-          "height": 231
+          "height": 215
         },
         "hidden": false,
         "className": "",
         "selected": false
-      },
-      {
-        "id": "wt-17476714424401l6MzsQpNv8Kqw6rvYywn",
-        "type": "model",
-        "position": {
-          "x": 0,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
-        "hidden": true,
-        "className": ""
       }
     ],
     "edges": [
@@ -81,7 +81,6 @@
         "source": "wa-17476712464615lkKtgIc855Art5UuNUEK",
         "target": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
         "hidden": false,
-        "type": "chat",
         "animated": false,
         "selected": false,
         "markerEnd": {
@@ -95,19 +94,20 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-17476712464615lkKtgIc855Art5UuNUEK",
-        "targetHandle": "agent-handle-left-target-wa-1747671248211kXD0xnZTd4rHa2imiKiXq"
+        "targetHandle": "agent-handle-left-target-wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
+        "type": "chat"
       }
     ],
     "viewport": {
-      "x": 20,
-      "y": 40,
-      "zoom": 1.051172909087707
+      "x": -143.70409711684363,
+      "y": -223.26251896813346,
+      "zoom": 1.6980273141122912
     },
     "agents": {
+      "groupManagerAgents": [],
       "userProxyAgents": [
         {
           "type": "agent",
-          "agentType": "user_proxy",
           "name": "User proxy",
           "description": "A new User proxy agent",
           "tags": [],
@@ -132,20 +132,28 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
-            "updateAgentStateBeforeReply": []
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
           },
-          "id": "wa-17476712464615lkKtgIc855Art5UuNUEK"
+          "id": "wa-17476712464615lkKtgIc855Art5UuNUEK",
+          "agentType": "user_proxy"
         }
       ],
       "assistantAgents": [
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Assistant",
           "description": "A new Assistant agent",
           "tags": [],
@@ -177,21 +185,29 @@
               {
                 "messages": [],
                 "triggeredBy": [],
-                "order": 0
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
               }
             ],
             "handoffs": [],
             "contextVariables": {},
             "updateAgentStateBeforeReply": [],
+            "afterWork": null,
             "isMultimodal": false
           },
-          "id": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq"
+          "id": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
+          "agentType": "assistant"
         }
       ],
       "ragUserProxyAgents": [],
       "reasoningAgents": [],
-      "captainAgents": [],
-      "groupManagerAgents": []
+      "captainAgents": []
     },
     "models": [
       {
@@ -212,11 +228,11 @@
           "topP": null,
           "maxTokens": null,
           "aws": {
-            "accessKey": null,
-            "profileName": null,
             "region": null,
+            "accessKey": null,
             "secretKey": null,
-            "sessionToken": null
+            "sessionToken": null,
+            "profileName": null
           },
           "extras": {},
           "defaultHeaders": {},
@@ -282,13 +298,20 @@
             "reply": null
           },
           "prerequisites": [],
-          "handoffCondition": null,
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false,
-    "cacheSeed": 41
+    "isAsync": false
   }
 }
