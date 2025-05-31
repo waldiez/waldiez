@@ -13,7 +13,7 @@ import { edgeId, edgeProps, flowId } from "../data";
 describe("WaldiezEdgeModalTabNested", () => {
     it("updates the nested chat message type", async () => {
         renderEdge("nested");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeId}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeId}`);
         fireEvent.click(tab);
         const messageTypeSelect = screen.getByLabelText("Message Type:");
         expect(messageTypeSelect).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("WaldiezEdgeModalTabNested", () => {
     });
     it("updates the nested chat message content", async () => {
         renderEdge("nested");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeId}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeId}`);
         fireEvent.click(tab);
         const messageTypeSelect = screen.getByLabelText("Message Type:");
         expect(messageTypeSelect).toBeInTheDocument();
@@ -44,9 +44,9 @@ describe("WaldiezEdgeModalTabNested", () => {
     });
     it("updates the nested chat reply type", async () => {
         renderEdge("nested");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
-        const replyTab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
+        const replyTab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
         fireEvent.click(replyTab);
         const replyTypeSelect = screen.getByLabelText("Reply Type:");
         expect(replyTypeSelect).toBeInTheDocument();
@@ -59,9 +59,9 @@ describe("WaldiezEdgeModalTabNested", () => {
     });
     it("updates the nested chat reply content", async () => {
         renderEdge("nested");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
-        const replyTab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
+        const replyTab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
         fireEvent.click(replyTab);
         const replyTypeSelect = screen.getByLabelText("Reply Type:");
         expect(replyTypeSelect).toBeInTheDocument();

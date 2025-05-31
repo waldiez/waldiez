@@ -4,6 +4,13 @@
  */
 import { WaldiezRagUserRetrieveConfig, defaultRetrieveConfig } from "@waldiez/models/Agent/RagUser";
 
+/**
+ * getRetrieveConfig
+ * Extracts the retrieval configuration from the provided JSON object.
+ * If not found, returns a default configuration.
+ * @param json - The JSON object to extract the retrieval configuration from.
+ * @returns - The WaldiezRagUserRetrieveConfig object.
+ */
 export const getRetrieveConfig: (json: { [key: string]: any }) => WaldiezRagUserRetrieveConfig = json => {
     if (typeof json !== "object") {
         return defaultRetrieveConfig;
@@ -53,6 +60,13 @@ export const getRetrieveConfig: (json: { [key: string]: any }) => WaldiezRagUser
         nResults: getNResults(jsonData),
     };
 };
+
+/**
+ * Utility functions to extract various configurations from a JSON object.
+ * These functions are used to parse and validate the configuration settings for a retrieval system.
+ * @param json - The JSON object containing the configuration settings.
+ * @returns - The parsed configuration settings.
+ */
 
 const getTask = (json: { [key: string]: any }) => {
     let task: "code" | "qa" | "default" = "default";

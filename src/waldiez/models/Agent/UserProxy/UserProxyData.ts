@@ -5,13 +5,13 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
-    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
     WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common";
+import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez User Proxy Agent Data.
@@ -27,7 +27,8 @@ import {
  * @param nestedChats - The nested chats of the agent
  * @param contextVariables - The context variables of the agent
  * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
- * @param handoffs - The handoffs of the agent
+ * @param afterWork - The handoff transition after work of the agent
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
  * @param rest - The rest of the agent data
  * @see {@link WaldiezAgentData}
  * @see {@link WaldiezAgentLinkedTool}
@@ -35,8 +36,8 @@ import {
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
- * @see {@link WaldiezAgentHandoff}
  * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezAgentUserProxyData extends WaldiezAgentData {
     constructor(
@@ -53,7 +54,8 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
             updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
-            handoffs: WaldiezAgentHandoff[];
+            afterWork: WaldiezTransitionTarget | null;
+            handoffs: string[]; // handoff / edge ids
         } = {
             humanInputMode: "ALWAYS",
             systemMessage: null,
@@ -73,11 +75,19 @@ export class WaldiezAgentUserProxyData extends WaldiezAgentData {
                 {
                     messages: [],
                     triggeredBy: [],
-                    order: 0,
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a nested chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
+            afterWork: null,
             handoffs: [],
         },
     ) {

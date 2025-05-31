@@ -24,7 +24,7 @@ import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
  * @param nestedChats - The nested chats
  * @param contextVariables - The context variables
  * @param updateAgentStateBeforeReply - Optional handler to update the agent state before replying
- * @param handoffs - The handoffs
+ * @param afterWork - The handoff transition after work
  * @param modelIds - The agent's model ids
  * @param tools - The tools available to the agent
  * @param tags - The tags
@@ -36,9 +36,9 @@ import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentNestedChat}
- * @see {@link WaldiezAgentHandoff}
  * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  * @see {@link WaldiezAgentCommonData}
  */
 export type WaldiezNodeAgentUserProxyData = WaldiezAgentCommonData & {

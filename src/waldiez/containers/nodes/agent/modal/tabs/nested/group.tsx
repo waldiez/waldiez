@@ -4,9 +4,13 @@
  */
 import { memo, useCallback, useEffect, useMemo } from "react";
 
-import { ChatAvailability, TabItem, TabItems } from "@waldiez/components";
-import { useNestedChatHandoff } from "@waldiez/containers/nodes/agent/modal/tabs/nested/hooks";
-import { WaldiezAgentNestedChat, WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
+import { HandoffAvailability, HandoffCondition, TabItem, TabItems } from "@waldiez/components";
+import {
+    WaldiezAgentConnections,
+    WaldiezAgentNestedChat,
+    WaldiezEdge,
+    WaldiezNodeAgentData,
+} from "@waldiez/types";
 
 type WaldiezAgentGroupNestedChatTabsProps = {
     id: string;
@@ -14,16 +18,7 @@ type WaldiezAgentGroupNestedChatTabsProps = {
     darkMode: boolean;
     edges: WaldiezEdge[];
     data: WaldiezNodeAgentData;
-    agentConnections: {
-        sources: {
-            nodes: WaldiezNodeAgent[];
-            edges: WaldiezEdge[];
-        };
-        targets: {
-            nodes: WaldiezNodeAgent[];
-            edges: WaldiezEdge[];
-        };
-    };
+    agentConnections: WaldiezAgentConnections;
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>, markDirty?: boolean) => void;
 };
 
@@ -40,7 +35,14 @@ const getNestedChats = (agentData: WaldiezNodeAgentData, edges: WaldiezEdge[]): 
         nestedChats.push({
             triggeredBy: [],
             messages: [],
-            order: 0,
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Start a nested chat",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
         });
     }
 
@@ -129,7 +131,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
     /**
      * Move a nested chat message up in the queue
      */
-    const onMoveNestedChatUp = useCallback(
+    const onMoveNestedChatMessageUp = useCallback(
         (index: number) => {
             const newNestedChats = [...nestedChats];
             const temp = newNestedChats[0].messages[index];
@@ -144,7 +146,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
     /**
      * Move a nested chat message down in the queue
      */
-    const onMoveNestedChatDown = useCallback(
+    const onMoveNestedChatMessageDown = useCallback(
         (index: number) => {
             const newNestedChats = [...nestedChats];
             const temp = newNestedChats[0].messages[index];
@@ -153,22 +155,34 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
 
             onDataChange({
                 nestedChats: structuredClone(newNestedChats),
-                handoffs: [],
             });
         },
         [nestedChats, onDataChange],
     );
 
     /**
-     * Get handoff condition and update handler
+     * Handle condition change for nested chat
      */
-    const { condition, onDataChange: onConditionChange } = useNestedChatHandoff({
-        handoffs: data.handoffs ?? [],
-        setHandoffs: updater => {
-            const newHandoffs = updater(data.handoffs ?? []);
-            onDataChange({ handoffs: structuredClone(newHandoffs) });
+    const onConditionChange = useCallback(
+        (condition: WaldiezAgentNestedChat["condition"]) => {
+            const newNestedChats = structuredClone(nestedChats);
+            newNestedChats[0].condition = condition;
+            onDataChange({ nestedChats: newNestedChats });
         },
-    });
+        [nestedChats, onDataChange],
+    );
+
+    /**
+     * Handle availability change for nested chat
+     */
+    const onAvailabilityChange = useCallback(
+        (available: WaldiezAgentNestedChat["available"]) => {
+            const newNestedChats = structuredClone(nestedChats);
+            newNestedChats[0].available = available;
+            onDataChange({ nestedChats: newNestedChats });
+        },
+        [nestedChats, onDataChange],
+    );
 
     return (
         <div className="agent-panel" data-testid={`agent-group-nested-chat-tabs-${id}`}>
@@ -191,7 +205,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                                             title="Move up"
                                             className="reorder-btn up-btn"
                                             data-testid={`move-nested-recipient-up-button-${index}`}
-                                            onClick={() => onMoveNestedChatUp(index)}
+                                            onClick={() => onMoveNestedChatMessageUp(index)}
                                             aria-label={`Move ${getRecipientName(message.id)} up`}
                                         >
                                             &#x2191;
@@ -205,7 +219,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                                             type="button"
                                             className="reorder-btn down-btn"
                                             data-testid={`move-nested-recipient-down-button-${index}`}
-                                            onClick={() => onMoveNestedChatDown(index)}
+                                            onClick={() => onMoveNestedChatMessageDown(index)}
                                             aria-label={`Move ${getRecipientName(message.id)} down`}
                                         >
                                             &#x2193;
@@ -222,12 +236,20 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                     </div>
                 </TabItem>
 
-                {/* Availability Tab */}
-                <TabItem label="Availability" id={`wf-${flowId}-wa-${id}-nested-chat-availability`}>
-                    <ChatAvailability
-                        condition={condition}
+                {/* HandoffCondition Tab - Only shown when in a group */}
+                <TabItem label="Condition" id={`wf-${flowId}-wa-${id}-nested-chat-condition`}>
+                    <HandoffCondition
+                        condition={nestedChats[0].condition}
                         onDataChange={onConditionChange}
-                        aria-label="Chat availability settings"
+                        aria-label="Handoff condition settings"
+                    />
+                </TabItem>
+                {/* HandoffAvailability Tab - Only shown when in a group */}
+                <TabItem label="Availability" id={`wf-${flowId}-wa-${id}-nested-chat-availability`}>
+                    <HandoffAvailability
+                        available={nestedChats[0].available}
+                        onDataChange={onAvailabilityChange}
+                        aria-label="Handoff availability settings"
                     />
                 </TabItem>
             </TabItems>

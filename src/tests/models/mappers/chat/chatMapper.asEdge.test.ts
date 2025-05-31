@@ -38,9 +38,17 @@ describe("chatMapper.asEdge", () => {
             },
             prerequisites: [],
             maxTurns: 0,
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Handoff to another agent",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
+            afterWork: null,
             realSource: "wa-1",
             realTarget: "wa-2",
-            handoffCondition: null,
         };
         const chat = new WaldiezChat({ id: "1", data: chatData });
         const edge = chatMapper.asEdge(chat);

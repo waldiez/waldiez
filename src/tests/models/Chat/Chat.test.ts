@@ -68,7 +68,15 @@ describe("WaldiezChat", () => {
                 reply: nestedChatReply,
             },
             prerequisites: [],
-            handoffCondition: null,
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Handoff to another agent",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
+            afterWork: null,
             realSource: "agent1",
             realTarget: "agent2",
         });
@@ -89,6 +97,5 @@ describe("WaldiezChat", () => {
         expect(chat.data.maxTurns).toBe(10);
         expect(chat.data.summary.method).toBe("lastMsg");
         expect(chat.data.message).toEqual(message);
-        expect(chat.data.handoffCondition).toBe(null);
     });
 });

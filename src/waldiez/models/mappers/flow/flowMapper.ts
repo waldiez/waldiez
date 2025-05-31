@@ -139,7 +139,7 @@ const getFlowDataToImport = (json: Record<string, unknown>, _flowId: string) => 
 
 const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipLinks: boolean) => {
     const nodes = flow.nodes || [];
-    const flowEdges = (flow.edges || []) as WaldiezEdge[];
+    const edges = (flow.edges || []) as WaldiezEdge[];
     const modelNodes = nodes.filter(node => node.type === "model") as WaldiezNodeModel[];
     const toolNodes = nodes.filter(node => node.type === "tool") as WaldiezNodeTool[];
     const {
@@ -157,32 +157,34 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             delete nodeCopy.agentType;
             return nodeCopy;
         }),
-        edges: flowEdges.map(edge => {
+        edges: edges.map(edge => {
             const edgeCopy = { ...edge } as any;
             delete edgeCopy.data;
             return edgeCopy;
         }),
         agents: {
             groupManagerAgents: groupManagerAgentNodes.map(groupManagerAgentNode =>
-                exportAgent(groupManagerAgentNode, nodes, skipLinks),
+                exportAgent(groupManagerAgentNode, nodes, edges, skipLinks),
             ),
             userProxyAgents: userAgentNodes.map(userAgentNode =>
-                exportAgent(userAgentNode, nodes, skipLinks),
+                exportAgent(userAgentNode, nodes, edges, skipLinks),
             ),
             assistantAgents: assistantAgentNodes.map(assistantAgentNode =>
-                exportAgent(assistantAgentNode, nodes, skipLinks),
+                exportAgent(assistantAgentNode, nodes, edges, skipLinks),
             ),
-            ragUserProxyAgents: ragUserNodes.map(ragUserNode => exportAgent(ragUserNode, nodes, skipLinks)),
+            ragUserProxyAgents: ragUserNodes.map(ragUserNode =>
+                exportAgent(ragUserNode, nodes, edges, skipLinks),
+            ),
             reasoningAgents: reasoningAgentNodes.map(reasoningAgentNode =>
-                exportAgent(reasoningAgentNode, nodes, skipLinks),
+                exportAgent(reasoningAgentNode, nodes, edges, skipLinks),
             ),
             captainAgents: captainAgentNodes.map(captainAgentNode =>
-                exportAgent(captainAgentNode, nodes, skipLinks),
+                exportAgent(captainAgentNode, nodes, edges, skipLinks),
             ),
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),
         tools: toolNodes.map(toolNode => exportTool(toolNode, nodes, hideSecrets)),
-        chats: flowEdges.map((edge, index) => exportChat(edge, flowEdges, index)),
+        chats: edges.map((edge, index) => exportChat(edge, edges, index)),
         isAsync: flow.isAsync,
         cacheSeed: flow.cacheSeed,
         viewport: flow.viewport,

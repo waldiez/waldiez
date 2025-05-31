@@ -8,10 +8,29 @@ const ValidChatMessageTypes = ["string", "method", "rag_message_generator", "non
 
 type ChatMessageType = "string" | "method" | "rag_message_generator" | "none";
 
+/**
+ * Waldiez Message Mapper
+ * This module provides functions to map messages between different formats.
+ * It includes functions to import and export messages, as well as utility functions
+ * to extract message properties from edge data structures.
+ * @see {@link WaldiezMessage}
+ */
 export const messageMapper = {
+    /**
+     * Imports a message from edge data.
+     * If the data is invalid or missing, it returns a default message.
+     * @param data - The edge data containing the message.
+     * @returns An object representing the imported message.
+     */
     importMessage: (data: { [key: string]: any }) => {
         return getEdgeMessage(data);
     },
+
+    /**
+     * Exports a WaldiezMessage to a format suitable for edge data.
+     * @param message - The WaldiezMessage to export.
+     * @returns An object representing the exported message.
+     */
     exportMessage: (message: WaldiezMessage) => {
         return {
             type: message.type,
@@ -22,6 +41,12 @@ export const messageMapper = {
     },
 };
 
+/**
+ * Utility functions to extract message properties from edge data.
+ * @param data - The edge data containing the message.
+ * @returns An object representing the message with type, content, context, and carryover usage.
+ *          If the data does not contain a valid message, it returns default values.
+ */
 const getEdgeMessage = (data: { [key: string]: any }) => {
     const message = {
         type: "none",

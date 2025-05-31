@@ -2,13 +2,25 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useAgentRelationships } from "@waldiez/components/handoffs/hooks/useAgentRelationships";
-import { useHandoffOrdering } from "@waldiez/components/handoffs/hooks/useHandoffOrdering";
-import { useHandoffTargets } from "@waldiez/components/handoffs/hooks/useHandoffTargets";
-import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models";
+import { useHandoffNames } from "@waldiez/components/handoffs/hooks/useHandoffNames";
+import {
+    WaldiezEdge,
+    WaldiezNodeAgent,
+    WaldiezNodeAgentData,
+    WaldiezTransitionTarget,
+} from "@waldiez/models";
 
+type WaldiezOrderedHandoffTransitionTarget = WaldiezTransitionTarget & {
+    id: string; // Ensure id is a string
+    order: number; // Add order property for sorting
+};
+
+/**
+ * Hook to manage agent handoffs with ordering capability
+ */
 export const useHandoffs = (
     id: string,
     data: WaldiezNodeAgentData,
@@ -16,43 +28,119 @@ export const useHandoffs = (
     edges: WaldiezEdge[],
     onDataChange: (data: Partial<WaldiezNodeAgentData>) => void,
 ) => {
-    // Get agent relationship data
-    const { groupEdges, getAgentName } = useAgentRelationships(id, data, agents, edges);
+    const { groupEdges, nestedChats } = useAgentRelationships(id, data, agents, edges);
+    const { getTransitionTargetName } = useHandoffNames(agents, edges, nestedChats);
+    const orderedTransitionTargets: WaldiezOrderedHandoffTransitionTarget[] = useMemo(() => {
+        // Initialize ordered targets
+        const orderedTargets: WaldiezOrderedHandoffTransitionTarget[] = [];
+        const processedEdges = new Set<string>();
 
-    // Get handoff targets
-    const {
-        nestedChats,
-        afterWorkHandoff,
-        orderedTransitionTargets,
-        getTransitionTargetName,
-        getNestedChatDisplayName,
-        getAfterWorkTargetName,
-    } = useHandoffTargets(data, groupEdges, getAgentName);
+        // Process ordered handoffs from data.handoffs
+        data.handoffs.forEach((id, index) => {
+            if (id === "nested-chat") {
+                // Handle nested chat
+                if (nestedChats) {
+                    const newTarget: WaldiezTransitionTarget = {
+                        targetType: "NestedChatTarget",
+                        value: ["nested-chat"],
+                    };
+                    orderedTargets.push({
+                        id: "nested-chat",
+                        ...newTarget,
+                        value: [getTransitionTargetName(newTarget)],
+                        order: index,
+                    });
+                }
+            } else {
+                // Handle edge handoff
+                const edge = groupEdges.find(e => e.id === id);
+                if (edge) {
+                    processedEdges.add(edge.id);
+                    const newTarget: WaldiezTransitionTarget = {
+                        targetType: "AgentTarget",
+                        value: [edge.target],
+                    };
+                    orderedTargets.push({
+                        id: edge.id,
+                        ...newTarget,
+                        value: [getTransitionTargetName(newTarget)],
+                        order: index,
+                    });
+                }
+            }
+        });
 
-    // Get ordering functions
-    const { moveTransitionTargetUp, moveTransitionTargetDown } = useHandoffOrdering(
-        data,
-        orderedTransitionTargets,
-        nestedChats,
-        getAgentName,
-        onDataChange,
+        // Add any new edges that aren't in data.handoffs yet
+        groupEdges.forEach(edge => {
+            if (!processedEdges.has(edge.id)) {
+                const newTarget: WaldiezTransitionTarget = {
+                    targetType: "AgentTarget",
+                    value: [edge.target],
+                };
+                orderedTargets.push({
+                    id: edge.id,
+                    ...newTarget,
+                    value: [getTransitionTargetName(newTarget)],
+                    order: orderedTargets.length,
+                });
+            }
+        });
+
+        // Add nested chat if it exists but isn't in data.handoffs
+        if (nestedChats && !data.handoffs.includes("nested-chat")) {
+            const newTarget: WaldiezTransitionTarget = {
+                targetType: "NestedChatTarget",
+                value: [],
+            };
+            orderedTargets.push({
+                id: "nested-chat",
+                ...newTarget,
+                value: [getTransitionTargetName(newTarget)],
+                order: orderedTargets.length,
+            });
+        }
+        // Sort handoffs by their order property
+        return orderedTargets.sort((a, b) => a.order - b.order);
+    }, [data.handoffs, groupEdges, nestedChats, getTransitionTargetName]);
+    const onMoveTransitionTargetUp = useCallback(
+        (index: number) => {
+            if (index <= 0) {
+                return;
+            }
+
+            const newOrderedTargets = [...orderedTransitionTargets];
+            [newOrderedTargets[index], newOrderedTargets[index - 1]] = [
+                newOrderedTargets[index - 1],
+                newOrderedTargets[index],
+            ];
+
+            const newHandoffs = newOrderedTargets.map(target => target.id);
+            onDataChange({ handoffs: newHandoffs });
+        },
+        [orderedTransitionTargets, onDataChange],
     );
 
-    // Check if we have any handoffs to display
-    const hasHandoffs = useMemo(
-        () => orderedTransitionTargets.length > 0 || !!afterWorkHandoff,
-        [orderedTransitionTargets, afterWorkHandoff],
-    );
+    const onMoveTransitionTargetDown = useCallback(
+        (index: number) => {
+            if (index >= orderedTransitionTargets.length - 1) {
+                return;
+            }
 
+            const newOrderedTargets = [...orderedTransitionTargets];
+            [newOrderedTargets[index], newOrderedTargets[index + 1]] = [
+                newOrderedTargets[index + 1],
+                newOrderedTargets[index],
+            ];
+
+            const newHandoffs = newOrderedTargets.map(target => target.id);
+            onDataChange({ handoffs: newHandoffs });
+        },
+        [orderedTransitionTargets, onDataChange],
+    );
     return {
-        hasHandoffs,
         orderedTransitionTargets,
-        afterWorkHandoff,
         getTransitionTargetName,
-        getAgentName,
-        getNestedChatDisplayName,
-        getAfterWorkTargetName,
-        moveTransitionTargetUp,
-        moveTransitionTargetDown,
+        onMoveTransitionTargetUp,
+        onMoveTransitionTargetDown,
     };
 };

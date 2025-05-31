@@ -50,9 +50,10 @@ describe("WaldiezAgentRagUser", () => {
             parentId: undefined,
             nestedChats: [],
             contextVariables: {},
-            handoffs: [],
             retrieveConfig: defaultRetrieveConfig,
             updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
         });
         const ragUser = new WaldiezAgentRagUser({
             id: "1",

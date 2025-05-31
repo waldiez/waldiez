@@ -193,7 +193,14 @@ describe("getNestedChats", () => {
                 {
                     triggeredBy: ["wa-1"],
                     messages: [{ id: "wa-2", isReply: false }],
-                    order: 0,
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a new chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
         });
@@ -201,17 +208,31 @@ describe("getNestedChats", () => {
             {
                 triggeredBy: ["wa-1"],
                 messages: [{ id: "wa-2", isReply: false }],
-                order: 0,
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Start a new chat",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
             },
         ]);
     });
-    it("should return an empty array", () => {
+    it("should return a default nested chat structure with no messages or triggers", () => {
         const chats = getNestedChats({});
         expect(chats).toEqual([
             {
                 triggeredBy: [],
                 messages: [],
-                order: 0,
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Start a nested chat",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
             },
         ]);
     });

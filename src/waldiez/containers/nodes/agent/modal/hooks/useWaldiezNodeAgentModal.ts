@@ -319,11 +319,7 @@ export const useWaldiezNodeAgentModal = (
     const onDataChange = useCallback(
         (partialData: Partial<WaldiezNodeAgentData>) => {
             const dirty = !isEqual({ ...agentData, ...partialData }, data);
-            // Use setTimeout to ensure state updates don't conflict
-            setTimeout(() => {
-                setAgentData(prevData => ({ ...prevData, ...partialData }));
-            }, 10);
-
+            setAgentData(prevData => ({ ...prevData, ...partialData }));
             setIsDirty(dirty);
         },
         [agentData, data],

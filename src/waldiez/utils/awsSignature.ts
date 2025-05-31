@@ -77,6 +77,8 @@ export const awsSignatureUtils = {
 
     /**
      * Parse URL into host and path components
+     * @param url - The URL to parse
+     * @returns An object containing the host and path
      */
     parseUrl(url: string): { host: string; path: string } {
         try {
@@ -92,6 +94,8 @@ export const awsSignatureUtils = {
 
     /**
      * Build canonical headers string
+     * @param headers - Headers to include in the canonical request
+     * @returns A string of canonical headers formatted for AWS Signature V4
      */
     buildCanonicalHeaders(headers: Record<string, string>): string {
         return Object.keys(headers)
@@ -102,6 +106,8 @@ export const awsSignatureUtils = {
 
     /**
      * Build signed headers list
+     * @param headers - Headers to include in the signed headers
+     * @returns A string of signed headers formatted for AWS Signature V4
      */
     buildSignedHeadersList(headers: Record<string, string>): string {
         return Object.keys(headers)
@@ -112,6 +118,12 @@ export const awsSignatureUtils = {
 
     /**
      * Derive signing key for AWS Signature V4
+     * @param key - The secret access key
+     * @param dateStamp - The date in YYYYMMDD format
+     * @param regionName - The AWS region name
+     * @param serviceName - The AWS service name
+     * @returns A promise that resolves to the signing key as a Uint8Array
+     * @throws Error if the key derivation fails
      */
     async getSignatureKey(
         key: string,

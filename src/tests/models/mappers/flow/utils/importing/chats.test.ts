@@ -38,7 +38,14 @@ describe("getChats", () => {
                             reply: null,
                         },
                         prerequisites: [],
-                        handoffCondition: null,
+                        condition: {
+                            conditionType: "string_llm",
+                            prompt: "Handoff to wa-2",
+                        },
+                        available: {
+                            type: "none",
+                            value: "",
+                        },
                         silent: undefined,
                         realSource: null,
                         realTarget: null,
@@ -110,7 +117,15 @@ describe("getChats", () => {
                         reply: null,
                     },
                     prerequisites: [],
-                    handoffCondition: null,
+                    afterWork: null,
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Handoff to wa-2",
+                    },
                     silent: undefined,
                     realSource: null,
                     realTarget: null,

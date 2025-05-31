@@ -13,7 +13,7 @@ import { edgeProps, flowId } from "../data";
 describe("WaldiezEdgeModalTab message", () => {
     it("updates the message type", async () => {
         renderEdge("chat");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
         const messageTypeSelect = screen.getByLabelText("Message Type:");
         expect(messageTypeSelect).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("WaldiezEdgeModalTab message", () => {
     });
     it("updates the message content", async () => {
         renderEdge("chat");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
         const messageContentInput = screen.getByTestId("message-text") as HTMLTextAreaElement;
         fireEvent.change(messageContentInput, {
@@ -36,7 +36,7 @@ describe("WaldiezEdgeModalTab message", () => {
     });
     it("adds a message context entry", async () => {
         renderEdge("chat");
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
         const newKeyInput = screen.getByTestId("new-dict-message-context-key") as HTMLInputElement;
         fireEvent.change(newKeyInput, { target: { value: "key" } });
@@ -53,7 +53,7 @@ describe("WaldiezEdgeModalTab message", () => {
                 context: { key1: "value1" },
             },
         });
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
         // `delete-dict-item-${index}`
         const deleteButton = screen.getByTestId("delete-dict-item-message-context-0");
@@ -67,7 +67,7 @@ describe("WaldiezEdgeModalTab message", () => {
                 context: { key1: "value1" },
             },
         });
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
         const keyInput = screen.getByTestId("key-input-message-context-0") as HTMLInputElement;
         fireEvent.change(keyInput, { target: { value: "updatedKey" } });

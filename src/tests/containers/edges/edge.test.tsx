@@ -52,7 +52,7 @@ describe("WaldiezEdgeChat", () => {
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
     });
 });
@@ -83,7 +83,7 @@ describe("WaldiezEdgeNested", () => {
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
     });
     it("should change the nested sub-tab in the modal", () => {
@@ -91,9 +91,9 @@ describe("WaldiezEdgeNested", () => {
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
-        const subTab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
+        const subTab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
         fireEvent.click(subTab);
     });
 });

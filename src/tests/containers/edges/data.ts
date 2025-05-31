@@ -40,9 +40,13 @@ export const edgeData = {
     },
     prerequisites: [],
     contextVariables: {},
+    condition: {
+        conditionType: "string_llm",
+        prompt: "Handoff to another agent",
+    },
     available: {
         type: "none",
-        value: null,
+        value: "",
     },
 };
 export const edgeProps = {

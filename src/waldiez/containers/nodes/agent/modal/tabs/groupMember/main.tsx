@@ -5,7 +5,7 @@
 import { memo, useMemo } from "react";
 
 import { AfterWork, Handoffs, Select, TabItem, TabItems, UpdateState } from "@waldiez/components";
-import { useWaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group/hooks";
+import { useWaldiezAgentGroupMember } from "@waldiez/containers/nodes/agent/modal/tabs/groupMember/hooks";
 import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
 
 type WaldiezAgentGroupProps = {
@@ -21,7 +21,7 @@ type WaldiezAgentGroupProps = {
  * Component for managing agent group membership and related settings
  * Handles joining/leaving groups and configuring group-specific behavior
  */
-export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
+export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
     const { id, data, darkMode, agents, edges, onDataChange } = props;
 
     // Use the hook for group-related state and handlers
@@ -34,7 +34,7 @@ export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
         onJoinGroup,
         onLeaveGroup,
         onAfterWorkChange,
-    } = useWaldiezAgentGroup(props);
+    } = useWaldiezAgentGroupMember(props);
 
     /**
      * Current selected group value for the dropdown
@@ -60,11 +60,6 @@ export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
      */
     const isJoinButtonDisabled = selectedGroup === null;
 
-    /**
-     * Get the current after work target from handoffs
-     */
-    const afterWorkTarget = useMemo(() => data.handoffs?.[0]?.after_work, [data.handoffs]);
-
     return (
         <div className="agent-panel agent-group-panel">
             <TabItems activeTabIndex={0}>
@@ -74,7 +69,7 @@ export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
                         <div className="info margin-bottom-10">
                             Should this agent be part of a group chat?
                         </div>
-                        {/* Not in a group: Show group selection dropdown */}
+                        {/* Not in a group: Show group selection dropdown and join button */}
                         {!showGroupTabs ? (
                             <div>
                                 <label htmlFor={`agent-select-group-${id}`}>Group:</label>
@@ -151,13 +146,13 @@ export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
 
                 {/* Afterwards Tab - Only shown when in a group */}
                 {showGroupTabs && (
-                    <TabItem label="Afterwards" id={`wa-${id}-after-work`}>
+                    <TabItem label="Afterwards" id={`wa-${id}-group-after-work`}>
                         <div
                             style={{ paddingLeft: "1rem", paddingRight: "1rem" }}
                             data-testid={`after-work-panel-${id}`}
                         >
                             <AfterWork
-                                target={afterWorkTarget}
+                                target={data.afterWork}
                                 agents={groupMembers}
                                 onChange={onAfterWorkChange}
                                 isForGroupChat={false}
@@ -171,4 +166,4 @@ export const WaldiezAgentGroup = memo((props: WaldiezAgentGroupProps) => {
     );
 });
 
-WaldiezAgentGroup.displayName = "WaldiezAgentGroup";
+WaldiezAgentGroupMember.displayName = "WaldiezAgentGroupMember";

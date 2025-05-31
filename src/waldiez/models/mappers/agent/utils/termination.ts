@@ -4,6 +4,13 @@
  */
 import { WaldiezAgentTerminationMessageCheck } from "@waldiez/models/Agent/Common";
 
+/**
+ * getTermination
+ * Extracts the termination configuration from the provided JSON object.
+ * If not found, returns a default termination configuration.
+ * @param data - The JSON object to extract the termination configuration from.
+ * @returns - The termination configuration.
+ */
 export const getTermination = (data: Record<string, unknown>): WaldiezAgentTerminationMessageCheck => {
     if ("termination" in data && typeof data.termination === "object" && data.termination) {
         const termination = data.termination as Record<string, unknown>;
@@ -25,6 +32,14 @@ export const getTermination = (data: Record<string, unknown>): WaldiezAgentTermi
         methodContent: null,
     };
 };
+
+/**
+ * Utility functions to extract termination configuration from a JSON object.
+ * @param data - The JSON object containing termination configurations.
+ * @returns An object representing the termination configuration.
+ *          If the JSON does not contain a valid termination configuration, it returns default values.
+ *          The returned object includes the type, keywords, criterion, and method content.
+ */
 
 const getTerminationType = (data: Record<string, unknown>): "none" | "keyword" | "method" => {
     if (

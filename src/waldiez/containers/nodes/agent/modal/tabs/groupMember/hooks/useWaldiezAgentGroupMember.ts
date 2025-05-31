@@ -8,10 +8,10 @@ import { SingleValue } from "@waldiez/components";
 import { WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezTransitionTarget } from "@waldiez/models";
 
 /**
- * Custom hook for managing Waldiez Agent Group functionality
+ * Custom hook for managing Waldiez Agent Group membership
  * Handles group selection, joining and leaving groups, and related operations
  */
-export const useWaldiezAgentGroup = (props: {
+export const useWaldiezAgentGroupMember = (props: {
     id: string;
     data: WaldiezNodeAgentData;
     agents: WaldiezNodeAgent[];
@@ -91,29 +91,15 @@ export const useWaldiezAgentGroup = (props: {
         onDataChange({ parentId: undefined });
     }, [onDataChange]);
 
+    /**
+     * Handle after work target change
+     */
     const onAfterWorkChange = useCallback(
-        (target: WaldiezTransitionTarget | undefined) => {
-            // Create a copy of existing handoffs or initialize an empty array
-            const handoffs = [...(data.handoffs || [])];
-
-            if (handoffs.length === 0) {
-                // If no handoffs exist, create a new one with the after_work target
-                handoffs.push({
-                    id: `handoff-${Date.now()}`,
-                    after_work: target,
-                });
-            } else {
-                // Update the first handoff's after_work
-                handoffs[0] = {
-                    ...handoffs[0],
-                    after_work: target,
-                };
-            }
-
-            // Update the agent data with the modified handoffs
-            onDataChange({ handoffs });
+        (target: WaldiezTransitionTarget | null) => {
+            // Update the agent data with the modified afterWork target
+            onDataChange({ afterWork: target });
         },
-        [data.handoffs, onDataChange],
+        [onDataChange],
     );
     return {
         groupOptions,

@@ -6,13 +6,13 @@ import { WaldiezCaptainAgentLibEntry } from "@waldiez/models/Agent/Captain/types
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
-    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
     WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common";
+import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez Captain Agent Data.
@@ -28,7 +28,8 @@ import {
  * @param nestedChats - The nested chats of the agent
  * @param contextVariables - The context variables of the agent
  * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
- * @param handoffs - The handoffs of the agent
+ * @param afterWork - The handoff transition after work of the agent
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
  * @param toolLib - The tool library of the agent
  * @param maxRound - The maximum round of the agent
  * @param maxTurns - The maximum turns of the agent
@@ -38,8 +39,8 @@ import {
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
- * @see {@link WaldiezAgentHandoff}
  * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezAgentCaptainData extends WaldiezAgentData {
     agentLib: WaldiezCaptainAgentLibEntry[];
@@ -61,7 +62,8 @@ export class WaldiezAgentCaptainData extends WaldiezAgentData {
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
             updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
-            handoffs: WaldiezAgentHandoff[];
+            afterWork: WaldiezTransitionTarget | null;
+            handoffs: string[]; // handoff / edge ids
             agentLib: WaldiezCaptainAgentLibEntry[];
             toolLib: "default" | null;
             maxRound: number;
@@ -85,12 +87,20 @@ export class WaldiezAgentCaptainData extends WaldiezAgentData {
                 {
                     messages: [],
                     triggeredBy: [],
-                    order: 0,
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a nested chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
             handoffs: [],
+            afterWork: null,
             agentLib: [],
             toolLib: null,
             maxRound: 10,

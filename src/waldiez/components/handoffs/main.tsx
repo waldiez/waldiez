@@ -7,7 +7,7 @@ import { memo } from "react";
 import { useHandoffs } from "@waldiez/components/handoffs/hooks";
 import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models";
 
-type HandoffsProps = {
+type HandoffProps = {
     id: string;
     data: WaldiezNodeAgentData;
     agents: WaldiezNodeAgent[];
@@ -19,19 +19,16 @@ type HandoffsProps = {
  * Component for displaying agent's handoffs with ordering capability
  * Shows connections to other agents, nested chats, and any AfterWork handoff
  */
-export const Handoffs = memo((props: HandoffsProps) => {
+export const Handoffs = memo((props: HandoffProps) => {
     const { id, data, agents, edges, onDataChange } = props;
 
     const {
-        hasHandoffs,
         orderedTransitionTargets,
-        afterWorkHandoff,
         getTransitionTargetName,
-        getNestedChatDisplayName,
-        getAfterWorkTargetName,
-        moveTransitionTargetUp,
-        moveTransitionTargetDown,
+        onMoveTransitionTargetDown,
+        onMoveTransitionTargetUp,
     } = useHandoffs(id, data, agents, edges, onDataChange);
+    const hasHandoffs = orderedTransitionTargets.length > 0 || !!data.afterWork;
 
     return (
         <div className="handoffs-container" data-testid={`handoffs-container-${id}`}>
@@ -60,11 +57,10 @@ export const Handoffs = memo((props: HandoffsProps) => {
                                 <div className="handoff-list">
                                     {orderedTransitionTargets.map((item, index) => (
                                         <div
-                                            key={item.id}
+                                            key={`handoff-${index}`}
                                             className="handoff-item"
-                                            data-testid={`handoff-item-${item.id}`}
+                                            data-testid={`handoff-item-${index}`}
                                         >
-                                            {/* Reorder buttons */}
                                             <div className="reorder-buttons">
                                                 {/* Move Up Button - Only shown when not first item */}
                                                 {index > 0 && (
@@ -73,7 +69,7 @@ export const Handoffs = memo((props: HandoffsProps) => {
                                                         title="Move up"
                                                         className="reorder-btn up-btn"
                                                         data-testid={`move-handoff-up-button-${index}`}
-                                                        onClick={() => moveTransitionTargetUp(index)}
+                                                        onClick={() => onMoveTransitionTargetUp(index)}
                                                         aria-label="Move up"
                                                     >
                                                         &#x2191;
@@ -87,28 +83,24 @@ export const Handoffs = memo((props: HandoffsProps) => {
                                                         title="Move down"
                                                         className="reorder-btn down-btn"
                                                         data-testid={`move-handoff-down-button-${index}`}
-                                                        onClick={() => moveTransitionTargetDown(index)}
+                                                        onClick={() => onMoveTransitionTargetDown(index)}
                                                         aria-label="Move down"
                                                     >
                                                         &#x2193;
                                                     </button>
                                                 )}
-                                            </div>
-
+                                            </div>{" "}
                                             <div className="handoff-item-content">
                                                 <div className="handoff-order-badge">{index + 1}</div>
                                                 <div className="handoff-type">
-                                                    {item.target.target_type === "AgentTarget"
+                                                    {item.targetType === "AgentTarget"
                                                         ? "Agent Connection"
-                                                        : item.target.target_type === "NestedChatTarget"
+                                                        : item.targetType === "NestedChatTarget"
                                                           ? "Nested Chat"
-                                                          : item.target.target_type}
+                                                          : item.targetType}
                                                 </div>
                                                 <div className="handoff-target">
-                                                    <span className="target-label">Target:</span>{" "}
-                                                    {item.id === "nested-chat"
-                                                        ? getNestedChatDisplayName(0)
-                                                        : getTransitionTargetName(item.target)}
+                                                    <span className="target-label">Target:</span> {item.value}
                                                 </div>
                                             </div>
                                         </div>
@@ -116,9 +108,8 @@ export const Handoffs = memo((props: HandoffsProps) => {
                                 </div>
                             </div>
                         )}
-
                         {/* Display AfterWork handoff if exists - not re-orderable */}
-                        {afterWorkHandoff && afterWorkHandoff.after_work && (
+                        {data.afterWork && (
                             <div className="handoffs-section">
                                 <h4 className="handoffs-section-title">After Work</h4>
                                 <div
@@ -129,7 +120,7 @@ export const Handoffs = memo((props: HandoffsProps) => {
                                         <div className="handoff-type">AfterWork</div>
                                         <div className="handoff-target">
                                             <span className="target-label">Target:</span>{" "}
-                                            {getAfterWorkTargetName(afterWorkHandoff.after_work)}
+                                            {getTransitionTargetName(data.afterWork)}
                                         </div>
                                         <div className="handoff-info">
                                             <em>AfterWork handoff always executes last</em>

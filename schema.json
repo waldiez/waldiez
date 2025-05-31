@@ -278,14 +278,25 @@
                         "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
                     }
                 },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                        "type": "string"
                     }
                 }
             },
             "required": [
+                "afterWork",
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
                 "contextVariables",
@@ -446,13 +457,132 @@
                         "additionalProperties": false
                     }
                 },
-                "order": {
-                    "type": "number"
+                "condition": {
+                    "$ref": "#/definitions/WaldiezHandoffCondition"
+                },
+                "available": {
+                    "$ref": "#/definitions/WaldiezHandoffAvailability"
                 }
             },
-            "required": ["triggeredBy", "messages", "order"],
+            "required": ["triggeredBy", "messages", "condition", "available"],
             "additionalProperties": false,
             "description": "Waldiez agent nested chat."
+        },
+        "WaldiezHandoffCondition": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/WaldiezLLMBasedCondition"
+                },
+                {
+                    "$ref": "#/definitions/WaldiezContextBasedCondition"
+                }
+            ],
+            "description": "Waldiez Handoff condition A condition that can be evaluated by an LLM or against context variables."
+        },
+        "WaldiezLLMBasedCondition": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/WaldiezStringLLMCondition"
+                },
+                {
+                    "$ref": "#/definitions/WaldiezContextStrLLMCondition"
+                }
+            ],
+            "description": "Waldiez LLM condition A condition that can be evaluated by an LLM."
+        },
+        "WaldiezStringLLMCondition": {
+            "type": "object",
+            "properties": {
+                "conditionType": {
+                    "type": "string",
+                    "const": "string_llm"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                }
+            },
+            "required": ["conditionType", "prompt"],
+            "additionalProperties": false,
+            "description": "Waldiez String LLM condition A static string prompt to be evaluated by an LLM."
+        },
+        "WaldiezContextStrLLMCondition": {
+            "type": "object",
+            "properties": {
+                "conditionType": {
+                    "type": "string",
+                    "const": "context_str_llm"
+                },
+                "context_str": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                }
+            },
+            "required": ["conditionType", "context_str"],
+            "additionalProperties": false,
+            "description": "Waldiez ContextStr LLM condition A `ContextStr` object with context variable placeholders that  will be substituted before being evaluated by an LLM."
+        },
+        "WaldiezContextBasedCondition": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/WaldiezStringContextCondition"
+                },
+                {
+                    "$ref": "#/definitions/WaldiezExpressionContextCondition"
+                }
+            ],
+            "description": "Waldiez context condition A condition that can be evaluated against context variables."
+        },
+        "WaldiezStringContextCondition": {
+            "type": "object",
+            "properties": {
+                "conditionType": {
+                    "type": "string",
+                    "const": "string_context"
+                },
+                "variable_name": {
+                    "type": "string"
+                }
+            },
+            "required": ["conditionType", "variable_name"],
+            "additionalProperties": false,
+            "description": "Waldiez String context condition  This condition checks if a named context variable exists and is truthy."
+        },
+        "WaldiezExpressionContextCondition": {
+            "type": "object",
+            "properties": {
+                "conditionType": {
+                    "type": "string",
+                    "const": "expression_context"
+                },
+                "expression": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object"
+                }
+            },
+            "required": ["conditionType", "expression"],
+            "additionalProperties": false,
+            "description": "Waldiez Expression context condition  This condition evaluates a ContextExpression against the context variables."
+        },
+        "WaldiezHandoffAvailability": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["string", "expression", "none"]
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": ["type", "value"],
+            "additionalProperties": false
         },
         "WaldiezAgentUpdateSystemMessage": {
             "type": "object",
@@ -473,69 +603,29 @@
             "enum": ["string", "callable"],
             "description": "System message type."
         },
-        "WaldiezAgentHandoff": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "llm_transitions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/WaldiezLLMBasedTransition"
-                    }
-                },
-                "context_transitions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/WaldiezContextBasedTransition"
-                    }
-                },
-                "after_work": {
-                    "$ref": "#/definitions/WaldiezTransitionTarget"
-                }
-            },
-            "required": ["id"],
-            "additionalProperties": {},
-            "description": "Waldiez agent handoff A handoff that can be triggered by LLM or context conditions."
-        },
-        "WaldiezLLMBasedTransition": {
-            "type": "object",
-            "properties": {
-                "target": {
-                    "$ref": "#/definitions/WaldiezTransitionTarget"
-                },
-                "condition": {
-                    "$ref": "#/definitions/WaldiezLLMBasedCondition"
-                }
-            },
-            "required": ["target", "condition"],
-            "additionalProperties": false,
-            "description": "Condition wrapper for LLM conditions. Matches the Python WaldiezLLMBasedCondition class."
-        },
         "WaldiezTransitionTarget": {
             "anyOf": [
                 {
                     "type": "object",
                     "properties": {
-                        "target_type": {
+                        "targetType": {
                             "type": "string",
                             "const": "AgentTarget"
                         },
                         "value": {
-                            "type": "string"
-                        },
-                        "order": {
-                            "type": "number"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "required": ["target_type", "value"],
+                    "required": ["targetType", "value"],
                     "additionalProperties": false
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "target_type": {
+                        "targetType": {
                             "type": "string",
                             "const": "RandomAgentTarget"
                         },
@@ -544,35 +634,32 @@
                             "items": {
                                 "type": "string"
                             }
-                        },
-                        "order": {
-                            "type": "number"
                         }
                     },
-                    "required": ["target_type", "value"],
+                    "required": ["targetType", "value"],
                     "additionalProperties": false
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "target_type": {
+                        "targetType": {
                             "type": "string",
                             "enum": ["GroupChatTarget", "NestedChatTarget"]
                         },
                         "value": {
-                            "type": "string"
-                        },
-                        "order": {
-                            "type": "number"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "required": ["target_type", "value"],
+                    "required": ["targetType", "value"],
                     "additionalProperties": false
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "target_type": {
+                        "targetType": {
                             "type": "string",
                             "enum": [
                                 "AskUserTarget",
@@ -582,120 +669,18 @@
                                 "TerminateTarget"
                             ]
                         },
-                        "order": {
-                            "type": "number"
+                        "value": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
-                    "required": ["target_type"],
+                    "required": ["targetType", "value"],
                     "additionalProperties": false
                 }
             ],
             "description": "The type of target in a handoff transition."
-        },
-        "WaldiezLLMBasedCondition": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/WaldiezStringLLMCondition"
-                },
-                {
-                    "$ref": "#/definitions/WaldiezContextStrLLMCondition"
-                }
-            ],
-            "description": "Waldiez LLM condition A condition that can be evaluated by an LLM."
-        },
-        "WaldiezStringLLMCondition": {
-            "type": "object",
-            "properties": {
-                "condition_type": {
-                    "type": "string",
-                    "const": "string_llm"
-                },
-                "prompt": {
-                    "type": "string"
-                },
-                "data": {
-                    "type": "object"
-                }
-            },
-            "required": ["condition_type", "prompt"],
-            "additionalProperties": false,
-            "description": "Waldiez String LLM condition A static string prompt to be evaluated by an LLM."
-        },
-        "WaldiezContextStrLLMCondition": {
-            "type": "object",
-            "properties": {
-                "condition_type": {
-                    "type": "string",
-                    "const": "context_str_llm"
-                },
-                "context_str": {
-                    "type": "string"
-                },
-                "data": {
-                    "type": "object"
-                }
-            },
-            "required": ["condition_type", "context_str"],
-            "additionalProperties": false,
-            "description": "Waldiez ContextStr LLM condition A `ContextStr` object with context variable placeholders that  will be substituted before being evaluated by an LLM."
-        },
-        "WaldiezContextBasedTransition": {
-            "type": "object",
-            "properties": {
-                "target": {
-                    "$ref": "#/definitions/WaldiezTransitionTarget"
-                },
-                "condition": {
-                    "$ref": "#/definitions/WaldiezContextBasedCondition"
-                }
-            },
-            "required": ["target", "condition"],
-            "additionalProperties": false,
-            "description": "Condition wrapper for context conditions. Matches the Python WaldiezContextBasedCondition class."
-        },
-        "WaldiezContextBasedCondition": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/WaldiezStringContextCondition"
-                },
-                {
-                    "$ref": "#/definitions/WaldiezExpressionContextCondition"
-                }
-            ],
-            "description": "Waldiez context condition A condition that can be evaluated against context variables."
-        },
-        "WaldiezStringContextCondition": {
-            "type": "object",
-            "properties": {
-                "condition_type": {
-                    "type": "string",
-                    "const": "string_context"
-                },
-                "variable_name": {
-                    "type": "string"
-                }
-            },
-            "required": ["condition_type", "variable_name"],
-            "additionalProperties": false,
-            "description": "Waldiez String context condition  This condition checks if a named context variable exists and is truthy."
-        },
-        "WaldiezExpressionContextCondition": {
-            "type": "object",
-            "properties": {
-                "condition_type": {
-                    "type": "string",
-                    "const": "expression_context"
-                },
-                "expression": {
-                    "type": "string"
-                },
-                "data": {
-                    "type": "object"
-                }
-            },
-            "required": ["condition_type", "expression"],
-            "additionalProperties": false,
-            "description": "Waldiez Expression context condition  This condition evaluates a ContextExpression against the context variables."
         },
         "WaldiezAgentAssistant": {
             "type": "object",
@@ -807,10 +792,20 @@
                         "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
                     }
                 },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                        "type": "string"
                     }
                 },
                 "isMultimodal": {
@@ -818,6 +813,7 @@
                 }
             },
             "required": [
+                "afterWork",
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
                 "contextVariables",
@@ -945,10 +941,20 @@
                         "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
                     }
                 },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                        "type": "string"
                     }
                 },
                 "retrieveConfig": {
@@ -956,6 +962,7 @@
                 }
             },
             "required": [
+                "afterWork",
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
                 "contextVariables",
@@ -1252,10 +1259,20 @@
                         "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
                     }
                 },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                        "type": "string"
                     }
                 },
                 "verbose": {
@@ -1266,6 +1283,7 @@
                 }
             },
             "required": [
+                "afterWork",
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
                 "contextVariables",
@@ -1445,10 +1463,20 @@
                         "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
                     }
                 },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                        "type": "string"
                     }
                 },
                 "agentLib": {
@@ -1469,6 +1497,7 @@
                 }
             },
             "required": [
+                "afterWork",
                 "agentDefaultAutoReply",
                 "agentLib",
                 "codeExecutionConfig",
@@ -1616,10 +1645,20 @@
                         "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
                     }
                 },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
                 "handoffs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/WaldiezAgentHandoff"
+                        "type": "string"
                     }
                 },
                 "maxRound": {
@@ -1646,6 +1685,7 @@
             },
             "required": [
                 "adminName",
+                "afterWork",
                 "agentDefaultAutoReply",
                 "codeExecutionConfig",
                 "contextVariables",
@@ -2076,10 +2116,16 @@
                 "realTarget": {
                     "type": ["string", "null"]
                 },
-                "handoffCondition": {
+                "available": {
+                    "$ref": "#/definitions/WaldiezHandoffAvailability"
+                },
+                "condition": {
+                    "$ref": "#/definitions/WaldiezHandoffCondition"
+                },
+                "afterWork": {
                     "anyOf": [
                         {
-                            "$ref": "#/definitions/WaldiezHandoffCondition"
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
                         },
                         {
                             "type": "null"
@@ -2107,7 +2153,9 @@
                 "prerequisites",
                 "realSource",
                 "realTarget",
-                "handoffCondition"
+                "available",
+                "condition",
+                "afterWork"
             ],
             "additionalProperties": false,
             "description": "Waldiez Chat Data"
@@ -2159,17 +2207,6 @@
             "type": ["string", "null"],
             "enum": ["reflectionWithLlm", "lastMsg", null],
             "description": "WaldiezChatLlmSummaryMethod Represents the method used to summarize the chat."
-        },
-        "WaldiezHandoffCondition": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/WaldiezLLMBasedCondition"
-                },
-                {
-                    "$ref": "#/definitions/WaldiezContextBasedCondition"
-                }
-            ],
-            "description": "Waldiez Handoff condition A condition that can be evaluated by an LLM or against context variables."
         }
     },
     "title": "Waldiez Flow",

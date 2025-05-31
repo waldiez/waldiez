@@ -29,37 +29,36 @@ export type ConditionType = "string_llm" | "context_str_llm" | "string_context" 
  * @param RevertToUserTarget - Revert to the user.
  * @param StayTarget - Stay in the current state.
  * @param TerminateTarget - Terminate the conversation.
- * @param target_type - Type of the target
- * @param target - Target string
- * @param order - Order of the target
+ * @param targetType - Type of the target
+ * @param value - Value of the target, which is an array of strings representing agent IDs or chat IDs.
  * @see {@link WaldiezTransitionTarget}
  * @see {@link WaldiezAgentNestedChat}
  */
 export type WaldiezTransitionTarget =
-    | { target_type: "AgentTarget"; value: string; order?: number }
-    | { target_type: "RandomAgentTarget"; value: string[]; order?: number }
-    | { target_type: "GroupChatTarget" | "NestedChatTarget"; value: string; order?: number }
+    | { targetType: "AgentTarget"; value: string[] }
+    | { targetType: "RandomAgentTarget"; value: string[] }
+    | { targetType: "GroupChatTarget" | "NestedChatTarget"; value: string[] }
     | {
-          target_type:
+          targetType:
               | "AskUserTarget"
               | "GroupManagerTarget"
               | "RevertToUserTarget"
               | "StayTarget"
               | "TerminateTarget";
-          order?: number;
+          value: string[];
       };
 
 /**
  * Waldiez String LLM condition
  * A static string prompt to be evaluated by an LLM.
- * @param condition_type - Type of the condition
+ * @param conditionType - Type of the condition
  * @param prompt - Prompt string
  * @param data - Additional data
  * @see {@link WaldiezLLMBasedCondition}
  * @see {@link WaldiezLLMBasedCondition}
  */
 export type WaldiezStringLLMCondition = {
-    condition_type: "string_llm";
+    conditionType: "string_llm";
     prompt: string;
     data?: Record<string, any>;
 };
@@ -68,14 +67,14 @@ export type WaldiezStringLLMCondition = {
  * Waldiez ContextStr LLM condition
  * A `ContextStr` object with context variable placeholders that
     will be substituted before being evaluated by an LLM.
-* @param condition_type - Type of the condition
+* @param conditionType - Type of the condition
 * @param context_str - The context string
 * @param data - Additional data
 * @see {@link WaldiezLLMBasedCondition}
 * @see {@link WaldiezLLMBasedCondition}
 */
 export type WaldiezContextStrLLMCondition = {
-    condition_type: "context_str_llm";
+    conditionType: "context_str_llm";
     context_str: string;
     data?: Record<string, any>;
 };
@@ -83,7 +82,7 @@ export type WaldiezContextStrLLMCondition = {
 /**
  * Waldiez LLM condition
  * A condition that can be evaluated by an LLM.
- * @param condition_type - Type of the condition (in any of the cases)
+ * @param conditionType - Type of the condition (in any of the cases)
  * @param prompt - Prompt string (in case of string LLM condition)
  * @param context_str - The context string (in case of context string LLM condition)
  * @param data - Additional data (in any of the cases)
@@ -95,27 +94,27 @@ export type WaldiezLLMBasedCondition = WaldiezStringLLMCondition | WaldiezContex
 /**
  * Waldiez String context condition
  *  This condition checks if a named context variable exists and is truthy.
- * @param condition_type - Type of the condition
+ * @param conditionType - Type of the condition
  * @param variable_name - Name of the context variable
  * @see {@link WaldiezContextBasedCondition}
  * @see {@link WaldiezContextBasedCondition}
  */
 export type WaldiezStringContextCondition = {
-    condition_type: "string_context";
+    conditionType: "string_context";
     variable_name: string;
 };
 
 /**
  * Waldiez Expression context condition
  *  This condition evaluates a ContextExpression against the context variables.
- * @param condition_type - Type of the condition
+ * @param conditionType - Type of the condition
  * @param expression - Expression to be evaluated
  * @param data - Additional data
  * @see {@link WaldiezContextBasedCondition}
  * @see {@link WaldiezContextBasedCondition}
  */
 export type WaldiezExpressionContextCondition = {
-    condition_type: "expression_context";
+    conditionType: "expression_context";
     expression: string;
     data?: Record<string, any>;
 };
@@ -123,7 +122,7 @@ export type WaldiezExpressionContextCondition = {
 /**
  * Waldiez context condition
  * A condition that can be evaluated against context variables.
- * @param condition_type - Type of the condition (in any of the cases)
+ * @param conditionType - Type of the condition (in any of the cases)
  * @param variable_name - Name of the context variable (in case of string context condition)
  * @param expression - Expression to be evaluated (in case of expression context condition)
  * @param data - Additional data (in case of string context condition)
@@ -141,6 +140,11 @@ export type WaldiezContextBasedCondition = WaldiezStringContextCondition | Waldi
  */
 export type WaldiezHandoffCondition = WaldiezLLMBasedCondition | WaldiezContextBasedCondition;
 
+export type WaldiezHandoffAvailability = {
+    type: "string" | "expression" | "none";
+    value: string;
+};
+
 /**
  * Condition wrapper for LLM conditions.
  * Matches the Python WaldiezLLMBasedCondition class.
@@ -152,6 +156,7 @@ export type WaldiezHandoffCondition = WaldiezLLMBasedCondition | WaldiezContextB
 export type WaldiezLLMBasedTransition = {
     target: WaldiezTransitionTarget;
     condition: WaldiezLLMBasedCondition;
+    available: WaldiezHandoffAvailability;
 };
 
 /**
@@ -165,35 +170,20 @@ export type WaldiezLLMBasedTransition = {
 export type WaldiezContextBasedTransition = {
     target: WaldiezTransitionTarget;
     condition: WaldiezContextBasedCondition;
+    available: WaldiezHandoffAvailability;
 };
 
 /**
  * Waldiez handoff condition
  * A condition that can be evaluated by an LLM or against context variables.
  * This matches the Python WaldiezHandoffCondition union type.
+ * @param target - Target of the handoff
+ * @param condition - LLM or context condition to be evaluated
+ * @param available - Availability for the handoff condition
  * @see {@link WaldiezLLMBasedCondition}
  * @see {@link WaldiezContextBasedCondition}
  */
 export type WaldiezHandoffTransition = WaldiezLLMBasedTransition | WaldiezContextBasedTransition;
-
-/**
- * Waldiez agent handoff
- * A handoff that can be triggered by LLM or context conditions.
- * @param id - Unique identifier for the handoff
- * @param llm_transitions - LLM conditions
- * @param context_transitions - Context conditions
- * @param after_work - After work target
- * @param data - Additional data
- * @see {@link WaldiezLLMBasedTransition}
- * @see {@link WaldiezContextBasedTransition}
- */
-export type WaldiezAgentHandoff = {
-    id: string;
-    llm_transitions?: WaldiezLLMBasedTransition[];
-    context_transitions?: WaldiezContextBasedTransition[];
-    after_work?: WaldiezTransitionTarget;
-    [key: string]: unknown;
-};
 
 /**
  * The types of targets that can be used in a handoff.
@@ -232,7 +222,7 @@ export type TransitionTargetType =
 
 /**
  * Possible Transition target types
- * These are the possible values for the `target_type` field in a handoff transition.
+ * These are the possible values for the `targetType` field in a handoff transition.
  */
 export const ValidTransitionTargetTypes: TransitionTargetType[] = [
     "AgentTarget",
@@ -256,7 +246,7 @@ export const ValidConditionCategories: ConditionCategory[] = ["llm", "context"];
 
 /**
  * Possible Condition types
- * These are the possible values for the `condition_type` field in a handoff condition.
+ * These are the possible values for the `conditionType` field in a handoff condition.
  */
 export const ValidConditionTypes: ConditionType[] = [
     "string_llm",

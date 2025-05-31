@@ -9,8 +9,10 @@ import { SnackbarContextType } from "@waldiez/components/snackbar/types";
 
 export const useSnackbar = (): SnackbarContextType => {
     const ctx = useContext(SnackbarContext);
+    /* c8 ignore start */
     if (!ctx) {
         throw new Error("useSnackbar must be used within a SnackbarProvider");
     }
+    /* c8 ignore end */
     return ctx;
 };

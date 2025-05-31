@@ -113,8 +113,8 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         (nodeType: WaldiezNodeType) => {
             if (selectedNodeType.current !== nodeType) {
                 setSelectedNodeType(nodeType);
-                showNodes(nodeType);
             }
+            showNodes(nodeType);
         },
         [setSelectedNodeType, showNodes],
     );

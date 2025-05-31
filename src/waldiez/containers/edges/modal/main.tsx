@@ -5,7 +5,14 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { FaTrashCan } from "react-icons/fa6";
 
-import { ChatAvailability, MessageInput, Modal, TabItem, TabItems } from "@waldiez/components";
+import {
+    HandoffAvailability,
+    HandoffCondition,
+    MessageInput,
+    Modal,
+    TabItem,
+    TabItems,
+} from "@waldiez/components";
 import { useWaldiezEdgeModal } from "@waldiez/containers/edges/modal/hooks";
 import { WaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic";
 import { WaldiezEdgeGroupTab } from "@waldiez/containers/edges/modal/tabs/group";
@@ -17,6 +24,7 @@ import {
 import { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
 import {
     WaldiezGroupChatType,
+    WaldiezHandoffAvailability,
     WaldiezHandoffCondition,
     WaldiezMessage,
     WaldiezMessageType,
@@ -71,11 +79,21 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
     }, [onSubmit, onClose]);
 
     /**
-     * Update availability condition
+     * Update handoff condition
+     */
+    const onConditionChange = useCallback(
+        (condition: WaldiezHandoffCondition) => {
+            onDataChange({ condition });
+        },
+        [onDataChange],
+    );
+
+    /**
+     * Update handoff availability
      */
     const onAvailabilityChange = useCallback(
-        (condition: WaldiezHandoffCondition | null) => {
-            onDataChange({ handoffCondition: condition });
+        (available: WaldiezHandoffAvailability) => {
+            onDataChange({ available });
         },
         [onDataChange],
     );
@@ -115,10 +133,11 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
     // Generate IDs for tabs
     const tabIds = useMemo(
         () => ({
-            properties: `we-${flowId}-edge-properties-${edgeId}`,
-            message: `we-${flowId}-edge-message-${edgeId}`,
-            nested: `we-${flowId}-edge-nested-${edgeId}`,
-            availability: `we-${flowId}-edge-availability-${edgeId}`,
+            properties: `wc-${flowId}-edge-properties-${edgeId}`,
+            message: `wc-${flowId}-edge-message-${edgeId}`,
+            nested: `wc-${flowId}-edge-nested-${edgeId}`,
+            condition: `wc-${flowId}-edge-condition-${edgeId}`,
+            availability: `wc-${flowId}-edge-availability-${edgeId}`,
         }),
         [flowId, edgeId],
     );
@@ -214,7 +233,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                             </TabItem>
                         )}
                         {groupChatType === "nested" && (
-                            <TabItem label="Message" id={`we-${flowId}-edge-nested-chat-${edgeId}-message`}>
+                            <TabItem label="Message" id={`wc-${flowId}-edge-nested-chat-${edgeId}-message`}>
                                 <div className="flex-column">
                                     <MessageInput
                                         darkMode={isDark}
@@ -236,21 +255,20 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                                     />
                                 </div>
                             </TabItem>
-                            // <TabItem label="Nested Chat" id={tabIds.nested}>
-                            //     <WaldiezEdgeNestedTab
-                            //         flowId={flowId}
-                            //         edgeId={edgeId}
-                            //         darkMode={isDark}
-                            //         data={edgeData}
-                            //         onDataChange={onDataChange}
-                            //     />
-                            // </TabItem>
                         )}
 
                         {groupChatType === "handoff" && (
+                            <TabItem label="Condition" id={tabIds.condition}>
+                                <HandoffCondition
+                                    condition={edgeData.condition}
+                                    onDataChange={onConditionChange}
+                                />
+                            </TabItem>
+                        )}
+                        {groupChatType === "handoff" && (
                             <TabItem label="Availability" id={tabIds.availability}>
-                                <ChatAvailability
-                                    condition={edgeData.handoffCondition}
+                                <HandoffAvailability
+                                    available={edgeData.available}
                                     onDataChange={onAvailabilityChange}
                                 />
                             </TabItem>

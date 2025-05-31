@@ -53,6 +53,10 @@ export class WaldiezTool {
         this.rest = props.rest;
     }
 
+    /**
+     * Creates a new WaldiezTool instance with default values.
+     * @returns A new instance of WaldiezTool.
+     */
     static create(): WaldiezTool {
         return new WaldiezTool({
             id: `wt-${getId()}`,

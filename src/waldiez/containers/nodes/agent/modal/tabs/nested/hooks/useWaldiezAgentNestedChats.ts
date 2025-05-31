@@ -14,6 +14,21 @@ import { WaldiezAgentNestedChat, WaldiezEdge } from "@waldiez/models";
  */
 export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) => {
     const { data, onDataChange, agentConnections } = props;
+
+    const getDefaultChat = (): WaldiezAgentNestedChat => {
+        return {
+            messages: [],
+            triggeredBy: [],
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Start a new chat",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
+        };
+    };
     /**
      * Initialize nested chats if none exist
      * This ensures that the first chat is always present
@@ -22,13 +37,7 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
         // If no nested chat at all, or first one is empty — initialize
         if (data.nestedChats.length === 0) {
             onDataChange({
-                nestedChats: [
-                    {
-                        messages: [],
-                        triggeredBy: [],
-                        order: 0,
-                    },
-                ],
+                nestedChats: [getDefaultChat()],
             });
         }
     }, [data.nestedChats, onDataChange]);
@@ -36,8 +45,7 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
      * Get initial chat configuration or create a default one
      */
     const chat = useMemo(
-        (): WaldiezAgentNestedChat =>
-            data.nestedChats.length > 0 ? data.nestedChats[0] : { triggeredBy: [], messages: [], order: 0 },
+        (): WaldiezAgentNestedChat => (data.nestedChats.length > 0 ? data.nestedChats[0] : getDefaultChat()),
         [data.nestedChats],
     );
 
@@ -139,7 +147,8 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
                 },
             ],
             triggeredBy: chat.triggeredBy,
-            order: chat.order,
+            condition: chat.condition,
+            available: chat.available,
         };
 
         onDataChange({
@@ -154,9 +163,8 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
         (index: number) => {
             // Create new chat with filtered messages
             const newChat = {
+                ...chat,
                 messages: chat.messages.filter((_, i) => i !== index),
-                triggeredBy: chat.triggeredBy,
-                order: chat.order,
             };
 
             onDataChange({
@@ -234,16 +242,16 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
 
             // Create new chat with updated triggers
             const newChat = {
+                ...chat,
                 messages: options ? chat.messages : [],
                 triggeredBy: options ? options.map(option => option.value) : [],
-                order: chat.order,
             };
 
             onDataChange({
                 nestedChats: [newChat],
             });
         },
-        [chat.messages, chat.order, onDataChange],
+        [chat, onDataChange],
     );
 
     /**

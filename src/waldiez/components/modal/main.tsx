@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import React, { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
 import { renderConfirmationContent } from "@waldiez/components/modal/confirmation";
@@ -64,6 +64,7 @@ export const Modal = memo<ModalProps>(props => {
     const modalRef = useRef<HTMLDialogElement | null>(null);
     const dragRef = useRef<HTMLDivElement | null>(null);
     const [lockedWidth, setLockedWidth] = useState<string | undefined>(undefined);
+    const [tabCount, setTabCount] = useState(0);
 
     const {
         showConfirmation,
@@ -80,24 +81,6 @@ export const Modal = memo<ModalProps>(props => {
         onMouseDown,
     } = useModal({ ...props, modalRef });
 
-    // don't let fit-content to resize the modal once it is open
-    useLayoutEffect(() => {
-        if (isOpen && modalRef.current) {
-            const measure = () => {
-                if (modalRef.current) {
-                    const width = modalRef.current.getBoundingClientRect().width;
-                    setLockedWidth(`${width}px`);
-                }
-            };
-            // Use rAF for more reliability, especially with animations
-            const raf = requestAnimationFrame(measure);
-            return () => cancelAnimationFrame(raf);
-        }
-        if (!isOpen) {
-            setLockedWidth(undefined);
-        }
-    }, [isOpen]);
-
     // Handle modal open/close state
     useEffect(() => {
         if (isOpen) {
@@ -106,6 +89,88 @@ export const Modal = memo<ModalProps>(props => {
             modalRef.current?.close();
         }
     }, [isOpen]);
+
+    // Lock width on first render
+    useLayoutEffect(() => {
+        if (isOpen && modalRef.current && !lockedWidth) {
+            const measure = () => {
+                if (modalRef.current) {
+                    const width = modalRef.current.getBoundingClientRect().width;
+                    const tabButtons = modalRef.current.querySelectorAll(".tab-btn");
+                    setLockedWidth(`${width}px`);
+                    setTabCount(tabButtons.length);
+                }
+            };
+            const raf = requestAnimationFrame(measure);
+            return () => cancelAnimationFrame(raf);
+        }
+
+        if (!isOpen) {
+            setLockedWidth(undefined);
+            setTabCount(0);
+        }
+    }, [isOpen, lockedWidth]);
+
+    const resizeBasedOnTabsList = useCallback(
+        (tabList: HTMLElement) => {
+            if (!modalRef.current || !tabList || !lockedWidth) {
+                return;
+            }
+            const tabListWidth = tabList.scrollWidth;
+            const currentModalWidth = parseFloat(lockedWidth);
+            const modalPadding = 20;
+            const requiredModalWidth = tabListWidth + modalPadding;
+
+            if (requiredModalWidth > currentModalWidth) {
+                // Tabs need more space - resize modal
+                setLockedWidth(`${requiredModalWidth}px`);
+            }
+        },
+        [lockedWidth],
+    );
+
+    useLayoutEffect(() => {
+        if (isOpen && modalRef.current && lockedWidth) {
+            const currentTabCount = modalRef.current.querySelectorAll(".tab-btn").length;
+
+            if (currentTabCount !== tabCount) {
+                // Get the actual width needed by the tab list
+                const tabList = modalRef.current.querySelector(".tab-list") as HTMLElement;
+                if (tabList) {
+                    resizeBasedOnTabsList(tabList);
+                } else {
+                    modalRef.current.style.width = "";
+                    const naturalWidth = modalRef.current.getBoundingClientRect().width;
+                    const currentWidth = parseFloat(lockedWidth);
+
+                    if (naturalWidth > currentWidth) {
+                        setLockedWidth(`${naturalWidth}px`);
+                    }
+                }
+                setTabCount(currentTabCount);
+            }
+        }
+    }, [children, isOpen, tabCount, lockedWidth, resizeBasedOnTabsList]);
+
+    // Handle manual resizing
+    useLayoutEffect(() => {
+        if (isOpen && modalRef.current && lockedWidth) {
+            const resizeObserver = new ResizeObserver(entries => {
+                for (const entry of entries) {
+                    if (entry.target === modalRef.current) {
+                        // Guard against jsdom/test environment
+                        const newWidth = entry.contentRect?.width;
+                        if (newWidth !== undefined) {
+                            setLockedWidth(`${newWidth}px`);
+                        }
+                    }
+                }
+            });
+
+            resizeObserver.observe(modalRef.current);
+            return () => resizeObserver.disconnect();
+        }
+    }, [isOpen, lockedWidth]);
 
     // Compute CSS classes
     const modalClasses = [
@@ -132,52 +197,54 @@ export const Modal = memo<ModalProps>(props => {
                 ...(isFullScreen ? {} : { top: position.y, left: position.x }),
             }}
         >
-            <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
-                <div>{beforeTitle}</div>
-                <h3 className="modal-title">{title}</h3>
-                <div className="modal-header-actions">
-                    {hasMinimizeBtn && (
-                        <div
-                            className="modal-minimize-btn clickable"
-                            role="button"
-                            title={isMinimized ? "Restore" : "Minimize"}
-                            onClick={onToggleMinimize}
-                        >
-                            {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
-                        </div>
-                    )}
-                    {hasMaximizeBtn && (
-                        <div
-                            className="modal-fullscreen-btn clickable"
-                            role="button"
-                            title={isFullScreen ? "Restore" : "Maximize"}
-                            onClick={onToggleFullScreen}
-                        >
-                            {isFullScreen ? <FaCompress /> : <FaExpand />}
-                        </div>
-                    )}
-                    {hasCloseBtn && (
-                        <div
-                            className="modal-close-btn clickable"
-                            role="button"
-                            title="Close"
-                            data-testid="modal-close-btn"
-                            onClick={handleCloseModal}
-                        >
-                            <FaCircleXmark />
-                        </div>
-                    )}
+            <div className="modal-wrapper">
+                <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
+                    <div>{beforeTitle}</div>
+                    <h3 className="modal-title">{title}</h3>
+                    <div className="modal-header-actions">
+                        {hasMinimizeBtn && (
+                            <div
+                                className="modal-minimize-btn clickable"
+                                role="button"
+                                title={isMinimized ? "Restore" : "Minimize"}
+                                onClick={onToggleMinimize}
+                            >
+                                {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
+                            </div>
+                        )}
+                        {hasMaximizeBtn && (
+                            <div
+                                className="modal-fullscreen-btn clickable"
+                                role="button"
+                                title={isFullScreen ? "Restore" : "Maximize"}
+                                onClick={onToggleFullScreen}
+                            >
+                                {isFullScreen ? <FaCompress /> : <FaExpand />}
+                            </div>
+                        )}
+                        {hasCloseBtn && (
+                            <div
+                                className="modal-close-btn clickable"
+                                role="button"
+                                title="Close"
+                                data-testid="modal-close-btn"
+                                onClick={handleCloseModal}
+                            >
+                                <FaCircleXmark />
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
-            <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
-                {showConfirmation
-                    ? renderConfirmationContent({
-                          onSaveAndClose,
-                          hideConfirmation,
-                          handleSaveAndClose,
-                          handleCloseModal,
-                      })
-                    : children}
+                <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
+                    {showConfirmation
+                        ? renderConfirmationContent({
+                              onSaveAndClose,
+                              hideConfirmation,
+                              handleSaveAndClose,
+                              handleCloseModal,
+                          })
+                        : children}
+                </div>
             </div>
         </dialog>
     );

@@ -22,7 +22,20 @@ import {
 } from "@waldiez/models/mappers/common";
 import { getId } from "@waldiez/utils";
 
+/**
+ * toolMapper is a utility object that provides methods to import and export tools,
+ * as well as convert them to and from node format.
+ * It includes methods to import a tool from JSON, export a tool to JSON,
+ * and convert a WaldiezTool instance to a WaldiezNodeTool instance.
+ * @see {@link WaldiezTool}
+ */
 export const toolMapper = {
+    /**
+     * Imports a tool from JSON.
+     * If the JSON is invalid or missing, it creates a new tool with default values.
+     * @param json - The JSON representation of the tool.
+     * @returns A new instance of WaldiezTool.
+     */
     importTool: (json: unknown): WaldiezTool => {
         if (!json || typeof json !== "object") {
             return new WaldiezTool({
@@ -70,6 +83,14 @@ export const toolMapper = {
             rest,
         });
     },
+
+    /**
+     * Exports a tool to JSON format.
+     * If replaceSecrets is true, it replaces all secret values with "REPLACE_ME".
+     * @param toolNode - The WaldiezNodeTool instance to export.
+     * @param replaceSecrets - Whether to replace secret values with "REPLACE_ME".
+     * @returns A JSON representation of the tool.
+     */
     exportTool: (toolNode: WaldiezNodeTool, replaceSecrets: boolean): { [key: string]: unknown } => {
         const secrets = { ...toolNode.data.secrets };
         if (replaceSecrets) {
@@ -99,6 +120,13 @@ export const toolMapper = {
             ...rest,
         };
     },
+
+    /**
+     * Converts a WaldiezTool instance to a WaldiezNodeTool instance.
+     * @param tool - The WaldiezTool instance to convert.
+     * @param position - Optional position for the node.
+     * @returns A new instance of WaldiezNodeTool.
+     */
     asNode: (tool: WaldiezTool, position?: { x: number; y: number }): WaldiezNodeTool => {
         const nodePosition = getNodePositionFromJSON(tool, position);
         const nodeData = {
@@ -124,6 +152,12 @@ export const toolMapper = {
     },
 };
 
+/**
+ * Gets the content of the tool data from the JSON object.
+ * If the content is not present or not a string, it returns the default custom tool content.
+ * @param json - The JSON object containing tool data.
+ * @returns The content of the tool data.
+ */
 const getToolDataContent = (json: Record<string, unknown>): string => {
     let content = DEFAULT_CUSTOM_TOOL_CONTENT;
     if ("content" in json && typeof json.content === "string") {
@@ -132,6 +166,12 @@ const getToolDataContent = (json: Record<string, unknown>): string => {
     return content;
 };
 
+/**
+ * Gets the secrets (environment variables) of the tool data from the JSON object.
+ * If the secrets are not present or not an object, it returns an empty object.
+ * @param json - The JSON object containing tool data.
+ * @returns An object containing the secrets of the tool data.
+ */
 const getToolDataSecrets = (json: Record<string, unknown>): { [key: string]: string } => {
     let secrets: { [key: string]: string } = {};
     if ("secrets" in json && typeof json.secrets === "object") {
@@ -148,6 +188,13 @@ const getToolDataSecrets = (json: Record<string, unknown>): { [key: string]: str
     return secrets;
 };
 
+/**
+ * Gets the metadata of a tool from the JSON object.
+ * It extracts the name, description, tags, requirements, createdAt, and updatedAt fields.
+ * If any of these fields are not present or invalid, it uses default values.
+ * @param json - The JSON object containing tool metadata.
+ * @returns An object containing the tool metadata.
+ */
 const getNodeMeta = (
     json: Record<string, unknown>,
 ): {
@@ -167,6 +214,15 @@ const getNodeMeta = (
     return { name, description, tags, requirements, createdAt, updatedAt };
 };
 
+/**
+ * Gets the tool data type from the JSON object.
+ * It checks for the "toolType" field and returns its value if valid.
+ * If the tool name is "waldiez_shared", it sets the tool type to "shared".
+ * If no valid tool type is found, it defaults to "custom".
+ * @param json - The JSON object containing tool data.
+ * @param toolName - The name of the tool.
+ * @returns The tool type as a WaldiezToolType.
+ */
 const getToolDataType = (json: Record<string, unknown>, toolName: string): WaldiezToolType => {
     let toolType: WaldiezToolType = "custom";
     if (

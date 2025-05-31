@@ -31,7 +31,7 @@ import {
     getEnableClearHistory,
     getGroupChatMaxRound,
     getGroupName,
-    getHandoffs,
+    getHandoffIds,
     getHumanInputMode,
     getInitialAgentId,
     getIsMultimodal,
@@ -49,9 +49,23 @@ import {
     getUpdateAgentStateBeforeReply,
     getVerbose,
 } from "@waldiez/models/mappers/agent/utils";
-import { getNodePositionFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
+import { getAfterWork, getNodePositionFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
+/**
+ * Agent Mapper
+ * This module provides functions to import and export agents,
+ * as well as to convert agents to and from node format.
+ * It handles the conversion of agent data to a format suitable for storage or transmission,
+ * and ensures that all necessary fields are included.
+ */
 export const agentMapper = {
+    /**
+     * Imports an agent from a JSON object or similar structure.
+     * @param thing - The agent data to import, can be a JSON object or similar structure.
+     * @param agentId - Optional agent ID to use if not present in the data.
+     * @returns A WaldiezAgent instance representing the imported agent.
+     * @throws Error if the input is invalid or missing required fields.
+     */
     importAgent: (thing: unknown, agentId?: string): WaldiezAgent => {
         if (!thing || typeof thing !== "object") {
             throw new Error("Invalid agent data");
@@ -78,6 +92,12 @@ export const agentMapper = {
         );
     },
 
+    /**
+     * Exports an agent to a format suitable for storage or transmission.
+     * @param agentNode - The agent node to export.
+     * @param skipLinks - Optional flag to skip links in the exported data.
+     * @returns An object representing the exported agent.
+     */
     exportAgent: (agentNode: WaldiezNodeAgent, skipLinks?: boolean) => {
         const agentCopy: any = skipLinks ? removeLinks(agentNode) : { ...agentNode };
         const data = { ...agentCopy.data };
@@ -98,6 +118,7 @@ export const agentMapper = {
             handoffs: data.handoffs,
             contextVariables: data.contextVariables,
             updateAgentStateBeforeReply: data.updateAgentStateBeforeReply,
+            afterWork: data.afterWork,
         };
         updateAgentDataToExport(agentType, agentData, data);
         ensureOneNestedChatExists(agentData);
@@ -125,6 +146,14 @@ export const agentMapper = {
             ...agentCopy,
         };
     },
+
+    /**
+     * Converts a WaldiezAgent instance to a WaldiezNodeAgent format.
+     * @param agent - The WaldiezAgent instance to convert.
+     * @param position - Optional position for the node.
+     * @param skipLinks - Optional flag to skip links in the converted node.
+     * @returns A WaldiezNodeAgent instance representing the agent.
+     */
     asNode: (
         agent: WaldiezAgent,
         position?: { x: number; y: number },
@@ -157,18 +186,36 @@ export const agentMapper = {
     },
 };
 
+/**
+ * Ensures that at least one nested chat exists in the agent data.
+ * If no nested chats are present, it initializes a default nested chat.
+ * @param data - The agent data to check and modify if necessary.
+ */
 const ensureOneNestedChatExists = (data: any) => {
     if (!data.nestedChats || data.nestedChats.length === 0) {
         data.nestedChats = [
             {
                 messages: [],
                 triggeredBy: [],
-                order: 0,
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Start a nested chat",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
             },
         ];
     }
 };
 
+/**
+ * Extracts common agent data from the provided JSON object based on the agent type.
+ * @param data - The JSON object containing agent data.
+ * @param agentType - The type of the agent.
+ * @returns An instance of WaldiezAgentData containing the common agent data.
+ */
 const getCommonAgentData = (
     data: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -185,7 +232,8 @@ const getCommonAgentData = (
     const nestedChats = getNestedChats(data);
     const contextVariables = getContextVariables(data);
     const updateAgentStateBeforeReply = getUpdateAgentStateBeforeReply(data);
-    const handoffs = getHandoffs(data);
+    const afterWork = getAfterWork(data);
+    const handoffs = getHandoffIds(data);
     return new WaldiezAgentData({
         systemMessage,
         humanInputMode,
@@ -199,10 +247,17 @@ const getCommonAgentData = (
         nestedChats,
         contextVariables,
         updateAgentStateBeforeReply,
+        afterWork,
         handoffs,
     });
 };
 
+/**
+ * Returns a list of keys to exclude from the agent data based on the agent type.
+ * This is used to filter out unnecessary or sensitive information when exporting agents.
+ * @param agentType - The type of the agent.
+ * @returns An array of keys to exclude from the agent data.
+ */
 const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     const toExclude = ["id", "name", "description", "tags", "requirements", "createdAt", "updatedAt", "data"];
     if (agentType === "rag_user_proxy") {
@@ -230,6 +285,13 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     return toExclude;
 };
 
+/**
+ * Converts JSON data to a WaldiezAgentData instance based on the agent type.
+ * This function handles the specific data structure for each agent type.
+ * @param jsonData - The JSON object containing agent data.
+ * @param agentType - The type of the agent.
+ * @returns An instance of WaldiezAgentData or its subclasses.
+ */
 const getAgentDataToImport = (
     jsonData: Record<string, unknown>,
     agentType: WaldiezNodeAgentType,
@@ -278,11 +340,19 @@ const getAgentDataToImport = (
     return data;
 };
 
+/**
+ * Removes links from the agent data, clearing model IDs, tools, nested chats, handoffs,
+ * and code execution functions. This is useful for preparing agents for export or
+ * when links are not needed.
+ * @param agent - The agent to process.
+ * @returns A new agent object with links removed.
+ */
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     const agentCopy = { ...agent };
     agentCopy.data.modelIds = [];
     agentCopy.data.tools = [];
     agentCopy.data.nestedChats = [];
+    agentCopy.data.handoffs = [];
     if (agentCopy.data.codeExecutionConfig) {
         agentCopy.data.codeExecutionConfig.functions = [];
     }
@@ -304,6 +374,15 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     return agentCopy;
 };
 
+/**
+ * Updates the agent data to be exported based on the agent type.
+ * This function modifies the agent data object to include specific properties
+ * required for each agent type, such as retrieveConfig for rag_user_proxy,
+ * reasonConfig for reasoning agents, and so on.
+ * @param agentType - The type of the agent.
+ * @param agentData - The agent data object to update.
+ * @param data - The original data object containing all properties.
+ */
 const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any, data: any) => {
     if (agentType === "rag_user_proxy") {
         updateRagAgent(agentData, data);
@@ -322,15 +401,33 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
     }
 };
 
+/**
+ * Updates the rag user agent data with specific properties required for export.
+ * This includes the retrieve configuration and any other rag-specific properties.
+ * @param agentData - The rag user agent data to update.
+ * @param data - The original data object containing all properties.
+ */
 const updateRagAgent = (agentData: WaldiezAgentRagUserData, data: any) => {
     agentData.retrieveConfig = getRetrieveConfig(data);
 };
 
+/**
+ * Updates the reasoning agent data with specific properties required for export.
+ * This includes the verbose flag and reasoning configuration.
+ * @param agentData - The reasoning agent data to update.
+ * @param data - The original data object containing all properties.
+ */
 const updateReasoningAgent = (agentData: WaldiezAgentReasoningData, data: any) => {
     agentData.verbose = getVerbose(data);
     agentData.reasonConfig = getReasonConfig(data);
 };
 
+/**
+ * Updates the captain agent data with specific properties required for export.
+ * This includes the agent library, tool library, maximum rounds, and maximum turns.
+ * @param agentData - The captain agent data to update.
+ * @param data - The original data object containing all properties.
+ */
 const updateCaptainAgent = (agentData: WaldiezAgentCaptainData, data: any) => {
     agentData.agentLib = getCaptainAgentLib(data);
     agentData.toolLib = getCaptainToolLib(data);
@@ -338,6 +435,13 @@ const updateCaptainAgent = (agentData: WaldiezAgentCaptainData, data: any) => {
     agentData.maxTurns = getCaptainMaxTurns(data);
 };
 
+/**
+ * Updates the group manager agent data with specific properties required for export.
+ * This includes the maximum round, admin name, speakers, clear history option,
+ * introductions option, initial agent ID, and group name.
+ * @param agentData - The group manager agent data to update.
+ * @param data - The original data object containing all properties.
+ */
 const updateGroupManager = (agentData: WaldiezAgentGroupManagerData, data: any) => {
     agentData.maxRound = getGroupChatMaxRound(data);
     agentData.adminName = getAdminName(data);

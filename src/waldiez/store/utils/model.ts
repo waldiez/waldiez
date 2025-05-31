@@ -5,6 +5,14 @@
 import { typeOfGet, typeOfSet } from "@waldiez/store/types";
 import { reArrangeNodes } from "@waldiez/store/utils/common";
 
+/**
+ * Re-arranges the model nodes in the flow by updating their positions
+ * based on the current number of nodes and the flow's React Flow instance.
+ * It updates the state with the new nodes and the current timestamp.
+ * @param get - Function to get the current state.
+ * @param set - Function to set the new state.
+ * @returns The updated nodes after re-arrangement.
+ */
 export const reArrangeModels = (get: typeOfGet, set: typeOfSet) => {
     const nodes = reArrangeNodes(get().nodes, get().flowId, "model", get().rfInstance);
     set({

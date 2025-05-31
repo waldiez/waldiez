@@ -47,6 +47,9 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
     // Calculate message classes - memoized for performance
     const getMessageClass = useCallback(
         (msg: ChatUIMessage) => {
+            if (["system", "termination"].includes(msg.type)) {
+                return "system-message";
+            }
             if (msg.sender && userParticipants.includes(msg.sender)) {
                 return "user-message";
             }
@@ -55,9 +58,6 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
             }
             if (msg.type === "input_request") {
                 return "request-message";
-            }
-            if (["system", "termination"].includes(msg.type)) {
-                return "system-message";
             }
             return "assistant-message"; // generic class for non-user senders
         },

@@ -16,6 +16,14 @@ import {
     agentMapper,
 } from "@waldiez/models";
 
+/**
+ * Creates a new agent node with the specified type, position, and parent ID.
+ * If the agent type requires additional data, it initializes that data as well.
+ * @param agentType - The type of the agent to create.
+ * @param position - The position of the agent node in the graph.
+ * @param parentId - The ID of the parent node, if any.
+ * @returns A new agent node with the specified properties.
+ */
 export const getAgentNode = (
     agentType: WaldiezNodeAgentType,
     position: { x: number; y: number } | undefined,
@@ -45,6 +53,15 @@ export const getAgentNode = (
     return agentNode as WaldiezNodeAgent;
 };
 
+/**
+ * Retrieves the connections of an agent node in terms of its source and target nodes.
+ * It can filter connections to only sources or targets based on the provided options.
+ * @param nodes - The list of all nodes in the graph.
+ * @param edges - The list of all edges in the graph.
+ * @param nodeId - The ID of the agent node for which connections are being retrieved.
+ * @param options - Optional parameters to filter connections (sources only, targets only).
+ * @returns An object containing arrays of connected source and target nodes and their corresponding edges.
+ */
 export const getAgentConnections = (
     nodes: Node[],
     edges: Edge[],
@@ -86,6 +103,16 @@ export const getAgentConnections = (
         },
     };
 };
+
+/**
+ * Helper function to determine the source and target nodes connected to a specific agent node
+ * based on the provided edge and options for filtering connections.
+ * @param nodeId - The ID of the agent node.
+ * @param edge - The edge connecting nodes in the graph.
+ * @param nodes - The list of all nodes in the graph.
+ * @param options - Options to filter connections (sources only, targets only).
+ * @returns An object containing the source and target nodes connected to the agent node.
+ */
 const getAgentEdgeConnections = (
     nodeId: string,
     edge: Edge,

@@ -23,7 +23,20 @@ import {
 } from "@waldiez/models/mappers/common";
 import { getId } from "@waldiez/utils";
 
+/**
+ * modelMapper is a utility object that provides methods to import and export models,
+ * as well as convert them to and from node format.
+ * It includes methods to import a model from JSON, export a model to JSON,
+ * and convert a WaldiezModel instance to a WaldiezNodeModel instance.
+ * @see {@link WaldiezModel}
+ */
 export const modelMapper = {
+    /**
+     * Imports a model from JSON.
+     * If the JSON is invalid or missing, it creates a new model with default values.
+     * @param json - The JSON representation of the model.
+     * @returns A new instance of WaldiezModel.
+     */
     importModel: (json: unknown): WaldiezModel => {
         if (!json || typeof json !== "object") {
             return new WaldiezModel({
@@ -66,6 +79,14 @@ export const modelMapper = {
             rest,
         });
     },
+
+    /**
+     * Exports a model to JSON.
+     * If replaceSecrets is true, it replaces sensitive information with "REPLACE_ME".
+     * @param modelNode - The WaldiezNodeModel instance representing the model.
+     * @param replaceSecrets - Whether to replace sensitive information with "REPLACE_ME".
+     * @returns A JSON representation of the model.
+     */
     exportModel: (modelNode: WaldiezNodeModel, replaceSecrets: boolean) => {
         const apiKey = modelNode.data.apiKey ? (replaceSecrets ? "REPLACE_ME" : modelNode.data.apiKey) : null;
         const rest = getRestFromJSON(modelNode, ["id", "type", "parentId", "data"]);
@@ -97,6 +118,14 @@ export const modelMapper = {
             ...rest,
         };
     },
+
+    /**
+     * Converts a WaldiezModel instance to a WaldiezNodeModel instance.
+     * It sets the position based on the provided coordinates or defaults to (0, 0).
+     * @param model - The WaldiezModel instance to convert.
+     * @param position - Optional position object with x and y coordinates.
+     * @returns A new instance of WaldiezNodeModel representing the model.
+     */
     asNode: (model: WaldiezModel, position?: { x: number; y: number }): WaldiezNodeModel => {
         const nodePosition = getNodePositionFromJSON(model, position);
         const nodeData = {
@@ -123,6 +152,12 @@ export const modelMapper = {
     },
 };
 
+/**
+ * Replaces sensitive information in the model node's data with "REPLACE_ME".
+ * This is useful for exporting models without exposing sensitive information.
+ * @param modelNode - The WaldiezNodeModel instance representing the model.
+ * @returns An object containing the modified defaultHeaders, extras, and aws properties.
+ */
 const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
     const defaultHeaders = { ...modelNode.data.defaultHeaders };
     const extras = { ...modelNode.data.extras };
@@ -157,6 +192,12 @@ const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
     };
 };
 
+/**
+ * Utility functions to extract model metadata from a JSON object.
+ * @param name - The name of the model.
+ * @param json - The JSON object to extract the model name from.
+ * @returns The model name.
+ */
 const getModelName = (name: string | null, json: Record<string, unknown>): string => {
     let modelName = name ?? "Model";
     if ("name" in json && typeof json.name === "string") {
@@ -164,7 +205,6 @@ const getModelName = (name: string | null, json: Record<string, unknown>): strin
     }
     return modelName;
 };
-
 const getBaseUrl = (json: Record<string, unknown>): string | null => {
     let baseUrl: string | null = null;
     if ("baseUrl" in json && typeof json.baseUrl === "string") {

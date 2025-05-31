@@ -15,19 +15,49 @@ import { modelMapper } from "@waldiez/models/mappers";
 import { getNewNodePosition, reArrangeModels, setViewPortTopLeft } from "@waldiez/store/utils";
 import { typeOfGet, typeOfSet } from "@waldiez/types";
 
+/**
+ * WaldiezModelStore
+ * A store for managing Waldiez models.
+ * It provides methods to get, add, clone, update, delete, import, and export models.
+ * @see {@link IWaldiezModelStore}
+ */
 export class WaldiezModelStore implements IWaldiezModelStore {
     private get: typeOfGet;
     private set: typeOfSet;
+    /**
+     * Creates an instance of WaldiezModelStore.
+     * @param get - A function to get the current state of the store.
+     * @param set - A function to set the new state of the store.
+     */
     constructor(get: typeOfGet, set: typeOfSet) {
         this.get = get;
         this.set = set;
     }
+    /**
+     * Creates a new instance of WaldiezModelStore.
+     * @param get - A function to get the current state of the store.
+     * @param set - A function to set the new state of the store.
+     * @returns A new instance of WaldiezModelStore.
+     */
     static create(get: typeOfGet, set: typeOfSet) {
         return new WaldiezModelStore(get, set);
     }
+    /**
+     * Gets all models from the store.
+     * @returns An array of WaldiezNodeModel objects.
+     * @see {@link WaldiezNodeModel}
+     * @see {@link IWaldiezModelStore.getModels}
+     */
     getModels = () => {
         return this.get().nodes.filter(node => node.type === "model") as WaldiezNodeModel[];
     };
+    /**
+     * Gets a model by its ID.
+     * @param id - The ID of the model to retrieve.
+     * @returns The WaldiezNodeModel object if found, otherwise null.
+     * @see {@link WaldiezNodeModel}
+     * @see {@link IWaldiezModelStore.getModelById}
+     */
     getModelById = (id: string) => {
         const model = this.get().nodes.find(node => node.id === id);
         if (!model || model.type !== "model") {
@@ -35,6 +65,12 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         }
         return model as WaldiezNodeModel;
     };
+    /**
+     * Adds a new model to the store.
+     * @returns The newly created WaldiezNodeModel object.
+     * @see {@link WaldiezNodeModel}
+     * @see {@link IWaldiezModelStore.addModel}
+     */
     addModel = () => {
         const existingModels = this.get().nodes.filter(node => node.type === "model");
         const modelCount = existingModels.length;
@@ -58,6 +94,13 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         const model = this.get().nodes.find(node => node.id === newNode.id);
         return model as WaldiezNodeModel;
     };
+    /**
+     * Clones an existing model by its ID.
+     * @param id - The ID of the model to clone.
+     * @returns The cloned WaldiezNodeModel object if successful, otherwise null.
+     * @see {@link WaldiezNodeModel}
+     * @see {@link IWaldiezModelStore.cloneModel}
+     */
     cloneModel = (id: string) => {
         const model = this.get().nodes.find(node => node.id === id);
         if (!model || model.type !== "model") {
@@ -90,6 +133,13 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         const modelWithNewPosition = this.get().nodes.find(node => node.id === newModel.id);
         return modelWithNewPosition as WaldiezNodeModel;
     };
+    /**
+     * Updates the data of an existing model by its ID.
+     * @param id - The ID of the model to update.
+     * @param data - The partial data to update the model with.
+     * @see {@link WaldiezNodeModelData}
+     * @see {@link IWaldiezModelStore.updateModelData}
+     */
     updateModelData = (id: string, data: Partial<WaldiezNodeModelData>) => {
         const model = this.get().nodes.find(node => node.id === id);
         if (!model || model.type !== "model") {
@@ -111,6 +161,11 @@ export class WaldiezModelStore implements IWaldiezModelStore {
             updatedAt,
         });
     };
+    /**
+     * Deletes a model by its ID.
+     * @param id - The ID of the model to delete.
+     * @see {@link IWaldiezModelStore.deleteModel}
+     */
     deleteModel = (id: string) => {
         const rfInstance = this.get().rfInstance;
         const newNodes = this.getNodesAfterModelDeletion(id, rfInstance);
@@ -121,6 +176,16 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         reArrangeModels(this.get, this.set);
         setViewPortTopLeft(rfInstance);
     };
+    /**
+     * Imports a model from a given model object.
+     * @param model - The model object to import.
+     * @param modelId - The ID to assign to the imported model.
+     * @param position - The position to place the imported model in the flow.
+     * @param save - Whether to save the imported model immediately (default: true).
+     * @returns The imported WaldiezNodeModel object.
+     * @see {@link WaldiezNodeModel}
+     * @see {@link IWaldiezModelStore.importModel}
+     */
     importModel = (
         model: { [key: string]: unknown },
         modelId: string,
@@ -140,6 +205,13 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         }
         return modelNode;
     };
+    /**
+     * Exports a model by its ID.
+     * @param modelId - The ID of the model to export.
+     * @param hideSecrets - Whether to hide secrets in the exported model (default: true).
+     * @returns The exported model object.
+     * @see {@link IWaldiezModelStore.exportModel}
+     */
     exportModel = (modelId: string, hideSecrets: boolean) => {
         const model = this.get().nodes.find(node => node.id === modelId);
         if (!model || model.type !== "model") {
@@ -159,6 +231,14 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         const newModel = WaldiezModel.create();
         return modelMapper.asNode(newModel, position);
     };
+    /**
+     * Gets the nodes after a model deletion.
+     * This method rearranges the nodes and updates the positions of the remaining model nodes.
+     * It also checks if the deleted model was linked to any agents and updates them accordingly.
+     * @param modelId - The ID of the model that was deleted.
+     * @param rfInstance - The React Flow instance to get the new positions for the nodes.
+     * @returns An array of updated nodes after the model deletion.
+     */
     private getNodesAfterModelDeletion = (modelId: string, rfInstance: ReactFlowInstance | undefined) => {
         const newModelNodes = this.get().nodes.filter(node => node.type === "model" && node.id !== modelId);
         const newModelNodesCount = newModelNodes.length;

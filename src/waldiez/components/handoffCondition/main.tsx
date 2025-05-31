@@ -10,8 +10,8 @@ import { TextareaInput } from "@waldiez/components/textareaInput";
 import { ConditionType, WaldiezHandoffCondition } from "@waldiez/types";
 
 const conditionTypeMapping: Record<ConditionType, string> = {
-    string_context: "Variable check",
     string_llm: "Static LLM prompt",
+    string_context: "Variable check",
     context_str_llm: "Dynamic LLM Prompt",
     expression_context: "Expression check",
 };
@@ -30,33 +30,19 @@ type ConditionFieldUpdater = {
     handler: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
 };
 
-export const ChatAvailability: React.FC<{
-    condition: WaldiezHandoffCondition | null;
-    onDataChange: (data: WaldiezHandoffCondition | null) => void;
+export const HandoffCondition: React.FC<{
+    condition: WaldiezHandoffCondition;
+    onDataChange: (condition: WaldiezHandoffCondition) => void;
 }> = props => {
     const { condition, onDataChange } = props;
 
     // State
-    const [enabled, setEnabled] = useState<boolean>(!!condition);
-    const [currentHandoffCondition, setCurrentHandoffCondition] = useState<WaldiezHandoffCondition | null>(
-        condition,
-    );
-
-    // Effect to reset condition when disabled
-    useEffect(() => {
-        if (!enabled) {
-            setCurrentHandoffCondition(null);
-        }
-    }, [enabled]);
+    const [currentHandoffCondition, setCurrentHandoffCondition] =
+        useState<WaldiezHandoffCondition>(condition);
 
     // Effect to sync with external condition changes
     useEffect(() => {
-        if (condition) {
-            setCurrentHandoffCondition(condition);
-            setEnabled(true);
-        } else {
-            setEnabled(false);
-        }
+        setCurrentHandoffCondition(condition);
     }, [condition]);
 
     // Generic function to update condition fields
@@ -65,30 +51,14 @@ export const ChatAvailability: React.FC<{
             if (!currentHandoffCondition) {
                 return;
             }
-
             const updatedCondition = {
                 ...currentHandoffCondition,
                 [field]: value,
             } as WaldiezHandoffCondition;
-
             setCurrentHandoffCondition(updatedCondition);
             onDataChange(updatedCondition);
         },
         [currentHandoffCondition, onDataChange],
-    );
-
-    // Event handlers
-    const onHandoffConditionChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const isChecked = event.target.checked;
-            setEnabled(isChecked);
-
-            if (!isChecked) {
-                setCurrentHandoffCondition(null);
-                onDataChange(null);
-            }
-        },
-        [onDataChange],
     );
 
     const onConditionTypeChange = useCallback(
@@ -96,14 +66,11 @@ export const ChatAvailability: React.FC<{
             if (selectedOption) {
                 const selectedConditionType = selectedOption.value;
                 const newCondition = {
-                    condition_type: selectedConditionType,
+                    conditionType: selectedConditionType,
                 } as WaldiezHandoffCondition;
 
                 setCurrentHandoffCondition(newCondition);
                 onDataChange(newCondition);
-            } else {
-                setCurrentHandoffCondition(null);
-                onDataChange(null);
             }
         },
         [onDataChange],
@@ -135,22 +102,22 @@ export const ChatAvailability: React.FC<{
     // Memoized selected condition type option
     const selectedTypeOption = useMemo(
         () =>
-            currentHandoffCondition?.condition_type
+            currentHandoffCondition?.conditionType
                 ? {
-                      label: conditionTypeMapping[currentHandoffCondition.condition_type],
-                      value: currentHandoffCondition.condition_type,
+                      label: conditionTypeMapping[currentHandoffCondition.conditionType],
+                      value: currentHandoffCondition.conditionType,
                   }
                 : null,
-        [currentHandoffCondition?.condition_type],
+        [currentHandoffCondition?.conditionType],
     );
 
     // Helper function to render the appropriate input field based on condition type
     const renderConditionInput = useCallback(() => {
-        if (!currentHandoffCondition?.condition_type) {
+        if (!currentHandoffCondition?.conditionType) {
             return null;
         }
 
-        const conditionType = currentHandoffCondition.condition_type;
+        const conditionType = currentHandoffCondition.conditionType;
         const updater = fieldUpdaters[conditionType];
 
         switch (conditionType) {
@@ -220,19 +187,18 @@ export const ChatAvailability: React.FC<{
     return (
         <div className="flex-column">
             <div className="info margin-bottom-5">
-                You can enable a condition to control when this transition should be triggered. Conditions can
-                be based on context variables or evaluated using a language model (LLM). Choose from the
-                following types:
+                You can control when this transition happens. Conditions allow you to check values or evaluate
+                logic based on the current context. There are four types of conditions you can choose from:
                 <ul className="no-margin">
                     <li>
-                        <strong>Static LLM prompt</strong>: A fixed prompt sent to the LLM for evaluation.
+                        <strong>Static LLM prompt</strong>: A fixed message sent to a language model (LLM) to
+                        decide whether the transition should happen.
                     </li>
                     <li>
-                        <strong>Dynamic LLM prompt</strong>: A context-aware prompt that includes variables,
-                        and will be evaluated by the LLM. The prompt can be customized based on the current
-                        context. <br />
-                        <em>Example:</em> (assuming user_name and num_orders exist in the context variables){" "}
+                        <strong>Dynamic LLM prompt</strong>: A message that includes context variables, like
+                        the user's name or order count. It's sent to the LLM for evaluation.
                         <br />
+                        <em>Example:</em>
                         <ul>
                             <li>
                                 <code>
@@ -242,23 +208,14 @@ export const ChatAvailability: React.FC<{
                         </ul>
                     </li>
                     <li>
-                        <strong>Variable check</strong>: Checks if a specific context variable exists and is
+                        <strong>Variable check</strong>: Simply checks if a specific variable exists and is
                         truthy.
                     </li>
                     <li>
-                        <strong>Expression check</strong>: Evaluates a logical expression using context
-                        variables. Expressions use{" "}
-                        <code>
-                            ${"{"}var_name{"}"}
-                        </code>{" "}
-                        syntax to reference variables, and support logical operators (<code>not</code>/
-                        <code>!</code>, <code>and</code>/<code>&amp;</code>, <code>or</code>/<code>|</code>),
-                        comparisons (<code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>,{" "}
-                        <code>&lt;=</code>, <code>==</code>, <code>!=</code>), and functions like{" "}
-                        <code>
-                            len(${"{"}var_name{"}"})
-                        </code>
-                        . Parentheses can be used for grouping.
+                        <strong>Expression check</strong>: Allows you to write a small logic expression using
+                        context variables. You can use operators like <code>and</code>, <code>or</code>,{" "}
+                        <code>not</code>, as well as comparison signs like <code>&gt;</code>, <code>==</code>,
+                        etc.
                         <br />
                         <em>Examples:</em>
                         <ul>
@@ -270,48 +227,29 @@ export const ChatAvailability: React.FC<{
                             </li>
                             <li>
                                 <code>
-                                    len(${"{"}orders{"}"}) &gt; 0 &amp; ${"{"}user_active{"}"}
-                                </code>
-                            </li>
-                            <li>
-                                <code>
-                                    len(${"{"}cart_items{"}"}) == 0 | ${"{"}checkout_started{"}"}
+                                    len(${"{"}orders{"}"}) &gt; 0 and ${"{"}user_active{"}"}
                                 </code>
                             </li>
                         </ul>
                     </li>
                 </ul>
             </div>
-            <div>
-                <label className="checkbox-label">
-                    <div className="checkbox-label-view">Enable Availability Check</div>
-                    <input
-                        type="checkbox"
-                        checked={enabled}
-                        onChange={onHandoffConditionChange}
-                        data-testid="availability-enabled-checkbox"
-                    />
-                    <div className="checkbox"></div>
+            <div className="flex-column margin-top-10">
+                <label className="hidden" htmlFor="select-condition-type">
+                    Condition Type
                 </label>
+                <Select
+                    options={conditionTypeOptions}
+                    value={selectedTypeOption}
+                    onChange={onConditionTypeChange}
+                    inputId="select-condition-type"
+                    className="flex-1 margin-right-10"
+                    isClearable
+                />
+                {renderConditionInput()}
             </div>
-            {enabled && (
-                <div className="flex-column margin-top-10">
-                    <label className="hidden" htmlFor="select-condition-type">
-                        Condition Type
-                    </label>
-                    <Select
-                        options={conditionTypeOptions}
-                        value={selectedTypeOption}
-                        onChange={onConditionTypeChange}
-                        inputId="select-condition-type"
-                        className="flex-1 margin-right-10"
-                        isClearable
-                    />
-                    {renderConditionInput()}
-                </div>
-            )}
         </div>
     );
 };
 
-ChatAvailability.displayName = "ChatAvailability";
+HandoffCondition.displayName = "HandoffCondition";

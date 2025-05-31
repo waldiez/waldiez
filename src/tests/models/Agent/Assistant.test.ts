@@ -79,11 +79,19 @@ describe("WaldiezAgentAssistant", () => {
                         { id: "1", isReply: false },
                         { id: "2", isReply: true },
                     ],
-                    order: 0,
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a new chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
+            afterWork: null,
             handoffs: [],
             isMultimodal: false,
         });

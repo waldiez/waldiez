@@ -8,6 +8,12 @@ import {
     GroupChatSpeakerTransitionsType,
 } from "@waldiez/models/Agent/GroupManager/types";
 
+/**
+ * Default configuration for group chat speakers.
+ * @see {@link GroupChatSpeakerSelectionMethodOption}
+ * @see {@link GroupChatSpeakerSelectionMode}
+ * @see {@link GroupChatSpeakerTransitionsType}
+ */
 export const defaultGroupChatSpeakers = {
     selectionMethod: "auto" as GroupChatSpeakerSelectionMethodOption,
     selectionCustomMethod: "",

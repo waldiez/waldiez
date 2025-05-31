@@ -4,6 +4,13 @@
  */
 import { WaldiezReasoningAgentReasonConfig, defaultReasonConfig } from "@waldiez/models/Agent/Reasoning";
 
+/**
+ * getVerbose
+ * Returns the verbose setting from the provided JSON object.
+ * If not found, defaults to true.
+ * @param json - The JSON object to check for the verbose setting.
+ * @returns - The verbose setting.
+ */
 export const getVerbose: (json: { [key: string]: any }) => boolean = json => {
     if (typeof json !== "object") {
         return true;
@@ -22,6 +29,13 @@ export const getVerbose: (json: { [key: string]: any }) => boolean = json => {
     return true;
 };
 
+/**
+ * getReasonConfig
+ * Extracts the reasoning agent configuration from the provided JSON object.
+ * If not found, returns a default configuration.
+ * @param json - The JSON object to extract the reasoning configuration from.
+ * @returns - The reasoning agent configuration.
+ */
 export const getReasonConfig: (json: { [key: string]: any }) => WaldiezReasoningAgentReasonConfig = json => {
     if (typeof json !== "object") {
         return defaultReasonConfig;
@@ -53,6 +67,13 @@ export const getReasonConfig: (json: { [key: string]: any }) => WaldiezReasoning
         explorationConstant: getReasonConfigExplorationConstant(jsonData),
     };
 };
+
+/**
+ * Utility functions to extract reasoning agent configuration from a JSON object.
+ * @param data - The JSON object containing reasoning agent configurations.
+ * @returns An object representing the reasoning agent configuration.
+ *          If not specified or invalid, it returns default values.
+ */
 
 const getReasonConfigMethod = (data: Record<string, unknown>): "beam_search" | "mcts" | "lats" | "dfs" => {
     if (

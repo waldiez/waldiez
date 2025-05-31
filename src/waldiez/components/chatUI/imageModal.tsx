@@ -35,7 +35,7 @@ export const ImageModal: React.FC<{
         setImageError(true);
     };
     return (
-        <div className={`image-modal ${isOpen ? "open" : ""}`} onClick={onClose}>
+        <div className={`image-modal ${isOpen ? "open" : ""}`} onClick={onClose} data-testid="modal-overlay">
             {imageError ? (
                 <div className="modal-error-message">
                     <p>The image could not be displayed in full size.</p>
@@ -50,7 +50,13 @@ export const ImageModal: React.FC<{
                     onError={onImageError}
                 />
             )}
-            <button type="button" title="Close preview" className="modal-close" onClick={onClose}>
+            <button
+                type="button"
+                title="Close preview"
+                className="modal-close"
+                onClick={onClose}
+                data-testid="modal-close"
+            >
                 <FaX />
             </button>
         </div>

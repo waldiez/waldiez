@@ -8,7 +8,7 @@ import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic";
 import { WaldiezAgentCaptainTab } from "@waldiez/containers/nodes/agent/modal/tabs/captain";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
-import { WaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group";
+import { WaldiezAgentGroupMember } from "@waldiez/containers/nodes/agent/modal/tabs/groupMember";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
 import {
     WaldiezAgentGroupNestedChatTabs,
@@ -295,7 +295,7 @@ export const WaldiezNodeAgentModalTabs = memo(
                 {!isManager && groupManagers.length > 0 && (
                     <TabItem id={`wf-${flowId}-wa-${id}-group`} label="Group">
                         <div className="modal-tab-body">
-                            <WaldiezAgentGroup
+                            <WaldiezAgentGroupMember
                                 id={id}
                                 data={data}
                                 agents={agents}

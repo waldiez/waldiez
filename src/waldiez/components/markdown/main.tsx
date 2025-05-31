@@ -15,6 +15,43 @@ type MarkdownRendererProps = {
 };
 
 /**
+ * Type guard to check if a React node is a valid element with props
+ */
+const isReactElementWithProps = (
+    node: React.ReactNode,
+): node is React.ReactElement<{ className?: string }> => {
+    return React.isValidElement(node) && typeof node.props === "object" && node.props !== null;
+};
+
+/**
+ * Extract language from className string
+ */
+const extractLanguageFromClassName = (className: string): string | null => {
+    const match = /language-(\w+)/.exec(className);
+    return match && match[1] !== "md" ? match[1] : null;
+};
+
+/**
+ * Find language in React children recursively
+ */
+const findLanguageInChildren = (children: React.ReactNode): string | null => {
+    if (isReactElementWithProps(children) && children.props.className) {
+        return extractLanguageFromClassName(children.props.className);
+    }
+
+    if (Array.isArray(children)) {
+        for (const child of children) {
+            const language = findLanguageInChildren(child);
+            if (language) {
+                return language;
+            }
+        }
+    }
+
+    return null;
+};
+
+/**
  * Detects if text might contain markdown syntax
  */
 const mightBeMarkdown = (text: string): boolean => {
@@ -70,7 +107,7 @@ const preprocessContent = (content: string): string => {
 export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode = false, onImageClick }) => {
     // Skip markdown processing for short texts or if it doesn't look like markdown
     const shouldRenderMarkdown = useMemo(() => {
-        return content.length > 20 && mightBeMarkdown(content);
+        return content.length > 5 && mightBeMarkdown(content);
     }, [content]);
 
     // Pre-process content to handle special cases
@@ -221,33 +258,7 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
                     // Pre tag wrapper for code blocks
                     pre: ({ children, ...props }) => {
                         // Extract language information from the code block if available
-                        let language = null;
-
-                        // Try to find the code element and check for language
-                        if (children && typeof children === "object") {
-                            // Handle React element
-                            // @ts-expect-error node.children is a ReactNode
-                            if (React.isValidElement(children) && children.props?.className) {
-                                // @ts-expect-error node.children is a ReactNode
-                                const match = /language-(\w+)/.exec(children.props.className || "");
-                                if (match && match[1] !== "md") {
-                                    language = match[1];
-                                }
-                            }
-                            // Handle array of children
-                            else if (Array.isArray(children)) {
-                                React.Children.forEach(children, child => {
-                                    // @ts-expect-error node.children is a ReactNode
-                                    if (React.isValidElement(child) && child.props?.className) {
-                                        // @ts-expect-error node.children is a ReactNode
-                                        const match = /language-(\w+)/.exec(child.props.className || "");
-                                        if (match && match[1] !== "md") {
-                                            language = match[1];
-                                        }
-                                    }
-                                });
-                            }
-                        }
+                        const language = findLanguageInChildren(children);
 
                         // If we found a language, show it in the header
                         if (language) {
@@ -287,4 +298,5 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
         </div>
     );
 };
+
 Markdown.displayName = "Markdown";

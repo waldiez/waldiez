@@ -15,19 +15,49 @@ import { getAgentConnections, getAgentNode, resetEdgeOrdersAndPositions } from "
 import { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
+/**
+ * WaldiezAgentStore class implements the IWaldiezAgentStore interface.
+ * It provides methods to manage agents in the Waldiez application.
+ * This includes adding, updating, deleting, and retrieving agents,
+ * as well as importing and exporting agent data.
+ * The store uses a get and set function to manage the state of agents.
+ * @see {@link IWaldiezAgentStore}
+ */
 export class WaldiezAgentStore implements IWaldiezAgentStore {
     private get: typeOfGet;
     private set: typeOfSet;
+    /**
+     * Constructor for the WaldiezAgentStore class.
+     * @param get - Function to get the current state of the store.
+     * @param set - Function to set the new state of the store.
+     */
     constructor(get: typeOfGet, set: typeOfSet) {
         this.get = get;
         this.set = set;
     }
+    /**
+     * Static method to create an instance of WaldiezAgentStore.
+     * @param get - Function to get the current state of the store.
+     * @param set - Function to set the new state of the store.
+     * @returns An instance of WaldiezAgentStore.
+     */
     static create(get: typeOfGet, set: typeOfSet) {
         return new WaldiezAgentStore(get, set);
     }
+    /**
+     * Retrieves the current state of the agent store.
+     * @returns The current state of the agent store.
+     * @see {@link IWaldiezAgentStore.getAgents}
+     */
     getAgents = () => {
         return this.get().nodes.filter(node => node.type === "agent") as WaldiezNodeAgent[];
     };
+    /**
+     * Retrieves an agent by its ID.
+     * @param id - The ID of the agent to retrieve.
+     * @returns The agent with the specified ID, or null if not found.
+     * @see {@link IWaldiezAgentStore.getAgentById}
+     */
     getAgentById = (id: string) => {
         const agent = this.get().nodes.find(node => node.id === id);
         if (!agent || agent.type !== "agent") {
@@ -35,6 +65,14 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         return agent as WaldiezNodeAgent;
     };
+    /**
+     * Adds a new agent to the store.
+     * @param agentType - The type of the agent to add.
+     * @param position - The position of the agent in the graph.
+     * @param parentId - The ID of the parent agent, if any.
+     * @returns The newly added agent node.
+     * @see {@link IWaldiezAgentStore.addAgent}
+     */
     addAgent = (
         agentType: WaldiezNodeAgentType,
         position: { x: number; y: number } | undefined,
@@ -47,6 +85,12 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         });
         return agentNode;
     };
+    /**
+     * Clones an existing agent by its ID.
+     * @param id - The ID of the agent to clone.
+     * @returns The cloned agent node, or null if the agent was not found.
+     * @see {@link IWaldiezAgentStore.cloneAgent}
+     */
     cloneAgent = (id: string) => {
         const agent = this.get().nodes.find(node => node.id === id);
         if (agent) {
@@ -80,6 +124,12 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         return null;
     };
+    /**
+     * Updates the data of an agent by its ID.
+     * @param id - The ID of the agent to update.
+     * @param data - The new data to set for the agent.
+     * @see {@link IWaldiezAgentStore.updateAgentData}
+     */
     updateAgentData = (id: string, data: Partial<WaldiezNodeAgentData>) => {
         this.set({
             nodes: this.get().nodes.map(node => {
@@ -99,6 +149,11 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         });
         resetEdgeOrdersAndPositions(this.get, this.set);
     };
+    /**
+     * Deletes an agent by its ID.
+     * @param id - The ID of the agent to delete.
+     * @see {@link IWaldiezAgentStore.deleteAgent}
+     */
     deleteAgent = (id: string) => {
         const agent = this.get().nodes.find(node => node.id === id);
         if (agent) {
@@ -149,6 +204,16 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         resetEdgeOrdersAndPositions(this.get, this.set);
     };
+    /**
+     * Imports an agent from a JSON object.
+     * @param agent - The agent data to import.
+     * @param agentId - The ID to assign to the imported agent.
+     * @param skipLinks - Whether to skip importing links.
+     * @param position - The position to place the imported agent in the graph.
+     * @param save - Whether to save the imported agent to the store.
+     * @returns The newly imported agent node.
+     * @see {@link IWaldiezAgentStore.importAgent}
+     */
     importAgent = (
         agent: { [key: string]: unknown },
         agentId: string,
@@ -169,6 +234,13 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         return newAgentNode;
     };
+    /**
+     * Exports an agent by its ID.
+     * @param agentId - The ID of the agent to export.
+     * @param hideSecrets - Whether to hide sensitive information in the exported data.
+     * @returns The exported agent data.
+     * @see {@link IWaldiezAgentStore.exportAgent}
+     */
     exportAgent = (agentId: string, hideSecrets: boolean) => {
         const agent = this.get().nodes.find(node => node.id === agentId);
         if (!agent) {
@@ -176,6 +248,13 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         return agentMapper.exportAgent(agent as WaldiezNodeAgent, hideSecrets);
     };
+    /**
+     * Retrieves the connections of an agent by its ID.
+     * @param nodeId - The ID of the agent to get connections for.
+     * @param options - Options to filter connections (sourcesOnly, targetsOnly).
+     * @returns An array of connections for the specified agent.
+     * @see {@link IWaldiezAgentStore.getAgentConnections}
+     */
     getAgentConnections = (
         nodeId: string,
         options?: {
@@ -191,6 +270,13 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         }
         return getAgentConnections(this.get().nodes, this.get().edges, nodeId, options);
     };
+    /**
+     * Sets the agent group for a specific agent.
+     * @param agentId - The ID of the agent to set the group for.
+     * @param groupId - The ID of the group to set.
+     * @param position - The position to place the agent in the group.
+     * @see {@link IWaldiezAgentStore.setAgentGroup}
+     */
     setAgentGroup = (agentId: string, groupId: string, position?: XYPosition) => {
         this.set({
             nodes: this.get().nodes.map(node => {
@@ -211,11 +297,24 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
             updatedAt: new Date().toISOString(),
         });
     };
+    /**
+     * Retrieves the group members of a specific group by its ID.
+     * @param groupId - The ID of the group to get members for.
+     * @returns An array of agents that are members of the specified group.
+     * @see {@link IWaldiezAgentStore.getGroupMembers}
+     */
     getGroupMembers = (groupId: string) => {
         return this.get().nodes.filter(
             node => node.type === "agent" && node.data.parentId === groupId,
         ) as WaldiezNodeAgent[];
     };
+    /**
+     * Adds a member to a group by its ID.
+     * @param groupId - The ID of the group to add the member to.
+     * @param memberId - The ID of the member to add.
+     * @param position - The position to place the member in the group.
+     * @see {@link IWaldiezAgentStore.addGroupMember}
+     */
     addGroupMember = (groupId: string, memberId: string, position?: XYPosition) => {
         this.set({
             nodes: this.get().nodes.map(node => {
@@ -234,6 +333,12 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         });
         resetEdgeOrdersAndPositions(this.get, this.set);
     };
+    /**
+     * Removes a member from a group by its ID.
+     * @param groupId - The ID of the group to remove the member from.
+     * @param memberId - The ID of the member to remove.
+     * @see {@link IWaldiezAgentStore.removeGroupMember}
+     */
     removeGroupMember = (groupId: string, memberId: string) => {
         const nodes = [
             ...this.get().nodes.map(node => {

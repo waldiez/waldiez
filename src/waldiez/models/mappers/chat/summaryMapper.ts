@@ -4,7 +4,20 @@
  */
 import { WaldiezChatLlmSummaryMethod, WaldiezChatSummary } from "@waldiez/models/Chat";
 
+/**
+ * summaryMapper
+ * A utility to map chat summaries between JSON format and WaldiezChatSummary format.
+ * It provides methods to import and export summaries.
+ * @see {@link WaldiezChatSummary}
+ * @see {@link WaldiezChatLlmSummaryMethod}
+ */
 export const summaryMapper = {
+    /**
+     * Imports a chat summary from JSON.
+     * If the JSON is invalid or missing, it returns a default summary.
+     * @param json - The JSON representation of the chat summary.
+     * @returns An object representing the imported chat summary.
+     */
     importSummary: (json: { [key: string]: any }): WaldiezChatSummary => {
         if ("summary" in json) {
             return getEdgeSummary(json);
@@ -15,6 +28,12 @@ export const summaryMapper = {
             args: {},
         };
     },
+
+    /**
+     * Exports a WaldiezChatSummary to a format suitable for JSON.
+     * @param summary - The WaldiezChatSummary to export.
+     * @returns An object representing the exported chat summary.
+     */
     exportSummary: (summary: WaldiezChatSummary) => {
         return {
             method: summary.method,
@@ -24,6 +43,12 @@ export const summaryMapper = {
     },
 };
 
+/**
+ * Utility functions to extract summary properties from edge data.
+ * @param data - The edge data containing the summary.
+ * @returns An object representing the summary with method, prompt, and args.
+ *          If the data does not contain a valid summary, it returns default values.
+ */
 const getEdgeSummary: (data: { [key: string]: any }) => {
     method: WaldiezChatLlmSummaryMethod;
     prompt: string;

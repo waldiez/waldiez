@@ -67,7 +67,14 @@ const agentNodes: Node[] = edges.map((_, index) => {
                     isReply: true,
                 },
             ],
-            order: 0,
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Start a new chat",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
         });
         addedNestedChat = true;
     }

@@ -5,7 +5,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SnackbarProvider, showSnackbar, useSnackbar } from "@waldiez/components/snackbar";
+import { Snackbar, SnackbarProvider, showSnackbar, useSnackbar } from "@waldiez/components/snackbar";
 
 const FLOW_ID = "test-flow";
 
@@ -250,5 +250,77 @@ describe("Snackbar System", () => {
         expect(await screen.findByText("Modal Snackbar")).toBeInTheDocument();
         // Optionally: check it is a child of modalContent
         expect(modalContent.querySelector(".snackbar")).not.toBeNull();
+    });
+    describe("Snackbar fallback container", () => {
+        it("renders in document.body if rf-root-<flowId> does not exist", () => {
+            // Remove any custom root to ensure fallback
+            const flowId = "no-root";
+            render(
+                <Snackbar
+                    id={`rf-root-${flowId}`}
+                    flowId={flowId}
+                    message="Body fallback"
+                    onClose={() => {}}
+                />,
+            );
+
+            // Snackbar should render in body
+            const snackbar = screen.queryByTestId("snackbar");
+            expect(snackbar).toBeInTheDocument();
+            // Check its parentNode is body or a child of body (since createPortal appends to container)
+            expect(snackbar?.ownerDocument.body.contains(snackbar)).toBe(true);
+        });
+    });
+    describe("Snackbar details rendering (getErrorMessage logic)", () => {
+        const baseProps = {
+            id: "snackbar-test",
+            flowId: "test",
+            message: "irrelevant",
+            onClose: () => {},
+        };
+        it("renders string details directly", () => {
+            render(<Snackbar {...baseProps} details="simple string" />);
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent("simple string");
+        });
+
+        it("renders .detail property if present", () => {
+            render(<Snackbar {...baseProps} details={{ detail: "Fine print!" }} />);
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent("Fine print!");
+        });
+
+        it("renders .message property if present", () => {
+            render(<Snackbar {...baseProps} details={{ message: "Boom!" }} />);
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent("Boom!");
+        });
+
+        it("renders .statusText property if present", () => {
+            render(<Snackbar {...baseProps} details={{ statusText: "Not Found" }} />);
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent("Error: Not Found");
+        });
+
+        it("renders stringified object if no known property", () => {
+            render(<Snackbar {...baseProps} details={{ foo: "bar", val: 2 }} />);
+            // This will be a JSON string
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent('{ "foo": "bar", "val": 2 }');
+        });
+
+        it("renders fallback for non-stringifiable detail", () => {
+            const circular: any = {};
+            circular.me = circular;
+            render(<Snackbar {...baseProps} details={circular} />);
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent("[object Object]");
+        });
+
+        it("renders fallback message for unknown details", () => {
+            render(<Snackbar {...baseProps} details={undefined} />);
+            // Should not render the details span at all if details is undefined
+            expect(screen.queryByTestId("snackbar-details")).toBeNull();
+        });
+
+        it("renders for non-object, non-string details", () => {
+            // @ts-expect-error not a valid type for details
+            render(<Snackbar {...baseProps} details={42} />);
+            expect(screen.getByTestId("snackbar-details")).toHaveTextContent("An unexpected error occurred.");
+        });
     });
 });

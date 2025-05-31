@@ -5,13 +5,7 @@
 /* eslint-disable max-statements */
 import { Edge, MarkerType, Node } from "@xyflow/react";
 
-import {
-    ValidAgentTypes,
-    ValidChatTypes,
-    ValidConditionTypes,
-    WaldiezHandoffCondition,
-    WaldiezNodeAgentType,
-} from "@waldiez/models";
+import { ValidAgentTypes, ValidChatTypes, WaldiezNodeAgentType } from "@waldiez/models";
 import { WaldiezChatData, WaldiezEdge, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { AGENT_COLORS } from "@waldiez/theme";
@@ -115,87 +109,6 @@ export const getRealTarget = (data: { [key: string]: any }) => {
         realTarget = data.realTarget;
     }
     return realTarget;
-};
-
-const getStringLLMCondition = (data: { [key: string]: any }) => {
-    let condition: WaldiezHandoffCondition | null = null;
-    if ("condition_type" in data && data.condition_type === "string_llm") {
-        if ("prompt" in data && typeof data.prompt === "string") {
-            condition = {
-                condition_type: "string_llm",
-                prompt: data.prompt,
-            };
-        }
-    }
-    return condition;
-};
-const getContextStrLLMCondition = (data: { [key: string]: any }) => {
-    let condition: WaldiezHandoffCondition | null = null;
-    if ("condition_type" in data && data.condition_type === "context_str_llm") {
-        if ("context_str" in data && typeof data.context_str === "string") {
-            condition = {
-                condition_type: "context_str_llm",
-                context_str: data.context_str,
-            };
-        }
-    }
-    return condition;
-};
-const getStringContextCondition = (data: { [key: string]: any }) => {
-    let condition: WaldiezHandoffCondition | null = null;
-    if ("condition_type" in data && data.condition_type === "string_context") {
-        if ("variable_name" in data && typeof data.variable_name === "string") {
-            condition = {
-                condition_type: "string_context",
-                variable_name: data.variable_name,
-            };
-        }
-    }
-    return condition;
-};
-const getExpressionContextCondition = (data: { [key: string]: any }) => {
-    let condition: WaldiezHandoffCondition | null = null;
-    if ("condition_type" in data && data.condition_type === "expression_context") {
-        if ("expression" in data && typeof data.expression === "string") {
-            condition = {
-                condition_type: "expression_context",
-                expression: data.expression,
-            };
-        }
-    }
-    return condition;
-};
-
-export const getChatHandoffCondition = (data: { [key: string]: any }) => {
-    let handoffCondition: WaldiezHandoffCondition | null = null;
-    if ("handoffCondition" in data && data.handoffCondition) {
-        if (typeof data.handoffCondition === "object") {
-            if (
-                "condition_type" in data.handoffCondition &&
-                data.handoffCondition.condition_type &&
-                ValidConditionTypes.includes(data.handoffCondition.condition_type)
-            ) {
-                const conditionType = data.handoffCondition.condition_type;
-                switch (conditionType) {
-                    case "string_llm":
-                        handoffCondition = getStringLLMCondition(data.handoffCondition);
-                        break;
-                    case "context_str_llm":
-                        handoffCondition = getContextStrLLMCondition(data.handoffCondition);
-                        break;
-                    case "string_context":
-                        handoffCondition = getStringContextCondition(data.handoffCondition);
-                        break;
-                    case "expression_context":
-                        handoffCondition = getExpressionContextCondition(data.handoffCondition);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-    return handoffCondition;
 };
 
 export const getChatType = (

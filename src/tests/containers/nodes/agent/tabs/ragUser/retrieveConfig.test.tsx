@@ -216,24 +216,31 @@ describe("Rag User tab Retrieve Config", () => {
                 files,
             },
         });
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-rag-doc-0")).not.toBeNull();
+        });
         const docsPathInput = screen.getByTestId("new-list-entry-rag-doc-item") as HTMLInputElement;
+        expect(docsPathInput).toBeInTheDocument();
         fireEvent.change(docsPathInput, {
             target: {
                 value: "new-docs-path",
             },
         });
-        await waitFor(() => {
-            expect(screen.queryByTestId("list-entry-item-rag-doc-0")).not.toBeNull();
-        });
         const addDocsPathButton = screen.getByTestId("add-list-entry-rag-doc-button");
         fireEvent.click(addDocsPathButton);
+        // 2 entries should be present now
         await waitFor(() => {
             expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).not.toBeNull();
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-1")).not.toBeNull();
         });
+        // remove the first entry (dropzone file)
         const removeFileButton = screen.getByTestId("delete-list-entry-rag-doc-0");
         fireEvent.click(removeFileButton);
         await waitFor(() => {
-            expect(screen.queryByTestId("delete-list-entry-rag-doc-0")).toBeNull();
+            const ragDoc0 = screen.queryByTestId("list-entry-item-rag-doc-0");
+            expect(ragDoc0).not.toBeNull();
+            expect(ragDoc0).toHaveValue("new-docs-path"); // not the dropzone file
+            expect(screen.queryByTestId("delete-list-entry-rag-doc-1")).toBeNull();
         });
     });
 });

@@ -58,12 +58,21 @@ export class WaldiezFlow {
         this.rest = props.rest || {};
     }
 }
+
+/**
+ * Generates a unique flow ID.
+ * @returns A unique flow ID string.
+ */
 const getFlowId = () => {
-    return `wf-${new Date().getTime()}${nanoid()}}`;
+    return `wf-${new Date().getTime()}${nanoid()}`;
 };
 
 const aFlowId = getFlowId();
 
+/**
+ * Creates a new WaldiezFlow instance with default values.
+ * @returns A new instance of WaldiezFlow.
+ */
 export const emptyFlow: WaldiezFlow = {
     type: "flow",
     id: aFlowId,

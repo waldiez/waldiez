@@ -59,6 +59,7 @@ export type WaldiezStoreProps = {
     tags?: string[];
     rfInstance?: ReactFlowInstance;
     viewport?: Viewport;
+    previousViewport?: Viewport; // used to store the previous viewport when switching node types
     onRun?: ((flow: string) => void) | null; // handler for running the flow (send to backend
     onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null; // handler for converting the flow (send to backend)
     onUpload?: ((files: File[]) => Promise<string[]>) | null; // handler for file uploads (send to backend)

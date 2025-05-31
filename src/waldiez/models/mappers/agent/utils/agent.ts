@@ -18,6 +18,20 @@ import {
 } from "@waldiez/models";
 import { WaldiezAgent, WaldiezAgentData, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
 
+/**
+ * Creates a Waldiez agent based on the provided agent type and data.
+ * @param agentType - The type of the agent (e.g., user_proxy, assistant, rag_user_proxy, reasoning, captain, group_manager).
+ * @param id - The unique identifier for the agent.
+ * @param name - The name of the agent.
+ * @param description - A brief description of the agent.
+ * @param tags - An array of tags associated with the agent.
+ * @param requirements - An array of requirements for the agent.
+ * @param createdAt - The creation date of the agent.
+ * @param updatedAt - The last update date of the agent.
+ * @param data - The specific data associated with the agent type.
+ * @param rest - Any additional properties that do not fit into the standard agent structure.
+ * @returns An instance of the appropriate Waldiez agent class based on the agent type.
+ */
 export const getAgent = (
     agentType: WaldiezNodeAgentType,
     id: string,

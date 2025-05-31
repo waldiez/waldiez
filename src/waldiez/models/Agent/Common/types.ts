@@ -2,9 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
-
-export type * from "@waldiez/models/Agent/Common/Handoff";
+import {
+    WaldiezHandoffAvailability,
+    WaldiezHandoffCondition,
+    WaldiezTransitionTarget,
+} from "@waldiez/models/common/Handoff";
 
 export type { WaldiezAgent } from "@waldiez/models/Agent/Common/Agent";
 export type { WaldiezAgentData } from "@waldiez/models/Agent/Common/AgentData";
@@ -73,12 +75,16 @@ export type WaldiezAgentTerminationCriterionOption = "found" | "ending" | "start
  * Waldiez agent nested chat.
  * @param triggeredBy - The agent ids that trigger the nested chat
  * @param messages - The messages to include in the chat queue
- * @param order - The order of the nested chat (if used as a handoff target)
+ * @param condition - The condition for the nested chat (if used as handoff)
+ * @param available - The availability of the nested chat (if used as handoff)
+ * @see {@link WaldiezHandoffCondition}
+ * @see {@link WaldiezHandoffAvailability}
  */
 export type WaldiezAgentNestedChat = {
     triggeredBy: string[];
     messages: { id: string; isReply: boolean }[];
-    order: number;
+    condition: WaldiezHandoffCondition;
+    available: WaldiezHandoffAvailability;
 };
 /**
  * Waldiez agent termination message check.
@@ -117,7 +123,8 @@ export type WaldiezAgentLinkedTool = {
  * @param nestedChats - The nested chats
  * @param contextVariables - The context variables
  * @param updateAgentStateBeforeReply - Optional handler to update the agent state before replying
- * @param handoffs - The handoffs
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @param afterWork - The handoff transition after work
  * @param modelIds - The agent's model ids
  * @param tools - The tools available to the agent
  * @param tags - The tags
@@ -129,7 +136,8 @@ export type WaldiezAgentLinkedTool = {
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentNestedChat}
- * @see {@link WaldiezAgentHandoff}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentUpdateSystemMessage}
  */
@@ -147,8 +155,9 @@ export type WaldiezAgentCommonData = {
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables?: { [key: string]: unknown };
     updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
-    handoffs: WaldiezAgentHandoff[];
-    // links
+    handoffs: string[]; // handoff / edge ids
+    afterWork: WaldiezTransitionTarget | null;
+    // linkss
     modelIds: string[];
     tools: WaldiezAgentLinkedTool[];
     // meta

@@ -57,7 +57,7 @@ export type WaldiezFlowProps = ReactFlowJsonObject & {
  * @param edges - The edges of the flow
  * @param viewport - The viewport of the flow
  * @param monacoVsPath - The path to the monaco vs code editor
- * @param chat - The chat configuration @see {@link WaldiezChatConfig}
+ * @param chat - The chat configuration
  * @param readOnly - Whether the flow is read only or not
  * @param skipImport - Whether to skip import or not
  * @param skipExport - Whether to skip export or not

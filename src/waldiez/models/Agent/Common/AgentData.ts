@@ -9,8 +9,8 @@ import {
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
     WaldiezAgentUpdateSystemMessage,
-} from "@waldiez/models/Agent/Common";
-import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
+} from "@waldiez/models/Agent/Common/types";
+import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez Agent data
@@ -25,14 +25,15 @@ import { WaldiezAgentHandoff } from "@waldiez/models/Agent/Common/Handoff";
  * @param parentId - Parent id
  * @param nestedChats - Nested chats
  * @param contextVariables - Context variables
- * @param handoffs - Handoffs
+ * @param updateAgentStateBeforeReply - Update agent state before reply
+ * @param afterWork - Handoff transition after work
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
- * @see {@link WaldiezAgentHandoff}
  * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezAgentData {
     systemMessage: string | null;
@@ -47,7 +48,8 @@ export class WaldiezAgentData {
     nestedChats: WaldiezAgentNestedChat[];
     contextVariables: Record<string, any>;
     updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
-    handoffs: WaldiezAgentHandoff[];
+    afterWork: WaldiezTransitionTarget | null;
+    handoffs: string[]; // handoff / edge ids
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -62,7 +64,8 @@ export class WaldiezAgentData {
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
             updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
-            handoffs: WaldiezAgentHandoff[];
+            afterWork: WaldiezTransitionTarget | null;
+            handoffs?: string[]; // handoff / edge ids
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,
@@ -82,11 +85,19 @@ export class WaldiezAgentData {
                 {
                     messages: [],
                     triggeredBy: [],
-                    order: 0,
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a nested chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
+            afterWork: null,
             handoffs: [],
         },
     ) {
@@ -102,6 +113,7 @@ export class WaldiezAgentData {
         this.nestedChats = props.nestedChats;
         this.contextVariables = props.contextVariables;
         this.updateAgentStateBeforeReply = props.updateAgentStateBeforeReply;
-        this.handoffs = props.handoffs;
+        this.afterWork = props.afterWork || null;
+        this.handoffs = props.handoffs || [];
     }
 }

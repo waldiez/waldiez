@@ -33,7 +33,6 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
         models,
         initialAgent,
         initialAgentOptions,
-        currentAfterWork,
         onGroupNameChange,
         onManagerNameChange,
         onMaxRoundChange,
@@ -281,7 +280,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                 <TabItem label="Afterwards" id={`wf-${flowId}-agent-group-manager-after-work-${id}`}>
                     <div className="modal-body agent-panel">
                         <AfterWork
-                            target={currentAfterWork}
+                            target={data.afterWork}
                             agents={groupMembers}
                             onChange={onAfterWorkChange}
                             isForGroupChat

@@ -24,14 +24,22 @@ const baseData = {
     modelIds: [],
     tools: [],
     contextVariables: {},
-    handoffs: [],
     updateAgentStateBeforeReply: [],
+    afterWork: null,
+    handoffs: [],
     parentId: undefined,
     nestedChats: [
         {
             messages: [],
             triggeredBy: [],
-            order: 0,
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Start a nested chat",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
         },
     ],
 };

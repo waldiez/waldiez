@@ -3,12 +3,13 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 export { AfterWork } from "@waldiez/components/afterWork";
-export { ChatAvailability } from "@waldiez/components/chatAvailability";
 export { ChatUI, ImageModal } from "@waldiez/components/chatUI";
 export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";
 export { DropZone } from "@waldiez/components/dropZone";
 export { Editor } from "@waldiez/components/editor";
+export { HandoffAvailability } from "@waldiez/components/handoffAvailability";
+export { HandoffCondition } from "@waldiez/components/handoffCondition";
 export { Handoffs } from "@waldiez/components/handoffs";
 export { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 export { InfoLabel } from "@waldiez/components/infoLabel";

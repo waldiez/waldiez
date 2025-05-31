@@ -32,12 +32,24 @@ export class WaldiezChat {
         this.rest = props.rest || {};
     }
 
+    /**
+     * Gets the source of the chat.
+     */
     get source(): string {
         return this.data.source;
     }
+
+    /**
+     * Gets the target of the chat.
+     */
     get target(): string {
         return this.data.target;
     }
+
+    /**
+     * Creates a new WaldiezChat instance with default values.
+     * @returns A new instance of WaldiezChat.
+     */
     static create(props: { source: string; target: string }): WaldiezChat {
         const data = new WaldiezChatData();
         data.source = props.source;

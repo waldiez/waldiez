@@ -13,9 +13,9 @@ import {
 } from "@waldiez/models";
 
 type AfterWorkProps = {
-    target: WaldiezTransitionTarget | undefined;
+    target: WaldiezTransitionTarget | null;
     agents: WaldiezNodeAgent[];
-    onChange: (target: WaldiezTransitionTarget | undefined) => void;
+    onChange: (target: WaldiezTransitionTarget | null) => void;
     isForGroupChat?: boolean;
 };
 /**
@@ -52,15 +52,15 @@ const targetsToLabelsMapping: Record<TransitionTargetType, string> = {
 export const AfterWork: React.FC<AfterWorkProps> = memo(
     ({ target, agents, onChange, isForGroupChat = true }: AfterWorkProps) => {
         // State
-        const [enabled, setEnabled] = useState(target !== undefined);
+        const [enabled, setEnabled] = useState(!!target);
         const [selectedTargetType, setSelectedTargetType] = useState<TransitionTargetType | undefined>(
-            target?.target_type,
+            target?.targetType,
         );
         const [selectedAgentTargetId, setSelectedAgentTargetId] = useState<string | undefined>(
-            target?.target_type === "AgentTarget" ? target.value : undefined,
+            target?.targetType === "AgentTarget" ? target.value[0] : undefined,
         );
         const [selectedRandomAgentTargetIds, setSelectedRandomAgentTargetIds] = useState<string[]>(
-            target?.target_type === "RandomAgentTarget" ? target.value : [],
+            target?.targetType === "RandomAgentTarget" ? target.value : [],
         );
 
         /**
@@ -127,7 +127,8 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                 setEnabled(checked);
 
                 if (!checked) {
-                    onChange(undefined);
+                    setSelectedTargetType(undefined);
+                    onChange(null);
                 }
             },
             [onChange],
@@ -148,8 +149,8 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                     case "AgentTarget":
                         if (selectedAgentTargetId) {
                             onChange({
-                                target_type: targetType,
-                                value: selectedAgentTargetId,
+                                targetType: targetType,
+                                value: [selectedAgentTargetId],
                             });
                         }
                         break;
@@ -157,12 +158,12 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                     case "RevertToUserTarget":
                     case "AskUserTarget":
                     case "GroupManagerTarget":
-                        onChange({ target_type: targetType });
+                        onChange({ targetType: targetType, value: [] });
                         break;
                     case "RandomAgentTarget":
                         if (selectedRandomAgentTargetIds.length > 0) {
                             onChange({
-                                target_type: targetType,
+                                targetType: targetType,
                                 value: selectedRandomAgentTargetIds,
                             });
                         }
@@ -183,13 +184,16 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                 setSelectedAgentTargetId(selectedOption.value);
 
                 onChange({
-                    target_type: "AgentTarget",
-                    value: selectedOption.value,
+                    targetType: "AgentTarget",
+                    value: [selectedOption.value],
                 });
             },
             [onChange, selectedTargetType],
         );
 
+        /**
+         * Handle selection of multiple agents for RandomAgentTarget
+         */
         const onRandomAgentTargetsChange = useCallback(
             (selectedOptions?: MultiValue<{ label?: string; value: string }>) => {
                 if (!selectedOptions || selectedTargetType !== "RandomAgentTarget") {
@@ -198,7 +202,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                 const selectedIds = selectedOptions.map(option => option.value);
                 setSelectedRandomAgentTargetIds(selectedIds);
                 onChange({
-                    target_type: "RandomAgentTarget",
+                    targetType: "RandomAgentTarget",
                     value: selectedIds,
                 });
             },

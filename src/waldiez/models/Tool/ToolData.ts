@@ -119,6 +119,11 @@ Make sure you have a variable named with the same name as the tool.
 
 `;
 
+/**
+ * Default tool content map for different tool types.
+ * This map provides default content for each tool type.
+ * @see {@link WaldiezToolType}
+ */
 export const DEFAULT_TOOL_CONTENT_MAP: Record<WaldiezToolType, string> = {
     shared: DEFAULT_SHARED_TOOL_CONTENT,
     custom: DEFAULT_CUSTOM_TOOL_CONTENT,

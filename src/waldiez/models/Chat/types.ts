@@ -4,8 +4,13 @@
  */
 import { Edge } from "@xyflow/react";
 
-import { WaldiezAgentType, WaldiezHandoffCondition } from "@waldiez/models/Agent/types";
+import { WaldiezAgentType } from "@waldiez/models/Agent/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
+import {
+    WaldiezHandoffAvailability,
+    WaldiezHandoffCondition,
+    WaldiezTransitionTarget,
+} from "@waldiez/models/common/Handoff";
 
 export type { WaldiezMessage };
 
@@ -71,13 +76,17 @@ export type WaldiezNestedChat = {
  * @param realTarget - The real target (overrides target)
  * @param sourceType - The source type
  * @param targetType - The target type
- * @param handoffCondition - The handoff condition
+ * @param condition - The handoff condition
+ * @param available - The available for handoff condition
+ * @param afterWork - The after work transition
  * @param silent - The silent mode
  * @see {@link WaldiezMessage}
  * @see {@link WaldiezChatSummary}
  * @see {@link WaldiezNestedChat}
  * @see {@link WaldiezAgentType}
  * @see {@link WaldiezHandoffCondition}
+ * @see {@link WaldiezTransitionTarget}
+ * @see {@link WaldiezHandoffAvailability}
  */
 export type WaldiezChatDataCommon = {
     description: string;
@@ -93,7 +102,9 @@ export type WaldiezChatDataCommon = {
     realTarget: string | null;
     sourceType: WaldiezAgentType;
     targetType: WaldiezAgentType;
-    handoffCondition: WaldiezHandoffCondition | null;
+    condition: WaldiezHandoffCondition;
+    available: WaldiezHandoffAvailability;
+    afterWork: WaldiezTransitionTarget | null;
     silent?: boolean;
 };
 
@@ -113,7 +124,9 @@ export type WaldiezChatDataCommon = {
  * @param realTarget - The real target (overrides target)
  * @param sourceType - The source type
  * @param targetType - The target type
- * @param handoffCondition - The handoff condition
+ * @param condition - The handoff condition
+ * @param available - The available for handoff condition
+ * @param afterWork - The after work transition
  * @param silent - The silent mode
  * @see {@link WaldiezMessage}
  * @see {@link WaldiezChatSummary}

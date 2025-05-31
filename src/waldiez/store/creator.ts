@@ -98,6 +98,14 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
     );
 };
 
+/**
+ * zundoEquality
+ * Custom equality function for zundo to compare past and current state.
+ * It checks if the changes are significant enough to warrant a new history entry.
+ * @param pastState - The previous state of the Waldiez store.
+ * @param currentState - The current state of the Waldiez store.
+ * @returns true if the states are considered equal, false otherwise.
+ */
 const zundoEquality = (pastState: Partial<WaldiezState>, currentState: Partial<WaldiezState>) => {
     const diffs = diff(pastState, currentState);
     // only check nodes[n].data and edges[n].data

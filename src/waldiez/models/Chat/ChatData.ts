@@ -2,9 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezAgentType, WaldiezHandoffCondition } from "@waldiez/models/Agent/types";
+import { WaldiezAgentType } from "@waldiez/models/Agent/Common/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
+import {
+    WaldiezHandoffAvailability,
+    WaldiezHandoffCondition,
+    WaldiezTransitionTarget,
+} from "@waldiez/models/common";
 
 /**
  * Waldiez Chat Data
@@ -21,11 +26,17 @@ import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/type
  * @param nestedChat - The nested chat
  * @param prerequisites - The prerequisites (chat ids) for async mode
  * @param available - The available for handoff condition
+ * @param condition - The handoff condition
+ * @param afterWork - The after work transition
  * @param realSource - The real source (overrides source)
  * @param realTarget - The real target (overrides target)
  * @see {@link WaldiezMessage}
  * @see {@link WaldiezChatSummary}
  * @see {@link WaldiezNestedChat}
+ * @see {@link WaldiezAgentType}
+ * @see {@link WaldiezHandoffCondition}
+ * @see {@link WaldiezHandoffAvailability}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezChatData {
     source: string;
@@ -47,7 +58,15 @@ export class WaldiezChatData {
     prerequisites: string[] = [];
     realSource: string | null = null;
     realTarget: string | null = null;
-    handoffCondition: WaldiezHandoffCondition | null = null;
+    available: WaldiezHandoffAvailability = {
+        type: "none",
+        value: "",
+    };
+    condition: WaldiezHandoffCondition = {
+        conditionType: "string_llm",
+        prompt: "Handoff to another agent",
+    };
+    afterWork: WaldiezTransitionTarget | null = null;
     silent?: boolean = false;
     constructor(
         props: {
@@ -65,7 +84,9 @@ export class WaldiezChatData {
             message: WaldiezMessage;
             nestedChat: WaldiezNestedChat;
             prerequisites: string[];
-            handoffCondition?: WaldiezHandoffCondition | null;
+            condition: WaldiezHandoffCondition;
+            available: WaldiezHandoffAvailability;
+            afterWork: WaldiezTransitionTarget | null;
             realSource: string | null;
             realTarget: string | null;
             silent?: boolean;
@@ -96,7 +117,15 @@ export class WaldiezChatData {
                 reply: null,
             },
             prerequisites: [],
-            handoffCondition: null,
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Handoff to another agent",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
+            afterWork: null,
             realSource: null,
             realTarget: null,
             silent: false,
@@ -117,10 +146,12 @@ export class WaldiezChatData {
             order,
             nestedChat,
             prerequisites,
+            condition,
+            available,
+            afterWork,
             realSource,
             realTarget,
             silent,
-            handoffCondition,
         } = props;
         this.source = source;
         this.target = target;
@@ -136,7 +167,9 @@ export class WaldiezChatData {
         this.order = order;
         this.nestedChat = nestedChat;
         this.prerequisites = prerequisites;
-        this.handoffCondition = handoffCondition || null;
+        this.condition = condition;
+        this.available = available;
+        this.afterWork = afterWork;
         this.realSource = realSource;
         this.realTarget = realTarget;
         this.silent = silent;

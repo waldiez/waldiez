@@ -38,7 +38,15 @@ describe("chatMapper.exportChat", () => {
                 },
                 prerequisites: [],
                 maxTurns: 0,
-                handoffCondition: null,
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Handoff to another agent",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
+                afterWork: null,
                 realSource: "wa-1",
                 realTarget: "wa-2",
                 sourceType: "user_proxy" as const,

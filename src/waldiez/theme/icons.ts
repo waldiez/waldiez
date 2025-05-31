@@ -19,6 +19,10 @@ import managerWebp from "@waldiez/assets/manager.webp";
 import reasoningWebp from "@waldiez/assets/reasoning.webp";
 import userWebp from "@waldiez/assets/user.webp";
 
+/**
+ * A collection of logos used in Waldiez.
+ * These logos represent various AI providers and are used in the UI.
+ */
 export const LOGOS = {
     openai,
     azure,
@@ -34,6 +38,10 @@ export const LOGOS = {
     nim,
     other: openai,
 };
+/**
+ * A collection of agent icons used in Waldiez.
+ * These icons represent different roles in the system and are used in the UI.
+ */
 export const AGENT_ICONS = {
     user_proxy: userWebp,
     rag_user_proxy: userWebp,

@@ -10,6 +10,12 @@ import { useCallback } from "react";
 import { DropZoneProps } from "@waldiez/components/dropZone/types";
 import { showSnackbar } from "@waldiez/components/snackbar";
 
+/**
+ * useDropZone hook
+ * @param props - The properties for the drop zone
+ * @returns An object containing handlers for drag and drop events
+ * @see {@link DropZoneProps}
+ */
 export const useDropZone = (props: DropZoneProps) => {
     const { flowId, onUpload, allowedFileExtensions, multiple = false } = props;
 

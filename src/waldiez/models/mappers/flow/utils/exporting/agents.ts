@@ -12,6 +12,7 @@ import {
     WaldiezNodeAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers/agent";
+import { WaldiezEdge } from "@waldiez/types";
 
 export const getAgentNodes = (nodes: Node[]) => {
     const agentNodes = nodes.filter(node => node.type === "agent") as WaldiezNodeAgent[];
@@ -74,7 +75,12 @@ export const getAgentNodes = (nodes: Node[]) => {
     };
 };
 
-export const exportAgent = (agent: WaldiezNodeAgent, nodes: Node[], skipLinks: boolean) => {
+export const exportAgent = (
+    agent: WaldiezNodeAgent,
+    nodes: Node[],
+    edges: WaldiezEdge[],
+    skipLinks: boolean,
+) => {
     const waldiezAgent = agentMapper.exportAgent(agent, skipLinks);
     const agentNode = nodes.find(node => node.id === agent.id);
     if (agentNode) {
@@ -85,5 +91,57 @@ export const exportAgent = (agent: WaldiezNodeAgent, nodes: Node[], skipLinks: b
         });
     }
     waldiezAgent.agentType = agent.data.agentType;
+    ensureAgentNestedChatData(waldiezAgent, nodes, edges);
     return waldiezAgent;
+};
+
+const getAgentNestedEdges = (
+    agentId: string,
+    agents: WaldiezNodeAgent[],
+    parentGroupId: string | undefined | null,
+    edges: WaldiezEdge[],
+) => {
+    const agentEdges = edges.filter(edge => edge.source === agentId);
+    if (parentGroupId) {
+        return agentEdges.filter(edge => {
+            const sourceAgent = agents.find(agent => agent.id === edge.source);
+            const targetAgent = agents.find(agent => agent.id === edge.target);
+            return (
+                sourceAgent &&
+                targetAgent &&
+                sourceAgent.data.parentId === parentGroupId &&
+                targetAgent.data.parentId !== parentGroupId
+            );
+        });
+    }
+    return agentEdges.filter(edge => edge.type === "nested");
+};
+
+const ensureAgentNestedChatData = (agent: WaldiezNodeAgent, nodes: Node[], edges: WaldiezEdge[]) => {
+    const agents = nodes.filter(node => node.type === "agent") as WaldiezNodeAgent[];
+    const parentGroupId = agent.data.parentId;
+    const nestedEdges = getAgentNestedEdges(agent.id, agents, parentGroupId, edges);
+    const existingNestedChats = agent.data.nestedChats || [];
+    if (
+        nestedEdges.length === 0 ||
+        (existingNestedChats.length > 0 && existingNestedChats[0].messages.length > 0)
+    ) {
+        agent.data.nestedChats = existingNestedChats;
+    } else {
+        agent.data.nestedChats = [
+            {
+                triggeredBy: [agent.id],
+                // in the order of the edges (since no update was made to the agent's relevant tab)
+                messages: nestedEdges.map(edge => ({ id: edge.id, isReply: false })),
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Start a new chat",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
+            },
+        ];
+    }
 };

@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 .flow-wrapper .tab-nav {
-  overflow-x: scroll;
+  overflow: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   /* stylelint-disable-next-line csstree/validator */

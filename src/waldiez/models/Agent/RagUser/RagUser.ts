@@ -16,8 +16,9 @@ import { WaldiezAgentRagUserData } from "@waldiez/models/Agent/RagUser/RagUserDa
  * @param requirements - The requirements of the agent
  * @param createdAt - The creation date of the agent
  * @param updatedAt - The update date of the agent
- * @param data - The data of the agent. See {@link WaldiezAgentRagUserData}
+ * @param data - The data of the agent.
  * @param rest - Any other data
+ * @see {@link WaldiezAgentRagUserData}
  */
 export class WaldiezAgentRagUser extends WaldiezAgent {
     data: WaldiezAgentRagUserData;

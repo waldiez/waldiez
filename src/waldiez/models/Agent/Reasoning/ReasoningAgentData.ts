@@ -5,7 +5,6 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
-    WaldiezAgentHandoff,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
@@ -13,7 +12,12 @@ import {
     WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common";
 import { WaldiezReasoningAgentReasonConfig } from "@waldiez/models/Agent/Reasoning/types";
+import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
+/**
+ * Default configuration for Waldiez Reasoning Agent.
+ * @see {@link WaldiezReasoningAgentReasonConfig}
+ */
 export const defaultReasonConfig: WaldiezReasoningAgentReasonConfig = {
     method: "beam_search",
     maxDepth: 3,
@@ -39,7 +43,8 @@ export const defaultReasonConfig: WaldiezReasoningAgentReasonConfig = {
  * @param nestedChats - The nested chats of the agent
  * @param contextVariables - The context variables of the agent
  * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
- * @param handoffs - The handoffs of the agent
+ * @param afterWork - The handoff transition after work of the agent
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
  * @param verbose - The verbose flag of the agent
  * @param reasonConfig - The reasoning configuration of the agent
  * @see {@link WaldiezAgentData}
@@ -50,8 +55,8 @@ export const defaultReasonConfig: WaldiezReasoningAgentReasonConfig = {
  * @see {@link defaultReasonConfig}
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
- * @see {@link WaldiezAgentHandoff}
  * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezAgentReasoningData extends WaldiezAgentData {
     verbose: boolean;
@@ -71,7 +76,8 @@ export class WaldiezAgentReasoningData extends WaldiezAgentData {
             nestedChats: WaldiezAgentNestedChat[];
             contextVariables: Record<string, any>;
             updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
-            handoffs: WaldiezAgentHandoff[];
+            afterWork: WaldiezTransitionTarget | null;
+            handoffs: string[]; // handoff / edge ids
             verbose: boolean;
             reasonConfig: WaldiezReasoningAgentReasonConfig;
         } = {
@@ -93,12 +99,20 @@ export class WaldiezAgentReasoningData extends WaldiezAgentData {
                 {
                     messages: [],
                     triggeredBy: [],
-                    order: 0,
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a nested chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
             contextVariables: {},
             updateAgentStateBeforeReply: [],
             handoffs: [],
+            afterWork: null,
             verbose: true,
             reasonConfig: defaultReasonConfig,
         },

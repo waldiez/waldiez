@@ -26,6 +26,8 @@ export const WaldiezThemeContext = createContext<WaldiezThemeContextType | undef
 /**
  * Hook to use the WaldiezThemeContext.
  * This hook provides access to the theme context values.
+ * @returns The current theme context values.
+ * @throws Error if the hook is used outside of a WaldiezThemeProvider context.
  */
 export const useWaldiezTheme = (): WaldiezThemeContextType => {
     const context = useContext(WaldiezThemeContext);

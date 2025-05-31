@@ -127,7 +127,15 @@ export const updateData = {
             },
         },
         maxTurns: 0,
-        handoffCondition: null,
+        condition: {
+            conditionType: "string_llm" as const,
+            prompt: "Handoff to another agent",
+        },
+        available: {
+            type: "none" as const,
+            value: "",
+        },
+        afterWork: null,
         realSource: "wa-1",
         realTarget: "wa-2",
     },
@@ -161,11 +169,19 @@ export const updateData = {
                 },
             },
             maxTurns: 0,
+            condition: {
+                conditionType: "string_llm" as const,
+                prompt: "Handoff to another agent",
+            },
+            available: {
+                type: "none" as const,
+                value: "",
+            },
+            afterWork: null,
             realSource: "wa-1",
             realTarget: "wa-2",
             sourceType: "user_proxy" as const,
             targetType: "assistant" as const,
-            handoffCondition: null,
         },
     },
     json: {
@@ -193,9 +209,17 @@ export const updateData = {
             },
         },
         maxTurns: 0,
+        condition: {
+            conditionType: "string_llm" as const,
+            prompt: "Handoff to another agent",
+        },
+        available: {
+            type: "none" as const,
+            value: "",
+        },
+        afterWork: null,
         realSource: "wa-1",
         realTarget: "wa-2",
-        handoffCondition: null,
     },
     expected: {
         id: "1",
@@ -233,7 +257,15 @@ export const updateData = {
             targetType: "assistant",
             realSource: "wa-1",
             realTarget: "wa-2",
-            handoffCondition: null,
+            condition: {
+                conditionType: "string_llm" as const,
+                prompt: "Handoff to another agent",
+            },
+            available: {
+                type: "none" as const,
+                value: "",
+            },
+            afterWork: null,
         },
         animated: false,
         markerEnd: {

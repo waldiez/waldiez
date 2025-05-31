@@ -4,8 +4,6 @@
  */
 import { useCallback, useMemo } from "react";
 
-import { nanoid } from "nanoid";
-
 import { SingleValue } from "@waldiez/components";
 import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
 import {
@@ -60,14 +58,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
             })),
         [groupMembers],
     );
-
-    const currentAfterWork = useMemo(() => {
-        const currentAfterWorkFilter = data.handoffs?.filter(handoff => handoff?.after_work !== undefined);
-        // There should be only one after work
-        return currentAfterWorkFilter && currentAfterWorkFilter.length > 0
-            ? currentAfterWorkFilter[0].after_work
-            : undefined;
-    }, [data.handoffs]);
 
     /**
      * Update speaker data
@@ -227,61 +217,24 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
         },
         [setSpeakerData],
     );
-
-    /**
-     * Remove after work transition
-     */
-    const removeAfterWork = useCallback(() => {
-        const newHandoffs = data.handoffs?.filter(handoff => !handoff.after_work);
-        onDataChange({
-            ...data,
-            handoffs: newHandoffs,
-        });
-    }, [data, onDataChange]);
-
-    /**
-     * Add or update after work transition
-     */
-    const addOrUpdateAfterWork = useCallback(
-        (target: WaldiezTransitionTarget) => {
-            let newHandoffs = data.handoffs?.filter(handoff => handoff.after_work === undefined);
-            const newHandoff = {
-                id: nanoid(),
-                after_work: target,
-            };
-
-            if (newHandoffs) {
-                const existingHandoffIndex = newHandoffs.findIndex(
-                    handoff => handoff.after_work !== undefined,
-                );
-                if (existingHandoffIndex !== -1) {
-                    newHandoffs[existingHandoffIndex] = newHandoff;
-                } else {
-                    newHandoffs.push(newHandoff);
-                }
-            } else {
-                newHandoffs = [newHandoff];
-            }
-            onDataChange({
-                ...data,
-                handoffs: newHandoffs,
-            });
-        },
-        [data, onDataChange],
-    );
-
     /**
      * Handle after work changes
      */
     const onAfterWorkChange = useCallback(
-        (target: WaldiezTransitionTarget | undefined) => {
+        (target: WaldiezTransitionTarget | undefined | null) => {
             if (!target) {
-                removeAfterWork();
+                onDataChange({
+                    ...data,
+                    afterWork: null,
+                });
             } else {
-                addOrUpdateAfterWork(target);
+                onDataChange({
+                    ...data,
+                    afterWork: target,
+                });
             }
         },
-        [removeAfterWork, addOrUpdateAfterWork],
+        [data, onDataChange],
     );
 
     return {
@@ -289,7 +242,6 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
         groupMembers,
         initialAgent,
         initialAgentOptions,
-        currentAfterWork,
         onGroupNameChange,
         onManagerNameChange,
         onDescriptionChange,

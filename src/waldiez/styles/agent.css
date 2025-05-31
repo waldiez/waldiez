@@ -217,7 +217,7 @@
   flex-direction: column;
   align-self: center;
   justify-content: flex-end;
-  width: calc(100% - 10px);
+  width: 100%;
 }
 
 .flow-wrapper .agent-footer .agent-actions {
@@ -226,11 +226,18 @@
   align-items: center;
   width: calc(100% - 4px);
   padding: 2px;
-  margin-bottom: 4px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+@supports (-webkit-backdrop-filter: blur(1px)) {
+  .flow-wrapper .agent-footer .agent-actions {
+    margin-bottom: -12px;
+  }
 }
 
 .flow-wrapper .agent-footer .date-info {
-  font-size: small;
+  font-size: 0.7rem;
   color: #666;
 }
 
@@ -304,12 +311,17 @@
   display: flex;
 }
 
+.flow-wrapper .agent-tool-preview .agent-tool-name,
 .flow-wrapper .agent-model-preview .agent-model-name {
   max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
+}
+
+.flow-wrapper .agent-tool-preview .agent-tool-name {
+  max-width: 120px;
 }
 
 .flow-wrapper.dark .agent-model-preview .agent-model-img.other img,
