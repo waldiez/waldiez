@@ -1,4 +1,4 @@
 <!-- markdownlint-disable MD041 -->
-::: waldiez.exporting.flow.flow_exporter
+::: waldiez.exporting.flow
     options:
         members_order: source
