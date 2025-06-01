@@ -79,10 +79,20 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         parentId: string | undefined,
     ) => {
         const agentNode = getAgentNode(agentType, position, parentId);
-        this.set({
-            nodes: [...this.get().nodes, { ...agentNode }],
-            updatedAt: new Date().toISOString(),
-        });
+        // if the new agent iss a group manager,
+        // make sure it is in the front of the list
+        // to avoid issues with group members ('cannot find parent node')
+        if (agentType === "group_manager") {
+            this.set({
+                nodes: [agentNode, ...this.get().nodes],
+                updatedAt: new Date().toISOString(),
+            });
+        } else {
+            this.set({
+                nodes: [...this.get().nodes, agentNode],
+                updatedAt: new Date().toISOString(),
+            });
+        }
         return agentNode;
     };
     /**

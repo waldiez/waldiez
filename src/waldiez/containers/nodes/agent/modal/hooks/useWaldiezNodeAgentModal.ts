@@ -35,6 +35,8 @@ export const useWaldiezNodeAgentModal = (
     const exportAgent = useWaldiez(s => s.exportAgent);
     const importAgent = useWaldiez(s => s.importAgent);
     const getAgentConnections = useWaldiez(s => s.getAgentConnections);
+    const removeGroupMember = useWaldiez(s => s.removeGroupMember);
+    const addGroupMember = useWaldiez(s => s.addGroupMember);
     const updateEdgePath = useWaldiez(s => s.updateEdgePath);
     const uploadHandler = useWaldiez(s => s.onUpload);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
@@ -165,6 +167,22 @@ export const useWaldiezNodeAgentModal = (
         [updateAgentConnections],
     );
 
+    const checkGroupChange = useCallback(
+        (dataToSubmit: { [key: string]: any }) => {
+            const currentParentId = data.parentId;
+            const newParentId = dataToSubmit.parentId;
+            if (currentParentId !== newParentId) {
+                if (currentParentId) {
+                    removeGroupMember(currentParentId, id);
+                }
+                if (newParentId) {
+                    addGroupMember(newParentId, id);
+                }
+            }
+        },
+        [data.parentId, id, removeGroupMember, addGroupMember],
+    );
+
     /**
      * Submit agent data updates to store
      */
@@ -174,6 +192,9 @@ export const useWaldiezNodeAgentModal = (
             if (dataToSubmit.agentType !== data.agentType) {
                 dataToSubmit = handleAgentTypeChange(dataToSubmit);
             }
+
+            // check if group membership has changed
+            checkGroupChange(dataToSubmit);
 
             // Update agent data
             updateAgentData(id, dataToSubmit);
@@ -187,7 +208,15 @@ export const useWaldiezNodeAgentModal = (
             setFilesToUpload([]);
             postSubmit();
         },
-        [data, id, handleAgentTypeChange, updateAgentData, updateAgentEdgeLabels, postSubmit],
+        [
+            data,
+            id,
+            handleAgentTypeChange,
+            checkGroupChange,
+            updateAgentData,
+            updateAgentEdgeLabels,
+            postSubmit,
+        ],
     );
 
     /**
