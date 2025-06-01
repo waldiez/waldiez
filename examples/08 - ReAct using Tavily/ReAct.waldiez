@@ -1,6 +1,7 @@
 {
-  "id": "wf-1olHWN_NvlfwsHwhc5PwK",
-  "type": "flow",
+  "flowId": "wf-1olHWN_NvlfwsHwhc5PwK",
+  "isAsync": false,
+  "cacheSeed": null,
   "storageId": "wf-1olHWN_NvlfwsHwhc5PwK",
   "name": "ReAct",
   "description": "ReAct using Tavily",
@@ -11,243 +12,123 @@
   "requirements": [],
   "createdAt": "2025-05-19T16:10:23.312Z",
   "updatedAt": "2025-05-31T16:05:10.778Z",
-  "data": {
-    "nodes": [
-      {
-        "id": "wt-17476714424401l6MzsQpNv8Kqw6rvYywn",
-        "type": "model",
-        "position": {
-          "x": 0,
-          "y": 10
+  "edges": [
+    {
+      "id": "we-1747671410490vekEEI-iAlIimv-PrfXzi",
+      "source": "wa-17476712464615lkKtgIc855Art5UuNUEK",
+      "target": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
+      "type": "chat",
+      "data": {
+        "type": "chat",
+        "label": "User proxy => Assistant",
+        "sourceType": "user_proxy",
+        "targetType": "assistant",
+        "description": "New connection",
+        "position": 1,
+        "order": 0,
+        "clearHistory": true,
+        "message": {
+          "type": "method",
+          "useCarryover": false,
+          "content": "\"\"\"Custom message function.\"\"\"\n\ndef callable_message(sender, recipient, context):\n    \"\"\"Complete the message function\"\"\"\n    ReAct_prompt = \"\"\"\nAnswer the following questions as best you can. You have access to tools provided.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take\nAction Input: the input to the action\nObservation: the result of the action\n... (this process can repeat multiple times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\nQuestion: {input}\n\"\"\"\n    return ReAct_prompt.format(input=context[\"question\"])\n",
+          "context": {
+            "question": "What is the result of super bowl 2024?"
+          }
         },
-        "measured": {
-          "width": 182,
-          "height": 182
+        "nestedChat": {
+          "message": null,
+          "reply": null
         },
-        "selected": false,
-        "hidden": true,
-        "className": ""
+        "prerequisites": [],
+        "summary": {
+          "method": "lastMsg",
+          "prompt": "",
+          "args": {}
+        },
+        "maxTurns": null,
+        "condition": {
+          "conditionType": "string_llm",
+          "prompt": "Handoff to another agent"
+        },
+        "available": {
+          "type": "none",
+          "value": ""
+        },
+        "afterWork": null,
+        "realSource": null,
+        "realTarget": null
       },
-      {
-        "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
-        "type": "tool",
-        "position": {
-          "x": 0,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
-        "hidden": true,
-        "className": ""
+      "hidden": false,
+      "animated": false,
+      "selected": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#bc76f5",
+        "width": 10,
+        "height": 10
       },
-      {
-        "id": "wa-17476712464615lkKtgIc855Art5UuNUEK",
-        "type": "agent",
-        "position": {
-          "x": 150,
-          "y": 270
-        },
-        "measured": {
-          "width": 200,
-          "height": 211
-        },
-        "hidden": false,
-        "selected": false,
-        "dragging": false,
-        "className": ""
+      "style": {
+        "stroke": "#bc76f5",
+        "strokeWidth": 3
       },
-      {
-        "id": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
-        "type": "agent",
-        "position": {
-          "x": 609,
-          "y": 216
+      "sourceHandle": "agent-handle-right-source-wa-17476712464615lkKtgIc855Art5UuNUEK",
+      "targetHandle": "agent-handle-left-target-wa-1747671248211kXD0xnZTd4rHa2imiKiXq"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "wt-17476714424401l6MzsQpNv8Kqw6rvYywn",
+      "type": "model",
+      "data": {
+        "baseUrl": null,
+        "apiKey": "REPLACE_ME",
+        "apiType": "anthropic",
+        "apiVersion": null,
+        "temperature": null,
+        "topP": null,
+        "maxTokens": null,
+        "aws": {
+          "region": null,
+          "accessKey": null,
+          "secretKey": null,
+          "sessionToken": null,
+          "profileName": null
         },
-        "measured": {
-          "width": 200,
-          "height": 215
+        "extras": {},
+        "defaultHeaders": {},
+        "price": {
+          "promptPricePer1k": null,
+          "completionTokenPricePer1k": null
         },
-        "hidden": false,
-        "className": "",
-        "selected": false
-      }
-    ],
-    "edges": [
-      {
-        "id": "we-1747671410490vekEEI-iAlIimv-PrfXzi",
-        "source": "wa-17476712464615lkKtgIc855Art5UuNUEK",
-        "target": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
-        "hidden": false,
-        "animated": false,
-        "selected": false,
-        "markerEnd": {
-          "type": "arrowclosed",
-          "color": "#bc76f5",
-          "width": 10,
-          "height": 10
-        },
-        "style": {
-          "stroke": "#bc76f5",
-          "strokeWidth": 3
-        },
-        "sourceHandle": "agent-handle-right-source-wa-17476712464615lkKtgIc855Art5UuNUEK",
-        "targetHandle": "agent-handle-left-target-wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
-        "type": "chat"
-      }
-    ],
-    "viewport": {
-      "x": -143.70409711684363,
-      "y": -223.26251896813346,
-      "zoom": 1.6980273141122912
-    },
-    "agents": {
-      "groupManagerAgents": [],
-      "userProxyAgents": [
-        {
-          "type": "agent",
-          "name": "User proxy",
-          "description": "A new User proxy agent",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T16:14:06.461Z",
-          "updatedAt": "2025-05-19T16:14:06.461Z",
-          "data": {
-            "systemMessage": null,
-            "humanInputMode": "ALWAYS",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [],
-            "tools": [],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null
-          },
-          "id": "wa-17476712464615lkKtgIc855Art5UuNUEK",
-          "agentType": "user_proxy"
-        }
-      ],
-      "assistantAgents": [
-        {
-          "type": "agent",
-          "name": "Assistant",
-          "description": "A new Assistant agent",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T16:14:08.211Z",
-          "updatedAt": "2025-05-19T16:14:08.211Z",
-          "data": {
-            "systemMessage": "Only use the tools you have been provided with. Reply TERMINATE at the end when the task is done.",
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [
-              "wt-17476714424401l6MzsQpNv8Kqw6rvYywn"
-            ],
-            "tools": [
-              {
-                "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
-                "executorId": "wa-17476712464615lkKtgIc855Art5UuNUEK"
-              }
-            ],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null,
-            "isMultimodal": false
-          },
-          "id": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
-          "agentType": "assistant"
-        }
-      ],
-      "ragUserProxyAgents": [],
-      "reasoningAgents": [],
-      "captainAgents": []
-    },
-    "models": [
-      {
-        "id": "wt-17476714424401l6MzsQpNv8Kqw6rvYywn",
-        "type": "model",
-        "name": "claude-3-7-sonnet-20250219",
+        "label": "claude-3-7-sonnet-20250219",
         "description": "A new model",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T16:17:22.440Z",
-        "updatedAt": "2025-05-19T16:17:57.990Z",
-        "data": {
-          "apiKey": "REPLACE_ME",
-          "apiType": "anthropic",
-          "apiVersion": null,
-          "baseUrl": null,
-          "temperature": null,
-          "topP": null,
-          "maxTokens": null,
-          "aws": {
-            "region": null,
-            "accessKey": null,
-            "secretKey": null,
-            "sessionToken": null,
-            "profileName": null
-          },
-          "extras": {},
-          "defaultHeaders": {},
-          "price": {
-            "promptPricePer1k": null,
-            "completionTokenPricePer1k": null
-          }
-        }
-      }
-    ],
-    "tools": [
-      {
-        "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
-        "type": "tool",
-        "name": "search_tool",
+        "updatedAt": "2025-05-19T16:17:57.990Z"
+      },
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
+      "type": "tool",
+      "data": {
+        "content": "\"\"\"Search tool using tavily.\"\"\"\n\ndef search_tool(query: str) -> str:\n    \"\"\"Search tool using tavily.\n\n    Args:\n        query (str): The search query\n\n    Returns:\n        str: The search results\n    \"\"\"\n    from tavily import TavilyClient\n\n    tavily = TavilyClient(api_key=os.environ[\"TAVILY_API_KEY\"])\n    return tavily.get_search_context(query=query, search_depth=\"advanced\")\n",
+        "toolType": "custom",
+        "secrets": {
+          "TAVILY_API_KEY": "REPLACE_ME"
+        },
+        "label": "search_tool",
         "description": "Search tool using Tavily AI",
         "tags": [
           "Tavily"
@@ -256,62 +137,120 @@
           "tavily-python"
         ],
         "createdAt": "2025-05-19T16:10:56.207Z",
-        "updatedAt": "2025-05-19T16:16:40.656Z",
-        "data": {
-          "content": "\"\"\"Search tool using tavily.\"\"\"\n\ndef search_tool(query: str) -> str:\n    \"\"\"Search tool using tavily.\n\n    Args:\n        query (str): The search query\n\n    Returns:\n        str: The search results\n    \"\"\"\n    from tavily import TavilyClient\n\n    tavily = TavilyClient(api_key=os.environ[\"TAVILY_API_KEY\"])\n    return tavily.get_search_context(query=query, search_depth=\"advanced\")\n",
-          "toolType": "custom",
-          "secrets": {
-            "TAVILY_API_KEY": "REPLACE_ME"
+        "updatedAt": "2025-05-19T16:16:40.656Z"
+      },
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wa-17476712464615lkKtgIc855Art5UuNUEK",
+      "type": "agent",
+      "data": {
+        "systemMessage": null,
+        "humanInputMode": "ALWAYS",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [],
+        "tools": [],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "agentType": "user_proxy",
+        "label": "User proxy",
+        "description": "A new User proxy agent",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T16:14:06.461Z",
+        "updatedAt": "2025-05-19T16:14:06.461Z"
+      },
+      "agentType": "user_proxy",
+      "position": {
+        "x": 150,
+        "y": 270
+      },
+      "measured": {
+        "width": 200,
+        "height": 211
+      },
+      "hidden": false,
+      "selected": false,
+      "dragging": false,
+      "className": ""
+    },
+    {
+      "id": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
+      "type": "agent",
+      "data": {
+        "systemMessage": "Only use the tools you have been provided with. Reply TERMINATE at the end when the task is done.",
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [
+          "wt-17476714424401l6MzsQpNv8Kqw6rvYywn"
+        ],
+        "tools": [
+          {
+            "id": "wt-1747671056207a32n0VswtD0dFYvBrjbqY",
+            "executorId": "wa-17476712464615lkKtgIc855Art5UuNUEK"
           }
-        }
-      }
-    ],
-    "chats": [
-      {
-        "id": "we-1747671410490vekEEI-iAlIimv-PrfXzi",
-        "data": {
-          "source": "wa-17476712464615lkKtgIc855Art5UuNUEK",
-          "target": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
-          "sourceType": "user_proxy",
-          "targetType": "assistant",
-          "name": "User proxy => Assistant",
-          "order": 0,
-          "description": "New connection",
-          "position": 1,
-          "clearHistory": true,
-          "maxTurns": null,
-          "message": {
-            "type": "method",
-            "content": "\"\"\"Custom message function.\"\"\"\n\ndef callable_message(sender, recipient, context):\n    \"\"\"Complete the message function\"\"\"\n    ReAct_prompt = \"\"\"\nAnswer the following questions as best you can. You have access to tools provided.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take\nAction Input: the input to the action\nObservation: the result of the action\n... (this process can repeat multiple times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\nQuestion: {input}\n\"\"\"\n    return ReAct_prompt.format(input=context[\"question\"])\n",
-            "context": {
-              "question": "What is the result of super bowl 2024?"
-            },
-            "useCarryover": false
-          },
-          "summary": {
-            "method": "lastMsg",
-            "prompt": "",
-            "args": {}
-          },
-          "nestedChat": {
-            "message": null,
-            "reply": null
-          },
-          "prerequisites": [],
-          "condition": {
-            "conditionType": "string_llm",
-            "prompt": "Handoff to another agent"
-          },
-          "available": {
-            "type": "none",
-            "value": ""
-          },
-          "afterWork": null,
-          "realSource": null,
-          "realTarget": null
-        }
-      }
-    ],
-    "isAsync": false
-  }
+        ],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "isMultimodal": false,
+        "agentType": "assistant",
+        "label": "Assistant",
+        "description": "A new Assistant agent",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T16:14:08.211Z",
+        "updatedAt": "2025-05-19T16:14:08.211Z"
+      },
+      "agentType": "assistant",
+      "position": {
+        "x": 609,
+        "y": 216
+      },
+      "measured": {
+        "width": 200,
+        "height": 215
+      },
+      "hidden": false,
+      "className": "",
+      "selected": false
+    }
+  ],
+  "viewport": {
+    "x": -143.70409711684363,
+    "y": -223.26251896813346,
+    "zoom": 1.6980273141122912
+  },
+  "type": "flow"
 }

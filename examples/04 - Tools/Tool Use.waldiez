@@ -1,6 +1,7 @@
 {
-  "id": "wf-afhmSNzq3QHTSjqYUhtAF",
-  "type": "flow",
+  "flowId": "wf-afhmSNzq3QHTSjqYUhtAF",
+  "isAsync": false,
+  "cacheSeed": null,
   "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Tool Use",
   "description": "Tool Use and Conversational Chess",
@@ -10,563 +11,495 @@
   ],
   "createdAt": "2025-05-19T05:29:44.181Z",
   "updatedAt": "2025-05-31T16:01:21.910Z",
-  "data": {
-    "nodes": [
-      {
-        "id": "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ",
-        "type": "model",
-        "position": {
-          "x": 0,
-          "y": 10
+  "edges": [
+    {
+      "id": "we-1747633640191sgd5JTCXD4CxBUJ4Y0gEG",
+      "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
+      "target": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
+      "type": "chat",
+      "data": {
+        "type": "chat",
+        "label": "Player Black => Player White",
+        "sourceType": "user_proxy",
+        "targetType": "user_proxy",
+        "description": "Player Black challenges Player White",
+        "position": 1,
+        "order": 0,
+        "clearHistory": false,
+        "message": {
+          "type": "string",
+          "useCarryover": false,
+          "content": "Let's play chess! Your move.",
+          "context": {}
         },
-        "measured": {
-          "width": 182,
-          "height": 182
+        "nestedChat": {
+          "message": null,
+          "reply": null
         },
-        "selected": false,
-        "hidden": true,
-        "className": ""
+        "prerequisites": [],
+        "summary": {
+          "method": "lastMsg",
+          "prompt": "",
+          "args": {}
+        },
+        "maxTurns": 2,
+        "condition": {
+          "conditionType": "string_llm",
+          "prompt": "Handoff to another agent"
+        },
+        "available": {
+          "type": "none",
+          "value": ""
+        },
+        "afterWork": null,
+        "realSource": null,
+        "realTarget": null
       },
-      {
-        "id": "wt-1747632719081BF5asRSeurYPJNh2v7J3P",
-        "type": "tool",
-        "position": {
-          "x": 0,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
-        "hidden": true,
-        "className": ""
+      "hidden": false,
+      "animated": false,
+      "selected": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#bc76f5",
+        "width": 10,
+        "height": 10
       },
-      {
-        "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
-        "type": "tool",
-        "position": {
-          "x": 240,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
-        "hidden": true,
-        "className": ""
+      "style": {
+        "stroke": "#bc76f5",
+        "strokeWidth": 3
       },
-      {
-        "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
-        "type": "tool",
-        "position": {
-          "x": 480,
-          "y": 10
-        },
-        "measured": {
-          "width": 182,
-          "height": 182
-        },
-        "selected": false,
-        "hidden": true,
-        "className": ""
-      },
-      {
-        "id": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "type": "agent",
-        "position": {
-          "x": 450,
-          "y": 450
-        },
-        "measured": {
-          "width": 200,
-          "height": 230
-        },
-        "className": "",
-        "selected": false,
-        "dragging": false,
-        "hidden": false
-      },
-      {
-        "id": "1747633035639vcXujJkXlY_IOT7CJWFml",
-        "type": "agent",
-        "position": {
-          "x": 135,
-          "y": 150
-        },
-        "measured": {
-          "width": 200,
-          "height": 230
-        },
-        "className": "",
-        "selected": false,
-        "dragging": false,
-        "hidden": false
-      },
-      {
-        "id": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "type": "agent",
-        "position": {
-          "x": 765,
-          "y": 150
-        },
-        "measured": {
-          "width": 200,
-          "height": 211
-        },
-        "selected": true,
-        "dragging": false,
-        "className": "",
-        "hidden": false
-      }
-    ],
-    "edges": [
-      {
-        "id": "we-1747633640191sgd5JTCXD4CxBUJ4Y0gEG",
-        "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
-        "target": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "hidden": false,
-        "animated": false,
-        "selected": false,
-        "markerEnd": {
-          "type": "arrowclosed",
-          "color": "#bc76f5",
-          "width": 10,
-          "height": 10
-        },
-        "style": {
-          "stroke": "#bc76f5",
-          "strokeWidth": 3
-        },
-        "sourceHandle": "agent-handle-right-source-1747633035639vcXujJkXlY_IOT7CJWFml",
-        "targetHandle": "agent-handle-left-target-wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "type": "chat"
-      },
-      {
-        "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
-        "source": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "hidden": false,
-        "animated": true,
-        "selected": false,
-        "style": {
-          "stroke": "#bc76f5",
-          "strokeWidth": 3
-        },
-        "sourceHandle": "agent-handle-right-source-wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "targetHandle": "agent-handle-bottom-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "type": "nested"
-      },
-      {
-        "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
-        "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
-        "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "hidden": false,
-        "animated": true,
-        "selected": false,
-        "style": {
-          "stroke": "#bc76f5",
-          "strokeWidth": 3
-        },
-        "sourceHandle": "agent-handle-right-source-1747633035639vcXujJkXlY_IOT7CJWFml",
-        "targetHandle": "agent-handle-left-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "type": "nested"
-      }
-    ],
-    "viewport": {
-      "x": 32.29245283018861,
-      "y": -113.05660377358492,
-      "zoom": 1.1603773584905661
+      "sourceHandle": "agent-handle-right-source-1747633035639vcXujJkXlY_IOT7CJWFml",
+      "targetHandle": "agent-handle-left-target-wa-1747632837301wu22ovYsUaHbF_P6U0J74"
     },
-    "agents": {
-      "groupManagerAgents": [],
-      "userProxyAgents": [
-        {
-          "type": "agent",
-          "name": "Player White",
-          "description": "Player White",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T05:33:57.301Z",
-          "updatedAt": "2025-05-19T05:33:57.301Z",
-          "data": {
-            "systemMessage": "You are a chess player and you play as white. First call get_legal_moves(), to get a list of legal moves. Then call make_move(move) to make a move.",
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [
-              "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ"
-            ],
-            "tools": [
-              {
-                "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
-                "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
-              },
-              {
-                "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
-                "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
-              }
-            ],
-            "nestedChats": [
-              {
-                "triggeredBy": [
-                  "1747633035639vcXujJkXlY_IOT7CJWFml"
-                ],
-                "messages": [
-                  {
-                    "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
-                    "isReply": true
-                  }
-                ],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null
-          },
-          "id": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-          "agentType": "user_proxy"
+    {
+      "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
+      "source": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
+      "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
+      "type": "nested",
+      "data": {
+        "type": "nested",
+        "label": "Player White => Board Proxy",
+        "sourceType": "user_proxy",
+        "targetType": "assistant",
+        "description": "New connection",
+        "position": 1,
+        "order": -1,
+        "clearHistory": true,
+        "message": {
+          "type": "none",
+          "useCarryover": false,
+          "content": null,
+          "context": {}
         },
-        {
-          "type": "agent",
-          "name": "Player Black",
-          "description": "Player Black",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T05:33:57.301Z",
-          "updatedAt": "2025-05-19T05:33:57.301Z",
-          "data": {
-            "systemMessage": "You are a chess player and you play as black. First call get_legal_moves(), to get a list of legal moves. Then call make_move(move) to make a move.",
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [
-              "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ"
-            ],
-            "tools": [
-              {
-                "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
-                "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
-              },
-              {
-                "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
-                "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
-              }
-            ],
-            "nestedChats": [
-              {
-                "triggeredBy": [
-                  "wa-1747632837301wu22ovYsUaHbF_P6U0J74"
-                ],
-                "messages": [
-                  {
-                    "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
-                    "isReply": true
-                  }
-                ],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null
-          },
-          "id": "1747633035639vcXujJkXlY_IOT7CJWFml",
-          "agentType": "user_proxy"
-        }
-      ],
-      "assistantAgents": [
-        {
-          "type": "agent",
-          "name": "Board Proxy",
-          "description": "Board Proxy",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T05:33:08.354Z",
-          "updatedAt": "2025-05-19T05:33:08.354Z",
-          "data": {
-            "systemMessage": null,
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "method",
-              "keywords": [],
-              "criterion": "found",
-              "methodContent": "\"\"\"Custom termination message function.\"\"\"\n\nfrom typing import Any\n\ndef is_termination_message(message: dict[str, Any]) -> bool:\n    \"\"\"Complete the termination message function\"\"\"\n    if \"MADE_MOVE\" not in globals():\n        globals()[\"MADE_MOVE\"] = False\n    # pylint: disable=global-statement\n    global MADE_MOVE\n    if MADE_MOVE is True:\n        MADE_MOVE = False  # pyright: ignore\n        return True\n    return False\n"
-            },
-            "modelIds": [],
-            "tools": [],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null,
-            "isMultimodal": false
-          },
-          "id": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-          "agentType": "assistant"
-        }
-      ],
-      "ragUserProxyAgents": [],
-      "reasoningAgents": [],
-      "captainAgents": []
+        "nestedChat": {
+          "message": null,
+          "reply": null
+        },
+        "prerequisites": [],
+        "summary": {
+          "method": "lastMsg",
+          "prompt": "",
+          "args": {}
+        },
+        "maxTurns": null,
+        "condition": {
+          "conditionType": "string_llm",
+          "prompt": "Handoff to another agent"
+        },
+        "available": {
+          "type": "none",
+          "value": ""
+        },
+        "afterWork": null,
+        "realSource": null,
+        "realTarget": null
+      },
+      "hidden": false,
+      "animated": true,
+      "selected": false,
+      "style": {
+        "stroke": "#bc76f5",
+        "strokeWidth": 3
+      },
+      "sourceHandle": "agent-handle-right-source-wa-1747632837301wu22ovYsUaHbF_P6U0J74",
+      "targetHandle": "agent-handle-bottom-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
     },
-    "models": [
-      {
-        "id": "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ",
-        "type": "model",
-        "name": "gpt-3.5-turbo",
+    {
+      "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
+      "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
+      "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
+      "type": "nested",
+      "data": {
+        "type": "nested",
+        "label": "Player Black => Board Proxy",
+        "sourceType": "user_proxy",
+        "targetType": "assistant",
+        "description": "New connection",
+        "position": 1,
+        "order": -1,
+        "clearHistory": true,
+        "message": {
+          "type": "none",
+          "useCarryover": false,
+          "content": null,
+          "context": {}
+        },
+        "nestedChat": {
+          "message": null,
+          "reply": null
+        },
+        "prerequisites": [],
+        "summary": {
+          "method": "lastMsg",
+          "prompt": "",
+          "args": {}
+        },
+        "maxTurns": null,
+        "condition": {
+          "conditionType": "string_llm",
+          "prompt": "Handoff to another agent"
+        },
+        "available": {
+          "type": "none",
+          "value": ""
+        },
+        "afterWork": null,
+        "realSource": null,
+        "realTarget": null
+      },
+      "hidden": false,
+      "animated": true,
+      "selected": false,
+      "style": {
+        "stroke": "#bc76f5",
+        "strokeWidth": 3
+      },
+      "sourceHandle": "agent-handle-right-source-1747633035639vcXujJkXlY_IOT7CJWFml",
+      "targetHandle": "agent-handle-left-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ",
+      "type": "model",
+      "data": {
+        "baseUrl": null,
+        "apiKey": "REPLACE_ME",
+        "apiType": "openai",
+        "apiVersion": null,
+        "temperature": null,
+        "topP": null,
+        "maxTokens": null,
+        "aws": {
+          "region": null,
+          "accessKey": null,
+          "secretKey": null,
+          "sessionToken": null,
+          "profileName": null
+        },
+        "extras": {},
+        "defaultHeaders": {},
+        "price": {
+          "promptPricePer1k": null,
+          "completionTokenPricePer1k": null
+        },
+        "label": "gpt-3.5-turbo",
         "description": "A new model",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T05:31:06.110Z",
-        "updatedAt": "2025-05-19T05:31:50.581Z",
-        "data": {
-          "apiKey": "REPLACE_ME",
-          "apiType": "openai",
-          "apiVersion": null,
-          "baseUrl": null,
-          "temperature": null,
-          "topP": null,
-          "maxTokens": null,
-          "aws": {
-            "region": null,
-            "accessKey": null,
-            "secretKey": null,
-            "sessionToken": null,
-            "profileName": null
-          },
-          "extras": {},
-          "defaultHeaders": {},
-          "price": {
-            "promptPricePer1k": null,
-            "completionTokenPricePer1k": null
-          }
-        }
-      }
-    ],
-    "tools": [
-      {
-        "id": "wt-1747632719081BF5asRSeurYPJNh2v7J3P",
-        "type": "tool",
-        "name": "waldiez_shared",
+        "updatedAt": "2025-05-19T05:31:50.581Z"
+      },
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wt-1747632719081BF5asRSeurYPJNh2v7J3P",
+      "type": "tool",
+      "data": {
+        "content": "import chess\nimport chess.svg\n\nBOARD = chess.Board()\nMADE_MOVE = False\n",
+        "toolType": "shared",
+        "secrets": {},
+        "label": "waldiez_shared",
         "description": "Shared code to be placed before other tools.",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-01-21T07:43:10.327Z",
-        "updatedAt": "2025-05-19T05:38:14.538Z",
-        "data": {
-          "content": "import chess\nimport chess.svg\n\nBOARD = chess.Board()\nMADE_MOVE = False\n",
-          "toolType": "shared",
-          "secrets": {}
-        }
+        "updatedAt": "2025-05-19T05:38:14.538Z"
       },
-      {
-        "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
-        "type": "tool",
-        "name": "get_legal_moves",
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
+      "type": "tool",
+      "data": {
+        "content": "# filename: {get_legal_moves}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n# pylint: disable=global-statement\nfrom typing import Annotated\n\nimport chess\n\n\ndef get_legal_moves() -> Annotated[str, \"A list of legal moves in UCI format\"]:\n    \"\"\"Get a list of legal moves.\"\"\"\n    return \"Possible moves are: \" + \",\".join(\n        [str(move) for move in BOARD.legal_moves]\n    )\n",
+        "toolType": "custom",
+        "secrets": {},
+        "label": "get_legal_moves",
         "description": "Get a list of legal chess moves.",
         "tags": [],
         "requirements": [],
         "createdAt": "2024-09-27T15:59:59.195Z",
-        "updatedAt": "2025-05-19T05:32:51.531Z",
-        "data": {
-          "content": "# filename: {get_legal_moves}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n# pylint: disable=global-statement\nfrom typing import Annotated\n\nimport chess\n\n\ndef get_legal_moves() -> Annotated[str, \"A list of legal moves in UCI format\"]:\n    \"\"\"Get a list of legal moves.\"\"\"\n    return \"Possible moves are: \" + \",\".join(\n        [str(move) for move in BOARD.legal_moves]\n    )\n",
-          "toolType": "custom",
-          "secrets": {}
-        }
+        "updatedAt": "2025-05-19T05:32:51.531Z"
       },
-      {
-        "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
-        "type": "tool",
-        "name": "make_move",
+      "position": {
+        "x": 240,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
+      "type": "tool",
+      "data": {
+        "content": "# filename: {make_move}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n# pylint: disable=global-statement,unused-import\nfrom typing import Annotated\n\nimport chess\n\n\ndef make_move(\n    move: Annotated[str, \"A move in UCI format.\"],\n) -> Annotated[str, \"Result of the move.\"]:\n    \"\"\"Make a move on the board.\"\"\"\n    # pylint: disable=global-statement\n    global MADE_MOVE\n    try:\n        chess_move = chess.Move.from_uci(move)\n    except BaseException:  # pylint: disable=broad-except\n        chess_move = BOARD.parse_san(move)\n    BOARD.push_uci(str(move))\n    # Get the piece name.\n    piece = BOARD.piece_at(chess_move.to_square)\n    if piece is None:\n        return \"Invalid move.\"\n    piece_symbol = piece.unicode_symbol()\n    piece_name = (\n        chess.piece_name(piece.piece_type).capitalize()\n        if piece_symbol.isupper()\n        else chess.piece_name(piece.piece_type)\n    )\n    MADE_MOVE = True  # pyright: ignore\n    return f\"Moved {piece_name} ({piece_symbol}) from \"\\\n        f\"{chess.SQUARE_NAMES[chess_move.from_square]} to \"\\\n        f\"{chess.SQUARE_NAMES[chess_move.to_square]}.\"",
+        "toolType": "custom",
+        "secrets": {},
+        "label": "make_move",
         "description": "Make a move on the board.",
         "tags": [],
         "requirements": [],
         "createdAt": "2024-09-27T16:01:14.292Z",
-        "updatedAt": "2025-05-19T06:13:50.936Z",
-        "data": {
-          "content": "# filename: {make_move}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n# pylint: disable=global-statement,unused-import\nfrom typing import Annotated\n\nimport chess\n\n\ndef make_move(\n    move: Annotated[str, \"A move in UCI format.\"],\n) -> Annotated[str, \"Result of the move.\"]:\n    \"\"\"Make a move on the board.\"\"\"\n    # pylint: disable=global-statement\n    global MADE_MOVE\n    try:\n        chess_move = chess.Move.from_uci(move)\n    except BaseException:  # pylint: disable=broad-except\n        chess_move = BOARD.parse_san(move)\n    BOARD.push_uci(str(move))\n    # Get the piece name.\n    piece = BOARD.piece_at(chess_move.to_square)\n    if piece is None:\n        return \"Invalid move.\"\n    piece_symbol = piece.unicode_symbol()\n    piece_name = (\n        chess.piece_name(piece.piece_type).capitalize()\n        if piece_symbol.isupper()\n        else chess.piece_name(piece.piece_type)\n    )\n    MADE_MOVE = True  # pyright: ignore\n    return f\"Moved {piece_name} ({piece_symbol}) from \"\\\n        f\"{chess.SQUARE_NAMES[chess_move.from_square]} to \"\\\n        f\"{chess.SQUARE_NAMES[chess_move.to_square]}.\"",
-          "toolType": "custom",
-          "secrets": {}
-        }
-      }
-    ],
-    "chats": [
-      {
-        "id": "we-1747633640191sgd5JTCXD4CxBUJ4Y0gEG",
-        "data": {
-          "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
-          "target": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-          "sourceType": "user_proxy",
-          "targetType": "user_proxy",
-          "name": "Player Black => Player White",
-          "order": 0,
-          "description": "Player Black challenges Player White",
-          "position": 1,
-          "clearHistory": false,
-          "maxTurns": 2,
-          "message": {
-            "type": "string",
-            "content": "Let's play chess! Your move.",
-            "context": {},
-            "useCarryover": false
-          },
-          "summary": {
-            "method": "lastMsg",
-            "prompt": "",
-            "args": {}
-          },
-          "nestedChat": {
-            "message": null,
-            "reply": null
-          },
-          "prerequisites": [],
-          "condition": {
-            "conditionType": "string_llm",
-            "prompt": "Handoff to another agent"
-          },
-          "available": {
-            "type": "none",
-            "value": ""
-          },
-          "afterWork": null,
-          "realSource": null,
-          "realTarget": null
-        }
+        "updatedAt": "2025-05-19T06:13:50.936Z"
       },
-      {
-        "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
-        "data": {
-          "source": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-          "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-          "sourceType": "user_proxy",
-          "targetType": "assistant",
-          "name": "Player White => Board Proxy",
-          "order": -1,
-          "description": "New connection",
-          "position": 1,
-          "clearHistory": true,
-          "maxTurns": null,
-          "message": {
-            "type": "none",
-            "content": null,
-            "context": {},
-            "useCarryover": false
-          },
-          "summary": {
-            "method": "lastMsg",
-            "prompt": "",
-            "args": {}
-          },
-          "nestedChat": {
-            "message": null,
-            "reply": null
-          },
-          "prerequisites": [],
-          "condition": {
-            "conditionType": "string_llm",
-            "prompt": "Handoff to another agent"
-          },
-          "available": {
-            "type": "none",
-            "value": ""
-          },
-          "afterWork": null,
-          "realSource": null,
-          "realTarget": null
-        }
+      "position": {
+        "x": 480,
+        "y": 10
       },
-      {
-        "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
-        "data": {
-          "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
-          "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-          "sourceType": "user_proxy",
-          "targetType": "assistant",
-          "name": "Player Black => Board Proxy",
-          "order": -1,
-          "description": "New connection",
-          "position": 1,
-          "clearHistory": true,
-          "maxTurns": null,
-          "message": {
-            "type": "none",
-            "content": null,
-            "context": {},
-            "useCarryover": false
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
+      "type": "agent",
+      "data": {
+        "systemMessage": "You are a chess player and you play as white. First call get_legal_moves(), to get a list of legal moves. Then call make_move(move) to make a move.",
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [
+          "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ"
+        ],
+        "tools": [
+          {
+            "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
+            "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
           },
-          "summary": {
-            "method": "lastMsg",
-            "prompt": "",
-            "args": {}
+          {
+            "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
+            "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
+          }
+        ],
+        "nestedChats": [
+          {
+            "triggeredBy": [
+              "1747633035639vcXujJkXlY_IOT7CJWFml"
+            ],
+            "messages": [
+              {
+                "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
+                "isReply": true
+              }
+            ],
+            "condition": {
+              "conditionType": "string_llm",
+              "prompt": "Start a nested chat"
+            },
+            "available": {
+              "type": "none",
+              "value": ""
+            }
+          }
+        ],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "agentType": "user_proxy",
+        "label": "Player White",
+        "description": "Player White",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T05:33:57.301Z",
+        "updatedAt": "2025-05-19T05:33:57.301Z"
+      },
+      "agentType": "user_proxy",
+      "position": {
+        "x": 450,
+        "y": 450
+      },
+      "measured": {
+        "width": 200,
+        "height": 230
+      },
+      "className": "",
+      "selected": false,
+      "dragging": false,
+      "hidden": false
+    },
+    {
+      "id": "1747633035639vcXujJkXlY_IOT7CJWFml",
+      "type": "agent",
+      "data": {
+        "systemMessage": "You are a chess player and you play as black. First call get_legal_moves(), to get a list of legal moves. Then call make_move(move) to make a move.",
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [
+          "wt-1747632666110xFH3OUDmoDDei9O3jkKIZ"
+        ],
+        "tools": [
+          {
+            "id": "wt-1747632755319FHYH_ux2NoDTXClD37qvr",
+            "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
           },
-          "nestedChat": {
-            "message": null,
-            "reply": null
-          },
-          "prerequisites": [],
-          "condition": {
-            "conditionType": "string_llm",
-            "prompt": "Handoff to another agent"
-          },
-          "available": {
-            "type": "none",
-            "value": ""
-          },
-          "afterWork": null,
-          "realSource": null,
-          "realTarget": null
-        }
-      }
-    ],
-    "isAsync": false
-  }
+          {
+            "id": "wt-1747632773047yPBc7GG6He9Z_uSN-U1u0",
+            "executorId": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
+          }
+        ],
+        "nestedChats": [
+          {
+            "triggeredBy": [
+              "wa-1747632837301wu22ovYsUaHbF_P6U0J74"
+            ],
+            "messages": [
+              {
+                "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
+                "isReply": true
+              }
+            ],
+            "condition": {
+              "conditionType": "string_llm",
+              "prompt": "Start a nested chat"
+            },
+            "available": {
+              "type": "none",
+              "value": ""
+            }
+          }
+        ],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "agentType": "user_proxy",
+        "label": "Player Black",
+        "description": "Player Black",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T05:33:57.301Z",
+        "updatedAt": "2025-05-19T05:33:57.301Z"
+      },
+      "agentType": "user_proxy",
+      "position": {
+        "x": 135,
+        "y": 150
+      },
+      "measured": {
+        "width": 200,
+        "height": 230
+      },
+      "className": "",
+      "selected": false,
+      "dragging": false,
+      "hidden": false
+    },
+    {
+      "id": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
+      "type": "agent",
+      "data": {
+        "systemMessage": null,
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "method",
+          "keywords": [],
+          "criterion": "found",
+          "methodContent": "\"\"\"Custom termination message function.\"\"\"\n\nfrom typing import Any\n\ndef is_termination_message(message: dict[str, Any]) -> bool:\n    \"\"\"Complete the termination message function\"\"\"\n    if \"MADE_MOVE\" not in globals():\n        globals()[\"MADE_MOVE\"] = False\n    # pylint: disable=global-statement\n    global MADE_MOVE\n    if MADE_MOVE is True:\n        MADE_MOVE = False  # pyright: ignore\n        return True\n    return False\n"
+        },
+        "modelIds": [],
+        "tools": [],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "isMultimodal": false,
+        "agentType": "assistant",
+        "label": "Board Proxy",
+        "description": "Board Proxy",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T05:33:08.354Z",
+        "updatedAt": "2025-05-19T05:33:08.354Z"
+      },
+      "agentType": "assistant",
+      "position": {
+        "x": 765,
+        "y": 150
+      },
+      "measured": {
+        "width": 200,
+        "height": 211
+      },
+      "selected": true,
+      "dragging": false,
+      "className": "",
+      "hidden": false
+    }
+  ],
+  "viewport": {
+    "x": 32.29245283018861,
+    "y": -113.05660377358492,
+    "zoom": 1.1603773584905661
+  },
+  "type": "flow"
 }

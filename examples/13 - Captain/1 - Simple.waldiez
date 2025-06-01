@@ -1,6 +1,7 @@
 {
-  "id": "wf-57v7v5V-k6fIlTP5E6QFL",
-  "type": "flow",
+  "flowId": "wf-57v7v5V-k6fIlTP5E6QFL",
+  "isAsync": false,
+  "cacheSeed": null,
   "storageId": "wf-57v7v5V-k6fIlTP5E6QFL",
   "name": "1 - Simple",
   "description": "Using CaptainAgent without libraries. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-captainagent-without-libraries>",
@@ -11,262 +12,205 @@
   "requirements": [],
   "createdAt": "2025-05-19T09:58:46.340Z",
   "updatedAt": "2025-05-31T16:06:46.780Z",
-  "data": {
-    "nodes": [
-      {
-        "id": "wt-1747648745935lzNCw18vN2Yuqsg06JO0A",
-        "type": "model",
-        "position": {
-          "x": 0,
-          "y": 10
+  "edges": [
+    {
+      "id": "we-1747648772944jIxHrVO5yLLfWtfvwmp0C",
+      "source": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
+      "target": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
+      "type": "chat",
+      "data": {
+        "type": "chat",
+        "label": "User proxy => Captain",
+        "sourceType": "user_proxy",
+        "targetType": "captain",
+        "description": "New connection",
+        "position": 1,
+        "order": 0,
+        "clearHistory": true,
+        "message": {
+          "type": "string",
+          "useCarryover": false,
+          "content": "Find a recent paper about large language models on arxiv and find its potential applications in software.",
+          "context": {}
         },
-        "measured": {
-          "width": 182,
-          "height": 182
+        "nestedChat": {
+          "message": null,
+          "reply": null
         },
-        "selected": false,
-        "hidden": true
+        "prerequisites": [],
+        "summary": {
+          "method": "lastMsg",
+          "prompt": "",
+          "args": {}
+        },
+        "maxTurns": 1,
+        "condition": {
+          "conditionType": "string_llm",
+          "prompt": "Handoff to another agent"
+        },
+        "available": {
+          "type": "none",
+          "value": ""
+        },
+        "afterWork": null,
+        "realSource": null,
+        "realTarget": null
       },
-      {
-        "id": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-        "type": "agent",
-        "position": {
-          "x": 221.82354736328125,
-          "y": 318
-        },
-        "hidden": false,
-        "measured": {
-          "width": 200,
-          "height": 211
-        },
-        "selected": false
+      "hidden": false,
+      "animated": false,
+      "selected": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#bc76f5",
+        "width": 10,
+        "height": 10
       },
-      {
-        "id": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
-        "type": "agent",
-        "position": {
-          "x": 765.8235473632812,
-          "y": 245
+      "style": {
+        "stroke": "#bc76f5",
+        "strokeWidth": 3
+      },
+      "sourceHandle": "agent-handle-right-source-wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
+      "targetHandle": "agent-handle-left-target-wa-1747648770281G2SIflV6LiGugWwlAknFI"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "wt-1747648745935lzNCw18vN2Yuqsg06JO0A",
+      "type": "model",
+      "data": {
+        "baseUrl": null,
+        "apiKey": "REPLACE_ME",
+        "apiType": "openai",
+        "apiVersion": null,
+        "temperature": null,
+        "topP": null,
+        "maxTokens": null,
+        "aws": {
+          "region": null,
+          "accessKey": null,
+          "secretKey": null,
+          "sessionToken": null,
+          "profileName": null
         },
-        "measured": {
-          "width": 200,
-          "height": 215
+        "extras": {},
+        "defaultHeaders": {},
+        "price": {
+          "promptPricePer1k": null,
+          "completionTokenPricePer1k": null
         },
-        "selected": false,
-        "hidden": false
-      }
-    ],
-    "edges": [
-      {
-        "id": "we-1747648772944jIxHrVO5yLLfWtfvwmp0C",
-        "source": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-        "target": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
-        "hidden": false,
-        "animated": false,
-        "selected": false,
-        "markerEnd": {
-          "type": "arrowclosed",
-          "color": "#bc76f5",
-          "width": 10,
-          "height": 10
-        },
-        "style": {
-          "stroke": "#bc76f5",
-          "strokeWidth": 3
-        },
-        "sourceHandle": "agent-handle-right-source-wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-        "targetHandle": "agent-handle-left-target-wa-1747648770281G2SIflV6LiGugWwlAknFI",
-        "type": "chat"
-      }
-    ],
-    "viewport": {
-      "x": -222.62977083267708,
-      "y": -213.5604838709678,
-      "zoom": 1.5040322580645162
-    },
-    "agents": {
-      "groupManagerAgents": [],
-      "userProxyAgents": [
-        {
-          "type": "agent",
-          "name": "User proxy",
-          "description": "A new User proxy agent",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T09:59:26.582Z",
-          "updatedAt": "2025-05-19T09:59:26.582Z",
-          "data": {
-            "systemMessage": null,
-            "humanInputMode": "ALWAYS",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [],
-            "tools": [],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null
-          },
-          "id": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-          "agentType": "user_proxy"
-        }
-      ],
-      "assistantAgents": [],
-      "ragUserProxyAgents": [],
-      "reasoningAgents": [],
-      "captainAgents": [
-        {
-          "type": "agent",
-          "name": "Captain",
-          "description": "A new Captain agent",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-19T09:59:30.281Z",
-          "updatedAt": "2025-05-19T09:59:30.281Z",
-          "data": {
-            "systemMessage": null,
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [
-              "wt-1747648745935lzNCw18vN2Yuqsg06JO0A"
-            ],
-            "tools": [],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null,
-            "agentLib": [],
-            "toolLib": null,
-            "maxRound": 10,
-            "maxTurns": 5
-          },
-          "id": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
-          "agentType": "captain"
-        }
-      ]
-    },
-    "models": [
-      {
-        "id": "wt-1747648745935lzNCw18vN2Yuqsg06JO0A",
-        "type": "model",
-        "name": "gpt-4o",
+        "label": "gpt-4o",
         "description": "gpt-4o",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T09:59:05.935Z",
-        "updatedAt": "2025-05-19T09:59:21.728Z",
-        "data": {
-          "apiKey": "REPLACE_ME",
-          "apiType": "openai",
-          "apiVersion": null,
-          "baseUrl": null,
-          "temperature": null,
-          "topP": null,
-          "maxTokens": null,
-          "aws": {
-            "region": null,
-            "accessKey": null,
-            "secretKey": null,
-            "sessionToken": null,
-            "profileName": null
-          },
-          "extras": {},
-          "defaultHeaders": {},
-          "price": {
-            "promptPricePer1k": null,
-            "completionTokenPricePer1k": null
-          }
-        }
-      }
-    ],
-    "tools": [],
-    "chats": [
-      {
-        "id": "we-1747648772944jIxHrVO5yLLfWtfvwmp0C",
-        "data": {
-          "source": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-          "target": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
-          "sourceType": "user_proxy",
-          "targetType": "captain",
-          "name": "User proxy => Captain",
-          "order": 0,
-          "description": "New connection",
-          "position": 1,
-          "clearHistory": true,
-          "maxTurns": 1,
-          "message": {
-            "type": "string",
-            "content": "Find a recent paper about large language models on arxiv and find its potential applications in software.",
-            "context": {},
-            "useCarryover": false
-          },
-          "summary": {
-            "method": "lastMsg",
-            "prompt": "",
-            "args": {}
-          },
-          "nestedChat": {
-            "message": null,
-            "reply": null
-          },
-          "prerequisites": [],
-          "condition": {
-            "conditionType": "string_llm",
-            "prompt": "Handoff to another agent"
-          },
-          "available": {
-            "type": "none",
-            "value": ""
-          },
-          "afterWork": null,
-          "realSource": null,
-          "realTarget": null
-        }
-      }
-    ],
-    "isAsync": false
-  }
+        "updatedAt": "2025-05-19T09:59:21.728Z"
+      },
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true
+    },
+    {
+      "id": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
+      "type": "agent",
+      "data": {
+        "systemMessage": null,
+        "humanInputMode": "ALWAYS",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [],
+        "tools": [],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "agentType": "user_proxy",
+        "label": "User proxy",
+        "description": "A new User proxy agent",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T09:59:26.582Z",
+        "updatedAt": "2025-05-19T09:59:26.582Z"
+      },
+      "agentType": "user_proxy",
+      "position": {
+        "x": 221.82354736328125,
+        "y": 318
+      },
+      "hidden": false,
+      "measured": {
+        "width": 200,
+        "height": 211
+      },
+      "selected": false
+    },
+    {
+      "id": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
+      "type": "agent",
+      "data": {
+        "systemMessage": null,
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [
+          "wt-1747648745935lzNCw18vN2Yuqsg06JO0A"
+        ],
+        "tools": [],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "agentLib": [],
+        "toolLib": null,
+        "maxRound": 10,
+        "maxTurns": 5,
+        "agentType": "captain",
+        "label": "Captain",
+        "description": "A new Captain agent",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T09:59:30.281Z",
+        "updatedAt": "2025-05-19T09:59:30.281Z"
+      },
+      "agentType": "captain",
+      "position": {
+        "x": 765.8235473632812,
+        "y": 245
+      },
+      "measured": {
+        "width": 200,
+        "height": 215
+      },
+      "selected": false,
+      "hidden": false
+    }
+  ],
+  "viewport": {
+    "x": -222.62977083267708,
+    "y": -213.5604838709678,
+    "zoom": 1.5040322580645162
+  },
+  "type": "flow"
 }

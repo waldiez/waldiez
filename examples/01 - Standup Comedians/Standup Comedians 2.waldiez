@@ -1,6 +1,7 @@
 {
-  "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
-  "type": "flow",
+  "flowId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
+  "isAsync": false,
+  "cacheSeed": null,
   "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "Standup comedians 2",
   "description": "Standup comedians without user input.",
@@ -11,266 +12,210 @@
   "requirements": [],
   "createdAt": "2025-05-13T10:49:00.617Z",
   "updatedAt": "2025-05-31T15:40:20.655Z",
-  "data": {
-    "nodes": [
-      {
-        "id": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
-        "type": "model",
-        "position": {
-          "x": 0,
-          "y": 10
+  "edges": [
+    {
+      "id": "we-1747132917885akpyJYGf7eC2gGaL_TByh",
+      "source": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+      "target": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+      "type": "chat",
+      "data": {
+        "type": "chat",
+        "label": "Joe => Cathy",
+        "sourceType": "assistant",
+        "targetType": "assistant",
+        "description": "Joe starts the chat.",
+        "position": 1,
+        "order": 0,
+        "clearHistory": true,
+        "message": {
+          "type": "string",
+          "useCarryover": false,
+          "content": "Hi Cathy, I'm Joe. Let's keep the jokes rolling!",
+          "context": {}
         },
-        "measured": {
-          "width": 182,
-          "height": 182
+        "nestedChat": {
+          "message": null,
+          "reply": null
         },
-        "selected": false,
-        "hidden": true,
-        "className": ""
+        "prerequisites": [],
+        "summary": {
+          "method": "lastMsg",
+          "prompt": "",
+          "args": {}
+        },
+        "maxTurns": 3,
+        "condition": {
+          "conditionType": "string_llm",
+          "prompt": "Handoff to another agent"
+        },
+        "available": {
+          "type": "none",
+          "value": ""
+        },
+        "afterWork": null,
+        "realSource": null,
+        "realTarget": null
       },
-      {
-        "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
-        "type": "agent",
-        "position": {
-          "x": 210,
-          "y": 285
-        },
-        "measured": {
-          "width": 200,
-          "height": 229
-        },
-        "className": "",
-        "hidden": false,
-        "selected": false,
-        "dragging": false
+      "hidden": false,
+      "animated": false,
+      "selected": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "color": "#66bc57",
+        "width": 10,
+        "height": 10
       },
-      {
-        "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
-        "type": "agent",
-        "position": {
-          "x": 630,
-          "y": 240
+      "style": {
+        "stroke": "#66bc57",
+        "strokeWidth": 3
+      },
+      "sourceHandle": "agent-handle-right-source-wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+      "targetHandle": "agent-handle-left-target-wa-1747132751423TuUidB_jxVHLPGQ4htC1d"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
+      "type": "model",
+      "data": {
+        "baseUrl": null,
+        "apiKey": "REPLACE_ME",
+        "apiType": "openai",
+        "apiVersion": null,
+        "temperature": null,
+        "topP": null,
+        "maxTokens": null,
+        "aws": {
+          "region": null,
+          "accessKey": null,
+          "secretKey": null,
+          "sessionToken": null,
+          "profileName": null
         },
-        "measured": {
-          "width": 200,
-          "height": 229
+        "extras": {},
+        "defaultHeaders": {},
+        "price": {
+          "promptPricePer1k": null,
+          "completionTokenPricePer1k": null
         },
-        "selected": true,
-        "dragging": false,
-        "className": "",
-        "hidden": false
-      }
-    ],
-    "edges": [
-      {
-        "id": "we-1747132917885akpyJYGf7eC2gGaL_TByh",
-        "source": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
-        "target": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
-        "hidden": false,
-        "animated": false,
-        "selected": false,
-        "markerEnd": {
-          "type": "arrowclosed",
-          "color": "#66bc57",
-          "width": 10,
-          "height": 10
-        },
-        "style": {
-          "stroke": "#66bc57",
-          "strokeWidth": 3
-        },
-        "sourceHandle": "agent-handle-right-source-wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
-        "targetHandle": "agent-handle-left-target-wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
-        "type": "chat"
-      }
-    ],
-    "viewport": {
-      "x": -82.83270167056946,
-      "y": -172.81745172798855,
-      "zoom": 1.4659845669719795
-    },
-    "agents": {
-      "groupManagerAgents": [],
-      "userProxyAgents": [],
-      "assistantAgents": [
-        {
-          "type": "agent",
-          "name": "Joe",
-          "description": "Joe is a standup comedian.",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-13T10:37:38.672Z",
-          "updatedAt": "2025-05-13T10:37:38.672Z",
-          "data": {
-            "systemMessage": "Your name is Joe and you are a standup comedian. Start the next joke from the previous punchline.",
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [
-              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
-            ],
-            "tools": [],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null,
-            "isMultimodal": false
-          },
-          "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
-          "agentType": "assistant"
-        },
-        {
-          "type": "agent",
-          "name": "Cathy",
-          "description": "Cathy is a standup comedian.",
-          "tags": [],
-          "requirements": [],
-          "createdAt": "2025-05-13T10:39:11.423Z",
-          "updatedAt": "2025-05-13T10:39:11.423Z",
-          "data": {
-            "systemMessage": "Your name is Cathy and you are a standup comedian.",
-            "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
-            "agentDefaultAutoReply": null,
-            "maxConsecutiveAutoReply": null,
-            "termination": {
-              "type": "none",
-              "keywords": [],
-              "criterion": null,
-              "methodContent": null
-            },
-            "modelIds": [
-              "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
-            ],
-            "tools": [],
-            "nestedChats": [
-              {
-                "messages": [],
-                "triggeredBy": [],
-                "condition": {
-                  "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
-                },
-                "available": {
-                  "type": "none",
-                  "value": ""
-                }
-              }
-            ],
-            "handoffs": [],
-            "contextVariables": {},
-            "updateAgentStateBeforeReply": [],
-            "afterWork": null,
-            "isMultimodal": false
-          },
-          "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
-          "agentType": "assistant"
-        }
-      ],
-      "ragUserProxyAgents": [],
-      "reasoningAgents": [],
-      "captainAgents": []
-    },
-    "models": [
-      {
-        "id": "wt-1747132690009vkxVMuuwze2pCJQyESa4s",
-        "type": "model",
-        "name": "gpt-3.5-turbo",
+        "label": "gpt-3.5-turbo",
         "description": "gpt-3.5-turbo",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-13T10:38:10.009Z",
-        "updatedAt": "2025-05-18T11:06:37.254Z",
-        "data": {
-          "apiKey": "REPLACE_ME",
-          "apiType": "openai",
-          "apiVersion": null,
-          "baseUrl": null,
-          "temperature": null,
-          "topP": null,
-          "maxTokens": null,
-          "aws": {
-            "region": null,
-            "accessKey": null,
-            "secretKey": null,
-            "sessionToken": null,
-            "profileName": null
-          },
-          "extras": {},
-          "defaultHeaders": {},
-          "price": {
-            "promptPricePer1k": null,
-            "completionTokenPricePer1k": null
-          }
-        }
-      }
-    ],
-    "tools": [],
-    "chats": [
-      {
-        "id": "we-1747132917885akpyJYGf7eC2gGaL_TByh",
-        "data": {
-          "source": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
-          "target": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
-          "sourceType": "assistant",
-          "targetType": "assistant",
-          "name": "Joe => Cathy",
-          "order": 0,
-          "description": "Joe starts the chat.",
-          "position": 1,
-          "clearHistory": true,
-          "maxTurns": 3,
-          "message": {
-            "type": "string",
-            "content": "Hi Cathy, I'm Joe. Let's keep the jokes rolling!",
-            "context": {},
-            "useCarryover": false
-          },
-          "summary": {
-            "method": "lastMsg",
-            "prompt": "",
-            "args": {}
-          },
-          "nestedChat": {
-            "message": null,
-            "reply": null
-          },
-          "prerequisites": [],
-          "condition": {
-            "conditionType": "string_llm",
-            "prompt": "Handoff to another agent"
-          },
-          "available": {
-            "type": "none",
-            "value": ""
-          },
-          "afterWork": null,
-          "realSource": null,
-          "realTarget": null
-        }
-      }
-    ],
-    "isAsync": false
-  }
+        "updatedAt": "2025-05-18T11:06:37.254Z"
+      },
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "measured": {
+        "width": 182,
+        "height": 182
+      },
+      "selected": false,
+      "hidden": true,
+      "className": ""
+    },
+    {
+      "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
+      "type": "agent",
+      "data": {
+        "systemMessage": "Your name is Joe and you are a standup comedian. Start the next joke from the previous punchline.",
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [
+          "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+        ],
+        "tools": [],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "isMultimodal": false,
+        "agentType": "assistant",
+        "label": "Joe",
+        "description": "Joe is a standup comedian.",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-13T10:37:38.672Z",
+        "updatedAt": "2025-05-13T10:37:38.672Z"
+      },
+      "agentType": "assistant",
+      "position": {
+        "x": 210,
+        "y": 285
+      },
+      "measured": {
+        "width": 200,
+        "height": 229
+      },
+      "className": "",
+      "hidden": false,
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
+      "type": "agent",
+      "data": {
+        "systemMessage": "Your name is Cathy and you are a standup comedian.",
+        "humanInputMode": "NEVER",
+        "codeExecutionConfig": false,
+        "agentDefaultAutoReply": null,
+        "maxConsecutiveAutoReply": null,
+        "termination": {
+          "type": "none",
+          "keywords": [],
+          "criterion": null,
+          "methodContent": null
+        },
+        "modelIds": [
+          "wt-1747132690009vkxVMuuwze2pCJQyESa4s"
+        ],
+        "tools": [],
+        "nestedChats": [],
+        "contextVariables": {},
+        "updateAgentStateBeforeReply": [],
+        "afterWork": null,
+        "handoffs": [],
+        "isMultimodal": false,
+        "agentType": "assistant",
+        "label": "Cathy",
+        "description": "Cathy is a standup comedian.",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-13T10:39:11.423Z",
+        "updatedAt": "2025-05-13T10:39:11.423Z"
+      },
+      "agentType": "assistant",
+      "position": {
+        "x": 630,
+        "y": 240
+      },
+      "measured": {
+        "width": 200,
+        "height": 229
+      },
+      "selected": true,
+      "dragging": false,
+      "className": "",
+      "hidden": false
+    }
+  ],
+  "viewport": {
+    "x": -82.83270167056946,
+    "y": -172.81745172798855,
+    "zoom": 1.4659845669719795
+  },
+  "type": "flow"
 }
