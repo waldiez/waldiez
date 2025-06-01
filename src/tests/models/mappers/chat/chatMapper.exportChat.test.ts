@@ -13,8 +13,8 @@ describe("chatMapper.exportChat", () => {
             id: "1",
             source: "wa-1",
             target: "wa-2",
+            type: "chat",
             data: {
-                type: "chat",
                 label: "custom_chat",
                 description: "custom_description",
                 position: 0,
@@ -57,8 +57,8 @@ describe("chatMapper.exportChat", () => {
         const json = chatMapper.exportChat(edge, 0);
         expect(json).toBeTruthy();
         expect(json.id).toBe("1");
-        expect(json.data.source).toBe("wa-1");
-        expect(json.data.target).toBe("wa-2");
+        expect(json.source).toBe("wa-1");
+        expect(json.target).toBe("wa-2");
         expect(json.data.name).toBe("custom_chat");
         expect(json.data.description).toBe("custom_description");
         expect(json.data.position).toBe(0);

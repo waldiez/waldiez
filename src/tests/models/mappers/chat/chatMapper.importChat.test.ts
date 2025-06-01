@@ -16,8 +16,8 @@ describe("chatMapper.importChat", () => {
         const chat = imported?.chat as WaldiezChat;
         expect(chat).toBeTruthy();
         expect(chat.id).toBe("wc-1");
-        expect(chat.data.source).toBe("wa-1");
-        expect(chat.data.target).toBe("wa-2");
+        expect(chat.source).toBe("wa-1");
+        expect(chat.target).toBe("wa-2");
         expect(chat.data.name).toBe("wa-1 => wa-2");
         expect(chat.data.description).toBe("custom_description");
         expect(chat.data.position).toBe(0);
@@ -50,7 +50,7 @@ describe("chatMapper.importChat", () => {
     it("should throw an error if the edge is not found", () => {
         expect(() =>
             chatMapper.importChat(
-                { id: "1", type: "chat", data: { source: "wa-1", target: "wa-2" } },
+                { id: "1", type: "chat", source: "wa-1", target: "wa-2", data: {} },
                 [],
                 agents,
                 1,
@@ -60,7 +60,7 @@ describe("chatMapper.importChat", () => {
     it("should throw an error if the source is not found", () => {
         expect(() =>
             chatMapper.importChat(
-                { id: "wc-1", type: "chat", data: { source: "1", target: "wa-2" } },
+                { id: "wc-1", type: "chat", source: "1", target: "wa-2", data: {} },
                 edges,
                 agents,
                 1,
@@ -70,7 +70,7 @@ describe("chatMapper.importChat", () => {
     it("should throw an error if the target is not found", () => {
         expect(() =>
             chatMapper.importChat(
-                { id: "wc-1", type: "chat", data: { source: "wa-1", target: "2" } },
+                { id: "wc-1", type: "chat", source: "wa-1", target: "2", data: {} },
                 edges,
                 agents,
                 1,
@@ -79,15 +79,17 @@ describe("chatMapper.importChat", () => {
     });
     it("should throw an error if an invalid edge is provided", () => {
         expect(() =>
-            chatMapper.importChat({ id: "1", type: "chat", data: { source: "wa-1" } }, [], agents, 1),
-        ).toThrowError("Invalid edge data");
+            chatMapper.importChat({ id: "1", type: "chat", source: "wa-1", data: {} }, [], agents, 1),
+        ).toThrowError("Target not found in chat data");
     });
     it("should throw an error if the edge source does not match the data source", () => {
         expect(() =>
             chatMapper.importChat(
                 {
                     id: "wc-1",
-                    data: { source: "wa-2", target: "wa-2" },
+                    source: "wa-2",
+                    target: "wa-2",
+                    data: {},
                     type: "chat",
                 },
                 edges,
@@ -101,7 +103,9 @@ describe("chatMapper.importChat", () => {
             chatMapper.importChat(
                 {
                     id: "wc-1",
-                    data: { source: "wa-1", target: "wa-3" },
+                    source: "wa-1",
+                    target: "wa-3",
+                    data: {},
                     type: "chat",
                 },
                 edges,
@@ -115,7 +119,9 @@ describe("chatMapper.importChat", () => {
             {
                 id: "wc-1",
                 type: "other",
-                data: { source: "wa-1", target: "wa-2" },
+                source: "wa-1",
+                target: "wa-2",
+                data: {},
             },
             edges,
             agents,
@@ -137,7 +143,9 @@ describe("chatMapper.importChat", () => {
             {
                 id: "wc-1",
                 type: "nested",
-                data: { source: "wa-1", target: "wa-2" },
+                source: "wa-1",
+                target: "wa-2",
+                data: { name: "wa-1 => wa-2" },
             },
             newEdges,
             agents,
@@ -148,7 +156,7 @@ describe("chatMapper.importChat", () => {
     });
     it("should change the edge type to chat if the edge.type is not a valid type", () => {
         const { chat, edge } = chatMapper.importChat(
-            { id: "wc-1", data: { source: "wa-1", target: "wa-2" } },
+            { id: "wc-1", source: "wa-1", target: "wa-2", data: {} },
             [{ ...edges[0], type: "other" }],
             agents,
             1,

@@ -6,10 +6,10 @@ import { Edge, Node } from "@xyflow/react";
 
 export const chatJson = {
     id: "wc-1",
+    type: "chat",
+    source: "wa-1",
+    target: "wa-2",
     data: {
-        type: "chat",
-        source: "wa-1",
-        target: "wa-2",
         name: "custom_chat",
         description: "custom_description",
         position: 0,
@@ -36,12 +36,10 @@ export const chatJson = {
         },
         maxTurns: 0,
     },
-    type: "chat",
 };
 export const edges: Edge[] = [
     {
         id: "wc-1",
-        type: "chat",
         source: "wa-1",
         target: "wa-2",
         data: {
@@ -50,7 +48,6 @@ export const edges: Edge[] = [
     },
     {
         id: "wc-2",
-        type: "chat",
         source: "wa-2",
         target: "wa-3",
         data: {
@@ -98,11 +95,8 @@ export const agents: Node[] = [
 ];
 export const updateData = {
     chat: {
-        type: "chat" as const,
         name: "Chat",
         description: "Chat Description",
-        source: "wa-1",
-        target: "wa-2",
         sourceType: "user_proxy" as const,
         targetType: "assistant" as const,
         position: 0,
@@ -143,8 +137,8 @@ export const updateData = {
         id: "1",
         source: "wa-1",
         target: "wa-2",
+        type: "chat" as const,
         data: {
-            type: "chat" as const,
             label: "Chat",
             description: "Chat Description",
             position: 0,
@@ -227,7 +221,6 @@ export const updateData = {
         target: "wa-2",
         type: "chat",
         data: {
-            type: "chat" as const,
             label: "Chat",
             description: "Chat Description",
             position: 0,
@@ -252,8 +245,6 @@ export const updateData = {
                 },
             },
             maxTurns: 0,
-            source: "wa-1",
-            target: "wa-2",
             sourceType: "user_proxy",
             targetType: "assistant",
             realSource: "wa-1",

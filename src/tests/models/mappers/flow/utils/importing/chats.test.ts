@@ -46,7 +46,7 @@ describe("getChats", () => {
                             type: "none",
                             value: "",
                         },
-                        silent: undefined,
+                        silent: false,
                         realSource: null,
                         realTarget: null,
                     },
@@ -90,10 +90,10 @@ describe("getChats", () => {
         expect(chats).toEqual([
             {
                 id: "wc-1",
+                type: "chat",
+                source: "wa-1",
+                target: "wa-2",
                 data: {
-                    type: "chat",
-                    source: "wa-1",
-                    target: "wa-2",
                     sourceType: "user_proxy",
                     targetType: "assistant",
                     name: "agent1 => agent2",
@@ -127,7 +127,7 @@ describe("getChats", () => {
                         conditionType: "string_llm",
                         prompt: "Handoff to wa-2",
                     },
-                    silent: undefined,
+                    silent: false,
                     realSource: null,
                     realTarget: null,
                 },

@@ -9,7 +9,13 @@ import { WaldiezChat, WaldiezChatData, WaldiezMessage } from "@waldiez/models/Ch
 describe("WaldiezChat", () => {
     it("should create an instance", () => {
         const chatData = new WaldiezChatData();
-        const chat = new WaldiezChat({ id: "1", data: chatData });
+        const chat = new WaldiezChat({
+            id: "1",
+            data: chatData,
+            type: "chat",
+            source: "source",
+            target: "target",
+        });
         expect(chat).toBeTruthy();
         expect(chat.id).toBe("1");
         expect(chat.source).toBe("source");
@@ -17,6 +23,7 @@ describe("WaldiezChat", () => {
         expect(chat.data.name).toBe("Chat");
         expect(chat.data.description).toBe("New connection");
         const chat2 = WaldiezChat.create({
+            type: "chat",
             source: "source1",
             target: "target1",
         });
@@ -47,9 +54,6 @@ describe("WaldiezChat", () => {
             content: null,
         });
         const chatData = new WaldiezChatData({
-            type: "chat",
-            source: "agent1",
-            target: "agent2",
             sourceType: "reasoning",
             targetType: "assistant",
             name: "custom_chat",
@@ -83,6 +87,9 @@ describe("WaldiezChat", () => {
         });
         const chat = new WaldiezChat({
             id: "1",
+            type: "chat",
+            source: "agent1",
+            target: "agent2",
             data: chatData,
             rest: { key: "42" },
         });

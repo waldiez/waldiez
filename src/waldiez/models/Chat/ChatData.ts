@@ -4,7 +4,7 @@
  */
 import { WaldiezAgentType } from "@waldiez/models/Agent/Common/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
-import { WaldiezChatSummary, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat/types";
+import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
 import {
     WaldiezHandoffAvailability,
     WaldiezHandoffCondition,
@@ -13,9 +13,6 @@ import {
 
 /**
  * Waldiez Chat Data
- * @param type - The type of the chat
- * @param source - The source
- * @param target - The target
  * @param name - The name of the chat
  * @param description - The description of the chat
  * @param clearHistory - Clear history
@@ -40,9 +37,6 @@ import {
  * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezChatData {
-    type: WaldiezEdgeType = "chat";
-    source: string;
-    target: string;
     sourceType: WaldiezAgentType;
     targetType: WaldiezAgentType;
     name: string;
@@ -72,9 +66,6 @@ export class WaldiezChatData {
     silent?: boolean = false;
     constructor(
         props: {
-            type: WaldiezEdgeType;
-            source: string;
-            target: string;
             sourceType: WaldiezAgentType;
             targetType: WaldiezAgentType;
             name: string;
@@ -94,9 +85,6 @@ export class WaldiezChatData {
             realTarget: string | null;
             silent?: boolean;
         } = {
-            type: "chat",
-            source: "source",
-            target: "target",
             sourceType: "user_proxy",
             targetType: "assistant",
             name: "Chat",
@@ -136,9 +124,6 @@ export class WaldiezChatData {
         },
     ) {
         const {
-            type,
-            source,
-            target,
             sourceType,
             targetType,
             name,
@@ -158,9 +143,6 @@ export class WaldiezChatData {
             realTarget,
             silent,
         } = props;
-        this.type = type;
-        this.source = source;
-        this.target = target;
         this.sourceType = sourceType;
         this.targetType = targetType;
         this.name = name;

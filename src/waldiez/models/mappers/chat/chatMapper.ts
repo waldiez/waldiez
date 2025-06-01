@@ -24,6 +24,7 @@ import {
     getChatPosition,
     getChatPrerequisites,
     getChatRest,
+    getChatSilent,
     getChatSourceType,
     getChatTargetType,
     getNestedChat,
@@ -79,7 +80,7 @@ export const chatMapper = {
         const { edge, sourceNode, targetNode } = result;
         const id = jsonObject.id as string;
         const type = getChatTypeFromJSON(edge);
-        const data = getChatData(type, jsonObject.data as any, index);
+        const data = getChatData(jsonObject.data as any, index);
         const rest = getChatRest({ ...jsonObject, ...edge });
 
         const updatedEdge = updateEdge(edge as WaldiezEdge, data, jsonObject, sourceNode, targetNode, rest);
@@ -88,7 +89,7 @@ export const chatMapper = {
                 rest[key] = value;
             }
         });
-        const chat = new WaldiezChat({ id, data, rest });
+        const chat = new WaldiezChat({ id, data, type, source: sourceNode.id, target: targetNode.id, rest });
         return { chat, edge: updatedEdge };
     },
 
@@ -100,11 +101,9 @@ export const chatMapper = {
      */
     exportChat: (edge: WaldiezEdge, index: number) => {
         const edgeData = edge.data as WaldiezEdge["data"];
+        const edgeType = edge.type || getChatTypeFromJSON(edge);
         const data = { ...edgeData } as WaldiezEdgeData;
         const chatData = {
-            source: edge.source,
-            target: edge.target,
-            type: edge.type || getChatTypeFromJSON(edge),
             sourceType: getChatSourceType(data),
             targetType: getChatTargetType(data),
             name: getChatName(data),
@@ -120,6 +119,7 @@ export const chatMapper = {
             condition: getHandoffCondition(data),
             available: getHandoffAvailability(data),
             afterWork: getAfterWork(data),
+            silent: getChatSilent(data),
             realSource: data.realSource,
             realTarget: data.realTarget,
         };
@@ -135,6 +135,9 @@ export const chatMapper = {
         const chat = new WaldiezChat({
             id: edge.id,
             data: chatData,
+            type: edgeType,
+            source: edge.source,
+            target: edge.target,
             rest,
         }) as any;
         const toExport = { ...chat, ...chat.rest };
@@ -149,7 +152,6 @@ export const chatMapper = {
      */
     asEdge: (chat: WaldiezChat): WaldiezEdge => {
         const data = {
-            type: chat.data.type || getChatTypeFromJSON(chat.data),
             label: chat.data.name,
             sourceType: chat.data.sourceType,
             targetType: chat.data.targetType,
@@ -167,14 +169,15 @@ export const chatMapper = {
             afterWork: chat.data.afterWork,
             realSource: chat.data.realSource,
             realTarget: chat.data.realTarget,
+            silent: chat.data.silent,
         };
         return {
             id: chat.id,
             source: chat.source,
             target: chat.target,
-            type: data.type,
+            type: chat.type,
             data,
-            hidden: chat.rest?.hidden === true || data.type === "hidden",
+            hidden: chat.rest?.hidden === true || chat.type === "hidden",
             ...chat.rest,
         };
     },
@@ -205,14 +208,12 @@ const getChatTypeFromJSON = (json: { [key: string]: any }): WaldiezEdgeType => {
  * @param index - The index of the chat in the graph.
  * @returns A WaldiezChatData instance with the extracted data.
  */
-const getChatData = (type: WaldiezEdgeType, json: { [key: string]: any }, index: number): WaldiezChatData => {
+const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatData => {
     if (!json || typeof json !== "object") {
         throw new Error("Invalid chat data");
     }
     const name = getNameFromJSON(json, "New connection")!;
     const description = getDescriptionFromJSON(json, "New connection");
-    const source = json.source as string;
-    const target = json.target as string;
     const sourceType = getChatSourceType(json);
     const targetType = getChatTargetType(json);
     const clearHistory = getChatClearHistory(json);
@@ -228,10 +229,8 @@ const getChatData = (type: WaldiezEdgeType, json: { [key: string]: any }, index:
     const condition = getHandoffCondition(json);
     const available = getHandoffAvailability(json);
     const afterWork = getAfterWork(json);
+    const silent = getChatSilent(json);
     const data = new WaldiezChatData({
-        type,
-        source,
-        target,
         sourceType,
         targetType,
         name,
@@ -249,6 +248,7 @@ const getChatData = (type: WaldiezEdgeType, json: { [key: string]: any }, index:
         realSource,
         realTarget,
         afterWork,
+        silent,
     });
     return data;
 };

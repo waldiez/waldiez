@@ -54,8 +54,8 @@ export const getChats = (json: Record<string, unknown>, nodes: Node[], edges: Ed
             const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index);
             chats.push(chat);
             updatedEdges.push(edge);
-        } catch (_) {
-            //
+        } catch (error) {
+            console.error(`Error importing chat at index ${index}:`, error);
         }
     });
     return { chats, edges: updatedEdges };

@@ -28,6 +28,7 @@ export type * from "@waldiez/store";
  * @param flowId - The id of the flow
  * @param isAsync - Whether the flow is async or not
  * @param cacheSeed - The seed for the cache
+ * @param silent - Whether the flow is silent or not
  * @param storageId - The id of the storage
  * @param name - The name of the flow
  * @param description - The description of the flow
@@ -41,6 +42,7 @@ export type WaldiezFlowProps = ReactFlowJsonObject & {
     flowId: string;
     isAsync?: boolean;
     cacheSeed?: number | null;
+    silent?: boolean;
     storageId: string;
     name: string;
     description: string;

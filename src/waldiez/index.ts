@@ -37,4 +37,17 @@ export const importFlow = (data: any) => {
     const flow = flowMapper.importFlow(data);
     return flowMapper.toReactFlow(flow);
 };
+
+/**
+ * Export a flow to a JSON object.
+ * @param data - The flow to export
+ * @returns The exported JSON object
+ * @see {@link Waldiez}
+ * @see {@link WaldiezFlowProps}
+ */
+export const exportFlow = (data: any, hideSecrets: boolean = true, skipLinks: boolean = true) => {
+    const flow = flowMapper.importFlow(data);
+    return flowMapper.exportFlow(flowMapper.toReactFlow(flow), hideSecrets, skipLinks);
+};
+
 export default Waldiez;

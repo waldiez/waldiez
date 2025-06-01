@@ -85,7 +85,7 @@ export const exportAgent = (
     const agentNode = nodes.find(node => node.id === agent.id);
     if (agentNode) {
         Object.keys(agentNode).forEach(key => {
-            if (key !== "id" && key !== "type" && key !== "data") {
+            if (!["id", "type", "parentId", "data"].includes(key)) {
                 delete waldiezAgent[key];
             }
         });

@@ -147,6 +147,9 @@ export const updateEdge = (
         edge.type = rest.type as WaldiezEdgeType;
         chatType = edge.type;
     }
+    delete rest.type;
+    delete rest.source;
+    delete rest.target;
     const color = AGENT_COLORS[sourceAgentType];
     edge.type = chatType;
     if (edge.type !== "hidden") {
@@ -167,7 +170,8 @@ export const updateEdge = (
     chatData.order = chatType === "nested" ? -1 : chatData.order;
     setEdgeSourceHandle(edge, rest);
     setEdgeTargetHandle(edge, rest);
-    return { ...edge, ...rest };
+    const updated = { ...edge, ...rest };
+    return updated;
 };
 
 const updateChatCommonStyle = (edge: WaldiezEdge, edgeType: WaldiezEdgeType, color: string) => {
@@ -250,16 +254,48 @@ const findOoutWhyItIsInvalid = (json: { [key: string]: any }) => {
     if (!("data" in json) || typeof json.data !== "object" || json.data === null) {
         why.push("data must be an object");
     }
-    if (!("source" in json.data) || typeof json.data.source !== "string") {
-        why.push("data.source must be a string");
+    if (!("source" in json) || typeof json.source !== "string") {
+        why.push("source must be a string");
     }
-    if (!("target" in json.data) || typeof json.data.target !== "string") {
-        why.push("data.target must be a string");
+    if (!("target" in json) || typeof json.target !== "string") {
+        why.push("target must be a string");
     }
     if (why.length > 0) {
         return `Invalid edge data: ${why.join(", ")}`;
     }
-    return "Invalid edge data";
+    return "Invalid edge data ?";
+};
+
+const getChatSource = (json: { [key: string]: any }) => {
+    if ("source" in json && typeof json.source === "string") {
+        return json.source;
+    }
+    if (
+        "data" in json &&
+        typeof json.data === "object" &&
+        json.data !== null &&
+        "source" in json.data &&
+        typeof json.data.source === "string"
+    ) {
+        return json.data.source;
+    }
+    throw new Error("Source not found in chat data");
+};
+
+const getChatTarget = (json: { [key: string]: any }) => {
+    if ("target" in json && typeof json.target === "string") {
+        return json.target;
+    }
+    if (
+        "data" in json &&
+        typeof json.data === "object" &&
+        json.data !== null &&
+        "target" in json.data &&
+        typeof json.data.target === "string"
+    ) {
+        return json.data.target;
+    }
+    throw new Error("Target not found in chat data");
 };
 
 const validateChatData = (json: { [key: string]: any }) => {
@@ -271,11 +307,11 @@ const validateChatData = (json: { [key: string]: any }) => {
         typeof json.id === "string" &&
         "data" in json &&
         typeof json.data === "object" &&
-        json.data !== null &&
-        "source" in json.data &&
-        typeof json.data.source === "string" &&
-        "target" in json.data &&
-        typeof json.data.target === "string";
+        json.data !== null;
+    const source = getChatSource(json);
+    json.source = source;
+    const target = getChatTarget(json);
+    json.target = target;
     if (!isValid) {
         throw new Error(findOoutWhyItIsInvalid(json));
     }
@@ -298,6 +334,14 @@ const ensureValidEdgeType = (json: { [key: string]: any }) => {
     }
 };
 
+export const getChatSilent = (json: { [key: string]: any }) => {
+    let silent = false;
+    if ("silent" in json && typeof json.silent === "boolean") {
+        silent = json.silent;
+    }
+    return silent;
+};
+
 export const checkChatData = (json: { [key: string]: any }, edges: Edge[], nodes: Node[]) => {
     validateChatData(json);
     ensureValidEdgeType(json);
@@ -305,19 +349,19 @@ export const checkChatData = (json: { [key: string]: any }, edges: Edge[], nodes
     if (!edge) {
         throw new Error(`Edge not found: ${json.id}`);
     }
-    const sourceNode = nodes.find(n => n.id === json.data.source);
+    const sourceNode = nodes.find(n => n.id === json.source);
     if (!sourceNode || sourceNode.type !== "agent") {
-        throw new Error(`Source node not found: ${json.data.source}`);
+        throw new Error(`Source node not found: ${json.source}`);
     }
-    if (edge.source !== json.data.source) {
-        throw new Error(`Source node does not match edge source: ${json.data.source}`);
+    if (edge.source !== json.source) {
+        throw new Error(`Source node does not match edge source: ${json.source}`);
     }
-    const targetNode = nodes.find(n => n.id === json.data.target);
+    const targetNode = nodes.find(n => n.id === json.target);
     if (!targetNode || targetNode.type !== "agent") {
-        throw new Error(`Target node not found: ${json.data.target}`);
+        throw new Error(`Target node not found: ${json.target}`);
     }
-    if (edge.target !== json.data.target) {
-        throw new Error(`Target node does not match edge target: ${json.data.target}`);
+    if (edge.target !== json.target) {
+        throw new Error(`Target node does not match edge target: ${json.target}`);
     }
     return { edge, sourceNode, targetNode };
 };

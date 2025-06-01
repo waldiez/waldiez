@@ -242,8 +242,6 @@ const getNewChat = (
     const sourceType = sourceNode.data.agentType as WaldiezNodeAgentType;
     const targetType = targetNode.data.agentType as WaldiezNodeAgentType;
     const chatData = new WaldiezChatData();
-    chatData.source = sourceNode.id;
-    chatData.target = targetNode.id;
     chatData.sourceType = sourceType;
     chatData.targetType = targetType;
     chatData.description = `${sourceNode.data.label} to ${targetNode.data.label}`;
@@ -255,10 +253,12 @@ const getNewChat = (
     chatData.order = -1;
     const chatType = getNewChatType(sourceNode, targetNode, hidden);
     chatData.position = positionGetter(chatType);
-    chatData.type = chatType;
     const chat = new WaldiezChat({
         id: `wc-${getId()}`,
         data: chatData,
+        type: chatType,
+        source: sourceNode.id,
+        target: targetNode.id,
         rest: {},
     });
     return { chat, chatType };
