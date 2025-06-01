@@ -1,7 +1,6 @@
 {
-  "flowId": "wf-1olHWN_NvlfwsHwhc5PwK",
-  "isAsync": false,
-  "cacheSeed": null,
+  "id": "wf-1olHWN_NvlfwsHwhc5PwK",
+  "type": "flow",
   "storageId": "wf-1olHWN_NvlfwsHwhc5PwK",
   "name": "Chain-of-Thought Reasoning with DFS",
   "description": "Chain-of-Thought Reasoning with DFS",
@@ -14,212 +13,269 @@
   "requirements": [],
   "createdAt": "2025-05-19T14:03:53.279Z",
   "updatedAt": "2025-05-31T16:05:41.938Z",
-  "edges": [
-    {
-      "id": "we-17476636171152CjWNQUo9267esOKhBdke",
-      "source": "wa-1747663611288peWUClnOTiu5rptUsflff",
-      "target": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
-      "type": "chat",
-      "data": {
-        "type": "chat",
-        "label": "User proxy => Reasoning",
-        "sourceType": "user_proxy",
-        "targetType": "reasoning",
-        "description": "New connection",
-        "position": 1,
-        "order": 0,
-        "clearHistory": true,
-        "message": {
-          "type": "string",
-          "useCarryover": false,
-          "content": "What is the expected maximum dice value if you can roll a 6-sided dice three times?",
-          "context": {}
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1747663530794zAOnQE1LFL77-gKYUiw9F",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
         },
-        "nestedChat": {
-          "message": null,
-          "reply": null
+        "measured": {
+          "width": 182,
+          "height": 182
         },
-        "prerequisites": [],
-        "summary": {
-          "method": "lastMsg",
-          "prompt": "",
-          "args": {}
-        },
-        "maxTurns": null,
-        "condition": {
-          "conditionType": "string_llm",
-          "prompt": "Handoff to another agent"
-        },
-        "available": {
-          "type": "none",
-          "value": ""
-        },
-        "afterWork": null,
-        "realSource": null,
-        "realTarget": null
+        "selected": false,
+        "hidden": true
       },
-      "hidden": false,
-      "animated": false,
-      "selected": false,
-      "markerEnd": {
-        "type": "arrowclosed",
-        "color": "#bc76f5",
-        "width": 10,
-        "height": 10
-      },
-      "style": {
-        "stroke": "#bc76f5",
-        "strokeWidth": 3
-      },
-      "sourceHandle": "agent-handle-right-source-wa-1747663611288peWUClnOTiu5rptUsflff",
-      "targetHandle": "agent-handle-left-target-wa-17476636145686Psj3iVNybSHDgSqAShDm"
-    }
-  ],
-  "nodes": [
-    {
-      "id": "wt-1747663530794zAOnQE1LFL77-gKYUiw9F",
-      "type": "model",
-      "data": {
-        "baseUrl": null,
-        "apiKey": "REPLACE_ME",
-        "apiType": "google",
-        "apiVersion": null,
-        "temperature": null,
-        "topP": null,
-        "maxTokens": null,
-        "aws": {
-          "region": null,
-          "accessKey": null,
-          "secretKey": null,
-          "sessionToken": null,
-          "profileName": null
+      {
+        "id": "wa-1747663611288peWUClnOTiu5rptUsflff",
+        "type": "agent",
+        "position": {
+          "x": 207,
+          "y": 206
         },
-        "extras": {},
-        "defaultHeaders": {},
-        "price": {
-          "promptPricePer1k": null,
-          "completionTokenPricePer1k": null
+        "measured": {
+          "width": 200,
+          "height": 211
         },
-        "label": "gemini-2.0-flash",
+        "selected": false,
+        "hidden": false
+      },
+      {
+        "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+        "type": "agent",
+        "position": {
+          "x": 632,
+          "y": 193
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "hidden": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "we-17476636171152CjWNQUo9267esOKhBdke",
+        "source": "wa-1747663611288peWUClnOTiu5rptUsflff",
+        "target": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1747663611288peWUClnOTiu5rptUsflff",
+        "targetHandle": "agent-handle-left-target-wa-17476636145686Psj3iVNybSHDgSqAShDm",
+        "type": "chat"
+      }
+    ],
+    "viewport": {
+      "x": -259.6128,
+      "y": -177.572,
+      "zoom": 1.7904
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User proxy",
+          "description": "A new User proxy agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T14:06:51.288Z",
+          "updatedAt": "2025-05-19T14:06:51.288Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1747663611288peWUClnOTiu5rptUsflff",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [
+        {
+          "type": "agent",
+          "name": "Reasoning",
+          "description": "A new Reasoning agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T14:06:54.568Z",
+          "updatedAt": "2025-05-19T14:06:54.568Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747663530794zAOnQE1LFL77-gKYUiw9F"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "verbose": true,
+            "reasonConfig": {
+              "method": "beam_search",
+              "maxDepth": 3,
+              "forestSize": 1,
+              "ratingScale": 10,
+              "beamSize": 3,
+              "answerApproach": "pool",
+              "nsim": 3,
+              "explorationConstant": 1.41
+            }
+          },
+          "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+          "agentType": "reasoning"
+        }
+      ],
+      "captainAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1747663530794zAOnQE1LFL77-gKYUiw9F",
+        "type": "model",
+        "name": "gemini-2.0-flash",
         "description": "gemini-2.0-flash",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T14:05:30.795Z",
-        "updatedAt": "2025-05-19T14:06:46.419Z"
-      },
-      "position": {
-        "x": 0,
-        "y": 10
-      },
-      "measured": {
-        "width": 182,
-        "height": 182
-      },
-      "selected": false,
-      "hidden": true
-    },
-    {
-      "id": "wa-1747663611288peWUClnOTiu5rptUsflff",
-      "type": "agent",
-      "data": {
-        "systemMessage": null,
-        "humanInputMode": "ALWAYS",
-        "codeExecutionConfig": false,
-        "agentDefaultAutoReply": null,
-        "maxConsecutiveAutoReply": null,
-        "termination": {
-          "type": "none",
-          "keywords": [],
-          "criterion": null,
-          "methodContent": null
-        },
-        "modelIds": [],
-        "tools": [],
-        "nestedChats": [],
-        "contextVariables": {},
-        "updateAgentStateBeforeReply": [],
-        "afterWork": null,
-        "handoffs": [],
-        "agentType": "user_proxy",
-        "label": "User proxy",
-        "description": "A new User proxy agent",
-        "tags": [],
-        "requirements": [],
-        "createdAt": "2025-05-19T14:06:51.288Z",
-        "updatedAt": "2025-05-19T14:06:51.288Z"
-      },
-      "agentType": "user_proxy",
-      "position": {
-        "x": 207,
-        "y": 206
-      },
-      "measured": {
-        "width": 200,
-        "height": 211
-      },
-      "selected": false,
-      "hidden": false
-    },
-    {
-      "id": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
-      "type": "agent",
-      "data": {
-        "systemMessage": null,
-        "humanInputMode": "NEVER",
-        "codeExecutionConfig": false,
-        "agentDefaultAutoReply": null,
-        "maxConsecutiveAutoReply": null,
-        "termination": {
-          "type": "none",
-          "keywords": [],
-          "criterion": null,
-          "methodContent": null
-        },
-        "modelIds": [
-          "wt-1747663530794zAOnQE1LFL77-gKYUiw9F"
-        ],
-        "tools": [],
-        "nestedChats": [],
-        "contextVariables": {},
-        "updateAgentStateBeforeReply": [],
-        "afterWork": null,
-        "handoffs": [],
-        "verbose": true,
-        "reasonConfig": {
-          "method": "beam_search",
-          "maxDepth": 3,
-          "forestSize": 1,
-          "ratingScale": 10,
-          "beamSize": 3,
-          "answerApproach": "pool",
-          "nsim": 3,
-          "explorationConstant": 1.41
-        },
-        "agentType": "reasoning",
-        "label": "Reasoning",
-        "description": "A new Reasoning agent",
-        "tags": [],
-        "requirements": [],
-        "createdAt": "2025-05-19T14:06:54.568Z",
-        "updatedAt": "2025-05-19T14:06:54.568Z"
-      },
-      "agentType": "reasoning",
-      "position": {
-        "x": 632,
-        "y": 193
-      },
-      "measured": {
-        "width": 200,
-        "height": 215
-      },
-      "selected": false,
-      "hidden": false
-    }
-  ],
-  "viewport": {
-    "x": -259.6128,
-    "y": -177.572,
-    "zoom": 1.7904
-  },
-  "type": "flow"
+        "updatedAt": "2025-05-19T14:06:46.419Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "google",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "we-17476636171152CjWNQUo9267esOKhBdke",
+        "data": {
+          "source": "wa-1747663611288peWUClnOTiu5rptUsflff",
+          "target": "wa-17476636145686Psj3iVNybSHDgSqAShDm",
+          "sourceType": "user_proxy",
+          "targetType": "reasoning",
+          "name": "User proxy => Reasoning",
+          "order": 0,
+          "description": "New connection",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "What is the expected maximum dice value if you can roll a 6-sided dice three times?",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false
+  }
 }

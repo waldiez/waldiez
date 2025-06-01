@@ -1,7 +1,6 @@
 {
-  "flowId": "wf-afhmSNzq3QHTSjqYUhtAF",
-  "isAsync": false,
-  "cacheSeed": null,
+  "id": "wf-afhmSNzq3QHTSjqYUhtAF",
+  "type": "flow",
   "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Coding",
   "description": "Coding and Financial Analysis",
@@ -11,243 +10,305 @@
   "requirements": [],
   "createdAt": "2025-05-19T14:14:02.364Z",
   "updatedAt": "2025-05-31T16:01:49.106Z",
-  "edges": [
-    {
-      "id": "we-1747664281640uoyN1Xjy1KOKpH9mbHSSF",
-      "source": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
-      "target": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
-      "type": "chat",
-      "data": {
-        "type": "chat",
-        "label": "Code Executor Agent => Assistant",
-        "sourceType": "user_proxy",
-        "targetType": "assistant",
-        "description": "The code executor asks the code writer to generate a plot with stock prices.",
-        "position": 1,
-        "order": 0,
-        "clearHistory": false,
-        "message": {
-          "type": "method",
-          "useCarryover": false,
-          "content": "\"\"\"Custom message function.\"\"\"\n\ndef callable_message(sender, recipient, context):\n    \"\"\"Complete the message function\"\"\"\n    # pylint: disable=import-outside-toplevel\n    import datetime\n    today = datetime.datetime.now().date()\n    message = (\n        f\"Today is {today}.\"\n        \"Download the last three months of stock prices YTD for NVDA and TSLA and create \"\n        \"a plot. Make sure the code is in markdown code block and \"\n        \"save the figure to a file stock_prices_YTD_plot.png.\"\n    )\n    return message\n",
-          "context": {}
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-17476641001906-adc7jh4Ymj_JpZyxnHq",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
         },
-        "nestedChat": {
-          "message": null,
-          "reply": null
+        "measured": {
+          "width": 182,
+          "height": 182
         },
-        "prerequisites": [],
-        "summary": {
-          "method": "lastMsg",
-          "prompt": "",
-          "args": {}
-        },
-        "maxTurns": null,
-        "condition": {
-          "conditionType": "string_llm",
-          "prompt": "Handoff to another agent"
-        },
-        "available": {
-          "type": "none",
-          "value": ""
-        },
-        "afterWork": null,
-        "realSource": null,
-        "realTarget": null
+        "selected": false,
+        "hidden": true,
+        "className": ""
       },
-      "hidden": false,
-      "animated": false,
-      "selected": false,
-      "markerEnd": {
-        "type": "arrowclosed",
-        "color": "#bc76f5",
-        "width": 10,
-        "height": 10
-      },
-      "style": {
-        "stroke": "#bc76f5",
-        "strokeWidth": 3
-      },
-      "sourceHandle": "agent-handle-right-source-wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
-      "targetHandle": "agent-handle-left-target-wa-1747664044560sLTbfS9L1RqjXjurvZ81j"
-    }
-  ],
-  "nodes": [
-    {
-      "id": "wt-17476641001906-adc7jh4Ymj_JpZyxnHq",
-      "type": "model",
-      "data": {
-        "baseUrl": null,
-        "apiKey": "REPLACE_ME",
-        "apiType": "anthropic",
-        "apiVersion": null,
-        "temperature": null,
-        "topP": null,
-        "maxTokens": null,
-        "aws": {
-          "region": null,
-          "accessKey": null,
-          "secretKey": null,
-          "sessionToken": null,
-          "profileName": null
+      {
+        "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
         },
-        "extras": {},
-        "defaultHeaders": {},
-        "price": {
-          "promptPricePer1k": null,
-          "completionTokenPricePer1k": null
+        "measured": {
+          "width": 182,
+          "height": 182
         },
-        "label": "claude-3-7-sonnet-20250219",
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
+        "type": "agent",
+        "position": {
+          "x": 180,
+          "y": 300
+        },
+        "measured": {
+          "width": 200,
+          "height": 211
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "hidden": false
+      },
+      {
+        "id": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
+        "type": "agent",
+        "position": {
+          "x": 585,
+          "y": 240
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      }
+    ],
+    "edges": [
+      {
+        "id": "we-1747664281640uoyN1Xjy1KOKpH9mbHSSF",
+        "source": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
+        "target": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 3
+        },
+        "sourceHandle": "agent-handle-right-source-wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
+        "targetHandle": "agent-handle-left-target-wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
+        "type": "chat"
+      }
+    ],
+    "viewport": {
+      "x": -220.9256198347108,
+      "y": -326.0198347107438,
+      "zoom": 1.8495867768595042
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "Code Executor Agent",
+          "description": "Code Executor Agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T14:16:49.476Z",
+          "updatedAt": "2025-05-19T14:16:49.476Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": {
+              "workDir": "coding",
+              "timeout": 60,
+              "functions": [
+                "wt-17476694116094tvuyiCu3cK_loUxYwbVr"
+              ]
+            },
+            "agentDefaultAutoReply": "Please continue. If everything is done, reply 'TERMINATE'.",
+            "maxConsecutiveAutoReply": 10,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Assistant",
+          "description": "Code Writer Agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T14:14:04.560Z",
+          "updatedAt": "2025-05-19T14:14:04.560Z",
+          "data": {
+            "systemMessage": "You are a helpful AI assistant.\nSolve tasks using your coding and language tools.\nReply \"TERMINATE\" in the end when everything is done.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-17476641001906-adc7jh4Ymj_JpZyxnHq"
+            ],
+            "tools": [
+              {
+                "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
+                "executorId": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN"
+              }
+            ],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": "Start a nested chat"
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-17476641001906-adc7jh4Ymj_JpZyxnHq",
+        "type": "model",
+        "name": "claude-3-7-sonnet-20250219",
         "description": "claude-3-7-sonnet",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T14:15:00.190Z",
-        "updatedAt": "2025-05-19T15:05:39.419Z"
-      },
-      "position": {
-        "x": 0,
-        "y": 10
-      },
-      "measured": {
-        "width": 182,
-        "height": 182
-      },
-      "selected": false,
-      "hidden": true,
-      "className": ""
-    },
-    {
-      "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
-      "type": "tool",
-      "data": {
-        "content": "def get_and_plot_stock_data(\n    stock_symbols: list[str],\n    start_date: str,\n    end_date: str,\n    filename: str,\n) -> str:\n    # pylint: disable=import-outside-toplevel\n    import pandas as pd\n    import matplotlib.pyplot as plt\n    import yfinance as yf\n\n    data = yf.download(stock_symbols, start=start_date, end=end_date)\n\n    # Get the closing prices\n    closing_prices = data['Close']\n\n    # Normalize the prices to start at 100 for easier comparison\n    normalized_prices = closing_prices.div(closing_prices.iloc[0]) * 100\n\n    # Create the plot\n    plt.figure(figsize=(12, 6))\n    for symbol in stock_symbols:\n        plt.plot(normalized_prices.index, normalized_prices[symbol], label=symbol)\n\n    plt.title('Stock Prices')\n    plt.xlabel('Date')\n    plt.ylabel('Normalized Price (Base 100)')\n    plt.legend()\n    plt.grid(True)\n\n    # Save the figure\n    plt.savefig(filename)\n    plt.close()\n    return \"ok\"\n",
-        "toolType": "custom",
-        "secrets": {},
-        "label": "get_and_plot_stock_data",
+        "updatedAt": "2025-05-19T15:05:39.419Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "anthropic",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
+        "type": "tool",
+        "name": "get_and_plot_stock_data",
         "description": "get_and_plot_stock_data",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T15:43:31.610Z",
-        "updatedAt": "2025-05-19T15:51:01.054Z"
-      },
-      "position": {
-        "x": 0,
-        "y": 10
-      },
-      "measured": {
-        "width": 182,
-        "height": 182
-      },
-      "selected": false,
-      "hidden": true
-    },
-    {
-      "id": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
-      "type": "agent",
-      "data": {
-        "systemMessage": null,
-        "humanInputMode": "ALWAYS",
-        "codeExecutionConfig": {
-          "workDir": "coding",
-          "timeout": 60,
-          "functions": [
-            "wt-17476694116094tvuyiCu3cK_loUxYwbVr"
-          ]
-        },
-        "agentDefaultAutoReply": "Please continue. If everything is done, reply 'TERMINATE'.",
-        "maxConsecutiveAutoReply": 10,
-        "termination": {
-          "type": "none",
-          "keywords": [],
-          "criterion": null,
-          "methodContent": null
-        },
-        "modelIds": [],
-        "tools": [],
-        "nestedChats": [],
-        "contextVariables": {},
-        "updateAgentStateBeforeReply": [],
-        "afterWork": null,
-        "handoffs": [],
-        "agentType": "user_proxy",
-        "label": "Code Executor Agent",
-        "description": "Code Executor Agent",
-        "tags": [],
-        "requirements": [],
-        "createdAt": "2025-05-19T14:16:49.476Z",
-        "updatedAt": "2025-05-19T14:16:49.476Z"
-      },
-      "agentType": "user_proxy",
-      "position": {
-        "x": 180,
-        "y": 300
-      },
-      "measured": {
-        "width": 200,
-        "height": 211
-      },
-      "className": "",
-      "selected": false,
-      "dragging": false,
-      "hidden": false
-    },
-    {
-      "id": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
-      "type": "agent",
-      "data": {
-        "systemMessage": "You are a helpful AI assistant.\nSolve tasks using your coding and language tools.\nReply \"TERMINATE\" in the end when everything is done.",
-        "humanInputMode": "NEVER",
-        "codeExecutionConfig": false,
-        "agentDefaultAutoReply": null,
-        "maxConsecutiveAutoReply": null,
-        "termination": {
-          "type": "none",
-          "keywords": [],
-          "criterion": null,
-          "methodContent": null
-        },
-        "modelIds": [
-          "wt-17476641001906-adc7jh4Ymj_JpZyxnHq"
-        ],
-        "tools": [
-          {
-            "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
-            "executorId": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN"
-          }
-        ],
-        "nestedChats": [],
-        "contextVariables": {},
-        "updateAgentStateBeforeReply": [],
-        "afterWork": null,
-        "handoffs": [],
-        "isMultimodal": false,
-        "agentType": "assistant",
-        "label": "Assistant",
-        "description": "Code Writer Agent",
-        "tags": [],
-        "requirements": [],
-        "createdAt": "2025-05-19T14:14:04.560Z",
-        "updatedAt": "2025-05-19T14:14:04.560Z"
-      },
-      "agentType": "assistant",
-      "position": {
-        "x": 585,
-        "y": 240
-      },
-      "measured": {
-        "width": 200,
-        "height": 215
-      },
-      "selected": false,
-      "hidden": false,
-      "dragging": false,
-      "className": ""
-    }
-  ],
-  "viewport": {
-    "x": -220.9256198347108,
-    "y": -326.0198347107438,
-    "zoom": 1.8495867768595042
-  },
-  "type": "flow"
+        "updatedAt": "2025-05-19T15:51:01.054Z",
+        "data": {
+          "content": "def get_and_plot_stock_data(\n    stock_symbols: list[str],\n    start_date: str,\n    end_date: str,\n    filename: str,\n) -> str:\n    # pylint: disable=import-outside-toplevel\n    import pandas as pd\n    import matplotlib.pyplot as plt\n    import yfinance as yf\n\n    data = yf.download(stock_symbols, start=start_date, end=end_date)\n\n    # Get the closing prices\n    closing_prices = data['Close']\n\n    # Normalize the prices to start at 100 for easier comparison\n    normalized_prices = closing_prices.div(closing_prices.iloc[0]) * 100\n\n    # Create the plot\n    plt.figure(figsize=(12, 6))\n    for symbol in stock_symbols:\n        plt.plot(normalized_prices.index, normalized_prices[symbol], label=symbol)\n\n    plt.title('Stock Prices')\n    plt.xlabel('Date')\n    plt.ylabel('Normalized Price (Base 100)')\n    plt.legend()\n    plt.grid(True)\n\n    # Save the figure\n    plt.savefig(filename)\n    plt.close()\n    return \"ok\"\n",
+          "toolType": "custom",
+          "secrets": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "we-1747664281640uoyN1Xjy1KOKpH9mbHSSF",
+        "data": {
+          "source": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
+          "target": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
+          "sourceType": "user_proxy",
+          "targetType": "assistant",
+          "name": "Code Executor Agent => Assistant",
+          "order": 0,
+          "description": "The code executor asks the code writer to generate a plot with stock prices.",
+          "position": 1,
+          "clearHistory": false,
+          "maxTurns": null,
+          "message": {
+            "type": "method",
+            "content": "\"\"\"Custom message function.\"\"\"\n\ndef callable_message(sender, recipient, context):\n    \"\"\"Complete the message function\"\"\"\n    # pylint: disable=import-outside-toplevel\n    import datetime\n    today = datetime.datetime.now().date()\n    message = (\n        f\"Today is {today}.\"\n        \"Download the last three months of stock prices YTD for NVDA and TSLA and create \"\n        \"a plot. Make sure the code is in markdown code block and \"\n        \"save the figure to a file stock_prices_YTD_plot.png.\"\n    )\n    return message\n",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Handoff to another agent"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false
+  }
 }
