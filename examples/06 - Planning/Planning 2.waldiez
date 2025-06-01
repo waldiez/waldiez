@@ -322,7 +322,6 @@
             "isMultimodal": false
           },
           "id": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
-          "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
           "agentType": "assistant"
         },
         {
@@ -371,7 +370,6 @@
             "isMultimodal": false
           },
           "id": "1747672280224yHtHT4KU6hJHXC7NzHnPD",
-          "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
           "agentType": "assistant"
         },
         {
@@ -421,7 +419,6 @@
             "isMultimodal": false
           },
           "id": "1747672281719vu_wTfjf3BRQ_1Vb_88RM",
-          "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
           "agentType": "assistant"
         },
         {
@@ -470,7 +467,6 @@
             "isMultimodal": false
           },
           "id": "1747672286352sP2IQQRswtxnXbkQun5zr",
-          "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
           "agentType": "assistant"
         }
       ],
