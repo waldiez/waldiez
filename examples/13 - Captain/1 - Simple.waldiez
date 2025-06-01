@@ -1,6 +1,7 @@
 {
   "id": "wf-57v7v5V-k6fIlTP5E6QFL",
   "type": "flow",
+  "version": "0.4.7",
   "storageId": "wf-57v7v5V-k6fIlTP5E6QFL",
   "name": "1 - Simple",
   "description": "Using CaptainAgent without libraries. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-captainagent-without-libraries>",

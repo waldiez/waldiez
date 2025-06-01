@@ -1,6 +1,7 @@
 {
   "id": "wf-QGa7BsMVh9p7J3AJJkwM_",
   "type": "flow",
+  "version": "0.4.7",
   "storageId": "wf-QGa7BsMVh9p7J3AJJkwM_",
   "name": "Planning 1",
   "description": "Planning and Stock Report Generation",
@@ -67,7 +68,6 @@
       {
         "id": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
         "type": "agent",
-        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
         "position": {
           "x": 150,
           "y": 60
@@ -80,12 +80,12 @@
         "selected": false,
         "dragging": false,
         "className": "",
-        "hidden": false
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
       },
       {
         "id": "1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "type": "agent",
-        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
         "position": {
           "x": 480,
           "y": 75
@@ -98,12 +98,12 @@
         "selected": false,
         "dragging": false,
         "className": "",
-        "hidden": false
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
       },
       {
         "id": "1747672281719vu_wTfjf3BRQ_1Vb_88RM",
         "type": "agent",
-        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
         "position": {
           "x": 150,
           "y": 360
@@ -116,12 +116,12 @@
         "selected": false,
         "dragging": false,
         "className": "",
-        "hidden": false
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
       },
       {
         "id": "1747672286352sP2IQQRswtxnXbkQun5zr",
         "type": "agent",
-        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
         "position": {
           "x": 480,
           "y": 360
@@ -134,7 +134,8 @@
         "selected": false,
         "dragging": false,
         "className": "",
-        "hidden": false
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
       }
     ],
     "edges": [

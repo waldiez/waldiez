@@ -1,6 +1,7 @@
 {
   "id": "wf-57v7v5V-k6fIlTP5E6QFL",
   "type": "flow",
+  "version": "0.4.7",
   "storageId": "wf-57v7v5V-k6fIlTP5E6QFL",
   "name": "2 - With agent lib",
   "description": "Using CaptainAgent with agent library. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-agent-library-only>",
