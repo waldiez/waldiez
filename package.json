@@ -55,6 +55,11 @@
         "build:web": "tsc -b && vite build --config vite.web.config.ts",
         "build:site": "bun monaco && bun build:web && bun scripts/afterSite.ts",
         "docs": "typedoc --tsconfig tsconfig.docs.json",
+        "examples:build:check": "bun build:lib && node --import=tsx scripts/examples.ts --check",
+        "examples:build:update": "bun build:lib && node --import=tsx scripts/examples.ts --update",
+        "examples:update": "node --import=tsx scripts/examples.ts --update",
+        "examples:check": "node --import=tsx scripts/examples.ts --check",
+        "examples:check:strict": "node --import=tsx scripts/examples.ts --check --strict",
         "preview": "vite preview",
         "format": "bun prettier && bun stylelint && bun eslint",
         "lint": "bun typecheck && bun prettier:check && bun stylelint:check && bun eslint:check",
@@ -91,7 +96,7 @@
         "test:all": "bun test:browser && bun test:coverage",
         "test": "bun test:all && bun lcov:merge",
         "changelog": "bun scripts/changelog.ts",
-        "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun archive && bun docs"
+        "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun examples:check:strict && bun archive && bun docs"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,json,css,md,yml,yaml}": [
