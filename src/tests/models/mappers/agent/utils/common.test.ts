@@ -227,7 +227,7 @@ describe("getNestedChats", () => {
                 messages: [],
                 condition: {
                     conditionType: "string_llm",
-                    prompt: "Start a nested chat",
+                    prompt: "",
                 },
                 available: {
                     type: "none",

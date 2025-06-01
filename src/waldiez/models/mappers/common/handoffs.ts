@@ -18,10 +18,7 @@ import {
  * @param data - The data object containing the condition information.
  * @param defaultPrompt - The default prompt to use if no valid condition is found.
  */
-const getStringLLMCondition = (
-    data: { [key: string]: any },
-    defaultPrompt: string = "Handoff to another agent",
-) => {
+const getStringLLMCondition = (data: { [key: string]: any }, defaultPrompt: string = "") => {
     let condition: WaldiezHandoffCondition | null = {
         conditionType: "string_llm",
         prompt: defaultPrompt,
@@ -148,10 +145,7 @@ export const getHandoffAvailability = (json: { [key: string]: any }) => {
  * @param defaultPrompt - The default prompt to use if no valid condition is found.
  * @returns - A WaldiezHandoffCondition object.
  */
-export const getHandoffCondition = (
-    data: { [key: string]: any },
-    defaultPrompt: string = "Handoff to another agent",
-) => {
+export const getHandoffCondition = (data: { [key: string]: any }, defaultPrompt: string = "") => {
     let handoffCondition: WaldiezHandoffCondition = {
         conditionType: "string_llm",
         prompt: defaultPrompt,

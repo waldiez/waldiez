@@ -14,6 +14,7 @@ describe("chatMapper.exportChat", () => {
             source: "wa-1",
             target: "wa-2",
             data: {
+                type: "chat",
                 label: "custom_chat",
                 description: "custom_description",
                 position: 0,

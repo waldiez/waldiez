@@ -111,15 +111,20 @@ export const getRealTarget = (data: { [key: string]: any }) => {
     return realTarget;
 };
 
-export const getChatType = (
-    edge: WaldiezEdge,
-    json: { [key: string]: any },
-    _sourceNode: Node,
-    _targetNode: Node,
-) => {
+export const getChatType = (edge: WaldiezEdge, json: { [key: string]: any }) => {
     let edgeType: WaldiezEdgeType = "chat";
-    if (json.type && ValidChatTypes.includes(json.type)) {
-        edgeType = json.type;
+    if ("type" in json && typeof json.type === "string" && json.type && ValidChatTypes.includes(json.type)) {
+        edgeType = json.type as WaldiezEdgeType;
+    } else if (
+        "data" in json &&
+        typeof json.data === "object" &&
+        json.data !== null &&
+        "type" in json.data &&
+        typeof json.data.type === "string" &&
+        json.data.type &&
+        ValidChatTypes.includes(json.data.type)
+    ) {
+        edgeType = json.data.type as WaldiezEdgeType;
     }
     let chatType = edge?.type ?? edgeType;
     if (!ValidChatTypes.includes(chatType)) {
@@ -137,7 +142,11 @@ export const updateEdge = (
     rest: { [key: string]: any },
 ) => {
     const sourceAgentType = sourceNode.data.agentType as WaldiezNodeAgentType;
-    const chatType = getChatType(edge, json, sourceNode, targetNode);
+    let chatType = getChatType(edge, json);
+    if ("type" in rest && typeof rest.type === "string" && ValidChatTypes.includes(rest.type)) {
+        edge.type = rest.type as WaldiezEdgeType;
+        chatType = edge.type;
+    }
     const color = AGENT_COLORS[sourceAgentType];
     edge.type = chatType;
     if (edge.type !== "hidden") {
@@ -233,7 +242,30 @@ export const getChatRest = (json: { [key: string]: any }) => {
     return rest;
 };
 
-export const checkChatData = (json: { [key: string]: any }, edges: Edge[], nodes: Node[]) => {
+const findOoutWhyItIsInvalid = (json: { [key: string]: any }) => {
+    const why = [];
+    if (!("id" in json) || typeof json.id !== "string") {
+        why.push("id must be a string");
+    }
+    if (!("data" in json) || typeof json.data !== "object" || json.data === null) {
+        why.push("data must be an object");
+    }
+    if (!("source" in json.data) || typeof json.data.source !== "string") {
+        why.push("data.source must be a string");
+    }
+    if (!("target" in json.data) || typeof json.data.target !== "string") {
+        why.push("data.target must be a string");
+    }
+    if (why.length > 0) {
+        return `Invalid edge data: ${why.join(", ")}`;
+    }
+    return "Invalid edge data";
+};
+
+const validateChatData = (json: { [key: string]: any }) => {
+    if (!json || typeof json !== "object") {
+        throw new Error("Invalid edge data");
+    }
     const isValid =
         "id" in json &&
         typeof json.id === "string" &&
@@ -245,8 +277,30 @@ export const checkChatData = (json: { [key: string]: any }, edges: Edge[], nodes
         "target" in json.data &&
         typeof json.data.target === "string";
     if (!isValid) {
-        throw new Error("Invalid edge data");
+        throw new Error(findOoutWhyItIsInvalid(json));
     }
+};
+
+const ensureValidEdgeType = (json: { [key: string]: any }) => {
+    if ("type" in json && typeof json.type === "string" && ValidChatTypes.includes(json.type)) {
+        json.type = json.type as WaldiezEdgeType;
+    } else if (
+        "data" in json &&
+        typeof json.data === "object" &&
+        json.data !== null &&
+        "type" in json.data &&
+        typeof json.data.type === "string" &&
+        ValidChatTypes.includes(json.data.type)
+    ) {
+        json.type = json.data.type as WaldiezEdgeType;
+    } else {
+        json.type = "chat"; // default type
+    }
+};
+
+export const checkChatData = (json: { [key: string]: any }, edges: Edge[], nodes: Node[]) => {
+    validateChatData(json);
+    ensureValidEdgeType(json);
     const edge = edges.find(e => e.id === json.id);
     if (!edge) {
         throw new Error(`Edge not found: ${json.id}`);

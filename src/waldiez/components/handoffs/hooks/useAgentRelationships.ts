@@ -83,7 +83,7 @@ export const useAgentRelationships = (
                 messages: nestedEdges.map(edge => ({ id: edge.id, isReply: false })), // the messages are gathered from the edges (the targets)
                 condition: {
                     conditionType: "string_llm",
-                    prompt: "Start a nested chat",
+                    prompt: "",
                 },
                 available: {
                     type: "none",

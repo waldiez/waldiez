@@ -21,7 +21,7 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
             triggeredBy: [],
             condition: {
                 conditionType: "string_llm",
-                prompt: "Start a new chat",
+                prompt: "",
             },
             available: {
                 type: "none",

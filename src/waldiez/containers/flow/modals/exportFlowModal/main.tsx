@@ -228,7 +228,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                 <div className="flex flex-row">
                     {alsoUpload && (
                         <button
-                            type="submit"
+                            type="button"
                             className="modal-action-submit margin-right-20"
                             onClick={onUploadToHub}
                             data-testid={`upload-to-hub-${flowId}`}
@@ -237,7 +237,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                             {isUploading ? "Uploading..." : "Upload to Hub"}
                         </button>
                     )}
-                    <button type="submit" className="modal-action-submit" onClick={onDownload}>
+                    <button type="button" className="modal-action-submit" onClick={onDownload}>
                         Download
                     </button>
                 </div>

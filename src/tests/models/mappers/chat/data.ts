@@ -4,11 +4,10 @@
  */
 import { Edge, Node } from "@xyflow/react";
 
-import { WaldiezChatLlmSummaryMethod, WaldiezEdgeType, WaldiezMessageType } from "@waldiez/types";
-
 export const chatJson = {
     id: "wc-1",
     data: {
+        type: "chat",
         source: "wa-1",
         target: "wa-2",
         name: "custom_chat",
@@ -99,6 +98,7 @@ export const agents: Node[] = [
 ];
 export const updateData = {
     chat: {
+        type: "chat" as const,
         name: "Chat",
         description: "Chat Description",
         source: "wa-1",
@@ -109,7 +109,7 @@ export const updateData = {
         order: 0,
         clearHistory: false,
         message: {
-            type: "none" as WaldiezMessageType,
+            type: "none" as const,
             useCarryover: false,
             content: null,
             context: {},
@@ -120,7 +120,7 @@ export const updateData = {
         },
         prerequisites: [],
         summary: {
-            method: "lastMsg" as WaldiezChatLlmSummaryMethod,
+            method: "lastMsg" as const,
             prompt: "summarize the conversation",
             args: {
                 summary_role: "user",
@@ -143,15 +143,15 @@ export const updateData = {
         id: "1",
         source: "wa-1",
         target: "wa-2",
-        type: "chat" as WaldiezEdgeType,
         data: {
+            type: "chat" as const,
             label: "Chat",
             description: "Chat Description",
             position: 0,
             order: 0,
             clearHistory: false,
             message: {
-                type: "none" as WaldiezMessageType,
+                type: "none" as const,
                 useCarryover: false,
                 content: null,
                 context: {},
@@ -162,7 +162,7 @@ export const updateData = {
             },
             prerequisites: [],
             summary: {
-                method: "lastMsg" as WaldiezChatLlmSummaryMethod,
+                method: "lastMsg" as const,
                 prompt: "summarize the conversation",
                 args: {
                     summary_role: "user",
@@ -227,6 +227,7 @@ export const updateData = {
         target: "wa-2",
         type: "chat",
         data: {
+            type: "chat" as const,
             label: "Chat",
             description: "Chat Description",
             position: 0,

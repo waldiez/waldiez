@@ -91,6 +91,7 @@ describe("getChats", () => {
             {
                 id: "wc-1",
                 data: {
+                    type: "chat",
                     source: "wa-1",
                     target: "wa-2",
                     sourceType: "user_proxy",
@@ -131,7 +132,6 @@ describe("getChats", () => {
                     realTarget: null,
                 },
                 rest: {
-                    type: "chat",
                     animated: false,
                     hidden: false,
                     markerEnd: {

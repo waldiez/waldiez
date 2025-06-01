@@ -89,6 +89,7 @@ export type WaldiezNestedChat = {
  * @see {@link WaldiezHandoffAvailability}
  */
 export type WaldiezChatDataCommon = {
+    type: WaldiezEdgeType;
     description: string;
     position: number;
     order: number;

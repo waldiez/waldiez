@@ -135,7 +135,7 @@ const ensureAgentNestedChatData = (agent: WaldiezNodeAgent, nodes: Node[], edges
                 messages: nestedEdges.map(edge => ({ id: edge.id, isReply: false })),
                 condition: {
                     conditionType: "string_llm",
-                    prompt: "Start a new chat",
+                    prompt: "",
                 },
                 available: {
                     type: "none",

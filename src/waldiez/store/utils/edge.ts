@@ -246,15 +246,16 @@ const getNewChat = (
     chatData.target = targetNode.id;
     chatData.sourceType = sourceType;
     chatData.targetType = targetType;
-    chatData.description = `Handoff from ${sourceNode.data.label} to ${targetNode.data.label}`;
+    chatData.description = `${sourceNode.data.label} to ${targetNode.data.label}`;
     chatData.condition = {
         conditionType: "string_llm",
-        prompt: `Handoff to ${targetNode.data.label}`,
+        prompt: "",
     };
     chatData.name = edgeName;
     chatData.order = -1;
     const chatType = getNewChatType(sourceNode, targetNode, hidden);
     chatData.position = positionGetter(chatType);
+    chatData.type = chatType;
     const chat = new WaldiezChat({
         id: `wc-${getId()}`,
         data: chatData,

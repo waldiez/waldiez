@@ -49,22 +49,37 @@ describe("chatMapper.importChat", () => {
     });
     it("should throw an error if the edge is not found", () => {
         expect(() =>
-            chatMapper.importChat({ id: "1", data: { source: "wa-1", target: "wa-2" } }, [], agents, 1),
+            chatMapper.importChat(
+                { id: "1", type: "chat", data: { source: "wa-1", target: "wa-2" } },
+                [],
+                agents,
+                1,
+            ),
         ).toThrowError("Edge not found");
     });
     it("should throw an error if the source is not found", () => {
         expect(() =>
-            chatMapper.importChat({ id: "wc-1", data: { source: "1", target: "wa-2" } }, edges, agents, 1),
+            chatMapper.importChat(
+                { id: "wc-1", type: "chat", data: { source: "1", target: "wa-2" } },
+                edges,
+                agents,
+                1,
+            ),
         ).toThrowError("Source node not found");
     });
     it("should throw an error if the target is not found", () => {
         expect(() =>
-            chatMapper.importChat({ id: "wc-1", data: { source: "wa-1", target: "2" } }, edges, agents, 1),
+            chatMapper.importChat(
+                { id: "wc-1", type: "chat", data: { source: "wa-1", target: "2" } },
+                edges,
+                agents,
+                1,
+            ),
         ).toThrowError("Target node not found");
     });
     it("should throw an error if an invalid edge is provided", () => {
         expect(() =>
-            chatMapper.importChat({ id: "1", data: { source: "wa-1" } }, [], agents, 1),
+            chatMapper.importChat({ id: "1", type: "chat", data: { source: "wa-1" } }, [], agents, 1),
         ).toThrowError("Invalid edge data");
     });
     it("should throw an error if the edge source does not match the data source", () => {

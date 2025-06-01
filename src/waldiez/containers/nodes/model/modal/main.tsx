@@ -101,7 +101,7 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
                             Save & Close
                         </button>
                         <button
-                            type="submit"
+                            type="button"
                             title="Save"
                             className="modal-action-submit"
                             onClick={onSave}

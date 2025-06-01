@@ -4,7 +4,7 @@
  */
 import { WaldiezAgentType } from "@waldiez/models/Agent/Common/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
-import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
+import { WaldiezChatSummary, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat/types";
 import {
     WaldiezHandoffAvailability,
     WaldiezHandoffCondition,
@@ -13,6 +13,7 @@ import {
 
 /**
  * Waldiez Chat Data
+ * @param type - The type of the chat
  * @param source - The source
  * @param target - The target
  * @param name - The name of the chat
@@ -39,6 +40,7 @@ import {
  * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezChatData {
+    type: WaldiezEdgeType = "chat";
     source: string;
     target: string;
     sourceType: WaldiezAgentType;
@@ -64,12 +66,13 @@ export class WaldiezChatData {
     };
     condition: WaldiezHandoffCondition = {
         conditionType: "string_llm",
-        prompt: "Handoff to another agent",
+        prompt: "",
     };
     afterWork: WaldiezTransitionTarget | null = null;
     silent?: boolean = false;
     constructor(
         props: {
+            type: WaldiezEdgeType;
             source: string;
             target: string;
             sourceType: WaldiezAgentType;
@@ -91,6 +94,7 @@ export class WaldiezChatData {
             realTarget: string | null;
             silent?: boolean;
         } = {
+            type: "chat",
             source: "source",
             target: "target",
             sourceType: "user_proxy",
@@ -119,7 +123,7 @@ export class WaldiezChatData {
             prerequisites: [],
             condition: {
                 conditionType: "string_llm",
-                prompt: "Handoff to another agent",
+                prompt: "",
             },
             available: {
                 type: "none",
@@ -132,6 +136,7 @@ export class WaldiezChatData {
         },
     ) {
         const {
+            type,
             source,
             target,
             sourceType,
@@ -153,6 +158,7 @@ export class WaldiezChatData {
             realTarget,
             silent,
         } = props;
+        this.type = type;
         this.source = source;
         this.target = target;
         this.sourceType = sourceType;

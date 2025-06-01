@@ -10,6 +10,7 @@ import { chatMapper } from "@waldiez/models/mappers";
 describe("chatMapper.asEdge", () => {
     it("should convert a chat to edge", () => {
         const chatData: WaldiezChatData = {
+            type: "chat",
             source: "wa-1",
             target: "wa-2",
             sourceType: "user_proxy",
@@ -54,6 +55,9 @@ describe("chatMapper.asEdge", () => {
         const edge = chatMapper.asEdge(chat);
         expect(edge).toBeTruthy();
         expect(edge.id).toBe("1");
+        expect(edge.source).toBe("wa-1");
+        expect(edge.target).toBe("wa-2");
+        expect(edge.type).toBe("chat");
         expect(edge.data?.label).toBe("custom_chat");
     });
 });

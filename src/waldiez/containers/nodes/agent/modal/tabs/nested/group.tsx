@@ -37,7 +37,7 @@ const getNestedChats = (agentData: WaldiezNodeAgentData, edges: WaldiezEdge[]): 
             messages: [],
             condition: {
                 conditionType: "string_llm",
-                prompt: "Start a nested chat",
+                prompt: "",
             },
             available: {
                 type: "none",

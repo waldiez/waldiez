@@ -47,6 +47,7 @@ describe("WaldiezChat", () => {
             content: null,
         });
         const chatData = new WaldiezChatData({
+            type: "chat",
             source: "agent1",
             target: "agent2",
             sourceType: "reasoning",
@@ -70,7 +71,7 @@ describe("WaldiezChat", () => {
             prerequisites: [],
             condition: {
                 conditionType: "string_llm",
-                prompt: "Handoff to another agent",
+                prompt: "",
             },
             available: {
                 type: "none",

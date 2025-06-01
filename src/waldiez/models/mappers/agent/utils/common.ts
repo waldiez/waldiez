@@ -330,7 +330,7 @@ const getNestedChatMessages = (chat: any): { id: string; isReply: boolean }[] =>
  */
 export const getNestedChats = (data: Record<string, unknown>): WaldiezAgentNestedChat[] => {
     const chats: WaldiezAgentNestedChat[] = [];
-    const defaultPrompt = "Start a nested chat";
+    const defaultPrompt = "";
     const defaultCondition: WaldiezAgentNestedChat["condition"] = {
         conditionType: "string_llm",
         prompt: defaultPrompt,

@@ -4,7 +4,14 @@
  */
 import { Edge, Node } from "@xyflow/react";
 
-import { WaldiezChat, WaldiezChatData, WaldiezEdge, WaldiezEdgeData } from "@waldiez/models/Chat";
+import {
+    ValidChatTypes,
+    WaldiezChat,
+    WaldiezChatData,
+    WaldiezEdge,
+    WaldiezEdgeData,
+    WaldiezEdgeType,
+} from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { summaryMapper } from "@waldiez/models/mappers/chat/summaryMapper";
 import {
@@ -71,11 +78,13 @@ export const chatMapper = {
         }
         const { edge, sourceNode, targetNode } = result;
         const id = jsonObject.id as string;
-        const data = getChatData(jsonObject.data as any, index);
+        const type = getChatTypeFromJSON(edge);
+        const data = getChatData(type, jsonObject.data as any, index);
         const rest = getChatRest({ ...jsonObject, ...edge });
+
         const updatedEdge = updateEdge(edge as WaldiezEdge, data, jsonObject, sourceNode, targetNode, rest);
         Object.entries(updatedEdge).forEach(([key, value]) => {
-            if (key !== "data" && key !== "source" && key !== "target" && key !== "id") {
+            if (key !== "data" && key !== "source" && key !== "target" && key !== "id" && key !== "type") {
                 rest[key] = value;
             }
         });
@@ -95,6 +104,7 @@ export const chatMapper = {
         const chatData = {
             source: edge.source,
             target: edge.target,
+            type: edge.type || getChatTypeFromJSON(edge),
             sourceType: getChatSourceType(data),
             targetType: getChatTargetType(data),
             name: getChatName(data),
@@ -139,6 +149,7 @@ export const chatMapper = {
      */
     asEdge: (chat: WaldiezChat): WaldiezEdge => {
         const data = {
+            type: chat.data.type || getChatTypeFromJSON(chat.data),
             label: chat.data.name,
             sourceType: chat.data.sourceType,
             targetType: chat.data.targetType,
@@ -161,11 +172,31 @@ export const chatMapper = {
             id: chat.id,
             source: chat.source,
             target: chat.target,
+            type: data.type,
             data,
-            hidden: chat.rest?.hidden === true || chat.rest?.type === "hidden",
+            hidden: chat.rest?.hidden === true || data.type === "hidden",
             ...chat.rest,
         };
     },
+};
+
+const getChatTypeFromJSON = (json: { [key: string]: any }): WaldiezEdgeType => {
+    const defaultType = "chat";
+    if (
+        "data" in json &&
+        typeof json.data === "object" &&
+        "type" in json.data &&
+        typeof json.data.type === "string" &&
+        ValidChatTypes.includes(json.data.type.toLocaleLowerCase())
+    ) {
+        return json.data.type as WaldiezEdgeType;
+    }
+    if ("type" in json && typeof json.type === "string") {
+        if (ValidChatTypes.includes(json.type.toLocaleLowerCase())) {
+            return json.type as WaldiezEdgeType;
+        }
+    }
+    return defaultType;
 };
 
 /**
@@ -174,7 +205,10 @@ export const chatMapper = {
  * @param index - The index of the chat in the graph.
  * @returns A WaldiezChatData instance with the extracted data.
  */
-const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatData => {
+const getChatData = (type: WaldiezEdgeType, json: { [key: string]: any }, index: number): WaldiezChatData => {
+    if (!json || typeof json !== "object") {
+        throw new Error("Invalid chat data");
+    }
     const name = getNameFromJSON(json, "New connection")!;
     const description = getDescriptionFromJSON(json, "New connection");
     const source = json.source as string;
@@ -195,6 +229,7 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
     const available = getHandoffAvailability(json);
     const afterWork = getAfterWork(json);
     const data = new WaldiezChatData({
+        type,
         source,
         target,
         sourceType,

@@ -156,6 +156,7 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
                         hidden: false,
                         data: {
                             ...edge.data,
+                            type: edgeType,
                             order: edgeType === "nested" ? -1 : (edge.data?.order ?? -1),
                             prerequisites: edgeType === "nested" ? [] : (edge.data?.prerequisites ?? []),
                         },

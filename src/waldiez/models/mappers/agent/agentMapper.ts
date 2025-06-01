@@ -199,7 +199,7 @@ const ensureOneNestedChatExists = (data: any) => {
                 triggeredBy: [],
                 condition: {
                     conditionType: "string_llm",
-                    prompt: "Start a nested chat",
+                    prompt: "",
                 },
                 available: {
                     type: "none",
