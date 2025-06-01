@@ -25,7 +25,7 @@ embedchain ;sys_platform == 'win32' and platform_machine != 'arm64' and platform
 google-api-python-client>=2.163.0,<3.0
 google-auth-httplib2>=0.2.0,<0.3
 google-auth-oauthlib>=1.2.1,<2.0
-hf-xet>=1.1.2,<2.0.0; platform_machine=='x86_64' or platform_machine=='amd64' or platform_machine=='arm64' or platform_machine=='ARM64' or platform_machine=='aarch64'
+hf-xet>=1.1.2,<2.0.0; platform_machine == 'x86_64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'ARM64' or platform_machine == 'aarch64'
 huggingface-hub
 ipython
 langchain-community>=0.3.12,<1
