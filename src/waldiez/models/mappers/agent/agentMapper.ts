@@ -130,6 +130,7 @@ export const agentMapper = {
             "createdAt",
             "updatedAt",
             "agentType",
+            "parentId",
         ]) {
             delete agentCopy[key];
         }
