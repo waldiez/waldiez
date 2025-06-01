@@ -15,3 +15,4 @@ interface ImportMetaEnv {
 interface ImportMeta {
     readonly env: ImportMetaEnv;
 }
+declare const __WALDIEZ_VERSION__: string;

@@ -9,6 +9,8 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
 
+import packageJson from "./package.json";
+
 const defaultIncludes = ["**/tests/**/*.test.{ts,tsx}"];
 const defaultBrowserIncludes = ["**/ui-tests/**/*.test.{ts,tsx}"];
 const isBrowserTest = process.argv.includes("--browser.enabled");
@@ -24,6 +26,21 @@ const thresholds = {
     lines: 80,
 };
 
+const getVersion = (): string => {
+    const version = packageJson.version;
+    if (!version) {
+        throw new Error("Version not found in package.json");
+    }
+    // remove leading 'v' if present
+    const cleanedVersion = version.startsWith("v") ? version.slice(1) : version;
+    // make sure it's a valid semver
+    const semverRegex = /^\d+\.\d+\.\d+(-\w+)?$/;
+    if (!semverRegex.test(cleanedVersion)) {
+        throw new Error(`Invalid version format: ${cleanedVersion}`);
+    }
+    return JSON.stringify(cleanedVersion);
+};
+
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
     publicDir: command === "build" ? resolve(__dirname, "public", "logo") : resolve(__dirname, "public"),
@@ -32,6 +49,9 @@ export default defineConfig(({ command }) => ({
             "content-security-policy-report-only":
                 "default-src 'none'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; script-src 'self'; font-src 'self'; img-src 'self' data:; connect-src *; report-to /_/csp",
         },
+    },
+    define: {
+        __WALDIEZ_VERSION__: getVersion(),
     },
     build: {
         emptyOutDir: true,

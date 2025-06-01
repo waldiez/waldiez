@@ -9,6 +9,7 @@ import { WaldiezFlowData } from "@waldiez/models/Flow/FlowData";
 /**
  * Waldiez Flow
  * @param type - The type (flow)
+ * @param version - The version of waldiez used to create this flow
  * @param id - The ID
  * @param name - The name of the flow
  * @param description - The description of the flow
@@ -23,6 +24,7 @@ import { WaldiezFlowData } from "@waldiez/models/Flow/FlowData";
  */
 export class WaldiezFlow {
     type = "flow";
+    version = __WALDIEZ_VERSION__;
     id: string;
     name: string;
     description: string;
@@ -75,6 +77,7 @@ const aFlowId = getFlowId();
  */
 export const emptyFlow: WaldiezFlow = {
     type: "flow",
+    version: __WALDIEZ_VERSION__,
     id: aFlowId,
     storageId: aFlowId,
     name: "Waldiez Flow",

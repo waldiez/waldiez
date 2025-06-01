@@ -119,6 +119,7 @@ export const flowMapper = {
         const waldiezFlow: WaldiezFlow = {
             id: flow.flowId,
             type: "flow",
+            version: __WALDIEZ_VERSION__,
             storageId: flow.storageId,
             name: flow.name,
             description: flow.description,

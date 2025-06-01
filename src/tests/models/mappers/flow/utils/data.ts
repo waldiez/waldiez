@@ -11,6 +11,7 @@ export const waldiezFlow: WaldiezFlow = {
     id: "wf-1",
     storageId: "wf-1",
     type: "flow",
+    version: __WALDIEZ_VERSION__,
     name: "Waldiez Flow",
     createdAt,
     updatedAt,
