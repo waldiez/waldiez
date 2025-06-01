@@ -2026,6 +2026,15 @@
                 "id": {
                     "type": "string"
                 },
+                "type": {
+                    "$ref": "#/definitions/WaldiezEdgeType"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "target": {
+                    "type": "string"
+                },
                 "data": {
                     "$ref": "#/definitions/WaldiezChatData"
                 },
@@ -2034,19 +2043,18 @@
                     "additionalProperties": {}
                 }
             },
-            "required": ["id", "data"],
+            "required": ["id", "type", "source", "target", "data"],
             "additionalProperties": false,
             "description": "Waldiez Chat"
+        },
+        "WaldiezEdgeType": {
+            "type": "string",
+            "enum": ["chat", "nested", "group", "hidden"],
+            "description": "Waldiez Edge Type"
         },
         "WaldiezChatData": {
             "type": "object",
             "properties": {
-                "source": {
-                    "type": "string"
-                },
-                "target": {
-                    "type": "string"
-                },
                 "sourceType": {
                     "$ref": "#/definitions/WaldiezAgentType"
                 },
@@ -2137,8 +2145,6 @@
                 }
             },
             "required": [
-                "source",
-                "target",
                 "sourceType",
                 "targetType",
                 "name",
