@@ -26,7 +26,7 @@ except ImportError:
     sys.path.append(str(Path(__file__).resolve().parents[1]))
     from waldiez.exporter import WaldiezExporter
 
-from waldiez.exporting.core import DefaultLogger
+from waldiez.logger import WaldiezLogger
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 DOT_LOCAL = ROOT_DIR / ".local"
@@ -57,7 +57,7 @@ EXAMPLES = [
 ]
 
 
-LOG = DefaultLogger()
+LOG = WaldiezLogger()
 
 
 def load_shared_schema() -> dict[str, Any]:
@@ -163,10 +163,12 @@ def validate_example(example_path: str) -> None:
     with open(example_path, "r", encoding="utf-8") as file:
         flow_data = json.load(file)
     shared_schema = load_shared_schema()
+    file_name = os.path.basename(example_path)
     try:
         validate(instance=flow_data, schema=shared_schema)
     except Exception as e:
-        raise AssertionError(f"Example {example_path} is not valid: {e}") from e
+        raise AssertionError(f"Example {file_name} is not valid: {e}") from e
+    LOG.success(f"Example {file_name} is valid.")
 
 
 def convert_examples() -> None:
@@ -185,27 +187,81 @@ def convert_examples() -> None:
         example_url = f"{REPO_URL}/{example}"
         example_path = os.path.join(temp_dir, example)
         os.makedirs(os.path.dirname(example_path), exist_ok=True)
-        LOG.info(f"Downloading {example} ...")  # noqa: G004
+        LOG.info("Downloading %s ...", example)
         download_example(http, example_url, example_path)
-        LOG.info(f"Validating {example} ...")  # noqa: G004
+        LOG.info("Validating %s ...", example)
         validate_example(example_path)
-        LOG.info(f"Converting {example} to py...")  # noqa: G004
+        LOG.info("Converting %s to py...", example)
         exporter = WaldiezExporter.load(Path(example_path))
         output_py_path = example_path.replace(".waldiez", ".py")
         exporter.export(output_py_path, True)
         if not os.path.exists(output_py_path):
             # pylint: disable=broad-exception-raised
             raise Exception(f"Failed to convert {example}")
-        LOG.info(f"Converting {example} to ipynb...")  # noqa: G004
+        LOG.info("Converting %s to ipynb...", example)
         output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
         exporter.export(output_ipynb_path, True)
         if not os.path.exists(output_ipynb_path):
             # pylint: disable=broad-exception-raised
             raise Exception(f"Failed to convert {example} to ipynb")
         move_to_dot_local(example_dir, example_path, exporter.waldiez.name)
-        LOG.info(f"Example {example} looks good ...")  # noqa: G004
+        LOG.success("Example %s looks good ...", example)
     shutil.rmtree(temp_dir)
 
 
+def validate_local_example(example_dir: str, example_path: str) -> None:
+    """Check if the example already exists locally.
+
+    Parameters
+    ----------
+    example_dir : str
+        The directory of the example.
+    example_path : str
+        The path to the example.
+    """
+    local_dir = os.path.join(ROOT_DIR, "examples", example_dir)
+    local_path = os.path.join(local_dir, os.path.basename(example_path))
+    if os.path.exists(local_path):
+        validate_example(local_path)
+        return
+    LOG.warning("Example %s does not exist locally.", local_path)
+
+
+def check_local_examples() -> None:
+    """Check if the examples exist locally and validate them.
+
+    Raises
+    ------
+    Exception
+        If the validation fails for any example.
+    """
+    for example in EXAMPLES:
+        example_dir = os.path.dirname(example)
+        example_path = os.path.join(ROOT_DIR, "examples", example)
+        try:
+            validate_local_example(example_dir, example_path)
+        except Exception as e:
+            _log = f"Error validating local example {example}: {e}"
+            LOG.error(_log)
+            raise e
+        LOG.success(
+            f"Local example {example} looks valid.",
+        )
+
+
+def main() -> None:
+    """Handle local and remote examples."""
+    LOG.info("Checking local examples...")
+    check_local_examples()
+    try:
+        convert_examples()
+        LOG.info(
+            "All examples validated and converted successfully.",
+        )
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        LOG.error("Error during conversion: %s", e)
+        sys.exit(1)
+
+
 if __name__ == "__main__":
-    convert_examples()
+    main()
