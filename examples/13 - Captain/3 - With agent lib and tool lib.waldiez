@@ -61,6 +61,7 @@
         "id": "we-1747648772944jIxHrVO5yLLfWtfvwmp0C",
         "source": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
         "target": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -75,8 +76,7 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-        "targetHandle": "agent-handle-left-target-wa-1747648770281G2SIflV6LiGugWwlAknFI",
-        "type": "chat"
+        "targetHandle": "agent-handle-left-target-wa-1747648770281G2SIflV6LiGugWwlAknFI"
       }
     ],
     "viewport": {
@@ -115,7 +115,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -166,7 +166,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -317,9 +317,10 @@
     "chats": [
       {
         "id": "we-1747648772944jIxHrVO5yLLfWtfvwmp0C",
+        "type": "chat",
+        "source": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
+        "target": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
         "data": {
-          "source": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
-          "target": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
           "sourceType": "user_proxy",
           "targetType": "captain",
           "name": "User proxy => Captain",
@@ -353,11 +354,14 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
   }
 }

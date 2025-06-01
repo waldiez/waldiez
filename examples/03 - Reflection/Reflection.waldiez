@@ -130,6 +130,7 @@
         "id": "we-174758729031787ySRT6YrNGz58-rWLSQv",
         "source": "1747587231249CS8kwY_f_NdENhVDsPdDW",
         "target": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -144,13 +145,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747587231249CS8kwY_f_NdENhVDsPdDW",
-        "targetHandle": "agent-handle-left-target-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-        "type": "chat"
+        "targetHandle": "agent-handle-left-target-1747587201016JPcWAqQsZ7f_hwRZ_OniJ"
       },
       {
         "id": "we-1747587341567Vf6ZV_ahewHcJSZoPOmXD",
         "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
         "target": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
+        "type": "nested",
         "hidden": false,
         "animated": true,
         "selected": false,
@@ -159,13 +160,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-        "targetHandle": "agent-handle-left-target-wa-1747587027822eX627_nqb5tWvkkUUq44W",
-        "type": "nested"
+        "targetHandle": "agent-handle-left-target-wa-1747587027822eX627_nqb5tWvkkUUq44W"
       },
       {
         "id": "we-17475873447682tBCgW-7BLtRBvGvyt2_q",
         "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
         "target": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
+        "type": "nested",
         "hidden": false,
         "animated": true,
         "selected": false,
@@ -174,13 +175,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-        "targetHandle": "agent-handle-left-target-17475870887015fT9HMRt7Op1Y2l0EDLSc",
-        "type": "nested"
+        "targetHandle": "agent-handle-left-target-17475870887015fT9HMRt7Op1Y2l0EDLSc"
       },
       {
         "id": "we-1747587347416ekDsyp52ZXSq7dJmGw13v",
         "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
         "target": "1747587121881_z5Y971nA86t3GHAjWwuA",
+        "type": "nested",
         "hidden": false,
         "animated": true,
         "selected": false,
@@ -189,13 +190,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-        "targetHandle": "agent-handle-left-target-1747587121881_z5Y971nA86t3GHAjWwuA",
-        "type": "nested"
+        "targetHandle": "agent-handle-left-target-1747587121881_z5Y971nA86t3GHAjWwuA"
       },
       {
         "id": "we-1747587350867T7Yogz9BL_p963ijyxCPs",
         "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
         "target": "1747587163482cY8jFkfB079xEe8mI77M2",
+        "type": "nested",
         "hidden": false,
         "animated": true,
         "selected": false,
@@ -204,8 +205,7 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-        "targetHandle": "agent-handle-left-target-1747587163482cY8jFkfB079xEe8mI77M2",
-        "type": "nested"
+        "targetHandle": "agent-handle-left-target-1747587163482cY8jFkfB079xEe8mI77M2"
       }
     ],
     "viewport": {
@@ -247,7 +247,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -294,7 +294,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -341,7 +341,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -388,7 +388,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -501,7 +501,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -561,9 +561,10 @@
     "chats": [
       {
         "id": "we-174758729031787ySRT6YrNGz58-rWLSQv",
+        "type": "chat",
+        "source": "1747587231249CS8kwY_f_NdENhVDsPdDW",
+        "target": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
         "data": {
-          "source": "1747587231249CS8kwY_f_NdENhVDsPdDW",
-          "target": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
           "sourceType": "assistant",
           "targetType": "assistant",
           "name": "Critic => Writer",
@@ -597,15 +598,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747587341567Vf6ZV_ahewHcJSZoPOmXD",
+        "type": "nested",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
         "data": {
-          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-          "target": "wa-1747587027822eX627_nqb5tWvkkUUq44W",
           "sourceType": "assistant",
           "targetType": "assistant",
           "name": "Writer => SEO reviewer",
@@ -644,15 +647,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-17475873447682tBCgW-7BLtRBvGvyt2_q",
+        "type": "nested",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
         "data": {
-          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-          "target": "17475870887015fT9HMRt7Op1Y2l0EDLSc",
           "sourceType": "assistant",
           "targetType": "assistant",
           "name": "Writer => Legal Reviewer",
@@ -691,15 +696,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747587347416ekDsyp52ZXSq7dJmGw13v",
+        "type": "nested",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "1747587121881_z5Y971nA86t3GHAjWwuA",
         "data": {
-          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-          "target": "1747587121881_z5Y971nA86t3GHAjWwuA",
           "sourceType": "assistant",
           "targetType": "assistant",
           "name": "Writer => Ethics Reviewer",
@@ -738,15 +745,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747587350867T7Yogz9BL_p963ijyxCPs",
+        "type": "nested",
+        "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
+        "target": "1747587163482cY8jFkfB079xEe8mI77M2",
         "data": {
-          "source": "1747587201016JPcWAqQsZ7f_hwRZ_OniJ",
-          "target": "1747587163482cY8jFkfB079xEe8mI77M2",
           "sourceType": "assistant",
           "targetType": "assistant",
           "name": "Writer => Meta Reviewer",
@@ -785,11 +794,14 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
   }
 }

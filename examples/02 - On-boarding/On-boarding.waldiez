@@ -115,6 +115,7 @@
         "id": "we-1747157103085uza2B-fHxE1pahit4ztNY",
         "source": "1747156782114_RZ2qtDdOC0P4DRseYcSJ",
         "target": "wa-17471570702041449mVlghDw-1N6htql8f",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -129,13 +130,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747156782114_RZ2qtDdOC0P4DRseYcSJ",
-        "targetHandle": "agent-handle-left-target-wa-17471570702041449mVlghDw-1N6htql8f",
-        "type": "chat"
+        "targetHandle": "agent-handle-left-target-wa-17471570702041449mVlghDw-1N6htql8f"
       },
       {
         "id": "we-1747157109516pM58U1Q5Qgmh4TBJsmBw6",
         "source": "wa-1747156458235hNFYOShslvNDfhE2jtR4V",
         "target": "wa-17471570702041449mVlghDw-1N6htql8f",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -150,13 +151,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-top-source-wa-1747156458235hNFYOShslvNDfhE2jtR4V",
-        "targetHandle": "agent-handle-bottom-target-wa-17471570702041449mVlghDw-1N6htql8f",
-        "type": "chat"
+        "targetHandle": "agent-handle-bottom-target-wa-17471570702041449mVlghDw-1N6htql8f"
       },
       {
         "id": "we-1747157142116pBQ9B77EMdg0pc7RyGBRE",
         "source": "wa-17471570702041449mVlghDw-1N6htql8f",
         "target": "wa-1747156452757IU0q1SGFT9W6PLnAWkHvW",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -171,8 +172,7 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-17471570702041449mVlghDw-1N6htql8f",
-        "targetHandle": "agent-handle-left-target-wa-1747156452757IU0q1SGFT9W6PLnAWkHvW",
-        "type": "chat"
+        "targetHandle": "agent-handle-left-target-wa-1747156452757IU0q1SGFT9W6PLnAWkHvW"
       }
     ],
     "viewport": {
@@ -211,7 +211,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -261,7 +261,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -310,7 +310,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -359,7 +359,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -451,9 +451,10 @@
     "chats": [
       {
         "id": "we-1747157103085uza2B-fHxE1pahit4ztNY",
+        "type": "chat",
+        "source": "1747156782114_RZ2qtDdOC0P4DRseYcSJ",
+        "target": "wa-17471570702041449mVlghDw-1N6htql8f",
         "data": {
-          "source": "1747156782114_RZ2qtDdOC0P4DRseYcSJ",
-          "target": "wa-17471570702041449mVlghDw-1N6htql8f",
           "sourceType": "assistant",
           "targetType": "user_proxy",
           "name": "personal_inform => customer_proxy",
@@ -489,15 +490,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747157109516pM58U1Q5Qgmh4TBJsmBw6",
+        "type": "chat",
+        "source": "wa-1747156458235hNFYOShslvNDfhE2jtR4V",
+        "target": "wa-17471570702041449mVlghDw-1N6htql8f",
         "data": {
-          "source": "wa-1747156458235hNFYOShslvNDfhE2jtR4V",
-          "target": "wa-17471570702041449mVlghDw-1N6htql8f",
           "sourceType": "assistant",
           "targetType": "user_proxy",
           "name": "topic_preferenc => customer_proxy",
@@ -533,15 +536,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747157142116pBQ9B77EMdg0pc7RyGBRE",
+        "type": "chat",
+        "source": "wa-17471570702041449mVlghDw-1N6htql8f",
+        "target": "wa-1747156452757IU0q1SGFT9W6PLnAWkHvW",
         "data": {
-          "source": "wa-17471570702041449mVlghDw-1N6htql8f",
-          "target": "wa-1747156452757IU0q1SGFT9W6PLnAWkHvW",
           "sourceType": "user_proxy",
           "targetType": "assistant",
           "name": "customer_proxy => customer_engage",
@@ -575,11 +580,14 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
   }
 }

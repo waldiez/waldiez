@@ -79,6 +79,7 @@
         "id": "we-1747664281640uoyN1Xjy1KOKpH9mbHSSF",
         "source": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
         "target": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -93,8 +94,7 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
-        "targetHandle": "agent-handle-left-target-wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
-        "type": "chat"
+        "targetHandle": "agent-handle-left-target-wa-1747664044560sLTbfS9L1RqjXjurvZ81j"
       }
     ],
     "viewport": {
@@ -139,7 +139,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -192,7 +192,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -268,9 +268,10 @@
     "chats": [
       {
         "id": "we-1747664281640uoyN1Xjy1KOKpH9mbHSSF",
+        "type": "chat",
+        "source": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
+        "target": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
         "data": {
-          "source": "wa-17476642094762RZZPyJ4MDH-s5G8dX1pN",
-          "target": "wa-1747664044560sLTbfS9L1RqjXjurvZ81j",
           "sourceType": "user_proxy",
           "targetType": "assistant",
           "name": "Code Executor Agent => Assistant",
@@ -304,11 +305,14 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
   }
 }

@@ -126,6 +126,7 @@
         "id": "we-1747633640191sgd5JTCXD4CxBUJ4Y0gEG",
         "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
         "target": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
+        "type": "chat",
         "hidden": false,
         "animated": false,
         "selected": false,
@@ -140,13 +141,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747633035639vcXujJkXlY_IOT7CJWFml",
-        "targetHandle": "agent-handle-left-target-wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "type": "chat"
+        "targetHandle": "agent-handle-left-target-wa-1747632837301wu22ovYsUaHbF_P6U0J74"
       },
       {
         "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
         "source": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
         "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
+        "type": "nested",
         "hidden": false,
         "animated": true,
         "selected": false,
@@ -155,13 +156,13 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-        "targetHandle": "agent-handle-bottom-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "type": "nested"
+        "targetHandle": "agent-handle-bottom-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
       },
       {
         "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
         "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
         "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
+        "type": "nested",
         "hidden": false,
         "animated": true,
         "selected": false,
@@ -170,8 +171,7 @@
           "strokeWidth": 3
         },
         "sourceHandle": "agent-handle-right-source-1747633035639vcXujJkXlY_IOT7CJWFml",
-        "targetHandle": "agent-handle-left-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
-        "type": "nested"
+        "targetHandle": "agent-handle-left-target-wa-1747632788354NCzu_aqKb0Zd92i-k3wBM"
       }
     ],
     "viewport": {
@@ -336,7 +336,7 @@
                 "triggeredBy": [],
                 "condition": {
                   "conditionType": "string_llm",
-                  "prompt": "Start a nested chat"
+                  "prompt": ""
                 },
                 "available": {
                   "type": "none",
@@ -442,9 +442,10 @@
     "chats": [
       {
         "id": "we-1747633640191sgd5JTCXD4CxBUJ4Y0gEG",
+        "type": "chat",
+        "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
+        "target": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
         "data": {
-          "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
-          "target": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
           "sourceType": "user_proxy",
           "targetType": "user_proxy",
           "name": "Player Black => Player White",
@@ -478,15 +479,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747633784307j92F2JqSeXN8C1MR79Cv4",
+        "type": "nested",
+        "source": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
+        "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
         "data": {
-          "source": "wa-1747632837301wu22ovYsUaHbF_P6U0J74",
-          "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
           "sourceType": "user_proxy",
           "targetType": "assistant",
           "name": "Player White => Board Proxy",
@@ -520,15 +523,17 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       },
       {
         "id": "we-1747633787339t0SX_fJq-M9QniUurDVE3",
+        "type": "nested",
+        "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
+        "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
         "data": {
-          "source": "1747633035639vcXujJkXlY_IOT7CJWFml",
-          "target": "wa-1747632788354NCzu_aqKb0Zd92i-k3wBM",
           "sourceType": "user_proxy",
           "targetType": "assistant",
           "name": "Player Black => Board Proxy",
@@ -562,11 +567,14 @@
             "value": ""
           },
           "afterWork": null,
+          "silent": false,
           "realSource": null,
           "realTarget": null
         }
       }
     ],
-    "isAsync": false
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
   }
 }
