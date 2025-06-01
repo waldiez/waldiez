@@ -332,6 +332,13 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
                         sourceHandle: newConnection.sourceHandle,
                         targetHandle: newConnection.targetHandle,
                         ...edgeCommonStyle(oldEdge.type as WaldiezEdgeType, color),
+                        data: {
+                            ...edge.data,
+                            realSource: newSourceNode.id,
+                            realTarget: newTargetNode.id,
+                            sourceType: newSourceNode.data.agentType,
+                            targetType: newTargetNode.data.agentType,
+                        } as WaldiezEdge["data"],
                     };
                 }),
             ],
