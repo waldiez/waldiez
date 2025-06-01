@@ -10,6 +10,9 @@
         "type": {
             "type": "string"
         },
+        "version": {
+            "type": "string"
+        },
         "id": {
             "type": "string"
         },
@@ -55,7 +58,8 @@
         "storageId",
         "tags",
         "type",
-        "updatedAt"
+        "updatedAt",
+        "version"
     ],
     "definitions": {
         "WaldiezFlowData": {
