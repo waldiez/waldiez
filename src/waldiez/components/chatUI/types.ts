@@ -12,7 +12,7 @@
  * @param document - Document content
  * @param string - Other string types
  */
-export type WaldiezMediaType = "text" | "image" | "video" | "audio" | "file" | "document" | (string & {});
+export type WaldiezMediaType = "text" | "image" | "video" | "audio" | "file" | (string & {});
 
 /**
  * Media content wrapper
@@ -21,7 +21,7 @@ export type WaldiezMediaType = "text" | "image" | "video" | "audio" | "file" | "
  * @param image - Image content (if type is "image")
  * @param video - Video content (if type is "video")
  * @param audio - Audio content (if type is "audio")
- * @param file - File content (if type is "file" or "document")
+ * @param file - File content (if type is "file")
  * @param url - URL of the media content
  * @param file - File object of the media content
  * @param alt - Alt text for the image
@@ -71,7 +71,7 @@ export type WaldiezMediaContent =
           };
       }
     | {
-          type: "file" | "document";
+          type: "file";
           file: {
               url?: string;
               file?: File;
