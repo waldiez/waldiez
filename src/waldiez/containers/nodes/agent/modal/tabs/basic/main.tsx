@@ -86,7 +86,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
             {data.agentType === "assistant" && (
                 <InfoCheckbox
                     label="Multimodal"
-                    info="If checked, the agent will handle uploaded images from the user."
+                    info="If checked, the agent will handle uploaded images from the user. NOTE: Make sure you use a compatible LLM model that supports multimodal inputs (e.g. GPT-4o-mini)."
                     checked={(data as WaldiezNodeAgentAssistantData).isMultimodal ?? false}
                     onChange={onMultimodalChange}
                     dataTestId={`agent-multimodal-toggle-${id}`}
