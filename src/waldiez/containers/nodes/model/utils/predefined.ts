@@ -62,6 +62,14 @@ const predefinedOpenAIModels = [
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
 const predefinedAnthropicModels = [
     {
+        label: "Claude 4 Sonnet",
+        value: "claude-sonnet-4-20250514",
+    },
+    {
+        label: "Claude 4 Opus",
+        value: "claude-opus-4-20250514",
+    },
+    {
         label: "Claude 3.7 Sonnet",
         value: "claude-3-7-sonnet-20250219",
     },
