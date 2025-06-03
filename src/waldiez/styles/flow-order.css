@@ -117,18 +117,6 @@
   cursor: not-allowed;
 }
 
-.flow-wrapper.light .hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
 /* Dark Theme */
 .flow-wrapper.dark .flow-chat-order-wrapper {
   padding: 1rem;

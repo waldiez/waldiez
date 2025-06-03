@@ -27,6 +27,117 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     const getModels = useWaldiez(s => s.getModels);
 
     /**
+     * Make sure data.speakers.order always has all the group members
+     * This ensures that the order is always consistent with the group members
+     * if not present, it initializes with the group members
+     * if some of the members are not present in the order, it adds them
+     * if the order has members that are not in the group members, it removes them
+     */
+    const speakersOrder = useMemo(() => {
+        const groupMembers = getGroupMembers(id);
+        const currentOrder = data.speakers.order || [];
+
+        // Create a set of group member IDs for quick lookup
+        const groupMemberIds = new Set(groupMembers.map(member => member.id));
+
+        // Filter out any agents not in the group members
+        const filteredOrder = currentOrder.filter(agentId => groupMemberIds.has(agentId));
+
+        // Add any missing group members to the order
+        const filteredOrderSet = new Set(filteredOrder);
+        const missingMembers = groupMembers
+            .filter(member => !filteredOrderSet.has(member.id))
+            .map(member => member.id);
+
+        let updatedOrder = [...filteredOrder, ...missingMembers];
+
+        // Handle initialAgentId: ensure it's always at the start if present
+        if (data.initialAgentId && groupMemberIds.has(data.initialAgentId)) {
+            // Remove it from its current position (if present)
+            updatedOrder = updatedOrder.filter(id => id !== data.initialAgentId);
+            // Add it to the beginning
+            updatedOrder.unshift(data.initialAgentId);
+        }
+
+        return updatedOrder;
+    }, [getGroupMembers, id, data.speakers.order, data.initialAgentId]);
+
+    const updateSpeakersOrder = useCallback(
+        (newOrder: string[]) => {
+            // Update the speakers order in the data
+            onDataChange({
+                speakers: {
+                    ...data.speakers,
+                    order: newOrder,
+                },
+            });
+        },
+        [data.speakers, onDataChange],
+    );
+
+    const onMoveMemberUp = useCallback(
+        (agentId: string) => {
+            if (!speakersOrder.includes(agentId)) {
+                return;
+            }
+
+            const currentIndex = speakersOrder.indexOf(agentId);
+
+            // Can't move up if already at the top
+            if (currentIndex <= 0) {
+                return;
+            }
+
+            // If there's an initialAgentId, can't move above position 1 (index 0 is reserved)
+            if (data.initialAgentId && currentIndex === 1) {
+                return;
+            }
+
+            const newOrder = [...speakersOrder];
+            // Swap with the element above
+            [newOrder[currentIndex - 1], newOrder[currentIndex]] = [
+                newOrder[currentIndex],
+                newOrder[currentIndex - 1],
+            ];
+
+            // Update the data (assuming you have a function to update speakers order)
+            updateSpeakersOrder(newOrder);
+        },
+        [speakersOrder, data.initialAgentId, updateSpeakersOrder],
+    );
+
+    const onMoveMemberDown = useCallback(
+        (agentId: string) => {
+            if (!speakersOrder.includes(agentId)) {
+                return;
+            }
+
+            const currentIndex = speakersOrder.indexOf(agentId);
+
+            // Can't move down if already at the bottom
+            if (currentIndex >= speakersOrder.length - 1) {
+                return;
+            }
+
+            // If this is the initialAgentId, it can't be moved down (must stay first)
+            if (data.initialAgentId && agentId === data.initialAgentId) {
+                return;
+            }
+
+            const newOrder = [...speakersOrder];
+            // Swap with the element below
+            [newOrder[currentIndex], newOrder[currentIndex + 1]] = [
+                newOrder[currentIndex + 1],
+                newOrder[currentIndex],
+            ];
+
+            // Update the data (assuming you have a function to update speakers order)
+            updateSpeakersOrder(newOrder);
+        },
+        [speakersOrder, data.initialAgentId, updateSpeakersOrder],
+    );
+
+    /**
      * Get models, group members and current agent from store
      */
     const models = useMemo(() => getModels(), [getModels]);
@@ -240,6 +351,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
     return {
         models,
         groupMembers,
+        speakersOrder,
         initialAgent,
         initialAgentOptions,
         onGroupNameChange,
@@ -256,5 +368,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
         onMaxRetriesForSelectingChange,
         onSpeakerSelectionMethodChange,
         onAfterWorkChange,
+        onMoveMemberUp,
+        onMoveMemberDown,
     };
 };

@@ -255,7 +255,6 @@ const getCommonAgentData = (
 
 /**
  * Returns a list of keys to exclude from the agent data based on the agent type.
- * This is used to filter out unnecessary or sensitive information when exporting agents.
  * @param agentType - The type of the agent.
  * @returns An array of keys to exclude from the agent data.
  */
@@ -281,6 +280,7 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
             "speakers",
             "enableClearHistory",
             "sendIntroductions",
+            "groupName",
         );
     }
     return toExclude;
@@ -369,6 +369,7 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
             ...(agentCopy as WaldiezNodeAgentGroupManager).data.speakers,
             allowRepeat: [],
             allowedOrDisallowedTransitions: {},
+            order: [],
         };
         (agentCopy as WaldiezNodeAgentGroupManager).data.initialAgentId = undefined;
     }

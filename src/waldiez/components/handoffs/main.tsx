@@ -58,11 +58,11 @@ export const Handoffs = memo((props: HandoffProps) => {
                                     ), you can use the up and down arrows to reorder handoffs. The ordering
                                     will then determine the sequence in which handoffs are processed.
                                 </p>
-                                <div className="handoff-list">
+                                <div className="ordered-items-list">
                                     {orderedTransitionTargets.map((item, index) => (
                                         <div
                                             key={`handoff-${index}`}
-                                            className="handoff-item"
+                                            className="ordered-item"
                                             data-testid={`handoff-item-${index}`}
                                         >
                                             <div className="reorder-buttons">
@@ -94,8 +94,8 @@ export const Handoffs = memo((props: HandoffProps) => {
                                                     </button>
                                                 )}
                                             </div>{" "}
-                                            <div className="handoff-item-content">
-                                                <div className="handoff-order-badge">{index + 1}</div>
+                                            <div className="ordered-item-content">
+                                                <div className="order-badge">{index + 1}</div>
                                                 <div className="handoff-type">
                                                     {item.targetType === "AgentTarget"
                                                         ? "Agent Connection"

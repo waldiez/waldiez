@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { memo, useEffect, useMemo, useState } from "react";
+import { FaLock } from "react-icons/fa6";
 
 import {
     AfterWork,
@@ -33,6 +34,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
         models,
         initialAgent,
         initialAgentOptions,
+        speakersOrder,
         onGroupNameChange,
         onManagerNameChange,
         onMaxRoundChange,
@@ -47,6 +49,8 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
         onDescriptionChange,
         onSystemMessageChange,
         onAfterWorkChange,
+        onMoveMemberUp,
+        onMoveMemberDown,
     } = useGroupManagerTabs(props);
 
     // Tab state
@@ -87,7 +91,11 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
     /**
      * Determine if "Afterwards" tab should be shown
      */
-    const showAfterwardsTab = !["manual", "auto"].includes(data.speakers?.selectionMethod); // === "default";
+    const showAfterwardsTab = !["manual", "auto"].includes(data.speakers?.selectionMethod);
+
+    const getAgentName = (agentId: string) => {
+        return groupMembers.find(agent => agent.id === agentId)?.data.label ?? agentId;
+    };
 
     return (
         <TabItems activeTabIndex={activeTabIndex}>
@@ -231,8 +239,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                                 </li>
                                 <li>
                                     <strong className="italic">Default</strong>: the transitions to the
-                                    speakers are explicitly defined in the workflow. An optional action to
-                                    perform after the chat can also be defined.
+                                    speakers are explicitly defined in the workflow.
                                 </li>
                                 <li>
                                     <strong className="italic">Random</strong>: the next speaker is selected
@@ -272,6 +279,65 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                         dataTestId={`manager-max-retries-for-selecting-input-${id}`}
                         aria-label="Maximum retries for speaker selection"
                     />
+
+                    {data.speakers?.selectionMethod === "round_robin" && (
+                        <div className="margin-top-10">
+                            <div className="info">
+                                The order in which the speakers will be selected in round robin mode. If not
+                                provided, the order will be automatically determined based on the agents in
+                                the group.
+                            </div>
+                            <div className="ordered-items-list">
+                                {speakersOrder.map((speaker, index) => {
+                                    const isInitialAgent = data.initialAgentId === speaker;
+                                    const canMoveUp = index > 0 && !(data.initialAgentId && index === 1);
+                                    const canMoveDown = index < speakersOrder.length - 1 && !isInitialAgent;
+                                    const hasButtons = canMoveUp || canMoveDown;
+
+                                    return (
+                                        <div
+                                            key={`group-speaker-${speaker}`}
+                                            className={`ordered-item ${hasButtons ? "has-buttons" : "no-buttons"}`}
+                                            data-testid={`group-speaker-${index}`}
+                                        >
+                                            <div className="reorder-buttons">
+                                                {canMoveUp && (
+                                                    <button
+                                                        type="button"
+                                                        title="Move up"
+                                                        className="reorder-btn up-btn"
+                                                        onClick={() => onMoveMemberUp(speaker)}
+                                                    >
+                                                        &#x2191;
+                                                    </button>
+                                                )}
+
+                                                {canMoveDown && (
+                                                    <button
+                                                        type="button"
+                                                        title="Move down"
+                                                        className="reorder-btn down-btn"
+                                                        onClick={() => onMoveMemberDown(speaker)}
+                                                    >
+                                                        &#x2193;
+                                                    </button>
+                                                )}
+                                                {isInitialAgent && (
+                                                    <button type="button" className="reorder-btn no-click">
+                                                        <FaLock />
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            <div className="ordered-item-content">
+                                                {getAgentName(speaker)}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </TabItem>
 

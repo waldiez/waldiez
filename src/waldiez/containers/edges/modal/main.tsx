@@ -198,6 +198,8 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
         [onDataChange, edgeData.nestedChat],
     );
 
+    console.log(groupChatType);
+
     return (
         <Modal
             isOpen={isOpen}
@@ -225,9 +227,9 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                                     edgeId={edgeId}
                                     data={edgeData}
                                     darkMode={isDark}
-                                    skipRagOption
-                                    skipCarryoverOption
-                                    skipContextVarsOption
+                                    skipRagOption={false}
+                                    skipCarryoverOption={false}
+                                    skipContextVarsOption={false}
                                     onDataChange={onDataChange}
                                 />
                             </TabItem>

@@ -122,6 +122,7 @@ export class WaldiezAgentGroupManagerData extends WaldiezAgentData {
                 allowRepeat: true,
                 allowedOrDisallowedTransitions: {},
                 transitionsType: "allowed",
+                order: [],
             },
             enableClearHistory: undefined,
             sendIntroductions: undefined,

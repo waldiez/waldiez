@@ -40,6 +40,7 @@ describe("WaldiezAgentGroupManager", () => {
             allowRepeat: true,
             allowedOrDisallowedTransitions: {},
             transitionsType: "allowed",
+            order: ["speaker1", "speaker2"],
         });
         const groupManagerData = new WaldiezAgentGroupManagerData({
             humanInputMode: "NEVER",

@@ -25,6 +25,7 @@ export const getSpeakers: (json: Record<string, unknown>) => WaldiezAgentGroupMa
         allowRepeat: true,
         allowedOrDisallowedTransitions: {},
         transitionsType: "allowed",
+        order: [],
     };
     if ("speakers" in json && typeof json.speakers === "object") {
         const data = json.speakers as Record<string, unknown>;
@@ -36,6 +37,7 @@ export const getSpeakers: (json: Record<string, unknown>) => WaldiezAgentGroupMa
             allowRepeat: getAllowRepeat(data),
             allowedOrDisallowedTransitions: getAllowedOrDisallowedTransitions(data),
             transitionsType: getTransitionsType(data),
+            order: getGroupChatSpeakersOrder(data),
         };
     }
     return speakers;
@@ -253,4 +255,19 @@ const getTransitionsType = (json: Record<string, unknown>): GroupChatSpeakerTran
     }
 
     return transitionsType;
+};
+
+/**
+ * Get the group chat speakers order from the JSON object.
+ * @param json - The JSON object containing group chat speakers configuration.
+ * @returns An array of strings representing the order of speakers.
+ *         If not specified or invalid, it returns an empty array.
+ * @see {@link WaldiezAgentGroupManagerSpeakers}
+ */
+const getGroupChatSpeakersOrder = (json: Record<string, unknown>): string[] => {
+    let order: string[] = [];
+    if ("order" in json && Array.isArray(json.order)) {
+        order = json.order.filter(id => typeof id === "string");
+    }
+    return order;
 };

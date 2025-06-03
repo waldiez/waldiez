@@ -22,6 +22,7 @@ export const defaultGroupChatSpeakers = {
     allowRepeat: true,
     allowedOrDisallowedTransitions: {},
     transitionsType: "allowed" as GroupChatSpeakerTransitionsType,
+    order: [],
 };
 
 /**
@@ -46,6 +47,7 @@ export class WaldiezAgentGroupManagerSpeakers {
     allowRepeat: boolean | string[];
     allowedOrDisallowedTransitions: { [key: string]: string[] };
     transitionsType: GroupChatSpeakerTransitionsType;
+    order: string[] = [];
     constructor(
         props: {
             selectionMethod: GroupChatSpeakerSelectionMethodOption;
@@ -55,6 +57,7 @@ export class WaldiezAgentGroupManagerSpeakers {
             allowRepeat: boolean | string[];
             allowedOrDisallowedTransitions: { [key: string]: string[] };
             transitionsType: GroupChatSpeakerTransitionsType;
+            order: string[];
         } = {
             selectionMethod: "auto",
             selectionCustomMethod: "",
@@ -63,6 +66,7 @@ export class WaldiezAgentGroupManagerSpeakers {
             allowRepeat: true,
             allowedOrDisallowedTransitions: {},
             transitionsType: "allowed",
+            order: [],
         },
     ) {
         this.selectionMethod = props.selectionMethod;
@@ -72,5 +76,6 @@ export class WaldiezAgentGroupManagerSpeakers {
         this.allowRepeat = props.allowRepeat;
         this.allowedOrDisallowedTransitions = props.allowedOrDisallowedTransitions;
         this.transitionsType = props.transitionsType;
+        this.order = props.order;
     }
 }

@@ -75,3 +75,8 @@ textarea {
   cursor: unset !important;
   opacity: 0.6;
 }
+
+.flow-wrapper .no-click {
+  cursor: unset !important;
+  pointer-events: none !important;
+}
