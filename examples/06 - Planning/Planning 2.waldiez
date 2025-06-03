@@ -219,7 +219,8 @@
               "selectionMode": "repeat",
               "allowRepeat": true,
               "allowedOrDisallowedTransitions": {},
-              "transitionsType": "allowed"
+              "transitionsType": "allowed",
+              "order": []
             },
             "enableClearHistory": false,
             "sendIntroductions": false,
