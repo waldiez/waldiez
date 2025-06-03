@@ -213,7 +213,6 @@
       "userProxyAgents": [
         {
           "type": "agent",
-          "agentType": "user_proxy",
           "name": "User",
           "description": "A new User proxy agent",
           "tags": [],
@@ -253,13 +252,13 @@
             "updateAgentStateBeforeReply": [],
             "afterWork": null
           },
-          "id": "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw"
+          "id": "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw",
+          "agentType": "user_proxy"
         }
       ],
       "assistantAgents": [
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Interface",
           "description": "You are just the input and output of the guardrail system",
           "tags": [],
@@ -284,6 +283,9 @@
             "tools": [],
             "nestedChats": [
               {
+                "triggeredBy": [
+                  "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw"
+                ],
                 "messages": [
                   {
                     "id": "wc-1748972757961vpj80pFT1TzEbNjCuT5bV",
@@ -302,9 +304,6 @@
                     "isReply": false
                   }
                 ],
-                "triggeredBy": [
-                  "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw"
-                ],
                 "condition": {
                   "conditionType": "string_llm",
                   "prompt": ""
@@ -321,11 +320,11 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "wa-1748972130669imOc0lFwJCQCLeStyWKiI"
+          "id": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Intention Analyzer",
           "description": "Intention Analyzer",
           "tags": [],
@@ -368,11 +367,11 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "1748972166215rkbIlIfyqwIoADPWoX1A4"
+          "id": "1748972166215rkbIlIfyqwIoADPWoX1A4",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Original Prompt Analyzer",
           "description": "Original Prompt Analyzer",
           "tags": [],
@@ -415,11 +414,11 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "1748972311281lzT8TV4atKmOT2K_Zessy"
+          "id": "1748972311281lzT8TV4atKmOT2K_Zessy",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Judge",
           "description": "Judge",
           "tags": [],
@@ -462,11 +461,11 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "1748972449882d9L5KjDPGH2YtbKs-Foqx"
+          "id": "1748972449882d9L5KjDPGH2YtbKs-Foqx",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Answer provider",
           "description": "Final answer provider",
           "tags": [],
@@ -509,7 +508,8 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "1748972527615aBwn8Wq1_FN2Pd2LQGXTk"
+          "id": "1748972527615aBwn8Wq1_FN2Pd2LQGXTk",
+          "agentType": "assistant"
         }
       ],
       "ragUserProxyAgents": [],
@@ -535,11 +535,11 @@
           "topP": null,
           "maxTokens": null,
           "aws": {
-            "accessKey": null,
-            "profileName": null,
             "region": null,
+            "accessKey": null,
             "secretKey": null,
-            "sessionToken": null
+            "sessionToken": null,
+            "profileName": null
           },
           "extras": {},
           "defaultHeaders": {},

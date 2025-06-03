@@ -15,6 +15,21 @@
   "data": {
     "nodes": [
       {
+        "id": "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
         "id": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
         "type": "agent",
         "position": {
@@ -34,19 +49,54 @@
         "resizing": false
       },
       {
-        "id": "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR",
-        "type": "model",
+        "id": "wa-1748974502257qBQggiOR_efpn4OVbGX1F",
+        "type": "agent",
         "position": {
-          "x": 0,
-          "y": 10
+          "x": 100,
+          "y": 40
         },
+        "extent": "parent",
         "measured": {
-          "width": 182,
-          "height": 182
+          "width": 200,
+          "height": 215
         },
+        "className": "",
         "selected": false,
-        "hidden": true,
-        "className": ""
+        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+      },
+      {
+        "id": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
+        "type": "agent",
+        "position": {
+          "x": 255,
+          "y": 345
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+      },
+      {
+        "id": "1748974648206t4VXaV1-dgVvMSnZ7nP-G",
+        "type": "agent",
+        "position": {
+          "x": 450,
+          "y": 45
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
       },
       {
         "id": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
@@ -62,56 +112,6 @@
         "selected": false,
         "dragging": false,
         "className": ""
-      },
-      {
-        "id": "wa-1748974502257qBQggiOR_efpn4OVbGX1F",
-        "type": "agent",
-        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
-        "position": {
-          "x": 100,
-          "y": 40
-        },
-        "extent": "parent",
-        "measured": {
-          "width": 200,
-          "height": 215
-        },
-        "className": "",
-        "selected": false
-      },
-      {
-        "id": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
-        "type": "agent",
-        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
-        "position": {
-          "x": 255,
-          "y": 345
-        },
-        "extent": "parent",
-        "measured": {
-          "width": 200,
-          "height": 215
-        },
-        "className": "",
-        "selected": false,
-        "dragging": false
-      },
-      {
-        "id": "1748974648206t4VXaV1-dgVvMSnZ7nP-G",
-        "type": "agent",
-        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
-        "position": {
-          "x": 450,
-          "y": 45
-        },
-        "extent": "parent",
-        "measured": {
-          "width": 200,
-          "height": 215
-        },
-        "className": "",
-        "selected": false,
-        "dragging": false
       }
     ],
     "edges": [
@@ -146,7 +146,6 @@
       "groupManagerAgents": [
         {
           "type": "agent",
-          "agentType": "group_manager",
           "name": "Manager",
           "description": "The group manager agent",
           "tags": [],
@@ -204,14 +203,14 @@
             "initialAgentId": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
             "groupName": "Group"
           },
-          "id": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+          "id": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+          "agentType": "group_manager"
         }
       ],
       "userProxyAgents": [],
       "assistantAgents": [
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Senior Python Engineer",
           "description": "Senior Python Engineer",
           "tags": [],
@@ -257,11 +256,11 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "wa-1748974502257qBQggiOR_efpn4OVbGX1F"
+          "id": "wa-1748974502257qBQggiOR_efpn4OVbGX1F",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Product Manager",
           "description": "Product Manager who can design and plan the project.",
           "tags": [],
@@ -307,11 +306,11 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "1748974593259gYCLzPhPL5MQ9ptBXEh7m"
+          "id": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
+          "agentType": "assistant"
         },
         {
           "type": "agent",
-          "agentType": "assistant",
           "name": "Code Reviewer",
           "description": "Code Reviewer who can review the code.",
           "tags": [],
@@ -357,13 +356,13 @@
             "afterWork": null,
             "isMultimodal": false
           },
-          "id": "1748974648206t4VXaV1-dgVvMSnZ7nP-G"
+          "id": "1748974648206t4VXaV1-dgVvMSnZ7nP-G",
+          "agentType": "assistant"
         }
       ],
       "ragUserProxyAgents": [
         {
           "type": "agent",
-          "agentType": "rag_user_proxy",
           "name": "Boss Assistant",
           "description": "Assistant who has extra content retrieval power for solving difficult problems.",
           "tags": [],
@@ -444,7 +443,8 @@
               "nResults": null
             }
           },
-          "id": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq"
+          "id": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
+          "agentType": "rag_user_proxy"
         }
       ],
       "reasoningAgents": [],
@@ -469,11 +469,11 @@
           "topP": null,
           "maxTokens": null,
           "aws": {
-            "accessKey": null,
-            "profileName": null,
             "region": null,
+            "accessKey": null,
             "secretKey": null,
-            "sessionToken": null
+            "sessionToken": null,
+            "profileName": null
           },
           "extras": {},
           "defaultHeaders": {},
