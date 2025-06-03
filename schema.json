@@ -1747,6 +1747,12 @@
                 },
                 "transitionsType": {
                     "$ref": "#/definitions/GroupChatSpeakerTransitionsType"
+                },
+                "order": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             },
             "required": [
@@ -1756,7 +1762,8 @@
                 "selectionMode",
                 "allowRepeat",
                 "allowedOrDisallowedTransitions",
-                "transitionsType"
+                "transitionsType",
+                "order"
             ],
             "additionalProperties": false,
             "description": "WaldiezAgentGroupManagerSpeakers"
