@@ -3,8 +3,8 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { flowMapper } from "@waldiez/models/mappers";
+import "@waldiez/polyfills/promiseWithResolvers";
 import { WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
-import "@waldiez/utils/promisePolyfill";
 import { Waldiez } from "@waldiez/waldiez";
 
 export type {

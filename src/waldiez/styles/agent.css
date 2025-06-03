@@ -236,6 +236,12 @@
   }
 }
 
+@media screen and (width <= 600px) {
+  .flow-wrapper .agent-footer .agent-actions {
+    margin-bottom: 8px;
+  }
+}
+
 .flow-wrapper .agent-footer .date-info {
   font-size: 0.7rem;
   color: #666;

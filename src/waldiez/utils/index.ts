@@ -6,6 +6,5 @@ export * from "@waldiez/utils/crypto";
 export * from "@waldiez/utils/exporting";
 export * from "@waldiez/utils/ids";
 export * from "@waldiez/utils/importing";
-export * from "@waldiez/utils/promisePolyfill";
 export * from "@waldiez/utils/rootDiv";
 export * from "@waldiez/utils/strings";

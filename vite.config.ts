@@ -5,16 +5,20 @@
 import react from "@vitejs/plugin-react";
 import fs from "fs-extra";
 import { resolve } from "path";
-import { defineConfig } from "vite";
+import { defineConfig, normalizePath } from "vite";
 import dts from "vite-plugin-dts";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 import packageJson from "./package.json";
+import { transformPublicFiles } from "./vite.plugin";
+
+const normalizedResolve = (...paths: string[]): string => normalizePath(resolve(__dirname, ...paths));
 
 const defaultIncludes = ["**/tests/**/*.test.{ts,tsx}"];
 const defaultBrowserIncludes = ["**/ui-tests/**/*.test.{ts,tsx}"];
 const isBrowserTest = process.argv.includes("--browser.enabled");
-const recordingsDir = resolve(__dirname, ".local", "recordings");
+const recordingsDir = normalizedResolve(".local", "recordings");
 fs.ensureDirSync(recordingsDir);
 
 const viewport = { width: 1280, height: 720 };
@@ -26,6 +30,10 @@ const thresholds = {
     lines: 80,
 };
 
+/**
+ * Get the version from package.json, ensuring it is a valid semver.
+ * @returns - The version string, cleaned and validated.
+ */
 const getVersion = (): string => {
     const version = packageJson.version;
     if (!version) {
@@ -41,13 +49,21 @@ const getVersion = (): string => {
     return JSON.stringify(cleanedVersion);
 };
 
+/**
+ * Get the public directory based on the command.
+ * @param command - The command being executed, either "build" or "serve".
+ * @returns - The path to the public directory.
+ */
+const getPublicDir = (command: "build" | "serve"): string | false => {
+    return command === "build" ? false : normalizedResolve("public");
+};
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
-    publicDir: command === "build" ? resolve(__dirname, "public", "logo") : resolve(__dirname, "public"),
+    publicDir: getPublicDir(command),
     server: {
         headers: {
             "content-security-policy-report-only":
-                "default-src 'none'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; script-src 'self'; font-src 'self'; img-src 'self' data:; connect-src *; report-to /_/csp",
+                "default-src 'none'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; script-src 'self' https://drag-drop-touch-js.github.io/; font-src 'self'; img-src 'self' data:; connect-src *; report-to /_/csp",
         },
     },
     define: {
@@ -55,9 +71,9 @@ export default defineConfig(({ command }) => ({
     },
     build: {
         emptyOutDir: true,
-        outDir: resolve(__dirname, "dist"),
+        outDir: normalizedResolve("dist"),
         lib: {
-            entry: resolve(__dirname, "src", "waldiez", "index.ts"),
+            entry: normalizedResolve("src", "waldiez", "index.ts"),
             name: "@waldiez",
             formats: ["es", "cjs", "umd"],
             fileName: "@waldiez",
@@ -134,7 +150,7 @@ export default defineConfig(({ command }) => ({
     },
     resolve: {
         alias: {
-            "@waldiez": resolve(__dirname, "src", "waldiez"),
+            "@waldiez": normalizedResolve("src", "waldiez"),
         },
     },
     plugins: [
@@ -144,6 +160,51 @@ export default defineConfig(({ command }) => ({
             insertTypesEntry: true,
             rollupTypes: true,
             tsconfigPath: "./tsconfig.build.json",
+        }),
+        transformPublicFiles("lib"),
+        viteStaticCopy({
+            targets:
+                command === "build"
+                    ? [
+                          {
+                              src: normalizedResolve("public", "icons", "logo.svg"),
+                              dest: "",
+                          },
+                          {
+                              src: normalizedResolve("public", "icons", "icon.svg"),
+                              dest: "",
+                          },
+                      ]
+                    : [
+                          {
+                              src: `${normalizedResolve("public", "icons")}/*`,
+                              dest: "icons",
+                          },
+                          {
+                              src: `${normalizedResolve("public", "screenshots")}/*`,
+                              dest: "screenshots",
+                          },
+                          {
+                              src: normalizedResolve("public", "apple-touch-icon.png"),
+                              dest: "",
+                          },
+                          {
+                              src: normalizedResolve("public", "favicon.ico"),
+                              dest: "",
+                          },
+                          {
+                              src: normalizedResolve("public", "robots.txt"),
+                              dest: "",
+                          },
+                          {
+                              src: normalizedResolve("public", "vs"),
+                              dest: "",
+                          },
+                          {
+                              src: normalizedResolve("public", "min-maps"),
+                              dest: "",
+                          },
+                      ],
         }),
     ],
     test: {
@@ -167,7 +228,7 @@ export default defineConfig(({ command }) => ({
                 "**/tests/**",
                 "**/ui-tests/**",
             ],
-            reportsDirectory: resolve(__dirname, "coverage", "react"),
+            reportsDirectory: normalizedResolve("coverage", "react"),
             ignoreEmptyLines: true,
             thresholds,
             all: true,

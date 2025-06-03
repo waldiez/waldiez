@@ -9,7 +9,7 @@ site/
 out/
 .idea/
 public/**/*
-!public/logo/
+!public/.gitignore
 **/coverage/
 **/waldiez_out/
 **/logs/
