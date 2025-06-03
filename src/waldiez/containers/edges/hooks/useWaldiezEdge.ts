@@ -20,8 +20,19 @@ import { AGENT_COLORS_ALT } from "@waldiez/theme";
  * Custom hook for managing Waldiez edge properties and interactions
  */
 export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEdgeType }) => {
-    const { id, source, type, data, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } =
-        props;
+    const {
+        id,
+        source,
+        target,
+        type,
+        data,
+        sourceX,
+        sourceY,
+        targetX,
+        targetY,
+        sourcePosition,
+        targetPosition,
+    } = props;
 
     // Get store actions and state
     const isReadOnly = useWaldiez(s => s.isReadOnly);
@@ -31,16 +42,10 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
     const onEdgeDoubleClick = useWaldiez(s => s.onEdgeDoubleClick);
     const updateEdgeData = useWaldiez(s => s.updateEdgeData);
 
-    // Get source and target agents
-    const sourceAgent = useMemo(
-        () => getAgentById(source) as WaldiezNodeAgent | null,
-        [getAgentById, source],
-    );
-
-    const targetAgent = useMemo(
-        () => getAgentById(props.target) as WaldiezNodeAgent | null,
-        [getAgentById, props.target],
-    );
+    // Get source and target agents / skip memoization
+    // if th eagent type changes, we want to recalculate the edge color
+    const sourceAgent = getAgentById(source) as WaldiezNodeAgent | null;
+    const targetAgent = getAgentById(target) as WaldiezNodeAgent | null;
 
     // Calculate edge path and label position
     const [edgePath, labelX, labelY] = useMemo(
@@ -80,19 +85,17 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
      * Get the edge color based on source agent type
      */
     const getEdgeColor = useCallback(() => {
-        if (!sourceAgent) {
+        const agent = getAgentById(source) as WaldiezNodeAgent | null;
+        if (!agent) {
             return undefined;
         }
-
-        const agentType = sourceAgent.data.agentType as WaldiezNodeAgentType;
+        const agentType = agent.data.agentType as WaldiezNodeAgentType;
+        console.debug(`Edge color for agent type ${agentType}:`, AGENT_COLORS_ALT[agentType]);
 
         if (ValidAgentTypes.includes(agentType)) {
             return AGENT_COLORS_ALT[agentType];
         }
-
-        return undefined;
-    }, [sourceAgent]);
-
+    }, [getAgentById, source]);
     /**
      * Get the edge label number or identifier
      */

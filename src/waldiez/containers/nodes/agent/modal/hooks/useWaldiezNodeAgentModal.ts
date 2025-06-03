@@ -161,8 +161,6 @@ export const useWaldiezNodeAgentModal = (
             } else if (newAgentType === "user_proxy" && dataToSubmit.retrieveConfig) {
                 delete dataToSubmit.retrieveConfig;
             }
-
-            return dataToSubmit;
         },
         [updateAgentConnections],
     );
@@ -190,7 +188,7 @@ export const useWaldiezNodeAgentModal = (
         (dataToSubmit: { [key: string]: any }) => {
             // Handle agent type change if needed
             if (dataToSubmit.agentType !== data.agentType) {
-                dataToSubmit = handleAgentTypeChange(dataToSubmit);
+                handleAgentTypeChange(dataToSubmit);
             }
 
             // check if group membership has changed

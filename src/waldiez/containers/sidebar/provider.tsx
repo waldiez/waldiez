@@ -42,5 +42,6 @@ const getIsSidebarCollapsedFromBody = () => {
     if (document.body.classList.contains("waldiez-sidebar-expanded")) {
         return false;
     }
-    return false;
+    // if mobile/small screen, let's have it collapsed by default
+    return window.innerWidth < 768;
 };

@@ -137,7 +137,7 @@ export const MessageInput: React.FC<MessageInputProps> = (props: {
                         <TextareaInput
                             placeholder="Enter the problem"
                             rows={3}
-                            className="fill-available"
+                            className="fill-available margin-top-5"
                             value={String(current.context.problem ?? "")}
                             onChange={onRagProblemUpdate}
                             data-testid="rag-message-generator-problem"
