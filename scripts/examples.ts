@@ -15,7 +15,7 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const examplesPath = path.resolve(__dirname, "..", "examples");
 
-const examplesNotYetReady = ["10", "14", "dev"];
+const examplesToSkip = ["14", "dev"];
 
 const getDiffs = (filePath: string) => {
     const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
@@ -118,8 +118,8 @@ const collectFilePaths = (): string[] => {
         const filePath = path.join(examplesPath, item);
         if (fs.statSync(filePath).isDirectory()) {
             const dirPrefix = item.split("-")[0].trim();
-            if (examplesNotYetReady.includes(dirPrefix)) {
-                console.log(`\x1b[33mSkipping example ${item} as it is not yet ready.\x1b[0m`);
+            if (examplesToSkip.includes(dirPrefix)) {
+                console.log(`\x1b[33mSkipping example ${item}.\x1b[0m`);
                 continue;
             }
             for (const subFile of fs.readdirSync(filePath)) {
