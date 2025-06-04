@@ -2,43 +2,15 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common utilities for exporting chats."""
 
-from typing import Any, Callable, Optional
+from typing import Optional
 
 from waldiez.models import WaldiezAgent, WaldiezChat
-
-
-def update_summary_chat_args(
-    chat_args: dict[str, Any],
-    string_escape: Callable[[str], str],
-) -> dict[str, Any]:
-    """Escape quotes in the summary args if they are strings.
-
-    Parameters
-    ----------
-    chat_args : dict[str, Any]
-        The chat arguments.
-    string_escape : Callable[[str], str]
-        The function to escape the string
-
-    Returns
-    -------
-    dict[str, Any]
-        The chat arguments with the summary prompt escaped.
-    """
-    if "summary_args" in chat_args and isinstance(
-        chat_args["summary_args"], dict
-    ):
-        for key, value in chat_args["summary_args"].items():  # pyright: ignore
-            if isinstance(value, str):
-                chat_args["summary_args"][key] = string_escape(value)
-    return chat_args
 
 
 def get_chat_message_string(
     sender: WaldiezAgent,
     chat: WaldiezChat,
     chat_names: dict[str, str],
-    string_escape: Callable[[str], str],
 ) -> tuple[str, Optional[str]]:
     """Get the agent's message as a string.
 
@@ -50,8 +22,6 @@ def get_chat_message_string(
         The chat.
     chat_names : dict[str, str]
         A mapping of chat id to chat name with all the chats in the flow.
-    string_escape : Callable[[str], str]
-        The function to escape the string.
 
     Returns
     -------
@@ -60,19 +30,14 @@ def get_chat_message_string(
         If the message is a method, the method name and the method content.
         If the message is None, 'None' and None.
     """
-    if (
-        not chat.message
-        or chat.message.type == "none"
-        or chat.message.content is None
-        or chat.message_content is None
-    ):
+    if not chat.message or chat.message.type == "none":
         return "None", None
     if chat.message.type == "string":
-        return string_escape(chat.message.content), None
+        if chat.message.content is None:
+            return "None", None
+        return chat.message.content, None
 
-    is_rag_with_carryover = (
-        sender.agent_type == "rag_user_proxy" and chat.message.use_carryover
-    )
+    is_rag_with_carryover = sender.is_rag_user and chat.message.use_carryover
     chat_name = chat_names[chat.id]
     function_content, function_name = chat.get_message_function(
         name_suffix=chat_name,

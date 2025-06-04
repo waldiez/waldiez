@@ -12,4 +12,5 @@ pandas>=2
 parso==0.8.4
 pillow
 pydantic>=2.10.2,<3
+rpds-py==0.25.1
 typer>=0.9.0,<1

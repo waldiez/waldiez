@@ -13,9 +13,16 @@ from waldiez.models.agents import (
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
+    WaldiezCaptainAgent,
+    WaldiezGroupManager,
+    WaldiezGroupManagerData,
     WaldiezRagUserProxy,
     WaldiezReasoningAgent,
     WaldiezUserProxy,
+)
+from waldiez.models.common import (
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
 )
 
 
@@ -60,6 +67,8 @@ def test_waldiez_agent() -> None:
                 WaldiezAgentNestedChat(
                     triggered_by=[],
                     messages=[],
+                    condition=WaldiezDefaultCondition.create(),
+                    available=WaldiezTransitionAvailability(),
                 )
             ],
         ),
@@ -80,6 +89,8 @@ def test_waldiez_agent() -> None:
         agent.validate_linked_tools(tool_ids=["ws-2"], agent_ids=["wa-1"])
     with pytest.raises(ValueError):
         agent.validate_linked_tools(tool_ids=["ws-1"], agent_ids=["wa-2"])
+    with pytest.raises(RuntimeError):
+        _ = agent.handoffs
 
 
 def test_agent_ag2_class() -> None:
@@ -107,11 +118,33 @@ def test_agent_ag2_class() -> None:
         id="wa-7",
         name="reasoning_agent",
     )
+    multimodal_group_member = WaldiezAssistant(  # pyright: ignore
+        id="wa-6",
+        name="multimodal_group_member",
+        data=WaldiezAssistantData(  # pyright: ignore
+            is_multimodal=True,
+            parent_id="wa-5",
+        ),
+    )
+    captain = WaldiezCaptainAgent(  # pyright: ignore
+        id="wa-3",
+        name="captain",
+    )
+    group_manager = WaldiezGroupManager(  # pyright: ignore
+        id="wa-8",
+        name="group_manager",
+        data=WaldiezGroupManagerData(  # pyright: ignore
+            initial_agent_id="wa-2",
+        ),
+    )
     assert user_proxy.ag2_class == "UserProxyAgent"
     assert assistant.ag2_class == "AssistantAgent"
     assert rag_user.ag2_class == "RetrieveUserProxyAgent"
     assert multimodal_agent.ag2_class == "MultimodalConversableAgent"
     assert reasoning_agent.ag2_class == "ReasoningAgent"
+    assert multimodal_group_member.ag2_class == "MultimodalConversableAgent"
+    assert captain.ag2_class == "CaptainAgent"
+    assert group_manager.ag2_class == "GroupChatManager"
 
 
 def test_agent_ag2_imports() -> None:
@@ -139,6 +172,17 @@ def test_agent_ag2_imports() -> None:
         id="wa-7",
         name="reasoning_agent",
     )
+    captain_agent = WaldiezCaptainAgent(  # pyright: ignore
+        id="wa-3",
+        name="captain",
+    )
+    group_manager = WaldiezGroupManager(  # pyright: ignore
+        id="wa-8",
+        name="group_manager",
+        data=WaldiezGroupManagerData(  # pyright: ignore
+            initial_agent_id="wa-2",
+        ),
+    )
     assert user_proxy.ag2_imports == {
         "import autogen",
         "from autogen import UserProxyAgent",
@@ -159,4 +203,14 @@ def test_agent_ag2_imports() -> None:
     assert reasoning_agent.ag2_imports == {
         "import autogen",
         "from autogen.agents.experimental import ReasoningAgent",
+    }
+    assert captain_agent.ag2_imports == {
+        "import autogen",
+        "from autogen.agentchat.contrib.captainagent import CaptainAgent",
+    }
+    assert group_manager.ag2_imports == {
+        "import autogen",
+        "from autogen import GroupChat",
+        "from autogen.agentchat import GroupChatManager",
+        "from autogen.agentchat.group import ContextVariables",
     }

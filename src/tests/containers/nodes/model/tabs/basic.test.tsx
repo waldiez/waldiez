@@ -72,8 +72,6 @@ describe("WaldiezNodeModel Modal Base Tab", () => {
         fireEvent.click(openModalButton);
         const labelInput = screen.getByDisplayValue(modelData.name);
         expect(labelInput).toBeInTheDocument();
-        const descriptionInput = screen.getByTestId("model-description-textarea");
-        expect(descriptionInput).toBeInTheDocument();
         const apiKeyInput = screen.getByTestId("model-api-key-input");
         expect(apiKeyInput).toBeInTheDocument();
         const baseUrlInput = screen.getByTestId("model-base-url-input");
@@ -86,16 +84,6 @@ describe("WaldiezNodeModel Modal Base Tab", () => {
         const labelInput = screen.getByDisplayValue(modelData.name);
         fireEvent.change(labelInput, { target: { value: "new label" } });
         expect(labelInput).toHaveValue("new label");
-    });
-    it("should update description input", () => {
-        renderModel();
-        const openModalButton = screen.getByTestId(`open-model-node-modal-${modelId}`);
-        fireEvent.click(openModalButton);
-        const descriptionInput = screen.getByTestId("model-description-textarea");
-        fireEvent.change(descriptionInput, {
-            target: { value: "new description" },
-        });
-        expect(descriptionInput).toHaveValue("new description");
     });
     it("should update api key input", () => {
         renderModel();

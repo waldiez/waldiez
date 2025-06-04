@@ -20,9 +20,11 @@ from waldiez.models import (
     WaldiezChatMessage,
     WaldiezChatNested,
     WaldiezChatSummary,
+    WaldiezDefaultCondition,
     WaldiezFlow,
     WaldiezFlowData,
     WaldiezModel,
+    WaldiezTransitionAvailability,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -96,11 +98,12 @@ def get_runnable_flow() -> WaldiezFlow:
     )
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat_1",
             description="Description of chat 1",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             position=-1,
@@ -126,6 +129,8 @@ def get_runnable_flow() -> WaldiezFlow:
             real_source=None,
             real_target=None,
             prerequisites=[],
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agents = WaldiezAgents(
@@ -159,6 +164,25 @@ def get_runnable_flow() -> WaldiezFlow:
     return flow
 
 
+def _cleanup_files() -> None:
+    """Cleanup files created during tests."""
+    extra_files = [
+        "flow_name.mmd",
+        "captain_agent_llm_config.json",
+        "captain_agent_agent_lib.json",
+    ]
+    for file in extra_files:
+        file_path = ROOT_DIR / file
+        if file_path.exists():
+            try:
+                file_path.unlink()
+            except OSError:
+                print(
+                    f"Failed to remove {file_path}."
+                    "It might be in use or read-only."
+                )
+
+
 @pytest.fixture(scope="session", autouse=True)
 def before_and_after_tests() -> Generator[None, None, None]:
     """Fixture to run before and after all tests.
@@ -169,14 +193,9 @@ def before_and_after_tests() -> Generator[None, None, None]:
         Nothing.
     """
     # Code to run before all tests
-    print("Running setup before all tests...")
-
+    _cleanup_files()
     yield
-    if (ROOT_DIR / "flow_name.mmd").exists():  # leftover?
-        try:
-            (ROOT_DIR / "flow_name.mmd").unlink()
-        except OSError:
-            pass
+    _cleanup_files()
 
 
 @pytest.fixture(scope="function")

@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=unused-import,unused-argument,protected-access
+# pylint: disable=too-many-public-methods,too-few-public-methods
+# pylint: disable=missing-param-doc,missing-return-doc
+# pylint: disable=attribute-defined-outside-init
 """Test waldiez.io.ws.*."""
 
 import json
@@ -9,13 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from waldiez.io.models import UserInputData
 from waldiez.io.ws import AsyncWebsocketsIOStream
-
-# pylint: disable=unused-import,unused-argument,protected-access
-# pylint: disable=too-many-public-methods,too-few-public-methods
-# pylint: disable=missing-param-doc,missing-return-doc
-# pylint: disable=attribute-defined-outside-init
 
 
 # Create a mock BaseEvent for testing
@@ -380,6 +378,18 @@ class TestAsyncWebsocketsIOStream:
 
         assert result == "valid response"
 
+    def test_parse_response_duble_dumped(self) -> None:
+        """Test parsing response that is double-dumped."""
+        response = {
+            "request_id": "test_id",
+            "data": json.dumps("valid response"),
+        }
+        result = self.sync_stream._parse_response(  # pyright: ignore
+            response,
+            "test_id",
+        )
+        assert result == "valid response"
+
     @patch("waldiez.io.ws.LOG")
     def test_parse_response_validation_error(self, mock_log: MagicMock) -> None:
         """Test parsing response with validation error."""
@@ -416,242 +426,4 @@ class TestAsyncWebsocketsIOStream:
             "User response request ID mismatch:"
             in mock_log.error.call_args[0][0]
         )
-        assert result == ""
-
-    def test_get_content_string_text(self) -> None:
-        """Test getting content string from text content."""
-        # Mock UserInputData with text content
-        mock_content = MagicMock()
-        mock_content.type = "text"
-        mock_content.text = "Hello, world!"
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == "Hello, world!"
-
-    @patch("waldiez.io.ws.get_image")
-    def test_get_content_string_image_url(
-        self, mock_get_image: MagicMock
-    ) -> None:
-        """Test getting content string from image_url content."""
-        mock_get_image.return_value = "http://example.com/image.jpg"
-
-        # Mock UserInputData with image_url content
-        mock_image_url = MagicMock()
-        mock_image_url.url = "http://example.com/image.jpg"
-
-        mock_content = MagicMock()
-        mock_content.type = "image_url"
-        mock_content.image_url = mock_image_url
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == "<img http://example.com/image.jpg>"
-        mock_get_image.assert_called_once_with(
-            uploads_root=self.sync_stream.uploads_root,
-            image_data="http://example.com/image.jpg",
-            base_name="test_id",
-        )
-
-    def test_get_content_string_image_url_no_url(self) -> None:
-        """Test getting content string from image_url content with no URL."""
-        # Mock UserInputData with empty image_url
-        mock_image_url = MagicMock()
-        mock_image_url.url = None
-
-        mock_content = MagicMock()
-        mock_content.type = "image_url"
-        mock_content.image_url = mock_image_url
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == ""
-
-    def test_get_content_string_image_url_no_image_url(self) -> None:
-        """Test getting content string from image_url with no image_url."""
-        mock_content = MagicMock()
-        mock_content.type = "image_url"
-        mock_content.image_url = None
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == ""
-
-    @patch("waldiez.io.ws.get_image")
-    def test_get_content_string_image_with_file(
-        self, mock_get_image: MagicMock
-    ) -> None:
-        """Test getting content string from image content with file."""
-        mock_get_image.return_value = "base64_encoded_image_data"
-
-        # Mock UserInputData with image content
-        mock_image = MagicMock()
-        mock_image.file = "base64_encoded_image_data"
-        mock_image.url = None
-
-        mock_content = MagicMock()
-        mock_content.type = "image"
-        mock_content.image = mock_image
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == "<img base64_encoded_image_data>"
-        mock_get_image.assert_called_once_with(
-            uploads_root=self.sync_stream.uploads_root,
-            image_data="base64_encoded_image_data",
-            base_name="test_id",
-        )
-
-    @patch("waldiez.io.ws.get_image")
-    def test_get_content_string_image_with_url(
-        self, mock_get_image: MagicMock
-    ) -> None:
-        """Test getting content string from image content with URL."""
-        mock_get_image.return_value = "http://example.com/image.jpg"
-
-        # Mock UserInputData with image content
-        mock_image = MagicMock()
-        mock_image.file = None
-        mock_image.url = "http://example.com/image.jpg"
-
-        mock_content = MagicMock()
-        mock_content.type = "image"
-        mock_content.image = mock_image
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == "<img http://example.com/image.jpg>"
-        mock_get_image.assert_called_once_with(
-            uploads_root=self.sync_stream.uploads_root,
-            image_data="http://example.com/image.jpg",
-            base_name="test_id",
-        )
-
-    def test_get_content_string_image_no_data(self) -> None:
-        """Test getting content string from image content with no data."""
-        mock_image = MagicMock()
-        mock_image.file = None
-        mock_image.url = None
-
-        mock_content = MagicMock()
-        mock_content.type = "image"
-        mock_content.image = mock_image
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == ""
-
-    def test_get_content_string_image_no_image(self) -> None:
-        """Test getting content string from image content with no image."""
-        mock_content = MagicMock()
-        mock_content.type = "image"
-        mock_content.image = None
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == ""
-
-    @patch("waldiez.io.ws.LOG")
-    def test_get_content_string_unknown_type(self, mock_log: MagicMock) -> None:
-        """Test getting content string from unknown content type."""
-        mock_content = MagicMock()
-        mock_content.type = "unknown_type"
-
-        mock_user_data = MagicMock()
-        mock_user_data.content = mock_content
-
-        result = self.sync_stream.get_content_string(mock_user_data, "test_id")
-
-        assert result == ""
-        mock_log.error.assert_called_once()
-        assert "Unknown content type:" in mock_log.error.call_args[0][0]
-
-    def test_get_response_text_string_data(self) -> None:
-        """Test getting response text from string data."""
-        mock_response = MagicMock()
-        mock_response.data = "string response"
-
-        result = self.sync_stream.get_response_text(mock_response, "test_id")
-
-        assert result == "string response"
-
-    def test_get_response_text_list_data(self) -> None:
-        """Test getting response text from list data."""
-        mock_user_data = MagicMock(spec=UserInputData)
-
-        # Mock the get_content_string method to return expected value
-        with patch.object(
-            self.sync_stream,
-            "get_content_string",
-            return_value="content string",
-        ):
-            mock_response = MagicMock()
-            mock_response.data = ["string entry", mock_user_data]
-
-            result = self.sync_stream.get_response_text(
-                mock_response, "test_id"
-            )
-
-            assert result == "string entrycontent string"
-
-    def test_get_response_text_single_user_data(self) -> None:
-        """Test getting response text from single UserInputData."""
-        # Create a mock that will pass the isinstance check
-        mock_user_data = MagicMock(spec=UserInputData)
-
-        # Mock the get_content_string method to return expected value
-        with patch.object(
-            self.sync_stream,
-            "get_content_string",
-            return_value="user data content",
-        ):
-            mock_response = MagicMock()
-            mock_response.data = mock_user_data
-
-            result = self.sync_stream.get_response_text(
-                mock_response, "test_id"
-            )
-
-            assert result == "user data content"
-
-    def test_get_response_text_other_data_type(self) -> None:
-        """Test getting response text from other data types."""
-        mock_response = MagicMock()
-        mock_response.data = {"unexpected": "data"}
-
-        result = self.sync_stream.get_response_text(mock_response, "test_id")
-
-        assert result == ""
-
-    def test_get_response_text_empty_list(self) -> None:
-        """Test getting response text from empty list."""
-        mock_response = MagicMock()
-        mock_response.data = []
-
-        result = self.sync_stream.get_response_text(mock_response, "test_id")
-
         assert result == ""

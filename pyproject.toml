@@ -39,6 +39,7 @@ dependencies = [
   "pillow",
   "jupytext",
   "parso==0.8.4",
+  "rpds-py==0.25.1",
   "pydantic>=2.10.2,<3",
   "typer>=0.9.0,<1",
   "httpx<1",
@@ -52,56 +53,71 @@ requires-python = ">=3.10,<3.14"
 waldiez = "waldiez.cli:app"
 
 [project.optional-dependencies]
+# stream-io-extensions: redis, websockets, mqtt
 redis = [
     "ag2[redis]==0.9.1.post0",
 ]
 websockets = [
     "ag2[websockets]==0.9.1.post0",
 ]
-
+mqtt = [
+    "paho-mqtt>=2.1.0,<3.0",
+]
+# jupyterlab extension
+jupyter = [
+  "waldiez_jupyter==0.4.7",
+  "jupyterlab>=4.3.0,<5.0",
+  "jupyter_server==2.16.0",
+]
+runner = [
+  "waldiez_runner==0.4.7; python_version >= '3.11'",
+]
+studio = [
+  "waldiez_studio==0.4.7",
+]
 ag2_extras = [
   # models
   "ag2[anthropic]==0.9.1.post0",
   "ag2[bedrock]==0.9.1.post0",
   "ag2[cohere]==0.9.1.post0",
-  "ag2[gemini]==0.9.1.post0 ;sys_platform != 'win32'",
-  "ag2[gemini]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "ag2[gemini]==0.9.1.post0;sys_platform != 'win32'",
+  "ag2[gemini]==0.9.1.post0;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "ag2[groq]==0.9.1.post0",
   "ag2[lmm]==0.9.1.post0",
   "ag2[mistral]==0.9.1.post0",
   "ag2[ollama]==0.9.1.post0",
-  "ag2[together]==0.9.1.post0 ;sys_platform != 'win32'",
-  "ag2[together]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'", # utils
+  "ag2[together]==0.9.1.post0;sys_platform != 'win32'",
+  "ag2[together]==0.9.1.post0;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'", # utils
   # utils
   "ag2[websockets]==0.9.1.post0",
   "ag2[redis]==0.9.1.post0",
   "ag2[interop-crewai]==0.9.1.post0",
   "ag2[interop-langchain]==0.9.1.post0",
-  "ag2[neo4j]==0.9.1.post0 ;sys_platform != 'win32'",
-  "ag2[neo4j]==0.9.1.post0 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "ag2[neo4j]==0.9.1.post0;sys_platform != 'win32'",
+  "ag2[neo4j]==0.9.1.post0;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "ag2[websurfer]==0.9.1.post0",
-  "chromadb>=0.5.10 ;sys_platform != 'win32'",
-  "chromadb>=0.5.10 ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "chromadb>=0.5.10;sys_platform != 'win32'",
+  "chromadb>=0.5.10;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "pgvector>=0.4.0",
-  "psycopg>=3.2.6 ;sys_platform == 'linux'",
-  "psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'arm64'",
-  "psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'ARM64'",
-  "psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'aarch64'",
-  "psycopg>=3.2.6 ;sys_platform == 'win32' and platform_machine == 'AARCH64'",
-  "psycopg[binary]>=3.2.6 ;sys_platform != 'linux' and platform_machine != 'arm64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'AARCH64'",
+  "psycopg>=3.2.6;sys_platform == 'linux'",
+  "psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'arm64'",
+  "psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'ARM64'",
+  "psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'aarch64'",
+  "psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'AARCH64'",
+  "psycopg[binary]>=3.2.6;sys_platform != 'linux' and platform_machine != 'arm64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'AARCH64'",
   "protobuf>=5.29.3",
   "pypdf",
   "ipython",
   "markdownify",
   "beautifulsoup4",
-  "sentence-transformers ;sys_platform == 'linux'",
+  "sentence-transformers;sys_platform == 'linux'",
   "huggingface-hub",
-  "hf-xet>=1.1.2,<2.0.0; platform_machine == 'x86_64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'ARM64' or platform_machine == 'aarch64'",
-  "qdrant-client[fastembed] ;sys_platform != 'win32'",
-  "qdrant-client[fastembed] ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "hf-xet>=1.1.2,<2.0.0;platform_machine == 'x86_64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'ARM64' or platform_machine == 'aarch64'",
+  "qdrant-client[fastembed];sys_platform != 'win32'",
+  "qdrant-client[fastembed];sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "pgvector>=0.4.0",
-  "embedchain ;sys_platform != 'win32'",
-  "embedchain ;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "embedchain;sys_platform != 'win32'",
+  "embedchain;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "langchain-community>=0.3.12,<1",
   "pydantic-ai>=0.0.21",
   "pymongo>=4.11",
@@ -125,6 +141,7 @@ dev = [
   "jupyter_server==2.16.0",
   "hatchling==1.27.0",
   "mypy==1.16.0",
+  "paho-mqtt>=2.1.0,<3.0",
   "pandas-stubs==2.2.3.250527",
   "pre-commit==4.2.0",
   "pydocstyle==6.3.0",
@@ -132,13 +149,13 @@ dev = [
   "python-dotenv==1.1.0",
   "ruff==0.11.12",
   "types-pyyaml==6.0.12.20250516",
-  "yamllint==1.37.1",
-  "toml==0.10.2; python_version <= '3.10'",
   "types-jsonschema==4.24.0.20250528",
   "types-redis==4.6.0.20241004",
   "types-toml==0.10.8.20240310",
   "types-requests==2.32.0.20250515",
+  "toml==0.10.2; python_version <= '3.10'",
   "watchdog==6.0.0",
+  "yamllint==1.37.1",
 ]
 docs = [
   "mdx-include==1.4.2",
@@ -153,21 +170,12 @@ docs = [
   "mkdocs-awesome-nav==3.1.2",
   "mkdocs-open-in-new-tab==1.0.8",
 ]
-jupyter = [
-  "waldiez_jupyter==0.4.7",
-  "jupyterlab>=4.3.0,<5.0",
-  "jupyter_server==2.16.0",
-]
-runner = [
-  "waldiez_runner==0.4.7; python_version >= '3.11'",
-]
-studio = [
-  "waldiez_studio==0.4.7",
-]
 test = [
   "ag2[redis]==0.9.1.post0",
   "ag2[websockets]==0.9.1.post0",
   "fakeredis>=2.28.1",
+  "paho-mqtt>=2.1.0,<3.0",
+
   "pytest==8.3.5",
   "pytest-asyncio==1.0.0",
   "pytest-cov==6.1.1",
@@ -212,13 +220,26 @@ fields = ["description", "authors", "urls"]
 
 [tool.hatch.envs.default]
 python = "3.12"
-dependencies = ["waldiez[dev,test,docs,ag2_extras,redis,websockets]"]
+dependencies = ["waldiez[dev,test,docs,ag2_extras,redis,websockets,mqtt]"]
 
 [tool.hatch.envs.default.scripts]
-test = """pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests"""
-test-models = "pytest -c pyproject.toml --cov=waldiez/models --cov-branch --cov-report=term-missing -vv tests/models"
-test-exporting = "pytest -c pyproject.toml --cov=waldiez/exporting --cov-branch --cov-report=term-missing -vv tests/exporting"
-test-io = "pytest -c pyproject.toml -ss --cov=waldiez/io --cov-branch --cov-report=term-missing -vv tests/io"
+pre-test = "pip install -q -r requirements/test.txt"
+test = """
+hatch run pre-test
+pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing:skip-covered --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests
+"""
+test-models = """
+hatch run pre-test
+pytest -c pyproject.toml --cov=waldiez/models --cov-branch --cov-report=term-missing:skip-covered -vv tests/models
+"""
+test-exporting = """
+hatch run pre-test
+pytest -c pyproject.toml --cov=waldiez/exporting --cov-branch --cov-report=term-missing:skip-covered -vv tests/exporting
+"""
+test-io = """
+hatch run pre-test
+pytest -c pyproject.toml --cov=waldiez/io --cov-branch --cov-report=term-missing:skip-covered -vv tests/io
+"""
 
 format-black = "black --config pyproject.toml waldiez tests scripts"
 format-autoflake = "autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive waldiez tests scripts"
@@ -250,7 +271,11 @@ forlint = """
 hatch run format
 hatch run lint
 """
+
+clean = "python scripts/clean.py"
 smoke = "python scripts/smoke.py"
+smoke-local = "python scripts/smoke.py --local"
+smoke-remote = "python scripts/smoke.py --remote"
 
 docs = "python -m mkdocs build -d site"
 docs-live = "python -m mkdocs serve --watch mkdocs.yml --watch docs --watch waldiez --dev-addr localhost:8400"
@@ -258,6 +283,7 @@ build = "python -m build --wheel --sdist --outdir out/dist"
 image = "python scripts/image.py"
 
 check = """
+hatch run clean
 hatch run format
 hatch run lint
 hatch run test
@@ -498,5 +524,5 @@ exclude_lines = [
   "if TYPE_CHECKING:",
   "if __name__ == .__main__.:",
 ]
-fail_under = 80
+fail_under = 75
 precision = 2

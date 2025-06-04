@@ -4,14 +4,15 @@
 """User input data models and validation."""
 
 import json
+import os
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import Annotated
 
 from ..utils import detect_media_type
-from .constants import CONTENT_MAPPING, MediaContent
+from .constants import CONTENT_MAPPING, ContentMappingEntry, MediaContent
 from .content.audio import AudioMediaContent
 from .content.base import (
     AudioContent,
@@ -29,12 +30,20 @@ class UserInputData(BaseModel):
     """User's input data model."""
 
     content: Annotated[
-        MediaContent,
+        Union[MediaContent, list[MediaContent]],
         Field(
             description="The content of the input data.",
             title="Content",
         ),
     ]
+
+    def __str__(self) -> str:
+        """Get the string representation of the content."""
+        return self.to_string()
+
+    def __repr__(self) -> str:
+        """Get the string representation of the UserInputData."""
+        return f"UserInputData(content={self.to_string()})"
 
     def to_string(
         self,
@@ -55,6 +64,11 @@ class UserInputData(BaseModel):
         str
             The string representation of the content.
         """
+        if isinstance(self.content, list):
+            return " ".join(
+                item.to_string(uploads_root, base_name)  # pyright: ignore
+                for item in self.content
+            )
         return self.content.to_string(uploads_root, base_name)
 
     @classmethod
@@ -105,54 +119,64 @@ class UserInputData(BaseModel):
         if content_type not in CONTENT_MAPPING:
             raise ValueError(f"Unsupported content type: {content_type}")
 
+        # Get the mapping for the content type
         mapping = CONTENT_MAPPING[content_type]
+        return cls._build_media_content(value, mapping, content_type)
 
-        # Check for any of the possible field names for this content type
+    @classmethod
+    def _build_media_content(
+        cls,
+        value: dict[str, Any],
+        mapping: ContentMappingEntry,
+        content_type: str,
+    ) -> MediaContent:
+        """Try to construct the appropriate MediaContent from the mapping."""
         for field in mapping["fields"]:
-            if field in value:
-                # If we need additional parameters (e.g. FileMediaContent)
-                if content_type in ["document", "file"]:
-                    return mapping["cls"](
-                        type=content_type,  # type: ignore
-                        **{mapping["required_field"]: value[field]},
-                    )
-                # If we have a direct mapping
-                if field == mapping["required_field"]:
-                    return mapping["cls"](**{field: value[field]})
-                # If we need field name conversion (e.g., url -> image_url)
-                # Handle simple string URLs by wrapping in
-                # appropriate Content object
-                field_value = value[field]
-                if mapping["required_field"] in [
-                    "image_url",
-                    "image",
-                ] and isinstance(field_value, str):
-                    field_value = ImageContent(url=field_value)
-                elif mapping["required_field"] == "video" and isinstance(
-                    field_value, str
-                ):
-                    field_value = VideoContent(url=field_value)
-                elif mapping["required_field"] == "audio" and isinstance(
-                    field_value, str
-                ):
-                    field_value = AudioContent(url=field_value)
-                elif mapping["required_field"] == "file" and isinstance(
-                    field_value, str
-                ):
-                    # For file content, we need a name -
-                    #  use the URL as name if it's a string
-                    field_value = FileContent(name=field_value, url=field_value)
+            if field not in value:
+                continue
 
+            raw_val = value[field]
+
+            if field == mapping["required_field"]:
+                # if we have direct mapping to the required field,
+                # let's try to instantiate the class directly
+                try:
+                    return mapping["cls"](**{field: raw_val})
+                except ValueError:
+                    pass  # let's try to convert it
+
+            converted = cls._convert_simple_content(
+                raw_val, mapping["required_field"]
+            )
+            if converted is not None:  # pragma: no branch
                 return mapping["cls"](
-                    **{
-                        mapping["required_field"]: field_value,
-                    }  # pyright: ignore
+                    **{mapping["required_field"]: converted}  # type: ignore
                 )
 
         raise ValueError(
-            "Missing required field for content type"
-            f" '{content_type}' in: {value}"
+            "Missing required field for content type "
+            f"'{content_type}' in: {value}"
         )
+
+    @staticmethod
+    def _convert_simple_content(
+        raw_val: Any, target_field: str
+    ) -> ImageContent | VideoContent | AudioContent | FileContent | None:
+        """Convert a simple string to the appropriate content, if applicable."""
+        if not isinstance(raw_val, str):  # pragma: no cover
+            return None
+
+        if target_field in ("image_url", "image"):
+            return ImageContent(url=raw_val)
+        if target_field == "video":
+            return VideoContent(url=raw_val)
+        if target_field == "audio":
+            return AudioContent(url=raw_val)
+        if target_field == "file":
+            filename = raw_val.split(os.path.sep)[-1]
+            return FileContent(name=filename, url=raw_val)
+
+        return None  # pragma: no cover
 
     @field_validator("content", mode="before")
     @classmethod
@@ -197,10 +221,7 @@ class UserInputData(BaseModel):
 
         # If it's a list
         if isinstance(v, list):
-            raise ValueError(
-                "List of content is not supported. "
-                "Please provide a single content item."
-            )
+            return [cls.validate_content(item) for item in v]  # type: ignore
 
         # Default fallback
         return TextMediaContent(type="text", text=str(v))

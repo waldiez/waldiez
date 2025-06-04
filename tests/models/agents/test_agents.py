@@ -2,9 +2,12 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents."""
 
+import pytest
+
 from waldiez.models.agents import (
     WaldiezAgents,
     WaldiezAssistant,
+    WaldiezGroupManager,
     WaldiezUserProxy,
 )
 from waldiez.models.model import WaldiezModel
@@ -68,3 +71,46 @@ def test_waldiez_agents() -> None:
     assert agents.assistantAgents == [assistant]
     assert next(agents.members) == user
     agents.validate_flow(model_ids=[model.id], tool_ids=[tool.id])
+
+    manager = WaldiezGroupManager(
+        id="wa-3",
+        name="group_manager",
+        type="agent",
+        agent_type="group_manager",
+        description="Group Manager",
+        tags=[],
+        requirements=[],
+        data={
+            "initialAgentId": assistant.id,
+        },  # type: ignore
+    )
+    assistant.data.parent_id = manager.id
+    user.data.parent_id = manager.id
+    agents = WaldiezAgents(
+        assistantAgents=[assistant],
+        userProxyAgents=[user],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
+        groupManagerAgents=[manager],
+    )
+    assert agents.groupManagerAgents == [manager]
+    agents.validate_flow(
+        model_ids=[model.id],
+        tool_ids=[tool.id],
+    )
+
+    manager.data.initial_agent_id = "not_in_agents"
+    agents = WaldiezAgents(
+        assistantAgents=[assistant],
+        userProxyAgents=[user],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
+        groupManagerAgents=[manager],
+    )
+    with pytest.raises(ValueError):
+        agents.validate_flow(
+            model_ids=[model.id],
+            tool_ids=[tool.id],
+        )

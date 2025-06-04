@@ -51,7 +51,12 @@ UPLOADS_DIR.mkdir(exist_ok=True, parents=True)
 
 IncomingAction = Literal["run", "save", "upload", "convert"]
 OutgoingAction = Literal[
-    "runResult", "saveResult", "uploadResult", "convertResult", "error"
+    "runResult",
+    "saveResult",
+    "uploadResult",
+    "convertResult",
+    "stopResult",
+    "error",
 ]
 
 
@@ -98,10 +103,11 @@ class ReloadHandler(FileSystemEventHandler):
         # Debounce rapid file changes
         if self.debounce_timer:
             self.debounce_timer.cancel()
-        self.debounce_timer = threading.Timer(0.5, self._trigger_restart)
+        self.debounce_timer = threading.Timer(0.5, self.trigger_restart)
         self.debounce_timer.start()
 
-    def _trigger_restart(self) -> None:
+    @staticmethod
+    def trigger_restart() -> None:
         """Trigger a restart of the server."""
         logger.info("Files changed, restarting...")
         os.execv(  # nosemgrep # nosec
@@ -128,6 +134,7 @@ class WaldiezDevServer:
         self.host = host
         self.port = port
         self.connections: Set[websockets.ServerConnection] = set()
+        self.run_proc = None
 
     async def _send(
         self,
@@ -221,6 +228,8 @@ class WaldiezDevServer:
                 data.get("flow", ""),
                 data.get("to", "py"),
             )
+        elif action == "stop":
+            message = await self.handle_stop(websocket)
         else:
             message = OutgoingMessage(
                 type="error",
@@ -398,6 +407,30 @@ class WaldiezDevServer:
             success=True,
             filePaths=[relative_to_cwd],
             message=f"Flow converted successfully to {output_path}",
+        )
+
+    async def handle_stop(
+        self, websocket: websockets.ServerConnection
+    ) -> OutgoingMessage:
+        """Handle a 'stop' action.
+
+        Parameters
+        ----------
+        websocket : websockets.ServerConnection
+            The WebSocket connection to handle.
+
+        Returns
+        -------
+        OutgoingMessage
+            The result of the operation.
+        """
+        to_log = "Handling stop action"
+        logger.info(to_log)
+        # TODO: find a way to actuall stop the runner if it's running
+        return OutgoingMessage(
+            type="stopResult",
+            success=True,
+            message="Server stopped successfully",
         )
 
     async def send_error(

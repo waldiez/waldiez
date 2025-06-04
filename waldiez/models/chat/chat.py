@@ -4,11 +4,19 @@
 
 from typing import Any, Optional
 
-from pydantic import Field
-from typing_extensions import Annotated
+from pydantic import Field, model_validator
+from typing_extensions import Annotated, Literal, Self
 
-from ..agents import WaldiezAgent, WaldiezHandoffCondition, WaldiezRagUserProxy
-from ..common import WaldiezBase, generate_function
+from ..agents import WaldiezAgent, WaldiezRagUserProxy
+from ..common import (
+    WaldiezAgentTarget,
+    WaldiezBase,
+    WaldiezHandoff,
+    WaldiezHandoffCondition,
+    WaldiezTransitionAvailability,
+    WaldiezTransitionTarget,
+    generate_function,
+)
 from .chat_data import WaldiezChatData
 from .chat_message import (
     CALLABLE_MESSAGE,
@@ -26,6 +34,8 @@ from .chat_nested import (
     WaldiezChatNested,
 )
 
+WaldiezChatType = Literal["chat", "nested", "group", "hidden"]
+
 
 # noinspection PyUnresolvedReferences
 class WaldiezChat(WaldiezBase):
@@ -35,15 +45,17 @@ class WaldiezChat(WaldiezBase):
     ----------
     id : str
         The chat ID.
+    source : str
+        The source of the chat (sender).
+    target : str
+        The target of the chat (recipient).
+    type : WaldiezChatType
+        The type of the chat data: "chat", "nested", "group", or "hidden".
     data : WaldiezChatData
         The chat data.
         See `waldiez.models.chat.WaldiezChatData` for more information.
     name : str
         The chat name.
-    source : str
-        The chat source.
-    target : str
-        The chat target.
     nested_chat : WaldiezChatNested
         The nested chat message/reply if any.
     message : WaldiezChatMessage
@@ -65,6 +77,30 @@ class WaldiezChat(WaldiezBase):
             description="The chat ID.",
         ),
     ]
+    type: Annotated[
+        WaldiezChatType,
+        Field(
+            default="chat",
+            title="Type",
+            description="The type of the chat data.",
+        ),
+    ]
+    source: Annotated[
+        str,
+        Field(
+            ...,
+            title="Source",
+            description="The chat source.",
+        ),
+    ]
+    target: Annotated[
+        str,
+        Field(
+            ...,
+            title="Target",
+            description="The chat target.",
+        ),
+    ]
     data: Annotated[
         WaldiezChatData,
         Field(
@@ -83,20 +119,6 @@ class WaldiezChat(WaldiezBase):
     def description(self) -> str:
         """Get the description."""
         return self.data.description
-
-    @property
-    def source(self) -> str:
-        """Get the source."""
-        if self.data.real_source:
-            return self.data.real_source
-        return self.data.source
-
-    @property
-    def target(self) -> str:
-        """Get the target."""
-        if self.data.real_target:
-            return self.data.real_target
-        return self.data.target
 
     @property
     def order(self) -> int:
@@ -143,9 +165,43 @@ class WaldiezChat(WaldiezBase):
         return self.data.get_prerequisites()
 
     @property
-    def handoff_condition(self) -> WaldiezHandoffCondition | None:
+    def condition(self) -> WaldiezHandoffCondition:
         """Get the handoff condition."""
-        return self.data.handoff_condition
+        return self.data.condition
+
+    @property
+    def available(self) -> WaldiezTransitionAvailability:
+        """Get the transition availability."""
+        return self.data.available
+
+    @model_validator(mode="after")
+    def _validate_chat(self) -> Self:
+        """Override if needed the source and target of the chat."""
+        if self.data.real_source:
+            self.source = self.data.real_source
+        if self.data.real_target:
+            self.target = self.data.real_target
+        return self
+
+    def as_handoff(
+        self,
+    ) -> WaldiezHandoff:
+        """Convert the chat to a handoff.
+
+        Returns
+        -------
+        WaldiezHandoff
+            The handoff representation of the chat.
+        """
+        target: WaldiezTransitionTarget = WaldiezAgentTarget(
+            target_type="AgentTarget",
+            value=[self.target],
+        )
+        return WaldiezHandoff(
+            target=target,
+            condition=self.condition,
+            available=self.available,
+        )
 
     def set_chat_id(self, value: int) -> None:
         """Set the chat ID.
@@ -355,7 +411,7 @@ class WaldiezChat(WaldiezBase):
         args_dict = self.data.get_chat_args(for_queue)
         if (
             isinstance(sender, WaldiezRagUserProxy)
-            and sender.agent_type == "rag_user_proxy"
+            and sender.is_rag_user
             and self.message.type == "rag_message_generator"
         ):
             # check for n_results in agent data, to add in context
@@ -380,8 +436,6 @@ class WaldiezChat(WaldiezBase):
         dump = super().model_dump(**kwargs)
         dump["name"] = self.name
         dump["description"] = self.description
-        dump["source"] = self.source
-        dump["target"] = self.target
         dump["nested_chat"] = self.nested_chat.model_dump()
         dump["message"] = self.message.model_dump()
         dump["message_content"] = self.message_content

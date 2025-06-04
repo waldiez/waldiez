@@ -4,7 +4,7 @@
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional, Union
 
 from pydantic import ValidationError, field_validator
 
@@ -25,7 +25,7 @@ class UserResponse(StructuredBase):
     @classmethod
     def validate_data(
         cls, value: Any
-    ) -> Union[str, UserInputData, list[UserInputData]]:
+    ) -> Optional[Union[str, UserInputData, list[UserInputData]]]:
         """Validate the data field in UserResponse.
 
         Parameters
@@ -43,6 +43,8 @@ class UserResponse(StructuredBase):
         ValueError
             If the value is not valid.
         """
+        if value is None:
+            return ""
         if cls._is_valid_type(value):
             return value
 
@@ -134,6 +136,12 @@ class UserResponse(StructuredBase):
                 result.append(cls._handle_dict(item))  # pyright: ignore
             elif isinstance(item, str):
                 result.append(cls._create_text_input(item))
+            elif isinstance(item, list):
+                nested_result = cls._handle_list(item)  # pyright: ignore
+                if isinstance(nested_result, list):
+                    result.extend(nested_result)
+                else:
+                    result.append(nested_result)
             else:
                 result.append(cls._create_text_input(str(item)))
 
@@ -151,7 +159,7 @@ class UserResponse(StructuredBase):
     def _create_invalid_input(cls, raw: Any, label: str) -> UserInputData:
         try:
             preview = json.dumps(raw)[:100]
-        except (TypeError, ValueError):
+        except (TypeError, ValueError):  # pragma: no cover
             preview = str(raw)[:100]
         return UserInputData(
             content=TextMediaContent(text=f"{label}: {preview}...")
@@ -191,9 +199,10 @@ class UserResponse(StructuredBase):
             return self.data.to_string(
                 uploads_root=uploads_root, base_name=base_name
             )
-        if isinstance(self.data, str):  # pyright: ignore
+        # we have probably returned sth till here
+        if isinstance(self.data, str):  # pyright: ignore # pragma: no cover
             return self.data
-        return (
+        return (  # pragma: no cover
             json.dumps(self.data)
             if hasattr(self.data, "__dict__")
             else str(self.data)

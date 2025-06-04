@@ -187,7 +187,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 f"{common_end}"
             )
 
-        elif self.criterion == "exact":
+        elif self.criterion == "exact":  # pragma: no branch
             self._string = (
                 f'{common_start}x.get("content", "") == keyword {common_end}'
             )

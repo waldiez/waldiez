@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # flake8: noqa: E501
+# pyright:reportCallIssue=false
 """Test waldiez.models.agents.rag_user.retrieve_config.*."""
 
 import os
@@ -318,10 +319,10 @@ def test_validate_docs_path() -> None:
         'r"/path/to/docs"',
         'r"/path/to/folder/one"',
         'r"/path/to/the/docs"',
-        "r'/path/to/folder'",
+        'r"/path/to/folder"',
         'r"/path/to/docs/two/"',
         'r"https://www.example.com/one"',
         'r"https://www.example.com/two"',
-        "r'https://www.example.com/three'",
+        'r"https://www.example.com/three"',
         f'r"{this_file}"',
     ]

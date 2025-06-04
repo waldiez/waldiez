@@ -14,8 +14,11 @@ from pathlib import Path
 from typing import Union
 
 import jupytext  # type: ignore[import-untyped]
+from jupytext.config import (  # type: ignore[import-untyped]
+    JupytextConfiguration,
+)
 
-from .exporting import FlowExporter
+from .exporting import create_flow_exporter
 from .models import Waldiez
 
 
@@ -54,7 +57,12 @@ class WaldiezExporter:
         waldiez = Waldiez.load(file_path)
         return cls(waldiez)
 
-    def export(self, path: Union[str, Path], force: bool = False) -> None:
+    def export(
+        self,
+        path: Union[str, Path],
+        force: bool = False,
+        debug: bool = False,
+    ) -> None:
         """Export the Waldiez instance.
 
         Parameters
@@ -63,6 +71,8 @@ class WaldiezExporter:
             The path to export to.
         force : bool, (optional)
             Override the output file if it already exists, by default False.
+        debug : bool, (optional)
+            Whether to enable debug mode, by default False.
 
         Raises
         ------
@@ -85,21 +95,27 @@ class WaldiezExporter:
         path.parent.mkdir(parents=True, exist_ok=True)
         extension = path.suffix
         if extension == ".waldiez":
-            self.to_waldiez(path)
+            self.to_waldiez(path, debug=debug)
         elif extension == ".py":
-            self.to_py(path)
+            self.to_py(path, debug=debug)
         elif extension == ".ipynb":
-            self.to_ipynb(path)
+            self.to_ipynb(path, debug=debug)
         else:
             raise ValueError(f"Invalid extension: {extension}")
 
-    def to_ipynb(self, path: Path) -> None:
+    def to_ipynb(
+        self,
+        path: Path,
+        debug: bool = False,
+    ) -> None:
         """Export flow to jupyter notebook.
 
         Parameters
         ----------
         path : Path
             The path to export to.
+        debug : bool, optional
+            Whether to enable debug mode, by default False.
 
         Raises
         ------
@@ -108,64 +124,79 @@ class WaldiezExporter:
         """
         # we first create a .py file with the content
         # and then convert it to a notebook using jupytext
-        exporter = FlowExporter(
+        exporter = create_flow_exporter(
             waldiez=self.waldiez,
             output_dir=path.parent,
             for_notebook=True,
+            debug=debug,
         )
         output = exporter.export()
-        content_str = output["content"]
+        content_str = output.main_content
         if not content_str:
             raise RuntimeError("Could not generate notebook")
         py_path = path.with_suffix(".tmp.py")
         with open(py_path, "w", encoding="utf-8", newline="\n") as f:
             f.write(content_str)
+        config = JupytextConfiguration(
+            comment_magics=False,
+            hide_notebook_metadata=True,
+            cell_metadata_filter="-all",
+        )
         with open(py_path, "r", encoding="utf-8") as py_out:
             jp_content = jupytext.read(  # pyright: ignore
                 py_out,
-                fmt="py:light",
+                fmt="py:percent",
+                config=config,
             )
         ipynb_path = str(py_path).replace(".tmp.py", ".tmp.ipynb")
         jupytext.write(  # pyright: ignore
             jp_content,
             ipynb_path,
             fmt="ipynb",
+            config=config,
         )
         Path(ipynb_path).rename(ipynb_path.replace(".tmp.ipynb", ".ipynb"))
         py_path.unlink(missing_ok=True)
 
-    def to_py(self, path: Path) -> None:
+    def to_py(self, path: Path, debug: bool = False) -> None:
         """Export waldiez flow to a python script.
 
         Parameters
         ----------
         path : Path
             The path to export to.
+        debug : bool, optional
+            Whether to enable debug mode, by default False.
 
         Raises
         ------
         RuntimeError
             If the python script could not be generated.
         """
-        exporter = FlowExporter(
+        exporter = create_flow_exporter(
             waldiez=self.waldiez,
             output_dir=path.parent,
             for_notebook=False,
+            debug=debug,
         )
         output = exporter.export()
-        content = output["content"]
+        content = output.main_content
         if not content:
             raise RuntimeError("Could not generate python script")
         with open(path, "w", encoding="utf-8", newline="\n") as file:
             file.write(content)
 
-    def to_waldiez(self, file_path: Path) -> None:
+    def to_waldiez(self, file_path: Path, debug: bool = False) -> None:
         """Export the Waldiez instance.
 
         Parameters
         ----------
         file_path : Path
             The file path.
+        debug : bool, optional
+            Whether to enable debug mode, by default False.
         """
         with open(file_path, "w", encoding="utf-8", newline="\n") as file:
             file.write(self.waldiez.model_dump_json())
+        if debug:
+            print(self.waldiez.model_dump_json(indent=2))

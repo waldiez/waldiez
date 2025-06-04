@@ -174,9 +174,9 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
      * @see {@link IWaldiezFlowStore.onViewportChange}
      */
     onViewportChange = (viewport: { x: number; y: number; zoom: number }, nodeType: WaldiezNodeType) => {
-        const zoomChanged = viewport.zoom !== this.get().viewport?.zoom;
-        if (zoomChanged) {
-            if (nodeType === "model" || nodeType === "tool") {
+        if (nodeType === "model" || nodeType === "tool") {
+            const zoomChanged = viewport.zoom !== this.get().viewport?.zoom;
+            if (zoomChanged) {
                 const { nodes, rfInstance, flowId } = this.get();
                 this.set({
                     nodes: reArrangeNodes(nodes, flowId, nodeType, rfInstance),

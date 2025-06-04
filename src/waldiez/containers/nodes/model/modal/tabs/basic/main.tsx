@@ -5,7 +5,7 @@
 import { memo, useMemo } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { Collapsible, InfoLabel, Select, TextareaInput } from "@waldiez/components";
+import { Collapsible, InfoLabel, Select } from "@waldiez/components";
 import { useModelModalBasicTab } from "@waldiez/containers/nodes/model/modal/tabs/basic/hooks";
 import { ModelSelector } from "@waldiez/containers/nodes/model/modal/tabs/basic/selectModel";
 import { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/basic/types";
@@ -18,7 +18,7 @@ import { capitalize } from "@waldiez/utils";
  */
 export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalBasicTabProps) => {
     const { id, data } = props;
-    const { label, description, apiType, apiKey, baseUrl } = data;
+    const { label, apiType, apiKey, baseUrl } = data;
 
     // Get handlers and derived state from hook
     const {
@@ -33,7 +33,6 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
         onDataChange,
         onApiKeyVisibleChange,
         onLabelChange,
-        onDescriptionChange,
         onApiTypeChange,
         onApiKeyChange,
         onBaseUrlChange,
@@ -75,7 +74,6 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
 
     // Generate input IDs for accessibility
     const nameInputId = `model-name-input-${id}`;
-    const descriptionInputId = `model-description-textarea-${id}`;
     const apiTypeSelectId = `model-api-type-select-${id}`;
     const apiKeyInputId = `model-api-key-input-${id}`;
     const baseUrlInputId = `model-base-url-input-${id}`;
@@ -117,22 +115,6 @@ export const WaldiezNodeModelModalBasicTab = memo((props: WaldiezNodeModelModalB
                     aria-label="Model name"
                 />
             </div>
-
-            <div className="margin-top-10">
-                <label htmlFor={descriptionInputId}>Description:</label>
-                <div className="margin-top-10" />
-                <TextareaInput
-                    id={descriptionInputId}
-                    title="Model description"
-                    rows={2}
-                    value={description || ""}
-                    onChange={onDescriptionChange}
-                    data-testid="model-description-textarea"
-                    className="full-width"
-                    aria-label="Model description"
-                />
-            </div>
-
             <div className="margin-top-0">
                 <InfoLabel
                     label="Model Type:"

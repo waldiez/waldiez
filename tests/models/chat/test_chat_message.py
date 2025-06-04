@@ -82,6 +82,17 @@ def test_waldiez_chat_message() -> None:
     assert chat_message.type == "string"
     assert chat_message.content_body == ""
 
+    chat_message = WaldiezChatMessage(
+        type="string",
+        content="content",
+        context={"key": "value"},
+        use_carryover=True,
+    )
+    assert chat_message.type == "string"
+    assert chat_message.content_body
+    assert '"content" + carryover' in chat_message.content_body
+    assert chat_message.context == {"key": "value"}
+
     with pytest.raises(ValueError):
         chat_message = WaldiezChatMessage(
             type="invalid",  # type: ignore

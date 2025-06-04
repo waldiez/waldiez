@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=missing-module-docstring,missing-class-docstring
+# pyright: reportPrivateUsage=false
+# pylint: disable=missing-module-docstring,missing-class-docstring,no-self-use
 # pylint: disable=missing-function-docstring,missing-param-doc,protected-access
 # pylint: disable=missing-return-doc,unused-argument,unused-variable
 
@@ -9,6 +10,7 @@
 import json
 import queue
 import sys
+from pathlib import Path
 from typing import Any, Callable
 from unittest.mock import MagicMock, patch
 
@@ -29,6 +31,7 @@ class MockEvent(BaseEvent):
         super().__init__(content=content)
 
 
+# pylint: disable=too-many-public-methods
 class TestStructuredIOStream:
     """Test suite for StructuredIOStream class."""
 
@@ -385,3 +388,119 @@ class TestStructuredIOStream:
             in payload["data"]
         )
         assert kwargs == {"flush": True}
+
+    def test_init_with_uploads_root_string(self, tmp_path: Path) -> None:
+        """Test initialization with uploads_root as string."""
+        # Test with string path
+        stream = StructuredIOStream(uploads_root=str(tmp_path))
+        assert stream.uploads_root == tmp_path.resolve()
+
+    def test_init_with_uploads_root_path_object(self, tmp_path: Path) -> None:
+        """Test initialization with uploads_root as Path object."""
+        stream = StructuredIOStream(uploads_root=tmp_path)
+        assert stream.uploads_root == tmp_path.resolve()
+
+    def test_init_creates_uploads_root_directory(self, tmp_path: Path) -> None:
+        """Test that uploads_root directory is created if it doesn't exist."""
+        non_existent_path = Path(tmp_path) / "new_folder" / "nested"
+
+        # Ensure the path doesn't exist initially
+        assert not non_existent_path.exists()
+
+        # Create stream with non-existent path
+        stream = StructuredIOStream(uploads_root=non_existent_path)
+
+        # Verify the directory was created
+        assert stream.uploads_root == non_existent_path.resolve()
+        assert non_existent_path.exists()
+
+    def test_handle_user_input_list_response(self) -> None:
+        """Test handling list response data."""
+        # Test with valid list data
+        valid_list_data = [
+            {"type": "text", "content": "Hello"},
+            {"type": "image", "content": "image_data"},
+        ]
+        json_input = json.dumps(
+            {"request_id": "test_id", "data": valid_list_data}
+        )
+
+        stream = StructuredIOStream()
+        result = stream._handle_user_input(json_input, "test_id")
+
+        # Should return UserResponse with list data
+        assert result.request_id == "test_id"
+        assert isinstance(result.data, list)
+
+    def test_handle_user_input_empty_list(self) -> None:
+        """Test handling empty list response."""
+        json_input = json.dumps({"request_id": "test_id", "data": []})
+
+        stream = StructuredIOStream()
+        result = stream._handle_user_input(json_input, "test_id")
+
+        assert result.to_string() == ""
+
+    def test_load_user_input_double_json_decode_scenarios(self) -> None:
+        """Test various double JSON decoding scenarios."""
+        stream = StructuredIOStream()
+
+        # Test double-dumped string
+        double_dumped = json.dumps("Hello, world!")
+        result = stream._load_user_input(double_dumped)
+        assert result == "Hello, world!"
+
+        # Test double-dumped dict with string data
+        inner_dict = {"key": "value"}
+        double_dumped_dict = json.dumps(json.dumps(inner_dict))
+        result = stream._load_user_input(double_dumped_dict)
+        assert result == inner_dict
+
+        # Test triple-nested JSON (should stop at double)
+        triple_dumped = json.dumps(json.dumps(json.dumps("deep")))
+        result = stream._load_user_input(triple_dumped)
+        assert result == json.dumps("deep")  # Should only decode twice
+
+        # Test non-dict result after first decode
+        list_data = ["item1", "item2"]
+        dumped_list = json.dumps(list_data)
+        result = stream._load_user_input(dumped_list)
+        assert result == str(list_data)  # Should convert to string
+
+        # Test dict with data field containing double-dumped JSON
+        dict_with_double_data = {
+            "data": json.dumps({"nested": "value"}),
+            "other": "field",
+        }
+        dumped_dict = json.dumps(dict_with_double_data)
+        result = stream._load_user_input(dumped_dict)
+
+        expected: dict[str, Any] = {
+            "data": {"nested": "value"},  # Should be decoded
+            "other": "field",
+        }
+        assert result == expected
+
+        # Test dict with data field containing invalid JSON (should not decode)
+        dict_with_invalid_data = {"data": "not json", "other": "field"}
+        dumped_dict = json.dumps(dict_with_invalid_data)
+        result = stream._load_user_input(dumped_dict)
+        assert result == dict_with_invalid_data
+
+    def test_format_multimedia_response_with_content_wrapper(self) -> None:
+        """Test formatting multimedia response with content wrapper."""
+        # Test data wrapped in "content" key
+        wrapped_data = {
+            "content": {"image": "src='wrapped.jpg'", "text": "Wrapped content"}
+        }
+
+        stream = StructuredIOStream()
+        result = stream._format_multimedia_response(wrapped_data)
+
+        assert result == "<img src='wrapped.jpg'> Wrapped content"
+
+        # Test nested content wrapper
+        nested_wrapped = {"content": {"content": {"text": "Deeply nested"}}}
+
+        result = stream._format_multimedia_response(nested_wrapped)
+        assert result == "Deeply nested"

@@ -7,8 +7,16 @@ from typing import Any, Optional, Union
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents import WaldiezAgentType, WaldiezHandoffCondition
-from ..common import WaldiezBase, check_function, update_dict
+from ..agents import WaldiezAgentType
+from ..common import (
+    WaldiezBase,
+    WaldiezDefaultCondition,
+    WaldiezHandoffCondition,
+    WaldiezHandoffTransition,
+    WaldiezTransitionAvailability,
+    check_function,
+    update_dict,
+)
 from .chat_message import (
     CALLABLE_MESSAGE,
     CALLABLE_MESSAGE_ARGS,
@@ -25,10 +33,6 @@ class WaldiezChatData(WaldiezBase):
     ----------
     name : str
         The name of the chat.
-    source : str
-        The source of the chat (sender).
-    target : str
-        The target of the chat (recipient).
     source_type : WaldiezAgentType
         The agent type of the chat source.
     target_type : WaldiezAgentType
@@ -49,8 +53,8 @@ class WaldiezChatData(WaldiezBase):
         The summary method and options for the chat.
     max_turns : Optional[int]
         The maximum number of turns for the chat, by default None (no limit).
-    silent : Optional[bool], optional
-        Whether to run the chat silently, by default None (ignored).
+    silent : bool, optional
+        Whether to run the chat silently, by default False (not silent).
     summary_args : Optional[dict[str, Any]]
         The summary args to use in autogen.
     handoff_condition : Optional[WaldiezHandoffCondition], optional
@@ -63,22 +67,6 @@ class WaldiezChatData(WaldiezBase):
 
     name: Annotated[
         str, Field(..., title="Name", description="The name of the chat.")
-    ]
-    source: Annotated[
-        str,
-        Field(
-            ...,
-            title="Source",
-            description="The source of the chat (sender).",
-        ),
-    ]
-    target: Annotated[
-        str,
-        Field(
-            ...,
-            title="Target",
-            description="The target of the chat (recipient).",
-        ),
     ]
     description: Annotated[
         str,
@@ -105,14 +93,14 @@ class WaldiezChatData(WaldiezBase):
         ),
     ] = -1
     clear_history: Annotated[
-        Optional[bool],
+        bool,
         Field(
-            default=None,
+            default=True,
             alias="clearHistory",
             title="Clear History",
             description="Whether to clear the chat history.",
         ),
-    ] = None
+    ] = True
     message: Annotated[
         Union[str, WaldiezChatMessage],
         Field(
@@ -156,13 +144,13 @@ class WaldiezChatData(WaldiezBase):
         ),
     ] = []
     silent: Annotated[
-        Optional[bool],
+        bool,
         Field(
-            default=None,
+            default=False,
             title="Silent",
             description="Whether to run the chat silently.",
         ),
-    ] = None
+    ] = False
     real_source: Annotated[
         Optional[str],
         Field(
@@ -199,13 +187,33 @@ class WaldiezChatData(WaldiezBase):
             description="The agent type of the target.",
         ),
     ]
-    handoff_condition: Annotated[
-        Optional[WaldiezHandoffCondition],
+    condition: Annotated[
+        WaldiezHandoffCondition,
         Field(
-            None,
-            alias="handoffCondition",
+            default_factory=WaldiezDefaultCondition.create,
+            alias="condition",
             title="Handoff Condition",
             description="The handoff condition to use.",
+        ),
+    ]
+    available: Annotated[
+        WaldiezTransitionAvailability,
+        Field(
+            default_factory=WaldiezTransitionAvailability,
+            title="Availability",
+            description="The availability condition for the chat.",
+        ),
+    ]
+    after_work: Annotated[
+        Optional[WaldiezHandoffTransition],
+        Field(
+            None,
+            title="After Work",
+            description=(
+                "The target to transfer control to after the chat has "
+                "finished its work. (used if in a group chat)"
+            ),
+            alias="afterWork",
         ),
     ] = None
     _message_content: Optional[str] = None
@@ -338,9 +346,9 @@ class WaldiezChatData(WaldiezBase):
         ):
             return None
         args: dict[str, Any] = {}
-        if self.summary.prompt:
+        if self.summary.prompt:  # pragma: no branch
             args["summary_prompt"] = self.summary.prompt
-        if self.summary.args:
+        if self.summary.args:  # pragma: no branch
             args.update(self.summary.args)
         return args
 
@@ -374,16 +382,16 @@ class WaldiezChatData(WaldiezBase):
             The dictionary to pass as kwargs.
         """
         args: dict[str, Any] = {}
-        if self.summary.method:
-            args["summary_method"] = self.summary.method
+        if self.summary.method:  # pragma: no branch
+            args["summary_method"] = str(self.summary.method)
         if self.summary_args:
             args["summary_args"] = self.summary_args
-        if isinstance(self.max_turns, int) and self.max_turns > 0:
+        if (
+            isinstance(self.max_turns, int) and self.max_turns > 0
+        ):  # pragma: no branch
             args["max_turns"] = self.max_turns
-        if isinstance(self.clear_history, bool):
-            args["clear_history"] = self.clear_history
-        if isinstance(self.silent, bool):
-            args["silent"] = self.silent
+        args["clear_history"] = self.clear_history
+        # args["silent"] = self.silent
         args.update(self._get_context_args())
         if for_queue:
             args["chat_id"] = self._chat_id

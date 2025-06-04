@@ -12,10 +12,12 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from waldiez.io.models.content import (
+    AudioMediaContent,
     FileMediaContent,
     ImageMediaContent,
     ImageUrlMediaContent,
     TextMediaContent,
+    VideoMediaContent,
 )
 from waldiez.io.models.user_input import UserInputData
 
@@ -30,6 +32,27 @@ class TestUserInputData:
 
         assert user_input.content == text_content
         assert user_input.content.text == "Hello, world!"  # type: ignore
+        assert str(user_input) == "Hello, world!"
+        assert repr(user_input) == "UserInputData(content=Hello, world!)"
+
+    def test_user_input_data_creation_with_list_content(self) -> None:
+        """Test creating UserInputData with a list of content."""
+        text_content1 = TextMediaContent(text="First message")
+        text_content2 = TextMediaContent(text="Second message")
+        user_input = UserInputData(content=[text_content1, text_content2])
+
+        assert isinstance(user_input.content, list)
+        assert len(user_input.content) == 2
+        assert user_input.to_string() == "First message Second message"
+
+    def test_user_input_data_creation_with_string_content(self) -> None:
+        """Test creating UserInputData with a string content."""
+        user_input = UserInputData(
+            content="Just a plain string",  # type: ignore
+        )
+
+        assert isinstance(user_input.content, TextMediaContent)
+        assert user_input.content.text == "Just a plain string"
 
     def test_user_input_data_to_string_basic(self) -> None:
         """Test to_string method basic functionality."""
@@ -168,6 +191,52 @@ class TestUserInputData:
         assert result.file.name == "test.txt"
 
     @patch("waldiez.io.models.user_input.detect_media_type")
+    def test_user_input_data_content_from_dict_video_type(
+        self, mock_detect_media_type: MagicMock
+    ) -> None:
+        """Test _content_from_dict with video type."""
+        mock_detect_media_type.return_value = "video"
+
+        input_dict = {"type": "video", "video": "https://example.com/video.mp4"}
+        result = UserInputData.content_from_dict(input_dict)
+
+        assert isinstance(result, VideoMediaContent)
+        assert result.type == "video"
+        assert result.video.url == "https://example.com/video.mp4"
+
+    @patch("waldiez.io.models.user_input.detect_media_type")
+    def test_user_input_data_content_from_dict_audio_type(
+        self, mock_detect_media_type: MagicMock
+    ) -> None:
+        """Test _content_from_dict with audio type."""
+        mock_detect_media_type.return_value = "audio"
+
+        input_dict = {"type": "audio", "audio": "https://example.com/audio.mp3"}
+        result = UserInputData.content_from_dict(input_dict)
+
+        assert isinstance(result, AudioMediaContent)
+        assert result.type == "audio"
+        assert result.audio.url == "https://example.com/audio.mp3"
+
+    @patch("waldiez.io.models.user_input.detect_media_type")
+    def test_user_input_data_content_from_dict_file_content(
+        self, mock_detect_media_type: MagicMock
+    ) -> None:
+        """Test _content_from_dict with file content."""
+        mock_detect_media_type.return_value = "file"
+
+        input_dict = {
+            "type": "file",
+            "file": "https://example.com/example.txt",
+        }
+        result = UserInputData.content_from_dict(input_dict)
+
+        assert isinstance(result, FileMediaContent)
+        assert result.type == "file"
+        assert result.file.name == "example.txt"
+        assert result.file.url == "https://example.com/example.txt"
+
+    @patch("waldiez.io.models.user_input.detect_media_type")
     def test_user_input_data_content_from_dict_field_name_conversion(
         self, mock_detect_media_type: MagicMock
     ) -> None:
@@ -207,15 +276,6 @@ class TestUserInputData:
 
         assert isinstance(result, TextMediaContent)
         assert result.text == "Dict input"
-
-    def test_user_input_data_validate_content_list_input(self) -> None:
-        """Test validate_content with list input (should raise error)."""
-        input_list = ["item1", "item2"]
-
-        with pytest.raises(ValueError) as exc_info:
-            UserInputData.validate_content(input_list)
-
-        assert "List of content is not supported" in str(exc_info.value)
 
     def test_user_input_data_validate_content_other_types(self) -> None:
         """Test validate_content with other types (fallback to text)."""
@@ -281,4 +341,3 @@ class TestUserInputData:
         recreated = UserInputData.model_validate_json(json_data)
 
         assert recreated.content.text == original.content.text  # type: ignore
-        assert recreated.content.type == original.content.type

@@ -117,16 +117,18 @@ class WaldiezChatNested(WaldiezBase):
         for attr, content_attr, function_name in [
             ("message", "_message_content", NESTED_CHAT_MESSAGE),
             ("reply", "_reply_content", NESTED_CHAT_REPLY),
-        ]:
+        ]:  # pragma: no branch
             attr_value = getattr(self, attr)
             if attr_value is not None:
-                if isinstance(attr_value, WaldiezChatMessage):
+                if isinstance(
+                    attr_value, WaldiezChatMessage
+                ):  # pragma: no branch
                     setattr(self, content_attr, attr_value.content_body)
                     if attr_value.type == "none":
                         setattr(self, content_attr, "")
                     elif attr_value.type == "string":
                         setattr(self, content_attr, attr_value.content)
-                    elif attr_value.type == "method":
+                    elif attr_value.type == "method":  # pragma: no branch
                         setattr(
                             self,
                             content_attr,
@@ -135,6 +137,4 @@ class WaldiezChatNested(WaldiezBase):
                                 function_args=NESTED_CHAT_ARGS,
                             ),
                         )
-            elif isinstance(attr_value, str):
-                setattr(self, content_attr, attr_value)
         return self

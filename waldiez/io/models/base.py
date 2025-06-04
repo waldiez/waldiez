@@ -3,6 +3,8 @@
 
 """Base models for structured data."""
 
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..utils import MessageType, gen_id, now
@@ -34,3 +36,31 @@ class PrintMessage(StructuredBase):
 
     type: MessageType = "print"
     data: str
+
+    @classmethod
+    def create(cls, *args: Any, **kwargs: Any) -> "PrintMessage":
+        """Create a new print message.
+
+        Parameters
+        ----------
+        *args : Any
+            Positional arguments (not used).
+        **kwargs : Any
+            Keyword arguments
+
+        Returns
+        -------
+        PrintMessage
+            A new print message instance with the provided data.
+        """
+        message = " ".join(str(arg) for arg in args)
+        if "file" in kwargs:
+            file = kwargs.pop("file")
+            if hasattr(file, "getvalue"):
+                io_value = file.getvalue()
+                if isinstance(io_value, bytes):
+                    io_value = io_value.decode("utf-8", errors="replace")
+                message += io_value
+        end = kwargs.get("end", "\n")
+        message += end
+        return cls(data=message)

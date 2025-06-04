@@ -4,14 +4,42 @@
 
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Optional, TypedDict
 
 from ..agents import (
     WaldiezAgent,
-    WaldiezAgentNestedChat,
-    WaldiezAgentNestedChatMessage,
 )
 from ..chat import WaldiezChat
+
+
+def read_version() -> str:  # pragma: no cover  # depends on file existence
+    """Read the version from the version file.
+
+    Returns
+    -------
+    str
+        The version.
+    """
+    here = Path(__file__).parent
+    package_dir = here.parent.parent
+    version_file = package_dir / "_version.py"
+    if not version_file.exists():
+        return "0.0.0"  # dev / ignored
+    with version_file.open() as f:
+        for line in f:
+            if line.startswith("__version__"):
+                version = line.split("=")[1].strip().strip('"').strip("'")
+                # send version without "v" prefix
+                if version.startswith("v"):
+                    version = version[1:]
+                # make sure it is a valid semver
+                if not version or not all(
+                    part.isdigit() for part in version.split(".")
+                ):
+                    return "0.0.0"
+                return version
+    return "0.0.0"  # fallback if not found
 
 
 def id_factory() -> str:
@@ -25,49 +53,6 @@ def id_factory() -> str:
     now_td = datetime.now(timezone.utc)
     now_str = now_td.strftime("%Y%m%d%H%M%S%f")
     return f"{now_str}-{uuid.uuid4().hex}"
-
-
-def merge_nested_chat_messages(
-    agent_nested_chat_messages: list[WaldiezAgentNestedChatMessage],
-    all_connections: list[WaldiezChat],
-) -> list[WaldiezAgentNestedChat]:
-    """Merge the nested chat messages.
-
-    Parameters
-    ----------
-    all_connections : list[WaldiezChat]
-        The connections.
-    agent_nested_chat_messages : list[WaldiezAgentNestedChatMessage]
-        The agent's nested chat messages.
-
-    Returns
-    -------
-    list[WaldiezAgentNestedChat]
-        The merged nested chat with all the messages.
-    """
-    nested_chat = WaldiezAgentNestedChat(triggered_by=[], messages=[])
-    chat_ids_added: list[str] = []
-    for message in agent_nested_chat_messages:
-        chat = next((c for c in all_connections if c.id == message.id), None)
-        if chat and chat.id not in chat_ids_added:
-            nested_chat.messages.append(
-                WaldiezAgentNestedChatMessage(
-                    id=chat.id,
-                    is_reply=False,
-                )
-            )
-            chat_ids_added.append(chat.id)
-    for chat in all_connections:
-        if chat.id not in chat_ids_added:
-            nested_chat.messages.append(
-                WaldiezAgentNestedChatMessage(
-                    id=chat.id,
-                    is_reply=False,
-                )
-            )
-            chat_ids_added.append(chat.id)
-    nested_chat.messages.sort(key=lambda x: chat_ids_added.index(x.id))
-    return [nested_chat]
 
 
 def get_flow_data(

@@ -2,6 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.chat.chat.*."""
 
+from typing import Any
+
 from waldiez.models.agents.rag_user_proxy import WaldiezRagUserProxy
 from waldiez.models.chat.chat import WaldiezChat
 from waldiez.models.chat.chat_data import WaldiezChatData
@@ -13,11 +15,12 @@ def test_waldiez_chat() -> None:
     # Given
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             position=0,
@@ -62,11 +65,12 @@ def test_waldiez_chat() -> None:
     # Given
     chat = WaldiezChat(
         id="wc-1",
-        data=WaldiezChatData(
+        source="wa-1",
+        target="wa-2",
+        type="nested",
+        data=WaldiezChatData(  # pyright: ignore
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             real_source="wa-3",
@@ -75,18 +79,18 @@ def test_waldiez_chat() -> None:
     )
     # Then
     assert chat.id == "wc-1"
-    assert chat.data.source == "wa-1"
     assert chat.source == "wa-3"
     assert chat.target == "wa-2"
 
     # Given
     chat = WaldiezChat(
         id="wc-1",
-        data=WaldiezChatData(
+        source="wa-1",
+        target="wa-2",
+        type="chat",
+        data=WaldiezChatData(  # pyright: ignore
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             real_source=None,
@@ -95,10 +99,8 @@ def test_waldiez_chat() -> None:
     )
     # Then
     assert chat.id == "wc-1"
-    assert chat.data.source == "wa-1"
     assert chat.source == "wa-1"
     assert chat.target == "wa-4"
-    assert chat.data.target == "wa-2"
     assert chat.data.real_target == "wa-4"
 
 
@@ -123,11 +125,12 @@ def test_waldiez_chat_with_rag_user() -> None:
     # Given
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message={  # type: ignore
@@ -135,7 +138,6 @@ def test_waldiez_chat_with_rag_user() -> None:
                 "content": None,
                 "context": {},
             },
-            context_variables={"problem": "Solve this task"},
         ),
     )
     # When
@@ -147,7 +149,7 @@ def test_waldiez_chat_with_rag_user() -> None:
 def test_waldiez_chat_get_message_function() -> None:
     """Test get_message_function."""
     # Given
-    message1 = {
+    message1: dict[str, Any] = {
         "type": "string",
         "content": "Hello there",
         "context": {
@@ -159,11 +161,12 @@ def test_waldiez_chat_get_message_function() -> None:
     }
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message=message1,  # type: ignore
@@ -182,11 +185,12 @@ def test_waldiez_chat_get_message_function() -> None:
     }
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message=message2,  # type: ignore
@@ -221,18 +225,19 @@ def test_waldiez_chat_get_message_function() -> None:
 
 def test_waldiez_chat_get_nested_chat_message_function() -> None:
     """Test get_nested_chat_message_function."""
-    message1 = {
+    message1: dict[str, Any] = {
         "type": "string",
         "content": "Hello there",
         "context": {},
     }
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="nested",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message=message1,  # type: ignore
@@ -255,11 +260,12 @@ def test_waldiez_chat_get_nested_chat_message_function() -> None:
     }
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="nested",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message=message1,  # type: ignore
@@ -299,18 +305,18 @@ def test_waldiez_chat_get_nested_chat_message_function() -> None:
 
 def test_waldiez_chat_get_nested_chat_reply_function() -> None:
     """Test get_nested_chat_message_function."""
-    message1 = {
+    message1: dict[str, Any] = {
         "type": "string",
         "content": "Hello there",
         "context": {},
     }
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message=message1,  # type: ignore
@@ -333,11 +339,12 @@ def test_waldiez_chat_get_nested_chat_reply_function() -> None:
     }
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="nested",
         data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             message=message1,  # type: ignore

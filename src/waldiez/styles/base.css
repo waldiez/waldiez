@@ -9,10 +9,26 @@
   --reasoning-agent-color: #63d0d4;
   --captain-agent-color: #0e2766;
   --group-manager-agent-color: #ed8a34;
-
-  /* --captain-agent-color: #112044; */
   --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
   --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+}
+
+.flow-wrapper.dark {
+  --rag-user-proxy-agent-background: rgb(207 69 97 / 20%);
+  --assistant-agent-background: rgb(0 100 0 / 20%);
+  --user-proxy-agent-background: rgb(179 0 255 / 20%);
+  --reasoning-agent-background: rgb(0 150 150 / 20%);
+  --captain-agent-background: rgb(14 39 102 / 20%);
+  --group-manager-agent-background: rgb(237 138 52 / 20%);
+}
+
+.flow-wrapper.light {
+  --rag-user-proxy-agent-background: rgb(207 69 97 / 10%);
+  --assistant-agent-background: rgb(0 100 0 / 10%);
+  --user-proxy-agent-background: rgb(179 0 255 / 10%);
+  --reasoning-agent-background: rgb(0 150 150 / 10%);
+  --captain-agent-background: rgb(14 39 102 / 10%);
+  --group-manager-agent-background: rgb(237 138 52 / 10%);
 }
 
 .flow-wrapper {

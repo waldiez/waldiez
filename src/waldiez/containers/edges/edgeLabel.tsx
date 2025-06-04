@@ -28,7 +28,7 @@ export const EdgeLabel = ({ edge, transform }: { edge: WaldiezEdge | undefined; 
                 color: "currentcolor",
                 fontSize: 12,
                 fontWeight: 700,
-                zIndex: 9999,
+                zIndex: 10001,
                 transform,
             }}
             className="nodrag nopan"

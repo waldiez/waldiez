@@ -8,9 +8,9 @@
 # pylint: disable=invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,missing-function-docstring
 # pylint: disable=missing-param-doc,missing-return-doc,ungrouped-imports,unnecessary-lambda-assignment
 
-# pyright: reportUnusedImport=false,reportMissingTypeStubs=false
-# pyright: reportUnknownArgumentType=false,reportUnknownMemberType=false
-# pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
+# pyright: reportUnusedImport=false,reportMissingTypeStubs=false,reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false,reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
+# pyright: reportUnknownVariableType=false
 
 """Standup comedians 3.
 

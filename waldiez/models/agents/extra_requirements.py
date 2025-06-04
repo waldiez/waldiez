@@ -36,9 +36,7 @@ def get_retrievechat_extra_requirements(
         "markdownify",
     }
     for agent in agents:
-        if agent.agent_type == "rag_user_proxy" and isinstance(
-            agent, WaldiezRagUserProxy
-        ):
+        if agent.is_rag_user and isinstance(agent, WaldiezRagUserProxy):
             # if not chroma, get the relevant db requirements
             db_type = agent.data.retrieve_config.vector_db
             if db_type == "pgvector":

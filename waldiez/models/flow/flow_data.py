@@ -13,8 +13,19 @@ from ..agents import (
     WaldiezAssistant,
     WaldiezAssistantData,
 )
-from ..chat import WaldiezChat
-from ..common import WaldiezBase, now
+from ..chat import (
+    WaldiezChat,
+    WaldiezChatData,
+    WaldiezChatMessage,
+    WaldiezChatNested,
+    WaldiezChatSummary,
+)
+from ..common import (
+    WaldiezBase,
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
+    now,
+)
 from ..model import WaldiezModel
 from ..tool import WaldiezTool
 
@@ -143,7 +154,7 @@ class WaldiezFlowData(WaldiezBase):
         ValueError
             If there is a chat with a prerequisite that does not exist.
         """
-        self.chats = sorted(self.chats, key=lambda x: x.order)
+        self.chats.sort(key=lambda x: x.order)
         # in async, ag2 uses the "chat_id" field (and it must be an int):
         # ```
         #    prerequisites = []
@@ -197,14 +208,24 @@ class WaldiezFlowData(WaldiezBase):
                 userProxyAgents=[],
                 assistantAgents=[
                     WaldiezAssistant(
-                        id="assistant",
-                        name="Assistant",
+                        id="assistant1",
+                        name="Assistant 1",
                         created_at=now(),
                         updated_at=now(),
                         data=WaldiezAssistantData(
                             termination=WaldiezAgentTerminationMessage()
                         ),
-                    )
+                    ),
+                    WaldiezAssistant(
+                        id="assistant2",
+                        name="Assistant 2",
+                        created_at=now(),
+                        updated_at=now(),
+                        data=WaldiezAssistantData(
+                            # is_multimodal=True,  # we need an api key for this
+                            termination=WaldiezAgentTerminationMessage(),
+                        ),
+                    ),
                 ],
                 ragUserProxyAgents=[],
                 reasoningAgents=[],
@@ -212,7 +233,51 @@ class WaldiezFlowData(WaldiezBase):
             ),
             models=[],
             tools=[],
-            chats=[],
+            chats=[
+                WaldiezChat(
+                    id="chat1",
+                    type="chat",
+                    source="assistant1",
+                    target="assistant2",
+                    data=WaldiezChatData(
+                        name="Chat 1",
+                        order=0,
+                        position=0,
+                        source_type="assistant",
+                        target_type="assistant",
+                        summary=WaldiezChatSummary(),
+                        message=WaldiezChatMessage(
+                            type="string",
+                            content="Hello, how can I help you?",
+                        ),
+                        condition=WaldiezDefaultCondition.create(),
+                        available=WaldiezTransitionAvailability(),
+                        nested_chat=WaldiezChatNested(),
+                    ),
+                ),
+                WaldiezChat(
+                    id="chat2",
+                    type="chat",
+                    source="assistant2",
+                    target="assistant1",
+                    data=WaldiezChatData(
+                        name="Chat 2",
+                        order=1,
+                        position=1,
+                        source_type="assistant",
+                        target_type="assistant",
+                        summary=WaldiezChatSummary(),
+                        message=WaldiezChatMessage(
+                            type="string",
+                            content="Hello, I need some help.",
+                        ),
+                        condition=WaldiezDefaultCondition.create(),
+                        available=WaldiezTransitionAvailability(),
+                        nested_chat=WaldiezChatNested(),
+                        prerequisites=["chat1"],
+                    ),
+                ),
+            ],
             is_async=False,
             cache_seed=42,
         )

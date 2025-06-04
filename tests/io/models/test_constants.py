@@ -65,7 +65,6 @@ class TestContentTypeKey:
             "video",
             "audio",
             "file",
-            "document",
         }
 
         # Verify all expected keys are in CONTENT_MAPPING
@@ -103,7 +102,6 @@ class TestContentMapping:
             "video",
             "audio",
             "file",
-            "document",
         }
 
         assert set(CONTENT_MAPPING.keys()) == expected_keys
@@ -148,30 +146,13 @@ class TestContentMapping:
         assert entry["cls"] == AudioMediaContent
         assert entry["required_field"] == "audio"
 
-    def test_content_mapping_document_entry(self) -> None:
-        """Test document content mapping entry."""
-        entry = CONTENT_MAPPING["document"]
-
-        assert entry["fields"] == ["document", "file"]
-        assert entry["cls"] == FileMediaContent
-        assert entry["required_field"] == "file"
-
     def test_content_mapping_file_entry(self) -> None:
         """Test file content mapping entry."""
         entry = CONTENT_MAPPING["file"]
 
-        assert entry["fields"] == ["document", "file"]
+        assert entry["fields"] == ["file"]
         assert entry["cls"] == FileMediaContent
         assert entry["required_field"] == "file"
-
-    def test_content_mapping_file_and_document_same(self) -> None:
-        """Test that file and document entries are identical."""
-        file_entry = CONTENT_MAPPING["file"]
-        document_entry = CONTENT_MAPPING["document"]
-
-        assert file_entry["fields"] == document_entry["fields"]
-        assert file_entry["cls"] == document_entry["cls"]
-        assert file_entry["required_field"] == document_entry["required_field"]
 
     def test_content_mapping_classes_are_importable(self) -> None:
         """Test that all classes in mapping are properly importable."""
@@ -206,7 +187,6 @@ class TestContentMapping:
 
         # File types should require "file"
         assert CONTENT_MAPPING["file"]["required_field"] == "file"
-        assert CONTENT_MAPPING["document"]["required_field"] == "file"
 
     def test_content_mapping_fields_lists_not_empty(self) -> None:
         """Test that all fields lists are non-empty."""
@@ -243,8 +223,8 @@ class TestContentMapping:
         # Should be a dictionary
         assert isinstance(CONTENT_MAPPING, dict)
 
-        # Should have exactly 7 entries
-        assert len(CONTENT_MAPPING) == 7
+        # Should have exactly 6 entries
+        assert len(CONTENT_MAPPING) == 6
 
         # Each entry should be a dictionary with required keys
         for _, entry in CONTENT_MAPPING.items():

@@ -67,8 +67,8 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
     );
 
     // Node size constraints
-    const minWidth = useMemo(() => (agentType === "group_manager" ? 490 : 210), [agentType]);
-    const minHeight = useMemo(() => (agentType === "group_manager" ? 330 : 210), [agentType]);
+    const minWidth = useMemo(() => (agentType === "group_manager" ? 490 : 170), [agentType]);
+    const minHeight = useMemo(() => (agentType === "group_manager" ? 330 : 140), [agentType]);
 
     return (
         <div

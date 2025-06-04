@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=unused-import,unused-argument,protected-access
+# pylint: disable=too-many-public-methods,too-few-public-methods
+# pylint: disable=missing-param-doc,missing-return-doc,no-self-use
 """Test waldiez.io.utils.*."""
 
 from pathlib import Path
@@ -9,10 +12,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from waldiez.io.utils import detect_media_type, get_image
-
-# pylint: disable=unused-import,unused-argument,protected-access
-# pylint: disable=too-many-public-methods,too-few-public-methods
-# pylint: disable=missing-param-doc,missing-return-doc,no-self-use
 
 
 class TestDetectMediaType:
@@ -27,7 +26,6 @@ class TestDetectMediaType:
             "video",
             "audio",
             "file",
-            "document",
         ]
 
         for media_type in valid_types:
@@ -79,12 +77,6 @@ class TestDetectMediaType:
         value = {"file": "file_data"}
         result = detect_media_type(value)
         assert result == "file"
-
-    def test_detect_media_type_by_key_presence_document(self) -> None:
-        """Test detection by key presence - document."""
-        value = {"document": "document_data"}
-        result = detect_media_type(value)
-        assert result == "document"
 
     def test_detect_media_type_multiple_keys_first_match(self) -> None:
         """Test detection with multiple keys - should return first match."""

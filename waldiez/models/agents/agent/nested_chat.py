@@ -5,7 +5,12 @@
 from pydantic import Field
 from typing_extensions import Annotated
 
-from ...common import WaldiezBase
+from ...common import (
+    WaldiezBase,
+    WaldiezDefaultCondition,
+    WaldiezHandoffCondition,
+    WaldiezTransitionAvailability,
+)
 
 
 class WaldiezAgentNestedChatMessage(WaldiezBase):
@@ -70,12 +75,25 @@ class WaldiezAgentNestedChat(WaldiezBase):
             default_factory=list,
         ),
     ]
-    order: Annotated[
-        int,
+    condition: Annotated[
+        WaldiezHandoffCondition,
         Field(
-            0,
-            title="Order",
-            description="The order of the nested chat (if used as a handoff).",
-            ge=0,
+            default_factory=WaldiezDefaultCondition.create,
+            title="Condition",
+            description=(
+                "The condition to use for the nested chat handoff. "
+                "If not provided, the nested chat will always be available."
+            ),
         ),
-    ] = 0
+    ]
+    available: Annotated[
+        WaldiezTransitionAvailability,
+        Field(
+            default_factory=WaldiezTransitionAvailability,
+            title="Available",
+            description=(
+                "The availability of the nested chat. "
+                "If not provided, the nested chat will always be available."
+            ),
+        ),
+    ]

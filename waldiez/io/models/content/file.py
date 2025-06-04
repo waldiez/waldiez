@@ -14,7 +14,7 @@ from .base import FileContent
 class FileMediaContent(BaseModel):
     """File media content."""
 
-    type: Literal["file", "document"]
+    type: Literal["file"] = "file"
     file: FileContent
 
     def to_string(

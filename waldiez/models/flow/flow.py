@@ -11,7 +11,7 @@ from ..agents import WaldiezAgent, WaldiezGroupManager
 from ..chat import WaldiezChat
 from ..common import WaldiezBase, now
 from .flow_data import WaldiezFlowData
-from .utils import WaldiezAgentConnection, id_factory
+from .utils import WaldiezAgentConnection, id_factory, read_version
 
 
 class WaldiezFlow(WaldiezBase):
@@ -49,6 +49,14 @@ class WaldiezFlow(WaldiezBase):
             default_factory=id_factory,
         ),
     ]
+    version: Annotated[
+        str,
+        Field(
+            default_factory=read_version,
+            description="The version waldiez that was used to create the flow",
+            title="Version",
+        ),
+    ] = "0.0.0"  # default to 0.0.0 if not found
     type: Annotated[
         Literal["flow"],
         Field(
@@ -283,20 +291,33 @@ class WaldiezFlow(WaldiezBase):
             The list of group chat members.
         """
         agent = self.get_agent_by_id(group_manager_id)
-        if agent.agent_type not in ("group_manager", "manager"):
+        if not agent.is_group_manager or not isinstance(
+            agent, WaldiezGroupManager
+        ):
             return []
-        return [
+        members = [
             agent
             for agent in self.data.agents.members
             if agent.data.parent_id == group_manager_id
         ]
+        if agent.data.speakers.selection_method != "round_robin":
+            return members
+        ordered_ids = agent.get_speakers_order()
+        if not ordered_ids:
+            return members
+        members_dict = {member.id: member for member in members}
+        ordered_members = [
+            members_dict[member_id]
+            for member_id in ordered_ids
+            if member_id in members_dict
+        ]
+        return ordered_members
 
     def _get_flow_order(
         self,
     ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow."""
         if self._is_group_chat:
-            print("Group chat flow detected, using group chat flow.")
             return self._get_group_chat_flow()
         # in the chats, there is the 'order' field, we use this,
         # we only keep the ones with order >=0
@@ -442,6 +463,12 @@ class WaldiezFlow(WaldiezBase):
             If the manager's group chat has no members.
         """
         all_members = list(self.data.agents.members)
+        all_chats = list(self.data.chats)
+        for agent in all_members:
+            agent.gather_nested_chats(
+                all_agents=all_members, all_chats=all_chats
+            )
+            agent.gather_handoffs(all_agents=all_members, all_chats=all_chats)
         self._validate_group_chat(all_members)
         if len(all_members) == 1:
             return self._validate_single_agent_mode(all_members[0])
@@ -510,7 +537,7 @@ class WaldiezFlow(WaldiezBase):
             - If the model IDs are not unique.
             - If the tool IDs are not unique.
         """
-        if member.agent_type in ["group_manager", "swarm"]:
+        if member.is_group_manager:
             raise ValueError(
                 "In single agent mode, the agent must not be a group manager."
             )
@@ -563,3 +590,12 @@ class WaldiezFlow(WaldiezBase):
                     "The flow is a group chat but the initial agent ID "
                     f"{group_manager.data.initial_agent_id} is not in the flow."
                 )
+            group_members = self.get_group_members(group_manager.id)
+            if not group_members:
+                raise ValueError(
+                    "The flow is a group chat but the group manager agent "
+                    f"{group_manager.id} has no members in the group."
+                )
+            group_manager.set_speakers_order(
+                [member.id for member in group_members]
+            )

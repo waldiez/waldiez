@@ -1,7 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Agents exporter."""
+"""Agent exporter."""
 
-from .agent_exporter import AgentExporter
+from .exporter import AgentExporter
+from .factory import create_agent_exporter
 
-__all__ = ["AgentExporter"]
+__all__ = [
+    "AgentExporter",
+    "create_agent_exporter",
+]

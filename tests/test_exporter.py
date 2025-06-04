@@ -10,7 +10,7 @@ import pytest
 from waldiez import Waldiez, WaldiezExporter
 from waldiez.models import WaldiezFlow
 
-from .exporting.flow.flow_helpers import get_flow
+from .exporting.flow_helpers import get_flow
 
 
 def test_export_load_from_file(

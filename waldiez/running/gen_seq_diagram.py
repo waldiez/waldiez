@@ -181,7 +181,7 @@ def generate_sequence_diagram(
             df_events = pd.read_csv(file_path)  # pyright: ignore
         else:
             df_events = pd.read_json(file_path)  # pyright: ignore
-    except pd.errors.EmptyDataError:
+    except pd.errors.EmptyDataError:  # pragma: no cover
         return
 
     # Generate the Mermaid sequence diagram text

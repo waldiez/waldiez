@@ -14,6 +14,7 @@ from waldiez.models import (
     WaldiezChatData,
     WaldiezChatNested,
     WaldiezChatSummary,
+    WaldiezDefaultCondition,
     WaldiezFlow,
     WaldiezFlowData,
     WaldiezModel,
@@ -28,6 +29,7 @@ from waldiez.models import (
     WaldiezReasoningAgentReasonConfig,
     WaldiezTool,
     WaldiezToolData,
+    WaldiezTransitionAvailability,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -200,11 +202,12 @@ def test_waldiez_flow() -> None:
     chats = [
         WaldiezChat(
             id="wc-1",
+            source="wa-1",
+            target="wa-2",
+            type="chat",
             data=WaldiezChatData(
                 name="chat_data",
                 description="Chat data",
-                source="wa-1",
-                target="wa-2",
                 source_type="user_proxy",
                 target_type="assistant",
                 position=-1,
@@ -222,15 +225,18 @@ def test_waldiez_flow() -> None:
                 real_source=None,
                 real_target=None,
                 prerequisites=[],
+                condition=WaldiezDefaultCondition.create(),
+                available=WaldiezTransitionAvailability(),
             ),
         ),
         WaldiezChat(
             id="wc-2",
+            source="wa-3",
+            target="wa-2",
+            type="chat",
             data=WaldiezChatData(
                 name="chat_data",
                 description="Chat data",
-                source="wa-3",
-                target="wa-2",
                 source_type="rag_user_proxy",
                 target_type="assistant",
                 position=-1,
@@ -248,15 +254,18 @@ def test_waldiez_flow() -> None:
                 real_source=None,
                 real_target=None,
                 prerequisites=[],
+                condition=WaldiezDefaultCondition.create(),
+                available=WaldiezTransitionAvailability(),
             ),
         ),
         WaldiezChat(
             id="wc-3",
+            source="wa-3",
+            target="wa-4",
+            type="chat",
             data=WaldiezChatData(
                 name="chat_data",
                 description="Chat data",
-                source="wa-3",
-                target="wa-4",
                 source_type="rag_user_proxy",
                 target_type="reasoning",
                 position=-1,
@@ -274,6 +283,8 @@ def test_waldiez_flow() -> None:
                 real_source=None,
                 real_target=None,
                 prerequisites=[],
+                condition=WaldiezDefaultCondition.create(),
+                available=WaldiezTransitionAvailability(),
             ),
         ),
     ]
@@ -490,11 +501,12 @@ def test_waldiez_flow() -> None:
     chats2 = [
         WaldiezChat(
             id="wc-1",
+            source="wa-1",
+            target="wa-2",
+            type="chat",
             data=WaldiezChatData(
                 name="chat_data",
                 description="Chat data",
-                source="wa-1",
-                target="wa-2",
                 source_type="user_proxy",
                 target_type="assistant",
                 position=-1,
@@ -512,6 +524,8 @@ def test_waldiez_flow() -> None:
                 real_source=None,
                 real_target=None,
                 prerequisites=[],
+                condition=WaldiezDefaultCondition.create(),
+                available=WaldiezTransitionAvailability(),
             ),
         ),
     ]
@@ -571,3 +585,13 @@ def test_empty_flow() -> None:
                 is_async=False,
             ),
         )
+
+
+def test_flow_default() -> None:
+    """Test default flow."""
+    flow = WaldiezFlow.default()
+    assert flow.id is not None
+    assert flow.data.agents.members
+    assert flow.data.chats
+    with pytest.raises(ValueError):
+        flow.get_root_group_manager()

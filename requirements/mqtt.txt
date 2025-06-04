@@ -1,0 +1,2 @@
+-r main.txt
+paho-mqtt>=2.1.0,<3.0

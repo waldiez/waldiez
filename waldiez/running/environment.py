@@ -5,7 +5,6 @@
 
 import os
 import sys
-import warnings
 from typing import Generator
 
 
@@ -23,7 +22,7 @@ def in_virtualenv() -> bool:
     )
 
 
-def is_root() -> bool:
+def is_root() -> bool:  # pragma: no cover  # os specific
     """Check if the script is running as root/administrator.
 
     Returns
@@ -47,19 +46,13 @@ def is_root() -> bool:
 
 def refresh_environment() -> None:
     """Refresh the environment."""
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            module="flaml",
-            message="^.*flaml.automl is not available.*$",
-        )
-        # a group chat without a user agent
-        # creates a new user (this has a default code execution with docker)
-        # captain also generates new agents that also have
-        # default code execution with docker
-        # temp (until we handle/detect docker setup)
-        os.environ["AUTOGEN_USE_DOCKER"] = "0"
-        try_handle_the_np_thing()
+    # a group chat without a user agent
+    # creates a new user (this has a default code execution with docker)
+    # captain also generates new agents that also have
+    # default code execution with docker
+    # temp (until we handle/detect docker setup)
+    os.environ["AUTOGEN_USE_DOCKER"] = "0"
+    try_handle_the_np_thing()
 
 
 def try_handle_the_np_thing() -> None:
@@ -85,7 +78,7 @@ def try_handle_the_np_thing() -> None:
             None
                 Nothing.
             """
-            yield
+            yield  # pragma: no cover
 
         setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
 

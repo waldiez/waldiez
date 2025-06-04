@@ -47,6 +47,15 @@ def test_waldiez_flow_data() -> None:
     assert not flow_data.tools
     assert not flow_data.chats
 
+    default_data = WaldiezFlowData.default()
+    assert len(list(default_data.agents.members)) > 0
+
+    dumped = default_data.model_dump()
+    dumped["isAsync"] = True
+    loaded = WaldiezFlowData.model_validate(dumped)
+    assert loaded.is_async
+    assert loaded.chats
+
     with pytest.raises(ValueError):
         # at least 2 agents are required
         WaldiezFlowData(

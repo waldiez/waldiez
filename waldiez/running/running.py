@@ -334,23 +334,27 @@ def get_printer() -> Callable[..., None]:
         try:
             printer(*args, **kwargs)
         except UnicodeEncodeError:
-            # pylint: disable=too-many-try-statements
             try:
-                msg, flush = get_what_to_print(*args, **kwargs)
-                printer(msg, end="", flush=flush)
+                # Use the helper to get safely encoded message
+                safe_msg, flush = get_what_to_print(*args, **kwargs)
+                # Try printing the safe message
+                # (without end since it's already included)
+                printer(safe_msg, end="", flush=flush)
             except UnicodeEncodeError:
-                sys.stdout = io.TextIOWrapper(
-                    sys.stdout.buffer, encoding="utf-8"
-                )
-                sys.stderr = io.TextIOWrapper(
-                    sys.stderr.buffer, encoding="utf-8"
-                )
+                # pylint: disable=too-many-try-statements
                 try:
-                    printer(*args, **kwargs)
-                except UnicodeEncodeError:
-                    sys.stderr.write(
-                        "Could not print the message due to encoding issues.\n"
+                    # If that still fails, write directly to buffer
+                    msg, flush = get_what_to_print(*args, **kwargs)
+                    safe_msg_bytes = msg.encode("utf-8", errors="replace")
+                    sys.stdout.buffer.write(safe_msg_bytes)
+                    if flush:
+                        sys.stdout.buffer.flush()
+                except Exception:  # pylint: disable=broad-exception-caught
+                    error_msg = (
+                        b"Could not print message due to encoding issues.\n"
                     )
+                    sys.stderr.buffer.write(error_msg)
+                    sys.stderr.buffer.flush()
 
     return safe_printer
 

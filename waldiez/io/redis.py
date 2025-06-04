@@ -5,7 +5,6 @@
 # pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
 
 """A Redis I/O stream for handling print and input messages."""
-# TODO: handle image and other types
 
 import json
 import logging
@@ -26,7 +25,7 @@ from typing import (
 try:
     import redis
     import redis.asyncio as a_redis
-except ImportError as error:
+except ImportError as error:  # pragma: no cover
     raise ImportError(
         "Redis client not installed. Please install redis-py with `pip install redis`."
     ) from error
@@ -217,40 +216,9 @@ class RedisIOStream(IOStream):
         kwargs : Any
             Additional keyword arguments.
         """
-        message = " ".join(str(arg) for arg in args)
-        if "file" in kwargs:
-            file = kwargs.pop("file")
-            if hasattr(file, "getvalue"):
-                io_value = file.getvalue()
-                if isinstance(io_value, bytes):
-                    io_value = io_value.decode("utf-8", errors="replace")
-                message += io_value
-        end = kwargs.get("end", "\n")
-        message += end
-        print_message = PrintMessage(
-            data=message,
-        )
+        print_message = PrintMessage.create(*args, **kwargs)
         payload = print_message.model_dump(mode="json")
         self._print(payload)
-
-    def send(self, message: BaseMessage) -> None:
-        """Send a structured message to Redis.
-
-        Parameters
-        ----------
-        message : dict[str, Any]
-            The message to send.
-        """
-        message_dump = message.model_dump(mode="json")
-        message_type = message_dump.get("type", None)
-        if not message_type:
-            message_type = message.__class__.__name__
-        self._print(
-            {
-                "type": message_type,
-                "data": json.dumps(message_dump),
-            }
-        )
 
     def input(
         self,
@@ -300,7 +268,7 @@ class RedisIOStream(IOStream):
         user_response = UserResponse(
             type="input_response",
             request_id=request_id,
-            data=[text_response],
+            data=text_response,
         )
         payload = user_response.model_dump(mode="json")
         # no nested dicts :(
@@ -309,6 +277,31 @@ class RedisIOStream(IOStream):
         LOG.debug("Sending input response: %s", payload)
         self._print(payload)
         return user_input
+
+    def send(self, message: BaseMessage) -> None:
+        """Send a structured message to Redis.
+
+        Parameters
+        ----------
+        message : dict[str, Any]
+            The message to send.
+        """
+        try:
+            message_dump = message.model_dump(mode="json")
+        except Exception as e:  # pragma: no cover
+            message_dump = {
+                "type": "error",
+                "error": str(e),
+            }
+        message_type = message_dump.get("type", None)
+        if not message_type:
+            message_type = message.__class__.__name__
+        self._print(
+            {
+                "data": json.dumps(message_dump),
+                "type": message_type,
+            }
+        )
 
     def _wait_for_input(self, input_request_id: str) -> str:
         """Wait for user input.
@@ -339,7 +332,7 @@ class RedisIOStream(IOStream):
                 if not response or response.request_id != input_request_id:
                     continue
 
-                if self._acquire_lock(lock_key):
+                if self._acquire_lock(lock_key):  # pragma: no branch
                     try:
                         if self._is_request_processed(response.request_id):
                             continue
@@ -376,24 +369,14 @@ class RedisIOStream(IOStream):
         """
         if not response.data:
             return ""
-        if isinstance(response.data, str):
+        if isinstance(
+            response.data, str
+        ):  # pragma: no cover should be structured
             return response.data
-        text_parts: list[str] = []
-        # TODO: handle other types
-        if isinstance(response.data, list):
-            for entry in response.data:
-                if isinstance(entry, TextMediaContent):
-                    text_parts.append(entry.text)
-            return " ".join(text_parts) if text_parts else ""
-        if isinstance(response.data.content, list):
-            for entry in response.data.content:
-                if isinstance(entry, TextMediaContent):
-                    text_parts.append(entry.text)
-                # ...
-            return " ".join(text_parts) if text_parts else ""
-        if response.data.content.type == "text":
-            return response.data.content.text
-        return ""
+        return response.to_string(
+            uploads_root=self.uploads_root,
+            base_name=response.request_id,
+        )
 
     def _acquire_lock(self, lock_key: str, lock_expiry: int = 10) -> bool:
         """Try to acquire a lock, returns True if acquired, False otherwise."""
@@ -427,9 +410,74 @@ class RedisIOStream(IOStream):
             {request_id: int(time.time() * 1_000_000)},
         )
 
-    # pylint: disable=too-many-return-statements,too-complex
     @staticmethod
+    def _extract_message_data(data: Any) -> Optional[dict[str, Any]]:
+        """Extract and parse the message data field."""
+        message_data = data
+
+        # Handle string-encoded JSON
+        if isinstance(message_data, str):
+            try:
+                message_data = json.loads(message_data)
+            except json.JSONDecodeError:
+                LOG.error("Invalid JSON in message data: %s", message_data)
+                return None
+
+        # Validate data type
+        if not isinstance(message_data, dict):  # pragma: no cover
+            LOG.error("Invalid message data format: %s", message_data)
+            return None
+
+        return message_data  # pyright: ignore
+
+    @staticmethod
+    def _message_has_required_fields(message_data: dict[str, Any]) -> bool:
+        """Check if message data contains required fields."""
+        if "request_id" not in message_data:
+            LOG.error("Missing 'request_id' in message data: %s", message_data)
+            return False
+
+        return True
+
+    @staticmethod
+    def _process_nested_data(
+        message_data: dict[str, Any],
+    ) -> Optional[dict[str, Any]]:
+        """Process nested JSON data if present."""
+        # Create a copy to avoid modifying the original
+        processed_data = message_data.copy()
+
+        # Handle nested JSON in 'data' field
+        if "data" in processed_data and isinstance(
+            processed_data["data"], str
+        ):  # pragma: no branch
+            try:
+                processed_data["data"] = json.loads(processed_data["data"])
+            except json.JSONDecodeError:
+                LOG.error(
+                    "Invalid JSON in nested data field: %s", processed_data
+                )
+                return None
+
+        return processed_data
+
+    @staticmethod
+    def _create_user_response(
+        message_data: dict[str, Any],
+    ) -> Optional["UserResponse"]:
+        """Create UserResponse object from validated data."""
+        try:
+            return UserResponse.model_validate(message_data)
+        except Exception as e:
+            LOG.error(
+                "Error parsing user input response: %s - %s",
+                message_data,
+                str(e),
+            )
+            return None
+
     def parse_pubsub_input(
+        self,
         message: dict[str, Any] | None,
     ) -> UserResponse | None:
         """Extract request ID and user input from a message.
@@ -444,41 +492,23 @@ class RedisIOStream(IOStream):
         UserResponse
             The parsed user response.
         """
-        if not isinstance(message, dict):
-            LOG.error("Invalid message format: %s", message)
+        if not isinstance(message, dict) or "data" not in message:
+            LOG.error("Invalid message format or missing 'data': %s", message)
             return None
-        if "data" not in message:
-            LOG.error("Missing 'data' in message: %s", message)
+        message_data = self._extract_message_data(message["data"])
+        if message_data is None:  # pragma: no cover
             return None
-        message_data = message.get("data", {})  # pyright: ignore
-        if isinstance(message_data, str):
-            try:
-                message_data = json.loads(message_data)
-            except json.JSONDecodeError:
-                LOG.error("Invalid JSON in message data: %s", message_data)
-                return None
-        if not isinstance(message_data, dict):
-            LOG.error("Invalid message data format: %s", message_data)
+
+        if not self._message_has_required_fields(
+            message_data
+        ):  # pragma: no cover
             return None
-        if "request_id" not in message_data:
-            to_log = f"Missing 'request_id' in message data: {message_data}"
-            LOG.error(to_log)
+
+        processed_data = self._process_nested_data(message_data)
+        if processed_data is None:  # pragma: no cover
             return None
-        if "data" in message_data:
-            try:
-                message_data["data"] = json.loads(
-                    message_data["data"],  # pyright: ignore
-                )
-            except json.JSONDecodeError:
-                to_log = f"Invalid JSON in message data: {message_data}"
-                LOG.error(to_log)
-                return None
-        try:
-            return UserResponse.model_validate(message_data)
-        except Exception:  # pylint: disable=broad-exception-caught
-            to_log = f"Error parsing user input response: {message_data}"
-            LOG.error(to_log)
-            return None
+
+        return self._create_user_response(processed_data)
 
     @staticmethod
     def try_do(func: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
@@ -724,7 +754,7 @@ class RedisIOStream(IOStream):
 
         async for key in redis_client.scan_iter(
             "task:*:output", count=scan_count
-        ):
+        ):  # pragma: no branch
             before = await redis_client.xlen(key)
             await RedisIOStream.a_try_do(
                 redis_client.xtrim,  # pyright: ignore
@@ -733,7 +763,7 @@ class RedisIOStream(IOStream):
                 approximate=approximate,
             )
             after = await redis_client.xlen(key)
-            if before > after:
+            if before > after:  # pragma: no branch
                 trimmed = before - after
                 trimmed_count += trimmed
                 LOG.debug("Trimmed %d entries from %s", trimmed, key)

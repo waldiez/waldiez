@@ -80,14 +80,38 @@ except ImportError:  # pragma: no cover
             )
 
 
+try:
+    from .mqtt import MqttIOStream  # type: ignore[no-redef,unused-ignore]
+except ImportError:  # pragma: no cover
+
+    class MqttIOStream:  # type: ignore[no-redef,unused-ignore]
+        """Dummy class for MqttIOStream."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            """Initialize the MqttIOStream.
+
+            Parameters
+            ----------
+            args : tuple
+                Positional arguments.
+            kwargs : dict
+                Keyword arguments.
+            """
+            raise ImportError(
+                "MqttIOStream is not available. "
+                "Please install the required package."
+            )
+
+
 __all__ = [
+    "AsyncWebsocketsIOStream",
     "StructuredIOStream",
+    "RedisIOStream",
+    "MqttIOStream",
     "UserInputData",
     "UserResponse",
     "UserInputRequest",
     "PrintMessage",
-    "RedisIOStream",
-    "AsyncWebsocketsIOStream",
     "MessageType",
     "MediaType",
     "MediaContent",

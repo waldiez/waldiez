@@ -55,6 +55,24 @@ class TestUserResponse:
         assert response.data[0] is input1  # pyright: ignore
         assert response.data[1] is input2
 
+    def test_nested_list_gets_processed(self) -> None:
+        """Test that nested lists get converted properly."""
+        nested_list: list[Any] = [
+            {"text": "from dict"},
+            UserInputData(content=TextMediaContent(text="existing")),
+            ["another", "nested", "list"],
+            ["yet another", {"text": "dict in list"}],
+            ["one"],
+            4,
+        ]
+
+        response = UserResponse(request_id="req5", data=nested_list)
+
+        assert isinstance(response.data, list)
+        assert len(response.data) == 9
+        assert isinstance(response.data[0], UserInputData)
+        assert response.data[0].to_string() == "from dict"
+
     def test_mixed_list_gets_processed(self) -> None:
         """Test that mixed lists get converted properly."""
         mixed_list: list[Any] = [

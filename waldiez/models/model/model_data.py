@@ -142,70 +142,70 @@ class WaldiezModelData(WaldiezBase):
     base_url: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             title="Base URL",
             description="The base url of the model",
             alias="baseUrl",
         ),
-    ]
+    ] = None
     api_key: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             alias="apiKey",
             title="API Key",
             description="The api key to use with the model",
         ),
-    ]
+    ] = None
     api_type: Annotated[
         WaldiezModelAPIType,
         Field(
-            "other",
+            default="other",
             alias="apiType",
             title="API Type",
             description="The api type of the model",
         ),
-    ]
+    ] = "other"
     api_version: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             alias="apiVersion",
             title="API Version",
             description="The api version of the model",
         ),
-    ]
+    ] = None
     temperature: Annotated[
         Optional[float],
         Field(
-            None,
+            default=None,
             alias="temperature",
             title="Temperature",
             description="The temperature of the model",
         ),
-    ]
+    ] = None
     top_p: Annotated[
         Optional[float],
         Field(
-            None,
+            default=None,
             alias="topP",
             title="Top P",
             description="The top p of the model",
         ),
-    ]
+    ] = None
     max_tokens: Annotated[
         Optional[int],
         Field(
-            None,
+            default=None,
             alias="maxTokens",
             title="Max Tokens",
             description="The max tokens of the model",
         ),
-    ]
+    ] = None
     aws: Annotated[
         Optional[WaldiezModelAWS],
         Field(
-            None,
+            default=None,
             alias="aws",
             title="AWS",
             description="The AWS related parameters",
@@ -231,5 +231,7 @@ class WaldiezModelData(WaldiezBase):
     ] = {}
     price: Annotated[
         Optional[WaldiezModelPrice],
-        Field(None, title="Price", description="The price of the model"),
-    ]
+        Field(
+            default=None, title="Price", description="The price of the model"
+        ),
+    ] = None

@@ -9,13 +9,23 @@ import importlib.util
 import sys
 import sysconfig
 from pathlib import Path
-from typing import Optional
+from typing import NamedTuple, Optional
 
+# parso for extracting function bodies
+# (keeps comments, docstrings and formatting as-is)
 import parso
 import parso.python  # pyright: ignore
 import parso.tree  # pyright: ignore
 
+# let's limit the variable name length
 MAX_VAR_NAME_LENGTH = 64
+
+
+class ParseResult(NamedTuple):
+    """Result of parsing a code string."""
+
+    error: Optional[str]
+    tree: Optional[ast.Module]
 
 
 def is_standard_library(module_name: str) -> bool:
@@ -33,25 +43,23 @@ def is_standard_library(module_name: str) -> bool:
     """
     if module_name in sys.builtin_module_names:
         return True
-    # noinspection PyBroadException
-    # pylint: disable=broad-exception-caught
     try:
         spec = importlib.util.find_spec(module_name)
-    except BaseException:
+    except (ImportError, ValueError, ModuleNotFoundError):  # pragma: no cover
         return False
-    if spec is None or not spec.origin:
+    if spec is None or not spec.origin:  # pragma: no cover
         return False
     if "site-packages" in spec.origin:
         return False
-    if spec.origin.startswith(sys.prefix) or spec.origin == "frozen":
+    if spec.origin == "frozen":
         return True
-    stdlib_path = str(Path(sysconfig.get_path("stdlib")).resolve())
-    return spec.origin.startswith(stdlib_path)
+    stdlib_path = Path(sysconfig.get_path("stdlib")).resolve()
+    return Path(spec.origin).resolve().is_relative_to(stdlib_path)
 
 
 def parse_code_string(
     code_string: str,
-) -> tuple[Optional[str], Optional[ast.Module]]:
+) -> ParseResult:
     """Parse the code string.
 
     Parameters
@@ -61,7 +69,7 @@ def parse_code_string(
 
     Returns
     -------
-    tuple[Optional[str], Optional[ast.Module]]
+    ParseResult
         If valid, None and the ast module.
         If invalid, the error message and None.
     """
@@ -69,10 +77,89 @@ def parse_code_string(
     try:
         tree = ast.parse(code_string)
     except SyntaxError as e:
-        return f"SyntaxError: {e}, in " + "\n" + f"{code_string}", None
+        return ParseResult(
+            f"SyntaxError: {e}, in " + "\n" + f"{code_string}", None
+        )
     except BaseException as e:  # pragma: no cover
-        return f"Invalid code: {e}, in " + "\n" + f"{code_string}", None
-    return None, tree
+        return ParseResult(
+            f"Invalid code: {e}, in " + "\n" + f"{code_string}", None
+        )
+    return ParseResult(None, tree)
+
+
+def _extract_module_name(node: ast.AST) -> Optional[str]:
+    """Extract the root module name from an import node."""
+    if isinstance(node, ast.Import):
+        return node.names[0].name.split(".")[0]
+    if isinstance(node, ast.ImportFrom):
+        if node.module:
+            # Handle relative imports
+            if node.module.startswith("."):  # pragma: no cover
+                return None  # Skip relative imports for stdlib check
+            return node.module.split(".")[0]
+    return None  # pragma: no cover
+
+
+def _extract_imports_from_ast(code_string: str) -> tuple[list[str], list[str]]:
+    """Extract import statements from code using AST.
+
+    Parameters
+    ----------
+    code_string : str
+        The code string to parse.
+
+    Returns
+    -------
+    tuple[list[str], list[str]]
+        Standard library imports and third party imports (unsorted).
+    """
+    standard_lib_imports: list[str] = []
+    third_party_imports: list[str] = []
+
+    try:
+        tree = ast.parse(code_string)
+    except SyntaxError:  # pragma: no cover
+        return [], []
+
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            full_import_statement = ast.get_source_segment(code_string, node)
+            if not full_import_statement:  # pragma: no cover
+                continue
+            full_import_statement = full_import_statement.strip()
+
+            module_name = _extract_module_name(node)
+            if not module_name:  # pragma: no cover
+                continue
+
+            if is_standard_library(module_name):
+                standard_lib_imports.append(full_import_statement)
+            else:
+                third_party_imports.append(full_import_statement)
+
+    return standard_lib_imports, third_party_imports
+
+
+def _sort_imports(imports: list[str]) -> list[str]:
+    """Sort import statements with 'import' statements before 'from' statements.
+
+    Parameters
+    ----------
+    imports : list[str]
+        List of import statements to sort.
+
+    Returns
+    -------
+    list[str]
+        Sorted import statements.
+    """
+    import_statements = sorted(
+        [stmt for stmt in imports if stmt.startswith("import ")]
+    )
+    from_statements = sorted(
+        [stmt for stmt in imports if stmt.startswith("from ")]
+    )
+    return import_statements + from_statements
 
 
 def gather_code_imports(
@@ -93,32 +180,10 @@ def gather_code_imports(
     tuple[list[str], list[str]]
         The standard library imports and the third party imports.
     """
-    standard_lib_imports: list[str] = []
-    third_party_imports: list[str] = []
-    tree = parso.parse(code_string)  # type: ignore
-    for node in tree.iter_imports():
-        if node.type == "import_name":
-            full_import_statement = node.get_code().strip()
-            module_name = (
-                node.get_code().replace("import", "").strip().split(" ")[0]
-            )
-            if not module_name:
-                continue
-            if is_standard_library(module_name):
-                standard_lib_imports.append(full_import_statement)
-            else:
-                third_party_imports.append(full_import_statement)
-        elif node.type == "import_from":
-            full_import_statement = node.get_code().strip()
-            module_name = (
-                node.get_code().replace("from", "").strip().split(" ")[0]
-            )
-            if not module_name:
-                continue
-            if is_standard_library(module_name):
-                standard_lib_imports.append(full_import_statement)
-            else:
-                third_party_imports.append(full_import_statement)
+    standard_lib_imports, third_party_imports = _extract_imports_from_ast(
+        code_string
+    )
+
     if is_interop and (
         "from autogen.interop import Interoperability"
         not in third_party_imports
@@ -126,18 +191,10 @@ def gather_code_imports(
         third_party_imports.append(
             "from autogen.interop import Interoperability"
         )
-    # sorted_standard_lib_imports
-    # first import x, then `from a import b`
-    sorted_standard_lib_imports = sorted(
-        [stm for stm in standard_lib_imports if stm.startswith("import ")]
-    ) + sorted(
-        [stmt for stmt in standard_lib_imports if stmt.startswith("from ")]
-    )
-    sorted_third_party_imports = sorted(
-        [stm for stm in third_party_imports if stm.startswith("import ")]
-    ) + sorted(
-        [stmt for stmt in third_party_imports if stmt.startswith("from ")]
-    )
+
+    sorted_standard_lib_imports = _sort_imports(standard_lib_imports)
+    sorted_third_party_imports = _sort_imports(third_party_imports)
+
     return sorted_standard_lib_imports, sorted_third_party_imports
 
 
@@ -288,7 +345,7 @@ def _get_function_body(
     signature_start_line = node.lineno - 1
     body_start_line = node.body[0].lineno - 1
     signature_end_line = signature_start_line
-    for i in range(signature_start_line, body_start_line):
+    for i in range(signature_start_line, body_start_line):  # pragma: no branch
         if ")" in lines[i]:
             signature_end_line = i
             break
@@ -354,6 +411,6 @@ def generate_function(
         function_string += " -> " + function_types[1] + ":"
     function_string += "\n" if not function_body.startswith("\n") else ""
     function_string += f"{function_body}"
-    if not function_string.endswith("\n"):
+    if not function_string.endswith("\n"):  # pragma: no branch
         function_string += "\n"
     return function_string

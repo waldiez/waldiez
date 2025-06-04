@@ -12,6 +12,7 @@ jsonschema==4.24.0
 jupyter_server==2.16.0
 jupyterlab>=4.3.0,<5.0
 mypy==1.16.0
+paho-mqtt>=2.1.0,<3.0
 pandas-stubs==2.2.3.250527
 pre-commit==4.2.0
 pydocstyle==6.3.0

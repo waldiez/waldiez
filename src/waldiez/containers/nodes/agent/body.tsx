@@ -5,8 +5,6 @@
 import { memo, useMemo } from "react";
 import { AiFillCode } from "react-icons/ai";
 
-import { TextareaInput } from "@waldiez/components";
-import { useWaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
@@ -24,7 +22,7 @@ type WaldiezNodeAgentBodyProps = {
  * Displays model information, tools, and a description editor
  */
 export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
-    const { id, flowId, data, isReadOnly } = props;
+    const { id, data } = props;
     const agentType = data.agentType;
 
     // If this is a group manager, don't render anything
@@ -32,33 +30,16 @@ export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
         return null;
     }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { onDescriptionChange } = useWaldiezNodeAgentBody(props);
-
     // Get model and tools views via hooks
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const agentModelView = useAgentModelView(id, data);
+    const agentModelsView = useAgentModelsView(id, data);
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const agentToolsView = useAgentToolsView(id, data);
 
     return (
         <div className="agent-body">
-            <div className="agent-model">{agentModelView}</div>
+            <div className="agent-models">{agentModelsView}</div>
             <div className="agent-tools">{agentToolsView}</div>
-
-            <div className="flex-column flex-1 agent-description-view">
-                <label htmlFor={`flow-${flowId}-agent-description-${id}`}>Description:</label>
-                <TextareaInput
-                    title="Agent description"
-                    className="nodrag nopan agent-description-no-modal"
-                    rows={2}
-                    value={data.description}
-                    onChange={onDescriptionChange}
-                    readOnly={isReadOnly}
-                    id={`flow-${flowId}-agent-description-${id}`}
-                    data-testid={`agent-description-${id}`}
-                />
-            </div>
         </div>
     );
 });
@@ -66,9 +47,9 @@ export const WaldiezNodeAgentBody = memo((props: WaldiezNodeAgentBodyProps) => {
 WaldiezNodeAgentBody.displayName = "WaldiezNodeAgentBody";
 
 /**
- * Custom hook for rendering the agent's model information
+ * Custom hook for rendering the agent's models names and logos
  */
-const useAgentModelView = (id: string, data: WaldiezNodeAgentData) => {
+const useAgentModelsView = (id: string, data: WaldiezNodeAgentData) => {
     const getModels = useWaldiez(s => s.getModels);
 
     return useMemo(() => {

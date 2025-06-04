@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pyright: reportPrivateUsage=false
 # pylint: disable=missing-param-doc,missing-type-doc,missing-return-doc
 # pylint: disable=missing-yield-doc, protected-access
 
@@ -11,12 +12,21 @@ import json
 import threading
 import time
 import uuid
+from pathlib import Path
+from typing import Any
+from unittest.mock import MagicMock, patch
 
 import fakeredis
 import pytest
+import redis
 from autogen.messages import BaseMessage  # type: ignore
 
-from waldiez.io import RedisIOStream
+from waldiez.io import (
+    RedisIOStream,
+    TextMediaContent,
+    UserInputData,
+    UserResponse,
+)
 
 
 @pytest.fixture(name="fake_redis")
@@ -360,3 +370,368 @@ async def test_a_trim_task_output_streams(
     await RedisIOStream.a_trim_task_output_streams(a_fake_redis, maxlen=10)
 
     assert await a_fake_redis.xlen(stream_key) <= 10
+
+
+def test_init_with_uploads_root_creation(tmp_path: Path) -> None:
+    """Test initialization creates uploads_root directory."""
+    non_existent_path = tmp_path / "new_uploads" / "nested"
+
+    # Ensure the path doesn't exist initially
+    assert not non_existent_path.exists()
+
+    # Create stream with non-existent uploads path
+    with patch("redis.Redis.from_url") as mock_redis:
+        mock_redis.return_value = MagicMock()
+        stream = RedisIOStream(
+            redis_url="redis://localhost", uploads_root=non_existent_path
+        )
+
+        # Verify the directory was created
+        assert stream.uploads_root == non_existent_path.resolve()
+        assert non_existent_path.exists()
+
+
+def test_send_message_without_type(fake_redis: fakeredis.FakeRedis) -> None:
+    """Test send() with message that has no type field."""
+    task_id = "test_send_no_type"
+    stream = RedisIOStream("redis://localhost", task_id)
+    stream.redis = fake_redis
+
+    class MessageWithoutType(BaseMessage):
+        """Test message without explicit type."""
+
+        content: str
+
+    message = MessageWithoutType(uuid=uuid.uuid4(), content="test content")
+
+    # Remove type if it exists in model_dump
+    with patch.object(MessageWithoutType, "model_dump") as mock_dump:
+        mock_dump.return_value = {"content": "test content"}
+        stream.send(message)
+
+    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
+    # Should use class name as type
+    assert call_data["type"] == "MessageWithoutType"
+
+
+def test_input_with_callbacks(fake_redis: fakeredis.FakeRedis) -> None:
+    """Test input() with callback functions."""
+    task_id = "test_callbacks"
+
+    # Mock callbacks
+    input_request_callback = MagicMock()
+    input_response_callback = MagicMock()
+
+    stream = RedisIOStream(
+        "redis://localhost",
+        task_id,
+        input_timeout=2,
+        on_input_request=input_request_callback,
+        on_input_response=input_response_callback,
+    )
+    stream.redis = fake_redis
+
+    def delayed_publish() -> None:
+        """Publish a mock user response after a delay."""
+        time.sleep(0.5)
+        user_response = json.dumps(
+            {
+                "request_id": "callback-test",
+                "data": json.dumps(
+                    {"content": {"type": "text", "text": "callback-response"}}
+                ),
+                "task_id": task_id,
+                "type": "input_response",
+            }
+        )
+        fake_redis.publish(f"task:{task_id}:input_response", user_response)
+
+    thread = threading.Thread(target=delayed_publish, daemon=True)
+    thread.start()
+
+    result = stream.input("Test prompt:", request_id="callback-test")
+
+    # Verify callbacks were called
+    input_request_callback.assert_called_once_with(
+        "Test prompt:", "callback-test", task_id
+    )
+    input_response_callback.assert_called_once_with(
+        "callback-response", task_id
+    )
+    assert result == "callback-response"
+
+    thread.join(timeout=0.1)
+
+
+def test_wait_for_input_mismatched_request_id(
+    fake_redis: fakeredis.FakeRedis,
+) -> None:
+    """Test _wait_for_input ignores messages with wrong request_id."""
+    task_id = "test_mismatch"
+    stream = RedisIOStream("redis://localhost", task_id, input_timeout=2)
+    stream.redis = fake_redis
+
+    def delayed_publish() -> None:
+        """Publish responses with wrong and correct request IDs."""
+        time.sleep(0.5)
+
+        # First, publish with wrong request_id
+        wrong_response = json.dumps(
+            {
+                "request_id": "wrong-id",
+                "data": json.dumps(
+                    {"content": {"type": "text", "text": "wrong-response"}}
+                ),
+                "task_id": task_id,
+            }
+        )
+        fake_redis.publish(f"task:{task_id}:input_response", wrong_response)
+
+        time.sleep(0.2)
+
+        # Then publish with correct request_id
+        correct_response = json.dumps(
+            {
+                "request_id": "correct-id",
+                "data": json.dumps(
+                    {"content": {"type": "text", "text": "correct-response"}}
+                ),
+                "task_id": task_id,
+            }
+        )
+        fake_redis.publish(f"task:{task_id}:input_response", correct_response)
+
+    thread = threading.Thread(target=delayed_publish, daemon=True)
+    thread.start()
+
+    result = stream._wait_for_input("correct-id")
+    assert result == "correct-response"
+
+    thread.join(timeout=0.1)
+
+
+def test_wait_for_input_already_processed(
+    fake_redis: fakeredis.FakeRedis,
+) -> None:
+    """Test _wait_for_input skips already processed requests."""
+    task_id = "test_processed"
+    stream = RedisIOStream("redis://localhost", task_id, input_timeout=2)
+    stream.redis = fake_redis
+
+    # Mark request as already processed
+    stream._mark_request_processed("processed-id")
+
+    def delayed_publish() -> None:
+        """Publish a response for an already processed request."""
+        time.sleep(0.5)
+        response = json.dumps(
+            {
+                "request_id": "processed-id",
+                "data": json.dumps(
+                    {"content": {"type": "text", "text": "processed-response"}}
+                ),
+                "task_id": task_id,
+            }
+        )
+        fake_redis.publish(f"task:{task_id}:input_response", response)
+
+    thread = threading.Thread(target=delayed_publish, daemon=True)
+    thread.start()
+
+    # Should timeout since the request is already processed
+    result = stream._wait_for_input("processed-id")
+    assert result == ""
+
+    thread.join(timeout=0.1)
+
+
+def test_init_with_redis_connection_kwargs() -> None:
+    """Test initialization with redis_connection_kwargs."""
+    with patch("redis.Redis.from_url") as mock_from_url:
+        mock_redis = MagicMock()
+        mock_from_url.return_value = mock_redis
+
+        kwargs: dict[str, Any] = {
+            "socket_timeout": 30,
+            "socket_connect_timeout": 30,
+            "retry_on_timeout": True,
+        }
+
+        RedisIOStream(
+            redis_url="redis://localhost", redis_connection_kwargs=kwargs
+        )
+
+        # Verify Redis.from_url was called with the kwargs
+        mock_from_url.assert_called_once_with("redis://localhost", **kwargs)
+
+
+def test_print_with_bytes_file_encoding_issues(
+    fake_redis: fakeredis.FakeRedis,
+) -> None:
+    """Test print with file object that has encoding issues."""
+    task_id = "test_encoding"
+    stream = RedisIOStream("redis://localhost", task_id)
+    stream.redis = fake_redis
+
+    # Test with object that has getvalue()
+    # but returns bytes with encoding issues
+    # pylint: disable=too-few-public-methods,invalid-name,no-self-use
+    class MockFileWithBytes:
+        """Mock file-like object with getvalue() returning bytes."""
+
+        def getvalue(self) -> bytes:
+            """Return bytes with invalid UTF-8 encoding."""
+            return b"\xff\xfe Invalid UTF-8"
+
+    mock_file = MockFileWithBytes()
+    stream.print("Test", file=mock_file)
+
+    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
+    assert len(entries) == 1  # pyright: ignore
+    call_data = entries[0][1]  # pyright: ignore
+    assert "Test" in call_data["data"]
+
+
+def test_parse_pubsub_input_complete_flow() -> None:
+    """Test complete parse_pubsub_input flow with valid nested data."""
+    stream = RedisIOStream("redis://localhost", "test_task")
+
+    # Test with valid JSON that has nested data
+    valid_message = {
+        "data": json.dumps(
+            {
+                "request_id": "test",
+                "data": json.dumps(
+                    {"content": {"type": "text", "text": "nested"}}
+                ),
+            }
+        )
+    }
+    result = stream.parse_pubsub_input(valid_message)
+    assert result is not None
+    assert result.request_id == "test"
+
+
+def test_get_user_input_string_data() -> None:
+    """Test _get_user_input with string data."""
+    stream = RedisIOStream("redis://localhost", "test_task")
+    response = UserResponse(request_id="test", data="simple string")
+    result = stream._get_user_input(response)
+    assert result == "simple string"
+
+    # Test with empty/None data
+    response = UserResponse(request_id="test", data=None)  # type: ignore
+    result = stream._get_user_input(response)
+    assert result == ""
+
+
+def test_get_user_input_list_content() -> None:
+    """Test _get_user_input with list content."""
+    stream = RedisIOStream("redis://localhost", "test_task")
+    text1 = TextMediaContent(text="First part")
+    text2 = TextMediaContent(text="Second part")
+    user_input = UserInputData(
+        content=[text1, text2],
+    )
+
+    response = UserResponse(
+        request_id="test",
+        data=user_input,
+    )
+    result = stream._get_user_input(response)
+    assert result == "First part Second part"
+
+
+def test_acquire_lock_redis_error() -> None:
+    """Test _acquire_lock with Redis error."""
+    with patch("redis.Redis.from_url") as mock_redis_class:
+        mock_redis = MagicMock()
+        mock_redis.set.side_effect = redis.RedisError("Connection failed")
+        mock_redis_class.return_value = mock_redis
+
+        stream = RedisIOStream("redis://localhost", "test_task")
+
+        # Should return False on Redis error
+        result = stream._acquire_lock("test_lock")
+        assert result is False
+
+
+def test_acquire_lock_general_exception() -> None:
+    """Test _acquire_lock with general exception."""
+    with patch("redis.Redis.from_url") as mock_redis_class:
+        mock_redis = MagicMock()
+        mock_redis.set.side_effect = Exception("Unexpected error")
+        mock_redis_class.return_value = mock_redis
+
+        stream = RedisIOStream("redis://localhost", "test_task")
+
+        # Should return False on general exception
+        result = stream._acquire_lock("test_lock")
+        assert result is False
+
+
+def test_extract_message_data_invalid_json() -> None:
+    """Test _extract_message_data with invalid JSON."""
+    # Test with invalid JSON string
+    result = RedisIOStream._extract_message_data("invalid json string")
+    assert result is None
+
+
+def test_extract_message_data_invalid_type() -> None:
+    """Test _extract_message_data with invalid data type."""
+    # Test with non-dict data after JSON parsing
+    result = RedisIOStream._extract_message_data(
+        "123"
+    )  # Valid JSON but not dict
+    assert result is None
+
+    # Test with list
+    result = RedisIOStream._extract_message_data('["item1", "item2"]')
+    assert result is None
+
+    # Test with boolean
+    result = RedisIOStream._extract_message_data("true")
+    assert result is None
+
+
+def test_message_has_required_fields_missing_request_id() -> None:
+    """Test _message_has_required_fields with missing request_id."""
+    # Test with missing request_id
+    message_data = {"data": "some data", "type": "test"}
+    result = RedisIOStream._message_has_required_fields(message_data)
+    assert result is False
+
+
+def test_process_nested_data_invalid_json() -> None:
+    """Test _process_nested_data with invalid nested JSON."""
+    # Test with invalid JSON in data field
+    message_data = {"request_id": "test", "data": "invalid json string"}
+    result = RedisIOStream._process_nested_data(message_data)
+    assert result is None
+
+
+def test_create_user_response_validation_error() -> None:
+    """Test _create_user_response with validation error."""
+    # Test with invalid data that causes validation error
+    invalid_data = {"request_id": "test", "invalid_field": "invalid_value"}
+    result = RedisIOStream._create_user_response(invalid_data)
+    assert result is None
+
+
+def test_parse_pubsub_input_invalid_formats() -> None:
+    """Test parse_pubsub_input with various invalid format."""
+    stream = RedisIOStream("redis://localhost", "test_task")
+
+    # Test with None message
+    result = stream.parse_pubsub_input(None)
+    assert result is None
+
+    # Test with non-dict message
+    result = stream.parse_pubsub_input("not a dict")  # type: ignore
+    assert result is None
+
+    # Test with dict missing 'data' key
+    result = stream.parse_pubsub_input({"type": "test"})
+    assert result is None

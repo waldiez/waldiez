@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Test waldiez.exporting.models.ModelsExporter."""
+"""Test for waldiez.exporting.models.ModelsExporter."""
 
 import shutil
 from pathlib import Path
 
-from waldiez.exporting.models import ModelsExporter
-from waldiez.models.agents import WaldiezAgent
-from waldiez.models.model import DEFAULT_BASE_URLS, WaldiezModel
+from waldiez.exporting.models.exporter import ModelsExporter
+from waldiez.exporting.models.factory import create_models_exporter
+from waldiez.models import DEFAULT_BASE_URLS, WaldiezAgent, WaldiezModel
 
 
 # pylint: disable=too-many-locals,too-many-statements
@@ -66,7 +66,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         output_dir=None,
         cache_seed=42,
     )
-    generated_string = models_exporter.generate()
+    generated_string = models_exporter.generate_main_content()
     expected = f"""
 {model1_name}_llm_config: dict[str, Any] = {{
     "model": "{model1_name}",
@@ -76,8 +76,8 @@ def test_models_exporter(tmp_path: Path) -> None:
 
 {model2_name}_llm_config: dict[str, Any] = {{
     "model": "{model2_name}",
-    "api_key": get_{flow_name}_model_api_key("{model2_name}"),
-    "base_url": "{DEFAULT_BASE_URLS["nim"]}"
+    "base_url": "{DEFAULT_BASE_URLS["nim"]}",
+    "api_key": get_{flow_name}_model_api_key("{model2_name}")
 }}
 
 {model3_name}_llm_config: dict[str, Any] = {{
@@ -99,10 +99,8 @@ def test_models_exporter(tmp_path: Path) -> None:
         output_dir=str(output_dir),
         cache_seed=42,
     )
-    models_exporter.get_imports()
-    after_export = models_exporter.get_after_export()
-    assert after_export is not None
-    assert after_export[0][0] == (
+    agent_llm = models_exporter.get_agent_llm_config_arg(agent)
+    assert agent_llm == (
         "    llm_config=autogen.LLMConfig(\n"
         "        config_list=[\n"
         f"            {model1_name}_llm_config," + "\n"
@@ -124,33 +122,18 @@ def test_models_exporter(tmp_path: Path) -> None:
             "model_ids": [],
         },
     )
-    models_exporter = ModelsExporter(
+    models_exporter = create_models_exporter(
         flow_name=flow_name,
         agents=[agent],
         agent_names=agent_names,
         models=[model1, model2, model3],
         model_names=model_names,
         for_notebook=False,
-        output_dir=str(tmp_path),
         cache_seed=43,
+        output_dir=str(output_dir),
     )
-    models_exporter.get_imports()
-    generated_string = models_exporter.generate()
-    assert generated_string == expected
-    output_dir = tmp_path / "test_models_exporter"
-    output_dir.mkdir(exist_ok=True)
-    models_exporter = ModelsExporter(
-        flow_name=flow_name,
-        agents=[agent],
-        agent_names=agent_names,
-        models=[model1, model2],
-        model_names=model_names,
-        for_notebook=True,
-        output_dir=str(tmp_path),
-        cache_seed=None,
-    )
-    models_exporter.get_imports()
-    assert (tmp_path / f"{flow_name}_api_keys.py").exists()
+    generated_string = models_exporter.generate_main_content()
+    assert (output_dir / f"{flow_name}_api_keys.py").exists()
     shutil.rmtree(output_dir)
 
     agent = WaldiezAgent(
@@ -173,6 +156,5 @@ def test_models_exporter(tmp_path: Path) -> None:
         cache_seed=None,
     )
     models_exporter.get_imports()
-    after_export = models_exporter.get_after_export()
-    assert after_export is not None
-    assert after_export[0][0] == "    llm_config=False,  # pyright: ignore\n"
+    agent_llm = models_exporter.get_agent_llm_config_arg(agent)
+    assert agent_llm == "    llm_config=False,  # pyright: ignore\n"

@@ -22,9 +22,7 @@ MediaContent = Union[
     FileMediaContent,
 ]
 
-ContentTypeKey = Literal[
-    "text", "image", "image_url", "video", "audio", "file", "document"
-]
+ContentTypeKey = Literal["text", "image", "image_url", "video", "audio", "file"]
 """Possible content types for the mapping."""
 
 
@@ -72,13 +70,8 @@ CONTENT_MAPPING: dict[ContentTypeKey, ContentMappingEntry] = {
         "cls": AudioMediaContent,
         "required_field": "audio",
     },
-    "document": {
-        "fields": ["document", "file"],
-        "cls": FileMediaContent,
-        "required_field": "file",
-    },
     "file": {
-        "fields": ["document", "file"],
+        "fields": ["file"],
         "cls": FileMediaContent,
         "required_field": "file",
     },

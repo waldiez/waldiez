@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=broad-exception-raised
 """Check if we can load and convert the examples in the git repo.
 
 No model api keys or tool secrets files are checked.
@@ -11,6 +12,7 @@ something is wrong with latest changes in the codebase.
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -26,6 +28,7 @@ except ImportError:
     sys.path.append(str(Path(__file__).resolve().parents[1]))
     from waldiez.exporter import WaldiezExporter
 
+from waldiez.exporting import ExporterError
 from waldiez.logger import WaldiezLogger
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -46,15 +49,16 @@ EXAMPLES = [
     "05 - Coding/Coding.waldiez",
     "06 - Planning/Planning 1.waldiez",
     "06 - Planning/Planning 2.waldiez",
-    # "07 - Group chat with RAG/RAG.waldiez",
+    "07 - Group chat with RAG/RAG.waldiez",
     "08 - ReAct using Tavily/ReAct.waldiez",
-    # "09 - AutoDefence/AutoDefense Flow.waldiez",
-    # "10 - Travel Planning/Travel Planning.waldiez",
-    # "11 - Swarm/Swarm.waldiez",
+    "09 - AutoDefence/AutoDefense Flow.waldiez",
+    "10 - Travel Planning/Travel Planning.waldiez",
+    "11 - Swarm/Swarm.waldiez",
     "12 - Reasoning/Chain-of-Thought Reasoning with DFS.waldiez",
     "13 - Captain/1 - Simple.waldiez",
     "13 - Captain/2 - With agent lib.waldiez",
     "13 - Captain/3 - With agent lib and tool lib.waldiez",
+    # "14 - HR Work Remotely/HR_remote.waldiez",
 ]
 
 
@@ -97,7 +101,6 @@ def download_example(
     # pylint: disable=line-too-long
     response = http.request("GET", example_url)  # type: ignore[unused-ignore,no-untyped-call]  # noqa: E501
     if response.status != 200:
-        # pylint: disable=broad-exception-raised
         raise Exception(f"Failed to download {example_url}")
     flow_data = json.loads(response.data.decode("utf-8"))
     with open(example_path, "w", encoding="utf-8") as file:
@@ -172,7 +175,7 @@ def validate_example(example_path: str) -> None:
     LOG.success(f"Example {file_name} is valid.")
 
 
-def convert_examples() -> None:
+def convert_remote_examples() -> None:
     """Check if we can load and convert the examples in the git repo.
 
     Raises
@@ -197,14 +200,13 @@ def convert_examples() -> None:
         output_py_path = example_path.replace(".waldiez", ".py")
         exporter.export(output_py_path, True)
         if not os.path.exists(output_py_path):
-            # pylint: disable=broad-exception-raised
-            raise Exception(f"Failed to convert {example}")
+            raise ExporterError(f"Failed to convert {example} to py")
+            # raise Exception(f"Failed to convert {example}")
         LOG.info("Converting %s to ipynb...", example)
         output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
         exporter.export(output_ipynb_path, True)
         if not os.path.exists(output_ipynb_path):
-            # pylint: disable=broad-exception-raised
-            raise Exception(f"Failed to convert {example} to ipynb")
+            raise ExporterError(f"Failed to convert {example} to ipynb")
         move_to_dot_local(example_dir, example_path, exporter.waldiez.name)
         LOG.success("Example %s looks good ...", example)
     shutil.rmtree(temp_dir)
@@ -228,7 +230,71 @@ def validate_local_example(example_dir: str, example_path: str) -> None:
     LOG.warning("Example %s does not exist locally.", local_path)
 
 
-def check_local_examples() -> None:
+def convert_local_example(example_path: str) -> None:
+    """Convert the local example to py and ipynb.
+
+    Parameters
+    ----------
+    example_path : str
+        The path to the example.
+
+    Raises
+    ------
+    Exception
+        If the conversion fails.
+    """
+    exporter = WaldiezExporter.load(Path(example_path))
+    output_py_path = example_path.replace(".waldiez", ".py")
+    exporter.export(output_py_path, True)
+    if not os.path.exists(output_py_path):
+        raise ExporterError(f"Failed to convert {example_path} to py")
+    output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
+    exporter.export(output_ipynb_path, True)
+    if not os.path.exists(output_ipynb_path):
+        raise ExporterError(f"Failed to convert {example_path} to ipynb")
+
+
+def lint_example(example_path: str) -> None:
+    """Lint the local example.
+
+    Parameters
+    ----------
+    example_path : str
+        The path to the example.
+
+    Raises
+    ------
+    Exception
+        If the linting fails.
+    """
+    # black and mypy
+    to_call = [
+        "black",
+        "mypy",
+    ]
+    example_file_name = os.path.basename(example_path)
+    for tool in to_call:
+        if example_path.endswith(".ipynb") and tool == "mypy":
+            continue
+        result = subprocess.run(
+            [tool, example_path],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        LOG.info(
+            "Linting %s with %s:\n%s",
+            f'"{example_file_name}"',
+            tool,
+            result.stdout,
+        )
+        if result.returncode != 0:
+            raise ExporterError(
+                f"Linting failed for {example_path}: {result.stderr}"
+            ) from None
+
+
+def convert_local_examples() -> None:
     """Check if the examples exist locally and validate them.
 
     Raises
@@ -248,20 +314,55 @@ def check_local_examples() -> None:
         LOG.success(
             f"Local example {example} looks valid.",
         )
+        try:
+            convert_local_example(example_path)
+        except Exception as e:
+            _log = f"Error converting local example {example}: {e}"
+            LOG.error(_log)
+            raise e
+        try:
+            lint_example(example_path.replace(".waldiez", ".py"))
+            lint_example(example_path.replace(".waldiez", ".ipynb"))
+        except Exception as e:
+            _log = f"Error linting local example {example}: {e}"
+            LOG.error(_log)
+            raise e
+        LOG.success(f"Local example {example} linted successfully.")
+
+
+def handle_remote() -> None:
+    """Handle remote examples."""
+    LOG.info("Checking remote examples...")
+    try:
+        convert_remote_examples()
+        LOG.success("Remote examples validated and converted.")
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        LOG.error("Error during remote conversion: %s", e)
+        sys.exit(1)
+
+
+def handle_local() -> None:
+    """Handle local examples."""
+    LOG.info("Checking local examples...")
+    try:
+        convert_local_examples()
+        LOG.success("Local examples validated and converted.")
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        LOG.error("Error during local conversion: %s", e)
+        sys.exit(1)
 
 
 def main() -> None:
     """Handle local and remote examples."""
-    LOG.info("Checking local examples...")
-    check_local_examples()
-    try:
-        convert_examples()
-        LOG.info(
-            "All examples validated and converted successfully.",
-        )
-    except Exception as e:  # pylint: disable=broad-exception-caught
-        LOG.error("Error during conversion: %s", e)
-        sys.exit(1)
+    do_local = "--local" in sys.argv or len(sys.argv) == 1
+    do_remote = "--remote" in sys.argv or len(sys.argv) == 1
+    if not do_local and not do_remote:
+        do_local = True
+        do_remote = True
+    if do_local:
+        handle_local()
+    if do_remote:
+        handle_remote()
 
 
 if __name__ == "__main__":

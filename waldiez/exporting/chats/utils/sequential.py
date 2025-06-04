@@ -10,7 +10,7 @@ from waldiez.models import (
     WaldiezRagUserProxy,
 )
 
-from .common import get_chat_message_string, update_summary_chat_args
+from .common import get_chat_message_string
 
 
 def export_sequential_chat(
@@ -18,7 +18,6 @@ def export_sequential_chat(
     chat_names: dict[str, str],
     agent_names: dict[str, str],
     serializer: Callable[..., str],
-    string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
     skip_cache: bool,
@@ -35,8 +34,6 @@ def export_sequential_chat(
         A mapping of agent id to agent name.
     serializer : Callable[..., str]
         The serializer function to escape quotes in a string.
-    string_escape : Callable[[str], str]
-        The string escape function.
     tabs : int
         The number of tabs to use for indentation.
     is_async : bool
@@ -125,7 +122,6 @@ def export_sequential_chat(
             connection=connection,
             agent_names=agent_names,
             serializer=serializer,
-            string_escape=string_escape,
             tabs=tabs + 1,
             skip_cache=skip_cache,
         )
@@ -135,13 +131,11 @@ def export_sequential_chat(
     return content, additional_methods_string
 
 
-# pylint: disable=too-many-locals
 def _get_chat_dict_string(
     connection: WaldiezAgentConnection,
     chat_names: dict[str, str],
     agent_names: dict[str, str],
     serializer: Callable[..., str],
-    string_escape: Callable[[str], str],
     tabs: int,
     skip_cache: bool,
 ) -> tuple[str, str]:
@@ -161,8 +155,6 @@ def _get_chat_dict_string(
         A mapping of agent id to agent name.
     serializer : Callable[[str], str]
         The function to serialize the dictionaries or lists.
-    string_escape : Callable[[str], str]
-        The function to escape the string.
     tabs : int
         The number of tabs to use for indentation.
     skip_cache : bool
@@ -176,41 +168,29 @@ def _get_chat_dict_string(
     tab = "    " * tabs
     chat = connection["chat"]
     sender = connection["source"]
-    recipient = connection["target"]
-    chat_args = chat.get_chat_args(for_queue=True, sender=sender)
-    chat_args = update_summary_chat_args(chat_args, string_escape)
-    chat_string = "{"
-    chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
-    chat_string += "\n" + f'{tab}    "recipient": {agent_names[recipient.id]},'
-    if skip_cache is False:
-        chat_string += "\n" + f'{tab}    "cache": cache,'
-    additional_methods_string = ""
-    for key, value in chat_args.items():
-        if isinstance(value, str):
-            chat_string += "\n" + f'{tab}    "{key}": "{value}",'
-        elif isinstance(value, dict):
-            chat_string += (
-                "\n" + f'{tab}    "{key}": {serializer(value, tabs=tabs + 1)},'
-            )
-        else:
-            chat_string += "\n" + f'{tab}    "{key}": {value},'
+    chat_string = _get_chat_strig_start(
+        connection=connection,
+        agent_names=agent_names,
+        serializer=serializer,
+        tabs=tabs,
+        skip_cache=skip_cache,
+    )
     if (
-        sender.agent_type == "rag_user_proxy"
+        sender.is_rag_user
         and isinstance(sender, WaldiezRagUserProxy)
         and chat.message.type == "rag_message_generator"
     ):
         message = f"{agent_names[sender.id]}.message_generator"
         chat_string += "\n" + f'{tab}    "message": {message},'
         chat_string += "\n" + tab + "},"
-        return chat_string, additional_methods_string
+        return chat_string, ""
+    additional_methods_string = ""
     message, method_content = get_chat_message_string(
         sender=sender,
         chat=chat,
         chat_names=chat_names,
-        string_escape=string_escape,
     )
     if message and isinstance(chat.data.message, WaldiezChatMessage):
-        message = string_escape(message)
         if chat.data.message.type == "method":
             if method_content:
                 additional_methods_string += "\n" + method_content
@@ -219,6 +199,35 @@ def _get_chat_dict_string(
             chat_string += "\n" + f'{tab}    "message": "{message}",'
     chat_string += "\n" + tab + "},"
     return chat_string, additional_methods_string
+
+
+def _get_chat_strig_start(
+    connection: WaldiezAgentConnection,
+    agent_names: dict[str, str],
+    serializer: Callable[..., str],
+    tabs: int,
+    skip_cache: bool,
+) -> str:
+    tab = "    " * tabs
+    chat = connection["chat"]
+    sender = connection["source"]
+    recipient = connection["target"]
+    chat_args = chat.get_chat_args(for_queue=True, sender=sender)
+    # chat_args = update_summary_chat_args(chat_args)
+    chat_string = "{"
+    chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
+    chat_string += "\n" + f'{tab}    "recipient": {agent_names[recipient.id]},'
+    if skip_cache is False:
+        chat_string += "\n" + f'{tab}    "cache": cache,'
+    # additional_methods_string = ""
+    for key, value in chat_args.items():
+        if isinstance(value, (dict, str)):
+            chat_string += (
+                "\n" + f'{tab}    "{key}": {serializer(value, tabs=tabs + 1)},'
+            )
+        else:
+            chat_string += "\n" + f'{tab}    "{key}": {value},'
+    return chat_string
 
 
 def _get_initiate_chats_line(

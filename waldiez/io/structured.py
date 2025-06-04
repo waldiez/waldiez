@@ -293,13 +293,14 @@ class StructuredIOStream(IOStream):
 
         input_data: list[UserInputData] = []
         for entry in data:  # pyright: ignore
+            # pylint: disable=broad-exception-caught
             try:
                 content = UserInputData.model_validate(entry)
                 input_data.append(content)
-            except Exception as error:  # pylint: disable=broad-exception-caught
+            except Exception as error:  # pragma: no cover
                 print({"type": "error", "message": str(error)}, file=sys.stderr)
                 continue
-        if not input_data:
+        if not input_data:  # pragma: no cover
             # No valid data in the list, return empty response
             return UserResponse(
                 request_id=request_id,

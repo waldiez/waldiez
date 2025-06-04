@@ -172,8 +172,20 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             alias="transitionsType",
         ),
     ] = "allowed"
-
+    order: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            title="Order",
+            description=(
+                "The order of the speakers in the group "
+                "(if round_robin is used). If empty, the order  "
+                "will be determined by the order of the agents in the flow."
+            ),
+        ),
+    ] = []
     _custom_method_string: Optional[str] = None
+    _order: Optional[list[str]] = None
 
     @property
     def custom_method_string(self) -> Optional[str]:
@@ -219,6 +231,48 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             function_name,
         )
+
+    def get_order(self) -> list[str]:
+        """Get the order of the speakers.
+
+        Returns
+        -------
+        list[str]
+            The order of the speakers.
+
+        Raises
+        ------
+        RuntimeError
+            If the order is not set.
+        """
+        if self._order is None:
+            raise RuntimeError("Order is not set. Call `set_order` first.")
+        return self._order
+
+    def set_order(
+        self, initial_agent_id: str, group_members: list[str]
+    ) -> None:
+        """Generate the order of the speakers.
+
+        Parameters
+        ----------
+        initial_agent_id : str
+            The ID of the initial agent.
+        group_members : list[str]
+            The group members' IDs.
+        """
+        if self._order is not None:
+            return
+        # make sure all the members are in the order
+        # also make sure the initial agent is first
+        order_copy = self.order.copy() if self.order else []
+        all_members = [initial_agent_id] + [
+            member for member in order_copy if member != initial_agent_id
+        ]
+        for member in group_members:
+            if member not in all_members:
+                all_members.append(member)
+        self._order = all_members
 
     @model_validator(mode="after")
     def validate_group_speakers_config(self) -> Self:

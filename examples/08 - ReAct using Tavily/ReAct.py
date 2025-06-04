@@ -8,9 +8,9 @@
 # pylint: disable=invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,missing-function-docstring
 # pylint: disable=missing-param-doc,missing-return-doc,ungrouped-imports,unnecessary-lambda-assignment
 
-# pyright: reportUnusedImport=false,reportMissingTypeStubs=false
-# pyright: reportUnknownArgumentType=false,reportUnknownMemberType=false
-# pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
+# pyright: reportUnusedImport=false,reportMissingTypeStubs=false,reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false,reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
+# pyright: reportUnknownVariableType=false
 
 """ReAct.
 
@@ -146,6 +146,15 @@ def get_react_model_api_key(model_name: str) -> str:
 
 
 # Tools
+
+# Load tool secrets module if needed
+# NOTE:
+# This section assumes that a file named "react_search_tool_secrets"
+# exists in the same directory as this file.
+# This file contains the secrets for the tool used in this flow.
+# It should be .gitignored and not shared publicly.
+# If this file is not present, you can either create it manually
+# or change the way secrets are loaded in the flow.
 
 
 def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:

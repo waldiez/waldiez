@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Test waldiez.exporting.tools.ToolsExporter."""
+"""Test for waldiez.exporting.tools.ToolsExporter."""
 
 import shutil
 from pathlib import Path
 
-from waldiez.exporting.base import AgentPosition, AgentPositions
 from waldiez.exporting.tools import ToolsExporter
+from waldiez.exporting.tools.factory import create_tools_exporter
 from waldiez.models import WaldiezAgent, WaldiezTool
 
 
@@ -117,7 +117,9 @@ def tool3():
         tool_names=tool_names,
         output_dir=None,
     )
-    generated = tools_exporter.generate()
+    main_content = tools_exporter.get_main_content()
+    assert not main_content
+    generated = tools_exporter.extras.function_content
     expected_string = (
         tool1_content
         + "\n\n"
@@ -131,14 +133,9 @@ def tool3():
         ("SECRET_KEY_1", "SECRET_VALUE_1"),
         ("SECRET_KEY_2", "SECRET_VALUE_2"),
     ]
-    assert (
-        tools_exporter.get_environment_variables()
-        == expected_environment_variables
-    )
-    assert tools_exporter.get_before_export() is None
-    expected_after_agent_position = AgentPosition(
-        None, AgentPositions.AFTER_ALL, 1
-    )
+    assert [
+        entry.as_tuple() for entry in tools_exporter.get_environment_variables()
+    ] == expected_environment_variables
     expected_after_agent_string = (
         "\n"
         "register_function(\n"
@@ -153,7 +150,6 @@ def tool3():
         f'    description="{tool1_name} description",'
         "\n"
         ")\n"
-        "\n"
         "register_function(\n"
         f"    {tool2_name},"
         "\n"
@@ -166,7 +162,6 @@ def tool3():
         f'    description="{tool2_name} description",'
         "\n"
         ")\n"
-        "\n"
         "register_function(\n"
         "    tool3,\n"
         f"    caller={agent1_name},\n"
@@ -174,18 +169,16 @@ def tool3():
         f'    name="{tool3_name}",\n'
         f'    description="{tool3_name} description",\n'
         ")\n"
-        "\n"
     )
-    after_agent = tools_exporter.get_after_export()
+    after_agent = tools_exporter.extras.registration_content
     assert after_agent is not None
-    assert after_agent[0][0] == expected_after_agent_string
-    assert after_agent[0][1] == expected_after_agent_position
+    assert after_agent == expected_after_agent_string
     output_dir = tmp_path / "test_tools_exporter"
     output_dir.mkdir()
-    # and one with no tools
+    # and one with with factory and no tools
     agent1.data.tools = []
     agent2.data.tools = []
-    tools_exporter = ToolsExporter(
+    tools_exporter = create_tools_exporter(
         flow_name=flow_name,
         agents=[agent1, agent2],
         agent_names=agent_names,
@@ -193,8 +186,6 @@ def tool3():
         tool_names=tool_names,
         output_dir=str(output_dir),
     )
-    imports = tools_exporter.get_imports()
-    assert not imports
     shutil.rmtree(output_dir)
 
 
@@ -232,7 +223,9 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         'api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)\n'
         'wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)\n'
         'ag2_wiki_tool_interop = Interoperability()\n'
-        'ag2_wiki_tool = ag2_wiki_tool_interop.convert_tool(tool=wiki_tool, type="langchain")'
+        'ag2_wiki_tool = ag2_wiki_tool_interop.convert_tool(\n'
+        '    tool=wiki_tool,\n'
+        '    type="langchain"\n)'
     )
     # fmt: on
     agent_names = {"wa-1": "agent1", "wa-2": "agent2"}
@@ -287,7 +280,7 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         description="agent description",
         data={"tools": []},  # type: ignore
     )
-    tools_exporter = ToolsExporter(
+    tools_exporter = create_tools_exporter(
         flow_name=flow_name,
         agents=[agent1, agent2],
         agent_names=agent_names,
@@ -295,21 +288,18 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         tool_names=tool_names,
         output_dir=str(tmp_path / "test_export_interop_tool"),
     )
-    generated = tools_exporter.generate()
-    expected_string = tool1_content + "\n\n" + tool2_expected_content + "\n\n"
-    assert generated == expected_string
     expected_environment_variables = [
         ("SECRET_KEY_1", "SECRET_VALUE_1"),
         ("SECRET_KEY_2", "SECRET_VALUE_2"),
     ]
-    assert (
-        tools_exporter.get_environment_variables()
-        == expected_environment_variables
-    )
-    assert tools_exporter.get_before_export() is None
-    expected_after_agent_position = AgentPosition(
-        None, AgentPositions.AFTER_ALL, 1
-    )
+    assert [
+        env.as_tuple() for env in tools_exporter.get_environment_variables()
+    ] == expected_environment_variables
+    contents = tools_exporter.extras.function_content
+    expected_string = tool1_content + "\n\n" + tool2_expected_content + "\n\n"
+    assert contents == expected_string
+    after_agent = tools_exporter.extras.registration_content
+    assert after_agent is not None
     expected_after_agent_string = (
         "\n"
         "register_function(\n"
@@ -324,22 +314,12 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         f'    description="{tool1_name} description",'
         "\n"
         ")\n"
-        "\n"
         "register_function(\n"
-        f"    ag2_{tool2_name},"
-        "\n"
-        f"    caller={agent1_name},"
-        "\n"
-        f"    executor={agent2_name},"
-        "\n"
-        f'    name="ag2_{tool2_name}",'
-        "\n"
-        f'    description="{tool2_name} description",'
-        "\n"
+        f"    ag2_wiki_tool,\n"
+        f"    caller={agent1_name},\n"
+        f"    executor={agent2_name},\n"
+        f'    name="ag2_{tool2_name}",\n'
+        f'    description="{tool2_name} description",\n'
         ")\n"
-        "\n"
     )
-    after_agent = tools_exporter.get_after_export()
-    assert after_agent is not None
-    assert after_agent[0][0] == expected_after_agent_string
-    assert after_agent[0][1] == expected_after_agent_position
+    assert after_agent == expected_after_agent_string

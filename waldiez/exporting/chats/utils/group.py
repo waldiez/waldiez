@@ -6,7 +6,7 @@
 Using the group patterns (no group manager agent)
 """
 
-from typing import Callable
+import json
 
 from waldiez.models import WaldiezGroupManager
 
@@ -15,7 +15,6 @@ def export_group_chats(
     agent_names: dict[str, str],
     manager: WaldiezGroupManager,
     intial_chat: str | None,
-    string_escape: Callable[[str], str],
     tabs: int,
     is_async: bool,
 ) -> str:
@@ -29,8 +28,6 @@ def export_group_chats(
         The group manager agent.
     intial_chat : str | None
         The initial chat to use if any.
-    string_escape : Callable[[str], str]
-        The function to escape the string.
     tabs : int
         The number of tabs for indentation.
     is_async : bool
@@ -50,7 +47,7 @@ def export_group_chats(
     content = f"{tab}results, _, __ = {initiate_group_chat}(" + "\n"
     content += f"{tab}    pattern={pattern_name}," + "\n"
     if intial_chat:
-        content += f'{tab}    messages="{string_escape(intial_chat)}",' + "\n"
+        content += f"{tab}    messages={json.dumps(intial_chat)}," + "\n"
     else:
         content += f"{tab}    messages=[],\n"
     content += f"{tab}    max_rounds={manager.data.max_round},\n"

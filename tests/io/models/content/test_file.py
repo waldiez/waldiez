@@ -23,38 +23,12 @@ class TestFileMediaContent:
         assert content.type == "file"
         assert content.file == file_content
 
-    def test_file_media_content_creation_document_type(self) -> None:
-        """Test creating FileMediaContent with 'document' type."""
-        file_content = FileContent(name="report.docx")
-        content = FileMediaContent(type="document", file=file_content)
-
-        assert content.type == "document"
-        assert content.file == file_content
-
-    def test_file_media_content_required_fields(self) -> None:
-        """Test that both type and file fields are required."""
-        file_content = FileContent(name="test.txt")
-
-        # Should work with both required fields
-        content = FileMediaContent(type="file", file=file_content)
-        assert content.type == "file"
-        assert content.file == file_content
-
-        # Should fail without type
-        with pytest.raises(ValueError):
-            FileMediaContent(file=file_content)  # type: ignore
-
-        # Should fail without file
-        with pytest.raises(ValueError):
-            FileMediaContent(type="file")  # type: ignore
-
     def test_file_media_content_invalid_type(self) -> None:
         """Test that invalid type values are rejected."""
         file_content = FileContent(name="test.txt")
 
         # Valid types should work
         FileMediaContent(type="file", file=file_content)
-        FileMediaContent(type="document", file=file_content)
 
         # Invalid type should fail
         with pytest.raises(ValueError):
@@ -81,7 +55,7 @@ class TestFileMediaContent:
     ) -> None:
         """Test to_string with file data."""
         file_content = FileContent(name="data.bin", file="binary_file_data")
-        content = FileMediaContent(type="document", file=file_content)
+        content = FileMediaContent(type="file", file=file_content)
 
         result = content.to_string(uploads_root=tmp_path, base_name="test")
 
@@ -107,7 +81,7 @@ class TestFileMediaContent:
             url="https://example.com/document.pdf",
             file="binary_data",
         )
-        content = FileMediaContent(type="document", file=file_content)
+        content = FileMediaContent(type="file", file=file_content)
 
         result = content.to_string(uploads_root=tmp_path)
 
@@ -161,7 +135,7 @@ class TestFileMediaContent:
             type="application/pdf",
             previewUrl="https://example.com/preview.jpg",
         )
-        content = FileMediaContent(type="document", file=file_content)
+        content = FileMediaContent(type="file", file=file_content)
 
         # to_string should still only use URL/file and name for output
         result = content.to_string(None)
@@ -196,7 +170,7 @@ class TestFileMediaContent:
             "wordprocessingml.document"
         )
         data: dict[str, Any] = {
-            "type": "document",
+            "type": "file",
             "file": {
                 "name": "report.docx",
                 "url": "https://example.com/report.docx",
@@ -206,7 +180,7 @@ class TestFileMediaContent:
         }
         content = FileMediaContent(**data)
 
-        assert content.type == "document"
+        assert content.type == "file"
         assert content.file.name == "report.docx"
         assert content.file.url == "https://example.com/report.docx"
         assert content.file.size == 4096

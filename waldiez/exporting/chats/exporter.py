@@ -1,0 +1,106 @@
+# SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2025 Waldiez and contributors.
+"""Chats exporter."""
+
+from typing import Any, Optional
+
+from waldiez.models import (
+    WaldiezAgent,
+    WaldiezAgentConnection,
+    WaldiezChat,
+    WaldiezGroupManager,
+)
+
+from ..core import ChatExtras, Exporter, ExporterContext
+from .processor import ChatsProcessor
+
+
+class ChatsExporter(Exporter[ChatExtras]):
+    """Chats exporter with structured extras."""
+
+    def __init__(
+        self,
+        all_agents: list[WaldiezAgent],
+        agent_names: dict[str, str],
+        all_chats: list[WaldiezChat],
+        chat_names: dict[str, str],
+        main_chats: list[WaldiezAgentConnection],
+        root_group_manager: Optional[WaldiezGroupManager],
+        for_notebook: bool,
+        is_async: bool,
+        cache_seed: Optional[int],
+        context: Optional[ExporterContext] = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize the chats exporter.
+
+        Parameters
+        ----------
+        all_agents : list[WaldiezAgent]
+            All agents involved in the chats.
+        agent_names : dict[str, str]
+            Mapping of agent IDs to their names.
+        all_chats : list[WaldiezChat]
+            All chats to be exported.
+        chat_names : dict[str, str]
+            Mapping of chat IDs to their names.
+        main_chats : list[WaldiezAgentConnection]
+            Main chats that are connections between agents.
+        root_group_manager : Optional[WaldiezGroupManager]
+            The root group manager for managing chat groups, if any.
+        for_notebook : bool
+            Whether the export is intended for a notebook environment.
+        is_async : bool
+            Whether the exporter operates asynchronously.
+        cache_seed : Optional[int]
+            The cache seed for any caching mechanism, if applicable.
+        context : Optional[ExporterContext], optional
+            Exporter context with dependencies, by default None
+        **kwargs : Any
+            Additional keyword arguments for the exporter.
+        """
+        super().__init__(context, **kwargs)
+
+        self.all_agents = all_agents
+        self.agent_names = agent_names
+        self.all_chats = all_chats
+        self.chat_names = chat_names
+        self.main_chats = main_chats
+        self.root_group_manager = root_group_manager
+        self.for_notebook = for_notebook
+        self.is_async = is_async
+        self.cache_seed = cache_seed
+
+        # Initialize extras with processed chat content
+        self._extras = self._create_chat_extras()
+
+    @property
+    def extras(self) -> ChatExtras:
+        """Get the chat extras."""
+        return self._extras
+
+    # pylint: disable=no-self-use
+    def _create_chat_extras(self) -> ChatExtras:
+        """Create and populate chat extras."""
+        extras = ChatExtras("chats")
+        processor = ChatsProcessor(
+            all_agents=self.all_agents,
+            agent_names=self.agent_names,
+            all_chats=self.all_chats,
+            chat_names=self.chat_names,
+            main_chats=self.main_chats,
+            root_group_manager=self.root_group_manager,
+            for_notebook=self.for_notebook,
+            is_async=self.is_async,
+            cache_seed=self.cache_seed,
+            serializer=self.context.get_serializer(),
+            extras=extras,
+        )
+        processor.process()
+        if extras.chat_registration:
+            extras.append_after_all_agents(extras.chat_registration)
+        return extras
+
+    def generate_main_content(self) -> Optional[str]:
+        """Generate the main content of the export."""
+        return None

@@ -76,7 +76,8 @@ class WaldiezGroupManager(WaldiezAgent):
         ValueError
             If the agent type is not `group_manager`.
         """
-        if v in ["groupManager", "manager"]:
+        if v in ["groupManager", "manager"]:  # pragma: no cover
+            # Deprecated agent type names
             warnings.warn(
                 (
                     "The agent types 'groupManager' and 'manager' are "
@@ -85,7 +86,7 @@ class WaldiezGroupManager(WaldiezAgent):
                 DeprecationWarning,
                 stacklevel=2,
             )
-        if v != "group_manager":
+        if v != "group_manager":  # pragma: no cover
             raise ValueError(
                 "The agent type must be 'group_manager'. "
                 "Use 'group_manager' instead."
@@ -113,6 +114,31 @@ class WaldiezGroupManager(WaldiezAgent):
                 f"Initial agent ID '{initial_agent_id}' "
                 f"is not in the list of agent IDs: {all_agent_ids}"
             )
+
+    def get_speakers_order(self) -> list[str]:
+        """Get the order of the speakers.
+
+        Returns
+        -------
+        list[str]
+            The order of the speakers.
+
+        Raises
+        ------
+        RuntimeError
+            If the order is not set.
+        """
+        return self.data.speakers.get_order()
+
+    def set_speakers_order(self, group_members: list[str]) -> None:
+        """Set the order of the speakers.
+
+        Parameters
+        ----------
+        group_members : list[str]
+            The group members' IDs.
+        """
+        self.data.speakers.set_order(self.data.initial_agent_id, group_members)
 
     def validate_transitions(self, agent_ids: list[str]) -> None:
         """Validate the transitions.

@@ -11,7 +11,7 @@ from typing import Any
 
 try:
     import websockets
-except ImportError as error:
+except ImportError as error:  # pragma: no cover
     raise ImportError(
         "websockets package is required for AsyncWebsocketsIOStream. "
         "Please install it with `pip install websockets`."
@@ -19,11 +19,8 @@ except ImportError as error:
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
-from .models import (
-    UserInputData,
-    UserResponse,
-)
-from .utils import get_image, now
+from .models import UserResponse
+from .utils import now
 
 LOG = logging.getLogger(__name__)
 
@@ -55,7 +52,7 @@ class AsyncWebsocketsIOStream(IOStream):
         self.websocket = websocket
         self.is_async = is_async
         self.verbose = verbose
-        if isinstance(uploads_root, str):
+        if isinstance(uploads_root, str):  # pragma: no cover
             uploads_root = Path(uploads_root)
         if uploads_root is not None:
             uploads_root = uploads_root.resolve()
@@ -128,7 +125,7 @@ class AsyncWebsocketsIOStream(IOStream):
             # conversable_agent has:
             # iostream = IOStream.get_default()
             # reply = await iostream.input(prompt)  # ? await ?
-            return coro  # type: ignore
+            return coro  # type: ignore  # pragma: no cover
         try:
             return asyncio.run(coro)
         except RuntimeError:
@@ -192,13 +189,14 @@ class AsyncWebsocketsIOStream(IOStream):
         """
         if "data" in response:
             response_data = response["data"]
-            if isinstance(response, str):  # double dumped?
+            if isinstance(response_data, str):  # pragma: no branch
                 try:
-                    response_data = json.loads(response_data)
+                    # double dumped?
+                    parsed = json.loads(response_data)
                 except json.JSONDecodeError:
                     pass
                 else:
-                    response["data"] = response_data
+                    response["data"] = parsed
         try:
             user_response = UserResponse.model_validate(response)
         except Exception as error:  # pylint: disable=broad-exception-caught
@@ -211,109 +209,7 @@ class AsyncWebsocketsIOStream(IOStream):
                 request_id,
             )
             return ""
-        return self.get_response_text(user_response, request_id)
-
-    # pylint: disable=too-many-return-statements
-    def get_content_string(
-        self, user_response_data: UserInputData, request_id: str
-    ) -> str:
-        """Get the string content from the user input data.
-
-        Parameters
-        ----------
-        user_response_data : UserInputData
-            The user input data to parse.
-        request_id : str
-            The request ID of the input request.
-
-        Returns
-        -------
-        str
-            The string content of the user input data.
-        """
-        if user_response_data.content.type == "text":
-            return user_response_data.content.text
-        if user_response_data.content.type == "image_url":
-            if not user_response_data.content.image_url:
-                return ""
-            image_url = user_response_data.content.image_url
-            if not image_url or not image_url.url:
-                return ""
-            image = get_image(
-                uploads_root=self.uploads_root,
-                image_data=image_url.url,
-                base_name=request_id,
-            )
-            return f"<img {image}>"
-        if user_response_data.content.type == "image":
-            if not user_response_data.content.image:
-                return ""
-            image_data = (
-                user_response_data.content.image.file
-                or user_response_data.content.image.url
-            )
-            if not image_data:
-                return ""
-            image = get_image(
-                uploads_root=self.uploads_root,
-                image_data=image_data,
-                base_name=request_id,
-            )
-            return f"<img {image}>"
-        # if user_response_data.content.type == "audio":
-        #     audio = StructuredIOStream.get_audio(
-        #         uploads_root=self.uploads_root,
-        #         audio_data=user_response_data.content.audio.file,
-        #         base_name=request_id,
-        #     )
-        #     return f"<audio {audio}>"
-        # if user_response_data.content.type == "video":
-        #     video = StructuredIOStream.get_video(
-        #         uploads_root=self.uploads_root,
-        #         video_data=user_response_data.content.video.file,
-        #         base_name=request_id,
-        #     )
-        #     return f"<video {video}>"
-        # if user_response_data.content.type == "file":
-        #     file = StructuredIOStream.get_file(
-        #         uploads_root=self.uploads_root,
-        #         file_data=user_response_data.content.file.file,
-        #         base_name=request_id,
-        #     )
-        #     return f"<file {file}>"...
-        LOG.error(
-            "Unknown content type: %s",
-            user_response_data.content.type,
+        return user_response.to_string(
+            uploads_root=self.uploads_root,
+            base_name=request_id,
         )
-        return ""
-
-    def get_response_text(
-        self, user_response: UserResponse, request_id: str
-    ) -> str:
-        """Get the text content from the user response.
-
-        Parameters
-        ----------
-        user_response : UserResponse
-            The user response to parse.
-        request_id : str
-            The request ID of the input request.
-
-        Returns
-        -------
-        str
-            The text data of the user response.
-        """
-        response_str = ""
-        if isinstance(user_response.data, str):
-            return user_response.data
-        if isinstance(user_response.data, list):
-            for entry in user_response.data:
-                if isinstance(entry, str):
-                    response_str += entry
-                else:
-                    response_str += self.get_content_string(entry, request_id)
-            return response_str
-        if isinstance(user_response.data, UserInputData):  # pyright: ignore
-            return self.get_content_string(user_response.data, request_id)
-        return response_str

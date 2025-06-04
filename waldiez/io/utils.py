@@ -24,7 +24,7 @@ MediaType = Union[
     Literal["image_url"],
     Literal["video"],
     Literal["audio"],
-    Literal["file", "document"],
+    Literal["file"],
 ]
 """Possible media types for the structured I/O stream."""
 
@@ -78,7 +78,6 @@ def detect_media_type(value: dict[str, Any]) -> MediaType:
         "video",
         "audio",
         "file",
-        "document",
     )
     if "type" in value:
         content_type = value["type"]

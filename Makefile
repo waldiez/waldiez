@@ -35,7 +35,9 @@ help:
 	@echo " docs             Generate the python documentation"
 	@echo " docs-live        Generate the documentation in 'live' mode"
 	@echo " images           Build the podman/docker images"
-	@echo " smoke            Run the smoke tests for the python package"
+	@echo " smoke            Run smoke tests for the python package"
+	@echo " smoke-local      Run smoke tests for the python package using local examples"
+	@echo " smoke-remote     Run smoke tests for the python package using remote examples"
 	@echo " dev              Start both python and react dev servers"
 	@echo " some             Run some (not all) of the above"
 
@@ -144,6 +146,20 @@ some: clean format lint test build docs image
 .PHONY: smoke
 smoke:
 	$(PYTHON) scripts/smoke.py
+
+.PHONY: smoke-local
+smoke-local:
+	$(PYTHON) scripts/smoke.py --local
+
+.PHONY: smoke_local
+smoke_local: smoke-local
+
+.PHONY: smoke-remote
+smoke-remote:
+	$(PYTHON) scripts/smoke.py --remote
+
+.PHONY: smoke_remote
+smoke_remote: smoke-remote
 
 .PHONY: dev
 dev:

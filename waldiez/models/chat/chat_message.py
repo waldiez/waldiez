@@ -100,6 +100,16 @@ class WaldiezChatMessage(WaldiezBase):
 
     _content_body: Optional[str] = None
 
+    def is_method(self) -> bool:
+        """Check if the message is a method.
+
+        Returns
+        -------
+        bool
+            True if the message is a method, False otherwise.
+        """
+        return self.type in ("method", "rag_message_generator")
+
     @property
     def content_body(self) -> Optional[str]:
         """Get the content body."""

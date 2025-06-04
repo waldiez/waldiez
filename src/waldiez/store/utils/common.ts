@@ -20,16 +20,19 @@ const calculateNewNodePosition = (
     rfInstance: ReactFlowInstance | undefined,
     flowWrapper: HTMLElement,
     currentNodesCount: number,
-    entriesDistance: number,
+    entriesDistance: {
+        x: number;
+        y: number;
+    },
 ) => {
     const zoom = rfInstance?.getZoom() ?? 1;
     const flowWrapperRect = flowWrapper.getBoundingClientRect();
     // take into account the zoom level
     // to calculate the number of nodes per row
     const canvasWidth = flowWrapperRect.width / zoom;
-    const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance * 1.1));
-    const x = (currentNodesCount % maxNodesPerRow) * entriesDistance;
-    let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance;
+    const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
+    const x = (currentNodesCount % maxNodesPerRow) * entriesDistance.x;
+    let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance.y;
     // if first ROW, add +10 to y to avoid overlapping with the top elements
     if (y === 0) {
         y += 10;
@@ -54,7 +57,10 @@ export const getNewNodePosition = (
     currentNodesCount: number,
     flowId: string,
     rfInstance?: ReactFlowInstance,
-    entriesDistance: number = 240,
+    entriesDistance: {
+        x: number;
+        y: number;
+    } = { x: 200, y: 140 },
 ) => {
     const flowRoot = getFlowRoot(flowId);
     if (!flowRoot) {

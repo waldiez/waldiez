@@ -149,7 +149,7 @@ class WaldiezAgents(WaldiezBase):
             agent.validate_linked_models(model_ids)
             agent.validate_linked_tools(tool_ids, agent_ids=all_agent_ids)
             agent.validate_code_execution(tool_ids=tool_ids)
-            if agent.agent_type == "manager" and isinstance(
+            if agent.is_group_manager and isinstance(
                 agent, WaldiezGroupManager
             ):
                 agent.validate_initial_agent_id(all_agent_ids)

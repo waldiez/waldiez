@@ -18,7 +18,6 @@ export const WaldiezNodeToolView = (props: NodeProps<WaldiezNodeTool>) => {
         isDirty,
         toolData: data,
         isDark,
-        updatedAt,
         onOpen,
         onClone,
         onDelete,
@@ -51,7 +50,6 @@ export const WaldiezNodeToolView = (props: NodeProps<WaldiezNodeTool>) => {
                 <div className="description" data-test-id={`node-description-${id}`}>
                     {data.description}
                 </div>
-                <div className="date-info">{updatedAt}</div>
             </div>
             <div className="tool-footer" data-testid={`tool-footer-${id}`}>
                 <div

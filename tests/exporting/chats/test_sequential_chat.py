@@ -11,6 +11,8 @@ from waldiez.models import (
     WaldiezChatMessage,
     WaldiezChatNested,
     WaldiezChatSummary,
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
 )
 
 
@@ -45,9 +47,10 @@ def test_sequential_chat() -> None:
     )
     chat1 = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
-            source="wa-1",
-            target="wa-2",
             source_type="assistant",
             target_type="assistant",
             name=chat1_name,
@@ -58,13 +61,16 @@ def test_sequential_chat() -> None:
             ),
             nested_chat=WaldiezChatNested(),
             summary=WaldiezChatSummary(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     chat2 = WaldiezChat(
         id="wc-2",
+        source="wa-2",
+        target="wa-3",
+        type="chat",
         data=WaldiezChatData(
-            source="wa-2",
-            target="wa-3",
             source_type="assistant",
             target_type="assistant",
             name=chat2_name,
@@ -75,6 +81,8 @@ def test_sequential_chat() -> None:
             ),
             nested_chat=WaldiezChatNested(),
             summary=WaldiezChatSummary(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {
@@ -107,7 +115,7 @@ def test_sequential_chat() -> None:
         for_notebook=False,
         is_async=False,
     )
-    generated = exporter.generate()
+    exporter.export()
     expected = """
         results = initiate_chats([
             {
@@ -115,6 +123,7 @@ def test_sequential_chat() -> None:
                 "recipient": agent2,
                 "cache": cache,
                 "summary_method": "last_msg",
+                "clear_history": True,
                 "chat_id": 0,
                 "message": "Hello, how are you?",
             },
@@ -123,14 +132,16 @@ def test_sequential_chat() -> None:
                 "recipient": agent3,
                 "cache": cache,
                 "summary_method": "last_msg",
+                "clear_history": True,
                 "chat_id": 0,
                 "message": "Hello, how are you?",
             },
         ])
 """
-    assert generated == expected
+    assert exporter.extras.chat_initiation == expected
     imports = exporter.get_imports()
     assert imports is not None
-    assert imports[0][0] == "from autogen.agentchat.chat import initiate_chats"
-    # no nested chats in agents
-    assert not exporter.get_after_export()
+    assert (
+        imports[0].statement
+        == "from autogen.agentchat.chat import initiate_chats"
+    )

@@ -3,7 +3,6 @@
 # pylint: disable=too-many-locals,duplicate-code
 """Test waldiez.exporting.chats.ChatsExporter with a single chat."""
 
-from waldiez.exporting.base import ExportPositions
 from waldiez.exporting.chats import ChatsExporter
 from waldiez.models import (
     WaldiezAgent,
@@ -12,7 +11,9 @@ from waldiez.models import (
     WaldiezChatMessage,
     WaldiezChatNested,
     WaldiezChatSummary,
+    WaldiezDefaultCondition,
     WaldiezRagUserProxy,
+    WaldiezTransitionAvailability,
 )
 from waldiez.models.chat.chat_message import get_last_carryover_method_content
 
@@ -42,11 +43,12 @@ def callable_message(sender, recipient, context):
 """
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             summary=WaldiezChatSummary(
@@ -63,6 +65,8 @@ def callable_message(sender, recipient, context):
                 context={"variable1": "value1", "n_results": 2},
             ),
             nested_chat=WaldiezChatNested(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -85,10 +89,9 @@ def callable_message(sender, recipient, context):
         is_async=False,
     )
     imports = exporter.get_imports()
-    assert imports is None
-    before_export = exporter.get_before_export()
-    assert before_export is not None
-    before_export_str, export_position = before_export[0]
+    assert not imports
+    before_export_str = exporter.extras.chat_prerequisites
+    assert before_export_str is not None
     expected_before_string = (
         f"def callable_message_{chat_name}("
         "\n    sender: ConversableAgent,"
@@ -99,10 +102,9 @@ def callable_message(sender, recipient, context):
         '    return f"Hello to {recipient.name} from {sender.name}"\n'
     )
     assert before_export_str == expected_before_string
-    assert export_position.position == ExportPositions.CHATS
-    after_export = exporter.get_after_export()
+    after_export = exporter.extras.after_agent
     assert not after_export
-    generated = exporter.generate()
+    generated = exporter.extras.chat_initiation
     expected = """
         results = agent1.initiate_chat(
             agent2,
@@ -112,6 +114,7 @@ def callable_message(sender, recipient, context):
                 "summary_prompt": "Summarize the chat.",
                 "summary_role": "system"
             },
+            clear_history=True,
             variable1="value1",
             n_results=2,
             message=callable_message_chat1,
@@ -141,16 +144,16 @@ def test_empty_chat() -> None:
     )
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-1",
-            target="wa-2",
             source_type="assistant",
             target_type="assistant",
             max_turns=-1,
-            clear_history=None,
-            silent=None,
+            clear_history=True,
             summary=WaldiezChatSummary(
                 method=None,
                 prompt="",
@@ -163,6 +166,8 @@ def test_empty_chat() -> None:
                 context={},
             ),
             nested_chat=WaldiezChatNested(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -185,16 +190,15 @@ def test_empty_chat() -> None:
         is_async=False,
     )
     imports = exporter.get_imports()
-    assert imports is None
-    before_export = exporter.get_before_export()
+    assert not imports
+    before_export = exporter.extras.chat_prerequisites
     assert not before_export
-    after_export = exporter.get_after_export()
-    assert not after_export
-    generated = exporter.generate()
+    generated = exporter.extras.chat_initiation
     expected = (
         "\n        results = agent1.initiate_chat("
         "\n            agent2,"
         "\n            cache=cache,"
+        "\n            clear_history=True,"
         "\n        )\n"
     )
     assert generated == expected
@@ -221,16 +225,16 @@ def test_chat_with_rag_and_carryover() -> None:
     )
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-1",
-            target="wa-2",
             source_type="rag_user",
             target_type="assistant",
             max_turns=-1,
-            clear_history=None,
-            silent=None,
+            clear_history=True,
             summary=WaldiezChatSummary(
                 method=None,
                 prompt="",
@@ -246,6 +250,8 @@ def test_chat_with_rag_and_carryover() -> None:
                 },
             ),
             nested_chat=WaldiezChatNested(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -268,8 +274,8 @@ def test_chat_with_rag_and_carryover() -> None:
         is_async=False,
     )
     imports = exporter.get_imports()
-    assert imports is None
-    before_export = exporter.get_before_export()
+    assert not imports
+    before_export = exporter.extras.chat_prerequisites
     expected_before_body = get_last_carryover_method_content(
         "Hello, how are you?"
     )
@@ -281,12 +287,8 @@ def test_chat_with_rag_and_carryover() -> None:
         ") -> Union[dict[str, Any], str]:"
         f"{expected_before_body}"
     )
-    assert before_export is not None
-    before_export_str = before_export[0][0]
-    assert before_export_str == expected_before
-    after_export = exporter.get_after_export()
-    assert not after_export
-    generated = exporter.generate()
+    assert before_export == expected_before
+    generated = exporter.extras.chat_initiation
     tab = "    "
     space = tab * 2
     expected = (
@@ -296,6 +298,8 @@ def test_chat_with_rag_and_carryover() -> None:
         f"{space}{tab}{agent2_name},"
         "\n"
         f"{space}{tab}cache=cache,"
+        "\n"
+        f"{space}{tab}clear_history=True,"
         "\n"
         f'{space}{tab}problem="summarization",'
         "\n"
@@ -330,16 +334,16 @@ def test_chat_with_rag_no_carryover() -> None:
     )
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-1",
-            target="wa-2",
             source_type="rag_user",
             target_type="assistant",
             max_turns=-1,
-            clear_history=None,
-            silent=None,
+            clear_history=True,
             summary=WaldiezChatSummary(
                 method=None,
                 prompt="",
@@ -354,6 +358,8 @@ def test_chat_with_rag_no_carryover() -> None:
                 },
             ),
             nested_chat=WaldiezChatNested(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
@@ -376,12 +382,10 @@ def test_chat_with_rag_no_carryover() -> None:
         is_async=False,
     )
     imports = exporter.get_imports()
-    assert imports is None
-    before_export = exporter.get_before_export()
+    assert not imports
+    before_export = exporter.extras.chat_prerequisites
     assert not before_export
-    after_export = exporter.get_after_export()
-    assert not after_export
-    generated = exporter.generate()
+    generated = exporter.extras.chat_initiation
     tab = "    "
     space = tab * 2
     expected = (
@@ -391,6 +395,8 @@ def test_chat_with_rag_no_carryover() -> None:
         f"{space}{tab}{agent2_name},"
         "\n"
         f"{space}{tab}cache=cache,"
+        "\n"
+        f"{space}{tab}clear_history=True,"
         "\n"
         f'{space}{tab}key1="value1",'
         "\n"

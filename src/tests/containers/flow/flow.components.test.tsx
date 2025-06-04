@@ -66,19 +66,6 @@ describe("WaldiezFlow Nodes and Edges", () => {
         const linkedToolNameView = screen.getByTestId("agent-agent-0-linked-tool-0");
         expect(linkedToolNameView.textContent).toBe("Tool Node 0");
     });
-    it("should update an agent's description", async () => {
-        act(() => {
-            renderFlow();
-        });
-        const description = screen.getByTestId("agent-description-agent-0");
-        fireEvent.change(description, {
-            target: {
-                value: "Updated Description",
-            },
-        });
-        const descriptionUpdated = screen.getByTestId("agent-description-agent-0") as HTMLTextAreaElement;
-        expect(descriptionUpdated.value).toBe("Updated Description");
-    });
     it("should connect two agents with an edge", async () => {
         act(() => {
             renderFlow();

@@ -13,6 +13,10 @@ from waldiez.models.chat import (
     WaldiezChatNested,
     WaldiezChatSummary,
 )
+from waldiez.models.common import (
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
+)
 
 
 def test_waldiez_chat_data() -> None:
@@ -21,8 +25,6 @@ def test_waldiez_chat_data() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=-1,
@@ -57,13 +59,14 @@ def test_waldiez_chat_data() -> None:
         },
         max_turns=5,
         silent=False,
+        prerequisites=["chat1", "chat2"],
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
 
     # Then
     assert chat_data.name == "chat_data"
     assert chat_data.description == "Chat data"
-    assert chat_data.source == "wa-1"
-    assert chat_data.target == "wa-2"
     assert chat_data.position == -1
     assert chat_data.order == 1
     assert not chat_data.clear_history
@@ -91,12 +94,16 @@ def test_waldiez_chat_data() -> None:
         "summary_prompt": "Summarize this chat",
         "summary_role": "system",
     }
+    chat_data.set_prerequisites([1, 2])
     chat_args = chat_data.get_chat_args(for_queue=True)
     assert chat_args["chat_id"] == 0
     assert chat_args["problem"] == "Solve this task"
     assert chat_args["solution"] == 4.2
     assert chat_args["alternative_solution"] == 42
     assert chat_args["not_a_solution"] is None
+
+    assert chat_data.prerequisites == ["chat1", "chat2"]
+    assert chat_args["prerequisites"] == [1, 2]
 
     model_dump = chat_data.model_dump(by_alias=True)
     assert model_dump["summary"]["method"] == "reflectionWithLlm"
@@ -108,8 +115,6 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -117,6 +122,8 @@ def test_waldiez_chat_data_message() -> None:
         message="Hello there",
         nested_chat=WaldiezChatNested(),
         summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -126,8 +133,6 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -143,13 +148,15 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
         clear_history=False,
         message=42,  # type: ignore
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -160,8 +167,6 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -175,8 +180,6 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -189,6 +192,8 @@ def test_waldiez_chat_data_message() -> None:
         ),
         nested_chat=WaldiezChatNested(),
         summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -199,8 +204,6 @@ def test_waldiez_chat_data_message() -> None:
     chat_data_dict: dict[str, Any] = {
         "name": "chat_data",
         "description": "Chat data",
-        "source": "wa-1",
-        "target": "wa-2",
         "source_type": "user_proxy",
         "target_type": "assistant",
         "position": 0,
@@ -237,8 +240,6 @@ def test_waldiez_chat_summary() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -246,6 +247,8 @@ def test_waldiez_chat_summary() -> None:
         message="Hello there",
         nested_chat=WaldiezChatNested(),
         summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert chat_data.summary.method == "last_msg"
@@ -256,8 +259,6 @@ def test_waldiez_chat_summary() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -279,8 +280,6 @@ def test_waldiez_chat_summary() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -306,8 +305,6 @@ def test_waldiez_chat_get_chat_args() -> None:
     chat_data = WaldiezChatData(
         name="Chat data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
         source_type="user_proxy",
         target_type="assistant",
         position=0,
@@ -341,8 +338,6 @@ def test_waldiez_chat_invalid_message_method() -> None:
         WaldiezChatData(
             name="Chat data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
             source_type="user_proxy",
             target_type="assistant",
             position=0,

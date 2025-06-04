@@ -40,9 +40,9 @@ class WaldiezBase(BaseModel):
         """
         by_alias = kwargs.pop("by_alias", None)
         mode = kwargs.pop("mode", None)
-        if mode is None:
+        if mode is None:  # pragma: no branch
             mode = "json"
-        if by_alias is None:
+        if by_alias is None:  # pragma: no branch
             by_alias = True
         if not isinstance(by_alias, bool):
             by_alias = True

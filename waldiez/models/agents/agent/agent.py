@@ -3,16 +3,24 @@
 """Base agent class to be inherited by all agents."""
 
 import warnings
-from typing import Set
+from typing import TYPE_CHECKING
 
 from pydantic import Field, field_validator
 from typing_extensions import Annotated, Literal
 
-from ....models.common import WaldiezBase, now
+from ....models.common import (
+    WaldiezBase,
+    WaldiezGroupOrNestedTarget,
+    WaldiezHandoff,
+    now,
+)
 from .agent_data import WaldiezAgentData
 from .agent_type import WaldiezAgentType
 from .code_execution import WaldiezAgentCodeExecutionConfig
-from .handoff import WaldiezAgentHandoff
+from .nested_chat import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
+
+if TYPE_CHECKING:
+    from ...chat import WaldiezChat
 
 
 class WaldiezAgent(WaldiezBase):
@@ -67,7 +75,7 @@ class WaldiezAgent(WaldiezBase):
             ...,
             title="Agent type",
             description=(
-                "The type of the agent: user_proxy, assistant, group manager, "
+                "The type of the agent: user_proxy, assistant, group_manager, "
                 "rag_user_proxy or reasoning"
             ),
         ),
@@ -123,6 +131,45 @@ class WaldiezAgent(WaldiezBase):
             default_factory=WaldiezAgentData,  # pyright: ignore
         ),
     ]
+
+    _handoffs: Annotated[
+        list[WaldiezHandoff],
+        Field(
+            init=False,  # this is not a field in the constructor
+            default_factory=list[WaldiezHandoff],
+            title="Handoffs",
+            description=(
+                "A list of handoffs (target ids) to register. "
+                "These are used to transfer control to another agent or chat."
+            ),
+        ),
+    ] = []
+
+    _checked_nested_chats: Annotated[bool, Field(init=False, default=False)] = (
+        False
+    )
+    _checked_handoffs: Annotated[bool, Field(init=False, default=False)] = False
+
+    @property
+    def handoffs(self) -> list[WaldiezHandoff]:
+        """Get the handoffs for this agent.
+
+        Returns
+        -------
+        list[WaldiezHandoff]
+            The list of handoffs for this agent.
+
+        Raises
+        ------
+        RuntimeError
+            If handoffs have not been gathered yet.
+        """
+        if not self._checked_handoffs:
+            raise RuntimeError(
+                "Handoffs have not been gathered yet. "
+                "Call gather_handoffs() first."
+            )
+        return self._handoffs
 
     @field_validator("agent_type")
     @classmethod
@@ -182,15 +229,26 @@ class WaldiezAgent(WaldiezBase):
         )
 
     @property
-    def is_group_manager(self) -> bool:
-        """Check if the agent is a group manager.
+    def is_captain(self) -> bool:
+        """Check if the agent is a captain.
 
         Returns
         -------
         bool
-            True if the agent is a group manager, False otherwise.
+            True if the agent is a captain, False otherwise.
         """
-        return self.agent_type in ("group_manager", "manager")
+        return self.agent_type == "captain"
+
+    @property
+    def is_reasoning(self) -> bool:
+        """Check if the agent is a reasoning agent.
+
+        Returns
+        -------
+        bool
+            True if the agent is a reasoning agent, False otherwise.
+        """
+        return self.agent_type == "reasoning"
 
     @property
     def is_user(self) -> bool:
@@ -209,16 +267,35 @@ class WaldiezAgent(WaldiezBase):
         )
 
     @property
-    def handoffs(self) -> list[WaldiezAgentHandoff]:
-        """Return the handoffs of the agent."""
-        return self.data.handoffs
+    def is_rag_user(self) -> bool:
+        """Check if the agent is a RAG user.
+
+        Returns
+        -------
+        bool
+            True if the agent is a RAG user, False otherwise.
+        """
+        return self.agent_type in ("rag_user", "rag_user_proxy")
+
+    @property
+    def is_group_manager(self) -> bool:
+        """Check if the agent is a group manager.
+
+        Returns
+        -------
+        bool
+            True if the agent is a group manager, False otherwise.
+        """
+        return self.agent_type in ("group_manager", "manager")
 
     @property
     def ag2_class(self) -> str:
         """Return the AG2 class of the agent."""
         class_name = "ConversableAgent"
         if self.is_group_member:
-            if getattr(self.data, "is_multimodal", False) is True:
+            if (
+                getattr(self.data, "is_multimodal", False) is True
+            ):  # pragma: no branch
                 class_name = "MultimodalConversableAgent"
             return class_name
         if self.agent_type == "assistant":
@@ -228,18 +305,18 @@ class WaldiezAgent(WaldiezBase):
                 class_name = "AssistantAgent"
         if self.is_user:
             class_name = "UserProxyAgent"
-        if self.agent_type in ("rag_user", "rag_user_proxy"):
+        if self.is_rag_user:
             class_name = "RetrieveUserProxyAgent"
-        if self.agent_type == "reasoning":
+        if self.is_reasoning:
             class_name = "ReasoningAgent"
-        if self.agent_type == "captain":
+        if self.is_captain:
             class_name = "CaptainAgent"
         if self.is_group_manager:
             class_name = "GroupChatManager"
-        return class_name
+        return class_name  # pragma: no cover
 
     @property
-    def ag2_imports(self) -> Set[str]:
+    def ag2_imports(self) -> set[str]:
         """Return the AG2 imports of the agent."""
         agent_class = self.ag2_class
         imports = {"import autogen"}
@@ -266,11 +343,10 @@ class WaldiezAgent(WaldiezBase):
                 "from autogen.agentchat.contrib.captainagent "
                 "import CaptainAgent"
             )
-        elif agent_class == "GroupChatManager":
+        elif agent_class == "GroupChatManager":  # pragma: no branch
             imports.add("from autogen import GroupChat")
             imports.add("from autogen.agentchat import GroupChatManager")
             imports.add("from autogen.agentchat.group import ContextVariables")
-            # add more
         return imports
 
     def validate_linked_tools(
@@ -343,3 +419,241 @@ class WaldiezAgent(WaldiezBase):
                     raise ValueError(
                         f"Function '{function}' not found in tools"
                     )
+
+    def gather_nested_chats(
+        self,
+        all_agents: list["WaldiezAgent"],
+        all_chats: list["WaldiezChat"],
+    ) -> None:
+        """Gather the nested chats for the agent.
+
+        Parameters
+        ----------
+        all_agents : list["WaldiezAgent"]
+            All the agents in the flow.
+        all_chats : list["WaldiezChat"]
+            All the chats in the flow.
+        """
+        if self._checked_nested_chats:
+            return
+        self._checked_nested_chats = True
+        all_chat_ids = {chat.id for chat in all_chats}
+        all_agent_ids = {agent.id for agent in all_agents}
+        # only use chats that do have messages and "triggered_by"
+        nested_chats: list[WaldiezAgentNestedChat] = []
+        for chat in self.data.nested_chats:
+            if not chat.messages or not chat.triggered_by:  # pragma: no cover
+                continue
+            # make sure the ids exist
+            chat.messages = [
+                message
+                for message in chat.messages
+                if message.id in all_chat_ids
+            ]
+            chat.triggered_by = [
+                agent_id
+                for agent_id in chat.triggered_by
+                if agent_id in all_agent_ids
+            ]
+            if chat.messages and chat.triggered_by:  # pragma: no branch
+                nested_chats.append(chat)
+        self.data.nested_chats = nested_chats
+
+    def gather_handoff_ids(
+        self,
+        group_chats: list["WaldiezChat"],
+        nested_chat_id: str,
+    ) -> None:
+        """Gather all the handoff IDs for this agent.
+
+        This method will gather all the handoff IDs from the agent's data,
+        including those that might not be passed in data.handoffs.
+
+        Parameters
+        ----------
+        group_chats : list["WaldiezChat"]
+            The list of group chats that this agent is part of.
+        nested_chat_id : str
+            The ID of the nested chat to include in handoffs if it exists.
+
+        """
+        existing_handoffs = set(self.data.handoffs)
+        has_nested_chat = len(self.data.nested_chats) > 0 and any(
+            chat.messages for chat in self.data.nested_chats
+        )
+        # Step 1: Add missing group chat handoffs
+        # These are chats between group members (equivalent to groupEdges)
+        for chat in group_chats:
+            if chat.id not in existing_handoffs:
+                self.data.handoffs.append(chat.id)
+                existing_handoffs.add(chat.id)
+
+        # Step 2: Add nested chat if it exists and is not already in handoffs
+        if has_nested_chat and nested_chat_id not in existing_handoffs:
+            self.data.handoffs.append(nested_chat_id)
+            existing_handoffs.add(nested_chat_id)
+
+        # Step 3: Validate all handoffs still exist
+        # Remove any handoffs that reference non-existent chats
+        valid_chat_ids = {chat.id for chat in group_chats}
+        if has_nested_chat:
+            valid_chat_ids.add(nested_chat_id)
+
+        # Filter out invalid handoffs
+        self.data.handoffs = [
+            handoff
+            for handoff in self.data.handoffs
+            if handoff in valid_chat_ids
+        ]
+
+    def gather_handoffs(
+        self,
+        all_agents: list["WaldiezAgent"],
+        all_chats: list["WaldiezChat"],
+    ) -> None:
+        """Gather all the handoffs including.
+
+        Including ones that might not be passed in data.handoffs.
+
+        Parameters
+        ----------
+        all_agents : list["WaldiezAgent"]
+            The list of all agents in the flow.
+        all_chats : list["WaldiezChat"]
+            The list of all chats in the flow.
+
+        """
+        self.gather_nested_chats(all_agents, all_chats)
+        if not self.is_group_member or self._checked_handoffs:
+            return
+        nested_chat_id = "nested-chat"
+        self._checked_handoffs = True
+        group_chats, group_nested_chats = self._get_agent_chats(
+            all_agents, all_chats
+        )
+        if group_nested_chats:
+            self._ensure_one_nested_chat(group_nested_chats)
+        self.gather_handoff_ids(
+            group_chats=group_chats, nested_chat_id=nested_chat_id
+        )
+        # generate the actual handoff instances
+        for handoff_id in self.data.handoffs:
+            if handoff_id == nested_chat_id:
+                nested_chat_handoff = self._generate_handoff_from_nested(
+                    group_nested_chats
+                )
+                if nested_chat_handoff:
+                    self._handoffs.append(nested_chat_handoff)
+            else:
+                chat = next(
+                    (chat for chat in group_chats if chat.id == handoff_id),
+                    None,
+                )
+                if chat:
+                    self._handoffs.append(chat.as_handoff())
+
+    def _ensure_one_nested_chat(
+        self,
+        group_nested_chats: list["WaldiezChat"],
+    ) -> None:
+        """Ensure that there is at least one nested chat."""
+        if not self.data.nested_chats:
+            # create one from the group chats.
+            triggered_by = [self.id]
+            messages = [
+                WaldiezAgentNestedChatMessage(id=chat.id, is_reply=False)
+                for chat in group_nested_chats
+            ]
+            chats_with_condition = [
+                chat
+                for chat in group_nested_chats
+                if chat.condition.is_not_empty()
+            ]
+            if not chats_with_condition:
+                chat_with_condition = group_nested_chats[0]
+            else:
+                chat_with_condition = chats_with_condition[0]
+            nested_chat = WaldiezAgentNestedChat(
+                triggered_by=triggered_by,
+                messages=messages,
+                condition=chat_with_condition.condition,  # pyright: ignore
+                available=chat_with_condition.available,  # pyright: ignore
+            )
+            self.data.nested_chats.append(nested_chat)
+
+    def _generate_handoff_from_nested(
+        self,
+        group_nested_chats: list["WaldiezChat"],
+    ) -> WaldiezHandoff | None:
+        """Generate a handoff from a nested chat.
+
+        Parameters
+        ----------
+        group_nested_chats : list["WaldiezChat"]
+            The list of nested (out of the group) chats
+            that this agent is part of.
+
+        Returns
+        -------
+        WaldiezHandoff | None
+            A handoff instance if a nested chat with messages exists,
+            otherwise None.
+        """
+        if not group_nested_chats:
+            return None
+        # Check if we have any nested chats with messages
+        if not self.data.nested_chats or not any(
+            chat.messages for chat in self.data.nested_chats
+        ):
+            return None
+        # get the first (and probably only) nested chat
+        nested_chat = self.data.nested_chats[0]
+        target = WaldiezGroupOrNestedTarget(
+            target_type="NestedChatTarget",
+            value=[message.id for message in nested_chat.messages],
+        )
+        return WaldiezHandoff(
+            target=target,
+            available=nested_chat.available,
+            condition=nested_chat.condition,
+        )
+
+    def _get_agent_chats(
+        self,
+        all_agents: list["WaldiezAgent"],
+        all_chats: list["WaldiezChat"],
+    ) -> tuple[list["WaldiezChat"], list["WaldiezChat"]]:
+        """Get all chats originating from this agent.
+
+        Parameters
+        ----------
+        all_agents : list["WaldiezAgent"]
+            The list of all agents.
+        all_chats : list["WaldiezChat"]
+            The list of all chats if the flow.
+
+        Returns
+        -------
+        tuple[list["WaldiezChat"], list["WaldiezChat"]]
+            A tuple containing two lists:
+            - group_chats: Chats that are between group members.
+            - group_nested_chats: Chats that are from this agent to an agent
+            that is not a group member.
+        """
+        agent_chats: list["WaldiezChat"] = [
+            chat for chat in all_chats if chat.source == self.id
+        ]
+        group_chats: list["WaldiezChat"] = []
+        group_nested_chats: list["WaldiezChat"] = []
+        # make sure we have prepared the nested chats
+        for chat in agent_chats:
+            target_agent = next(
+                (agent for agent in all_agents if agent.id == chat.target),
+                None,
+            )
+            if target_agent:
+                if target_agent.is_group_member:
+                    group_chats.append(chat)
+                else:
+                    group_nested_chats.append(chat)
+        return group_chats, group_nested_chats

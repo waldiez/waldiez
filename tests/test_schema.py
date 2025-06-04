@@ -11,7 +11,7 @@ from jsonschema.exceptions import SchemaError, ValidationError
 
 from waldiez.models import WaldiezFlow
 
-from .exporting.flow.flow_helpers import get_flow
+from .exporting.flow_helpers import get_flow
 
 
 def load_shared_schema() -> dict[str, Any]:

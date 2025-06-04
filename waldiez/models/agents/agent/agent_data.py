@@ -8,9 +8,8 @@ from pydantic import ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
 from typing_extensions import Annotated, Literal, Self
 
-from ...common import WaldiezBase, update_dict
+from ...common import WaldiezBase, WaldiezTransitionTarget, update_dict
 from .code_execution import WaldiezAgentCodeExecutionConfig
-from .handoff import WaldiezAgentHandoff
 from .linked_tool import WaldiezAgentLinkedTool
 from .nested_chat import WaldiezAgentNestedChat
 from .termination_message import WaldiezAgentTerminationMessage
@@ -154,7 +153,7 @@ class WaldiezAgentData(WaldiezBase):
         Field(
             default_factory=list,
             description=(
-                "A list of nested chats (triggered_by, messages), to register."
+                "A list of nested chats (triggers, messages, ...), to register."
             ),
             alias="nestedChats",
         ),
@@ -173,16 +172,7 @@ class WaldiezAgentData(WaldiezBase):
             alias="contextVariables",
         ),
     ] = {}
-    handoffs: Annotated[
-        list[WaldiezAgentHandoff],
-        Field(
-            default_factory=list,
-            title="Handoffs",
-            description=(
-                "A list of handoffs (conditions, targets) to register."
-            ),
-        ),
-    ] = []
+
     update_agent_state_before_reply: Annotated[
         list[Union[str, WaldiezAgentUpdateSystemMessage]],
         Field(
@@ -198,6 +188,27 @@ class WaldiezAgentData(WaldiezBase):
             default_factory=list,
         ),
     ] = []
+    handoffs: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            title="Handoffs",
+            description=("A list of handoffs (target ids) to register."),
+        ),
+    ] = []
+    after_work: Annotated[
+        Optional[WaldiezTransitionTarget],
+        Field(
+            None,
+            title="After work",
+            description=(
+                "The target to transfer control to after the agent"
+                " has finished its work. (used if in a group chat)"
+            ),
+            alias="afterWork",
+        ),
+    ] = None
+
     parent_id: Annotated[
         Optional[str],
         Field(

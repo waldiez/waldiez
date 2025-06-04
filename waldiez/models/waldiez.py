@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=too-many-public-methods
 """Waldiez data class.
 
 A Waldiez class contains all the information needed to generate
@@ -73,7 +74,8 @@ class Waldiez:
             tags=tags,
             requirements=requirements,
         )
-        return cls(flow=WaldiezFlow.model_validate(flow))
+        validated = WaldiezFlow.model_validate(flow)
+        return cls(flow=validated)
 
     @classmethod
     def load(
@@ -147,11 +149,14 @@ class Waldiez:
         return self.flow.model_dump_json(by_alias=by_alias, indent=indent)
 
     @property
+    def id(self) -> str:
+        """Get the flow id."""
+        return self.flow.id
+
+    @property
     def has_rag_agents(self) -> bool:
         """Check if the flow has RAG agents."""
-        return any(
-            agent.agent_type == "rag_user_proxy" for agent in self.agents
-        )
+        return any(agent.is_rag_user for agent in self.agents)
 
     @property
     def has_multimodal_agents(self) -> bool:
@@ -164,7 +169,7 @@ class Waldiez:
     @property
     def has_captain_agents(self) -> bool:
         """Check if the flow has captain agents."""
-        return any(agent.agent_type == "captain" for agent in self.agents)
+        return any(agent.is_captain for agent in self.agents)
 
     @property
     def initial_chats(
@@ -251,12 +256,12 @@ class Waldiez:
         )
         requirements = set(requirements_list)
         requirements.add(f"ag2[openai]=={autogen_version}")
-        if self.has_rag_agents:
+        if self.has_rag_agents:  # pragma: no branch
             rag_extras = get_retrievechat_extra_requirements(self.agents)
             requirements.update(rag_extras)
-        if self.has_multimodal_agents:
+        if self.has_multimodal_agents:  # pragma: no branch
             requirements.add(f"ag2[lmm]=={autogen_version}")
-        if self.has_captain_agents:
+        if self.has_captain_agents:  # pragma: no branch
             captain_extras = get_captain_agent_extra_requirements()
             requirements.update(captain_extras)
         requirements.update(
@@ -286,10 +291,10 @@ class Waldiez:
             for secret_key, secret_value in tool.secrets.items():
                 env_vars.append((secret_key, secret_value))
         for model in self.models:
-            api_eny_key = model.api_key_env_key
+            api_env_key = model.api_key_env_key
             api_key = model.api_key
-            if api_eny_key and api_key:
-                env_vars.append((api_eny_key, api_key))
+            if api_env_key and api_key:  # pragma: no branch
+                env_vars.append((api_env_key, api_key))
         return env_vars
 
     def get_root_group_manager(self) -> WaldiezGroupManager:
@@ -320,6 +325,6 @@ class Waldiez:
         List[WaldiezAgent]
             The group chat members.
         """
-        if agent.agent_type not in ("manager", "group_manager"):
+        if not agent.is_group_manager:
             return []
         return self.flow.get_group_chat_members(agent.id)

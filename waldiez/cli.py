@@ -5,14 +5,13 @@
 """Command line interface to convert or run a waldiez file."""
 
 import json
-import logging
 import os
-import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 import anyio
 import typer
+from dotenv import load_dotenv
 from typing_extensions import Annotated
 
 # pylint: disable=import-error,line-too-long
@@ -31,6 +30,7 @@ except ImportError:  # pragma: no cover
 
 
 from .exporter import WaldiezExporter
+from .logger import get_logger
 from .models import Waldiez
 from .runner import WaldiezRunner
 from .utils import add_cli_extras
@@ -38,6 +38,9 @@ from .utils import add_cli_extras
 if TYPE_CHECKING:
     from autogen import ChatResult  # type: ignore[import-untyped]
 
+
+load_dotenv()
+LOG = get_logger()
 
 app = typer.Typer(
     name="waldiez",
@@ -116,22 +119,21 @@ def run(
         results = anyio.run(runner.a_run, output_path, None)
     else:
         results = runner.run(output_path=output_path)
-    logger = _get_logger()
     if isinstance(results, list):
-        logger.info("Results:")
+        LOG.info("Results:")
         for result in results:
-            _log_result(result, logger)
+            _log_result(result)
             sep = "-" * 80
             print("\n" + f"{sep}" + "\n")
     elif isinstance(results, dict):
-        logger.info("Results:")
+        LOG.info("Results:")
         for key, result in results.items():
-            logger.info("Order: %s", key)
-            _log_result(result, logger)
+            LOG.info("Order: %s", key)
+            _log_result(result)
             sep = "-" * 80
             print("\n" + f"{sep}" + "\n")
     else:
-        _log_result(results, logger)
+        _log_result(results)
 
 
 @app.command()
@@ -148,23 +150,30 @@ def convert(
             resolve_path=True,
         ),
     ],
-    output: Annotated[
-        Path,
-        typer.Option(
-            ...,
-            help=(
-                "Path to the output file. "
-                "The file extension determines the output format: "
-                "`.py` for Python script, `.ipynb` for Jupyter notebook."
-            ),
-            file_okay=True,
-            dir_okay=False,
-            resolve_path=True,
+    output: Path | None = typer.Option(  # noqa: B008
+        default=None,
+        help=(
+            "Path to the output file. "
+            "The file extension determines the output format: "
+            "`.py` for Python script, `.ipynb` for Jupyter notebook."
+            " If not provided, the output will be saved in the same directory as the input file."
+            " If the file already exists, it will not be overwritten unless --force is used."
         ),
-    ],
+        file_okay=True,
+        dir_okay=False,
+        resolve_path=True,
+    ),
     force: bool = typer.Option(
         False,
         help="Override the output file if it already exists.",
+    ),
+    debug: bool = typer.Option(
+        False,
+        "--debug",
+        "-d",
+        help="Enable debug logging.",
+        is_eager=True,
+        rich_help_panel="Debug",
     ),
 ) -> None:
     """Convert a Waldiez flow to a Python script or a Jupyter notebook."""
@@ -177,7 +186,11 @@ def convert(
             raise typer.Exit(code=1) from error
     waldiez = Waldiez.from_dict(data)
     exporter = WaldiezExporter(waldiez)
-    exporter.export(output, force=force)
+    if debug:
+        LOG.set_level("DEBUG")
+    if output is None:
+        output = Path(file).with_suffix(".py").resolve()
+    exporter.export(output, force=force, debug=debug)
     generated = str(output).replace(os.getcwd(), ".")
     typer.echo(f"Generated: {generated}")
 
@@ -201,7 +214,7 @@ def check(
     with file.open("r", encoding="utf-8") as _file:
         data = json.load(_file)
     Waldiez.from_dict(data)
-    typer.echo("Waldiez flow is valid.")
+    LOG.success("Waldiez flow seems valid.")
 
 
 def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
@@ -211,53 +224,23 @@ def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
         output.parent.mkdir(parents=True)
     if output is not None and output.exists():
         if force is False:
-            typer.echo("Output file already exists.")
+            LOG.error("Output file already exists.")
             raise typer.Exit(code=1)
         output.unlink()
     return output
 
 
-def _get_logger(level: int = logging.INFO) -> logging.Logger:
-    """Get the logger for the Waldiez package.
-
-    Parameters
-    ----------
-    level : int or str, optional
-        The logging level. Default is logging.INFO.
-
-    Returns
-    -------
-    logging.Logger
-        The logger.
-    """
-    # check if we already have set up a config
-
-    if not logging.getLogger().handlers:
-        logging.basicConfig(
-            level=level,
-            format="%(levelname)s %(message)s",
-            stream=sys.stderr,
-            force=True,
-        )
-    logger = logging.getLogger("waldiez::cli")
-    current_level = logger.getEffectiveLevel()
-    if current_level != level:
-        logger.setLevel(level)
-    return logger
-
-
-def _log_result(result: "ChatResult", logger: logging.Logger) -> None:
+def _log_result(result: "ChatResult") -> None:
     """Log the result of the Waldiez flow."""
-    logger.info("Chat History:\n")
-    logger.info(result.chat_history)
-    logger.info("Summary:\n")
-    logger.info(result.summary)
-    logger.info("Cost:\n")
-    logger.info(result.cost)
+    LOG.info("Chat History:\n")
+    LOG.info(result.chat_history)
+    LOG.info("Summary:\n")
+    LOG.info(result.summary)
+    LOG.info("Cost:\n")
+    LOG.info(result.cost)
 
 
 add_cli_extras(app)
 
 if __name__ == "__main__":
-    _get_logger()
     app()

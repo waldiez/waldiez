@@ -47,6 +47,16 @@ def test_waldiez_agent_termination_message_keyword() -> None:
         'lambda x: any(isinstance(x, dict) and x.get("content", "") and isinstance(x.get("content", ""), str) and x.get("content", "") == keyword for keyword in ["keyword-1", "keyword-2"])'
     )
 
+    termination_message = WaldiezAgentTerminationMessage(
+        type="keyword",
+        keywords=["TERMINATE"],
+        criterion="starting",
+        method_content=None,
+    )
+    assert termination_message.string == (
+        'lambda x: any(isinstance(x, dict) and x.get("content", "") and isinstance(x.get("content", ""), str) and x.get("content", "").startswith(keyword) for keyword in ["TERMINATE"])'
+    )
+
     with pytest.raises(ValueError):
         WaldiezAgentTerminationMessage(
             type="keyword",

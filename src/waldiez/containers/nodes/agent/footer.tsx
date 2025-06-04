@@ -8,7 +8,6 @@ import { FaTrashCan } from "react-icons/fa6";
 
 import { useWaldiezNodeAgentFooter } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentData } from "@waldiez/models";
-import { getDateString } from "@waldiez/utils";
 
 /**
  * Component for rendering the footer section of a Waldiez Node Agent
@@ -31,16 +30,13 @@ export const WaldiezNodeAgentFooter = memo(
                     />
 
                     {data.agentType !== "group_manager" && (
-                        <>
-                            <div className="date-info">{getDateString(data.updatedAt)}</div>
-                            <FaCopy
-                                role="button"
-                                onClick={onClone}
-                                title="Clone Agent"
-                                className="clone-agent no-margin no-padding clickable"
-                                aria-label="Clone Agent"
-                            />
-                        </>
+                        <FaCopy
+                            role="button"
+                            onClick={onClone}
+                            title="Clone Agent"
+                            className="clone-agent no-margin no-padding clickable"
+                            aria-label="Clone Agent"
+                        />
                     )}
                 </div>
             </div>

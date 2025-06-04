@@ -56,6 +56,10 @@ NOT_LOCAL = (
     "ftp://",
     "ftps://",
     "sftp://",
+    "hdfs",
+    "s3://",
+    "gs://",
+    "azure://",
 )
 
 
@@ -714,35 +718,50 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         """
         if not self.docs_path:
             return
-        # if urls or directories ok, if files they should resolve
+
+        # Normalize to list
         doc_paths = (
             [self.docs_path]
             if isinstance(self.docs_path, str)
             else self.docs_path
         )
-        paths: list[str] = []
+
+        validated_paths: list[str] = []
+
         for path in doc_paths:
-            resolved = path
-            is_remote, is_raw = is_remote_path(resolved)
+            # Skip duplicates
+            if path in validated_paths:
+                continue
+
+            # Check if it's a remote path
+            is_remote = is_remote_path(path)
             if is_remote:
-                if not is_raw:
-                    resolved = f'r"{resolved}"'
-                if resolved not in paths:
-                    paths.append(resolved)
+                # Remote paths: ensure proper raw string wrapping if needed
+                content = extract_raw_string_content(path)
+                validated_paths.append(f'r"{content}"')
                 continue
-            resolved = remove_file_scheme(resolved)
-            is_raw = resolved.startswith(("r'", 'r"'))
-            maybe_folder = string_represents_folder(resolved)
-            if maybe_folder:
-                if not is_raw:
-                    resolved = f'r"{resolved}"'
-                if resolved not in paths:
-                    paths.append(resolved)
-                continue
-            resolved = resolve_path(resolved, is_raw, not maybe_folder)
-            if resolved not in paths:
-                paths.append(resolved)
-        self.docs_path = paths
+
+            # Handle local paths
+            # First remove any file:// scheme
+            cleaned_path = remove_file_scheme(path)
+            content = extract_raw_string_content(cleaned_path)
+
+            # Determine if it's likely a folder
+            is_folder = string_represents_folder(content)
+
+            if is_folder:
+                validated_paths.append(f'r"{content}"')
+            else:
+                # Files: resolve and validate existence
+                try:
+                    resolved_path = resolve_path(cleaned_path, must_exist=True)
+                    validated_paths.append(resolved_path)
+                except ValueError as e:
+                    raise ValueError(f"Invalid file path '{path}': {e}") from e
+
+        # remove dupes (but keep order)
+        validated_paths = list(dict.fromkeys(validated_paths))
+        self.docs_path = [path for path in validated_paths if path]
 
     @model_validator(mode="after")
     def validate_rag_user_data(self) -> Self:
@@ -769,6 +788,29 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         return self
 
 
+def extract_raw_string_content(path: str) -> str:
+    """Extract content from potential raw string formats.
+
+    Parameters
+    ----------
+    path : str
+        The path that might be wrapped in raw string format.
+
+    Returns
+    -------
+    str
+        The actual content of the path, without raw string formatting.
+    """
+    # Handle r"..." and r'...'
+    if path.startswith(('r"', "r'")) and len(path) > 3:
+        quote = path[1]
+        if path.endswith(quote):
+            return path[2:-1]
+        # Handle malformed raw strings (missing end quote)
+        return path[2:]
+    return path
+
+
 def string_represents_folder(path: str) -> bool:
     """Check if a string represents a folder.
 
@@ -782,14 +824,27 @@ def string_represents_folder(path: str) -> bool:
     bool
         True if the path is likely a folder, False if it's likely a file.
     """
-    if path.endswith(os.path.sep):
+    # Extract actual path content if wrapped
+    content = extract_raw_string_content(path)
+
+    # Explicit folder indicators
+    if content.endswith(("/", "\\", os.path.sep)):
         return True
-    if os.path.isdir(path):
-        return True
-    return not os.path.splitext(path)[1]
+
+    # Check if it actually exists and is a directory
+    try:
+        if os.path.isdir(content):
+            return True
+    except (OSError, ValueError):
+        pass
+
+    # Heuristic: no file extension likely means folder
+    # return not os.path.splitext(content)[1]
+    _, ext = os.path.splitext(path.rstrip("/\\"))
+    return not ext
 
 
-def is_remote_path(path: str) -> tuple[bool, bool]:
+def is_remote_path(path: str) -> bool:
     """Check if a path is a remote path.
 
     Parameters
@@ -802,11 +857,11 @@ def is_remote_path(path: str) -> tuple[bool, bool]:
     tuple[bool, bool]
         If the path is a remote path and if it's a raw string.
     """
-    is_raw = path.startswith(("r'", 'r"'))
+    content = extract_raw_string_content(path)
     for not_local in NOT_LOCAL:
-        if path.startswith((not_local, f'r"{not_local}', f"r'{not_local}")):
-            return True, is_raw
-    return False, is_raw
+        if content.startswith((not_local, f'r"{not_local}', f"r'{not_local}")):
+            return True
+    return False
 
 
 def remove_file_scheme(path: str) -> str:
@@ -822,54 +877,64 @@ def remove_file_scheme(path: str) -> str:
     str
         The path without the scheme.
     """
-    resolved = str(path)
-    while resolved.startswith('r"file://') and resolved.endswith('"'):
-        resolved = resolved[len('r"file://') : -1]
-    while resolved.startswith("r'file://") and resolved.endswith("'"):
-        resolved = resolved[len("r'file://") : -1]
-    while resolved.startswith("file://"):
-        resolved = resolved[len("file://") :]
-    return resolved
+    content = extract_raw_string_content(path)
+
+    # Remove file:// prefix
+    while content.startswith("file://"):
+        content = content[len("file://") :]
+
+    return f'r"{content}"'
 
 
-def resolve_path(path: str, is_raw: bool, must_exist: bool) -> str:
+def resolve_path(path: str, must_exist: bool) -> str:
     """Try to resolve a path.
 
     Parameters
     ----------
     path : str
         The path to resolve.
-    is_raw : bool
-        If the path is a raw string.
     must_exist : bool
         If the path must exist.
 
     Returns
     -------
-    Path
-        The resolved path.
+    str
+        The resolved path, potentially wrapped in raw string format.
 
     Raises
     ------
     ValueError
         If the path is not a valid local path.
     """
-    # pylint: disable=broad-except
-    path_string = path
-    if is_raw:
-        path_string = path[2:-1]
+    # Extract the actual path content
+    # if is_raw:
+    path_content = extract_raw_string_content(path)
+    # else:
+    #     path_content = path
+
+    # Handle JSON-escaped backslashes
+    if "\\\\" in path_content:
+        path_content = path_content.replace("\\\\", "\\")
+    # pylint: disable=too-many-try-statements
     try:
-        resolved = Path(path_string).resolve()
-    except BaseException as error:  # pragma: no cover
-        # check if 'r'... is needed
-        raw_string = f'r"{path}"'
+        # Try to resolve the path
+        resolved = Path(path_content).resolve()
+
+        if must_exist and not resolved.exists():
+            raise ValueError(f"Path {path} does not exist.")
+
+        return f'r"{resolved}"'
+
+    except (OSError, UnicodeDecodeError, ValueError) as error:
+        # Fallback: try as raw string for Windows compatibility
+        raw_version = f'r"{path_content}"'
         try:
-            Path(raw_string).resolve()
-        except BaseException:
+            # Test if the path can be resolved when treated as raw
+            resolved = Path(raw_version).resolve()
+            if must_exist and not resolved.exists():
+                raise ValueError(f"Path {path} does not exist.") from error
+            return raw_version
+        except Exception:
             raise ValueError(
-                f"Path {path} is not a valid local path."
+                f"Path {path} is not a valid local path: {error}"
             ) from error
-        return raw_string
-    if not resolved.exists() and must_exist:
-        raise ValueError(f"Path {path} does not exist.")
-    return f'r"{resolved}"'
