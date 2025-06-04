@@ -261,8 +261,6 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         group_members : list[str]
             The group members' IDs.
         """
-        if self._order is not None:
-            return
         # make sure all the members are in the order
         # also make sure the initial agent is first
         order_copy = self.order.copy() if self.order else []
