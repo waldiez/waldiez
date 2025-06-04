@@ -231,7 +231,7 @@
         },
         "style": {
           "stroke": "#bc76f5",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-right-source-wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
         "targetHandle": "agent-handle-left-target-wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
@@ -252,7 +252,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-bottom-source-wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
         "targetHandle": "agent-handle-top-target-1747672281719vu_wTfjf3BRQ_1Vb_88RM"
@@ -273,7 +273,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-top-source-1747672281719vu_wTfjf3BRQ_1Vb_88RM",
         "targetHandle": "agent-handle-bottom-target-wa-1747672170039_pXmnMM3Zf8571R3C9KYM"
@@ -294,7 +294,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-right-source-wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
         "targetHandle": "agent-handle-left-target-1747672280224yHtHT4KU6hJHXC7NzHnPD"
@@ -315,7 +315,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-left-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-right-target-wa-1747672170039_pXmnMM3Zf8571R3C9KYM"
@@ -336,7 +336,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-right-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-left-target-wa-17480674648237IphnhUm7-egrAi3jiepV"
@@ -357,7 +357,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-right-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-left-target-17480675293561MDjttYRMb6R7tkQEyOZf"
@@ -378,7 +378,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 2
         },
         "sourceHandle": "agent-handle-bottom-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-right-target-1747672281719vu_wTfjf3BRQ_1Vb_88RM"
