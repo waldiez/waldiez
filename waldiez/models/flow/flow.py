@@ -547,6 +547,36 @@ class WaldiezFlow(WaldiezBase):
         self._single_agent_mode = True
         return self
 
+    def _validate_group_manager(
+        self, group_manager: WaldiezGroupManager, all_member_ids: list[str]
+    ) -> None:
+        """Validate the group manager agents.
+
+        Raises
+        ------
+        ValueError
+            If there are no group manager agents.
+        """
+        if not group_manager.data.initial_agent_id:
+            raise ValueError(
+                "The flow is a group chat but the group manager agent "
+                f"{group_manager.id} has no initial agent ID."
+            )
+        if group_manager.data.initial_agent_id not in all_member_ids:
+            raise ValueError(
+                "The flow is a group chat but the initial agent ID "
+                f"{group_manager.data.initial_agent_id} is not in the flow."
+            )
+        group_members = self.get_group_members(group_manager.id)
+        if not group_members:
+            raise ValueError(
+                "The flow is a group chat but the group manager agent "
+                f"{group_manager.id} has no members in the group."
+            )
+        group_manager.set_speakers_order(
+            [member.id for member in group_members]
+        )
+
     def _validate_group_chat(self, all_members: list[WaldiezAgent]) -> None:
         """Check if the flow is a group chat and validate it.
 
@@ -569,33 +599,15 @@ class WaldiezFlow(WaldiezBase):
         group_manager_ids = [
             agent.id for agent in self.data.agents.groupManagerAgents
         ]
-        all_members_ids = [agent.id for agent in all_members]
+        all_member_ids = [agent.id for agent in all_members]
         if not all(
-            group_manager_id in all_members_ids
+            group_manager_id in all_member_ids
             for group_manager_id in group_manager_ids
         ):
             raise ValueError(
-                "The flow is a group chat but the group manager agents are not "
+                "The flow is a group chat but not all group manager agents are "
                 "in the flow."
             )
-        # check the intiail_agent_id for each group
+        # check the initial_agent_id for each group
         for group_manager in self.data.agents.groupManagerAgents:
-            if not group_manager.data.initial_agent_id:
-                raise ValueError(
-                    "The flow is a group chat but the group manager agent "
-                    f"{group_manager.id} has no initial agent ID."
-                )
-            if group_manager.data.initial_agent_id not in all_members_ids:
-                raise ValueError(
-                    "The flow is a group chat but the initial agent ID "
-                    f"{group_manager.data.initial_agent_id} is not in the flow."
-                )
-            group_members = self.get_group_members(group_manager.id)
-            if not group_members:
-                raise ValueError(
-                    "The flow is a group chat but the group manager agent "
-                    f"{group_manager.id} has no members in the group."
-                )
-            group_manager.set_speakers_order(
-                [member.id for member in group_members]
-            )
+            self._validate_group_manager(group_manager, all_member_ids)
