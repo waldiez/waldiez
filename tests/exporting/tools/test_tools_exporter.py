@@ -48,7 +48,7 @@ def tool3():
 '''
     # fmt: on
     tool1 = WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         name=tool1_name,
         description=f"{tool1_name} description",
         data={  # type: ignore
@@ -60,7 +60,7 @@ def tool3():
         },
     )
     tool2 = WaldiezTool(
-        id="ws-2",
+        id="wt-2",
         name=tool2_name,
         description=f"{tool2_name} description",
         data={  # type: ignore
@@ -69,7 +69,7 @@ def tool3():
         },
     )
     tool3 = WaldiezTool(
-        id="ws-3",
+        id="wt-3",
         name="tool3",
         description="tool3 description",
         data={"content": tool3_content, "secrets": {}},  # type: ignore
@@ -82,15 +82,15 @@ def tool3():
         data={  # type: ignore
             "tools": [
                 {
-                    "id": "ws-1",
+                    "id": "wt-1",
                     "executor_id": "wa-1",
                 },
                 {
-                    "id": "ws-2",
+                    "id": "wt-2",
                     "executor_id": "wa-2",
                 },
                 {
-                    "id": "ws-3",
+                    "id": "wt-3",
                     "executor_id": "wa-1",
                 },
             ],
@@ -105,9 +105,9 @@ def tool3():
     )
     agent_names = {"wa-1": "agent1", "wa-2": "agent2"}
     tool_names = {
-        "ws-1": tool1_name,
-        "ws-2": tool2_name,
-        "ws-3": tool3_name,
+        "wt-1": tool1_name,
+        "wt-2": tool2_name,
+        "wt-3": tool3_name,
     }
     tools_exporter = ToolsExporter(
         flow_name=flow_name,
@@ -230,11 +230,11 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
     # fmt: on
     agent_names = {"wa-1": "agent1", "wa-2": "agent2"}
     tool_names = {
-        "ws-1": tool1_name,
-        "ws-2": tool2_name,
+        "wt-1": tool1_name,
+        "wt-2": tool2_name,
     }
     tool1 = WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         name=tool1_name,
         description=f"{tool1_name} description",
         data={  # type: ignore
@@ -246,7 +246,7 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         },
     )
     tool2 = WaldiezTool(
-        id="ws-2",
+        id="wt-2",
         name=tool2_name,
         description=f"{tool2_name} description",
         data={  # type: ignore
@@ -263,11 +263,11 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         data={  # type: ignore
             "tools": [
                 {
-                    "id": "ws-1",
+                    "id": "wt-1",
                     "executor_id": "wa-1",
                 },
                 {
-                    "id": "ws-2",
+                    "id": "wt-2",
                     "executor_id": "wa-2",
                 },
             ],

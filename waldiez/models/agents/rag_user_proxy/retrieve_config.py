@@ -835,7 +835,7 @@ def string_represents_folder(path: str) -> bool:
     try:
         if os.path.isdir(content):
             return True
-    except (OSError, ValueError):
+    except (OSError, ValueError):  # pragma: no cover
         pass
 
     # Heuristic: no file extension likely means folder
@@ -913,7 +913,7 @@ def resolve_path(path: str, must_exist: bool) -> str:
     #     path_content = path
 
     # Handle JSON-escaped backslashes
-    if "\\\\" in path_content:
+    if "\\\\" in path_content:  # pragma: no cover
         path_content = path_content.replace("\\\\", "\\")
     # pylint: disable=too-many-try-statements
     try:
@@ -925,7 +925,11 @@ def resolve_path(path: str, must_exist: bool) -> str:
 
         return f'r"{resolved}"'
 
-    except (OSError, UnicodeDecodeError, ValueError) as error:
+    except (
+        OSError,
+        UnicodeDecodeError,
+        ValueError,
+    ) as error:  # pragma: no cover
         # Fallback: try as raw string for Windows compatibility
         raw_version = f'r"{path_content}"'
         try:

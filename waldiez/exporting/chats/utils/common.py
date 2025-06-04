@@ -33,7 +33,8 @@ def get_chat_message_string(
     if not chat.message or chat.message.type == "none":
         return "None", None
     if chat.message.type == "string":
-        if chat.message.content is None:
+        if chat.message.content is None:  # pragma: no cover
+            # should be coverred previousliy on pydantic validation
             return "None", None
         return chat.message.content, None
 

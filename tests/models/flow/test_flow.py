@@ -289,7 +289,7 @@ def test_waldiez_flow() -> None:
         ),
     ]
     tool = WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         name="tool_name",
         type="tool",
         description="Tool description",

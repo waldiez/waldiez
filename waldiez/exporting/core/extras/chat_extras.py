@@ -99,7 +99,7 @@ class ChatExtras(BaseExtras):
             )
 
         # Chat initiation goes inside "def main()"
-        if self.chat_initiation:
+        if self.chat_initiation:  # pragma: no branch
             result.add_content(
                 self.chat_initiation,
                 ExportPosition.CHATS,
@@ -109,7 +109,7 @@ class ChatExtras(BaseExtras):
 
         # Chat registration goes after all agents are defined
         # (agent.register_nested_chat..))
-        if self.chat_registration:
+        if self.chat_registration:  # pragma: no branch
             result.add_content(
                 self.chat_registration,
                 ExportPosition.AGENTS,

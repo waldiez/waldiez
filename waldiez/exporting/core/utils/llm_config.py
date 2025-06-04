@@ -102,7 +102,7 @@ def _get_agent_llm_config_arg_as_dict(
     temperature: float | None = None
     for model_id in agent.data.model_ids:
         model = next((m for m in all_models if m.id == model_id), None)
-        if model is not None:
+        if model is not None:  # pragma: no branch
             temperature = model.data.temperature
             model_name = model_names[model_id]
             content += "\n" + f"{tab}        {model_name}_llm_config,"

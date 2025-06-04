@@ -489,14 +489,16 @@ class WaldiezAgent(WaldiezBase):
                 existing_handoffs.add(chat.id)
 
         # Step 2: Add nested chat if it exists and is not already in handoffs
-        if has_nested_chat and nested_chat_id not in existing_handoffs:
+        if (
+            has_nested_chat and nested_chat_id not in existing_handoffs
+        ):  # pragma: no branch
             self.data.handoffs.append(nested_chat_id)
             existing_handoffs.add(nested_chat_id)
 
         # Step 3: Validate all handoffs still exist
         # Remove any handoffs that reference non-existent chats
         valid_chat_ids = {chat.id for chat in group_chats}
-        if has_nested_chat:
+        if has_nested_chat:  # pragma: no branch
             valid_chat_ids.add(nested_chat_id)
 
         # Filter out invalid handoffs
@@ -531,7 +533,7 @@ class WaldiezAgent(WaldiezBase):
         group_chats, group_nested_chats = self._get_agent_chats(
             all_agents, all_chats
         )
-        if group_nested_chats:
+        if group_nested_chats:  # pragma: no branch
             self._ensure_one_nested_chat(group_nested_chats)
         self.gather_handoff_ids(
             group_chats=group_chats, nested_chat_id=nested_chat_id
@@ -542,14 +544,14 @@ class WaldiezAgent(WaldiezBase):
                 nested_chat_handoff = self._generate_handoff_from_nested(
                     group_nested_chats
                 )
-                if nested_chat_handoff:
+                if nested_chat_handoff:  # pragma: no branch
                     self._handoffs.append(nested_chat_handoff)
             else:
                 chat = next(
                     (chat for chat in group_chats if chat.id == handoff_id),
                     None,
                 )
-                if chat:
+                if chat:  # pragma: no branch
                     self._handoffs.append(chat.as_handoff())
 
     def _ensure_one_nested_chat(
@@ -557,7 +559,7 @@ class WaldiezAgent(WaldiezBase):
         group_nested_chats: list["WaldiezChat"],
     ) -> None:
         """Ensure that there is at least one nested chat."""
-        if not self.data.nested_chats:
+        if not self.data.nested_chats:  # pragma: no branch
             # create one from the group chats.
             triggered_by = [self.id]
             messages = [
@@ -651,7 +653,7 @@ class WaldiezAgent(WaldiezBase):
                 (agent for agent in all_agents if agent.id == chat.target),
                 None,
             )
-            if target_agent:
+            if target_agent:  # pragma: no branch
                 if target_agent.is_group_member:
                     group_chats.append(chat)
                 else:

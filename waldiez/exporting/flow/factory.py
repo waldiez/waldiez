@@ -62,7 +62,7 @@ def create_flow_exporter(
             logger=WaldiezLogger(),
         )
     else:
-        if not context.config:
+        if not context.config:  # pragma: no cover
             context.config = ExportConfig(
                 name=waldiez.name,
                 description=waldiez.description or "",

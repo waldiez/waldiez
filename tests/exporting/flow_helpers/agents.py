@@ -58,7 +58,7 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
                 work_dir="coding",
                 use_docker=None,
                 last_n_messages=3,
-                functions=["ws-1"],
+                functions=["wt-1"],
                 timeout=40,
             ),
             agent_default_auto_reply="I am a user.",
@@ -72,7 +72,7 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
             model_ids=[],
             tools=[
                 WaldiezAgentLinkedTool(
-                    id="ws-1",
+                    id="wt-1",
                     executor_id="wa-2",
                 )
             ],
@@ -85,7 +85,7 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
                             is_reply=True,
                         ),
                         WaldiezAgentNestedChatMessage(
-                            id="wc-3",
+                            id="wc-4",
                             is_reply=False,
                         ),
                     ],
@@ -98,7 +98,9 @@ def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
 
 
 def get_assistant(
-    agent_id: str = "wa-2", is_multimodal: bool = True
+    agent_id: str = "wa-2",
+    is_multimodal: bool = False,
+    with_nested_chat: bool = False,
 ) -> WaldiezAssistant:
     """Get a WaldiezAssistant.
 
@@ -107,7 +109,7 @@ def get_assistant(
     agent_id : str, optional
         The agent ID, by default "wa-2"
     is_multimodal : bool, optional
-        Whether the assistant is multimodal, by default True
+        Whether the assistant is multimodal, by default False
 
     Returns
     -------
@@ -122,6 +124,25 @@ def get_assistant(
         '        for keyword in ["bye", "goodbye"]\n'
         "    )"
     )
+    nested_chats: list[WaldiezAgentNestedChat] = []
+    if with_nested_chat:
+        nested_chats = [
+            WaldiezAgentNestedChat(
+                triggered_by=["wa-1"],
+                messages=[
+                    WaldiezAgentNestedChatMessage(
+                        id="wc-2",
+                        is_reply=False,
+                    ),
+                    WaldiezAgentNestedChatMessage(
+                        id="wc-3",
+                        is_reply=False,
+                    ),
+                ],
+                condition=WaldiezDefaultCondition.create(),
+                available=WaldiezTransitionAvailability(),
+            ),
+        ]
     return WaldiezAssistant(
         id=agent_id,
         name="assistant",
@@ -147,11 +168,11 @@ def get_assistant(
             model_ids=["wm-1"],
             tools=[
                 WaldiezAgentLinkedTool(
-                    id="ws-1",
+                    id="wt-1",
                     executor_id="wa-2",
                 ),
             ],
-            nested_chats=[],
+            nested_chats=nested_chats,
             is_multimodal=is_multimodal,
         ),
     )

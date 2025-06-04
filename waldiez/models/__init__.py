@@ -87,7 +87,12 @@ from .model import (
     WaldiezModelData,
     WaldiezModelPrice,
 )
-from .tool import SHARED_TOOL_NAME, WaldiezTool, WaldiezToolData
+from .tool import (
+    SHARED_TOOL_NAME,
+    WaldiezTool,
+    WaldiezToolData,
+    WaldiezToolType,
+)
 from .waldiez import Waldiez
 
 # pylint: disable=duplicate-code
@@ -162,6 +167,7 @@ __all__ = [
     "WaldiezStringLLMCondition",
     "WaldiezTool",
     "WaldiezToolData",
+    "WaldiezToolType",
     "WaldiezTransitionAvailability",
     "WaldiezTransitionTarget",
     "WaldiezUserProxy",

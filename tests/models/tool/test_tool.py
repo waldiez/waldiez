@@ -16,7 +16,7 @@ from waldiez.models.tool import (
 def test_waldiez_tool() -> None:
     """Test WaldiezTool."""
     # Given
-    tool_id = "ws-1"
+    tool_id = "wt-1"
     name = "tool_name"
     description = "description"
     data = {"content": "def tool_name():\n    pass"}
@@ -43,7 +43,7 @@ def test_invalid_tool() -> None:
         WaldiezTool()
 
     # Given
-    tool_id = "ws-1"
+    tool_id = "wt-1"
     name = "tool_name"
     description = "description"
     data = {"content": "def tool_name(4):"}
@@ -57,7 +57,7 @@ def test_invalid_tool() -> None:
         )
 
     # Given
-    tool_id = "ws-1"
+    tool_id = "wt-1"
     name = "tool_name"
     description = "description"
     data = {"content": "def not_tool_name():\n    pass"}
@@ -75,7 +75,7 @@ def test_shared_tool() -> None:
     """Test shared tool."""
     # When
     tool = WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         type="tool",
         tags=[],
         requirements=[],
@@ -86,7 +86,7 @@ def test_shared_tool() -> None:
         data=WaldiezToolData(content="GLOBAL_VARIABLE = 5", secrets={}),
     )
     # Then
-    assert tool.id == "ws-1"
+    assert tool.id == "wt-1"
     assert tool.name == SHARED_TOOL_NAME
     assert tool.description == "shared tool"
     assert tool.content == "GLOBAL_VARIABLE = 5"
@@ -112,7 +112,7 @@ api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)
 wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
 """
     tool = WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         type="tool",
         tags=[],
         requirements=["wikipedia"],
@@ -127,7 +127,7 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         ),
     )
     # Then
-    assert tool.id == "ws-1"
+    assert tool.id == "wt-1"
     assert tool.name == tool_name
     assert tool.description == "langchain tool"
     assert tool.content == (
@@ -163,7 +163,7 @@ scrape_tool = ScrapeWebsiteTool()
 
 """
     tool = WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         type="tool",
         tags=[],
         requirements=["crewai"],
@@ -178,7 +178,7 @@ scrape_tool = ScrapeWebsiteTool()
         ),
     )
     # Then
-    assert tool.id == "ws-1"
+    assert tool.id == "wt-1"
     assert tool.name == "scrape_tool"
     assert tool.description == "crewai tool"
     assert tool.content == "scrape_tool = ScrapeWebsiteTool()"
@@ -197,7 +197,7 @@ scrape_tool = ScrapeWebsiteTool()
 def test_pydantic_tool() -> None:
     """Test pydantic tool."""
     # Given
-    tool_id = "ws-1"
+    tool_id = "wt-1"
     tool_name = "ag2_pydantic_ai_tool"
     description = "description"
     pydantic_ai_tool_content = '''
@@ -306,7 +306,7 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
 """
     # Then
     WaldiezTool(
-        id="ws-1",
+        id="wt-1",
         type="tool",
         tags=[],
         requirements=["wikipedia"],
@@ -340,7 +340,7 @@ ag2_tool = Interoperability().convert_tool(wiki_tool, type="langchain")
 """
     with pytest.raises(ValueError):
         WaldiezTool(
-            id="ws-1",
+            id="wt-1",
             type="tool",
             tags=[],
             requirements=["wikipedia"],
@@ -359,7 +359,7 @@ ag2_tool = Interoperability().convert_tool(wiki_tool, type="langchain")
 def test_custom_tool_content() -> None:
     """Test custom tool content."""
     # Given
-    tool_id = "ws-1"
+    tool_id = "wt-1"
     name = "custom_tool"
     description = "description"
     content = '''

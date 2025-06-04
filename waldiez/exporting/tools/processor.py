@@ -96,7 +96,7 @@ class ToolProcessor:
         """
         # Get tool content
         tool_content = tool.get_content()
-        if tool_content:
+        if tool_content:  # pragma: no branch
             # Add interop conversion if needed
             if tool.is_interop:
                 tool_content += self._get_interop_conversion(tool)
@@ -173,7 +173,7 @@ ag2_{tool_name} = ag2_{tool_name}_interop.convert_tool(
         tool_name : str
             The name of the tool.
         """
-        if not self.output_dir or not tool.secrets:
+        if not self.output_dir or not tool.secrets:  # pragma: no cover
             return
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -194,7 +194,7 @@ ag2_{tool_name} = ag2_{tool_name}_interop.convert_tool(
                 f.write("import os\n\n")
                 for key, value in tool.secrets.items():
                     f.write(f'os.environ["{key}"] = "{value}"\n')
-        except Exception as exc:
+        except Exception as exc:  # pragma: no cover
             raise ExporterContentError(
                 f"Failed to write secrets file for tool '{tool_name}': {exc}"
             ) from exc

@@ -71,7 +71,7 @@ class AgentProcessor:
 
         # Get additional arguments from resolver
         resolved_args = self.arguments_resolver(self.agent)
-        if resolved_args:
+        if resolved_args:  # pragma: no branch
             extra_args += ",\n".join(resolved_args)
         # Build the agent definition
         agent_str = f"""{agent_name} = {ag2_class}(

@@ -7,16 +7,20 @@ from typing_extensions import Literal
 from waldiez.models import (
     WaldiezTool,
     WaldiezToolData,
+    WaldiezToolType,
 )
 
 
-def get_tool(tool_id: str = "ws-1") -> WaldiezTool:
+def get_tool(
+    tool_id: str = "wt-1",
+    tool_type: WaldiezToolType = "custom",
+) -> WaldiezTool:
     """Get a WaldiezTool.
 
     Parameters
     ----------
     tool_id : str, optional
-        The tool ID, by default "ws-1"
+        The tool ID, by default "wt-1"
 
     Returns
     -------
@@ -33,6 +37,7 @@ def get_tool(tool_id: str = "ws-1") -> WaldiezTool:
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
         data=WaldiezToolData(
+            tool_type=tool_type,
             content=(
                 "def tool_name() -> str:\n"
                 '    """Tool Description."""\n'
@@ -46,7 +51,7 @@ def get_tool(tool_id: str = "ws-1") -> WaldiezTool:
 
 
 def get_interop_tool(
-    tool_id: str = "ws-2",
+    tool_id: str = "wt-2",
     tool_type: Literal["langchain", "crewai"] = "langchain",
 ) -> WaldiezTool:
     """Get an interop tool.
@@ -54,7 +59,7 @@ def get_interop_tool(
     Parameters
     ----------
     tool_id : str, optional
-        The tool ID, by default "ws-2"
+        The tool ID, by default "wt-2"
     tool_type : Literal["langchain", "crewai"], optional
         The tool type, by default "langchain"
 

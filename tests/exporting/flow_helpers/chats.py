@@ -47,20 +47,16 @@ def get_chats(is_group: bool, count: int = 5) -> list[WaldiezChat]:
             message=None,
             reply=None,
         )
-        source_index = index + 1
-        target_index = index + 2
-        prerequisites = []
-        if not is_group:
-            if index == 1:
-                prerequisites = ["wc-1"]
-            elif index > 2:
-                prerequisites = [f"wc-{idx + 1}" for idx in range(index - 1)]
-        else:
-            if index == 0:
-                target_index = 3
         chat_type: WaldiezChatType = "chat"
-        if is_group and index == 1:
-            chat_type = "group"
+        if is_group:
+            if index == 1:
+                chat_type = "group"
+            if index == 2:
+                chat_type = "nested"
+        source_index, target_index, prerequisites = _get_chat_numbers(
+            index=index,
+            is_group=is_group,
+        )
         chat = WaldiezChat(
             id=chat_id,
             type=chat_type,
@@ -103,3 +99,22 @@ def get_chats(is_group: bool, count: int = 5) -> list[WaldiezChat]:
         )
         chats.append(chat)
     return chats
+
+
+def _get_chat_numbers(index: int, is_group: bool) -> tuple[int, int, list[str]]:
+    """Get source and target index for chat messages."""
+    source_index = index + 1
+    target_index = index + 2
+    prerequisites = []
+    if not is_group:
+        if index == 1:
+            prerequisites = ["wc-1"]
+        elif index > 2:
+            prerequisites = [f"wc-{idx + 1}" for idx in range(index - 1)]
+    else:
+        if index == 0:
+            target_index = 3
+        if index == 2:
+            source_index = 2
+            target_index = 3
+    return source_index, target_index, prerequisites

@@ -93,8 +93,7 @@ def get_vector_db_extras(
         before += "\n" + f"{content_before}"
     if ef_body:
         before += "\n" + f"{ef_body}" + "\n"
-    if db_imports:
-        imports.update(db_imports)
+    imports.update(db_imports)
     kwarg_string += _get_metadata_arg(agent)
     vdb_arg = f"{vdb_class}(" + "\n"
     vdb_arg += kwarg_string + "        )"

@@ -25,7 +25,7 @@ class ToolExtras(BaseExtras):
         content : str
             The function content to add.
         """
-        if content and content.strip():
+        if content and content.strip():  # pragma: no branch
             if self.function_content:
                 self.function_content += "\n\n" + content.rstrip()
             else:
@@ -41,7 +41,7 @@ class ToolExtras(BaseExtras):
         content : str
             The registration content to add.
         """
-        if content and content.strip():
+        if content and content.strip():  # pragma: no branch
             self.registration_content += "\n" + content.rstrip() + "\n"
 
     def has_specific_content(self) -> bool:

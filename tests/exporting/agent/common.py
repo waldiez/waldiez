@@ -39,7 +39,7 @@ def create_agent(
     """
     # fmt: off
     tool1 = WaldiezTool(
-        id=f"ws-{counter}_1",
+        id=f"wt-{counter}_1",
         name=f"tool{counter}_1",
         description=f"tool{counter}_1 description",
         data={  # type: ignore
@@ -51,7 +51,7 @@ def create_agent(
         },
     )
     tool2 = WaldiezTool(
-        id=f"ws-{counter}_2",
+        id=f"wt-{counter}_2",
         name=f"tool{counter}_2",
         description=f"tool{counter}_2 description",
         data={  # type: ignore
@@ -93,11 +93,11 @@ def create_agent(
             "system_message": f"system message of agent {counter}",
             "tools": [
                 {
-                    "id": f"ws-{counter}_1",
+                    "id": f"wt-{counter}_1",
                     "executor_id": f"wa-{counter}",
                 },
                 {
-                    "id": f"ws-{counter}_2",
+                    "id": f"wt-{counter}_2",
                     "executor_id": f"wa-{counter}",
                 },
             ],

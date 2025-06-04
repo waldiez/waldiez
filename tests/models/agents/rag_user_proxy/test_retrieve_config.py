@@ -313,6 +313,7 @@ def test_validate_docs_path() -> None:
             str(this_file),
             f'r"{this_file}"',
             f"r'{this_file}'",
+            f"r'{this_file}",
         ],
     )
     assert config.docs_path == [

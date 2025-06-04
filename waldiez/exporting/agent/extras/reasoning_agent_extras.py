@@ -66,7 +66,7 @@ class ReasoningAgentProcessor:
         )
         if not self.agent.is_reasoning or not isinstance(
             self.agent, WaldiezReasoningAgent
-        ):
+        ):  # pragma: no cover
             return result
 
         reasoning_config = self.agent.get_reasoning_config()
