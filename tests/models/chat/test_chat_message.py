@@ -42,6 +42,7 @@ def test_waldiez_chat_message() -> None:
     expected = get_last_carryover_method_content("content")
     assert chat_message.content_body == expected
     assert chat_message.context == {"key": "value"}
+    assert chat_message.is_method()
 
     chat_message = WaldiezChatMessage(
         type="rag_message_generator",
@@ -81,6 +82,7 @@ def test_waldiez_chat_message() -> None:
     )
     assert chat_message.type == "string"
     assert chat_message.content_body == ""
+    assert not chat_message.is_method()
 
     chat_message = WaldiezChatMessage(
         type="string",

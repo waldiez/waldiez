@@ -107,3 +107,24 @@ def test_waldiez_group_manager_get_custom_method_function() -> None:
         name_suffix="post",
     )
     assert custom_method_function[1] == "custom_speaker_selection_post"
+
+
+def test_waldiez_group_manager_speakers_order() -> None:
+    """Test WaldiezGroupManagerSpeakers order."""
+    speakers_config = WaldiezGroupManagerSpeakers(
+        selection_method="auto",
+        selection_custom_method=None,
+        max_retries_for_selecting=None,
+        selection_mode="repeat",
+        allow_repeat=True,
+        allowed_or_disallowed_transitions={},
+        transitions_type="allowed",
+    )
+    with pytest.raises(
+        RuntimeError,
+        match="Order is not set. Call `set_order` first.",
+    ):
+        speakers_config.get_order()
+
+    speakers_config.set_order("agent1", ["agent1", "agent2", "agent3"])
+    assert speakers_config.get_order() == ["agent1", "agent2", "agent3"]

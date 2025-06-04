@@ -35,6 +35,7 @@ from .chat_nested import (
 )
 
 WaldiezChatType = Literal["chat", "nested", "group", "hidden"]
+"""Possible chat types: "chat", "nested", "group", "hidden"."""
 
 
 # noinspection PyUnresolvedReferences

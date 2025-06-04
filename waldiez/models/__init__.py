@@ -56,6 +56,7 @@ from .chat import (
     WaldiezChatNested,
     WaldiezChatSummary,
     WaldiezChatSummaryMethod,
+    WaldiezChatType,
 )
 from .common import (
     WaldiezAgentTarget,
@@ -119,6 +120,7 @@ __all__ = [
     "WaldiezChatNested",
     "WaldiezChatSummary",
     "WaldiezChatSummaryMethod",
+    "WaldiezChatType",
     "WaldiezContextBasedCondition",
     "WaldiezContextBasedTransition",
     "WaldiezContextStrLLMCondition",

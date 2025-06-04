@@ -65,6 +65,16 @@ def test_waldiez(tmp_path: Path) -> None:
     assert not waldiez3.get_group_chat_members(agent1)
 
 
+def test_waldiez_group() -> None:
+    """Test Waldiez with group chat."""
+    flow = get_flow(is_group=True, is_pattern_based=True)
+    waldiez = Waldiez(flow=flow)
+    assert waldiez.name == flow.name
+    root_group_manager = waldiez.get_root_group_manager()
+    assert root_group_manager
+    assert waldiez.get_group_chat_members(root_group_manager)
+
+
 def test_waldiez_errors(tmp_path: Path) -> None:
     """Test Waldiez errors.
 

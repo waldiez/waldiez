@@ -103,3 +103,23 @@ def test_waldiez_group_manager_transitions() -> None:
         group_manager4.validate_transitions(agent_ids=["wa-2", "wa-3"])
         group_manager4.validate_transitions(agent_ids=["wa-2", "wa-3"])
         group_manager4.validate_transitions(agent_ids=["wa-2", "wa-3"])
+
+
+def test_waldiez_group_manager_speakers_order() -> None:
+    """Test WaldiezGroupManager speakers order."""
+    group_manager = WaldiezGroupManager(
+        id="wa-1",
+        name="group_manager",
+        data={  # type: ignore
+            "initialAgentId": "wa-1",
+            "speakers": {
+                "order": ["wa-1", "wa-2", "wa-3"],
+            },
+        },
+    )
+    with pytest.raises(RuntimeError):
+        group_manager.get_speakers_order()
+
+    group_manager.set_speakers_order(["wa-2", "wa-3", "wa-1"])
+    # initial_agent always first
+    assert group_manager.get_speakers_order() == ["wa-1", "wa-2", "wa-3"]

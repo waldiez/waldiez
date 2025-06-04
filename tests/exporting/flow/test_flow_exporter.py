@@ -22,7 +22,13 @@ DOT_LOCAL.mkdir(exist_ok=True, parents=True)
 
 
 # pylint: disable=too-many-locals
-def _export_flow(tmp_path: Path, is_async: bool, extension: str = "py") -> None:
+def _export_flow(
+    tmp_path: Path,
+    is_async: bool,
+    is_group: bool = False,
+    is_pattern_based: bool = False,
+    extension: str = "py",
+) -> None:
     """Export flow to py.
 
     Parameters
@@ -33,11 +39,20 @@ def _export_flow(tmp_path: Path, is_async: bool, extension: str = "py") -> None:
         Whether the flow is async.
     """
     sync_mode = "async" if is_async else "sync"
-    output_dir = tmp_path / f"test_export_flow_{extension}_{sync_mode}"
+    output_dir_name = f"test_export_flow_{extension}_{sync_mode}"
+    if is_group:
+        output_dir_name += "_group"
+    if is_pattern_based:
+        output_dir_name += "_pattern"
+    output_dir = tmp_path / output_dir_name
     if output_dir.exists():
         shutil.rmtree(output_dir, ignore_errors=True)
     output_dir.mkdir(exist_ok=True)
-    flow = get_flow(is_async=is_async)
+    flow = get_flow(
+        is_async=is_async,
+        is_group=is_group,
+        is_pattern_based=is_pattern_based,
+    )
     waldiez = Waldiez(flow=flow)
     for_notebook = extension == "ipynb"
     exporter = (
@@ -127,3 +142,103 @@ def test_flow_export_async_to_ipynb(tmp_path: Path) -> None:
         Temporary directory.
     """
     _export_flow(tmp_path, is_async=True, extension="ipynb")
+
+
+def test_flow_export_group_sync_to_py(tmp_path: Path) -> None:
+    """Test FlowExporter export group flow to py.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(tmp_path, is_async=False, is_group=True)
+
+
+def test_flow_export_group_async_to_py(tmp_path: Path) -> None:
+    """Test FlowExporter export group flow to async py.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(tmp_path, is_async=True, is_group=True)
+
+
+def test_flow_export_group_sync_to_ipynb(tmp_path: Path) -> None:
+    """Test FlowExporter export group flow to ipynb.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(tmp_path, is_async=False, is_group=True, extension="ipynb")
+
+
+def test_flow_export_group_async_to_ipynb(tmp_path: Path) -> None:
+    """Test FlowExporter export group flow to async ipynb.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(tmp_path, is_async=True, is_group=True, extension="ipynb")
+
+
+def test_flow_export_pattern_based_sync_to_py(tmp_path: Path) -> None:
+    """Test FlowExporter export pattern-based flow to py.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(tmp_path, is_async=False, is_group=True, is_pattern_based=True)
+
+
+def test_flow_export_pattern_based_async_to_py(tmp_path: Path) -> None:
+    """Test FlowExporter export pattern-based flow to async py.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(tmp_path, is_async=True, is_group=True, is_pattern_based=True)
+
+
+def test_flow_export_pattern_based_sync_to_ipynb(tmp_path: Path) -> None:
+    """Test FlowExporter export pattern-based flow to ipynb.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(
+        tmp_path,
+        is_async=False,
+        is_group=True,
+        is_pattern_based=True,
+        extension="ipynb",
+    )
+
+
+def test_flow_export_pattern_based_async_to_ipynb(tmp_path: Path) -> None:
+    """Test FlowExporter export pattern-based flow to async ipynb.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory.
+    """
+    _export_flow(
+        tmp_path,
+        is_async=True,
+        is_group=True,
+        is_pattern_based=True,
+        extension="ipynb",
+    )

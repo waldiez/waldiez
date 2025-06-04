@@ -2,32 +2,17 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Helpers for getting a flow."""
 
-from typing import Any
-
-from typing_extensions import Literal
-
 from waldiez.models import (
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentNestedChatMessage,
-    WaldiezAgents,
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
     WaldiezCaptainAgent,
     WaldiezCaptainAgentData,
-    WaldiezChat,
-    WaldiezChatData,
-    WaldiezChatMessage,
-    WaldiezChatNested,
-    WaldiezChatSummary,
     WaldiezDefaultCondition,
-    WaldiezFlow,
-    WaldiezFlowData,
-    WaldiezModel,
-    WaldiezModelData,
-    WaldiezModelPrice,
     WaldiezRagUserProxy,
     WaldiezRagUserProxyData,
     WaldiezRagUserProxyRetrieveConfig,
@@ -35,124 +20,12 @@ from waldiez.models import (
     WaldiezReasoningAgent,
     WaldiezReasoningAgentData,
     WaldiezReasoningAgentReasonConfig,
-    WaldiezTool,
-    WaldiezToolData,
     WaldiezTransitionAvailability,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
 
-from ..models.agents.captain_agent.example_agent_lib import EXAMPLE_AGENT_LIB
-
-
-def get_model(model_id: str = "wm-1") -> WaldiezModel:
-    """Get a WaldiezModel.
-
-    Parameters
-    ----------
-    model_id : str, optional
-        The model ID, by default "wm-1"
-
-    Returns
-    -------
-    WaldiezModel
-        A WaldiezModel instance
-    """
-    return WaldiezModel(
-        id=model_id,
-        name="model_name",
-        description="Model Description",
-        tags=["model"],
-        requirements=[],
-        type="model",
-        created_at="2021-01-01T00:00:00.000Z",
-        updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezModelData(
-            api_type="groq",  # to cover additional requirements
-            api_key="api_key",
-            api_version="2020-05-03",
-            base_url="https://example.com/v1",
-            price=WaldiezModelPrice(
-                prompt_price_per_1k=0.06,
-                completion_token_price_per_1k=0.12,
-            ),
-            temperature=0.5,
-            top_p=None,
-            max_tokens=1000,
-            default_headers={},
-        ),
-    )
-
-
-def get_tool(tool_id: str = "ws-1") -> WaldiezTool:
-    """Get a WaldiezTool.
-
-    Parameters
-    ----------
-    tool_id : str, optional
-        The tool ID, by default "ws-1"
-
-    Returns
-    -------
-    WaldiezTool
-        A WaldiezTool instance.
-    """
-    return WaldiezTool(
-        id=tool_id,
-        name="tool_name",
-        description="Tool Description",
-        tags=["tool"],
-        requirements=["chess"],
-        type="tool",
-        created_at="2021-01-01T00:00:00.000Z",
-        updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezToolData(
-            content=(
-                "def tool_name() -> str:\n"
-                '    """Tool Description."""\n'
-                "    return 'Tool Response'"
-            ),
-            secrets={
-                "TOOL_KEY": "tool_value",
-            },
-        ),
-    )
-
-
-def get_interop_tool(
-    tool_id: str = "ws-2",
-    tool_type: Literal["langchain", "crewai"] = "langchain",
-) -> WaldiezTool:
-    """Get an interop tool.
-
-    Parameters
-    ----------
-    tool_id : str, optional
-        The tool ID, by default "ws-2"
-    tool_type : Literal["langchain", "crewai"], optional
-        The tool type, by default "langchain"
-
-    Returns
-    -------
-    WaldiezTool
-        A WaldiezTool instance.
-    """
-    tool_name = f"{tool_type}_tool"
-    return WaldiezTool(
-        id=tool_id,
-        name=tool_name,
-        description="Interop Tool Description",
-        tags=["interop_tool"],
-        requirements=[],
-        type="tool",
-        created_at="2021-01-01T00:00:00.000Z",
-        updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezToolData(
-            content=(f"{tool_name} = lambda: 'Interop Tool Response'"),
-            tool_type=tool_type,
-            secrets={},
-        ),
-    )
+from ...models.agents.captain_agent.example_agent_lib import EXAMPLE_AGENT_LIB
 
 
 def get_user_proxy(agent_id: str = "wa-1") -> WaldiezUserProxy:
@@ -471,139 +344,3 @@ def get_captain_agent(agent_id: str = "wa-6") -> WaldiezCaptainAgent:
         updated_at="2021-01-01T00:00:00.000Z",
         data=data,
     )
-
-
-def get_chats(count: int = 5) -> list[WaldiezChat]:
-    """Get a list of WaldiezChat instances.
-
-    Parameters
-    ----------
-    count : int, optional
-        The number of chats to generate, by default 5
-
-    Returns
-    -------
-    list[WaldiezChat]
-        A list of WaldiezChat instances
-    """
-    chats: list[WaldiezChat] = []
-    custom_message = (
-        "def callable_message(sender, recipient, context):\n"
-        '    return "hello there!!"'
-    )
-    for index in range(count):
-        chat_id = f"wc-{index + 1}"
-        context: dict[str, Any] = {}
-        if index in (0, 3):
-            context["problem"] = "Solve tha task."
-        if index == 3:
-            context["bool_variable"] = True
-        nested_chat = WaldiezChatNested(
-            message=None,
-            reply=None,
-        )
-        source_index = index + 1
-        target_index = index + 2
-        prerequisites = []
-        if index == 1:
-            prerequisites = ["wc-1"]
-        elif index > 2:
-            prerequisites = [f"wc-{idx + 1}" for idx in range(index - 1)]
-        chat = WaldiezChat(
-            id=chat_id,
-            type="chat",
-            source=f"wa-{source_index}",
-            target=f"wa-{target_index}",
-            data=WaldiezChatData(
-                name=f"chat_{index + 1}",
-                description=f"Description of chat {index + 1}",
-                position=-1,
-                order=index,
-                clear_history=True,
-                silent=False,
-                max_turns=5,
-                message=WaldiezChatMessage(
-                    type="string" if index != 2 else "method",
-                    use_carryover=index == 2,
-                    content=(
-                        f"Hello wa-{source_index}"
-                        if index != 2
-                        else custom_message
-                    ),
-                    context=context,
-                ),
-                summary=WaldiezChatSummary(
-                    method=(
-                        "reflection_with_llm" if index % 2 == 0 else "last_msg"
-                    ),
-                    prompt="Summarize the chat.",
-                    args={"summary_role": "user"},
-                ),
-                nested_chat=nested_chat,
-                real_source=None,
-                real_target=None,
-                source_type="user_proxy",
-                target_type="assistant",
-                prerequisites=prerequisites,
-                condition=WaldiezDefaultCondition.create(),
-                available=WaldiezTransitionAvailability(),
-            ),
-        )
-        chats.append(chat)
-    return chats
-
-
-def get_flow(is_async: bool = False) -> WaldiezFlow:
-    """Get a WaldiezFlow instance.
-
-    Parameters
-    ----------
-    is_async : bool, optional
-        Whether the flow is asynchronous, by default False.
-
-    Returns
-    -------
-    WaldiezFlow
-        A WaldiezFlow instance.
-    """
-    model = get_model()
-    custom_tool = get_tool()
-    langchain_tool = get_interop_tool(tool_type="langchain")
-    crewai_tool = get_interop_tool(tool_id="ws-3", tool_type="crewai")
-    user = get_user_proxy()
-    assistant1 = get_assistant()
-    assistant2 = get_assistant(agent_id="wa-3", is_multimodal=False)
-    rag_user = get_rag_user()
-    reasoning_agent = get_reasoning_agent()
-    captain_agent = get_captain_agent()
-    chats = get_chats()
-    agents = WaldiezAgents(
-        userProxyAgents=[user],
-        assistantAgents=[assistant1, assistant2],
-        ragUserProxyAgents=[rag_user],
-        reasoningAgents=[reasoning_agent],
-        captainAgents=[captain_agent],
-        groupManagerAgents=[],
-    )
-    flow = WaldiezFlow(
-        id="wf-1",
-        name="flow_name",
-        type="flow",
-        description="Flow Description",
-        tags=["flow"],
-        requirements=["chess"],
-        storage_id="flow-1",
-        created_at="2021-01-01T00:00:00.000Z",
-        updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezFlowData(
-            is_async=is_async,
-            nodes=[],
-            edges=[],
-            viewport={},
-            agents=agents,
-            models=[model],
-            tools=[custom_tool, langchain_tool, crewai_tool],
-            chats=chats,
-        ),
-    )
-    return flow
