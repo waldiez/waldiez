@@ -21,6 +21,8 @@ def get_tool(
     ----------
     tool_id : str, optional
         The tool ID, by default "wt-1"
+    tool_type : WaldiezToolType, optional
+        The tool type, by default "custom"
 
     Returns
     -------

@@ -110,6 +110,8 @@ def get_assistant(
         The agent ID, by default "wa-2"
     is_multimodal : bool, optional
         Whether the assistant is multimodal, by default False
+    with_nested_chat : bool, optional
+        Whether the assistant has nested chat, by default False
 
     Returns
     -------
