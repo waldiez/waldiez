@@ -15,10 +15,12 @@ WORKDIR /tmp
 COPY requirements/main.txt /tmp/main.txt
 COPY requirements/redis.txt /tmp/redis.txt
 COPY requirements/websockets.txt /tmp/websockets.txt
+COPY requirements/mqtt.txt /tmp/mqtt.txt
 RUN pip install -r /tmp/main.txt && \
     pip install -r /tmp/redis.txt && \
     pip install -r /tmp/websockets.txt && \
-    rm -rf /root/.cache/pip /tmp/main.txt /tmp/redis.txt /tmp/websockets.txt
+    pip install -r /tmp/mqtt.txt && \
+    rm -rf /root/.cache/pip /tmp/main.txt /tmp/redis.txt /tmp/websockets.txt /tmp/mqtt.txt
 
 WORKDIR /app
 COPY . /app
