@@ -91,7 +91,7 @@ def _get_py_header(
 {FILE_HEADER}
 {get_flake8_ignore_comment()}
 {get_pylint_ignore_comment()}
-{get_mypy_ignore_comment()}
+{get_mypy_ignore_comment([])}
 {get_pyright_ignore_comment()}
 """{name}.
 

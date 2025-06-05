@@ -187,8 +187,10 @@ def get_mypy_ignore_comment(rules: list[str] | None = None) -> str:
     # mypy: disable-error-code="import-untyped,no-redef"
     ```
     """
-    if not rules:
+    if rules is None:
         rules = MYPY_RULES
+    if not rules:
+        return "# type: ignore\n"
     prefix = "# mypy: disable-error-code="
     content = ", ".join(rules)
     return prefix + f'"{content}"\n'
