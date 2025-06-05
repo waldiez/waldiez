@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Union
+from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator
 from typing_extensions import Annotated
@@ -173,7 +174,7 @@ class UserInputData(BaseModel):
         if target_field == "audio":
             return AudioContent(url=raw_val)
         if target_field == "file":
-            filename = raw_val.split(os.path.sep)[-1]
+            filename = extract_filename_from_path(raw_val)
             return FileContent(name=filename, url=raw_val)
 
         return None  # pragma: no cover
@@ -225,3 +226,37 @@ class UserInputData(BaseModel):
 
         # Default fallback
         return TextMediaContent(type="text", text=str(v))
+
+
+def extract_filename_from_path(path_or_url: str) -> str:
+    """Extract the filename from a given path or URL.
+
+    Parameters
+    ----------
+    path_or_url: str
+        The path or URL from which to extract the filename.
+
+    Returns
+    -------
+    str
+        The extracted filename.
+    """
+    if "://" in path_or_url:
+        # It's a URL - parse it properly
+        parsed = urlparse(path_or_url)
+        # Extract filename from the path component
+        filename = os.path.basename(parsed.path)
+
+        # Handle edge cases where path might be empty or end with /
+        if not filename and parsed.path.endswith("/"):
+            # Try to get the last directory name
+            path_parts = [p for p in parsed.path.split("/") if p]
+            filename = path_parts[-1] if path_parts else parsed.netloc
+        elif not filename:
+            # Fallback to using netloc (domain) if no path
+            filename = parsed.netloc
+
+        return filename
+    else:
+        # Local file path
+        return os.path.basename(path_or_url)
