@@ -7,6 +7,7 @@ from waldiez.exporting.flow.utils.linting import (
     PYLINT_RULES,
     PYRIGHT_RULES,
     get_flake8_ignore_comment,
+    get_mypy_ignore_comment,
     get_pylint_ignore_comment,
     get_pyright_ignore_comment,
     split_linter_comment,
@@ -92,3 +93,18 @@ def test_flake8_default() -> None:
 def test_split_linter_comment_empty_rules() -> None:
     """Test splitting linter comment with empty rules."""
     assert split_linter_comment("# test: ", [], max_lines=3) == "\n"
+
+
+def test_get_mypy_ignore_comment_default() -> None:
+    """Test getting the default mypy ignore comment."""
+    result = get_mypy_ignore_comment()
+    assert result.startswith("# mypy: disable-error-code")
+    assert all(rule in result for rule in ["import-untyped", "no-redef"])
+    assert result.endswith("\n")
+
+
+def test_get_mypy_ignore_comment_custom() -> None:
+    """Test getting a custom mypy ignore comment."""
+    rules = ["attr-defined", "no-redef"]
+    result = get_mypy_ignore_comment(rules)
+    assert result == '# mypy: disable-error-code="attr-defined, no-redef"\n'

@@ -1,6 +1,8 @@
 -r main.txt
+markdown-callouts==0.4.0
 mdx-include==1.4.2
 mdx_truly_sane_lists==1.3
+mkdocs-autorefs==1.4.2
 mkdocs-awesome-nav==3.1.2
 mkdocs-jupyter==0.25.1
 mkdocs-macros-plugin==1.3.7
@@ -8,5 +10,7 @@ mkdocs-material==9.6.14
 mkdocs-minify-html-plugin==0.3.1
 mkdocs-open-in-new-tab==1.0.8
 mkdocs==1.6.1
-mkdocstrings-python==1.16.11
+mkdocstrings-crystal==0.3.7
+mkdocstrings-python==1.16.12
 mkdocstrings[crystal,python]==0.29.1
+natsort==8.4.0

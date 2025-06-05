@@ -89,9 +89,9 @@ def _get_py_header(
 ) -> str:
     return f'''#!/usr/bin/env python
 {FILE_HEADER}
-{get_mypy_ignore_comment()}
 {get_flake8_ignore_comment()}
 {get_pylint_ignore_comment()}
+{get_mypy_ignore_comment()}
 {get_pyright_ignore_comment()}
 """{name}.
 

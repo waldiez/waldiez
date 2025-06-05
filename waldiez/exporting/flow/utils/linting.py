@@ -191,4 +191,4 @@ def get_mypy_ignore_comment(rules: list[str] | None = None) -> str:
         rules = MYPY_RULES
     prefix = "# mypy: disable-error-code="
     content = ", ".join(rules)
-    return prefix + f'"{content}"'
+    return prefix + f'"{content}"\n'

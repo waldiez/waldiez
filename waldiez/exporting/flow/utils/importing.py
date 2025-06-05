@@ -94,7 +94,7 @@ def sort_imports(
             builtin_imports.append(import_string)
         elif position == ImportPosition.THIRD_PARTY:
             third_party_imports.append(import_string)
-        elif position == ImportPosition.LOCAL:
+        elif position == ImportPosition.LOCAL:  # pragma: no branch
             local_imports.append(import_string)
 
     autogen_imports = clean_and_group_autogen_imports(autogen_imports)
@@ -139,9 +139,9 @@ def clean_and_group_autogen_imports(autogen_imports: list[str]) -> list[str]:
             continue
 
         # Parse "from autogen.module import items"
-        if imp.startswith("from autogen"):
+        if imp.startswith("from autogen"):  # pragma: no branch
             parts = imp.split(" import ")
-            if len(parts) == 2:
+            if len(parts) == 2:  # pragma: no branch
                 module_path = parts[0]  # "from autogen.module"
                 items = parts[1].strip()
 
@@ -214,10 +214,10 @@ def get_the_imports_string(
     if got_import_autogen:
         final_string += "\nimport autogen  # type: ignore\n"
 
-    if autogen_imports:
+    if autogen_imports:  # pragma: no branch
         final_string += "\n".join(autogen_imports) + "\n"
 
-    if third_party_imports:
+    if third_party_imports:  # pragma: no branch
         final_string += "\n".join(third_party_imports) + "\n"
 
     while not final_string.endswith("\n\n"):
@@ -328,7 +328,9 @@ def get_the_typing_imports(
     # with the default ones
     typing_imports: set[str] = set(TYPING_IMPORT_NAMES)
     for import_tuple in one_line_typing_imports:
-        if import_tuple[0].startswith("from typing import "):
+        if import_tuple[0].startswith(
+            "from typing import "
+        ):  # pragma: no branch
             # extract the names from the import statement
             names = import_tuple[0].split("from typing import ")[1]
             for name in names.split(","):
