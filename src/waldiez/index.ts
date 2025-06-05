@@ -4,7 +4,7 @@
  */
 import { flowMapper } from "@waldiez/models/mappers";
 import "@waldiez/polyfills/promiseWithResolvers";
-import { WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
+import { WaldiezFlow, WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
 import { Waldiez } from "@waldiez/waldiez";
 
 export type {
@@ -24,7 +24,7 @@ export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
 
 export { Waldiez };
-export type { WaldiezFlowProps, WaldiezProps };
+export type { WaldiezFlow, WaldiezFlowProps, WaldiezProps };
 
 /**
  * Import a flow from a JSON object.
@@ -43,7 +43,7 @@ export const importFlow = (data: any) => {
  * @param data - The flow to export
  * @returns The exported JSON object
  * @see {@link Waldiez}
- * @see {@link WaldiezFlowProps}
+ * @see {@link WaldiezFlow}
  */
 export const exportFlow = (data: any, hideSecrets: boolean = true, skipLinks: boolean = true) => {
     const flow = flowMapper.importFlow(data);
