@@ -7,7 +7,7 @@
 # pylint: disable=invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,missing-function-docstring
 # pylint: disable=missing-param-doc,missing-return-doc,ungrouped-imports,unnecessary-lambda-assignment
 
-# mypy: disable-error-code="import-untyped, no-redef, unused-ignore, import-not-found"
+# type: ignore
 
 # pyright: reportUnusedImport=false,reportMissingTypeStubs=false,reportUnknownArgumentType=false
 # pyright: reportUnknownMemberType=false,reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false

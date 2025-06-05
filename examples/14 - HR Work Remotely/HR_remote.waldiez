@@ -1,1 +1,1208 @@
-{"id":"id-fae2e3da-cf6a-4303-ad49-725d3e3d73a2","type":"flow","storageId":"wf-1740866144971MTWxBUAlmtYsd-BJBgNTp}","name":"Waldiez Flow","description":"A waldiez flow","tags":["Swarm","Swarm Orchestration"],"requirements":[],"createdAt":"2025-03-01T23:06:51.788Z","updatedAt":"2025-03-04T08:42:06.526Z","data":{"nodes":[{"id":"ws-1740870131933ixmErT4Kwb2rrmPrK7Gg7","type":"model","position":{"x":0,"y":10},"measured":{"width":181,"height":181},"selected":false,"hidden":true},{"id":"ws-17374644736302vMHYXfh8nEMPbFDQreJ4","type":"tool","position":{"x":0,"y":10},"measured":{"width":181,"height":181},"selected":false,"hidden":false},{"id":"ws-1737464497230vmxuubAq_AE8BKCxNmEdu","type":"tool","position":{"x":240,"y":10},"measured":{"width":181,"height":181},"selected":false,"hidden":false},{"id":"ws-1737464514743AgglkTDatghgKir-AbU2J","type":"tool","position":{"x":480,"y":10},"measured":{"width":181,"height":181},"selected":false,"hidden":false},{"id":"ws-1737464538674-E5IgEPn65joT0T9ePzIW","type":"tool","position":{"x":720,"y":10},"measured":{"width":181,"height":181},"selected":false,"hidden":false},{"id":"ws-17408752832076lNhi7DDFB7pAuufeo0vt","type":"tool","position":{"x":0,"y":235},"measured":{"width":181,"height":181},"selected":false,"hidden":false},{"id":"ws-1740923639201UjDfCX04EsMkRTSoRIo31","type":"tool","position":{"x":240,"y":235},"measured":{"width":181,"height":181},"selected":false,"hidden":false},{"id":"wa-1737464564552HWQESN71KMEkB_xXi9vUA","type":"agent","position":{"x":-75,"y":45},"hidden":true,"measured":{"width":205,"height":214},"selected":false,"dragging":false},{"id":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","type":"agent","position":{"x":240,"y":-285},"hidden":true,"measured":{"width":994,"height":799},"selected":false,"dragging":false,"width":994,"height":799,"resizing":false},{"id":"wa-1737464613697LWtjvtqVwetAROmysTjFf","type":"agent","position":{"x":345,"y":330},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","hidden":true,"measured":{"width":205,"height":214},"selected":false,"dragging":false},{"id":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","type":"agent","position":{"x":45,"y":585},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","hidden":true,"measured":{"width":205,"height":214},"selected":false,"dragging":false},{"id":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","type":"agent","position":{"x":45,"y":75},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","hidden":true,"measured":{"width":205,"height":231},"selected":false,"dragging":false},{"id":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","type":"agent","position":{"x":750,"y":330},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","measured":{"width":205,"height":231},"selected":false,"hidden":true,"dragging":false}],"edges":[{"id":"we-1737464846794pRRpuXJ7-ZqB74z8sLVpv","source":"wa-1737464613697LWtjvtqVwetAROmysTjFf","target":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#f0c808","width":10,"height":10},"style":{"stroke":"#f0c808","strokeWidth":3},"sourceHandle":"agent-handle-top-source-wa-1737464613697LWtjvtqVwetAROmysTjFf","targetHandle":"agent-handle-right-target-wa-1737464760717Rrum4lH4tQay0qvvxCmkN","type":"swarm"},{"id":"we-1737464916393QpJdYam692o0MK9Y3il9g","source":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#f0c808","width":10,"height":10},"style":{"stroke":"#f0c808","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-1737464760717Rrum4lH4tQay0qvvxCmkN","targetHandle":"agent-handle-top-target-wa-1737464613697LWtjvtqVwetAROmysTjFf","type":"swarm"},{"id":"we-1737464956357K2_QoBXyj1mJWDJ64nOVK","source":"wa-1737464613697LWtjvtqVwetAROmysTjFf","target":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#f0c808","width":10,"height":10},"style":{"stroke":"#f0c808","strokeWidth":3},"sourceHandle":"agent-handle-bottom-source-wa-1737464613697LWtjvtqVwetAROmysTjFf","targetHandle":"agent-handle-right-target-wa-1737464700312GpzAjDNowEhzbejk7ML0p","type":"swarm"},{"id":"we-1737464996743sNjMBj7h2HPGAZ3fxlst2","source":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#f0c808","width":10,"height":10},"style":{"stroke":"#f0c808","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-1737464700312GpzAjDNowEhzbejk7ML0p","targetHandle":"agent-handle-bottom-target-wa-1737464613697LWtjvtqVwetAROmysTjFf","type":"swarm"},{"id":"we-17374650248984BtW9kakBGcm6noUXQIyQ","source":"wa-1737464564552HWQESN71KMEkB_xXi9vUA","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#bc76f5","width":10,"height":10},"style":{"stroke":"#bc76f5","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-1737464564552HWQESN71KMEkB_xXi9vUA","targetHandle":"agent-handle-left-target-wa-1737464613697LWtjvtqVwetAROmysTjFf","type":"swarm"},{"id":"we-1740871819430A2mjfhVU5_iTwE1SivDBg","source":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#f0c808","width":10,"height":10},"style":{"stroke":"#f0c808","strokeWidth":3},"sourceHandle":"agent-handle-left-source-wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","targetHandle":"agent-handle-right-target-wa-1737464613697LWtjvtqVwetAROmysTjFf","type":"swarm"},{"id":"we-1740871885311veB0cd6YM58csWVCE38lQ","source":"wa-1737464613697LWtjvtqVwetAROmysTjFf","target":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","hidden":false,"animated":false,"selected":false,"markerEnd":{"type":"arrowclosed","color":"#f0c808","width":10,"height":10},"style":{"stroke":"#f0c808","strokeWidth":3},"sourceHandle":"agent-handle-right-source-wa-1737464613697LWtjvtqVwetAROmysTjFf","targetHandle":"agent-handle-left-target-wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","type":"swarm"}],"viewport":{"x":20,"y":40,"zoom":0.864},"agents":{"users":[{"type":"agent","name":"customer","description":"employee","tags":[],"requirements":[],"createdAt":"2025-01-21T13:02:44.552Z","updatedAt":"2025-01-21T13:02:44.552Z","data":{"systemMessage":null,"humanInputMode":"ALWAYS","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":[],"tools":[],"parentId":null,"nestedChats":[]},"id":"wa-1737464564552HWQESN71KMEkB_xXi9vUA","agentType":"user"}],"assistants":[],"managers":[],"rag_users":[],"swarm_agents":[{"type":"agent","agentType":"swarm","name":"hr_triage_agent","description":"HR_triage_agent","tags":[],"requirements":[],"createdAt":"2025-01-21T13:03:33.697Z","updatedAt":"2025-01-21T13:03:33.697Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["ws-1740870131933ixmErT4Kwb2rrmPrK7Gg7"],"tools":[],"parentId":null,"nestedChats":[],"functions":["ws-1737464497230vmxuubAq_AE8BKCxNmEdu"],"updateAgentStateBeforeReply":[{"updateFunctionType":"string","updateFunction":"You are an HR agent, working with a user and a group of agents to provide support for your HR department regarding your company's remote work policies.\n\nAn user needs to be logged in to be able to request to work remotely The authentication_agent will work with the customer to verify their identity, transfer to them to start with.\nThe policy_remote_agent will check whether the user is eligible to ask to work remotely, how many days ect. Be sure to check get the department and the manager's email.\nIf the days are approved ask whether you should notify the user's manager.\nAsk the customer for further information when necessary.\n\nThe current status of this workflow is:\nCustomer name: {user_name}\nLogged in: {logged_in}\nApproved days:{days_approved}\nWants to notify the manager: {notify_manager}"}],"handoffs":[{"targetType":"agent","target":{"id":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","order":0},"condition":"The customer is logged in, continue with the policy agent.","available":{"type":"string","value":"logged_in"}},{"targetType":"agent","target":{"id":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","order":0},"condition":"The customer is not logged in, authenticate the customer.","available":{"type":"string","value":"requires_login"}},{"targetType":"agent","target":{"id":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","order":0},"condition":"The user hasn't defined whether he/she would like to via email.","available":{"type":"none","value":null}},{"recipientType":"option","recipient":"REVERT_TO_USER"}],"isInitial":true},"id":"wa-1737464613697LWtjvtqVwetAROmysTjFf","position":{"x":345,"y":330},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","hidden":true,"measured":{"width":205,"height":214},"selected":false,"dragging":false},{"type":"agent","agentType":"swarm","name":"authentication_agent","description":"authenticates the employee","tags":[],"requirements":[],"createdAt":"2025-01-21T13:05:00.312Z","updatedAt":"2025-01-21T13:05:00.312Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["ws-1740870131933ixmErT4Kwb2rrmPrK7Gg7"],"tools":[],"parentId":null,"nestedChats":[],"functions":["ws-1737464514743AgglkTDatghgKir-AbU2J"],"updateAgentStateBeforeReply":[],"handoffs":[{"targetType":"agent","target":{"id":"wa-1737464613697LWtjvtqVwetAROmysTjFf","order":0},"condition":"The customer is logged in, continue with the order triage.","available":{"type":"string","value":"logged_in"}},{"recipientType":"option","recipient":"REVERT_TO_USER"}],"isInitial":false},"id":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","position":{"x":45,"y":585},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","hidden":true,"measured":{"width":205,"height":214},"selected":false,"dragging":false},{"type":"agent","agentType":"swarm","name":"remote_policy_agent","description":"Checks remote work policy of the department","tags":[],"requirements":[],"createdAt":"2025-01-21T13:06:00.717Z","updatedAt":"2025-01-21T13:06:00.717Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["ws-1740870131933ixmErT4Kwb2rrmPrK7Gg7"],"tools":[],"parentId":null,"nestedChats":[],"functions":["ws-1737464497230vmxuubAq_AE8BKCxNmEdu","ws-1737464538674-E5IgEPn65joT0T9ePzIW"],"updateAgentStateBeforeReply":[{"updateFunctionType":"string","updateFunction":"You are a work from remote policy management agent that manages whether the days a user has asked are valid.\n\nThe user must be logged in to ask working remotely.\n\nUse your available tools to check if the defined number of days comply with the departments policy. Ask the user questions as needed.\n\nThe current status of this workflow is:\nCustomer name: {user_name}\nLogged in: {logged_in}\nNumber of days: {remote_days}"}],"handoffs":[{"targetType":"agent","target":{"id":"wa-1737464613697LWtjvtqVwetAROmysTjFf","order":0},"condition":"The user application for working few days remotely has been approved by the policy","available":{"type":"none","value":null}},{"recipientType":"option","recipient":"REVERT_TO_USER"}],"isInitial":false},"id":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","position":{"x":45,"y":75},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","hidden":true,"measured":{"width":205,"height":231},"selected":false,"dragging":false},{"type":"agent","agentType":"swarm","name":"email_agent","description":"Sends email to the employees manager if asked","tags":[],"requirements":[],"createdAt":"2025-03-01T23:27:56.882Z","updatedAt":"2025-03-01T23:27:56.882Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":{"workDir":"coding","functions":[]},"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["ws-1740870131933ixmErT4Kwb2rrmPrK7Gg7"],"tools":[],"parentId":null,"nestedChats":[],"functions":["ws-17408752832076lNhi7DDFB7pAuufeo0vt","ws-1740923639201UjDfCX04EsMkRTSoRIo31"],"updateAgentStateBeforeReply":[{"updateFunctionType":"string","updateFunction":"You are a email notification agent. You must ask the user whether he/she wishes to notify his/her manager. \nIf so send this info to the EmailAssistant asking to write a formal email that will work remotely for  to his/her manager. Add Work Remotely as title\"\n    \nUse existing tools\n\n\n"}],"handoffs":[{"targetType":"agent","target":{"id":"wa-1737464613697LWtjvtqVwetAROmysTjFf","order":0},"condition":"Transfer to hr_triage_agent if mail sent","available":{"type":"none","value":null}}],"isInitial":false},"id":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","position":{"x":750,"y":330},"parentId":"swarm-container-id-7ffa9bdf-319d-41ec-88c0-621671307816","extent":"parent","measured":{"width":205,"height":231},"selected":false,"hidden":true,"dragging":false}],"reasoning_agents":[],"captain_agents":[]},"models":[{"id":"ws-1740870131933ixmErT4Kwb2rrmPrK7Gg7","type":"model","name":"gpt-4-turbo","description":"OpenAI","tags":[],"requirements":[],"createdAt":"2025-03-01T23:02:11.933Z","updatedAt":"2025-03-02T11:34:06.836Z","data":{"apiKey":"REPLACE_ME","apiType":"openai","apiVersion":null,"baseUrl":null,"temperature":0.01,"topP":null,"maxTokens":null,"defaultHeaders":{},"price":{"promptPricePer1k":null,"completionTokenPricePer1k":null}}}],"tools":[{"id":"ws-17374644736302vMHYXfh8nEMPbFDQreJ4","type":"tool","name":"waldiez_shared","description":"Global storage with user and department database.","tags":[],"requirements":[],"createdAt":"2025-01-21T13:01:13.630Z","updatedAt":"2025-03-04T08:33:48.633Z","data":{"content":"# Databases\n\nUSER_DATABASE = {\n    \"istella\": {\n        \"full_name\": \"Stella Ioannidou\",\n        \"department\": \"HR\",\n    },\n    \"laztoum\": {\n        \"full_name\": \"Lazaros Toumanidis\",\n        \"department\": \"RnD\",\n    },\n}\n\nDEPARTMENT_DATABASE = {\n    \"HR\": {\n        \"manager\": \"Styliani Ioannidou\",\n        \"manager_email\":\"manager_1@example.com\",\n        \"max_remote_days\": 4,\n        \"dep_address\": \"23 Kifisias St, Athens, PA 12345\",\n    },\n    \"RnD\": {\n        \"manager\": \"Panagiotis Kasnesis\",\n        \"manager_email\":\"manager_1@example.com\",\n        \"max_remote_days\": 10,\n        \"dep_address\": \"56 Ermou St, Athens, PA 12346\",\n    },\n   \n}\n","toolType":"shared","secrets":{}}},{"id":"ws-1737464497230vmxuubAq_AE8BKCxNmEdu","type":"tool","name":"remote_days","description":"remote_days","tags":[],"requirements":[],"createdAt":"2025-01-21T13:01:37.230Z","updatedAt":"2025-03-01T23:56:25.046Z","data":{"content":"# filename: {new_tool}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\nfrom autogen import SwarmResult\n\n\ndef remote_days(days: str, context_variables: dict) -> SwarmResult:\n    \"\"\"Record the number of remote days in the workflow context\"\"\"\n\n\n    context_variables[\"remote_days\"] = days\n    context_variables[\"has_defined_days\"] = True\n    return SwarmResult(\n        context_variables=context_variables, values=f\"Number of remote days recorded: {days}\",\n    )\n","toolType":"custom","secrets":{}}},{"id":"ws-1737464514743AgglkTDatghgKir-AbU2J","type":"tool","name":"login_by_username","description":"login_by_username","tags":[],"requirements":[],"createdAt":"2025-01-21T13:01:54.744Z","updatedAt":"2025-03-02T00:58:05.439Z","data":{"content":"# filename: {new_tool}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\nfrom autogen import SwarmResult\n\ndef login_by_username(username: str, context_variables: dict) -> SwarmResult:\n    \"\"\"Get and log the employee in by their username\"\"\"\n    if username in USER_DATABASE:\n        context_variables[\"user_name\"] = USER_DATABASE[username][\"full_name\"]\n        context_variables[\"department\"] = USER_DATABASE[username][\"department\"]\n        context_variables[\"logged_in_username\"] = username\n        context_variables[\"logged_in\"] = True\n        context_variables[\"requires_login\"] = False\n        context_variables[\"manager_name\"] = DEPARTMENT_DATABASE[context_variables[\"department\"]]['manager']\n        context_variables[\"manager_email\"] = DEPARTMENT_DATABASE[context_variables[\"department\"]]['manager_email']\n        return SwarmResult(\n            context_variables=context_variables,\n            values=f\"Hi {context_variables['user_name']}! How can I help you?\",\n        )\n    else:\n        return SwarmResult(\n            context_variables=context_variables,\n            values=f\"User {username} not found. Please ask for the correct username.\",\n        )","toolType":"custom","secrets":{}}},{"id":"ws-1737464538674-E5IgEPn65joT0T9ePzIW","type":"tool","name":"check_remote_policy","description":"check_remote_policy","tags":[],"requirements":[],"createdAt":"2025-01-21T13:02:18.674Z","updatedAt":"2025-03-02T11:39:17.727Z","data":{"content":"# filename: {new_tool}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n\nfrom autogen import SwarmResult\n\n\ndef check_remote_policy(remote_days: str, context_variables: dict) -> SwarmResult:\n    \"\"\"Check if the order ID is valid\"\"\"\n    # Restricts order to checking to the logged in user\n\n    if context_variables[\"logged_in_username\"] and context_variables[\"defined_department\"]:\n        department = context_variables[\"department\"]\n        if DEPARTMENT_DATABASE[department][max_remote_days] >= remote_days:\n            context_variables[\"days_approved\"]=True \n            return SwarmResult(\n                context_variables=context_variables, values=f\"Requested remote dates are approved.\")\n        else:\n            return SwarmResult(\n                context_variables=context_variables,\n                values=f\"The number {remote_days} of requested remote days is not compliant with your departments policy. Please ask for less or ask to noty your manager.\",\n            )","toolType":"custom","secrets":{}}},{"id":"ws-17408752832076lNhi7DDFB7pAuufeo0vt","type":"tool","name":"wants_to_notify","description":"wants_to_notify","tags":[],"requirements":[],"createdAt":"2025-03-02T00:28:03.207Z","updatedAt":"2025-03-02T11:27:43.771Z","data":{"content":"# filename: {new_tool}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n\nfrom autogen import SwarmResult\n\n# filename: {new_tool}.py\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n\nfrom autogen import SwarmResult\n\n\ndef wants_to_notify(notify_manager: str, context_variables: dict) -> SwarmResult:\n    \"\"\"Check if the order ID is valid\"\"\"\n    # Restricts order to checking to the logged in user\n\n    if context_variables[\"logged_in_username\"] and notify_manager:   \n        context_variables[\"notify_manager\"]=True\n        manager_name=context_variables[\"manager_name\"]\n        manager_email=context_variables[\"manager_email\"]\n        return SwarmResult(\n            context_variables=context_variables, values=f\"An email will be sent to your manager {manager_name} with email {manager_email}\")\n    else:\n        return SwarmResult(\n            context_variables=context_variables,\n            values=f\"The user doesn't want to notify the manager\",\n        )","toolType":"custom","secrets":{}}},{"id":"ws-1740923639201UjDfCX04EsMkRTSoRIo31","type":"tool","name":"gmail_send_function","description":"A new tool for sending emails","tags":[],"requirements":["langchain_google_community","langchain-google-community[gmail]"],"createdAt":"2025-02-18T14:39:28.513Z","updatedAt":"2025-03-04T08:35:07.354Z","data":{"content":"import os\nimport base64\nfrom email.mime.text import MIMEText\nfrom googleapiclient.discovery import build\nfrom google_auth_oauthlib.flow import InstalledAppFlow\nfrom google.auth.transport.requests import Request\nfrom google.oauth2.credentials import Credentials\nfrom typing import Optional, Any\n\ndef gmail_send_function(message_text: str, recipient_email: str, context_variables: dict, subject: str = \"\", sender_email: str = \"me\") -> SwarmResult:\n    \"\"\"\n    Send an email using Gmail API.\n    \n    Args:\n        message_text (str): The body of the email\n        recipient_email (str): Email address of the recipient\n        subject (str, optional): Subject of the email. Defaults to \"\".\n        sender_email (str, optional): Email address of sender. Defaults to \"me\".\n    \n    Returns:\n        str: A message indicating success or failure\n    \"\"\"\n    try:\n        # Gmail API setup directly within the function\n        SCOPES = [\n            'https://mail.google.com/',                      # Full access to Gmail account\n            'https://www.googleapis.com/auth/gmail.send',    # Send-only access\n           \n        ]\n        \n        creds = None\n        \n        # Try to load existing credentials if available\n        token_path = 'token.json'\n        \n        # Check if token.json exists and contains valid credentials\n        if os.path.exists(token_path):\n            try:\n                with open(token_path, 'r') as token_file:\n                    token_data = json.load(token_file)\n                    creds = Credentials.from_authorized_user_info(token_data, SCOPES)\n            except Exception as e:\n                print(f\"Error loading token file: {str(e)}\")\n        \n        # Check if credentials need to be refreshed or created\n        if not creds or not creds.valid:\n            if creds and creds.expired and creds.refresh_token:\n                # Just refresh the token if possible\n                creds.refresh(Request())\n                print(\"Refreshed existing credentials\")\n            else:\n                # Only trigger OAuth flow if we have no valid credentials\n                print(\"No valid credentials found, starting OAuth flow...\")\n                flow = InstalledAppFlow.from_client_secrets_file(\n                    'C:/Users/pathToFile/credentials.json', SCOPES)\n                creds = flow.run_local_server(port=0)\n                print(\"Successfully authenticated with Gmail API\")\n            \n            # Save the credentials for future runs\n            with open(token_path, 'w') as token:\n                token.write(creds.to_json())\n                print(f\"Saved credentials to {token_path}\")\n        else:\n            print(\"Using existing valid credentials\")\n        \n        # Build the service\n        service = build('gmail', 'v1', credentials=creds)\n        \n        # Create a more complete message\n        message = MIMEText(message_text)\n        message['to'] = recipient_email\n        message['subject'] = subject\n        \n        # Encode the message\n        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()\n        \n        # Create the message body\n        create_message = {\n            'raw': encoded_message\n        }\n        \n        # Send the message\n        send_message = service.users().messages().send(\n            userId=sender_email, body=create_message).execute()\n        context_variables['email_sent']=True\n\n        return SwarmResult(context_variables=context_variables, values=f\"Email sent successfully to {recipient_email} with message ID: {send_message['id']}\")\n    except Exception as e:\n        # More verbose error handling\n        return SwarmResult(context_variables=context_variables, values=f\"Error sending email: {str(e)}\\nMake sure your Google Cloud Project has Gmail API enabled and the credentials.json file is configured correctly.\")\n\n\n# This is the tool that Autogen will use\n#","toolType":"custom","secrets":{}}}],"chats":[{"id":"we-1737464846794pRRpuXJ7-ZqB74z8sLVpv","data":{"source":"wa-1737464613697LWtjvtqVwetAROmysTjFf","target":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","name":"HandleRequest","order":-1,"description":"The customer is logged in, continue with the policy agent.","position":1,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"string","value":"logged_in"},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-1737464916393QpJdYam692o0MK9Y3il9g","data":{"source":"wa-1737464760717Rrum4lH4tQay0qvvxCmkN","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","name":"Done","order":-1,"description":"The user application for working few days remotely has been approved by the policy","position":2,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":"wa-1737464613697LWtjvtqVwetAROmysTjFf"}},{"id":"we-1737464956357K2_QoBXyj1mJWDJ64nOVK","data":{"source":"wa-1737464613697LWtjvtqVwetAROmysTjFf","target":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","name":"NotAuthenticated","order":-1,"description":"The customer is not logged in, authenticate the customer.","position":3,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"string","value":"requires_login"},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-1737464996743sNjMBj7h2HPGAZ3fxlst2","data":{"source":"wa-1737464700312GpzAjDNowEhzbejk7ML0p","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","name":"IsAuthenticated","order":-1,"description":"The customer is logged in, continue with the order triage.","position":4,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"string","value":"logged_in"},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-17374650248984BtW9kakBGcm6noUXQIyQ","data":{"source":"wa-1737464564552HWQESN71KMEkB_xXi9vUA","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","name":"Start","order":-1,"description":"Transfer to order_triage_agent","position":5,"clearHistory":true,"maxTurns":null,"message":{"type":"string","content":"I would like to work remotely for a few days.","context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":40,"afterWork":{"recipientType":"option","recipient":"REVERT_TO_USER"},"flowAfterWork":{"recipientType":"option","recipient":"REVERT_TO_USER"},"available":{"type":"none","value":null},"contextVariables":{"user_name":"none","logged_in_username":"none","logged_in":"false","requires_login":"true","max_remote_days":"none","remote_days":"none","notify_manager":"false","has_defined_days":"false","department":"none","defined_department":"false","manager_email":"none","manager_name":"none","days_approved":"false","email_sent":"false"},"realSource":null,"realTarget":"wa-1737464613697LWtjvtqVwetAROmysTjFf"}},{"id":"we-1740871819430A2mjfhVU5_iTwE1SivDBg","data":{"source":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","target":"wa-1737464613697LWtjvtqVwetAROmysTjFf","name":"MailSent","order":-1,"description":"Transfer to hr_triage_agent if mail sent","position":6,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-1740871885311veB0cd6YM58csWVCE38lQ","data":{"source":"wa-1737464613697LWtjvtqVwetAROmysTjFf","target":"wa-1740871676882PwoZUYbKsGvqNAp9wRy-M","name":"SendEmail","order":-1,"description":"The user hasn't defined whether he/she would like to via email.","position":7,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}}],"isAsync":false}}
+{
+  "id": "wf-py-mZACp7XV0RVTT6PJEo",
+  "type": "flow",
+  "version": "0.4.7",
+  "storageId": "wf-py-mZACp7XV0RVTT6PJEo",
+  "name": "HR_Remote",
+  "description": "A waldiez flow",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2025-06-05T15:15:53.558Z",
+  "updatedAt": "2025-06-05T18:54:38.897Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1749136652660mMueFuvlYubDZRXsn12RS",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1749137464976KdNlceIYqbIqodZEIq6xx",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-1749137734778U6NdqMNrpwnhoh6VABjkY",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-1749137861540RC8w5cYobGP5YGK_XCCZ4",
+        "type": "tool",
+        "position": {
+          "x": 400,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-174913811024768YAYVxJLTbs9KwjuR3Do",
+        "type": "tool",
+        "position": {
+          "x": 600,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-17491399413221MpN5WhhjR6-UuTaFqvvz",
+        "type": "tool",
+        "position": {
+          "x": 800,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-1749140208831NQwVOaoJXUI8kb7Y1dFy7",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 135
+        },
+        "measured": {
+          "width": 182,
+          "height": 102
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+        "type": "agent",
+        "position": {
+          "x": 285,
+          "y": -45
+        },
+        "measured": {
+          "width": 915,
+          "height": 740
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "width": 915,
+        "height": 740,
+        "resizing": false,
+        "hidden": true
+      },
+      {
+        "id": "wa-1749138304265WENRwI0j6hiCom_sg8h1z",
+        "type": "agent",
+        "position": {
+          "x": 0,
+          "y": 330
+        },
+        "measured": {
+          "width": 160,
+          "height": 154
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true
+      },
+      {
+        "id": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "type": "agent",
+        "position": {
+          "x": 345,
+          "y": 345
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 182,
+          "height": 162
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "hidden": true,
+        "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-"
+      },
+      {
+        "id": "17491411894605D9qoX7d_Cie1Hlei0Y5D",
+        "type": "agent",
+        "position": {
+          "x": 45,
+          "y": 540
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 182,
+          "height": 162
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "hidden": true,
+        "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-"
+      },
+      {
+        "id": "17491413212505IQrhnb3_lF6J5VV6wWXS",
+        "type": "agent",
+        "position": {
+          "x": 45,
+          "y": 45
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 182,
+          "height": 178
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "hidden": true,
+        "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-"
+      },
+      {
+        "id": "1749141535607DnrcLYBPfukhniBlFFQhO",
+        "type": "agent",
+        "position": {
+          "x": 690,
+          "y": 330
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 168,
+          "height": 178
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "hidden": true,
+        "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-"
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1749138311592tqSBEN_VSwuXyeIh_AVuZ",
+        "source": "wa-1749138304265WENRwI0j6hiCom_sg8h1z",
+        "target": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1749138304265WENRwI0j6hiCom_sg8h1z",
+        "targetHandle": "agent-handle-left-target-wa-17491383078790V9F04_JtcVqBrqQTSgz-"
+      },
+      {
+        "id": "wc-1749141756353IoG_freZtGIenzbxUt7bS",
+        "source": "17491413212505IQrhnb3_lF6J5VV6wWXS",
+        "target": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-right-source-17491413212505IQrhnb3_lF6J5VV6wWXS",
+        "targetHandle": "agent-handle-top-target-wa-1749138377964rB7W0q0nGqPd-o3RBytCq"
+      },
+      {
+        "id": "wc-1749141759401lAnRJqIvR3tJwjwLj0_bB",
+        "source": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "target": "17491413212505IQrhnb3_lF6J5VV6wWXS",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-top-source-wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "targetHandle": "agent-handle-right-target-17491413212505IQrhnb3_lF6J5VV6wWXS"
+      },
+      {
+        "id": "wc-17491417678180LKK-ngFEUO7OnVtxbNfG",
+        "source": "17491411894605D9qoX7d_Cie1Hlei0Y5D",
+        "target": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-right-source-17491411894605D9qoX7d_Cie1Hlei0Y5D",
+        "targetHandle": "agent-handle-bottom-target-wa-1749138377964rB7W0q0nGqPd-o3RBytCq"
+      },
+      {
+        "id": "wc-17491417720692t_NLdjXcGaECKQmxQpy8",
+        "source": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "target": "17491411894605D9qoX7d_Cie1Hlei0Y5D",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-bottom-source-wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "targetHandle": "agent-handle-right-target-17491411894605D9qoX7d_Cie1Hlei0Y5D"
+      },
+      {
+        "id": "wc-1749141778468Oq_t9km4mxbLMwwxygDAN",
+        "source": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "target": "1749141535607DnrcLYBPfukhniBlFFQhO",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "targetHandle": "agent-handle-left-target-1749141535607DnrcLYBPfukhniBlFFQhO"
+      },
+      {
+        "id": "wc-1749141780969KuKM7hcH7Gd7yIAj2MH3e",
+        "source": "1749141535607DnrcLYBPfukhniBlFFQhO",
+        "target": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 2
+        },
+        "sourceHandle": "agent-handle-left-source-1749141535607DnrcLYBPfukhniBlFFQhO",
+        "targetHandle": "agent-handle-right-target-wa-1749138377964rB7W0q0nGqPd-o3RBytCq"
+      }
+    ],
+    "viewport": {
+      "x": 20,
+      "y": 40,
+      "zoom": 0.9066666666666666
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-05T15:45:07.879Z",
+          "updatedAt": "2025-06-05T15:45:07.879Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1749136652660mMueFuvlYubDZRXsn12RS"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {
+              "user_name": "none",
+              "logged_in_username": "none",
+              "logged_in": "false",
+              "requires_login": "true",
+              "max_remote_days": "none",
+              "remote_days": "none",
+              "notify_manager": "false",
+              "has_defined_days": "false",
+              "department": "none",
+              "defined_department": "false",
+              "manager_email": "none",
+              "manager_name": "none",
+              "days_approved": "false",
+              "email_sent": "false"
+            },
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "maxRound": 40,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "default",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": 10,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+            "groupName": "Group"
+          },
+          "id": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User proxy",
+          "description": "A new User proxy agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-05T15:45:04.265Z",
+          "updatedAt": "2025-06-05T15:45:04.265Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1749138304265WENRwI0j6hiCom_sg8h1z",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "hr_triage_agent",
+          "description": "HR_triage_agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-05T15:46:17.964Z",
+          "updatedAt": "2025-06-05T15:46:17.964Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1749136652660mMueFuvlYubDZRXsn12RS"
+            ],
+            "tools": [
+              {
+                "id": "wt-1749137734778U6NdqMNrpwnhoh6VABjkY",
+                "executorId": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq"
+              }
+            ],
+            "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [
+              "wc-17491417720692t_NLdjXcGaECKQmxQpy8",
+              "wc-1749141759401lAnRJqIvR3tJwjwLj0_bB",
+              "wc-1749141778468Oq_t9km4mxbLMwwxygDAN"
+            ],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You are an HR agent, working with a user and a group of agents to provide support for your HR department regarding your company's remote work policies.\nA user needs to be logged in to be able to request to work remotely.\nThe authentication_agent will work with the customer to verify their identity, transfer to them to start with.\nThe policy_remote_agent will check whether the user is eligible to ask to work remotely, how many days ect.\nBe sure to check get the department and the manager's email.\nIf the days are approved ask whether you should notify the user's manager.\nAsk the customer for further information when necessary.\n\nThe current status of this workflow is:\nCustomer name: {user_name}\nLogged in: {logged_in}\nApproved days:{days_approved}\nWants to notify the manager: {notify_manager}\""
+              }
+            ],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "authentication_agent",
+          "description": "authenticates the employee",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-05T15:46:17.964Z",
+          "updatedAt": "2025-06-05T15:46:17.964Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1749136652660mMueFuvlYubDZRXsn12RS"
+            ],
+            "tools": [
+              {
+                "id": "wt-1749137861540RC8w5cYobGP5YGK_XCCZ4",
+                "executorId": "17491411894605D9qoX7d_Cie1Hlei0Y5D"
+              }
+            ],
+            "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You are an HR agent, working with a user and a group of agents to provide support for your HR department regarding your company's remote work policies.\nA user needs to be logged in to be able to request to work remotely.\nThe authentication_agent will work with the customer to verify their identity, transfer to them to start with.\nThe policy_remote_agent will check whether the user is eligible to ask to work remotely, how many days ect.\nBe sure to check get the department and the manager's email.\nIf the days are approved ask whether you should notify the user's manager.\nAsk the customer for further information when necessary.\n\nThe current status of this workflow is:\nCustomer name: {user_name}\nLogged in: {logged_in}\nApproved days:{days_approved}\nWants to notify the manager: {notify_manager}\""
+              }
+            ],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "17491411894605D9qoX7d_Cie1Hlei0Y5D",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "remote_policy_agent",
+          "description": "Checks remote work policy of the department",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-05T15:46:17.964Z",
+          "updatedAt": "2025-06-05T15:46:17.964Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1749136652660mMueFuvlYubDZRXsn12RS"
+            ],
+            "tools": [
+              {
+                "id": "wt-1749137734778U6NdqMNrpwnhoh6VABjkY",
+                "executorId": "17491413212505IQrhnb3_lF6J5VV6wWXS"
+              },
+              {
+                "id": "wt-174913811024768YAYVxJLTbs9KwjuR3Do",
+                "executorId": "17491413212505IQrhnb3_lF6J5VV6wWXS"
+              }
+            ],
+            "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You are a work from remote policy management agent that manages whether the days a user has asked are valid.\nThe user must be logged in to ask working remotely.\nUse your available tools to check if the defined number of days comply with the departments policy. Ask the user questions as needed.\n\nThe current status of this workflow is:\nCustomer name: {user_name}\nLogged in: {logged_in}\nNumber of days: {remote_days}\n"
+              }
+            ],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "17491413212505IQrhnb3_lF6J5VV6wWXS",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "email_agent",
+          "description": "Sends email to the employees manager if asked",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-05T15:46:17.964Z",
+          "updatedAt": "2025-06-05T15:46:17.964Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1749136652660mMueFuvlYubDZRXsn12RS"
+            ],
+            "tools": [
+              {
+                "id": "wt-17491399413221MpN5WhhjR6-UuTaFqvvz",
+                "executorId": "1749141535607DnrcLYBPfukhniBlFFQhO"
+              },
+              {
+                "id": "wt-1749140208831NQwVOaoJXUI8kb7Y1dFy7",
+                "executorId": "1749141535607DnrcLYBPfukhniBlFFQhO"
+              }
+            ],
+            "parentId": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You are a email notification agent. You must ask the user whether he/she wishes to notify his/her manager.\nIf so, send this info to the EmailAssistant asking to write a formal email that will work remotely for to his/her manager. Add Work Remotely as title\n\nUse existing tools\n"
+              }
+            ],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1749141535607DnrcLYBPfukhniBlFFQhO",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1749136652660mMueFuvlYubDZRXsn12RS",
+        "type": "model",
+        "name": "gpt-4.1",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-05T15:17:32.660Z",
+        "updatedAt": "2025-06-05T15:18:05.860Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-1749137464976KdNlceIYqbIqodZEIq6xx",
+        "type": "tool",
+        "name": "shared",
+        "description": "Global storage with user and department database.",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-05T15:31:04.976Z",
+        "updatedAt": "2025-06-05T15:35:04.588Z",
+        "data": {
+          "content": "# Databases\nUSER_DATABASE = {\n    \"istella\": {\n        \"full_name\": \"Stella Ioannidou\",\n        \"department\": \"HR\",\n    },\n    \"laztoum\": {\n        \"full_name\": \"Lazaros Toumanidis\",\n        \"department\": \"RnD\",\n    },\n}\nDEPARTMENT_DATABASE = {\n    \"HR\": {\n        \"manager\": \"Styliani Ioannidou\",\n        \"manager_email\":\"manager_1@example.com\",\"max_remote_days\": 4,\n        \"dep_address\": \"23 Kifisias St, Athens, PA 12345\",\n    },\n    \"RnD\": {\n        \"manager\": \"Panagiotis Kasnesis\",\n        \"manager_email\": \"manager_1@example.com\",\"max_remote_days\": 10,\n         \"dep_address\": \"56 Ermou St, Athens, PA 12346\",\n    },\n}",
+          "toolType": "shared",
+          "secrets": {}
+        }
+      },
+      {
+        "id": "wt-1749137734778U6NdqMNrpwnhoh6VABjkY",
+        "type": "tool",
+        "name": "remote_days",
+        "description": "remote days",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-05T15:35:34.778Z",
+        "updatedAt": "2025-06-05T16:00:41.682Z",
+        "data": {
+          "content": "def remote_days(days: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Record the number of remote days in the workflow context\"\"\"\n    context_variables[\"remote_days\"] = days\n    context_variables[\"has_defined_days\"] = True\n    return ReplyResult(\n        context_variables=context_variables,\n        message=f\"Number of remote days recorded: {days}\",\n    )",
+          "toolType": "custom",
+          "secrets": {}
+        }
+      },
+      {
+        "id": "wt-1749137861540RC8w5cYobGP5YGK_XCCZ4",
+        "type": "tool",
+        "name": "login_by_username",
+        "description": "login_by_username",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-05T15:37:41.540Z",
+        "updatedAt": "2025-06-05T18:52:55.408Z",
+        "data": {
+          "content": "from autogen.agentchat.group import ContextVariables, ReplyResult\n\ndef login_by_username(username: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Get and log the employee in by their username\"\"\"\n    if username in USER_DATABASE:\n        department_name = USER_DATABASE[username][\"department\"]\n        context_variables[\"user_name\"] = USER_DATABASE[username][\"full_name\"]\n        context_variables[\"department\"] = department_name\n        department = DEPARTMENT_DATABASE[department_name]\n        context_variables[\"logged_in_username\"] = username\n        context_variables[\"logged_in\"] = True\n        context_variables[\"requires_login\"] = False\n        context_variables[\"defined_department\"] = True\n        context_variables[\"manager_name\"] = department['manager']\n        context_variables[\"manager_email\"] = department['manager_email']\n        context_variables[\"max_remote_days\"] = department[\"max_remote_days\"]\n        return ReplyResult(\n            context_variables=context_variables,\n            message=\"The user is authenticated, continue\",\n        )\n    return ReplyResult(\n        context_variables=context_variables,\n        message=f\"User {username} not found. Please ask for the correct username.\",\n    )",
+          "toolType": "custom",
+          "secrets": {}
+        }
+      },
+      {
+        "id": "wt-174913811024768YAYVxJLTbs9KwjuR3Do",
+        "type": "tool",
+        "name": "check_remote_policy",
+        "description": "check_remote_policy",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-05T15:41:50.247Z",
+        "updatedAt": "2025-06-05T18:54:38.290Z",
+        "data": {
+          "content": "def check_remote_policy(remote_days: int, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Check if the order ID is valid\"\"\"\n    # Restricts order to checking to the logged in user\n    if context_variables[\"logged_in_username\"] and context_variables[\"defined_department\"]:\n        department = context_variables[\"department\"]\n        if DEPARTMENT_DATABASE[department][\"max_remote_days\"] >= remote_days:\n            context_variables[\"days_approved\"]=True\n            return ReplyResult(\n                    context_variables=context_variables,\n                     message=f\"Requested remote dates are approved.\")\n    return ReplyResult(\n        context_variables=context_variables,\n        message=f\"The number {remote_days} of requested remote days is not compliant with your departments policy. Please ask for less or ask to notify your manager.\"\n    )",
+          "toolType": "custom",
+          "secrets": {}
+        }
+      },
+      {
+        "id": "wt-17491399413221MpN5WhhjR6-UuTaFqvvz",
+        "type": "tool",
+        "name": "wants_to_notify",
+        "description": "wants_to_notify",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-05T16:12:21.322Z",
+        "updatedAt": "2025-06-05T16:16:07.849Z",
+        "data": {
+          "content": "def wants_to_notify(notify_manager: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Check if the users wants to notify the department's manager.\"\"\"\n    if context_variables[\"logged_in_username\"] and notify_manager:\n        context_variables[\"notify_manager\"]=True\n        manager_name=context_variables[\"manager_name\"]\n        manager_email=context_variables[\"manager_email\"]\n        return ReplyResult(\n            context_variables=context_variables,\n            message=f\"An email will be sent to your manager {manager_name} with email {manager_email}\")\n    return ReplyResult(\n        context_variables=context_variables,\n        message=\"The user doesn't want to notify the manager\",\n    )",
+          "toolType": "custom",
+          "secrets": {}
+        }
+      },
+      {
+        "id": "wt-1749140208831NQwVOaoJXUI8kb7Y1dFy7",
+        "type": "tool",
+        "name": "gmail_send_function",
+        "description": "A new tool for sending emails",
+        "tags": [],
+        "requirements": [
+          "langchain-google-community[gmail]"
+        ],
+        "createdAt": "2025-06-05T16:16:48.831Z",
+        "updatedAt": "2025-06-05T16:30:22.958Z",
+        "data": {
+          "content": "import os\nimport base64\nfrom email.mime.text import MIMEText\nfrom googleapiclient.discovery import build\nfrom google_auth_oauthlib.flow import InstalledAppFlow\nfrom google.auth.transport.requests import Request\nfrom google.oauth2.credentials import Credentials\nfrom typing import Optional, Any\n\ndef gmail_send_function(\n    message_text: str,\n    recipient_email: str,\n    context_variables: ContextVariables,\n    subject: str = \"\",\n    sender_email: str = \"me\") -> ReplyResult:\n    \"\"\"Send an email using Gmail API.\n\n    Args:\n        message_text (str): The body of the email\n        recipient_email (str): Email address of the recipient\n        subject (str, optional): Subject of the email. Defaults to \"\".\n        sender_email (str, optional): Email address of sender. Defaults to \"me\".\n    Returns:\n        str: A message indicating success or failure\n    \"\"\"\n    try:\n        # Gmail API setup directly within the function\n        SCOPES = [\n            'https://mail.google.com/',  # Full access to Gmail account\n            'https://www.googleapis.com/auth/gmail.send',  # Send-only access\\\n        ]\n\n        creds = None\n        # Try to load existing credentials if available\n        token_path = 'token.json'\n        # Check if token.json exists and contains valid credentials\n        if os.path.exists(token_path):\n            try:\n                with open(token_path, 'r') as token_file:\n                    token_data = json.load(token_file)\n                creds = Credentials.from_authorized_user_info(token_data, SCOPES)\n            except Exception as e:\n                print(f\"Error loading token file: {str(e)}\")\n       \n        # Check if credentials need to be refreshed or created\n        if not creds or not creds.valid:\n            if creds and creds.expired and creds.refresh_token:\n                # Just refresh the token if possible\n                creds.refresh(Request())\n                print(\"Refreshed existing credentials\")\n            else:\n                # Only trigger OAuth flow if we have no valid credentials\n                print(\"No valid credentials found, starting OAuth flow...\")\n                flow = InstalledAppFlow.from_client_secrets_file(\n                    'C:/Users/pathToFile/credentials.json',\n                    SCOPES\n                )\n                creds = flow.run_local_server(port=0)\n                print(\"Successfully authenticated with Gmail API\")\n           \n            # Save the credentials for future runs\n            with open(token_path, 'w') as token:\n                token.write(creds.to_json())\n                print(f\"Saved credentials to {token_path}\")\n        else:\n            print(\"Using existing valid credentials\")\n       \n        # Build the service\n        service = build('gmail', 'v1', credentials=creds)\n       \n        # Create a more complete message\n        message = MIMEText(message_text)\n        message['to'] = recipient_email\n        message['subject'] = subject\n\n        # Encode the message\n        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()\n\n        # Create the message body\n        create_message = {\n            'raw': encoded_message\n        }\n\n        # Send the message\n        send_message = service.users().messages().send(\n            userId=sender_email,\n            body=create_message\n        ).execute()\n        context_variables['email_sent'] = True\n        return ReplyResult(\n            context_variables=context_variables,\n            message=f\"Email sent successfully to {recipient_email} with message ID: {send_message['id']}\"\n        )\n    except Exception as e:\n        # More verbose error handling\n        return ReplyResult(\n            context_variables=context_variables,\n            message=(\n                f\"Error sending email: {str(e)}\"\n                \"Make sure your Google Cloud Project has Gmail API enabled and the credentials.json file is configured correctly.\"\n            )\n        )\n",
+          "toolType": "custom",
+          "secrets": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1749138311592tqSBEN_VSwuXyeIh_AVuZ",
+        "type": "group",
+        "source": "wa-1749138304265WENRwI0j6hiCom_sg8h1z",
+        "target": "wa-17491383078790V9F04_JtcVqBrqQTSgz-",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "Start",
+          "order": -1,
+          "description": "User proxy to Manager",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "I would like to work remotely for a few days.",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1749141756353IoG_freZtGIenzbxUt7bS",
+        "type": "group",
+        "source": "17491413212505IQrhnb3_lF6J5VV6wWXS",
+        "target": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "Done",
+          "order": -1,
+          "description": "The user application for working few days remotely has been approved by the policy",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1749141759401lAnRJqIvR3tJwjwLj0_bB",
+        "type": "group",
+        "source": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "target": "17491413212505IQrhnb3_lF6J5VV6wWXS",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "HandleRequest",
+          "order": -1,
+          "description": "HR_triage_agent to remote_policy_agent",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "If the customer is logged in, continue with the policy agent, else transfer to the authentication agent."
+          },
+          "available": {
+            "type": "string",
+            "value": "logged_in"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-17491417678180LKK-ngFEUO7OnVtxbNfG",
+        "type": "group",
+        "source": "17491411894605D9qoX7d_Cie1Hlei0Y5D",
+        "target": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "IsAuthenticated",
+          "order": -1,
+          "description": "The user is logged in, continue with the request.",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "The user is logged in, continue with the request."
+          },
+          "available": {
+            "type": "string",
+            "value": "logged_in"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-17491417720692t_NLdjXcGaECKQmxQpy8",
+        "type": "group",
+        "source": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "target": "17491411894605D9qoX7d_Cie1Hlei0Y5D",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "NotAuthenticated",
+          "order": -1,
+          "description": "HR_triage_agent to authentication_agent",
+          "position": 5,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "The user is not logged in, authenticate the user."
+          },
+          "available": {
+            "type": "string",
+            "value": "requires_login"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1749141778468Oq_t9km4mxbLMwwxygDAN",
+        "type": "group",
+        "source": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "target": "1749141535607DnrcLYBPfukhniBlFFQhO",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "SendEmail",
+          "order": -1,
+          "description": "The user application for working few days remotely has been approved by the policy",
+          "position": 6,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "The user application for working few days remotely has been approved by the policy."
+          },
+          "available": {
+            "type": "string",
+            "value": "notify_manager"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1749141780969KuKM7hcH7Gd7yIAj2MH3e",
+        "type": "group",
+        "source": "1749141535607DnrcLYBPfukhniBlFFQhO",
+        "target": "wa-1749138377964rB7W0q0nGqPd-o3RBytCq",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "EmailSent",
+          "order": -1,
+          "description": "The user hasn't defined whether he/she would like to via email.",
+          "position": 7,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "The user hasn't defined whether he/she would like to via email."
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
+  }
+}

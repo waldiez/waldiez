@@ -58,7 +58,7 @@ EXAMPLES = [
     "13 - Captain/1 - Simple.waldiez",
     "13 - Captain/2 - With agent lib.waldiez",
     "13 - Captain/3 - With agent lib and tool lib.waldiez",
-    # "14 - HR Work Remotely/HR_remote.waldiez",
+    "14 - HR Work Remotely/HR_remote.waldiez",
 ]
 
 

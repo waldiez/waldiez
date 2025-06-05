@@ -15,7 +15,7 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const examplesPath = path.resolve(__dirname, "..", "examples");
 
-const examplesToSkip = ["14", "dev"];
+const examplesToSkip = ["dev"];
 
 const getDiffs = (filePath: string) => {
     const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
