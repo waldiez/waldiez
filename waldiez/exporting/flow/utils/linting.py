@@ -62,6 +62,13 @@ PYRIGHT_RULES = [
     "reportUnknownVariableType",
 ]
 
+MYPY_RULES = [
+    "import-untyped",
+    "no-redef",
+    "unused-ignore",
+    "import-not-found",
+]
+
 FLAKE8_RULES = ["E501"]
 
 
@@ -157,3 +164,31 @@ def get_pyright_ignore_comment(rules: list[str] | None = None) -> str:
         max_lines=3,
     )
     return output
+
+
+def get_mypy_ignore_comment(rules: list[str] | None = None) -> str:
+    """Get the mypy ignore comment string.
+
+    Parameters
+    ----------
+    rules : Optional[list[str]], optional
+        The mypy rules to ignore, by default None.
+
+    Returns
+    -------
+    str
+        The mypy ignore comment string.
+
+    Example
+    -------
+    ```python
+    >>> get_mypy_ignore_comment(["import-untyped", "no-redef"])
+
+    # mypy: disable-error-code="import-untyped,no-redef"
+    ```
+    """
+    if not rules:
+        rules = MYPY_RULES
+    prefix = "# mypy: disable-error-code="
+    content = ", ".join(rules)
+    return prefix + f'"{content}"'

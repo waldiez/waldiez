@@ -23,7 +23,6 @@ from .merger import ContentMerger
 from .utils import (
     generate_header,
     get_after_run_content,
-    # get_comment,
     get_np_no_nep50_handle,
     get_sqlite_out,
     get_start_logging,
