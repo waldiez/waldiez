@@ -62,7 +62,7 @@
 /* After work handoff - special styling */
 .flow-wrapper.light .after-work-handoff {
   background-color: #f8f9fa;
-  border-left: 3px solid #0d6efd;
+  border-left: 3px solid #0d6efd !important; /* Blue accent */
 }
 
 .flow-wrapper.light .handoff-info {
@@ -136,7 +136,7 @@
 /* After work handoff - special styling */
 .flow-wrapper.dark .after-work-handoff {
   background-color: #262626; /* Slightly darker background */
-  border-left: 3px solid #3b82f6; /* Blue accent */
+  border-left: 3px solid #3b82f6 !important; /* Blue accent */
 }
 
 .flow-wrapper.dark .handoff-info {

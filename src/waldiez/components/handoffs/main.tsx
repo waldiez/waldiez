@@ -117,10 +117,10 @@ export const Handoffs = memo((props: HandoffProps) => {
                             <div className="handoffs-section">
                                 <h4 className="handoffs-section-title">After Work</h4>
                                 <div
-                                    className="handoff-item after-work-handoff"
+                                    className="ordered-item after-work-handoff"
                                     data-testid="handoff-after-work-item"
                                 >
-                                    <div className="handoff-item-content">
+                                    <div className="ordered-item-content">
                                         <div className="handoff-type">AfterWork</div>
                                         <div className="handoff-target">
                                             <span className="target-label">Target:</span>{" "}
