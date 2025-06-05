@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# mypy: disable-error-code="import-untyped,no-redef,unused-ignore"
 # flake8: noqa: E501
 
 # pylint: disable=line-too-long,unknown-option-value,unused-argument,unused-import,unused-variable
 # pylint: disable=invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,missing-function-docstring
 # pylint: disable=missing-param-doc,missing-return-doc,ungrouped-imports,unnecessary-lambda-assignment
+
+# mypy: disable-error-code="import-untyped, no-redef, unused-ignore, import-not-found"
 
 # pyright: reportUnusedImport=false,reportMissingTypeStubs=false,reportUnknownArgumentType=false
 # pyright: reportUnknownMemberType=false,reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
@@ -16,7 +17,7 @@
 
 Group Chat with Retrieval Augmented Generation.
 
-Requirements: ag2[openai]==0.9.1post0, beautifulsoup4, chromadb>=0.5.23, ipython, markdownify, protobuf==5.29.3, pypdf, sentence_transformers
+Requirements: ag2[openai]==0.9.2, beautifulsoup4, chromadb>=0.5.23, ipython, markdownify, protobuf==5.29.3, pypdf, sentence_transformers
 Tags: RAG, FLAML
 🧩 generated with ❤️ by Waldiez.
 """

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# mypy: disable-error-code="import-untyped,no-redef,unused-ignore"
 # flake8: noqa: E501
 
 # pylint: disable=line-too-long,unknown-option-value,unused-argument,unused-import,unused-variable
 # pylint: disable=invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,missing-function-docstring
 # pylint: disable=missing-param-doc,missing-return-doc,ungrouped-imports,unnecessary-lambda-assignment
+
+# mypy: disable-error-code="import-untyped, no-redef, unused-ignore, import-not-found"
 
 # pyright: reportUnusedImport=false,reportMissingTypeStubs=false,reportUnknownArgumentType=false
 # pyright: reportUnknownMemberType=false,reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
@@ -16,7 +17,7 @@
 
 Enhanced Swarm Orchestration with AG2. Based on <https://docs.ag2.ai/latest/docs/use-cases/notebooks/notebooks/agentchat_swarm_enhanced>
 
-Requirements: ag2[openai]==0.9.1post0
+Requirements: ag2[openai]==0.9.2
 Tags: Swarm, Group
 🧩 generated with ❤️ by Waldiez.
 """

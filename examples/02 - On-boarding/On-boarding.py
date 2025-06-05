@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# mypy: disable-error-code="import-untyped,no-redef,unused-ignore"
 # flake8: noqa: E501
 
 # pylint: disable=line-too-long,unknown-option-value,unused-argument,unused-import,unused-variable
 # pylint: disable=invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,missing-function-docstring
 # pylint: disable=missing-param-doc,missing-return-doc,ungrouped-imports,unnecessary-lambda-assignment
+
+# mypy: disable-error-code="import-untyped, no-redef, unused-ignore, import-not-found"
 
 # pyright: reportUnusedImport=false,reportMissingTypeStubs=false,reportUnknownArgumentType=false
 # pyright: reportUnknownMemberType=false,reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false
@@ -16,7 +17,7 @@
 
 Sequential Chats and Customer Onboarding
 
-Requirements: ag2[anthropic]==0.9.1post0, ag2[openai]==0.9.1post0
+Requirements: ag2[anthropic]==0.9.2, ag2[openai]==0.9.2
 Tags: Sequential, Customer, On-boarding, Onboarding
 🧩 generated with ❤️ by Waldiez.
 """
