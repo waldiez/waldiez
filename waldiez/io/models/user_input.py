@@ -257,6 +257,6 @@ def extract_filename_from_path(path_or_url: str) -> str:
             filename = parsed.netloc
 
         return filename
-    else:
-        # Local file path
-        return os.path.basename(path_or_url)
+    # else:
+    # Local file path
+    return os.path.basename(path_or_url)

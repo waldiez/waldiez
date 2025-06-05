@@ -51,6 +51,10 @@ PYLINT_RULES = [
     "missing-return-doc",
     "ungrouped-imports",
     "unnecessary-lambda-assignment",
+    "too-many-arguments",
+    "too-many-locals",
+    "too-many-try-statements",
+    "broad-exception-caught",
 ]
 PYRIGHT_RULES = [
     "reportUnusedImport",
