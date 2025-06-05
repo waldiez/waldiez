@@ -11,6 +11,7 @@ something is wrong with latest changes in the codebase.
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -238,15 +239,66 @@ def validate_local_example(example_dir: str, example_path: str) -> None:
     LOG.warning("Example %s does not exist locally.", local_path)
 
 
-def git_restore_file(*files: str) -> None:
-    """Restore a file in the git staging area.
+def diff_has_only_id_changes(file_path: str) -> bool:
+    """Check if the diff of a file contains only 'id: ...' changes.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file.
+
+    Returns
+    -------
+    bool
+        True if the diff contains only 'id: ...' changes, False otherwise.
+    """
+    git_diff_cmd = ["git", "diff", "--", file_path]
+    result = subprocess.run(  # nosemgrep # nosec
+        git_diff_cmd,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    diff_output = result.stdout.strip()
+
+    # If no diff, return True (no changes)
+    if not diff_output.strip():
+        return True
+    # Split into lines and filter for actual changes (+ and - lines)
+    lines = diff_output.split("\n")
+
+    # Get only the actual change lines (+ and - lines, excluding file headers)
+    change_lines = [
+        line
+        for line in lines
+        if line.startswith(("+", "-")) and not line.startswith(("+++", "---"))
+    ]
+
+    # Pattern to match ID lines: starts with +/-, whitespace, "id": "value",
+    id_pattern = r'^[+-]\s+"id":\s+"[^"]+",?\s*$'
+
+    # Check if ALL change lines match the ID pattern
+    for line in change_lines:
+        if not re.match(id_pattern, line):
+            return False
+
+    return True
+
+
+def git_restore(*files: str) -> None:
+    """Restore files in the git staging area.
 
     Parameters
     ----------
     files : tuple[str, ...]
         The files to restore.
+
+    Raises
+    ------
+    RuntimeError
+        If the git restore command fails.
     """
-    git_restore_cmd = ["git", "restore", "--staged"] + list(files)
+    git_restore_cmd = ["git", "restore"] + list(files)
     result = subprocess.run(  # nosemgrep # nosec
         git_restore_cmd,
         capture_output=True,
@@ -254,7 +306,7 @@ def git_restore_file(*files: str) -> None:
         check=True,
     )
     if result.returncode != 0:
-        raise ExporterError(
+        raise RuntimeError(
             f"Failed to restore git staging area: {result.stderr}"
         )
 
@@ -277,12 +329,26 @@ def convert_local_example(example_path: str) -> None:
     exporter.export(output_py_path, True)
     if not os.path.exists(output_py_path):
         raise ExporterError(f"Failed to convert {example_path} to py")
+    try:
+        lint_example(output_py_path)
+    except Exception as e:
+        _log = f"Error linting local example {example_path}: {e}"
+        LOG.error(_log)
+        raise e
     output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
     exporter.export(output_ipynb_path, True)
     if not os.path.exists(output_ipynb_path):
         raise ExporterError(f"Failed to convert {example_path} to ipynb")
-    # let's git restore the ipynb (no need to commit the new "id: ..." changes)
-    # git_restore_file(output_ipynb_path)
+    try:
+        lint_example(output_ipynb_path)
+    except Exception as e:
+        _log = f"Error linting local example {example_path}: {e}"
+        LOG.error(_log)
+        raise e
+    # let's git restore the ipynb if needed (only cell id changes)
+    # (no need to commit the new "id: ..." changes)
+    if diff_has_only_id_changes(output_ipynb_path):
+        git_restore(output_ipynb_path)
 
 
 def lint_example(example_path: str) -> None:
@@ -351,14 +417,14 @@ def convert_local_examples() -> None:
             _log = f"Error converting local example {example}: {e}"
             LOG.error(_log)
             raise e
-        try:
-            lint_example(example_path.replace(".waldiez", ".py"))
-            lint_example(example_path.replace(".waldiez", ".ipynb"))
-        except Exception as e:
-            _log = f"Error linting local example {example}: {e}"
-            LOG.error(_log)
-            raise e
-        LOG.success(f"Local example {example} linted successfully.")
+        # try:
+        #     lint_example(example_path.replace(".waldiez", ".py"))
+        #     lint_example(example_path.replace(".waldiez", ".ipynb"))
+        # except Exception as e:
+        #     _log = f"Error linting local example {example}: {e}"
+        #     LOG.error(_log)
+        #     raise e
+        # LOG.success(f"Local example {example} linted successfully.")
 
 
 def handle_remote() -> None:
