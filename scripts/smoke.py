@@ -35,8 +35,10 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DOT_LOCAL = ROOT_DIR / ".local"
 DOT_LOCAL.mkdir(exist_ok=True, parents=True)
 
+BRANCH = "dev"
 REPO_URL = (
-    "https://raw.githubusercontent.com/waldiez/waldiez/refs/heads/next/examples"
+    "https://raw.githubusercontent.com/waldiez/waldiez/"
+    f"refs/heads/{BRANCH}/examples"
 )
 EXAMPLES = [
     "01 - Standup Comedians/Standup Comedians 1.waldiez",
@@ -99,7 +101,13 @@ def download_example(
         If the download fails.
     """
     # pylint: disable=line-too-long
-    response = http.request("GET", example_url)  # type: ignore[unused-ignore,no-untyped-call]  # noqa: E501
+    response = http.request(
+        "GET",
+        example_url,
+        headers={
+            "Cache-Control": "no-cache",
+        },
+    )  # type: ignore[unused-ignore,no-untyped-call]  # noqa: E501
     if response.status != 200:
         raise Exception(f"Failed to download {example_url}")
     flow_data = json.loads(response.data.decode("utf-8"))
@@ -230,6 +238,27 @@ def validate_local_example(example_dir: str, example_path: str) -> None:
     LOG.warning("Example %s does not exist locally.", local_path)
 
 
+def git_restore_file(*files: str) -> None:
+    """Restore a file in the git staging area.
+
+    Parameters
+    ----------
+    files : tuple[str, ...]
+        The files to restore.
+    """
+    git_restore_cmd = ["git", "restore", "--staged"] + list(files)
+    result = subprocess.run(  # nosemgrep # nosec
+        git_restore_cmd,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    if result.returncode != 0:
+        raise ExporterError(
+            f"Failed to restore git staging area: {result.stderr}"
+        )
+
+
 def convert_local_example(example_path: str) -> None:
     """Convert the local example to py and ipynb.
 
@@ -252,6 +281,8 @@ def convert_local_example(example_path: str) -> None:
     exporter.export(output_ipynb_path, True)
     if not os.path.exists(output_ipynb_path):
         raise ExporterError(f"Failed to convert {example_path} to ipynb")
+    # let's git restore the ipynb (no need to commit the new "id: ..." changes)
+    # git_restore_file(output_ipynb_path)
 
 
 def lint_example(example_path: str) -> None:
