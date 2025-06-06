@@ -6,8 +6,8 @@ import { InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldi
 import { useWaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic/hooks";
 import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
 
-export const WaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
-    const { data, edgeId, onTypeChange } = props;
+export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: WaldiezEdgeBasicTabProps) => {
+    const { data, edgeId, onTypeChange, skipDescription = false } = props;
     const {
         summaryRoleOptions,
         summaryOptions,
@@ -48,14 +48,18 @@ export const WaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
                 onChange={onLabelChange}
                 dataTestId={`edge-${edgeId}-label-input`}
             />
-            <label>Description:</label>
-            <TextareaInput
-                rows={2}
-                value={data.description}
-                placeholder="Enter a description"
-                onChange={onDescriptionChange}
-                data-testid={`edge-${edgeId}-description-input`}
-            />
+            {!skipDescription && (
+                <div className="margin-top-10">
+                    <label htmlFor={`edge-${edgeId}-description-input`}>Description:</label>
+                    <TextareaInput
+                        rows={2}
+                        value={data.description}
+                        placeholder="Enter a description"
+                        onChange={onDescriptionChange}
+                        data-testid={`edge-${edgeId}-description-input`}
+                    />
+                </div>
+            )}
             <label className="checkbox-label clear-history-checkbox">
                 <div className="checkbox-label-view">Clear History</div>
                 <input

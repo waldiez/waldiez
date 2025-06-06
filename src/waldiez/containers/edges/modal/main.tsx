@@ -15,7 +15,6 @@ import {
 } from "@waldiez/components";
 import { useWaldiezEdgeModal } from "@waldiez/containers/edges/modal/hooks";
 import { WaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic";
-import { WaldiezEdgeGroupTab } from "@waldiez/containers/edges/modal/tabs/group";
 import { WaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/message";
 import {
     DEFAULT_NESTED_CHAT_MESSAGE_METHOD_CONTENT,
@@ -213,10 +212,13 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                 {edgeType === "group" ? (
                     <TabItems activeTabIndex={activeTabIndex}>
                         <TabItem label="Properties" id={tabIds.properties}>
-                            <WaldiezEdgeGroupTab
+                            <WaldiezEdgeBasicTab
                                 edgeId={edgeId}
                                 data={edgeData}
+                                edgeType={edgeType}
+                                onTypeChange={onTypeChange}
                                 onDataChange={onDataChange}
+                                skipDescription={true}
                             />
                         </TabItem>
                         {groupChatType === "toManager" && (
