@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from pydantic import Field, field_validator
 from typing_extensions import Annotated, Literal
 
-from ....models.common import (
+from ...common import (
     WaldiezBase,
     WaldiezGroupOrNestedTarget,
     WaldiezHandoff,

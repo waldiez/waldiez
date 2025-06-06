@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pyright: reportCallIssue=false
 """Waldiez flow model."""
 
+from functools import cached_property
 from typing import Optional
 
 from pydantic import Field, model_validator
@@ -9,9 +11,10 @@ from typing_extensions import Annotated, Literal, Self
 
 from ..agents import WaldiezAgent, WaldiezGroupManager
 from ..chat import WaldiezChat
-from ..common import WaldiezBase, now
+from ..common import WaldiezBase, get_id, get_waldiez_version, now
+from .connection import WaldiezAgentConnection
 from .flow_data import WaldiezFlowData
-from .utils import WaldiezAgentConnection, id_factory, read_version
+from .naming import WaldiezUniqueNames, ensure_unique_names
 
 
 class WaldiezFlow(WaldiezBase):
@@ -46,13 +49,13 @@ class WaldiezFlow(WaldiezBase):
         Field(
             description="The ID of the flow",
             title="ID",
-            default_factory=id_factory,
+            default_factory=get_id,
         ),
     ]
     version: Annotated[
         str,
         Field(
-            default_factory=read_version,
+            default_factory=get_waldiez_version,
             description="The version waldiez that was used to create the flow",
             title="Version",
         ),
@@ -108,7 +111,7 @@ class WaldiezFlow(WaldiezBase):
     storage_id: Annotated[
         str,
         Field(
-            default_factory=id_factory,
+            default_factory=get_id,
             description="The storage ID of the flow (ignored, UI related)",
             title="Storage ID",
             alias="storageId",
@@ -176,6 +179,24 @@ class WaldiezFlow(WaldiezBase):
             self._ordered_flow = self._get_flow_order()
         return self._ordered_flow
 
+    @cached_property
+    def unique_names(self) -> WaldiezUniqueNames:
+        """Get the unique names for the flow.
+
+        Returns
+        -------
+        WaldiezUniqueNames
+            The unique names for the flow.
+        """
+        return ensure_unique_names(
+            flow_id=self.id,
+            flow_name=self.name,
+            flow_agents=self.data.agents.members,
+            flow_chats=self.data.chats,
+            flow_tools=self.data.tools,
+            flow_models=self.data.models,
+        )
+
     def get_agent_by_id(self, agent_id: str) -> WaldiezAgent:
         """Get the agent by ID.
 
@@ -208,9 +229,10 @@ class WaldiezFlow(WaldiezBase):
         WaldiezFlow
             The default flow.
         """
+        an_id = get_id()
         return cls(
-            id=id_factory(),
-            storage_id=id_factory(),
+            id=an_id,
+            storage_id=an_id,
             created_at=now(),
             updated_at=now(),
             type="flow",

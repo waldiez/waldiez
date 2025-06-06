@@ -98,6 +98,22 @@ def run(
         dir_okay=False,
         resolve_path=True,
     ),
+    uploads_root: Optional[Path] = typer.Option(  # noqa: B008
+        None,
+        help=(
+            "Path to the uploads root directory. "
+            "The directory will contain "
+            "any uploaded files."
+        ),
+        dir_okay=True,
+        resolve_path=True,
+    ),
+    structured: bool = typer.Option(  # noqa: B008
+        False,
+        help=(
+            "If set, running the flow will use structured io stream instead of the default 'input/print' "
+        ),
+    ),
     force: bool = typer.Option(  # noqa: B008
         False,
         help="Override the output file if it already exists.",
@@ -116,9 +132,13 @@ def run(
     waldiez = Waldiez.from_dict(data)
     runner = WaldiezRunner(waldiez)
     if waldiez.is_async:
-        results = anyio.run(runner.a_run, output_path, None)
+        results = anyio.run(runner.a_run, output_path, uploads_root, structured)
     else:
-        results = runner.run(output_path=output_path)
+        results = runner.run(
+            output_path=output_path,
+            uploads_root=uploads_root,
+            use_structured_io=structured,
+        )
     if isinstance(results, list):
         LOG.info("Results:")
         for result in results:

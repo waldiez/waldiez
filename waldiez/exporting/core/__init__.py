@@ -9,10 +9,6 @@ and extras for exportign flows.
 
 # Core base class
 # Context management
-from .__base__ import (
-    Exporter,
-)
-
 # Constants / defaults
 from .constants import (
     DEFAULT_AGENT_POSITION,
@@ -47,6 +43,9 @@ from .errors import (
     ExporterError,
     ExporterInitializationError,
     ExporterValidationError,
+)
+from .exporter import (
+    Exporter,
 )
 from .exporters import (
     ConfigurableExporter,
@@ -114,11 +113,8 @@ from .types import (
     NoExtras,
 )
 from .utils import (
-    ensure_unique_names,
     get_agent_llm_config_arg,
     get_comment,
-    get_valid_instance_name,
-    get_valid_python_variable_name,
 )
 from .validation import (
     ValidationError,
@@ -197,8 +193,4 @@ __all__ = [
     # utils
     "get_comment",
     "get_agent_llm_config_arg",
-    "get_valid_instance_name",
-    "get_valid_python_variable_name",
-    "ensure_unique_names",
-    "get_valid_instance_name",
 ]

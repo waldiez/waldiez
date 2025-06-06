@@ -15,7 +15,6 @@ from ..core import (
     ExportPosition,
     ExportResult,
     ImportPosition,
-    ensure_unique_names,
 )
 from ..models import ModelsExporter, create_models_exporter
 from ..tools import ToolsExporter, create_tools_exporter
@@ -60,9 +59,7 @@ class ExportOrchestrator:
 
     def _initialize(self) -> None:
         """Initialize the orchestrator with necessary configurations."""
-        unique_names = ensure_unique_names(
-            self.waldiez,
-        )
+        unique_names = self.waldiez.flow.unique_names
         self.flow_name = unique_names["flow_name"]
         self.agents = unique_names["agents"]
         self.models = unique_names["models"]

@@ -20,7 +20,12 @@ from .agents import (
     get_retrievechat_extra_requirements,
 )
 from .common import get_autogen_version
-from .flow import WaldiezAgentConnection, WaldiezFlow, get_flow_data
+from .flow import (
+    WaldiezAgentConnection,
+    WaldiezFlow,
+    WaldiezFlowInfo,
+    get_flow_data,
+)
 from .model import WaldiezModel, get_models_extra_requirements
 from .tool import WaldiezTool, get_tools_extra_requirements
 
@@ -75,7 +80,7 @@ class Waldiez:
             requirements=requirements,
         )
         validated = WaldiezFlow.model_validate(flow)
-        return cls(flow=validated)
+        return cls(flow=validated)  # pyright: ignore
 
     @classmethod
     def load(
@@ -212,6 +217,14 @@ class Waldiez:
         yield from self.flow.data.models
 
     @property
+    def info(self) -> WaldiezFlowInfo:
+        """Get the flow info."""
+        return WaldiezFlowInfo.create(
+            agents=self.agents,
+            agent_names=self.flow.unique_names["agent_names"],
+        )
+
+    @property
     def name(self) -> str:
         """Get the flow name."""
         return self.flow.name or "Waldiez Flow"
@@ -277,6 +290,8 @@ class Waldiez:
             )
         )
         return sorted(requirements)
+
+    # def get_flow_chat_info(self) ->
 
     def get_flow_env_vars(self) -> list[tuple[str, str]]:
         """Get the flow environment variables.

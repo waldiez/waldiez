@@ -26,6 +26,7 @@ from typing import (
 )
 
 from .exporter import WaldiezExporter
+from .io import StructuredIOStream
 from .models.waldiez import Waldiez
 from .running import (
     a_chdir,
@@ -186,6 +187,7 @@ class WaldiezRunner:
         printer: Callable[..., None],
     ) -> tuple[ModuleType, dict[str, str]]:
         self._exporter.export(Path(file_name))
+        # unique_names = self._exporter.context.get_unique_names()
         spec = importlib.util.spec_from_file_location(
             module_name, temp_dir / file_name
         )
@@ -196,12 +198,14 @@ class WaldiezRunner:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         printer("<Waldiez> - Starting workflow...")
+        printer(self.waldiez.info.model_dump_json())
         return module, old_vars
 
     def _run(
         self,
         output_path: Optional[Union[str, Path]],
         uploads_root: Optional[Union[str, Path]],
+        use_structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow.
@@ -212,6 +216,8 @@ class WaldiezRunner:
             The output path.
         uploads_root : Optional[Union[str, Path]]
             The runtime uploads root.
+        use_structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip the Mermaid diagram generation.
 
@@ -242,7 +248,15 @@ class WaldiezRunner:
                 module_name=module_name,
                 printer=printer,
             )
-            results = module.main()
+            if use_structured_io:
+                stream = StructuredIOStream(
+                    timeout=120,  # 2 minutes
+                    uploads_root=uploads_root,
+                )
+                with StructuredIOStream.set_default(stream):
+                    results = module.main()
+            else:
+                results = module.main()
             printer("<Waldiez> - Workflow finished")
             sys.path.pop(0)
             reset_env_vars(old_vars)
@@ -261,6 +275,7 @@ class WaldiezRunner:
         self,
         output_path: Optional[Union[str, Path]],
         uploads_root: Optional[Union[str, Path]],
+        use_structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow asynchronously."""
@@ -286,7 +301,15 @@ class WaldiezRunner:
                 module_name=module_name,
                 printer=printer,
             )
-            results = await module.main()
+            if use_structured_io:
+                stream = StructuredIOStream(
+                    timeout=120,  # 2 minutes
+                    uploads_root=uploads_root,
+                )
+                with StructuredIOStream.set_default(stream):
+                    results = await module.main()
+            else:
+                results = await module.main()
             sys.path.pop(0)
             reset_env_vars(old_vars)
         after_run(
@@ -304,6 +327,7 @@ class WaldiezRunner:
         self,
         output_path: Optional[Union[str, Path]] = None,
         uploads_root: Optional[Union[str, Path]] = None,
+        use_structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow.
@@ -314,6 +338,9 @@ class WaldiezRunner:
             The output path, by default None.
         uploads_root : Optional[Union[str, Path]], optional
             The uploads root, to get user-uploaded files, by default None.
+        use_structured_io : bool, optional
+            Whether to use structured IO instead of the default 'input/print',
+            by default False.
         skip_mmd : bool, optional
             Whether to skip the Mermaid diagram generation, by default False.
 
@@ -336,6 +363,7 @@ class WaldiezRunner:
                     self._a_run,
                     output_path,
                     uploads_root,
+                    use_structured_io,
                     skip_mmd,
                 )
         if self._running is True:
@@ -343,7 +371,12 @@ class WaldiezRunner:
         self._running = True
         file_path = output_path or self._file_path
         try:
-            return self._run(file_path, uploads_root, skip_mmd)
+            return self._run(
+                file_path,
+                uploads_root=uploads_root,
+                use_structured_io=use_structured_io,
+                skip_mmd=skip_mmd,
+            )
         finally:
             self._running = False
 
@@ -351,6 +384,7 @@ class WaldiezRunner:
         self,
         output_path: Optional[Union[str, Path]] = None,
         uploads_root: Optional[Union[str, Path]] = None,
+        use_structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow asynchronously.
@@ -361,6 +395,9 @@ class WaldiezRunner:
             The output path, by default None.
         uploads_root : Optional[Union[str, Path]], optional
             The uploads root, to get user-uploaded files, by default None.
+        use_structured_io : bool, optional
+            Whether to use structured IO instead of the default 'input/print',
+            by default False.
         skip_mmd : bool, optional
             Whether to skip the Mermaid diagram generation, by default False.
 
@@ -379,6 +416,11 @@ class WaldiezRunner:
         self._running = True
         file_path = output_path or self._file_path
         try:
-            return await self._a_run(file_path, uploads_root, skip_mmd)
+            return await self._a_run(
+                file_path,
+                uploads_root=uploads_root,
+                use_structured_io=use_structured_io,
+                skip_mmd=skip_mmd,
+            )
         finally:
             self._running = False

@@ -281,3 +281,63 @@ class WaldiezFlowData(WaldiezBase):
             is_async=False,
             cache_seed=42,
         )
+
+
+def get_flow_data(
+    data: dict[str, Any],
+    flow_id: Optional[str] = None,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    tags: Optional[list[str]] = None,
+    requirements: Optional[list[str]] = None,
+) -> dict[str, Any]:
+    """Get the flow from the passed data dict.
+
+    Parameters
+    ----------
+    data : dict[str, Any]
+        The data dict.
+    flow_id : Optional[str], optional
+        The flow ID, by default None.
+    name : Optional[str], optional
+        The flow name, by default None.
+    description : Optional[str], optional
+        The flow description, by default None.
+    tags : Optional[list[str]], optional
+        The flow tags, by default None.
+    requirements : Optional[list[str]], optional
+        The flow requirements, by default None.
+
+    Returns
+    -------
+    dict[str, Any]
+        The flow data.
+
+    Raises
+    ------
+    ValueError
+        If the flow type is not "flow".
+    """
+    item_type = data.get("type", "flow")
+    if item_type != "flow":
+        # empty flow (from exported model/tool ?)
+        raise ValueError(f"Invalid flow type: {item_type}")
+    from_args: dict[str, Any] = {
+        "id": flow_id,
+        "name": name,
+        "description": description,
+        "tags": tags,
+        "requirements": requirements,
+    }
+    for key, value in from_args.items():
+        if value:
+            data[key] = value
+    if "name" not in data:
+        data["name"] = "Waldiez Flow"
+    if "description" not in data:
+        data["description"] = "Waldiez Flow description"
+    if "tags" not in data:
+        data["tags"] = []
+    if "requirements" not in data:
+        data["requirements"] = []
+    return data

@@ -10,7 +10,6 @@ from typing import Any, Optional, TypeVar
 from .enums import (
     ImportPosition,
 )
-from .utils import get_valid_python_variable_name
 
 # Generic type for extras
 Extras = TypeVar("Extras")
@@ -256,7 +255,6 @@ class ExportConfig:
     is_async: bool = False
     output_directory: Optional[str | Path] = None
     cache_seed: Optional[int] = None
-    flow_var_name: str = field(init=False)
 
     @property
     def for_notebook(self) -> bool:
@@ -277,7 +275,6 @@ class ExportConfig:
             raise ValueError("ExportConfig description cannot be empty")
         if not self.output_extension:
             raise ValueError("ExportConfig output_extension cannot be empty")
-        self.flow_var_name = get_valid_python_variable_name(self.name)
 
     def update(self, **kwargs: Any) -> None:
         """Update the export configuration with new values.

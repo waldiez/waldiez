@@ -10,6 +10,7 @@ from .core.errors import (
     ExporterInitializationError,
     ExporterValidationError,
 )
+from .core.extras.flow_extras import FlowExtras
 from .flow import FlowExporter, create_flow_exporter
 from .models import ModelsExporter, create_models_exporter
 from .tools import ToolsExporter, create_tools_exporter
@@ -17,6 +18,7 @@ from .tools import ToolsExporter, create_tools_exporter
 __all__ = [
     "AgentExporter",
     "ChatsExporter",
+    "FlowExtras",
     "FlowExporter",
     "ModelsExporter",
     "ToolsExporter",

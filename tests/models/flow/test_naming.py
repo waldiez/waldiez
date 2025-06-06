@@ -4,55 +4,28 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,line-too-long
 # pylint: disable=missing-function-docstring,missing-param-doc,missing-return-doc
 # pylint: disable=no-self-use
-"""Test waldiez.exporting.core.utils.naming.*."""
+"""Test waldiez.models.flow.naming.*."""
 
 from unittest.mock import Mock
 
-from waldiez.exporting.core.utils.naming import (
-    MAX_VARIABLE_LENGTH,
-    ensure_unique_names,
-    get_valid_instance_name,
-    get_valid_python_variable_name,
-)
 from waldiez.models import (
+    MAX_VARIABLE_LENGTH,
     Waldiez,
     WaldiezAgent,
     WaldiezChat,
+    WaldiezFlow,
     WaldiezModel,
     WaldiezTool,
+    WaldiezUniqueNames,
+    ensure_unique_names,
 )
 
-
-def create_mock_agent(agent_id: str, name: str) -> WaldiezAgent:
-    """Create a mock agent for testing."""
-    agent = Mock(spec=WaldiezAgent)
-    agent.id = agent_id
-    agent.name = name
-    return agent
-
-
-def create_mock_model(model_id: str, name: str) -> WaldiezModel:
-    """Create a mock model for testing."""
-    model = Mock(spec=WaldiezModel)
-    model.id = model_id
-    model.name = name
-    return model
-
-
-def create_mock_tool(tool_id: str, name: str) -> WaldiezTool:
-    """Create a mock tool for testing."""
-    tool = Mock(spec=WaldiezTool)
-    tool.id = tool_id
-    tool.name = name
-    return tool
-
-
-def create_mock_chat(chat_id: str, name: str) -> WaldiezChat:
-    """Create a mock chat for testing."""
-    chat = Mock(spec=WaldiezChat)
-    chat.id = chat_id
-    chat.name = name
-    return chat
+from ..common.test_naming import (
+    create_mock_agent,
+    create_mock_chat,
+    create_mock_model,
+    create_mock_tool,
+)
 
 
 def create_mock_waldiez(
@@ -65,251 +38,49 @@ def create_mock_waldiez(
 ) -> Waldiez:
     """Create a mock Waldiez instance for testing."""
     waldiez = Mock(spec=Waldiez)
-    waldiez.agents = agents or []
-    waldiez.models = models or []
-    waldiez.tools = tools or []
+    # waldiez.agents = agents or []
+    # waldiez.models = models or []
+    # waldiez.tools = tools or []
 
     # Mock flow with nested data structure
-    waldiez.flow = Mock()
+    waldiez.flow = Mock(spec=WaldiezFlow)
     waldiez.flow.id = flow_id
     waldiez.flow.name = flow_name
     waldiez.flow.data = Mock()
+    waldiez.flow.data.agents.members = agents or []
+    waldiez.flow.data.models = models or []
+    waldiez.flow.data.tools = tools or []
     waldiez.flow.data.chats = chats or []
 
     return waldiez
 
 
-class TestGetValidPythonVariableName:
-    """Test the get_valid_python_variable_name function."""
-
-    def test_simple_valid_name(self) -> None:
-        """Test with already valid Python variable names."""
-        assert get_valid_python_variable_name("hello") == "hello"
-        assert get_valid_python_variable_name("agent_1") == "agent_1"
-        assert get_valid_python_variable_name("myVariable") == "myvariable"
-
-    def test_name_with_spaces(self) -> None:
-        """Test names with spaces are converted to underscores."""
-        assert get_valid_python_variable_name("hello world") == "hello_world"
-        assert (
-            get_valid_python_variable_name("my agent name") == "my_agent_name"
-        )
-
-    def test_name_with_special_characters(self) -> None:
-        """Test names with special characters."""
-        assert get_valid_python_variable_name("hello-world") == "hello_world"
-        assert get_valid_python_variable_name("agent@123") == "agent_123"
-        assert get_valid_python_variable_name("test.name") == "test_name"
-        assert get_valid_python_variable_name("agent#1") == "agent_1"
-
-    def test_arrow_operators(self) -> None:
-        """Test arrow operators are converted to meaningful words."""
-        assert get_valid_python_variable_name("agent->model") == "agenttomodel"
-        assert get_valid_python_variable_name("model=>agent") == "modeltoagent"
-        assert (
-            get_valid_python_variable_name("agent<-model") == "agentfrommodel"
-        )
-        assert (
-            get_valid_python_variable_name("model<=agent") == "modelfromagent"
-        )
-
-    def test_name_starting_with_digit(self) -> None:
-        """Test names starting with digits."""
-        assert get_valid_python_variable_name("123agent") == "w_123agent"
-        assert get_valid_python_variable_name("456test") == "w_456test"
-
-    def test_name_starting_with_underscore(self) -> None:
-        """Test names starting with underscore get prefix."""
-        assert get_valid_python_variable_name("_private") == "w_private"
-        assert get_valid_python_variable_name("__dunder") == "w__dunder"
-
-    def test_empty_name(self) -> None:
-        """Test empty names get default prefix."""
-        assert get_valid_python_variable_name("") == "w_"
-        assert get_valid_python_variable_name("   ") == "w_"  # All spaces
-
-    def test_custom_prefix(self) -> None:
-        """Test custom prefix parameter."""
-        assert (
-            get_valid_python_variable_name("123test", prefix="custom")
-            == "custom_123test"
-        )
-        assert (
-            get_valid_python_variable_name("_private", prefix="my")
-            == "my_private"
-        )
-        assert get_valid_python_variable_name("", prefix="empty") == "empty_"
-
-    def test_max_length_truncation(self) -> None:
-        """Test maximum length truncation."""
-        long_name = "a" * 100
-        result = get_valid_python_variable_name(long_name, max_length=10)
-        assert len(result) == 10
-        assert result == "a" * 10
-
-    def test_max_length_with_special_chars(self) -> None:
-        """Test max length with special character replacement."""
-        long_name = "hello world this is a very long name"
-        result = get_valid_python_variable_name(long_name, max_length=15)
-        assert len(result) == 15
-        assert result == "hello_world_thi"
-
-    def test_default_max_length(self) -> None:
-        """Test default max length is applied."""
-        long_name = "a" * 100
-        result = get_valid_python_variable_name(long_name)
-        assert len(result) == MAX_VARIABLE_LENGTH
-
-    def test_case_conversion(self) -> None:
-        """Test that names are converted to lowercase."""
-        assert get_valid_python_variable_name("HelloWorld") == "helloworld"
-        assert get_valid_python_variable_name("AGENT_NAME") == "agent_name"
-        assert get_valid_python_variable_name("CamelCase") == "camelcase"
-
-    def test_complex_combinations(self) -> None:
-        """Test complex combinations of transformations."""
-        assert (
-            get_valid_python_variable_name("Agent->Model@123")
-            == "agenttomodel_123"
-        )
-        assert (
-            get_valid_python_variable_name("123_Agent=>Test")
-            == "w_123_agenttotest"
-        )
-        assert (
-            get_valid_python_variable_name("  Special@Name#123  ")
-            == "w__special_name_123"
-        )
+def _get_unique_names(
+    waldiez: Waldiez,
+    max_length: int = MAX_VARIABLE_LENGTH,
+    flow_name_max_length: int = 20,
+) -> WaldiezUniqueNames:
+    """Extract unique names from a Waldiez instance."""
+    result = ensure_unique_names(
+        flow_name=waldiez.flow.name,
+        flow_id=waldiez.flow.id,
+        flow_agents=waldiez.flow.data.agents.members,
+        flow_models=waldiez.flow.data.models,
+        flow_tools=waldiez.flow.data.tools,
+        flow_chats=waldiez.flow.data.chats,
+        max_length=max_length,
+        flow_name_max_length=flow_name_max_length,
+    )
+    return result
 
 
-class TestGetValidInstanceName:
-    """Test the get_valid_instance_name function."""
-
-    def test_new_instance_simple_name(self) -> None:
-        """Test adding a new instance with simple name."""
-        current_names = {"existing_id": "existing_name"}
-        instance = ("new_id", "simple_name")
-
-        result = get_valid_instance_name(instance, current_names)
-
-        expected = {"existing_id": "existing_name", "new_id": "simple_name"}
-        assert result == expected
-
-    def test_existing_instance_id_no_change(self) -> None:
-        """Test that existing instance IDs are not modified."""
-        current_names = {"existing_id": "existing_name"}
-        instance = ("existing_id", "different_name")
-
-        result = get_valid_instance_name(instance, current_names)
-
-        # Should return unchanged since ID already exists
-        assert result == current_names
-
-    def test_name_conflict_gets_prefix(self) -> None:
-        """Test that name conflicts get resolved with prefix."""
-        current_names = {"id1": "test_name"}
-        instance = ("new_id", "test_name")  # Same name
-
-        result = get_valid_instance_name(instance, current_names, prefix="w")
-
-        expected = {"id1": "test_name", "new_id": "w_test_name"}
-        assert result == expected
-
-    def test_name_conflict_with_prefix_gets_index(self) -> None:
-        """Test that prefix conflicts get resolved with index."""
-        current_names = {"id1": "test_name", "id2": "w_test_name"}
-        instance = ("new_id", "test_name")
-
-        result = get_valid_instance_name(instance, current_names, prefix="w")
-
-        expected = {
-            "id1": "test_name",
-            "id2": "w_test_name",
-            "new_id": "w_test_name_1",
-        }
-        assert result == expected
-
-    def test_multiple_index_conflicts(self) -> None:
-        """Test multiple index conflicts are resolved correctly."""
-        current_names = {
-            "id1": "test_name",
-            "id2": "w_test_name",
-            "id3": "w_test_name_1",
-            "id4": "w_test_name_2",
-        }
-        instance = ("new_id", "test_name")
-
-        result = get_valid_instance_name(instance, current_names, prefix="w")
-
-        expected = current_names.copy()
-        expected["new_id"] = "w_test_name_3"
-        assert result == expected
-
-    def test_invalid_python_name_gets_cleaned(self) -> None:
-        """Test that invalid Python names get cleaned."""
-        current_names: dict[str, str] = {}
-        instance = ("new_id", "123invalid-name@test")
-
-        result = get_valid_instance_name(instance, current_names, prefix="w")
-
-        expected = {"new_id": "w_123invalid_name_test"}
-        assert result == expected
-
-    def test_custom_prefix(self) -> None:
-        """Test custom prefix parameter."""
-        current_names: dict[str, str] = {"id1": "test_name"}
-        instance = ("new_id", "test_name")
-
-        result = get_valid_instance_name(
-            instance, current_names, prefix="custom"
-        )
-
-        expected = {"id1": "test_name", "new_id": "custom_test_name"}
-        assert result == expected
-
-    def test_max_length_parameter(self) -> None:
-        """Test max_length parameter is applied."""
-        current_names: dict[str, str] = {}
-        long_name = "a" * 100
-        instance = ("new_id", long_name)
-
-        result = get_valid_instance_name(instance, current_names, max_length=10)
-
-        # Name should be truncated before processing
-        expected_name = "a" * 10
-        assert result == {"new_id": expected_name}
-
-    def test_empty_current_names(self) -> None:
-        """Test with empty current_names dictionary."""
-        current_names: dict[str, str] = {}
-        instance = ("new_id", "test_name")
-
-        result = get_valid_instance_name(instance, current_names)
-
-        assert result == {"new_id": "test_name"}
-
-    def test_original_dict_not_modified(self) -> None:
-        """Test that original current_names dict is not modified."""
-        original_names: dict[str, str] = {"id1": "name1"}
-        current_names = original_names.copy()
-        instance = ("new_id", "test_name")
-
-        result = get_valid_instance_name(instance, current_names)
-
-        # Original should be unchanged
-        assert original_names == {"id1": "name1"}
-        # Result should be different
-        assert result == {"id1": "name1", "new_id": "test_name"}
-
-
-class TestEnsureUniqueNames:
+class TestEnsureWaldiezUniqueNames:
     """Test the ensure_unique_names function."""
 
     def test_empty_waldiez(self) -> None:
         """Test with empty Waldiez instance."""
         waldiez = create_mock_waldiez()
-
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert not result["agent_names"]
         assert not result["model_names"]
@@ -326,7 +97,7 @@ class TestEnsureUniqueNames:
         agent = create_mock_agent("agent1", "Test Agent")
         waldiez = create_mock_waldiez(agents=[agent])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["agent_names"] == {"agent1": "test_agent"}
         assert result["agents"] == [agent]
@@ -337,7 +108,7 @@ class TestEnsureUniqueNames:
         model = create_mock_model("model1", "GPT-4")
         waldiez = create_mock_waldiez(models=[model])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["model_names"] == {"model1": "gpt_4"}
         assert result["models"] == [model]
@@ -347,7 +118,7 @@ class TestEnsureUniqueNames:
         tool = create_mock_tool("tool1", "Calculator")
         waldiez = create_mock_waldiez(tools=[tool])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["tool_names"] == {"tool1": "calculator"}
         assert result["tools"] == [tool]
@@ -357,7 +128,7 @@ class TestEnsureUniqueNames:
         chat = create_mock_chat("chat1", "Main Chat")
         waldiez = create_mock_waldiez(chats=[chat])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["chat_names"] == {"chat1": "main_chat"}
         assert result["chats"] == [chat]
@@ -377,7 +148,7 @@ class TestEnsureUniqueNames:
             flow_name="test",
         )
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Each should get its type prefix since names conflict
         assert result["agent_names"]["agent1"] == "test"  # First gets the name
@@ -396,7 +167,7 @@ class TestEnsureUniqueNames:
 
         waldiez = create_mock_waldiez(agents=[agent1, agent2, agent3])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["agent_names"]["agent1"] == "assistant"
         assert result["agent_names"]["agent2"] == "wa_assistant"
@@ -429,7 +200,7 @@ class TestEnsureUniqueNames:
             flow_name="Complex Flow",
         )
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Check all components are present
         assert len(result["agent_names"]) == 2
@@ -455,7 +226,7 @@ class TestEnsureUniqueNames:
         )
         waldiez = create_mock_waldiez(agents=[agent])
 
-        result = ensure_unique_names(waldiez, max_length=10)
+        result = _get_unique_names(waldiez, max_length=10)
 
         # Name should be truncated to 10 characters
         assert len(result["agent_names"]["agent1"]) == 9
@@ -467,7 +238,7 @@ class TestEnsureUniqueNames:
             flow_name="Very Long Flow Name That Exceeds Limit"
         )
 
-        result = ensure_unique_names(waldiez, flow_name_max_length=8)
+        result = _get_unique_names(waldiez, flow_name_max_length=8)
 
         # Flow name should be truncated to 8 characters
         assert len(result["flow_name"]) == 8
@@ -480,7 +251,7 @@ class TestEnsureUniqueNames:
 
         waldiez = create_mock_waldiez(agents=[agent], models=[model])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["agent_names"]["agent1"] == "wa_123_invalid_name"
         assert result["model_names"]["model1"] == "modeltoagent"
@@ -492,7 +263,7 @@ class TestEnsureUniqueNames:
 
         waldiez = create_mock_waldiez(agents=[agent], models=[model])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Check all required keys exist
         required_keys = [
@@ -531,7 +302,7 @@ class TestEdgeCases:
 
         waldiez = create_mock_waldiez(agents=[agent], models=[model])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         assert result["agent_names"]["agent1"] == "wa_"
         assert result["model_names"]["model1"] == "wm_"
@@ -543,7 +314,7 @@ class TestEdgeCases:
 
         waldiez = create_mock_waldiez(agents=[agent])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Should be truncated to default max length
         assert len(result["agent_names"]["agent1"]) == MAX_VARIABLE_LENGTH
@@ -553,7 +324,7 @@ class TestEdgeCases:
         agent = create_mock_agent("agent1", "Agënt Tést 🤖")
         waldiez = create_mock_waldiez(agents=[agent])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Unicode should be replaced with underscores
         assert result["agent_names"]["agent1"] == "ag_nt_t_st"
@@ -563,7 +334,7 @@ class TestEdgeCases:
         agent = create_mock_agent("agent1", "@#$%^&*()")
         waldiez = create_mock_waldiez(agents=[agent])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Should get default prefix since all chars are invalid
         assert result["agent_names"]["agent1"] == "wa_"
@@ -573,7 +344,7 @@ class TestEdgeCases:
         agent = create_mock_agent("agent1", "123456")
         waldiez = create_mock_waldiez(agents=[agent])
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Should get prefix since starts with number
         assert result["agent_names"]["agent1"] == "wa_123456"
@@ -610,7 +381,7 @@ class TestIntegration:
             flow_name="AI Coding Assistant",
         )
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # Verify realistic output
         assert result["agent_names"]["user_proxy_1"] == "user_proxy"
@@ -634,7 +405,7 @@ class TestIntegration:
         agents = [create_mock_agent(f"agent_{i}", "Agent") for i in range(10)]
         waldiez = create_mock_waldiez(agents=agents)
 
-        result = ensure_unique_names(waldiez)
+        result = _get_unique_names(waldiez)
 
         # First should get the base name, others should get prefixes/indices
         assert result["agent_names"]["agent_0"] == "agent"

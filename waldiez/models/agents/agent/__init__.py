@@ -6,6 +6,7 @@ from .agent import WaldiezAgent
 from .agent_data import WaldiezAgentData
 from .agent_type import WaldiezAgentType
 from .code_execution import WaldiezAgentCodeExecutionConfig
+from .human_input_mode import WaldiezAgentHumanInputMode
 from .linked_tool import WaldiezAgentLinkedTool
 from .nested_chat import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
 from .termination_message import (
@@ -33,4 +34,5 @@ __all__ = [
     "WaldiezAgentType",
     "WaldiezAgentUpdateSystemMessage",
     "WaldiezAgentUpdateFunctionType",
+    "WaldiezAgentHumanInputMode",
 ]

@@ -10,6 +10,7 @@ from typing_extensions import Annotated, Literal, Self
 
 from ...common import WaldiezBase, WaldiezTransitionTarget, update_dict
 from .code_execution import WaldiezAgentCodeExecutionConfig
+from .human_input_mode import WaldiezAgentHumanInputMode
 from .linked_tool import WaldiezAgentLinkedTool
 from .nested_chat import WaldiezAgentNestedChat
 from .termination_message import WaldiezAgentTerminationMessage
@@ -75,7 +76,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ] = None
     human_input_mode: Annotated[
-        Literal["ALWAYS", "NEVER", "TERMINATE"],
+        WaldiezAgentHumanInputMode,
         Field(
             "NEVER",
             title="Human input mode",

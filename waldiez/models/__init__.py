@@ -15,6 +15,7 @@ from .agents import (
     WaldiezAgent,
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
+    WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentNestedChatMessage,
@@ -59,6 +60,7 @@ from .chat import (
     WaldiezChatType,
 )
 from .common import (
+    MAX_VARIABLE_LENGTH,
     WaldiezAgentTarget,
     WaldiezContextBasedCondition,
     WaldiezContextBasedTransition,
@@ -77,8 +79,19 @@ from .common import (
     WaldiezStringLLMCondition,
     WaldiezTransitionAvailability,
     WaldiezTransitionTarget,
+    get_autogen_version,
+    get_valid_instance_name,
+    get_valid_python_variable_name,
 )
-from .flow import WaldiezAgentConnection, WaldiezFlow, WaldiezFlowData
+from .flow import (
+    WaldiezAgentConnection,
+    WaldiezAgentInfo,
+    WaldiezFlow,
+    WaldiezFlowData,
+    WaldiezFlowInfo,
+    WaldiezUniqueNames,
+    ensure_unique_names,
+)
 from .model import (
     DEFAULT_BASE_URLS,
     WaldiezModel,
@@ -97,13 +110,20 @@ from .waldiez import Waldiez
 
 # pylint: disable=duplicate-code
 __all__ = [
+    "MAX_VARIABLE_LENGTH",
     "SHARED_TOOL_NAME",
     "DEFAULT_BASE_URLS",
+    "ensure_unique_names",
+    "get_autogen_version",
+    "get_valid_instance_name",
+    "get_valid_python_variable_name",
     "Waldiez",
     "WaldiezAgent",
     "WaldiezAgentCodeExecutionConfig",
     "WaldiezAgentConnection",
     "WaldiezAgentData",
+    "WaldiezAgentHumanInputMode",
+    "WaldiezAgentInfo",
     "WaldiezAgentLinkedTool",
     "WaldiezAgentNestedChat",
     "WaldiezAgentNestedChatMessage",
@@ -133,6 +153,7 @@ __all__ = [
     "WaldiezExpressionContextCondition",
     "WaldiezFlow",
     "WaldiezFlowData",
+    "WaldiezFlowInfo",
     "WaldiezGroupManager",
     "WaldiezGroupManagerData",
     "WaldiezGroupManagerSpeakers",
@@ -170,6 +191,7 @@ __all__ = [
     "WaldiezToolType",
     "WaldiezTransitionAvailability",
     "WaldiezTransitionTarget",
+    "WaldiezUniqueNames",
     "WaldiezUserProxy",
     "WaldiezUserProxyData",
 ]

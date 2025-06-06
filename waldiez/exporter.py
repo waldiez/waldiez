@@ -18,7 +18,7 @@ from jupytext.config import (  # type: ignore[import-untyped]
     JupytextConfiguration,
 )
 
-from .exporting import create_flow_exporter
+from .exporting import FlowExtras, create_flow_exporter
 from .models import Waldiez
 
 
@@ -29,6 +29,8 @@ class WaldiezExporter:
     ----------
         waldiez (Waldiez): The Waldiez instance.
     """
+
+    flow_extras: FlowExtras
 
     def __init__(self, waldiez: Waldiez) -> None:
         """Initialize the Waldiez exporter.
@@ -130,6 +132,7 @@ class WaldiezExporter:
             for_notebook=True,
             debug=debug,
         )
+        self.flow_extras = exporter.extras
         output = exporter.export()
         content_str = output.main_content
         if not content_str:
@@ -179,6 +182,7 @@ class WaldiezExporter:
             for_notebook=False,
             debug=debug,
         )
+        self.flow_extras = exporter.extras
         output = exporter.export()
         content = output.main_content
         if not content:
