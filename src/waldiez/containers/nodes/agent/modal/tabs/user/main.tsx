@@ -6,7 +6,8 @@ import { memo, useCallback } from "react";
 
 import { NumberInput, TabItem, TabItems, TextInput, TextareaInput } from "@waldiez/components";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
-import { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
+import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
+import { WaldiezAgentConnections, WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
 
 export const WaldiezAgentUserTabs: React.FC<{
     id: string;
@@ -16,8 +17,10 @@ export const WaldiezAgentUserTabs: React.FC<{
     flowId: string;
     isDarkMode: boolean;
     isModalOpen: boolean;
+    showNestedChatsTab: boolean;
+    agentConnections: WaldiezAgentConnections;
 }> = memo(props => {
-    const { id, flowId, data, tools, onDataChange } = props;
+    const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections } = props;
 
     const onNameChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +99,18 @@ export const WaldiezAgentUserTabs: React.FC<{
                         />
                     </div>
                 </TabItem>
+                {showNestedChatsTab && (
+                    <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-nested`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentNestedChats
+                                id={id}
+                                data={data as WaldiezNodeAgentData}
+                                onDataChange={onDataChange}
+                                agentConnections={agentConnections}
+                            />
+                        </div>
+                    </TabItem>
+                )}
             </TabItems>
         </div>
     );

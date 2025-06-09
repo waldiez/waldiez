@@ -4,7 +4,12 @@
  */
 import { XYPosition } from "@xyflow/react";
 
-import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezNodeAgentType } from "@waldiez/models";
+import {
+    WaldiezAgentConnections,
+    WaldiezNodeAgent,
+    WaldiezNodeAgentData,
+    WaldiezNodeAgentType,
+} from "@waldiez/models";
 
 export interface IWaldiezAgentStore {
     /**
@@ -87,16 +92,7 @@ export interface IWaldiezAgentStore {
             sourcesOnly?: boolean;
             targetsOnly?: boolean;
         },
-    ) => {
-        sources: {
-            nodes: WaldiezNodeAgent[];
-            edges: WaldiezEdge[];
-        };
-        targets: {
-            nodes: WaldiezNodeAgent[];
-            edges: WaldiezEdge[];
-        };
-    };
+    ) => WaldiezAgentConnections;
     /**
      * Get the members of a specific group.
      * @param groupId - The ID of the group.

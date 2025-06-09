@@ -186,6 +186,8 @@ export const WaldiezNodeAgentModalTabs = memo(
                     isModalOpen={isModalOpen}
                     data={data as WaldiezNodeAgentData}
                     tools={tools}
+                    showNestedChatsTab={showNestedChatsTab}
+                    agentConnections={agentConnections}
                     onDataChange={onDataChange}
                 />
             );
