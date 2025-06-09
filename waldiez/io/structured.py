@@ -3,6 +3,7 @@
 
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
+import ast
 import json
 import queue
 import sys
@@ -97,6 +98,27 @@ class StructuredIOStream(IOStream):
             The message to send.
         """
         message_dump = message.model_dump(mode="json")
+        if message_dump.get("type") == "text":
+            content_block = message_dump.get("content")
+            if (
+                isinstance(content_block, dict)
+                and "content" in content_block
+                and isinstance(content_block["content"], str)
+            ):
+                inner_content = content_block["content"]
+                # Check if the nested 'content' is a string
+                # (potentially double-dumped)
+                try:
+                    # Attempt to parse the string as JSON
+                    parsed = json.loads(inner_content)
+                    # Overwrite if successful
+                    content_block["content"] = parsed
+                except json.JSONDecodeError:  # pragma: no cover
+                    try:
+                        parsed = ast.literal_eval(inner_content)
+                        content_block["content"] = parsed
+                    except Exception:  # pylint: disable=broad-exception-caught
+                        pass
         print(json.dumps(message_dump), flush=True)
 
     # noinspection PyMethodMayBeStatic

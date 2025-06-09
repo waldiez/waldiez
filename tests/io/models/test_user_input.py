@@ -43,7 +43,7 @@ class TestUserInputData:
 
         assert isinstance(user_input.content, list)
         assert len(user_input.content) == 2
-        assert user_input.to_string() == "First message Second message"
+        assert user_input.to_string() == '["First message", "Second message"]'
 
     def test_user_input_data_creation_with_string_content(self) -> None:
         """Test creating UserInputData with a string content."""
@@ -101,7 +101,9 @@ class TestUserInputData:
         result = UserInputData.content_from_string(json_string)
 
         assert isinstance(result, TextMediaContent)
-        assert result.text == json_string  # Should treat as original string
+        assert (
+            result.text == "Hello from JSON"
+        )  # Should treat as original string
         assert result.type == "text"
 
     def test_user_input_data_content_from_string_valid_json_dict(self) -> None:

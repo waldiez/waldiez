@@ -66,9 +66,11 @@ class UserInputData(BaseModel):
             The string representation of the content.
         """
         if isinstance(self.content, list):
-            return " ".join(
-                item.to_string(uploads_root, base_name)  # pyright: ignore
-                for item in self.content
+            return json.dumps(
+                [
+                    item.to_string(uploads_root, base_name)  # pyright: ignore
+                    for item in self.content
+                ]
             )
         return self.content.to_string(uploads_root, base_name)
 
@@ -91,7 +93,12 @@ class UserInputData(BaseModel):
         except json.JSONDecodeError:
             return TextMediaContent(type="text", text=value)
         if isinstance(parsed, str):
-            return TextMediaContent(type="text", text=value)
+            try:
+                parsed = json.loads(parsed)
+            except json.JSONDecodeError:
+                return TextMediaContent(type="text", text=parsed)
+            if isinstance(parsed, str):
+                return TextMediaContent(type="text", text=parsed)
         return cls.validate_content(parsed)
 
     @classmethod
