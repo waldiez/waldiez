@@ -106,19 +106,9 @@ class StructuredIOStream(IOStream):
                 and isinstance(content_block["content"], str)
             ):
                 inner_content = content_block["content"]
-                # Check if the nested 'content' is a string
-                # (potentially double-dumped)
-                try:
-                    # Attempt to parse the string as JSON
-                    parsed = json.loads(inner_content)
-                    # Overwrite if successful
-                    content_block["content"] = parsed
-                except json.JSONDecodeError:  # pragma: no cover
-                    try:
-                        parsed = ast.literal_eval(inner_content)
-                        content_block["content"] = parsed
-                    except Exception:  # pylint: disable=broad-exception-caught
-                        pass
+                content_block["content"] = try_parse_maybe_serialized(
+                    inner_content
+                )
         print(json.dumps(message_dump), flush=True)
 
     # noinspection PyMethodMayBeStatic
@@ -406,3 +396,36 @@ class StructuredIOStream(IOStream):
             return ""
         # Join with a space
         return " ".join(result)
+
+
+def try_parse_maybe_serialized(value: str) -> Any:
+    """Parse a string that may be JSON or Python serialized.
+
+    Returns the parsed object if successful, or the original string otherwise.
+
+    Parameters
+    ----------
+    value : str
+        The string to parse.
+
+    Returns
+    -------
+    Any
+        The parsed object or the original string if parsing fails.
+    """
+    for parser in (json.loads, ast.literal_eval):
+        # pylint: disable=broad-exception-caught, too-many-try-statements
+        try:
+            parsed: dict[str, Any] | list[Any] | str = parser(value)
+            # Normalize: if it's a single-item list of a string
+            # return the string
+            if (
+                isinstance(parsed, list)
+                and len(parsed) == 1
+                and isinstance(parsed[0], str)
+            ):
+                return parsed[0]
+            return parsed
+        except Exception:
+            pass  # Try next parser
+    return value  # Return original if all parsing fails
