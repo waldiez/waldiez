@@ -48,7 +48,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results, _, __ = initiate_group_chat(",
             "        pattern=chat_manager_pattern,",
-            "        messages=[],",
+            '        messages="",',
             "        max_rounds=10,",
             "    )",
         ]
@@ -76,7 +76,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results, _, __ = a_initiate_group_chat(",
             "        pattern=chat_manager_pattern,",
-            "        messages=[],",
+            '        messages="",',
             "        max_rounds=5,",
             "    )",
         ]
@@ -306,7 +306,7 @@ class TestExportGroupChats:
         )
 
         # Empty string should be JSON serialized as '""'
-        assert "messages=[]," in result
+        assert 'messages="",' in result
 
     def test_return_type_is_string(self) -> None:
         """Test that function returns a string."""
@@ -467,7 +467,7 @@ class TestOutputFormat:
         expected = (
             "    results, _, __ = a_initiate_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
-            "        messages=[],\n"
+            '        messages="",\n'
             "        max_rounds=3,\n"
             "    )\n"
         )
@@ -490,7 +490,7 @@ class TestOutputFormat:
         expected = (
             "results, _, __ = initiate_group_chat(\n"
             "    pattern=no_tab_mgr_pattern,\n"
-            "    messages=[],\n"
+            '    messages="",\n'
             "    max_rounds=1,\n"
             ")\n"
         )

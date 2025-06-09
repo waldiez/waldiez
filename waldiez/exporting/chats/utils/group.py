@@ -49,7 +49,7 @@ def export_group_chats(
     if intial_chat:
         content += f"{tab}    messages={json.dumps(intial_chat)}," + "\n"
     else:
-        content += f"{tab}    messages=[],\n"
+        content += f'{tab}    messages="",\n'
     content += f"{tab}    max_rounds={manager.data.max_round},\n"
     content += f"{tab})\n"
     return content
