@@ -367,24 +367,8 @@ class WaldiezLogger:
     @staticmethod
     def _format_caller_display(filename: str, line_number: int) -> str:
         """Format the caller information for display."""
-        try:
-            # Use dot notation for file path
-            file_display = os.path.relpath(filename).replace(os.sep, ".")
-            if file_display.endswith(".py"):  # pragma: no branch
-                file_display = file_display[:-3]
-            prefixes_to_remove = ["waldiez."]
-            for prefix in prefixes_to_remove:
-                if file_display.startswith(prefix):
-                    file_display = file_display[len(prefix) :]
-                    break
-
-            return f"{file_display}:{line_number}"
-        except Exception:  # pragma: no cover
-            # Fallback to just the basename if path processing fails
-            basename = os.path.basename(filename)
-            if basename.endswith(".py"):
-                basename = basename[:-3]
-            return f"{basename}:{line_number}"
+        basename = os.path.realpath(filename)
+        return f"{basename}:{line_number}"
 
     def _get_timestamp(self) -> str:
         """Get the current timestamp in a human-readable format."""
