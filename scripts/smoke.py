@@ -62,6 +62,7 @@ EXAMPLES = [
     "13 - Captain/2 - With agent lib.waldiez",
     "13 - Captain/3 - With agent lib and tool lib.waldiez",
     "14 - HR Work Remotely/HR_remote.waldiez",
+    "15 - Innovation Ideas/innovator.waldiez",
 ]
 
 
@@ -348,7 +349,11 @@ def convert_local_example(example_path: str) -> None:
     # let's git restore the ipynb if needed (only cell id changes)
     # (no need to commit the new "id: ..." changes)
     if diff_has_only_id_changes(output_ipynb_path):
-        git_restore(output_ipynb_path)
+        try:
+            git_restore(output_ipynb_path)
+        except BaseException:  # pylint: disable=broad-exception-caught
+            pass
+            # If restore fails (not in git yet?), we can still continue
 
 
 def lint_example(example_path: str) -> None:
