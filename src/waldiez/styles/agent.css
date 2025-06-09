@@ -13,7 +13,7 @@
   container-type: inline-size;
 }
 
-.flow-wrapper .flow-wrapper .agent-node.group_manager {
+.flow-wrapper .agent-node.group_manager {
   min-width: 480px;
   min-height: 320px;
   border-color: var(--group-manager-agent-color) !important;
@@ -290,6 +290,10 @@
   box-shadow: 0 0 8px var(--captain-agent-alt-color);
 }
 
+/* .flow-wrapper .agent-node.group_manager:hover {
+  box-shadow: 0 0 8px var(--group-manager-agent-alt-color);
+} */
+
 .flow-wrapper .agent-panel {
   display: flex;
   flex-direction: column;
@@ -305,7 +309,6 @@
   filter: invert(1);
 }
 
-/* More indicator styling */
 .flow-wrapper .agent-node .agent-more-indicator {
   display: flex;
   gap: 4px;

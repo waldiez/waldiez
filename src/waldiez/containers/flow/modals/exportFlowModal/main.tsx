@@ -240,7 +240,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                             {isUploading ? "Uploading..." : "Upload to Hub"}
                         </button>
                     )}
-                    <button type="button" className="modal-action-submit" onClick={onDownload}>
+                    <button type="button" className="primary" onClick={onDownload}>
                         Download
                     </button>
                 </div>
