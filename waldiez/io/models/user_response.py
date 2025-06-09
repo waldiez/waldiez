@@ -185,14 +185,18 @@ class UserResponse(StructuredBase):
             The string representation of the UserResponse.
         """
         if isinstance(self.data, list):
-            return json.dumps(
+            return " ".join(
                 [
                     (
                         item.to_string(
                             uploads_root=uploads_root, base_name=base_name
                         )
                         if hasattr(item, "to_string")
-                        else str(item)
+                        else (
+                            item
+                            if isinstance(item, str)  # pragma: no cover
+                            else str(item)
+                        )  # pragma: no cover
                     )
                     for item in self.data
                 ]

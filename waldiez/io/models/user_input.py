@@ -66,7 +66,7 @@ class UserInputData(BaseModel):
             The string representation of the content.
         """
         if isinstance(self.content, list):
-            return json.dumps(
+            return " ".join(
                 [
                     item.to_string(uploads_root, base_name)  # pyright: ignore
                     for item in self.content

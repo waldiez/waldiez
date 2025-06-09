@@ -641,7 +641,7 @@ def test_get_user_input_list_content() -> None:
         data=user_input,
     )
     result = stream._get_user_input(response)
-    assert result == '["First part", "Second part"]'
+    assert result == "First part Second part"
 
 
 def test_acquire_lock_redis_error() -> None:

@@ -43,7 +43,7 @@ class TestUserInputData:
 
         assert isinstance(user_input.content, list)
         assert len(user_input.content) == 2
-        assert user_input.to_string() == '["First message", "Second message"]'
+        assert user_input.to_string() == "First message Second message"
 
     def test_user_input_data_creation_with_string_content(self) -> None:
         """Test creating UserInputData with a string content."""

@@ -168,7 +168,7 @@ class TestUserResponse:
         response = UserResponse(request_id="req16", data=[input1, input2])
 
         result = response.to_string()
-        assert result == '["first", "second"]'
+        assert result == "first second"
 
     def test_to_string_with_uploads_params(self, tmp_path: Path) -> None:
         """Test to_string with upload parameters."""
