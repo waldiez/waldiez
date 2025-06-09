@@ -92,6 +92,9 @@
       {
         "id": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
         "type": "agent",
+        "style": {
+          "width": 490
+        },
         "position": {
           "x": 105,
           "y": 15
@@ -111,6 +114,9 @@
       {
         "id": "wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
         "type": "agent",
+        "style": {
+          "width": 130
+        },
         "position": {
           "x": -240,
           "y": 405
@@ -127,6 +133,9 @@
       {
         "id": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 90,
           "y": 60
@@ -145,6 +154,9 @@
       {
         "id": "1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 540,
           "y": 60
@@ -163,6 +175,9 @@
       {
         "id": "1747672281719vu_wTfjf3BRQ_1Vb_88RM",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 90,
           "y": 435
@@ -184,6 +199,9 @@
       {
         "id": "wa-17480674648237IphnhUm7-egrAi3jiepV",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 1095,
           "y": 435
@@ -200,6 +218,9 @@
       {
         "id": "17480675293561MDjttYRMb6R7tkQEyOZf",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 1110,
           "y": 75
@@ -231,7 +252,7 @@
         },
         "style": {
           "stroke": "#bc76f5",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
         "targetHandle": "agent-handle-left-target-wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
@@ -252,7 +273,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-bottom-source-wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
         "targetHandle": "agent-handle-top-target-1747672281719vu_wTfjf3BRQ_1Vb_88RM"
@@ -273,7 +294,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-top-source-1747672281719vu_wTfjf3BRQ_1Vb_88RM",
         "targetHandle": "agent-handle-bottom-target-wa-1747672170039_pXmnMM3Zf8571R3C9KYM"
@@ -294,7 +315,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
         "targetHandle": "agent-handle-left-target-1747672280224yHtHT4KU6hJHXC7NzHnPD"
@@ -315,7 +336,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-left-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-right-target-wa-1747672170039_pXmnMM3Zf8571R3C9KYM"
@@ -336,7 +357,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-left-target-wa-17480674648237IphnhUm7-egrAi3jiepV"
@@ -357,7 +378,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-left-target-17480675293561MDjttYRMb6R7tkQEyOZf"
@@ -378,7 +399,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 2
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-bottom-source-1747672280224yHtHT4KU6hJHXC7NzHnPD",
         "targetHandle": "agent-handle-right-target-1747672281719vu_wTfjf3BRQ_1Vb_88RM"

@@ -32,6 +32,9 @@
       {
         "id": "wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 210,
           "y": 285
@@ -48,6 +51,9 @@
       {
         "id": "wa-1747132751423TuUidB_jxVHLPGQ4htC1d",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 630,
           "y": 240
@@ -79,7 +85,7 @@
         },
         "style": {
           "stroke": "#66bc57",
-          "strokeWidth": 3
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-wa-1747132658672m74l-Py6CTvj-EQdxv-N0",
         "targetHandle": "agent-handle-left-target-wa-1747132751423TuUidB_jxVHLPGQ4htC1d"

@@ -31,6 +31,9 @@
       {
         "id": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
         "type": "agent",
+        "style": {
+          "width": 130
+        },
         "position": {
           "x": 221.82354736328125,
           "y": 318
@@ -45,6 +48,9 @@
       {
         "id": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 765.8235473632812,
           "y": 245
@@ -74,7 +80,7 @@
         },
         "style": {
           "stroke": "#bc76f5",
-          "strokeWidth": 3
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
         "targetHandle": "agent-handle-left-target-wa-1747648770281G2SIflV6LiGugWwlAknFI"

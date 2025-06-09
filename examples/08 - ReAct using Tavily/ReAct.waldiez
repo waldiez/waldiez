@@ -47,6 +47,9 @@
       {
         "id": "wa-17476712464615lkKtgIc855Art5UuNUEK",
         "type": "agent",
+        "style": {
+          "width": 130
+        },
         "position": {
           "x": 150,
           "y": 270
@@ -63,6 +66,9 @@
       {
         "id": "wa-1747671248211kXD0xnZTd4rHa2imiKiXq",
         "type": "agent",
+        "style": {
+          "width": 180
+        },
         "position": {
           "x": 609,
           "y": 216
@@ -93,7 +99,7 @@
         },
         "style": {
           "stroke": "#bc76f5",
-          "strokeWidth": 3
+          "strokeWidth": 1
         },
         "sourceHandle": "agent-handle-right-source-wa-17476712464615lkKtgIc855Art5UuNUEK",
         "targetHandle": "agent-handle-left-target-wa-1747671248211kXD0xnZTd4rHa2imiKiXq"
