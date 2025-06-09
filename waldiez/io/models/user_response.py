@@ -200,11 +200,11 @@ class UserResponse(StructuredBase):
                     )
                     for item in self.data
                 ]
-            )
+            ).strip()
         if isinstance(self.data, UserInputData):
             return self.data.to_string(
                 uploads_root=uploads_root, base_name=base_name
-            )
+            ).strip()
         # we have probably returned sth till here
         if isinstance(self.data, str):  # pyright: ignore # pragma: no cover
             return self.data

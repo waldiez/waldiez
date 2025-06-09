@@ -82,10 +82,12 @@ class StructuredIOStream(IOStream):
         self._send_input_request(prompt, request_id, password)
         user_input_raw = self._read_user_input(prompt, password, request_id)
         response = self._handle_user_input(user_input_raw, request_id)
-        return response.to_string(
+        user_response = response.to_string(
             uploads_root=self.uploads_root,
             base_name=request_id,
         )
+        print("Got user input:", user_response, flush=True)
+        return user_response
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
