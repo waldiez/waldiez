@@ -67,6 +67,13 @@ export const useSidebarView = (props: SidebarViewProps) => {
         [onDragStart],
     );
 
+    const onRagDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "rag_user_proxy");
+        },
+        [onDragStart],
+    );
+
     const onReasoningDragStart = useCallback(
         (event: React.DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "reasoning");
@@ -105,8 +112,16 @@ export const useSidebarView = (props: SidebarViewProps) => {
             reasoning: onReasoningDragStart,
             captain: onCaptainDragStart,
             group_manager: onManagerDragStart,
+            rag_user_proxy: onRagDragStart,
         }),
-        [onUserDragStart, onAssistantDragStart, onReasoningDragStart, onCaptainDragStart, onManagerDragStart],
+        [
+            onUserDragStart,
+            onAssistantDragStart,
+            onReasoningDragStart,
+            onCaptainDragStart,
+            onManagerDragStart,
+            onRagDragStart,
+        ],
     );
 
     return {
@@ -119,6 +134,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onShowModels,
         onShowTools,
         onUserDragStart,
+        onRagDragStart,
         onAssistantDragStart,
         onReasoningDragStart,
         onCaptainDragStart,

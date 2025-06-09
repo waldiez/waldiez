@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { defaultGroupChatSpeakers, defaultReasonConfig, defaultRetrieveConfig } from "@waldiez/models/Agent";
+import { INITIAL_AGENT_SIZE } from "@waldiez/theme/sizes";
 
 const baseTimestamps = () => ({
     createdAt: new Date().toISOString(),
@@ -79,6 +80,14 @@ const createAgentJson = ({
         ...dataOverrides,
     },
     position,
+    style: {
+        width:
+            agentType === "user_proxy"
+                ? INITIAL_AGENT_SIZE.user.width
+                : agentType === "group_manager"
+                  ? INITIAL_AGENT_SIZE.group_manager.width
+                  : INITIAL_AGENT_SIZE.other.width,
+    },
     ...extra,
 });
 

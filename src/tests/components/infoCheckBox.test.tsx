@@ -14,7 +14,7 @@ describe("InfoCheckbox", () => {
             label: "test",
             info: "test",
             checked: false,
-            dataTestId: "test",
+            id: "test-id",
             onChange,
         };
         const { baseElement } = render(<InfoCheckbox {...infoCheckboxProps} />);
@@ -27,7 +27,7 @@ describe("InfoCheckbox", () => {
             label: <div>test</div>,
             info: "test",
             checked: false,
-            dataTestId: "test",
+            id: "test-id",
             onChange,
         };
         const { baseElement } = render(<InfoCheckbox {...infoCheckboxProps} />);
@@ -40,7 +40,7 @@ describe("InfoCheckbox", () => {
             label: () => <div>test</div>,
             info: "test",
             checked: false,
-            dataTestId: "test",
+            id: "test-id",
             onChange,
         };
         const { baseElement } = render(<InfoCheckbox {...infoCheckboxProps} />);
@@ -53,7 +53,7 @@ describe("InfoCheckbox", () => {
             label: "test",
             info: <div>test</div>,
             checked: false,
-            dataTestId: "test",
+            id: "test-id",
             onChange,
         };
         const { baseElement } = render(<InfoCheckbox {...infoCheckboxProps} />);
@@ -66,7 +66,7 @@ describe("InfoCheckbox", () => {
             label: "test",
             info: () => <div>test</div>,
             checked: false,
-            dataTestId: "test",
+            id: "test-id",
             onChange,
         };
         const { baseElement } = render(<InfoCheckbox {...infoCheckboxProps} />);
@@ -79,7 +79,7 @@ describe("InfoCheckbox", () => {
             label: "test",
             info: "test",
             checked: false,
-            dataTestId: "test",
+            id: "test-id",
             onChange,
         };
         render(<InfoCheckbox {...infoCheckboxProps} />);

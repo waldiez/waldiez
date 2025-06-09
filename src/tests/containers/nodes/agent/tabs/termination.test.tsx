@@ -27,7 +27,7 @@ const terminationOverrides = {
 
 describe("Termination tab", () => {
     it("should allow changing the termination type", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
         });
         goToTerminationTab();
@@ -81,7 +81,7 @@ describe("Termination tab", () => {
     });
 
     it("should allow changing the termination criterion", async () => {
-        renderAgent("rag_user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
         });
         goToTerminationTab();
@@ -114,7 +114,7 @@ describe("Termination tab", () => {
     });
 
     it("should allow to add a termination keyword", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { termination: terminationOverrides },
         });
@@ -158,7 +158,7 @@ describe("Termination tab", () => {
     });
 
     it("should allow changing a termination keyword", async () => {
-        renderAgent("rag_user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { termination: terminationOverrides },
         });

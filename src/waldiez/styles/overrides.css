@@ -15,6 +15,14 @@
   border: none;
 }
 
+.flow-wrapper .react-flow__handle.not-selected {
+  opacity: 1;
+}
+
+.flow-wrapper .react-flow__handle:hover {
+  opacity: 1;
+}
+
 .flow-wrapper .agent-node .react-flow__handle.source {
   width: 12px;
   height: 12px;
@@ -75,7 +83,7 @@
 }
 
 .react-flow__resize-control.nodrag.bottom.right.handle.reasoning {
-  border-color: var(--captain-agent-color) !important;
+  border-color: var(--reasoning-agent-color) !important;
 }
 
 .react-flow__resize-control.nodrag.bottom.right.handle.captain {
@@ -103,21 +111,19 @@
   padding: 10px;
 }
 
+.react-flow__controls-button {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 4px;
+  padding: 8px !important;
+  margin: 4px !important;
+}
+
+.react-flow__background-pattern.dots {
+  fill: transparent;
+}
+
 .react-flow__attribution a {
   color: currentcolor !important;
   opacity: 0.7;
-}
-
-.flow-wrapper .rc-slider {
-  width: calc(100% - 20px);
-  margin: 0 10px;
-}
-
-.flow-wrapper .rc-slider-handle {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.flow-wrapper.dark .rc-slider-rail {
-  background-color: #666;
 }

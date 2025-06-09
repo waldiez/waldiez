@@ -56,8 +56,7 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
      * Handle tool library toggle
      */
     const onToolLibChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const checked = event.target.checked;
+        (checked: boolean) => {
             onChange({
                 toolLib: checked ? "default" : null,
             });
@@ -69,8 +68,7 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
      * Handle agent library toggle
      */
     const onEnableAgentLibChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const checked = event.target.checked;
+        (checked: boolean) => {
             setEnableAgentLib(checked);
 
             if (!checked) {
@@ -162,7 +160,7 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
         onEnableAgentLibChange,
         onFileUpload,
         onMaxRoundChange,
-        // onMaxTurnsChange, // Commented out in original
+        // onMaxTurnsChange,
         onToolLibChange,
     };
 };

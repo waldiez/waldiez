@@ -63,7 +63,7 @@ export class WaldiezAgent {
             name = "Manager";
             description = "The group manager agent";
         } else {
-            name = capitalize(agentType.replace("_", " "));
+            name = capitalize(agentType.replace("_proxy", "").replace("_", " "));
             description = `A new ${name} agent`;
         }
         const agent = new WaldiezAgent({

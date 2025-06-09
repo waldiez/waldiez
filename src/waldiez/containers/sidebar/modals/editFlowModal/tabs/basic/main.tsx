@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { TextareaInput } from "@waldiez/components";
+import { CheckboxInput, TextareaInput } from "@waldiez/components";
 import { HandleASyncChatOrderAndPrerequisites } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/asyncChat";
 import { HandleSyncChatOrder } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/syncChat";
 import { EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/types";
@@ -18,8 +18,8 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
         const description = event.target.value;
         onDataChange({ description });
     };
-    const onAsyncChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onDataChange({ isAsync: e.target.checked });
+    const onAsyncChange = (checked: boolean) => {
+        onDataChange({ isAsync: checked });
     };
     const edgesCount = sortedEdges.length + remainingEdges.length;
     return (
@@ -44,17 +44,14 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
                 onChange={onDescriptionChange}
                 data-testid={`edit-flow-${flowId}-description-input`}
             />
-            <label className="checkbox-label margin-left-5">
-                <div className="checkbox-label-view">Async Mode</div>
-                <input
-                    type="checkbox"
-                    checked={isAsync}
-                    onChange={onAsyncChange}
-                    data-testid={`edit-flow-${flowId}-modal-async-mode`}
-                />
-                <div className="checkbox"></div>
-            </label>
-            <label>Chat order {isAsync && "& prerequisites"} </label>
+            <div className="margin-bottom-5" />
+            <CheckboxInput
+                id={`edit-flow-${flowId}-modal-async-mode`}
+                label="Async Mode"
+                isChecked={isAsync}
+                onCheckedChange={onAsyncChange}
+            />
+            <div className="margin-top-5 margin-left-5">Chat order {isAsync && "& prerequisites"} </div>
             {edgesCount === 0 ? (
                 <div className="info">No chats added to the flow yet.</div>
             ) : isAsync ? (

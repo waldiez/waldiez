@@ -72,6 +72,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
                         "The chunk token size for the retrieve chat. " +
                         "If not provided, a default size `max_tokens * 0.4` will be used."
                     }
+                    htmlFor={`rag-chunk-token-size-${id}`}
                 />
 
                 <input
@@ -93,6 +94,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
                         "The context max token size for the retrieve chat. " +
                         "If not provided, a default size `max_tokens * 0.8` will be used."
                     }
+                    htmlFor={`rag-context-max-tokens-${id}`}
                 />
 
                 <input
@@ -109,6 +111,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
             {/* Chunk Mode */}
             <div className="flex-column">
                 <InfoLabel
+                    htmlFor={`rag-chunk-mode-${id}`}
                     label="Chunk Mode:"
                     info={
                         "The chunk mode for the retrieve chat. " +
@@ -117,7 +120,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
                     }
                 />
 
-                <label className="hidden" htmlFor={`rag-chunk-mode-${id}`}>
+                <label className="hidden" htmlFor={`rag-select-chunk-mode-${id}`}>
                     Chunk Mode
                 </label>
 
@@ -125,7 +128,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
                     options={chunkModeOptions}
                     value={chunkModeValue}
                     onChange={onChunkModeChange}
-                    inputId={`rag-chunk-mode-${id}`}
+                    inputId={`rag-select-chunk-mode-${id}`}
                     aria-label="Select chunk mode"
                 />
             </div>
@@ -139,9 +142,9 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
                             "Chunk will only break at empty line if True. Default is True. " +
                             'If chunk_mode is "one_line", this parameter will be ignored.'
                         }
+                        id={`rag-must-break-at-empty-line-${id}`}
                         checked={retrieveConfig.mustBreakAtEmptyLine}
                         onChange={onMustBreakAtEmptyLineChange}
-                        dataTestId={`rag-must-break-at-empty-line-${id}`}
                         aria-label="Must break at empty line"
                     />
                 </div>

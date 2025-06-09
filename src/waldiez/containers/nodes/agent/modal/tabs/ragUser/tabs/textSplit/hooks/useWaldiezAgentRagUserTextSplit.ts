@@ -94,9 +94,9 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
      * Handle must break at empty line toggle
      */
     const onMustBreakAtEmptyLineChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                mustBreakAtEmptyLine: event.target.checked,
+                mustBreakAtEmptyLine: checked,
             });
         },
         [setRetrieveConfigConfigData],

@@ -58,8 +58,7 @@ export const useWaldiezAgentCodeExecution = (props: {
      * Handle toggle for enabling/disabling code execution
      */
     const onUseCodeExecutionChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const checked = event.target.checked;
+        (checked: boolean) => {
             const newConfig = checked ? { ...data.codeExecutionConfig } : false;
             onDataChange({
                 codeExecutionConfig: newConfig,
@@ -120,13 +119,12 @@ export const useWaldiezAgentCodeExecution = (props: {
      * Handle Docker usage toggle
      */
     const onCodeExecutionUseDockerChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const useDocker = event.target.checked;
+        (checked: boolean) => {
             onDataChange({
                 codeExecutionConfig:
                     typeof data.codeExecutionConfig === "object"
-                        ? { ...data.codeExecutionConfig, useDocker }
-                        : { useDocker },
+                        ? { ...data.codeExecutionConfig, useDocker: checked }
+                        : { useDocker: checked },
             });
         },
         [data.codeExecutionConfig, onDataChange],

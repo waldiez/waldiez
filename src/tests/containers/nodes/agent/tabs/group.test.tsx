@@ -23,7 +23,7 @@ const groupOverrides = {
 
 describe("Groups tab", () => {
     it("should display the agent groups", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: groupOverrides,
             includeGroups: true,
@@ -82,7 +82,7 @@ describe("Groups tab", () => {
         submitAgentChanges();
     });
     it("should allow changing the agent group", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: groupOverrides,
             includeGroups: true,

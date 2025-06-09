@@ -127,7 +127,7 @@ export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) =>
             <div className="modal-body">{tabComponent}</div>
             <div className="modal-actions">
                 <button
-                    className="modal-action-cancel"
+                    className="secondary"
                     onClick={onCancel}
                     data-testid={`cancel-agent-data-${id}`}
                     type="button"
@@ -140,7 +140,7 @@ export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) =>
                     <button
                         type="button"
                         title="Save & Close"
-                        className="modal-action-submit margin-right-10"
+                        className="save margin-right-10"
                         onClick={onSaveAndClose}
                         data-testid={`submit-and-close-agent-data-${id}`}
                         disabled={!isDirty}
@@ -151,7 +151,7 @@ export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) =>
                     <button
                         type="button"
                         title={isDirty ? "Save" : "No changes to save"}
-                        className="modal-action-submit"
+                        className="primary"
                         onClick={onSave}
                         data-testid={`submit-agent-data-${id}`}
                         disabled={!isDirty}

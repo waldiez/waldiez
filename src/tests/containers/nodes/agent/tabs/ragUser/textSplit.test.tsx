@@ -14,8 +14,8 @@ const goToTextSplitTab = () => {
     renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
-    fireEvent.click(ragUserTab);
+    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    // fireEvent.click(ragUserTab);
     const textSplitTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-textSplit`);
     fireEvent.click(textSplitTab);
 };

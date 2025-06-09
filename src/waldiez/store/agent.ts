@@ -12,6 +12,7 @@ import {
 } from "@waldiez/models";
 import { agentMapper } from "@waldiez/models/mappers";
 import { getAgentConnections, getAgentNode, resetEdgeOrdersAndPositions } from "@waldiez/store/utils";
+import { INITIAL_AGENT_SIZE } from "@waldiez/theme";
 import { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
@@ -79,6 +80,14 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         parentId: string | undefined,
     ) => {
         const agentNode = getAgentNode(agentType, position, parentId);
+        agentNode.style = {
+            width:
+                agentType === "group_manager"
+                    ? INITIAL_AGENT_SIZE.group_manager.width
+                    : agentType !== "user_proxy"
+                      ? INITIAL_AGENT_SIZE.other.width
+                      : INITIAL_AGENT_SIZE.user.width,
+        };
         // if the new agent iss a group manager,
         // make sure it is in the front of the list
         // to avoid issues with group members ('cannot find parent node')

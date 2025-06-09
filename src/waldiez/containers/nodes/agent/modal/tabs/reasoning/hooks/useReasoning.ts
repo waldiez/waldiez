@@ -94,8 +94,7 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
      * Handle verbose toggle change
      */
     const onVerboseChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const checked = event.target.checked;
+        (checked: boolean) => {
             onChange({
                 verbose: checked,
             });

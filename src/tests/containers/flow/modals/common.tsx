@@ -20,7 +20,7 @@ import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } fro
 const onRun = vi.fn();
 export const onChange = vi.fn();
 
-export const renderFlow = (
+export const renderFlow = async (
     includeUserInput: boolean = false,
     singleAgent: boolean = false,
     noAgents: boolean = false,

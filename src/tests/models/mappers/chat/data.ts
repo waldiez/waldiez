@@ -268,7 +268,7 @@ export const updateData = {
         },
         style: {
             stroke: "#005490",
-            strokeWidth: 3,
+            strokeWidth: 1,
         },
         sourceHandle: "agent-handle-top-source-wa-1",
         targetHandle: "agent-handle-top-target-wa-2",

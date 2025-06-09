@@ -285,9 +285,8 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      * Handle clear history toggle changes
      */
     const onEnableClearHistoryChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const enableClearHistory = event.target.checked;
-            onDataChange({ enableClearHistory });
+        (checked: boolean) => {
+            onDataChange({ enableClearHistory: checked });
         },
         [onDataChange],
     );
@@ -296,9 +295,8 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      * Handle send introductions toggle changes
      */
     const onSendIntroductionsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const sendIntroductions = event.target.checked;
-            onDataChange({ sendIntroductions });
+        (checked: boolean) => {
+            onDataChange({ sendIntroductions: checked });
         },
         [onDataChange],
     );

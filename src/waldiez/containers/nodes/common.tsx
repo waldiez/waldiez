@@ -40,15 +40,15 @@ export const getImportExportView: (
             >
                 <FaFileImport />
             </label>
-            <button
-                type="button"
+            <div
+                role="button"
                 className="modal-header-export-button"
                 onClick={onExport}
                 title={`Export ${itemTypeCapitalized}`}
                 data-testid={`export-${itemTypeLower}-${flowId}-${itemId}`}
             >
                 <FaFileExport />
-            </button>
+            </div>
         </div>
     );
 };

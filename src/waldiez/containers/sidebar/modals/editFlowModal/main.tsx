@@ -46,7 +46,7 @@ export const EditFlowModal = (props: EditFlowModalProps) => {
             hasUnsavedChanges={isDirty}
             preventCloseIfUnsavedChanges
         >
-            <div className="modal-body padding-10">
+            <div className="modal-body">
                 <TabItems activeTabIndex={0}>
                     <TabItem label="Properties" id={`rf-${flowId}-edit-flow-modal`}>
                         <EditFlowModalModalTabBasic
@@ -86,7 +86,7 @@ export const EditFlowModal = (props: EditFlowModalProps) => {
                         <button
                             title="Save & Close"
                             type="button"
-                            className="modal-action-submit margin-right-10 "
+                            className="primary save margin-right-10"
                             onClick={onSaveAndClose}
                             data-testid={`modal-submit-and-close-btn-${flowId}`}
                             disabled={!isDirty}

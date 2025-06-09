@@ -3,16 +3,22 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 .flow-wrapper .drop_zone {
-  border: 2px dashed #ccc;
   height: 100px;
   width: 100%;
+  border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .flow-wrapper.light .drop_zone {
+  border: 2px dashed #ccc;
   background-color: #fff;
+}
+
+.flow-wrapper.dark .drop_zone {
+  border: 2px dashed #555;
+  background-color: #222;
 }
 
 .flow-wrapper .drop_zone .drop_zone_content {
@@ -31,7 +37,7 @@
 
 .flow-wrapper.dark .drop_zone.drag-over,
 .flow-wrapper.dark .drop_zone:hover {
-  background-color: #444;
+  background-color: #333;
 }
 
 .flow-wrapper.light .drop_zone.drag-over,

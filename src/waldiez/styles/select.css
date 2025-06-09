@@ -31,12 +31,27 @@
 }
 
 .flow-wrapper.dark .w-select__menu {
+  background-color: #333;
   border: 1px solid #444 !important;
 }
 
-.flow-wrapper.dark .select .w-select__input-container {
+.flow-wrapper.dark .w-select__input-container {
   background-color: unset;
-  color: unset;
+  outline: none !important;
+  box-shadow: none !important;
+  color: unset !important;
+}
+
+.flow-wrapper .w-select__input {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.flow-wrapper .w-select__input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .flow-wrapper.light .w-select__multi-value,
@@ -53,88 +68,148 @@
   color: #f8f8f8;
 }
 
-.flow-wrapper.light .select__multi-value {
+.flow-wrapper.light .w-select__multi-value {
   background-color: #e9ecef;
   border-radius: 4px;
 }
 
-.flow-wrapper.light .select__multi-value__label {
+.flow-wrapper.light .w-select__multi-value__label {
   color: #495057;
   font-size: 0.85rem;
   padding: 0.2rem 0.4rem;
 }
 
-.flow-wrapper.light .select__multi-value__remove {
+.flow-wrapper.light .w-select__multi-value__remove {
   color: #6c757d;
   padding: 0 0.4rem;
   cursor: pointer;
 }
 
-.flow-wrapper.dark .select__multi-value__remove {
+.flow-wrapper.dark .w-select__multi-value__remove {
   color: #a0a0a0;
   padding: 0 0.4rem;
   cursor: pointer;
 }
 
-.flow-wrapper.light .select__multi-value__remove:hover {
+.flow-wrapper.light .w-select__multi-value__remove:hover {
   background-color: #ced4da;
   color: #495057;
   border-radius: 0 4px 4px 0;
 }
 
-.flow-wrapper.dark .select__multi-value {
+.flow-wrapper.dark .w-select__multi-value {
   background-color: #333;
   border-radius: 4px;
 }
 
-.flow-wrapper.dark .select__multi-value__label {
+.flow-wrapper.dark .w-select__multi-value__label {
   color: #d1d5db;
   font-size: 0.85rem;
   padding: 0.2rem 0.4rem;
 }
 
-.flow-wrapper.dark .select__multi-value__remove:hover {
+.flow-wrapper.dark .w-select__multi-value__remove:hover {
   background-color: #444;
   color: #d1d5db;
   border-radius: 0 4px 4px 0;
 }
 
-/* Additional styling for the React-Select component in dark mode */
-.flow-wrapper.dark .select__control {
+.flow-wrapper.dark .w-select__control {
   background-color: #292929;
-  border-color: #3a3a3a;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--text-color) 20%, var(--background-color));
 }
 
-.flow-wrapper.dark .select__control:hover {
-  border-color: #505050;
+.flow-wrapper .w-select__control:hover {
+  border-color: #3b82f6;
 }
 
-.flow-wrapper.dark .select__control--is-focused {
+.flow-wrapper.dark .w-select__control--is-focused {
   border-color: #3b82f6;
   box-shadow: 0 0 0 1px #3b82f6;
 }
 
-.flow-wrapper.dark .select__menu {
-  background-color: #333;
-}
-
-.flow-wrapper.dark .select__option {
+.flow-wrapper.dark .w-select__option {
   background-color: #333;
   color: #d1d5db;
 }
 
-.flow-wrapper.dark .select__option--is-focused {
+.flow-wrapper.dark .w-select__option--is-focused {
   background-color: #3b82f6;
   color: white;
 }
 
-.flow-wrapper.dark .select__option--is-selected {
+.flow-wrapper.dark .w-select__option--is-selected {
   background-color: #2563eb;
   color: white;
 }
 
-.flow-wrapper.dark .select__input-container,
-.flow-wrapper.dark .select__placeholder,
-.flow-wrapper.dark .select__single-value {
+.flow-wrapper.dark .w-select__input-container,
+.flow-wrapper.dark .w-select__placeholder,
+.flow-wrapper.dark .w-select__single-value {
   color: #d1d5db;
 }
+
+/* 
+.agent-panel .select__control {
+  min-height: 36px;
+  border-radius: 6px !important;
+  border: 1px solid color-mix(in srgb, var(--text-color) 20%, var(--background-color)) !important;
+  background: var(--background-color) !important;
+  transition: all 0.2s ease !important;
+}
+
+.agent-panel .select__control:hover {
+  border-color: color-mix(in srgb, var(--text-color) 30%, var(--background-color)) !important;
+}
+
+.agent-panel .select__control--is-focused {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+.agent-panel .select__value-container {
+  padding: 4px 8px !important;
+}
+
+.agent-panel .select__single-value,
+.agent-panel .select__placeholder {
+  color: var(--text-color) !important;
+  font-size: 13px !important;
+}
+
+.agent-panel .select__menu {
+  background: var(--background-color) !important;
+  border: 1px solid color-mix(in srgb, var(--text-color) 20%, var(--background-color)) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--text-color) 15%, transparent) !important;
+  z-index: 1000 !important;
+}
+
+.agent-panel .select__option {
+  background: transparent !important;
+  color: var(--text-color) !important;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+}
+
+.agent-panel .select__option--is-focused {
+  background: color-mix(in srgb, var(--text-color) 10%, var(--background-color)) !important;
+}
+
+.agent-panel .select__option--is-selected {
+  background: color-mix(in srgb, #3b82f6 20%, var(--background-color)) !important;
+  color: color-mix(in srgb, #3b82f6 80%, var(--text-color)) !important;
+}
+
+.agent-panel .select__indicator-separator {
+  background: color-mix(in srgb, var(--text-color) 20%, var(--background-color)) !important;
+}
+
+.agent-panel .select__dropdown-indicator {
+  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color)) !important;
+}
+
+.agent-panel .select__dropdown-indicator:hover {
+  color: var(--text-color) !important;
+} */

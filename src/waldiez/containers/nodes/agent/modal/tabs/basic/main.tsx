@@ -27,7 +27,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
     const { id, data } = props;
 
     const {
-        onRagChange,
+        // onRagChange,
         onMultimodalChange,
         onNameChange,
         onDescriptionChange,
@@ -71,17 +71,6 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
 
     return (
         <div className="agent-panel agent-basic-panel">
-            {/* RAG toggle for user proxy agents */}
-            {(data.agentType === "user_proxy" || data.agentType === "rag_user_proxy") && (
-                <InfoCheckbox
-                    label="Use RAG"
-                    info="If checked, the agent will use Retrieval Augmented Generation (RAG) for generating responses."
-                    checked={data.agentType === "rag_user_proxy"}
-                    onChange={onRagChange}
-                    dataTestId={`agent-rag-toggle-${id}`}
-                />
-            )}
-
             {/* Multimodal toggle for assistant agents */}
             {data.agentType === "assistant" && (
                 <InfoCheckbox
@@ -89,13 +78,14 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
                     info="If checked, the agent will handle uploaded images from the user. NOTE: Make sure you use a compatible LLM model that supports multimodal inputs (e.g. GPT-4o-mini)."
                     checked={(data as WaldiezNodeAgentAssistantData).isMultimodal ?? false}
                     onChange={onMultimodalChange}
-                    dataTestId={`agent-multimodal-toggle-${id}`}
+                    id={`agent-multimodal-toggle-${id}`}
                 />
             )}
 
             {/* Name input */}
             <TextInput
                 label="Name:"
+                name="human-input-name"
                 value={data.label}
                 onChange={onNameChange}
                 dataTestId={`agent-name-input-${id}`}
@@ -152,6 +142,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
                         </ul>
                     </div>
                 )}
+                htmlFor={`agent-human-input-mode-${id}`}
             />
 
             <label htmlFor={`agent-human-input-mode-select-${id}`} className="hidden">
@@ -167,6 +158,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
 
             {/* Max consecutive auto reply input */}
             <NumberInput
+                name="max-consecutive-auto-reply"
                 label="Max consecutive auto reply: "
                 value={data.maxConsecutiveAutoReply}
                 onChange={onMaxConsecutiveAutoReplyChange}
@@ -183,12 +175,12 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
             />
 
             {/* Default auto reply input */}
-            <TextInput
-                className="full-width"
-                label="Agent Default Auto Reply:"
+            <label htmlFor={`agent-default-auto-reply-input-${id}`}>Default Auto Reply:</label>
+            <TextareaInput
+                className="full-width margin-top-5"
                 value={data.agentDefaultAutoReply ?? ""}
                 onChange={onAgentDefaultAutoReplyChange}
-                dataTestId={`agent-default-auto-reply-input-${id}`}
+                data-testid={`agent-default-auto-reply-input-${id}`}
                 aria-label="Default auto reply message"
             />
 

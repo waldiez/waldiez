@@ -94,10 +94,10 @@ export const useFlowModels = (props: {
      * Select all or none of the model nodes
      */
     const onAllNoneModelsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             onSelectedPropsChange({
                 nodes: {
-                    models: event.target.checked ? modelNodes : [],
+                    models: checked ? modelNodes : [],
                     tools: selectedProps.nodes.tools,
                     agents: selectedProps.nodes.agents,
                 },

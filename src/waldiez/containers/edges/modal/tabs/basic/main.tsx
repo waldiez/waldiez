@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
+import { CheckboxInput, InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic/hooks";
 import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
 
@@ -28,6 +28,7 @@ export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: W
         <div className="flex-column">
             <div className="margin-top--10">
                 <InfoLabel
+                    htmlFor={`select-chat-type-${edgeId}`}
                     label="Chat Type:"
                     info="The type of the chat. Could be Chat or Nested Chat. Chats are executed in a sequential order. Nested Chats are not always executed (i.e., triggered)."
                 />
@@ -44,6 +45,7 @@ export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: W
             </div>
             <TextInput
                 label="Label:"
+                name="edge-label"
                 value={data.label}
                 onChange={onLabelChange}
                 dataTestId={`edge-${edgeId}-label-input`}
@@ -60,17 +62,15 @@ export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: W
                     />
                 </div>
             )}
-            <label className="checkbox-label clear-history-checkbox">
-                <div className="checkbox-label-view">Clear History</div>
-                <input
-                    type="checkbox"
-                    checked={data.clearHistory === true}
-                    onChange={onClearHistoryChange}
-                    data-testid={`edge-${edgeId}-clear-history-checkbox`}
-                />
-                <div className="checkbox"></div>
-            </label>
+            <div className="margin-top-10" />
+            <CheckboxInput
+                label="Clear History"
+                isChecked={data.clearHistory === true}
+                onCheckedChange={onClearHistoryChange}
+                id={`edge-${edgeId}-clear-history-checkbox`}
+            />
             <NumberInput
+                name="max-turns"
                 label="Max Turns:"
                 min={0}
                 max={100}
@@ -83,6 +83,7 @@ export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: W
                 dataTestId={`edge-${edgeId}-max-turns-input`}
             />
             <InfoLabel
+                htmlFor={`select-summary-method-${edgeId}`}
                 label="Summary Method:"
                 // info="The method to be used to summarize the conversation."
                 info={() => (
@@ -121,6 +122,7 @@ export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: W
             {data.summary.method === "reflectionWithLlm" && (
                 <>
                     <InfoLabel
+                        htmlFor={`edge-${edgeId}-llm-prompt-input`}
                         label="Summary Prompt:"
                         info="The prompt to be used for the summary generation."
                     />

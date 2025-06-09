@@ -94,11 +94,11 @@ export const useFlowTools = (props: {
      * Select all or none of the tool nodes
      */
     const onAllNoneToolsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             onSelectedPropsChange({
                 nodes: {
                     models: selectedProps.nodes.models,
-                    tools: event.target.checked ? toolNodes : [],
+                    tools: checked ? toolNodes : [],
                     agents: selectedProps.nodes.agents,
                 },
             });

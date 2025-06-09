@@ -2,13 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useMemo } from "react";
+import * as Slider from "@radix-ui/react-slider";
 
-import Slider from "rc-slider";
+import React, { memo, useCallback, useMemo } from "react";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
 type NumberInputProps = {
+    name: string;
     label: string | React.JSX.Element;
     value: number | null;
     min: number;
@@ -32,6 +33,7 @@ type NumberInputProps = {
  */
 export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
     const {
+        name,
         value,
         label,
         onChange,
@@ -59,21 +61,19 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
     const currentValue = useMemo(() => (value !== null ? value : onNullValue), [value, onNullValue]);
 
     // Handle slider change
-    const handleChange = useCallback(
-        (newValue: number | number[]) => {
-            if (Array.isArray(newValue)) {
-                return;
-            }
+    const handleSliderChange = useCallback(
+        (newValues: number[]) => {
+            const newValue = newValues[0];
 
             if (newValue === max && setNullOnUpper) {
                 onChange(null);
             } else if (newValue === min && setNullOnLower) {
                 onChange(null);
             } else {
-                onChange(newValue);
+                onChange(forceInt ? Math.round(newValue) : newValue);
             }
         },
-        [onChange, max, min, setNullOnUpper, setNullOnLower],
+        [onChange, max, min, setNullOnUpper, setNullOnLower, forceInt],
     );
 
     // Handle input change
@@ -83,13 +83,13 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
                 const newValue = forceInt ? parseInt(e.target.value, 10) : parseFloat(e.target.value);
 
                 if (!isNaN(newValue)) {
-                    handleChange(newValue);
+                    handleSliderChange([newValue]);
                 }
             } catch (_) {
                 // Silently ignore parse errors
             }
         },
-        [forceInt, handleChange],
+        [forceInt, handleSliderChange],
     );
 
     // Generate the label value content
@@ -106,6 +106,8 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
         else {
             return (
                 <input
+                    id={`id-for-${name}`}
+                    name={name}
                     placeholder={`${currentValue}`}
                     inputMode="decimal"
                     type="number"
@@ -119,6 +121,7 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
             );
         }
     }, [
+        name,
         value,
         min,
         max,
@@ -146,6 +149,7 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
                             </div>
                         }
                         info={labelInfo}
+                        htmlFor={`id-for-${name}`}
                     />
                 </div>
             );
@@ -153,24 +157,30 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
 
         return (
             <div className="number-input-label-wrapper">
-                <label>
+                <label htmlFor={`id-for-${name}`}>
                     {label} {labelValue}
                 </label>
             </div>
         );
-    }, [label, getLabelValue, labelInfo]);
+    }, [name, label, getLabelValue, labelInfo]);
 
     return (
         <>
             {renderLabel}
-            <Slider
-                min={min}
+            <Slider.Root
+                className="slider-root"
+                value={[currentValue]}
                 max={max}
                 step={step}
-                value={currentValue}
-                onChange={handleChange}
+                min={min}
+                onValueChange={handleSliderChange}
                 disabled={disabled}
-            />
+            >
+                <Slider.Track className="slider-track">
+                    <Slider.Range className="slider-range" />
+                </Slider.Track>
+                <Slider.Thumb className="slider-thumb" />
+            </Slider.Root>
         </>
     );
 });

@@ -23,7 +23,7 @@ const toolOverrides = {
 
 describe("Tools tab", () => {
     it("should display the agent tools", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: toolOverrides,
             includeTools: true,
@@ -34,10 +34,10 @@ describe("Tools tab", () => {
         expect(toolName).toHaveTextContent("test tool1");
         const agentName = screen.getByTestId(`agent-name-${agentId}-0`);
         expect(agentName).toBeInTheDocument();
-        expect(agentName).toHaveTextContent("user_proxy");
+        expect(agentName).toHaveTextContent("Assistant");
     });
     it("should allow removing agent tools", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: toolOverrides,
             includeTools: true,
@@ -53,7 +53,7 @@ describe("Tools tab", () => {
         submitAgentChanges();
     });
     it("should allow adding agent tools", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: toolOverrides,
             includeTools: true,
@@ -66,7 +66,7 @@ describe("Tools tab", () => {
         const selectExecutor = screen.getByLabelText("Executor:");
         expect(selectExecutor).toBeInTheDocument();
         selectEvent.openMenu(selectExecutor);
-        await selectEvent.select(selectExecutor, "user_proxy");
+        await selectEvent.select(selectExecutor, "Assistant");
         const addToolButton = screen.getByTestId(`add-agent-tool-${agentId}`);
         expect(addToolButton).toBeInTheDocument();
         fireEvent.click(addToolButton);
@@ -76,12 +76,12 @@ describe("Tools tab", () => {
             expect(toolName).toHaveTextContent("test tool2");
             const agentName = screen.getByTestId(`agent-name-${agentId}-1`);
             expect(agentName).toBeInTheDocument();
-            expect(agentName).toHaveTextContent("user_proxy");
+            expect(agentName).toHaveTextContent("Assistant");
         });
         submitAgentChanges();
     });
     it("should show a message if there are no tools", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
         });
         goToToolsTab();

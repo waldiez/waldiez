@@ -1,209 +1,282 @@
-/* SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
- */
-/* stylelint-disable no-descending-specificity */
-
 .snackbar {
   position: fixed;
   bottom: 0;
   right: 0;
   z-index: 10001;
-  padding: 15px;
-  margin: 10px;
-  color: #fff !important;
-  border-radius: 5px;
-  box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
-  max-width: 300px;
+  padding: 16px;
+  margin: 16px;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 12px color-mix(in srgb, #000 15%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 10%, transparent);
+  max-width: 400px;
+  min-width: 300px;
   opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: block;
   font-family: inherit;
+  backdrop-filter: blur(8px);
 }
 
 .snackbar.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .snackbar.hide {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(20px) scale(0.95);
 }
 
 .snackbar .message {
-  margin-right: 30px;
+  margin-right: 40px;
   word-wrap: break-word;
-  line-height: 1.4;
+  line-height: 1.5;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .snackbar.with-details .message {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-/* Close button */
 .snackbar .close {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 15px;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   cursor: pointer;
   background: none;
   border: none;
   color: inherit;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
-  border-radius: 0 5px 0 0;
-  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
 }
 
 .snackbar .close:hover,
 .snackbar .close:focus {
-  background-color: rgb(0 0 0 / 10%);
+  background-color: color-mix(in srgb, #fff 15%, transparent);
+  opacity: 1;
   outline: none;
+  transform: scale(1.1);
 }
 
 .snackbar .close:focus {
-  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 50%);
+  box-shadow: 0 0 0 2px color-mix(in srgb, #fff 40%, transparent);
 }
 
-/* Details section */
+.snackbar .close:active {
+  transform: scale(0.95);
+}
+
 .snackbar details {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .snackbar details summary {
   cursor: pointer;
-  font-weight: bold;
-  padding: 5px 0;
+  font-weight: 600;
+  padding: 8px 12px;
   outline: none;
-  border-radius: 3px;
+  border-radius: 6px;
+  background: color-mix(in srgb, #fff 10%, transparent);
+  transition: all 0.2s ease;
+  list-style: none;
+  position: relative;
+}
+
+.snackbar details summary::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transition: transform 0.2s ease;
+  font-size: 12px;
+}
+
+.snackbar details[open] summary::after {
+  transform: translateY(-50%) rotate(0deg);
 }
 
 .snackbar details summary:hover,
 .snackbar details summary:focus {
-  background-color: rgb(255 255 255 / 10%);
-  padding-left: 5px;
+  background-color: color-mix(in srgb, #fff 20%, transparent);
+  transform: translateY(-1px);
 }
 
 .snackbar details .details-content {
-  margin-top: 5px;
-  padding: 10px;
-  background-color: rgb(0 0 0 / 20%);
-  border-radius: 3px;
-  font-family: monospace;
+  margin-top: 8px;
+  padding: 12px;
+  background-color: color-mix(in srgb, #000 20%, transparent);
+  border-radius: 6px;
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
   font-size: 12px;
   white-space: pre-wrap;
   word-break: break-all;
-  max-height: 150px;
+  max-height: 200px;
   overflow-y: auto;
+  border: 1px solid color-mix(in srgb, #fff 10%, transparent);
 }
 
-/* Error level */
+.snackbar details .details-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.snackbar details .details-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.snackbar details .details-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, #fff 30%, transparent);
+  border-radius: 3px;
+}
+
+.snackbar details .details-content::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, #fff 50%, transparent);
+}
+
 .snackbar.error {
-  background-color: #d32f2f;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #ef4444 90%, #000),
+    color-mix(in srgb, #dc2626 90%, #000)
+  );
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #ef4444 60%, transparent);
 }
 
-.snackbar.error .close:hover,
-.snackbar.error .close:focus {
-  background-color: rgb(255 0 0 / 20%);
-}
-
-/* Success level */
 .snackbar.success {
-  background-color: #38903d;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #10b981 90%, #000),
+    color-mix(in srgb, #059669 90%, #000)
+  );
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #10b981 60%, transparent);
 }
 
-.snackbar.success .close:hover,
-.snackbar.success .close:focus {
-  background-color: rgb(46 125 50 / 30%);
-}
-
-/* Warning level */
 .snackbar.warning {
-  background-color: #fbc02d;
-  color: #000 !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #f59e0b 95%, #000),
+    color-mix(in srgb, #d97706 95%, #000)
+  );
+  color: #000;
+  border: 1px solid color-mix(in srgb, #f59e0b 60%, transparent);
 }
 
 .snackbar.warning .close {
   color: #000;
 }
 
-.snackbar.warning .close:hover,
-.snackbar.warning .close:focus {
-  background-color: rgb(249 168 37 / 30%);
-}
-
 .snackbar.warning details .details-content {
-  background-color: rgb(0 0 0 / 10%);
+  background-color: color-mix(in srgb, #000 15%, transparent);
   color: #000;
+  border-color: color-mix(in srgb, #000 20%, transparent);
 }
 
-/* Info level */
 .snackbar.info {
-  background-color: #1866b3;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #3b82f6 90%, #000),
+    color-mix(in srgb, #2563eb 90%, #000)
+  );
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #3b82f6 60%, transparent);
 }
 
-.snackbar.info .close:hover,
-.snackbar.info .close:focus {
-  background-color: rgb(13 71 161 / 30%);
+/* Multiple snackbars stacking */
+.snackbar:nth-last-child(2) {
+  transform: translateY(-60px) scale(0.95);
+  opacity: 0.8;
 }
 
-/* Snackbar inside modal (if you portal into modal-content) */
+.snackbar:nth-last-child(3) {
+  transform: translateY(-120px) scale(0.9);
+  opacity: 0.6;
+}
+
 dialog .modal-content .snackbar {
   position: absolute;
-  bottom: 15px;
-  right: 15px;
+  bottom: 16px;
+  right: 16px;
   z-index: 10001;
   margin: 0;
-  max-width: calc(100% - 30px);
+  max-width: calc(100% - 32px);
+  min-width: min(300px, calc(100% - 32px));
 }
 
-dialog .modal-content .snackbar.show {
-  opacity: 1;
-  transform: translateY(0);
+.snackbar.show:nth-last-child(2) {
+  transform: translateY(-60px) scale(0.95);
 }
 
-dialog .modal-content .snackbar .close {
-  padding: 10px;
+.snackbar.show:nth-last-child(3) {
+  transform: translateY(-120px) scale(0.9);
 }
 
-dialog .modal-content .snackbar.warning {
-  color: #000 !important;
-}
-
-/* Responsive adjustments */
+/* Responsive improvements */
 @media (width <= 480px) {
   .snackbar {
-    left: 10px;
-    right: 10px;
+    left: 16px;
+    right: 16px;
     max-width: none;
-    margin: 10px 0;
+    min-width: unset;
+    margin: 16px 0;
   }
 
   dialog .modal-content .snackbar {
-    left: 15px;
-    right: 15px;
+    left: 16px;
+    right: 16px;
     max-width: none;
+    min-width: unset;
+  }
+
+  .snackbar .message {
+    margin-right: 44px;
+    font-size: 14px;
   }
 }
 
-/* High contrast mode support */
+.flow.wrapper .snackbar {
+  box-shadow:
+    0 4px 12px color-mix(in srgb, #000 30%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 5%, transparent);
+}
+
+/* high contrast mode support */
 @media (prefers-contrast: more) {
   .snackbar {
     border: 2px solid currentcolor;
+    backdrop-filter: none;
   }
 
   .snackbar .close:focus {
-    box-shadow: inset 0 0 0 3px currentcolor;
+    box-shadow: 0 0 0 3px currentcolor;
   }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .snackbar {
-    transition: none;
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+
+  .snackbar.show {
+    transform: none;
+  }
+
+  .snackbar.hide {
+    transform: none;
   }
 }

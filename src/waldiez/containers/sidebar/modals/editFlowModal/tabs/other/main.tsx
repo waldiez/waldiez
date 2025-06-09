@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { StringList } from "@waldiez/components";
+import { CheckboxInput, StringList } from "@waldiez/components";
 import { EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/other/types";
 
 export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProps) => {
@@ -32,8 +32,8 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             requirements: requirements.map(r => (r === oldValue ? newValue : r)),
         });
     };
-    const onCacheSeedToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onDataChange({ cacheSeed: e.target.checked ? null : 42 });
+    const onCacheSeedToggleChange = (checked: boolean) => {
+        onDataChange({ cacheSeed: checked ? null : 42 });
     };
     const onCacheSeedValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -53,16 +53,13 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             className="padding-left-10 padding-right-10"
             data-testid={`edit-flow-${flowId}-modal-other-view`}
         >
-            <label className="checkbox-label margin-left-5">
-                <div className="checkbox-label-view">Disable cache</div>
-                <input
-                    type="checkbox"
-                    checked={typeof cacheSeed !== "number"}
-                    onChange={onCacheSeedToggleChange}
-                    data-testid={`edit-flow-${flowId}-modal-cache-seed-toggle`}
-                />
-                <div className="checkbox"></div>
-            </label>
+            <CheckboxInput
+                id={`edit-flow-${flowId}-modal-cache-seed-toggle`}
+                label="Disable cache"
+                isChecked={typeof cacheSeed !== "number"}
+                onCheckedChange={onCacheSeedToggleChange}
+                data-testid={`edit-flow-${flowId}-modal-cache-seed-toggle`}
+            />
             {typeof cacheSeed === "number" && (
                 <div className="cache-seed-view flex">
                     <div className="margin-left-5 margin-right-5"> Cache seed:</div>
@@ -72,6 +69,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
                         placeholder="42"
                         value={cacheSeed}
                         onChange={onCacheSeedValueChange}
+                        id={`edit-flow-${flowId}-cache-seed-input`}
                         data-testid={`edit-flow-${flowId}-cache-seed-input`}
                     />
                 </div>

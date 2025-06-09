@@ -135,7 +135,11 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
             />
 
             {/* Embedding Model */}
-            <InfoLabel label="Embedding Model:" info={getEmbeddingModelInfoView} />
+            <InfoLabel
+                label="Embedding Model:"
+                info={getEmbeddingModelInfoView}
+                htmlFor={`rag-vector-db-model-${id}`}
+            />
             <input
                 type="text"
                 title="Embedding model"
@@ -153,8 +157,8 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
                         label="Use Memory Storage "
                         info="Use memory for the vector db. Default is True."
                         checked={retrieveConfig.dbConfig.useMemory}
+                        id={`rag-vector-db-use-memory-${id}`}
                         onChange={onQdrantUseMemoryChange}
-                        dataTestId={`rag-vector-db-use-memory-${id}`}
                         aria-label="Use memory storage for Qdrant"
                     />
 
@@ -165,7 +169,7 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
                                 info='Use local storage for the vector db. Default is: True if "Use Memory Storage" is False.'
                                 checked={usesLocalStorage}
                                 onChange={onQdrantUseLocalStorageChange}
-                                dataTestId={`rag-vector-db-use-local-storage-${id}`}
+                                id={`rag-vector-db-use-local-storage-${id}`}
                                 aria-label="Use local storage for Qdrant"
                             />
 
@@ -197,8 +201,8 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
                         label="Use Persistent Storage "
                         info="Use persistent storage for the vector db (i.e., whether to store data after closing the session). Default is False."
                         checked={usesLocalStorage}
+                        id={`rag-vector-db-use-local-storage-${id}`}
                         onChange={onChromaUseLocalStorageChange}
-                        dataTestId={`rag-vector-db-use-local-storage-${id}`}
                         aria-label="Use persistent storage for Chroma"
                     />
 
@@ -225,6 +229,7 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
             {showConnectionUrl && (
                 <div className="flex-column">
                     <InfoLabel
+                        htmlFor={`rag-vector-db-connection-url-${id}`}
                         label="Connection URL:"
                         info={
                             "The connection URL for the vector db. " +

@@ -29,15 +29,19 @@ export const Select = forwardRef(
                 {...props}
                 className={`select ${props.className ? ` ${props.className}` : ""}`}
                 classNamePrefix="w-select"
-                menuPosition="fixed"
+                menuPlacement="auto"
                 styles={{
+                    menuPortal: base => ({
+                        ...base,
+                        zIndex: 10001, // Higher than modal
+                    }),
                     menu: provided => ({
                         ...provided,
-                        zIndex: 9999,
+                        zIndex: 10001,
                         width: "max-content",
                         minWidth: "100%",
                     }),
-                    menuPortal: base => ({ ...base, zIndex: 9999 }),
+                    ...props.styles, // Allow style overrides
                 }}
             />
         );

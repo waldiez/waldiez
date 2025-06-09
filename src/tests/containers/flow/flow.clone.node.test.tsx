@@ -8,9 +8,24 @@ import { describe, expect, it } from "vitest";
 import { onChange, renderFlow } from "./common";
 
 describe("WaldiezFlow Clone Nodes", () => {
+    it("should clone an agent node", async () => {
+        await act(async () => {
+            await renderFlow();
+        });
+        // let's first 'select' the agent node
+        const agentDiv = screen.getByTestId("agent-node-agent-0-view");
+        expect(agentDiv).toBeTruthy();
+        fireEvent.click(agentDiv as HTMLElement);
+        // now the "copy" icon should be visible
+        const cloneDiv = agentDiv.querySelector(".copy-icon");
+        expect(cloneDiv).toBeTruthy();
+        fireEvent.click(cloneDiv as HTMLElement);
+        vi.advanceTimersByTime(50);
+        expect(onChange).toHaveBeenCalled();
+    });
     it("should clone a model node", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId("show-models"));
         fireEvent.click(screen.getByTestId("add-model-node"));
@@ -22,8 +37,8 @@ describe("WaldiezFlow Clone Nodes", () => {
         expect(onChange).toHaveBeenCalled();
     });
     it("should clone a tool node", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId("show-tools"));
         fireEvent.click(screen.getByTestId("add-tool-node"));
@@ -32,18 +47,6 @@ describe("WaldiezFlow Clone Nodes", () => {
         const cloneDiv = screen.getByTestId("clone-node-tool-0");
         expect(cloneDiv).toBeTruthy();
         fireEvent.click(cloneDiv as HTMLElement);
-        expect(onChange).toHaveBeenCalled();
-    });
-    it("should clone an agent node", async () => {
-        act(() => {
-            renderFlow();
-        });
-        const agentFooter = screen.getByTestId("agent-footer-agent-0");
-        expect(agentFooter).toBeTruthy();
-        const cloneDiv = agentFooter.querySelector(".clone-agent");
-        expect(cloneDiv).toBeTruthy();
-        fireEvent.click(cloneDiv as HTMLElement);
-        vi.advanceTimersByTime(50);
         expect(onChange).toHaveBeenCalled();
     });
 });

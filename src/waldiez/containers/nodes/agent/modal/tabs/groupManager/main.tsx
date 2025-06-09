@@ -104,6 +104,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                 <div className="modal-body  agent-panel">
                     <TextInput
                         label="Group Name:"
+                        name="group-name"
                         value={data.groupName ?? ""}
                         onChange={onGroupNameChange}
                         dataTestId={`agent-name-input-${id}`}
@@ -122,6 +123,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                     />
 
                     <NumberInput
+                        name="max-rounds"
                         label="Max Rounds:"
                         value={data.maxRound}
                         onChange={onMaxRoundChange}
@@ -167,6 +169,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                     <div>
                         <TextInput
                             label="Group Manager's Name:"
+                            name="group-manager-name"
                             value={data.name ?? data.label ?? ""}
                             onChange={onManagerNameChange}
                             dataTestId={`agent-name-input-${id}`}
@@ -206,7 +209,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                         checked={data.sendIntroductions === true}
                         info="Send a round of introductions at the start of the group chat, so agents know who they can speak to (default: False)"
                         onChange={onSendIntroductionsChange}
-                        dataTestId={`manager-send-introductions-checkbox-${id}`}
+                        id={`manager-send-introductions-checkbox-${id}`}
                         aria-label="Enable sending introductions"
                     />
 
@@ -215,7 +218,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                         checked={data.enableClearHistory === true}
                         info="Enable the possibility to clear history of messages for agents manually by providing 'clear history' phrase in user prompt."
                         onChange={onEnableClearHistoryChange}
-                        dataTestId={`manager-enable-clear-history-checkbox-${id}`}
+                        id={`manager-enable-clear-history-checkbox-${id}`}
                         aria-label="Enable clear history functionality"
                     />
                 </div>
@@ -266,6 +269,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                     />
 
                     <NumberInput
+                        name="max-retries-for-selecting"
                         label="Max Retries for selecting a speaker:"
                         value={data.speakers?.maxRetriesForSelecting ?? 0}
                         onChange={onMaxRetriesForSelectingChange}

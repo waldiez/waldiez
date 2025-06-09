@@ -275,11 +275,11 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
      * Handle changes to the "is reply" checkbox
      */
     const onSelectedRecipientIsReplyChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             if (selectedRecipient) {
                 setSelectedRecipient(prevState => ({
                     ...prevState!,
-                    isReply: event.target.checked,
+                    isReply: checked,
                 }));
             }
         },

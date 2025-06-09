@@ -36,9 +36,9 @@ export const useWaldiezAgentRagUserCustomFunctions = (props: {
      * Handle custom embedding toggle
      */
     const onUseCustomEmbeddingChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                useCustomEmbedding: event.target.checked,
+                useCustomEmbedding: checked,
             });
         },
         [setRetrieveConfigConfigData],
@@ -62,9 +62,9 @@ export const useWaldiezAgentRagUserCustomFunctions = (props: {
      * Handle custom token count toggle
      */
     const onUseCustomTokenCountChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                useCustomTokenCount: event.target.checked,
+                useCustomTokenCount: checked,
             });
         },
         [setRetrieveConfigConfigData],
@@ -88,9 +88,9 @@ export const useWaldiezAgentRagUserCustomFunctions = (props: {
      * Handle custom text split toggle
      */
     const onUseCustomTextSplitChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                useCustomTextSplit: event.target.checked,
+                useCustomTextSplit: checked,
             });
         },
         [setRetrieveConfigConfigData],

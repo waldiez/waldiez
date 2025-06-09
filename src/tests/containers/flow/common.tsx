@@ -60,7 +60,7 @@ export const captainDataTransfer = {
     },
 };
 
-export const renderFlow = (
+export const renderFlow = async (
     options: {
         withLinkedModels?: boolean;
         withLinkedTools?: boolean;
@@ -69,6 +69,9 @@ export const renderFlow = (
         withLinkedTools: false,
     },
 ) => {
+    // const container = document.createElement("div");
+    // document.body.appendChild(container);
+    // const root = createRoot(container);
     const { withLinkedModels, withLinkedTools } = options;
     let nodesToUse = [...nodes];
     if (withLinkedModels) {

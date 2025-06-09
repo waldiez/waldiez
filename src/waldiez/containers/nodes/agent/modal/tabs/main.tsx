@@ -14,11 +14,12 @@ import {
     WaldiezAgentGroupNestedChatTabs,
     WaldiezAgentNestedChats,
 } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
-import { WaldiezAgentRagUser } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
+import { WaldiezAgentRagUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
 import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 import { WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
+import { WaldiezAgentUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/user";
 import {
     WaldiezEdge,
     WaldiezNodeAgent,
@@ -160,6 +161,36 @@ export const WaldiezNodeAgentModalTabs = memo(
             uploadsEnabled,
         } = derivedData;
 
+        if (isRagUser) {
+            return (
+                <WaldiezAgentRagUserTabs
+                    id={id}
+                    flowId={flowId}
+                    isDarkMode={isDarkMode}
+                    isModalOpen={isModalOpen}
+                    models={models}
+                    uploadsEnabled={uploadsEnabled}
+                    data={data as WaldiezNodeAgentRagUserData}
+                    onDataChange={onDataChange}
+                    filesToUpload={filesToUpload}
+                    onFilesToUploadChange={onFilesToUploadChange}
+                />
+            );
+        }
+        if (data.agentType === "user_proxy") {
+            return (
+                <WaldiezAgentUserTabs
+                    id={id}
+                    flowId={flowId}
+                    isDarkMode={isDarkMode}
+                    isModalOpen={isModalOpen}
+                    data={data as WaldiezNodeAgentData}
+                    tools={tools}
+                    onDataChange={onDataChange}
+                />
+            );
+        }
+
         return (
             <TabItems activeTabIndex={activeTabIndex}>
                 {/* Basic Tab - Always visible */}
@@ -196,25 +227,6 @@ export const WaldiezNodeAgentModalTabs = memo(
                                 flowId={flowId}
                                 data={data as WaldiezNodeAgentCaptainData}
                                 onDataChange={onDataChange}
-                            />
-                        </div>
-                    </TabItem>
-                )}
-
-                {/* RAG Tab - Only for RAG user proxy agents */}
-                {isRagUser && (
-                    <TabItem label="RAG" id={`wf-${flowId}-wa-${id}-rag`}>
-                        <div className="modal-tab-body">
-                            <WaldiezAgentRagUser
-                                id={id}
-                                flowId={flowId}
-                                isDarkMode={isDarkMode}
-                                isModalOpen={isModalOpen}
-                                uploadsEnabled={uploadsEnabled}
-                                data={data as WaldiezNodeAgentRagUserData}
-                                onDataChange={onDataChange}
-                                filesToUpload={filesToUpload}
-                                onFilesToUploadChange={onFilesToUploadChange}
                             />
                         </div>
                     </TabItem>

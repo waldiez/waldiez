@@ -8,9 +8,9 @@ import { afterEach, describe, it, vi } from "vitest";
 import { renderFlow } from "../common";
 import { flowId } from "../data";
 
-const openFlowModalToExtras = (positions: number[]) => {
-    act(() => {
-        renderFlow(positions);
+const openFlowModalToExtras = async (positions: number[]) => {
+    await act(async () => {
+        await renderFlow(positions);
     });
     fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
     const extrasTab = screen.getByTestId(`tab-id-rf-${flowId}-edit-flow-modal-extras`);
@@ -21,26 +21,26 @@ describe("Sidebar Edit flow modal extras tab", () => {
         vi.resetAllMocks();
     });
     // tags
-    it("should add a new tag", () => {
-        openFlowModalToExtras([-1, 0, 1, 2]);
+    it("should add a new tag", async () => {
+        await openFlowModalToExtras([-1, 0, 1, 2]);
         const tagInput = screen.getByTestId("new-list-entry-tag-item");
         fireEvent.change(tagInput, { target: { value: "new tag" } });
         const addTagButton = screen.getByTestId("add-list-entry-tag-button");
         fireEvent.click(addTagButton);
     });
-    it("should delete a tag", () => {
-        openFlowModalToExtras([-1, 0, 1, 2]);
+    it("should delete a tag", async () => {
+        await openFlowModalToExtras([-1, 0, 1, 2]);
         const deleteTagButton = screen.getByTestId("delete-list-entry-tag-0");
         fireEvent.click(deleteTagButton);
     });
-    it("should update a tag", () => {
-        openFlowModalToExtras([-1, 0, 1, 2]);
+    it("should update a tag", async () => {
+        await openFlowModalToExtras([-1, 0, 1, 2]);
         const entryInput = screen.getByTestId("list-entry-item-tag-0");
         fireEvent.change(entryInput, { target: { value: "tag-update" } });
     });
     // requirements
-    it("should add a new requirement", () => {
-        openFlowModalToExtras([-1, 0, 1, 2]);
+    it("should add a new requirement", async () => {
+        await openFlowModalToExtras([-1, 0, 1, 2]);
         const requirementInput = screen.getByTestId("new-list-entry-requirement-item");
         fireEvent.change(requirementInput, {
             target: { value: "new requirement" },
@@ -48,13 +48,13 @@ describe("Sidebar Edit flow modal extras tab", () => {
         const addRequirementButton = screen.getByTestId("add-list-entry-requirement-button");
         fireEvent.click(addRequirementButton);
     });
-    it("should delete a requirement", () => {
-        openFlowModalToExtras([-1, 0, 1, 2]);
+    it("should delete a requirement", async () => {
+        await openFlowModalToExtras([-1, 0, 1, 2]);
         const deleteRequirementButton = screen.getByTestId("delete-list-entry-requirement-0");
         fireEvent.click(deleteRequirementButton);
     });
-    it("should update a requirement", () => {
-        openFlowModalToExtras([-1, 0, 1, 2]);
+    it("should update a requirement", async () => {
+        await openFlowModalToExtras([-1, 0, 1, 2]);
         const entryInput = screen.getByTestId("list-entry-item-requirement-0");
         fireEvent.change(entryInput, {
             target: { value: "requirement-update" },

@@ -4,7 +4,8 @@
  */
 import { memo, useCallback, useMemo, useState } from "react";
 
-import { InfoCheckbox, MultiValue, Select, SingleValue } from "@waldiez/components";
+import { InfoCheckbox } from "@waldiez/components/infoCheckBox";
+import { MultiValue, Select, SingleValue } from "@waldiez/components/select";
 import {
     TransitionTargetType,
     ValidTransitionTargetTypes,
@@ -122,8 +123,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
          * Handle enabling/disabling after-work
          */
         const onEnabledChange = useCallback(
-            (event: React.ChangeEvent<HTMLInputElement>) => {
-                const checked = event.target.checked;
+            (checked: boolean) => {
                 setEnabled(checked);
 
                 if (!checked) {
@@ -221,7 +221,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                     label={`Include an action to perform after ${infoLabelAfter}?`}
                     info={infoText}
                     checked={enabled}
-                    dataTestId="afterWork"
+                    id="afterWork"
                     onChange={onEnabledChange}
                 />
                 {enabled && (
@@ -234,8 +234,6 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                                 options={transitionTargetOptions}
                                 value={selectedTargetOption}
                                 onChange={onTargetTypeChange}
-                                isClearable={false}
-                                isSearchable={false}
                                 isMulti={false}
                             />
                         </div>

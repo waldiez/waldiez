@@ -130,6 +130,7 @@ agentNodes.push({
         x: 100 * edgesCount,
         y: 100 * edgesCount,
     },
+    selected: true,
     data: {
         label: "Agent Node",
         agentType: "assistant",

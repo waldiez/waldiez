@@ -90,7 +90,6 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
             return undefined;
         }
         const agentType = agent.data.agentType as WaldiezNodeAgentType;
-        console.debug(`Edge color for agent type ${agentType}:`, AGENT_COLORS_ALT[agentType]);
 
         if (ValidAgentTypes.includes(agentType)) {
             return AGENT_COLORS_ALT[agentType];

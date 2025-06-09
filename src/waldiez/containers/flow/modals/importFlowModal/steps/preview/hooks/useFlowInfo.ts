@@ -83,14 +83,13 @@ export const useFlowInfo = (props: {
      * Select all or none of the info properties
      */
     const onAllNoneInfoChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const isChecked = event.target.checked;
-
+        (checked: boolean) => {
             onSelectedPropsChange({
-                name: isChecked,
-                description: isChecked,
-                tags: isChecked,
-                requirements: isChecked,
+                name: checked,
+                description: checked,
+                tags: checked,
+                requirements: checked,
+                isAsync: checked,
             });
         },
         [onSelectedPropsChange],
@@ -100,9 +99,9 @@ export const useFlowInfo = (props: {
      * Toggle import everything option
      */
     const onImportEverythingChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             onSelectedPropsChange({
-                everything: event.target.checked,
+                everything: checked,
             });
         },
         [onSelectedPropsChange],
@@ -112,9 +111,9 @@ export const useFlowInfo = (props: {
      * Toggle override option
      */
     const onOverrideChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             onSelectedPropsChange({
-                override: event.target.checked,
+                override: checked,
             });
         },
         [onSelectedPropsChange],
@@ -124,36 +123,36 @@ export const useFlowInfo = (props: {
      * Individual property toggle handlers
      */
     const onNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            onSelectedPropsChange({ name: event.target.checked });
+        (checked: boolean) => {
+            onSelectedPropsChange({ name: checked });
         },
         [onSelectedPropsChange],
     );
 
     const onDescriptionChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            onSelectedPropsChange({ description: event.target.checked });
+        (checked: boolean) => {
+            onSelectedPropsChange({ description: checked });
         },
         [onSelectedPropsChange],
     );
 
     const onTagsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            onSelectedPropsChange({ tags: event.target.checked });
+        (checked: boolean) => {
+            onSelectedPropsChange({ tags: checked });
         },
         [onSelectedPropsChange],
     );
 
     const onRequirementsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            onSelectedPropsChange({ requirements: event.target.checked });
+        (checked: boolean) => {
+            onSelectedPropsChange({ requirements: checked });
         },
         [onSelectedPropsChange],
     );
 
     const onIsASyncChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            onSelectedPropsChange({ isAsync: event.target.checked });
+        (checked: boolean) => {
+            onSelectedPropsChange({ isAsync: checked });
         },
         [onSelectedPropsChange],
     );

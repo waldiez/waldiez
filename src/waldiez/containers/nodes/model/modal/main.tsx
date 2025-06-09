@@ -6,13 +6,16 @@ import { useEffect, useState } from "react";
 
 import { Modal, TabItem, TabItems } from "@waldiez/components";
 import {
+    WaldiezNodeModelModalAWSTab,
     WaldiezNodeModelModalAdvancedTab,
     WaldiezNodeModelModalBasicTab,
     WaldiezNodeModelModalPriceTab,
 } from "@waldiez/containers/nodes/model/modal/tabs";
 import { WaldiezNodeModelModalProps } from "@waldiez/containers/nodes/model/modal/types";
 
-export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
+export const WaldiezNodeModelModal: React.FC<WaldiezNodeModelModalProps> = (
+    props: WaldiezNodeModelModalProps,
+) => {
     const {
         modelId,
         data,
@@ -54,6 +57,13 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
                             />
                         </div>
                     </TabItem>
+                    {data.apiType === "bedrock" && (
+                        <TabItem label="AWS" id={`model-config-aws-${modelId}`}>
+                            <div className="model-panel">
+                                <WaldiezNodeModelModalAWSTab data={data} onDataChange={onDataChange} />
+                            </div>
+                        </TabItem>
+                    )}
                     <TabItem label="Advanced" id={`model-config-advanced-${modelId}`}>
                         <div className="model-panel">
                             <WaldiezNodeModelModalAdvancedTab data={data} onDataChange={onDataChange} />
@@ -83,7 +93,7 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
                         <button
                             type="button"
                             title="Test"
-                            className="modal-action-submit-alt margin-right-10"
+                            className="margin-right-10 neutral"
                             onClick={onTest}
                             data-testid={`modal-test-btn-${modelId}`}
                             disabled={isDirty}
@@ -93,7 +103,7 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
                         <button
                             title="Save & Close"
                             type="button"
-                            className="modal-action-submit margin-right-10 "
+                            className="save margin-right-10"
                             onClick={onSaveAndClose}
                             data-testid={`modal-submit-and-close-btn-${modelId}`}
                             disabled={!isDirty}

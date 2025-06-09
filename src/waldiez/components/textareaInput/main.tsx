@@ -8,18 +8,8 @@ export const TextareaInput: React.FC<{
     value: string | undefined;
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     autoFocus?: boolean;
-    [key: string]: any;
-}> = ({
-    value,
-    onChange,
-    autoFocus = false,
-    ...props
-}: {
-    value: string | undefined;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    autoFocus?: boolean;
-    [key: string]: any;
-}) => {
+    [key: string]: any; // Allow other props like className, style, etc.
+}> = ({ value, onChange, autoFocus = false, ...props }) => {
     const ref = useRef<HTMLTextAreaElement>(null);
     const cursorPositionRef = useRef<{
         selectionStart: number;

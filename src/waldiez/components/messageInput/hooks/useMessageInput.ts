@@ -94,10 +94,10 @@ export const useMessageInput = (props: MessageInputProps) => {
     );
 
     const onUseCarryoverChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             onMessageChange({
                 type: current.type,
-                useCarryover: e.target.checked,
+                useCarryover: checked,
                 content: current.content,
                 context: current.context,
             });

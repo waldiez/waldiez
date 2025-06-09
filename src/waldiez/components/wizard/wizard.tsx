@@ -149,7 +149,7 @@ export const Wizard = memo<WizardProps>((props: WizardProps) => {
             <div className="wizard-steps" role="tablist">
                 {renderedSteps}
             </div>
-            <div className="wizard-actions">
+            <div className="modal-actions">
                 <button
                     type="button"
                     title={backButtonText}
@@ -167,7 +167,7 @@ export const Wizard = memo<WizardProps>((props: WizardProps) => {
                     onClick={goForward}
                     disabled={isForwardDisabled}
                     data-testid="wizard-next-btn"
-                    className="wizard-action-btn wizard-action-btn-next"
+                    className="wizard-action-btn wizard-action-btn-next primary"
                     aria-label={nextButtonText}
                 >
                     {nextButtonText}

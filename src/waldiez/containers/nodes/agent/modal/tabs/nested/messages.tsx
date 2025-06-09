@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { Select, SingleValue } from "@waldiez/components";
+import { CheckboxInput, Select, SingleValue } from "@waldiez/components";
 import { WaldiezAgentNestedChat } from "@waldiez/models";
 
 type WaldiezAgentNestedChatsMessagesProps = {
@@ -20,7 +20,7 @@ type WaldiezAgentNestedChatsMessagesProps = {
     } | null;
     getEdgeLabel: (id: string) => string;
     onSelectedRecipientChange: (option: SingleValue<{ label: string; value: string }> | null) => void;
-    onSelectedRecipientIsReplyChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onSelectedRecipientIsReplyChange: (checked: boolean) => void;
     onAddNestedChatConnection: () => void;
     onRemoveRecipient: (index: number) => void;
     onNestedChatRecipientMovedUp: (index: number) => void;
@@ -102,22 +102,13 @@ export const WaldiezAgentNestedChatsMessages = memo((props: WaldiezAgentNestedCh
                         aria-label="Select message recipient"
                     />
                 </div>
-
-                <label
-                    className="checkbox-label nested-chat-agent-reply-label"
-                    htmlFor={`new-nested-chat-recipient-is-agent-reply-${id}`}
-                >
-                    <div>Agent's Reply</div>
-                    <input
-                        id={`new-nested-chat-recipient-is-agent-reply-${id}`}
-                        type="checkbox"
-                        checked={selectedRecipient?.isReply ?? false}
-                        onChange={onSelectedRecipientIsReplyChange}
-                        data-testid={`new-nested-chat-recipient-is-agent-reply-${id}`}
-                        aria-label="Mark as agent reply"
-                    />
-                    <div className="checkbox"></div>
-                </label>
+                <CheckboxInput
+                    id={`new-nested-chat-recipient-is-agent-reply-${id}`}
+                    label="Agent's reply"
+                    isChecked={selectedRecipient?.isReply ?? false}
+                    onCheckedChange={onSelectedRecipientIsReplyChange}
+                    data-testid={`new-nested-chat-recipient-is-agent-reply-${id}`}
+                />
 
                 <div className="nested-chat-add-button">
                     <button

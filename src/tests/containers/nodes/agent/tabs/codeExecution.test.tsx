@@ -27,7 +27,7 @@ const codeExecutionOverrides = {
 
 describe("WaldiezAgentNode Code Execution Tab", () => {
     it("Shows the code execution tab", () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
         });
         goToCodeExecutionTab();
@@ -36,7 +36,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         expect(toggle).not.toBeChecked(); // no code execution
     });
     it("It toggles the code execution", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -69,7 +69,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It updates the last N messages", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -84,7 +84,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It updates the timeout", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -99,7 +99,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It toggles the use docker", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { codeExecutionConfig: codeExecutionOverrides },
         });
@@ -114,7 +114,7 @@ describe("WaldiezAgentNode Code Execution Tab", () => {
         submitAgentChanges();
     });
     it("It updates the functions", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: {
                 codeExecutionConfig: {

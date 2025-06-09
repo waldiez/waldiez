@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { Collapsible, Editor } from "@waldiez/components";
+import { CheckboxInput, Collapsible, Editor } from "@waldiez/components";
 import { useWaldiezAgentRagUserCustomFunctions } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/customFunctions/hooks";
 import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
 
@@ -185,16 +185,13 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                             If selected, the agent will use a custom embedding function. Default is False.
                         </div>
                     </div>
-                    <label className="checkbox-label">
-                        <div className="checkbox-label-view">Use Custom Embedding Function </div>
-                        <input
-                            type="checkbox"
-                            checked={useCustomEmbedding}
-                            onChange={onUseCustomEmbeddingChange}
-                            data-testid={`${flowId}-rag-use-custom-embedding-checkbox`}
-                        />
-                        <div className="checkbox"></div>
-                    </label>
+                    <CheckboxInput
+                        id={`${flowId}-rag-use-custom-embedding-checkbox`}
+                        label="Use Custom Embedding Function"
+                        isChecked={useCustomEmbedding}
+                        onCheckedChange={onUseCustomEmbeddingChange}
+                        data-testid={`${flowId}-rag-use-custom-embedding-checkbox`}
+                    />
                     {useCustomEmbedding && (
                         <>
                             <label htmlFor={`${flowId}-embedding-function-editor`}>Embedding Function:</label>
@@ -223,16 +220,13 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                             If selected, the agent will use a custom token count function. Default is False.
                         </div>
                     </div>
-                    <label className="checkbox-label">
-                        <div className="checkbox-label-view">Use Custom Token Count Function </div>
-                        <input
-                            type="checkbox"
-                            checked={useCustomTokenCount}
-                            onChange={onUseCustomTokenCountChange}
-                            data-testid={`${flowId}-rag-use-custom-tokenCount-checkbox`}
-                        />
-                        <div className="checkbox"></div>
-                    </label>
+                    <CheckboxInput
+                        id={`${flowId}-rag-use-custom-tokenCount-checkbox`}
+                        label="Use Custom Token Count Function"
+                        isChecked={useCustomTokenCount}
+                        onCheckedChange={onUseCustomTokenCountChange}
+                        data-testid={`${flowId}-rag-use-custom-tokenCount-checkbox`}
+                    />
                     {useCustomTokenCount && (
                         <>
                             <label htmlFor={`${flowId}-token-count-function-editor`}>
@@ -263,16 +257,13 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                             If selected, the agent will use a custom text split function. Default is False.
                         </div>
                     </div>
-                    <label className="checkbox-label">
-                        <div className="checkbox-label-view">Use Custom Text Split Function </div>
-                        <input
-                            type="checkbox"
-                            checked={useCustomTextSplit}
-                            onChange={onUseCustomTextSplitChange}
-                            data-testid={`${flowId}-rag-use-custom-textSplit-checkbox`}
-                        />
-                        <div className="checkbox"></div>
-                    </label>
+                    <CheckboxInput
+                        id={`${flowId}-rag-use-custom-textSplit-checkbox`}
+                        label="Use Custom Text Split Function"
+                        isChecked={useCustomTextSplit}
+                        onCheckedChange={onUseCustomTextSplitChange}
+                        data-testid={`${flowId}-rag-use-custom-textSplit-checkbox`}
+                    />
                     {useCustomTextSplit && (
                         <>
                             <label htmlFor={`${flowId}-text-split-function-editor`}>

@@ -62,28 +62,26 @@ export const WaldiezNodeToolModal: React.FC<WaldiezNodeToolModalProps> = props =
                 >
                     Cancel
                 </button>
-                <div className="modal-actions flex-center margin-top--10 margin-bottom--10">
-                    <button
-                        title="Save & Close"
-                        type="button"
-                        className="modal-action-submit margin-right-10 "
-                        onClick={onSaveAndClose}
-                        data-testid={`modal-submit-and-close-btn-${toolId}`}
-                        disabled={!isDirty}
-                    >
-                        Save & Close
-                    </button>
-                    <button
-                        title="Save"
-                        type="button"
-                        className="modal-action-submit"
-                        onClick={onSave}
-                        data-testid={`modal-submit-btn-${toolId}`}
-                        disabled={!isDirty}
-                    >
-                        Save
-                    </button>
-                </div>
+                <button
+                    title="Save & Close"
+                    type="button"
+                    className="modal-action-submit margin-right-10 "
+                    onClick={onSaveAndClose}
+                    data-testid={`modal-submit-and-close-btn-${toolId}`}
+                    disabled={!isDirty}
+                >
+                    Save & Close
+                </button>
+                <button
+                    title="Save"
+                    type="button"
+                    className="modal-action-submit"
+                    onClick={onSave}
+                    data-testid={`modal-submit-btn-${toolId}`}
+                    disabled={!isDirty}
+                >
+                    Save
+                </button>
             </div>
         </Modal>
     );

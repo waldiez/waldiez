@@ -2,30 +2,35 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { memo } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 
+import { CheckboxInput } from "@waldiez/components/checkboxInput";
+
 type InfoCheckboxProps = {
+    id: string; // Add id for the checkbox
     label: string | React.JSX.Element | (() => React.JSX.Element | string);
     info: string | React.JSX.Element | (() => React.JSX.Element | string);
     checked: boolean;
-    dataTestId: string;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (checked: boolean) => void; // Updated to match Radix checkbox API
 };
-export const InfoCheckbox: React.FC<InfoCheckboxProps> = (props: InfoCheckboxProps) => {
-    const { label, info, checked, dataTestId, onChange } = props;
+
+export const InfoCheckbox: React.FC<InfoCheckboxProps> = memo((props: InfoCheckboxProps) => {
+    const { id, label, info, checked, onChange } = props;
+
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;
     return (
-        <div className="info-label tooltip-bottom">
-            <label className="checkbox-label">
-                <div className="checkbox-label-view">{labelElement}</div>
-                <input type="checkbox" checked={checked} onChange={onChange} data-testid={dataTestId} />
-                <div className="checkbox"></div>
-            </label>
-            <FaInfoCircle className="info-icon" />
-            <div className="info-description">{infoElement}</div>
+        <div className="info-checkbox-container">
+            <div className="info-checkbox-wrapper">
+                <CheckboxInput id={id} label={labelElement} isChecked={checked} onCheckedChange={onChange} />
+                <div className="info-label margin-left--10">
+                    <FaInfoCircle className="info-checkbox-icon" />
+                    <div className="info-description">{infoElement}</div>
+                </div>
+            </div>
         </div>
     );
-};
+});
 
 InfoCheckbox.displayName = "InfoCheckbox";

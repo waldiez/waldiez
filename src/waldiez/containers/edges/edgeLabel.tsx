@@ -23,11 +23,13 @@ export const EdgeLabel = ({ edge, transform }: { edge: WaldiezEdge | undefined; 
         <div
             style={{
                 position: "absolute",
-                // background: "red",
-                padding: 10,
+                width: "max-content",
+                // padding: 10,
                 color: "currentcolor",
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: 600,
+                left: "50%",
+                top: "50%",
                 zIndex: 10001,
                 transform,
             }}

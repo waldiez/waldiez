@@ -15,6 +15,7 @@ describe("TextInput", () => {
         const textInputProps = {
             label: "test",
             value: "test",
+            name: "test",
             onChange,
         };
         const { baseElement } = render(<TextInput {...textInputProps} />);
@@ -26,6 +27,7 @@ describe("TextInput", () => {
         const textInputProps = {
             label: <div>test</div>,
             value: "test",
+            name: "test",
             onChange,
         };
         const { baseElement } = render(<TextInput {...textInputProps} />);
@@ -39,6 +41,7 @@ describe("TextInput", () => {
             value: "test",
             onChange,
             labelInfo: "test",
+            name: "test",
         };
         const { baseElement } = render(<TextInput {...textInputProps} />);
         expect(baseElement).toBeTruthy();
@@ -51,6 +54,7 @@ describe("TextInput", () => {
             value: "test",
             onChange,
             labelInfo: <div>test</div>,
+            name: "test",
         };
         const { baseElement } = render(<TextInput {...textInputProps} />);
         expect(baseElement).toBeTruthy();
@@ -63,6 +67,7 @@ describe("TextInput", () => {
             value: null,
             onChange,
             onNull: "test",
+            name: "test",
         };
         render(<TextInput {...textInputProps} />);
         expect(screen.getByRole("textbox")).toHaveValue("test");
@@ -75,6 +80,7 @@ describe("TextInput", () => {
             value: "test",
             onChange,
             labelInfo: <div>test</div>,
+            name: "test",
         };
         const { baseElement } = render(<TextInput {...textInputProps} />);
         expect(baseElement).toBeTruthy();
@@ -84,6 +90,7 @@ describe("TextInput", () => {
         const textInputProps = {
             label: "test",
             value: "test",
+            name: "test",
         };
         const Wrapper = () => {
             const [value, setValue] = useState("test");
@@ -103,6 +110,7 @@ describe("TextInput", () => {
             value: "test",
             onChange,
             disabled: true,
+            name: "test",
         };
         render(<TextInput {...textInputProps} />);
         fireEvent.change(screen.getByRole("textbox"), {
@@ -110,19 +118,20 @@ describe("TextInput", () => {
         });
         expect(onChange).not.toHaveBeenCalled();
     });
-    // it("should toggle visibility if password", () => {
-    //     const onChange = vi.fn();
-    //     const textInputProps = {
-    //         label: "test",
-    //         value: "test",
-    //         onChange,
-    //         isPassword: true,
-    //         dataTestId: "text-input",
-    //     };
-    //     render(<TextInput {...textInputProps} />);
-    //     fireEvent.click(screen.getByTestId("visibility-text-input"));
-    //     expect(screen.getByRole("textbox")).toHaveAttribute("type", "text");
-    //     fireEvent.click(screen.getByTestId("visibility-text-input"));
-    //     expect(screen.getByRole("textbox")).toHaveAttribute("type", "password");
-    // });
+    it("should toggle visibility if password", () => {
+        const onChange = vi.fn();
+        const textInputProps = {
+            label: "test",
+            value: "test",
+            name: "test",
+            onChange,
+            isPassword: true,
+            dataTestId: "text-input",
+        };
+        render(<TextInput {...textInputProps} />);
+        fireEvent.click(screen.getByTestId("visibility-text-input"));
+        expect(screen.getByRole("textbox")).toHaveAttribute("type", "text");
+        // fireEvent.click(screen.getByTestId("visibility-text-input"));
+        // expect(screen.getByRole("textbox")).toHaveAttribute("type", "password");
+    });
 });

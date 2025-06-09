@@ -192,7 +192,7 @@ exports[`All > should render Waldiez components 1`] = `
                   src="/src/waldiez/assets/user.webp"
                   title="User Proxy Agent"
                 />
-                User Proxy
+                User
               </div>
               <div
                 class="dnd-area"
@@ -204,6 +204,17 @@ exports[`All > should render Waldiez components 1`] = `
                   title="Assistant Agent"
                 />
                 Assistant
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="rag-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/rag.webp"
+                  title="RAG User Proxy Agent"
+                />
+                RAG User
               </div>
               <div
                 class="dnd-area"
@@ -753,7 +764,7 @@ exports[`All > should render Waldiez components 1`] = `
                 src="/src/waldiez/assets/user.webp"
                 title="User Proxy Agent"
               />
-              User Proxy
+              User
             </div>
             <div
               class="dnd-area"
@@ -765,6 +776,17 @@ exports[`All > should render Waldiez components 1`] = `
                 title="Assistant Agent"
               />
               Assistant
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="rag-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/rag.webp"
+                title="RAG User Proxy Agent"
+              />
+              RAG User
             </div>
             <div
               class="dnd-area"

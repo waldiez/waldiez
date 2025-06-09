@@ -78,13 +78,14 @@ export const useCreateHandles = (
 };
 
 // For backward compatibility, keep the original function but make it use the hook internally
-export const createHandles = (
-    agentType: WaldiezNodeAgentType,
-    id: string,
-    handleClassNameBase: string,
-    onEdgeConnection: OnConnect,
-) => {
-    // This implementation works without hooks for direct function calls
+export const createHandles = (props: {
+    agentType: WaldiezNodeAgentType;
+    id: string;
+    handleClassNameBase: string;
+    onEdgeConnection: OnConnect;
+    selected: boolean;
+}) => {
+    const { agentType, id, handleClassNameBase, selected, onEdgeConnection } = props;
     const positions = [
         { pos: Position.Top, label: "top" },
         { pos: Position.Bottom, label: "bottom" },
@@ -92,12 +93,16 @@ export const createHandles = (
         { pos: Position.Right, label: "right" },
     ];
 
+    let handleClass = `${handleClassNameBase}handle `;
+    if (!selected) {
+        handleClass += "not-selected ";
+    }
     // For group managers, only create target handles
     if (agentType === "group_manager") {
         return positions.map(({ pos, label }) => (
             <Handle
                 key={`target-${label}`}
-                className={`${handleClassNameBase}handle ${label} target`}
+                className={`${handleClass} ${label} target`}
                 type="target"
                 isConnectableEnd
                 position={pos}
@@ -119,7 +124,7 @@ export const createHandles = (
     return positions.flatMap(({ pos, label }) => [
         <Handle
             key={`target-${label}`}
-            className={`${handleClassNameBase}handle ${label} target`}
+            className={`${handleClass} ${label} target`}
             type="target"
             isConnectableEnd
             position={pos}
@@ -130,7 +135,7 @@ export const createHandles = (
         />,
         <Handle
             key={`source-${label}`}
-            className={`${handleClassNameBase}handle ${label} source`}
+            className={`${handleClass} ${label} source`}
             type="source"
             isConnectableStart
             position={pos}

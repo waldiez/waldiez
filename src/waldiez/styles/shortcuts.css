@@ -31,10 +31,44 @@
   width: 100%;
 }
 
-.flow-wrapper .fill-available {
+.flow-wrapper .full-height {
+  height: 100%;
+}
+
+.flow-wrapper .full-size {
+  width: 100%;
+  height: 100%;
+}
+
+.flow-wrapper .no-border {
+  border: none;
+}
+
+.flow-wrapper .flex-start {
+  display: flex;
+  align-items: flex-start !important;
+}
+
+.flow-wrapper .flex-end {
+  display: flex;
+  align-items: flex-end !important;
+}
+
+.flow-wrapper .flex-baseline {
+  display: flex;
+  align-items: baseline !important;
+}
+
+.flow-wrapper .fill-available-width {
   width: -moz-available;
   width: -webkit-fill-available;
   width: stretch;
+}
+
+.flow-wrapper .fill-available-height {
+  height: -moz-available;
+  height: -webkit-fill-available;
+  height: stretch;
 }
 
 .flow-wrapper .bold {
@@ -43,6 +77,38 @@
 
 .flow-wrapper .italic {
   font-style: italic;
+}
+
+.flow-wrapper .underline {
+  text-decoration: underline;
+}
+
+.flow-wrapper .uppercase {
+  text-transform: uppercase;
+}
+
+.flow-wrapper .lowercase {
+  text-transform: lowercase;
+}
+
+.flow-wrapper .font-small {
+  font-size: 0.8em;
+}
+
+.flow-wrapper .font-xsmall {
+  font-size: 0.7em;
+}
+
+.flow-wrapper .font-medium {
+  font-size: 1em;
+}
+
+.flow-wrapper .font-large {
+  font-size: 1.2em;
+}
+
+.flow-wrapper .font-xlarge {
+  font-size: 1.5em;
 }
 
 .flow-wrapper .flex {

@@ -60,9 +60,9 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle update context toggle
      */
     const onUpdateContextChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                updateContext: event.target.checked,
+                updateContext: checked,
             });
         },
         [setRetrieveConfigConfigData],
@@ -72,9 +72,9 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle get or create toggle
      */
     const onGetOrCreateChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                getOrCreate: event.target.checked,
+                getOrCreate: checked,
             });
         },
         [setRetrieveConfigConfigData],
@@ -84,9 +84,9 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle new docs toggle
      */
     const onNewDocsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                newDocs: event.target.checked,
+                newDocs: checked,
             });
         },
         [setRetrieveConfigConfigData],
@@ -96,9 +96,9 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle overwrite toggle
      */
     const onOverwriteChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                overwrite: event.target.checked,
+                overwrite: checked,
             });
         },
         [setRetrieveConfigConfigData],
@@ -108,9 +108,9 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle recursive toggle
      */
     const onRecursiveChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             setRetrieveConfigConfigData({
-                recursive: event.target.checked,
+                recursive: checked,
             });
         },
         [setRetrieveConfigConfigData],

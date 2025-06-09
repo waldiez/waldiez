@@ -5,6 +5,7 @@
 @import url("./base.css");
 @import url("./theme.css");
 @import url("./agent.css");
+@import url("./agent-tools.css");
 @import url("./chat.css");
 @import url("./checkbox.css");
 @import url("./console.css");
@@ -27,6 +28,7 @@
 @import url("./ordering.css");
 @import url("./overrides.css");
 @import url("./select.css");
+@import url("./slider.css");
 @import url("./sidebar.css");
 @import url("./shortcuts.css");
 @import url("./tool.css");

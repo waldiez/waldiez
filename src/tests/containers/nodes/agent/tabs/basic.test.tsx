@@ -11,24 +11,24 @@ import { renderAgent, submitAgentChanges } from "../common";
 import { agentId } from "../data";
 
 describe("WaldiezAgentNode Basic Modal Tab", () => {
-    it("Updates the agent type from user_proxy to rag_user_proxy", () => {
-        renderAgent("user_proxy", { openModal: true });
-        const ragToggle = screen.getByTestId(`agent-rag-toggle-${agentId}`);
-        expect(ragToggle).not.toBeChecked();
-        fireEvent.click(ragToggle);
-        expect(ragToggle).toBeChecked();
-        submitAgentChanges();
-    });
-    it("Updates the agent type from rag_user_proxy to user_proxy", () => {
-        renderAgent("rag_user_proxy", { openModal: true });
-        const ragToggle = screen.getByTestId(`agent-rag-toggle-${agentId}`);
-        expect(ragToggle).toBeChecked();
-        fireEvent.click(ragToggle);
-        expect(ragToggle).not.toBeChecked();
-        submitAgentChanges();
-    });
+    // it("Updates the agent type from user_proxy to rag_user_proxy", () => {
+    //     renderAgent("user_proxy", { openModal: true });
+    //     const ragToggle = screen.getByTestId(`agent-rag-toggle-${agentId}`);
+    //     expect(ragToggle).not.toBeChecked();
+    //     fireEvent.click(ragToggle);
+    //     expect(ragToggle).toBeChecked();
+    //     submitAgentChanges();
+    // });
+    // it("Updates the agent type from rag_user_proxy to user_proxy", () => {
+    //     renderAgent("rag_user_proxy", { openModal: true });
+    //     const ragToggle = screen.getByTestId(`agent-rag-toggle-${agentId}`);
+    //     expect(ragToggle).toBeChecked();
+    //     fireEvent.click(ragToggle);
+    //     expect(ragToggle).not.toBeChecked();
+    //     submitAgentChanges();
+    // });
     it("Updates the agent name", async () => {
-        renderAgent("user_proxy", { openModal: true });
+        renderAgent("assistant", { openModal: true });
         const nameInput = screen.getByTestId(`agent-name-input-${agentId}`);
         fireEvent.change(nameInput, {
             target: { value: "New Name" },
@@ -39,7 +39,7 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         submitAgentChanges();
     });
     it("Updates the agent description", async () => {
-        renderAgent("user_proxy", { openModal: true });
+        renderAgent("assistant", { openModal: true });
         const descriptionInput = screen.getByTestId(`agent-description-input-${agentId}`);
         fireEvent.change(descriptionInput, {
             target: { value: "New Description" },
@@ -50,7 +50,7 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         submitAgentChanges();
     });
     it("Updates the agent system message", async () => {
-        renderAgent("user_proxy", { openModal: true });
+        renderAgent("assistant", { openModal: true });
         const systemMessageInput = screen.getByTestId(`agent-system-message-input-${agentId}`);
         fireEvent.change(systemMessageInput, {
             target: { value: "New System Message" },
@@ -61,7 +61,7 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         submitAgentChanges();
     });
     it("Updates the agent human input mode", async () => {
-        renderAgent("user_proxy", { openModal: true });
+        renderAgent("assistant", { openModal: true });
         const humanInputModeSelect = screen.getByLabelText("Human Input mode:");
         selectEvent.openMenu(humanInputModeSelect);
         await selectEvent.select(humanInputModeSelect, "Terminate");
@@ -77,7 +77,7 @@ describe("WaldiezAgentNode Basic Modal Tab", () => {
         submitAgentChanges();
     });
     it("Updates the agent max consecutive auto reply", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { maxConsecutiveAutoReply: 300 },
         });

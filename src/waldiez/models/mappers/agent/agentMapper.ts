@@ -50,6 +50,7 @@ import {
     getVerbose,
 } from "@waldiez/models/mappers/agent/utils";
 import { getAfterWork, getNodePositionFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
+import { INITIAL_AGENT_SIZE } from "@waldiez/theme";
 
 /**
  * Agent Mapper
@@ -176,6 +177,14 @@ export const agentMapper = {
             id: agent.id,
             type: "agent",
             data: nodeData,
+            style: {
+                width:
+                    agent.agentType === "group_manager"
+                        ? INITIAL_AGENT_SIZE.group_manager.width
+                        : agent.agentType !== "user_proxy"
+                          ? INITIAL_AGENT_SIZE.other.width
+                          : INITIAL_AGENT_SIZE.user.width,
+            },
             ...agent.rest,
             parentId: agent.data.parentId !== null ? agent.data.parentId : undefined,
             position: nodePosition,

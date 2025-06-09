@@ -4,7 +4,10 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Editor, Select, SingleValue, TextareaInput } from "@waldiez/components";
+import { CheckboxInput } from "@waldiez/components/checkboxInput";
+import { Editor } from "@waldiez/components/editor";
+import { Select, SingleValue } from "@waldiez/components/select";
+import { TextareaInput } from "@waldiez/components/textareaInput";
 import { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models";
 
 type UpdateStateProps = {
@@ -94,11 +97,10 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
      * Handle enable/disable toggle
      */
     const onEnabledChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const isEnabled = event.target.checked;
-            setEnabled(isEnabled);
+        (checked: boolean) => {
+            setEnabled(checked);
 
-            if (!isEnabled) {
+            if (!checked) {
                 // Clear configuration when disabled
                 onDataChange({ updateAgentStateBeforeReply: [] });
             } else {
@@ -203,26 +205,23 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
                 string.
             </div>
             <div className="flex-column">
-                <label className="checkbox-label enable-checkbox">
-                    <div className="checkbox-label-view">Update system message before reply</div>
-                    <input
-                        type="checkbox"
-                        checked={enabled}
-                        onChange={onEnabledChange}
-                        data-testid="enable-update-system-message"
-                    />
-                    <div className="checkbox"></div>
-                </label>
+                <CheckboxInput
+                    label="Update system message before reply"
+                    isChecked={enabled}
+                    onCheckedChange={onEnabledChange}
+                    id={"enable-update-system-message"}
+                    aria-label="Enable update system message"
+                />
                 {enabled && (
                     <>
-                        <label>Message update type</label>
+                        <label htmlFor="update-system-message-type-select-input">Message update type</label>
                         <Select
                             options={updateSystemMessageTypeOptions}
                             value={selectedOption}
                             onChange={onUpdateSystemMessageTypeChange}
-                            data-testid="update-system-message-type-select"
+                            inputId="update-system-message-type-select-input"
                         />
-                        <label>Message update</label>
+                        <label htmlFor="update-system-message-string">Message update</label>
                         {selectedType === "string" ? (
                             <TextareaInput
                                 rows={4}
@@ -230,6 +229,7 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
                                 placeholder="Enter a string template with {variable}s"
                                 onChange={onUpdateSystemMessageStringChange}
                                 data-testid="update-system-message-string"
+                                id="update-system-message-string"
                             />
                         ) : (
                             <Editor

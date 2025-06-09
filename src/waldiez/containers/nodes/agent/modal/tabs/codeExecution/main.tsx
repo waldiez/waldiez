@@ -4,7 +4,7 @@
  */
 import { memo } from "react";
 
-import { NumberInput, Select, TextInput } from "@waldiez/components";
+import { InfoCheckbox, NumberInput, Select, TextInput } from "@waldiez/components";
 import { useWaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution/hooks";
 import { WaldiezAgentCodeExecutionProps } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution/types";
 
@@ -54,25 +54,15 @@ export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionP
 
     return (
         <div className="agent-panel agent-codeExecution-panel">
-            {/* Code Execution Toggle
+            {/* Code Execution Toggle */}
             <InfoCheckbox
-                label="Use Code Execution"
+                label="Enable Code Execution"
                 info="Whether the agent is capable of executing code."
                 checked={isCodeExecutionEnabled}
                 onChange={onUseCodeExecutionChange}
-                dataTestId={`agent-code-execution-toggle-${id}`}
+                id={`agent-code-execution-toggle-${id}`}
                 aria-label="Enable code execution"
-            /> */}
-            <label className="checkbox-label">
-                <div className="checkbox-label-view">Use Code Execution</div>
-                <input
-                    type="checkbox"
-                    checked={isCodeExecutionEnabled}
-                    onChange={onUseCodeExecutionChange}
-                    data-testid={`agent-code-execution-toggle-${id}`}
-                />
-                <div className="checkbox"></div>
-            </label>
+            />
             {/* Code Execution Configuration Options */}
             {isCodeExecutionEnabled && data.codeExecutionConfig !== false && (
                 <div className="agent-node-codeExecution-options margin-top-10">
@@ -81,6 +71,7 @@ export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionP
                         label="Working directory:"
                         placeholder="Working directory"
                         className="margin-top-10"
+                        name="working-directory"
                         value={data.codeExecutionConfig?.workDir ?? ""}
                         onChange={onCodeExecutionWorkDirChange}
                         dataTestId={`agent-code-execution-work-dir-${id}`}
@@ -89,6 +80,7 @@ export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionP
 
                     {/* Last N Messages Setting */}
                     <NumberInput
+                        name="last-n-messages"
                         label="Last N messages:"
                         value={lastNMessagesValue}
                         onChange={onCodeExecutionLastNMessagesChange}
@@ -106,6 +98,7 @@ export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionP
                     {/* Timeout Setting */}
                     <NumberInput
                         label="Timeout:"
+                        name="timeout"
                         value={data.codeExecutionConfig?.timeout ?? 0}
                         onChange={onCodeExecutionTimeoutChange}
                         min={0}
@@ -120,25 +113,18 @@ export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionP
                         aria-label="Code execution timeout in seconds"
                     />
 
-                    {/* Docker Toggle (conditionally shown) */}
+                    {/* Docker Toggle */}
                     <div
                         className={`margin-top-10 margin-bottom-10 ${!SHOW_DOCKER_OPTION ? "sr-only hidden" : ""}`}
                     >
-                        <label
-                            className="checkbox-label codeExecution-use-docker-checkbox"
-                            htmlFor={`agent-code-execution-use-docker-${id}`}
-                        >
-                            <div>Use docker</div>
-                            <input
-                                type="checkbox"
-                                id={`agent-code-execution-use-docker-${id}`}
-                                checked={isDockerEnabled}
-                                onChange={onCodeExecutionUseDockerChange}
-                                data-testid={`agent-code-execution-use-docker-${id}`}
-                                aria-label="Use Docker for code execution"
-                            />
-                            <div className="checkbox"></div>
-                        </label>
+                        <InfoCheckbox
+                            label="Use Docker"
+                            info="Whether to use Docker for code execution. If enabled, the agent will run code in a Docker container."
+                            checked={isDockerEnabled}
+                            onChange={onCodeExecutionUseDockerChange}
+                            id={`agent-code-execution-use-docker-${id}`}
+                            aria-label="Enable Docker for code execution"
+                        />
                     </div>
 
                     {/* Functions Selection (shown when Docker is disabled) */}

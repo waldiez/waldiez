@@ -2,15 +2,141 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+
+.flow-wrapper a {
+  color: #007bff;
+}
+
+.flow-wrapper a:visited {
+  color: #007bff;
+}
+
+.flow-wrapper input[type="file"] {
+  display: none;
+}
+
+.flow-wrapper input,
+.flow-wrapper textarea {
+  all: unset;
+  width: 100%;
+  padding: 8px 16px;
+  border: 1px solid color-mix(in srgb, var(--text-color) 20%, var(--background-color));
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--text-color);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.flow-wrapper textarea {
+  resize: vertical;
+  min-height: 3rem;
+  font-family: inherit;
+}
+
+.flow-wrapper input:hover,
+.flow-wrapper textarea:hover,
+.flow-wrapper input:focus,
+.flow-wrapper textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.flow-wrapper input::placeholder,
+.flow-wrapper textarea::placeholder {
+  color: color-mix(in srgb, var(--text-color) 50%, var(--background-color));
+}
+
+.flow-wrapper input[type="number"] {
+  width: auto;
+  min-width: 60px;
+}
+
+.flow-wrapper .clickable {
+  cursor: pointer;
+}
+
+.flow-wrapper .number-max-width {
+  max-width: 100px;
+}
+
+.flow-wrapper input:disabled {
+  cursor: unset;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.flow-wrapper button {
+  all: unset;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.flow-wrapper.light button {
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  color: #111;
+}
+
+.flow-wrapper.dark button {
+  border: 1px solid #444;
+  background-color: #222;
+  color: #f8f8f8;
+}
+
+.flow-wrapper button:disabled {
+  cursor: default !important;
+  transition: none;
+}
+
+.flow-wrapper.light button:hover {
+  background-color: #f0f0f0;
+  border-color: #3b82f6;
+}
+
+.flow-wrapper.dark button:hover {
+  background-color: #111;
+  border-color: #3b82f6;
+}
+
+.flow-wrapper.dark button:disabled:hover {
+  background-color: #222;
+  border-color: #444;
+  transition: none;
+}
+
+.flow-wrapper.light button:disabled:hover {
+  background-color: #f8f8f8;
+  border-color: #ccc;
+  transition: none;
+}
+
+.flow-wrapper .no-click {
+  cursor: unset !important;
+  pointer-events: none !important;
+}
+
 .flow-wrapper.light {
   color-scheme: light;
-  background-color: #fefefe;
-  color: #141414;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .flow-wrapper.dark {
-  background-color: #141414;
-  color: #f8f8f8;
+  background-color: var(--background-color);
+  color: var(--text-color);
   color-scheme: dark;
 }
 
@@ -20,10 +146,6 @@
 
 .flow-wrapper.light * {
   scrollbar-color: #333 #fefefe;
-}
-
-.flow-wrapper input:disabled {
-  opacity: 0.8;
 }
 
 .flow-wrapper ::placeholder {
@@ -62,6 +184,43 @@
   color: #ccc;
 }
 
+.flow-wrapper .plus-button,
+.flow-wrapper .trash-button,
+.flow-wrapper .save-button,
+.flow-wrapper .toggle-visibility-btn {
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  margin-left: 5px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.flow-wrapper .plus-button svg,
+.flow-wrapper .trash-button svg,
+.flow-wrapper .save-button svg,
+.flow-wrapper .toggle-visibility-btn svg {
+  fill: currentcolor;
+}
+
+.flow-wrapper .plus-button:hover,
+.flow-wrapper .trash-button:hover,
+.flow-wrapper .save-button:hover,
+.flow-wrapper .toggle-visibility-btn:hover {
+  border-color: color-mix(in srgb, #3b82f6 15%, transparent);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+}
+
+.flow-wrapper .plus-button:disabled:hover,
+.flow-wrapper .trash-button:disabled:hover,
+.flow-wrapper .save-button:disabled:hover,
+.flow-wrapper .toggle-visibility-btn:disabled:hover {
+  border-color: unset;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
 .flow-wrapper.dark .editor-nav-action {
   background-color: #141414;
 }
@@ -91,7 +250,6 @@
 .flow-wrapper.light input[type="number"],
 .flow-wrapper.light textarea {
   background-color: #fefefe;
-  border: 1px solid #ccc;
   color: #141414;
 }
 
@@ -100,7 +258,6 @@
 .flow-wrapper.dark input[type="number"],
 .flow-wrapper.dark textarea {
   background-color: #222;
-  border: 1px solid #444;
   color: #f8f8f8;
 }
 

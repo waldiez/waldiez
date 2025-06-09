@@ -21,8 +21,8 @@ export const useWaldiezAgentBasic = (props: {
      * Handle RAG feature toggle change
      */
     const onRagChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const newAgentType = event.target.checked ? "rag_user_proxy" : "user_proxy";
+        (checked: boolean) => {
+            const newAgentType = checked ? "rag_user_proxy" : "user_proxy";
             onAgentTypeChange(newAgentType);
         },
         [onAgentTypeChange],
@@ -32,9 +32,8 @@ export const useWaldiezAgentBasic = (props: {
      * Handle multimodal feature toggle change
      */
     const onMultimodalChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const isMultimodal = event.target.checked;
-            onDataChange({ isMultimodal });
+        (checked: boolean) => {
+            onDataChange({ isMultimodal: checked });
         },
         [onDataChange],
     );
@@ -104,7 +103,7 @@ export const useWaldiezAgentBasic = (props: {
      * Handle agent default auto reply change
      */
     const onAgentDefaultAutoReplyChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
             const agentDefaultAutoReply = event.target.value;
             onDataChange({ agentDefaultAutoReply });
         },

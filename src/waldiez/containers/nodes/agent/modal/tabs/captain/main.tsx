@@ -34,6 +34,7 @@ export const WaldiezAgentCaptainTab = memo((props: WaldiezAgentCaptainTabProps) 
         <div className="agent-panel agent-codeExecution-panel margin-top--10">
             {/* Max Round Setting */}
             <NumberInput
+                name="max-round"
                 label="Max Round"
                 labelInfo="The maximum number of conversation rounds to be used in the generated groupchat."
                 value={data.maxRound}
@@ -46,7 +47,7 @@ export const WaldiezAgentCaptainTab = memo((props: WaldiezAgentCaptainTabProps) 
 
             {/* Tool Library Toggle */}
             <InfoCheckbox
-                dataTestId={`tool-lib-${id}`}
+                id={`tool-lib-${id}`}
                 label="Include tool lib"
                 info="If enabled, the agents will be equipped with several tools"
                 checked={data.toolLib === "default"}
@@ -73,7 +74,7 @@ export const WaldiezAgentCaptainTab = memo((props: WaldiezAgentCaptainTabProps) 
                 info="If enabled, the captain agent will generate agents from a dedicated agents library"
                 checked={enableAgentLib}
                 onChange={onEnableAgentLibChange}
-                dataTestId={`agent-captain-toggle-agent-lib-${id}`}
+                id={`agent-captain-toggle-agent-lib-${id}`}
                 aria-label="Include agent library"
             />
 

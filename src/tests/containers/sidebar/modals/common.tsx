@@ -65,7 +65,7 @@ const nodes = edges.map((edge, index) => {
     };
 });
 
-export const renderFlow = (edgePositions: number[] = [0, 1, 2, 3]) => {
+export const renderFlow = async (edgePositions: number[] = [0, 1, 2, 3]) => {
     const storeEdges = edges.map((edge, index) => {
         return {
             ...edge,

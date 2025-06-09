@@ -4,6 +4,7 @@
  */
 export { AfterWork } from "@waldiez/components/afterWork";
 export { ChatUI, ImageModal } from "@waldiez/components/chatUI";
+export { CheckboxInput } from "@waldiez/components/checkboxInput";
 export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";
 export { DropZone } from "@waldiez/components/dropZone";

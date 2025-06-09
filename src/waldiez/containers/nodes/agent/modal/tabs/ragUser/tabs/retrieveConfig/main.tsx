@@ -100,6 +100,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
                         "The default value is `default`, which supports both code and qa, " +
                         "and provides source information in the end of the response."
                     }
+                    htmlFor={`rag-retrieve-task-input-${id}`}
                 />
 
                 <label className="hidden" htmlFor={`rag-retrieve-task-${id}`}>
@@ -150,6 +151,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
                 <InfoLabel
                     label="Collection Name:"
                     info="The name of the collection to be used in the vector database. If not provided, a default name `autogen-docs` will be used."
+                    htmlFor={`rag-retrieve-collection-name-${id}`}
                 />
 
                 <input
@@ -172,6 +174,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
                         "which means the system will return all the results. " +
                         "Will be ignored if < 1."
                     }
+                    htmlFor={`rag-retrieve-n-results-${id}`}
                 />
 
                 <input
@@ -188,6 +191,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
             {/* Distance Threshold */}
             <div className="flex-column">
                 <InfoLabel
+                    htmlFor={`rag-retrieve-distance-threshold-${id}`}
                     label="Distance Threshold:"
                     info={
                         "The threshold for the distance score, only distance smaller than it will be returned. " +

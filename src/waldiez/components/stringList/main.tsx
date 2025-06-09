@@ -36,7 +36,7 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
                             type="text"
                             value={item}
                             data-index={index}
-                            // data-value={item}
+                            id={`list-entry-item-${itemsType}-${index}`}
                             onChange={onEntryChange}
                             data-testid={`list-entry-item-${itemsType}-${index}`}
                         />
@@ -45,6 +45,8 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
                             onClick={onDeleteEntry}
                             value={item}
                             title="Delete"
+                            className="trash-button"
+                            id={`delete-list-entry-${itemsType}-${index}`}
                             aria-label={`Delete item: ${item}`}
                             data-testid={`delete-list-entry-${itemsType}-${index}`}
                         >
@@ -62,9 +64,11 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
     return (
         <div className="list-entries-view">
             {viewLabelInfo ? (
-                <InfoLabel label={viewLabel} info={viewLabelInfo} />
+                <InfoLabel label={viewLabel} info={viewLabelInfo} htmlFor="list-entries" />
             ) : (
-                <label className="list-entries-label">{labelElement}</label>
+                <label className="list-entries-label" htmlFor="list-entries">
+                    {labelElement}
+                </label>
             )}
 
             {items.length > 0 && <div className="list-entries-list">{renderItems}</div>}
@@ -79,13 +83,16 @@ export const StringList = memo<StringListProps>((props: StringListProps) => {
                         onKeyDown={onNewEntryKeyDown}
                         data-testid={`new-list-entry-${itemsType}-item`}
                         aria-label={`New ${itemsType} input`}
+                        id={`new-list-entry-${itemsType}`}
                     />
                     <button
                         type="button"
                         onClick={onAddEntry}
                         title="Add"
                         disabled={isAddDisabled}
+                        className="plus-button"
                         aria-label="Add item"
+                        id={`add-list-entry-${itemsType}-button`}
                         data-testid={`add-list-entry-${itemsType}-button`}
                     >
                         <FaPlus />

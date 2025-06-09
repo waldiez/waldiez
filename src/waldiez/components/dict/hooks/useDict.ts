@@ -10,7 +10,7 @@ import { DictProps } from "@waldiez/components/dict/types";
  * Custom hook for managing dictionary-like key-value pairs
  */
 export const useDict = (props: DictProps) => {
-    const { items, onUpdate, onDelete, onAdd, allowEmptyValues } = props;
+    const { items, onUpdate, onDelete, onAdd, allowEmptyValues = true } = props;
 
     // State for visibility toggle of values
     const [visible, setVisible] = useState<Record<string, boolean>>({});

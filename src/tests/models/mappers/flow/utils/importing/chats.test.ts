@@ -143,7 +143,7 @@ describe("getChats", () => {
                     sourceHandle: null,
                     style: {
                         stroke: undefined,
-                        strokeWidth: 3,
+                        strokeWidth: 1,
                     },
                     targetHandle: null,
                 },
@@ -172,7 +172,7 @@ describe("getChats", () => {
                 sourceHandle: null,
                 style: {
                     stroke: undefined,
-                    strokeWidth: 3,
+                    strokeWidth: 1,
                 },
                 targetHandle: null,
             },

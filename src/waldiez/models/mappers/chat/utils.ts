@@ -189,7 +189,7 @@ const updateChatCommonStyle = (edge: WaldiezEdge, edgeType: WaldiezEdgeType, col
             : undefined;
     edge.style = {
         stroke: color,
-        strokeWidth: 3,
+        strokeWidth: 1,
     };
 };
 

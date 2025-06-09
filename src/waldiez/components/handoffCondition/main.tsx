@@ -155,6 +155,7 @@ export const HandoffCondition: React.FC<{
                 return (
                     <div className="margin-top-10">
                         <TextInput
+                            name="variable-name"
                             label="Variable Name:"
                             className="margin-top-5"
                             placeholder="Enter the variable name to check"

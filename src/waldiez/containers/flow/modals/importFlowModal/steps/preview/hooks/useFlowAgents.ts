@@ -94,12 +94,12 @@ export const useFlowAgents = (props: {
      * Select all or none of the agent nodes
      */
     const onAllNoneAgentsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             onSelectedPropsChange({
                 nodes: {
                     models: selectedProps.nodes.models,
                     tools: selectedProps.nodes.tools,
-                    agents: event.target.checked ? agentNodes : [],
+                    agents: checked ? agentNodes : [],
                 },
             });
         },

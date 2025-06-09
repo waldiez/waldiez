@@ -39,7 +39,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
                 info="When enabled, the agent will provide additional information about the reasoning process."
                 checked={data.verbose === true}
                 onChange={onVerboseChange}
-                dataTestId={`agent-reasoning-verbose-toggle-${id}`}
+                id={`agent-reasoning-verbose-toggle-${id}`}
                 aria-label="Enable verbose reasoning output"
             />
 
@@ -58,6 +58,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
             {/* Common Settings for All Methods */}
             <NumberInput
                 label="Max Depth:"
+                name="max-depth"
                 value={data.reasonConfig.maxDepth}
                 onChange={onMaxDepthChange}
                 min={1}
@@ -68,6 +69,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
 
             <NumberInput
                 label="Forest Size:"
+                name="forest-size"
                 value={data.reasonConfig.forestSize}
                 onChange={onForestSizeChange}
                 min={1}
@@ -78,6 +80,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
 
             <NumberInput
                 label="Rating Scale:"
+                name="rating-scale"
                 value={data.reasonConfig.ratingScale}
                 onChange={onRatingScaleChange}
                 min={1}
@@ -90,6 +93,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
             {isBeamSearch && (
                 <>
                     <NumberInput
+                        name="beam-size"
                         label="Beam Size:"
                         value={data.reasonConfig.beamSize}
                         onChange={onBeamSizeChange}
@@ -116,6 +120,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
             {isSimulationBasedMethod && (
                 <>
                     <NumberInput
+                        name="number-of-simulations"
                         label="Number of Simulations:"
                         value={data.reasonConfig.nsim}
                         onChange={onNSimChange}
@@ -127,6 +132,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
 
                     <NumberInput
                         label="Exploration Constant:"
+                        name="exploration-constant"
                         value={data.reasonConfig.explorationConstant}
                         onChange={onExplorationConstantChange}
                         min={0}

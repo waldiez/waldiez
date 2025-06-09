@@ -62,12 +62,26 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
      * Toggle the clear history option
      */
     const onClearHistoryChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            onDataChange({ clearHistory: e.target.checked });
+        (checked: boolean) => {
+            console.log("Clear history changed:", checked);
+            if (data.clearHistory === checked) {
+                return; // No change, do nothing
+            }
+            console.log("Updating clear history to:", checked);
+            // Update the clear history state
+            // This will trigger a re-render and update the state in the parent component
+            // or wherever onDataChange is defined
+            // Ensure that the onDataChange function is defined and available
+            if (typeof onDataChange !== "function") {
+                console.error("onDataChange is not a function");
+                return; // Exit if onDataChange is not a function
+            }
+            // Call onDataChange with the new clearHistory value
+            console.log("Calling onDataChange with clearHistory:", checked);
+            onDataChange({ clearHistory: checked });
         },
-        [onDataChange],
+        [onDataChange, data.clearHistory],
     );
-
     /**
      * Update the maximum number of turns
      */

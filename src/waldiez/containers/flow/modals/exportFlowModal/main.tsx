@@ -4,7 +4,7 @@
  */
 import { memo, useCallback, useState } from "react";
 
-import { DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
+import { CheckboxInput, DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
 
 // Constants
 const HUB_URL = "https://hub.waldiez.io";
@@ -35,8 +35,8 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
     const [isUploading, setIsUploading] = useState(false);
 
     // Event handlers
-    const onAlsoUploadChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setAlsoUpload(e.target.checked);
+    const onAlsoUploadChange = useCallback((checked: boolean) => {
+        setAlsoUpload(checked);
     }, []);
 
     const onHubApiTokenChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,31 +173,34 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
         >
             <div className="modal-body">
                 <div className="padding-10">
-                    <label className="checkbox-label">
-                        <span className="checkbox-label-view">
-                            <div>
-                                Share this flow to{" "}
-                                <a href={HUB_URL} target="_blank" rel="noopener noreferrer" className="link">
-                                    Waldiez hub
-                                </a>
-                            </div>
-                        </span>
-                        <input
-                            type="checkbox"
-                            checked={alsoUpload}
-                            onChange={onAlsoUploadChange}
-                            data-testid={`import-flow-modal-share-${flowId}`}
-                        />
-                        <div className="checkbox"></div>
-                    </label>
-
+                    <CheckboxInput
+                        id={`export-flow-modal-upload-${flowId}`}
+                        label={
+                            <span className="checkbox-label-view">
+                                <div>
+                                    Share this flow to{" "}
+                                    <a
+                                        href={HUB_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="link"
+                                    >
+                                        Waldiez hub
+                                    </a>
+                                </div>
+                            </span>
+                        }
+                        isChecked={alsoUpload}
+                        onCheckedChange={onAlsoUploadChange}
+                        data-testid={`export-flow-modal-upload-checkbox-${flowId}`}
+                    />
                     {alsoUpload && (
                         <div className="flex full-width flex-column">
                             <div className="margin-top-10 full-width">
                                 <TextInput
                                     label={<div className="no-padding margin-bottom-5">Hub API Token:</div>}
                                     value={hubApiToken}
-                                    // labelInfo={"Url with info on how to get a token"}
+                                    name="hub-api-token"
                                     onChange={onHubApiTokenChange}
                                     placeholder="Enter your hub API token"
                                     dataTestId={`hub-api-token-${flowId}`}
@@ -229,7 +232,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                     {alsoUpload && (
                         <button
                             type="button"
-                            className="modal-action-submit margin-right-20"
+                            className="save margin-right-20"
                             onClick={onUploadToHub}
                             data-testid={`upload-to-hub-${flowId}`}
                             disabled={isUploading || !hubApiToken}

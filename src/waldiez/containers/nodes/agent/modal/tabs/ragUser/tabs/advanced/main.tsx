@@ -40,6 +40,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                 <InfoLabel
                     label="Customized Prompt:"
                     info="The customized prompt for the retrieve chat. Default is None."
+                    htmlFor={`rag-customized-prompt-${id}`}
                 />
 
                 <TextareaInput
@@ -48,6 +49,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     value={retrieveConfig.customizedPrompt ?? ""}
                     onChange={onCustomizedPromptChange}
                     data-testid={`rag-customized-prompt-${id}`}
+                    id={`rag-customized-prompt-${id}`}
                     aria-label="Customized prompt for RAG"
                 />
             </div>
@@ -61,6 +63,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                         'If not "" and the customized_answer_prefix is not in the answer, ' +
                         "`Update Context` will be triggered."
                     }
+                    htmlFor={`rag-customized-answer-prefix-${id}`}
                 />
 
                 <input
@@ -69,6 +72,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     value={retrieveConfig.customizedAnswerPrefix ?? ""}
                     onChange={onCustomizedAnswerPrefixChange}
                     data-testid={`rag-customized-answer-prefix-${id}`}
+                    id={`rag-customized-answer-prefix-${id}`}
                     aria-label="Customized answer prefix"
                 />
             </div>
@@ -80,7 +84,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     info="If False, will not apply `Update Context` for interactive retrieval. Default is True."
                     checked={retrieveConfig.updateContext}
                     onChange={onUpdateContextChange}
-                    dataTestId={`rag-update-context-${id}`}
+                    id={`rag-update-context-${id}`}
                     aria-label="Update context for interactive retrieval"
                 />
             </div>
@@ -91,8 +95,8 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     label="Get or Create "
                     info="Whether to get the collection if it exists. Default is True."
                     checked={retrieveConfig.getOrCreate}
+                    id={`rag-get-or-create-${id}`}
                     onChange={onGetOrCreateChange}
-                    dataTestId={`rag-get-or-create-${id}`}
                     aria-label="Get or create collection"
                 />
             </div>
@@ -109,7 +113,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     }
                     checked={retrieveConfig.newDocs}
                     onChange={onNewDocsChange}
-                    dataTestId={`rag-new-docs-${id}`}
+                    id={`rag-new-docs-${id}`}
                     aria-label="Only add new documents"
                 />
             </div>
@@ -127,7 +131,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     }
                     checked={retrieveConfig.overwrite}
                     onChange={onOverwriteChange}
-                    dataTestId={`rag-overwrite-${id}`}
+                    id={`rag-overwrite-${id}`}
                     aria-label="Overwrite existing collection"
                 />
             </div>
@@ -139,7 +143,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
                     info="Whether to search documents recursively in the docs_path. Default is True."
                     checked={retrieveConfig.recursive}
                     onChange={onRecursiveChange}
-                    dataTestId={`rag-recursive-${id}`}
+                    id={`rag-recursive-${id}`}
                     aria-label="Search documents recursively"
                 />
             </div>

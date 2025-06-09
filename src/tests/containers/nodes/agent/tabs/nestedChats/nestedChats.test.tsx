@@ -14,7 +14,7 @@ describe("Nested Chats tab main", () => {
         expect(screen.queryByTestId(`tab-id-wf-${flowId}-wa-${agentId}-nested`)).toBeNull();
     });
     it("should render the Nested Chats tab if the agent has connections", async () => {
-        renderAgent("user_proxy", {
+        renderAgent("assistant", {
             openModal: true,
             includeNestedChats: true,
             dataOverrides: {

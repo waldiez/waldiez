@@ -171,6 +171,8 @@ export const chatMapper = {
             realTarget: chat.data.realTarget,
             silent: chat.data.silent,
         };
+        const style: React.CSSProperties = chat.rest?.style || {};
+        style.strokeWidth = 1;
         return {
             id: chat.id,
             source: chat.source,
@@ -179,6 +181,7 @@ export const chatMapper = {
             data,
             hidden: chat.rest?.hidden === true || chat.type === "hidden",
             ...chat.rest,
+            style,
         };
     },
 };

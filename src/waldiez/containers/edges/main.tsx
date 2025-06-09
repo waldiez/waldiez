@@ -5,16 +5,17 @@
 import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
 
 import { memo, useCallback, useMemo, useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert } from "react-icons/go";
 import { MdMessage } from "react-icons/md";
 
 import { EdgeLabel } from "@waldiez/containers/edges/edgeLabel";
+import { EdgePosition } from "@waldiez/containers/edges/edgePosition";
 import { useWaldiezEdge } from "@waldiez/containers/edges/hooks";
 import { WaldiezEdgeProps } from "@waldiez/containers/edges/types";
-import { getEdgeTranslations } from "@waldiez/containers/edges/utils";
+import { getEdgeLabelTransformNodeOffset } from "@waldiez/containers/edges/utils";
 import { WaldiezEdge, WaldiezEdgeType, WaldiezGroupChatType, WaldiezNodeAgent } from "@waldiez/models";
 
 /**
@@ -104,7 +105,7 @@ const getEdgeIcon = (type: WaldiezEdgeType, groupChatType: WaldiezGroupChatType,
 /**
  * Common edge component implementation used by all edge types
  */
-// eslint-disable-next-line max-statements
+
 const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
     const {
         id,
@@ -113,11 +114,11 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
         style = {},
         sourceX,
         sourceY,
-        sourcePosition,
-        targetPosition,
         targetX,
         targetY,
         markerEnd,
+        sourcePosition,
+        targetPosition,
     } = props;
 
     // Get edge properties from custom hook
@@ -162,20 +163,76 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
     );
 
     // Determine if edge needs position indicator
-    const needsPosition = useMemo(
-        () =>
-            type !== "group" ||
-            (type === "group" && (groupChatType === "toManager" || groupChatType === "fromManager")),
-        [type, groupChatType],
-    );
+    // const needsPosition = useMemo(
+    //     () =>
+    //         type !== "group" ||
+    //         (type === "group" && (groupChatType === "toManager" || groupChatType === "fromManager")),
+    //     [type, groupChatType],
+    // );
 
-    const positionClass = needsPosition ? " with-position" : "";
+    // const positionClass = needsPosition ? " with-position" : "";
 
     // Calculate edge translations for start and end labels
-    const translations = useMemo(
-        () => getEdgeTranslations(sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition),
-        [sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition],
-    );
+    // const translations = useMemo(
+    //     () => getEdgeTranslations(sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition),
+    //     [sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition],
+    // );
+
+    // const positionTranslation = useMemo(
+    //     () => getPortLabelTransform(sourceX, sourceY, sourcePosition, 16), // 16px offset for port label
+    //     [sourceX, sourceY, sourcePosition],
+    // );
+    const positionTranslation = useMemo(() => {
+        const sourceTransform = getEdgeLabelTransformNodeOffset(
+            sourceX,
+            sourceY,
+            targetX,
+            targetY,
+            labelX,
+            labelY,
+            sourcePosition,
+            targetPosition,
+            "source",
+            {
+                leftOffset: 10, // Labels on left-facing ports go 10px left
+                rightOffset: 20, // Labels on right-facing ports go 20px right
+                topOffset: 10, // Labels on top-facing ports go 0px up
+                bottomOffset: 20, // Labels on bottom-facing ports go 20px down
+                perpOffset: 20, // All labels get 20px perpendicular offset
+            },
+        );
+        const targetTransform = getEdgeLabelTransformNodeOffset(
+            sourceX,
+            sourceY,
+            targetX,
+            targetY,
+            labelX,
+            labelY,
+            sourcePosition,
+            targetPosition,
+            "target",
+            {
+                leftOffset: 60, // Labels on left-facing ports go 60px left
+                rightOffset: 60, // Labels on right-facing ports go 60px right
+                topOffset: 10, // Labels on top-facing ports go 10px up
+                bottomOffset: 10, // Labels on bottom-facing ports go 10px down
+                perpOffset: -10, // All labels get -10px perpendicular offset
+            },
+        );
+
+        return {
+            edgeStart: sourceTransform,
+            edgeEnd: targetTransform,
+        };
+
+        // // Mix and match to find what works best:
+        // const sourceTransform = sourceApproaches.approach1;  // Port-based
+        // const targetTransform = targetApproaches.approach2;  // Reverse geometry
+
+        // // Or try the bezier path approach for both:
+        // const sourceTransform = sourceApproaches.approach3;  // Actual bezier math
+        // const targetTransform = targetApproaches.approach3;  // Actual bezier math
+    }, [sourceX, sourceY, targetX, targetY, labelX, labelY, sourcePosition, targetPosition]);
 
     // Event handlers
     const onEdgeClick = useCallback(
@@ -204,14 +261,14 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
     const renderEdgeContent = useMemo(() => {
         if (edgeNumber !== "") {
             return (
-                <div className={`agent-edge-view clickable${positionClass}`}>
-                    <div className="edge-position">
+                <div className={"agent-edge-view clickable"}>
+                    <EdgePosition edge={edge} transform={positionTranslation.edgeStart}>
                         {edgeNumber === "0" ? (
                             <GoAlert size={16} className="edge-position-warning-icon" />
                         ) : (
                             edgeNumber
                         )}
-                    </div>
+                    </EdgePosition>
                     {edgeIcon}
                 </div>
             );
@@ -219,20 +276,24 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
 
         if (type === "group") {
             return (
-                <div className={`agent-edge-view clickable${positionClass}`}>
+                <div className={"agent-edge-view clickable"}>
                     {groupChatType === "fromManager" && (
-                        <div className="edge-position">
+                        <EdgePosition edge={edge} transform={positionTranslation.edgeStart}>
                             <GoAlert size={16} className="edge-position-warning-icon" />
-                        </div>
+                        </EdgePosition>
                     )}
-                    {groupChatType === "toManager" && <div className="edge-position">1</div>}
+                    {groupChatType === "toManager" && (
+                        <EdgePosition edge={edge} transform={positionTranslation.edgeStart}>
+                            <div className="edge-position">1</div>
+                        </EdgePosition>
+                    )}
                     <div className="edge-icon">{edgeIcon}</div>
                 </div>
             );
         }
 
         return <div className="agent-edge-view clickable">{edgeIcon}</div>;
-    }, [edgeNumber, edgeIcon, positionClass, type, groupChatType]);
+    }, [edgeNumber, type, edgeIcon, edge, positionTranslation, groupChatType]);
 
     return (
         <>
@@ -244,14 +305,14 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
                         transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
                         pointerEvents: "all",
                     }}
-                    className={`nodrag nopan clickable agent-edge-box ${sourceAgent.data.agentType}${positionClass}`}
+                    className={`nodrag nopan clickable agent-edge-box ${sourceAgent.data.agentType}`}
                     onClick={onEdgeClick}
                     data-testid={`edge-${id}-box`}
                     tabIndex={0}
                     onBlur={onEdgeBlur}
                 >
                     {focussed && (
-                        <div className={`edge-actions${positionClass}`}>
+                        <div className={"edge-actions"}>
                             <div
                                 title="Delete"
                                 role="button"
@@ -260,7 +321,7 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
                                 data-testid={`delete-edge-${id}`}
                                 aria-label="Delete edge"
                             >
-                                <FaTrashAlt />
+                                <FaTrash size={12} />
                             </div>
                             <div
                                 title="Edit"
@@ -270,13 +331,13 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
                                 data-testid={`open-edge-modal-${id}`}
                                 aria-label="Edit edge"
                             >
-                                <FaGear />
+                                <FaGear size={12} />
                             </div>
                         </div>
                     )}
                     {renderEdgeContent}
+                    <EdgeLabel edge={edge} transform={positionTranslation.edgeEnd} />
                 </div>
-                <EdgeLabel edge={edge} transform={translations.edgeEnd} />
             </EdgeLabelRenderer>
         </>
     );

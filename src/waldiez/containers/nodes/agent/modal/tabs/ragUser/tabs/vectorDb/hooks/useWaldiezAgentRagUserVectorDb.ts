@@ -79,9 +79,9 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle Qdrant memory storage toggle
      */
     const onQdrantUseMemoryChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             updateDbConfig({
-                useMemory: event.target.checked,
+                useMemory: checked,
                 useLocalStorage: false,
             });
         },
@@ -92,10 +92,10 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle Qdrant local storage toggle
      */
     const onQdrantUseLocalStorageChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             updateDbConfig({
                 useMemory: false,
-                useLocalStorage: event.target.checked,
+                useLocalStorage: checked,
             });
         },
         [updateDbConfig],
@@ -117,9 +117,9 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle Chroma local storage toggle
      */
     const onChromaUseLocalStorageChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (checked: boolean) => {
             updateDbConfig({
-                useLocalStorage: event.target.checked,
+                useLocalStorage: checked,
             });
         },
         [updateDbConfig],

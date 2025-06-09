@@ -53,10 +53,10 @@
   margin: 10px 4px;
 }
 
-.flow-wrapper .edit-flow-modal .modal-actions,
+/* .flow-wrapper .edit-flow-modal .modal-actions,
 .flow-wrapper .chat-modal .modal-actions {
   margin-top: 1rem;
-}
+} */
 
 .flow-wrapper .flow-data-preview {
   max-height: 60vh;

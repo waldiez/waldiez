@@ -4,6 +4,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { CheckboxInput } from "@waldiez/components/checkboxInput";
 import { Select, SingleValue } from "@waldiez/components/select";
 import { TextareaInput } from "@waldiez/components/textareaInput";
 import { WaldiezHandoffAvailability } from "@waldiez/types";
@@ -37,9 +38,8 @@ export const HandoffAvailability: React.FC<{
 
     // Handler for availability type change
     const onAvailabilityTypeChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const isChecked = event.target.checked;
-            const newType = isChecked ? "string" : "none";
+        (checked: boolean) => {
+            const newType = checked ? "string" : "none";
             const updatedAvailability: WaldiezHandoffAvailability = {
                 ...currentAvailability,
                 type: newType,
@@ -131,16 +131,14 @@ export const HandoffAvailability: React.FC<{
                 </ul>
             </div>
             <div>
-                <label className="checkbox-label">
-                    <div className="checkbox-label-view">Enable Availability Check</div>
-                    <input
-                        type="checkbox"
-                        checked={available.type !== "none"}
-                        onChange={onAvailabilityTypeChange}
-                        data-testid="availability-enabled-checkbox"
-                    />
-                    <div className="checkbox"></div>
-                </label>
+                <CheckboxInput
+                    label="Enable Availability Check"
+                    isChecked={currentAvailability.type !== "none"}
+                    onCheckedChange={onAvailabilityTypeChange}
+                    id="availability-enabled-checkbox"
+                    data-testid="availability-enabled-checkbox"
+                    aria-label="Enable availability check"
+                />
             </div>
             {available.type !== "none" && (
                 <div className="flex-column margin-top-10">

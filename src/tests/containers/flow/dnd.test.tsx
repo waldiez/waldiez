@@ -24,8 +24,8 @@ describe("Flow DnD", () => {
         fireEvent.click(toggleAgentsView);
     };
     it("should add a user agent node on drag and drop", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         ensureAgentsView();
         const sourceElement = screen.getByTestId("user-dnd");
@@ -43,8 +43,8 @@ describe("Flow DnD", () => {
         fireEvent.mouseUp(targetElement);
     });
     it("should add an assistant agent node on drag and drop", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         ensureAgentsView();
         const sourceElement = screen.getByTestId("assistant-dnd");
@@ -62,8 +62,8 @@ describe("Flow DnD", () => {
         fireEvent.mouseUp(targetElement);
     });
     it("should add a reasoning agent node on drag and drop", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         ensureAgentsView();
         const sourceElement = screen.getByTestId("reasoning-dnd");
@@ -81,8 +81,8 @@ describe("Flow DnD", () => {
         fireEvent.mouseUp(targetElement);
     });
     it("should add a captain agent node on drag and drop", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         ensureAgentsView();
         const sourceElement = screen.getByTestId("captain-dnd");

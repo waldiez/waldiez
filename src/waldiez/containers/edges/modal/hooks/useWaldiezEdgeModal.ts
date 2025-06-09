@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { SingleValue } from "@waldiez/components";
@@ -27,8 +27,8 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     const flowId = useWaldiez(s => s.flowId);
     const { isDark } = useWaldiezTheme();
 
-    // Get edge and related data
-    const edge = useMemo(() => getEdgeById(edgeId) as WaldiezEdge | null, [getEdgeById, edgeId]);
+    // no memo, so we can get the latest edge data (and correctly compy "isDirty" state)
+    const edge = getEdgeById(edgeId) as WaldiezEdge | null;
 
     const sourceAgent = useMemo(() => (edge ? getEdgeSourceAgent(edge) : null), [edge, getEdgeSourceAgent]);
 
@@ -45,17 +45,6 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         [sourceAgent?.data?.agentType],
     );
 
-    // Update local state when edge changes
-    useEffect(() => {
-        if (edge) {
-            if (edge.type) {
-                setEdgeType(edge.type);
-            }
-            setEdgeData(edge.data);
-            setIsDirty(false);
-        }
-    }, [edge]);
-
     /**
      * Update edge data and check if dirty
      */
@@ -64,12 +53,10 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
             if (!edgeData) {
                 return;
             }
-
             const newData = {
                 ...edgeData,
                 ...data,
             };
-
             setEdgeData(newData);
             setIsDirty(!isEqual(newData, edge?.data));
         },
@@ -121,7 +108,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     }, [onCancel, deleteEdge, edgeId]);
 
     /**
-     * Save changes and close modal
+     * Save changes
      */
     const onSubmit = useCallback(() => {
         // Update edge data if changed
@@ -135,7 +122,6 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         }
 
         setIsDirty(false);
-        // onClose();
     }, [edgeData, edgeType, edge, edgeId, updateEdgeData, updateEdgeType]);
 
     return {

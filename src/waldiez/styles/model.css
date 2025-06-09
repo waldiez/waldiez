@@ -134,20 +134,3 @@
 .flow-wrapper.dark .model-logo.openai img {
   filter: invert(1);
 }
-
-.flow-wrapper .visibilityWrapperBtn {
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  cursor: pointer;
-  min-width: 40px;
-}
-
-.flow-wrapper.light .visibilityWrapperBtn {
-  background-color: #f8f8f8;
-  color: #000;
-}
-
-.flow-wrapper.dark .visibilityWrapperBtn {
-  background-color: #222;
-  color: #f8f8f8;
-}

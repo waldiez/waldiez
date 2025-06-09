@@ -8,6 +8,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
 type TextInputProps = {
+    name: string;
     label: string | React.JSX.Element;
     value: string | undefined | null;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,6 +28,7 @@ type TextInputProps = {
  * Text input component with optional password visibility toggle and info label
  */
 export const TextInput = memo<{
+    name: string;
     label: string | React.JSX.Element;
     value: string | undefined | null;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -42,6 +44,7 @@ export const TextInput = memo<{
     labelClassName?: string;
 }>((props: TextInputProps) => {
     const {
+        name,
         label,
         value,
         onChange,
@@ -90,11 +93,15 @@ export const TextInput = memo<{
     // Render appropriate label based on prop type and info
     const renderLabel = () => {
         if (labelInfo) {
-            return <InfoLabel label={label} info={labelInfo} />;
+            return <InfoLabel label={label} info={labelInfo} htmlFor={`id-${name}`} />;
         }
 
         if (typeof label === "string") {
-            return <label className={labelClassName}>{label}</label>;
+            return (
+                <label htmlFor={`id-${name}`} className={labelClassName}>
+                    {label}
+                </label>
+            );
         }
 
         return label;
@@ -112,13 +119,15 @@ export const TextInput = memo<{
                     onChange={handleChange}
                     disabled={disabled}
                     data-testid={dataTestId}
+                    id={`id-${name}`}
+                    name={name}
                     style={inputStyle}
                     aria-label={typeof label === "string" ? label : undefined}
                 />
                 {isPassword && (
                     <button
                         type="button"
-                        className="visibilityWrapperBtn margin-left-5"
+                        className="toggle-visibility-btn margin-left-5"
                         onClick={toggleVisibility}
                         title={visible ? "Hide password" : "Show password"}
                         aria-label={visible ? "Hide password" : "Show password"}

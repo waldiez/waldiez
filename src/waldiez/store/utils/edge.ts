@@ -35,7 +35,7 @@ export const edgeCommonStyle = (edgeType: WaldiezEdgeType, color: string) => ({
             : undefined,
     style: {
         stroke: color,
-        strokeWidth: 2,
+        strokeWidth: 1,
     },
 });
 

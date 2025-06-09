@@ -13,10 +13,14 @@ import { useWaldiez } from "@waldiez/store";
  * Custom hook for handling Waldiez Node Agent operations
  * Manages node and edge modals, connections, read-only state, and drag operations
  */
-export const useWaldiezNodeAgent = () => {
+export const useWaldiezNodeAgent = (id: string) => {
     // Store selectors
     const getEdgeById = useWaldiez(s => s.getEdgeById);
     const addEdge = useWaldiez(s => s.addEdge);
+
+    const deleteAgent = useWaldiez(s => s.deleteAgent);
+    const cloneAgent = useWaldiez(s => s.cloneAgent);
+    const onFlowChanged = useWaldiez(s => s.onFlowChanged);
     const flowId = useWaldiez(s => s.flowId);
     const readOnly = useWaldiez(s => s.isReadOnly);
 
@@ -32,6 +36,31 @@ export const useWaldiezNodeAgent = () => {
     // Combined modal state
     const isModalOpen = useMemo(() => isNodeModalOpen || isEdgeModalOpen, [isNodeModalOpen, isEdgeModalOpen]);
 
+    /**
+     * Handle agent deletion
+     * Only triggers if not in read-only mode and modal is not open
+     */
+    const onDelete = useCallback(() => {
+        if (isReadOnly === true || isModalOpen) {
+            return;
+        }
+
+        deleteAgent(id);
+        onFlowChanged();
+    }, [isReadOnly, isModalOpen, deleteAgent, id, onFlowChanged]);
+
+    /**
+     * Handle agent cloning
+     * Only triggers if not in read-only mode and modal is not open
+     */
+    const onClone = useCallback(() => {
+        if (isReadOnly === true || isModalOpen) {
+            return;
+        }
+
+        cloneAgent(id);
+        onFlowChanged();
+    }, [isReadOnly, isModalOpen, cloneAgent, id, onFlowChanged]);
     /**
      * Opens the node modal if not in read-only mode
      */
@@ -124,6 +153,8 @@ export const useWaldiezNodeAgent = () => {
         isModalOpen,
         isReadOnly,
         isDragging,
+        onDelete,
+        onClone,
         onOpenNodeModal,
         onCloseNodeModal,
         onOpenEdgeModal,

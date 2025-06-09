@@ -81,9 +81,9 @@ export const MessageInput: React.FC<MessageInputProps> = (props: {
             current.type !== "rag_message_generator" &&
             notNoneLabel &&
             (notNoneLabelInfo ? (
-                <InfoLabel label={notNoneLabel} info={notNoneLabelInfo} />
+                <InfoLabel label={notNoneLabel} info={notNoneLabelInfo} htmlFor="message-input" />
             ) : (
-                <label>{notNoneLabel}</label>
+                <label htmlFor="message-input">{notNoneLabel}</label>
             ))
         );
     };
@@ -119,7 +119,7 @@ export const MessageInput: React.FC<MessageInputProps> = (props: {
                 <div className="full-width">
                     <TextareaInput
                         placeholder="Enter the message"
-                        className="fill-available"
+                        className="fill-available-width"
                         rows={3}
                         value={current.content ?? ""}
                         onChange={onContentUpdate}
@@ -137,7 +137,7 @@ export const MessageInput: React.FC<MessageInputProps> = (props: {
                         <TextareaInput
                             placeholder="Enter the problem"
                             rows={3}
-                            className="fill-available margin-top-5"
+                            className="fill-available-width margin-top-5"
                             value={String(current.context.problem ?? "")}
                             onChange={onRagProblemUpdate}
                             data-testid="rag-message-generator-problem"
@@ -169,7 +169,7 @@ export const MessageInput: React.FC<MessageInputProps> = (props: {
                         label="Carryover "
                         info={carryOverInfo}
                         checked={current.useCarryover ?? false}
-                        dataTestId="message-use-carryover"
+                        id="message-use-carryover"
                         onChange={onUseCarryoverChange}
                     />
                 )}

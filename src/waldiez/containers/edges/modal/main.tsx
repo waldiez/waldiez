@@ -318,8 +318,9 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                     <button
                         type="button"
                         title="Cancel"
-                        className="modal-action-cancel"
+                        className="secondary"
                         onClick={onCancel}
+                        id={testIds.cancel}
                         data-testid={testIds.cancel}
                     >
                         Cancel
@@ -329,8 +330,9 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                         <button
                             title="Save & Close"
                             type="button"
-                            className="modal-action-submit margin-right-10 "
+                            className="save margin-right-10 "
                             onClick={onSaveAndClose}
+                            id={testIds.saveAndClose}
                             data-testid={testIds.saveAndClose}
                             disabled={!isDirty}
                             aria-disabled={!isDirty}
@@ -341,8 +343,9 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                         <button
                             type="button"
                             title={isDirty ? "Save changes" : "No changes to save"}
-                            className="modal-action-submit"
+                            className="primary"
                             onClick={onSubmit}
+                            id={testIds.save}
                             data-testid={testIds.save}
                             disabled={!isDirty}
                             aria-disabled={!isDirty}

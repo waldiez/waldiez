@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines */
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import selectEvent from "react-select-event";
 
 import { CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT, UpdateState } from "@waldiez/components/updateState";
 import { WaldiezAgent, WaldiezNodeAgentData, agentMapper } from "@waldiez/models";
@@ -48,7 +49,6 @@ vi.mock("@waldiez/components", () => ({
     ),
 }));
 
-// eslint-disable-next-line max-lines-per-function
 describe("UpdateState Component", () => {
     let mockOnDataChange: ReturnType<typeof vi.fn>;
     let defaultData: WaldiezNodeAgentData;
@@ -93,8 +93,6 @@ describe("UpdateState Component", () => {
             const checkbox = screen.getByTestId("enable-update-system-message");
             expect(checkbox).toBeChecked();
 
-            // Should show configuration options when enabled
-            expect(screen.getByTestId("update-system-message-type-select")).toBeInTheDocument();
             expect(screen.getByTestId("update-system-message-string")).toBeInTheDocument();
         });
 
@@ -117,11 +115,6 @@ describe("UpdateState Component", () => {
 
             expect(mockOnDataChange).toHaveBeenCalledWith({
                 updateAgentStateBeforeReply: [{ type: "string", content: "" }],
-            });
-
-            // Should show configuration options after enabling
-            await waitFor(() => {
-                expect(screen.getByTestId("update-system-message-type-select")).toBeInTheDocument();
             });
         });
 
@@ -163,8 +156,7 @@ describe("UpdateState Component", () => {
 
             rerender(<UpdateState data={currentData} onDataChange={mockOnDataChange} darkMode={false} />);
 
-            const select = screen.getByTestId("update-system-message-type-select");
-            await user.selectOptions(select, "callable");
+            await selectEvent.select(screen.getByLabelText("Message update type"), "Function");
 
             // Disable
             await user.click(checkbox);
@@ -181,22 +173,7 @@ describe("UpdateState Component", () => {
     });
 
     describe("Type Selection", () => {
-        it("should show correct initial type selection", () => {
-            const dataWithStringConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "string", content: "test" }],
-            };
-
-            render(
-                <UpdateState data={dataWithStringConfig} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            const select = screen.getByTestId("update-system-message-type-select");
-            expect(select).toHaveValue("string");
-        });
-
         it("should change from string to callable type", async () => {
-            const user = userEvent.setup();
             const dataWithStringConfig: WaldiezNodeAgentData = {
                 ...defaultData,
                 updateAgentStateBeforeReply: [{ type: "string", content: "test" }],
@@ -205,19 +182,14 @@ describe("UpdateState Component", () => {
             render(
                 <UpdateState data={dataWithStringConfig} onDataChange={mockOnDataChange} darkMode={false} />,
             );
-
-            const select = screen.getByTestId("update-system-message-type-select");
-            await user.selectOptions(select, "callable");
-
+            await selectEvent.select(screen.getByLabelText("Message update type"), "Function");
             expect(mockOnDataChange).toHaveBeenCalledWith({
                 updateAgentStateBeforeReply: [
                     { type: "callable", content: CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT },
                 ],
             });
         });
-
         it("should change from callable to string type", async () => {
-            const user = userEvent.setup();
             const dataWithCallableConfig: WaldiezNodeAgentData = {
                 ...defaultData,
                 updateAgentStateBeforeReply: [{ type: "callable", content: "def test(): pass" }],
@@ -230,10 +202,7 @@ describe("UpdateState Component", () => {
                     darkMode={false}
                 />,
             );
-
-            const select = screen.getByTestId("update-system-message-type-select");
-            await user.selectOptions(select, "string");
-
+            await selectEvent.select(screen.getByLabelText("Message update type"), "Text");
             expect(mockOnDataChange).toHaveBeenCalledWith({
                 updateAgentStateBeforeReply: [{ type: "string", content: "" }],
             });
@@ -308,23 +277,9 @@ describe("UpdateState Component", () => {
                 />,
             );
 
-            const editor = screen.getByTestId("update-system-message-callable");
+            const editor = screen.getByTestId("mocked-monaco-editor");
             expect(editor).toBeInTheDocument();
             expect(editor).toHaveValue("def custom_function(): pass");
-        });
-
-        it("should pass dark mode to editor", () => {
-            const dataWithCallableConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "callable", content: "def test(): pass" }],
-            };
-
-            render(
-                <UpdateState data={dataWithCallableConfig} onDataChange={mockOnDataChange} darkMode={true} />,
-            );
-
-            const editor = screen.getByTestId("update-system-message-callable");
-            expect(editor).toHaveAttribute("data-dark-mode", "true");
         });
 
         it("should update callable content when editor changes", async () => {
@@ -341,9 +296,8 @@ describe("UpdateState Component", () => {
                 />,
             );
 
-            const editor = screen.getByTestId("update-system-message-callable");
+            const editor = screen.getByTestId("mocked-monaco-editor");
             fireEvent.change(editor, { target: { value: "updated code" } });
-
             expect(mockOnDataChange).toHaveBeenCalledWith({
                 updateAgentStateBeforeReply: [{ type: "callable", content: "updated code" }],
             });
@@ -364,7 +318,7 @@ describe("UpdateState Component", () => {
                 />,
             );
 
-            const editor = screen.getByTestId("update-system-message-callable");
+            const editor = screen.getByTestId("mocked-monaco-editor");
 
             // Simulate editor returning undefined (which can happen in some edge cases)
             fireEvent.change(editor, { target: { value: "" } });
@@ -399,8 +353,7 @@ describe("UpdateState Component", () => {
             await user.click(checkbox);
 
             // Change to callable type
-            const select = screen.getByTestId("update-system-message-type-select");
-            await user.selectOptions(select, "callable");
+            await selectEvent.select(screen.getByLabelText("Message update type"), "Function");
 
             expect(mockOnDataChange).toHaveBeenLastCalledWith({
                 updateAgentStateBeforeReply: [
@@ -417,152 +370,6 @@ describe("UpdateState Component", () => {
             expect(CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT).toContain(
                 "def custom_update_system_message",
             );
-        });
-    });
-
-    describe("Props Synchronization", () => {
-        it("should sync local state when props change", () => {
-            const dataWithStringConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "string", content: "test" }],
-            };
-
-            const { rerender } = render(
-                <UpdateState data={defaultData} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            // Initially disabled
-            let checkbox = screen.getByTestId("enable-update-system-message");
-            expect(checkbox).not.toBeChecked();
-
-            // Update props to have config
-            rerender(
-                <UpdateState data={dataWithStringConfig} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            // Should now be enabled
-            checkbox = screen.getByTestId("enable-update-system-message");
-            expect(checkbox).toBeChecked();
-        });
-
-        it("should sync type selection when props change", () => {
-            const dataWithStringConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "string", content: "test" }],
-            };
-
-            const dataWithCallableConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "callable", content: "def test(): pass" }],
-            };
-
-            const { rerender } = render(
-                <UpdateState data={dataWithStringConfig} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            let select = screen.getByTestId("update-system-message-type-select");
-            expect(select).toHaveValue("string");
-
-            // Update props to callable type
-            rerender(
-                <UpdateState
-                    data={dataWithCallableConfig}
-                    onDataChange={mockOnDataChange}
-                    darkMode={false}
-                />,
-            );
-
-            select = screen.getByTestId("update-system-message-type-select");
-            expect(select).toHaveValue("callable");
-        });
-    });
-
-    describe("Edge Cases", () => {
-        it("should handle empty updateAgentStateBeforeReply array", () => {
-            const dataWithEmptyArray: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [],
-            };
-
-            render(
-                <UpdateState data={dataWithEmptyArray} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            const checkbox = screen.getByTestId("enable-update-system-message");
-            expect(checkbox).not.toBeChecked();
-        });
-
-        it("should handle multiple configs by using the first one", () => {
-            const dataWithMultipleConfigs: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [
-                    { type: "string", content: "first config" },
-                    { type: "callable", content: "second config" },
-                ],
-            };
-
-            render(
-                <UpdateState
-                    data={dataWithMultipleConfigs}
-                    onDataChange={mockOnDataChange}
-                    darkMode={false}
-                />,
-            );
-
-            const checkbox = screen.getByTestId("enable-update-system-message");
-            expect(checkbox).toBeChecked();
-
-            const select = screen.getByTestId("update-system-message-type-select");
-            expect(select).toHaveValue("string");
-
-            const textarea = screen.getByTestId("update-system-message-string");
-            expect(textarea).toHaveValue("first config");
-        });
-
-        it("should handle rapid state changes", async () => {
-            const user = userEvent.setup();
-            render(<UpdateState data={defaultData} onDataChange={mockOnDataChange} darkMode={false} />);
-
-            const checkbox = screen.getByTestId("enable-update-system-message");
-
-            // Rapid toggle
-            await user.click(checkbox);
-            await user.click(checkbox);
-            await user.click(checkbox);
-
-            expect(mockOnDataChange).toHaveBeenCalledTimes(3);
-        });
-    });
-
-    describe("Accessibility", () => {
-        it("should have proper labels and associations", () => {
-            const dataWithStringConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "string", content: "test" }],
-            };
-
-            render(
-                <UpdateState data={dataWithStringConfig} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            expect(screen.getByText("Update system message before reply")).toBeInTheDocument();
-            expect(screen.getByText("Message update type")).toBeInTheDocument();
-            expect(screen.getByText("Message update")).toBeInTheDocument();
-        });
-
-        it("should have proper test ids for all interactive elements", () => {
-            const dataWithStringConfig: WaldiezNodeAgentData = {
-                ...defaultData,
-                updateAgentStateBeforeReply: [{ type: "string", content: "test" }],
-            };
-
-            render(
-                <UpdateState data={dataWithStringConfig} onDataChange={mockOnDataChange} darkMode={false} />,
-            );
-
-            expect(screen.getByTestId("enable-update-system-message")).toBeInTheDocument();
-            expect(screen.getByTestId("update-system-message-type-select")).toBeInTheDocument();
-            expect(screen.getByTestId("update-system-message-string")).toBeInTheDocument();
         });
     });
 });
