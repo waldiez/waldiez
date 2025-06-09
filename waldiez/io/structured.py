@@ -86,7 +86,6 @@ class StructuredIOStream(IOStream):
             uploads_root=self.uploads_root,
             base_name=request_id,
         )
-        print("Got user input:", user_response, flush=True)
         return user_response
 
     # noinspection PyMethodMayBeStatic
