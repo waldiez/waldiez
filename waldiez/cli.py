@@ -17,9 +17,9 @@ from typing_extensions import Annotated
 # pylint: disable=import-error,line-too-long
 # pyright: reportMissingImports=false
 try:  # pragma: no cover
-    from ._version import (  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
-        __version__,
-    )
+    # fmt: off
+    from ._version import __version__ # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
+    # fmt: on
 except ImportError:  # pragma: no cover
     import warnings
 

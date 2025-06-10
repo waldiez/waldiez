@@ -1,13 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods,too-many-instance-attributes
+# flake8: noqa: E501
 """Flow specific extras module."""
 
 from dataclasses import dataclass, field
 from typing import Optional
 
+# pylint: disable=import-error,line-too-long
+# pyright: reportMissingImports=false
 try:
-    from waldiez._version import __version__ as waldiez_version
+    from waldiez._version import __version__ as waldiez_version  # type: ignore[unused-ignore, import-not-found, import-untyped]  # noqa
 except ImportError:  # pragma: no cover
     import warnings
 
@@ -31,7 +34,7 @@ class FlowExtras(BaseExtras):
     flow_name: str = ""
     description: str = ""
     config: ExportConfig = field(default_factory=ExportConfig)
-    version: str = waldiez_version
+    version: str = waldiez_version  # pyright: ignore
 
     # Sub-exporter results
     tools_result: Optional[ExportResult] = None
