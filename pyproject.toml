@@ -42,7 +42,22 @@ dependencies = [
   "parso==0.8.4",
   "rpds-py==0.25.1",
   "pydantic>=2.10.2,<3",
+  # ag2[together]==0.9.2 depends on together>=1.2
+  # together>=1.2 depends on typer>=0.9,<0.16
   "typer>=0.9.0,<1",
+  "click<8.2",
+  # ../site-packages/click/types.py", line 54, in init
+  #     self.name = func.name
+  #                 ^^^^^^^^^^^^^
+  # AttributeError: 'tuple' object has no attribute 'name'
+  # ../site-packages/httpx/_main.py", line 379, in <module>
+  #   @click.option(
+  #    ~~~~~~~~~~~~^
+  #       "--auth",
+  #       ^^^^^^^^^
+  #   ...<9 lines>...
+  #       ),
+  #       ^^
   "httpx<1",
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
