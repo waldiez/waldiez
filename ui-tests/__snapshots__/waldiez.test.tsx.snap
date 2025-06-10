@@ -13,6 +13,7 @@ exports[`All > should render Waldiez components 1`] = `
     <div>
       <div
         class="flow-wrapper light"
+        data-flow-id="test-flow"
         data-testid="rf-root-test-flow"
         id="rf-root-test-flow"
       >
@@ -585,6 +586,7 @@ exports[`All > should render Waldiez components 1`] = `
   "container": <div>
     <div
       class="flow-wrapper light"
+      data-flow-id="test-flow"
       data-testid="rf-root-test-flow"
       id="rf-root-test-flow"
     >

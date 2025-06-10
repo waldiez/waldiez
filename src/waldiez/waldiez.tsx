@@ -15,8 +15,6 @@ import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HotkeysProvider } from "react-hotkeys-hook";
 
-import "rc-slider/assets/index.css";
-
 import { loader } from "@monaco-editor/react";
 
 import { SnackbarProvider } from "@waldiez/components/snackbar";

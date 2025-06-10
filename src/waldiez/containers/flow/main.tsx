@@ -190,6 +190,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         <div
             className={`flow-wrapper ${colorMode}`}
             id={`rf-root-${flowId}`}
+            data-flow-id={flowId}
             data-testid={`rf-root-${flowId}`}
         >
             <div className="flow-main">

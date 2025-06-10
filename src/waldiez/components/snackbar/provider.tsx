@@ -21,7 +21,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const enqueueSnackbar = useCallback((props: ShowSnackbarProps) => {
         setQueues(qs => {
             const id = Math.random().toString(36).slice(2);
-            const flowId = props.flowId;
+            const flowId = props.flowId || "default"; // Default flowId if not provided
             return {
                 ...qs,
                 [flowId]: [...(qs[flowId] ?? []), { ...props, id }],

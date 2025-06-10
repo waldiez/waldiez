@@ -18,7 +18,7 @@ export const Snackbar: React.FC<SnackbarItem & { onClose: () => void }> = ({
     const [container, setContainer] = useState<HTMLElement | null>(null);
 
     useLayoutEffect(() => {
-        let root: HTMLElement | null = document.getElementById(`rf-root-${flowId}`);
+        let root: HTMLElement | null = flowId ? document.getElementById(`rf-root-${flowId}`) : null;
         if (!root) {
             root = document.body;
         }

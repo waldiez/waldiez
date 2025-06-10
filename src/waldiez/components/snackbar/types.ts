@@ -5,7 +5,7 @@
 export type SnackbarLevel = "info" | "warning" | "error" | "success";
 export type SnackbarDetails = string | Error | object | null;
 export type ShowSnackbarProps = {
-    flowId: string;
+    flowId?: string;
     message: string;
     level?: SnackbarLevel;
     details?: SnackbarDetails;
