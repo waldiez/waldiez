@@ -59,6 +59,8 @@ class StructuredIOStream(IOStream):
             data=message,
         ).model_dump(mode="json")
         flush = kwargs.get("flush", True)
+        payload_type = kwargs.get("type", "print")
+        payload["type"] = payload_type
         print(json.dumps(payload), flush=flush)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
@@ -110,7 +112,7 @@ class StructuredIOStream(IOStream):
                 content_block["content"] = try_parse_maybe_serialized(
                     inner_content
                 )
-        print(json.dumps(message_dump), flush=True)
+        print(json.dumps(message_dump), flush=True, file=sys.stdout)
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
@@ -164,7 +166,7 @@ class StructuredIOStream(IOStream):
             "timestamp": now(),
             "data": f"No input received after {self.timeout} seconds.",
         }
-        print(json.dumps(timeout_payload), flush=True)
+        print(json.dumps(timeout_payload), flush=True, file=sys.stderr)
 
     def _handle_user_input(
         self, user_input_raw: str, request_id: str

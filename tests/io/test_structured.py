@@ -206,7 +206,8 @@ class TestStructuredIOStream:
 
         assert payload["type"] == "test_event"
         assert payload["content"] == "test message"
-        assert kwargs == {"flush": True}
+        assert "flush" in kwargs
+        assert kwargs["flush"] is True
 
     def test_handle_user_input_plain_text(self) -> None:
         """Test parsing plain text input."""
@@ -387,7 +388,9 @@ class TestStructuredIOStream:
             f"No input received after {self.stream.timeout} seconds"
             in payload["data"]
         )
-        assert kwargs == {"flush": True}
+        assert "flush" in kwargs
+        assert kwargs["flush"] is True
+        # assert kwargs == {"flush": True}
 
     def test_init_with_uploads_root_string(self, tmp_path: Path) -> None:
         """Test initialization with uploads_root as string."""
