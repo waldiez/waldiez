@@ -54,6 +54,7 @@ RUN apt update && \
     unzip \
     git \
     jq \
+    ffmpeg \
     graphviz \
     libcairo2-dev \
     libpango1.0-dev \
