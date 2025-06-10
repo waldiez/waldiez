@@ -8,9 +8,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
+
+# Allow only one concurrent deployment,
+# skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-docs:
@@ -21,24 +27,53 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: actions/setup-python@v5
         with:
           python-version: 3.12
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-docs-${{ runner.os }}-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            pip-docs-${{ runner.os }}-
+
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Cache bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-docs-${{ runner.os }}-${{ hashFiles('package.json', 'bun.lock') }}
+          restore-keys: |
+            bun-docs-${{ runner.os }}-
+
       - name: Install ts dependencies
-        run: |
-          bun install
+        run: bun install
+
       - name: Install python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt -r requirements/docs.txt
-      - name: Build
+
+      - name: Build documentation
         run: |
           bun run docs
           cp CONTRIBUTING.md docs/contribute/index.md
-          mkdocs gh-deploy --config-file mkdocs.yml --force
+          mkdocs build --config-file mkdocs.yml
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./site"
 
   deploy-docs:
     name: Deploy Docs to GitHub Pages
@@ -48,16 +83,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
