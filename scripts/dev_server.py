@@ -78,7 +78,7 @@ class OutgoingMessage(ModelBase):
 
     type: OutgoingAction
     success: bool
-    message: str | None = None
+    data: str | None = None
     filePaths: list[str] | None = None
 
 
@@ -274,11 +274,9 @@ class WaldiezDevServer:
         except Exception as e:
             to_log = f"Error running flow: {e}"
             logger.error(traceback.format_exc())
-            return OutgoingMessage(
-                type="runResult", success=False, message=to_log
-            )
+            return OutgoingMessage(type="runResult", success=False, data=to_log)
         return OutgoingMessage(
-            type="runResult", success=True, message="Flow executed successfully"
+            type="runResult", success=True, data="Flow executed successfully"
         )
 
     async def handle_save(
@@ -313,7 +311,7 @@ class WaldiezDevServer:
             type="saveResult",
             success=True,
             filePaths=[relative_to_cwd],
-            message=to_log,
+            data=to_log,
         )
 
     async def handle_upload(
@@ -362,7 +360,7 @@ class WaldiezDevServer:
         return OutgoingMessage(
             type="uploadResult",
             success=True,
-            message="Files uploaded successfully",
+            data="Files uploaded successfully",
             filePaths=file_paths,
         )
 
@@ -398,7 +396,7 @@ class WaldiezDevServer:
             to_log = f"Error converting flow: {e}"
             logger.error(to_log)
             return OutgoingMessage(
-                type="convertResult", success=False, message=to_log
+                type="convertResult", success=False, data=to_log
             )
         logger.info("Flow converted to %s", output_path)
         relative_to_cwd = str(output_path).replace(os.getcwd(), "")
@@ -406,7 +404,7 @@ class WaldiezDevServer:
             type="convertResult",
             success=True,
             filePaths=[relative_to_cwd],
-            message=f"Flow converted successfully to {output_path}",
+            data=f"Flow converted successfully to {output_path}",
         )
 
     async def handle_stop(
@@ -426,15 +424,15 @@ class WaldiezDevServer:
         """
         to_log = "Handling stop action"
         logger.info(to_log)
-        # TODO: find a way to actuall stop the runner if it's running
+        # TODO: find a way to actually stop the runner if it's running
         return OutgoingMessage(
             type="stopResult",
             success=True,
-            message="Server stopped successfully",
+            data="Server stopped successfully",
         )
 
     async def send_error(
-        self, websocket: websockets.ServerConnection, message: str
+        self, websocket: websockets.ServerConnection, data: str
     ) -> None:
         """Send an error message to the client.
 
@@ -442,7 +440,7 @@ class WaldiezDevServer:
         ----------
         websocket : websockets.ServerConnection
             The WebSocket connection to handle.
-        message : str
+        data : str
             The error message to send.
         """
         await websocket.send(
@@ -450,22 +448,22 @@ class WaldiezDevServer:
                 {
                     "type": "error",
                     "success": False,
-                    "message": message,
+                    "data": data,
                 }
             )
         )
 
-    async def broadcast(self, message: str) -> None:
+    async def broadcast(self, data: str) -> None:
         """Send a message to all connected clients.
 
         Parameters
         ----------
-        message : str
+        data : str
             The message to send.
         """
         if self.connections:
             await asyncio.gather(
-                *[connection.send(message) for connection in self.connections]
+                *[connection.send(data) for connection in self.connections]
             )
 
     async def serve(self) -> None:
