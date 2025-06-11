@@ -72,7 +72,7 @@
         "stylelint:check": "stylelint --ignore-path .gitignore --cache \"**/*.css\"",
         "prepack": "bun scripts/mkdir.ts --path ./out/archive --parents && bun scripts/pack.ts --before",
         "postpack": "bun scripts/pack.ts --after",
-        "archive": "bun pm pack --destination ./out/archive",
+        "archive": "bun build:lib && bun pm pack --destination ./out/archive",
         "clean:lintcache": "bun rimraf .eslintcache .stylelintcache",
         "clean:dist": "bun rimraf dist",
         "clean:web": "bun rimraf out/static",
