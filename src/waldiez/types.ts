@@ -23,6 +23,7 @@ export type {
 } from "@waldiez/components/types";
 export type * from "@waldiez/models";
 export type * from "@waldiez/store";
+export type * from "@waldiez/utils/chat/types";
 
 /**
  * WaldiezFlowProps

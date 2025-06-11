@@ -7,16 +7,37 @@ import { nanoid } from "nanoid";
 import { WaldiezChatMessage } from "@waldiez/types";
 import { MessageValidator } from "@waldiez/utils/chat/base";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import { IMessageHandler, IMessageProcessingContext, IProcessResult } from "@waldiez/utils/chat/types";
+import {
+    MessageHandler,
+    MessageProcessingContext,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 import { MessageUtils } from "@waldiez/utils/chat/utils";
 
 // Individual message handlers
-export class InputRequestHandler implements IMessageHandler {
+/**
+ * Input request handler processes input request messages.
+ * It validates the message structure and normalizes the prompt.
+ * If valid, it creates a WaldiezChatMessage object with the request ID and normalized prompt.
+ */
+export class InputRequestHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "input_request";
     }
 
-    handle(data: any, context: IMessageProcessingContext): IProcessResult | undefined {
+    /**
+     * Handles the input request message.
+     * Validates the message data, normalizes the prompt, and constructs a WaldiezChatMessage object.
+     * @param data - The raw message data to process.
+     * @param context - The processing context containing request ID and optional image URL.
+     * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+     */
+    handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidInputRequest(data)) {
             return undefined;
         }
@@ -43,12 +64,28 @@ export class InputRequestHandler implements IMessageHandler {
     }
 }
 
-export class PrintMessageHandler implements IMessageHandler {
+/**
+ * Print message handler processes print messages.
+ * It validates the message structure, checks for workflow end markers, and extracts participants if present.
+ * If valid, it returns a WaldiezChatMessageProcessingResult with participants or indicates workflow end.
+ */
+export class PrintMessageHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "print";
     }
 
-    handle(data: any): IProcessResult | undefined {
+    /**
+     * Handles the print message.
+     * Validates the message data, checks for workflow end markers, and extracts participants if present.
+     * @param data - The raw message data to process.
+     * @returns A WaldiezChatMessageProcessingResult containing participants or indicating workflow end, or undefined if invalid.
+     */
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidPrintMessage(data)) {
             console.warn("Invalid print message data:", data);
             return undefined;
@@ -71,7 +108,16 @@ export class PrintMessageHandler implements IMessageHandler {
         return undefined;
     }
 
-    private extractParticipants(dataContent: string | object): IProcessResult | undefined {
+    /**
+     * Extracts participants from the data content.
+     * If valid participants data is found, it returns a WaldiezChatMessageProcessingResult with participants.
+     * If the data is a string, it attempts to parse it as JSON.
+     * @param dataContent - The content from which to extract participants.
+     * @returns A WaldiezChatMessageProcessingResult with participants or undefined if not found or invalid.
+     */
+    private extractParticipants(
+        dataContent: string | object,
+    ): WaldiezChatMessageProcessingResult | undefined {
         console.debug("Extracting participants from data content:", dataContent);
         try {
             const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
@@ -104,17 +150,34 @@ export class PrintMessageHandler implements IMessageHandler {
     }
 }
 
-export class TextMessageHandler implements IMessageHandler {
+/**
+ * Text message handler processes text and tool call messages.
+ * It validates the message structure, normalizes the content, and replaces image URLs if provided.
+ * If valid, it constructs a WaldiezChatMessage object with the normalized content and metadata.
+ */
+export class TextMessageHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "text" || type === "tool_call";
     }
 
-    handle(data: any, context: IMessageProcessingContext): IProcessResult | undefined {
+    /**
+     * Handles the text message.
+     * Validates the message data, normalizes the content, and replaces image URLs if provided.
+     * @param data - The raw message data to process.
+     * @param context - The processing context containing request ID and optional image URL.
+     * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+     */
+    handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidTextMessage(data)) {
             return undefined;
         }
 
-        let content = MessageUtils.normalizeContent(data.content.content);
+        let content = MessageUtils.normalizeContent(data.content.content, context.imageUrl);
 
         if (context.imageUrl) {
             content = MessageUtils.replaceImageUrls(content, context.imageUrl);
@@ -136,12 +199,28 @@ export class TextMessageHandler implements IMessageHandler {
     }
 }
 
-export class TerminationHandler implements IMessageHandler {
+/**
+ * Termination handler processes termination messages.
+ * It validates the message structure and extracts the termination reason.
+ * If valid, it constructs a WaldiezChatMessage object with the termination reason.
+ */
+export class TerminationHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "termination";
     }
 
-    handle(data: any): IProcessResult | undefined {
+    /**
+     * Handles the termination message.
+     * Validates the message data and extracts the termination reason.
+     * @param data - The raw message data to process.
+     * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+     */
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidTerminationMessage(data)) {
             return undefined;
         }
@@ -162,12 +241,28 @@ export class TerminationHandler implements IMessageHandler {
     }
 }
 
-export class GroupChatRunHandler implements IMessageHandler {
+/**
+ * Group chat run handler processes group chat run messages.
+ * It validates the message structure and constructs a WaldiezChatMessage object with a system message.
+ * If valid, it returns the processed message.
+ */
+export class GroupChatRunHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "group_chat_run_chat";
     }
 
-    handle(data: any): IProcessResult | undefined {
+    /**
+     * Handles the group chat run message.
+     * Validates the message data and constructs a WaldiezChatMessage object with a system message.
+     * @param data - The raw message data to process.
+     * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+     */
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidGroupChatRun(data)) {
             return undefined;
         }
@@ -189,12 +284,28 @@ export class GroupChatRunHandler implements IMessageHandler {
     }
 }
 
-export class SpeakerSelectionHandler implements IMessageHandler {
+/**
+ * Speaker selection handler processes speaker selection messages.
+ * It validates the message structure and generates a markdown representation of the speaker selection.
+ * If valid, it constructs a WaldiezChatMessage object with the speaker selection content.
+ */
+export class SpeakerSelectionHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "select_speaker" || type === "select_speaker_invalid_input";
     }
 
-    handle(data: any): IProcessResult | undefined {
+    /**
+     * Handles the speaker selection message.
+     * Validates the message data and generates a markdown representation of the speaker selection.
+     * @param data - The raw message data to process.
+     * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+     */
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidSpeakerSelection(data)) {
             return undefined;
         }
@@ -215,12 +326,28 @@ export class SpeakerSelectionHandler implements IMessageHandler {
     }
 }
 
-export class CodeExecutionReplyHandler implements IMessageHandler {
+/**
+ * Code execution reply handler processes code execution reply messages.
+ * It validates the message structure and constructs a WaldiezChatMessage object with the code execution reply content.
+ * If valid, it returns the processed message.
+ */
+export class CodeExecutionReplyHandler implements MessageHandler {
+    /**
+     * Determines if this handler can process the given message type.
+     * @param type - The type of the message to check.
+     * @returns True if this handler can process the message type, false otherwise.
+     */
     canHandle(type: string): boolean {
         return type === "generate_code_execution_reply";
     }
 
-    handle(data: any): IProcessResult | undefined {
+    /**
+     * Handles the code execution reply message.
+     * Validates the message data and constructs a WaldiezChatMessage object with the code execution reply content.
+     * @param data - The raw message data to process.
+     * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+     */
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidCodeExecutionReply(data)) {
             return undefined;
         }

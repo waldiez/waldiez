@@ -165,57 +165,53 @@ export const Modal = memo<ModalProps>(props => {
                 ...(isFullScreen ? {} : { top: position.y, left: position.x }),
             }}
         >
-            <form>
-                <div className="modal-wrapper">
-                    <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
-                        <div>{beforeTitle}</div>
-                        <h3 className="modal-title">{title}</h3>
-                        <div className="modal-header-actions">
-                            {hasMinimizeBtn && (
-                                <div
-                                    className="modal-minimize-btn clickable"
-                                    role="button"
-                                    title={isMinimized ? "Restore" : "Minimize"}
-                                    onClick={onToggleMinimize}
-                                >
-                                    {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
-                                </div>
-                            )}
-                            {hasMaximizeBtn && (
-                                <div
-                                    className="modal-fullscreen-btn clickable"
-                                    role="button"
-                                    title={isFullScreen ? "Restore" : "Maximize"}
-                                    onClick={onToggleFullScreen}
-                                >
-                                    {isFullScreen ? <FaCompress /> : <FaExpand />}
-                                </div>
-                            )}
-                            {hasCloseBtn && (
-                                <div
-                                    className="modal-close-btn clickable"
-                                    role="button"
-                                    title="Close"
-                                    data-testid="modal-close-btn"
-                                    onClick={handleCloseModal}
-                                >
-                                    <FaCircleXmark />
-                                </div>
-                            )}
+            <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
+                <div>{beforeTitle}</div>
+                <h3 className="modal-title">{title}</h3>
+                <div className="modal-header-actions">
+                    {hasMinimizeBtn && (
+                        <div
+                            className="modal-minimize-btn clickable"
+                            role="button"
+                            title={isMinimized ? "Restore" : "Minimize"}
+                            onClick={onToggleMinimize}
+                        >
+                            {isMinimized ? <FaChevronDown /> : <FaChevronUp />}
                         </div>
-                    </div>
-                    <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
-                        {showConfirmation
-                            ? renderConfirmationContent({
-                                  onSaveAndClose,
-                                  hideConfirmation,
-                                  handleSaveAndClose,
-                                  handleCloseModal,
-                              })
-                            : children}
-                    </div>
+                    )}
+                    {hasMaximizeBtn && (
+                        <div
+                            className="modal-fullscreen-btn clickable"
+                            role="button"
+                            title={isFullScreen ? "Restore" : "Maximize"}
+                            onClick={onToggleFullScreen}
+                        >
+                            {isFullScreen ? <FaCompress /> : <FaExpand />}
+                        </div>
+                    )}
+                    {hasCloseBtn && (
+                        <div
+                            className="modal-close-btn clickable"
+                            role="button"
+                            title="Close"
+                            data-testid="modal-close-btn"
+                            onClick={handleCloseModal}
+                        >
+                            <FaCircleXmark />
+                        </div>
+                    )}
                 </div>
-            </form>
+            </div>
+            <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
+                {showConfirmation
+                    ? renderConfirmationContent({
+                          onSaveAndClose,
+                          hideConfirmation,
+                          handleSaveAndClose,
+                          handleCloseModal,
+                      })
+                    : children}
+            </div>
         </dialog>
     );
 });

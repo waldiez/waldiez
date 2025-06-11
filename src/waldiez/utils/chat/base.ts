@@ -3,18 +3,27 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import {
-    ICodeExecutionReplyData,
-    IGroupChatRunData,
-    IInputRequestData,
-    IParticipantsData,
-    IPrintMessageData,
-    ISpeakerSelectionData,
-    ITerminationMessageData,
-    ITextMessageData,
+    CodeExecutionReplyData,
+    GroupChatRunData,
+    InputRequestData,
+    ParticipantsData,
+    PrintMessageData,
+    SpeakerSelectionData,
+    TerminationMessageData,
+    TextMessageData,
 } from "@waldiez/utils/chat/types";
 
+/**
+ * MessageValidator class provides static methods to validate different types of chat messages.
+ * It checks if the provided data conforms to the expected structure for each message type.
+ */
 export class MessageValidator {
-    static isValidInputRequest(data: any): data is IInputRequestData {
+    /**
+     * Validates if the provided data is a valid input request message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid input request, false otherwise.
+     */
+    static isValidInputRequest(data: any): data is InputRequestData {
         return (
             data &&
             typeof data === "object" &&
@@ -24,7 +33,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidPrintMessage(message: any): message is IPrintMessageData {
+    /**
+     * Validates if the provided data is a valid print message.
+     * @param message - The message data to validate.
+     * @returns True if the message is a valid print message, false otherwise.
+     */
+    static isValidPrintMessage(message: any): message is PrintMessageData {
         console.debug("Validating print message data:", message);
         if (!message || typeof message !== "object") {
             return false;
@@ -49,7 +63,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidTextMessage(data: any): data is ITextMessageData {
+    /**
+     * Validates if the provided data is a valid text message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid text message, false otherwise.
+     */
+    static isValidTextMessage(data: any): data is TextMessageData {
         return (
             data &&
             typeof data === "object" &&
@@ -62,7 +81,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidTerminationMessage(data: any): data is ITerminationMessageData {
+    /**
+     * Validates if the provided data is a valid termination message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid termination message, false otherwise.
+     */
+    static isValidTerminationMessage(data: any): data is TerminationMessageData {
         return (
             data &&
             typeof data === "object" &&
@@ -73,7 +97,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidGroupChatRun(data: any): data is IGroupChatRunData {
+    /**
+     * Validates if the provided data is a valid group chat run message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid group chat run message, false otherwise.
+     */
+    static isValidGroupChatRun(data: any): data is GroupChatRunData {
         return (
             data &&
             typeof data === "object" &&
@@ -85,7 +114,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidSpeakerSelection(data: any): data is ISpeakerSelectionData {
+    /**
+     * Validates if the provided data is a valid speaker selection message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid speaker selection message, false otherwise.
+     */
+    static isValidSpeakerSelection(data: any): data is SpeakerSelectionData {
         return (
             data &&
             typeof data === "object" &&
@@ -98,7 +132,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidCodeExecutionReply(data: any): data is ICodeExecutionReplyData {
+    /**
+     * Validates if the provided data is a valid code execution reply message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid code execution reply message, false otherwise.
+     */
+    static isValidCodeExecutionReply(data: any): data is CodeExecutionReplyData {
         return (
             data &&
             typeof data === "object" &&
@@ -111,7 +150,12 @@ export class MessageValidator {
         );
     }
 
-    static isValidParticipantsData(data: any): data is IParticipantsData {
+    /**
+     * Validates if the provided data is a valid participants data.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid participants data, false otherwise.
+     */
+    static isValidParticipantsData(data: any): data is ParticipantsData {
         // {"id": "861880b3021a494abc79d231c65def35", "type": "print",
         // "timestamp": "2025-06-11T10:43:50.664895", "data":
         // "{\"participants\":[

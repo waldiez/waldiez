@@ -22,6 +22,7 @@ export type {
 } from "@waldiez/components/types";
 export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
+export type * from "@waldiez/utils/chat/types";
 
 export { showSnackbar } from "@waldiez/components/snackbar";
 export { WaldiezChatMessageProcessor } from "@waldiez/utils";

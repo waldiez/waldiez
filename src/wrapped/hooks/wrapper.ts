@@ -2,17 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines-per-function */
 import { useCallback, useRef, useState } from "react";
 
 import { nanoid } from "nanoid";
 
 import { showSnackbar } from "@waldiez/components";
-import { WaldiezChatMessage, WaldiezChatMessageType } from "@waldiez/types";
+import { WaldiezChatMessage } from "@waldiez/types";
+import { WaldiezChatMessageProcessingResult, WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
 
 import { useWebSocketActions } from "./actions";
-import { useWaldiezMessages } from "./messages";
-import { DataContent, WaldiezWrapperActions, WaldiezWrapperState, WebSocketResponse } from "./types";
+import { WaldiezWrapperActions, WaldiezWrapperState, WebSocketResponse } from "./types";
 import { useWebsocket } from "./ws";
 
 /**
@@ -39,6 +38,7 @@ export const useWaldiezWrapper = ({
           }
         | undefined
     >(undefined);
+    const serverBaseUrl = window.location.protocol + "//" + window.location.host;
     /**
      * On WebSocket message handler
      */
@@ -56,7 +56,7 @@ export const useWaldiezWrapper = ({
      * Handle WebSocket messages
      */
     const handleWebSocketMessage = (data: WebSocketResponse) => {
-        // other types to check:
+        console.debug("Handling WebSocket message:", data);
         // termination_and_human_reply_no_input
         // using_auto_reply
         switch (data.type) {
@@ -65,30 +65,6 @@ export const useWaldiezWrapper = ({
                 break;
             case "convertResult":
                 handleConvertResult(data);
-                break;
-            case "select_speaker":
-            case "select_speaker_invalid_input":
-                handleSelectSpeaker(data);
-                break;
-            case "text":
-            case "print":
-            case "tool_call":
-                handleTextOrPrint(data);
-                break;
-            case "input_request":
-                handleInputRequest(data);
-                break;
-            case "input_response":
-                // console.log("Input response received:", data.response);
-                break;
-            case "group_chat_run_chat":
-                handleGroupChatRunChat(data);
-                break;
-            case "generate_code_execution_reply":
-                handleGenerateCodeExecutionReply(data);
-                break;
-            case "termination":
-                handleFlowTermination(data);
                 break;
             case "error":
                 setIsRunning(false);
@@ -102,11 +78,56 @@ export const useWaldiezWrapper = ({
                     handleFlowError(data);
                 }
                 break;
+            default:
+                handleGenericMessage(data);
+                break;
         }
     };
-    const { getNewChatMessage } = useWaldiezMessages({
-        inputRequestId,
-    });
+
+    /**
+     * Handle generic messages
+     */
+    const handleGenericMessage = (data: WebSocketResponse) => {
+        const imageUrl = inputRequestId.current
+            ? `${serverBaseUrl}/uploads/${inputRequestId.current}.png`
+            : undefined;
+        const result = WaldiezChatMessageProcessor.process(
+            JSON.stringify(data),
+            inputRequestId.current,
+            imageUrl,
+        );
+        if (result?.message) {
+            const newMessage = result.message as WaldiezChatMessage;
+            setMessages(prevMessages => [...prevMessages, newMessage]);
+        }
+        if (result?.participants && result.participants.users) {
+            setUserParticipants(result.participants.users);
+        }
+
+        if (result?.message && result.message.type === "input_request") {
+            handleInputRequest(result);
+        }
+    };
+
+    /**
+     * Handle input request messages
+     */
+    const handleInputRequest = (result: WaldiezChatMessageProcessingResult) => {
+        if (result.message && result.message.type === "input_request") {
+            const requestId = result.requestId || result.message.request_id;
+            const prompt = result.message.prompt || "Enter your message to start the conversation:";
+            const password = result.message.password || false;
+            if (requestId) {
+                inputRequestId.current = requestId;
+            }
+            expectingUserInput.current = true;
+            setInputPrompt({
+                prompt,
+                request_id: inputRequestId.current || "<unknown>",
+                password: password || false,
+            });
+        }
+    };
 
     /**
      * Handle save result messages
@@ -135,11 +156,11 @@ export const useWaldiezWrapper = ({
     /**
      * Handle convert result messages
      */
-    const handleConvertResult = (data: WebSocketResponse) => {
-        if (data.success === false) {
+    const handleConvertResult = (response: WebSocketResponse) => {
+        if (response.success === false) {
             showSnackbar({
                 message: "Error converting file",
-                details: data.message || null,
+                details: response.data || response.message || null,
                 level: "error",
                 flowId,
                 withCloseButton: true,
@@ -148,7 +169,7 @@ export const useWaldiezWrapper = ({
         } else {
             showSnackbar({
                 message: "File converted successfully",
-                details: data.filePaths?.join(", ") || null,
+                details: response.filePaths?.join(", ") || null,
                 level: "success",
                 flowId,
                 withCloseButton: true,
@@ -159,162 +180,161 @@ export const useWaldiezWrapper = ({
     /**
      * Handle text or print messages
      */
-    const handleTextOrPrint = (data: WebSocketResponse) => {
-        if (data.content) {
-            checkSender(data);
-            const chatMessage: WaldiezChatMessage = getNewChatMessage(
-                data.content as DataContent,
-                data.type as WaldiezChatMessageType,
-            );
-            setMessages(prevMessages => [...prevMessages, chatMessage]);
-        } else if (
-            data.message &&
-            typeof data.message === "string" &&
-            data.message.trim().replace("\n", "") === "<Waldiez> - Workflow finished"
-        ) {
-            setIsRunning(false);
-        }
-    };
+    // const handleTextOrPrint = (data: WebSocketResponse) => {
+    //     if (data.content) {
+    //         checkSender(data);
+    //         const chatMessage: WaldiezChatMessage = getNewChatMessage(
+    //             data.content as DataContent,
+    //             data.type as WaldiezChatMessageType,
+    //         );
+    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
+    //     } else if (
+    //         data.message &&
+    //         typeof data.message === "string" &&
+    //         data.message.trim().replace("\n", "") === "<Waldiez> - Workflow finished"
+    //     ) {
+    //         setIsRunning(false);
+    //     }
+    // };
 
-    /**
-     * Handle group chat run chat messages
-     */
-    const handleGroupChatRunChat = (data: WebSocketResponse) => {
-        // # {"type": "group_chat_run_chat", "content":
-        // #    {"uuid": "3f2d491e-deb3-4f28-8991-cb8eb67ea3a6",
-        // #    "speaker": "executor", "silent": false}}
-        //
-        if (
-            data.content &&
-            typeof data.content === "object" &&
-            data.content !== null &&
-            "uuid" in data.content &&
-            typeof data.content.uuid === "string" &&
-            "speaker" in data.content &&
-            typeof data.content.speaker === "string"
-        ) {
-            const chatMessage: WaldiezChatMessage = {
-                id: nanoid(),
-                timestamp: new Date().toISOString(),
-                type: "system",
-                content: [
-                    {
-                        type: "text",
-                        text: "Group chat run",
-                    },
-                ],
-                sender: data.content.speaker,
-            };
-            setMessages(prevMessages => [...prevMessages, chatMessage]);
-        }
-    };
+    // /**
+    //  * Handle group chat run chat messages
+    //  */
+    // const handleGroupChatRunChat = (data: WebSocketResponse) => {
+    //     // # {"type": "group_chat_run_chat", "content":
+    //     // #    {"uuid": "3f2d491e-deb3-4f28-8991-cb8eb67ea3a6",
+    //     // #    "speaker": "executor", "silent": false}}
+    //     //
+    //     if (
+    //         data.content &&
+    //         typeof data.content === "object" &&
+    //         data.content !== null &&
+    //         "uuid" in data.content &&
+    //         typeof data.content.uuid === "string" &&
+    //         "speaker" in data.content &&
+    //         typeof data.content.speaker === "string"
+    //     ) {
+    //         const chatMessage: WaldiezChatMessage = {
+    //             id: nanoid(),
+    //             timestamp: new Date().toISOString(),
+    //             type: "system",
+    //             content: [
+    //                 {
+    //                     type: "text",
+    //                     text: "Group chat run",
+    //                 },
+    //             ],
+    //             sender: data.content.speaker,
+    //         };
+    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
+    //     }
+    // };
 
-    /**
-     * Handle generate code execution reply messages
-     */
-    const handleGenerateCodeExecutionReply = (data: WebSocketResponse) => {
-        // # {"type": "generate_code_execution_reply", "content":
-        // #    {"uuid": "af6e6cfd-edf6-4785-a490-97358ae3d306",
-        // #   "code_blocks": ["md"], "sender": "manager", "recipient": "executor"}}
-        if (
-            data.content &&
-            typeof data.content === "object" &&
-            data.content !== null &&
-            "uuid" in data.content &&
-            typeof data.content.uuid === "string" &&
-            "sender" in data.content &&
-            typeof data.content.sender === "string" &&
-            "recipient" in data.content &&
-            typeof data.content.recipient === "string"
-        ) {
-            const chatMessage: WaldiezChatMessage = {
-                id: nanoid(),
-                timestamp: new Date().toISOString(),
-                type: "system",
-                content: [
-                    {
-                        type: "text",
-                        text: "Generate code execution reply",
-                    },
-                ],
-                sender: data.content.sender,
-                recipient: data.content.recipient,
-            };
-            setMessages(prevMessages => [...prevMessages, chatMessage]);
-        }
-    };
+    // /**
+    //  * Handle generate code execution reply messages
+    //  */
+    // const handleGenerateCodeExecutionReply = (data: WebSocketResponse) => {
+    //     // # {"type": "generate_code_execution_reply", "content":
+    //     // #    {"uuid": "af6e6cfd-edf6-4785-a490-97358ae3d306",
+    //     // #   "code_blocks": ["md"], "sender": "manager", "recipient": "executor"}}
+    //     if (
+    //         data.content &&
+    //         typeof data.content === "object" &&
+    //         data.content !== null &&
+    //         "uuid" in data.content &&
+    //         typeof data.content.uuid === "string" &&
+    //         "sender" in data.content &&
+    //         typeof data.content.sender === "string" &&
+    //         "recipient" in data.content &&
+    //         typeof data.content.recipient === "string"
+    //     ) {
+    //         const chatMessage: WaldiezChatMessage = {
+    //             id: nanoid(),
+    //             timestamp: new Date().toISOString(),
+    //             type: "system",
+    //             content: [
+    //                 {
+    //                     type: "text",
+    //                     text: "Generate code execution reply",
+    //                 },
+    //             ],
+    //             sender: data.content.sender,
+    //             recipient: data.content.recipient,
+    //         };
+    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
+    //     }
+    // };
 
-    /**
-     * Handle select speaker messages
-     */
-    const handleSelectSpeaker = (data: WebSocketResponse) => {
-        if (
-            data.content &&
-            typeof data.content === "object" &&
-            data.content !== null &&
-            "uuid" in data.content &&
-            typeof data.content.uuid === "string" &&
-            "agents" in data.content &&
-            Array.isArray(data.content.agents) &&
-            data.content.agents.every(agent => typeof agent === "string")
-        ) {
-            const chatMessage: WaldiezChatMessage = {
-                id: data.content.uuid,
-                timestamp: new Date().toISOString(),
-                type: "system",
-                content: [
-                    {
-                        type: "text",
-                        text: get_speakerSelectionMd(data.content.agents),
-                    },
-                ],
-            };
-            setMessages(prevMessages => [...prevMessages, chatMessage]);
-        }
-    };
+    // /**
+    //  * Handle select speaker messages
+    //  */
+    // const handleSelectSpeaker = (data: WebSocketResponse) => {
+    //     if (
+    //         data.content &&
+    //         typeof data.content === "object" &&
+    //         data.content !== null &&
+    //         "uuid" in data.content &&
+    //         typeof data.content.uuid === "string" &&
+    //         "agents" in data.content &&
+    //         Array.isArray(data.content.agents) &&
+    //         data.content.agents.every(agent => typeof agent === "string")
+    //     ) {
+    //         const chatMessage: WaldiezChatMessage = {
+    //             id: data.content.uuid,
+    //             timestamp: new Date().toISOString(),
+    //             type: "system",
+    //             content: [
+    //                 {
+    //                     type: "text",
+    //                     text: get_speakerSelectionMd(data.content.agents),
+    //                 },
+    //             ],
+    //         };
+    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
+    //     }
+    // };
 
-    /**
-     * Get speaker selection markdown
-     */
-    const get_speakerSelectionMd = (agents: string[]): string => {
-        const agentList = agents.map((agent, index) => {
-            return `- ${index + 1}. ${agent}`;
-        });
-        return `Select a speaker from the list below:\n\n${agentList.join("\n")}`;
-    };
-
-    /**
-     * Handle flow termination
-     */
-    const handleFlowTermination = (data: WebSocketResponse) => {
-        if (
-            data.content &&
-            typeof data.content === "object" &&
-            data.content !== null &&
-            "termination_reason" in data.content &&
-            typeof data.content.termination_reason === "string"
-        ) {
-            const terminationMessage: WaldiezChatMessage = {
-                id: nanoid(),
-                timestamp: new Date().toISOString(),
-                type: "system",
-                content: [
-                    {
-                        type: "text",
-                        text: data.content.termination_reason,
-                    },
-                ],
-            };
-            setMessages(prevMessages => [...prevMessages, terminationMessage]);
-        }
-        setIsRunning(false);
-        setInputPrompt(undefined);
-    };
+    // /**
+    //  * Get speaker selection markdown
+    //  */
+    // const get_speakerSelectionMd = (agents: string[]): string => {
+    //     const agentList = agents.map((agent, index) => {
+    //         return `- ${index + 1}. ${agent}`;
+    //     });
+    //     return `Select a speaker from the list below:\n\n${agentList.join("\n")}`;
+    // };
+    // /**
+    //  * Handle flow termination
+    //  */
+    // const handleFlowTermination = (data: WebSocketResponse) => {
+    //     if (
+    //         data.content &&
+    //         typeof data.content === "object" &&
+    //         data.content !== null &&
+    //         "termination_reason" in data.content &&
+    //         typeof data.content.termination_reason === "string"
+    //     ) {
+    //         const terminationMessage: WaldiezChatMessage = {
+    //             id: nanoid(),
+    //             timestamp: new Date().toISOString(),
+    //             type: "system",
+    //             content: [
+    //                 {
+    //                     type: "text",
+    //                     text: data.content.termination_reason,
+    //                 },
+    //             ],
+    //         };
+    //         setMessages(prevMessages => [...prevMessages, terminationMessage]);
+    //     }
+    //     setIsRunning(false);
+    //     setInputPrompt(undefined);
+    // };
     /**
      * Handle flow error
      */
-    const handleFlowError = (data: WebSocketResponse) => {
-        if (data.message && typeof data.message === "string") {
+    const handleFlowError = (response: WebSocketResponse) => {
+        if (response.data && typeof response.data === "string") {
             const errorMessage: WaldiezChatMessage = {
                 id: nanoid(),
                 timestamp: new Date().toISOString(),
@@ -322,14 +342,14 @@ export const useWaldiezWrapper = ({
                 content: [
                     {
                         type: "text",
-                        text: data.message,
+                        text: response.data,
                     },
                 ],
             };
-            setError(data.message);
+            setError(response.data);
             showSnackbar({
                 message: "Error",
-                details: data.message,
+                details: response.data,
                 level: "error",
                 flowId,
                 withCloseButton: true,
@@ -340,88 +360,88 @@ export const useWaldiezWrapper = ({
         setIsRunning(false);
         setInputPrompt(undefined);
     };
-    /**
-     * Handle input request messages
-     */
-    const handleInputRequest = (data: WebSocketResponse) => {
-        if (data.prompt) {
-            let prompt = data.prompt.trim();
-            if (prompt === ">" || prompt === "> ") {
-                prompt = "Enter your message to start the conversation:";
-                data.prompt = prompt;
-            }
-            if (data.request_id) {
-                inputRequestId.current = data.request_id;
-            }
-            expectingUserInput.current = true;
-            const password = isPasswordPrompt(data);
-            setInputPrompt({
-                prompt,
-                request_id: inputRequestId.current || "<unknown>",
-                password,
-            });
-            addInputRequestMessage(data);
-        }
-    };
+    // /**
+    //  * Handle input request messages
+    //  */
+    // const handleInputRequest = (data: WebSocketResponse) => {
+    //     if (data.prompt) {
+    //         let prompt = data.prompt.trim();
+    //         if (prompt === ">" || prompt === "> ") {
+    //             prompt = "Enter your message to start the conversation:";
+    //             data.prompt = prompt;
+    //         }
+    //         if (data.request_id) {
+    //             inputRequestId.current = data.request_id;
+    //         }
+    //         expectingUserInput.current = true;
+    //         const password = isPasswordPrompt(data);
+    //         setInputPrompt({
+    //             prompt,
+    //             request_id: inputRequestId.current || "<unknown>",
+    //             password,
+    //         });
+    //         addInputRequestMessage(data);
+    //     }
+    // };
 
-    /**
-     * Add input request message to the chat
-     */
-    const addInputRequestMessage = (data: WebSocketResponse) => {
-        if (data.prompt && data.request_id) {
-            const chatMessage: WaldiezChatMessage = {
-                id: nanoid(),
-                timestamp: new Date().toISOString(),
-                type: "input_request",
-                request_id: data.request_id,
-                content: [
-                    {
-                        type: "text",
-                        text: data.prompt,
-                    },
-                ],
-            };
-            setMessages(prevMessages => [...prevMessages, chatMessage]);
-        }
-    };
+    // /**
+    //  * Add input request message to the chat
+    //  */
+    // const addInputRequestMessage = (data: WebSocketResponse) => {
+    //     if (data.prompt && data.request_id) {
+    //         const chatMessage: WaldiezChatMessage = {
+    //             id: nanoid(),
+    //             timestamp: new Date().toISOString(),
+    //             type: "input_request",
+    //             request_id: data.request_id,
+    //             content: [
+    //                 {
+    //                     type: "text",
+    //                     text: data.prompt,
+    //                 },
+    //             ],
+    //         };
+    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
+    //     }
+    // };
 
-    /**
-     * Check if the sender is a user and update the user participants list
-     */
-    const checkSender = (data: WebSocketResponse) => {
-        if (
-            expectingUserInput.current &&
-            typeof data.content === "object" &&
-            data.content !== null &&
-            "sender" in data.content &&
-            typeof data.content.sender === "string"
-        ) {
-            if (
-                "role" in data.content &&
-                typeof data.content.role === "string" &&
-                data.content.role !== "user"
-            ) {
-                return;
-            }
-            if (!userParticipants.includes(data.content.sender)) {
-                setUserParticipants(prev => [...prev, (data.content as any).sender]);
-            }
-            expectingUserInput.current = false;
-        }
-    };
+    // /**
+    //  * Check if the sender is a user and update the user participants list
+    //  */
+    // const checkSender = (data: WebSocketResponse) => {
+    //     if (
+    //         expectingUserInput.current &&
+    //         typeof data.content === "object" &&
+    //         data.content !== null &&
+    //         "sender" in data.content &&
+    //         typeof data.content.sender === "string"
+    //     ) {
+    //         if (
+    //             "role" in data.content &&
+    //             typeof data.content.role === "string" &&
+    //             data.content.role !== "user"
+    //         ) {
+    //             return;
+    //         }
+    //         if (!userParticipants.includes(data.content.sender)) {
+    //             setUserParticipants(prev => [...prev, (data.content as any).sender]);
+    //         }
+    //         expectingUserInput.current = false;
+    //     }
+    // };
 
-    /**
-     * Check if the prompt is a password prompt
-     */
-    const isPasswordPrompt = (data: WebSocketResponse): boolean => {
-        let password = false;
-        if (data.password && typeof data.password === "string") {
-            password = data.password.toLowerCase() === "true";
-        } else if (data.password && typeof data.password === "boolean") {
-            password = data.password;
-        }
-        return password;
-    };
+    // /**
+    //  * Check if the prompt is a password prompt
+    //  */
+    // const isPasswordPrompt = (data: WebSocketResponse): boolean => {
+    //     let password = false;
+    //     if (data.password && typeof data.password === "string") {
+    //         password = data.password.toLowerCase() === "true";
+    //     } else if (data.password && typeof data.password === "boolean") {
+    //         password = data.password;
+    //     }
+    //     return password;
+    // };
 
     /**
      * Reset the state

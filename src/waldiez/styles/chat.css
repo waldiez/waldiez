@@ -446,7 +446,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 99999;
   opacity: 0;
   visibility: hidden;
   transition:
@@ -474,13 +474,13 @@
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  padding: 4px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 20px;
   transition: background 0.2s ease;
 }
 
@@ -524,8 +524,6 @@
   .modal-close {
     top: 10px;
     right: 10px;
-    width: 30px;
-    height: 30px;
   }
 }
 
