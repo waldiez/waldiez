@@ -52,12 +52,25 @@ class StructuredIOStream(IOStream):
         """
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
-        message = sep.join(map(str, args)) + end
-        payload = PrintMessage(
-            id=uuid4().hex,
-            timestamp=now(),
-            data=message,
-        ).model_dump(mode="json")
+        message = sep.join(map(str, args))
+        is_dumped = self.is_json_dumped(message)
+        if is_dumped and end.endswith("\n"):
+            # If the message is already JSON-dumped,
+            # let's try not to double dump it
+            message = json.loads(message)
+            payload: dict[str, Any] = {
+                "type": "print",
+                "id": uuid4().hex,
+                "timestamp": now(),
+                "data": message,
+            }
+        else:
+            message += end
+            payload = PrintMessage(
+                id=uuid4().hex,
+                timestamp=now(),
+                data=message,
+            ).model_dump(mode="json")
         flush = kwargs.get("flush", True)
         payload_type = kwargs.get("type", "print")
         payload["type"] = payload_type
@@ -189,6 +202,26 @@ class StructuredIOStream(IOStream):
         if isinstance(user_input, str):
             return UserResponse(data=user_input, request_id=request_id)
         return self._parse_user_input(user_input, request_id)
+
+    @staticmethod
+    def is_json_dumped(value: str) -> bool:
+        """Check if a string is JSON-dumped.
+
+        Parameters
+        ----------
+        value : str
+            The string to check.
+
+        Returns
+        -------
+        bool
+            True if the string is JSON-dumped, False otherwise.
+        """
+        try:
+            parsed = json.loads(value)
+            return isinstance(parsed, (dict, list))
+        except json.JSONDecodeError:
+            return False
 
     @staticmethod
     def _load_user_input(user_input_raw: str) -> str | dict[str, Any]:
