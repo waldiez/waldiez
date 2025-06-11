@@ -76,6 +76,7 @@ describe("WaldiezChatMessageProcessor", () => {
                         },
                     ],
                     password: false,
+                    prompt: "Enter your input:",
                 },
                 requestId: "req-123",
             });

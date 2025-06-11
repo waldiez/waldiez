@@ -20,7 +20,7 @@ export class InputRequestHandler implements IMessageHandler {
         if (!MessageValidator.isValidInputRequest(data)) {
             return undefined;
         }
-
+        const normalizedPrompt = MessageUtils.normalizePrompt(data.prompt);
         const chatMessage: WaldiezChatMessage = {
             id: data.request_id,
             timestamp: MessageUtils.generateTimestamp(data),
@@ -29,9 +29,10 @@ export class InputRequestHandler implements IMessageHandler {
             content: [
                 {
                     type: "text",
-                    text: MessageUtils.normalizePrompt(data.prompt),
+                    text: normalizedPrompt,
                 },
             ],
+            prompt: normalizedPrompt,
             password: MessageUtils.isPasswordPrompt(data),
         };
 
