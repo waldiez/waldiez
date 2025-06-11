@@ -144,6 +144,18 @@ export type WaldiezChatMessageCommon = {
 };
 
 /**
+ * WaldiezChatContent structure
+ * This type can be a single media content, an array of media contents,
+ * or a string. It is used to represent the content of a chat message.
+ * @see {@link WaldiezMediaContent}
+ */
+export type WaldiezChatContent =
+    | WaldiezMediaContent
+    | WaldiezMediaContent[]
+    | { content: WaldiezMediaContent | WaldiezMediaContent[] | string }
+    | string;
+
+/**
  * WaldiezChatMessage structure
  * @param id - Unique identifier for the message
  * @param timestamp - Timestamp of the message
@@ -157,11 +169,7 @@ export type WaldiezChatMessageCommon = {
  * @see {@link WaldiezMediaContent}
  */
 export type WaldiezChatMessage = WaldiezChatMessageCommon & {
-    content:
-        | WaldiezMediaContent
-        | WaldiezMediaContent[]
-        | { content: WaldiezMediaContent | WaldiezMediaContent[] | string }
-        | string;
+    content: WaldiezChatContent;
 };
 /**
  * User input response to a specific request

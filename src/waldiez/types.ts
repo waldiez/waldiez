@@ -9,6 +9,7 @@ import { WaldiezChatConfig } from "@waldiez/components/types";
 export type {
     WaldiezActiveRequest,
     WaldiezChatConfig,
+    WaldiezChatContent,
     WaldiezChatError,
     WaldiezChatHandlers,
     WaldiezChatMessage,

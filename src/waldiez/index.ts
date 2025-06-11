@@ -24,6 +24,7 @@ export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
 
 export { showSnackbar } from "@waldiez/components/snackbar";
+export { WaldiezChatMessageProcessor } from "@waldiez/utils";
 
 export { Waldiez };
 export type { WaldiezFlow, WaldiezFlowProps, WaldiezProps };

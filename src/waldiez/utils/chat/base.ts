@@ -1,0 +1,109 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+import {
+    ICodeExecutionReplyData,
+    IGroupChatRunData,
+    IInputRequestData,
+    IParticipantsData,
+    IPrintMessageData,
+    ISpeakerSelectionData,
+    ITerminationMessageData,
+    ITextMessageData,
+} from "@waldiez/utils/chat/types";
+
+export class MessageValidator {
+    static isValidInputRequest(data: any): data is IInputRequestData {
+        return (
+            data &&
+            typeof data === "object" &&
+            data.type === "input_request" &&
+            typeof data.request_id === "string" &&
+            typeof data.prompt === "string"
+        );
+    }
+
+    static isValidPrintMessage(data: any): data is IPrintMessageData {
+        return (
+            data &&
+            typeof data === "object" &&
+            data.type === "print" &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.data === "string"
+        );
+    }
+
+    static isValidTextMessage(data: any): data is ITextMessageData {
+        return (
+            data &&
+            typeof data === "object" &&
+            (data.type === "text" || data.type === "tool_call") &&
+            data.content &&
+            typeof data.content === "object" &&
+            data.content.content !== undefined &&
+            typeof data.content.sender === "string" &&
+            typeof data.content.recipient === "string"
+        );
+    }
+
+    static isValidTerminationMessage(data: any): data is ITerminationMessageData {
+        return (
+            data &&
+            typeof data === "object" &&
+            data.type === "termination" &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.termination_reason === "string"
+        );
+    }
+
+    static isValidGroupChatRun(data: any): data is IGroupChatRunData {
+        return (
+            data &&
+            typeof data === "object" &&
+            data.type === "group_chat_run_chat" &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.uuid === "string" &&
+            typeof data.content.speaker === "string"
+        );
+    }
+
+    static isValidSpeakerSelection(data: any): data is ISpeakerSelectionData {
+        return (
+            data &&
+            typeof data === "object" &&
+            (data.type === "select_speaker" || data.type === "select_speaker_invalid_input") &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.uuid === "string" &&
+            Array.isArray(data.content.agents) &&
+            data.content.agents.every((agent: any) => typeof agent === "string")
+        );
+    }
+
+    static isValidCodeExecutionReply(data: any): data is ICodeExecutionReplyData {
+        return (
+            data &&
+            typeof data === "object" &&
+            data.type === "generate_code_execution_reply" &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.uuid === "string" &&
+            typeof data.content.sender === "string" &&
+            typeof data.content.recipient === "string"
+        );
+    }
+
+    static isValidParticipantsData(data: any): data is IParticipantsData {
+        return (
+            data &&
+            typeof data === "object" &&
+            Array.isArray(data.participants) &&
+            data.participants.length > 0 &&
+            data.participants.every((p: any) => p && typeof p.name === "string")
+        );
+    }
+}

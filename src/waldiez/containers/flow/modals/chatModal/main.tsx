@@ -193,6 +193,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             <FaStop size={18} />
         </div>
     ) : undefined;
+    const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
     return (
         <Modal
             id={modalTestId}
@@ -289,23 +290,26 @@ export const ChatModal = memo((props: ChatModalProps) => {
 
                         {chat?.activeRequest?.request_id !== undefined && (
                             <div className="chat-input-actions">
-                                <label htmlFor={imageInputId} className="chat-upload-button">
-                                    <FiPaperclip size={18} aria-hidden="true" />
-                                    <span className="hidden">Upload an image</span>
-                                    <input
-                                        type="file"
-                                        disabled={chat?.activeRequest?.request_id === undefined}
-                                        aria-label="Upload an image"
-                                        id={imageInputId}
-                                        data-testid={imageInputId}
-                                        accept="image/*"
-                                        className="chat-upload-input"
-                                        onChange={handleImageChange}
-                                        onClick={openFileSelectModal}
-                                        onBlur={closeFileSelectModal}
-                                    />
-                                </label>
-
+                                {allowImage ? (
+                                    <label htmlFor={imageInputId} className="chat-upload-button">
+                                        <FiPaperclip size={18} aria-hidden="true" />
+                                        <span className="hidden">Upload an image</span>
+                                        <input
+                                            type="file"
+                                            disabled={chat?.activeRequest?.request_id === undefined}
+                                            aria-label="Upload an image"
+                                            id={imageInputId}
+                                            data-testid={imageInputId}
+                                            accept="image/*"
+                                            className="chat-upload-input"
+                                            onChange={handleImageChange}
+                                            onClick={openFileSelectModal}
+                                            onBlur={closeFileSelectModal}
+                                        />
+                                    </label>
+                                ) : (
+                                    <div className="chat-upload-button"></div>
+                                )}
                                 <button
                                     type="button"
                                     title="Send"
