@@ -25,14 +25,24 @@ export class MessageValidator {
     }
 
     static isValidPrintMessage(data: any): data is IPrintMessageData {
-        return (
-            data &&
-            typeof data === "object" &&
-            data.type === "print" &&
-            data.content &&
-            typeof data.content === "object" &&
-            typeof data.content.data === "string"
-        );
+        console.debug("Validating print message data:", data);
+        if (!data || typeof data !== "object") {
+            console.warn("Invalid print message data structure:", data);
+            return false;
+        }
+        if (typeof data.type !== "string" || data.type !== "print") {
+            console.warn("Invalid print message type:", data.type);
+            return false;
+        }
+        if (!data.content || typeof data.content !== "object") {
+            console.warn("Invalid print message content:", data.content);
+            return false;
+        }
+        if (typeof data.content.data !== "string") {
+            console.warn("Invalid print message content data:", data.content.data);
+            return false;
+        }
+        return true;
     }
 
     static isValidTextMessage(data: any): data is ITextMessageData {

@@ -39,7 +39,7 @@ export class WaldiezChatMessageProcessor {
         requestId?: string | null,
         imageUrl?: string,
     ): IProcessResult | undefined {
-        const message = stripAnsi(rawMessage);
+        const message = stripAnsi(rawMessage.replace("\n", "")).trim();
 
         const data = WaldiezChatMessageProcessor.parseMessage(message);
         if (!data) {
