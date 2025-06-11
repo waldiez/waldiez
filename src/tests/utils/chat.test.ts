@@ -218,7 +218,7 @@ describe("WaldiezChatMessageProcessor", () => {
             });
         });
 
-        it("should handle duouble dumped participants data", () => {
+        it("should handle double dumped participants data", () => {
             const participantsData = {
                 participants: [
                     { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
