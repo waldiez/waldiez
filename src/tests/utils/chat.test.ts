@@ -218,6 +218,28 @@ describe("WaldiezChatMessageProcessor", () => {
             });
         });
 
+        it("should handle duouble dumped participants data", () => {
+            const participantsData = {
+                participants: [
+                    { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
+                    { name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
+                    { name: "assistant_2", humanInputMode: "NEVER", agentType: "assistant" },
+                    { name: "assistant_3", humanInputMode: "NEVER", agentType: "assistant" },
+                ],
+            };
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: JSON.stringify(participantsData),
+                },
+            });
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toEqual({
+                isWorkflowEnd: false,
+                userParticipants: ["user_proxy", "assistant_1", "assistant_2", "assistant_3"],
+            });
+        });
+
         it("should handle invalid participants data", () => {
             const message = JSON.stringify({
                 type: "print",

@@ -73,6 +73,12 @@ export class PrintMessageHandler implements IMessageHandler {
             const parsedData = JSON.parse(dataContent);
 
             if (MessageValidator.isValidParticipantsData(parsedData)) {
+                if (typeof parsedData === "string") {
+                    return {
+                        isWorkflowEnd: false,
+                        userParticipants: JSON.parse(parsedData).participants.map((p: any) => p.name),
+                    };
+                }
                 return {
                     isWorkflowEnd: false,
                     userParticipants: parsedData.participants.map(p => p.name),

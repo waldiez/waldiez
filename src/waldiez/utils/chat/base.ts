@@ -98,12 +98,31 @@ export class MessageValidator {
     }
 
     static isValidParticipantsData(data: any): data is IParticipantsData {
-        return (
+        // {"id": "861880b3021a494abc79d231c65def35", "type": "print",
+        // "timestamp": "2025-06-11T10:43:50.664895", "data":
+        // "{\"participants\":[
+        //      {\"name\":\"user\",\"humanInputMode\":\"ALWAYS\",\"agentType\":\"user_proxy\"},
+        //      {\"name\":\"assistant_1\",\"humanInputMode\":\"NEVER\",\"agentType\":\"assistant\"},
+        //      {\"name\":\"assistant_2\",\"humanInputMode\":\"NEVER\",\"agentType\":\"assistant\"},
+        //      {\"name\":\"assistant_3\",\"humanInputMode\":\"NEVER\",\"agentType\":\"assistant\"}
+        // ]}"}
+        if (
             data &&
             typeof data === "object" &&
             Array.isArray(data.participants) &&
             data.participants.length > 0 &&
             data.participants.every((p: any) => p && typeof p.name === "string")
-        );
+        ) {
+            return true;
+        }
+        if (data && typeof data === "string") {
+            try {
+                const parsedData = JSON.parse(data);
+                return MessageValidator.isValidParticipantsData(parsedData);
+            } catch {
+                return false;
+            }
+        }
+        return false;
     }
 }
