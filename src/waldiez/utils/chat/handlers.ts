@@ -162,7 +162,12 @@ export class TextMessageHandler implements MessageHandler {
      * @returns True if this handler can process the message type, false otherwise.
      */
     canHandle(type: string): boolean {
-        return type === "text" || type === "tool_call";
+        return (
+            type === "text" ||
+            type === "tool_call" ||
+            type === "termination_and_human_reply_no_input" ||
+            type === "using_auto_reply"
+        );
     }
 
     /**
