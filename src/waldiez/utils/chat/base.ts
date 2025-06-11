@@ -38,7 +38,11 @@ export class MessageValidator {
             console.warn("Invalid print message content:", data.content);
             return false;
         }
-        if (typeof data.content.data !== "string") {
+        if (
+            typeof data.content.data !== "string" &&
+            !Array.isArray(data.content.data) &&
+            typeof data.content.data !== "object"
+        ) {
             console.warn("Invalid print message content data:", data.content.data);
             return false;
         }

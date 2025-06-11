@@ -57,65 +57,26 @@ export class PrintMessageHandler implements IMessageHandler {
         const dataContent = data.content.data;
 
         // Check for workflow end
-        if (dataContent.includes(MESSAGE_CONSTANTS.WORKFLOW_END_MARKER)) {
+        if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.WORKFLOW_END_MARKER)) {
             return { isWorkflowEnd: true, userParticipants: [] };
         }
-
-        // private _checkParticipantsOrFlowTermination(parsed: any) {
-        //     // Received data: {"id": "67a32f5a96824589947ce2f75dd7312c", "type": "print",
-        //     // "timestamp": "2025-06-10T23:13:49.403700", "data":
-        //     // "{\"participants\":[{\"name\":\"user\",\"humanInputMode\":\"ALWAYS\"
-        //     // ,\"agentType\":\"user_proxy\"},{\"name\":\"assistant_1\",
-        //     // \"humanInputMode\":\"NEVER\",\"agentType\":\"assistant\"},
-        //     // {\"name\":\"assistant_2\",\"humanInputMode\":\"NEVER\",\"agentType\":\"assistant\"},
-        //     // {\"name\":\"assistant_3\",\"humanInputMode\":\"NEVER\",
-        //     // \"agentType\":\"assistant\"}]}\n"}
-        //     if (parsed.participants) {
-        //         this._handleParticipants(parsed.participants);
-        //         return;
-        //     }
-        //     if (parsed.data && typeof parsed.data === "string") {
-        //         try {
-        //             const innerDumped = JSON.parse(parsed.data);
-        //             if (innerDumped.participants) {
-        //                 this._handleParticipants(innerDumped.participants);
-        //                 return;
-        //             }
-        //         } catch (_) {
-        //             //
-        //         }
-        //         const data = parsed.data.trim().toLowerCase();
-        //         if (data.includes("workflow finished") || data.includes("workflow terminated")) {
-        //             traceVerbose("Workflow finished or terminated:", data);
-        //         }
-        //     }
-        // }
-
-        // private _handleParticipants(participants: any) {
-        //     try {
-        //         const list = typeof participants === "string" ? JSON.parse(participants) : participants;
-        //         const userParticipants = list
-        //             .filter((p: any) => p.humanInputMode?.toUpperCase() === "ALWAYS")
-        //             .map((p: any) => p.name)
-        //             .filter(Boolean);
-        //         this._transport.updateParticipants(userParticipants);
-        //     } catch (err) {
-        //         traceError("Failed to parse participants:", participants, err);
-        //     }
-        // }
         // Check for participants
-        if (dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
+        if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
             console.debug("Extracting participants from print message data:", dataContent);
+            return this.extractParticipants(dataContent);
+        }
+        if (typeof dataContent === "object" && dataContent !== null) {
+            console.debug("Extracting participants from print message object data:", dataContent);
             return this.extractParticipants(dataContent);
         }
 
         return undefined;
     }
 
-    private extractParticipants(dataContent: string): IProcessResult | undefined {
+    private extractParticipants(dataContent: string | object): IProcessResult | undefined {
         console.debug("Extracting participants from data content:", dataContent);
         try {
-            const parsedData = JSON.parse(dataContent);
+            const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
 
             if (MessageValidator.isValidParticipantsData(parsedData)) {
                 console.debug("Valid participants data found:", parsedData);
