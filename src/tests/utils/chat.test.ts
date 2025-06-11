@@ -17,29 +17,27 @@ vi.mock("nanoid", () => ({
 }));
 
 describe("WaldiezChatMessageProcessor", () => {
-    let processor: WaldiezChatMessageProcessor;
     let mockDate: Date;
 
     beforeEach(() => {
-        processor = new WaldiezChatMessageProcessor();
         mockDate = new Date("2024-01-01T12:00:00.000Z");
         vi.setSystemTime(mockDate);
     });
 
     describe("process method", () => {
         it("should return undefined for non-JSON messages", () => {
-            const result = processor.process("invalid json");
+            const result = WaldiezChatMessageProcessor.process("invalid json");
             expect(result).toBeUndefined();
         });
 
         it("should return undefined for empty data", () => {
-            const result = processor.process("null");
+            const result = WaldiezChatMessageProcessor.process("null");
             expect(result).toBeUndefined();
         });
 
         it("should return undefined for unknown message types", () => {
             const message = JSON.stringify({ type: "unknown_type" });
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toBeUndefined();
         });
 
@@ -47,7 +45,7 @@ describe("WaldiezChatMessageProcessor", () => {
             const stripAnsi = vi.mocked(await import("strip-ansi")).default;
             const message = JSON.stringify({ type: "input_request", request_id: "test" });
 
-            processor.process("\u001b[31m" + message + "\u001b[0m");
+            WaldiezChatMessageProcessor.process("\u001b[31m" + message + "\u001b[0m");
 
             expect(stripAnsi).toHaveBeenCalledWith("\u001b[31m" + message + "\u001b[0m");
         });
@@ -61,7 +59,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 prompt: "Enter your input:",
             });
 
-            const result = processor.process(message, "current-req");
+            const result = WaldiezChatMessageProcessor.process(message, "current-req");
 
             expect(result).toEqual({
                 message: {
@@ -89,7 +87,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 prompt: ">",
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.content).toEqual([
                 {
@@ -106,7 +104,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 prompt: "> ",
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
             expect(result?.message?.content).toEqual([
                 {
                     type: "text",
@@ -123,7 +121,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 password: true,
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.password).toBe(true);
         });
@@ -136,7 +134,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 password: "true",
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.password).toBe(true);
         });
@@ -149,7 +147,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 password: "TRUE",
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.password).toBe(true);
         });
@@ -162,7 +160,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 password: false,
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.password).toBe(false);
         });
@@ -174,7 +172,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 prompt: "Enter input:",
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.password).toBe(false);
         });
@@ -189,7 +187,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toEqual({
                 isWorkflowEnd: true,
@@ -212,7 +210,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toEqual({
                 isWorkflowEnd: false,
@@ -228,7 +226,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -241,7 +239,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -260,7 +258,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toEqual({
                 message: {
@@ -295,7 +293,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.content).toEqual(contentArray);
         });
@@ -312,7 +310,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.content).toEqual([contentObject]);
         });
@@ -334,7 +332,11 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message, null, "https://example.com/image.jpg");
+            const result = WaldiezChatMessageProcessor.process(
+                message,
+                null,
+                "https://example.com/image.jpg",
+            );
 
             expect(result?.message?.content).toEqual([
                 {
@@ -354,7 +356,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.type).toBe("tool_call");
         });
@@ -369,7 +371,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.id).toBe("mock-nanoid-id");
             expect(result?.message?.timestamp).toBe("2024-01-01T12:00:00.000Z");
@@ -384,7 +386,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -399,7 +401,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toEqual({
                 message: {
@@ -424,7 +426,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -441,7 +443,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toEqual({
                 message: {
@@ -468,7 +470,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -484,7 +486,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.id).toBe("selection-uuid-123");
             expect(result?.message?.type).toBe("system");
@@ -499,7 +501,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.type).toBe("system");
             expect(Array.isArray(result?.message?.content)).toBe(true);
@@ -514,7 +516,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -532,7 +534,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toEqual({
                 message: {
@@ -560,7 +562,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
         });
@@ -579,7 +581,11 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message, null, "https://example.com/image.jpg");
+            const result = WaldiezChatMessageProcessor.process(
+                message,
+                null,
+                "https://example.com/image.jpg",
+            );
 
             expect(result?.message?.content).toEqual(contentArray);
         });
@@ -604,7 +610,11 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             });
 
-            const result = processor.process(message, null, "https://example.com/image.jpg");
+            const result = WaldiezChatMessageProcessor.process(
+                message,
+                null,
+                "https://example.com/image.jpg",
+            );
 
             expect(result?.message?.content).toEqual([
                 {
@@ -621,14 +631,14 @@ describe("WaldiezChatMessageProcessor", () => {
     describe("edge cases", () => {
         it("should handle empty JSON object", () => {
             const message = JSON.stringify({});
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toBeUndefined();
         });
 
         it("should handle JSON parse errors gracefully", () => {
             const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
             const message = "not json but contains participants";
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toBeUndefined();
             consoleSpy.mockRestore();
         });
@@ -639,7 +649,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 content: null,
             });
 
-            const result = processor.process(message);
+            const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toBeUndefined();
         });
     });
