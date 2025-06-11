@@ -15,6 +15,12 @@ import path from "path";
 import eslintTs from "typescript-eslint";
 import { fileURLToPath } from "url";
 
+const owner = "Waldiez";
+const startYear = 2024;
+const spdxIdentifier = "Apache-2.0";
+const currentYear = new Date().getFullYear();
+const ownerAndContributors = `${owner} & contributors`;
+
 // https://github.com/import-js/eslint-plugin-import/issues/2948#issuecomment-2148832701
 const project = "./tsconfig.app.json";
 const __filename = fileURLToPath(import.meta.url);
@@ -150,13 +156,10 @@ const defaultConfig = eslintTs.config({
             "error",
             {
                 source: "string",
-                content:
-                    "SPDX-License-Identifier: {spdxIdentifier}\nCopyright {startYear} - {currentYear} {owner}",
+                content: "{licenseLine}\n{copyRightLine}",
                 variables: {
-                    spdxIdentifier: "Apache-2.0",
-                    startYear: "2024",
-                    currentYear: `${new Date().getFullYear()}`,
-                    owner: "Waldiez & contributors",
+                    licenseLine: `SPDX-License-Identifier: ${spdxIdentifier}`,
+                    copyRightLine: `Copyright ${startYear} - ${currentYear} ${ownerAndContributors}`,
                 },
             },
         ],

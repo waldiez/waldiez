@@ -56,6 +56,3 @@ export const transformPublicFiles = (mode: "lib" | "web"): Plugin => {
         },
     };
 };
-
-// Export the plugin
-export default transformPublicFiles;

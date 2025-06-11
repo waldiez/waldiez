@@ -11,7 +11,7 @@ import { externalizeDeps } from "vite-plugin-externalize-deps";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 import packageJson from "./package.json";
-import { transformPublicFiles } from "./vite.plugin";
+import { addHeaderToDistFiles, transformPublicFiles } from "./vite.plugins";
 
 const normalizedResolve = (...paths: string[]): string => normalizePath(resolve(__dirname, ...paths));
 
@@ -160,8 +160,15 @@ export default defineConfig(({ command }) => ({
             insertTypesEntry: true,
             rollupTypes: true,
             tsconfigPath: "./tsconfig.build.json",
+            beforeWriteFile: (filePath, content) => {
+                // remove SPDX and Copyright comments from the generated types
+                // we'll add one header later at the top of the generated file
+                content = content.replace(/\/\*\*[\s\S]*?(?:SPDX|Copyright)[\s\S]*?\*\//g, "").trim();
+                return { filePath, content };
+            },
         }),
         transformPublicFiles("lib"),
+        addHeaderToDistFiles(),
         viteStaticCopy({
             targets:
                 command === "build"

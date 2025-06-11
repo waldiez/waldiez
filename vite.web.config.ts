@@ -9,7 +9,7 @@ import { defineConfig, normalizePath } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 import packageJson from "./package.json";
-import { transformPublicFiles } from "./vite.plugin";
+import { transformPublicFiles } from "./vite.plugins";
 
 const normalizedResolve = (...paths: string[]): string => normalizePath(path.resolve(__dirname, ...paths));
 
