@@ -33,6 +33,20 @@ class WaldiezBase(BaseModel):
         **kwargs : Any
             Additional keyword arguments.
 
+            The following are from the Pydantic `model_dump` method:
+              - mode: str | Literal['json', 'python'] = 'json',
+              - include: IncEx | None
+              - exclude: IncEx | None
+              - context: Any | None
+              - by_alias: bool | None (None defaults to True)
+              - exclude_unset: bool = False
+              - exclude_defaults: bool = False
+              - exclude_none: bool = False
+              - round_trip: bool = False
+              - warnings: bool | Literal['none', 'warn', 'error'] = True
+              - fallback: ((Any) -> Any) | None = None
+              - serialize_as_any: bool = False
+
         Returns
         -------
         dict[str, Any]
@@ -55,6 +69,20 @@ class WaldiezBase(BaseModel):
         ----------
         **kwargs : Any
             Additional keyword arguments.
+
+            The following are from the Pydantic `model_dump_json` method:
+            - indent: int | None = None,
+            - include: IncEx | None = None,
+            - exclude: IncEx | None = None,
+            - context: Any | None = None,
+            - by_alias: bool | None = None, (None defaults to True)
+            - exclude_unset: bool = False,
+            - exclude_defaults: bool = False,
+            - exclude_none: bool = False,
+            - round_trip: bool = False,
+            - warnings: bool | Literal['none', 'warn', 'error'] = True,
+            - fallback: ((Any) -> Any) | None = None,
+            - serialize_as_any: bool = False
 
         Returns
         -------
