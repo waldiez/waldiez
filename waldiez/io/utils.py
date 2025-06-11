@@ -3,6 +3,8 @@
 
 """Utility functions for the waldiez.io package."""
 
+import ast
+import json
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -125,3 +127,58 @@ def get_image(
         pil_image.save(file_path, format="PNG")
         return str(file_path)
     return image_data
+
+
+def is_json_dumped(value: str) -> bool:
+    """Check if a string is JSON-dumped.
+
+    Parameters
+    ----------
+    value : str
+        The string to check.
+
+    Returns
+    -------
+    bool
+        True if the string is JSON-dumped, False otherwise.
+    """
+    try:
+        parsed = json.loads(value)
+        # If we can parse it as JSON and it's not a string,
+        # we consider it JSON-dumped
+        return not isinstance(parsed, str)
+    except json.JSONDecodeError:
+        return False
+
+
+def try_parse_maybe_serialized(value: str) -> Any:
+    """Parse a string that may be JSON or Python serialized.
+
+    Returns the parsed object if successful, or the original string otherwise.
+
+    Parameters
+    ----------
+    value : str
+        The string to parse.
+
+    Returns
+    -------
+    Any
+        The parsed object or the original string if parsing fails.
+    """
+    for parser in (json.loads, ast.literal_eval):
+        # pylint: disable=broad-exception-caught, too-many-try-statements
+        try:
+            parsed: dict[str, Any] | list[Any] | str = parser(value)
+            # Normalize: if it's a single-item list of a string
+            # return the string
+            if (
+                isinstance(parsed, list)
+                and len(parsed) == 1
+                and isinstance(parsed[0], str)
+            ):
+                return parsed[0]
+            return parsed
+        except Exception:
+            pass  # Try next parser
+    return value  # Return original if all parsing fails

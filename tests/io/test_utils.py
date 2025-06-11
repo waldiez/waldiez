@@ -5,13 +5,18 @@
 # pylint: disable=missing-param-doc,missing-return-doc,no-self-use
 """Test waldiez.io.utils.*."""
 
+import json
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from waldiez.io.utils import detect_media_type, get_image
+from waldiez.io.utils import (
+    detect_media_type,
+    get_image,
+    is_json_dumped,
+)
 
 
 class TestDetectMediaType:
@@ -342,3 +347,11 @@ class TestGetImage:
         # Empty string base name with no uploads_root
         result = get_image(None, "image_data", "")
         assert result == "image_data"
+
+    def test_is_json_dumped(self) -> None:
+        """Test if a string is JSON dumped."""
+        valid_json = json.dumps({"key": "value"})
+        invalid_json = "{invalid: json"
+
+        assert is_json_dumped(valid_json)
+        assert not is_json_dumped(invalid_json)

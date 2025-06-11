@@ -20,7 +20,7 @@ from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
 from .models import UserResponse
-from .utils import now
+from .utils import is_json_dumped, now, try_parse_maybe_serialized
 
 LOG = logging.getLogger(__name__)
 
@@ -70,11 +70,17 @@ class AsyncWebsocketsIOStream(IOStream):
         """
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
-        msg = sep.join(str(arg) for arg in args) + end
+        msg = sep.join(str(arg) for arg in args)  # + end
+
+        is_dumped = is_json_dumped(msg)
+        if is_dumped and end.endswith("\n"):
+            msg = json.loads(msg)
+        else:
+            msg = f"{msg}{end}"
         json_dump = json.dumps(
             {
                 "type": "print",
-                "message": msg,
+                "data": msg,
             }
         )
         if self.verbose:
@@ -95,7 +101,19 @@ class AsyncWebsocketsIOStream(IOStream):
             The message to send.
         """
         message_dump = message.model_dump(mode="json")
-        json_dump = json.dumps(message_dump)
+        # message_dump = message.model_dump(mode="json")
+        if message_dump.get("type") == "text":
+            content_block = message_dump.get("content")
+            if (
+                isinstance(content_block, dict)
+                and "content" in content_block
+                and isinstance(content_block["content"], str)
+            ):
+                inner_content = content_block["content"]
+                content_block["content"] = try_parse_maybe_serialized(
+                    inner_content
+                )
+        json_dump = json.dumps(message_dump, ensure_ascii=False)
         if self.verbose:
             LOG.info("sending: \n%s\n", json_dump)
         try:

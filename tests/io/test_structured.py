@@ -332,14 +332,6 @@ class TestStructuredIOStream:
         # Result should be empty
         assert result.to_string() == ""
 
-    def test_is_json_dumped(self) -> None:
-        """Test if a string is JSON dumped."""
-        valid_json = json.dumps({"key": "value"})
-        invalid_json = "{invalid: json"
-
-        assert self.stream.is_json_dumped(valid_json)
-        assert not self.stream.is_json_dumped(invalid_json)
-
     @patch("builtins.print")
     def test_print_with_json_dumped(self, mock_print: MagicMock) -> None:
         """Test printing with JSON dumped data."""

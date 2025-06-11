@@ -3,7 +3,6 @@
 
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
-import ast
 import json
 import queue
 import sys
@@ -22,7 +21,13 @@ from .models import (
     UserInputRequest,
     UserResponse,
 )
-from .utils import gen_id, get_image, now
+from .utils import (
+    gen_id,
+    get_image,
+    is_json_dumped,
+    now,
+    try_parse_maybe_serialized,
+)
 
 
 class StructuredIOStream(IOStream):
@@ -53,7 +58,7 @@ class StructuredIOStream(IOStream):
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
         message = sep.join(map(str, args))
-        is_dumped = self.is_json_dumped(message)
+        is_dumped = is_json_dumped(message)
         if is_dumped and end.endswith("\n"):
             # If the message is already JSON-dumped,
             # let's try not to double dump it
@@ -202,28 +207,6 @@ class StructuredIOStream(IOStream):
         if isinstance(user_input, str):
             return UserResponse(data=user_input, request_id=request_id)
         return self._parse_user_input(user_input, request_id)
-
-    @staticmethod
-    def is_json_dumped(value: str) -> bool:
-        """Check if a string is JSON-dumped.
-
-        Parameters
-        ----------
-        value : str
-            The string to check.
-
-        Returns
-        -------
-        bool
-            True if the string is JSON-dumped, False otherwise.
-        """
-        try:
-            parsed = json.loads(value)
-            # If we can parse it as JSON and it's not a string,
-            # we consider it JSON-dumped
-            return not isinstance(parsed, str)
-        except json.JSONDecodeError:
-            return False
 
     @staticmethod
     def _load_user_input(user_input_raw: str) -> str | dict[str, Any]:
@@ -434,36 +417,3 @@ class StructuredIOStream(IOStream):
             return ""
         # Join with a space
         return " ".join(result)
-
-
-def try_parse_maybe_serialized(value: str) -> Any:
-    """Parse a string that may be JSON or Python serialized.
-
-    Returns the parsed object if successful, or the original string otherwise.
-
-    Parameters
-    ----------
-    value : str
-        The string to parse.
-
-    Returns
-    -------
-    Any
-        The parsed object or the original string if parsing fails.
-    """
-    for parser in (json.loads, ast.literal_eval):
-        # pylint: disable=broad-exception-caught, too-many-try-statements
-        try:
-            parsed: dict[str, Any] | list[Any] | str = parser(value)
-            # Normalize: if it's a single-item list of a string
-            # return the string
-            if (
-                isinstance(parsed, list)
-                and len(parsed) == 1
-                and isinstance(parsed[0], str)
-            ):
-                return parsed[0]
-            return parsed
-        except Exception:
-            pass  # Try next parser
-    return value  # Return original if all parsing fails
