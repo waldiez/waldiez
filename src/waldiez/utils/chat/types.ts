@@ -71,7 +71,10 @@ export interface IProcessResult {
     message?: WaldiezChatMessage;
     requestId?: string | null;
     isWorkflowEnd?: boolean;
-    userParticipants?: string[];
+    participants?: {
+        users: string[];
+        all: string[];
+    };
 }
 
 export interface IParticipantsData {

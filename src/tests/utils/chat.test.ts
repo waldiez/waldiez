@@ -191,7 +191,6 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(result).toEqual({
                 isWorkflowEnd: true,
-                userParticipants: [],
             });
         });
 
@@ -214,7 +213,10 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                userParticipants: ["user_proxy", "assistant_1"],
+                participants: {
+                    all: ["user_proxy", "assistant_1"],
+                    users: ["user_proxy"],
+                },
             });
         });
 
@@ -236,7 +238,10 @@ describe("WaldiezChatMessageProcessor", () => {
             const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                userParticipants: ["user_proxy", "assistant_1", "assistant_2", "assistant_3"],
+                participants: {
+                    all: ["user_proxy", "assistant_1", "assistant_2", "assistant_3"],
+                    users: ["user_proxy"],
+                },
             });
         });
 

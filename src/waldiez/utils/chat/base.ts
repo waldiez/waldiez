@@ -24,29 +24,29 @@ export class MessageValidator {
         );
     }
 
-    static isValidPrintMessage(data: any): data is IPrintMessageData {
-        console.debug("Validating print message data:", data);
-        if (!data || typeof data !== "object") {
-            console.warn("Invalid print message data structure:", data);
+    static isValidPrintMessage(message: any): message is IPrintMessageData {
+        console.debug("Validating print message data:", message);
+        if (!message || typeof message !== "object") {
             return false;
         }
-        if (typeof data.type !== "string" || data.type !== "print") {
-            console.warn("Invalid print message type:", data.type);
+        if (typeof message.type !== "string" || message.type !== "print") {
             return false;
         }
-        if (!data.content || typeof data.content !== "object") {
-            console.warn("Invalid print message content:", data.content);
+        if ("data" in message && (typeof message.data === "string" || typeof message.data === "object")) {
+            message.content = { data: message.data };
+            return true;
+        }
+        if (!message.content || typeof message.content !== "object") {
             return false;
         }
-        if (
-            typeof data.content.data !== "string" &&
-            !Array.isArray(data.content.data) &&
-            typeof data.content.data !== "object"
-        ) {
-            console.warn("Invalid print message content data:", data.content.data);
+        if (!message.content.data) {
             return false;
         }
-        return true;
+        return (
+            typeof message.content.data === "string" ||
+            Array.isArray(message.content.data) ||
+            typeof message.content.data === "object"
+        );
     }
 
     static isValidTextMessage(data: any): data is ITextMessageData {

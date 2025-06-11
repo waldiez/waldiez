@@ -58,15 +58,13 @@ export class PrintMessageHandler implements IMessageHandler {
 
         // Check for workflow end
         if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.WORKFLOW_END_MARKER)) {
-            return { isWorkflowEnd: true, userParticipants: [] };
+            return { isWorkflowEnd: true };
         }
         // Check for participants
         if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
-            console.debug("Extracting participants from print message data:", dataContent);
             return this.extractParticipants(dataContent);
         }
         if (typeof dataContent === "object" && dataContent !== null) {
-            console.debug("Extracting participants from print message object data:", dataContent);
             return this.extractParticipants(dataContent);
         }
 
@@ -85,9 +83,17 @@ export class PrintMessageHandler implements IMessageHandler {
                     const innerDumped = JSON.parse(parsedData);
                     return this.extractParticipants(innerDumped);
                 }
+                const allParticipants = parsedData.participants.map((p: any) => p.name).filter(Boolean);
+                const userParticipants = parsedData.participants
+                    .filter((p: any) => p.humanInputMode?.toUpperCase() === "ALWAYS")
+                    .map((p: any) => p.name)
+                    .filter(Boolean);
                 return {
                     isWorkflowEnd: false,
-                    userParticipants: parsedData.participants.map(p => p.name),
+                    participants: {
+                        all: allParticipants,
+                        users: userParticipants,
+                    },
                 };
             }
         } catch (error) {
