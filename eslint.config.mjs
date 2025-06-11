@@ -81,7 +81,6 @@ const defaultConfig = eslintTs.config({
                     "^react-select",
                     "^zustand",
                     "^nanoid",
-                    "^rc-slider",
                     "^@monaco-editor/react",
                     "^@waldiez/",
                     "^[./]",
