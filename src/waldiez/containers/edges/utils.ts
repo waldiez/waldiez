@@ -92,6 +92,7 @@ export const getEdgeLabelTransformFixed = (
     labelX: number,
     labelY: number,
     labelType: "source" | "target",
+    targetPosition?: Position,
     options: {
         sourceFraction?: number; // How far from source (0 = on source, 1 = on target)
         targetFraction?: number; // How far from target (0 = on target, 1 = on source)
@@ -140,20 +141,30 @@ export const getEdgeLabelTransformFixed = (
         const dy = sourceY - targetY;
         const length = Math.sqrt(dx * dx + dy * dy);
 
+        let transform = `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px)`;
+
         if (length > 0) {
             const perpX = (-dy / length) * perpOffset;
             const perpY = (dx / length) * perpOffset;
 
-            return `translate(-50%, -50%) translate(${offsetX + perpX}px, ${offsetY + perpY}px)`;
+            transform = `translate(-50%, -50%) translate(${offsetX + perpX}px, ${offsetY + perpY}px)`;
         }
 
-        return `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px)`;
+        // Add rotation for target labels when position is left or right
+        if (targetPosition === Position.Left) {
+            transform += " rotate(-90deg)";
+        } else if (targetPosition === Position.Right) {
+            transform += " rotate(90deg)";
+        }
+
+        return transform;
     }
 };
 
 /**
  * Dynamic offset based on port position
  */
+// eslint-disable-next-line max-statements
 export const getEdgeLabelTransformNodeOffset = (
     sourceX: number,
     sourceY: number,
@@ -237,7 +248,16 @@ export const getEdgeLabelTransformNodeOffset = (
         const offsetFromCenterX = nodeOffsetX - labelX;
         const offsetFromCenterY = nodeOffsetY - labelY;
 
-        return `translate(-50%, -50%) translate(${offsetFromCenterX}px, ${offsetFromCenterY}px)`;
+        let transform = `translate(-50%, -50%) translate(${offsetFromCenterX}px, ${offsetFromCenterY}px)`;
+
+        // Add rotation for target labels when position is left or right
+        if (targetPosition === Position.Left) {
+            transform += " rotate(-90deg)";
+        } else if (targetPosition === Position.Right) {
+            transform += " rotate(90deg)";
+        }
+
+        return transform;
     }
 };
 
@@ -294,6 +314,7 @@ export const getEdgeLabelTransforms = (
                     labelX,
                     labelY,
                     "target",
+                    targetPosition,
                 ),
             };
         case "node-offset":

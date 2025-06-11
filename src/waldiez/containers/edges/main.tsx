@@ -161,27 +161,6 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
         () => getEdgeIcon(type, groupChatType, edgeColor),
         [type, groupChatType, edgeColor],
     );
-
-    // Determine if edge needs position indicator
-    // const needsPosition = useMemo(
-    //     () =>
-    //         type !== "group" ||
-    //         (type === "group" && (groupChatType === "toManager" || groupChatType === "fromManager")),
-    //     [type, groupChatType],
-    // );
-
-    // const positionClass = needsPosition ? " with-position" : "";
-
-    // Calculate edge translations for start and end labels
-    // const translations = useMemo(
-    //     () => getEdgeTranslations(sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition),
-    //     [sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition],
-    // );
-
-    // const positionTranslation = useMemo(
-    //     () => getPortLabelTransform(sourceX, sourceY, sourcePosition, 16), // 16px offset for port label
-    //     [sourceX, sourceY, sourcePosition],
-    // );
     const positionTranslation = useMemo(() => {
         const sourceTransform = getEdgeLabelTransformNodeOffset(
             sourceX,
@@ -212,8 +191,8 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
             targetPosition,
             "target",
             {
-                leftOffset: 60, // Labels on left-facing ports go 60px left
-                rightOffset: 60, // Labels on right-facing ports go 60px right
+                leftOffset: 10, // Labels on left-facing ports go 10px left
+                rightOffset: 10, // Labels on right-facing ports go 10px right
                 topOffset: 10, // Labels on top-facing ports go 10px up
                 bottomOffset: 10, // Labels on bottom-facing ports go 10px down
                 perpOffset: -10, // All labels get -10px perpendicular offset
