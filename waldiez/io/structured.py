@@ -219,7 +219,9 @@ class StructuredIOStream(IOStream):
         """
         try:
             parsed = json.loads(value)
-            return isinstance(parsed, (dict, list))
+            # If we can parse it as JSON and it's not a string,
+            # we consider it JSON-dumped
+            return not isinstance(parsed, str)
         except json.JSONDecodeError:
             return False
 
