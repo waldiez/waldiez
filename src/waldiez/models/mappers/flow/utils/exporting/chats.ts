@@ -10,7 +10,7 @@ export const exportChat = (edge: WaldiezEdge, edges: WaldiezEdge[], index: numbe
     const chatEdge = edges.find(e => e.id === edge.id);
     if (chatEdge) {
         Object.keys(chatEdge).forEach(key => {
-            if (!["id", "type", "source", "target", "data"].includes(key)) {
+            if (!["id", "data", "type", "source", "target"].includes(key)) {
                 delete chat[key];
             }
         });

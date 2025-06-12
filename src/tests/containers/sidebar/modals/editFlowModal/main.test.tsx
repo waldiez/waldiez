@@ -2,18 +2,19 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { onChange, renderFlow } from "../common";
-import { description, flowId, name } from "../data";
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { onChange, renderFlow } from "../common";
+import { description, flowId, name } from "../data";
 
 describe("Sidebar Edit flow modal", () => {
     afterEach(() => {
         vi.resetAllMocks();
     });
-    it("should open and close the modal", () => {
-        act(() => {
-            renderFlow();
+    it("should open and close the modal", async () => {
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
@@ -26,9 +27,9 @@ describe("Sidebar Edit flow modal", () => {
         expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
 
-    it("should switch to second tab", () => {
-        act(() => {
-            renderFlow();
+    it("should switch to second tab", async () => {
+        await act(async () => {
+            await renderFlow();
         });
         const extrasPanelTestId = `edit-flow-${flowId}-modal-other-view`;
         expect(screen.queryByTestId(extrasPanelTestId)).toBeNull();
@@ -38,8 +39,8 @@ describe("Sidebar Edit flow modal", () => {
         expect(screen.getByTestId(extrasPanelTestId)).toBeTruthy();
     });
     it("should update flow data on submit", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
         const modalTestId = `edit-flow-modal-${flowId}`;
@@ -60,9 +61,9 @@ describe("Sidebar Edit flow modal", () => {
         await userEvent.click(submitBtn);
         expect(onChange).toHaveBeenCalled();
     });
-    it("should discard changes on cancel", () => {
-        act(() => {
-            renderFlow();
+    it("should discard changes on cancel", async () => {
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
         const modalTestId = `edit-flow-modal-${flowId}`;
@@ -70,7 +71,9 @@ describe("Sidebar Edit flow modal", () => {
         // flowName
         const flowNameInput = screen.getByTestId(`edit-flow-${flowId}-name-input`);
         expect(flowNameInput).toBeTruthy();
-        fireEvent.change(flowNameInput, { target: { value: `${name} update` } });
+        fireEvent.change(flowNameInput, {
+            target: { value: `${name} update` },
+        });
         // flowDescription
         const flowDescriptionInput = screen.getByTestId(`edit-flow-${flowId}-description-input`);
         expect(flowDescriptionInput).toBeTruthy();

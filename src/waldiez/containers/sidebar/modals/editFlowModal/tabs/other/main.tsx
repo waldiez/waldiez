@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { StringList } from "@waldiez/components";
+import { CheckboxInput, StringList } from "@waldiez/components";
 import { EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/other/types";
 
 export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProps) => {
     const { flowId, data, onDataChange } = props;
-    const { tags, requirements } = data;
+    const { tags, requirements, cacheSeed } = data;
     const onAddTag = (tag: string) => {
         onDataChange({ tags: [...tags, tag] });
     };
@@ -15,7 +15,9 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
         onDataChange({ tags: tags.filter(t => t !== tag) });
     };
     const onTagChange = (oldValue: string, newValue: string) => {
-        onDataChange({ tags: tags.map(t => (t === oldValue ? newValue : t)) });
+        onDataChange({
+            tags: tags.map(t => (t === oldValue ? newValue : t)),
+        });
     };
     const onAddRequirement = (requirement: string) => {
         onDataChange({ requirements: [...requirements, requirement] });
@@ -30,6 +32,17 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             requirements: requirements.map(r => (r === oldValue ? newValue : r)),
         });
     };
+    const onCacheSeedToggleChange = (checked: boolean) => {
+        onDataChange({ cacheSeed: checked ? null : 42 });
+    };
+    const onCacheSeedValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            const cacheSeed = parseInt(e.target.value);
+            onDataChange({ cacheSeed });
+        } catch (_) {
+            // ignore
+        }
+    };
     const viewLabelInfo = () => (
         <div>
             Requirements to <span className="bold italic">pip install</span> before running this flow
@@ -37,9 +50,30 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
     );
     return (
         <div
-            className="modal-body agent-panel agent-config-panel"
+            className="padding-left-10 padding-right-10"
             data-testid={`edit-flow-${flowId}-modal-other-view`}
         >
+            <CheckboxInput
+                id={`edit-flow-${flowId}-modal-cache-seed-toggle`}
+                label="Disable cache"
+                isChecked={typeof cacheSeed !== "number"}
+                onCheckedChange={onCacheSeedToggleChange}
+                data-testid={`edit-flow-${flowId}-modal-cache-seed-toggle`}
+            />
+            {typeof cacheSeed === "number" && (
+                <div className="cache-seed-view flex">
+                    <div className="margin-left-5 margin-right-5"> Cache seed:</div>
+                    <input
+                        type="number"
+                        step={1}
+                        placeholder="42"
+                        value={cacheSeed}
+                        onChange={onCacheSeedValueChange}
+                        id={`edit-flow-${flowId}-cache-seed-input`}
+                        data-testid={`edit-flow-${flowId}-cache-seed-input`}
+                    />
+                </div>
+            )}
             <StringList
                 items={requirements}
                 itemsType="requirement"

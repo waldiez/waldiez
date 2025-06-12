@@ -1,0 +1,153 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+/* stylelint-disable no-descending-specificity */
+
+/* Handoffs Container */
+.flow-wrapper.light .handoffs-container {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Handoffs List */
+.flow-wrapper.light .handoffs-list {
+  margin-top: 1rem;
+}
+
+/* Section title */
+.flow-wrapper.light .handoffs-section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+/* No handoffs message */
+.flow-wrapper.light .no-handoffs-message {
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  color: #6c757d;
+  font-style: italic;
+  border: 1px dashed #ced4da;
+}
+
+/* Handoff type */
+.flow-wrapper.light .handoff-type {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  min-width: 130px;
+}
+
+/* Target info */
+.flow-wrapper.light .handoff-target {
+  font-size: 0.85rem;
+  color: #6c757d;
+  flex: 1;
+}
+
+.flow-wrapper.light .target-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+/* After work handoff - special styling */
+.flow-wrapper.light .after-work-handoff {
+  background-color: #f8f9fa;
+  border-left: 3px solid #0d6efd !important; /* Blue accent */
+}
+
+.flow-wrapper.light .handoff-info {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* Instructions text */
+.flow-wrapper.light .handoff-order-instructions {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-bottom: 0.75rem;
+}
+
+/* Dark Theme Handoffs Container Styling */
+.flow-wrapper.dark .handoffs-container {
+  padding: 1rem;
+  background-color: #1e1e1e; /* Darker background */
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* Handoffs List */
+.flow-wrapper.dark .handoffs-list {
+  margin-top: 1rem;
+}
+
+/* Section title */
+.flow-wrapper.dark .handoffs-section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d1d5db; /* Lighter text for dark mode */
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #2c2c2c; /* Darker border */
+  padding-bottom: 0.5rem;
+}
+
+/* No handoffs message */
+.flow-wrapper.dark .no-handoffs-message {
+  padding: 1rem;
+  background-color: #242424; /* Darker background */
+  border-radius: 6px;
+  color: #a1a1a1; /* Muted text */
+  font-style: italic;
+  border: 1px dashed #3d3d3d; /* Darker border */
+}
+
+/* Handoff type */
+.flow-wrapper.dark .handoff-type {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #e0e0e0; /* Light text */
+  display: flex;
+  align-items: center;
+  min-width: 130px;
+}
+
+/* Target info */
+.flow-wrapper.dark .handoff-target {
+  font-size: 0.85rem;
+  color: #a0a0a0; /* Muted text */
+  flex: 1;
+}
+
+.flow-wrapper.dark .target-label {
+  font-weight: 500;
+  color: #c0c0c0; /* Slightly brighter text */
+}
+
+/* After work handoff - special styling */
+.flow-wrapper.dark .after-work-handoff {
+  background-color: #262626; /* Slightly darker background */
+  border-left: 3px solid #3b82f6 !important; /* Blue accent */
+}
+
+.flow-wrapper.dark .handoff-info {
+  font-size: 0.75rem;
+  color: #909090; /* Muted text */
+  margin-top: 0.25rem;
+}
+
+/* Instructions text */
+.flow-wrapper.dark .handoff-order-instructions {
+  font-size: 0.8rem;
+  color: #a0a0a0; /* Muted text */
+  margin-bottom: 0.75rem;
+}

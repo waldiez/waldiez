@@ -3,13 +3,13 @@
 node_modules/
 .cache/
 build/
-dist/
+!dist/
 lib/
 site/
 out/
-public/vs
-public/min-maps
-public/monaco.json
+.idea/
+public/**/*
+!public/.gitignore
 **/coverage/
 **/waldiez_out/
 **/logs/
@@ -38,7 +38,9 @@ dmypy.json
 **/.DS_Store
 waldiez/_version.py
 **/*.mmd
+docs/contribute/index.md
 docs/reference/react
 docs/reference/react/assets
 .uv
+uv.lock
 !**/.env.example

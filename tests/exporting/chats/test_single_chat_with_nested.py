@@ -13,6 +13,9 @@ from waldiez.models import (
     WaldiezChatData,
     WaldiezChatMessage,
     WaldiezChatNested,
+    WaldiezChatSummary,
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
 )
 
 
@@ -68,12 +71,17 @@ def test_single_chat_with_nested() -> None:
     )
     chat1 = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-1",
-            target="wa-2",
+            source_type="assistant",
+            target_type="assistant",
             order=1,
+            nested_chat=WaldiezChatNested(),
+            summary=WaldiezChatSummary(),
             message=WaldiezChatMessage(
                 type="string",
                 content="Hello wa-2 from wa-1",
@@ -82,16 +90,22 @@ def test_single_chat_with_nested() -> None:
                     "variable1": "value1",
                 },
             ),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     chat2 = WaldiezChat(
         id="wc-2",
+        source="wa-1",
+        target="wa-3",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-1",
-            target="wa-3",
+            source_type="assistant",
+            target_type="assistant",
             order=-1,
+            summary=WaldiezChatSummary(),
             message=WaldiezChatMessage(
                 type="none",
                 content=None,
@@ -112,6 +126,8 @@ def test_single_chat_with_nested() -> None:
                     context={},
                 ),
             ),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     method_content = """
@@ -120,11 +136,14 @@ def nested_chat_message(recipient, messages, sender, config):
 """
     chat3 = WaldiezChat(
         id="wc-3",
+        source="wa-2",
+        target="wa-4",
+        type="chat",
         data=WaldiezChatData(
             name="chat1",
             description="A chat between two agents.",
-            source="wa-2",
-            target="wa-4",
+            source_type="assistant",
+            target_type="assistant",
             order=-1,
             message=WaldiezChatMessage(
                 type="none",
@@ -148,6 +167,9 @@ def nested_chat_message(recipient, messages, sender, config):
                     context={},
                 ),
             ),
+            summary=WaldiezChatSummary(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {
@@ -158,51 +180,60 @@ def nested_chat_message(recipient, messages, sender, config):
     }
     chat_names = {"wc-1": chat_name, "wc-2": chat_name, "wc-3": chat_name}
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2, agent3, agent4],
         agent_names=agent_names,
         all_chats=[chat1, chat2, chat3],
         chat_names=chat_names,
+        root_group_manager=None,
+        cache_seed=42,
         main_chats=[
-            (chat1, agent1, agent2),
+            {
+                "chat": chat1,
+                "source": agent1,
+                "target": agent2,
+            }
         ],
         for_notebook=False,
         is_async=False,
     )
-    generated = exporter.generate()
+    exporter.export()
     expected = """
         results = agent1.initiate_chat(
             agent2,
             cache=cache,
             summary_method="last_msg",
+            clear_history=True,
             variable1="value1",
             message="Hello wa-2 from wa-1",
         )
 """
-    assert generated == expected
-    after_export = exporter.get_after_export()
-    assert after_export is not None
-    after_export_str, _ = after_export[0]
+    assert exporter.extras.chat_initiation == expected
+    registrations = exporter.extras.chat_registration
+    # after_export = exporter.get_after_export()
+    # assert after_export is not None
+    # after_export_str, _ = after_export[0]
     excepted_after_string = """
-agent3_chat_queue = [
+agent3_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
+        "clear_history": True,
         "chat_id": 0,
         "recipient": agent1,
         "message": "Hello wa-1 from wa-3"
     },
 ]
 
-agent3.register_nested_chats(
+agent3.register_nested_chats(  # pyright: ignore
     trigger=["agent1"],
     chat_queue=agent3_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
 
-agent4_chat_queue = [
+agent4_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
+        "clear_history": True,
         "chat_id": 0,
         "recipient": agent3,
         "sender": agent1,
@@ -210,11 +241,11 @@ agent4_chat_queue = [
     },
 ]
 
-agent4.register_nested_chats(
+agent4.register_nested_chats(  # pyright: ignore
     trigger=["agent2"],
     chat_queue=agent4_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
 """
-    assert after_export_str == excepted_after_string
+    assert registrations == excepted_after_string

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezModelAPIType, WaldiezModelPrice } from "@waldiez/models/Model/types";
+import { WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelPrice } from "@waldiez/models/Model/types";
 
 /**
  * ModelData
@@ -13,6 +13,8 @@ import { WaldiezModelAPIType, WaldiezModelPrice } from "@waldiez/models/Model/ty
  * @param temperature - The temperature
  * @param topP - The top P
  * @param maxTokens - The max tokens
+ * @param aws - The AWS related fields
+ * @param extras - Exatra parameters to use in the LLM Config
  * @param defaultHeaders - The default headers
  * @param price - The price
  */
@@ -24,7 +26,9 @@ export class WaldiezModelData {
     temperature: number | null;
     topP: number | null;
     maxTokens: number | null;
-    defaultHeaders: { [key: string]: string };
+    aws?: WaldiezModelAWS | null;
+    extras: { [key: string]: unknown };
+    defaultHeaders: { [key: string]: unknown };
     price: WaldiezModelPrice;
 
     constructor(
@@ -36,7 +40,9 @@ export class WaldiezModelData {
             temperature: number | null;
             topP: number | null;
             maxTokens: number | null;
-            defaultHeaders: { [key: string]: string };
+            aws?: WaldiezModelAWS | null;
+            extras: { [key: string]: unknown };
+            defaultHeaders: { [key: string]: unknown };
             price: WaldiezModelPrice;
         } = {
             baseUrl: null,
@@ -46,6 +52,14 @@ export class WaldiezModelData {
             temperature: null,
             topP: null,
             maxTokens: null,
+            aws: {
+                accessKey: null,
+                profileName: null,
+                region: null,
+                secretKey: null,
+                sessionToken: null,
+            },
+            extras: {},
             defaultHeaders: {},
             price: {
                 promptPricePer1k: null,
@@ -53,8 +67,19 @@ export class WaldiezModelData {
             },
         },
     ) {
-        const { baseUrl, apiKey, apiType, apiVersion, temperature, topP, maxTokens, defaultHeaders, price } =
-            props;
+        const {
+            baseUrl,
+            apiKey,
+            apiType,
+            apiVersion,
+            temperature,
+            topP,
+            maxTokens,
+            aws,
+            extras,
+            defaultHeaders,
+            price,
+        } = props;
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
         this.apiType = apiType;
@@ -62,6 +87,8 @@ export class WaldiezModelData {
         this.temperature = temperature;
         this.topP = topP;
         this.maxTokens = maxTokens;
+        this.aws = aws || null;
+        this.extras = extras;
         this.defaultHeaders = defaultHeaders;
         this.price = price;
     }

@@ -2,19 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
-    assistantJson,
-    captainJson,
-    groupManagerJson,
-    ragUserJson,
-    swarmContainerJson,
-    swarmJson,
-    userJson,
-} from "./data";
 import { describe, expect, it } from "vitest";
 
 import {
-    WaldiezAgent,
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
     WaldiezAgentCaptainData,
@@ -25,11 +15,11 @@ import {
     WaldiezAgentRagUserData,
     WaldiezAgentReasoning,
     WaldiezAgentReasoningData,
-    WaldiezAgentSwarm,
-    WaldiezAgentSwarmData,
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers";
+
+import { assistantJson, captainJson, groupManagerJson, ragUserJson, reasoningJson, userJson } from "./data";
 
 describe("agentMapper", () => {
     it("should throw an error when importing without a json", () => {
@@ -39,7 +29,7 @@ describe("agentMapper", () => {
         const agent = agentMapper.importAgent(userJson);
         expect(agent).toBeInstanceOf(WaldiezAgentUserProxy);
         expect(agent.data).toBeInstanceOf(WaldiezAgentData);
-        expect(agent.agentType).toBe("user");
+        expect(agent.agentType).toBe("user_proxy");
     });
     it("should import an assistant agent", () => {
         const agent = agentMapper.importAgent(assistantJson);
@@ -51,48 +41,10 @@ describe("agentMapper", () => {
         const agent = agentMapper.importAgent(ragUserJson);
         expect(agent).toBeInstanceOf(WaldiezAgentRagUser);
         expect(agent.data).toBeInstanceOf(WaldiezAgentRagUserData);
-        expect(agent.agentType).toBe("rag_user");
+        expect(agent.agentType).toBe("rag_user_proxy");
         expect((agent.data as any).retrieveConfig).toBeTruthy();
     });
-    it("should import a group manager agent", () => {
-        const agent = agentMapper.importAgent(groupManagerJson);
-        expect(agent).toBeInstanceOf(WaldiezAgentGroupManager);
-        expect(agent.data).toBeInstanceOf(WaldiezAgentGroupManagerData);
-        expect(agent.agentType).toBe("manager");
-        expect((agent.data as any).speakers).toBeTruthy();
-    });
-    it("should import a swarm container agent", () => {
-        const agent = agentMapper.importAgent(swarmContainerJson);
-        expect(agent).toBeInstanceOf(WaldiezAgent);
-        expect(agent.data).toBeInstanceOf(WaldiezAgentData);
-        expect(agent.agentType).toBe("swarm_container");
-    });
-    it("should import a swarm agent", () => {
-        const agent = agentMapper.importAgent(swarmJson);
-        expect(agent).toBeInstanceOf(WaldiezAgentSwarm);
-        expect(agent.data).toBeInstanceOf(WaldiezAgentSwarmData);
-        expect(agent.agentType).toBe("swarm");
-        expect((agent as WaldiezAgentSwarm).data.handoffs.length).toBe(swarmJson.data.handoffs.length);
-    });
     it("should import a reasoning agent", () => {
-        const reasoningJson = {
-            ...assistantJson,
-            agentType: "reasoning",
-            data: {
-                ...userJson.data,
-                verbose: true,
-                reasonConfig: {
-                    method: "beam_search",
-                    max_depth: 3,
-                    forest_size: 4,
-                    rating_scale: 5,
-                    beam_size: 6,
-                    answer_approach: "pool",
-                    nsim: 7,
-                    exploration_constant: 1.6,
-                },
-            },
-        };
         const agent = agentMapper.importAgent(reasoningJson);
         expect(agent).toBeInstanceOf(WaldiezAgentReasoning);
         expect(agent.data).toBeInstanceOf(WaldiezAgentReasoningData);
@@ -104,6 +56,12 @@ describe("agentMapper", () => {
         expect(agent).toBeInstanceOf(WaldiezAgentCaptain);
         expect(agent.data).toBeInstanceOf(WaldiezAgentCaptainData);
         expect(agent.agentType).toBe("captain");
+    });
+    it("should import a group manager agent", () => {
+        const agent = agentMapper.importAgent(groupManagerJson);
+        expect(agent).toBeInstanceOf(WaldiezAgentGroupManager);
+        expect(agent.data).toBeInstanceOf(WaldiezAgentGroupManagerData);
+        expect(agent.agentType).toBe("group_manager");
     });
     it("should import, convert and export a user agent node", () => {
         const agent = agentMapper.importAgent(userJson);
@@ -123,43 +81,7 @@ describe("agentMapper", () => {
         const exported = agentMapper.exportAgent(agentNode, false);
         expect(exported).toEqual(ragUserJson);
     });
-    it("should import, convert and export a group manager agent node", () => {
-        const agent = agentMapper.importAgent(groupManagerJson);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, false);
-        expect(exported).toEqual(groupManagerJson);
-    });
-    it("should import, convert and export a swarm container agent node", () => {
-        const agent = agentMapper.importAgent(swarmContainerJson);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, false);
-        expect(exported).toEqual(swarmContainerJson);
-    });
-    it("should import, convert and export a swarm agent node", () => {
-        const agent = agentMapper.importAgent(swarmJson);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, false);
-        expect(exported).toEqual(swarmJson);
-    });
     it("should import, convert and export a reasoning agent node", () => {
-        const reasoningJson = {
-            ...assistantJson,
-            agentType: "reasoning",
-            data: {
-                ...userJson.data,
-                verbose: true,
-                reasonConfig: {
-                    method: "beam_search",
-                    max_depth: 3,
-                    forest_size: 4,
-                    rating_scale: 5,
-                    beam_size: 6,
-                    answer_approach: "pool",
-                    nsim: 7,
-                    exploration_constant: 1.6,
-                },
-            },
-        };
         const agent = agentMapper.importAgent(reasoningJson);
         const agentNode = agentMapper.asNode(agent, undefined, false);
         const exported = agentMapper.exportAgent(agentNode, false);
@@ -171,62 +93,13 @@ describe("agentMapper", () => {
         const exported = agentMapper.exportAgent(agentNode, false);
         expect(exported).toEqual(captainJson);
     });
-    it("should import, convert and export an agent node without links", () => {
-        const managerWithoutLinks = {
-            ...groupManagerJson,
-            data: {
-                ...groupManagerJson.data,
-                codeExecutionConfig: {
-                    workDir: "workDir",
-                    useDocker: false,
-                    timeout: 30,
-                    lastNMessages: "auto",
-                    functions: [],
-                },
-            },
-        };
-        const managerWithLinks = {
-            ...groupManagerJson,
-            data: {
-                ...groupManagerJson.data,
-                modes: ["mode1", "mode2"],
-                skills: [{ id: "skill1", executorId: "wa-2" }],
-                codeExecutionConfig: {
-                    workDir: "workDir",
-                    useDocker: false,
-                    timeout: 30,
-                    lastNMessages: "auto",
-                    functions: ["skill1"],
-                },
-                nestedChats: [
-                    {
-                        messages: ["wc-1"],
-                        triggeredBy: ["wa-2"],
-                    },
-                ],
-                speakers: {
-                    ...groupManagerJson.data.speakers,
-                    allowedOrDisallowedTransitions: {
-                        "wa-1": ["wa-2"],
-                        "wa-2": ["wa-1", "wa-3"],
-                    },
-                },
-            },
-        };
-        const agent = agentMapper.importAgent(managerWithLinks);
-        const agentNode = agentMapper.asNode(agent, undefined, false);
-        const exported = agentMapper.exportAgent(agentNode, true);
-        expect(exported).toEqual(managerWithoutLinks);
-        // just for the coverage
-        agentMapper.asNode(agent, undefined, true);
-    });
     it("should import, convert and export a rag user without links in retrieveConfig", () => {
         const ragUserWitLinks = {
             ...ragUserJson,
             data: {
                 ...ragUserJson.data,
                 retrieveConfig: {
-                    ...ragUserJson.data.retrieveConfig,
+                    ...(ragUserJson.data as any).retrieveConfig,
                     model: "wm-1",
                     docsPath: ["docs"],
                 },
@@ -237,7 +110,12 @@ describe("agentMapper", () => {
         const exported = agentMapper.exportAgent(agentNode, true);
         expect(exported).toEqual(ragUserJson);
     });
-    // const jsonData = (json.data || json) as Record<string, unknown>;
+    it("should import, convert and export a group manager agent node", () => {
+        const agent = agentMapper.importAgent(groupManagerJson);
+        const agentNode = agentMapper.asNode(agent, undefined, false);
+        const exported = agentMapper.exportAgent(agentNode, false);
+        expect(exported).toEqual(groupManagerJson);
+    });
     it("should use the json if data is not present", () => {
         const agentWithoutData = {
             ...userJson,

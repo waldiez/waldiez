@@ -2,61 +2,128 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { SidebarViewProps } from "@waldiez/containers/sidebar/types";
 import { useWaldiez } from "@waldiez/store";
 
+/**
+ * Custom hook for managing sidebar view state and interactions
+ */
 export const useSidebarView = (props: SidebarViewProps) => {
     const { selectedNodeType, onSelectNodeType } = props;
+
+    // State
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const [isAgentsViewCollapsed, setIsAgentsViewCollapsed] = useState<boolean>(false);
+
+    // Get flow ID from store
     const flowId = useWaldiez(s => s.flowId);
-    const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string, agentType?: string) => {
-        event.dataTransfer.setData("application/node", nodeType);
-        if (nodeType === "agent") {
-            event.dataTransfer.setData("application/agent", agentType ?? "user");
-        }
-        event.dataTransfer.effectAllowed = "move";
-    };
-    const onShowAgents = () => {
+
+    // Base drag start handler
+    const onDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>, nodeType: string, agentType?: string) => {
+            event.dataTransfer.setData("application/node", nodeType);
+
+            if (nodeType === "agent" && agentType) {
+                event.dataTransfer.setData("application/agent", agentType);
+            }
+
+            event.dataTransfer.effectAllowed = "move";
+        },
+        [],
+    );
+
+    // Node type selection handlers
+    const onShowAgents = useCallback(() => {
         if (selectedNodeType !== "agent") {
             onSelectNodeType("agent");
             setIsAgentsViewCollapsed(false);
         } else {
-            setIsAgentsViewCollapsed(!isAgentsViewCollapsed);
+            setIsAgentsViewCollapsed(prev => !prev);
         }
-    };
-    const onShowModels = () => {
+    }, [selectedNodeType, onSelectNodeType]);
+
+    const onShowModels = useCallback(() => {
         onSelectNodeType("model");
-    };
-    const onShowSkills = () => {
-        onSelectNodeType("skill");
-    };
-    const onUserDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent");
-    };
-    const onAssistantDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "assistant");
-    };
-    const onManagerDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "manager");
-    };
-    const onSwarmDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "swarm");
-    };
-    const onReasoningDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "reasoning");
-    };
-    const onCaptainDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-        onDragStart(event, "agent", "captain");
-    };
-    const onOpenEditModal = () => {
+    }, [onSelectNodeType]);
+
+    const onShowTools = useCallback(() => {
+        onSelectNodeType("tool");
+    }, [onSelectNodeType]);
+
+    // Agent type specific drag handlers
+    const onUserDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "user_proxy");
+        },
+        [onDragStart],
+    );
+
+    const onAssistantDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "assistant");
+        },
+        [onDragStart],
+    );
+
+    const onRagDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "rag_user_proxy");
+        },
+        [onDragStart],
+    );
+
+    const onReasoningDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "reasoning");
+        },
+        [onDragStart],
+    );
+
+    const onCaptainDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "captain");
+        },
+        [onDragStart],
+    );
+
+    const onManagerDragStart = useCallback(
+        (event: React.DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "group_manager");
+        },
+        [onDragStart],
+    );
+
+    // Modal handlers
+    const onOpenEditModal = useCallback(() => {
         setIsEditModalOpen(true);
-    };
-    const onCloseEditModal = () => {
+    }, []);
+
+    const onCloseEditModal = useCallback(() => {
         setIsEditModalOpen(false);
-    };
+    }, []);
+
+    // Create a map of agent types to their drag handlers
+    const agentDragHandlers = useMemo(
+        () => ({
+            user_proxy: onUserDragStart,
+            assistant: onAssistantDragStart,
+            reasoning: onReasoningDragStart,
+            captain: onCaptainDragStart,
+            group_manager: onManagerDragStart,
+            rag_user_proxy: onRagDragStart,
+        }),
+        [
+            onUserDragStart,
+            onAssistantDragStart,
+            onReasoningDragStart,
+            onCaptainDragStart,
+            onManagerDragStart,
+            onRagDragStart,
+        ],
+    );
+
     return {
         flowId,
         isEditModalOpen,
@@ -65,12 +132,13 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onCloseEditModal,
         onShowAgents,
         onShowModels,
-        onShowSkills,
+        onShowTools,
         onUserDragStart,
+        onRagDragStart,
         onAssistantDragStart,
-        onManagerDragStart,
-        onSwarmDragStart,
         onReasoningDragStart,
         onCaptainDragStart,
+        onManagerDragStart,
+        agentDragHandlers,
     };
 };

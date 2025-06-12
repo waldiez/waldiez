@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable complexity */
 import diff from "microdiff";
 import { temporal } from "zundo";
 
@@ -12,11 +13,18 @@ import { WaldiezEdgeStore } from "@waldiez/store/edge";
 import { WaldiezFlowStore } from "@waldiez/store/flow";
 import { WaldiezModelStore } from "@waldiez/store/model";
 import { WaldiezNodeStore } from "@waldiez/store/node";
-import { WaldiezSkillStore } from "@waldiez/store/skill";
+import { WaldiezToolStore } from "@waldiez/store/tool";
 import { WaldiezState, WaldiezStoreProps } from "@waldiez/store/types";
 import { getId } from "@waldiez/utils";
 
-// eslint-disable-next-line complexity
+/**
+ * createWaldiezStore
+ * Creates a new Waldiez zustand store.
+ * @param props - The props to create the store with
+ * @see {@link WaldiezStoreProps}
+ * @see {@link WaldiezState}
+ * @returns A new Waldiez store
+ */
 export const createWaldiezStore = (props: WaldiezStoreProps) => {
     const {
         flowId = `wf-${getId()}`,
@@ -66,7 +74,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 onConvert,
                 ...WaldiezAgentStore.create(get, set),
                 ...WaldiezModelStore.create(get, set),
-                ...WaldiezSkillStore.create(get, set),
+                ...WaldiezToolStore.create(get, set),
                 ...WaldiezNodeStore.create(get, set),
                 ...WaldiezEdgeStore.create(get, set),
                 ...WaldiezFlowStore.create(get, set),
@@ -90,6 +98,14 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
     );
 };
 
+/**
+ * zundoEquality
+ * Custom equality function for zundo to compare past and current state.
+ * It checks if the changes are significant enough to warrant a new history entry.
+ * @param pastState - The previous state of the Waldiez store.
+ * @param currentState - The current state of the Waldiez store.
+ * @returns true if the states are considered equal, false otherwise.
+ */
 const zundoEquality = (pastState: Partial<WaldiezState>, currentState: Partial<WaldiezState>) => {
     const diffs = diff(pastState, currentState);
     // only check nodes[n].data and edges[n].data

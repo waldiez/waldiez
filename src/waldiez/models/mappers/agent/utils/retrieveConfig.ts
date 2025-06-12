@@ -4,6 +4,13 @@
  */
 import { WaldiezRagUserRetrieveConfig, defaultRetrieveConfig } from "@waldiez/models/Agent/RagUser";
 
+/**
+ * getRetrieveConfig
+ * Extracts the retrieval configuration from the provided JSON object.
+ * If not found, returns a default configuration.
+ * @param json - The JSON object to extract the retrieval configuration from.
+ * @returns - The WaldiezRagUserRetrieveConfig object.
+ */
 export const getRetrieveConfig: (json: { [key: string]: any }) => WaldiezRagUserRetrieveConfig = json => {
     if (typeof json !== "object") {
         return defaultRetrieveConfig;
@@ -50,9 +57,16 @@ export const getRetrieveConfig: (json: { [key: string]: any }) => WaldiezRagUser
         customTextTypes: getCustomTextTypes(jsonData),
         recursive: getRecursive(jsonData),
         distanceThreshold: getDistanceThreshold(jsonData),
-        n_results: getNResults(jsonData),
+        nResults: getNResults(jsonData),
     };
 };
+
+/**
+ * Utility functions to extract various configurations from a JSON object.
+ * These functions are used to parse and validate the configuration settings for a retrieval system.
+ * @param json - The JSON object containing the configuration settings.
+ * @returns - The parsed configuration settings.
+ */
 
 const getTask = (json: { [key: string]: any }) => {
     let task: "code" | "qa" | "default" = "default";
@@ -118,6 +132,28 @@ const getDbConfigConnectionUrl = (json: { [key: string]: any }) => {
     return connectionUrl;
 };
 
+const getDbConfigWaitUntilIndexReady = (json: { [key: string]: any }) => {
+    let waitUntilIndexReady = null;
+    if ("waitUntilIndexReady" in json && typeof json.waitUntilIndexReady === "boolean") {
+        waitUntilIndexReady = json.waitUntilIndexReady;
+    }
+    return waitUntilIndexReady;
+};
+const getDbConfigWaitUntilDocumentReady = (json: { [key: string]: any }) => {
+    let waitUntilDocumentReady = null;
+    if ("waitUntilDocumentReady" in json && typeof json.waitUntilDocumentReady === "boolean") {
+        waitUntilDocumentReady = json.waitUntilDocumentReady;
+    }
+    return waitUntilDocumentReady;
+};
+const getDbConfigMetadata = (json: { [key: string]: any }) => {
+    let metadata = null;
+    if ("metadata" in json && typeof json.metadata === "object" && json.metadata) {
+        metadata = json.metadata;
+    }
+    return metadata;
+};
+
 const getDbConfig = (json: { [key: string]: any }) => {
     let dbConfig = {
         model: "all-MiniLM-L6-v2",
@@ -125,6 +161,9 @@ const getDbConfig = (json: { [key: string]: any }) => {
         useLocalStorage: false,
         localStoragePath: null as string | null,
         connectionUrl: null as string | null,
+        waitUntilIndexReady: null as boolean | null,
+        waitUntilDocumentReady: null as boolean | null,
+        metadata: null as { [key: string]: unknown } | null,
     };
     if ("dbConfig" in json && typeof json.dbConfig === "object") {
         dbConfig = {
@@ -133,6 +172,9 @@ const getDbConfig = (json: { [key: string]: any }) => {
             useLocalStorage: getDbConfigUseLocalStorage(json.dbConfig),
             localStoragePath: getDbConfigLocalStoragePath(json.dbConfig),
             connectionUrl: getDbConfigConnectionUrl(json.dbConfig),
+            waitUntilIndexReady: getDbConfigWaitUntilIndexReady(json.dbConfig),
+            waitUntilDocumentReady: getDbConfigWaitUntilDocumentReady(json.dbConfig),
+            metadata: getDbConfigMetadata(json.dbConfig),
         };
     }
     return dbConfig;
@@ -320,8 +362,8 @@ const getDistanceThreshold = (json: { [key: string]: any }) => {
 
 const getNResults = (json: { [key: string]: any }) => {
     let nResults: number | null = null;
-    if ("n_results" in json && typeof json.n_results === "number") {
-        nResults = json.n_results;
+    if ("nResults" in json && typeof json.nResults === "number") {
+        nResults = json.nResults;
     }
     return nResults;
 };

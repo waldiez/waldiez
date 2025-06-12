@@ -5,6 +5,7 @@
 import assistantWebp from "@waldiez/assets/assistant.webp";
 import captainWebp from "@waldiez/assets/captain.webp";
 import azure from "@waldiez/assets/logos/azure.svg";
+import bedrock from "@waldiez/assets/logos/bedrock.svg";
 import anthropic from "@waldiez/assets/logos/claude.svg";
 import cohere from "@waldiez/assets/logos/cohere.svg";
 import deepseek from "@waldiez/assets/logos/deepseek.svg";
@@ -15,13 +16,18 @@ import nim from "@waldiez/assets/logos/nim.svg";
 import openai from "@waldiez/assets/logos/openai.svg";
 import together from "@waldiez/assets/logos/together.svg";
 import managerWebp from "@waldiez/assets/manager.webp";
+import ragWebp from "@waldiez/assets/rag.webp";
 import reasoningWebp from "@waldiez/assets/reasoning.webp";
-import swarmAgentWebp from "@waldiez/assets/swarm.webp";
 import userWebp from "@waldiez/assets/user.webp";
 
+/**
+ * A collection of logos used in Waldiez.
+ * These logos represent various AI providers and are used in the UI.
+ */
 export const LOGOS = {
     openai,
     azure,
+    bedrock,
     deepseek,
     google,
     gemini: google,
@@ -33,13 +39,15 @@ export const LOGOS = {
     nim,
     other: openai,
 };
+/**
+ * A collection of agent icons used in Waldiez.
+ * These icons represent different roles in the system and are used in the UI.
+ */
 export const AGENT_ICONS = {
-    user: userWebp,
-    rag_user: userWebp,
+    user_proxy: userWebp,
+    rag_user_proxy: ragWebp,
     captain: captainWebp,
     assistant: assistantWebp,
-    manager: managerWebp,
-    swarm: swarmAgentWebp,
     reasoning: reasoningWebp,
-    swarm_container: userWebp,
+    group_manager: managerWebp,
 };

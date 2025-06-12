@@ -1,0 +1,8 @@
+*
+!*/
+!**/*.waldiez
+!**/*.py
+!**/*.ipynb
+**/*_api_keys.py
+**/*_secrets.py
+dev/

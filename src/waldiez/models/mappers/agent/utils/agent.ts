@@ -13,13 +13,25 @@ import {
     WaldiezAgentRagUserData,
     WaldiezAgentReasoning,
     WaldiezAgentReasoningData,
-    WaldiezAgentSwarm,
-    WaldiezAgentSwarmData,
     WaldiezAgentUserProxy,
     WaldiezAgentUserProxyData,
 } from "@waldiez/models";
 import { WaldiezAgent, WaldiezAgentData, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
 
+/**
+ * Creates a Waldiez agent based on the provided agent type and data.
+ * @param agentType - The type of the agent (e.g., user_proxy, assistant, rag_user_proxy, reasoning, captain, group_manager).
+ * @param id - The unique identifier for the agent.
+ * @param name - The name of the agent.
+ * @param description - A brief description of the agent.
+ * @param tags - An array of tags associated with the agent.
+ * @param requirements - An array of requirements for the agent.
+ * @param createdAt - The creation date of the agent.
+ * @param updatedAt - The last update date of the agent.
+ * @param data - The specific data associated with the agent type.
+ * @param rest - Any additional properties that do not fit into the standard agent structure.
+ * @returns An instance of the appropriate Waldiez agent class based on the agent type.
+ */
 export const getAgent = (
     agentType: WaldiezNodeAgentType,
     id: string,
@@ -32,7 +44,7 @@ export const getAgent = (
     data: WaldiezAgentData,
     rest: { [key: string]: any },
 ) => {
-    if (agentType === "user") {
+    if (agentType === "user_proxy") {
         return new WaldiezAgentUserProxy({
             id,
             agentType,
@@ -60,21 +72,7 @@ export const getAgent = (
             rest,
         });
     }
-    if (agentType === "manager") {
-        return new WaldiezAgentGroupManager({
-            id,
-            agentType,
-            name,
-            description,
-            tags,
-            requirements,
-            createdAt,
-            updatedAt,
-            data: data as WaldiezAgentGroupManagerData,
-            rest,
-        });
-    }
-    if (agentType === "rag_user") {
+    if (agentType === "rag_user_proxy") {
         return new WaldiezAgentRagUser({
             id,
             agentType,
@@ -85,20 +83,6 @@ export const getAgent = (
             createdAt,
             updatedAt,
             data: data as WaldiezAgentRagUserData,
-            rest,
-        });
-    }
-    if (agentType === "swarm") {
-        return new WaldiezAgentSwarm({
-            id,
-            agentType,
-            name,
-            description,
-            tags,
-            requirements,
-            createdAt,
-            updatedAt,
-            data: data as WaldiezAgentSwarmData,
             rest,
         });
     }
@@ -127,6 +111,20 @@ export const getAgent = (
             createdAt,
             updatedAt,
             data: data as WaldiezAgentCaptainData,
+            rest,
+        });
+    }
+    if (agentType === "group_manager") {
+        return new WaldiezAgentGroupManager({
+            id,
+            agentType,
+            name,
+            description,
+            tags,
+            requirements,
+            createdAt,
+            updatedAt,
+            data: data as WaldiezAgentGroupManagerData,
             rest,
         });
     }

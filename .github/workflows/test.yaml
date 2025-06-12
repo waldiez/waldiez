@@ -21,12 +21,30 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
+
+      - name: install lcov
+        if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
+        run: sudo apt update && sudo apt install -y lcov
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/AppData/Local/pip/Cache
+            ~/Library/Caches/pip
+          key: pip-test-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            pip-test-${{ runner.os }}-py${{ matrix.python-version }}-
+            pip-test-${{ runner.os }}-
 
       - name: Install py dependencies
         run: |
@@ -36,25 +54,43 @@ jobs:
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Cache bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-test-${{ runner.os }}-${{ hashFiles('package.json', 'bun.lock') }}
+          restore-keys: |
+            bun-test-${{ runner.os }}-
+
       - name: Install ts dependencies
         run: bun install
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/Library/Caches/ms-playwright
+            ~/AppData/Local/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
 
       - name: Prepare Playwright
         run: npx playwright install --with-deps chromium
 
       - name: Run tests
         run: |
-          bun run test
           python scripts/test.py
-      - name: install lcov
-        run: sudo apt update && sudo apt install -y lcov
+          bun run test
+
+      - name: Report to Coveralls
+        # don't spam coveralls with multiple reports
         if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
-        # we need to merge the two .lcov files
-        # - name: Report to Coveralls
-        #   # don't spam coveralls with multiple reports
-        #   if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
-        #   uses: coverallsapp/github-action@v2
-        #   with:
-        #     github-token: ${{ secrets.GITHUB_TOKEN }}
-        #     path-to-lcov: ./coverage/lcov.info
-        #     fail-on-error: false
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
+          fail-on-error: false

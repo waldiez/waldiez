@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { flow, flowId } from "../../../flow/data";
-import { renderFlow } from "../common";
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import { flow, flowId } from "../../../flow/data";
+import { renderFlow } from "../common";
 
 afterEach(() => {
     vi.resetAllMocks();
@@ -31,9 +32,9 @@ export const loadFlow = async () => {
 };
 
 describe("Import flow modal load step", () => {
-    it("should open and close the modal", () => {
-        act(() => {
-            renderFlow();
+    it("should open and close the modal", async () => {
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
@@ -46,14 +47,14 @@ describe("Import flow modal load step", () => {
         expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
     it("should load a flow from a file", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         await loadFlow();
     });
     it("should clear the loaded flow data", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         await loadFlow();
         const clearButton = screen.getByTestId("clear-loaded-flow-data");
@@ -62,8 +63,8 @@ describe("Import flow modal load step", () => {
         expect(screen.queryByTestId(`import-flow-modal-preview-step-${flowId}-view`)).not.toBeTruthy();
     });
     it("should close with the back button", async () => {
-        act(() => {
-            renderFlow();
+        await act(async () => {
+            await renderFlow();
         });
         await loadFlow();
         let backButton = screen.getByTestId("wizard-back-btn");

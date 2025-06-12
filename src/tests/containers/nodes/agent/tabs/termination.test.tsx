@@ -2,17 +2,18 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../common";
-import { agentId, flowId } from "../data";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
 
+import { renderAgent, submitAgentChanges } from "../common";
+import { agentId, flowId } from "../data";
+
 const goToTerminationTab = () => {
     // Click on the Termination tab
-    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-termination-${agentId}`);
+    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-termination`);
     expect(terminationTab).toBeInTheDocument();
     fireEvent.click(terminationTab);
 };
@@ -26,7 +27,7 @@ const terminationOverrides = {
 
 describe("Termination tab", () => {
     it("should allow changing the termination type", async () => {
-        renderAgent("user", {
+        renderAgent("assistant", {
             openModal: true,
         });
         goToTerminationTab();
@@ -63,20 +64,24 @@ describe("Termination tab", () => {
         // Check that the termination type has been changed
         expect(terminationTypeSelect).toHaveValue("method");
 
+        await waitFor(() => {
+            expect(screen.queryByTestId("mocked-monaco-editor")).toBeInTheDocument();
+        });
         // Change the termination method
         const terminationMethodEditor = screen.getByTestId("mocked-monaco-editor");
-        expect(terminationMethodEditor).toBeInTheDocument();
-        await userEvent.type(terminationMethodEditor, 'print("Hello, World!")');
+        // expect(terminationMethodEditor).toBeInTheDocument();
         fireEvent.change(terminationMethodEditor, {
             target: { value: 'print("Hello, World!")' },
         });
         // Check that the termination method has been changed
-        expect(terminationMethodEditor).toHaveValue('print("Hello, World!")');
+        await waitFor(() => {
+            expect(terminationMethodEditor).toHaveValue('print("Hello, World!")');
+        });
         submitAgentChanges();
     });
 
     it("should allow changing the termination criterion", async () => {
-        renderAgent("rag_user", {
+        renderAgent("assistant", {
             openModal: true,
         });
         goToTerminationTab();
@@ -88,25 +93,28 @@ describe("Termination tab", () => {
         fireEvent.change(terminationTypeSelect, {
             target: { label: "Keyword", value: "keyword" },
         });
-
-        // Check that the termination type has been changed
-        expect(terminationTypeSelect).toHaveValue("keyword");
+        await waitFor(() => {
+            // Check that the termination type has been changed
+            expect(terminationTypeSelect).toHaveValue("keyword");
+            expect(screen.queryByLabelText("Termination Criterion:")).toBeInTheDocument();
+        });
 
         // Select the termination criterion
         const terminationCriterionSelect = screen.getByLabelText("Termination Criterion:");
-        expect(terminationCriterionSelect).toBeInTheDocument();
         await selectEvent.select(terminationCriterionSelect, "Keyword is the last word");
         fireEvent.change(terminationCriterionSelect, {
             target: { label: "Keyword is the last word", value: "ending" },
         });
 
-        // Check that the termination criterion has been changed
-        expect(terminationCriterionSelect).toHaveValue("ending");
+        await waitFor(() => {
+            // Check that the termination criterion has been changed
+            expect(terminationCriterionSelect).toHaveValue("ending");
+        });
         submitAgentChanges();
     });
 
     it("should allow to add a termination keyword", async () => {
-        renderAgent("user", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { termination: terminationOverrides },
         });
@@ -115,11 +123,16 @@ describe("Termination tab", () => {
         // Add a termination keyword
         const terminationKeywordInput = screen.getByTestId("new-list-entry-termination-keyword-item");
         expect(terminationKeywordInput).toBeInTheDocument();
-        await userEvent.type(terminationKeywordInput, "STOP");
+        fireEvent.change(terminationKeywordInput, {
+            target: { value: "STOP" },
+        });
         const addTerminationKeywordButton = screen.getByTestId("add-list-entry-termination-keyword-button");
         expect(addTerminationKeywordButton).toBeInTheDocument();
         fireEvent.click(addTerminationKeywordButton);
 
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-termination-keyword-2")).toBeInTheDocument();
+        });
         // Check that the termination keyword has been added
         const terminationKeyword = screen.getByTestId("list-entry-item-termination-keyword-2");
         expect(terminationKeyword).toHaveValue("STOP");
@@ -138,14 +151,14 @@ describe("Termination tab", () => {
         expect(deleteTerminationKeywordButton).toBeInTheDocument();
         fireEvent.click(deleteTerminationKeywordButton);
 
-        // Check that the termination keyword has been deleted
-        const terminationKeyword = screen.queryByTestId("list-entry-item-termination-keyword-1");
-        expect(terminationKeyword).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.queryByTestId("list-entry-item-termination-keyword-1")).not.toBeInTheDocument();
+        });
         submitAgentChanges();
     });
 
     it("should allow changing a termination keyword", async () => {
-        renderAgent("rag_user", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: { termination: terminationOverrides },
         });
@@ -154,9 +167,13 @@ describe("Termination tab", () => {
         // Change a termination keyword
         const terminationKeywordInput = screen.getByTestId("list-entry-item-termination-keyword-0");
         expect(terminationKeywordInput).toBeInTheDocument();
-        await userEvent.type(terminationKeywordInput, "_KEY");
+        await userEvent.clear(terminationKeywordInput);
 
-        // Check that the termination keyword has been changed
-        expect(terminationKeywordInput).toHaveValue("TERMINATE_KEY");
+        fireEvent.change(terminationKeywordInput, { target: { value: "TERMINATE_KEY" } });
+
+        await waitFor(() => {
+            // Check that the termination keyword has been changed
+            expect(terminationKeywordInput).toHaveValue("TERMINATE_KEY");
+        });
     });
 });

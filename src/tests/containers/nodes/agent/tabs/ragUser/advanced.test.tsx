@@ -2,25 +2,26 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../../common";
-import { agentId, flowId } from "../../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { renderAgent, submitAgentChanges } from "../../common";
+import { agentId, flowId } from "../../data";
+
 const goToAdvancedTab = () => {
-    renderAgent("rag_user", {
+    renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
-    fireEvent.click(ragUserTab);
-    const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-advanced`);
+    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    // fireEvent.click(ragUserTab);
+    const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-advanced`);
     fireEvent.click(advancedTab);
 };
 
 describe("Rag User tab Advanced", () => {
     it("should render the Rag User tab Advanced", async () => {
         goToAdvancedTab();
-        const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}-advanced`);
+        const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-advanced`);
         expect(advancedTab).toBeInTheDocument();
     });
     it("should change the customized prompt", async () => {

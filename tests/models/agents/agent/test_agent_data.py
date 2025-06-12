@@ -2,28 +2,20 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents.agent.agent_data.*."""
 
-from waldiez.models.agents.agent.agent_data import WaldiezAgentData
-from waldiez.models.agents.agent.teachability import WaldiezAgentTeachability
 from waldiez.models.agents.agent.termination_message import (
     WaldiezAgentTerminationMessage,
 )
+from waldiez.models.agents.assistant.assistant_data import WaldiezAssistantData
 
 
 def test_waldiez_agent_data() -> None:
     """Test WaldiezAgentData."""
-    agent_data = WaldiezAgentData(
+    agent_data = WaldiezAssistantData(
         system_message="system_message",
         human_input_mode="NEVER",
         code_execution_config=False,
         agent_default_auto_reply="auto_reply",
         max_consecutive_auto_reply=5,
-        teachability=WaldiezAgentTeachability(
-            enabled=False,
-            verbosity=0,
-            reset_db=False,
-            recall_threshold=0.0,
-            max_num_retrievals=0,
-        ),
         termination=WaldiezAgentTerminationMessage(
             type="none",
             keywords=[],
@@ -31,7 +23,7 @@ def test_waldiez_agent_data() -> None:
             method_content=None,
         ),
         model_ids=["wm-1"],
-        skills=[],
+        tools=[],
         nested_chats=[],
     )
     assert agent_data.system_message == "system_message"
@@ -43,26 +35,19 @@ def test_waldiez_agent_data() -> None:
     assert not agent_data.termination.keywords
     assert agent_data.termination.criterion is None
     assert agent_data.termination.method_content is None
-    assert agent_data.model_ids == ["wm-1"]
-    assert not agent_data.skills
+    assert agent_data.model_ids[0] == "wm-1"
+    assert not agent_data.tools
     assert not agent_data.nested_chats
 
 
 def test_is_multimodal() -> None:
     """Test is_multimodal."""
-    agent_data = WaldiezAgentData(
+    agent_data = WaldiezAssistantData(
         system_message="system_message",
         human_input_mode="NEVER",
         code_execution_config=False,
         agent_default_auto_reply="auto_reply",
         max_consecutive_auto_reply=5,
-        teachability=WaldiezAgentTeachability(
-            enabled=False,
-            verbosity=0,
-            reset_db=False,
-            recall_threshold=0.0,
-            max_num_retrievals=0,
-        ),
         termination=WaldiezAgentTerminationMessage(
             type="none",
             keywords=[],
@@ -70,7 +55,7 @@ def test_is_multimodal() -> None:
             method_content=None,
         ),
         model_ids=["wm-1"],
-        skills=[],
+        tools=[],
         nested_chats=[],
         is_multimodal=True,
     )

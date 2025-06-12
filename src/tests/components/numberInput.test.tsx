@@ -12,6 +12,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 1,
             min: 0,
             max: 100,
@@ -25,6 +26,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: <div>test</div>,
+            name: "test",
             value: 1,
             min: 0,
             max: 100,
@@ -38,6 +40,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 1,
             min: 0,
             max: 100,
@@ -52,6 +55,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 1,
             min: 0,
             max: 100,
@@ -66,6 +70,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 1,
             min: 0,
             max: 100,
@@ -82,6 +87,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 1,
             min: 0,
             max: 100,
@@ -100,6 +106,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 90,
             min: 0,
             max: 100,
@@ -117,6 +124,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 90,
             min: 0,
             max: 100,
@@ -134,6 +142,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 10,
             min: 0,
             max: 100,
@@ -151,6 +160,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 10,
             min: 0,
             max: 100,
@@ -168,6 +178,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 100,
             min: 0,
             max: 100,
@@ -182,6 +193,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 100,
             min: 0,
             max: 100,
@@ -197,6 +209,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 0,
             min: 0,
             max: 100,
@@ -211,6 +224,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: 0,
             min: 0,
             max: 100,
@@ -226,6 +240,7 @@ describe("NumberInput", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",
+            name: "test",
             value: null,
             min: 0,
             max: 100,

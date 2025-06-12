@@ -4,7 +4,12 @@
 
 from .extra_requirements import get_models_extra_requirements
 from .model import DEFAULT_BASE_URLS, MODEL_NEEDS_BASE_URL, WaldiezModel
-from .model_data import WaldiezModelAPIType, WaldiezModelData, WaldiezModelPrice
+from .model_data import (
+    WaldiezModelAPIType,
+    WaldiezModelAWS,
+    WaldiezModelData,
+    WaldiezModelPrice,
+)
 
 __all__ = [
     "get_models_extra_requirements",
@@ -14,4 +19,5 @@ __all__ = [
     "WaldiezModelData",
     "WaldiezModelPrice",
     "WaldiezModelAPIType",
+    "WaldiezModelAWS",
 ]

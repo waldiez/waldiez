@@ -7,7 +7,7 @@
 import json
 from io import StringIO
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 import pandas as pd
 import pytest
@@ -22,12 +22,12 @@ from waldiez.running.gen_seq_diagram import (
 
 
 @pytest.fixture(name="sample_event_dicts")
-def sample_event_dicts_fixture() -> List[Dict[str, str]]:
+def sample_event_dicts_fixture() -> list[dict[str, str]]:
     """Fixture to provide a sample events dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         Sample events dictionary.
     """
     events = [
@@ -112,13 +112,13 @@ def sample_event_dicts_fixture() -> List[Dict[str, str]]:
 
 @pytest.fixture(name="sample_events_csv")
 def sample_events_csv_fixture(
-    sample_event_dicts: List[Dict[str, Any]],
+    sample_event_dicts: list[dict[str, Any]],
 ) -> StringIO:
     """Fixture to provide a sample CSV input.
 
     Parameters
     ----------
-    sample_event_dicts : List[Dict[str, Any]]
+    sample_event_dicts : list[dict[str, Any]]
         Sample events dictionaries.
 
     Returns
@@ -134,12 +134,12 @@ def sample_events_csv_fixture(
     return csv_file
 
 
-def test_get_json_state(sample_event_dicts: List[Dict[str, Any]]) -> None:
+def test_get_json_state(sample_event_dicts: list[dict[str, Any]]) -> None:
     """Test get_json_state function.
 
     Parameters
     ----------
-    sample_event_dicts : List[Dict[str, Any]]
+    sample_event_dicts : list[dict[str, Any]]
         Sample event dictionaries.
     """
     invalid_json = '{"invalid": "json", "not : "valid"}'
@@ -264,13 +264,13 @@ def test_generate_sequence_diagram_with_existing_csv(tmp_path: Path) -> None:
 
 
 def test_generate_sequence_diagram_with_json(
-    sample_event_dicts: List[Dict[str, Any]], tmp_path: Path
+    sample_event_dicts: list[dict[str, Any]], tmp_path: Path
 ) -> None:
     """Test generate_sequence_diagram function with JSON input.
 
     Parameters
     ----------
-    sample_event_dicts : List[Dict[str, Any]]
+    sample_event_dicts : list[dict[str, Any]]
         Sample event dictionaries.
     tmp_path : Path
         Temporary path.

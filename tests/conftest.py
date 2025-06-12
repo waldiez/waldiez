@@ -3,12 +3,13 @@
 """Common fixtures for tests."""
 
 import os
+from pathlib import Path
+from typing import Generator
 
 import pytest
 
 from waldiez.models import (
     WaldiezAgents,
-    WaldiezAgentTeachability,
     WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
@@ -19,19 +20,22 @@ from waldiez.models import (
     WaldiezChatMessage,
     WaldiezChatNested,
     WaldiezChatSummary,
+    WaldiezDefaultCondition,
     WaldiezFlow,
     WaldiezFlowData,
     WaldiezModel,
-    WaldiezSwarmOnConditionAvailable,
+    WaldiezTransitionAvailability,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
+
+ROOT_DIR = Path(__file__).parent.parent
 
 
 def get_runnable_flow() -> WaldiezFlow:
     """Get a runnable WaldiezFlow instance.
 
-    without models and skills
+    without models and tools
 
     Returns
     -------
@@ -41,7 +45,7 @@ def get_runnable_flow() -> WaldiezFlow:
     user = WaldiezUserProxy(
         id="wa-1",
         name="user",
-        agent_type="user",
+        agent_type="user_proxy",
         description="User Agent",
         type="agent",
         data=WaldiezUserProxyData(
@@ -57,15 +61,8 @@ def get_runnable_flow() -> WaldiezFlow:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
         ),
         tags=["user"],
         requirements=[],
@@ -91,15 +88,8 @@ def get_runnable_flow() -> WaldiezFlow:
                 method_content=None,
             ),
             model_ids=[],
-            skills=[],
+            tools=[],
             nested_chats=[],
-            teachability=WaldiezAgentTeachability(
-                enabled=False,
-                verbosity=0,
-                reset_db=False,
-                recall_threshold=1.5,
-                max_num_retrievals=10,
-            ),
         ),
         tags=["assistant"],
         requirements=[],
@@ -108,11 +98,14 @@ def get_runnable_flow() -> WaldiezFlow:
     )
     chat = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
             name="chat_1",
             description="Description of chat 1",
-            source="wa-1",
-            target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             position=-1,
             order=0,
             clear_history=True,
@@ -133,23 +126,19 @@ def get_runnable_flow() -> WaldiezFlow:
                 message=None,
                 reply=None,
             ),
-            available=WaldiezSwarmOnConditionAvailable(
-                type="none",
-                value=None,
-            ),
             real_source=None,
             real_target=None,
             prerequisites=[],
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agents = WaldiezAgents(
-        users=[user],
-        assistants=[assistant],
-        managers=[],
-        rag_users=[],
-        swarm_agents=[],
-        reasoning_agents=[],
-        captain_agents=[],
+        userProxyAgents=[user],
+        assistantAgents=[assistant],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
     )
     flow = WaldiezFlow(
         id="wf-1",
@@ -162,7 +151,7 @@ def get_runnable_flow() -> WaldiezFlow:
             viewport={},
             agents=agents,
             models=[],
-            skills=[],
+            tools=[],
             chats=[chat],
             is_async=False,
         ),
@@ -175,11 +164,45 @@ def get_runnable_flow() -> WaldiezFlow:
     return flow
 
 
+def _cleanup_files() -> None:
+    """Cleanup files created during tests."""
+    extra_files = [
+        "flow_name.mmd",
+        "captain_agent_llm_config.json",
+        "captain_agent_agent_lib.json",
+    ]
+    for file in extra_files:
+        file_path = ROOT_DIR / file
+        if file_path.exists():
+            try:
+                file_path.unlink()
+            except OSError:
+                print(
+                    f"Failed to remove {file_path}."
+                    "It might be in use or read-only."
+                )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def before_and_after_tests() -> Generator[None, None, None]:
+    """Fixture to run before and after all tests.
+
+    Yields
+    ------
+    None
+        Nothing.
+    """
+    # Code to run before all tests
+    _cleanup_files()
+    yield
+    _cleanup_files()
+
+
 @pytest.fixture(scope="function")
 def waldiez_flow() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance.
 
-    without models and skills
+    without models and tools
 
     Returns
     -------
@@ -193,7 +216,7 @@ def waldiez_flow() -> WaldiezFlow:
 def waldiez_flow_no_human_input() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance with no human input.
 
-    without models and skills
+    without models and tools
 
     Returns
     -------
@@ -202,7 +225,9 @@ def waldiez_flow_no_human_input() -> WaldiezFlow:
     """
     flow = get_runnable_flow()
     dumped = flow.model_dump(by_alias=True)
-    dumped["data"]["agents"]["users"][0]["data"]["humanInputMode"] = "NEVER"
+    user_proxy = dumped["data"]["agents"]["userProxyAgents"][0]
+    user_proxy["data"]["humanInputMode"] = "NEVER"
+    dumped["data"]["agents"]["userProxyAgents"] = [user_proxy]
     dumped["data"]["chats"][0]["data"]["maxTurns"] = 1
     return WaldiezFlow(**dumped)
 
@@ -219,7 +244,7 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
         A WaldiezFlow instance.
     """
     flow = get_runnable_flow()
-    flow.data.agents.assistants = []
+    flow.data.agents.assistantAgents = []
     flow.data.models = [
         WaldiezModel(
             id="wm-1",
@@ -234,7 +259,7 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
         ),
     ]
     os.environ["OPENAI_API_KEY"] = "sk-proj-something"
-    flow.data.agents.captain_agents = [
+    flow.data.agents.captainAgents = [
         WaldiezCaptainAgent(
             id="wa-2",
             type="agent",
@@ -245,12 +270,14 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
             requirements=[],
             created_at="2021-01-01T00:00:00.000Z",
             updated_at="2021-01-01T00:00:00.000Z",
-            data=WaldiezCaptainAgentData(
+            data=WaldiezCaptainAgentData(  # pyright: ignore
                 model_ids=["wm-1"],
             ),
         )
     ]
     dumped = flow.model_dump(by_alias=True)
-    dumped["data"]["agents"]["users"][0]["data"]["humanInputMode"] = "NEVER"
+    user_proxy = dumped["data"]["agents"]["userProxyAgents"][0]
+    user_proxy["data"]["humanInputMode"] = "NEVER"
+    dumped["data"]["agents"]["userProxyAgents"] = [user_proxy]
     dumped["data"]["chats"][0]["data"]["maxTurns"] = 1
     return flow

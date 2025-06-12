@@ -7,7 +7,7 @@ from typing import Iterator
 
 from waldiez.models.agents import (
     WaldiezAgent,
-    WaldiezRagUser,
+    WaldiezRagUserProxy,
     get_captain_agent_extra_requirements,
     get_retrievechat_extra_requirements,
 )
@@ -16,7 +16,7 @@ from waldiez.models.agents import (
 def test_get_retrievechat_extra_requirements() -> None:
     """Test get_retrievechat_extra_requirements."""
     agents_list = [
-        WaldiezRagUser(
+        WaldiezRagUserProxy(
             id="wa-1",
             name="rag_user",
             data={  # type: ignore
@@ -25,7 +25,7 @@ def test_get_retrievechat_extra_requirements() -> None:
                 },
             },
         ),
-        WaldiezRagUser(
+        WaldiezRagUserProxy(
             id="wa-2",
             name="rag_user",
             data={  # type: ignore
@@ -34,7 +34,7 @@ def test_get_retrievechat_extra_requirements() -> None:
                 },
             },
         ),
-        WaldiezRagUser(
+        WaldiezRagUserProxy(
             id="wa-3",
             name="rag_user",
             data={  # type: ignore
@@ -43,7 +43,7 @@ def test_get_retrievechat_extra_requirements() -> None:
                 },
             },
         ),
-        WaldiezRagUser(
+        WaldiezRagUserProxy(
             id="wa-4",
             name="rag_user",
             data={  # type: ignore
@@ -55,7 +55,7 @@ def test_get_retrievechat_extra_requirements() -> None:
     ]
     agents_iter: Iterator[WaldiezAgent] = iter(agents_list)
     expected_packages = [
-        "protobuf==4.25.3",
+        "protobuf==5.29.3",
         "chromadb>=0.5.23",
         "sentence_transformers",
         "pypdf",

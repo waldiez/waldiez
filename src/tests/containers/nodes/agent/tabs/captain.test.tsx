@@ -2,15 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../common";
-import { agentId, flowId } from "../data";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
+import { renderAgent, submitAgentChanges } from "../common";
+import { agentId, flowId } from "../data";
+
 const goToCaptainTab = () => {
     // Click on the Captain tab
-    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-captain-${agentId}`);
+    const terminationTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-captain`);
     expect(terminationTab).toBeInTheDocument();
     fireEvent.click(terminationTab);
 };
@@ -28,26 +29,12 @@ describe("Captain tab", () => {
         expect(maxRoundInput).toHaveValue(10);
         // Change the max round
         fireEvent.change(maxRoundInput, { target: { value: "20" } });
-        // Check that the max round has been changed
-        expect(maxRoundInput).toHaveValue(20);
+        await waitFor(() => {
+            // Check that the max round has been changed
+            expect(maxRoundInput).toHaveValue(20);
+        });
         submitAgentChanges();
     });
-    // it("should allow changing the max turns", async () => {
-    //     renderAgent("captain", {
-    //         openModal: true,
-    //     });
-    //     goToCaptainTab();
-
-    //     // Check that the max turns is 5 (default)
-    //     const maxTurnsInput = screen.getByTestId(`agent-captain-max-turns-${agentId}`);
-    //     expect(maxTurnsInput).toBeInTheDocument();
-    //     expect(maxTurnsInput).toHaveValue(5);
-    //     // Change the max turns
-    //     fireEvent.change(maxTurnsInput, { target: { value: "10" } });
-    //     // Check that the max turns has been changed
-    //     expect(maxTurnsInput).toHaveValue(10);
-    //     submitAgentChanges();
-    // });
     it("should allow enabling the agent library", async () => {
         renderAgent("captain", {
             openModal: true,
@@ -60,9 +47,10 @@ describe("Captain tab", () => {
         expect(agentLibToggle).not.toBeChecked();
         // Enable the agent library
         fireEvent.click(agentLibToggle);
-        // Check that the agent library has been enabled
-        expect(agentLibToggle).toBeChecked();
-        // submitAgentChanges(); not enabled, we need a change in the agent lib
+        await waitFor(() => {
+            // Check that the agent library has been enabled
+            expect(agentLibToggle).toBeChecked();
+        });
     });
     it("should allow uploading an agent library", async () => {
         renderAgent("captain", {
@@ -108,11 +96,13 @@ describe("Captain tab", () => {
         const agentLibFileInput = screen.getByTestId("drop-zone-file-input");
         expect(agentLibFileInput).toBeInTheDocument();
         await userEvent.upload(agentLibFileInput, agentLibFile);
-        // Check that the agent library has been uploaded
-        expect(screen.getByTestId(`agent-lib-${agentId}`)).toBeInTheDocument();
-        // title={`Agent Library (${agentLib.length} entries)`}
-        // Check that the agent library has the correct number of entries
-        expect(screen.getByText("Agent Library (2 entries)")).toBeInTheDocument();
+        await waitFor(() => {
+            // Check that the agent library has been uploaded
+            expect(screen.getByTestId(`agent-lib-${agentId}`)).toBeInTheDocument();
+            // title={`Agent Library (${agentLib.length} entries)`}
+            // Check that the agent library has the correct number of entries
+            expect(screen.getByText("Agent Library (2 entries)")).toBeInTheDocument();
+        });
         submitAgentChanges();
     });
     it("should allow disabling the agent library", async () => {
@@ -127,8 +117,10 @@ describe("Captain tab", () => {
 
         // Disable the agent library
         fireEvent.click(agentLibToggle);
-        // Check that the agent library has been disabled
-        expect(agentLibToggle).not.toBeChecked();
+        await waitFor(() => {
+            // Check that the agent library has been disabled
+            expect(agentLibToggle).not.toBeChecked();
+        });
     });
     it("should allow changing the tool lib", async () => {
         renderAgent("captain", {
@@ -142,8 +134,10 @@ describe("Captain tab", () => {
         expect(toolLibToggle).not.toBeChecked();
         // Enable the tool lib
         fireEvent.click(toolLibToggle);
-        // Check that the tool lib has been enabled
-        expect(toolLibToggle).toBeChecked();
+        await waitFor(() => {
+            // Check that the tool lib has been enabled
+            expect(toolLibToggle).toBeChecked();
+        });
         submitAgentChanges();
     });
 });

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Message Model."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -17,12 +17,12 @@ WaldiezChatMessageType = Literal[
 CALLABLE_MESSAGE = "callable_message"
 CALLABLE_MESSAGE_ARGS = ["sender", "recipient", "context"]
 CALLABLE_MESSAGE_TYPES = (
-    ["ConversableAgent", "ConversableAgent", "Dict[str, Any]"],
-    "Union[Dict[str, Any], str]",
+    ["ConversableAgent", "ConversableAgent", "dict[str, Any]"],
+    "Union[dict[str, Any], str]",
 )
 CALLABLE_MESSAGE_RAG_WITH_CARRYOVER_TYPES = (
-    ["RetrieveUserProxyAgent", "ConversableAgent", "Dict[str, Any]"],
-    "Union[Dict[str, Any], str]",
+    ["RetrieveUserProxyAgent", "ConversableAgent", "dict[str, Any]"],
+    "Union[dict[str, Any], str]",
 )
 
 
@@ -52,14 +52,14 @@ class WaldiezChatMessage(WaldiezBase):
         the `{sender}.message_generator` method will be used.
     content : Optional[str]
         The content of the message (string or method).
-    context : Dict[str, Any]
+    context : dict[str, Any]
         Extra context of the message.
     """
 
     type: Annotated[
         WaldiezChatMessageType,
         Field(
-            "none",
+            default="none",
             title="Type",
             description=(
                 "The type of the message: "
@@ -72,33 +72,43 @@ class WaldiezChatMessage(WaldiezBase):
                 "the `sender.message_generator` method will be used."
             ),
         ),
-    ]
+    ] = "none"
     use_carryover: Annotated[
         bool,
         Field(
-            False,
+            default=False,
             title="Use Carryover",
             description="Use the carryover from the context.",
         ),
-    ]
+    ] = False
     content: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             title="Content",
             description="The content of the message (string or method).",
         ),
-    ]
+    ] = None
     context: Annotated[
-        Dict[str, Any],
+        dict[str, Any],
         Field(
             default_factory=dict,
             title="Context",
             description="Extra context of the message.",
         ),
-    ]
+    ] = {}
 
     _content_body: Optional[str] = None
+
+    def is_method(self) -> bool:
+        """Check if the message is a method.
+
+        Returns
+        -------
+        bool
+            True if the message is a method, False otherwise.
+        """
+        return self.type in ("method", "rag_message_generator")
 
     @property
     def content_body(self) -> Optional[str]:
@@ -144,7 +154,7 @@ class WaldiezChatMessage(WaldiezBase):
             if not self.content:
                 self.content = ""
             if self.use_carryover:
-                content = get_last_carryover_method_content(
+                self.content = get_last_carryover_method_content(
                     text_content=self.content,
                 )
             content = self.content
@@ -162,7 +172,7 @@ class WaldiezChatMessage(WaldiezBase):
     def validate_method(
         self,
         function_name: str,
-        function_args: List[str],
+        function_args: list[str],
     ) -> str:
         """Validate a method.
 
@@ -170,7 +180,7 @@ class WaldiezChatMessage(WaldiezBase):
         ----------
         function_name : str
             The method name.
-        function_args : List[str]
+        function_args : list[str]
             The expected method arguments.
 
         Returns
@@ -219,12 +229,12 @@ def get_last_carryover_method_content(text_content: str) -> str:
         The source agent.
     recipient : ConversableAgent
         The target agent.
-    context : Dict[str, Any]
+    context : dict[str, Any]
         The context.
 
     Returns
     -------
-    Union[Dict[str, Any], str]
+    Union[dict[str, Any], str]
         The message to send using the last carryover.
     """
     carryover = context.get("carryover", "")
@@ -258,12 +268,12 @@ RAG_METHOD_WITH_CARRYOVER_BODY = '''
         The source agent.
     recipient : ConversableAgent
         The target agent.
-    context : Dict[str, Any]
+    context : dict[str, Any]
         The context.
 
     Returns
     -------
-    Union[Dict[str, Any], str]
+    Union[dict[str, Any], str]
         The message to send using the last carryover.
     """
     carryover = context.get("carryover", "")
@@ -285,7 +295,7 @@ RAG_METHOD_WITH_CARRYOVER = (
     "def callable_message(\n"
     "    sender: RetrieveUserProxyAgent,\n"
     "    recipient: ConversableAgent,\n"
-    "    context: Dict[str, Any],\n"
-    ") -> Union[Dict[str, Any], str]:"
+    "    context: dict[str, Any],\n"
+    ") -> Union[dict[str, Any], str]:"
     f"{RAG_METHOD_WITH_CARRYOVER_BODY}"
 )

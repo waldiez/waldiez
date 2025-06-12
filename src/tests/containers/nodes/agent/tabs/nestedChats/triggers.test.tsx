@@ -2,15 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../../common";
-import { agentId, flowId } from "../../data";
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
 
+import { renderAgent, submitAgentChanges } from "../../common";
+import { agentId, flowId } from "../../data";
+
 const goToNestedChatsTab = () => {
-    renderAgent("user", {
+    renderAgent("assistant", {
         openModal: true,
         includeNestedChats: true,
         dataOverrides: {
@@ -23,7 +24,7 @@ const goToNestedChatsTab = () => {
         },
     });
     // Click on the Nested Chats tab
-    const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-nestedChats-${agentId}`);
+    const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-nested`);
     expect(nestedChatsTab).toBeInTheDocument();
     fireEvent.click(nestedChatsTab);
 };
@@ -31,7 +32,7 @@ const goToNestedChatsTab = () => {
 describe("Nested Chats tab triggers", () => {
     it("should add a new trigger", async () => {
         goToNestedChatsTab();
-        const selectTrigger = screen.getByLabelText("Triggers");
+        const selectTrigger = screen.getByLabelText("Triggered by:");
         expect(selectTrigger).toBeInTheDocument();
         selectEvent.openMenu(selectTrigger);
         await selectEvent.select(selectTrigger, ["Agent 0", "Agent 1"]);

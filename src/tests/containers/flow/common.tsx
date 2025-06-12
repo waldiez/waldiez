@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, edges, flowId, nodes, updatedAt } from "./data";
 import { render } from "@testing-library/react";
 
 import { ReactFlowProvider } from "@xyflow/react";
@@ -13,6 +12,8 @@ import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { createdAt, edges, flowId, nodes, updatedAt } from "./data";
 
 export const onRun = vi.fn();
 export const onChange = vi.fn();
@@ -35,27 +36,7 @@ export const userDataTransfer = {
         if (key === "application/node") {
             return "agent";
         }
-        return "user";
-    },
-};
-
-export const managerDataTransfer = {
-    setData: vi.fn(),
-    getData: (key: string) => {
-        if (key === "application/node") {
-            return "agent";
-        }
-        return "manager";
-    },
-};
-
-export const swarmDataTransfer = {
-    setData: vi.fn(),
-    getData: (key: string) => {
-        if (key === "application/node") {
-            return "agent";
-        }
-        return "swarm";
+        return "user_proxy";
     },
 };
 
@@ -79,29 +60,32 @@ export const captainDataTransfer = {
     },
 };
 
-export const renderFlow = (
+export const renderFlow = async (
     options: {
         withLinkedModels?: boolean;
-        withLinkedSkills?: boolean;
+        withLinkedTools?: boolean;
     } = {
         withLinkedModels: false,
-        withLinkedSkills: false,
+        withLinkedTools: false,
     },
 ) => {
-    const { withLinkedModels, withLinkedSkills } = options;
+    // const container = document.createElement("div");
+    // document.body.appendChild(container);
+    // const root = createRoot(container);
+    const { withLinkedModels, withLinkedTools } = options;
     let nodesToUse = [...nodes];
     if (withLinkedModels) {
         nodesToUse = nodes.map(node => {
             if (node.type !== "agent") {
                 return node;
             }
-            if (withLinkedSkills) {
+            if (withLinkedTools) {
                 return {
                     ...node,
                     data: {
                         ...node.data,
                         modelIds: ["model-0"],
-                        skills: [{ id: "skill-0", executorId: "agent-0" }],
+                        tools: [{ id: "tool-0", executorId: "agent-0" }],
                     },
                 };
             }
@@ -114,7 +98,7 @@ export const renderFlow = (
             };
         });
     }
-    if (withLinkedSkills) {
+    if (withLinkedTools) {
         nodesToUse = nodes.map(node => {
             if (node.type !== "agent") {
                 return node;
@@ -125,7 +109,7 @@ export const renderFlow = (
                     data: {
                         ...node.data,
                         modelIds: ["model-0"],
-                        skills: [{ id: "skill-0", executorId: "agent-0" }],
+                        tools: [{ id: "tool-0", executorId: "agent-0" }],
                     },
                 };
             }
@@ -133,7 +117,7 @@ export const renderFlow = (
                 ...node,
                 data: {
                     ...node.data,
-                    skills: [{ id: "skill-0", executorId: "agent-0" }],
+                    tools: [{ id: "tool-0", executorId: "agent-0" }],
                 },
             };
         });
@@ -160,7 +144,7 @@ export const renderFlow = (
                             onConvert={onConvert}
                             onSave={onSave}
                         >
-                            <WaldiezFlowView flowId={flowId} onUserInput={onUserInput} inputPrompt={null} />
+                            <WaldiezFlowView flowId={flowId} />
                         </WaldiezProvider>
                     </SidebarProvider>
                 </ReactFlowProvider>

@@ -2,16 +2,32 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez flow data."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents import WaldiezAgents
-from ..chat import WaldiezChat
-from ..common import WaldiezBase
+from ..agents import (
+    WaldiezAgents,
+    WaldiezAgentTerminationMessage,
+    WaldiezAssistant,
+    WaldiezAssistantData,
+)
+from ..chat import (
+    WaldiezChat,
+    WaldiezChatData,
+    WaldiezChatMessage,
+    WaldiezChatNested,
+    WaldiezChatSummary,
+)
+from ..common import (
+    WaldiezBase,
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
+    now,
+)
 from ..model import WaldiezModel
-from ..skill import WaldiezSkill
+from ..tool import WaldiezTool
 
 
 class WaldiezFlowData(WaldiezBase):
@@ -19,24 +35,24 @@ class WaldiezFlowData(WaldiezBase):
 
     Attributes
     ----------
-    nodes : List[Dict[str, Any]]
+    nodes : list[dict[str, Any]]
         The nodes of the flow. We ignore this (UI-related)
-    edges : List[Dict[str, Any]]
+    edges : list[dict[str, Any]]
         The edges of the flow. We ignore this (UI-related)
-    viewport : Dict[str, Any]
+    viewport : dict[str, Any]
         The viewport of the flow. We ignore this (UI-related)
     agents : WaldiezAgents
         The agents of the flow:
-        users: List[WaldiezUserProxy]
-        assistants: List[WaldiezAssistant]
-        managers: List[WaldiezGroupManager]
-        rag_users : List[WaldiezRagUser]
+        users: list[WaldiezUserProxy]
+        assistants: list[WaldiezAssistant]
+        managers: list[WaldiezGroupManager]
+        rag_users : list[WaldiezRagUserProxy]
         See `WaldiezAgents` for more info.
-    models : List[WaldiezModel]
+    models : list[WaldiezModel]
         The models of the flow. See `WaldiezModel`.
-    skills : List[WaldiezSkill]
-        The skills of the flow. See `WaldiezSkill`.
-    chats : List[WaldiezChat]
+    tools : list[WaldiezTool]
+        The tools of the flow. See `WaldiezTool`.
+    chats : list[WaldiezChat]
         The chats of the flow. See `WaldiezChat`.
     is_async : bool
         Whether the flow is asynchronous or not.
@@ -44,32 +60,32 @@ class WaldiezFlowData(WaldiezBase):
         The seed for the cache. If None, the seed is not set. Default is 41.
     """
 
-    # the ones below (nodes,edges, viewport) we ignore
+    # we ignore the three below (nodes, edges, viewport)
     # (they for graph connections, positions, etc.)
     nodes: Annotated[
-        List[Dict[str, Any]],
+        list[dict[str, Any]],
         Field(
             default_factory=list,
             title="Nodes",
             description="The nodes of the flow",
         ),
-    ]
+    ] = []
     edges: Annotated[
-        List[Dict[str, Any]],
+        list[dict[str, Any]],
         Field(
             default_factory=list,
             title="Edges",
             description="The edges of the flow",
         ),
-    ]
+    ] = []
     viewport: Annotated[
-        Dict[str, Any],
+        dict[str, Any],
         Field(
             default_factory=dict,
             title="Viewport",
             description="The viewport of the flow",
         ),
-    ]
+    ] = {}
     # these are the ones we use.
     agents: Annotated[
         WaldiezAgents,
@@ -80,49 +96,49 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     models: Annotated[
-        List[WaldiezModel],
+        list[WaldiezModel],
         Field(
             description="The models of the flow",
             title="Models",
             default_factory=list,
         ),
-    ]
-    skills: Annotated[
-        List[WaldiezSkill],
+    ] = []
+    tools: Annotated[
+        list[WaldiezTool],
         Field(
-            description="The skills of the flow",
-            title="Skills",
+            description="The tools of the flow",
+            title="Tools",
             default_factory=list,
         ),
-    ]
+    ] = []
     chats: Annotated[
-        List[WaldiezChat],
+        list[WaldiezChat],
         Field(
             description="The chats of the flow",
             title="Chats",
             default_factory=list,
         ),
-    ]
+    ] = []
     is_async: Annotated[
         bool,
         Field(
-            False,
+            default=False,
             description="Whether the flow is asynchronous or not",
             title="Is Async",
         ),
-    ]
+    ] = False
     cache_seed: Annotated[
         Optional[int],
         Field(
-            41,
+            42,
             alias="cacheSeed",
             description=(
                 "The seed for the cache. If None, the seed is not set."
-                "Default is 41."
+                "Default is 42."
             ),
             title="Cache Seed",
         ),
-    ] = 41
+    ] = 42
 
     @model_validator(mode="after")
     def validate_flow_chats(self) -> Self:
@@ -138,7 +154,7 @@ class WaldiezFlowData(WaldiezBase):
         ValueError
             If there is a chat with a prerequisite that does not exist.
         """
-        self.chats = sorted(self.chats, key=lambda x: x.order)
+        self.chats.sort(key=lambda x: x.order)
         # in async, ag2 uses the "chat_id" field (and it must be an int):
         # ```
         #    prerequisites = []
@@ -156,7 +172,7 @@ class WaldiezFlowData(WaldiezBase):
         #         prerequisites.append((chat_id, pre_chat_id))
         #    return prerequisites
         # ```
-        id_to_chat_id: Dict[str, int] = {}
+        id_to_chat_id: dict[str, int] = {}
         for index, chat in enumerate(self.chats):
             id_to_chat_id[chat.id] = index
             chat.set_chat_id(index)
@@ -165,7 +181,7 @@ class WaldiezFlowData(WaldiezBase):
         # also update the chat prerequisites (if async)
         #  we have ids(str), not chat_ids(int)
         for chat in self.chats:
-            chat_prerequisites = []
+            chat_prerequisites: list[int] = []
             for chat_id in chat.data.prerequisites:
                 if chat_id not in id_to_chat_id:  # pragma: no cover
                     raise ValueError(
@@ -174,3 +190,154 @@ class WaldiezFlowData(WaldiezBase):
                 chat_prerequisites.append(id_to_chat_id[chat_id])
             chat.set_prerequisites(chat_prerequisites)
         return self
+
+    @classmethod
+    def default(cls) -> "WaldiezFlowData":
+        """Create a default flow data.
+
+        Returns
+        -------
+        WaldiezFlowData
+            The default flow data.
+        """
+        return cls(
+            nodes=[],
+            edges=[],
+            viewport={},
+            agents=WaldiezAgents(
+                userProxyAgents=[],
+                assistantAgents=[
+                    WaldiezAssistant(
+                        id="assistant1",
+                        name="Assistant 1",
+                        created_at=now(),
+                        updated_at=now(),
+                        data=WaldiezAssistantData(
+                            termination=WaldiezAgentTerminationMessage()
+                        ),
+                    ),
+                    WaldiezAssistant(
+                        id="assistant2",
+                        name="Assistant 2",
+                        created_at=now(),
+                        updated_at=now(),
+                        data=WaldiezAssistantData(
+                            # is_multimodal=True,  # we need an api key for this
+                            termination=WaldiezAgentTerminationMessage(),
+                        ),
+                    ),
+                ],
+                ragUserProxyAgents=[],
+                reasoningAgents=[],
+                captainAgents=[],
+            ),
+            models=[],
+            tools=[],
+            chats=[
+                WaldiezChat(
+                    id="chat1",
+                    type="chat",
+                    source="assistant1",
+                    target="assistant2",
+                    data=WaldiezChatData(
+                        name="Chat 1",
+                        order=0,
+                        position=0,
+                        source_type="assistant",
+                        target_type="assistant",
+                        summary=WaldiezChatSummary(),
+                        message=WaldiezChatMessage(
+                            type="string",
+                            content="Hello, how can I help you?",
+                        ),
+                        condition=WaldiezDefaultCondition.create(),
+                        available=WaldiezTransitionAvailability(),
+                        nested_chat=WaldiezChatNested(),
+                    ),
+                ),
+                WaldiezChat(
+                    id="chat2",
+                    type="chat",
+                    source="assistant2",
+                    target="assistant1",
+                    data=WaldiezChatData(
+                        name="Chat 2",
+                        order=1,
+                        position=1,
+                        source_type="assistant",
+                        target_type="assistant",
+                        summary=WaldiezChatSummary(),
+                        message=WaldiezChatMessage(
+                            type="string",
+                            content="Hello, I need some help.",
+                        ),
+                        condition=WaldiezDefaultCondition.create(),
+                        available=WaldiezTransitionAvailability(),
+                        nested_chat=WaldiezChatNested(),
+                        prerequisites=["chat1"],
+                    ),
+                ),
+            ],
+            is_async=False,
+            cache_seed=42,
+        )
+
+
+def get_flow_data(
+    data: dict[str, Any],
+    flow_id: Optional[str] = None,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    tags: Optional[list[str]] = None,
+    requirements: Optional[list[str]] = None,
+) -> dict[str, Any]:
+    """Get the flow from the passed data dict.
+
+    Parameters
+    ----------
+    data : dict[str, Any]
+        The data dict.
+    flow_id : Optional[str], optional
+        The flow ID, by default None.
+    name : Optional[str], optional
+        The flow name, by default None.
+    description : Optional[str], optional
+        The flow description, by default None.
+    tags : Optional[list[str]], optional
+        The flow tags, by default None.
+    requirements : Optional[list[str]], optional
+        The flow requirements, by default None.
+
+    Returns
+    -------
+    dict[str, Any]
+        The flow data.
+
+    Raises
+    ------
+    ValueError
+        If the flow type is not "flow".
+    """
+    item_type = data.get("type", "flow")
+    if item_type != "flow":
+        # empty flow (from exported model/tool ?)
+        raise ValueError(f"Invalid flow type: {item_type}")
+    from_args: dict[str, Any] = {
+        "id": flow_id,
+        "name": name,
+        "description": description,
+        "tags": tags,
+        "requirements": requirements,
+    }
+    for key, value in from_args.items():
+        if value:
+            data[key] = value
+    if "name" not in data:
+        data["name"] = "Waldiez Flow"
+    if "description" not in data:
+        data["description"] = "Waldiez Flow description"
+    if "tags" not in data:
+        data["tags"] = []
+    if "requirements" not in data:
+        data["requirements"] = []
+    return data

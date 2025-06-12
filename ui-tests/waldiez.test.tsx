@@ -10,15 +10,34 @@ import { render } from "vitest-browser-react";
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 describe("All", () => {
-    // eslint-disable-next-line max-statements
+    const removeTapHighlight = () => {
+        // it seems that chromium injects:
+        // '-webkit-tap-highlight-color: rgba(0, 0, 0, 0);'
+        // in the style attribute of some elements
+        // (in some cases)
+        // so the snapshots might be different
+        for (const el of document.querySelectorAll("[style]")) {
+            const original = el.getAttribute("style") ?? "";
+            const cleaned = original
+                .replace(/-webkit-tap-highlight-color:\s*rgba\(0,\s*0,\s*0,\s*0\);?/gi, "")
+                .trim();
+            if (cleaned) {
+                el.setAttribute("style", cleaned);
+            } else {
+                el.removeAttribute("style");
+            }
+        }
+    };
+
     it("should render Waldiez components", async () => {
         const screen = render(<Waldiez flowId="test-flow" storageId="test-flow-storage" />);
+        removeTapHighlight();
         const agents = page.getByText(/Agents/i);
         const models = page.getByText(/Models/i);
-        const skills = page.getByText(/Skills/i);
+        const tools = page.getByText(/Tools/i);
         await expect.element(agents).toBeInTheDocument();
         await expect.element(models).toBeInTheDocument();
-        await expect.element(skills).toBeInTheDocument();
+        await expect.element(tools).toBeInTheDocument();
         expect(screen).toMatchSnapshot();
         await sleep(100);
         await userEvent.click(models);

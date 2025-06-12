@@ -2,8 +2,20 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import {
+    WaldiezHandoffAvailability,
+    WaldiezHandoffCondition,
+    WaldiezTransitionTarget,
+} from "@waldiez/models/common/Handoff";
+
+export type { WaldiezAgent } from "@waldiez/models/Agent/Common/Agent";
+export type { WaldiezAgentData } from "@waldiez/models/Agent/Common/AgentData";
+
 /**
  * Human input mode.
+ * @param ALWAYS - Always ask for human input
+ * @param NEVER - Never ask for human input
+ * @param TERMINATE - Ask for human input only when the turn is terminated (no more actions)
  */
 export type WaldiezAgentHumanInputMode = "ALWAYS" | "NEVER" | "TERMINATE";
 /**
@@ -12,11 +24,11 @@ export type WaldiezAgentHumanInputMode = "ALWAYS" | "NEVER" | "TERMINATE";
  * @param useDocker - Either boolean (to enable/disable) or string (to specify the images)
  * @param timeout - The timeout
  * @param lastNMessages - The last N messages
- * @param functions - The functions (skill ids) to use
+ * @param functions - The functions (tool ids) to use
  */
 export type WaldiezAgentCodeExecutionConfigDict = {
     workDir?: string;
-    useDocker?: string | string[] | boolean;
+    useDocker?: string | string[] | boolean | null;
     timeout?: number;
     lastNMessages?: number | "auto";
     functions?: string[];
@@ -26,6 +38,24 @@ export type WaldiezAgentCodeExecutionConfigDict = {
  * either a {@link WaldiezAgentCodeExecutionConfigDict} or false (to disable)
  */
 export type WaldiezAgentCodeExecutionConfig = WaldiezAgentCodeExecutionConfigDict | false;
+
+/**
+ * System message type.
+ * @param string - String
+ * @param callable - Callable
+ */
+export type WaldiezAgentUpdateSystemMessageType = "string" | "callable";
+
+/**
+ * System message for agent update.
+ * @param type - The type of the system message {@link WaldiezAgentUpdateSystemMessageType}
+ * @param content - The content of the system message
+ */
+export type WaldiezAgentUpdateSystemMessage = {
+    type: WaldiezAgentUpdateSystemMessageType;
+    content: string;
+};
+
 /**
  * Termination type.
  * @param none - No termination
@@ -35,19 +65,26 @@ export type WaldiezAgentCodeExecutionConfig = WaldiezAgentCodeExecutionConfigDic
 export type WaldiezAgentTypeTerminationTypeOption = "none" | "keyword" | "method";
 /**
  * Termination criterion (if the termination type is "keyword").
- * @param found - Termination when found
- * @param ending - Termination when ending
- * @param exact - Termination when exact
+ * @param found - Termination when the message contains the keyword
+ * @param ending - Termination when the message ends with the keyword
+ * @param starting - Termination when the message starts with the keyword
+ * @param exact - Termination when the message is exactly the keyword
  */
-export type WaldiezAgentTerminationCriterionOption = "found" | "ending" | "exact";
+export type WaldiezAgentTerminationCriterionOption = "found" | "ending" | "starting" | "exact";
 /**
  * Waldiez agent nested chat.
  * @param triggeredBy - The agent ids that trigger the nested chat
  * @param messages - The messages to include in the chat queue
+ * @param condition - The condition for the nested chat (if used as handoff)
+ * @param available - The availability of the nested chat (if used as handoff)
+ * @see {@link WaldiezHandoffCondition}
+ * @see {@link WaldiezHandoffAvailability}
  */
 export type WaldiezAgentNestedChat = {
     triggeredBy: string[];
     messages: { id: string; isReply: boolean }[];
+    condition: WaldiezHandoffCondition;
+    available: WaldiezHandoffAvailability;
 };
 /**
  * Waldiez agent termination message check.
@@ -63,19 +100,19 @@ export type WaldiezAgentTerminationMessageCheck = {
     methodContent: string | null;
 };
 /**
- * Waldiez agent linked skill.
- * @param id - The skill id
+ * Waldiez agent linked tools.
+ * @param id - The tools id
  * @param executorId - The executor (agent) id
  */
-export type WaldiezAgentLinkedSkill = {
+export type WaldiezAgentLinkedTool = {
     id: string;
     executorId: string;
 };
 /**
  * Waldiez agent common (for all agent types) data.
- * @param name - The name
- * @param description - The description
- * @param parentId - The parent id
+ * @param name - The name of the agent
+ * @param description - The description of the agent
+ * @param parentId - The parent id of the agent (if in a group)
  * @param agentType - The agent type
  * @param systemMessage - The system message
  * @param humanInputMode - The human input mode
@@ -84,12 +121,25 @@ export type WaldiezAgentLinkedSkill = {
  * @param maxConsecutiveAutoReply - The max consecutive auto reply
  * @param termination - The termination message check
  * @param nestedChats - The nested chats
- * @param modelIds - The model ids
- * @param skills - The linked skills
+ * @param contextVariables - The context variables
+ * @param updateAgentStateBeforeReply - Optional handler to update the agent state before replying
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @param afterWork - The handoff transition after work
+ * @param modelIds - The agent's model ids
+ * @param tools - The tools available to the agent
  * @param tags - The tags
  * @param requirements - The requirements
  * @param createdAt - The created at date
  * @param updatedAt - The updated at date
+ * @see {@link WaldiezNodeAgentType}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
+ * @see {@link WaldiezAgentLinkedTool}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
  */
 export type WaldiezAgentCommonData = {
     name: string;
@@ -103,9 +153,13 @@ export type WaldiezAgentCommonData = {
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
     nestedChats: WaldiezAgentNestedChat[];
-    // links
+    contextVariables?: { [key: string]: unknown };
+    updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
+    handoffs: string[]; // handoff / edge ids
+    afterWork: WaldiezTransitionTarget | null;
+    // linkss
     modelIds: string[];
-    skills: WaldiezAgentLinkedSkill[];
+    tools: WaldiezAgentLinkedTool[];
     // meta
     tags: string[];
     requirements: string[];
@@ -113,13 +167,30 @@ export type WaldiezAgentCommonData = {
     updatedAt: string;
 };
 
+/**
+ * Waldiez agent type.
+ * @param user_proxy - User proxy
+ * @param assistant - Assistant
+ * @param rag_user_proxy - RAG user proxy
+ * @param reasoning - Reasoning
+ * @param captain - Captain
+ * @param group_manager - Group manager
+ */
 export type WaldiezAgentType =
-    | "user"
+    | "user_proxy"
     | "assistant"
-    | "manager"
-    | "rag_user"
-    | "swarm"
+    | "rag_user_proxy"
     | "reasoning"
-    | "captain";
+    | "captain"
+    | "group_manager";
 
-export type WaldiezNodeAgentType = WaldiezAgentType | "swarm_container";
+/**
+ * Waldiez node agent type (alias for WaldiezAgentType).
+ * @param user_proxy - User proxy
+ * @param assistant - Assistant
+ * @param rag_user_proxy - RAG user proxy
+ * @param reasoning - Reasoning
+ * @param captain - Captain
+ * @param group_manager - Group manager
+ */
+export type WaldiezNodeAgentType = WaldiezAgentType;

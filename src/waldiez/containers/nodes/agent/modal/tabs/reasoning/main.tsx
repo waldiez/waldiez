@@ -2,156 +2,48 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useState } from "react";
+import { memo } from "react";
 
-import { InfoCheckbox, NumberInput, Select, SingleValue } from "@waldiez/components";
+import { InfoCheckbox, NumberInput, Select } from "@waldiez/components";
+import { useWaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/hooks";
 import { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
-import { ReasoningConfigMethod } from "@waldiez/models";
 
-export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
-    const { id, data, onDataChange } = props;
-    const [localData, setLocalData] = useState(data);
-
-    const reasoningMethodOptions: { value: ReasoningConfigMethod; label: string }[] = [
-        { value: "beam_search", label: "Beam Search" },
-        { value: "mcts", label: "Monte Carlo Tree Search" },
-        { value: "lats", label: "Language Agent Tree Search" },
-        { value: "dfs", label: "Depth First Search" },
-    ];
-
-    const reasoningMethodValue = {
-        value: data.reasonConfig.method,
-        label: reasoningMethodOptions.find(option => option.value === data.reasonConfig.method)!.label,
-    };
-
-    const answerApproachOptions: { value: "pool" | "best"; label: string }[] = [
-        { value: "pool", label: "Pool" },
-        { value: "best", label: "Best" },
-    ];
-
-    const answerApproachValue = {
-        value: data.reasonConfig.answer_approach,
-        label: answerApproachOptions.find(option => option.value === data.reasonConfig.answer_approach)!
-            .label,
-    };
-
-    const onChange = (partialData: Partial<typeof localData>) => {
-        setLocalData({
-            ...localData,
-            ...partialData,
-        });
-        onDataChange({
-            ...partialData,
-        });
-    };
-
-    const onVerboseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const checked = event.target.checked;
-        onChange({
-            verbose: checked,
-        });
-    };
-
-    const onAnswerApproachChange = (option: SingleValue<{ value: "pool" | "best"; label: string }>) => {
-        if (option) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    answer_approach: option.value,
-                },
-            });
-        }
-    };
-
-    const onForestSizeChange = (value: number | null) => {
-        if (value) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    forest_size: value,
-                },
-            });
-        }
-    };
-
-    const onReasoningMethodChange = (
-        option: SingleValue<{ value: ReasoningConfigMethod; label: string }>,
-    ) => {
-        if (option) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    method: option.value,
-                },
-            });
-        }
-    };
-    const onMaxDepthChange = (value: number | null) => {
-        if (value) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    max_depth: value,
-                },
-            });
-        }
-    };
-
-    const onRatingScaleChange = (value: number | null) => {
-        if (value) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    rating_scale: value,
-                },
-            });
-        }
-    };
-
-    const onBeamSizeChange = (value: number | null) => {
-        if (value) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    beam_size: value,
-                },
-            });
-        }
-    };
-
-    const onNSimChange = (value: number | null) => {
-        if (value) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    nsim: value,
-                },
-            });
-        }
-    };
-
-    const onExplorationConstantChange = (value: number | null) => {
-        if (value) {
-            onChange({
-                reasonConfig: {
-                    ...localData.reasonConfig,
-                    exploration_constant: value,
-                },
-            });
-        }
-    };
-
+/**
+ * Component for configuring reasoning agent settings
+ * Manages reasoning methods, depth, forest size, and other algorithm-specific parameters
+ */
+export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) => {
+    const { id, data } = props;
+    const {
+        reasoningMethodOptions,
+        reasoningMethodValue,
+        answerApproachOptions,
+        answerApproachValue,
+        isBeamSearch,
+        isSimulationBasedMethod,
+        onVerboseChange,
+        onReasoningMethodChange,
+        onMaxDepthChange,
+        onForestSizeChange,
+        onRatingScaleChange,
+        onBeamSizeChange,
+        onAnswerApproachChange,
+        onNSimChange,
+        onExplorationConstantChange,
+    } = useWaldiezAgentReasoning(props);
     return (
         <div className="agent-panel agent-codeExecution-panel margin-top--10">
+            {/* Verbose Toggle */}
             <InfoCheckbox
-                label={"Verbose"}
-                info={
-                    "When enabled, the agent will provide additional information about the reasoning process."
-                }
-                checked={localData.verbose === true}
+                label="Verbose"
+                info="When enabled, the agent will provide additional information about the reasoning process."
+                checked={data.verbose === true}
                 onChange={onVerboseChange}
-                dataTestId={`agent-reasoning-verbose-toggle-${id}`}
+                id={`agent-reasoning-verbose-toggle-${id}`}
+                aria-label="Enable verbose reasoning output"
             />
+
+            {/* Reasoning Method Selection */}
             <label className="agent-panel-label" htmlFor={`agent-reasoning-method-${id}`}>
                 Reasoning Method:
             </label>
@@ -160,41 +52,57 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
                 value={reasoningMethodValue}
                 onChange={onReasoningMethodChange}
                 inputId={`agent-reasoning-method-${id}`}
+                aria-label="Select reasoning method"
             />
+
+            {/* Common Settings for All Methods */}
             <NumberInput
-                label={"Max Depth:"}
-                value={localData.reasonConfig.max_depth}
+                label="Max Depth:"
+                name="max-depth"
+                value={data.reasonConfig.maxDepth}
                 onChange={onMaxDepthChange}
                 min={1}
                 max={10}
                 dataTestId={`agent-reasoning-max-depth-${id}`}
+                aria-label="Maximum depth for reasoning"
             />
+
             <NumberInput
-                label={"Forest Size:"}
-                value={localData.reasonConfig.forest_size}
+                label="Forest Size:"
+                name="forest-size"
+                value={data.reasonConfig.forestSize}
                 onChange={onForestSizeChange}
                 min={1}
                 max={10}
                 dataTestId={`agent-reasoning-forest-size-${id}`}
+                aria-label="Forest size for reasoning"
             />
+
             <NumberInput
-                label={"Rating Scale:"}
-                value={localData.reasonConfig.rating_scale}
+                label="Rating Scale:"
+                name="rating-scale"
+                value={data.reasonConfig.ratingScale}
                 onChange={onRatingScaleChange}
                 min={1}
                 max={10}
                 dataTestId={`agent-reasoning-rating-scale-${id}`}
+                aria-label="Rating scale for reasoning"
             />
-            {localData.reasonConfig.method === "beam_search" && (
+
+            {/* Beam Search Specific Settings */}
+            {isBeamSearch && (
                 <>
                     <NumberInput
-                        label={"Beam Size:"}
-                        value={localData.reasonConfig.beam_size}
+                        name="beam-size"
+                        label="Beam Size:"
+                        value={data.reasonConfig.beamSize}
                         onChange={onBeamSizeChange}
                         min={1}
                         max={10}
                         dataTestId={`agent-reasoning-beam-size-${id}`}
+                        aria-label="Beam size for beam search"
                     />
+
                     <label className="agent-panel-label" htmlFor={`agent-reasoning-answer-approach-${id}`}>
                         Answer Approach:
                     </label>
@@ -203,30 +111,40 @@ export const WaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
                         value={answerApproachValue}
                         onChange={onAnswerApproachChange}
                         inputId={`agent-reasoning-answer-approach-${id}`}
+                        aria-label="Select answer approach"
                     />
                 </>
             )}
-            {["mcts", "lats"].includes(localData.reasonConfig.method) && (
+
+            {/* MCTS/LATS Specific Settings */}
+            {isSimulationBasedMethod && (
                 <>
                     <NumberInput
-                        label={"Number of Simulations:"}
-                        value={localData.reasonConfig.nsim}
+                        name="number-of-simulations"
+                        label="Number of Simulations:"
+                        value={data.reasonConfig.nsim}
                         onChange={onNSimChange}
                         min={1}
                         max={10}
                         dataTestId={`agent-reasoning-nsim-${id}`}
+                        aria-label="Number of simulations for MCTS/LATS"
                     />
+
                     <NumberInput
-                        label={"Exploration Constant:"}
-                        value={localData.reasonConfig.exploration_constant}
+                        label="Exploration Constant:"
+                        name="exploration-constant"
+                        value={data.reasonConfig.explorationConstant}
                         onChange={onExplorationConstantChange}
                         min={0}
                         max={10}
                         step={0.01}
                         dataTestId={`agent-reasoning-exploration-constant-${id}`}
+                        aria-label="Exploration constant for MCTS/LATS"
                     />
                 </>
             )}
         </div>
     );
-};
+});
+
+WaldiezAgentReasoning.displayName = "WaldiezAgentReasoning";

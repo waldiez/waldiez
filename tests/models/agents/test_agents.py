@@ -2,13 +2,16 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents."""
 
+import pytest
+
 from waldiez.models.agents import (
     WaldiezAgents,
     WaldiezAssistant,
+    WaldiezGroupManager,
     WaldiezUserProxy,
 )
 from waldiez.models.model import WaldiezModel
-from waldiez.models.skill import WaldiezSkill
+from waldiez.models.tool import WaldiezTool
 
 
 def test_waldiez_agents() -> None:
@@ -22,15 +25,15 @@ def test_waldiez_agents() -> None:
         requirements=[],
         data={},  # type: ignore
     )
-    skill = WaldiezSkill(
+    tool = WaldiezTool(
         id="wa-2",
-        name="skill",
-        type="skill",
-        description="Skill",
+        name="tool",
+        type="tool",
+        description="Tool",
         tags=[],
         requirements=[],
         data={  # type: ignore
-            "content": "def skill():\n    return 'skill'",
+            "content": "def tool():\n    return 'tool'",
         },
     )
     assistant = WaldiezAssistant(
@@ -42,9 +45,9 @@ def test_waldiez_agents() -> None:
         tags=[],
         requirements=[],
         data={  # type: ignore
-            "model_ids": [model.id],
-            "skills": [
-                {"id": skill.id, "executor_id": "wa-1"},
+            "model_id": model.id,
+            "tools": [
+                {"id": tool.id, "executor_id": "wa-1"},
             ],
         },
     )
@@ -59,14 +62,55 @@ def test_waldiez_agents() -> None:
         data={},  # type: ignore
     )
     agents = WaldiezAgents(
-        assistants=[assistant],
-        users=[user],
-        managers=[],
-        rag_users=[],
-        swarm_agents=[],
-        reasoning_agents=[],
-        captain_agents=[],
+        assistantAgents=[assistant],
+        userProxyAgents=[user],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
     )
-    assert agents.assistants == [assistant]
+    assert agents.assistantAgents == [assistant]
     assert next(agents.members) == user
-    agents.validate_flow(model_ids=[model.id], skill_ids=[skill.id])
+    agents.validate_flow(model_ids=[model.id], tool_ids=[tool.id])
+
+    manager = WaldiezGroupManager(
+        id="wa-3",
+        name="group_manager",
+        type="agent",
+        agent_type="group_manager",
+        description="Group Manager",
+        tags=[],
+        requirements=[],
+        data={
+            "initialAgentId": assistant.id,
+        },  # type: ignore
+    )
+    assistant.data.parent_id = manager.id
+    user.data.parent_id = manager.id
+    agents = WaldiezAgents(
+        assistantAgents=[assistant],
+        userProxyAgents=[user],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
+        groupManagerAgents=[manager],
+    )
+    assert agents.groupManagerAgents == [manager]
+    agents.validate_flow(
+        model_ids=[model.id],
+        tool_ids=[tool.id],
+    )
+
+    manager.data.initial_agent_id = "not_in_agents"
+    agents = WaldiezAgents(
+        assistantAgents=[assistant],
+        userProxyAgents=[user],
+        ragUserProxyAgents=[],
+        reasoningAgents=[],
+        captainAgents=[],
+        groupManagerAgents=[manager],
+    )
+    with pytest.raises(ValueError):
+        agents.validate_flow(
+            model_ids=[model.id],
+            tool_ids=[tool.id],
+        )

@@ -2,35 +2,40 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, description, flowId, name, requirements, tags, updatedAt } from "./common";
-import { edges } from "./edges";
-import { nodes } from "./nodes";
-
 import { Edge, Node } from "@xyflow/react";
 
 import {
     WaldiezAgentAssistant,
-    WaldiezAgentGroupManager,
+    WaldiezAgentAssistantData,
+    WaldiezAgentCaptain,
+    WaldiezAgentCaptainData,
     WaldiezAgentRagUser,
+    WaldiezAgentReasoning,
+    WaldiezAgentReasoningData,
     WaldiezAgentUserProxy,
     WaldiezChat,
     WaldiezModel,
     WaldiezNodeAgentRagUserData,
-    WaldiezSkill,
+    WaldiezTool,
     agentMapper,
     chatMapper,
     modelMapper,
-    skillMapper,
+    toolMapper,
 } from "@waldiez/models";
 
+import { createdAt, description, flowId, name, requirements, tags, updatedAt } from "./common";
+import { edges } from "./edges";
+import { nodes } from "./nodes";
+
 const agents = {
-    users: [] as WaldiezAgentUserProxy[],
-    assistants: [] as WaldiezAgentAssistant[],
-    managers: [] as WaldiezAgentGroupManager[],
-    rag_users: [] as WaldiezAgentRagUser[],
+    userProxyAgents: [] as WaldiezAgentUserProxy[],
+    assistantAgents: [] as WaldiezAgentAssistant[],
+    ragUserProxyAgents: [] as WaldiezAgentRagUser[],
+    captainAgents: [] as WaldiezAgentCaptain[],
+    reasoningAgents: [] as WaldiezAgentReasoning[],
 };
 const models = [] as WaldiezModel[];
-const skills = [] as WaldiezSkill[];
+const tools = [] as WaldiezTool[];
 
 /* eslint-disable max-statements */
 const nodesWithoutData = nodes.map((node: Node) => {
@@ -46,13 +51,20 @@ const nodesWithoutData = nodes.map((node: Node) => {
             createdAt,
             updatedAt,
         };
-        if (agentType === "user") {
-            agents.users.push(agentMapper.importAgent(jsonData, jsonData.id));
+        if (agentType === "user_proxy") {
+            agents.userProxyAgents.push(agentMapper.importAgent(jsonData, jsonData.id));
         } else if (agentType === "assistant") {
-            agents.assistants.push(agentMapper.importAgent(jsonData, jsonData.id));
-        } else if (agentType === "manager") {
-            agents.managers.push(agentMapper.importAgent(jsonData, jsonData.id) as WaldiezAgentGroupManager);
-        } else if (agentType === "rag_user") {
+            const dateWIthIsMultimodal = {
+                ...jsonData,
+                data: {
+                    ...jsonData.data,
+                    isMultimodal: (jsonData.data as WaldiezAgentAssistantData).isMultimodal,
+                },
+            };
+            agents.assistantAgents.push(
+                agentMapper.importAgent(dateWIthIsMultimodal, jsonData.id) as WaldiezAgentAssistant,
+            );
+        } else if (agentType === "rag_user_proxy") {
             const dataWithRetrieveConfig = {
                 ...jsonData,
                 data: {
@@ -60,8 +72,31 @@ const nodesWithoutData = nodes.map((node: Node) => {
                     retrieveConfig: (jsonData.data as WaldiezNodeAgentRagUserData).retrieveConfig,
                 },
             };
-            agents.rag_users.push(
+            agents.ragUserProxyAgents.push(
                 agentMapper.importAgent(dataWithRetrieveConfig, jsonData.id) as WaldiezAgentRagUser,
+            );
+        } else if (agentType === "captain") {
+            const dataWithAgentLibAndToolLib = {
+                ...jsonData,
+                data: {
+                    ...jsonData.data,
+                    agentLig: (jsonData.data as WaldiezAgentCaptainData).agentLib,
+                    toolLib: (jsonData.data as WaldiezAgentCaptainData).toolLib,
+                },
+            };
+            agents.captainAgents.push(
+                agentMapper.importAgent(dataWithAgentLibAndToolLib, jsonData.id) as WaldiezAgentCaptain,
+            );
+        } else if (agentType === "reasoning") {
+            const dataWithAgentReasonConfig = {
+                ...jsonData,
+                data: {
+                    ...jsonData.data,
+                    reasonConfig: (jsonData.data as WaldiezAgentReasoningData).reasonConfig,
+                },
+            };
+            agents.reasoningAgents.push(
+                agentMapper.importAgent(dataWithAgentReasonConfig, jsonData.id) as WaldiezAgentReasoning,
             );
         }
         return { ...node };
@@ -77,22 +112,23 @@ const nodesWithoutData = nodes.map((node: Node) => {
         };
         models.push(modelMapper.importModel(jsonData));
         return { ...node };
-    } else if (nodeType === "skill") {
-        const skillData = node.data as any;
+    } else if (nodeType === "tool") {
+        const toolData = node.data as any;
         const jsonData = {
             id: node.id,
             type: nodeType,
-            position: skillData.position,
-            data: { ...skillData },
+            position: toolData.position,
+            data: { ...toolData },
             createdAt,
             updatedAt,
         };
-        skills.push(skillMapper.importSkill(jsonData));
+        tools.push(toolMapper.importTool(jsonData));
         return { ...node };
     }
     const newNode = { ...node, data: {} };
     return { ...newNode };
 });
+
 const chats = [] as WaldiezChat[];
 const edgesWithoutData = edges.map((edge: Edge, index: number) => {
     const chatData = edge.data as any;
@@ -129,7 +165,7 @@ export const flow = {
         },
         chats,
         models,
-        skills,
+        tools,
         agents,
     },
     createdAt,

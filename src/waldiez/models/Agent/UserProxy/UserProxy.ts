@@ -20,7 +20,7 @@ import { WaldiezAgentUserProxyData } from "@waldiez/models/Agent/UserProxy/UserP
  */
 export class WaldiezAgentUserProxy extends WaldiezAgent {
     data: WaldiezAgentUserProxyData;
-    agentType: WaldiezNodeAgentType = "user";
+    agentType: WaldiezNodeAgentType = "user_proxy";
     constructor(props: {
         id: string;
         name: string;
@@ -34,6 +34,7 @@ export class WaldiezAgentUserProxy extends WaldiezAgent {
         rest?: { [key: string]: unknown };
     }) {
         super(props);
+        this.agentType = "user_proxy";
         this.data = props.data;
         this.rest = props.rest || {};
     }

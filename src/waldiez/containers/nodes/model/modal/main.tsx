@@ -6,13 +6,16 @@ import { useEffect, useState } from "react";
 
 import { Modal, TabItem, TabItems } from "@waldiez/components";
 import {
+    WaldiezNodeModelModalAWSTab,
     WaldiezNodeModelModalAdvancedTab,
     WaldiezNodeModelModalBasicTab,
     WaldiezNodeModelModalPriceTab,
 } from "@waldiez/containers/nodes/model/modal/tabs";
 import { WaldiezNodeModelModalProps } from "@waldiez/containers/nodes/model/modal/types";
 
-export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
+export const WaldiezNodeModelModal: React.FC<WaldiezNodeModelModalProps> = (
+    props: WaldiezNodeModelModalProps,
+) => {
     const {
         modelId,
         data,
@@ -45,22 +48,35 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
             <div className="modal-body">
                 <TabItems activeTabIndex={activeTabIndex}>
                     <TabItem label="Basic" id={`model-config-basic-${modelId}`}>
-                        <WaldiezNodeModelModalBasicTab
-                            id={modelId}
-                            data={data}
-                            onDataChange={onDataChange}
-                            onLogoChange={onLogoChange}
-                        />
+                        <div className="model-panel">
+                            <WaldiezNodeModelModalBasicTab
+                                id={modelId}
+                                data={data}
+                                onDataChange={onDataChange}
+                                onLogoChange={onLogoChange}
+                            />
+                        </div>
                     </TabItem>
+                    {data.apiType === "bedrock" && (
+                        <TabItem label="AWS" id={`model-config-aws-${modelId}`}>
+                            <div className="model-panel">
+                                <WaldiezNodeModelModalAWSTab data={data} onDataChange={onDataChange} />
+                            </div>
+                        </TabItem>
+                    )}
                     <TabItem label="Advanced" id={`model-config-advanced-${modelId}`}>
-                        <WaldiezNodeModelModalAdvancedTab data={data} onDataChange={onDataChange} />
+                        <div className="model-panel">
+                            <WaldiezNodeModelModalAdvancedTab data={data} onDataChange={onDataChange} />
+                        </div>
                     </TabItem>
                     <TabItem label="Price" id={`model-config-price-${modelId}`}>
-                        <WaldiezNodeModelModalPriceTab
-                            modelId={modelId}
-                            data={data}
-                            onDataChange={onDataChange}
-                        />
+                        <div className="model-panel">
+                            <WaldiezNodeModelModalPriceTab
+                                modelId={modelId}
+                                data={data}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
                     </TabItem>
                 </TabItems>
                 <div className="modal-actions">
@@ -77,7 +93,7 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
                         <button
                             type="button"
                             title="Test"
-                            className="modal-action-submit-alt margin-right-10"
+                            className="margin-right-10 neutral"
                             onClick={onTest}
                             data-testid={`modal-test-btn-${modelId}`}
                             disabled={isDirty}
@@ -85,7 +101,17 @@ export const WaldiezNodeModelModal = (props: WaldiezNodeModelModalProps) => {
                             Test
                         </button>
                         <button
-                            type="submit"
+                            title="Save & Close"
+                            type="button"
+                            className="save margin-right-10"
+                            onClick={onSaveAndClose}
+                            data-testid={`modal-submit-and-close-btn-${modelId}`}
+                            disabled={!isDirty}
+                        >
+                            Save & Close
+                        </button>
+                        <button
+                            type="button"
                             title="Save"
                             className="modal-action-submit"
                             onClick={onSave}

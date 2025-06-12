@@ -3,7 +3,6 @@
 """Test waldiez.models.model.WaldiezModel."""
 
 import os
-from typing import List
 
 import pytest
 
@@ -12,6 +11,7 @@ from waldiez.models.model import (
     MODEL_NEEDS_BASE_URL,
     WaldiezModel,
     WaldiezModelAPIType,
+    WaldiezModelAWS,
     WaldiezModelData,
     WaldiezModelPrice,
 )
@@ -201,7 +201,7 @@ def test_waldiez_api_key() -> None:
 def test_waldiez_invalid_model() -> None:
     """Test invalid WaldiezModel."""
     with pytest.raises(ValueError):
-        WaldiezModel(
+        WaldiezModel(  # pyright: ignore
             id="wm-1",
             name="model",
             description="description",
@@ -214,7 +214,7 @@ def test_waldiez_invalid_model() -> None:
 def test_waldiez_model_use_default_base_url() -> None:
     """Test WaldiezModel use default base url."""
     # Given
-    api_types: List[WaldiezModelAPIType] = [
+    api_types: list[WaldiezModelAPIType] = [
         "openai",
         "azure",
         "google",
@@ -263,3 +263,41 @@ def test_waldiez_model_use_default_base_url() -> None:
     )
     # Then
     assert model.get_llm_config()["base_url"] == "https://example.com"
+
+
+def test_waldiez_model_with_aws() -> None:
+    """Test WaldiezModel with AWS."""
+    # Given
+    data = WaldiezModelData(
+        api_type="bedrock",
+        aws=WaldiezModelAWS(
+            region="us-west-2",
+            access_key="aws_access_key",  # nosemgrep # nosec
+            secret_key="aws_secret_key",  # nosemgrep # nosec
+            session_token="aws_session_token",  # nosemgrep # nosec
+            profile_name="aws_profile",
+        ),
+    )
+    # When
+    model = WaldiezModel(
+        id="wm-1",
+        name="model",
+        description="description",
+        type="model",
+        tags=["tag1", "tag2"],
+        requirements=["requirement1", "requirement2"],
+        created_at="2021-01-01T00:00:00.000Z",
+        updated_at="2021-01-01T00:00:00.000Z",
+        data=data,
+    )
+    # Then
+    assert model.data.aws is not None
+    assert model.data.aws.region == "us-west-2"
+    assert model.data.aws.access_key == "aws_access_key"  # nosemgrep # nosec
+    assert model.data.aws.secret_key == "aws_secret_key"  # nosemgrep # nosec
+    assert (
+        model.data.aws.session_token == "aws_session_token"  # nosemgrep # nosec
+    )
+    assert model.data.aws.profile_name == "aws_profile"
+    llm_config = model.get_llm_config()
+    assert llm_config["aws_region"] == "us-west-2"

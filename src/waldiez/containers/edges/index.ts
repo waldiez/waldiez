@@ -5,7 +5,6 @@
 export {
     WaldiezEdgeChat,
     WaldiezEdgeGroup,
-    WaldiezEdgeNested,
     WaldiezEdgeHidden,
-    WaldiezEdgeSwarm,
+    WaldiezEdgeNested,
 } from "@waldiez/containers/edges/main";

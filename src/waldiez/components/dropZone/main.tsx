@@ -7,7 +7,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { useDropZone } from "@waldiez/components/dropZone/hooks";
 import { DropZoneProps } from "@waldiez/components/dropZone/types";
 
-export const DropZone = (props: DropZoneProps) => {
+export const DropZone: React.FC<DropZoneProps> = (props: DropZoneProps) => {
     const { flowId, multiple = false } = props;
     const { onFileDragOver, onFileDragLeave, onOpenUploadDialog, onFileDrop } = useDropZone(props);
     const instruction = multiple
@@ -31,3 +31,5 @@ export const DropZone = (props: DropZoneProps) => {
         </div>
     );
 };
+
+DropZone.displayName = "DropZone";

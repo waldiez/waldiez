@@ -1,1 +1,582 @@
-{"id":"9ceq0Wq1A84bv2Ipi9DRl2fyjBK7knEd","type":"flow","storageId":"id-f1f95812-cdc6-4066-9719-3d773ccd6382","name":"Planning 2","description":"Planning and Stock Report Generation, group chat using transition rules.","tags":["Planning","Stock reports"],"requirements":[],"createdAt":"2025-01-30T09:01:11.463Z","updatedAt":"2025-01-30T09:01:17.774Z","data":{"nodes":[{"id":"wm-SAqwA-43hLkpXYLje1lZ0","type":"model","position":{"x":0,"y":10},"measured":{"width":182,"height":182},"selected":false,"hidden":true},{"id":"wa--pDXaZuA43bmJjV8I_Ar6","type":"agent","position":{"x":240,"y":375},"hidden":false,"measured":{"width":206,"height":214},"selected":false},{"id":"wa-w2HTP7tlWiqP_4Z7uChWE","type":"agent","position":{"x":735,"y":-75},"hidden":false,"measured":{"width":8,"height":15},"selected":false,"dragging":false},{"id":"wa-RUBInsH4QGJF-HTcjVPyZ","type":"agent","position":{"x":345,"y":0},"hidden":false,"measured":{"width":8,"height":15},"selected":false,"dragging":false},{"id":"wa-oZU5OdAnp7Hv12IioG4-3","type":"agent","position":{"x":510,"y":45},"hidden":false,"measured":{"width":8,"height":15},"selected":false},{"id":"wa-BFY4Fmb6lKf_wAl-Jd8Zg","type":"agent","position":{"x":570,"y":90},"hidden":false,"measured":{"width":8,"height":15},"selected":false,"dragging":false},{"id":"wa-IUAkowjx2WoD2Vj1rzrs_","type":"agent","position":{"x":675,"y":315},"hidden":false,"measured":{"width":206,"height":283},"selected":false}],"edges":[{"id":"we-5UbFtOQWM7pbcbQPr2hls","source":"wa--pDXaZuA43bmJjV8I_Ar6","target":"wa-IUAkowjx2WoD2Vj1rzrs_","hidden":false,"animated":false,"selected":false,"style":{"stroke":"#bc76f5","strokeWidth":3},"markerEnd":{"type":"arrowclosed","color":"#bc76f5","width":10,"height":10},"sourceHandle":"agent-handle-right-source-wa--pDXaZuA43bmJjV8I_Ar6","targetHandle":"agent-handle-left-target-wa-IUAkowjx2WoD2Vj1rzrs_","type":"chat"},{"id":"we-vH-2EAa7bJpiiPsss20M1","source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-w2HTP7tlWiqP_4Z7uChWE","hidden":true,"animated":false,"style":{"stroke":"#ed8a34","strokeWidth":3},"markerEnd":{"type":"arrowclosed","color":"#ed8a34","width":10,"height":10},"sourceHandle":"agent-handle-right-source-wa-IUAkowjx2WoD2Vj1rzrs_","targetHandle":"agent-handle-left-target-wa-w2HTP7tlWiqP_4Z7uChWE","type":"hidden"},{"id":"we-IE1agJJRG_oK3TsjCHaEB","source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-RUBInsH4QGJF-HTcjVPyZ","hidden":true,"animated":false,"style":{"stroke":"#ed8a34","strokeWidth":3},"markerEnd":{"type":"arrowclosed","color":"#ed8a34","width":10,"height":10},"sourceHandle":"agent-handle-right-source-wa-IUAkowjx2WoD2Vj1rzrs_","targetHandle":"agent-handle-left-target-wa-RUBInsH4QGJF-HTcjVPyZ","type":"hidden"},{"id":"we-Ps6ivIKUMHADIOZsv7m1Q","source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-oZU5OdAnp7Hv12IioG4-3","hidden":true,"animated":false,"style":{"stroke":"#ed8a34","strokeWidth":3},"markerEnd":{"type":"arrowclosed","color":"#ed8a34","width":10,"height":10},"sourceHandle":"agent-handle-right-source-wa-IUAkowjx2WoD2Vj1rzrs_","targetHandle":"agent-handle-left-target-wa-oZU5OdAnp7Hv12IioG4-3","type":"hidden"},{"id":"we-UlFeleQVE_2Imv4-gYGmB","source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-BFY4Fmb6lKf_wAl-Jd8Zg","hidden":true,"animated":false,"style":{"stroke":"#ed8a34","strokeWidth":3},"markerEnd":{"type":"arrowclosed","color":"#ed8a34","width":10,"height":10},"sourceHandle":"agent-handle-right-source-wa-IUAkowjx2WoD2Vj1rzrs_","targetHandle":"agent-handle-left-target-wa-BFY4Fmb6lKf_wAl-Jd8Zg","type":"hidden"}],"viewport":{"x":578,"y":143,"zoom":1},"agents":{"users":[{"type":"agent","name":"Admin","description":"Admin","tags":[],"requirements":[],"createdAt":"2024-09-28T11:50:40.337Z","updatedAt":"2024-10-28T20:35:04.115Z","data":{"systemMessage":"Give the task, and send instructions to writer to refine the blog post.","humanInputMode":"ALWAYS","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":[],"skills":[],"parentId":null,"nestedChats":[]},"id":"wa--pDXaZuA43bmJjV8I_Ar6","agentType":"user"}],"assistants":[{"type":"agent","name":"Engineer","description":"An engineer that writes code based on the plan provided by the planner.","tags":[],"requirements":[],"createdAt":"2024-09-28T11:50:44.081Z","updatedAt":"2024-10-28T20:35:19.273Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-SAqwA-43hLkpXYLje1lZ0"],"skills":[],"parentId":"wa-IUAkowjx2WoD2Vj1rzrs_","nestedChats":[]},"id":"wa-w2HTP7tlWiqP_4Z7uChWE","agentType":"assistant"},{"type":"agent","name":"Executor","description":"Executes the code written by the engineer and reports the result.","tags":[],"requirements":[],"createdAt":"2024-09-28T11:52:15.963Z","updatedAt":"2024-09-28T11:58:41.913Z","data":{"systemMessage":"Execute the code written by the engineer and report the result.","humanInputMode":"NEVER","codeExecutionConfig":{"workDir":"coding","timeout":30},"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":[],"skills":[],"parentId":"wa-IUAkowjx2WoD2Vj1rzrs_","nestedChats":[]},"id":"wa-RUBInsH4QGJF-HTcjVPyZ","agentType":"assistant"},{"type":"agent","name":"Writer","description":"Writer. Write blogs based on the code execution results and take feedback from the admin to refine the blog.","tags":[],"requirements":[],"createdAt":"2024-09-28T11:59:05.318Z","updatedAt":"2024-09-28T11:59:40.852Z","data":{"systemMessage":"Writer. Please write blogs in markdown format (with relevant titles) and put the content in pseudo ```md``` code block. You take feedback from the admin and refine your blog.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-SAqwA-43hLkpXYLje1lZ0"],"skills":[],"parentId":"wa-IUAkowjx2WoD2Vj1rzrs_","nestedChats":[]},"id":"wa-oZU5OdAnp7Hv12IioG4-3","agentType":"assistant"},{"type":"agent","name":"Planner","description":"Planner. Given a task, determine what information is needed to complete the task. After each step is done by others, check the progress and instruct the remaining steps.","tags":[],"requirements":[],"createdAt":"2024-09-28T11:59:51.410Z","updatedAt":"2024-09-28T12:00:20.754Z","data":{"systemMessage":"Given a task, please determine what information is needed to complete the task. Please note that the information will all be retrieved using Python code. Please only suggest information that can be retrieved using Python code. After each step is done by others, check the progress and instruct the remaining steps. If a step fails, try to workaround.","humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-SAqwA-43hLkpXYLje1lZ0"],"skills":[],"parentId":"wa-IUAkowjx2WoD2Vj1rzrs_","nestedChats":[]},"id":"wa-BFY4Fmb6lKf_wAl-Jd8Zg","agentType":"assistant"}],"managers":[{"type":"agent","name":"Manager","description":"A group manager agent","tags":[],"requirements":[],"createdAt":"2024-09-28T11:50:42.298Z","updatedAt":"2024-10-28T20:35:13.683Z","data":{"systemMessage":null,"humanInputMode":"NEVER","codeExecutionConfig":false,"agentDefaultAutoReply":null,"maxConsecutiveAutoReply":null,"termination":{"type":"none","keywords":[],"criterion":null,"methodContent":null},"modelIds":["wm-SAqwA-43hLkpXYLje1lZ0"],"skills":[],"parentId":null,"nestedChats":[],"maxRound":10,"adminName":"Admin","speakers":{"selectionMethod":"auto","selectionCustomMethod":"","maxRetriesForSelecting":null,"selectionMode":"transition","allowRepeat":true,"allowedOrDisallowedTransitions":{"wa--pDXaZuA43bmJjV8I_Ar6":["wa-w2HTP7tlWiqP_4Z7uChWE","wa-oZU5OdAnp7Hv12IioG4-3","wa-RUBInsH4QGJF-HTcjVPyZ","wa-BFY4Fmb6lKf_wAl-Jd8Zg"],"wa-w2HTP7tlWiqP_4Z7uChWE":["wa--pDXaZuA43bmJjV8I_Ar6","wa-RUBInsH4QGJF-HTcjVPyZ"],"wa-RUBInsH4QGJF-HTcjVPyZ":["wa--pDXaZuA43bmJjV8I_Ar6","wa-w2HTP7tlWiqP_4Z7uChWE","wa-BFY4Fmb6lKf_wAl-Jd8Zg"],"wa-BFY4Fmb6lKf_wAl-Jd8Zg":["wa--pDXaZuA43bmJjV8I_Ar6","wa-w2HTP7tlWiqP_4Z7uChWE","wa-oZU5OdAnp7Hv12IioG4-3"],"wa-oZU5OdAnp7Hv12IioG4-3":["wa--pDXaZuA43bmJjV8I_Ar6","wa-BFY4Fmb6lKf_wAl-Jd8Zg"]},"transitionsType":"allowed"},"enableClearHistory":false,"sendIntroductions":false},"id":"wa-IUAkowjx2WoD2Vj1rzrs_","agentType":"manager"}],"rag_users":[],"swarm_agents":[],"reasoning_agents":[]},"models":[{"id":"wm-SAqwA-43hLkpXYLje1lZ0","type":"model","name":"gpt-3.5-turbo","description":"OpenAI GPT-3.5","tags":[],"requirements":[],"createdAt":"2024-10-28T07:23:33.793Z","updatedAt":"2024-10-28T20:33:28.531Z","data":{"apiKey":"REPLACE_ME","apiType":"openai","apiVersion":null,"baseUrl":null,"temperature":null,"topP":null,"maxTokens":null,"defaultHeaders":{},"price":{"promptPricePer1k":null,"completionTokenPricePer1k":null}}}],"skills":[],"chats":[{"id":"we-5UbFtOQWM7pbcbQPr2hls","data":{"source":"wa--pDXaZuA43bmJjV8I_Ar6","target":"wa-IUAkowjx2WoD2Vj1rzrs_","name":"User => Manager","order":0,"description":"New connection","position":1,"clearHistory":false,"maxTurns":null,"message":{"type":"method","content":"\"\"\"Custom message function.\"\"\"\n# provide the message to be sent when the sender and the recipient are connected\n# complete the `callable_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the:\n# final message: (str) or a dictionary with the final message and additional data (dict)\n#\n# the recipient and the sender are 'autogen.ConversableAgent' objects\n# the context is generated from the sender's initiate_chat additional keyword arguments\n# example:\n# def callable_message(sender, recipient, context):\n#   # type: (ConversableAgent, ConversableAgent, dict) -> Union[str, Dict]\n#   carryover = context.get(\"carryover\", \"\")\n#    if isinstance(carryover, list):\n#        carryover = carryover[-1]\n#    final_msg = \"Write a blogpost.\" + \"\\nContext: \\n\" + carryover\n#    return final_msg\n#\ndef callable_message(sender, recipient, context):\n    \"\"\"Return the task.\"\"\"\n    import datetime  # pylint: disable=import-outside-toplevel\n\n    today = datetime.datetime.now().date()\n    message = (\n        \"Write a blogpost about the stock price performance of \"\n        f\"Nvidia in the past month. Today's date is {today}\"\n    )\n    return message\n","context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-vH-2EAa7bJpiiPsss20M1","data":{"source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-w2HTP7tlWiqP_4Z7uChWE","name":"Chat","order":-1,"description":"New connection","position":1,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-IE1agJJRG_oK3TsjCHaEB","data":{"source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-RUBInsH4QGJF-HTcjVPyZ","name":"Chat","order":-1,"description":"New connection","position":2,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-Ps6ivIKUMHADIOZsv7m1Q","data":{"source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-oZU5OdAnp7Hv12IioG4-3","name":"Chat","order":-1,"description":"New connection","position":3,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}},{"id":"we-UlFeleQVE_2Imv4-gYGmB","data":{"source":"wa-IUAkowjx2WoD2Vj1rzrs_","target":"wa-BFY4Fmb6lKf_wAl-Jd8Zg","name":"Chat","order":-1,"description":"New connection","position":4,"clearHistory":true,"maxTurns":null,"message":{"type":"none","content":null,"context":{},"use_carryover":false},"summary":{"method":"last_msg","prompt":"","args":{}},"nestedChat":{"message":null,"reply":null},"prerequisites":[],"maxRounds":20,"afterWork":null,"flowAfterWork":null,"available":{"type":"none","value":null},"contextVariables":{},"realSource":null,"realTarget":null}}],"isAsync":false}}
+{
+  "id": "wf-WTy6LgJUIY2XuNBggSfb4",
+  "type": "flow",
+  "version": "0.4.7",
+  "storageId": "wf-WTy6LgJUIY2XuNBggSfb4",
+  "name": "Planning 2",
+  "description": "Planning and Stock Report Generation, using Ag2’s group patterns.",
+  "tags": [
+    "Planning",
+    "Stock report",
+    "Group"
+  ],
+  "requirements": [],
+  "createdAt": "2025-05-19T16:27:28.320Z",
+  "updatedAt": "2025-06-01T19:34:01.026Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 315,
+          "y": 30
+        },
+        "measured": {
+          "width": 840,
+          "height": 680
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "width": 840,
+        "height": 680,
+        "resizing": false,
+        "hidden": false
+      },
+      {
+        "id": "wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": -30,
+          "y": 405
+        },
+        "measured": {
+          "width": 200,
+          "height": 211
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false
+      },
+      {
+        "id": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 150,
+          "y": 60
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
+      },
+      {
+        "id": "1747672280224yHtHT4KU6hJHXC7NzHnPD",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 480,
+          "y": 75
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
+      },
+      {
+        "id": "1747672281719vu_wTfjf3BRQ_1Vb_88RM",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 150,
+          "y": 360
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 211
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
+      },
+      {
+        "id": "1747672286352sP2IQQRswtxnXbkQun5zr",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 480,
+          "y": 360
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
+      }
+    ],
+    "edges": [
+      {
+        "id": "we-1747672163736S1J59BLZY1Tcn27wOE-8X",
+        "source": "wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
+        "target": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
+        "targetHandle": "agent-handle-left-target-wa-1747672141671XNKFFNqEjBZfMyL7K_FUz"
+      }
+    ],
+    "viewport": {
+      "x": 119.05063291139243,
+      "y": 71.87552742616032,
+      "zoom": 0.8016877637130801
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T16:29:01.672Z",
+          "updatedAt": "2025-05-19T16:29:01.672Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "maxRound": 20,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "auto",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": 10,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
+            "groupName": "Group"
+          },
+          "id": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User proxy",
+          "description": "A new User proxy agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T16:29:20.556Z",
+          "updatedAt": "2025-05-19T16:29:20.556Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Planner",
+          "description": "Planner agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T16:29:30.039Z",
+          "updatedAt": "2025-05-19T16:29:30.039Z",
+          "data": {
+            "systemMessage": "Given a task, please determine what information is needed to complete the task. Please note that the information will all be retrieved using Python code. Please only suggest information that can be retrieved using Python code. After each step is done by others, check the progress and instruct the remaining steps. If a step fails, try to workaround.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy"
+            ],
+            "tools": [],
+            "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Engineer",
+          "description": "An engineer that writes code based on the plan provided by the planner.",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T16:29:30.039Z",
+          "updatedAt": "2025-05-19T16:29:30.039Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy"
+            ],
+            "tools": [],
+            "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1747672280224yHtHT4KU6hJHXC7NzHnPD",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Executor",
+          "description": "Executor agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T16:29:30.039Z",
+          "updatedAt": "2025-05-19T16:29:30.039Z",
+          "data": {
+            "systemMessage": "Execute the code written by the engineer and report the result.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": {
+              "timeout": 60,
+              "workDir": "coding"
+            },
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1747672281719vu_wTfjf3BRQ_1Vb_88RM",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Writer",
+          "description": "Writer agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-05-19T16:29:30.039Z",
+          "updatedAt": "2025-05-19T16:29:30.039Z",
+          "data": {
+            "systemMessage": "Writer. Please write blogs in markdown format (with relevant titles) and put the content in pseudo ```md``` code block. You take feedback from the admin and refine your blog.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy"
+            ],
+            "tools": [],
+            "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1747672286352sP2IQQRswtxnXbkQun5zr",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy",
+        "type": "model",
+        "name": "gpt-4-turbo",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-05-19T16:28:15.486Z",
+        "updatedAt": "2025-06-01T19:33:58.134Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "we-1747672163736S1J59BLZY1Tcn27wOE-8X",
+        "type": "group",
+        "source": "wa-1747672160556X-ZayJ5DaicoBkadzHgUG",
+        "target": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "User proxy => Manager",
+          "order": -1,
+          "description": "New connection",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "Write a blogpost about the stock price performance of Nvidia in the past month.",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

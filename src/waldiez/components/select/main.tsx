@@ -6,7 +6,7 @@
 import React, { JSX, forwardRef } from "react";
 import ReactSelect, { GroupBase, MultiValue, Props, SelectInstance, SingleValue } from "react-select";
 
-export type { SingleValue, MultiValue, GroupBase };
+export type { GroupBase, MultiValue, SingleValue };
 
 type SelectComponent = <
     Option,
@@ -27,15 +27,21 @@ export const Select = forwardRef(
             <ReactSelect
                 ref={ref}
                 {...props}
-                className="select"
+                className={`select ${props.className ? ` ${props.className}` : ""}`}
                 classNamePrefix="w-select"
+                menuPlacement="auto"
                 styles={{
+                    menuPortal: base => ({
+                        ...base,
+                        zIndex: 10001, // Higher than modal
+                    }),
                     menu: provided => ({
                         ...provided,
-                        zIndex: 9999,
+                        zIndex: 10001,
                         width: "max-content",
                         minWidth: "100%",
                     }),
+                    ...props.styles, // Allow style overrides
                 }}
             />
         );

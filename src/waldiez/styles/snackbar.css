@@ -1,118 +1,282 @@
-.flow-wrapper .snackbar {
-  display: none;
+.snackbar {
   position: fixed;
   bottom: 0;
   right: 0;
   z-index: 10001;
-  padding: 15px;
-  margin: 10px;
-  color: #fff !important;
-  border-radius: 5px;
-  box-shadow: 0 0 10px 0 rgb(0 0 0 / 20%);
-  max-width: 300px;
-}
-
-.flow-wrapper .snackbar.show {
+  padding: 16px;
+  margin: 16px;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 12px color-mix(in srgb, #000 15%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 10%, transparent);
+  max-width: 400px;
+  min-width: 300px;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: block;
+  font-family: inherit;
+  backdrop-filter: blur(8px);
 }
 
-.flow-wrapper .snackbar.show .message {
-  margin-right: 20px;
+.snackbar.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-.flow-wrapper .snackbar .close {
+.snackbar.hide {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+.snackbar .message {
+  margin-right: 40px;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.snackbar.with-details .message {
+  margin-bottom: 12px;
+}
+
+.snackbar .close {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 15px;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
 }
 
-.flow-wrapper .snackbar .close:hover {
-  background-color: #444;
+.snackbar .close:hover,
+.snackbar .close:focus {
+  background-color: color-mix(in srgb, #fff 15%, transparent);
+  opacity: 1;
+  outline: none;
+  transform: scale(1.1);
 }
 
-.flow-wrapper .snackbar.error {
-  background-color: #d32f2f;
+.snackbar .close:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, #fff 40%, transparent);
 }
 
-.flow-wrapper .snackbar.error .close:hover {
-  background-color: #c62828;
+.snackbar .close:active {
+  transform: scale(0.95);
 }
 
-.flow-wrapper .snackbar.success {
-  background-color: #38903d;
+.snackbar details {
+  margin-top: 12px;
 }
 
-.flow-wrapper .snackbar.success .close:hover {
-  background-color: #2e7d32;
+.snackbar details summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 12px;
+  outline: none;
+  border-radius: 6px;
+  background: color-mix(in srgb, #fff 10%, transparent);
+  transition: all 0.2s ease;
+  list-style: none;
+  position: relative;
 }
 
-.flow-wrapper .snackbar.warning {
-  background-color: #fbc02d;
-  color: #000 !important;
+.snackbar details summary::after {
+  content: "▼";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transition: transform 0.2s ease;
+  font-size: 12px;
 }
 
-.flow-wrapper .snackbar.warning .close:hover {
-  background-color: #f9a825;
+.snackbar details[open] summary::after {
+  transform: translateY(-50%) rotate(0deg);
 }
 
-.flow-wrapper .snackbar.info {
-  background-color: #1866b3;
+.snackbar details summary:hover,
+.snackbar details summary:focus {
+  background-color: color-mix(in srgb, #fff 20%, transparent);
+  transform: translateY(-1px);
 }
 
-.flow-wrapper .snackbar.info .close:hover {
-  background-color: #0d47a1;
+.snackbar details .details-content {
+  margin-top: 8px;
+  padding: 12px;
+  background-color: color-mix(in srgb, #000 20%, transparent);
+  border-radius: 6px;
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid color-mix(in srgb, #fff 10%, transparent);
 }
 
-.flow-wrapper.dark .sidebar-toggle-button div {
-  background-color: #666;
+.snackbar details .details-content::-webkit-scrollbar {
+  width: 6px;
 }
 
-.flow-wrapper.light .sidebar-toggle-button div {
-  background-color: #bbb;
+.snackbar details .details-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.flow-wrapper.dark .sidebar-toggle-button:hover div {
-  background-color: #eee;
+.snackbar details .details-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, #fff 30%, transparent);
+  border-radius: 3px;
 }
 
-.flow-wrapper.light .sidebar-toggle-button:hover div {
-  background-color: #111;
+.snackbar details .details-content::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, #fff 50%, transparent);
 }
 
-/* Snackbar inside modal */
+.snackbar.error {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #ef4444 90%, #000),
+    color-mix(in srgb, #dc2626 90%, #000)
+  );
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #ef4444 60%, transparent);
+}
+
+.snackbar.success {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #10b981 90%, #000),
+    color-mix(in srgb, #059669 90%, #000)
+  );
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #10b981 60%, transparent);
+}
+
+.snackbar.warning {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #f59e0b 95%, #000),
+    color-mix(in srgb, #d97706 95%, #000)
+  );
+  color: #000;
+  border: 1px solid color-mix(in srgb, #f59e0b 60%, transparent);
+}
+
+.snackbar.warning .close {
+  color: #000;
+}
+
+.snackbar.warning details .details-content {
+  background-color: color-mix(in srgb, #000 15%, transparent);
+  color: #000;
+  border-color: color-mix(in srgb, #000 20%, transparent);
+}
+
+.snackbar.info {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #3b82f6 90%, #000),
+    color-mix(in srgb, #2563eb 90%, #000)
+  );
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #3b82f6 60%, transparent);
+}
+
+/* Multiple snackbars stacking */
+.snackbar:nth-last-child(2) {
+  transform: translateY(-60px) scale(0.95);
+  opacity: 0.8;
+}
+
+.snackbar:nth-last-child(3) {
+  transform: translateY(-120px) scale(0.9);
+  opacity: 0.6;
+}
+
 dialog .modal-content .snackbar {
   position: absolute;
-  bottom: 15px;
-  right: 15px;
+  bottom: 16px;
+  right: 16px;
   z-index: 10001;
   margin: 0;
-  max-width: calc(100% - 30px);
-  animation: slide-up 0.3s ease;
+  max-width: calc(100% - 32px);
+  min-width: min(300px, calc(100% - 32px));
 }
 
-dialog .modal-content .snackbar.show {
-  display: block;
+.snackbar.show:nth-last-child(2) {
+  transform: translateY(-60px) scale(0.95);
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-dialog .modal-content .snackbar .close {
-  padding: 10px;
+.snackbar.show:nth-last-child(3) {
+  transform: translateY(-120px) scale(0.9);
 }
 
-dialog .modal-content .snackbar.warning {
-  color: #000 !important;
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* Responsive improvements */
+@media (width <= 480px) {
+  .snackbar {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    min-width: unset;
+    margin: 16px 0;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  dialog .modal-content .snackbar {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    min-width: unset;
+  }
+
+  .snackbar .message {
+    margin-right: 44px;
+    font-size: 14px;
+  }
+}
+
+.flow.wrapper .snackbar {
+  box-shadow:
+    0 4px 12px color-mix(in srgb, #000 30%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 5%, transparent);
+}
+
+/* high contrast mode support */
+@media (prefers-contrast: more) {
+  .snackbar {
+    border: 2px solid currentcolor;
+    backdrop-filter: none;
+  }
+
+  .snackbar .close:focus {
+    box-shadow: 0 0 0 3px currentcolor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .snackbar {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+
+  .snackbar.show {
+    transform: none;
+  }
+
+  .snackbar.hide {
+    transform: none;
   }
 }

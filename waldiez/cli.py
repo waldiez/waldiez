@@ -5,22 +5,21 @@
 """Command line interface to convert or run a waldiez file."""
 
 import json
-import logging
 import os
-import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import anyio
 import typer
+from dotenv import load_dotenv
 from typing_extensions import Annotated
 
 # pylint: disable=import-error,line-too-long
 # pyright: reportMissingImports=false
 try:  # pragma: no cover
-    from ._version import (  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
-        __version__,
-    )
+    # fmt: off
+    from ._version import __version__ # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
+    # fmt: on
 except ImportError:  # pragma: no cover
     import warnings
 
@@ -31,6 +30,8 @@ except ImportError:  # pragma: no cover
 
 
 from .exporter import WaldiezExporter
+from .io import StructuredIOStream
+from .logger import get_logger
 from .models import Waldiez
 from .runner import WaldiezRunner
 from .utils import add_cli_extras
@@ -38,6 +39,9 @@ from .utils import add_cli_extras
 if TYPE_CHECKING:
     from autogen import ChatResult  # type: ignore[import-untyped]
 
+
+load_dotenv()
+LOG = get_logger()
 
 app = typer.Typer(
     name="waldiez",
@@ -52,7 +56,7 @@ app = typer.Typer(
     invoke_without_command=True,
     add_help_option=True,
     pretty_exceptions_enable=False,
-    epilog=("Use `waldiez [COMMAND] --help` for command-specific help. "),
+    epilog="Use `waldiez [COMMAND] --help` for command-specific help.",
 )
 
 
@@ -95,6 +99,22 @@ def run(
         dir_okay=False,
         resolve_path=True,
     ),
+    uploads_root: Optional[Path] = typer.Option(  # noqa: B008
+        None,
+        help=(
+            "Path to the uploads root directory. "
+            "The directory will contain "
+            "any uploaded files."
+        ),
+        dir_okay=True,
+        resolve_path=True,
+    ),
+    structured: bool = typer.Option(  # noqa: B008
+        False,
+        help=(
+            "If set, running the flow will use structured io stream instead of the default 'input/print' "
+        ),
+    ),
     force: bool = typer.Option(  # noqa: B008
         False,
         help="Override the output file if it already exists.",
@@ -110,28 +130,27 @@ def run(
         except json.decoder.JSONDecodeError as error:
             typer.echo("Invalid .waldiez file. Not a valid json?")
             raise typer.Exit(code=1) from error
-    waldiez = Waldiez.from_dict(data)
-    runner = WaldiezRunner(waldiez)
-    if waldiez.is_async:
-        results = anyio.run(runner.a_run, output_path)
-    else:
-        results = runner.run(output_path=output_path)
-    logger = _get_logger()
+    results = _do_run(
+        data,
+        structured=structured,
+        uploads_root=uploads_root,
+        output_path=output_path,
+    )
     if isinstance(results, list):
-        logger.info("Results:")
+        LOG.info("Results:")
         for result in results:
-            _log_result(result, logger)
+            _log_result(result)
             sep = "-" * 80
             print("\n" + f"{sep}" + "\n")
     elif isinstance(results, dict):
-        logger.info("Results:")
+        LOG.info("Results:")
         for key, result in results.items():
-            logger.info("Order: %s", key)
-            _log_result(result, logger)
+            LOG.info("Order: %s", key)
+            _log_result(result)
             sep = "-" * 80
             print("\n" + f"{sep}" + "\n")
     else:
-        _log_result(results, logger)
+        _log_result(results)
 
 
 @app.command()
@@ -148,23 +167,30 @@ def convert(
             resolve_path=True,
         ),
     ],
-    output: Annotated[
-        Path,
-        typer.Option(
-            ...,
-            help=(
-                "Path to the output file. "
-                "The file extension determines the output format: "
-                "`.py` for Python script, `.ipynb` for Jupyter notebook."
-            ),
-            file_okay=True,
-            dir_okay=False,
-            resolve_path=True,
+    output: Path | None = typer.Option(  # noqa: B008
+        default=None,
+        help=(
+            "Path to the output file. "
+            "The file extension determines the output format: "
+            "`.py` for Python script, `.ipynb` for Jupyter notebook."
+            " If not provided, the output will be saved in the same directory as the input file."
+            " If the file already exists, it will not be overwritten unless --force is used."
         ),
-    ],
+        file_okay=True,
+        dir_okay=False,
+        resolve_path=True,
+    ),
     force: bool = typer.Option(
         False,
         help="Override the output file if it already exists.",
+    ),
+    debug: bool = typer.Option(
+        False,
+        "--debug",
+        "-d",
+        help="Enable debug logging.",
+        is_eager=True,
+        rich_help_panel="Debug",
     ),
 ) -> None:
     """Convert a Waldiez flow to a Python script or a Jupyter notebook."""
@@ -177,7 +203,11 @@ def convert(
             raise typer.Exit(code=1) from error
     waldiez = Waldiez.from_dict(data)
     exporter = WaldiezExporter(waldiez)
-    exporter.export(output, force=force)
+    if debug:
+        LOG.set_level("DEBUG")
+    if output is None:
+        output = Path(file).with_suffix(".py").resolve()
+    exporter.export(output, force=force, debug=debug)
     generated = str(output).replace(os.getcwd(), ".")
     typer.echo(f"Generated: {generated}")
 
@@ -201,7 +231,46 @@ def check(
     with file.open("r", encoding="utf-8") as _file:
         data = json.load(_file)
     Waldiez.from_dict(data)
-    typer.echo("Waldiez flow is valid.")
+    LOG.success("Waldiez flow seems valid.")
+
+
+def _do_run(
+    data: dict[str, Any],
+    structured: bool,
+    uploads_root: Optional[Path],
+    output_path: Optional[Path],
+) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
+    """Run the Waldiez flow and get the results."""
+    waldiez = Waldiez.from_dict(data)
+    if structured:
+        stream = StructuredIOStream(uploads_root=uploads_root)
+        with StructuredIOStream.set_default(stream):
+            runner = WaldiezRunner(waldiez)
+            if waldiez.is_async:
+                results = anyio.run(
+                    runner.a_run,
+                    output_path,
+                    uploads_root,
+                )
+            else:
+                results = runner.run(
+                    output_path=output_path,
+                    uploads_root=uploads_root,
+                )
+    else:
+        runner = WaldiezRunner(waldiez)
+        if waldiez.is_async:
+            results = anyio.run(
+                runner.a_run,
+                output_path,
+                uploads_root,
+            )
+        else:
+            results = runner.run(
+                output_path=output_path,
+                uploads_root=uploads_root,
+            )
+    return results
 
 
 def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
@@ -211,53 +280,23 @@ def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
         output.parent.mkdir(parents=True)
     if output is not None and output.exists():
         if force is False:
-            typer.echo("Output file already exists.")
+            LOG.error("Output file already exists.")
             raise typer.Exit(code=1)
         output.unlink()
     return output
 
 
-def _get_logger(level: int = logging.INFO) -> logging.Logger:
-    """Get the logger for the Waldiez package.
-
-    Parameters
-    ----------
-    level : int or str, optional
-        The logging level. Default is logging.INFO.
-
-    Returns
-    -------
-    logging.Logger
-        The logger.
-    """
-    # check if we already have setup a config
-
-    if not logging.getLogger().handlers:
-        logging.basicConfig(
-            level=level,
-            format="%(levelname)s %(message)s",
-            stream=sys.stderr,
-            force=True,
-        )
-    logger = logging.getLogger("waldiez::cli")
-    current_level = logger.getEffectiveLevel()
-    if current_level != level:
-        logger.setLevel(level)
-    return logger
-
-
-def _log_result(result: "ChatResult", logger: logging.Logger) -> None:
+def _log_result(result: "ChatResult") -> None:
     """Log the result of the Waldiez flow."""
-    logger.info("Chat History:\n")
-    logger.info(result.chat_history)
-    logger.info("Summary:\n")
-    logger.info(result.summary)
-    logger.info("Cost:\n")
-    logger.info(result.cost)
+    LOG.info("Chat History:\n")
+    LOG.info(result.chat_history)
+    LOG.info("Summary:\n")
+    LOG.info(result.summary)
+    LOG.info("Cost:\n")
+    LOG.info(result.cost)
 
 
 add_cli_extras(app)
 
 if __name__ == "__main__":
-    _get_logger()
     app()

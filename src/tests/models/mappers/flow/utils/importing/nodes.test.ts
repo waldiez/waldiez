@@ -52,7 +52,7 @@ describe("getNodes", () => {
                     position: { x: 0, y: 0 },
                     parentId: "agent2",
                     data: {
-                        agentType: "user",
+                        agentType: "user_proxy",
                     },
                 },
                 {
@@ -74,7 +74,7 @@ describe("getNodes", () => {
                 },
                 {
                     id: "101113",
-                    type: "skill",
+                    type: "tool",
                     position: 4,
                     data: {},
                 },

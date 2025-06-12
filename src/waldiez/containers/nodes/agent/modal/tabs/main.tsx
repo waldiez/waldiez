@@ -2,28 +2,24 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic";
 import { WaldiezAgentCaptainTab } from "@waldiez/containers/nodes/agent/modal/tabs/captain";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
-import { WaldiezAgentGroup } from "@waldiez/containers/nodes/agent/modal/tabs/group";
-import { WaldiezAgentGroupManager } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager";
+import { WaldiezAgentGroupMember } from "@waldiez/containers/nodes/agent/modal/tabs/groupMember";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
-import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nestedChats";
-import { WaldiezAgentRagUser } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
-import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
-import { WaldiezAgentSkills } from "@waldiez/containers/nodes/agent/modal/tabs/skills";
 import {
-    WaldiezAgentSwarmAfterWork,
-    WaldiezAgentSwarmFunctions,
-    WaldiezAgentSwarmHandoffs,
-    WaldiezAgentSwarmNestedChats,
-    WaldiezAgentSwarmUpdateState,
-} from "@waldiez/containers/nodes/agent/modal/tabs/swarm";
+    WaldiezAgentGroupNestedChatTabs,
+    WaldiezAgentNestedChats,
+} from "@waldiez/containers/nodes/agent/modal/tabs/nested";
+import { WaldiezAgentRagUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
+import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
+import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 import { WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
+import { WaldiezAgentUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/user";
 import {
     WaldiezEdge,
     WaldiezNodeAgent,
@@ -31,232 +27,302 @@ import {
     WaldiezNodeAgentData,
     WaldiezNodeAgentRagUserData,
     WaldiezNodeAgentReasoningData,
-    WaldiezNodeAgentSwarmData,
     WaldiezNodeModel,
-    WaldiezNodeSkill,
+    WaldiezNodeTool,
 } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
-export const WaldiezNodeAgentModalTabs = ({
-    id,
-    data: dataProp,
-    flowId,
-    isModalOpen,
-    isDarkMode,
-    filesToUpload,
-    onDataChange: onDataChangeProp,
-    onAgentTypeChange,
-    onFilesToUploadChange,
-}: WaldiezNodeAgentModalTabsProps) => {
-    const isManager = dataProp.agentType === "manager";
-    const isRagUser = dataProp.agentType === "rag_user";
-    const isSwarm = dataProp.agentType === "swarm";
-    const isReasoning = dataProp.agentType === "reasoning";
-    const isCaptain = dataProp.agentType === "captain";
-    const getAgentConnections = useWaldiez(s => s.getAgentConnections);
-    const getAgents = useWaldiez(s => s.getAgents);
-    const getModels = useWaldiez(s => s.getModels);
-    const getSkills = useWaldiez(s => s.getSkills);
-    const getEdges = useWaldiez(s => s.getEdges);
-    const uploadHandler = useWaldiez(s => s.onUpload);
-    const agentConnections = getAgentConnections(id);
-    const models = getModels() as WaldiezNodeModel[];
-    const agents = getAgents() as WaldiezNodeAgent[];
-    const skills = getSkills() as WaldiezNodeSkill[];
-    const edges = getEdges() as WaldiezEdge[];
-    const groupManagers = agents.filter(agent => agent.data.agentType === "manager");
-    const connectionsCount = agentConnections.target.edges.length + agentConnections.source.edges.length;
-    const showNestedChatsTab = !(isManager || connectionsCount === 0) && !isSwarm;
-    const uploadsEnabled = !!uploadHandler;
-    const [activeTabIndex, setActiveTabIndex] = useState(0);
-    useEffect(() => {
-        setActiveTabIndex(0);
-    }, [isModalOpen]);
-    const [data, setLocalData] = useState<WaldiezNodeAgentData>(dataProp);
-    const onDataChange = (newData: Partial<WaldiezNodeAgentData>) => {
-        setLocalData({ ...data, ...newData });
-        onDataChangeProp(newData);
-    };
-    return (
-        <TabItems activeTabIndex={activeTabIndex}>
-            <TabItem label="Agent" id={`wf-${flowId}-agent-config-${id}`}>
-                <div className="modal-tab-body">
-                    <WaldiezAgentBasic
-                        id={id}
-                        data={data}
-                        onDataChange={onDataChange}
-                        onAgentTypeChange={onAgentTypeChange}
-                    />
-                </div>
-            </TabItem>
-            {isManager && (
-                <TabItem label="Group Chat" id={`wf-${flowId}-agent-groupManager-${id}`}>
+/**
+ * Component for rendering the tab interface in Waldiez Node Agent Modal
+ * Displays different tabs based on agent type and connections
+ */
+export const WaldiezNodeAgentModalTabs = memo(
+    ({
+        id,
+        data,
+        flowId,
+        isModalOpen,
+        isDarkMode,
+        filesToUpload,
+        onDataChange,
+        onAgentTypeChange,
+        onFilesToUploadChange,
+    }: WaldiezNodeAgentModalTabsProps) => {
+        // Get data from store
+        const getAgentConnections = useWaldiez(s => s.getAgentConnections);
+        const getAgents = useWaldiez(s => s.getAgents);
+        const getModels = useWaldiez(s => s.getModels);
+        const getTools = useWaldiez(s => s.getTools);
+        const getEdges = useWaldiez(s => s.getEdges);
+        const uploadHandler = useWaldiez(s => s.onUpload);
+
+        // Track active tab index
+        const [activeTabIndex, setActiveTabIndex] = useState(0);
+
+        /**
+         * Reset active tab when modal opens/closes
+         */
+        useEffect(() => {
+            setActiveTabIndex(0);
+        }, [isModalOpen]);
+
+        // Compute agent type flags
+        const agentTypeInfo = useMemo(
+            () => ({
+                isManager: data.agentType === "group_manager",
+                isGroupMember: data.agentType !== "group_manager" && !!data.parentId,
+                isRagUser: data.agentType === "rag_user_proxy",
+                isReasoning: data.agentType === "reasoning",
+                isCaptain: data.agentType === "captain",
+            }),
+            [data.agentType, data.parentId],
+        );
+
+        // Extract agent type flags for readability
+        const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain } = agentTypeInfo;
+
+        // Compute derived data
+        // eslint-disable-next-line max-statements
+        const derivedData = useMemo(() => {
+            // Get necessary data from store
+            const agentConnections = getAgentConnections(id);
+            const models = getModels() as WaldiezNodeModel[];
+            const agents = getAgents() as WaldiezNodeAgent[];
+            const tools = getTools() as WaldiezNodeTool[];
+            const edges = getEdges() as WaldiezEdge[];
+
+            // Filter agents that are group managers
+            const groupManagers = agents.filter(agent => agent.data.agentType === "group_manager");
+
+            // Calculate connection counts
+            const connectionsCount =
+                agentConnections.targets.edges.length + agentConnections.sources.edges.length;
+
+            // Determine if nested chats tab should be shown
+            const showNestedChatsTab = !isGroupMember && connectionsCount > 0;
+
+            // Handle group member specific logic
+            let showGroupNestedChatTab = false;
+            let groupMembers: WaldiezNodeAgent[] = [];
+            let connectionsOutsideGroup: WaldiezEdge[] = [];
+
+            if (isGroupMember) {
+                // Find members of the same group
+                groupMembers = agents.filter(agent => agent.data.parentId === data.parentId);
+
+                // Find connections outside the group
+                connectionsOutsideGroup = agentConnections.targets.edges.filter(
+                    edge => groupMembers.findIndex(member => member.id === edge.target) === -1,
+                );
+
+                // Show nested chat tab if there are connections outside the group
+                showGroupNestedChatTab = connectionsOutsideGroup.length > 0;
+            }
+
+            // Check if uploads are enabled
+            const uploadsEnabled = !!uploadHandler;
+
+            return {
+                agentConnections,
+                models,
+                agents,
+                edges,
+                tools,
+                groupManagers,
+                showNestedChatsTab,
+                showGroupNestedChatTab,
+                groupMembers,
+                connectionsOutsideGroup,
+                uploadsEnabled,
+            };
+        }, [
+            getAgentConnections,
+            getModels,
+            getAgents,
+            getEdges,
+            getTools,
+            id,
+            isGroupMember,
+            data.parentId,
+            uploadHandler,
+        ]);
+
+        // Extract derived data for readability
+        const {
+            agentConnections,
+            models,
+            agents,
+            edges,
+            tools,
+            groupManagers,
+            showNestedChatsTab,
+            showGroupNestedChatTab,
+            connectionsOutsideGroup,
+            uploadsEnabled,
+        } = derivedData;
+
+        if (isRagUser) {
+            return (
+                <WaldiezAgentRagUserTabs
+                    id={id}
+                    flowId={flowId}
+                    isDarkMode={isDarkMode}
+                    isModalOpen={isModalOpen}
+                    models={models}
+                    uploadsEnabled={uploadsEnabled}
+                    data={data as WaldiezNodeAgentRagUserData}
+                    onDataChange={onDataChange}
+                    filesToUpload={filesToUpload}
+                    onFilesToUploadChange={onFilesToUploadChange}
+                />
+            );
+        }
+        if (data.agentType === "user_proxy") {
+            return (
+                <WaldiezAgentUserTabs
+                    id={id}
+                    flowId={flowId}
+                    isDarkMode={isDarkMode}
+                    isModalOpen={isModalOpen}
+                    data={data as WaldiezNodeAgentData}
+                    tools={tools}
+                    showNestedChatsTab={showNestedChatsTab}
+                    agentConnections={agentConnections}
+                    onDataChange={onDataChange}
+                />
+            );
+        }
+
+        return (
+            <TabItems activeTabIndex={activeTabIndex}>
+                {/* Basic Tab - Always visible */}
+                <TabItem label="Agent" id={`wf-${flowId}-wa-${id}-basic`}>
                     <div className="modal-tab-body">
-                        <WaldiezAgentGroupManager
+                        <WaldiezAgentBasic
                             id={id}
-                            flowId={flowId}
-                            isDarkMode={isDarkMode}
                             data={data}
                             onDataChange={onDataChange}
-                            agents={agents}
-                            agentConnections={agentConnections}
+                            onAgentTypeChange={onAgentTypeChange}
                         />
                     </div>
                 </TabItem>
-            )}
-            {isReasoning && (
-                <TabItem label="Reasoning" id={`wf-${flowId}-agent-reasoning-${id}`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentReasoning
-                            id={id}
-                            data={data as WaldiezNodeAgentReasoningData}
-                            onDataChange={onDataChange}
-                        />
-                    </div>
-                </TabItem>
-            )}
-            {isRagUser && (
-                <TabItem label="RAG" id={`wf-${flowId}-agent-ragUser-${id}`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentRagUser
-                            id={id}
-                            flowId={flowId}
-                            isDarkMode={isDarkMode}
-                            isModalOpen={isModalOpen}
-                            uploadsEnabled={uploadsEnabled}
-                            data={data as WaldiezNodeAgentRagUserData}
-                            onDataChange={onDataChange}
-                            filesToUpload={filesToUpload}
-                            onFilesToUploadChange={onFilesToUploadChange}
-                        />
-                    </div>
-                </TabItem>
-            )}
-            {!isManager && (
-                <TabItem label="Termination" id={`wf-${flowId}-agent-termination-${id}`}>
+
+                {/* Reasoning Tab - Only for reasoning agents */}
+                {isReasoning && (
+                    <TabItem label="Reasoning" id={`wf-${flowId}-wa-${id}-reasoning`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentReasoning
+                                id={id}
+                                data={data as WaldiezNodeAgentReasoningData}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+
+                {/* Captain Tab - Only visible for captain agents */}
+                {isCaptain && (
+                    <TabItem label="Captain" id={`wf-${flowId}-wa-${id}-captain`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentCaptainTab
+                                id={id}
+                                flowId={flowId}
+                                data={data as WaldiezNodeAgentCaptainData}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+
+                {/* Termination Tab - Always visible */}
+                <TabItem label="Termination" id={`wf-${flowId}-wa-${id}-termination`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentTermination id={id} data={data} onDataChange={onDataChange} />
                     </div>
                 </TabItem>
-            )}
-            {!isManager && (
-                <TabItem label="Code Execution" id={`wf-${flowId}-agent-codeExecution-${id}`}>
+
+                {/* Code Execution Tab - Always visible */}
+                <TabItem label="Code Execution" id={`wf-${flowId}-wa-${id}-codeExecution`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentCodeExecution
                             id={id}
                             data={data}
-                            skills={skills}
+                            tools={tools}
                             onDataChange={onDataChange}
                         />
                     </div>
                 </TabItem>
-            )}
-            <TabItem label="Models" id={`wf-${flowId}-agent-models-${id}`}>
-                <div className="modal-tab-body">
-                    <WaldiezAgentModels id={id} data={data} models={models} onDataChange={onDataChange} />
-                </div>
-            </TabItem>
-            {!isManager && groupManagers.length > 0 && (
-                <TabItem id={`wf-${flowId}-agent-group-${id}`} label="Group">
+
+                {/* Models Tab - Always visible */}
+                <TabItem label="Models" id={`wf-${flowId}-wa-${id}-models`}>
                     <div className="modal-tab-body">
-                        <WaldiezAgentGroup id={id} data={data} agents={agents} onDataChange={onDataChange} />
+                        <WaldiezAgentModels id={id} data={data} models={models} onDataChange={onDataChange} />
                     </div>
                 </TabItem>
-            )}
-            {!isManager && !isSwarm && (
-                <TabItem label="Skills" id={`wf-${flowId}-agent-skills-${id}`}>
+
+                {/* Tools Tab - Always visible */}
+                <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
                     <div className="modal-tab-body">
-                        <WaldiezAgentSkills
+                        <WaldiezAgentTools
                             id={id}
                             data={data}
                             agents={agents}
-                            skills={skills}
+                            tools={tools}
+                            skipExecutor={isGroupMember}
                             onDataChange={onDataChange}
                         />
                     </div>
                 </TabItem>
-            )}
-            {isSwarm && (
-                <TabItem label="Skills" id={`wf-${flowId}-agent-swarm-skills-${id}`}>
-                    <WaldiezAgentSwarmFunctions
-                        id={id}
-                        data={data as WaldiezNodeAgentSwarmData}
-                        skills={skills}
-                        onDataChange={onDataChange}
-                    />
-                </TabItem>
-            )}
-            {isSwarm && (
-                <TabItem label="Nested chat" id={`wf-${flowId}-agent-swarm-nestedChats-${id}`}>
-                    <WaldiezAgentSwarmNestedChats
-                        id={id}
-                        flowId={flowId}
-                        darkMode={isDarkMode}
-                        data={data as WaldiezNodeAgentSwarmData}
-                        agentConnections={agentConnections}
-                        agents={agents}
-                        edges={edges}
-                        onDataChange={onDataChange}
-                    />
-                </TabItem>
-            )}
-            {isSwarm && (
-                <TabItem label="Swarm" id={`wf-${flowId}-agent-swarm-specific-${id}`}>
-                    <TabItems activeTabIndex={0}>
-                        <TabItem label="Handoffs" id={`wf-${flowId}-agent-swarm-handoffs-${id}`}>
-                            <WaldiezAgentSwarmHandoffs
+
+                {/* Nested Chat Tab - Only visible if agent has connections and is not a group member */}
+                {showNestedChatsTab && (
+                    <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-nested`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentNestedChats
                                 id={id}
-                                data={data as WaldiezNodeAgentSwarmData}
+                                data={data as WaldiezNodeAgentData}
                                 onDataChange={onDataChange}
+                                agentConnections={agentConnections}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+
+                {/* Group Nested Chat Tab - Only visible for group members with outside connections */}
+                {isGroupMember && showGroupNestedChatTab && (
+                    <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-group-nested`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentGroupNestedChatTabs
+                                id={id}
+                                flowId={flowId}
+                                darkMode={isDarkMode}
+                                data={data as WaldiezNodeAgentData}
+                                agentConnections={agentConnections}
+                                edges={connectionsOutsideGroup}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+
+                {/* Group Tab - Only visible for non-managers when there are group managers */}
+                {!isManager && groupManagers.length > 0 && (
+                    <TabItem id={`wf-${flowId}-wa-${id}-group`} label="Group">
+                        <div className="modal-tab-body">
+                            <WaldiezAgentGroupMember
+                                id={id}
+                                data={data}
                                 agents={agents}
-                                agentConnections={agentConnections}
                                 edges={edges}
-                            />
-                        </TabItem>
-                        <TabItem label="Agent's State" id={`wf-${flowId}-agent-swarm-updateState-${id}`}>
-                            <WaldiezAgentSwarmUpdateState
-                                id={id}
-                                data={data as WaldiezNodeAgentSwarmData}
-                                onDataChange={onDataChange}
                                 darkMode={isDarkMode}
-                            />
-                        </TabItem>
-                        <TabItem label="After work" id={`wf-${flowId}-agent-swarm-afterWork-${id}`}>
-                            <WaldiezAgentSwarmAfterWork
-                                id={id}
-                                data={data as WaldiezNodeAgentSwarmData}
                                 onDataChange={onDataChange}
-                                agentConnections={agentConnections}
-                                darkMode={isDarkMode}
                             />
-                        </TabItem>
-                    </TabItems>
-                </TabItem>
-            )}
-            {showNestedChatsTab && (
-                <TabItem label="Nested chat" id={`wf-${flowId}-agent-nestedChats-${id}`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentNestedChats
-                            id={id}
-                            data={data as WaldiezNodeAgentData}
-                            onDataChange={onDataChange}
-                            agentConnections={agentConnections}
-                        />
-                    </div>
-                </TabItem>
-            )}
-            {isCaptain && (
-                <TabItem label="Captain" id={`wf-${flowId}-agent-captain-${id}`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentCaptainTab
-                            id={id}
-                            flowId={flowId}
-                            data={data as WaldiezNodeAgentCaptainData}
-                            onDataChange={onDataChange}
-                        />
-                    </div>
-                </TabItem>
-            )}
-        </TabItems>
-    );
-};
+                        </div>
+                    </TabItem>
+                )}
+            </TabItems>
+        );
+    },
+);
+
+WaldiezNodeAgentModalTabs.displayName = "WaldiezNodeAgentModalTabs";

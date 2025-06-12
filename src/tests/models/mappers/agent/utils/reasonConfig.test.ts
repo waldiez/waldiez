@@ -20,132 +20,156 @@ describe("getReasonConfig", () => {
     it("should return a reason config", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
         expect(getReasonConfig({ reasonConfig })).toEqual(reasonConfig);
     });
     it("should return a reason config from data.reasonConfig", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
         expect(getReasonConfig({ data: { reasonConfig } })).toEqual(reasonConfig);
     });
     it("should use a default method if invalid", () => {
         const reasonConfig = {
             method: "invalid",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, method: "beam_search" });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            method: "beam_search",
+        });
     });
-    it("should use a default max_depth if invalid", () => {
+    it("should use a default maxDepth if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: "invalid",
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: "invalid",
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, max_depth: 3 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            maxDepth: 3,
+        });
     });
-    it("should use a default forest_size if invalid", () => {
+    it("should use a default forestSize if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: "invalid",
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: "invalid",
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, forest_size: 1 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            forestSize: 1,
+        });
     });
-    it("should use a default rating_scale if invalid", () => {
+    it("should use a default ratingScale if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: "invalid",
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: "invalid",
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, rating_scale: 10 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            ratingScale: 10,
+        });
     });
-    it("should use a default beam_size if invalid", () => {
+    it("should use a default beamSize if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: "invalid",
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: "invalid",
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, beam_size: 3 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            beamSize: 3,
+        });
     });
-    it("should use a default answer_approach if invalid", () => {
+    it("should use a default answerApproach if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "invalid",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "invalid",
             nsim: 7,
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, answer_approach: "pool" });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            answerApproach: "pool",
+        });
     });
     it("should use a default nsim if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: "invalid",
-            exploration_constant: 1.6,
+            explorationConstant: 1.6,
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, nsim: 3 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            nsim: 3,
+        });
     });
-    it("should use a default exploration_constant if invalid", () => {
+    it("should use a default explorationConstant if invalid", () => {
         const reasonConfig = {
             method: "beam_search",
-            max_depth: 3,
-            forest_size: 4,
-            rating_scale: 5,
-            beam_size: 6,
-            answer_approach: "pool",
+            maxDepth: 3,
+            forestSize: 4,
+            ratingScale: 5,
+            beamSize: 6,
+            answerApproach: "pool",
             nsim: 7,
-            exploration_constant: "invalid",
+            explorationConstant: "invalid",
         };
-        expect(getReasonConfig({ reasonConfig })).toEqual({ ...reasonConfig, exploration_constant: 1.41 });
+        expect(getReasonConfig({ reasonConfig })).toEqual({
+            ...reasonConfig,
+            explorationConstant: 1.41,
+        });
     });
 });
 

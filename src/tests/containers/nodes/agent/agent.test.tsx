@@ -2,28 +2,29 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent } from "./common";
-import { agentId, flowId, getAgentData } from "./data";
 import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Mock, describe, expect, it } from "vitest";
+
+import { renderAgent } from "./common";
+import { agentId, flowId, getAgentData } from "./data";
 
 describe("WaldiezAgentNode", () => {
     const user = userEvent.setup({
         applyAccept: false,
     });
     it("should render", () => {
-        renderAgent("user");
+        renderAgent("user_proxy");
     });
     it("should open a user's modal", () => {
-        renderAgent("user");
+        renderAgent("rag_user_proxy");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should not open a user's modal if it's already open", () => {
-        renderAgent("user", { openModal: true });
+        renderAgent("rag_user_proxy", { openModal: true });
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
@@ -39,22 +40,8 @@ describe("WaldiezAgentNode", () => {
         fireEvent.click(editButton);
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
-    it("should open a manager's modal", () => {
-        renderAgent("manager");
-        const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
-        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-    });
     it("should open a rag user's modal", () => {
-        renderAgent("rag_user");
-        const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
-        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-    });
-    it("should open a swarm agent's modal", () => {
-        renderAgent("swarm");
+        renderAgent("rag_user_proxy");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
@@ -64,23 +51,23 @@ describe("WaldiezAgentNode", () => {
         renderAgent("assistant", { openModal: true });
         const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
         expect(labelViewInput).toHaveValue("Assistant");
-        const agentData = getAgentData("user");
+        const agentData = getAgentData("user_proxy");
         const importInputElement = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
         const modalView = screen.getByTestId(`wf-${flowId}-agent-modal-${agentId}`);
         expect(modalView).toBeInTheDocument();
         const importData = structuredClone({
             type: "agent",
-            agentType: "user",
-            data: { ...(agentData as any), name: "User" },
+            agentType: "rag_user_proxy",
+            data: { ...(agentData as any), name: "user_proxy" },
         });
         const newFile = new File([JSON.stringify(importData)], "test.waldiezAgent");
         const importInput = importInputElement as HTMLInputElement;
         await user.upload(importInput, [newFile]);
     });
     it("should import an assistant agent", async () => {
-        renderAgent("user", { openModal: true });
+        renderAgent("captain", { openModal: true });
         const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("User");
+        expect(labelViewInput).toHaveValue("Captain");
         const agentData = getAgentData("assistant");
         const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
         const importData = {
@@ -91,69 +78,41 @@ describe("WaldiezAgentNode", () => {
         };
         await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
     });
-    it("should import a manager agent", async () => {
+
+    it("should import a rag user agent", async () => {
         renderAgent("assistant", { openModal: true });
         const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
         expect(labelViewInput).toHaveValue("Assistant");
-        const agentData = getAgentData("manager");
+        const agentData = getAgentData("rag_user_proxy");
         const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
         const importData = {
             id: agentId,
             type: "agent",
-            agentType: "manager",
+            agentType: "rag_user_proxy",
             data: { ...(agentData as any) },
         };
         await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
     });
-
-    it("should import a rag user agent", async () => {
-        renderAgent("user", { openModal: true });
-        const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("User");
-        const agentData = getAgentData("rag_user");
-        const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
-        const importData = {
-            id: agentId,
-            type: "agent",
-            agentType: "rag_user",
-            data: { ...(agentData as any) },
-        };
-        await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
-    });
-    it("should import a swarm agent", async () => {
-        renderAgent("user", { openModal: true });
-        const labelViewInput = screen.getByTestId(`agent-name-input-${agentId}`);
-        expect(labelViewInput).toHaveValue("User");
-        const agentData = getAgentData("swarm");
-        const importInput = screen.getByTestId(`file-upload-agent-${flowId}-${agentId}`);
-        const importData = {
-            id: agentId,
-            type: "agent",
-            agentType: "swarm",
-            data: { ...(agentData as any) },
-        };
-        await user.upload(importInput, [new File([JSON.stringify(importData)], "test.waldiezAgent")]);
-    });
-    it("should export a user agent", () => {
-        renderAgent("user", {
-            openModal: true,
-            dataOverrides: {
-                nestedChats: [
-                    {
-                        triggeredBy: [{ id: "test", isReply: false }],
-                        messages: [{ id: "test", isReply: true }],
-                    },
-                ],
-            },
-        });
-        const exportButton = screen.getByTestId(`export-agent-${flowId}-${agentId}`);
-        fireEvent.click(exportButton);
-        expect(window.URL.createObjectURL).toHaveBeenCalled();
-        expect(window.URL.revokeObjectURL).toHaveBeenCalled();
-        expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
-    });
+    // it("should export a user agent", () => {
+    //     renderAgent("user_proxy", {
+    //         openModal: true,
+    //         dataOverrides: {
+    //             nestedChats: [
+    //                 {
+    //                     triggeredBy: [{ id: "test", isReply: false }],
+    //                     messages: [{ id: "test", isReply: true }],
+    //                 },
+    //             ],
+    //         },
+    //     });
+    //     const exportButton = screen.getByTestId(`export-agent-${flowId}-${agentId}`);
+    //     fireEvent.click(exportButton);
+    //     expect(window.URL.createObjectURL).toHaveBeenCalled();
+    //     expect(window.URL.revokeObjectURL).toHaveBeenCalled();
+    //     expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
+    // });
     it("should export a rag user agent", () => {
-        renderAgent("rag_user", {
+        renderAgent("rag_user_proxy", {
             openModal: true,
             dataOverrides: {
                 nestedChats: [
@@ -176,48 +135,10 @@ describe("WaldiezAgentNode", () => {
             dataOverrides: {
                 codeExecutionConfig: {
                     workDir: undefined,
-                    useDocker: false,
+                    useDocker: undefined,
                     timeout: 10,
                     lastNMessages: "auto",
-                    functions: ["skill1", "skill2"],
-                },
-            },
-        });
-        const exportButton = screen.getByTestId(`export-agent-${flowId}-${agentId}`);
-        fireEvent.click(exportButton);
-        expect(window.URL.createObjectURL).toHaveBeenCalled();
-        expect(window.URL.revokeObjectURL).toHaveBeenCalled();
-        expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
-    });
-    it("should export a manager agent", () => {
-        renderAgent("manager", {
-            openModal: true,
-            dataOverrides: {
-                codeExecutionConfig: {
-                    workDir: undefined,
-                    useDocker: false,
-                    timeout: 10,
-                    lastNMessages: "auto",
-                    functions: [],
-                },
-            },
-        });
-        const exportButton = screen.getByTestId(`export-agent-${flowId}-${agentId}`);
-        fireEvent.click(exportButton);
-        expect(window.URL.createObjectURL).toHaveBeenCalled();
-        expect(window.URL.revokeObjectURL).toHaveBeenCalled();
-        expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
-    });
-    it("should export a swarm agent", () => {
-        renderAgent("swarm", {
-            openModal: true,
-            dataOverrides: {
-                codeExecutionConfig: {
-                    workDir: undefined,
-                    useDocker: false,
-                    timeout: 10,
-                    lastNMessages: "auto",
-                    functions: [],
+                    functions: ["tool1", "tool2"],
                 },
             },
         });

@@ -24,7 +24,7 @@ def test_waldiez_agent_termination_message_keyword() -> None:
     assert termination_message.criterion == "found"
     assert termination_message.method_content is None
     assert termination_message.string == (
-        'lambda x: any(x.get("content", "") and keyword in x.get("content", "") for keyword in ["keyword-1", "keyword-2"])'
+        'lambda x: any(isinstance(x, dict) and x.get("content", "") and isinstance(x.get("content", ""), str) and keyword in x.get("content", "") for keyword in ["keyword-1", "keyword-2"])'
     )
 
     termination_message = WaldiezAgentTerminationMessage(
@@ -34,7 +34,7 @@ def test_waldiez_agent_termination_message_keyword() -> None:
         method_content=None,
     )
     assert termination_message.string == (
-        'lambda x: any(x.get("content", "") and x.get("content", "").endswith(keyword) for keyword in ["keyword-1", "keyword-2"])'
+        'lambda x: any(isinstance(x, dict) and x.get("content", "") and isinstance(x.get("content", ""), str) and x.get("content", "").endswith(keyword) for keyword in ["keyword-1", "keyword-2"])'
     )
 
     termination_message = WaldiezAgentTerminationMessage(
@@ -44,7 +44,17 @@ def test_waldiez_agent_termination_message_keyword() -> None:
         method_content=None,
     )
     assert termination_message.string == (
-        'lambda x: any(x.get("content", "") == keyword for keyword in ["keyword-1", "keyword-2"])'
+        'lambda x: any(isinstance(x, dict) and x.get("content", "") and isinstance(x.get("content", ""), str) and x.get("content", "") == keyword for keyword in ["keyword-1", "keyword-2"])'
+    )
+
+    termination_message = WaldiezAgentTerminationMessage(
+        type="keyword",
+        keywords=["TERMINATE"],
+        criterion="starting",
+        method_content=None,
+    )
+    assert termination_message.string == (
+        'lambda x: any(isinstance(x, dict) and x.get("content", "") and isinstance(x.get("content", ""), str) and x.get("content", "").startswith(keyword) for keyword in ["TERMINATE"])'
     )
 
     with pytest.raises(ValueError):
@@ -120,7 +130,7 @@ def test_waldiez_agent_get_termination_function() -> None:
     assert termination_function_tuple[1] == "pre_is_termination_message_post"
     assert termination_function_tuple[0] == (
         "def pre_is_termination_message_post(\n"
-        "    message: Dict[str, Any],\n"
+        "    message: dict[str, Any],\n"
         ") -> bool:\n"
         "    return False\n"
     )

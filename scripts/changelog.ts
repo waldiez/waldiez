@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { readFileSync } from "fs";
+import fs from "fs-extra";
 import { resolve } from "path";
 
-const packageJson = JSON.parse(readFileSync(resolve("package.json"), "utf-8"));
+const packageJson = JSON.parse(fs.readFileSync(resolve("package.json"), "utf-8"));
 
-const changelog = readFileSync(resolve("CHANGELOG.md"), "utf-8");
+const changelog = fs.readFileSync(resolve("CHANGELOG.md"), "utf-8");
 
 const tag = packageJson.version;
 

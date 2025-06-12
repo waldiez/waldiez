@@ -4,7 +4,7 @@ nav:
   - Getting Started:
       - Getting Started: usage/index.md
       - Models: usage/models.md
-      - Skills: usage/skills.md
+      - Tools: usage/tools.md
       - Agents: usage/agents.md
       - Flow: usage/flow.md
       - Running and Troubleshooting: usage/run.md

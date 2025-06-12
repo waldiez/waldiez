@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Termination Message Check."""
 
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -12,7 +12,7 @@ from ...common import WaldiezBase, check_function, generate_function
 IS_TERMINATION_MESSAGE = "is_termination_message"
 IS_TERMINATION_MESSAGE_ARGS = ["message"]
 IS_TERMINATION_MESSAGE_TYPES = (
-    ["Dict[str, Any]"],
+    ["dict[str, Any]"],
     "bool",
 )
 
@@ -24,7 +24,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
     ----------
     type : Literal["none", "keyword", "method"]
         The type of the termination check to use: "none", "keyword", "method"
-    keywords : List[str]
+    keywords : list[str]
         If the type is "keyword", the keywords to search in the message.
     criterion : Optional[Literal["found", "ending", "exact"]] = None
         If the type is "keyword", the criterion to use (e.g.: in, endswith, ==)
@@ -52,9 +52,9 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 "none, keyword, method"
             ),
         ),
-    ]
+    ] = "none"
     keywords: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Keywords",
@@ -63,9 +63,9 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 " the keywords to search in the message."
             ),
         ),
-    ]
+    ] = []
     criterion: Annotated[
-        Optional[Literal["found", "ending", "exact"]],
+        Optional[Literal["found", "ending", "starting", "exact"]],
         Field(
             "exact",
             title="Criterion",
@@ -74,7 +74,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 "the criterion to use (e.g.: in, endswith, ==)"
             ),
         ),
-    ]
+    ] = "exact"
     method_content: Annotated[
         Optional[str],
         Field(
@@ -87,7 +87,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
                 "bool (whether the message is a termination message or not.)"
             ),
         ),
-    ]
+    ] = None
 
     _string: str = "None"
 
@@ -95,7 +95,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the termination function.
 
         Parameters
@@ -107,7 +107,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The termination function and the function name.
         """
         function_name = "is_termination_message"
@@ -162,26 +162,34 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         """Validate the keyword termination configuration."""
         if not self.keywords:
             raise ValueError("Keywords are required for keyword termination.")
-        if self.criterion not in ["found", "ending", "exact"]:
+        if self.criterion not in ["found", "ending", "starting", "exact"]:
             raise ValueError(f"Invalid criterion: {self.criterion}")
         # pylint: disable=inconsistent-quotes
         keywords_str = ", ".join([f'"{keyword}"' for keyword in self.keywords])
+        common_start = (
+            "lambda x: any(isinstance(x, dict) and "
+            'x.get("content", "") and '
+            'isinstance(x.get("content", ""), str) and '
+        )
+        common_end = f"for keyword in [{keywords_str}])"
         if self.criterion == "found":
             self._string = (
-                'lambda x: any(x.get("content", "") and '
-                'keyword in x.get("content", "") '
-                f"for keyword in [{keywords_str}])"
+                f'{common_start}keyword in x.get("content", "") {common_end}'
             )
-        if self.criterion == "ending":
+        elif self.criterion == "ending":
             self._string = (
-                'lambda x: any(x.get("content", "") and '
-                'x.get("content", "").endswith(keyword) '
-                f"for keyword in [{keywords_str}])"
+                f'{common_start}x.get("content", "").endswith(keyword) '
+                f"{common_end}"
             )
-        if self.criterion == "exact":
+        elif self.criterion == "starting":
             self._string = (
-                'lambda x: any(x.get("content", "") == keyword '
-                f"for keyword in [{keywords_str}])"
+                f'{common_start}x.get("content", "").startswith(keyword) '
+                f"{common_end}"
+            )
+
+        elif self.criterion == "exact":  # pragma: no branch
+            self._string = (
+                f'{common_start}x.get("content", "") == keyword {common_end}'
             )
 
     @model_validator(mode="after")

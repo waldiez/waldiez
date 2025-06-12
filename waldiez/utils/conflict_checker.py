@@ -1,17 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=line-too-long
-"""Check for conflicts with 'autogen-agentchat' package."""
+# pylint: disable=line-too-long, broad-exception-caught,invalid-name
+# pylint: disable=too-many-try-statements
+"""Check for conflicts between Waldiez and other packages."""
 
 import sys
 from importlib.metadata import PackageNotFoundError, version
 
-__WALDIEZ_CHECKED_FOR_CONFLICTS = False
+# Global variable to track if conflicts have been checked
+__waldiez_checked_conflicts = False
 
 
 # fmt: off
-def _check_conflicts() -> None:  # pragma: no cover
-    """Check for conflicts with 'autogen-agentchat' package."""
+def _check_autogen_agentchat() -> None:  # pragma: no cover
     try:
         version("autogen-agentchat")
         print(
@@ -30,10 +31,15 @@ def _check_conflicts() -> None:  # pragma: no cover
 # fmt: on
 
 
+def _check_conflicts() -> None:  # pragma: no cover
+    """Check for conflicts."""
+    _check_autogen_agentchat()
+
+
 def check_conflicts() -> None:  # pragma: no cover
-    """Check for conflicts with 'autogen-agentchat' package."""
+    """Check for conflicts."""
     # pylint: disable=global-statement
-    global __WALDIEZ_CHECKED_FOR_CONFLICTS
-    if __WALDIEZ_CHECKED_FOR_CONFLICTS is False:
+    global __waldiez_checked_conflicts
+    if __waldiez_checked_conflicts is False:
+        __waldiez_checked_conflicts = True
         _check_conflicts()
-        __WALDIEZ_CHECKED_FOR_CONFLICTS = True

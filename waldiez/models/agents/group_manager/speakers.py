@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Group chat speakers."""
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -14,6 +14,7 @@ WaldiezGroupManagerSpeakersSelectionMethod = Literal[
     "manual",
     "random",
     "round_robin",
+    "default",
     "custom",
 ]
 """Possible methods for the speaker selection."""
@@ -66,13 +67,13 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         Max retries for selecting a speaker.
     selection_mode : WaldiezGroupManagerSpeakersSelectionMode
         Selection mode.
-    allow_repeat : Union[bool, List[str]]
+    allow_repeat : Union[bool, list[str]]
         Allow repeat.
-    allowed_or_disallowed_transitions : Dict[str, List[str]]
+    allowed_or_disallowed_transitions : dict[str, list[str]]
         Allowed or disallowed transitions.
     transitions_type : WaldiezGroupManagerSpeakersTransitionsType
         The type of transition rules to use if
-        if a mapping (agent => List[agents]) is used:
+        if a mapping (agent => list[agents]) is used:
         `allowed` (default) or `disallowed`
     custom_method_string : Optional[str]
         The custom method string.
@@ -86,16 +87,16 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
     selection_method: Annotated[
         WaldiezGroupManagerSpeakersSelectionMethod,
         Field(
-            "auto",
+            default="auto",
             title="Selection Method",
             description="The next speaker selection method",
             alias="selectionMethod",
         ),
-    ]
+    ] = "auto"
     selection_custom_method: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             title="Method for custom selection.",
             description=(
                 "If the method for the speaker selection if `custom`"
@@ -108,11 +109,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="selectionCustomMethod",
         ),
-    ]
+    ] = None
     max_retries_for_selecting: Annotated[
         Optional[int],
         Field(
-            None,
+            default=None,
             title="Max retries for a selecting",
             description=(
                 "The maximum number of retries for the group manager "
@@ -120,11 +121,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="maxRetriesForSelecting",
         ),
-    ]
+    ] = None
     selection_mode: Annotated[
         WaldiezGroupManagerSpeakersSelectionMode,
         Field(
-            "repeat",
+            default="repeat",
             title="Selection Mode",
             description=(
                 "The method to use for selecting a next speaker: "
@@ -133,11 +134,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="selectionMode",
         ),
-    ]
+    ] = "repeat"
     allow_repeat: Annotated[
-        Union[bool, List[str]],
+        Union[bool, list[str]],
         Field(
-            True,
+            default=True,
             title="Allow repeat",
             description=(
                 "The speakers' repetition mode: "
@@ -145,34 +146,46 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="allowRepeat",
         ),
-    ]
+    ] = True
     allowed_or_disallowed_transitions: Annotated[
-        Dict[str, List[str]],
+        dict[str, list[str]],
         Field(
             default_factory=dict,
             title="Allowed or disallowed transitions",
             description=(
-                "A mapping (agent.id => List[agent.ids])"
+                "A mapping (agent.id => list[agent.ids])"
                 "with the allowed or disallowed transitions."
             ),
             alias="allowedOrDisallowedTransitions",
         ),
-    ]
+    ] = {}
     transitions_type: Annotated[
         WaldiezGroupManagerSpeakersTransitionsType,
         Field(
-            "allowed",
+            default="allowed",
             title="Transitions type",
             description=(
                 "The type of transition rules to use if "
-                "if a mapping (agent => List[agents]) is used: "
+                "if a mapping (agent => list[agents]) is used: "
                 "`allowed` (default) or `disallowed`"
             ),
             alias="transitionsType",
         ),
-    ]
-
+    ] = "allowed"
+    order: Annotated[
+        list[str],
+        Field(
+            default_factory=list,
+            title="Order",
+            description=(
+                "The order of the speakers in the group "
+                "(if round_robin is used). If empty, the order  "
+                "will be determined by the order of the agents in the flow."
+            ),
+        ),
+    ] = []
     _custom_method_string: Optional[str] = None
+    _order: Optional[list[str]] = None
 
     @property
     def custom_method_string(self) -> Optional[str]:
@@ -189,7 +202,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the custom method function.
 
         Parameters
@@ -201,7 +214,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The custom method function and the function name.
         """
         function_name = CUSTOM_SPEAKER_SELECTION
@@ -218,6 +231,46 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             function_name,
         )
+
+    def get_order(self) -> list[str]:
+        """Get the order of the speakers.
+
+        Returns
+        -------
+        list[str]
+            The order of the speakers.
+
+        Raises
+        ------
+        RuntimeError
+            If the order is not set.
+        """
+        if self._order is None:
+            raise RuntimeError("Order is not set. Call `set_order` first.")
+        return self._order
+
+    def set_order(
+        self, initial_agent_id: str, group_members: list[str]
+    ) -> None:
+        """Generate the order of the speakers.
+
+        Parameters
+        ----------
+        initial_agent_id : str
+            The ID of the initial agent.
+        group_members : list[str]
+            The group members' IDs.
+        """
+        # make sure all the members are in the order
+        # also make sure the initial agent is first
+        order_copy = self.order.copy() if self.order else []
+        all_members = [initial_agent_id] + [
+            member for member in order_copy if member != initial_agent_id
+        ]
+        for member in group_members:
+            if member not in all_members:
+                all_members.append(member)
+        self._order = all_members
 
     @model_validator(mode="after")
     def validate_group_speakers_config(self) -> Self:

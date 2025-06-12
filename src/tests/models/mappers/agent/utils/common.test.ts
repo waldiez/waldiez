@@ -17,8 +17,8 @@ import {
     getModelIds,
     getNestedChats,
     getParentId,
-    getSkills,
     getSystemMessage,
+    getTools,
 } from "@waldiez/models/mappers/agent/utils";
 
 describe("getAgentId", () => {
@@ -34,8 +34,8 @@ describe("getAgentId", () => {
 
 describe("getAgentType", () => {
     it("should return the agent type", () => {
-        const agentType = getAgentType({ agentType: "user" });
-        expect(agentType).toBe("user");
+        const agentType = getAgentType({ agentType: "user_proxy" });
+        expect(agentType).toBe("user_proxy");
     });
     it("should return the agent type from the data", () => {
         const agentType = getAgentType({ data: { agentType: "assistant" } });
@@ -43,40 +43,28 @@ describe("getAgentType", () => {
     });
     it("should return the default agent type", () => {
         const agentType = getAgentType({});
-        expect(agentType).toBe("user");
+        expect(agentType).toBe("user_proxy");
     });
 });
 
 describe("getFallbackDescription", () => {
     it("should return the user fallback description", () => {
-        const description = getFallbackDescription("user");
+        const description = getFallbackDescription("user_proxy");
         expect(description).toBe("A user agent");
     });
     it("should return the assistant fallback description", () => {
         const description = getFallbackDescription("assistant");
         expect(description).toBe("An assistant agent");
     });
-    it("should return the manager fallback description", () => {
-        const description = getFallbackDescription("manager");
-        expect(description).toBe("A group chat manager");
-    });
     it("should return the rag user fallback description", () => {
-        const description = getFallbackDescription("rag_user");
+        const description = getFallbackDescription("rag_user_proxy");
         expect(description).toBe("A RAG user agent");
-    });
-    it("should return the swarm agent fallback description", () => {
-        const description = getFallbackDescription("swarm");
-        expect(description).toBe("A Swarm agent");
-    });
-    it("should return the swarm container fallback description", () => {
-        const description = getFallbackDescription("swarm_container");
-        expect(description).toBe("A Swarm container");
     });
 });
 
 describe("getAgentMeta", () => {
     it("should return the agent meta", () => {
-        const meta = getAgentMeta({}, "user");
+        const meta = getAgentMeta({}, "user_proxy");
         expect(meta).toBeTruthy();
     });
 });
@@ -94,31 +82,19 @@ describe("getSystemMessage", () => {
 
 describe("getHumanInputMode", () => {
     it("should return the default human input mode if the agent is user", () => {
-        const mode = getHumanInputMode({}, "user");
+        const mode = getHumanInputMode({}, "user_proxy");
         expect(mode).toBe("ALWAYS");
     });
     it("should return the default human input mode if the agent is an assistant", () => {
         const mode = getHumanInputMode({}, "assistant");
         expect(mode).toBe("NEVER");
     });
-    it("should return the default human input mode if the agent is a manager", () => {
-        const mode = getHumanInputMode({}, "manager");
-        expect(mode).toBe("NEVER");
-    });
     it("should return the default human input mode if the agent is a rag user", () => {
-        const mode = getHumanInputMode({}, "rag_user");
+        const mode = getHumanInputMode({}, "rag_user_proxy");
         expect(mode).toBe("ALWAYS");
     });
-    it("should return the default human input mode if the agent is a swarm agent", () => {
-        const mode = getHumanInputMode({}, "swarm");
-        expect(mode).toBe("NEVER");
-    });
-    it("should return the default human input mode if the agent is a swarm container", () => {
-        const mode = getHumanInputMode({}, "swarm_container");
-        expect(mode).toBe("NEVER");
-    });
     it("should return the human input mode from the data", () => {
-        const mode = getHumanInputMode({ humanInputMode: "NEVER" }, "user");
+        const mode = getHumanInputMode({ humanInputMode: "NEVER" }, "user_proxy");
         expect(mode).toBe("NEVER");
     });
 });
@@ -136,7 +112,9 @@ describe("getCodeExecutionConfig", () => {
 
 describe("getAgentDefaultAutoReply", () => {
     it("should return the default auto reply", () => {
-        const reply = getAgentDefaultAutoReply({ agentDefaultAutoReply: "test" });
+        const reply = getAgentDefaultAutoReply({
+            agentDefaultAutoReply: "test",
+        });
         expect(reply).toBe("test");
     });
     it("should return null", () => {
@@ -147,7 +125,9 @@ describe("getAgentDefaultAutoReply", () => {
 
 describe("getMaximumConsecutiveAutoReply", () => {
     it("should return the maximum consecutive auto reply", () => {
-        const max = getMaximumConsecutiveAutoReply({ maxConsecutiveAutoReply: 3 });
+        const max = getMaximumConsecutiveAutoReply({
+            maxConsecutiveAutoReply: 3,
+        });
         expect(max).toBe(3);
     });
     it("should return null", () => {
@@ -157,7 +137,7 @@ describe("getMaximumConsecutiveAutoReply", () => {
 });
 
 describe("getModelIds", () => {
-    it("should return the model ids", () => {
+    it("should return the model id", () => {
         const ids = getModelIds({ modelIds: ["model-1"] });
         expect(ids).toEqual(["model-1"]);
     });
@@ -167,68 +147,93 @@ describe("getModelIds", () => {
     });
 });
 
-describe("getSkills", () => {
-    it("should return the skills", () => {
-        const skills = getSkills({ skills: [{ id: "skill-1", executorId: "wa-1" }] });
-        expect(skills).toEqual([{ id: "skill-1", executorId: "wa-1" }]);
+describe("getTools", () => {
+    it("should return the tools", () => {
+        const tools = getTools({
+            tools: [{ id: "tool-1", executorId: "wa-1" }],
+        });
+        expect(tools).toEqual([{ id: "tool-1", executorId: "wa-1" }]);
     });
     it("should return an empty array", () => {
-        const skills = getSkills({});
-        expect(skills).toEqual([]);
+        const tools = getTools({});
+        expect(tools).toEqual([]);
     });
 });
 
 describe("getAgentName", () => {
     it("should return the agent name", () => {
-        const name = getAgentName({ name: "test" }, "user");
+        const name = getAgentName({ name: "test" }, "user_proxy");
         expect(name).toBe("test");
     });
     it("should return the fallback name", () => {
         const name = getAgentName({}, "assistant");
         expect(name).toBe("Assistant");
     });
-    it("should return the fallback name for a manager", () => {
-        const name = getAgentName({}, "manager");
-        expect(name).toBe("Manager");
-    });
     it("should return the fallback name for a rag user", () => {
-        const name = getAgentName({}, "rag_user");
+        const name = getAgentName({}, "rag_user_proxy");
         expect(name).toBe("RAG User");
-    });
-    it("should return the fallback name for a swarm agent", () => {
-        const name = getAgentName({}, "swarm");
-        expect(name).toBe("Swarm Agent");
-    });
-    it("should return the fallback name for a swarm container", () => {
-        const name = getAgentName({}, "swarm_container");
-        expect(name).toBe("Swarm Container");
     });
 });
 
 describe("getParentId", () => {
     it("should return the parent id", () => {
-        const id = getParentId({ parentId: "wa-1" }, "user");
+        const id = getParentId({ parentId: "wa-1" }, "user_proxy");
         expect(id).toBe("wa-1");
     });
     it("should return null if no parent id in the data", () => {
-        const id = getParentId({}, "user");
-        expect(id).toBeNull();
-    });
-    it("should return null if the agent type is manager or swarm container", () => {
-        const id = getParentId({ parentId: "wa-1" }, "manager");
-        expect(id).toBeNull();
+        const id = getParentId({}, "user_proxy");
+        expect(id).toBeUndefined();
     });
 });
 
 describe("getNestedChats", () => {
     it("should return the nested chats", () => {
         const chats = getNestedChats({
-            nestedChats: [{ triggeredBy: ["wa-1"], messages: [{ id: "wa-2", isReply: false }] }],
+            nestedChats: [
+                {
+                    triggeredBy: ["wa-1"],
+                    messages: [{ id: "wa-2", isReply: false }],
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a new chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
+                },
+            ],
         });
-        expect(chats).toEqual([{ triggeredBy: ["wa-1"], messages: [{ id: "wa-2", isReply: false }] }]);
+        expect(chats).toEqual([
+            {
+                triggeredBy: ["wa-1"],
+                messages: [{ id: "wa-2", isReply: false }],
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Start a new chat",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
+            },
+        ]);
     });
-    it("should return an empty array", () => {
+    it("should return a default nested chat structure with no messages or triggers", () => {
         const chats = getNestedChats({});
-        expect(chats).toEqual([]);
+        expect(chats).toEqual([
+            {
+                triggeredBy: [],
+                messages: [],
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
+            },
+        ]);
     });
 });

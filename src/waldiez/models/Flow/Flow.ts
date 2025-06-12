@@ -9,6 +9,7 @@ import { WaldiezFlowData } from "@waldiez/models/Flow/FlowData";
 /**
  * Waldiez Flow
  * @param type - The type (flow)
+ * @param version - The version of waldiez used to create this flow
  * @param id - The ID
  * @param name - The name of the flow
  * @param description - The description of the flow
@@ -23,6 +24,7 @@ import { WaldiezFlowData } from "@waldiez/models/Flow/FlowData";
  */
 export class WaldiezFlow {
     type = "flow";
+    version = __WALDIEZ_VERSION__;
     id: string;
     name: string;
     description: string;
@@ -58,14 +60,24 @@ export class WaldiezFlow {
         this.rest = props.rest || {};
     }
 }
+
+/**
+ * Generates a unique flow ID.
+ * @returns A unique flow ID string.
+ */
 const getFlowId = () => {
-    return `wf-${new Date().getTime()}${nanoid()}}`;
+    return `wf-${new Date().getTime()}${nanoid()}`;
 };
 
 const aFlowId = getFlowId();
 
+/**
+ * Creates a new WaldiezFlow instance with default values.
+ * @returns A new instance of WaldiezFlow.
+ */
 export const emptyFlow: WaldiezFlow = {
     type: "flow",
+    version: __WALDIEZ_VERSION__,
     id: aFlowId,
     storageId: aFlowId,
     name: "Waldiez Flow",
@@ -74,19 +86,19 @@ export const emptyFlow: WaldiezFlow = {
     requirements: [],
     data: {
         agents: {
-            users: [],
-            assistants: [],
-            managers: [],
-            rag_users: [],
-            swarm_agents: [],
-            reasoning_agents: [],
-            captain_agents: [],
+            userProxyAgents: [],
+            assistantAgents: [],
+            ragUserProxyAgents: [],
+            reasoningAgents: [],
+            captainAgents: [],
+            groupManagerAgents: [],
         },
         models: [],
-        skills: [],
+        tools: [],
         chats: [],
         isAsync: false,
-        cacheSeed: 41,
+        cacheSeed: 42,
+        silent: false,
         nodes: [],
         edges: [],
         viewport: { zoom: 1, x: 0, y: 0 },

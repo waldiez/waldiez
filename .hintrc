@@ -12,12 +12,16 @@
         "ignore": [
           "scrollbar-width",
           "scrollbar-width: thin",
-          "width: stretch"
+          "width: stretch",
+          "scrollbar-color",
+          "-webkit-overflow-scrolling"
         ]
       }
     ],
     "detect-css-reflows/composite": "off",
-    "detect-css-reflows/paint": "off"
+    "detect-css-reflows/paint": "off",
+    "detect-css-reflows/layout": "off",
+    "axe/aria": "off"
   },
   "browserslist": [
     "defaults",
@@ -26,6 +30,8 @@
     "not ios_saf <= 16.7",
     "not ios_saf <= 18.2",
     "not safari <= 18.2",
-    "not samsung <= 27"
+    "not samsung <= 27",
+    "not ios_saf <= 18.4",
+    "not safari <= 18.4"
   ]
 }

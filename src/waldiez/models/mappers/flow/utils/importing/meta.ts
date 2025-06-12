@@ -33,7 +33,17 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
         "data",
     ]);
     const storageId = getStorageId(json, id);
-    return { id, storageId, name, description, tags, requirements, createdAt, updatedAt, rest };
+    return {
+        id,
+        storageId,
+        name,
+        description,
+        tags,
+        requirements,
+        createdAt,
+        updatedAt,
+        rest,
+    };
 };
 export const getFlowViewport = (data: { [key: string]: unknown }) => {
     let viewport = { zoom: 1, x: 0, y: 0 };
@@ -74,7 +84,7 @@ export const getIsAsync = (json: Record<string, unknown>) => {
 };
 
 export const getCacheSeed = (json: Record<string, unknown>) => {
-    let cacheSeed: number | null = 41;
+    let cacheSeed: number | null = null;
     if ("cacheSeed" in json) {
         if (typeof json.cacheSeed === "number") {
             cacheSeed = parseInt(`${json.cacheSeed}`, 10);

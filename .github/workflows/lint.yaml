@@ -30,8 +30,30 @@ jobs:
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
 
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/AppData/Local/pip/Cache
+            ~/Library/Caches/pip
+          key: pip-lint-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('requirements/*.txt') }}
+          restore-keys: |
+            pip-lint-${{ runner.os }}-py${{ matrix.python-version }}-
+            pip-lint-${{ runner.os }}-
+
       - name: Setup bun
         uses: oven-sh/setup-bun@v2
+
+      - name: Cache bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('package.json', 'bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
 
       - name: Install ts dependencies
         run: bun install
@@ -44,6 +66,7 @@ jobs:
       - name: Run Python linters
         run: |
           python scripts/lint.py
+
       - name: Run TypeScript linters
         run: |
           bun run lint

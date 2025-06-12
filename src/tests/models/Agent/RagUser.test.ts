@@ -15,7 +15,7 @@ describe("WaldiezAgentRagUser", () => {
         const ragUserData = new WaldiezAgentRagUserData();
         const ragUser = new WaldiezAgentRagUser({
             id: "1",
-            agentType: "rag_user",
+            agentType: "rag_user_proxy",
             name: "RAG User",
             description: "A RAG User agent",
             tags: [],
@@ -27,8 +27,8 @@ describe("WaldiezAgentRagUser", () => {
         expect(ragUser).toBeTruthy();
         expect(ragUser.id).toBe("1");
         expect(ragUser.data).toBe(ragUserData);
-        expect(ragUser.agentType).toBe("rag_user");
-        const ragUser2 = WaldiezAgentRagUser.create("rag_user");
+        expect(ragUser.agentType).toBe("rag_user_proxy");
+        const ragUser2 = WaldiezAgentRagUser.create("rag_user_proxy");
         expect(ragUser2).toBeTruthy();
         expect(ragUser2.data.humanInputMode).toBe("ALWAYS");
     });
@@ -46,14 +46,18 @@ describe("WaldiezAgentRagUser", () => {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
-            parentId: null,
+            tools: [],
+            parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
             retrieveConfig: defaultRetrieveConfig,
+            updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
         });
         const ragUser = new WaldiezAgentRagUser({
             id: "1",
-            agentType: "rag_user",
+            agentType: "rag_user_proxy",
             name: "RagUser",
             description: "RagUser description",
             tags: [],

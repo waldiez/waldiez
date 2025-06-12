@@ -1,22 +1,40 @@
-.flow-wrapper .modal {
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+.modal {
   position: fixed;
   resize: both;
   overflow: auto;
   width: 50vw;
   margin: 0 auto;
   height: fit-content;
-  max-width: 90vw;
-  max-height: 90vh;
-  min-width: 300px;
+  max-width: 95vw;
+  max-height: 95vh;
+  min-width: 320px;
   min-height: 200px;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  box-shadow:
+    0 25px 50px color-mix(in srgb, #000 25%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--text-color) 8%, transparent);
   z-index: 1000;
   cursor: default !important;
+  background-color: var(--background-color);
+  border: 1px solid color-mix(in srgb, var(--text-color) 15%, var(--background-color));
+  backdrop-filter: blur(8px);
+
+  /* transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); this makes moving the modal not smooth */
 }
 
-.flow-wrapper .modal-fullscreen {
+.flow-wrapper .agent-node .modal {
+  width: fit-content;
+  min-width: 50vw;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.modal:has(.image-modal.open),
+.modal-fullscreen {
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
@@ -27,9 +45,22 @@
   min-height: 0 !important;
   max-width: none !important;
   max-height: none !important;
+  box-shadow: none;
 }
 
-.flow-wrapper .modal-header {
+.modal-minimized {
+  height: fit-content !important;
+  max-height: fit-content !important;
+  min-height: 0 !important;
+  resize: none !important;
+  overflow: hidden;
+}
+
+.modal-minimized .modal-content.hidden {
+  display: none;
+}
+
+.modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -37,133 +68,168 @@
   cursor: move;
   -webkit-user-select: none;
   user-select: none;
-  gap: 0.5rem;
+  gap: 12px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--text-color) 3%, var(--background-color)),
+    color-mix(in srgb, var(--text-color) 6%, var(--background-color))
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, var(--background-color));
+  position: relative;
 }
 
-.flow-wrapper .modal-header > div:first-child {
+.modal-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--text-color) 20%, transparent),
+    transparent
+  );
+}
+
+.modal-header > div:first-child {
   margin-right: auto;
   flex-shrink: 0;
 }
 
-.flow-wrapper .modal-title {
+.modal-title {
   flex-grow: 1;
-  font-size: 1.125rem;
+  font-size: 18px;
   font-weight: 600;
   text-align: center;
   margin: 0;
   pointer-events: none;
+  color: var(--text-color);
+  letter-spacing: -0.025em;
 }
 
-.flow-wrapper .modal-header-actions {
+.modal-header-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
   flex-shrink: 0;
 }
 
-.flow-wrapper .modal-close-btn,
-.flow-wrapper .modal-fullscreen-btn {
-  font-size: 1.25rem;
-  transition: color 0.2s ease;
+.modal-close-btn,
+.modal-fullscreen-btn,
+.modal-minimize-btn {
+  all: unset;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
+  background: transparent;
 }
 
-.flow-wrapper .modal-close-btn:hover {
-  color: #d33;
+.modal-close-btn:hover {
+  background: color-mix(in srgb, #ef4444 15%, var(--background-color));
+  color: #ef4444;
+  transform: scale(1.05);
 }
 
-.flow-wrapper .modal-fullscreen-btn:hover {
-  color: #007bff;
+.modal-fullscreen-btn:hover {
+  background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
+  color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.modal-close-btn:active,
+.modal-fullscreen-btn:active {
+  transform: scale(0.95);
+}
+
+.modal-minimize-btn {
+  all: unset;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
+  background: transparent;
+}
+
+.modal-minimize-btn:hover {
+  background: color-mix(in srgb, var(--text-color) 10%, var(--background-color));
+  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
+  transform: scale(1.05);
+}
+
+.modal-minimize-btn:active {
+  transform: scale(0.95);
 }
 
 .flow-wrapper .modal-header-import-export {
   display: flex;
   align-items: center;
-}
-
-.flow-wrapper .modal-header-import-button svg,
-.flow-wrapper .modal-header-export-button svg {
-  font-size: large;
-  margin-right: 0.5rem;
+  gap: 4px;
 }
 
 .flow-wrapper .modal-header-export-button {
-  margin-left: 10px;
+  border: none !important;
+  padding: 3px 6px;
+  margin-top: -1px;
+  color: unset;
+}
+
+.flow-wrapper .modal-header-export-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .flow-wrapper .modal-header-import-button,
 .flow-wrapper .modal-header-export-button {
-  display: inline-block;
-  text-align: center;
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   cursor: pointer;
-  margin-left: 10px;
-  border: none;
-  color: #555;
-  background-color: transparent;
+  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
+  transition: all 0.2s ease;
+  font-size: 14px;
 }
 
-.flow-wrapper.dark .modal-header-import-button,
-.flow-wrapper.dark .modal-header-export-button {
-  color: #aaa;
+.flow-wrapper .modal-header-import-button:hover:not(:disabled),
+.flow-wrapper .modal-header-export-button:hover:not(:disabled) {
+  background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
+  color: #3b82f6;
+  transform: scale(1.05);
 }
 
-.flow-wrapper .modal-header-import-button:hover,
-.flow-wrapper .modal-header-export-button:hover {
-  color: #007bff;
-}
-
-.flow-wrapper .modal-header button {
-  box-shadow: none;
-  padding: unset;
+.flow-wrapper .modal-header-import-button svg,
+.flow-wrapper .modal-header-export-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .flow-wrapper .modal-content {
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 24px;
+  flex: 1;
   min-width: 320px;
-  min-height: 180px;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
-}
-
-.flow-wrapper.dark .modal-content {
-  background-color: #333;
-  color: #eee !important;
-}
-
-.flow-wrapper .modal.confirmation .modal-content {
-  min-height: unset;
-}
-
-.flow-wrapper .modal-content button {
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-}
-
-.flow-wrapper .modal-body input,
-.flow-wrapper .modal-body textarea {
-  padding: 10px;
-  width: calc(100% - 20px);
-}
-
-.flow-wrapper .modal-body input[type="number"] {
-  width: auto;
-}
-
-.flow-wrapper .modal-body textarea {
-  resize: vertical;
-}
-
-.flow-wrapper .modal-actions {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
+  background: var(--background-color);
+  color: var(--text-color);
+  overflow: auto;
 }
 
 .flow-wrapper .modal-body {
@@ -173,66 +239,215 @@
   flex: 1;
   justify-content: space-between;
   min-height: 0;
+  padding: 0;
+  background: transparent;
+  gap: 16px;
 }
 
-.flow-wrapper .modal-actions > .modal-action-submit,
-.flow-wrapper .modal-actions > .modal-action-submit-alt,
-.flow-wrapper .modal-actions > .modal-action-cancel,
-.flow-wrapper .modal-actions > div > .modal-action-submit,
-.flow-wrapper .modal-actions > div > .modal-action-submit-alt,
-.flow-wrapper .modal-actions > div > .modal-action-cancel {
-  color: white;
-  border: none;
-  border-radius: 5px;
+.flow-wrapper .modal.confirmation .modal-content {
+  min-height: unset;
+}
+
+.flow-wrapper .modal-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px 0 0;
+
+  /* border-top: 1px solid color-mix(in srgb, var(--text-color) 8%, var(--background-color)); */
+  margin-top: auto;
+}
+
+.flow-wrapper .modal-actions button {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  border: 1px solid transparent;
   cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-width: 90px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-.flow-wrapper .modal-actions > .modal-action-submit,
-.flow-wrapper .modal-actions > div > .modal-action-submit {
-  background-color: #007bff;
+.flow-wrapper .modal-actions button:disabled {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-width: 90px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  gap: 8px;
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-.flow-wrapper .modal-actions > .modal-action-cancel,
-.flow-wrapper .modal-actions > div > .modal-action-cancel {
-  background-color: #9e37a2;
+/* Secondary button (Cancel) */
+.flow-wrapper .modal-actions button.secondary,
+.flow-wrapper .modal-actions button[data-action="cancel"],
+.flow-wrapper .modal-actions button:first-child:not(.primary, .danger, .save, .neutral, .danger) {
+  background: linear-gradient(135deg, #9e37a2, #8b2f96);
+  color: #fff;
+  border-color: #8b2f96;
+  box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 25%, transparent);
 }
 
-/* stylelint-disable-next-line no-descending-specificity */
-.flow-wrapper .modal-actions > .modal-action-submit-alt,
-.flow-wrapper .modal-actions > div > .modal-action-submit-alt {
-  background-color: #004085;
+/* Primary button */
+.flow-wrapper .modal-actions button[type="submit"],
+.flow-wrapper .modal-actions button.primary,
+.flow-wrapper .modal-actions button:last-child:not(.secondary, .danger, .save) {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent);
 }
 
-.flow-wrapper.light .modal-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #ddd;
-  color: #555 !important;
+/* Save button */
+.flow-wrapper .modal-actions button.save,
+.flow-wrapper .modal-actions button[data-action="save"]:not([data-action="save-close"]) {
+  background: color-mix(in srgb, #3b82f6 12%, var(--background-color));
+  color: #3b82f6;
+  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 15%, transparent);
 }
 
-.flow-wrapper.dark .modal-header {
-  background-color: #222;
-  color: #aaa !important;
+/* Neutral button  no colors */
+.flow-wrapper .modal-actions button.neutral,
+.flow-wrapper .modal-actions button[data-action="neutral"] {
+  background: color-mix(in srgb, var(--text-color) 5%, var(--background-color));
+  color: var(--text-color);
 }
 
-.flow-wrapper.light .modal {
-  background-color: white;
-  color: #000 !important;
-  border: 1px solid #ccc;
+.flow-wrapper .modal-actions button[type="submit"]:hover:not(:disabled),
+.flow-wrapper .modal-actions button.primary:hover:not(:disabled),
+.flow-wrapper .modal-actions button:last-child:not(:disabled, .secondary, .danger, .save):hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 35%, transparent);
 }
 
-.flow-wrapper.dark .modal {
-  background-color: #333;
-  color: #fff !important;
-  border: 1px solid #444;
+.flow-wrapper .modal-actions button.save:hover:not(:disabled),
+.flow-wrapper .modal-actions button[data-action="save"]:not(:disabled, [data-action="save-close"]):hover {
+  background: color-mix(in srgb, #3b82f6 20%, var(--background-color));
+  border-color: color-mix(in srgb, #3b82f6 50%, var(--background-color));
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent);
+}
+
+.flow-wrapper .modal-actions button.save:hover:disabled,
+.flow-wrapper .modal-actions button[data-action="save"]:not([data-action="save-close"]):hover:disabled {
+  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
+  background: color-mix(in srgb, #3b82f6 12%, var(--background-color));
+  transition: none;
+}
+
+.flow-wrapper .modal-actions button.secondary:hover:not(:disabled),
+.flow-wrapper .modal-actions button[data-action="cancel"]:hover:not(:disabled),
+.flow-wrapper .modal-actions button:first-child:not(:disabled, .neutral, .primary, .danger, .save):hover {
+  background: linear-gradient(135deg, #8b2f96, #7a2785);
+  border-color: #7a2785;
+  box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 35%, transparent);
+}
+
+.modal::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--text-color) 5%, var(--background-color));
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-color) 20%, var(--background-color));
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.modal::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text-color) 30%, var(--background-color));
+}
+
+.modal-fullscreen::after {
+  display: none;
 }
 
 @media (width <= 768px) {
   .modal {
-    width: 90vw;
+    width: 95vw;
     height: 90vh;
-    max-width: var(--app-width);
-    max-height: var(--app-height);
+    max-width: 95vw;
+    max-height: 90vh;
+    margin: 5vh auto 0;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+  }
+
+  .modal-title {
+    font-size: 16px;
+  }
+
+  .flow-wrapper .modal-content {
+    padding: 16px;
+  }
+
+  .flow-wrapper .modal-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .flow-wrapper .modal-actions button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+.flow-wrapper.dark .modal {
+  box-shadow:
+    0 25px 50px color-mix(in srgb, #000 40%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 8%, transparent);
+}
+
+@media (prefers-contrast: more) {
+  .modal {
+    border-width: 2px;
+  }
+
+  .modal-header {
+    border-bottom-width: 2px;
+  }
+
+  .flow-wrapper .modal-actions {
+    border-top-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal-close-btn,
+  .modal-fullscreen-btn,
+  .flow-wrapper .modal-actions button {
+    transition: none;
   }
 }

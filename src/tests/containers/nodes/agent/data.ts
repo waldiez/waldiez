@@ -9,16 +9,15 @@ import {
     WaldiezAgentCaptain,
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
-    WaldiezAgentSwarm,
     WaldiezAgentUserProxy,
     WaldiezChatData,
     WaldiezEdge,
     WaldiezModelData,
     WaldiezNodeAgentType,
-    WaldiezSkillData,
+    WaldiezToolData,
     agentMapper,
     modelMapper,
-    skillMapper,
+    toolMapper,
 } from "@waldiez/models";
 
 export const agentId = "test-agent";
@@ -26,20 +25,14 @@ export const flowId = "test-flow";
 export const createdAt = new Date().toISOString();
 export const updatedAt = new Date().toISOString();
 export const getAgentData = (agentType: WaldiezNodeAgentType) => {
-    if (agentType === "user") {
-        return WaldiezAgentUserProxy.create("user").data;
+    if (agentType === "user_proxy") {
+        return WaldiezAgentUserProxy.create("user_proxy").data;
     }
     if (agentType === "assistant") {
         return WaldiezAgentAssistant.create("assistant").data;
     }
-    if (agentType === "manager") {
-        return WaldiezAgentGroupManager.create("manager").data;
-    }
-    if (agentType === "rag_user") {
-        return WaldiezAgentRagUser.create("rag_user").data;
-    }
-    if (agentType === "swarm") {
-        return WaldiezAgentSwarm.create("swarm").data;
+    if (agentType === "rag_user_proxy") {
+        return WaldiezAgentRagUser.create("rag_user_proxy").data;
     }
     if (agentType === "reasoning") {
         return WaldiezAgentUserProxy.create("reasoning").data;
@@ -57,7 +50,7 @@ export const getAgentNode = (
     const agentData = getAgentData(agentType);
     let node: Node;
     switch (agentType) {
-        case "user":
+        case "user_proxy":
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
@@ -75,25 +68,7 @@ export const getAgentNode = (
                 }),
             );
             break;
-        case "manager":
-            node = agentMapper.asNode(
-                agentMapper.importAgent({
-                    ...agentData,
-                    agentType: agentType as any,
-                    ...dataOverrides,
-                }),
-            );
-            break;
-        case "rag_user":
-            node = agentMapper.asNode(
-                agentMapper.importAgent({
-                    ...agentData,
-                    agentType: agentType as any,
-                    ...dataOverrides,
-                }),
-            );
-            break;
-        case "swarm":
+        case "rag_user_proxy":
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
@@ -106,7 +81,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType: agentType,
                     ...dataOverrides,
                 }),
             );
@@ -115,7 +90,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType: agentType,
                     ...dataOverrides,
                 }),
             );
@@ -127,23 +102,23 @@ export const getAgentNode = (
     return { ...node, ...nodeOverrides } as Node;
 };
 
-export const getSkillNodes = () => {
-    const skillData = new WaldiezSkillData();
-    const skill1 = skillMapper.asNode(
-        skillMapper.importSkill({
-            ...skillData,
-            name: "test skill1",
+export const getToolNodes = () => {
+    const toolData = new WaldiezToolData();
+    const tool1 = toolMapper.asNode(
+        toolMapper.importTool({
+            ...toolData,
+            name: "test tool1",
         }),
     );
-    skill1.id = "test-skill1";
-    const skill2 = skillMapper.asNode(
-        skillMapper.importSkill({
-            ...skillData,
-            name: "test skill2",
+    tool1.id = "test-tool1";
+    const tool2 = toolMapper.asNode(
+        toolMapper.importTool({
+            ...toolData,
+            name: "test tool2",
         }),
     );
-    skill2.id = "test-skill2";
-    return [{ ...skill1 }, { ...skill2 }];
+    tool2.id = "test-tool2";
+    return [{ ...tool1 }, { ...tool2 }];
 };
 
 export const getModelNodes = () => {
@@ -151,24 +126,24 @@ export const getModelNodes = () => {
     const model1 = modelMapper.asNode(
         modelMapper.importModel({
             ...modelData,
-            name: "test model1",
+            name: "test model 1",
         }),
     );
     model1.id = "test-model1";
     const model2 = modelMapper.asNode(
         modelMapper.importModel({
             ...modelData,
-            name: "test model2",
+            name: "test model 2",
         }),
     );
     model2.id = "test-model2";
     return [{ ...model1 }, { ...model2 }];
 };
-const getEdge = (agent: Node, index: number, isGroup: boolean) => {
-    const source = isGroup ? agentId : index % 2 === 0 ? agentId : agent.id;
-    const target = isGroup ? agent.id : index % 2 === 0 ? agent.id : agentId;
+const getEdge = (agent: Node, index: number) => {
+    const source = index % 2 === 0 ? agentId : agent.id;
+    const target = index % 2 === 0 ? agent.id : agentId;
     const edgeId = `test-edge-${index}`;
-    const type = isGroup ? "hidden" : index < 2 ? "nested" : "chat";
+    const type = index < 2 ? "nested" : "chat";
     const chatData = new WaldiezChatData();
     const edge: WaldiezEdge = {
         id: edgeId,
@@ -181,7 +156,7 @@ const getEdge = (agent: Node, index: number, isGroup: boolean) => {
         },
     };
     // edge.type = type;
-    if (!isGroup && index < 2) {
+    if (index < 2) {
         edge.data!.nestedChat = {
             message: {
                 type: "string",
@@ -189,37 +164,30 @@ const getEdge = (agent: Node, index: number, isGroup: boolean) => {
                 context: {
                     key1: "value1",
                 },
-                use_carryover: false,
+                useCarryover: false,
             },
             reply: {
                 type: "none",
                 content: "",
                 context: {},
-                use_carryover: true,
+                useCarryover: true,
             },
         };
     }
     return edge;
 };
-export const getConnectedAgents = (areGroupMembers: boolean = false) => {
+export const getConnectedAgents = () => {
     const nodes: Node[] = [];
     const edges = [];
     for (let i = 0; i < 5; i++) {
-        const agent = getAgentNode("user");
+        const agent = getAgentNode("user_proxy");
         agent.data.label = `Agent ${i}`;
-        if (areGroupMembers) {
-            agent.data.parentId = agentId;
-        }
         agent.id = `agent-${i}`;
         nodes.push({ ...agent });
-        const edge = getEdge(agent, i, areGroupMembers);
+        const edge = getEdge(agent, i);
         edges.push({ ...edge });
     }
     return { nodes, edges };
-};
-
-export const getGroupMembers = () => {
-    return getConnectedAgents(true);
 };
 
 export const getNestedChats = () => {
@@ -227,11 +195,11 @@ export const getNestedChats = () => {
 };
 
 export const getGroupNodes = () => {
-    const groupData = WaldiezAgentGroupManager.create("manager");
+    const groupData = WaldiezAgentGroupManager.create("group_manager");
     const group1 = agentMapper.asNode(
         agentMapper.importAgent({
             ...groupData,
-            agentType: "manager" as any,
+            agentType: "group_manager",
         }),
     );
     group1.data.label = "Group 1";
@@ -239,7 +207,7 @@ export const getGroupNodes = () => {
     const group2 = agentMapper.asNode(
         agentMapper.importAgent({
             ...groupData,
-            agentType: "manager" as any,
+            agentType: "group_manager",
         }),
     );
     group2.data.label = "Group 2";

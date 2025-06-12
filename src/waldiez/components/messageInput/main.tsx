@@ -9,9 +9,49 @@ import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useMessageInput } from "@waldiez/components/messageInput/hooks";
 import { MessageInputProps } from "@waldiez/components/messageInput/types";
 import { Select } from "@waldiez/components/select";
-import { WaldiezMessageType } from "@waldiez/models";
+import { TextareaInput } from "@waldiez/components/textareaInput";
+import { WaldiezMessage, WaldiezMessageType } from "@waldiez/models";
 
-export const MessageInput = (props: MessageInputProps) => {
+/* eslint-disable tsdoc/syntax */
+/**
+ * MessageInput component for selecting and editing message types and content
+ * @param props - Props for the MessageInput component
+ * @param props.current - The current message object
+ * @param props.darkMode - Boolean indicating if dark mode is enabled
+ * @param props.defaultContent - The default content for the message
+ * @param props.selectLabel - Label for the message type select input
+ * @param props.includeContext - Boolean indicating if context variables should be included
+ * @param props.skipRagOption - Boolean indicating if the RAG option should be skipped
+ * @param props.skipCarryoverOption - Boolean indicating if the carryover option should be skipped
+ * @param props.selectTestId - Test ID for the message type select input
+ * @param props.notNoneLabel - Optional label for the message input when type is not "none"
+ * @param props.notNoneLabelInfo - Optional info for the message input when type is not "none"
+ * @param props.skipNone - Boolean indicating if the "none" option should be skipped
+ * @param props.onTypeChange - Callback function for when the message type changes
+ * @param props.onMessageChange - Callback function for when the message content changes
+ * @param props.onAddContextEntry - Callback function for adding a context entry
+ * @param props.onRemoveContextEntry - Callback function for removing a context entry
+ * @param props.onUpdateContextEntries - Callback function for updating context entries
+ * @see {@link MessageInputProps}
+ */
+export const MessageInput: React.FC<MessageInputProps> = (props: {
+    current: WaldiezMessage;
+    darkMode: boolean;
+    defaultContent: string;
+    selectLabel: string;
+    includeContext: boolean;
+    skipRagOption: boolean;
+    skipCarryoverOption: boolean;
+    selectTestId: string;
+    notNoneLabel?: string;
+    notNoneLabelInfo?: string;
+    skipNone?: boolean;
+    onTypeChange: (type: WaldiezMessageType) => void;
+    onMessageChange: (message: WaldiezMessage) => void;
+    onAddContextEntry?: (key: string, value: string) => void;
+    onRemoveContextEntry?: (key: string) => void;
+    onUpdateContextEntries?: (entries: Record<string, unknown>) => void;
+}) => {
     const {
         current,
         darkMode,
@@ -41,9 +81,9 @@ export const MessageInput = (props: MessageInputProps) => {
             current.type !== "rag_message_generator" &&
             notNoneLabel &&
             (notNoneLabelInfo ? (
-                <InfoLabel label={notNoneLabel} info={notNoneLabelInfo} />
+                <InfoLabel label={notNoneLabel} info={notNoneLabelInfo} htmlFor="message-input" />
             ) : (
-                <label>{notNoneLabel}</label>
+                <label htmlFor="message-input">{notNoneLabel}</label>
             ))
         );
     };
@@ -77,11 +117,11 @@ export const MessageInput = (props: MessageInputProps) => {
             {labelView}
             {current.type === "string" && (
                 <div className="full-width">
-                    <textarea
+                    <TextareaInput
                         placeholder="Enter the message"
-                        className="fill-available"
+                        className="fill-available-width"
                         rows={3}
-                        defaultValue={current.content ?? ""}
+                        value={current.content ?? ""}
                         onChange={onContentUpdate}
                         data-testid="message-text"
                     />
@@ -94,11 +134,11 @@ export const MessageInput = (props: MessageInputProps) => {
                     </div>
                     <label>Problem:</label>
                     <div className="full-width">
-                        <textarea
+                        <TextareaInput
                             placeholder="Enter the problem"
                             rows={3}
-                            className="fill-available"
-                            defaultValue={current.context.problem ?? ""}
+                            className="fill-available-width margin-top-5"
+                            value={String(current.context.problem ?? "")}
                             onChange={onRagProblemUpdate}
                             data-testid="rag-message-generator-problem"
                         />
@@ -128,8 +168,8 @@ export const MessageInput = (props: MessageInputProps) => {
                     <InfoCheckbox
                         label="Carryover "
                         info={carryOverInfo}
-                        checked={current.use_carryover}
-                        dataTestId="message-use-carryover"
+                        checked={current.useCarryover ?? false}
+                        id="message-use-carryover"
                         onChange={onUseCarryoverChange}
                     />
                 )}
@@ -164,3 +204,5 @@ const MessageOptionsMapping = {
     rag_message_generator: "Use RAG Message Generator",
     method: "Method",
 };
+
+MessageInput.displayName = "MessageInput";

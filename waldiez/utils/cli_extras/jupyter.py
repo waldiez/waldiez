@@ -11,12 +11,14 @@ import typer
 from typer.models import CommandInfo
 import subprocess  # nosemgrep # nosec
 
-HAVE_JUPYTER = False
+_have_jupyter = False
 
+# noinspection PyBroadException
+# pylint: disable=broad-exception-caught
 try:
     import waldiez_jupyter  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 
-    HAVE_JUPYTER = True
+    _have_jupyter = True
 except BaseException:
     pass
 
@@ -34,7 +36,7 @@ def add_jupyter_cli(app: typer.Typer) -> None:
     typer.Typer
         The app with the extra command added
     """
-    if HAVE_JUPYTER:
+    if _have_jupyter:
         jupyter_app = get_jupyter_app()
         app.registered_commands.append(
             CommandInfo(name="lab", callback=jupyter_app)

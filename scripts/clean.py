@@ -7,6 +7,10 @@ import glob
 import os
 import shutil
 import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT_DIR = HERE.parent
 
 DIR_PATTERNS = [
     "__pycache__",
@@ -76,4 +80,10 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    cwd = os.getcwd()
+    if os.path.abspath(cwd) != os.path.abspath(ROOT_DIR):
+        os.chdir(ROOT_DIR)
+    try:
+        main()
+    finally:
+        os.chdir(cwd)

@@ -82,18 +82,18 @@ During the flow execution, you might encounter errors that can interrupt the con
   - Make sure you have set the API key in the model configuration.
   - Restart the flow after setting the API key to ensure it is recognized.
 
-#### **Skill or custom functions related errors**
+#### **Tool or custom functions related errors**
 
-**Description:** Errors related to skills or custom functions can occur due to incorrect function names, missing environment variables, or syntax errors in the code.
+**Description:** Errors related to tools or custom functions can occur due to incorrect function names, missing environment variables, or syntax errors in the code.
 
 ![Autogen Error Preview](../static/images/light/error3.webp#only-light)
 ![Autogen Error Dark Preview](../static/images/dark/error3.webp#only-dark)
 
 Make sure to check the following:
 
-- **Function Name:** In skills, ensure the function name in the code matches the skill name.
+- **Function Name:** In tools, ensure the function name in the code matches the tool name.
 - **Syntax Errors:** Review the code for any syntax errors or typos that may cause the function to fail.
-- **Environment Variables:** If environment variables are required, ensure they are correctly set in the skill configuration.
+- **Environment Variables:** If environment variables are required, ensure they are correctly set in the tool configuration.
 - **Logs:** Check the logs for detailed error messages that can help identify the issue.
 
 #### **General Debugging Tips**

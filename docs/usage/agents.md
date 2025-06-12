@@ -8,7 +8,7 @@ In the agents view, you can design and organize agent workflows by connecting no
 
 - **Configuring Agents**:
   - Each agent has settings where you can specify the model, add a system message, and set other properties.
-  - Double-clicking an agent allows you to edit its properties, such as setting the agent's name, linking models and skills to it, and defining the agent's behavior.
+  - Double-clicking an agent allows you to edit its properties, such as setting the agent's name, linking models and tools to it, and defining the agent's behavior.
 
 ![Assistant Preview](../static/images/light/assistant_1.webp#only-light)
 ![Assistant Dark Preview](../static/images/dark/assistant_1.webp#only-dark)
@@ -65,13 +65,13 @@ Link models to your agent in this section.
 
 ---
 
-### **Skill Management**
+### **Tool Management**
 
-Define specific skills for the assistant.
+Define specific tools for the assistant.
 
-- **Skill:** Select a previously defined skill to link to the agent.
-- **Executor:** Choose the executor responsible for running the skill.
-- **Current Skills:** View and manage currently linked skills.
+- **Tool:** Select a previously defined tool to link to the agent.
+- **Executor:** Choose the executor responsible for running the tool.
+- **Current Tools:** View and manage currently linked tools.
 
 ---
 

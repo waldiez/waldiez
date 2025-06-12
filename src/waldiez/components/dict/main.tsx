@@ -8,7 +8,7 @@ import { useDict } from "@waldiez/components/dict/hooks";
 import { DictProps } from "@waldiez/components/dict/types";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
-export const Dict = (props: DictProps) => {
+export const Dict: React.FC<DictProps> = (props: DictProps) => {
     const { viewLabel, viewLabelInfo, items, itemsType, areValuesSecret = false } = props;
     const {
         visible,
@@ -26,7 +26,7 @@ export const Dict = (props: DictProps) => {
     return (
         <div className="dict-entries-view">
             {viewLabelInfo ? (
-                <InfoLabel label={viewLabel} info={viewLabelInfo} />
+                <InfoLabel htmlFor={`dict-entry-${itemsType}`} label={viewLabel} info={viewLabelInfo} />
             ) : (
                 <label className={"margin-bottom-5"}>{viewLabel}</label>
             )}
@@ -44,17 +44,19 @@ export const Dict = (props: DictProps) => {
                         <input
                             type={areValuesSecret ? (visible[key] ? "text" : "password") : "text"}
                             key={`${value}-${index}-${key}`}
-                            defaultValue={value}
+                            defaultValue={String(value)}
                             onChange={onValueChange.bind(null, index)}
                             data-testid={`value-input-${itemsType}-${index}`}
+                            id={`dict-value-input-${itemsType}-${index}`}
                             placeholder="Value"
                         />
                         {areValuesSecret && (
                             <button
                                 type="button"
-                                className="visibilityWrapperBtn"
+                                className="toggle-visibility-btn"
                                 onClick={onVisibilityChange.bind(null, key)}
                                 title="Toggle visibility"
+                                id={`visibility-${itemsType}-${index}`}
                                 data-testid={`visibility-${itemsType}-${index}`}
                             >
                                 {visible[key] ? <FaEyeSlash /> : <FaEye />}
@@ -64,6 +66,8 @@ export const Dict = (props: DictProps) => {
                             type="button"
                             onClick={onDeleteEntry.bind(null, key)}
                             title="Delete"
+                            className="trash-button"
+                            id={`delete-dict-item-${itemsType}-${index}`}
                             data-testid={`delete-dict-item-${itemsType}-${index}`}
                         >
                             <FaTrash />
@@ -72,8 +76,10 @@ export const Dict = (props: DictProps) => {
                             <button
                                 onClick={onSaveEntry}
                                 title="Save"
+                                id={`save-dict-item-${itemsType}-${index}`}
                                 data-testid={`save-dict-item-${itemsType}-${index}`}
                                 type="button"
+                                className="save-button"
                             >
                                 <FaSave />
                             </button>
@@ -86,12 +92,14 @@ export const Dict = (props: DictProps) => {
                     type="text"
                     placeholder="Key"
                     data-testid={`new-dict-${itemsType}-key`}
+                    id={`new-dict-${itemsType}-key`}
                     value={newEntry.key}
                     onChange={onNewEntryKeyChange}
                 />
                 <input
                     placeholder="Value"
                     data-testid={`new-dict-${itemsType}-value`}
+                    id={`new-dict-${itemsType}-value`}
                     type={areValuesSecret ? (visible["_NEW"] ? "text" : "password") : "text"}
                     value={newEntry.value}
                     onChange={onNewEntryValueChange}
@@ -99,9 +107,10 @@ export const Dict = (props: DictProps) => {
                 {areValuesSecret && (
                     <button
                         type="button"
-                        className="visibilityWrapperBtn"
+                        className="toggle-visibility-btn"
                         onClick={onVisibilityChange.bind(null, "_NEW")}
                         title="Toggle visibility"
+                        id={`visibility-${itemsType}-new`}
                         data-testid={`visibility-${itemsType}-new`}
                     >
                         {visible["_NEW"] ? <FaEyeSlash /> : <FaEye />}
@@ -110,7 +119,10 @@ export const Dict = (props: DictProps) => {
                 <button
                     onClick={onAddEntry}
                     title="Add"
+                    className="plus-button"
+                    id={`add-new-dict-${itemsType}-item`}
                     data-testid={`add-new-dict-${itemsType}-item`}
+                    disabled={newEntry.key === ""}
                     type="button"
                 >
                     <FaPlus />
@@ -119,3 +131,5 @@ export const Dict = (props: DictProps) => {
         </div>
     );
 };
+
+Dict.displayName = "Dict";

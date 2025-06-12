@@ -27,6 +27,11 @@ def test_waldiez_reasoning_agent_data_beam_search() -> None:
     assert reasoning_agent_data.beam_size == 3
     assert reasoning_agent_data.answer_approach == "pool"
     assert reasoning_agent_data.verbose is True
+    assert reasoning_agent_data.method == "beam_search"
+    assert reasoning_agent_data.forest_size == 1
+    assert reasoning_agent_data.rating_scale == 10
+    assert reasoning_agent_data.nsim == 3
+    assert reasoning_agent_data.exploration_constant == 1.41
     assert reasoning_agent_data.get_reasoning_config() == {
         "method": "beam_search",
         "max_depth": 3,

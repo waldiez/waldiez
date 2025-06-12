@@ -1,14 +1,25 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 import { fixupPluginRules } from "@eslint/compat";
 import { FlatCompat } from "@eslint/eslintrc";
 import { default as eslint, default as eslintJs } from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import headers from "eslint-plugin-headers";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import reactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 import eslintPluginTsDoc from "eslint-plugin-tsdoc";
 import path from "path";
 import eslintTs from "typescript-eslint";
 import { fileURLToPath } from "url";
+
+const owner = "Waldiez";
+const startYear = 2024;
+const spdxIdentifier = "Apache-2.0";
+const currentYear = new Date().getFullYear();
+const ownerAndContributors = `${owner} & contributors`;
 
 // https://github.com/import-js/eslint-plugin-import/issues/2948#issuecomment-2148832701
 const project = "./tsconfig.app.json";
@@ -51,11 +62,11 @@ const defaultConfig = eslintTs.config({
         "react-refresh": eslintPluginReactRefresh,
         import: legacyPlugin("eslint-plugin-import", "import"),
         tsdoc: eslintPluginTsDoc,
+        "react-hooks": reactHooks,
         headers,
     },
     rules: {
         "prettier/prettier": [
-            // also check package.json for prettier config
             "error",
             {
                 tabWidth: 4,
@@ -65,6 +76,29 @@ const defaultConfig = eslintTs.config({
                 singleQuote: false,
                 trailingComma: "all",
                 endOfLine: "lf",
+                plugins: ["@trivago/prettier-plugin-sort-imports"],
+                importOrderSeparation: true,
+                importOrderSortSpecifiers: true,
+                importOrder: [
+                    "^@fortawesome/",
+                    "^@xyflow/",
+                    "^react",
+                    "^react-dom",
+                    "^react-select",
+                    "^zustand",
+                    "^nanoid",
+                    "^@monaco-editor/react",
+                    "^@waldiez/",
+                    "^[./]",
+                ],
+                overrides: [
+                    {
+                        files: ["**/*.yml", "**/*.yaml", "**/*.md", "**/*.css"],
+                        options: {
+                            tabWidth: 2,
+                        },
+                    },
+                ],
             },
         ],
         "@typescript-eslint/naming-convention": [
@@ -78,6 +112,8 @@ const defaultConfig = eslintTs.config({
                 },
             },
         ],
+        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/rules-of-hooks": "error",
         "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
@@ -113,20 +149,17 @@ const defaultConfig = eslintTs.config({
         complexity: ["error", 20],
         "max-depth": ["error", 4],
         "max-nested-callbacks": ["error", 4],
-        "max-statements": ["error", 11, { ignoreTopLevelFunctions: true }],
+        "max-statements": ["error", 15, { ignoreTopLevelFunctions: true }],
         "max-lines": ["error", { max: 400, skipBlankLines: true, skipComments: true }],
         "max-lines-per-function": ["error", { max: 300, skipBlankLines: true, skipComments: true }],
         "headers/header-format": [
             "error",
             {
                 source: "string",
-                content:
-                    "SPDX-License-Identifier: {spdxIdentifier}\nCopyright {startYear} - {currentYear} {owner}",
+                content: "{licenseLine}\n{copyRightLine}",
                 variables: {
-                    spdxIdentifier: "Apache-2.0",
-                    startYear: "2024",
-                    currentYear: `${new Date().getFullYear()}`,
-                    owner: "Waldiez & contributors",
+                    licenseLine: `SPDX-License-Identifier: ${spdxIdentifier}`,
+                    copyRightLine: `Copyright ${startYear} - ${currentYear} ${ownerAndContributors}`,
                 },
             },
         ],

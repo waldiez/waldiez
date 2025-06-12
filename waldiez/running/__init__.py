@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Common utility functions."""
+"""Running related functions."""
 
 from .environment import (
     in_virtualenv,

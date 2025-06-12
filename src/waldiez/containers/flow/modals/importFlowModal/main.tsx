@@ -7,7 +7,7 @@ import { useImportFlowModal } from "@waldiez/containers/flow/modals/importFlowMo
 import { FlowDataPreviewStep, LoadFlowStep } from "@waldiez/containers/flow/modals/importFlowModal/steps";
 import { ImportFlowModalProps } from "@waldiez/containers/flow/modals/importFlowModal/types";
 
-export const ImportFlowModal = (props: ImportFlowModalProps) => {
+export const ImportFlowModal: React.FC<ImportFlowModalProps> = (props: ImportFlowModalProps) => {
     const { flowId, isOpen } = props;
     const { state, initialState, onStateChange, onClose, onBack, onForward } = useImportFlowModal(props);
     return (

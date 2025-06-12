@@ -2,241 +2,164 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { defaultRetrieveConfig } from "@waldiez/models/Agent";
+import { defaultGroupChatSpeakers, defaultReasonConfig, defaultRetrieveConfig } from "@waldiez/models/Agent";
+import { INITIAL_AGENT_SIZE } from "@waldiez/theme/sizes";
 
-export const userJson = {
-    id: "wa-1",
-    type: "agent",
-    name: "User",
-    description: "New user",
-    agentType: "user",
-    tags: [],
-    requirements: [],
+const baseTimestamps = () => ({
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "ALWAYS",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
+});
+
+const baseData = {
+    humanInputMode: "NEVER",
+    systemMessage: null,
+    codeExecutionConfig: false,
+    agentDefaultAutoReply: null,
+    maxConsecutiveAutoReply: null,
+    termination: {
+        type: "none",
+        keywords: [],
+        criterion: null,
+        methodContent: null,
     },
-    position: { x: 10, y: 11 },
+    modelIds: [],
+    tools: [],
+    contextVariables: {},
+    updateAgentStateBeforeReply: [],
+    afterWork: null,
+    handoffs: [],
+    parentId: undefined,
+    nestedChats: [
+        {
+            messages: [],
+            triggeredBy: [],
+            condition: {
+                conditionType: "string_llm",
+                prompt: "",
+            },
+            available: {
+                type: "none",
+                value: "",
+            },
+        },
+    ],
 };
 
-export const assistantJson = {
-    id: "assistant",
+const createAgentJson = ({
+    id,
+    agentType,
+    name,
+    description,
+    tags = [],
+    requirements = [],
+    position,
+    dataOverrides = {},
+    extra = {},
+}: {
+    id: string;
+    agentType: string;
+    name: string;
+    description: string;
+    tags?: string[];
+    requirements?: string[];
+    position: { x: number; y: number };
+    dataOverrides?: Record<string, any>;
+    extra?: Record<string, any>;
+}) => ({
+    id,
     type: "agent",
+    agentType,
+    name,
+    description,
+    tags,
+    requirements,
+    ...baseTimestamps(),
+    data: {
+        ...baseData,
+        humanInputMode: agentType === "user_proxy" || agentType === "rag_user_proxy" ? "ALWAYS" : "NEVER",
+        ...dataOverrides,
+    },
+    position,
+    style: {
+        width:
+            agentType === "user_proxy"
+                ? INITIAL_AGENT_SIZE.user.width
+                : agentType === "group_manager"
+                  ? INITIAL_AGENT_SIZE.group_manager.width
+                  : INITIAL_AGENT_SIZE.other.width,
+    },
+    ...extra,
+});
+
+export const userJson = createAgentJson({
+    id: "wa-1",
+    agentType: "user_proxy",
+    name: "user_proxy",
+    description: "New user",
+    position: { x: 10, y: 11 },
+});
+
+export const assistantJson = createAgentJson({
+    id: "assistant",
     agentType: "assistant",
     name: "Assistant",
     description: "New assistant",
     tags: ["tag1"],
     requirements: ["requirement1"],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-    },
     position: { x: 20, y: 21 },
-};
+    dataOverrides: { isMultimodal: false },
+});
 
-export const groupManagerJson = {
-    id: "groupManager",
-    type: "agent",
-    agentType: "manager",
-    name: "Manager",
-    description: "A group manager agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-        maxRound: 1,
-        adminName: "admin",
-        speakers: {
-            selectionMethod: "auto",
-            selectionCustomMethod: "",
-            maxRetriesForSelecting: 4,
-            selectionMode: "repeat",
-            allowRepeat: true,
-            allowedOrDisallowedTransitions: {},
-            transitionsType: "allowed",
-        },
-        enableClearHistory: true,
-        sendIntroductions: true,
-    },
-    key: "value",
-    position: { x: 30, y: 31 },
-};
-
-export const ragUserJson = {
+export const ragUserJson = createAgentJson({
     id: "ragUser",
-    type: "agent",
-    agentType: "rag_user",
+    agentType: "rag_user_proxy",
     name: "Rag User",
     description: "A rag user agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "ALWAYS",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-        retrieveConfig: defaultRetrieveConfig,
-    },
-    key: "value",
     position: { x: 40, y: 41 },
-};
+    dataOverrides: { retrieveConfig: defaultRetrieveConfig },
+    extra: { key: "value" },
+});
 
-export const swarmJson = {
-    id: "swarm",
-    type: "agent",
-    agentType: "swarm",
-    name: "Swarm",
-    description: "A swarm agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-        functions: [],
-        updateAgentStateBeforeReply: [],
-        handoffs: [],
-        isInitial: false,
-    },
-    key: "value",
-    position: { x: 50, y: 51 },
-};
-
-export const swarmContainerJson = {
-    id: "swarm",
-    type: "agent",
-    agentType: "swarm_container",
-    name: "Swarm Container",
-    description: "A swarm container agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
-    },
-    key: "value",
-    position: { x: 60, y: 61 },
-};
-
-export const captainJson = {
+export const captainJson = createAgentJson({
     id: "captain",
-    type: "agent",
     agentType: "captain",
     name: "Captain",
     description: "A captain agent",
-    tags: [],
-    requirements: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    data: {
-        humanInputMode: "NEVER",
-        systemMessage: null,
-        codeExecutionConfig: false,
-        agentDefaultAutoReply: null,
-        maxConsecutiveAutoReply: null,
-        termination: {
-            type: "none",
-            keywords: [],
-            criterion: null,
-            methodContent: null,
-        },
-        modelIds: [],
-        skills: [],
-        parentId: null,
-        nestedChats: [],
+    position: { x: 70, y: 71 },
+    dataOverrides: {
         agentLib: [],
         toolLib: null,
         maxRound: 10,
         maxTurns: 5,
     },
-    key: "value",
-    position: { x: 70, y: 71 },
-};
+    extra: { key: "value" },
+});
+
+export const groupManagerJson = createAgentJson({
+    id: "groupManager",
+    agentType: "group_manager",
+    name: "Group Manager",
+    description: "A group manager agent",
+    position: { x: 80, y: 81 },
+    dataOverrides: {
+        maxRound: 1,
+        adminName: "admin",
+        speakers: defaultGroupChatSpeakers,
+        enableClearHistory: true,
+        sendIntroductions: true,
+    },
+    extra: { key: "value" },
+});
+
+export const reasoningJson = createAgentJson({
+    id: "reasoning",
+    agentType: "reasoning",
+    name: "Reasoning",
+    description: "A reasoning agent",
+    position: { x: 90, y: 91 },
+    dataOverrides: {
+        verbose: true,
+        reasonConfig: defaultReasonConfig,
+    },
+    extra: { key: "value" },
+});

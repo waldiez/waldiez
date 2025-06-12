@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez agents model."""
 
-from typing import Iterator, List
+from typing import Iterator
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
@@ -10,11 +10,10 @@ from typing_extensions import Annotated, Self
 from ..common import WaldiezBase
 from .agent import WaldiezAgent
 from .assistant import WaldiezAssistant
-from .captain_agent import WaldiezCaptainAgent
+from .captain import WaldiezCaptainAgent
 from .group_manager import WaldiezGroupManager
-from .rag_user import WaldiezRagUser
+from .rag_user_proxy import WaldiezRagUserProxy
 from .reasoning import WaldiezReasoningAgent
-from .swarm_agent import WaldiezSwarmAgent
 from .user_proxy import WaldiezUserProxy
 
 
@@ -23,72 +22,68 @@ class WaldiezAgents(WaldiezBase):
 
     Attributes
     ----------
-    users : List[WaldiezUserProxy]
+    userProxyAgents : list[WaldiezUserProxy]
         User proxy agents.
-    assistants : List[WaldiezAssistant]
+    assistantAgents : list[WaldiezAssistant]
         Assistant agents.
-    managers : List[WaldiezGroupManager]
-        Group chat managers.
-    rag_users : List[WaldiezRagUser]
-        RAG user agents.
+    ragUserProxyAgents : list[WaldiezRagUserProxy]
+        RAG user proxy agents.
+    reasoningAgents : list[WaldiezReasoningAgent]
+        Reasoning agents.
+    captainAgents : list[WaldiezCaptainAgent]
+        Captain agents.
+    groupManagerAgents : list[WaldiezGroupManager]
+        Group manager agents.
     """
 
-    users: Annotated[
-        List[WaldiezUserProxy],
+    userProxyAgents: Annotated[
+        list[WaldiezUserProxy],
         Field(
-            title="Users.",
-            description="User proxy agents",
+            title="User Proxy Agents.",
+            description="The User proxy agents in the flow.",
             default_factory=list,
         ),
-    ]
-    assistants: Annotated[
-        List[WaldiezAssistant],
+    ] = []
+    assistantAgents: Annotated[
+        list[WaldiezAssistant],
         Field(
-            title="Assistants.",
-            description="Assistant agents",
+            title="Assistant Agents.",
+            description="The assistant agents in the flow.",
             default_factory=list,
         ),
-    ]
-    managers: Annotated[
-        List[WaldiezGroupManager],
+    ] = []
+    ragUserProxyAgents: Annotated[
+        list[WaldiezRagUserProxy],
         Field(
-            title="Managers.",
-            description="Group chat managers",
+            title="RAG Users Proxy agents.",
+            description="The RAG user proxy agents in the flow.",
             default_factory=list,
         ),
-    ]
-    rag_users: Annotated[
-        List[WaldiezRagUser],
-        Field(
-            title="RAG Users.",
-            description="RAG user agents",
-            default_factory=list,
-        ),
-    ]
-    swarm_agents: Annotated[
-        List[WaldiezSwarmAgent],
-        Field(
-            title="Swarm Agents.",
-            description="Swarm agents",
-            default_factory=list,
-        ),
-    ]
-    reasoning_agents: Annotated[
-        List[WaldiezReasoningAgent],
+    ] = []
+    reasoningAgents: Annotated[
+        list[WaldiezReasoningAgent],
         Field(
             title="Reasoning Agents.",
-            description="Reasoning agents",
+            description="The Reasoning agents in the flow.",
             default_factory=list,
         ),
-    ]
-    captain_agents: Annotated[
-        List[WaldiezCaptainAgent],
+    ] = []
+    captainAgents: Annotated[
+        list[WaldiezCaptainAgent],
         Field(
             title="Captain Agents.",
-            description="Captain agents",
+            description="The Captain agents in the flow.",
             default_factory=list,
         ),
-    ]
+    ] = []
+    groupManagerAgents: Annotated[
+        list[WaldiezGroupManager],
+        Field(
+            title="Group Manager Agents.",
+            description="The Group manager agents in the flow.",
+            default_factory=list,
+        ),
+    ] = []
 
     @property
     def members(self) -> Iterator[WaldiezAgent]:
@@ -99,13 +94,12 @@ class WaldiezAgents(WaldiezBase):
         WaldiezAgent
             The agents.
         """
-        yield from self.users
-        yield from self.assistants
-        yield from self.rag_users
-        yield from self.reasoning_agents
-        yield from self.swarm_agents
-        yield from self.managers
-        yield from self.captain_agents
+        yield from self.userProxyAgents
+        yield from self.assistantAgents
+        yield from self.ragUserProxyAgents
+        yield from self.reasoningAgents
+        yield from self.captainAgents
+        yield from self.groupManagerAgents
 
     @model_validator(mode="after")
     def validate_agents(self) -> Self:
@@ -131,19 +125,19 @@ class WaldiezAgents(WaldiezBase):
             raise ValueError("Agent IDs must be unique.")
         return self
 
-    def validate_flow(self, model_ids: List[str], skill_ids: List[str]) -> None:
+    def validate_flow(self, model_ids: list[str], tool_ids: list[str]) -> None:
         """Validate the flow of the agents.
 
         - Validate the linked models (the referenced model ids must exist).
-        - Validate the linked skills (the referenced skill ids must exist).
+        - Validate the linked tools (the referenced tool ids must exist).
         - Validate the code execution (the referenced functions must exist).
 
         Parameters
         ----------
-        model_ids : List[str]
+        model_ids : list[str]
             The list of model IDs.
-        skill_ids : List[str]
-            The list of skill IDs.
+        tool_ids : list[str]
+            The list of tool IDs.
 
         Raises
         ------
@@ -153,9 +147,10 @@ class WaldiezAgents(WaldiezBase):
         all_agent_ids = [agent.id for agent in self.members]
         for agent in self.members:
             agent.validate_linked_models(model_ids)
-            agent.validate_linked_skills(skill_ids, agent_ids=all_agent_ids)
-            agent.validate_code_execution(skill_ids=skill_ids)
-            if agent.agent_type == "manager" and isinstance(
+            agent.validate_linked_tools(tool_ids, agent_ids=all_agent_ids)
+            agent.validate_code_execution(tool_ids=tool_ids)
+            if agent.is_group_manager and isinstance(
                 agent, WaldiezGroupManager
             ):
+                agent.validate_initial_agent_id(all_agent_ids)
                 agent.validate_transitions(agent_ids=all_agent_ids)

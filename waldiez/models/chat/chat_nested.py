@@ -16,11 +16,11 @@ NESTED_CHAT_ARGS = ["recipient", "messages", "sender", "config"]
 NESTED_CHAT_TYPES = (
     [
         "ConversableAgent",
-        "List[Dict[str, Any]]",
+        "list[dict[str, Any]]",
         "ConversableAgent",
-        "Dict[str, Any]",
+        "dict[str, Any]",
     ],
-    "Union[Dict[str, Any], str]",
+    "Union[dict[str, Any], str]",
 )
 
 
@@ -38,19 +38,19 @@ class WaldiezChatNested(WaldiezBase):
     message: Annotated[
         Optional[WaldiezChatMessage],
         Field(
-            None,
+            default=None,
             title="Message",
             description="The message in a nested chat (sender -> recipient).",
         ),
-    ]
+    ] = None
     reply: Annotated[
         Optional[WaldiezChatMessage],
         Field(
-            None,
+            default=None,
             title="Reply",
             description="The reply in a nested chat (recipient -> sender).",
         ),
-    ]
+    ] = None
 
     _message_content: Optional[str] = None
     _reply_content: Optional[str] = None
@@ -65,6 +65,7 @@ class WaldiezChatNested(WaldiezBase):
         """Get the reply content."""
         return self._reply_content
 
+    # noinspection PyNestedDecorators
     @field_validator("message", "reply", mode="before")
     @classmethod
     def validate_message(cls, value: Any) -> WaldiezChatMessage:
@@ -113,27 +114,27 @@ class WaldiezChatNested(WaldiezBase):
         ValueError
             If the validation fails.
         """
-        if self.message is not None:
-            self._message_content = self.message.content_body
-            if self.message.type == "none":
-                self._message_content = ""
-            if self.message.type == "string":
-                self._message_content = self.message.content
-            if self.message.type == "method":
-                self._message_content = self.message.validate_method(
-                    function_name=NESTED_CHAT_MESSAGE,
-                    function_args=NESTED_CHAT_ARGS,
-                )
-
-        if self.reply is not None:
-            self._reply_content = self.reply.content_body
-            if self.reply.type == "none":
-                self._reply_content = ""
-            if self.reply.type == "string":
-                self._reply_content = self.reply.content
-            if self.reply.type == "method":
-                self._reply_content = self.reply.validate_method(
-                    function_name=NESTED_CHAT_REPLY,
-                    function_args=NESTED_CHAT_ARGS,
-                )
+        for attr, content_attr, function_name in [
+            ("message", "_message_content", NESTED_CHAT_MESSAGE),
+            ("reply", "_reply_content", NESTED_CHAT_REPLY),
+        ]:  # pragma: no branch
+            attr_value = getattr(self, attr)
+            if attr_value is not None:
+                if isinstance(
+                    attr_value, WaldiezChatMessage
+                ):  # pragma: no branch
+                    setattr(self, content_attr, attr_value.content_body)
+                    if attr_value.type == "none":
+                        setattr(self, content_attr, "")
+                    elif attr_value.type == "string":
+                        setattr(self, content_attr, attr_value.content)
+                    elif attr_value.type == "method":  # pragma: no branch
+                        setattr(
+                            self,
+                            content_attr,
+                            attr_value.validate_method(
+                                function_name=function_name,
+                                function_args=NESTED_CHAT_ARGS,
+                            ),
+                        )
         return self

@@ -24,9 +24,9 @@ class WaldiezUserProxyData(WaldiezAgentData):
     human_input_mode: Annotated[
         Literal["ALWAYS", "NEVER", "TERMINATE"],
         Field(
-            "ALWAYS",
+            default="ALWAYS",
             title="Human input mode",
             description="The human input mode, Defaults to `ALWAYS`",
             alias="humanInputMode",
         ),
-    ]
+    ] = "ALWAYS"

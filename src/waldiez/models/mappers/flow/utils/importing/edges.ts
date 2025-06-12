@@ -4,11 +4,9 @@
  */
 import { Edge, Node } from "@xyflow/react";
 
-import { WaldiezChat } from "@waldiez/models";
+import { ValidChatTypes, WaldiezChat } from "@waldiez/models";
 import { chatMapper } from "@waldiez/models/mappers/chat";
 import { getRestFromJSON } from "@waldiez/models/mappers/common";
-
-const VALID_EDGE_TYPES = ["chat", "nested", "group", "swarm", "hidden"];
 
 export const getEdges = (json: Record<string, unknown>) => {
     if (!("edges" in json) || !Array.isArray(json.edges)) {
@@ -22,7 +20,7 @@ export const getEdges = (json: Record<string, unknown>) => {
         if (
             !("type" in edgeJson) ||
             typeof edgeJson.type !== "string" ||
-            !VALID_EDGE_TYPES.includes(edgeJson.type)
+            !ValidChatTypes.includes(edgeJson.type)
         ) {
             return;
         }
@@ -56,8 +54,8 @@ export const getChats = (json: Record<string, unknown>, nodes: Node[], edges: Ed
             const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index);
             chats.push(chat);
             updatedEdges.push(edge);
-        } catch (_) {
-            //
+        } catch (error) {
+            console.error(`Error importing chat at index ${index}:`, error);
         }
     });
     return { chats, edges: updatedEdges };

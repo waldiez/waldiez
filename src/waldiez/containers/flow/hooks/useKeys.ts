@@ -15,7 +15,7 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
     const deleteAgent = useWaldiez(s => s.deleteAgent);
     const deleteEdge = useWaldiez(s => s.deleteEdge);
     const deleteModel = useWaldiez(s => s.deleteModel);
-    const deleteSkill = useWaldiez(s => s.deleteSkill);
+    const deleteTool = useWaldiez(s => s.deleteTool);
     const saveFlow = useWaldiez(s => s.saveFlow);
     const listenForSave = typeof onSave === "function" && isReadOnly === false;
     const isFlowVisible = () => {
@@ -29,18 +29,17 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
         return clientRect.width > 0 && clientRect.height > 0;
     };
     {
-        !isReadOnly &&
-            useHotkeys(
-                "mod+z",
-                () => {
-                    if (pastStates.length > 0) {
-                        if (isFlowVisible()) {
-                            undo();
-                        }
+        useHotkeys(
+            "mod+z",
+            () => {
+                if (pastStates.length > 0) {
+                    if (isFlowVisible()) {
+                        undo();
                     }
-                },
-                { scopes: flowId },
-            );
+                }
+            },
+            { scopes: flowId },
+        );
         useHotkeys(
             ["shift+mod+z", "mod+y"],
             () => {
@@ -54,6 +53,7 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
         );
     }
     if (listenForSave) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         useHotkeys(
             "mod+s",
             event => {
@@ -99,15 +99,15 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
         if (nodeId) {
             const isAgent = target.classList.contains("react-flow__node-agent");
             const isModel = target.classList.contains("react-flow__node-model");
-            const isSkill = target.classList.contains("react-flow__node-skill");
+            const isTool = target.classList.contains("react-flow__node-tool");
             if (isAgent) {
                 deleteAgent(nodeId);
             } else {
                 if (isModel) {
                     deleteModel(nodeId);
                 } else {
-                    if (isSkill) {
-                        deleteSkill(nodeId);
+                    if (isTool) {
+                        deleteTool(nodeId);
                     }
                 }
             }

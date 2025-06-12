@@ -66,9 +66,9 @@ describe("SideBar", () => {
         expect(onSelectNodeType).toBeCalledTimes(1);
     });
 
-    it("should call onNodeTypeSelected with skill", () => {
+    it("should call onNodeTypeSelected with tool", () => {
         renderSidebar();
-        fireEvent.click(screen.getByTestId("show-skills"));
+        fireEvent.click(screen.getByTestId("show-tools"));
         expect(onSelectNodeType).toBeCalledTimes(1);
     });
     const ensureAgentsView = () => {
@@ -86,12 +86,6 @@ describe("SideBar", () => {
             dataTransfer: { setData: vi.fn() },
         });
         fireEvent.dragStart(screen.getByTestId("assistant-dnd"), {
-            dataTransfer: { setData: vi.fn() },
-        });
-        fireEvent.dragStart(screen.getByTestId("manager-dnd"), {
-            dataTransfer: { setData: vi.fn() },
-        });
-        fireEvent.dragStart(screen.getByTestId("swarm-dnd"), {
             dataTransfer: { setData: vi.fn() },
         });
     });

@@ -5,10 +5,12 @@
 import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentHumanInputMode,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
-} from "@waldiez/models/Agent/Common";
+    WaldiezAgentUpdateSystemMessage,
+} from "@waldiez/models/Agent/Common/types";
+import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez Agent data
@@ -18,15 +20,20 @@ import {
  * @param agentDefaultAutoReply - Default auto reply
  * @param maxConsecutiveAutoReply - Maximum consecutive auto reply
  * @param termination - Termination message check
- * @param modelIds - Model ids
- * @param skills - Linked skills
+ * @param modelIds - The agent's model ids
+ * @param tools - Tools available to the agent
  * @param parentId - Parent id
  * @param nestedChats - Nested chats
+ * @param contextVariables - Context variables
+ * @param updateAgentStateBeforeReply - Update agent state before reply
+ * @param afterWork - Handoff transition after work
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentTerminationMessageCheck}
- * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezAgentData {
     systemMessage: string | null;
@@ -35,11 +42,14 @@ export class WaldiezAgentData {
     agentDefaultAutoReply: string | null;
     maxConsecutiveAutoReply: number | null;
     termination: WaldiezAgentTerminationMessageCheck;
-    // links
     modelIds: string[];
-    skills: WaldiezAgentLinkedSkill[];
-    parentId: string | null;
+    tools: WaldiezAgentLinkedTool[];
+    parentId?: string | null;
     nestedChats: WaldiezAgentNestedChat[];
+    contextVariables: Record<string, any>;
+    updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
+    afterWork: WaldiezTransitionTarget | null;
+    handoffs: string[]; // handoff / edge ids
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -49,9 +59,13 @@ export class WaldiezAgentData {
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
-            skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            tools: WaldiezAgentLinkedTool[];
+            parentId?: string | null;
             nestedChats: WaldiezAgentNestedChat[];
+            contextVariables: Record<string, any>;
+            updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
+            afterWork: WaldiezTransitionTarget | null;
+            handoffs?: string[]; // handoff / edge ids
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,
@@ -65,9 +79,26 @@ export class WaldiezAgentData {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
-            parentId: null,
-            nestedChats: [],
+            tools: [],
+            parentId: undefined,
+            nestedChats: [
+                {
+                    messages: [],
+                    triggeredBy: [],
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
+                },
+            ],
+            contextVariables: {},
+            updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
         },
     ) {
         this.systemMessage = props.systemMessage;
@@ -77,8 +108,12 @@ export class WaldiezAgentData {
         this.maxConsecutiveAutoReply = props.maxConsecutiveAutoReply;
         this.termination = props.termination;
         this.modelIds = props.modelIds;
-        this.skills = props.skills;
+        this.tools = props.tools;
         this.parentId = props.parentId;
         this.nestedChats = props.nestedChats;
+        this.contextVariables = props.contextVariables;
+        this.updateAgentStateBeforeReply = props.updateAgentStateBeforeReply;
+        this.afterWork = props.afterWork || null;
+        this.handoffs = props.handoffs || [];
     }
 }

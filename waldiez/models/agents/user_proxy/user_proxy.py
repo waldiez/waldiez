@@ -18,26 +18,30 @@ class WaldiezUserProxy(WaldiezAgent):
 
     Attributes
     ----------
-    agent_type : Literal["user"]
+    agent_type : Literal["user", "user_proxy"]
         The agent type: 'user' for a user proxy agent
     data : WaldiezUserProxyData
         The user proxy agent's data
     """
 
-    agent_type: Annotated[
-        Literal["user"],
+    agent_type: Annotated[  # pyright: ignore
+        Literal["user", "user_proxy"],
         Field(
-            "user",
+            "user_proxy",
             title="Agent type",
-            description="The agent type in a graph: 'user'",
+            description=(
+                "The agent type in a graph. "
+                "`user` is deprecated and will be removed in future versions. "
+                "Use `user_proxy` instead."
+            ),
             alias="agentType",
         ),
     ]
-    data: Annotated[
+    data: Annotated[  # pyright: ignore
         WaldiezUserProxyData,
         Field(
             title="Data",
             description="The user proxy agent's data",
-            default_factory=WaldiezUserProxyData,
+            default_factory=WaldiezUserProxyData,  # pyright: ignore
         ),
     ]

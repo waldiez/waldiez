@@ -2,18 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
-    agentId,
-    createdAt,
-    flowId,
-    getAgentNode,
-    getGroupMembers,
-    getGroupNodes,
-    getModelNodes,
-    getNestedChats,
-    getSkillNodes,
-    updatedAt,
-} from "./data";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { Edge, Node, ReactFlowProvider } from "@xyflow/react";
@@ -26,7 +14,19 @@ import { WaldiezNodeAgentType } from "@waldiez/models";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
 
-/* eslint-disable max-statements */
+import {
+    agentId,
+    createdAt,
+    flowId,
+    getAgentNode,
+    getGroupNodes,
+    getModelNodes,
+    getNestedChats,
+    getToolNodes,
+    updatedAt,
+} from "./data";
+
+// eslint-disable-next-line max-statements
 export const renderAgent = (
     type: WaldiezNodeAgentType,
     options: {
@@ -34,19 +34,17 @@ export const renderAgent = (
         nodeOverrides?: Partial<Node>;
         dataOverrides?: { [key: string]: any };
         includeModels?: boolean;
-        includeSkills?: boolean;
-        includeGroups?: boolean;
+        includeTools?: boolean;
         includeNestedChats?: boolean;
-        includeGroupMembers?: boolean;
+        includeGroups?: boolean;
     } = {
         openModal: false,
         nodeOverrides: {},
         dataOverrides: {},
         includeModels: false,
-        includeSkills: false,
-        includeGroups: false,
+        includeTools: false,
         includeNestedChats: false,
-        includeGroupMembers: false,
+        includeGroups: false,
     },
     uploadsHandler: ((files: File[]) => Promise<string[]>) | null = null,
 ) => {
@@ -55,10 +53,9 @@ export const renderAgent = (
         nodeOverrides,
         dataOverrides,
         includeModels,
-        includeSkills,
-        includeGroups,
+        includeTools,
         includeNestedChats,
-        includeGroupMembers,
+        includeGroups,
     } = options;
     const agentNode = getAgentNode(type, nodeOverrides, dataOverrides);
     const nodeData = {
@@ -71,21 +68,16 @@ export const renderAgent = (
     if (includeModels) {
         flowNodes.push(...getModelNodes());
     }
-    if (includeSkills) {
-        flowNodes.push(...getSkillNodes());
-    }
-    if (includeGroups) {
-        flowNodes.push(...getGroupNodes());
+    if (includeTools) {
+        flowNodes.push(...getToolNodes());
     }
     if (includeNestedChats) {
         const { nodes, edges } = getNestedChats();
         flowNodes.push(...nodes);
         flowEdges.push(...edges);
     }
-    if (includeGroupMembers) {
-        const { nodes, edges } = getGroupMembers();
-        flowNodes.push(...nodes);
-        flowEdges.push(...edges);
+    if (includeGroups) {
+        flowNodes.push(...getGroupNodes());
     }
     act(() => {
         render(

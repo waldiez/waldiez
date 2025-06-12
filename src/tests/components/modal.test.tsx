@@ -112,7 +112,7 @@ describe("Modal", () => {
         const maximizeButton = screen.getByTitle("Maximize");
         expect(maximizeButton).toBeTruthy();
         fireEvent.click(maximizeButton);
-        const minimizeButton = screen.getByTitle("Minimize");
+        const minimizeButton = screen.getByTitle("Restore");
         expect(minimizeButton).toBeTruthy();
         fireEvent.click(minimizeButton);
         expect(maximizeButton).toBeTruthy();

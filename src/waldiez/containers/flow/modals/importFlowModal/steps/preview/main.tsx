@@ -5,7 +5,7 @@
 import { FlowAgents } from "@waldiez/containers/flow/modals/importFlowModal/steps/preview/flowAgents";
 import { FlowInfo } from "@waldiez/containers/flow/modals/importFlowModal/steps/preview/flowInfo";
 import { FlowModels } from "@waldiez/containers/flow/modals/importFlowModal/steps/preview/flowModels";
-import { FlowSkills } from "@waldiez/containers/flow/modals/importFlowModal/steps/preview/flowSkills";
+import { FlowTools } from "@waldiez/containers/flow/modals/importFlowModal/steps/preview/flowTools";
 import { FlowDataPreviewProps } from "@waldiez/containers/flow/modals/importFlowModal/steps/types";
 
 export const FlowDataPreviewStep = (props: FlowDataPreviewProps) => {
@@ -20,7 +20,7 @@ export const FlowDataPreviewStep = (props: FlowDataPreviewProps) => {
                     </div>
                     <div className="flow-data-preview-body">
                         <FlowModels flowId={flowId} state={state} onStateChange={onStateChange} />
-                        <FlowSkills flowId={flowId} state={state} onStateChange={onStateChange} />
+                        <FlowTools flowId={flowId} state={state} onStateChange={onStateChange} />
                         <FlowAgents flowId={flowId} state={state} onStateChange={onStateChange} />
                     </div>
                 </>

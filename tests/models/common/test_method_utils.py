@@ -265,8 +265,8 @@ def test_generate_function() -> None:
         "def callable_message(\n"
         "    sender: ConversableAgent,\n"
         "    recipient: ConversableAgent,\n"
-        "    context: Dict[str, Any],\n"
-        ") -> Union[Dict[str, Any], str]:\n"
+        "    context: dict[str, Any],\n"
+        ") -> Union[dict[str, Any], str]:\n"
         "    return 'Hello'\n"
     )
     # Given
@@ -286,11 +286,11 @@ def test_generate_function() -> None:
     assert function_string == (
         "def nested_chat_reply(\n"
         "    recipient,  # type: ConversableAgent\n"
-        "    messages,  # type: List[Dict[str, Any]]\n"
+        "    messages,  # type: list[dict[str, Any]]\n"
         "    sender,  # type: ConversableAgent\n"
-        "    config,  # type: Dict[str, Any]\n"
+        "    config,  # type: dict[str, Any]\n"
         "):\n"
-        "    # type: (...) -> Union[Dict[str, Any], str]\n"
+        "    # type: (...) -> Union[dict[str, Any], str]\n"
         "    return 'Hello'\n"
     )
     # Given

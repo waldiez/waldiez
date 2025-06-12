@@ -1,11 +1,14 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 .flow-wrapper .model-node {
   border-radius: 10px;
   width: 180px;
   min-width: 180px;
   max-width: 180px;
-  height: 180px;
-  min-height: 180px;
-  max-height: 180px;
+  min-height: 100px;
+  max-height: 100px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -34,6 +37,7 @@
   height: auto;
 }
 
+.flow-wrapper .model-logo.bedrock img,
 .flow-wrapper .model-logo.other img,
 .flow-wrapper .model-logo.openai img {
   width: 20px !important;
@@ -97,17 +101,13 @@
   padding: 8px;
 }
 
-.flow-wrapper .model-node .modal-actions {
-  padding: 10px;
-}
-
 .flow-wrapper .model-node .modal-body label {
   margin-top: 10px;
   padding: 4px;
 }
 
 .flow-wrapper .model-node .date-info {
-  font-size: small;
+  font-size: 0.7rem;
   color: #666;
 }
 
@@ -130,23 +130,7 @@
 }
 
 .flow-wrapper.dark .model-logo.other img,
+.flow-wrapper.dark .model-logo.bedrock img,
 .flow-wrapper.dark .model-logo.openai img {
   filter: invert(1);
-}
-
-.flow-wrapper .visibilityWrapperBtn {
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  cursor: pointer;
-  min-width: 40px;
-}
-
-.flow-wrapper.light .visibilityWrapperBtn {
-  background-color: #f8f8f8;
-  color: #000;
-}
-
-.flow-wrapper.dark .visibilityWrapperBtn {
-  background-color: #222;
-  color: #f8f8f8;
 }

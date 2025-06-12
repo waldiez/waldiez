@@ -4,6 +4,13 @@
  */
 import { WaldiezReasoningAgentReasonConfig, defaultReasonConfig } from "@waldiez/models/Agent/Reasoning";
 
+/**
+ * getVerbose
+ * Returns the verbose setting from the provided JSON object.
+ * If not found, defaults to true.
+ * @param json - The JSON object to check for the verbose setting.
+ * @returns - The verbose setting.
+ */
 export const getVerbose: (json: { [key: string]: any }) => boolean = json => {
     if (typeof json !== "object") {
         return true;
@@ -22,6 +29,13 @@ export const getVerbose: (json: { [key: string]: any }) => boolean = json => {
     return true;
 };
 
+/**
+ * getReasonConfig
+ * Extracts the reasoning agent configuration from the provided JSON object.
+ * If not found, returns a default configuration.
+ * @param json - The JSON object to extract the reasoning configuration from.
+ * @returns - The reasoning agent configuration.
+ */
 export const getReasonConfig: (json: { [key: string]: any }) => WaldiezReasoningAgentReasonConfig = json => {
     if (typeof json !== "object") {
         return defaultReasonConfig;
@@ -43,18 +57,25 @@ export const getReasonConfig: (json: { [key: string]: any }) => WaldiezReasoning
         return defaultReasonConfig;
     }
     return {
-        method: getReasoningConfigMethod(jsonData),
-        max_depth: getReasoningConfigMaxDepth(jsonData),
-        forest_size: getReasoningConfigForestSize(jsonData),
-        rating_scale: getReasoningConfigRatingScale(jsonData),
-        beam_size: getReasoningConfigBeamSize(jsonData),
-        answer_approach: getReasoningConfigAnswerApproach(jsonData),
-        nsim: getReasoningConfigNsim(jsonData),
-        exploration_constant: getReasoningConfigExplorationConstant(jsonData),
+        method: getReasonConfigMethod(jsonData),
+        maxDepth: getReasonConfigMaxDepth(jsonData),
+        forestSize: getReasonConfigForestSize(jsonData),
+        ratingScale: getReasonConfigRatingScale(jsonData),
+        beamSize: getReasonConfigBeamSize(jsonData),
+        answerApproach: getReasonConfigAnswerApproach(jsonData),
+        nsim: getReasonConfigNsim(jsonData),
+        explorationConstant: getReasonConfigExplorationConstant(jsonData),
     };
 };
 
-const getReasoningConfigMethod = (data: Record<string, unknown>): "beam_search" | "mcts" | "lats" | "dfs" => {
+/**
+ * Utility functions to extract reasoning agent configuration from a JSON object.
+ * @param data - The JSON object containing reasoning agent configurations.
+ * @returns An object representing the reasoning agent configuration.
+ *          If not specified or invalid, it returns default values.
+ */
+
+const getReasonConfigMethod = (data: Record<string, unknown>): "beam_search" | "mcts" | "lats" | "dfs" => {
     if (
         "method" in data &&
         typeof data.method === "string" &&
@@ -65,55 +86,55 @@ const getReasoningConfigMethod = (data: Record<string, unknown>): "beam_search" 
     return "beam_search";
 };
 
-const getReasoningConfigMaxDepth = (data: Record<string, unknown>): number => {
-    if ("max_depth" in data && typeof data.max_depth === "number") {
-        return data.max_depth;
+const getReasonConfigMaxDepth = (data: Record<string, unknown>): number => {
+    if ("maxDepth" in data && typeof data.maxDepth === "number") {
+        return data.maxDepth;
     }
     return 3;
 };
 
-const getReasoningConfigForestSize = (data: Record<string, unknown>): number => {
-    if ("forest_size" in data && typeof data.forest_size === "number") {
-        return data.forest_size;
+const getReasonConfigForestSize = (data: Record<string, unknown>): number => {
+    if ("forestSize" in data && typeof data.forestSize === "number") {
+        return data.forestSize;
     }
     return 1;
 };
 
-const getReasoningConfigRatingScale = (data: Record<string, unknown>): number => {
-    if ("rating_scale" in data && typeof data.rating_scale === "number") {
-        return data.rating_scale;
+const getReasonConfigRatingScale = (data: Record<string, unknown>): number => {
+    if ("ratingScale" in data && typeof data.ratingScale === "number") {
+        return data.ratingScale;
     }
     return 10;
 };
 
-const getReasoningConfigBeamSize = (data: Record<string, unknown>): number => {
-    if ("beam_size" in data && typeof data.beam_size === "number") {
-        return data.beam_size;
+const getReasonConfigBeamSize = (data: Record<string, unknown>): number => {
+    if ("beamSize" in data && typeof data.beamSize === "number") {
+        return data.beamSize;
     }
     return 3;
 };
 
-const getReasoningConfigAnswerApproach = (data: Record<string, unknown>): "pool" | "best" => {
+const getReasonConfigAnswerApproach = (data: Record<string, unknown>): "pool" | "best" => {
     if (
-        "answer_approach" in data &&
-        typeof data.answer_approach === "string" &&
-        ["pool", "best"].includes(data.answer_approach)
+        "answerApproach" in data &&
+        typeof data.answerApproach === "string" &&
+        ["pool", "best"].includes(data.answerApproach)
     ) {
-        return data.answer_approach as "pool" | "best";
+        return data.answerApproach as "pool" | "best";
     }
     return "pool";
 };
 
-const getReasoningConfigNsim = (data: Record<string, unknown>): number => {
+const getReasonConfigNsim = (data: Record<string, unknown>): number => {
     if ("nsim" in data && typeof data.nsim === "number") {
         return data.nsim;
     }
     return 3;
 };
 
-const getReasoningConfigExplorationConstant = (data: Record<string, unknown>): number => {
-    if ("exploration_constant" in data && typeof data.exploration_constant === "number") {
-        return data.exploration_constant;
+const getReasonConfigExplorationConstant = (data: Record<string, unknown>): number => {
+    if ("explorationConstant" in data && typeof data.explorationConstant === "number") {
+        return data.explorationConstant;
     }
     return 1.41;
 };

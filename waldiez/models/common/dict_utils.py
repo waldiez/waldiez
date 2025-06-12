@@ -2,38 +2,63 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Dictionary related utilities."""
 
-from typing import Any, Dict
+import re
+from typing import Any
+
+BOOL_VALUES = {"true", "false"}
+NULL_VALUES = {"none", "null", "nil", "undefined"}
 
 
-def update_dict(original: Dict[str, Any]) -> Dict[str, Any]:
+def update_dict(original: dict[str, Any]) -> dict[str, Any]:
     """
-
     Try to determine the type of the dictionary values.
 
     Parameters
     ----------
-    original : Dict[str, Any]
+    original : dict[str, Any]
         The original dictionary.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The updated dictionary with values converted to the detected types.
     """
-    new_dict: Dict[str, Any] = {}
+    new_dict: dict[str, Any] = {}
+
     for key, value in original.items():
-        value_lower = str(value).lower()
-        if value_lower in ("none", "null"):
-            new_dict[key] = None
-        elif value_lower in ("true", "false"):
-            new_dict[key] = value_lower == "true"
-        elif str(value).isdigit():
-            new_dict[key] = int(value)
-        elif str(value).replace(".", "").isdigit():
-            try:
-                new_dict[key] = float(value)
-            except ValueError:  # pragma: no cover
-                new_dict[key] = value
-        else:
+        # Skip conversion if already the desired type
+        if not isinstance(value, str):
             new_dict[key] = value
+            continue
+
+        value_stripped = value.strip()
+        if (
+            value_stripped.startswith('"') and value_stripped.endswith('"')
+        ) or (value_stripped.startswith("'") and value_stripped.endswith("'")):
+            value_stripped = value_stripped[1:-1]
+        if not value_stripped:  # Empty or whitespace-only
+            new_dict[key] = value
+            continue
+
+        value_lower = value_stripped.lower()
+
+        # Check for None/null
+        if value_lower in NULL_VALUES:
+            new_dict[key] = None
+        # Check for boolean
+        elif value_lower in BOOL_VALUES:
+            new_dict[key] = value_lower == "true"
+        # Check for integer
+        elif re.fullmatch(r"[-+]?\d+", value_stripped):
+            new_dict[key] = int(value_stripped)
+        # Check for float
+        else:
+            try:
+                # This handles floats, scientific notation, etc.
+                float_val = float(value_stripped)
+                new_dict[key] = float_val
+            except ValueError:
+                # Keep as string if conversion fails
+                new_dict[key] = value_stripped
+
     return new_dict

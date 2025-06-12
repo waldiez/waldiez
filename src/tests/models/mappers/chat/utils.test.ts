@@ -2,25 +2,22 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { updateData } from "./data";
 import { describe, expect, it } from "vitest";
 
 import {
-    getAvailable,
-    getChatAfterWork,
     getChatClearHistory,
     getChatDescription,
-    getChatMaxRounds,
     getChatMaxTurns,
     getChatName,
     getChatOrder,
     getChatPosition,
     getChatRest,
-    getContextVariables,
     getRealSource,
     getRealTarget,
     updateEdge,
 } from "@waldiez/models/mappers/chat/utils";
+
+import { updateData } from "./data";
 
 describe("getChatClearHistory", () => {
     it("should return the clearHistory value", () => {
@@ -87,77 +84,6 @@ describe("getChatOrder", () => {
     });
 });
 
-describe("getChatMaxRounds", () => {
-    it("should return the maxRounds value", () => {
-        expect(getChatMaxRounds({ maxRounds: 0 })).toBe(0);
-        expect(getChatMaxRounds({ maxRounds: 1 })).toBe(1);
-        expect(getChatMaxRounds({ maxRounds: 2 })).toBe(2);
-        expect(getChatMaxRounds({ maxRounds: -1 })).toBe(-1);
-        expect(getChatMaxRounds({ maxRounds: 1.5 })).toBe(1);
-        expect(getChatMaxRounds({ maxRounds: "1" })).toBe(20);
-        expect(getChatMaxRounds({ maxRounds: "1.5" })).toBe(20);
-        expect(getChatMaxRounds({} as any)).toBe(20);
-    });
-});
-
-describe("getContextVariables", () => {
-    it("should return the contextVariables value", () => {
-        expect(
-            getContextVariables({
-                contextVariables: {
-                    context_key1: "context_value",
-                    context_key2: 5,
-                    context_key3: true,
-                    context_key4: null,
-                },
-            }),
-        ).toEqual({
-            context_key1: "context_value",
-            context_key2: "5",
-            context_key3: "true",
-            context_key4: "",
-        });
-        expect(getContextVariables({ contextVariables: {} })).toEqual({});
-        expect(getContextVariables({})).toEqual({});
-    });
-});
-
-describe("getAvailable", () => {
-    it("should return the available value", () => {
-        expect(getAvailable({ available: { type: "string", value: "value" } })).toEqual({
-            type: "string",
-            value: "value",
-        });
-        expect(getAvailable({ available: { type: "callable", value: "value" } })).toEqual({
-            type: "callable",
-            value: "value",
-        });
-        expect(getAvailable({ available: { type: "none", value: null } })).toEqual({
-            type: "none",
-            value: null,
-        });
-        expect(getAvailable({ available: {} })).toEqual({
-            type: "none",
-            value: null,
-        });
-        expect(getAvailable({})).toEqual({
-            type: "none",
-            value: null,
-        });
-    });
-});
-
-describe("getChatAfterWork", () => {
-    it("should return the afterWork value", () => {
-        expect(getChatAfterWork({ afterWork: { recipientType: "agent", recipient: "wa-2" } })).toEqual({
-            recipientType: "agent",
-            recipient: "wa-2",
-        });
-        expect(getChatAfterWork({ afterWork: {} })).toBeNull();
-        expect(getChatAfterWork({})).toBeNull();
-    });
-});
-
 describe("getRealSource", () => {
     it("should return the realSource value", () => {
         expect(getRealSource({ realSource: "wa-1" })).toBe("wa-1");
@@ -174,9 +100,20 @@ describe("getRealTarget", () => {
 
 describe("getChatRest", () => {
     it("should return the rest value", () => {
-        expect(getChatRest({ id: "1", data: { source: "wa-1", target: "wa-2" }, type: "chat" })).toEqual({});
         expect(
-            getChatRest({ id: "1", data: { source: "wa-1", target: "wa-2" }, type: "chat", custom: "value" }),
+            getChatRest({
+                id: "1",
+                data: { source: "wa-1", target: "wa-2" },
+                type: "chat",
+            }),
+        ).toEqual({});
+        expect(
+            getChatRest({
+                id: "1",
+                data: { source: "wa-1", target: "wa-2" },
+                type: "chat",
+                custom: "value",
+            }),
         ).toEqual({
             custom: "value",
         });
@@ -186,92 +123,22 @@ describe("getChatRest", () => {
 describe("updateEdge", () => {
     it("should update the edge", () => {
         const { edge, chat, json, expected } = updateData;
-        const sourceNode = { data: { agentType: "agent" }, id: "wa-1", position: { x: 0, y: 0 } };
-        const targetNode = { data: { agentType: "agent" }, id: "wa-2", position: { x: 20, y: 20 } };
+        const sourceNode = {
+            data: { agentType: "agent" },
+            id: "wa-1",
+            position: { x: 0, y: 0 },
+        };
+        const targetNode = {
+            data: { agentType: "agent" },
+            id: "wa-2",
+            position: { x: 20, y: 20 },
+        };
         const rest = {
             sourceHandle: "agent-handle-top-source-wa-1",
             targetHandle: "agent-handle-top-target-wa-2",
         };
 
         const updatedEdge = updateEdge(edge, chat, json, sourceNode, targetNode, rest);
-        expect(updatedEdge).toEqual(expected);
-    });
-    it("should handle the case when the target node is a swarm_container and the realTarget is not null", () => {
-        const { edge } = updateData;
-        const json = structuredClone({
-            ...updateData.json,
-            realTarget: "wa-3",
-            swarm_agents: [
-                {
-                    id: "wa-3",
-                },
-            ],
-        });
-        const chatData = structuredClone({
-            ...updateData.chat,
-            realTarget: "wa-3",
-        });
-        const sourceNode = { data: { agentType: "agent" }, id: "wa-1", position: { x: 0, y: 0 } };
-        const targetNode = {
-            data: { agentType: "swarm_container" },
-            id: "wc-2",
-            position: { x: 20, y: 20 },
-        };
-        const rest = {
-            sourceHandle: "agent-handle-top-source-wa-1",
-            targetHandle: "agent-handle-top-target-wa-2",
-        };
-
-        const updatedEdge = updateEdge(edge, chatData, json, sourceNode, targetNode, rest);
-        const expected = structuredClone({
-            ...updateData.expected,
-            target: "wa-3",
-            targetHandle: "agent-handle-top-target-wa-3",
-            data: {
-                ...updateData.expected.data,
-                target: "wa-3",
-                realTarget: "wa-3",
-            },
-        });
-        expect(updatedEdge).toEqual(expected);
-    });
-    it("should handle the case when the target node is a swarm_container and the realTarget is null", () => {
-        const { edge } = updateData;
-        const json = structuredClone({
-            ...updateData.json,
-            realTarget: null,
-            swarm_agents: [
-                {
-                    id: "wa-3",
-                },
-            ],
-        });
-        const chatData = structuredClone({
-            ...updateData.chat,
-            realTarget: null,
-        });
-        const sourceNode = { data: { agentType: "agent" }, id: "wa-1", position: { x: 0, y: 0 } };
-        const targetNode = {
-            data: { agentType: "swarm_container" },
-            id: "wc-2",
-            position: { x: 20, y: 20 },
-        };
-        const rest = {
-            sourceHandle: "agent-handle-top-source-wa-1",
-            targetHandle: "agent-handle-top-target-wa-2",
-        };
-
-        const updatedEdge = updateEdge(edge, chatData, json, sourceNode, targetNode, rest);
-        const expected = structuredClone({
-            ...updateData.expected,
-            target: "wa-3",
-            targetHandle: "agent-handle-top-target-wa-3",
-            data: {
-                ...updateData.expected.data,
-                target: "wa-3",
-                realTarget: "wa-3",
-            },
-        });
         expect(updatedEdge).toEqual(expected);
     });
 });

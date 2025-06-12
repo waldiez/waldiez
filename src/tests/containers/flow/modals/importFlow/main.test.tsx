@@ -2,8 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderFlow } from "../common";
 import { act, fireEvent, screen } from "@testing-library/react";
+
+import { renderFlow } from "../common";
 
 // import userEvent from '@testing-library/user-event';
 
@@ -14,9 +15,9 @@ afterEach(() => {
 });
 
 describe("Sidebar Import flow modal", () => {
-    it("should open and close the modal", () => {
-        act(() => {
-            renderFlow();
+    it("should open and close the modal", async () => {
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
@@ -28,9 +29,9 @@ describe("Sidebar Import flow modal", () => {
         fireEvent.click(closeButton as HTMLElement);
         expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
-    it("should not display the preview step if the flow data is not loaded", () => {
-        act(() => {
-            renderFlow();
+    it("should not display the preview step if the flow data is not loaded", async () => {
+        await act(async () => {
+            await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const modalTestId = `import-flow-modal-${flowId}`;

@@ -4,27 +4,36 @@
  */
 import { WaldiezMessageType } from "@waldiez/models/Chat/types";
 
+/**
+ * WaldiezMessage
+ * Represents a message in the Waldiez chat system.
+ * @param type - The type of the message
+ * @param content - The content of the message
+ * @param useCarryover - Whether to use carryover for the message
+ * @param context - The context of the message
+ * @see {@link WaldiezMessageType}
+ */
 export class WaldiezMessage {
     type: WaldiezMessageType;
     content: string | null;
-    use_carryover: boolean;
-    context: { [key: string]: string };
+    useCarryover?: boolean;
+    context: { [key: string]: unknown };
 
     constructor(
         props: {
             type: WaldiezMessageType;
-            use_carryover: boolean;
+            useCarryover?: boolean;
             content: string | null;
             context?: { [key: string]: string };
         } = {
             type: "none",
-            use_carryover: false,
+            useCarryover: false,
             content: null,
         },
     ) {
-        const { type, use_carryover, content, context } = props;
+        const { type, useCarryover, content, context } = props;
         this.type = type;
-        this.use_carryover = use_carryover;
+        this.useCarryover = useCarryover;
         this.content = content;
         this.context = context || {};
     }

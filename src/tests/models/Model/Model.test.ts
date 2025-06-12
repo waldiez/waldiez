@@ -53,6 +53,7 @@ describe("WaldiezModel", () => {
             temperature: 0.5,
             topP: 0.9,
             maxTokens: 100,
+            extras: { key: "value" },
             defaultHeaders: { key: "value" },
             price: {
                 promptPricePer1k: 1,
@@ -88,6 +89,7 @@ describe("WaldiezModel", () => {
         expect(model.data.temperature).toBe(0.5);
         expect(model.data.topP).toBe(0.9);
         expect(model.data.maxTokens).toBe(100);
+        expect(model.data.extras).toEqual({ key: "value" });
         expect(model.data.defaultHeaders).toEqual({ key: "value" });
         expect(model.data.price.promptPricePer1k).toBe(1);
         expect(model.data.price.completionTokenPricePer1k).toBe(2);

@@ -23,13 +23,13 @@ describe("getChats", () => {
                         clearHistory: true,
                         maxTurns: 4,
                         summary: {
-                            method: "last_msg",
+                            method: "lastMsg",
                             prompt: "",
                             args: {},
                         },
                         message: {
                             type: "none",
-                            use_carryover: false,
+                            useCarryover: false,
                             content: null,
                             context: {},
                         },
@@ -38,8 +38,17 @@ describe("getChats", () => {
                             reply: null,
                         },
                         prerequisites: [],
-                        maxRounds: 20,
-                        afterWork: null,
+                        condition: {
+                            conditionType: "string_llm",
+                            prompt: "Handoff to wa-2",
+                        },
+                        available: {
+                            type: "none",
+                            value: "",
+                        },
+                        silent: false,
+                        realSource: null,
+                        realTarget: null,
                     },
                 },
                 {
@@ -81,9 +90,12 @@ describe("getChats", () => {
         expect(chats).toEqual([
             {
                 id: "wc-1",
+                type: "chat",
+                source: "wa-1",
+                target: "wa-2",
                 data: {
-                    source: "wa-1",
-                    target: "wa-2",
+                    sourceType: "user_proxy",
+                    targetType: "assistant",
                     name: "agent1 => agent2",
                     description: "New connection",
                     position: 1,
@@ -91,13 +103,13 @@ describe("getChats", () => {
                     clearHistory: true,
                     maxTurns: 4,
                     summary: {
-                        method: "last_msg",
+                        method: "lastMsg",
                         prompt: "",
                         args: {},
                     },
                     message: {
                         type: "none",
-                        use_carryover: false,
+                        useCarryover: false,
                         content: null,
                         context: {},
                     },
@@ -106,19 +118,20 @@ describe("getChats", () => {
                         reply: null,
                     },
                     prerequisites: [],
-                    maxRounds: 20,
                     afterWork: null,
-                    flowAfterWork: null,
-                    contextVariables: {},
                     available: {
                         type: "none",
-                        value: null,
+                        value: "",
                     },
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Handoff to wa-2",
+                    },
+                    silent: false,
                     realSource: null,
                     realTarget: null,
                 },
                 rest: {
-                    type: "chat",
                     animated: false,
                     hidden: false,
                     markerEnd: {
@@ -130,7 +143,7 @@ describe("getChats", () => {
                     sourceHandle: null,
                     style: {
                         stroke: undefined,
-                        strokeWidth: 3,
+                        strokeWidth: 1,
                     },
                     targetHandle: null,
                 },
@@ -159,7 +172,7 @@ describe("getChats", () => {
                 sourceHandle: null,
                 style: {
                     stroke: undefined,
-                    strokeWidth: 3,
+                    strokeWidth: 1,
                 },
                 targetHandle: null,
             },

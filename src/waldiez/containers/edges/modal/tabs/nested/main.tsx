@@ -12,13 +12,13 @@ export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
         useWaldiezEdgeNestedTab(props);
     const currentMessageInput = data.nestedChat?.message ?? {
         type: "none",
-        use_carryover: false,
+        useCarryover: false,
         content: null,
         context: {},
     };
     const currentReplyInput = data.nestedChat?.reply ?? {
         type: "none",
-        use_carryover: false,
+        useCarryover: false,
         content: null,
         context: {},
     };
@@ -36,7 +36,7 @@ export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
                 received, from the source and the target respectively.
             </div>
             <TabItems activeTabIndex={0}>
-                <TabItem label="Message" id={`we-${flowId}-edge-nested-chat-${edgeId}-message`}>
+                <TabItem label="Message" id={`wc-${flowId}-edge-nested-chat-${edgeId}-message`}>
                     <div className="flex-column">
                         <MessageInput
                             darkMode={darkMode}
@@ -57,7 +57,7 @@ export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
                         />
                     </div>
                 </TabItem>
-                <TabItem label="Reply" id={`we-${flowId}-edge-nested-chat-${edgeId}-reply`}>
+                <TabItem label="Reply" id={`wc-${flowId}-edge-nested-chat-${edgeId}-reply`}>
                     <div className="flex-column">
                         <MessageInput
                             darkMode={darkMode}

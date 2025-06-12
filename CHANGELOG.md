@@ -7,6 +7,15 @@ The contents of each release will be used in
 
 ## [Unreleased]
 
+- Breaking news and changes.
+- New json schema to ensure ts and py compatibility.
+- Updated ag2 dependency to 0.9.2.
+- Several ui changes.
+- Image usage support with ag2's Multimodal agent.
+- Swarm depraction and migration to group chats as in ag2.
+- Several bug fixes.
+- Updated dependencies.
+
 ## v0.4.7
 
 - Fixed a bug with flow not running if using a swarm chat.

@@ -8,6 +8,13 @@ export * from "@waldiez/models/Agent/Common";
 export * from "@waldiez/models/Agent/GroupManager";
 export * from "@waldiez/models/Agent/RagUser";
 export * from "@waldiez/models/Agent/Reasoning";
-export * from "@waldiez/models/Agent/Swarm";
-export * from "@waldiez/models/Agent/UserProxy";
 export type * from "@waldiez/models/Agent/types";
+export * from "@waldiez/models/Agent/UserProxy";
+export const ValidAgentTypes = [
+    "user_proxy",
+    "assistant",
+    "rag_user_proxy",
+    "reasoning",
+    "captain",
+    "group_manager",
+];

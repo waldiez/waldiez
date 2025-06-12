@@ -1,6 +1,12 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 @import url("./base.css");
 @import url("./theme.css");
 @import url("./agent.css");
+@import url("./agent-tools.css");
+@import url("./chat.css");
 @import url("./checkbox.css");
 @import url("./console.css");
 @import url("./collapsible.css");
@@ -9,18 +15,24 @@
 @import url("./editor.css");
 @import url("./edge.css");
 @import url("./flow.css");
+@import url("./flow-order.css");
+@import url("./group.css");
+@import url("./handoffs.css");
 @import url("./label.css");
 @import url("./list.css");
+@import url("./markdown.css");
 @import url("./messages.css");
 @import url("./modal.css");
 @import url("./model.css");
+@import url("./nested.css");
+@import url("./ordering.css");
 @import url("./overrides.css");
 @import url("./select.css");
+@import url("./slider.css");
 @import url("./sidebar.css");
 @import url("./shortcuts.css");
-@import url("./skill.css");
+@import url("./tool.css");
 @import url("./snackbar.css");
-@import url("./swarm.css");
 @import url("./tabs.css");
 @import url("./tooltip.css");
 @import url("./wizard.css");

@@ -1,0 +1,72 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+.flow-wrapper .tool-node {
+  border-radius: 10px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  min-height: 100px;
+  max-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flow-wrapper .tool-node .tool-header {
+  display: flex;
+  padding: 0 8px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flow-wrapper .tool-node .tool-header div[role="button"] {
+  display: flex;
+}
+
+.flow-wrapper .tool-node .tool-header .node-label {
+  width: 100%;
+  max-width: 110px;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flow-wrapper .tool-node .tool-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.flow-wrapper .tool-node .modal-body label {
+  margin-top: 10px;
+  padding: 4px;
+}
+
+.flow-wrapper .tool-node .date-info {
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.flow-wrapper .tool-node .tool-footer {
+  display: flex;
+  padding: 0 8px;
+  height: 40px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flow-wrapper.light .tool-node {
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.flow-wrapper.dark .tool-node {
+  border: 1px solid #333;
+  background-color: #222;
+}

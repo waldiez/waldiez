@@ -2,12 +2,15 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Nested Chat."""
 
-from typing import List
-
 from pydantic import Field
 from typing_extensions import Annotated
 
-from ...common import WaldiezBase
+from ...common import (
+    WaldiezBase,
+    WaldiezDefaultCondition,
+    WaldiezHandoffCondition,
+    WaldiezTransitionAvailability,
+)
 
 
 class WaldiezAgentNestedChatMessage(WaldiezBase):
@@ -42,15 +45,18 @@ class WaldiezAgentNestedChat(WaldiezBase):
 
     Attributes
     ----------
-    triggered_by : List[str]
+    triggered_by : list[str]
         A list of agent ids that trigger the nested chat.
-    messages : List[WaldiezAgentNestedChatMessage]
+    messages : list[WaldiezAgentNestedChatMessage]
         The list of messages (chat ids and 'is_reply'z)
         to include the in the nested chat registration.
+    order : int
+        The order of the nested chat (if used as a handoff).
+        Defaults to 0.
     """
 
     triggered_by: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Triggered By",
             description=("A list of agent ids that trigger the nested chat."),
@@ -59,7 +65,7 @@ class WaldiezAgentNestedChat(WaldiezBase):
         ),
     ]
     messages: Annotated[
-        List[WaldiezAgentNestedChatMessage],
+        list[WaldiezAgentNestedChatMessage],
         Field(
             title="Messages",
             description=(
@@ -67,5 +73,27 @@ class WaldiezAgentNestedChat(WaldiezBase):
                 "to include the in the nested chat registration."
             ),
             default_factory=list,
+        ),
+    ]
+    condition: Annotated[
+        WaldiezHandoffCondition,
+        Field(
+            default_factory=WaldiezDefaultCondition.create,
+            title="Condition",
+            description=(
+                "The condition to use for the nested chat handoff. "
+                "If not provided, the nested chat will always be available."
+            ),
+        ),
+    ]
+    available: Annotated[
+        WaldiezTransitionAvailability,
+        Field(
+            default_factory=WaldiezTransitionAvailability,
+            title="Available",
+            description=(
+                "The availability of the nested chat. "
+                "If not provided, the nested chat will always be available."
+            ),
         ),
     ]

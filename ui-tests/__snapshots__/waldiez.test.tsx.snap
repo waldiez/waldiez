@@ -13,6 +13,7 @@ exports[`All > should render Waldiez components 1`] = `
     <div>
       <div
         class="flow-wrapper light"
+        data-flow-id="test-flow"
         data-testid="rf-root-test-flow"
         id="rf-root-test-flow"
       >
@@ -112,8 +113,8 @@ exports[`All > should render Waldiez components 1`] = `
                 </li>
                 <li
                   class="clickable"
-                  data-node-type="skill"
-                  data-testid="show-skills"
+                  data-node-type="tool"
+                  data-testid="show-tools"
                 >
                   <svg
                     fill="currentColor"
@@ -129,7 +130,7 @@ exports[`All > should render Waldiez components 1`] = `
                     />
                   </svg>
                   <span>
-                    Skills
+                    Tools
                   </span>
                 </li>
                 <li
@@ -192,7 +193,7 @@ exports[`All > should render Waldiez components 1`] = `
                   src="/src/waldiez/assets/user.webp"
                   title="User Proxy Agent"
                 />
-                User Proxy
+                User
               </div>
               <div
                 class="dnd-area"
@@ -207,25 +208,14 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
               <div
                 class="dnd-area"
-                data-testid="manager-dnd"
+                data-testid="rag-dnd"
                 draggable="true"
               >
                 <img
-                  src="/src/waldiez/assets/manager.webp"
-                  title="Group Manager Agent"
+                  src="/src/waldiez/assets/rag.webp"
+                  title="RAG User Proxy Agent"
                 />
-                Group Manager
-              </div>
-              <div
-                class="dnd-area"
-                data-testid="swarm-dnd"
-                draggable="true"
-              >
-                <img
-                  src="/src/waldiez/assets/swarm.webp"
-                  title="Swarm Agent"
-                />
-                Swarm Agent
+                RAG User
               </div>
               <div
                 class="dnd-area"
@@ -236,7 +226,7 @@ exports[`All > should render Waldiez components 1`] = `
                   src="/src/waldiez/assets/reasoning.webp"
                   title="Reasoning Agent"
                 />
-                Reasoning Agent
+                Reasoning
               </div>
               <div
                 class="dnd-area"
@@ -247,7 +237,18 @@ exports[`All > should render Waldiez components 1`] = `
                   src="/src/waldiez/assets/captain.webp"
                   title="Captain Agent"
                 />
-                Captain Agent
+                Captain
+              </div>
+              <div
+                class="dnd-area"
+                data-testid="group-manager-dnd"
+                draggable="true"
+              >
+                <img
+                  src="/src/waldiez/assets/manager.webp"
+                  title="Group Manager Agent"
+                />
+                Group Manager
               </div>
             </div>
             <div
@@ -377,7 +378,6 @@ exports[`All > should render Waldiez components 1`] = `
                       height="1em"
                       stroke="currentColor"
                       stroke-width="0"
-                      style="stroke-width: 2;"
                       viewBox="0 0 512 512"
                       width="1em"
                       xmlns="http://www.w3.org/2000/svg"
@@ -395,16 +395,19 @@ exports[`All > should render Waldiez components 1`] = `
                   >
                     <svg
                       fill="currentColor"
-                      height="1em"
+                      height="24"
                       stroke="currentColor"
                       stroke-width="0"
-                      style="stroke-width: 2;"
-                      viewBox="0 0 512 512"
-                      width="1em"
+                      viewBox="0 0 24 24"
+                      width="24"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M307 34.8c-11.5 5.1-19 16.6-19 29.2l0 64-112 0C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96l96 0 0 64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z"
+                        d="M0 0h24v24H0V0z"
+                        fill="none"
+                      />
+                      <path
+                        d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2z"
                       />
                     </svg>
                   </button>
@@ -501,12 +504,83 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
           </div>
         </div>
+        <dialog
+          class="modal no-wheel no-pan no-drag chat-modal"
+          data-testid="rf-test-flow-chat-modal"
+          id="rf-test-flow-chat-modal"
+          style="top: 20px; left: 10px;"
+        >
+          <div
+            class="modal-header"
+          >
+            <div />
+            <h3
+              class="modal-title"
+            >
+              Chat
+            </h3>
+            <div
+              class="modal-header-actions"
+            >
+              <div
+                class="modal-minimize-btn clickable"
+                role="button"
+                title="Minimize"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 512 512"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"
+                  />
+                </svg>
+              </div>
+              <div
+                class="modal-fullscreen-btn clickable"
+                role="button"
+                title="Maximize"
+              >
+                <svg
+                  fill="currentColor"
+                  height="1em"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="modal-content "
+          >
+            <div
+              class="modal-body"
+            >
+              <div
+                class="input-prompt"
+              />
+            </div>
+          </div>
+        </dialog>
       </div>
     </div>
   </body>,
   "container": <div>
     <div
       class="flow-wrapper light"
+      data-flow-id="test-flow"
       data-testid="rf-root-test-flow"
       id="rf-root-test-flow"
     >
@@ -606,8 +680,8 @@ exports[`All > should render Waldiez components 1`] = `
               </li>
               <li
                 class="clickable"
-                data-node-type="skill"
-                data-testid="show-skills"
+                data-node-type="tool"
+                data-testid="show-tools"
               >
                 <svg
                   fill="currentColor"
@@ -623,7 +697,7 @@ exports[`All > should render Waldiez components 1`] = `
                   />
                 </svg>
                 <span>
-                  Skills
+                  Tools
                 </span>
               </li>
               <li
@@ -686,7 +760,7 @@ exports[`All > should render Waldiez components 1`] = `
                 src="/src/waldiez/assets/user.webp"
                 title="User Proxy Agent"
               />
-              User Proxy
+              User
             </div>
             <div
               class="dnd-area"
@@ -701,25 +775,14 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
             <div
               class="dnd-area"
-              data-testid="manager-dnd"
+              data-testid="rag-dnd"
               draggable="true"
             >
               <img
-                src="/src/waldiez/assets/manager.webp"
-                title="Group Manager Agent"
+                src="/src/waldiez/assets/rag.webp"
+                title="RAG User Proxy Agent"
               />
-              Group Manager
-            </div>
-            <div
-              class="dnd-area"
-              data-testid="swarm-dnd"
-              draggable="true"
-            >
-              <img
-                src="/src/waldiez/assets/swarm.webp"
-                title="Swarm Agent"
-              />
-              Swarm Agent
+              RAG User
             </div>
             <div
               class="dnd-area"
@@ -730,7 +793,7 @@ exports[`All > should render Waldiez components 1`] = `
                 src="/src/waldiez/assets/reasoning.webp"
                 title="Reasoning Agent"
               />
-              Reasoning Agent
+              Reasoning
             </div>
             <div
               class="dnd-area"
@@ -741,7 +804,18 @@ exports[`All > should render Waldiez components 1`] = `
                 src="/src/waldiez/assets/captain.webp"
                 title="Captain Agent"
               />
-              Captain Agent
+              Captain
+            </div>
+            <div
+              class="dnd-area"
+              data-testid="group-manager-dnd"
+              draggable="true"
+            >
+              <img
+                src="/src/waldiez/assets/manager.webp"
+                title="Group Manager Agent"
+              />
+              Group Manager
             </div>
           </div>
           <div
@@ -871,7 +945,6 @@ exports[`All > should render Waldiez components 1`] = `
                     height="1em"
                     stroke="currentColor"
                     stroke-width="0"
-                    style="stroke-width: 2;"
                     viewBox="0 0 512 512"
                     width="1em"
                     xmlns="http://www.w3.org/2000/svg"
@@ -889,16 +962,19 @@ exports[`All > should render Waldiez components 1`] = `
                 >
                   <svg
                     fill="currentColor"
-                    height="1em"
+                    height="24"
                     stroke="currentColor"
                     stroke-width="0"
-                    style="stroke-width: 2;"
-                    viewBox="0 0 512 512"
-                    width="1em"
+                    viewBox="0 0 24 24"
+                    width="24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M307 34.8c-11.5 5.1-19 16.6-19 29.2l0 64-112 0C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96l96 0 0 64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z"
+                      d="M0 0h24v24H0V0z"
+                      fill="none"
+                    />
+                    <path
+                      d="m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2z"
                     />
                   </svg>
                 </button>
@@ -995,6 +1071,76 @@ exports[`All > should render Waldiez components 1`] = `
           </div>
         </div>
       </div>
+      <dialog
+        class="modal no-wheel no-pan no-drag chat-modal"
+        data-testid="rf-test-flow-chat-modal"
+        id="rf-test-flow-chat-modal"
+        style="top: 20px; left: 10px;"
+      >
+        <div
+          class="modal-header"
+        >
+          <div />
+          <h3
+            class="modal-title"
+          >
+            Chat
+          </h3>
+          <div
+            class="modal-header-actions"
+          >
+            <div
+              class="modal-minimize-btn clickable"
+              role="button"
+              title="Minimize"
+            >
+              <svg
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 512 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z"
+                />
+              </svg>
+            </div>
+            <div
+              class="modal-fullscreen-btn clickable"
+              role="button"
+              title="Maximize"
+            >
+              <svg
+                fill="currentColor"
+                height="1em"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 448 512"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal-content "
+        >
+          <div
+            class="modal-body"
+          >
+            <div
+              class="input-prompt"
+            />
+          </div>
+        </div>
+      </dialog>
     </div>
   </div>,
   "debug": [Function],

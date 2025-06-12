@@ -35,7 +35,11 @@ describe("importItem", () => {
         const onLoad = vi.fn();
         const event = {
             target: {
-                files: [new File(["{invalid: json}"], "test.json", { type: "application/json" })],
+                files: [
+                    new File(["{invalid: json}"], "test.json", {
+                        type: "application/json",
+                    }),
+                ],
             },
         } as unknown as React.ChangeEvent<HTMLInputElement>;
         importItem(event, itemGetter, onLoad);

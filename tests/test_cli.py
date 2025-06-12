@@ -113,7 +113,7 @@ def test_cli_export(
 
 
 def test_cli_run(
-    caplog: pytest.LogCaptureFixture,
+    capsys: pytest.CaptureFixture[str],
     tmp_path: Path,
     waldiez_flow_no_human_input: WaldiezFlow,
 ) -> None:
@@ -121,8 +121,8 @@ def test_cli_run(
 
     Parameters
     ----------
-    caplog : pytest.LogCaptureFixture
-        Pytest fixture to capture logs.
+    capsys : pytest.CaptureFixture[str]
+        Pytest fixture to capture stdout and stderr.
     tmp_path : Path
         Pytest fixture to provide a temporary directory.
     waldiez_flow_no_human_input : WaldiezFlow
@@ -134,7 +134,8 @@ def test_cli_run(
     sys.argv = ["waldiez", "run", "--file", str(input_file)]
     with pytest.raises(SystemExit):
         waldiez_main()
-    assert "Summary" in caplog.text
+    captured = capsys.readouterr()
+    assert "Summary" in escape_ansi(captured.out)
 
 
 def test_cli_check(
@@ -160,4 +161,4 @@ def test_cli_check(
     with pytest.raises(SystemExit):
         waldiez_main()
     captured = capsys.readouterr()
-    assert "Waldiez flow is valid" in escape_ansi(captured.out)
+    assert "Waldiez flow seems valid" in escape_ansi(captured.out)

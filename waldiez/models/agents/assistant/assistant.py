@@ -24,7 +24,7 @@ class WaldiezAssistant(WaldiezAgent):
         The assistant agent's data
     """
 
-    agent_type: Annotated[
+    agent_type: Annotated[  # pyright: ignore
         Literal["assistant"],
         Field(
             "assistant",
@@ -32,12 +32,12 @@ class WaldiezAssistant(WaldiezAgent):
             description="The agent type in a graph: 'assistant'",
             alias="agentType",
         ),
-    ]
-    data: Annotated[
+    ] = "assistant"
+    data: Annotated[  # pyright: ignore
         WaldiezAssistantData,
         Field(
             title="Data",
             description="The assistant agent's data",
-            default_factory=WaldiezAssistantData,
+            default_factory=WaldiezAssistantData,  # pyright: ignore
         ),
     ]

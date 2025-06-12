@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { AiFillOpenAI } from "react-icons/ai";
-import { AiFillCode } from "react-icons/ai";
+import { AiFillCode, AiFillOpenAI } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { FaBars, FaRobot } from "react-icons/fa6";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
@@ -23,13 +22,13 @@ export const SideBar = (props: SidebarViewProps) => {
         onCloseEditModal,
         onShowAgents,
         onShowModels,
-        onShowSkills,
+        onShowTools,
         onUserDragStart,
         onAssistantDragStart,
-        onManagerDragStart,
-        onSwarmDragStart,
+        onRagDragStart,
         onReasoningDragStart,
         onCaptainDragStart,
+        onManagerDragStart,
     } = useSidebarView(props);
     const { isCollapsed, toggleSidebar } = useSidebar();
     return (
@@ -82,12 +81,12 @@ export const SideBar = (props: SidebarViewProps) => {
                     </li>
                     <li
                         className="clickable"
-                        data-node-type="skill"
-                        data-testid="show-skills"
-                        onClick={onShowSkills}
+                        data-node-type="tool"
+                        data-testid="show-tools"
+                        onClick={onShowTools}
                     >
                         <AiFillCode />
-                        {!isCollapsed && <span>Skills</span>}
+                        {!isCollapsed && <span>Tools</span>}
                     </li>
                     <li
                         className="clickable expandable"
@@ -117,8 +116,8 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onUserDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.user} title="User Proxy Agent" />
-                            User Proxy
+                            <img src={AGENT_ICONS.user_proxy} title="User Proxy Agent" />
+                            User
                         </div>
                         <div
                             className="dnd-area"
@@ -131,21 +130,12 @@ export const SideBar = (props: SidebarViewProps) => {
                         </div>
                         <div
                             className="dnd-area"
-                            data-testid="manager-dnd"
-                            onDragStart={onManagerDragStart}
+                            data-testid="rag-dnd"
+                            onDragStart={onRagDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.manager} title="Group Manager Agent" />
-                            Group Manager
-                        </div>
-                        <div
-                            className="dnd-area"
-                            data-testid="swarm-dnd"
-                            onDragStart={onSwarmDragStart}
-                            draggable
-                        >
-                            <img src={AGENT_ICONS.swarm} title="Swarm Agent" />
-                            Swarm Agent
+                            <img src={AGENT_ICONS.rag_user_proxy} title="RAG User Proxy Agent" />
+                            RAG User
                         </div>
                         <div
                             className="dnd-area"
@@ -154,7 +144,7 @@ export const SideBar = (props: SidebarViewProps) => {
                             draggable
                         >
                             <img src={AGENT_ICONS.reasoning} title="Reasoning Agent" />
-                            Reasoning Agent
+                            Reasoning
                         </div>
                         <div
                             className="dnd-area"
@@ -163,7 +153,16 @@ export const SideBar = (props: SidebarViewProps) => {
                             draggable
                         >
                             <img src={AGENT_ICONS.captain} title="Captain Agent" />
-                            Captain Agent
+                            Captain
+                        </div>
+                        <div
+                            className="dnd-area"
+                            data-testid="group-manager-dnd"
+                            onDragStart={onManagerDragStart}
+                            draggable
+                        >
+                            <img src={AGENT_ICONS.group_manager} title="Group Manager Agent" />
+                            Group Manager
                         </div>
                     </>
                 )}

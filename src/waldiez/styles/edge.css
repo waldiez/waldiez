@@ -1,11 +1,11 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 .flow-wrapper .agent-edge-box {
   display: flex;
   cursor: pointer;
   align-items: stretch;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
   z-index: 10000;
   background-color: transparent !important;
 }
@@ -21,58 +21,38 @@
   justify-content: center;
 }
 
-.flow-wrapper .agent-edge-view.with-position {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  min-width: 50px;
-  max-width: 50px;
-}
-
-.flow-wrapper.light .agent-edge-view {
+/* .flow-wrapper.light .agent-edge-view {
   background-color: #f8f8f8;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc50;
 }
 
 .flow-wrapper.dark .agent-edge-view {
   background-color: #222;
-  border: 1px solid #333;
-}
+  border: 1px solid #33333350;
+} */
 
 .flow-wrapper .agent-edge-box.assistant .agent-edge-view {
   color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.manager .agent-edge-view {
-  color: var(--group-manager-color);
+.flow-wrapper .agent-edge-box.rag_user_proxy .agent-edge-view {
+  color: var(--rag-user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.rag_user .agent-edge-view {
-  color: var(--rag-user-color);
-}
-
-.flow-wrapper .agent-edge-box.user .agent-edge-view {
-  color: var(--user-agent-color);
+.flow-wrapper .agent-edge-box.user_proxy .agent-edge-view {
+  color: var(--user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.assistant .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.manager .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--group-manager-color);
+.flow-wrapper .agent-edge-box.rag_user_proxy .agent-edge-view:hover {
+  box-shadow: 0 0 4px var(--rag-user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.rag_user .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--rag-user-color);
-}
-
-.flow-wrapper .agent-edge-box.user .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--user-agent-color);
-}
-
-.flow-wrapper .agent-edge-box.swarm .agent-edge-view:hover {
-  box-shadow: 0 0 4px var(--swarm-agent-color);
+.flow-wrapper .agent-edge-box.user_proxy .agent-edge-view:hover {
+  box-shadow: 0 0 4px var(--user-proxy-agent-color);
 }
 
 .flow-wrapper .agent-edge-box.reasoning .agent-edge-view:hover {
@@ -83,12 +63,8 @@
   box-shadow: 0 0 4px var(--captain-agent-color);
 }
 
-.flow-wrapper .clear-history-checkbox {
-  margin-top: 10px;
-}
-
-.flow-wrapper .edge-modal .modal-actions {
-  margin-top: 10px;
+.flow-wrapper .agent-edge-box.group_manager .agent-edge-view:hover {
+  box-shadow: 0 0 4px var(--group-manager-agent-color);
 }
 
 .flow-wrapper.dark .edge-position-warning-icon {
@@ -102,11 +78,13 @@
 .flow-wrapper .edge-actions {
   position: absolute;
   top: -40px;
-  left: -50%;
+  left: calc(50% - 30px);
   display: flex;
   justify-content: space-between;
-  width: 50px;
+  width: 60px;
   padding: 8px;
+  border-radius: 4px;
+  border: 1px solid;
 }
 
 .flow-wrapper .edge-actions.with-position {
@@ -117,16 +95,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   cursor: pointer;
+  opacity: 0.8;
+}
+
+.flow-wrapper .edge-actions div.delete-edge {
+  color: #dc3545;
+}
+
+.flow-wrapper .edge-actions div:hover {
+  opacity: 1;
+}
+
+.flow-wrapper .edge-actions div svg {
+  width: 16px;
+  height: 16px;
+  fill: currentcolor;
 }
 
 .flow-wrapper.dark .edge-actions {
-  background-color: #222;
+  /* background-color: #222; */
+  border-color: #333;
+  background-color: rgb(34 34 34 / 80%);
 }
 
 .flow-wrapper.light .edge-actions {
-  background-color: #f8f8f8;
+  /* background-color: #f8f8f8; */
+  border-color: #ccc;
+  background-color: rgb(248 248 248 / 80%);
 }

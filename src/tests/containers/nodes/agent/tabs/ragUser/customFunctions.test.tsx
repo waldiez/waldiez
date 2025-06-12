@@ -2,20 +2,19 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../../common";
-import { agentId, flowId } from "../../data";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { renderAgent, submitAgentChanges } from "../../common";
+import { agentId, flowId } from "../../data";
+
 const goToCustomFunctionsTab = async () => {
-    renderAgent("rag_user", {
+    renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-ragUser-${agentId}`);
-    fireEvent.click(ragUserTab);
-    const customFunctionsTab = screen.getByTestId(
-        `tab-id-wf-${flowId}-agent-ragUser-${agentId}-customFunctions`,
-    );
+    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    // fireEvent.click(ragUserTab);
+    const customFunctionsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-customFunctions`);
     fireEvent.click(customFunctionsTab);
 };
 
@@ -42,6 +41,9 @@ describe("Rag User tab Custom Functions", () => {
             `${flowId}-rag-use-custom-embedding-checkbox`,
         ) as HTMLInputElement;
         fireEvent.click(useCustomEmbeddingCheckbox);
+        await waitFor(() => {
+            expect(screen.queryByTestId("mocked-monaco-editor")).toBeInTheDocument();
+        });
         const editor = screen.getByTestId("mocked-monaco-editor");
         expect(editor).toBeInTheDocument();
         fireEvent.change(editor, {
@@ -64,6 +66,9 @@ describe("Rag User tab Custom Functions", () => {
             `${flowId}-rag-use-custom-tokenCount-checkbox`,
         ) as HTMLInputElement;
         fireEvent.click(useCustomTokenCountCheckbox);
+        await waitFor(() => {
+            expect(screen.queryByTestId("mocked-monaco-editor")).toBeInTheDocument();
+        });
         const editor = screen.getByTestId("mocked-monaco-editor");
         expect(editor).toBeInTheDocument();
         fireEvent.change(editor, {
@@ -86,6 +91,9 @@ describe("Rag User tab Custom Functions", () => {
             `${flowId}-rag-use-custom-textSplit-checkbox`,
         ) as HTMLInputElement;
         fireEvent.click(useCustomTextSplitCheckbox);
+        await waitFor(() => {
+            expect(screen.queryByTestId("mocked-monaco-editor")).toBeInTheDocument();
+        });
         const editor = screen.getByTestId("mocked-monaco-editor");
         expect(editor).toBeInTheDocument();
         fireEvent.change(editor, {

@@ -4,179 +4,259 @@
  */
 import { Node, XYPosition, useReactFlow } from "@xyflow/react";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
-import { WaldiezNodeAgentType } from "@waldiez/models";
+import { ValidAgentTypes, WaldiezNodeAgentType } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
+/**
+ * Custom hook for handling drag and drop operations in the flow
+ */
 export const useDnD = (onNewAgent: () => void) => {
+    // Get flow utilities and state management functions
     const { screenToFlowPosition, getIntersectingNodes } = useReactFlow();
-    const getFlowInfo = useWaldiez(s => s.getFlowInfo);
-    const getRfInstance = useWaldiez(s => s.getRfInstance);
     const addAgent = useWaldiez(s => s.addAgent);
-    const addEdge = useWaldiez(s => s.addEdge);
-    const reselectNode = useWaldiez(s => s.reselectNode);
     const setAgentGroup = useWaldiez(s => s.setAgentGroup);
-    const ensureSwarmContainer = useWaldiez(s => s.ensureSwarmContainer);
-    const getSwarmAgents = useWaldiez(s => s.getSwarmAgents);
-    const getIntersectingParent = (intersectingNodes: Node[], agentType: "manager" | "swarm_container") => {
-        let parent: Node | undefined;
-        const isIntersectingWithParent = intersectingNodes.some(
-            node => node.type === "agent" && node.data.agentType === agentType,
-        );
-        if (isIntersectingWithParent) {
-            const parentNode = intersectingNodes.find(
-                node => node.type === "agent" && node.data.agentType === agentType,
-            );
-            if (parentNode) {
-                parent = parentNode;
-            }
-        }
-        return parent;
-    };
-    const getDroppedAgentParent = (agentType: "manager" | "swarm_container", position: XYPosition) => {
-        let parent: Node | undefined;
-        const { x, y } = position;
-        const nodeRect = {
-            x,
-            y,
-            width: 100,
-            height: 100,
-        };
-        let intersectingNodes: Node[] = [];
-        try {
-            intersectingNodes = getIntersectingNodes(nodeRect);
-        } catch (_) {
-            // testing/no dom: Cannot read properties of undefined (reading 'parentId')
-        }
-        if (intersectingNodes.length > 0) {
-            parent = getIntersectingParent(intersectingNodes, agentType);
-        }
-        return parent;
-    };
-    const getAgentType = (event: React.DragEvent<HTMLDivElement>) => {
+    const addGroupMember = useWaldiez(s => s.addGroupMember);
+    const getRfInstance = useWaldiez(s => s.getRfInstance);
+    const highlightNode = useWaldiez(s => s.highlightNode);
+    const clearNodeHighlight = useWaldiez(s => s.clearNodeHighlight);
+
+    /**
+     * Extract agent type from drag event data
+     */
+    const getAgentType = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         const nodeTypeData = event.dataTransfer.getData("application/node");
-        let agentType: WaldiezNodeAgentType | undefined;
-        if (nodeTypeData === "agent") {
-            const agentTypeData = event.dataTransfer.getData("application/agent");
-            if (
-                ["user", "assistant", "manager", "swarm", "rag_user", "reasoning", "captain"].includes(
-                    agentTypeData,
-                )
-            ) {
-                agentType = agentTypeData as WaldiezNodeAgentType;
-            }
+
+        if (nodeTypeData !== "agent") {
+            return undefined;
         }
-        if (nodeTypeData !== "agent" || !agentType) {
-            agentType = undefined;
+
+        const agentTypeData = event.dataTransfer.getData("application/agent");
+
+        if (ValidAgentTypes.includes(agentTypeData)) {
+            return agentTypeData as WaldiezNodeAgentType;
         }
-        return agentType;
-    };
+
+        return undefined;
+    }, []);
+
+    /**
+     * Handle drag over events
+     */
     const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
+        document.body.classList.add("dragging");
     }, []);
-    const addAgentNode = (event: React.DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
-        let position = screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-        });
-        const parent = getDroppedAgentParent("manager", position);
-        if (parent) {
-            position = parent.position;
-        }
-        const newNode = addAgent(agentType, position, parent?.id);
-        if (parent) {
-            addParentNodeEdge(parent, newNode);
-        }
-        return newNode;
-    };
-    const ensureSwarmContainerNode = (event: React.DragEvent<HTMLDivElement>) => {
-        const position = screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-        });
-        const { flowId } = getFlowInfo();
-        const parent = ensureSwarmContainer(flowId, position);
-        return { position, parent };
-    };
-    const addParentNodeEdge = (parent: Node, newNode: Node) => {
-        addEdge({ source: parent.id, target: newNode.id, sourceHandle: null, targetHandle: null }, true);
-        setTimeout(() => {
-            setAgentGroup(newNode.id, parent.id);
-        }, 0);
-        setTimeout(() => {
-            reselectNode(parent.id);
-        }, 100);
-    };
-    const getNewSwarmNodePosition = () => {
-        const currentSwarmAgents = getSwarmAgents();
-        const newNodePosition = {
-            x: 40,
-            y: 50,
-        };
-        if (currentSwarmAgents.length > 0) {
-            const lastAgent = currentSwarmAgents[currentSwarmAgents.length - 1];
-            newNodePosition.x = lastAgent.position.x + 50;
-            newNodePosition.y = lastAgent.position.y + 50;
-        }
-        return newNodePosition;
-    };
-    const getParentPosition = (parent: Node) => {
-        const rfInstance = getRfInstance();
-        if (rfInstance) {
+
+    /**
+     * Find a group manager node that intersects with the given nodes
+     */
+    const getIntersectingParent = useCallback((intersectingNodes: Node[]) => {
+        return intersectingNodes.find(
+            node => node.type === "agent" && node.data.agentType === "group_manager",
+        );
+    }, []);
+
+    /**
+     * Find a parent node at the given position
+     */
+    const getDroppedAgentParent = useCallback(
+        (position: XYPosition) => {
+            const { x, y } = position;
+            const nodeRect = { x, y, width: 100, height: 100 };
+
+            try {
+                const intersectingNodes = getIntersectingNodes(nodeRect);
+                if (intersectingNodes.length > 0) {
+                    return getIntersectingParent(intersectingNodes);
+                }
+            } catch (_) {
+                // testing/no dom: Cannot read properties of undefined (reading 'parentId')
+            }
+
+            return undefined;
+        },
+        [getIntersectingNodes, getIntersectingParent],
+    );
+
+    /**
+     * Get absolute position of a parent node
+     */
+    const getParentPosition = useCallback(
+        (parent: Node) => {
+            const rfInstance = getRfInstance();
+
+            if (!rfInstance) {
+                return undefined;
+            }
+
             const parentPos = rfInstance.getInternalNode(parent.id);
-            if (parentPos) {
-                const parentX = parentPos.internals.positionAbsolute.x;
-                const parentY = parentPos.internals.positionAbsolute.y;
+
+            if (parentPos?.internals.positionAbsolute) {
                 return {
-                    x: parentX,
-                    y: parentY,
+                    x: parentPos.internals.positionAbsolute.x,
+                    y: parentPos.internals.positionAbsolute.y,
                 };
             }
-        }
-        return null;
-    };
-    const getSwarmNodePosition = (event: React.DragEvent<HTMLDivElement>) => {
-        const clientX = (event?.clientX as number) || 0;
-        const clientY = (event?.clientY as number) || 0;
-        const screenPos = screenToFlowPosition({
-            x: clientX,
-            y: clientY,
-        });
-        const parent = getDroppedAgentParent("swarm_container", screenPos);
-        if (parent) {
-            const parentPosition = getParentPosition(parent);
-            if (parentPosition) {
-                const posX = screenPos.x - parentPosition.x - 50;
-                const posY = screenPos.y - parentPosition.y - 50;
-                return {
-                    x: posX,
-                    y: posY,
-                };
+
+            return undefined;
+        },
+        [getRfInstance],
+    );
+
+    /**
+     * Calculate position and find parent for a dragged element
+     */
+    const getAgentPositionAndParent = useCallback(
+        (event: React.DragEvent<HTMLDivElement> | React.MouseEvent, parentNode?: Node) => {
+            // Convert screen coordinates to flow coordinates
+            let position = screenToFlowPosition(
+                {
+                    x: event.clientX,
+                    y: event.clientY,
+                },
+                {
+                    snapToGrid: false,
+                },
+            );
+
+            // Find parent node if not provided
+            const parent = parentNode || getDroppedAgentParent(position);
+
+            // Adjust position relative to parent if needed
+            if (parent) {
+                const parentPos = getParentPosition(parent);
+
+                if (parentPos) {
+                    const screenPos = screenToFlowPosition({
+                        x: event.clientX,
+                        y: event.clientY,
+                    });
+
+                    position = {
+                        x: screenPos.x - parentPos.x - 50,
+                        y: screenPos.y - parentPos.y - 50,
+                    };
+                }
             }
-        }
-        return getNewSwarmNodePosition();
-    };
-    const addSwarmNode = (event: React.DragEvent<HTMLDivElement>, parent: Node) => {
-        const newNodePosition = getSwarmNodePosition(event);
-        addAgent("swarm", newNodePosition, parent.id);
-    };
+
+            return { position, parent };
+        },
+        [screenToFlowPosition, getDroppedAgentParent, getParentPosition],
+    );
+
+    /**
+     * Add a new agent node at the drop position
+     */
+    const addAgentNode = useCallback(
+        (event: React.DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
+            const { position, parent } = getAgentPositionAndParent(event);
+            const newNode = addAgent(agentType, position, parent?.id);
+
+            if (parent) {
+                newNode.parentId = parent.id;
+                newNode.data.parentId = parent.id;
+
+                // Use a more reliable approach than setTimeout
+                window.requestAnimationFrame(() => {
+                    setAgentGroup(newNode.id, parent.id);
+                });
+            }
+
+            return newNode;
+        },
+        [getAgentPositionAndParent, addAgent, setAgentGroup],
+    );
+
+    /**
+     * Handle drop events
+     */
     const onDrop = useCallback(
         (event: React.DragEvent<HTMLDivElement>) => {
-            event.preventDefault();
+            document.body.classList.remove("dragging");
             const agentType = getAgentType(event);
+
             if (agentType) {
-                if (agentType === "swarm") {
-                    const { parent } = ensureSwarmContainerNode(event);
-                    addSwarmNode(event, parent);
-                } else {
-                    addAgentNode(event, agentType);
-                }
+                event.preventDefault();
+                addAgentNode(event, agentType);
                 onNewAgent();
             }
         },
-        [screenToFlowPosition],
+        [getAgentType, addAgentNode, onNewAgent],
     );
-    return { onDragOver, onDrop };
+
+    /**
+     * Find an intersecting group manager for a dragged node
+     */
+    const getIntersectingGroupManager = useCallback(
+        (_event: React.MouseEvent, node: Node) => {
+            try {
+                const intersectingNodes = getIntersectingNodes(node);
+                const intersections = intersectingNodes.filter(
+                    node => node.type === "agent" && node.data.agentType === "group_manager",
+                );
+
+                if (intersections.length === 1) {
+                    return intersections[0];
+                }
+            } catch (_) {
+                // testing/no dom: Cannot read properties of undefined (reading 'parentId')
+            }
+
+            return undefined;
+        },
+        [getIntersectingNodes],
+    );
+
+    /**
+     * Handle node drag events
+     */
+    const onNodeDrag = useCallback(
+        (event: React.MouseEvent, node: Node) => {
+            if (!node.parentId && node.data.agentType !== "group_manager") {
+                const groupManager = getIntersectingGroupManager(event, node);
+
+                if (groupManager) {
+                    highlightNode(groupManager.id);
+                } else {
+                    clearNodeHighlight();
+                }
+            } else {
+                clearNodeHighlight();
+            }
+        },
+        [getIntersectingGroupManager, highlightNode, clearNodeHighlight],
+    );
+
+    /**
+     * Handle node drag stop events
+     */
+    const onNodeDragStop = useCallback(
+        (event: React.MouseEvent, node: Node) => {
+            if (!node.parentId && node.data.agentType !== "group_manager") {
+                const groupManager = getIntersectingGroupManager(event, node);
+
+                if (groupManager) {
+                    const { position } = getAgentPositionAndParent(event, groupManager);
+                    addGroupMember(groupManager.id, node.id, position);
+                }
+            }
+
+            clearNodeHighlight();
+        },
+        [getIntersectingGroupManager, getAgentPositionAndParent, addGroupMember, clearNodeHighlight],
+    );
+
+    // Return the memoized handlers
+    return useMemo(
+        () => ({
+            onDragOver,
+            onDrop,
+            onNodeDrag,
+            onNodeDragStop,
+        }),
+        [onDragOver, onDrop, onNodeDrag, onNodeDragStop],
+    );
 };

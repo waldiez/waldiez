@@ -9,7 +9,7 @@ else
   PYTHON_PATH := $(shell command -v python || command -v python3)
 endif
 
-PYTHON_NAME := $(notdir $(firstword $(PYTHON_PATH)))
+PYTHON_NAME := $(notdir $(lastword $(PYTHON_PATH)))
 PYTHON := $(basename $(PYTHON_NAME))
 
 .PHONY: help
@@ -27,12 +27,18 @@ help:
 	@echo " clean            Cleanup unneeded files"
 	@echo " test             Run the tests for the python package"
 	@echo " test-models      Run the tests for the models"
-	@echo " test-exporting   Run the tests for the exporting"
-	@echo " test-running    Run the tests for the running"
+	@echo " test-exporting   Run the tests for exporting"
+	@echo " test-running     Run the tests for running"
+	@echo " test-io          Run the tests for the IO stream"
+	@echo " test-schema      Run the tests for the schema"
 	@echo " build            Build the python package"
 	@echo " docs             Generate the python documentation"
 	@echo " docs-live        Generate the documentation in 'live' mode"
 	@echo " images           Build the podman/docker images"
+	@echo " smoke            Run smoke tests for the python package"
+	@echo " smoke-local      Run smoke tests for the python package using local examples"
+	@echo " smoke-remote     Run smoke tests for the python package using remote examples"
+	@echo " dev              Start both python and react dev servers"
 	@echo " some             Run some (not all) of the above"
 
 
@@ -89,6 +95,30 @@ test_running:
 		--cov-branch \
 		${.TESTS_DIR}/running
 
+.PHONY: test-running
+test-running: test_running
+
+.PHONY: test_io
+test_io:
+	pytest \
+		-c pyproject.toml -vv \
+		--cov-report=term-missing:skip-covered \
+		--cov=${.PACKAGE_NAME}/io \
+		--cov-branch \
+		${.TESTS_DIR}/io
+
+.PHONY: test-io
+test-io: test_io
+
+.PHONY: test_schema
+test_schema:
+	pytest \
+		-c pyproject.toml -vv \
+		${.TESTS_DIR}/test_schema.py
+
+.PHONY: test-schema
+test-schema: test_schema
+
 .PHONY: build
 build:
 	$(PYTHON) scripts/build.py
@@ -112,3 +142,25 @@ requirements:
 
 .PHONY: some
 some: clean format lint test build docs image
+
+.PHONY: smoke
+smoke:
+	$(PYTHON) scripts/smoke.py
+
+.PHONY: smoke-local
+smoke-local:
+	$(PYTHON) scripts/smoke.py --local
+
+.PHONY: smoke_local
+smoke_local: smoke-local
+
+.PHONY: smoke-remote
+smoke-remote:
+	$(PYTHON) scripts/smoke.py --remote
+
+.PHONY: smoke_remote
+smoke_remote: smoke-remote
+
+.PHONY: dev
+dev:
+	$(PYTHON) scripts/dev.py

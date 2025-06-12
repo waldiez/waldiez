@@ -9,6 +9,7 @@ export type WaldiezEdgeMessageTabProps = {
     data: WaldiezEdgeData;
     darkMode: boolean;
     skipCarryoverOption?: boolean;
-    skipRagOption: boolean;
+    skipRagOption?: boolean;
+    skipContextVarsOption?: boolean;
     onDataChange: (data: Partial<WaldiezEdgeData>) => void;
 };

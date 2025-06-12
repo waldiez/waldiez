@@ -9,7 +9,6 @@ import os
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Tuple
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +22,7 @@ DIRECTORIES_TO_SCAN = [
 ]
 
 
-def get_first_lines(file_path: str) -> Tuple[str, str, str]:
+def get_first_lines(file_path: str) -> tuple[str, str, str]:
     """Get the first two lines of a file.
 
     Parameters
@@ -33,7 +32,7 @@ def get_first_lines(file_path: str) -> Tuple[str, str, str]:
 
     Returns
     -------
-    Tuple[str, str, str]
+    tuple[str, str, str]
         The first two lines and the remaining content.
 
     Raises
@@ -120,7 +119,7 @@ def process_copyright_line(
 
 
 def ensure_license_and_copyright(
-    directories: List[str],
+    directories: list[str],
     license_line: str,
     start_year: int,
     holder: str,
@@ -129,7 +128,7 @@ def ensure_license_and_copyright(
 
     Parameters
     ----------
-    directories : List[str]
+    directories : list[str]
         The list of directories to scan.
     license_line : str
         The SPDX license identifier.

@@ -4,10 +4,19 @@
  */
 import { FaFileExport, FaFileImport } from "react-icons/fa";
 
+/**
+ * Function to get the import/export view for a given item type
+ * @param flowId - The ID of the flow
+ * @param itemId - The ID of the item
+ * @param itemType - The type of the item (model, tool, or agent)
+ * @param onImport - Callback function to handle import action
+ * @param onExport - Callback function to handle export action
+ * @returns A React node representing the import/export view
+ */
 export const getImportExportView: (
     flowId: string,
     itemId: string,
-    itemType: "model" | "skill" | "agent",
+    itemType: "model" | "tool" | "agent",
     onImport: (e: React.ChangeEvent<HTMLInputElement>) => void,
     onExport: () => Promise<void>,
 ) => React.ReactNode = (flowId, itemId, itemType, onImport, onExport) => {
@@ -31,15 +40,15 @@ export const getImportExportView: (
             >
                 <FaFileImport />
             </label>
-            <button
-                type="button"
+            <div
+                role="button"
                 className="modal-header-export-button"
                 onClick={onExport}
                 title={`Export ${itemTypeCapitalized}`}
                 data-testid={`export-${itemTypeLower}-${flowId}-${itemId}`}
             >
                 <FaFileExport />
-            </button>
+            </div>
         </div>
     );
 };

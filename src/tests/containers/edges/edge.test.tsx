@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderEdge } from "./common";
-import { edgeProps, flowId } from "./data";
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+
+import { renderEdge } from "./common";
+import { edgeProps, flowId } from "./data";
 
 describe("WaldiezEdgeHidden", () => {
     it("should render", () => {
@@ -51,7 +52,7 @@ describe("WaldiezEdgeChat", () => {
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-message-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-message-${edgeProps.id}`);
         fireEvent.click(tab);
     });
 });
@@ -82,7 +83,7 @@ describe("WaldiezEdgeNested", () => {
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
     });
     it("should change the nested sub-tab in the modal", () => {
@@ -90,71 +91,9 @@ describe("WaldiezEdgeNested", () => {
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const tab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-${edgeProps.id}`);
+        const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
-        const subTab = screen.getByTestId(`tab-id-we-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
+        const subTab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-chat-${edgeProps.id}-reply`);
         fireEvent.click(subTab);
-    });
-});
-
-describe("WaldiezEdgeGroup", () => {
-    afterEach(() => {
-        (HTMLDialogElement.prototype.showModal as any).mockClear();
-    });
-    it("should render", () => {
-        renderEdge("group", { order: "invalid" }, false);
-    });
-    it("should call delete edge", () => {
-        renderEdge("group", { order: 1 }, false);
-        const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
-        fireEvent.click(toGainFocus);
-        fireEvent.click(screen.getByTestId(`delete-edge-${edgeProps.id}`));
-    });
-    it("should open the edge modal", () => {
-        renderEdge("group", { order: 2 }, false);
-        expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
-        const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
-        fireEvent.click(toGainFocus);
-        fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        const dialog = screen.getByTestId(`edge-modal-${edgeProps.id}`);
-        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-        expect(dialog).not.toBeNull();
-        const closeBtn = dialog.querySelector(".modal-close-btn");
-        expect(closeBtn).not.toBeNull();
-    });
-});
-
-describe("WaldiezEdgeSwarm", () => {
-    afterEach(() => {
-        (HTMLDialogElement.prototype.showModal as any).mockClear();
-    });
-    ["trigger", "handoff", "nested"].forEach(type => {
-        it(`should render a swarm ${type}`, () => {
-            renderEdge("swarm", { order: "invalid" }, false, type as "trigger" | "handoff" | "nested");
-        });
-        it(`should not be hidden for swarm ${type}`, () => {
-            renderEdge("swarm", { order: 1 }, false, type as "trigger" | "handoff" | "nested");
-            expect(screen.queryByTestId(`edge-${edgeProps.id}-box`)).not.toBeNull();
-        });
-        it(`should open the edge modal for swarm ${type}`, () => {
-            renderEdge("swarm", { order: 2 }, false, type as "trigger" | "handoff" | "nested");
-            expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
-            const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
-            fireEvent.click(toGainFocus);
-            const idToClick = `open-edge-modal-${edgeProps.id}`;
-            fireEvent.click(screen.getByTestId(idToClick));
-            // fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-            const dialog = screen.getByTestId(`edge-modal-${edgeProps.id}`);
-            expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-            expect(dialog).not.toBeNull();
-            const closeBtn = dialog.querySelector(".modal-close-btn");
-            expect(closeBtn).not.toBeNull();
-        });
-        it(`should call delete edge for swarm ${type}`, () => {
-            renderEdge("swarm", { order: 3 }, false, type as "trigger" | "handoff" | "nested");
-            const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
-            fireEvent.click(toGainFocus);
-            fireEvent.click(screen.getByTestId(`delete-edge-${edgeProps.id}`));
-        });
     });
 });

@@ -10,7 +10,7 @@ import { capitalize, getId } from "@waldiez/utils";
  * Waldiez Agent.
  * @param id - The id of the agent
  * @param type - The type of the node in a graph (agent)
- * @param agentType - The type of the agent ("user" | "assistant" | "manager" | "rag_user" | "swarm" | "reasoning" | "captain")
+ * @param agentType - The type of the agent ("user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain" | "group_manager")
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param tags - The tags of the agent
@@ -56,11 +56,15 @@ export class WaldiezAgent {
         this.rest = props.rest;
     }
 
-    static create(agentType: WaldiezAgentType | "swarm_container"): WaldiezAgent {
-        const name = capitalize(agentType.replace("_", " "));
-        let description = `A new ${name}`;
-        if (agentType !== "swarm_container") {
-            description += " agent";
+    static create(agentType: WaldiezAgentType): WaldiezAgent {
+        let name = "";
+        let description = "";
+        if (agentType === "group_manager") {
+            name = "Manager";
+            description = "The group manager agent";
+        } else {
+            name = capitalize(agentType.replace("_proxy", "").replace("_", " "));
+            description = `A new ${name} agent`;
         }
         const agent = new WaldiezAgent({
             id: `wa-${getId()}`,
@@ -78,22 +82,13 @@ export class WaldiezAgent {
     }
 }
 
-// eslint-disable-next-line max-statements
-const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType | "swarm_container") => {
-    if (["user", "rag_user"].includes(agentType)) {
+const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType) => {
+    agent.data.humanInputMode = "NEVER";
+    if (["user_proxy", "rag_user_proxy"].includes(agentType)) {
         agent.data.humanInputMode = "ALWAYS";
-        if (agentType === "rag_user") {
+        if (agentType === "rag_user_proxy") {
             addRagUserProps(agent.data);
         }
-    }
-    if (agentType === "manager") {
-        addGroupManagerProps(agent.data);
-    }
-    if (agentType === "swarm_container") {
-        addSwarmContainerProps(agent.data);
-    }
-    if (agentType === "swarm") {
-        addSwarmProps(agent.data);
     }
     if (agentType === "reasoning") {
         addReasoningProps(agent.data);
@@ -101,39 +96,31 @@ const updateAgentDataProps = (agent: WaldiezAgent, agentType: WaldiezAgentType |
     if (agentType === "captain") {
         addCaptainProps(agent.data);
     }
-};
-
-const addSwarmContainerProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).initialAgent = null;
-    (agentData as any).maxRounds = 20;
-    (agentData as any).afterWork = null;
-    (agentData as any).contextVariables = {};
-};
-
-const addSwarmProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).functions = [];
-    (agentData as any).updateAgentStateBeforeReply = [];
-    (agentData as any).handoffs = [];
-    (agentData as any).isInitial = false;
+    if (agentType === "group_manager") {
+        addGroupManagerProps(agent.data);
+    }
 };
 
 const addRagUserProps = (agentData: WaldiezAgentData) => {
     (agentData as any).retrieveConfig = {
-        task: "default" as "code" | "qa" | "default",
-        vectorDb: "chroma" as "chroma" | "pgvector" | "mongodb" | "qdrant",
+        task: "default",
+        vectorDb: "chroma",
         dbConfig: {
             model: "all-MiniLM-L6-v2",
             useMemory: false,
             useLocalStorage: false,
             localStoragePath: null,
             connectionUrl: null,
+            waitUntilIndexReady: null,
+            waitUntilDocumentReady: null,
+            metadata: null,
         },
         docsPath: [],
         newDocs: true,
         model: null,
         chunkTokenSize: null,
         contextMaxTokens: null,
-        chunkMode: "multi_lines" as "multi_lines" | "one_line",
+        chunkMode: "multi_lines",
         mustBreakAtEmptyLine: true,
         useCustomEmbedding: false,
         embeddingFunction: null,
@@ -150,27 +137,39 @@ const addRagUserProps = (agentData: WaldiezAgentData) => {
         customTextTypes: [],
         recursive: true,
         distanceThreshold: -1,
-        n_results: null,
+        nResults: null,
     };
 };
 
 const addReasoningProps = (agentData: WaldiezAgentData) => {
     (agentData as any).verbose = true;
     (agentData as any).reasonConfig = {
-        method: "beam_search" as "beam_search" | "mcts" | "lats" | "dfs",
-        max_depth: 3,
-        forest_size: 1,
-        rating_scale: 10,
-        beam_size: 3,
-        answer_approach: "pool" as "pool" | "best",
+        method: "beam_search",
+        maxDepth: 3,
+        forestSize: 1,
+        ratingScale: 10,
+        beamSize: 3,
+        answerApproach: "pool",
         nsim: 3,
-        exploration_constant: 1.41,
+        explorationConstant: 1.41,
     };
 };
 
+const addCaptainProps = (agentData: WaldiezAgentData) => {
+    (agentData as any).agentLib = [];
+    (agentData as any).toolLib = null;
+    (agentData as any).maxRound = 10;
+    (agentData as any).maxTurns = 5;
+};
+
 const addGroupManagerProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).maxRound = null;
+    (agentData as any).groupName = "Group";
+    (agentData as any).maxRound = 20;
     (agentData as any).adminName = null;
+    (agentData as any).contextVariables = {};
+    (agentData as any).enableClearHistory = false;
+    (agentData as any).sendIntroductions = false;
+    (agentData as any).initialAgentId = undefined;
     (agentData as any).speakers = {
         selectionMethod: "auto",
         selectionCustomMethod: "",
@@ -180,13 +179,4 @@ const addGroupManagerProps = (agentData: WaldiezAgentData) => {
         allowedOrDisallowedTransitions: {},
         transitionsType: "allowed",
     };
-    (agentData as any).enableClearHistory = false;
-    (agentData as any).sendIntroductions = false;
-};
-
-const addCaptainProps = (agentData: WaldiezAgentData) => {
-    (agentData as any).agentLib = [];
-    (agentData as any).toolLib = null;
-    (agentData as any).maxRound = 10;
-    (agentData as any).maxTurns = 5;
 };

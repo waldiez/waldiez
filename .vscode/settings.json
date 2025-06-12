@@ -15,7 +15,7 @@
     "pylint.args": ["--rcfile=pyproject.toml"],
     "pylint.importStrategy": "fromEnvironment",
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
+        "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -52,7 +52,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "yaml.format.indent": 2,
-    "black-formatter.args": ["--config=pyproject.toml"],
     "mypy.runUsingActiveInterpreter": true,
     "mypy-type-checker.args": ["--config pyproject.toml"],
     "yaml.customTags": ["tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"],
@@ -61,5 +60,6 @@
     "cSpell.mergeCSpellSettings": true,
     "cSpell.configFile": "cspell.json",
     "vitest.disableWorkspaceWarning": true,
-    "prettier.configPath": ".prettierrc.json"
+    "prettier.configPath": "package.json",
+    "mypy-type-checker.importStrategy": "fromEnvironment"
 }

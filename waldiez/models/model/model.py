@@ -3,15 +3,15 @@
 """Waldiez model model."""
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
 
 from ..common import WaldiezBase, now
-from .model_data import WaldiezModelAPIType, WaldiezModelData
+from .model_data import WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelData
 
-DEFAULT_BASE_URLS: Dict[WaldiezModelAPIType, str] = {
+DEFAULT_BASE_URLS: dict[WaldiezModelAPIType, str] = {
     "deepseek": "https://api.deepseek.com/v1",
     "google": "https://generativelanguage.googleapis.com/v1beta",
     "anthropic": "https://api.anthropic.com/v1",
@@ -24,7 +24,7 @@ DEFAULT_BASE_URLS: Dict[WaldiezModelAPIType, str] = {
 
 
 # we can omit the base_url for these models
-MODEL_NEEDS_BASE_URL: Dict[WaldiezModelAPIType, bool] = {
+MODEL_NEEDS_BASE_URL: dict[WaldiezModelAPIType, bool] = {
     "openai": False,
     "azure": False,
     "google": False,
@@ -50,9 +50,9 @@ class WaldiezModel(WaldiezBase):
         The name of the model.
     description : str
         The description of the model.
-    tags : List[str]
+    tags : list[str]
         The tags of the model.
-    requirements : List[str]
+    requirements : list[str]
         The requirements of the model.
     created_at : str
         The date and time when the model was created.
@@ -86,7 +86,7 @@ class WaldiezModel(WaldiezBase):
         ),
     ]
     tags: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Tags",
@@ -94,7 +94,7 @@ class WaldiezModel(WaldiezBase):
         ),
     ]
     requirements: Annotated[
-        List[str],
+        list[str],
         Field(
             default_factory=list,
             title="Requirements",
@@ -175,7 +175,7 @@ class WaldiezModel(WaldiezBase):
         return api_key or "REPLACE_ME"
 
     @property
-    def price(self) -> Optional[List[float]]:
+    def price(self) -> Optional[list[float]]:
         """Get the model's price."""
         if self.data.price is None:
             return None
@@ -188,29 +188,31 @@ class WaldiezModel(WaldiezBase):
             ]
         return None
 
-    def get_llm_config(self, skip_price: bool = False) -> Dict[str, Any]:
+    def get_llm_config(self, skip_price: bool = False) -> dict[str, Any]:
         """Get the model's llm config.
 
         Parameters
         ----------
         skip_price : bool, optional
-            Whether to skip the price, by default False
+            Whether to skip the price, by default, False
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The model's llm config dictionary.
         """
-        _llm_config: Dict[str, Any] = {}
+        # noinspection PyDictCreation
+        _llm_config: dict[str, Any] = {}
         _llm_config["model"] = self.name
-        for attr, atr_type in [
+        optionals: list[tuple[str, type]] = [
             ("base_url", str),
             ("max_tokens", int),
             # ("temperature", float),
             ("top_p", float),
             ("api_version", str),
             ("default_headers", dict),
-        ]:
+        ]
+        for attr, atr_type in optionals:
             value = getattr(self.data, attr)
             if value and isinstance(value, atr_type):
                 _llm_config[attr] = value
@@ -221,33 +223,86 @@ class WaldiezModel(WaldiezBase):
             value = getattr(self, attr)
             if value:
                 _llm_config[attr] = value
+        if self.data.api_type == "bedrock":
+            _llm_config.pop("base_url", None)
+            return set_bedrock_aws_config(_llm_config, self.data.aws)
         return set_default_base_url(_llm_config, self.data.api_type)
 
 
 def set_default_base_url(
-    llm_config: Dict[str, Any], api_type: WaldiezModelAPIType
-) -> Dict[str, Any]:
+    llm_config: dict[str, Any], api_type: WaldiezModelAPIType
+) -> dict[str, Any]:
     """Set the default base url if not provided.
 
     Parameters
     ----------
-    llm_config : Dict[str, Any]
+    llm_config : dict[str, Any]
         The llm config dictionary.
     api_type : str
         The api type.
 
     Returns
     -------
-    Dict[str, Any]
+    dict[str, Any]
         The llm config dictionary with the default base url set.
     """
     dict_copy = llm_config.copy()
     if "base_url" not in llm_config or not llm_config["base_url"]:
-        if MODEL_NEEDS_BASE_URL.get(api_type, True):
+        if MODEL_NEEDS_BASE_URL.get(api_type, True):  # pragma: no branch
             dict_copy["base_url"] = DEFAULT_BASE_URLS.get(api_type, "")
     if (
         not llm_config.get("base_url", "")
         and MODEL_NEEDS_BASE_URL.get(api_type, True) is False
-    ):
+    ):  # pragma: no cover
         dict_copy.pop("base_url", None)
+    return dict_copy
+
+
+def set_bedrock_aws_config(
+    llm_config: dict[str, Any],
+    aws_config: Optional[WaldiezModelAWS],
+) -> dict[str, Any]:
+    """Set the AWS config for Bedrock.
+
+    Parameters
+    ----------
+    llm_config : dict[str, Any]
+        The llm config dictionary.
+    aws_config : Optional[WaldiezModelAWS]
+        The passed aws config if any.
+
+    Returns
+    -------
+    dict[str, Any]
+        The llm config dictionary with the AWS config set.
+    """
+    dict_copy = llm_config.copy()
+    aws_params = [
+        "access_key",
+        "secret_key",
+        "session_token",
+        "profile_name",
+        "region",
+    ]
+
+    extra_args: dict[str, Any] = {}
+    for param in aws_params:
+        config_key = f"aws_{param}"
+        env_var = f"AWS_{param.upper()}"
+
+        # First try to get from aws_config
+        value = getattr(aws_config, param, "") if aws_config else ""
+
+        # If not found, try environment variable
+        if not value:  # pragma: no cover
+            value = os.environ.get(env_var, "")
+
+        # Add to extra_args if value exists
+        if value:  # pragma: no branch
+            extra_args[config_key] = value
+
+    # Update llm_config with extra_args
+    if extra_args:  # pragma: no branch
+        dict_copy.update(extra_args)
+
     return dict_copy

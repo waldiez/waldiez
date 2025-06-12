@@ -8,7 +8,6 @@ import subprocess  # nosemgrep # nosec
 import sys
 from importlib.metadata import version as package_version
 from pathlib import Path
-from typing import List
 
 ROOT_DIR = Path(__file__).parent.parent
 
@@ -29,9 +28,23 @@ def prefer_uv() -> bool:
     return (ROOT_DIR / ".uv").is_file()
 
 
+def in_hatch_environment() -> bool:
+    """Check if the script is running in a Hatch environment.
+
+    Returns
+    -------
+    bool
+        True if the script is running in a Hatch environment, False otherwise.
+    """
+    return (
+        "HATCH_ENV_ACTIVE" in os.environ
+        and len(os.environ["HATCH_ENV_ACTIVE"]) > 0
+    )
+
+
 def ensure_venv() -> None:
     """Ensure the virtual environment executable exists."""
-    if os.path.exists(ROOT_DIR / ".venv"):
+    if os.path.exists(ROOT_DIR / ".venv") or in_hatch_environment():
         return
     if prefer_uv():
         print("Creating virtual environment with uv...")
@@ -63,6 +76,8 @@ def get_executable() -> str:
     """
     if os.getenv("CI") == "true":
         return sys.executable
+    if in_hatch_environment():
+        return sys.executable
     if not os.path.exists(ROOT_DIR / ".venv"):
         ensure_venv()
     if sys.platform != "win32":
@@ -73,12 +88,12 @@ def get_executable() -> str:
     return sys.executable
 
 
-def run_command(args: List[str], cwd: Path = ROOT_DIR) -> None:
+def run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
     """Run a command.
 
     Parameters
     ----------
-    args : List[str]
+    args : list[str]
         List of arguments to pass to the command.
     cwd : Path
         Directory to run the command in. Defaults to the root directory.
@@ -137,6 +152,7 @@ def ensure_package_exists(package_name: str) -> None:
             ):
                 return
         print(f"Package {package_name} not found. Installing...")
+        run_command(["ensurepip"])
         run_command(["pip", "install", package_name])
 
 
@@ -145,6 +161,7 @@ def ensure_dev_requirements() -> None:
     if "--no-deps" in sys.argv or os.getenv("CI") == "true":
         return
     requirements_file = ROOT_DIR / "requirements" / "dev.txt"
+    run_command(["ensurepip"])
     run_command(
         [
             "pip",
@@ -160,6 +177,7 @@ def ensure_test_requirements() -> None:
     if "--no-deps" in sys.argv or os.getenv("CI") == "true":
         return
     requirements_file = ROOT_DIR / "requirements" / "test.txt"
+    run_command(["ensurepip"])
     run_command(["pip", "install", "--upgrade", "pip"])
     run_command(
         [
@@ -176,6 +194,7 @@ def ensure_docs_requirements() -> None:
     if "--no-deps" in sys.argv:
         return
     requirements_file = ROOT_DIR / "requirements" / "docs.txt"
+    run_command(["ensurepip"])
     run_command(
         [
             "pip",

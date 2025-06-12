@@ -2,11 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import packageJson from "../package.json";
 import fs from "fs";
 import path from "path";
 import tsj from "ts-json-schema-generator";
 import url from "url";
+
+import packageJson from "../package.json";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -2,12 +2,25 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Editor, InfoLabel, Select, StringList } from "@waldiez/components";
-import { useWaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination/hooks";
-import { WaldiezAgentTerminationProps } from "@waldiez/containers/nodes/agent/modal/tabs/termination/types";
+import { memo, useMemo } from "react";
 
-export const WaldiezAgentTermination = (props: WaldiezAgentTerminationProps) => {
+import { Editor, Select, StringList } from "@waldiez/components";
+import { useWaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination/hooks";
+import { WaldiezNodeAgentData } from "@waldiez/types";
+
+type WaldiezAgentTerminationProps = {
+    id: string;
+    data: WaldiezNodeAgentData;
+    onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
+};
+
+/**
+ * Component for configuring agent termination conditions
+ * Handles termination types, criteria, keywords, and custom method implementation
+ */
+export const WaldiezAgentTermination = memo((props: WaldiezAgentTerminationProps) => {
     const { id } = props;
+
     const {
         data,
         isDarkMode,
@@ -21,51 +34,90 @@ export const WaldiezAgentTermination = (props: WaldiezAgentTerminationProps) => 
         onDeleteTerminationKeyword,
         onTerminationKeywordChange,
     } = useWaldiezAgentTermination(props);
+
+    /**
+     * Current selected termination type value
+     */
+    const terminationTypeValue = useMemo(
+        () => ({
+            label:
+                terminationTypeOptions.find(option => option.value === data.termination.type)?.label ??
+                "None",
+            value: data.termination?.type ?? "none",
+        }),
+        [data.termination.type, terminationTypeOptions],
+    );
+
+    /**
+     * Current selected termination criterion value
+     */
+    const terminationCriterionValue = useMemo(() => {
+        const entry = terminationCriterionOptions.find(option => option.value === data.termination.criterion);
+        if (!entry) {
+            return undefined;
+        }
+        return {
+            label: entry.label,
+            value: entry.value,
+        };
+    }, [data.termination.criterion, terminationCriterionOptions]);
+
+    /**
+     * Flag to show method editor
+     */
+    const showMethodEditor = data.termination && data.termination.type === "method";
+
+    /**
+     * Flag to show keyword settings
+     */
+    const showKeywordSettings = data.termination && data.termination.type === "keyword";
+
     return (
-        <div className="agent-panel agent-termination-panel margin-bottom-10 margin-top--10">
-            <InfoLabel
-                label="Termination condition:"
-                info="After receiving each message, the agent will send a reply to the sender unless the termination condition is met. A termination condition can be a keyword or a custom method."
-            />
-            <label className="hidden" htmlFor={`termination-type-${id}`}>
-                Termination Type:
-            </label>
+        <div className="agent-panel agent-termination-panel">
+            {/* Termination Condition Header */}
+            <div className="info">
+                After receiving each message, the agent will send a reply to the sender unless the termination
+                condition is met. A termination condition can be a keyword or a custom method.
+            </div>
+            {/* Termination Type Selector */}
+            <label htmlFor={`termination-type-${id}`}>Termination Type:</label>
+            <div className="margin-top-10" />
             <Select
                 options={terminationTypeOptions}
-                value={{
-                    label:
-                        terminationTypeOptions.find(option => option.value === data.termination.type)
-                            ?.label ?? "None",
-                    value: data.termination?.type ?? "none",
-                }}
+                value={terminationTypeValue}
                 onChange={onTerminationTypeChange}
                 inputId={`termination-type-${id}`}
+                aria-label="Select termination type"
             />
-            {data.termination && data.termination.type === "method" && (
+
+            {/* Method Editor (shown when type is 'method') */}
+            {showMethodEditor && (
                 <>
-                    <label>Termination Method:</label>
+                    <label htmlFor={`termination-method-editor-${id}`}>Termination Method:</label>
+                    <div className="margin-top-10" />
                     <Editor
+                        data-testid={`termination-method-editor-${id}`}
                         darkMode={isDarkMode}
                         value={defaultTerminationMethodContent}
                         onChange={onTerminationMethodChange}
+                        aria-label="Edit termination method code"
                     />
                 </>
             )}
-            {data.termination && data.termination.type === "keyword" && (
+
+            {/* Keyword Settings (shown when type is 'keyword') */}
+            {showKeywordSettings && (
                 <div className="margin-top-10">
                     <label htmlFor={`termination-criterion-${id}`}>Termination Criterion:</label>
+                    <div className="margin-top-10" />
                     <Select
                         options={terminationCriterionOptions}
-                        value={{
-                            label:
-                                terminationCriterionOptions.find(
-                                    option => option.value === data.termination?.criterion,
-                                )?.label ?? "Keyword is found",
-                            value: data.termination.criterion ?? "found",
-                        }}
+                        value={terminationCriterionValue}
                         onChange={onTerminationCriterionChange}
                         inputId={`termination-criterion-${id}`}
+                        aria-label="Select termination criterion"
                     />
+
                     <StringList
                         viewLabel="Termination Keywords:"
                         viewLabelInfo="List of keywords to check for termination."
@@ -74,9 +126,12 @@ export const WaldiezAgentTermination = (props: WaldiezAgentTerminationProps) => 
                         onItemAdded={onAddTerminationKeyword}
                         onItemDeleted={onDeleteTerminationKeyword}
                         onItemChange={onTerminationKeywordChange}
+                        aria-label="Termination keywords list"
                     />
                 </div>
             )}
         </div>
     );
-};
+});
+
+WaldiezAgentTermination.displayName = "WaldiezAgentTermination";

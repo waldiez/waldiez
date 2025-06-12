@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { SingleValue } from "@waldiez/components";
@@ -31,17 +31,21 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     });
     const [selectedNewEdge, setSelectedNewEdge] = useState<WaldiezEdge | null>(null);
     const getFlowEdges = useWaldiez(s => s.getFlowEdges);
-    const { used: sortedEdges, remaining: remainingEdges } = getFlowEdges(true);
+    const { used: sortedEdges, remaining: remainingEdges } = getFlowEdges();
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
     // tmp state (to save onSubmit, discard onCancel)
     const [sortedEdgesState, setSortedEdgesState] = useState<WaldiezEdge[]>(sortedEdges);
     const [remainingEdgesState, setRemainingEdgeState] = useState<WaldiezEdge[]>(remainingEdges);
-    const isDataDirty = !isEqual(flowData, { name, description, requirements, tags, isAsync, cacheSeed });
+    const isDataDirty = !isEqual(flowData, {
+        name,
+        description,
+        requirements,
+        tags,
+        isAsync,
+        cacheSeed,
+    });
     const isEdgesDirty = !isEqual(sortedEdgesState, sortedEdges);
     const [isDirty, setIsDirty] = useState<boolean>(isDataDirty || isEdgesDirty);
-    useEffect(() => {
-        reset();
-    }, [isOpen]);
     const onSubmit = () => {
         updateFlowInfo(flowData);
         if (!flowData.isAsync) {
@@ -63,14 +67,24 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         onFlowChanged();
         setIsDirty(false);
     };
-    const reset = () => {
+    const reset = useCallback(() => {
         const { name, description, requirements, tags, isAsync, cacheSeed } = getFlowInfo();
-        setFlowData({ name, description, requirements, tags, isAsync, cacheSeed });
-        const { used, remaining } = getFlowEdges(true);
+        setFlowData({
+            name,
+            description,
+            requirements,
+            tags,
+            isAsync,
+            cacheSeed,
+        });
+        const { used, remaining } = getFlowEdges();
         setSortedEdgesState(used);
         setRemainingEdgeState(remaining);
         setIsDirty(false);
-    };
+    }, [getFlowEdges, getFlowInfo]);
+    useEffect(() => {
+        reset();
+    }, [isOpen, reset]);
     const onCancel = () => {
         reset();
         onClose();
@@ -131,7 +145,10 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
             setSortedEdgesState(sortedEdgesState.filter(e => e.id !== edge.id));
             setRemainingEdgeState([
                 ...remainingEdgesState,
-                { ...edge, data: { ...edge.data, order: -1, prerequisites: [] } as any },
+                {
+                    ...edge,
+                    data: { ...edge.data, order: -1, prerequisites: [] } as any,
+                },
             ]);
             setIsDirty(true);
         }
@@ -155,7 +172,10 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         // if order === 0: set the prerequisites to []
         return newSortedEdges.map((edge, index) => {
             if (index === 0) {
-                return { ...edge, data: { ...edge.data, order: 0, prerequisites: [] } } as WaldiezEdge;
+                return {
+                    ...edge,
+                    data: { ...edge.data, order: 0, prerequisites: [] },
+                } as WaldiezEdge;
             }
             const previousEdge = newSortedEdges[index - 1];
             return {
@@ -171,7 +191,10 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     const onPrerequisitesChange = (edge: WaldiezEdge, prerequisites: string[]) => {
         const newSortedEdges = sortedEdgesState.map(e => {
             if (e.id === edge.id) {
-                return { ...e, data: { ...e.data, prerequisites } } as WaldiezEdge;
+                return {
+                    ...e,
+                    data: { ...e.data, prerequisites },
+                } as WaldiezEdge;
             }
             return e;
         });

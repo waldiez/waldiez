@@ -1,23 +1,33 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=too-many-public-methods
 """Waldiez data class.
 
-A Waldiez class contains all the information that is needed to generate
+A Waldiez class contains all the information needed to generate
 and run an autogen workflow. It has the model/LLM configurations, the agent
-definitions and their optional additional skills to be used.
+definitions and their optional additional tools to be used.
 """
 
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Iterator, Optional
 
-from .agents import WaldiezAgent, get_retrievechat_extra_requirements
-from .chat import WaldiezChat
+from .agents import (
+    WaldiezAgent,
+    WaldiezGroupManager,
+    get_captain_agent_extra_requirements,
+    get_retrievechat_extra_requirements,
+)
 from .common import get_autogen_version
-from .flow import WaldiezFlow, get_flow_data
+from .flow import (
+    WaldiezAgentConnection,
+    WaldiezFlow,
+    WaldiezFlowInfo,
+    get_flow_data,
+)
 from .model import WaldiezModel, get_models_extra_requirements
-from .skill import WaldiezSkill, get_skills_extra_requirements
+from .tool import WaldiezTool, get_tools_extra_requirements
 
 
 @dataclass(frozen=True, slots=True)
@@ -32,18 +42,18 @@ class Waldiez:
     @classmethod
     def from_dict(
         cls,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         flow_id: Optional[str] = None,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        requirements: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
+        requirements: Optional[list[str]] = None,
     ) -> "Waldiez":
         """Create a Waldiez from dict.
 
         Parameters
         ----------
-        data : Dict[str, Any]
+        data : dict[str, Any]
             The data.
         flow_id : Optional[str], optional
             The flow id, by default None (retrieved from data or generated).
@@ -51,9 +61,9 @@ class Waldiez:
             The name, by default None (retrieved from data).
         description : Optional[str], optional
             The description, by default None (retrieved from data).
-        tags : Optional[List[str]], optional
+        tags : Optional[list[str]], optional
             The tags, by default None (retrieved from data).
-        requirements : Optional[List[str]], optional
+        requirements : Optional[list[str]], optional
             The requirements, by default None (retrieved from data).
 
         Returns
@@ -69,16 +79,17 @@ class Waldiez:
             tags=tags,
             requirements=requirements,
         )
-        return cls(flow=WaldiezFlow.model_validate(flow))
+        validated = WaldiezFlow.model_validate(flow)
+        return cls(flow=validated)  # pyright: ignore
 
     @classmethod
     def load(
         cls,
-        waldiez_file: Union[str, Path],
+        waldiez_file: str | Path,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        requirements: Optional[List[str]] = None,
+        tags: Optional[list[str]] = None,
+        requirements: Optional[list[str]] = None,
     ) -> "Waldiez":
         """Load a Waldiez from a file.
 
@@ -90,9 +101,9 @@ class Waldiez:
             The name, by default None.
         description : Optional[str], optional
             The description, by default None.
-        tags : Optional[List[str]], optional
+        tags : Optional[list[str]], optional
             The tags, by default None.
-        requirements : Optional[List[str]], optional
+        requirements : Optional[list[str]], optional
             The requirements, by default None.
 
         Returns
@@ -105,7 +116,7 @@ class Waldiez:
         ValueError
             If the file is not found or invalid JSON.
         """
-        data: Dict[str, Any] = {}
+        data: dict[str, Any] = {}
         if not Path(waldiez_file).exists():
             raise ValueError(f"File not found: {waldiez_file}")
         with open(waldiez_file, "r", encoding="utf-8") as file:
@@ -143,22 +154,32 @@ class Waldiez:
         return self.flow.model_dump_json(by_alias=by_alias, indent=indent)
 
     @property
+    def id(self) -> str:
+        """Get the flow id."""
+        return self.flow.id
+
+    @property
     def has_rag_agents(self) -> bool:
         """Check if the flow has RAG agents."""
-        return any(agent.agent_type == "rag_user" for agent in self.agents)
+        return any(agent.is_rag_user for agent in self.agents)
 
     @property
     def has_multimodal_agents(self) -> bool:
         """Check if the flow has multimodal agents."""
-        return any(agent.data.is_multimodal for agent in self.agents)
+        return any(
+            agent.data.is_multimodal
+            for agent in self.flow.data.agents.assistantAgents
+        )
 
     @property
     def has_captain_agents(self) -> bool:
         """Check if the flow has captain agents."""
-        return any(agent.agent_type == "captain" for agent in self.agents)
+        return any(agent.is_captain for agent in self.agents)
 
     @property
-    def chats(self) -> List[Tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]:
+    def initial_chats(
+        self,
+    ) -> list[WaldiezAgentConnection]:
         """Get the chats."""
         return self.flow.ordered_flow
 
@@ -174,15 +195,15 @@ class Waldiez:
         yield from self.flow.data.agents.members
 
     @property
-    def skills(self) -> Iterator[WaldiezSkill]:
-        """Get the flow skills.
+    def tools(self) -> Iterator[WaldiezTool]:
+        """Get the flow tools.
 
         Yields
         ------
-        WaldiezSkill
-            The skills.
+        WaldiezTool
+            The tools.
         """
-        yield from self.flow.data.skills
+        yield from self.flow.data.tools
 
     @property
     def models(self) -> Iterator[WaldiezModel]:
@@ -196,6 +217,14 @@ class Waldiez:
         yield from self.flow.data.models
 
     @property
+    def info(self) -> WaldiezFlowInfo:
+        """Get the flow info."""
+        return WaldiezFlowInfo.create(
+            agents=self.agents,
+            agent_names=self.flow.unique_names["agent_names"],
+        )
+
+    @property
     def name(self) -> str:
         """Get the flow name."""
         return self.flow.name or "Waldiez Flow"
@@ -206,7 +235,7 @@ class Waldiez:
         return self.flow.description or "Waldiez Flow description"
 
     @property
-    def tags(self) -> List[str]:
+    def tags(self) -> list[str]:
         """Get the flow tags."""
         return self.flow.tags
 
@@ -226,14 +255,13 @@ class Waldiez:
         return self.flow.is_single_agent_mode
 
     @property
-    def requirements(self) -> List[str]:
+    def requirements(self) -> list[str]:
         """Get the flow requirements."""
         autogen_version = get_autogen_version()
         requirements_list = filter(
             # we use the fixed "ag2=={autogen_version}" below
             lambda requirement: not (
-                # cspell:disable-next-line
-                requirement.startswith("pyautogen")
+                requirement.startswith("ag2")
                 or requirement.startswith("ag2")
                 or requirement.startswith("autogen")
             ),
@@ -241,29 +269,13 @@ class Waldiez:
         )
         requirements = set(requirements_list)
         requirements.add(f"ag2[openai]=={autogen_version}")
-        if self.has_rag_agents:
+        if self.has_rag_agents:  # pragma: no branch
             rag_extras = get_retrievechat_extra_requirements(self.agents)
             requirements.update(rag_extras)
-        if self.has_multimodal_agents:
+        if self.has_multimodal_agents:  # pragma: no branch
             requirements.add(f"ag2[lmm]=={autogen_version}")
-        if self.has_captain_agents:
-            # pysqlite3-binary might not get installed on windows
-            captain_extras = [
-                "chromadb",
-                "sentence-transformers",
-                "huggingface-hub",
-                # tools:
-                "pillow",
-                "markdownify",
-                "arxiv",
-                "pymupdf",
-                "wikipedia-api",
-                "easyocr",
-                "python-pptx",
-                "openai-whisper",
-                "pandas",
-                "scipy",
-            ]
+        if self.has_captain_agents:  # pragma: no branch
+            captain_extras = get_captain_agent_extra_requirements()
             requirements.update(captain_extras)
         requirements.update(
             get_models_extra_requirements(
@@ -272,28 +284,50 @@ class Waldiez:
             )
         )
         requirements.update(
-            get_skills_extra_requirements(
-                self.skills,
+            get_tools_extra_requirements(
+                self.tools,
                 autogen_version=autogen_version,
             )
         )
         return sorted(requirements)
 
-    def get_flow_env_vars(self) -> List[Tuple[str, str]]:
+    # def get_flow_chat_info(self) ->
+
+    def get_flow_env_vars(self) -> list[tuple[str, str]]:
         """Get the flow environment variables.
 
         Returns
         -------
-        List[Tuple[str, str]]
+        list[tuple[str, str]]
             The environment variables for the flow.
         """
-        env_vars: List[Tuple[str, str]] = []
-        for skill in self.skills:
-            for secret_key, secret_value in skill.secrets.items():
+        env_vars: list[tuple[str, str]] = []
+        for tool in self.tools:
+            for secret_key, secret_value in tool.secrets.items():
                 env_vars.append((secret_key, secret_value))
+        for model in self.models:
+            api_env_key = model.api_key_env_key
+            api_key = model.api_key
+            if api_env_key and api_key:  # pragma: no branch
+                env_vars.append((api_env_key, api_key))
         return env_vars
 
-    def get_group_chat_members(self, agent: WaldiezAgent) -> List[WaldiezAgent]:
+    def get_root_group_manager(self) -> WaldiezGroupManager:
+        """Get the root group manager agent.
+
+        Returns
+        -------
+        WaldiezGroupManager
+            The root group manager agent.
+
+        Raises
+        ------
+        ValueError
+            If the root group manager agent is not found.
+        """
+        return self.flow.get_root_group_manager()
+
+    def get_group_chat_members(self, agent: WaldiezAgent) -> list[WaldiezAgent]:
         """Get the chat members that connect to a group chat manager agent.
 
         Parameters
@@ -306,23 +340,6 @@ class Waldiez:
         List[WaldiezAgent]
             The group chat members.
         """
-        if agent.agent_type != "manager":
+        if not agent.is_group_manager:
             return []
         return self.flow.get_group_chat_members(agent.id)
-
-    def get_swarm_members(
-        self, initial_agent: WaldiezAgent
-    ) -> Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]:
-        """Get the chat members that connect to a swarm agent.
-
-        Parameters
-        ----------
-        initial_agent : WaldiezAgent
-            The initial agent.
-
-        Returns
-        -------
-        Tuple[List[WaldiezAgent], Optional[WaldiezAgent]]
-            The swarm agents and the user agent.
-        """
-        return self.flow.get_swarm_chat_members(initial_agent)

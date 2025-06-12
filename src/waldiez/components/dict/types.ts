@@ -5,9 +5,9 @@
 export type DictProps = {
     viewLabel: string;
     viewLabelInfo?: string;
-    items: { [key: string]: string };
+    items: { [key: string]: unknown };
     itemsType: string;
-    onUpdate: (items: { [key: string]: string }) => void;
+    onUpdate: (items: { [key: string]: unknown }) => void;
     onDelete: (key: string) => void;
     onAdd: (key: string, value: string) => void;
     areValuesSecret?: boolean;

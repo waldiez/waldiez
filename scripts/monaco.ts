@@ -150,7 +150,10 @@ const removeUnneededFiles = async (): Promise<void> => {
     await Promise.all(
         languages.map(lang => {
             if (lang !== "python") {
-                return fs.rm(path.join(basicLanguagesDir, lang), { recursive: true, force: true });
+                return fs.rm(path.join(basicLanguagesDir, lang), {
+                    recursive: true,
+                    force: true,
+                });
             }
         }),
     );

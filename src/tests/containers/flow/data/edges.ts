@@ -2,19 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, edgesCount, updatedAt } from "./common";
-
 import { Edge } from "@xyflow/react";
 
 import { WaldiezChatLlmSummaryMethod, WaldiezMessageType } from "@waldiez/models";
+
+import { createdAt, edgesCount, updatedAt } from "./common";
 
 const edges: Edge[] = [];
 for (let i = 0; i < edgesCount; i++) {
     let chatType = "chat";
     if (i % 3 === 1) {
         chatType = "nested";
-    } else if (i % 3 === 2) {
-        chatType = "group";
     }
     edges.push({
         id: `edge-${i}`,
@@ -27,7 +25,7 @@ for (let i = 0; i < edgesCount; i++) {
             order: i,
             clearHistory: false,
             summary: {
-                method: "last_msg" as WaldiezChatLlmSummaryMethod,
+                method: "lastMsg" as WaldiezChatLlmSummaryMethod,
                 prompt: "Summarize the conversation",
                 args: {
                     "summary-arg-key": "summary-arg-value",
@@ -40,7 +38,7 @@ for (let i = 0; i < edgesCount; i++) {
                 context: {
                     "context-key": "context-value",
                 },
-                use_carryover: false,
+                useCarryover: false,
             },
             nestedChat: {
                 message: {
@@ -58,12 +56,7 @@ for (let i = 0; i < edgesCount; i++) {
                     },
                 },
             },
-            maxRounds: 10,
-            afterWork: {
-                recipientType: "option",
-                recipient: "TERMINATE",
-            },
-            flowAfterWork: null,
+            prerequisites: [],
             createdAt,
             updatedAt,
         },

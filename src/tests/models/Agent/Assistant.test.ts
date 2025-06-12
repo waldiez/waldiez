@@ -52,7 +52,7 @@ describe("WaldiezAgentAssistant", () => {
             systemMessage: null,
             codeExecutionConfig: {
                 workDir: "code",
-                useDocker: true,
+                useDocker: undefined,
                 timeout: 30,
                 lastNMessages: "auto",
             },
@@ -64,14 +64,14 @@ describe("WaldiezAgentAssistant", () => {
                 criterion: "ending",
                 methodContent: null,
             },
-            modelIds: ["1", "2"],
-            skills: [
+            modelIds: ["1"],
+            tools: [
                 {
                     id: "1",
                     executorId: "2",
                 },
             ],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [
                 {
                     triggeredBy: ["1", "2"],
@@ -79,8 +79,21 @@ describe("WaldiezAgentAssistant", () => {
                         { id: "1", isReply: false },
                         { id: "2", isReply: true },
                     ],
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a new chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
+            contextVariables: {},
+            updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
+            isMultimodal: false,
         });
         const assistant = new WaldiezAgentAssistant({
             id: "assistant",
@@ -101,7 +114,7 @@ describe("WaldiezAgentAssistant", () => {
         expect(assistant.data.systemMessage).toBe(null);
         expect(assistant.data.codeExecutionConfig).toEqual({
             workDir: "code",
-            useDocker: true,
+            useDocker: undefined,
             timeout: 30,
             lastNMessages: "auto",
         });
@@ -113,8 +126,8 @@ describe("WaldiezAgentAssistant", () => {
             criterion: "ending",
             methodContent: null,
         });
-        expect(assistant.data.modelIds).toEqual(["1", "2"]);
-        expect(assistant.data.skills).toEqual([
+        expect(assistant.data.modelIds[0]).toEqual("1");
+        expect(assistant.data.tools).toEqual([
             {
                 id: "1",
                 executorId: "2",

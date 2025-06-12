@@ -6,15 +6,36 @@ import { Edge, Node } from "@xyflow/react";
 
 import { ImportedFlow, ThingsToImport, WaldiezNodeType } from "@waldiez/types";
 
+/**
+ * Merges the current and new tags into a single array of unique tags.
+ * @param currentTags - The current array of tags.
+ * @param newTags - The new array of tags to merge.
+ * @returns An array of unique tags.
+ */
 export const mergeTags: (currentTags: string[], newTags: string[]) => string[] = (currentTags, newTags) => {
     return Array.from(new Set([...currentTags, ...newTags]));
 };
+
+/**
+ * Merges the current and new requirements into a single array of unique requirements.
+ * @param currentRequirements - The current array of requirements.
+ * @param newRequirements - The new array of requirements to merge.
+ * @returns An array of unique requirements.
+ */
 export const mergeRequirements: (currentRequirements: string[], newRequirements: string[]) => string[] = (
     currentRequirements,
     newRequirements,
 ) => {
     return Array.from(new Set([...currentRequirements, ...newRequirements]));
 };
+
+/**
+ * Merges the current edges with the new edges, ensuring no duplicates and applying animations and visibility.
+ * @param allNodes - The list of all nodes in the flow.
+ * @param currentEdges - The current edges in the flow.
+ * @param newEdges - The new edges to merge into the flow.
+ * @returns An array of merged edges with animations and visibility applied.
+ */
 export const mergeEdges: (allNodes: Node[], currentEdges: Edge[], newEdges: Edge[]) => Edge[] = (
     allNodes,
     currentEdges,
@@ -40,6 +61,14 @@ export const mergeEdges: (allNodes: Node[], currentEdges: Edge[], newEdges: Edge
         return { ...edge, animated, hidden };
     });
 };
+
+/**
+ * Merges the current nodes with the new nodes, ensuring no duplicates and applying visibility based on typeShown.
+ * @param currentNodes - The current nodes in the flow.
+ * @param newNodes - The new nodes to merge into the flow.
+ * @param typeShown - The type of nodes that should be visible.
+ * @returns An array of merged nodes with visibility applied based on typeShown.
+ */
 export const mergeNodes: (currentNodes: Node[], newNodes: Node[], typeShown: WaldiezNodeType) => Node[] = (
     currentNodes,
     newNodes,
@@ -55,6 +84,15 @@ export const mergeNodes: (currentNodes: Node[], newNodes: Node[], typeShown: Wal
         return { ...node, hidden: true };
     });
 };
+
+/**
+ * Merges the current flow name with the new flow name, returning the new name if there are no nodes or edges.
+ * @param currentName - The current flow name.
+ * @param newName - The new flow name to merge.
+ * @param currentNodes - The current nodes in the flow.
+ * @param currentEdges - The current edges in the flow.
+ * @returns The merged flow name.
+ */
 export const mergeFlowName = (
     currentName: string,
     newName: string,
@@ -66,6 +104,15 @@ export const mergeFlowName = (
     }
     return currentName;
 };
+
+/**
+ * Merges the current flow description with the new flow description, returning the new description if there are no nodes or edges.
+ * @param currentDescription - The current flow description.
+ * @param newDescription - The new flow description to merge.
+ * @param currentNodes - The current nodes in the flow.
+ * @param currentEdges - The current edges in the flow.
+ * @returns The merged flow description.
+ */
 export const mergeFlowDescription = (
     currentDescription: string,
     newDescription: string,
@@ -77,6 +124,16 @@ export const mergeFlowDescription = (
     }
     return currentDescription;
 };
+
+/**
+ * Merges the current flow with the new flow based on the items to import.
+ * It either overrides everything or selectively merges properties based on the items.
+ * @param items - The items to import, specifying what to override or merge.
+ * @param currentFlow - The current flow to merge into.
+ * @param newFlow - The new flow to merge from.
+ * @param typeShown - The type of nodes that should be visible in the merged flow.
+ * @returns The merged flow.
+ */
 export const loadFlow: (
     items: ThingsToImport,
     currentFlow: ImportedFlow,
@@ -104,7 +161,7 @@ export const loadFlow: (
                   tags: mergeTags(currentFlow.tags, newFlow.tags),
                   requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
                   isAsync: newFlow.isAsync ?? currentFlow.isAsync,
-                  cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 41,
+                  cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42,
                   nodes: mergedNodes,
                   edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges),
               };
@@ -115,6 +172,15 @@ export const loadFlow: (
     return mergedFlow;
 };
 
+/**
+ * Selectively overrides or merges the flow properties based on the items to import.
+ * It updates the merged flow with the new properties from the new flow or current flow.
+ * @param items - The items to import, specifying what to override or merge.
+ * @param currentFlow - The current flow to merge into.
+ * @param newFlow - The new flow to merge from.
+ * @param typeShown - The type of nodes that should be visible in the merged flow.
+ * @param mergedFlow - The flow being built up with merged properties.
+ */
 const selectivelyOverrideOrMergeFlow = (
     items: ThingsToImport,
     currentFlow: ImportedFlow,
@@ -138,9 +204,9 @@ const selectivelyOverrideOrMergeFlow = (
         mergedFlow.isAsync = newFlow.isAsync ?? currentFlow.isAsync;
     }
     if (items.cacheSeed) {
-        mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 41;
+        mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42;
     }
-    const itemNodes: Node[] = [...items.nodes.models, ...items.nodes.skills, ...items.nodes.agents];
+    const itemNodes: Node[] = [...items.nodes.models, ...items.nodes.tools, ...items.nodes.agents];
     const itemNodeIds: string[] = itemNodes.map(node => node.id);
     const newFlowNodesToUse = newFlow.nodes.filter(node => itemNodeIds.includes(node.id));
     const mergedNodes: Node[] = items.override
@@ -153,17 +219,20 @@ const selectivelyOverrideOrMergeFlow = (
     mergedFlow.edges = mergedEdges;
 };
 
+/**
+ * Determines if an edge should be animated based on its type and the nodes it connects.
+ * @param edge - The edge to check for animation.
+ * @param nodes - The list of all nodes in the flow.
+ * @returns True if the edge should be animated, false otherwise.
+ */
 const isEdgeAnimated = (edge: Edge, nodes: Node[]) => {
     if (edge.type === "nested") {
         return true;
-    }
-    if (edge.type !== "swarm") {
-        return false;
     }
     const sourceNode = nodes.find(node => node.id === edge.source);
     const targetNode = nodes.find(node => node.id === edge.target);
     if (!sourceNode || !targetNode) {
         return false;
     }
-    return sourceNode.data.agentType === "swarm" && targetNode.data.agentType !== "swarm";
+    return false;
 };

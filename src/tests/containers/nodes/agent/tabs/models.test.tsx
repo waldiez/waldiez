@@ -2,16 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../common";
-import { agentId, flowId } from "../data";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
 
+import { renderAgent, submitAgentChanges } from "../common";
+import { agentId, flowId } from "../data";
+
 const goToModelsTab = () => {
     // Click on the Models tab
-    const modelsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-models-${agentId}`);
+    const modelsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-models`);
     expect(modelsTab).toBeInTheDocument();
     fireEvent.click(modelsTab);
 };
@@ -22,70 +23,63 @@ const modelOverrides = {
 
 describe("Models tab", () => {
     it("should have the agent models selected", async () => {
-        renderAgent("user", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: modelOverrides,
             includeModels: true,
         });
         goToModelsTab();
-        const modelSelect = screen.getByLabelText("Models to link to agent:");
+        const modelSelect = screen.getByLabelText("Models to use:");
         expect(modelSelect).toBeInTheDocument();
         const modelsPanel = screen.getByTestId("agent-models-panel");
         expect(modelsPanel).toBeInTheDocument();
-        expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model1");
+        expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model 1");
     });
     it("should allow changing the agent models", async () => {
-        renderAgent("user", {
+        renderAgent("assistant", {
             openModal: true,
             dataOverrides: modelOverrides,
             includeModels: true,
         });
         goToModelsTab();
-        const modelSelect = screen.getByLabelText("Models to link to agent:");
-        expect(modelSelect).toBeInTheDocument();
-        selectEvent.openMenu(modelSelect);
-        // the ones below give:
-        // Warning: The current testing environment is not configured to support act(...)
-        //
-        // - await waitFor(async () => {
-        //     await selectEvent.clearAll(modelSelect);
-        // });
-        // - await selectEvent.clearAll(modelSelect);
-        // :(
-        // let's find the button that removes the current model instead
+        const modelSelect = screen.getByLabelText("Models to use:");
         const modelsPanel = screen.getByTestId("agent-models-panel");
         expect(modelsPanel).toBeInTheDocument();
-        expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model1");
-        const removeButton = screen.getByLabelText("Remove test model1");
-        fireEvent.click(removeButton);
-        await selectEvent.select(modelSelect, ["test model2"]);
-        fireEvent.change(modelSelect, {
-            target: [{ label: "test-model2", value: "test model2" }],
+        expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model 1");
+        const clearButton = modelsPanel.querySelector(".w-select__clear-indicator");
+        expect(clearButton).toBeInTheDocument();
+        fireEvent.click(clearButton!);
+        await selectEvent.clearAll(modelSelect);
+        selectEvent.openMenu(modelSelect);
+        await selectEvent.select(modelSelect, "test model 2");
+        await waitFor(() => {
+            expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent(
+                "test model 2",
+            );
         });
-        expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model2");
         submitAgentChanges();
     });
-    it("should allow having multiple models", async () => {
-        renderAgent("user", {
+    it("should allow haviing two models selected", async () => {
+        renderAgent("assistant", {
             openModal: true,
+            dataOverrides: modelOverrides,
             includeModels: true,
         });
         goToModelsTab();
-        const modelSelect = screen.getByLabelText("Models to link to agent:");
-        expect(modelSelect).toBeInTheDocument();
-        selectEvent.openMenu(modelSelect);
-        await selectEvent.select(modelSelect, ["test model1"]);
-        await selectEvent.select(modelSelect, ["test model2"]);
+        const modelSelect = screen.getByLabelText("Models to use:");
         const modelsPanel = screen.getByTestId("agent-models-panel");
         expect(modelsPanel).toBeInTheDocument();
-        expect(modelsPanel.querySelectorAll(".w-select__multi-value__label")).toHaveLength(2);
-        submitAgentChanges();
-    });
-    it("should show a message if there are no models", async () => {
-        renderAgent("user", {
-            openModal: true,
+        expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent("test model 1");
+        selectEvent.openMenu(modelSelect);
+        await selectEvent.select(modelSelect, "test model 2");
+        await waitFor(() => {
+            expect(modelsPanel.querySelectorAll(".w-select__multi-value__label")).toHaveLength(2);
+            expect(modelsPanel.querySelector(".w-select__multi-value__label")).toHaveTextContent(
+                "test model 1",
+            );
+            expect(modelsPanel.querySelectorAll(".w-select__multi-value__label")[1]).toHaveTextContent(
+                "test model 2",
+            );
         });
-        goToModelsTab();
-        expect(screen.getByText("No models found in the workspace")).toBeInTheDocument();
     });
 });

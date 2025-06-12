@@ -7,3 +7,6 @@ out/
 site/
 .local/
 public/
+examples/
+**/coverage/
+**/waldiez_out/

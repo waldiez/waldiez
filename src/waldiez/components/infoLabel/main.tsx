@@ -4,17 +4,20 @@
  */
 import { FaInfoCircle } from "react-icons/fa";
 
-import { InfoLabelProps } from "@waldiez/components/infoLabel/types";
-
-export const InfoLabel = (props: InfoLabelProps) => {
-    const { label, info } = props;
+type InfoLabelProps = {
+    htmlFor: string;
+    label: string | React.JSX.Element | (() => React.JSX.Element | string);
+    info: string | React.JSX.Element | (() => React.JSX.Element | string);
+};
+export const InfoLabel: React.FC<InfoLabelProps> = (props: InfoLabelProps) => {
+    const { htmlFor, label, info } = props;
     // we show the info on hover (css), to show on `icon click`, use state.
     // const [showDescription, setShowDescription] = useState(false);
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;
     return (
         <div className="info-label">
-            <label>{labelElement}</label>
+            <label htmlFor={htmlFor}>{labelElement}</label>
             <FaInfoCircle className="info-icon" />
             <div
                 // className={`info-description ${
@@ -27,3 +30,5 @@ export const InfoLabel = (props: InfoLabelProps) => {
         </div>
     );
 };
+
+InfoLabel.displayName = "InfoLabel";

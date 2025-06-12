@@ -18,7 +18,7 @@ export const edgeData = {
     position: 1,
     clearHistory: false,
     summary: {
-        method: "last_msg" as WaldiezChatLlmSummaryMethod,
+        method: "lastMsg" as WaldiezChatLlmSummaryMethod,
         prompt: "",
         args: {},
     },
@@ -38,15 +38,15 @@ export const edgeData = {
             content: "",
         },
     },
-    maxRounds: 20,
-    afterWork: {
-        recipientType: "option",
-        recipient: "TERMINATE",
-    },
+    prerequisites: [],
     contextVariables: {},
+    condition: {
+        conditionType: "string_llm",
+        prompt: "Handoff to another agent",
+    },
     available: {
         type: "none",
-        value: null,
+        value: "",
     },
 };
 export const edgeProps = {
@@ -73,20 +73,10 @@ export const nodes = [
         },
         data: {
             label: "Edge source",
-            agentType: "user",
+            agentType: "user_proxy",
             nestedChats: [],
-            skills: [],
+            tools: [],
             modelIds: [],
-            handoffs: [
-                {
-                    targetType: "agent",
-                    target: { id: edgeProps.target, order: 0 },
-                    available: {
-                        type: "option",
-                        value: "TERMINATE",
-                    },
-                },
-            ],
         },
     },
     {
@@ -100,7 +90,7 @@ export const nodes = [
             label: "Edge target",
             agentType: "assistant",
             nestedChats: [],
-            skills: [],
+            tools: [],
             modelIds: [],
         },
     },

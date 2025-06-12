@@ -2,16 +2,21 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Chat data model."""
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
 
-from ..agents.swarm_agent import (
-    WaldiezSwarmAfterWork,
-    WaldiezSwarmOnConditionAvailable,
+from ..agents import WaldiezAgentType
+from ..common import (
+    WaldiezBase,
+    WaldiezDefaultCondition,
+    WaldiezHandoffCondition,
+    WaldiezHandoffTransition,
+    WaldiezTransitionAvailability,
+    check_function,
+    update_dict,
 )
-from ..common import WaldiezBase, check_function, update_dict
 from .chat_message import (
     CALLABLE_MESSAGE,
     CALLABLE_MESSAGE_ARGS,
@@ -28,10 +33,10 @@ class WaldiezChatData(WaldiezBase):
     ----------
     name : str
         The name of the chat.
-    source : str
-        The source of the chat (sender).
-    target : str
-        The target of the chat (recipient).
+    source_type : WaldiezAgentType
+        The agent type of the chat source.
+    target_type : WaldiezAgentType
+        The agent type of the chat target.
     description : str
         The description of the chat.
     position : int
@@ -48,83 +53,54 @@ class WaldiezChatData(WaldiezBase):
         The summary method and options for the chat.
     max_turns : Optional[int]
         The maximum number of turns for the chat, by default None (no limit).
-    silent : Optional[bool], optional
-        Whether to run the chat silently, by default None (ignored).
-    summary_args : Optional[Dict[str, Any]]
+    silent : bool, optional
+        Whether to run the chat silently, by default False (not silent).
+    summary_args : Optional[dict[str, Any]]
         The summary args to use in autogen.
+    handoff_condition : Optional[WaldiezHandoffCondition], optional
+        The handoff condition to use, by default None (for group chat).
     real_source : Optional[str]
         The real source of the chat (overrides the source).
     real_target : Optional[str]
         The real target of the chat (overrides the target).
-    max_rounds : int
-        Maximum number of conversation rounds (swarm).
-    after_work : Optional[WaldiezSwarmAfterWork]
-        The work to do after the chat (swarm).
-
-    Functions
-    ---------
-    validate_message(value: Any)
-        Validate the message.
-    validate_summary_method(value: Optional[WaldiezChatSummaryMethod])
-        Validate the summary method.
-    serialize_summary_method(value: Any, info: FieldSerializationInfo)
-        Serialize summary method.
-    get_chat_args()
-        Get the chat arguments to use in autogen.
     """
 
     name: Annotated[
         str, Field(..., title="Name", description="The name of the chat.")
     ]
-    source: Annotated[
-        str,
-        Field(
-            ...,
-            title="Source",
-            description="The source of the chat (sender).",
-        ),
-    ]
-    target: Annotated[
-        str,
-        Field(
-            ...,
-            title="Target",
-            description="The target of the chat (recipient).",
-        ),
-    ]
     description: Annotated[
         str,
         Field(
-            ...,
+            default="A new chat",
             title="Description",
             description="The description of the chat.",
         ),
-    ]
+    ] = "A new chat"
     position: Annotated[
         int,
         Field(
-            -1,
+            default=-1,
             title="Position",
             description="The position of the chat in the flow (Ignored).",
         ),
-    ]
+    ] = -1
     order: Annotated[
         int,
         Field(
-            -1,
+            default=-1,
             title="Order",
             description="The order of the chat in the flow.",
         ),
-    ]
+    ] = -1
     clear_history: Annotated[
-        Optional[bool],
+        bool,
         Field(
-            None,
+            default=True,
             alias="clearHistory",
             title="Clear History",
             description="Whether to clear the chat history.",
         ),
-    ]
+    ] = True
     message: Annotated[
         Union[str, WaldiezChatMessage],
         Field(
@@ -153,84 +129,96 @@ class WaldiezChatData(WaldiezBase):
     max_turns: Annotated[
         Optional[int],
         Field(
-            None,
+            default=None,
             alias="maxTurns",
             title="Max Turns",
             description="The maximum number of turns for the chat.",
         ),
-    ]
+    ] = None
     prerequisites: Annotated[
-        List[str],
+        list[str],
         Field(
             title="Prerequisites",
             description="The prerequisites (chat ids) for the chat (if async).",
             default_factory=list,
         ),
-    ]
+    ] = []
     silent: Annotated[
-        Optional[bool],
+        bool,
         Field(
-            None,
+            default=False,
             title="Silent",
             description="Whether to run the chat silently.",
         ),
-    ]
+    ] = False
     real_source: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             alias="realSource",
             title="Real Source",
             description="The real source of the chat (overrides the source).",
         ),
-    ]
+    ] = None
     real_target: Annotated[
         Optional[str],
         Field(
-            None,
+            default=None,
             alias="realTarget",
             title="Real Target",
             description="The real target of the chat (overrides the target).",
         ),
+    ] = None
+    source_type: Annotated[
+        WaldiezAgentType,
+        Field(
+            ...,
+            alias="sourceType",
+            title="Source Type",
+            description="The agent type of the source.",
+        ),
     ]
-    max_rounds: Annotated[
-        int,
+    target_type: Annotated[
+        WaldiezAgentType,
         Field(
-            20,
-            title="Max Rounds",
-            description="Maximum number of conversation rounds.(swarm)",
+            ...,
+            alias="targetType",
+            title="Target Type",
+            description="The agent type of the target.",
         ),
-    ] = 20
-    after_work: Annotated[
-        Optional[WaldiezSwarmAfterWork],
+    ]
+    condition: Annotated[
+        WaldiezHandoffCondition,
         Field(
-            None,
-            alias="afterWork",
-            title="After Work",
-            description="The work to do after the chat (swarm).",
+            default_factory=WaldiezDefaultCondition.create,
+            alias="condition",
+            title="Handoff Condition",
+            description="The handoff condition to use.",
         ),
-    ] = None
-    context_variables: Annotated[
-        Optional[Dict[str, Any]],
-        Field(
-            None,
-            alias="contextVariables",
-            title="Context Variables",
-            description="The context variables to use in the chat.",
-        ),
-    ] = None
+    ]
     available: Annotated[
-        WaldiezSwarmOnConditionAvailable,
+        WaldiezTransitionAvailability,
         Field(
-            default_factory=WaldiezSwarmOnConditionAvailable,
-            title="Available",
-            description="The available condition for the chat.",
+            default_factory=WaldiezTransitionAvailability,
+            title="Availability",
+            description="The availability condition for the chat.",
         ),
     ]
-
+    after_work: Annotated[
+        Optional[WaldiezHandoffTransition],
+        Field(
+            None,
+            title="After Work",
+            description=(
+                "The target to transfer control to after the chat has "
+                "finished its work. (used if in a group chat)"
+            ),
+            alias="afterWork",
+        ),
+    ] = None
     _message_content: Optional[str] = None
     _chat_id: int = 0
-    _prerequisites: List[int] = []
+    _prerequisites: list[int] = []
 
     @property
     def message_content(self) -> Optional[str]:
@@ -257,22 +245,22 @@ class WaldiezChatData(WaldiezBase):
         """
         self._chat_id = value
 
-    def get_prerequisites(self) -> List[int]:
+    def get_prerequisites(self) -> list[int]:
         """Get the chat prerequisites.
 
         Returns
         -------
-        List[int]
+        list[int]
             The chat prerequisites (if async).
         """
         return self._prerequisites
 
-    def set_prerequisites(self, value: List[int]) -> None:
+    def set_prerequisites(self, value: list[int]) -> None:
         """Set the chat prerequisites.
 
         Parameters
         ----------
-        value : List[int]
+        value : list[int]
             The chat prerequisites to set.
         """
         self._prerequisites = value
@@ -309,6 +297,7 @@ class WaldiezChatData(WaldiezBase):
             self._message_content = error_or_body
         return self
 
+    # noinspection PyNestedDecorators
     @field_validator("message", mode="before")
     @classmethod
     def validate_message(cls, value: Any) -> WaldiezChatMessage:
@@ -348,62 +337,36 @@ class WaldiezChatData(WaldiezBase):
             )
         return value
 
-    @field_validator("context_variables", mode="after")
-    @classmethod
-    def validate_context_variables(
-        cls, value: Optional[Dict[str, Any]]
-    ) -> Optional[Dict[str, Any]]:
-        """Validate the context variables.
-
-        Parameters
-        ----------
-        value : Optional[Dict[str, Any]]
-            The context variables value.
-
-        Returns
-        -------
-        Optional[Dict[str, Any]]
-            The validated context variables value.
-
-        Raises
-        ------
-        ValueError
-            If the validation fails.
-        """
-        if value is None:
-            return None
-        return update_dict(value)
-
     @property
-    def summary_args(self) -> Optional[Dict[str, Any]]:
+    def summary_args(self) -> Optional[dict[str, Any]]:
         """Get the summary args."""
         if self.summary.method not in (
             "reflection_with_llm",
             "reflectionWithLlm",
         ):
             return None
-        args: Dict[str, Any] = {}
-        if self.summary.prompt:
+        args: dict[str, Any] = {}
+        if self.summary.prompt:  # pragma: no branch
             args["summary_prompt"] = self.summary.prompt
-        if self.summary.args:
+        if self.summary.args:  # pragma: no branch
             args.update(self.summary.args)
         return args
 
-    def _get_context_args(self) -> Dict[str, Any]:
+    def _get_context_args(self) -> dict[str, Any]:
         """Get the context arguments to use in autogen.
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The dictionary to use for generating the kwargs.
         """
-        extra_args: Dict[str, Any] = {}
+        extra_args: dict[str, Any] = {}
         if not isinstance(self.message, WaldiezChatMessage):  # pragma: no cover
             return extra_args
         extra_args.update(update_dict(self.message.context))
         return extra_args
 
-    def get_chat_args(self, for_queue: bool) -> Dict[str, Any]:
+    def get_chat_args(self, for_queue: bool) -> dict[str, Any]:
         """Get the chat arguments to use in autogen.
 
         Without the 'message' key.
@@ -415,20 +378,20 @@ class WaldiezChatData(WaldiezBase):
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The dictionary to pass as kwargs.
         """
-        args: Dict[str, Any] = {}
-        if self.summary.method:
-            args["summary_method"] = self.summary.method
+        args: dict[str, Any] = {}
+        if self.summary.method:  # pragma: no branch
+            args["summary_method"] = str(self.summary.method)
         if self.summary_args:
             args["summary_args"] = self.summary_args
-        if isinstance(self.max_turns, int) and self.max_turns > 0:
+        if (
+            isinstance(self.max_turns, int) and self.max_turns > 0
+        ):  # pragma: no branch
             args["max_turns"] = self.max_turns
-        if isinstance(self.clear_history, bool):
-            args["clear_history"] = self.clear_history
-        if isinstance(self.silent, bool):
-            args["silent"] = self.silent
+        args["clear_history"] = self.clear_history
+        # args["silent"] = self.silent
         args.update(self._get_context_args())
         if for_queue:
             args["chat_id"] = self._chat_id

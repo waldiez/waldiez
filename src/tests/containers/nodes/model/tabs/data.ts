@@ -22,6 +22,7 @@ export const modelData = {
     temperature: 0.1,
     topP: 0.2,
     maxTokens: 200,
+    extras: {} as { [key: string]: unknown },
     defaultHeaders: {} as { [key: string]: string },
     price: {
         promptPricePer1k: 0.05 as number | null,

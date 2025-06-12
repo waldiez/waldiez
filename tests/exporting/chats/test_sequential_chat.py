@@ -5,9 +5,14 @@
 from waldiez.exporting.chats import ChatsExporter
 from waldiez.models import (
     WaldiezAgent,
+    WaldiezAgentConnection,
     WaldiezChat,
     WaldiezChatData,
     WaldiezChatMessage,
+    WaldiezChatNested,
+    WaldiezChatSummary,
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
 )
 
 
@@ -42,28 +47,42 @@ def test_sequential_chat() -> None:
     )
     chat1 = WaldiezChat(
         id="wc-1",
+        source="wa-1",
+        target="wa-2",
+        type="chat",
         data=WaldiezChatData(
-            source="wa-1",
-            target="wa-2",
+            source_type="assistant",
+            target_type="assistant",
             name=chat1_name,
             description="A chat between two agents.",
             message=WaldiezChatMessage(
                 type="string",
                 content="Hello, how are you?",
             ),
+            nested_chat=WaldiezChatNested(),
+            summary=WaldiezChatSummary(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     chat2 = WaldiezChat(
         id="wc-2",
+        source="wa-2",
+        target="wa-3",
+        type="chat",
         data=WaldiezChatData(
-            source="wa-2",
-            target="wa-3",
+            source_type="assistant",
+            target_type="assistant",
             name=chat2_name,
             description="A chat between two agents.",
             message=WaldiezChatMessage(
                 type="string",
                 content="Hello, how are you?",
             ),
+            nested_chat=WaldiezChatNested(),
+            summary=WaldiezChatSummary(),
+            condition=WaldiezDefaultCondition.create(),
+            available=WaldiezTransitionAvailability(),
         ),
     )
     agent_names = {
@@ -72,18 +91,31 @@ def test_sequential_chat() -> None:
         "wa-3": agent3_name,
     }
     chat_names = {"wc-1": chat1_name, "wc-2": chat2_name}
-    main_chats = [(chat1, agent1, agent2), (chat2, agent2, agent3)]
+    # main_chats = [(chat1, agent1, agent2), (chat2, agent2, agent3)]
+    main_chats: list[WaldiezAgentConnection] = [
+        {
+            "chat": chat1,
+            "source": agent1,
+            "target": agent2,
+        },
+        {
+            "chat": chat2,
+            "source": agent2,
+            "target": agent3,
+        },
+    ]
     exporter = ChatsExporter(
-        get_swarm_members=lambda _: ([], None),
         all_agents=[agent1, agent2, agent3],
         agent_names=agent_names,
         all_chats=[chat1, chat2],
         chat_names=chat_names,
         main_chats=main_chats,
+        root_group_manager=None,
+        cache_seed=42,
         for_notebook=False,
         is_async=False,
     )
-    generated = exporter.generate()
+    exporter.export()
     expected = """
         results = initiate_chats([
             {
@@ -91,6 +123,7 @@ def test_sequential_chat() -> None:
                 "recipient": agent2,
                 "cache": cache,
                 "summary_method": "last_msg",
+                "clear_history": True,
                 "chat_id": 0,
                 "message": "Hello, how are you?",
             },
@@ -99,14 +132,16 @@ def test_sequential_chat() -> None:
                 "recipient": agent3,
                 "cache": cache,
                 "summary_method": "last_msg",
+                "clear_history": True,
                 "chat_id": 0,
                 "message": "Hello, how are you?",
             },
         ])
 """
-    assert generated == expected
+    assert exporter.extras.chat_initiation == expected
     imports = exporter.get_imports()
     assert imports is not None
-    assert imports[0][0] == "from autogen.agentchat.chat import initiate_chats"
-    # no nested chats in agents
-    assert not exporter.get_after_export()
+    assert (
+        imports[0].statement
+        == "from autogen.agentchat.chat import initiate_chats"
+    )

@@ -1,0 +1,177 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+/* stylelint-disable selector-class-pattern */
+
+.agent-panel-add-tool {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background: color-mix(in srgb, var(--text-color) 5%, var(--background-color));
+  border: 1px solid color-mix(in srgb, var(--text-color) 15%, var(--background-color));
+  border-radius: 8px;
+}
+
+.agent-panel-add-tool label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+/* Remove button */
+.agent-panel-current-tool-entry button {
+  background: color-mix(in srgb, #ef4444 85%, var(--background-color));
+  color: #fff;
+  border: 1px solid color-mix(in srgb, #ef4444 60%, var(--background-color));
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.agent-panel-add-tool button {
+  font-size: 13px;
+}
+
+.agent-panel-add-tool button:hover {
+  background-color: color-mix(in srgb, var(--text-color) 15%, var(--background-color));
+  border-color: #1d4ed8 !important;
+}
+
+.agent-panel-current-tool-entry button:hover {
+  background: #ef4444;
+  border-color: #dc2626 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, #ef4444 30%, transparent);
+}
+
+.agent-panel-current-tool-entry button:active {
+  transform: translateY(0);
+}
+
+.agent-panel-current-tool-entry button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 30%, transparent);
+}
+
+.agent-panel-add-tool button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.agent-panel-add-tool button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-color) 20%, transparent);
+}
+
+.agent-panel-current-tools {
+  background: color-mix(in srgb, var(--text-color) 3%, var(--background-color));
+  border: 1px solid color-mix(in srgb, var(--text-color) 10%, var(--background-color));
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.agent-panel-current-tools-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.agent-panel-current-tool {
+  background: var(--background-color);
+  border: 1px solid color-mix(in srgb, var(--text-color) 15%, var(--background-color));
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.agent-panel-current-tool:last-child {
+  margin-bottom: 0;
+}
+
+.agent-panel-current-tool:hover {
+  border-color: color-mix(in srgb, var(--text-color) 25%, var(--background-color));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--text-color) 10%, transparent);
+}
+
+.agent-panel-current-tool-entry {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tool-item,
+.agent-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--text-color) 70%, var(--background-color));
+  font-weight: 500;
+}
+
+.tool-name,
+.agent-name {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Monaco, Menlo, "Ubuntu Mono", monospace;
+  border: 1px solid transparent;
+}
+
+.tool-name {
+  background: color-mix(in srgb, #3b82f6 20%, var(--background-color));
+  color: color-mix(in srgb, #3b82f6 80%, var(--text-color));
+  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
+}
+
+.agent-name {
+  background: color-mix(in srgb, #10b981 20%, var(--background-color));
+  color: color-mix(in srgb, #10b981 80%, var(--text-color));
+  border-color: color-mix(in srgb, #10b981 30%, var(--background-color));
+}
+
+@media (width <= 768px) {
+  .agent-panel-add-tool {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .agent-panel-add-tool label {
+    justify-self: start;
+  }
+
+  .agent-panel-add-tool .select {
+    min-width: 100%;
+  }
+
+  .agent-panel-current-tool-entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .agent-panel-current-tool-entry button {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+}
+
+/* Enhanced focus states for accessibility */
+.agent-panel-add-tool *:focus,
+.agent-panel-current-tools *:focus {
+  outline: 2px solid color-mix(in srgb, var(--text-color) 50%, transparent);
+  outline-offset: 2px;
+}

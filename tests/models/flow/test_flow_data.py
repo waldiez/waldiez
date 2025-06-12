@@ -27,26 +27,34 @@ def test_waldiez_flow_data() -> None:
         edges=[],
         viewport={},
         agents={  # type: ignore
-            "users": [],
-            "assistants": [assistant_1, assistant_2],
-            "managers": [],
-            "rag_users": [],
+            "userProxyAgents": [],
+            "assistantAgents": [assistant_1, assistant_2],
+            "managerAgents": [],
+            "ragUserProxyAgents": [],
         },
         models=[],
-        skills=[],
+        tools=[],
         chats=[],
     )
     # Then
     assert not flow_data.nodes
     assert not flow_data.edges
     assert not flow_data.viewport
-    assert not flow_data.agents.users
-    assert len(flow_data.agents.assistants) == 2
-    assert not flow_data.agents.managers
-    assert not flow_data.agents.rag_users
+    assert not flow_data.agents.userProxyAgents
+    assert len(flow_data.agents.assistantAgents) == 2
+    assert not flow_data.agents.ragUserProxyAgents
     assert not flow_data.models
-    assert not flow_data.skills
+    assert not flow_data.tools
     assert not flow_data.chats
+
+    default_data = WaldiezFlowData.default()
+    assert len(list(default_data.agents.members)) > 0
+
+    dumped = default_data.model_dump()
+    dumped["isAsync"] = True
+    loaded = WaldiezFlowData.model_validate(dumped)
+    assert loaded.is_async
+    assert loaded.chats
 
     with pytest.raises(ValueError):
         # at least 2 agents are required
@@ -55,13 +63,12 @@ def test_waldiez_flow_data() -> None:
             edges=[],
             viewport={},
             agents={  # type: ignore
-                "users": [],
-                "assistants": [],
-                "managers": [],
-                "rag_users": [],
+                "userProxyAgents": [],
+                "assistantAgents": [],
+                "ragUserProxyAgents": [],
             },
             models=[],
-            skills=[],
+            tools=[],
             chats=[],
         )
     with pytest.raises(ValueError):
@@ -71,12 +78,11 @@ def test_waldiez_flow_data() -> None:
             edges=[],
             viewport={},
             agents={  # type: ignore
-                "users": [],
-                "assistants": [assistant_1, assistant_1],
-                "managers": [],
-                "rag_users": [],
+                "userProxyAgents": [],
+                "assistantAgents": [assistant_1, assistant_1],
+                "ragUserProxyAgents": [],
             },
             models=[],
-            skills=[],
+            tools=[],
             chats=[],
         )

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat related models."""
 
-from .chat import WaldiezChat
+from .chat import WaldiezChat, WaldiezChatType
 from .chat_data import WaldiezChatData
 from .chat_message import (
     CALLABLE_MESSAGE,
@@ -37,4 +37,5 @@ __all__ = [
     "WaldiezChatNested",
     "WaldiezChatSummary",
     "WaldiezChatSummaryMethod",
+    "WaldiezChatType",
 ]

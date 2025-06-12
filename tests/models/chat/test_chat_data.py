@@ -3,10 +3,20 @@
 
 """Test waldiez.models.chat.chat_data.*."""
 
+from typing import Any
+
 import pytest
 
-from waldiez.models.chat.chat_data import WaldiezChatData
-from waldiez.models.chat.chat_message import WaldiezChatMessage
+from waldiez.models.chat import (
+    WaldiezChatData,
+    WaldiezChatMessage,
+    WaldiezChatNested,
+    WaldiezChatSummary,
+)
+from waldiez.models.common import (
+    WaldiezDefaultCondition,
+    WaldiezTransitionAvailability,
+)
 
 
 def test_waldiez_chat_data() -> None:
@@ -15,8 +25,8 @@ def test_waldiez_chat_data() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=-1,
         order=1,
         clear_history=False,
@@ -49,13 +59,14 @@ def test_waldiez_chat_data() -> None:
         },
         max_turns=5,
         silent=False,
+        prerequisites=["chat1", "chat2"],
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
 
     # Then
     assert chat_data.name == "chat_data"
     assert chat_data.description == "Chat data"
-    assert chat_data.source == "wa-1"
-    assert chat_data.target == "wa-2"
     assert chat_data.position == -1
     assert chat_data.order == 1
     assert not chat_data.clear_history
@@ -83,12 +94,16 @@ def test_waldiez_chat_data() -> None:
         "summary_prompt": "Summarize this chat",
         "summary_role": "system",
     }
+    chat_data.set_prerequisites([1, 2])
     chat_args = chat_data.get_chat_args(for_queue=True)
     assert chat_args["chat_id"] == 0
     assert chat_args["problem"] == "Solve this task"
     assert chat_args["solution"] == 4.2
     assert chat_args["alternative_solution"] == 42
     assert chat_args["not_a_solution"] is None
+
+    assert chat_data.prerequisites == ["chat1", "chat2"]
+    assert chat_args["prerequisites"] == [1, 2]
 
     model_dump = chat_data.model_dump(by_alias=True)
     assert model_dump["summary"]["method"] == "reflectionWithLlm"
@@ -100,11 +115,15 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message="Hello there",
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -114,8 +133,8 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message=None,  # type: ignore
@@ -129,11 +148,15 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message=42,  # type: ignore
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -144,8 +167,8 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message=(1, 2),  # type: ignore
@@ -157,8 +180,8 @@ def test_waldiez_chat_data_message() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message=WaldiezChatMessage(
@@ -167,6 +190,10 @@ def test_waldiez_chat_data_message() -> None:
             content="Hello there",
             context={},
         ),
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert isinstance(chat_data.message, WaldiezChatMessage)
@@ -174,11 +201,11 @@ def test_waldiez_chat_data_message() -> None:
     assert chat_data.message.content == "Hello there"
 
     # Given
-    chat_data_dict = {
+    chat_data_dict: dict[str, Any] = {
         "name": "chat_data",
         "description": "Chat data",
-        "source": "wa-1",
-        "target": "wa-2",
+        "source_type": "user_proxy",
+        "target_type": "assistant",
         "position": 0,
         "clear_history": False,
         "message": {
@@ -190,11 +217,11 @@ def test_waldiez_chat_data_message() -> None:
                 "n_results": 42,
                 "as_list": [1, 2, 3],
             },
-            "use_carryover": True,
+            "use_carryover": False,
         },
     }
     # Then
-    chat_data = WaldiezChatData(**chat_data_dict)  # type: ignore
+    chat_data = WaldiezChatData(**chat_data_dict)  # pyright: ignore
     assert isinstance(chat_data.message, WaldiezChatMessage)
     assert chat_data.message.type == "string"
     assert chat_data.message.content == "text message"
@@ -204,7 +231,7 @@ def test_waldiez_chat_data_message() -> None:
         "n_results": 42,
         "as_list": [1, 2, 3],
     }
-    assert chat_data.message.use_carryover is True
+    assert chat_data.message.use_carryover is False
 
 
 def test_waldiez_chat_summary() -> None:
@@ -213,23 +240,27 @@ def test_waldiez_chat_summary() -> None:
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message="Hello there",
+        nested_chat=WaldiezChatNested(),
+        summary=WaldiezChatSummary(),
+        condition=WaldiezDefaultCondition.create(),
+        available=WaldiezTransitionAvailability(),
     )
     # Then
     assert chat_data.summary.method == "last_msg"
-    assert chat_data.summary_args is None
+    assert not chat_data.summary_args
     model_dump = chat_data.model_dump(by_alias=True)
     assert model_dump["summary"]["method"] == "lastMsg"
     # Given
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message="Hello there",
@@ -238,15 +269,19 @@ def test_waldiez_chat_summary() -> None:
         },
     )
     # Then
-    assert not chat_data.summary_args
+    assert chat_data.summary_args
+    assert (
+        chat_data.summary_args["summary_prompt"]
+        == "Summarize the conversation."
+    )
     model_dump = chat_data.model_dump(by_alias=True)
     assert model_dump["summary"]["method"] == "reflectionWithLlm"
     # Given
     chat_data = WaldiezChatData(
         name="chat_data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message="Hello there",
@@ -270,8 +305,8 @@ def test_waldiez_chat_get_chat_args() -> None:
     chat_data = WaldiezChatData(
         name="Chat data",
         description="Chat data",
-        source="wa-1",
-        target="wa-2",
+        source_type="user_proxy",
+        target_type="assistant",
         position=0,
         clear_history=False,
         message={  # type: ignore
@@ -297,46 +332,14 @@ def test_waldiez_chat_get_chat_args() -> None:
     assert chat_args["not_a_solution"] is None
 
 
-def test_waldiez_chat_invalid_context_variables() -> None:
-    """Test invalid context variables."""
-    with pytest.raises(ValueError):
-        WaldiezChatData(
-            name="Chat data",
-            description="Chat data",
-            source="wa-1",
-            target="wa-2",
-            position=0,
-            clear_history=False,
-            message={  # type: ignore
-                "type": "string",
-                "content": "Hello there",
-                "context": {
-                    "problem": "Solve this task",
-                    "solution": "4.2",
-                    "alternative_solution": "42",
-                    "not_a_solution": "null",
-                    "is_valid": "true",
-                },
-            },
-            summary={  # type: ignore
-                "method": "last_msg",
-                "prompt": "Summarize this chat",
-                "args": {
-                    "summary_role": "system",
-                },
-            },
-            context_variables=4,  # type: ignore
-        )
-
-
 def test_waldiez_chat_invalid_message_method() -> None:
     """Test invalid message method."""
     with pytest.raises(ValueError):
         WaldiezChatData(
             name="Chat data",
             description="Chat data",
-            source="wa-1",
-            target="wa-2",
+            source_type="user_proxy",
+            target_type="assistant",
             position=0,
             clear_history=False,
             message={  # type: ignore

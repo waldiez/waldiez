@@ -2,13 +2,21 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat model."""
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
-from pydantic import Field
-from typing_extensions import Annotated
+from pydantic import Field, model_validator
+from typing_extensions import Annotated, Literal, Self
 
-from ..agents import WaldiezAgent, WaldiezRagUser, WaldiezSwarmAfterWork
-from ..common import WaldiezBase, generate_function
+from ..agents import WaldiezAgent, WaldiezRagUserProxy
+from ..common import (
+    WaldiezAgentTarget,
+    WaldiezBase,
+    WaldiezHandoff,
+    WaldiezHandoffCondition,
+    WaldiezTransitionAvailability,
+    WaldiezTransitionTarget,
+    generate_function,
+)
 from .chat_data import WaldiezChatData
 from .chat_message import (
     CALLABLE_MESSAGE,
@@ -26,7 +34,11 @@ from .chat_nested import (
     WaldiezChatNested,
 )
 
+WaldiezChatType = Literal["chat", "nested", "group", "hidden"]
+"""Possible chat types: "chat", "nested", "group", "hidden"."""
 
+
+# noinspection PyUnresolvedReferences
 class WaldiezChat(WaldiezBase):
     """Chat class.
 
@@ -34,15 +46,17 @@ class WaldiezChat(WaldiezBase):
     ----------
     id : str
         The chat ID.
+    source : str
+        The source of the chat (sender).
+    target : str
+        The target of the chat (recipient).
+    type : WaldiezChatType
+        The type of the chat data: "chat", "nested", "group", or "hidden".
     data : WaldiezChatData
         The chat data.
         See `waldiez.models.chat.WaldiezChatData` for more information.
     name : str
         The chat name.
-    source : str
-        The chat source.
-    target : str
-        The chat target.
     nested_chat : WaldiezChatNested
         The nested chat message/reply if any.
     message : WaldiezChatMessage
@@ -64,6 +78,30 @@ class WaldiezChat(WaldiezBase):
             description="The chat ID.",
         ),
     ]
+    type: Annotated[
+        WaldiezChatType,
+        Field(
+            default="chat",
+            title="Type",
+            description="The type of the chat data.",
+        ),
+    ]
+    source: Annotated[
+        str,
+        Field(
+            ...,
+            title="Source",
+            description="The chat source.",
+        ),
+    ]
+    target: Annotated[
+        str,
+        Field(
+            ...,
+            title="Target",
+            description="The chat target.",
+        ),
+    ]
     data: Annotated[
         WaldiezChatData,
         Field(
@@ -82,20 +120,6 @@ class WaldiezChat(WaldiezBase):
     def description(self) -> str:
         """Get the description."""
         return self.data.description
-
-    @property
-    def source(self) -> str:
-        """Get the source."""
-        if self.data.real_source:
-            return self.data.real_source
-        return self.data.source
-
-    @property
-    def target(self) -> str:
-        """Get the target."""
-        if self.data.real_target:
-            return self.data.real_target
-        return self.data.target
 
     @property
     def order(self) -> int:
@@ -127,19 +151,9 @@ class WaldiezChat(WaldiezBase):
         return self.data.message_content
 
     @property
-    def context_variables(self) -> Dict[str, Any]:
-        """Get the context variables."""
-        return self.data.context_variables or {}
-
-    @property
-    def max_rounds(self) -> int:
-        """Get the max rounds for swarm chat."""
-        return self.data.max_rounds
-
-    @property
-    def after_work(self) -> Optional[WaldiezSwarmAfterWork]:
-        """Get the after work."""
-        return self.data.after_work
+    def max_turns(self) -> Optional[int]:
+        """Get the max rounds for the chat."""
+        return self.data.max_turns
 
     @property
     def chat_id(self) -> int:
@@ -147,9 +161,48 @@ class WaldiezChat(WaldiezBase):
         return self.data.get_chat_id()
 
     @property
-    def prerequisites(self) -> List[int]:
+    def prerequisites(self) -> list[int]:
         """Get the chat prerequisites."""
         return self.data.get_prerequisites()
+
+    @property
+    def condition(self) -> WaldiezHandoffCondition:
+        """Get the handoff condition."""
+        return self.data.condition
+
+    @property
+    def available(self) -> WaldiezTransitionAvailability:
+        """Get the transition availability."""
+        return self.data.available
+
+    @model_validator(mode="after")
+    def _validate_chat(self) -> Self:
+        """Override if needed the source and target of the chat."""
+        if self.data.real_source:
+            self.source = self.data.real_source
+        if self.data.real_target:
+            self.target = self.data.real_target
+        return self
+
+    def as_handoff(
+        self,
+    ) -> WaldiezHandoff:
+        """Convert the chat to a handoff.
+
+        Returns
+        -------
+        WaldiezHandoff
+            The handoff representation of the chat.
+        """
+        target: WaldiezTransitionTarget = WaldiezAgentTarget(
+            target_type="AgentTarget",
+            value=[self.target],
+        )
+        return WaldiezHandoff(
+            target=target,
+            condition=self.condition,
+            available=self.available,
+        )
 
     def set_chat_id(self, value: int) -> None:
         """Set the chat ID.
@@ -161,12 +214,12 @@ class WaldiezChat(WaldiezBase):
         """
         self.data.set_chat_id(value)
 
-    def set_prerequisites(self, value: List[int]) -> None:
+    def set_prerequisites(self, value: list[int]) -> None:
         """Set the chat prerequisites.
 
         Parameters
         ----------
-        value : List[int]
+        value : list[int]
             The chat prerequisites.
         """
         self.data.set_prerequisites(value)
@@ -176,7 +229,7 @@ class WaldiezChat(WaldiezBase):
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
         is_rag: bool = False,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the message function.
 
         Parameters
@@ -190,7 +243,7 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The message function and the function name.
         """
         if self.message.type in ("string", "none") or (
@@ -225,11 +278,53 @@ class WaldiezChat(WaldiezBase):
             function_name,
         )
 
+    @staticmethod
+    def _get_nested_chat_function(
+        content: Optional[str],
+        function_name_base: str,
+        name_prefix: Optional[str] = None,
+        name_suffix: Optional[str] = None,
+    ) -> tuple[str, str]:
+        """Get the nested chat function.
+
+        Parameters
+        ----------
+        content : str
+            The content for the function body.
+        function_name_base : str
+            The base name of the function.
+        name_prefix : str
+            The function name prefix.
+        name_suffix : str
+            The function name suffix.
+
+        Returns
+        -------
+        tuple[str, str]
+            The generated function and its name.
+        """
+        if not content:
+            return "", ""
+        function_name = function_name_base
+        if name_prefix:
+            function_name = f"{name_prefix}_{function_name}"
+        if name_suffix:
+            function_name = f"{function_name}_{name_suffix}"
+        return (
+            generate_function(
+                function_name=function_name,
+                function_args=NESTED_CHAT_ARGS,
+                function_types=NESTED_CHAT_TYPES,
+                function_body=content,
+            ),
+            function_name,
+        )
+
     def get_nested_chat_message_function(
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the nested chat message function.
 
         Parameters
@@ -241,35 +336,30 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The nested chat message function and the function name.
         """
-        if (
-            not self.nested_chat.message
-            or self.nested_chat.message.type in ("string", "none")
-            or not self.nested_chat.message_content
+        if not self.nested_chat.message or (
+            self.nested_chat.message.use_carryover is False
+            and self.nested_chat.message.type
+            in (
+                "string",
+                "none",
+            )
         ):
             return "", ""
-        function_name = NESTED_CHAT_MESSAGE
-        if name_prefix:
-            function_name = f"{name_prefix}_{function_name}"
-        if name_suffix:
-            function_name = f"{function_name}_{name_suffix}"
-        return (
-            generate_function(
-                function_name=function_name,
-                function_args=NESTED_CHAT_ARGS,
-                function_types=NESTED_CHAT_TYPES,
-                function_body=self.nested_chat.message_content,
-            ),
-            function_name,
+        return self._get_nested_chat_function(
+            content=self.nested_chat.message_content,
+            function_name_base=NESTED_CHAT_MESSAGE,
+            name_prefix=name_prefix,
+            name_suffix=name_suffix,
         )
 
     def get_nested_chat_reply_function(
         self,
         name_prefix: Optional[str] = None,
         name_suffix: Optional[str] = None,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """Get the nested chat reply function.
 
         Parameters
@@ -281,35 +371,30 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Tuple[str, str]
+        tuple[str, str]
             The nested chat reply function and the function name.
         """
-        if (
-            not self.nested_chat.reply
-            or self.nested_chat.reply.type in ("string", "none")
-            or not self.nested_chat.reply_content
+        if not self.nested_chat.reply or (
+            self.nested_chat.reply.use_carryover is False
+            and self.nested_chat.reply.type
+            in (
+                "string",
+                "none",
+            )
         ):
             return "", ""
-        function_name = NESTED_CHAT_REPLY
-        if name_prefix:
-            function_name = f"{name_prefix}_{function_name}"
-        if name_suffix:
-            function_name = f"{function_name}_{name_suffix}"
-        return (
-            generate_function(
-                function_name=function_name,
-                function_args=NESTED_CHAT_ARGS,
-                function_types=NESTED_CHAT_TYPES,
-                function_body=self.nested_chat.reply_content,
-            ),
-            function_name,
+        return self._get_nested_chat_function(
+            content=self.nested_chat.reply_content,
+            function_name_base=NESTED_CHAT_REPLY,
+            name_prefix=name_prefix,
+            name_suffix=name_suffix,
         )
 
     def get_chat_args(
         self,
         for_queue: bool,
         sender: Optional[WaldiezAgent] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Get the chat arguments to use in autogen.
 
         Parameters
@@ -326,8 +411,8 @@ class WaldiezChat(WaldiezBase):
         """
         args_dict = self.data.get_chat_args(for_queue)
         if (
-            isinstance(sender, WaldiezRagUser)
-            and sender.agent_type == "rag_user"
+            isinstance(sender, WaldiezRagUserProxy)
+            and sender.is_rag_user
             and self.message.type == "rag_message_generator"
         ):
             # check for n_results in agent data, to add in context
@@ -336,7 +421,7 @@ class WaldiezChat(WaldiezBase):
                 args_dict["n_results"] = n_results
         return args_dict
 
-    def model_dump(self, **kwargs: Any) -> Dict[str, Any]:
+    def model_dump(self, **kwargs: Any) -> dict[str, Any]:
         """Dump the model to a dict including the chat attributes.
 
         Parameters
@@ -346,20 +431,14 @@ class WaldiezChat(WaldiezBase):
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The model dump with the chat attributes.
         """
         dump = super().model_dump(**kwargs)
         dump["name"] = self.name
         dump["description"] = self.description
-        dump["source"] = self.source
-        dump["target"] = self.target
         dump["nested_chat"] = self.nested_chat.model_dump()
         dump["message"] = self.message.model_dump()
         dump["message_content"] = self.message_content
-        dump["context_variables"] = self.context_variables
-        dump["max_rounds"] = self.max_rounds
-        dump["after_work"] = (
-            self.after_work.model_dump() if self.after_work else None
-        )
+        dump["max_turns"] = self.max_turns
         return dump

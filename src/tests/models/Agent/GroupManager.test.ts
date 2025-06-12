@@ -14,7 +14,7 @@ describe("WaldiezAgentGroupManager", () => {
     it("should create a new instance", () => {
         const groupManager = new WaldiezAgentGroupManager({
             id: "groupManagerId",
-            agentType: "manager",
+            agentType: "group_manager",
             name: "Manager",
             description: "A group manager agent",
             tags: [],
@@ -26,7 +26,7 @@ describe("WaldiezAgentGroupManager", () => {
 
         expect(groupManager).toBeDefined();
         expect(groupManager.id).toBe("groupManagerId");
-        const manager2 = WaldiezAgentGroupManager.create("manager");
+        const manager2 = WaldiezAgentGroupManager.create("group_manager");
         expect(manager2).toBeDefined();
         expect(manager2.data.humanInputMode).toBe("NEVER");
     });
@@ -40,6 +40,7 @@ describe("WaldiezAgentGroupManager", () => {
             allowRepeat: true,
             allowedOrDisallowedTransitions: {},
             transitionsType: "allowed",
+            order: ["speaker1", "speaker2"],
         });
         const groupManagerData = new WaldiezAgentGroupManagerData({
             humanInputMode: "NEVER",
@@ -54,9 +55,13 @@ describe("WaldiezAgentGroupManager", () => {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
-            parentId: null,
+            tools: [],
+            parentId: undefined,
             nestedChats: [],
+            contextVariables: {},
+            updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
             maxRound: 1,
             adminName: "admin",
             speakers,
@@ -65,7 +70,7 @@ describe("WaldiezAgentGroupManager", () => {
         });
         const groupManager = new WaldiezAgentGroupManager({
             id: "groupManagerId",
-            agentType: "manager",
+            agentType: "group_manager",
             name: "Manager",
             description: "A group manager agent",
             tags: [],
@@ -91,10 +96,10 @@ describe("WaldiezAgentGroupManager", () => {
             methodContent: null,
         });
         expect(groupManager.data.modelIds).toEqual([]);
-        expect(groupManager.data.skills).toEqual([]);
+        expect(groupManager.data.tools).toEqual([]);
         expect(groupManager.tags).toEqual([]);
         expect(groupManager.requirements).toEqual([]);
-        expect(groupManager.data.parentId).toBeNull();
+        expect(groupManager.data.parentId).toBeUndefined();
         expect(groupManager.data.maxRound).toBe(1);
         expect(groupManager.data.adminName).toBe("admin");
         expect(groupManager.data.speakers).toEqual(speakers);

@@ -16,4 +16,5 @@ export type WaldiezEdgeBasicTabProps = {
         }>,
     ) => void;
     onDataChange: (data: Partial<WaldiezEdgeData>) => void;
+    skipDescription?: boolean;
 };

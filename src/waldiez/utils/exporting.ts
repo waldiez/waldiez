@@ -6,32 +6,54 @@ import JSZip from "jszip";
 
 export const BASE_EXTENSION = ".waldiez";
 
-const isMac = () => {
-    if ("userAgentData" in navigator) {
-        if (typeof navigator.userAgentData === "object") {
-            const userAgentData = navigator.userAgentData;
-            if (userAgentData && "platform" in userAgentData && typeof userAgentData.platform === "string") {
-                return userAgentData.platform.toLowerCase().includes("mac");
-            }
+/**
+ * Check if the current device is an Apple device (macOS, iOS, or iPadOS).
+ *
+ * This function uses `navigator.userAgentData` if available,
+ * and falls back to checking `navigator.userAgent` for older browsers.
+ *
+ * @returns True if the device is Apple (macOS or iOS), false otherwise.
+ */
+const isAppleDevice = (): boolean => {
+    // Modern API (Chromium-based browsers)
+    if ("userAgentData" in navigator && typeof navigator.userAgentData === "object") {
+        const userAgentData = navigator.userAgentData;
+        if (userAgentData && "platform" in userAgentData && typeof userAgentData.platform === "string") {
+            const platform = userAgentData.platform.toLowerCase();
+            return platform.includes("mac") || platform.includes("ios");
         }
     }
-    // fallback
-    return navigator.userAgent.includes("Macintosh") || navigator.userAgent.includes("Mac OS X");
+
+    // Fallback: check legacy userAgent
+    const ua = navigator.userAgent;
+    return /Macintosh|Mac OS X|iPhone|iPad|iPod/i.test(ua);
 };
 
-const getItemExtension = (itemType: "model" | "skill" | "agent" | "flow") => {
+/**
+ * Get the appropriate file extension based on the item type.
+ *
+ * @param itemType - The type of item being exported (model, tool, agent, or flow).
+ * @returns The file extension for the specified item type.
+ */
+const getItemExtension = (itemType: "model" | "tool" | "agent" | "flow") => {
     let extension = BASE_EXTENSION;
     if (itemType !== "flow") {
-        // .{BASE_EXTENSION}Model, .{BASE_EXTENSION}Skill, .{BASE_EXTENSION}Agent
+        // .{BASE_EXTENSION}Model, .{BASE_EXTENSION}Tool, .{BASE_EXTENSION}Agent
         extension += itemType.charAt(0).toUpperCase() + itemType.slice(1);
     }
-    if (isMac()) {
+    if (isAppleDevice()) {
         // we might get a Gatekeeper warning on macOS if we use a custom extension
         extension += ".zip";
     }
     return extension;
 };
 
+/**
+ * Download a file with the specified blob and filename.
+ *
+ * @param blob - The Blob object containing the file data.
+ * @param filename - The name of the file to be downloaded.
+ */
 const downloadFile = (blob: Blob, filename: string) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -41,7 +63,15 @@ const downloadFile = (blob: Blob, filename: string) => {
     URL.revokeObjectURL(url);
 };
 
-export const getFilenameForExporting = (baseName: string, itemType: "model" | "skill" | "agent" | "flow") => {
+/**
+ * Get a filename for exporting an item, ensuring it has the correct extension
+ * and adheres to length constraints.
+ *
+ * @param baseName - The base name for the file.
+ * @param itemType - The type of item being exported (model, tool, agent, or flow).
+ * @returns A formatted filename with the appropriate extension.
+ */
+export const getFilenameForExporting = (baseName: string, itemType: "model" | "tool" | "agent" | "flow") => {
     const extension = getItemExtension(itemType);
     let filename = baseName || "flow";
     if (filename.length < 3) {
@@ -53,6 +83,13 @@ export const getFilenameForExporting = (baseName: string, itemType: "model" | "s
     return `${filename}${extension}`;
 };
 
+/**
+ * Download a ZIP file containing the specified contents.
+ *
+ * @param filename - The name of the ZIP file to be created.
+ * @param contents - The contents to be included in the ZIP file.
+ * @param onError - Callback function to handle errors during download.
+ */
 const downloadZip = async (filename: string, contents: string, onError: () => void) => {
     try {
         const internalName = filename.replace(/\.zip$/, "");
@@ -65,9 +102,17 @@ const downloadZip = async (filename: string, contents: string, onError: () => vo
     }
 };
 
+/**
+ * Export an item (model, tool, agent, or flow) to a file.
+ *
+ * @param name - The name of the item to be exported.
+ * @param itemType - The type of item being exported (model, tool, agent, or flow).
+ * @param exporter - A function that returns the item data to be exported.
+ * @param onNoItem - Callback function to handle cases where there is no item to export.
+ */
 export const exportItem = async (
     name: string,
-    itemType: "model" | "skill" | "agent" | "flow",
+    itemType: "model" | "tool" | "agent" | "flow",
     exporter: () => { [key: string]: unknown } | null,
     onNoItem: () => void = () => {
         console.error("No item to export");
@@ -80,7 +125,9 @@ export const exportItem = async (
         if (filename.endsWith(".zip")) {
             await downloadZip(filename, itemString, onNoItem);
         } else {
-            const blob = new Blob([itemString], { type: "application/json; charset=utf-8" });
+            const blob = new Blob([itemString], {
+                type: "application/json; charset=utf-8",
+            });
             downloadFile(blob, filename);
         }
     } else {

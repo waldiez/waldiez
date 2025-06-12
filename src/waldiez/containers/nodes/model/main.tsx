@@ -11,7 +11,6 @@ import { getImportExportView } from "@waldiez/containers/nodes/common";
 import { useWaldiezNodeModel } from "@waldiez/containers/nodes/model/hooks";
 import { WaldiezNodeModelModal } from "@waldiez/containers/nodes/model/modal";
 import { WaldiezNodeModel } from "@waldiez/models";
-import { getDateString } from "@waldiez/utils";
 
 export const WaldiezNodeModelView = ({ id, data }: NodeProps<WaldiezNodeModel>) => {
     const {
@@ -40,7 +39,6 @@ export const WaldiezNodeModelView = ({ id, data }: NodeProps<WaldiezNodeModel>) 
                     role="button"
                     title="Edit"
                     className="clickable"
-                    // id={`open-model-node-modal-${id}`}
                     data-node-id={id}
                     data-testid={`open-model-node-modal-${id}`}
                     onClick={onOpen}
@@ -53,10 +51,6 @@ export const WaldiezNodeModelView = ({ id, data }: NodeProps<WaldiezNodeModel>) 
                 <div className={`model-logo ${data.apiType}`}>
                     <img src={logo} alt="logo" />
                 </div>
-            </div>
-            <div className="model-content">
-                <div className="description">{data.description}</div>
-                <div className="date-info">{getDateString(data.updatedAt)}</div>
             </div>
             <div className="model-footer" data-testid={`model-footer-${id}`}>
                 <div

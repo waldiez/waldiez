@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, description, edgesCount, flowId, name, requirements, tags, updatedAt } from "./data";
 import { render } from "@testing-library/react";
 
 import { ReactFlow, ReactFlowProvider } from "@xyflow/react";
@@ -11,6 +10,8 @@ import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar, SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { createdAt, description, edgesCount, flowId, name, requirements, tags, updatedAt } from "./data";
 
 export const onChange = vi.fn();
 
@@ -31,10 +32,10 @@ for (let i = 0; i < edgesCount; i++) {
                 type: i % 2 === 0 ? "string" : "none",
                 content: "Message content",
                 context: {},
-                use_carryover: false,
+                useCarryover: false,
             },
             summary: {
-                type: "last_msg",
+                type: "lastMsg",
                 prompt: "Prompt",
                 args: {},
             },
@@ -55,17 +56,16 @@ const nodes = edges.map((edge, index) => {
         },
         data: {
             label: `Node ${index}`,
-            agentType:
-                index > 6 ? "swarm" : index % 3 === 0 ? "user" : index % 3 === 1 ? "assistant" : "manager",
+            agentType: index % 3 === 0 ? "user_proxy" : "assistant",
             nestedChats: [],
-            skills: [],
+            tools: [],
             modelIds: [],
             functions: [],
         },
     };
 });
 
-export const renderFlow = (edgePositions: number[] = [0, 1, 2, 3]) => {
+export const renderFlow = async (edgePositions: number[] = [0, 1, 2, 3]) => {
     const storeEdges = edges.map((edge, index) => {
         return {
             ...edge,

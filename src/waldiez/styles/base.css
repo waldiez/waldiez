@@ -1,15 +1,46 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 :root {
-  --user-agent-color: #bc76f5;
+  --user-proxy-agent-color: #bc76f5;
+  --user-proxy-agent-alt-color: #9f5bbf;
   --assistant-agent-color: #66bc57;
-  --group-manager-color: #ed8a34;
-  --rag-user-color: #e34561;
-  --swarm-agent-color: #f0c808;
+  --assistant-agent-alt-color: #4a9f45;
+  --rag-user-proxy-agent-color: #e34561;
+  --rag-user-proxy-agent-alt-color: #c03450;
   --reasoning-agent-color: #63d0d4;
-  --captain-agent-color: #0e2766;
-
-  /* --captain-agent-color: #112044; */
+  --reasoning-agent-alt-color: #4aa3a6;
+  --group-manager-agent-color: #ed8a34;
+  --group-manager-agent-alt-color: #b76c2a;
   --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
   --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+}
+
+.flow-wrapper.dark {
+  --captain-agent-color: #133164;
+  --captain-agent-alt-color: #3d558a;
+  --rag-user-proxy-agent-background: rgb(207 69 97 / 20%);
+  --assistant-agent-background: rgb(0 100 0 / 20%);
+  --user-proxy-agent-background: rgb(179 0 255 / 20%);
+  --reasoning-agent-background: rgb(0 150 150 / 20%);
+  --captain-agent-background: rgb(14 39 102 / 20%);
+  --group-manager-agent-background: rgb(237 138 52 / 20%);
+  --background-color: #141414;
+  --text-color: #f8f8f8;
+}
+
+.flow-wrapper.light {
+  --captain-agent-color: #2957a4;
+  --captain-agent-alt-color: #aac4e6;
+  --rag-user-proxy-agent-background: rgb(207 69 97 / 10%);
+  --assistant-agent-background: rgb(0 100 0 / 10%);
+  --user-proxy-agent-background: rgb(179 0 255 / 10%);
+  --reasoning-agent-background: rgb(0 150 150 / 10%);
+  --captain-agent-background: rgb(14 39 102 / 15%);
+  --group-manager-agent-background: rgb(237 138 52 / 10%);
+  --background-color: #fefefe;
+  --text-color: #141414;
 }
 
 .flow-wrapper {
@@ -21,6 +52,7 @@
 }
 
 .flow-wrapper * {
+  box-sizing: border-box;
   scrollbar-width: thin;
 }
 
@@ -30,45 +62,4 @@
 
 .flow-wrapper *:focus {
   outline: none;
-}
-
-.flow-wrapper a {
-  color: #007bff;
-}
-
-.flow-wrapper a:visited {
-  color: #007bff;
-}
-
-.flow-wrapper input[type="file"] {
-  display: none;
-}
-
-.flow-wrapper .clickable {
-  cursor: pointer;
-}
-
-.flow-wrapper input,
-textarea {
-  border-radius: 5px;
-  font-size: unset;
-}
-
-.flow-wrapper .number-max-width {
-  max-width: 100px;
-}
-
-.flow-wrapper textarea {
-  font-family: unset;
-  min-height: 2rem;
-}
-
-.flow-wrapper input:disabled {
-  cursor: unset;
-  pointer-events: none;
-}
-
-.flow-wrapper button:disabled {
-  cursor: unset !important;
-  opacity: 0.6;
 }

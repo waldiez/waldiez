@@ -2,9 +2,10 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Group chat manager agent."""
 
-from typing import List, Literal
+import warnings
+from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from typing_extensions import Annotated
 
 from ..agent import WaldiezAgent
@@ -21,36 +22,125 @@ class WaldiezGroupManager(WaldiezAgent):
 
     Attributes
     ----------
-    agent_type : Literal["manager"]
-        The agent type: 'manager' for a group manager agent
+    agent_type : Literal["group_manager"]
+        The agent type: 'group_manager' for a group manager agent
     data : WaldiezGroupManagerData
         The group manager agent's data.
 
     Functions
     ---------
-    validate_transitions(agent_ids: List[str])
+    validate_transitions(agent_ids: list[str])
         Validate the transitions.
     """
 
-    agent_type: Annotated[
-        Literal["manager"],
+    agent_type: Annotated[  # pyright: ignore
+        Literal["group_manager", "manager"],
         Field(
             "manager",
             title="Agent type",
-            description="The agent type: 'manager' for a group manager agent",
+            description=(
+                "The agent type: 'group_manager' for a group manager agent"
+            ),
             alias="agentType",
         ),
-    ]
-    data: Annotated[
+    ] = "group_manager"
+    data: Annotated[  # pyright: ignore
         WaldiezGroupManagerData,
         Field(
             title="Data",
             description="The group manager agent's data",
-            default_factory=WaldiezGroupManagerData,
+            default_factory=WaldiezGroupManagerData,  # pyright: ignore
         ),
     ]
 
-    def validate_transitions(self, agent_ids: List[str]) -> None:
+    @field_validator("agent_type", mode="before")
+    @classmethod
+    def validate_agent_type(cls, v: str) -> Literal["group_manager"]:
+        """Validate the agent type.
+
+        The agent type must be `group_manager`.
+        The other two are deprecated and will be removed in the future.
+
+        Parameters
+        ----------
+        v : str
+            The agent type.
+
+        Returns
+        -------
+        str
+            The validated agent type.
+
+        Raises
+        ------
+        ValueError
+            If the agent type is not `group_manager`.
+        """
+        if v in ["groupManager", "manager"]:  # pragma: no cover
+            # Deprecated agent type names
+            warnings.warn(
+                (
+                    "The agent types 'groupManager' and 'manager' are "
+                    "deprecated. Use 'group_manager' instead."
+                ),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        if v != "group_manager":  # pragma: no cover
+            raise ValueError(
+                "The agent type must be 'group_manager'. "
+                "Use 'group_manager' instead."
+            )
+        return "group_manager"
+
+    def validate_initial_agent_id(self, all_agent_ids: list[str]) -> None:
+        """Validate the initial agent ID.
+
+        The initial agent ID must be in the list of agent IDs.
+
+        Parameters
+        ----------
+        all_agent_ids : list[str]
+            The list of agent IDs.
+
+        Raises
+        ------
+        ValueError
+            If the initial agent ID is not in the list of agent IDs.
+        """
+        initial_agent_id = self.data.initial_agent_id
+        if initial_agent_id not in all_agent_ids:
+            raise ValueError(
+                f"Initial agent ID '{initial_agent_id}' "
+                f"is not in the list of agent IDs: {all_agent_ids}"
+            )
+
+    def get_speakers_order(self) -> list[str]:
+        """Get the order of the speakers.
+
+        Returns
+        -------
+        list[str]
+            The order of the speakers.
+
+        Raises
+        ------
+        RuntimeError
+            If the order is not set.
+        """
+        return self.data.speakers.get_order()
+
+    def set_speakers_order(self, group_members: list[str]) -> None:
+        """Set the order of the speakers.
+
+        Parameters
+        ----------
+        group_members : list[str]
+            The group members' IDs.
+        """
+        self.data.speakers.set_order(self.data.initial_agent_id, group_members)
+
+    def validate_transitions(self, agent_ids: list[str]) -> None:
         """Validate the transitions.
 
         If the selection mode is `transition`:
@@ -62,7 +152,7 @@ class WaldiezGroupManager(WaldiezAgent):
 
         Parameters
         ----------
-        agent_ids : List[str]
+        agent_ids : list[str]
             The list of agent IDs.
 
         Raises

@@ -2,14 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezSwarmAfterWork, WaldiezSwarmOnConditionAvailable } from "@waldiez/models/Agent";
+import { WaldiezAgentType } from "@waldiez/models/Agent/Common/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
 import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
+import {
+    WaldiezHandoffAvailability,
+    WaldiezHandoffCondition,
+    WaldiezTransitionTarget,
+} from "@waldiez/models/common";
 
 /**
  * Waldiez Chat Data
- * @param source - The source
- * @param target - The target
  * @param name - The name of the chat
  * @param description - The description of the chat
  * @param clearHistory - Clear history
@@ -20,22 +23,22 @@ import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/type
  * @param message - The message
  * @param nestedChat - The nested chat
  * @param prerequisites - The prerequisites (chat ids) for async mode
- * @param maxRounds - The maximum rounds
- * @param afterWork - The after work
- * @param flowAfterWork - The flow after work
- * @param contextVariables - The context variables
  * @param available - The available for handoff condition
+ * @param condition - The handoff condition
+ * @param afterWork - The after work transition
  * @param realSource - The real source (overrides source)
  * @param realTarget - The real target (overrides target)
  * @see {@link WaldiezMessage}
  * @see {@link WaldiezChatSummary}
  * @see {@link WaldiezNestedChat}
- * @see {@link WaldiezSwarmAfterWork}
- * @see {@link WaldiezSwarmOnConditionAvailable}
+ * @see {@link WaldiezAgentType}
+ * @see {@link WaldiezHandoffCondition}
+ * @see {@link WaldiezHandoffAvailability}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezChatData {
-    source: string;
-    target: string;
+    sourceType: WaldiezAgentType;
+    targetType: WaldiezAgentType;
     name: string;
     description: string;
     position: number;
@@ -49,20 +52,22 @@ export class WaldiezChatData {
         reply: WaldiezMessage | null;
     };
     prerequisites: string[] = [];
-    maxRounds: number;
-    afterWork: WaldiezSwarmAfterWork | null;
-    flowAfterWork: WaldiezSwarmAfterWork | null;
-    contextVariables: { [key: string]: string } = {};
-    available: WaldiezSwarmOnConditionAvailable = {
-        type: "none",
-        value: null,
-    };
     realSource: string | null = null;
     realTarget: string | null = null;
+    available: WaldiezHandoffAvailability = {
+        type: "none",
+        value: "",
+    };
+    condition: WaldiezHandoffCondition = {
+        conditionType: "string_llm",
+        prompt: "",
+    };
+    afterWork: WaldiezTransitionTarget | null = null;
+    silent?: boolean = false;
     constructor(
         props: {
-            source: string;
-            target: string;
+            sourceType: WaldiezAgentType;
+            targetType: WaldiezAgentType;
             name: string;
             description: string;
             clearHistory: boolean;
@@ -73,22 +78,21 @@ export class WaldiezChatData {
             message: WaldiezMessage;
             nestedChat: WaldiezNestedChat;
             prerequisites: string[];
-            maxRounds: number;
-            afterWork: WaldiezSwarmAfterWork | null;
-            flowAfterWork: WaldiezSwarmAfterWork | null;
-            contextVariables: { [key: string]: string };
-            available: WaldiezSwarmOnConditionAvailable;
+            condition: WaldiezHandoffCondition;
+            available: WaldiezHandoffAvailability;
+            afterWork: WaldiezTransitionTarget | null;
             realSource: string | null;
             realTarget: string | null;
+            silent?: boolean;
         } = {
-            source: "source",
-            target: "target",
+            sourceType: "user_proxy",
+            targetType: "assistant",
             name: "Chat",
             description: "New connection",
             clearHistory: true,
             maxTurns: null,
             summary: {
-                method: "last_msg",
+                method: "lastMsg",
                 prompt: "",
                 args: {},
             },
@@ -96,7 +100,7 @@ export class WaldiezChatData {
             order: -1,
             message: {
                 type: "none",
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -105,21 +109,23 @@ export class WaldiezChatData {
                 reply: null,
             },
             prerequisites: [],
-            maxRounds: 20,
-            afterWork: null,
-            flowAfterWork: null,
-            contextVariables: {},
+            condition: {
+                conditionType: "string_llm",
+                prompt: "",
+            },
             available: {
                 type: "none",
-                value: null,
+                value: "",
             },
+            afterWork: null,
             realSource: null,
             realTarget: null,
+            silent: false,
         },
     ) {
         const {
-            source,
-            target,
+            sourceType,
+            targetType,
             name,
             description,
             clearHistory,
@@ -130,16 +136,15 @@ export class WaldiezChatData {
             order,
             nestedChat,
             prerequisites,
-            maxRounds,
-            afterWork,
-            flowAfterWork,
-            contextVariables,
+            condition,
             available,
+            afterWork,
             realSource,
             realTarget,
+            silent,
         } = props;
-        this.source = source;
-        this.target = target;
+        this.sourceType = sourceType;
+        this.targetType = targetType;
         this.name = name;
         this.description = description;
         this.clearHistory = clearHistory;
@@ -150,12 +155,11 @@ export class WaldiezChatData {
         this.order = order;
         this.nestedChat = nestedChat;
         this.prerequisites = prerequisites;
-        this.maxRounds = maxRounds;
-        this.afterWork = afterWork;
-        this.flowAfterWork = flowAfterWork;
-        this.contextVariables = contextVariables;
+        this.condition = condition;
         this.available = available;
+        this.afterWork = afterWork;
         this.realSource = realSource;
         this.realTarget = realTarget;
+        this.silent = silent;
     }
 }

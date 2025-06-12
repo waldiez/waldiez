@@ -6,31 +6,42 @@ import {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentData,
     WaldiezAgentHumanInputMode,
-    WaldiezAgentLinkedSkill,
+    WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
+    WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common";
+import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez Assistant Agent Data.
- * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "SOMETIMES")
+ * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "TERMINATE")
  * @param systemMessage - The system message of the agent
  * @param codeExecutionConfig - The code execution configuration of the agent
  * @param agentDefaultAutoReply - The default auto reply of the agent
  * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
  * @param termination - The termination message check of the agent
- * @param modelIds - The model ids of the agent
- * @param skills - The linked skills of the agent
+ * @param modelIds - The agent's model ids
+ * @param tools - The tools available to the agent
  * @param parentId - The parent id of the agent
  * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
+ * @param afterWork - The handoff transition after work of the agent
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @param isMultimodal - The multimodal flag of the agent
  * @see {@link WaldiezAgentData}
- * @see {@link WaldiezAgentLinkedSkill}
+ * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
  * @see {@link WaldiezAgentTerminationMessageCheck}
  * @see {@link WaldiezAgentHumanInputMode}
  * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
  */
 export class WaldiezAgentAssistantData extends WaldiezAgentData {
+    isMultimodal: boolean;
+
     constructor(
         props: {
             humanInputMode: WaldiezAgentHumanInputMode;
@@ -40,9 +51,14 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
             maxConsecutiveAutoReply: number | null;
             termination: WaldiezAgentTerminationMessageCheck;
             modelIds: string[];
-            skills: WaldiezAgentLinkedSkill[];
-            parentId: string | null;
+            tools: WaldiezAgentLinkedTool[];
+            parentId?: string | null;
             nestedChats: WaldiezAgentNestedChat[];
+            contextVariables: Record<string, any>;
+            updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
+            afterWork: WaldiezTransitionTarget | null;
+            handoffs: string[]; // handoff / edge ids
+            isMultimodal: boolean;
         } = {
             humanInputMode: "NEVER",
             systemMessage: null,
@@ -56,11 +72,30 @@ export class WaldiezAgentAssistantData extends WaldiezAgentData {
                 methodContent: null,
             },
             modelIds: [],
-            skills: [],
-            parentId: null,
-            nestedChats: [],
+            tools: [],
+            parentId: undefined,
+            nestedChats: [
+                {
+                    messages: [],
+                    triggeredBy: [],
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
+                },
+            ],
+            contextVariables: {},
+            updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
+            isMultimodal: false,
         },
     ) {
         super(props);
+        this.isMultimodal = props.isMultimodal;
     }
 }

@@ -7,9 +7,12 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ImportMetaEnv {
     VS_PATH?: string;
+    USE_DEV_SERVER?: string;
+    DEV_WS_URL?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ImportMeta {
     readonly env: ImportMetaEnv;
 }
+declare const __WALDIEZ_VERSION__: string;

@@ -10,15 +10,17 @@ from typing import Any, Callable
 import typer
 from typer.models import CommandInfo
 
-HAVE_RUNNER = False
+_have_runner = False
 runner_app: Callable[..., Any] | None = None
 
+# noinspection PyBroadException
+# pylint: disable=broad-exception-caught
 try:
     from waldiez_runner.cli import run  # type: ignore[unused-ignore, import-not-found, import-untyped]
 
-    runner_app = run
+    runner_app = run  # pyright: ignore
 
-    HAVE_RUNNER = True
+    _have_runner = True
 except BaseException:
     pass
 
@@ -31,7 +33,7 @@ def add_runner_cli(app: typer.Typer) -> None:
     app : typer.Typer
         The Typer app to add the runner command to.
     """
-    if HAVE_RUNNER:
+    if _have_runner:
         app.registered_commands.append(
             CommandInfo(name="serve", callback=runner_app)
         )

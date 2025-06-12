@@ -2,182 +2,186 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Handle, NodeResizer, Position } from "@xyflow/react";
+import { NodeResizer } from "@xyflow/react";
+
+import { useMemo } from "react";
+import { FaCopy } from "react-icons/fa";
+import { FaGear, FaTrash } from "react-icons/fa6";
 
 import { WaldiezEdgeModal } from "@waldiez/containers/edges/modal";
 import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
-import { WaldiezNodeAgentFooter } from "@waldiez/containers/nodes/agent/footer";
-import { WaldiezNodeAgentHeader } from "@waldiez/containers/nodes/agent/header";
+import { createHandles } from "@waldiez/containers/nodes/agent/handles";
 import { useWaldiezNodeAgent } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal";
-import { WaldiezNodeSwarmContainer } from "@waldiez/containers/nodes/agent/swarmContainer";
 import { WaldiezNodeAgentProps } from "@waldiez/containers/nodes/agent/types";
-import { AGENT_COLORS } from "@waldiez/theme";
+import { AGENT_COLORS, AGENT_ICONS } from "@waldiez/theme";
 
-export const WaldiezNodeAgentView = (props: WaldiezNodeAgentProps) => {
-    const { id, data } = props;
+const RESIZE_LIMITS = {
+    manager: {
+        minWidth: 490,
+        minHeight: 330,
+    },
+    other: {
+        minWidth: 130,
+        minHeight: 120,
+    },
+};
+
+/**
+ * Component for rendering a Waldiez Agent Node
+ * Handles node appearance, drag interactions, and modal management
+ */
+export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
+    const { id, data, selected } = props;
     const agentType = data.agentType;
+
+    // Use the node agent hook for core functionality
     const {
         edge,
         flowId,
         isReadOnly,
         isNodeModalOpen,
         isEdgeModalOpen,
+        isModalOpen,
+        isDragging,
+        onDragOver,
+        onDragLeave,
+        onDrop,
+        onDelete,
+        onClone,
         onOpenNodeModal,
         onCloseNodeModal,
         onOpenEdgeModal,
         onCloseEdgeModal,
         onEdgeConnection,
-    } = useWaldiezNodeAgent();
-    const isModalOpen = isNodeModalOpen || isEdgeModalOpen;
-    let className = isModalOpen ? "nodrag nowheel" : "";
-    if (!data.parentId) {
-        className += `agent-node ${agentType}`;
-    }
-    if (agentType === "swarm_container") {
-        return (
-            <WaldiezNodeSwarmContainer
-                {...props}
-                isNodeModalOpen={isNodeModalOpen}
-                onOpenNodeModal={onOpenNodeModal}
-                onCloseNodeModal={onCloseNodeModal}
-            />
-        );
-    }
-    const handleClassNameBase = agentType === "swarm" ? "swarm-" : data.parentId ? "hidden " : "";
+    } = useWaldiezNodeAgent(id);
+
+    // Dynamic class name generation
+    const className = useMemo(() => {
+        let classes = isModalOpen ? "nodrag nowheel " : "";
+
+        if (!data.parentId) {
+            classes += `agent-node ${agentType}`;
+        } else {
+            classes += `agent-node ${agentType} group-member`;
+        }
+
+        if (agentType === "group_manager") {
+            classes += " flex-column flex-1";
+            if (isDragging) {
+                classes += " dragging";
+            }
+        }
+
+        return classes;
+    }, [isModalOpen, data.parentId, agentType, isDragging]);
+
+    // Handle class name calculation
+    const handleClassNameBase = useMemo(
+        () => (data.parentId ? "group-member " : agentType === "group_manager" ? "group-manager " : ""),
+        [data.parentId, agentType],
+    );
+
+    // Node size constraints
+    const minWidth = useMemo(
+        () => (agentType === "group_manager" ? RESIZE_LIMITS.manager.minWidth : RESIZE_LIMITS.other.minWidth),
+        [agentType],
+    );
+    const minHeight = useMemo(
+        () =>
+            agentType === "group_manager" ? RESIZE_LIMITS.manager.minHeight : RESIZE_LIMITS.other.minHeight,
+        [agentType],
+    );
+    const agentImgSrc = AGENT_ICONS[agentType];
+
     return (
-        <div className={className} data-testid={`agent-node-${id}-view`}>
-            {!data.parentId && (
-                <div className="agent-content" data-testid={`agent-${id}-content`}>
-                    {agentType !== "swarm" && (
-                        <NodeResizer
-                            color={AGENT_COLORS[agentType]}
-                            minWidth={206}
-                            minHeight={206}
-                            handleStyle={{ color: AGENT_COLORS[agentType] }}
-                            handleClassName={agentType}
+        <div
+            className={className}
+            data-testid={`agent-node-${id}-view`}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+        >
+            <NodeResizer
+                color={AGENT_COLORS[agentType]}
+                minWidth={minWidth}
+                minHeight={minHeight}
+                handleStyle={{ color: AGENT_COLORS[agentType], borderColor: AGENT_COLORS[agentType] }}
+                handleClassName={agentType}
+            />
+            {!isReadOnly && !isDragging && selected && (
+                <div className={`agent-actions ${agentType}`} data-testid={`agent-actions-${id}`}>
+                    <FaTrash
+                        role="button"
+                        onClick={onDelete}
+                        title="Delete Agent"
+                        className="delete-icon clickable margin-right-20"
+                        aria-label="Delete Agent"
+                    />
+                    {data.agentType !== "group_manager" && (
+                        <FaCopy
+                            role="button"
+                            onClick={onClone}
+                            title="Clone Agent"
+                            className="copy-icon margin-right-20 clickable"
+                            aria-label="Clone Agent"
                         />
                     )}
-                    <WaldiezNodeAgentHeader id={id} data={data} onOpenNodeModal={onOpenNodeModal} />
+                    <FaGear
+                        role="button"
+                        className="clickable cog-icon"
+                        onClick={onOpenNodeModal}
+                        aria-label="Open Settings"
+                        title="Open Settings"
+                    />
+                </div>
+            )}
+
+            <div className="agent-main">
+                <div className="agent-top">
+                    <div className={"agent-icon-with-label"}>
+                        <img className="agent-icon-image" src={agentImgSrc} alt="Agent" />
+                        <div className="agent-icon-label">{data.label}</div>
+                    </div>
                     <WaldiezNodeAgentBody
                         flowId={flowId}
                         id={id}
                         data={data}
                         isModalOpen={isModalOpen}
                         isReadOnly={isReadOnly}
+                        onOpenModal={onOpenNodeModal}
                     />
-                    <WaldiezNodeAgentFooter id={id} data={data} isModalOpen={isModalOpen} />
                 </div>
-            )}
-            <Handle
-                className={`${handleClassNameBase}handle top target`}
-                type="target"
-                isConnectableEnd
-                position={Position.Top}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-top-target-${id}`}
-                id={`agent-handle-top-target-${id}`}
-                style={{ left: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle top source`}
-                type="source"
-                isConnectableStart
-                position={Position.Top}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-top-source-${id}`}
-                id={`agent-handle-top-source-${id}`}
-                style={{ left: "25%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle bottom target`}
-                type="target"
-                isConnectableEnd
-                position={Position.Bottom}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-bottom-target-${id}`}
-                id={`agent-handle-bottom-target-${id}`}
-                style={{ left: "25%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle bottom source`}
-                type="source"
-                isConnectableStart
-                position={Position.Bottom}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-bottom-source-${id}`}
-                id={`agent-handle-bottom-source-${id}`}
-                style={{ left: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle left target`}
-                type="target"
-                // isConnectableEnd
-                position={Position.Left}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-left-target-${id}`}
-                id={`agent-handle-left-target-${id}`}
-                style={{ top: "25%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle left source`}
-                type="source"
-                isConnectableStart
-                position={Position.Left}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-left-source-${id}`}
-                id={`agent-handle-left-source-${id}`}
-                style={{ top: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle right target`}
-                type="target"
-                isConnectableEnd
-                position={Position.Right}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-right-target-${id}`}
-                id={`agent-handle-right-target-${id}`}
-                style={{ top: "75%" }}
-            />
-            <Handle
-                className={`${handleClassNameBase}handle right source`}
-                type="source"
-                isConnectableStart
-                position={Position.Right}
-                onConnect={onEdgeConnection}
-                data-testid={`agent-handle-right-source-${id}`}
-                id={`agent-handle-right-source-${id}`}
-                style={{ top: "25%" }}
-            />
-            <button
-                title="Open Node Modal"
-                type="button"
-                // id={`open-agent-node-modal-${id}`}
-                data-node-id={id}
-                data-testid={`open-agent-node-modal-${id}`}
-                className="hidden"
-                onClick={onOpenNodeModal}
-            />
-            <button
-                title="Open Edge Modal"
-                type="button"
-                id={`open-edge-modal-node-${id}`}
-                data-testid={`open-edge-modal-node-${id}`}
-                className="hidden"
-                onClick={onOpenEdgeModal}
-                data-edge-id=""
-            ></button>
-            {edge && isEdgeModalOpen && (
-                <WaldiezEdgeModal isOpen={isEdgeModalOpen} edgeId={edge.id} onClose={onCloseEdgeModal} />
-            )}
-            {isNodeModalOpen && (
-                <WaldiezNodeAgentModal
-                    id={id}
-                    data={data}
-                    isOpen={isNodeModalOpen}
-                    onClose={onCloseNodeModal}
+                {createHandles({ agentType, id, handleClassNameBase, selected, onEdgeConnection })}
+                <button
+                    title="Open Node Modal"
+                    type="button"
+                    data-node-id={id}
+                    data-testid={`open-agent-node-modal-${id}`}
+                    className="hidden"
+                    onClick={onOpenNodeModal}
                 />
-            )}
+                <button
+                    title="Open Edge Modal"
+                    type="button"
+                    data-testid={`open-edge-modal-node-${id}`}
+                    className="hidden"
+                    onClick={onOpenEdgeModal}
+                    data-edge-node-id={id}
+                    data-edge-id=""
+                />
+                {edge && isEdgeModalOpen && !isNodeModalOpen && (
+                    <WaldiezEdgeModal isOpen={isEdgeModalOpen} edgeId={edge.id} onClose={onCloseEdgeModal} />
+                )}
+                {isNodeModalOpen && !isEdgeModalOpen && (
+                    <WaldiezNodeAgentModal
+                        id={id}
+                        data={data}
+                        isOpen={isNodeModalOpen}
+                        onClose={onCloseNodeModal}
+                    />
+                )}
+            </div>
         </div>
     );
 };

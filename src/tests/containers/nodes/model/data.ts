@@ -19,6 +19,7 @@ export const modelData = {
     temperature: 0.1,
     topP: 0.2,
     maxTokens: 200,
+    extras: {},
     defaultHeaders: {
         "header-1": "value-1",
     },

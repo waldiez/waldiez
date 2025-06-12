@@ -1,0 +1,57 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+.flow-wrapper .group_manager .react-flow__handle {
+  border-radius: 2px;
+  background-color: var(--group-manager-agent-color);
+}
+
+.flow-wrapper .agent-node.group_manager {
+  border-radius: 10px;
+  width: auto;
+  height: auto;
+  min-width: 480px;
+  min-height: 320px;
+  flex-grow: 1;
+}
+
+.flow-wrapper .agent-node.group_manager .agent-header .agent-label {
+  max-width: 320px !important;
+}
+
+.react-flow__node.highlight > .agent-node.group_manager,
+.flow-wrapper .agent-node.dragging.group_manager {
+  background-color: rgb(237 138 52 / 15%) !important;
+}
+
+@media (width <= 480px) {
+  .flow-wrapper .agent-node.group_manager {
+    min-width: 100%;
+    min-height: 100%;
+  }
+}
+
+.flow-wrapper .group-member .react-flow__handle {
+  border-radius: 2px;
+
+  /* background-color: var(--group-group-manager-agent-color); */
+}
+
+.flow-wrapper .react-flow__handle.group-member.target {
+  width: 20px !important;
+  height: 10px !important;
+}
+
+.flow-wrapper .group-member .react-flow__handle-left.target,
+.flow-wrapper .group-member .react-flow__handle-right.target {
+  width: 10px !important;
+  height: 20px !important;
+}
+
+.flow-wrapper .group-member .react-flow__handle.source {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}

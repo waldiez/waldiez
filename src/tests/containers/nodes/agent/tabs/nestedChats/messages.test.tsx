@@ -2,15 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { renderAgent, submitAgentChanges } from "../../common";
-import { agentId, flowId } from "../../data";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
 
+import { renderAgent, submitAgentChanges } from "../../common";
+import { agentId, flowId } from "../../data";
+
 const goToNestedChatsTab = (isReply: boolean, skipMessages: boolean = false) => {
-    renderAgent("user", {
+    renderAgent("assistant", {
         openModal: true,
         includeNestedChats: true,
         dataOverrides: {
@@ -18,12 +19,13 @@ const goToNestedChatsTab = (isReply: boolean, skipMessages: boolean = false) => 
                 {
                     triggeredBy: ["test-agent0"],
                     messages: skipMessages ? [] : [{ id: "test-edge-1", isReply }],
+                    order: 0,
                 },
             ],
         },
     });
     // Click on the Nested Chats tab
-    const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-agent-nestedChats-${agentId}`);
+    const nestedChatsTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-nested`);
     expect(nestedChatsTab).toBeInTheDocument();
     fireEvent.click(nestedChatsTab);
 };
@@ -52,7 +54,9 @@ describe("Nested Chats tab messages", () => {
                 value: "agent-4",
             },
         });
-        expect(screen.getByTestId("remove-nested-chat-recipient-1")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByTestId("remove-nested-chat-recipient-1")).toBeInTheDocument();
+        });
         submitAgentChanges();
     });
     it("should add a new message with agent reply", async () => {
@@ -73,7 +77,9 @@ describe("Nested Chats tab messages", () => {
         const addMessageButton = screen.getByTestId(`new-nested-chat-add-recipient-${agentId}`);
         expect(addMessageButton).toBeInTheDocument();
         fireEvent.click(addMessageButton);
-        expect(screen.getByTestId("remove-nested-chat-recipient-1")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByTestId("remove-nested-chat-recipient-1")).toBeInTheDocument();
+        });
         submitAgentChanges();
     });
     it("should remove a message", () => {
@@ -98,8 +104,10 @@ describe("Nested Chats tab messages", () => {
                 value: "agent-4",
             },
         });
+        await waitFor(() => {
+            expect(screen.getByTestId("nested-chat-reorder-up-1")).toBeInTheDocument();
+        });
         const upButton = screen.getByTestId("nested-chat-reorder-up-1");
-        expect(upButton).toBeInTheDocument();
         fireEvent.click(upButton);
         const downButton = screen.getByTestId("nested-chat-reorder-down-0");
         expect(downButton).toBeInTheDocument();

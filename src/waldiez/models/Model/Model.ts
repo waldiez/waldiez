@@ -53,9 +53,13 @@ export class WaldiezModel {
         this.rest = props.rest;
     }
 
+    /**
+     * Creates a new WaldiezModel instance with default values.
+     * @returns A new instance of WaldiezModel.
+     */
     static create(): WaldiezModel {
         return new WaldiezModel({
-            id: `ws-${getId()}`,
+            id: `wt-${getId()}`,
             name: "Model",
             description: "A new model",
             tags: [],

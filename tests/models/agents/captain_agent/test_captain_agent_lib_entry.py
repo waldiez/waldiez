@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.agents.captain_agent.captain_agent_lib_entry.*."""
 
-from waldiez.models.agents.captain_agent.captain_agent_lib_entry import (
+from waldiez.models.agents.captain.captain_agent_lib_entry import (
     WaldiezCaptainAgentLibEntry,
 )
 

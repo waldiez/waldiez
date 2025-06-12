@@ -8,15 +8,17 @@ import { InfoLabel } from "@waldiez/components/infoLabel";
 
 describe("InfoLabel", () => {
     it("should render successfully", () => {
-        const { baseElement } = render(<InfoLabel label="test" info="test" />);
+        const { baseElement } = render(<InfoLabel htmlFor="test" label="test" info="test" />);
         expect(baseElement).toBeTruthy();
     });
     it("should render successfully with function", () => {
-        const { baseElement } = render(<InfoLabel label={() => "test"} info={() => "test"} />);
+        const { baseElement } = render(<InfoLabel htmlFor="test" label={() => "test"} info={() => "test"} />);
         expect(baseElement).toBeTruthy();
     });
     it("should render successfully with React.JSX.Element", () => {
-        const { baseElement } = render(<InfoLabel label={<div>test</div>} info={<div>test</div>} />);
+        const { baseElement } = render(
+            <InfoLabel htmlFor="test" label={<div>test</div>} info={<div>test</div>} />,
+        );
         expect(baseElement).toBeTruthy();
     });
 });

@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { createdAt, flowId, modelData, modelId, updatedAt } from "./data";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
@@ -10,6 +9,8 @@ import { describe, expect, it } from "vitest";
 import { WaldiezNodeModelView } from "@waldiez/containers/nodes";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
+
+import { createdAt, flowId, modelData, modelId, updatedAt } from "./data";
 
 const renderModel = (overrides: { [key: string]: any } = {}, openModal: boolean = false) => {
     const modelDataToUse = { ...modelData, ...overrides };

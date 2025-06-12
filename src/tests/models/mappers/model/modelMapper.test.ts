@@ -110,7 +110,9 @@ describe("modelMapper", () => {
         expect(modelJson.type).toBe("model");
         expect(modelJson.name).toBe(modelNode.data.label);
         expect((modelJson.data as any).apiKey).toBe("REPLACE_ME");
-        expect((modelJson.data as any).defaultHeaders).toEqual({ key: "REPLACE_ME" });
+        expect((modelJson.data as any).defaultHeaders).toEqual({
+            key: "REPLACE_ME",
+        });
     });
     it("should convert a model to a model node", () => {
         const modelData = new WaldiezModelData();
@@ -190,6 +192,14 @@ describe("modelMapper", () => {
                 temperature: 0.5,
                 topP: 0.9,
                 maxTokens: 100,
+                aws: {
+                    accessKey: null,
+                    profileName: null,
+                    region: null,
+                    secretKey: null,
+                    sessionToken: null,
+                },
+                extras: {},
                 defaultHeaders: { key: "value" },
                 price: {
                     promptPricePer1k: 1,

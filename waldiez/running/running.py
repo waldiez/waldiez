@@ -6,20 +6,20 @@ import asyncio
 import datetime
 import io
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
-import warnings
 from contextlib import asynccontextmanager, contextmanager
 from pathlib import Path
 from typing import (
+    Any,
     AsyncIterator,
     Callable,
     Iterator,
     Optional,
     Set,
-    Tuple,
     Union,
 )
 
@@ -73,6 +73,23 @@ async def a_chdir(to: Union[str, Path]) -> AsyncIterator[None]:
         os.chdir(old_cwd)
 
 
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences from text.
+
+    Parameters
+    ----------
+    text : str
+        The text to strip.
+
+    Returns
+    -------
+    str
+        The text without ANSI escape sequences.
+    """
+    ansi_pattern = re.compile(r"\x1b\[[0-9;]*m|\x1b\[.*?[@-~]")
+    return ansi_pattern.sub("", text)
+
+
 def before_run(
     output_path: Optional[Union[str, Path]],
     uploads_root: Optional[Union[str, Path]],
@@ -120,9 +137,10 @@ def install_requirements(
     requirements_string = ", ".join(extra_requirements)
     printer(f"Installing requirements: {requirements_string}")
     pip_install = [sys.executable, "-m", "pip", "install"]
+    break_system_packages = ""
     if not in_virtualenv():  # it should
         # if not, let's try to install as user
-        # not sure if --break-system-packages is safe
+        # not sure if --break-system-packages is safe,
         # but it might fail if we don't
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
@@ -138,10 +156,10 @@ def install_requirements(
         ) as proc:
             if proc.stdout:
                 for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
-                    printer(line.strip())
+                    printer(strip_ansi(line.strip()))
             if proc.stderr:
                 for line in io.TextIOWrapper(proc.stderr, encoding="utf-8"):
-                    printer(line.strip())
+                    printer(strip_ansi(line.strip()))
     finally:
         if not in_virtualenv():
             # restore the old env var
@@ -166,10 +184,12 @@ async def a_install_requirements(
     requirements_string = ", ".join(extra_requirements)
     printer(f"Installing requirements: {requirements_string}")
     pip_install = [sys.executable, "-m", "pip", "install"]
+    break_system_packages = ""
     if not in_virtualenv():
         break_system_packages = os.environ.get("PIP_BREAK_SYSTEM_PACKAGES", "")
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
-        pip_install.extend(["--user"])
+        if not is_root():
+            pip_install.extend(["--user"])
     pip_install.extend(extra_requirements)
     # pylint: disable=too-many-try-statements
     try:
@@ -180,10 +200,10 @@ async def a_install_requirements(
         )
         if proc.stdout:
             async for line in proc.stdout:
-                printer(line.decode().strip())
+                printer(strip_ansi(line.decode().strip()))
         if proc.stderr:
             async for line in proc.stderr:
-                printer(line.decode().strip())
+                printer(strip_ansi(line.decode().strip()))
     finally:
         if not in_virtualenv():
             if break_system_packages:
@@ -213,7 +233,7 @@ def after_run(
         The flow name.
     skip_mmd : bool, optional
         Whether to skip the mermaid sequence diagram generation,
-        by default False
+        by default, False
     """
     if isinstance(output_path, str):
         output_path = Path(output_path)
@@ -276,7 +296,7 @@ def copy_results(
         ):
             continue
         if item.is_file():
-            # let's also copy the tree of thoughts image
+            # let's also copy the "tree of thoughts" image
             # to the output directory
             if item.name.endswith("tree_of_thoughts.png") or item.name.endswith(
                 "reasoning_tree.json"
@@ -305,54 +325,53 @@ def get_printer() -> Callable[..., None]:
     Callable[..., None]
         The printer function.
     """
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            module="flaml",
-            message="^.*flaml.automl is not available.*$",
-        )
-        from autogen.io import IOStream  # type: ignore
+    from autogen.io import IOStream  # type: ignore
 
+    # noinspection PyUnboundLocalVariable
     printer = IOStream.get_default().print
 
-    def safe_printer(*args: object, **kwargs: object) -> None:
+    def safe_printer(*args: Any, **kwargs: Any) -> None:
         try:
             printer(*args, **kwargs)
         except UnicodeEncodeError:
-            # pylint: disable=too-many-try-statements
             try:
-                msg, flush = get_what_to_print(*args, **kwargs)
-                printer(msg, end="", flush=flush)
+                # Use the helper to get safely encoded message
+                safe_msg, flush = get_what_to_print(*args, **kwargs)
+                # Try printing the safe message
+                # (without end since it's already included)
+                printer(safe_msg, end="", flush=flush)
             except UnicodeEncodeError:
-                sys.stdout = io.TextIOWrapper(
-                    sys.stdout.buffer, encoding="utf-8"
-                )
-                sys.stderr = io.TextIOWrapper(
-                    sys.stderr.buffer, encoding="utf-8"
-                )
+                # pylint: disable=too-many-try-statements
                 try:
-                    printer(*args, **kwargs)
-                except UnicodeEncodeError:
-                    sys.stderr.write(
-                        "Could not print the message due to encoding issues.\n"
+                    # If that still fails, write directly to buffer
+                    msg, flush = get_what_to_print(*args, **kwargs)
+                    safe_msg_bytes = msg.encode("utf-8", errors="replace")
+                    sys.stdout.buffer.write(safe_msg_bytes)
+                    if flush:
+                        sys.stdout.buffer.flush()
+                except Exception:  # pylint: disable=broad-exception-caught
+                    error_msg = (
+                        b"Could not print message due to encoding issues.\n"
                     )
+                    sys.stderr.buffer.write(error_msg)
+                    sys.stderr.buffer.flush()
 
     return safe_printer
 
 
-def get_what_to_print(*args: object, **kwargs: object) -> Tuple[str, bool]:
+def get_what_to_print(*args: object, **kwargs: object) -> tuple[str, bool]:
     """Get what to print.
 
     Parameters
     ----------
     args : object
-        The arguments.
+        The print arguments.
     kwargs : object
         The keyword arguments.
 
     Returns
     -------
-    Tuple[str, bool]
+    tuple[str, bool]
         The message and whether to flush.
     """
     sep = kwargs.get("sep", " ")

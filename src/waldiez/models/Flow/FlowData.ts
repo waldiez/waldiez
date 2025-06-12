@@ -10,12 +10,11 @@ import {
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
-    WaldiezAgentSwarm,
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { WaldiezChat } from "@waldiez/models/Chat";
 import { WaldiezModel } from "@waldiez/models/Model";
-import { WaldiezSkill } from "@waldiez/models/Skill";
+import { WaldiezTool } from "@waldiez/models/Tool";
 
 /**
  * Waldiez Flow Data
@@ -23,18 +22,16 @@ import { WaldiezSkill } from "@waldiez/models/Skill";
  * @param edges - The edges
  * @param agents - The agents
  * @param models - The models
- * @param skills - The skills
+ * @param tools - The tools
  * @param chats - The chats
  * @param isAsync - Is async
  * @param cacheSeed - The cache seed
  * @param viewport - The viewport
  * @see {@link WaldiezAgentUserProxy}
  * @see {@link WaldiezAgentAssistant}
- * @see {@link WaldiezAgentGroupManager}
  * @see {@link WaldiezAgentRagUser}
- * @see {@link WaldiezAgentSwarm}
  * @see {@link WaldiezModel}
- * @see {@link WaldiezSkill}
+ * @see {@link WaldiezTool}
  * @see {@link WaldiezChat}
  * @see {@link WaldiezFlowData}
  */
@@ -43,19 +40,19 @@ export class WaldiezFlowData {
     edges: Edge[];
     viewport: Viewport;
     agents: {
-        users: WaldiezAgentUserProxy[];
-        assistants: WaldiezAgentAssistant[];
-        managers: WaldiezAgentGroupManager[];
-        rag_users: WaldiezAgentRagUser[];
-        swarm_agents: WaldiezAgentSwarm[];
-        reasoning_agents: WaldiezAgentReasoning[];
-        captain_agents: WaldiezAgentCaptain[];
+        userProxyAgents: WaldiezAgentUserProxy[];
+        assistantAgents: WaldiezAgentAssistant[];
+        ragUserProxyAgents: WaldiezAgentRagUser[];
+        reasoningAgents: WaldiezAgentReasoning[];
+        captainAgents: WaldiezAgentCaptain[];
+        groupManagerAgents: WaldiezAgentGroupManager[];
     };
     models: WaldiezModel[];
-    skills: WaldiezSkill[];
+    tools: WaldiezTool[];
     chats: WaldiezChat[];
     isAsync?: boolean = false;
-    cacheSeed?: number | null = 41;
+    cacheSeed?: number | null = 42;
+    silent?: boolean = false;
 
     constructor(
         props: {
@@ -63,19 +60,19 @@ export class WaldiezFlowData {
             edges: Edge[];
             viewport: Viewport;
             agents: {
-                users: WaldiezAgentUserProxy[];
-                assistants: WaldiezAgentAssistant[];
-                managers: WaldiezAgentGroupManager[];
-                rag_users: WaldiezAgentRagUser[];
-                swarm_agents: WaldiezAgentSwarm[];
-                reasoning_agents: WaldiezAgentReasoning[];
-                captain_agents: WaldiezAgentCaptain[];
+                userProxyAgents: WaldiezAgentUserProxy[];
+                assistantAgents: WaldiezAgentAssistant[];
+                ragUserProxyAgents: WaldiezAgentRagUser[];
+                reasoningAgents: WaldiezAgentReasoning[];
+                captainAgents: WaldiezAgentCaptain[];
+                groupManagerAgents: WaldiezAgentGroupManager[];
             };
             models: WaldiezModel[];
-            skills: WaldiezSkill[];
+            tools: WaldiezTool[];
             chats: WaldiezChat[];
             isAsync?: boolean;
             cacheSeed?: number | null;
+            silent?: boolean;
         } = {
             nodes: [],
             edges: [],
@@ -85,19 +82,19 @@ export class WaldiezFlowData {
                 zoom: 1,
             },
             agents: {
-                users: [],
-                assistants: [],
-                managers: [],
-                rag_users: [],
-                swarm_agents: [],
-                reasoning_agents: [],
-                captain_agents: [],
+                userProxyAgents: [],
+                assistantAgents: [],
+                ragUserProxyAgents: [],
+                reasoningAgents: [],
+                captainAgents: [],
+                groupManagerAgents: [],
             },
             models: [],
-            skills: [],
+            tools: [],
             chats: [],
             isAsync: false,
-            cacheSeed: 41,
+            cacheSeed: 42,
+            silent: false,
         },
     ) {
         this.nodes = props.nodes;
@@ -105,9 +102,10 @@ export class WaldiezFlowData {
         this.viewport = props.viewport;
         this.agents = props.agents;
         this.models = props.models;
-        this.skills = props.skills;
+        this.tools = props.tools;
         this.chats = props.chats;
         this.isAsync = props.isAsync;
         this.cacheSeed = props.cacheSeed;
+        this.silent = props.silent;
     }
 }

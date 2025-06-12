@@ -6,21 +6,18 @@ import React, { ReactNode, useEffect, useState } from "react";
 
 import { SidebarContext } from "@waldiez/containers/sidebar";
 
-export const SidebarProvider: React.FC<{ children: ReactNode; collapsed?: boolean }> = ({
-    children,
-    collapsed,
-}) => {
+export const SidebarProvider: React.FC<{
+    children: ReactNode;
+    collapsed?: boolean;
+}> = ({ children, collapsed }) => {
     const initiallyCollapsed = typeof collapsed === "boolean" ? collapsed : getIsSidebarCollapsedFromBody();
     const [isCollapsed, setIsCollapsed] = useState(initiallyCollapsed);
     useEffect(() => {
-        setSidebarCollapsedToBody(getIsSidebarCollapsedFromBody());
-    }, []);
+        setSidebarCollapsedToBody(isCollapsed);
+    }, [isCollapsed]);
 
     const toggleSidebar = () => {
-        setIsCollapsed(prev => {
-            setSidebarCollapsedToBody(!prev);
-            return !prev;
-        });
+        setIsCollapsed(prev => !prev);
     };
 
     return (
@@ -45,5 +42,6 @@ const getIsSidebarCollapsedFromBody = () => {
     if (document.body.classList.contains("waldiez-sidebar-expanded")) {
         return false;
     }
-    return false;
+    // if mobile/small screen, let's have it collapsed by default
+    return window.innerWidth < 768;
 };

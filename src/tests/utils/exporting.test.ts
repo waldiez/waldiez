@@ -58,8 +58,8 @@ describe("getFilenameForExporting", () => {
     });
 
     it("should include type-specific extension", () => {
-        const filename = getFilenameForExporting("example", "skill");
-        expect(filename.includes("Skill")).toBe(true);
+        const filename = getFilenameForExporting("example", "tool");
+        expect(filename.includes("Tool")).toBe(true);
     });
 
     it("should fallback to 'flow' if name is too short", () => {

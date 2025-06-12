@@ -2,48 +2,27 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Reasoning agent data model."""
 
-from typing import Any, Dict
+from typing import Any
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
 
-from ..assistant import WaldiezAssistantData
+from ..agent import WaldiezAgentData
 from .reasoning_agent_reason_config import WaldiezReasoningAgentReasonConfig
 
 
-class WaldiezReasoningAgentData(WaldiezAssistantData):
+class WaldiezReasoningAgentData(WaldiezAgentData):
     """Reasoning agent data model."""
 
-    max_depth: Annotated[
-        int,
+    human_input_mode: Annotated[
+        Literal["ALWAYS", "NEVER", "TERMINATE"],
         Field(
-            4,
-            title="Maximum depth",
-            description="Maximum depth of the reasoning tree",
-            alias="maxDepth",
-            deprecated=True,
+            "NEVER",
+            title="Human input mode",
+            description="The human input mode, Defaults to `NEVER`",
+            alias="humanInputMode",
         ),
-    ] = 4
-    beam_size: Annotated[
-        int,
-        Field(
-            3,
-            title="Beam size",
-            description="Number of parallel reasoning paths to maintain",
-            alias="beamSize",
-            deprecated=True,
-        ),
-    ] = 3
-    answer_approach: Annotated[
-        Literal["pool", "best"],
-        Field(
-            "pool",
-            title="Answer approach",
-            description="How to generate final answer",
-            alias="answerApproach",
-            deprecated=True,
-        ),
-    ] = "pool"
+    ] = "NEVER"
     verbose: Annotated[
         bool,
         Field(
@@ -51,7 +30,7 @@ class WaldiezReasoningAgentData(WaldiezAssistantData):
             title="Verbose",
             description="Whether to show intermediate steps",
         ),
-    ]
+    ] = True
     reason_config: Annotated[
         WaldiezReasoningAgentReasonConfig,
         Field(
@@ -62,16 +41,112 @@ class WaldiezReasoningAgentData(WaldiezAssistantData):
         ),
     ]
 
-    def get_reasoning_config(self) -> Dict[str, Any]:
+    @property
+    def method(self) -> str:
+        """Get the method of the reasoning agent.
+
+        Returns
+        -------
+        str
+            The method of the reasoning agent.
+
+        """
+        return self.reason_config.method
+
+    @property
+    def max_depth(self) -> int:
+        """Get the maximum depth of the reasoning agent.
+
+        Returns
+        -------
+        int
+            The maximum depth of the reasoning agent.
+
+        """
+        return self.reason_config.max_depth
+
+    @property
+    def beam_size(self) -> int:
+        """Get the beam size of the reasoning agent.
+
+        Returns
+        -------
+        int
+            The beam size of the reasoning agent.
+
+        """
+        return self.reason_config.beam_size
+
+    @property
+    def answer_approach(self) -> str:
+        """Get the answer approach of the reasoning agent.
+
+        Returns
+        -------
+        str
+            The answer approach of the reasoning agent.
+
+        """
+        return self.reason_config.answer_approach
+
+    @property
+    def forest_size(self) -> int:
+        """Get the forest size of the reasoning agent.
+
+        Returns
+        -------
+        int
+            The forest size of the reasoning agent.
+
+        """
+        return self.reason_config.forest_size
+
+    @property
+    def rating_scale(self) -> int:
+        """Get the rating scale of the reasoning agent.
+
+        Returns
+        -------
+        int
+            The rating scale of the reasoning agent.
+
+        """
+        return self.reason_config.rating_scale
+
+    @property
+    def exploration_constant(self) -> float:
+        """Get the exploration constant of the reasoning agent.
+
+        Returns
+        -------
+        float
+            The exploration constant of the reasoning agent.
+
+        """
+        return self.reason_config.exploration_constant
+
+    @property
+    def nsim(self) -> int:
+        """Get the number of simulations of the reasoning agent.
+
+        Returns
+        -------
+        int
+            The number of simulations of the reasoning agent.
+
+        """
+        return self.reason_config.nsim
+
+    def get_reasoning_config(self) -> dict[str, Any]:
         """Get the reasoning configuration based on the reason_config method.
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The reasoning configuration.
 
         """
-        reason_dict: Dict[str, Any] = {
+        reason_dict: dict[str, Any] = {
             "method": self.reason_config.method,
             "max_depth": self.reason_config.max_depth,
             "forest_size": self.reason_config.forest_size,
@@ -86,31 +161,3 @@ class WaldiezReasoningAgentData(WaldiezAssistantData):
                 self.reason_config.exploration_constant
             )
         return reason_dict
-
-
-# reason_config (dict): Configuration for the reasoning method.
-# Supported parameters:
-#     method (str): The search strategy to use. Options:
-#         - "beam_search" (default): Uses beam search with parallel paths
-#         - "mcts": Uses Monte Carlo Tree Search for exploration
-#         - "lats": Uses Language Agent Tree Search with per-step rewards
-#         - "dfs": Uses depth-first search
-#                (equivalent to beam_search with beam_size=1)
-#     Common parameters:
-#         max_depth (int): Maximum depth of reasoning tree (default: 3)
-#         forest_size (int):
-#               Number of independent trees to maintain (default: 1)
-#         rating_scale (int):
-#               Scale for grading responses, e.g. 1-10 (default: 10)
-#     Beam Search specific:
-#         beam_size (int): Number of parallel paths to maintain (default: 3)
-#         answer_approach (str):
-#               How to select final answer, "pool" or "best" (default: "pool")
-#     MCTS/LATS specific:
-#         nsim (int): Number of simulations to run (default: 3)
-#         exploration_constant (float):
-#               UCT exploration parameter (default: 1.41)
-#     Example configs:
-#         `{"method": "beam_search", "beam_size": 5, "max_depth": 4}`
-#         `{"method": "mcts", "nsim": 10, "exploration_constant": 2.0}`
-#         `{"method": "lats", "nsim": 5, "forest_size": 3}`

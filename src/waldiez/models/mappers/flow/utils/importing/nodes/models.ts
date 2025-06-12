@@ -25,7 +25,10 @@ export const getModels = (json: Record<string, unknown>, nodes: Node[]) => {
                 delete nodeExtras.data;
                 delete nodeExtras.type;
                 delete nodeExtras.parentId;
-                const waldiezModel = modelMapper.importModel({ ...modelJson, ...nodeExtras });
+                const waldiezModel = modelMapper.importModel({
+                    ...modelJson,
+                    ...nodeExtras,
+                });
                 models.push(waldiezModel);
             }
         }

@@ -12,20 +12,20 @@ describe("WaldiezAgentUserProxy", () => {
         const userProxyData = new WaldiezAgentUserProxyData();
         const userProxy = new WaldiezAgentUserProxy({
             id: "1",
-            name: "User",
+            name: "user_proxy",
             description: "User description",
             tags: [],
             requirements: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            agentType: "user",
+            agentType: "user_proxy",
             data: userProxyData,
         });
         expect(userProxy).toBeTruthy();
         expect(userProxy.id).toBe("1");
-        expect(userProxy.name).toBe("User");
+        expect(userProxy.name).toBe("user_proxy");
         expect(userProxy.data.humanInputMode).toBe("ALWAYS");
-        const userProxy2 = WaldiezAgentUserProxy.create("user");
+        const userProxy2 = WaldiezAgentUserProxy.create("user_proxy");
         expect(userProxy2).toBeTruthy();
         expect(userProxy2.data.humanInputMode).toBe("ALWAYS");
     });
@@ -37,7 +37,7 @@ describe("WaldiezAgentUserProxy", () => {
             systemMessage: "system_message",
             codeExecutionConfig: {
                 workDir: "code",
-                useDocker: true,
+                useDocker: undefined,
                 timeout: 30,
                 lastNMessages: "auto",
             },
@@ -49,14 +49,14 @@ describe("WaldiezAgentUserProxy", () => {
                 criterion: null,
                 methodContent: null,
             },
-            modelIds: ["1", "2"],
-            skills: [
+            modelIds: ["1"],
+            tools: [
                 {
                     id: "1",
                     executorId: "2",
                 },
             ],
-            parentId: null,
+            parentId: undefined,
             nestedChats: [
                 {
                     triggeredBy: ["1", "2"],
@@ -64,12 +64,24 @@ describe("WaldiezAgentUserProxy", () => {
                         { id: "1", isReply: false },
                         { id: "2", isReply: true },
                     ],
+                    condition: {
+                        conditionType: "string_llm",
+                        prompt: "Start a new chat",
+                    },
+                    available: {
+                        type: "none",
+                        value: "",
+                    },
                 },
             ],
+            contextVariables: {},
+            updateAgentStateBeforeReply: [],
+            afterWork: null,
+            handoffs: [],
         });
         const userProxy = new WaldiezAgentUserProxy({
             id: "1",
-            agentType: "user",
+            agentType: "user_proxy",
             name: "custom_user",
             description: "custom_description",
             tags: ["tag1", "tag2"],
@@ -87,7 +99,7 @@ describe("WaldiezAgentUserProxy", () => {
         expect(userProxy.data.systemMessage).toBe("system_message");
         expect(userProxy.data.codeExecutionConfig).toEqual({
             workDir: "code",
-            useDocker: true,
+            useDocker: undefined,
             timeout: 30,
             lastNMessages: "auto",
         });
@@ -99,8 +111,8 @@ describe("WaldiezAgentUserProxy", () => {
             criterion: null,
             methodContent: null,
         });
-        expect(userProxy.data.modelIds).toEqual(["1", "2"]);
-        expect(userProxy.data.skills).toEqual([
+        expect(userProxy.data.modelIds[0]).toEqual("1");
+        expect(userProxy.data.tools).toEqual([
             {
                 id: "1",
                 executorId: "2",
@@ -110,7 +122,7 @@ describe("WaldiezAgentUserProxy", () => {
         expect(userProxy.requirements).toEqual(["req1", "req2"]);
         expect(userProxy.createdAt).toBe(createdAt);
         expect(userProxy.updatedAt).toBe(updatedAt);
-        expect(userProxy.data.parentId).toBeNull();
+        expect(userProxy.data.parentId).toBeUndefined();
         expect(userProxy.data.nestedChats).toEqual([
             {
                 triggeredBy: ["1", "2"],
@@ -118,6 +130,14 @@ describe("WaldiezAgentUserProxy", () => {
                     { id: "1", isReply: false },
                     { id: "2", isReply: true },
                 ],
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "Start a new chat",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
             },
         ]);
     });

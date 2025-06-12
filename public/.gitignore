@@ -1,0 +1,13 @@
+# Ignore everything
+*
+# But not these ...
+!.gitignore
+!icons/
+!icons/*
+!screenshots/
+!screenshots/*
+!apple-touch-icon.png
+!browserconfig.xml
+!site.webmanifest
+!favicon.ico
+!robots.txt

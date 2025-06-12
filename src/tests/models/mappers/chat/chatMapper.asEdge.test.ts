@@ -10,8 +10,8 @@ import { chatMapper } from "@waldiez/models/mappers";
 describe("chatMapper.asEdge", () => {
     it("should convert a chat to edge", () => {
         const chatData: WaldiezChatData = {
-            source: "wa-1",
-            target: "wa-2",
+            sourceType: "user_proxy",
+            targetType: "assistant",
             name: "custom_chat",
             description: "custom_description",
             position: 0,
@@ -19,7 +19,7 @@ describe("chatMapper.asEdge", () => {
             clearHistory: false,
             message: {
                 type: "none",
-                use_carryover: false,
+                useCarryover: false,
                 content: null,
                 context: {},
             },
@@ -28,7 +28,7 @@ describe("chatMapper.asEdge", () => {
                 reply: null,
             },
             summary: {
-                method: "last_msg",
+                method: "lastMsg",
                 prompt: "summarize the conversation",
                 args: {
                     summary_role: "user",
@@ -36,24 +36,31 @@ describe("chatMapper.asEdge", () => {
             },
             prerequisites: [],
             maxTurns: 0,
-            maxRounds: 0,
-            afterWork: {
-                recipientType: "agent",
-                recipient: "wa-2",
+            condition: {
+                conditionType: "string_llm",
+                prompt: "Handoff to another agent",
             },
-            flowAfterWork: null,
-            contextVariables: {},
             available: {
                 type: "none",
-                value: null,
+                value: "",
             },
+            afterWork: null,
             realSource: "wa-1",
             realTarget: "wa-2",
         };
-        const chat = new WaldiezChat({ id: "1", data: chatData });
+        const chat = new WaldiezChat({
+            id: "1",
+            type: "chat",
+            data: chatData,
+            source: "wa-1",
+            target: "wa-2",
+        });
         const edge = chatMapper.asEdge(chat);
         expect(edge).toBeTruthy();
         expect(edge.id).toBe("1");
+        expect(edge.source).toBe("wa-1");
+        expect(edge.target).toBe("wa-2");
+        expect(edge.type).toBe("chat");
         expect(edge.data?.label).toBe("custom_chat");
     });
 });
