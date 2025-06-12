@@ -7,11 +7,11 @@ import React from "react";
 import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
 import { Markdown } from "@waldiez/components/markdown";
 
-const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick: (url: string) => void) => (
-    <div className="structured-content">
-        {items.map((item, idx) => {
-            if (!item.type) {
-                console.warn(`Item at index ${idx} has no type:`, item);
+const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick: (url: string) => void) => {
+    const children = items
+        .map((item, idx) => {
+            if (!item || !item.type) {
+                console.warn("Invalid item in structured content", item);
                 return null;
             }
             if (item.type === "text" && item.text.trim().length > 0) {
@@ -23,7 +23,6 @@ const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick:
                         onImageClick={onImageClick}
                     />
                 );
-                // return <span key={`text-${idx}`}>{item.text}</span>;
             }
             if (item.type === "image_url" && item.image_url?.url) {
                 return (
@@ -45,10 +44,17 @@ const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick:
                     />
                 );
             }
+            console.warn("Unsupported item type in structured content", item);
             return null;
-        })}
-    </div>
-);
+        })
+        .filter(Boolean);
+
+    if (children.length === 0) {
+        return null;
+    }
+
+    return <div className="structured-content">{children}</div>;
+};
 
 const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (url: string) => void) => {
     const regex = /\[Image:\s*(.+?)\]/g;

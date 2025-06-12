@@ -6968,47 +6968,54 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
   ) });
 };
 Markdown.displayName = "Markdown";
-const parseStructuredContent = (items, isDarkMode, onImageClick) => /* @__PURE__ */ jsx("div", { className: "structured-content", children: items.map((item, idx) => {
-  var _a, _b;
-  if (!item.type) {
-    console.warn(`Item at index ${idx} has no type:`, item);
+const parseStructuredContent = (items, isDarkMode, onImageClick) => {
+  const children = items.map((item, idx) => {
+    var _a, _b;
+    if (!item || !item.type) {
+      console.warn("Invalid item in structured content", item);
+      return null;
+    }
+    if (item.type === "text" && item.text.trim().length > 0) {
+      return /* @__PURE__ */ jsx(
+        Markdown,
+        {
+          content: item.text,
+          isDarkMode,
+          onImageClick
+        },
+        `text-${idx}`
+      );
+    }
+    if (item.type === "image_url" && ((_a = item.image_url) == null ? void 0 : _a.url)) {
+      return /* @__PURE__ */ jsx(
+        ImageWithRetry,
+        {
+          src: item.image_url.url,
+          className: "chat-image",
+          onClick: () => onImageClick(item.image_url.url)
+        },
+        `img-${idx}`
+      );
+    }
+    if (item.type === "image" && ((_b = item.image) == null ? void 0 : _b.url)) {
+      return /* @__PURE__ */ jsx(
+        ImageWithRetry,
+        {
+          src: item.image.url,
+          className: "chat-image",
+          onClick: () => onImageClick(item.image.url)
+        },
+        `img-${idx}`
+      );
+    }
+    console.warn("Unsupported item type in structured content", item);
+    return null;
+  }).filter(Boolean);
+  if (children.length === 0) {
     return null;
   }
-  if (item.type === "text" && item.text.trim().length > 0) {
-    return /* @__PURE__ */ jsx(
-      Markdown,
-      {
-        content: item.text,
-        isDarkMode,
-        onImageClick
-      },
-      `text-${idx}`
-    );
-  }
-  if (item.type === "image_url" && ((_a = item.image_url) == null ? void 0 : _a.url)) {
-    return /* @__PURE__ */ jsx(
-      ImageWithRetry,
-      {
-        src: item.image_url.url,
-        className: "chat-image",
-        onClick: () => onImageClick(item.image_url.url)
-      },
-      `img-${idx}`
-    );
-  }
-  if (item.type === "image" && ((_b = item.image) == null ? void 0 : _b.url)) {
-    return /* @__PURE__ */ jsx(
-      ImageWithRetry,
-      {
-        src: item.image.url,
-        className: "chat-image",
-        onClick: () => onImageClick(item.image.url)
-      },
-      `img-${idx}`
-    );
-  }
-  return null;
-}) });
+  return /* @__PURE__ */ jsx("div", { className: "structured-content", children });
+};
 const parseTextWithImages = (text, isDarkMode, onImageClick) => {
   const regex = /\[Image:\s*(.+?)\]/g;
   const parts = [];
