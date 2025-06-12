@@ -27,7 +27,11 @@ const addHeaderToFile = async (filePath: string): Promise<void> => {
     }
     // Avoid adding twice
     if (!content.includes("SPDX-License-Identifier")) {
-        const newContent = `${header}\n\n${content}`;
+        let newContent = `${header}\n\n${content}`.replace(/\r\n/g, "\n");
+        if (!newContent.endsWith("\n")) {
+            // Ensure the file ends with a newline
+            newContent += "\n";
+        }
         await fs.writeFile(filePath, newContent, "utf-8");
         console.log(`\n\x1b[36m[add-header-to-dist-files]\x1b[0m Header added to ${filePath}`);
     }
