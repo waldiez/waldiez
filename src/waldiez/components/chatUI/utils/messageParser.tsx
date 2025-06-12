@@ -10,6 +10,10 @@ import { Markdown } from "@waldiez/components/markdown";
 const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick: (url: string) => void) => (
     <div className="structured-content">
         {items.map((item, idx) => {
+            if (!item.type) {
+                console.warn(`Item at index ${idx} has no type:`, item);
+                return null;
+            }
             if (item.type === "text" && item.text.trim().length > 0) {
                 return (
                     <Markdown

@@ -16,6 +16,7 @@ import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, ge
 import { ErrorBoundary } from "react-error-boundary";
 import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
 import MonacoEditor, { loader } from "@monaco-editor/react";
+import { motion } from "framer-motion";
 import { createPortal } from "react-dom";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
@@ -5333,6 +5334,110 @@ if (typeof Promise.withResolvers === "undefined") {
     };
   }
 }
+const botVariants = [
+  {
+    // Assistant: tilts head
+    animate: { rotate: [0, -10, 10, 0] },
+    transition: { repeat: Infinity, duration: 2.2 }
+  },
+  {
+    // Rag: jumps (reading)
+    animate: { y: [0, -10, 0] },
+    transition: { repeat: Infinity, duration: 2.5, delay: 0.3 }
+  },
+  {
+    // Manager: waves (moves checklist)
+    animate: { rotate: [0, 6, -6, 0] },
+    transition: { repeat: Infinity, duration: 2.8, delay: 0.6 }
+  },
+  {
+    // Reasoning: bobs up/down, pondering
+    animate: { y: [0, 8, 0] },
+    transition: { repeat: Infinity, duration: 2, delay: 0.9 }
+  },
+  {
+    // Captain: points (tilts hat)
+    animate: { rotate: [0, -8, 8, 0] },
+    transition: { repeat: Infinity, duration: 3, delay: 1.2 }
+  },
+  {
+    // User: shakes (looks lost)
+    animate: { x: [0, 7, -7, 0] },
+    transition: { repeat: Infinity, duration: 2.6, delay: 1.5 }
+  }
+];
+const bots = [
+  { src: AGENT_ICONS.assistant, alt: "Assistant Waldiez" },
+  { src: AGENT_ICONS.rag_user_proxy, alt: "RAG Waldiez" },
+  { src: AGENT_ICONS.group_manager, alt: "Manager Waldiez" },
+  { src: AGENT_ICONS.reasoning, alt: "Reasoning Waldiez" },
+  { src: AGENT_ICONS.captain, alt: "Captain Waldiez" },
+  { src: AGENT_ICONS.user_proxy, alt: "User Waldiez" }
+];
+const ErrorPage = ({ error }) => {
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-error-container", "data-testid": "error-boundary", children: [
+    /* @__PURE__ */ jsx("div", { className: "waldiez-bots-row", children: bots.map((bot, idx) => /* @__PURE__ */ jsx(
+      motion.img,
+      {
+        src: bot.src,
+        alt: bot.alt,
+        className: "waldiez-bot-img",
+        animate: botVariants[idx].animate,
+        transition: botVariants[idx].transition,
+        style: { zIndex: 10 + idx }
+      },
+      bot.alt
+    )) }),
+    /* @__PURE__ */ jsx(
+      motion.div,
+      {
+        className: "waldiez-error-sign",
+        initial: { opacity: 0, scale: 0.9 },
+        animate: {
+          opacity: [0, 1, 0.7, 1],
+          scale: [0.9, 1.1, 1]
+        },
+        transition: {
+          repeat: Infinity,
+          repeatType: "reverse",
+          duration: 1.2,
+          delay: 0.5
+        },
+        children: /* @__PURE__ */ jsx("span", { children: "🚨 ERROR" })
+      }
+    ),
+    /* @__PURE__ */ jsxs(
+      motion.div,
+      {
+        className: "waldiez-error-message",
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { delay: 1.3 },
+        children: [
+          /* @__PURE__ */ jsx("div", { className: "waldiez-error-title", children: "Oops, something went wrong!" }),
+          /* @__PURE__ */ jsx("div", { className: "waldiez-error-desc", children: "The Waldiez team is on the case. Please wait while we investigate..." }),
+          /* @__PURE__ */ jsx("div", { className: "waldiez-refresh-btn-container", children: /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => window.location.reload(),
+              className: "waldiez-refresh-btn",
+              onMouseDown: (e) => e.currentTarget.style.transform = "scale(0.97)",
+              onMouseUp: (e) => e.currentTarget.style.transform = "scale(1)",
+              onMouseLeave: (e) => e.currentTarget.style.transform = "scale(1)",
+              children: "Refresh Page"
+            }
+          ) }),
+          error && /* @__PURE__ */ jsxs("div", { className: "waldiez-error-details", children: [
+            /* @__PURE__ */ jsx("strong", { children: "Error:" }),
+            " ",
+            error.message,
+            error.stack && /* @__PURE__ */ jsx("pre", { children: error.stack })
+          ] })
+        ]
+      }
+    )
+  ] });
+};
 let globalEnqueue = null;
 const showSnackbar = (props) => {
   if (!props.flowId) {
@@ -6865,6 +6970,10 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
 Markdown.displayName = "Markdown";
 const parseStructuredContent = (items, isDarkMode, onImageClick) => /* @__PURE__ */ jsx("div", { className: "structured-content", children: items.map((item, idx) => {
   var _a, _b;
+  if (!item.type) {
+    console.warn(`Item at index ${idx} has no type:`, item);
+    return null;
+  }
   if (item.type === "text" && item.text.trim().length > 0) {
     return /* @__PURE__ */ jsx(
       Markdown,
@@ -6968,8 +7077,13 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
   const processMessage = useCallback(
     (msg) => {
       const { id, timestamp, type, content, sender, recipient } = msg;
-      const node = parseMessageContent(content, isDarkMode, openImagePreview);
-      return { id, timestamp, type, sender, recipient, node };
+      try {
+        const node = parseMessageContent(content, isDarkMode, openImagePreview);
+        return { id, timestamp, type, sender, recipient, node };
+      } catch (error) {
+        console.error("Error parsing message content:", error);
+        return { id, timestamp, type, sender, recipient, node: null };
+      }
     },
     [openImagePreview, isDarkMode]
   );
@@ -7018,6 +7132,9 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index) => {
       const processedMsg = processMessage(msg);
+      if (!processedMsg.node) {
+        return null;
+      }
       return /* @__PURE__ */ jsxs(
         "div",
         {
@@ -24830,10 +24947,8 @@ const Waldiez = (props) => {
 };
 const fallbackRender = (props) => {
   const { error } = props;
-  return /* @__PURE__ */ jsxs("div", { className: "error-boundary", "data-testid": "error-boundary", children: [
-    /* @__PURE__ */ jsx("p", { children: "Something went wrong :(" }),
-    /* @__PURE__ */ jsx("pre", { className: "error", children: error.message })
-  ] });
+  console.error("Error in Waldiez component:", error);
+  return /* @__PURE__ */ jsx(ErrorPage, { error });
 };
 const checkInitialBodyThemeClass = () => {
   const isDark = isInitiallyDark();

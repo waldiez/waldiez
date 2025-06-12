@@ -38,8 +38,13 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
     const processMessage = useCallback(
         (msg: WaldiezChatMessage): ChatUIMessage => {
             const { id, timestamp, type, content, sender, recipient } = msg;
-            const node = parseMessageContent(content, isDarkMode, openImagePreview);
-            return { id, timestamp, type, sender, recipient, node };
+            try {
+                const node = parseMessageContent(content, isDarkMode, openImagePreview);
+                return { id, timestamp, type, sender, recipient, node };
+            } catch (error) {
+                console.error("Error parsing message content:", error);
+                return { id, timestamp, type, sender, recipient, node: null };
+            }
         },
         [openImagePreview, isDarkMode],
     );
@@ -104,6 +109,10 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
                     // Process each message in the render function
                     // This ensures we always get fresh content
                     const processedMsg = processMessage(msg);
+                    if (!processedMsg.node) {
+                        // Skip messages that failed to parse
+                        return null;
+                    }
                     return (
                         <div
                             key={getMessageKey(msg, index)}

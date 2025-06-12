@@ -9,6 +9,7 @@ export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";
 export { DropZone } from "@waldiez/components/dropZone";
 export { Editor } from "@waldiez/components/editor";
+export { ErrorPage } from "@waldiez/components/error";
 export { HandoffAvailability } from "@waldiez/components/handoffAvailability";
 export { HandoffCondition } from "@waldiez/components/handoffCondition";
 export { Handoffs } from "@waldiez/components/handoffs";

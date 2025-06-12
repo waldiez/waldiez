@@ -1,0 +1,120 @@
+.waldiez-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  min-height: 60vh;
+}
+
+.waldiez-bots-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+@media (width >= 768px) {
+  .waldiez-bots-row {
+    gap: 2rem;
+  }
+}
+
+.waldiez-bot-img {
+  width: 5rem;
+  filter: drop-shadow(0 8px 24px rgb(0 0 0 / 20%));
+  background: rgb(255 255 255 / 80%);
+  border-radius: 9999px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #f1f5f9;
+}
+
+@media (width >= 768px) {
+  .waldiez-bot-img {
+    width: 7rem;
+  }
+}
+
+.waldiez-error-sign {
+  margin-top: 2rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 10%),
+    0 4px 6px -4px rgb(0 0 0 / 10%);
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.waldiez-error-message {
+  margin-top: 2rem;
+  text-align: center;
+  max-width: 36rem;
+}
+
+.waldiez-error-title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.waldiez-error-desc {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: #4b5563;
+}
+
+.waldiez-error-details {
+  margin-top: 2rem;
+  background: #fff8dc;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-family: monospace;
+  max-width: 100%;
+  overflow: auto;
+  box-shadow: 0 1px 8px 0 rgb(0 0 0 / 6%);
+  text-align: left;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  max-height: 20rem;
+
+  /* word-break: break-word; */
+}
+
+.waldiez-error-details pre {
+  margin-top: 0.5rem;
+  color: #a16207;
+  font-size: 0.95em;
+  white-space: pre-wrap;
+}
+
+.waldiez-refresh-btn-container {
+  margin-top: 2rem;
+}
+
+.waldiez-refresh-btn {
+  background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+  cursor: pointer;
+  transition:
+    transform 0.12s,
+    box-shadow 0.12s;
+}

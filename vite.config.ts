@@ -106,6 +106,7 @@ export default defineConfig(({ command }) => ({
                 "react-select",
                 "react-error-boundary",
                 "strip-ansi",
+                "framer-motion",
             ],
             output: {
                 exports: "named",
@@ -135,6 +136,7 @@ export default defineConfig(({ command }) => ({
                     "react-select": "reactSelect",
                     "react-error-boundary": "reactErrorBoundary",
                     "strip-ansi": "stripAnsi",
+                    "framer-motion": "framerMotion",
                 },
             },
         },

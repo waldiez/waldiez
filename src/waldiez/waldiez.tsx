@@ -17,6 +17,7 @@ import { HotkeysProvider } from "react-hotkeys-hook";
 
 import { loader } from "@monaco-editor/react";
 
+import { ErrorPage } from "@waldiez/components/error";
 import { SnackbarProvider } from "@waldiez/components/snackbar";
 import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
@@ -153,14 +154,8 @@ type errorRenderProps = {
 const fallbackRender = (props: errorRenderProps) => {
     // Call resetErrorBoundary() to reset the error boundary and retry the render.
     const { error } = props;
-    // const { error, resetErrorBoundary } = props;
-    // resetErrorBoundary();
-    return (
-        <div className="error-boundary" data-testid="error-boundary">
-            <p>Something went wrong :(</p>
-            <pre className="error">{error.message}</pre>
-        </div>
-    );
+    console.error("Error in Waldiez component:", error);
+    return <ErrorPage error={error} />;
 };
 
 const checkInitialBodyThemeClass = () => {
