@@ -118,14 +118,11 @@ export class PrintMessageHandler implements MessageHandler {
     private extractParticipants(
         dataContent: string | object,
     ): WaldiezChatMessageProcessingResult | undefined {
-        console.debug("Extracting participants from data content:", dataContent);
         try {
             const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
 
             if (MessageValidator.isValidParticipantsData(parsedData)) {
-                console.debug("Valid participants data found:", parsedData);
                 if (typeof parsedData === "string") {
-                    console.debug("Parsing participants data from string:", parsedData);
                     const innerDumped = JSON.parse(parsedData);
                     return this.extractParticipants(innerDumped);
                 }

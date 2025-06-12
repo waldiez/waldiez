@@ -3,9 +3,7 @@
     "projectOwner": "waldiez",
     "repoType": "github",
     "repoHost": "https://github.com",
-    "files": [
-        "README.md"
-    ],
+    "files": ["README.md"],
     "imageSize": 100,
     "commit": false,
     "commitConvention": "angular",
@@ -15,29 +13,21 @@
             "name": "Panagiotis Kasnesis",
             "avatar_url": "https://avatars.githubusercontent.com/u/29335277?v=4",
             "profile": "https://scholar.google.com/citations?user=JmW9DwkAAAAJ",
-            "contributions": [
-                "projectManagement",
-                "research"
-            ]
+            "contributions": ["projectManagement", "research"]
         },
         {
             "login": "lazToum",
             "name": "Lazaros Toumanidis",
             "avatar_url": "https://avatars.githubusercontent.com/u/4764837?v=4",
             "profile": "https://github.com/lazToum",
-            "contributions": [
-                "code"
-            ]
+            "contributions": ["code"]
         },
         {
             "login": "siioannidou",
             "name": "Stella Ioannidou",
             "avatar_url": "https://avatars.githubusercontent.com/u/3456066?v=4",
             "profile": "https://humancentered.gr/",
-            "contributions": [
-                "promotion",
-                "design"
-            ]
+            "contributions": ["promotion", "design"]
         },
         {
             "login": "amaliacontiero",
@@ -45,6 +35,13 @@
             "avatar_url": "https://avatars.githubusercontent.com/u/29499343?v=4",
             "profile": "https://github.com/amaliacontiero",
             "contributions": ["code", "bug"]
+        },
+        {
+            "login": "hchris0",
+            "name": "Christos Chatzigeorgiou",
+            "avatar_url": "https://avatars.githubusercontent.com/u/23460824?v=4",
+            "profile": "https://github.com/hchris0",
+            "contributions": ["code"]
         }
     ],
     "contributorsPerLine": 7,

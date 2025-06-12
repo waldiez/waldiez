@@ -39,7 +39,6 @@ export class MessageValidator {
      * @returns True if the message is a valid print message, false otherwise.
      */
     static isValidPrintMessage(message: any): message is PrintMessageData {
-        console.debug("Validating print message data:", message);
         if (!message || typeof message !== "object") {
             return false;
         }

@@ -113,7 +113,6 @@ class MessageValidator {
    * @returns True if the message is a valid print message, false otherwise.
    */
   static isValidPrintMessage(message) {
-    console.debug("Validating print message data:", message);
     if (!message || typeof message !== "object") {
       return false;
     }
@@ -398,13 +397,10 @@ class PrintMessageHandler {
    * @returns A WaldiezChatMessageProcessingResult with participants or undefined if not found or invalid.
    */
   extractParticipants(dataContent) {
-    console.debug("Extracting participants from data content:", dataContent);
     try {
       const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
       if (MessageValidator.isValidParticipantsData(parsedData)) {
-        console.debug("Valid participants data found:", parsedData);
         if (typeof parsedData === "string") {
-          console.debug("Parsing participants data from string:", parsedData);
           const innerDumped = JSON.parse(parsedData);
           return this.extractParticipants(innerDumped);
         }
@@ -8816,9 +8812,6 @@ const Modal = memo((props) => {
     const currentModalWidth = parseFloat(lockedWidth);
     const requiredModalWidth = tabListWidth + MODAL_CHROME_WIDTH;
     if (requiredModalWidth > currentModalWidth) {
-      console.debug(
-        `Expanding modal: tabs need ${tabListWidth}px, modal needs ${requiredModalWidth}px`
-      );
       setLockedWidth(`${requiredModalWidth}px`);
     }
   }, [lockedWidth]);
@@ -8826,7 +8819,6 @@ const Modal = memo((props) => {
     if (isOpen && modalRef.current && lockedWidth) {
       const currentTabCount = modalRef.current.querySelectorAll(".tab-btn").length;
       if (currentTabCount !== tabCount) {
-        console.debug(`Tab count changed: ${tabCount} → ${currentTabCount}`);
         setTabCount(currentTabCount);
         checkTabSpaceAndResize();
       }
@@ -15095,16 +15087,12 @@ const useWaldiezEdgeBasicTab = (props) => {
   );
   const onClearHistoryChange = useCallback(
     (checked) => {
-      console.log("Clear history changed:", checked);
       if (data.clearHistory === checked) {
         return;
       }
-      console.log("Updating clear history to:", checked);
       if (typeof onDataChange !== "function") {
-        console.error("onDataChange is not a function");
         return;
       }
-      console.log("Calling onDataChange with clearHistory:", checked);
       onDataChange({ clearHistory: checked });
     },
     [onDataChange, data.clearHistory]

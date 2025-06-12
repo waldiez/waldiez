@@ -120,9 +120,6 @@ export const Modal = memo<ModalProps>(props => {
         const requiredModalWidth = tabListWidth + MODAL_CHROME_WIDTH;
 
         if (requiredModalWidth > currentModalWidth) {
-            console.debug(
-                `Expanding modal: tabs need ${tabListWidth}px, modal needs ${requiredModalWidth}px`,
-            );
             setLockedWidth(`${requiredModalWidth}px`);
         }
     }, [lockedWidth]);
@@ -133,7 +130,6 @@ export const Modal = memo<ModalProps>(props => {
             const currentTabCount = modalRef.current.querySelectorAll(".tab-btn").length;
 
             if (currentTabCount !== tabCount) {
-                console.debug(`Tab count changed: ${tabCount} → ${currentTabCount}`);
                 setTabCount(currentTabCount);
                 checkTabSpaceAndResize();
             }
