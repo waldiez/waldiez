@@ -29,7 +29,7 @@ const addHeaderToFile = async (filePath: string): Promise<void> => {
     if (!content.includes("SPDX-License-Identifier")) {
         const newContent = `${header}\n\n${content}`;
         await fs.writeFile(filePath, newContent, "utf-8");
-        console.log(`[add-header-to-dist-files] Header added to ${filePath}`);
+        console.log(`\n\x1b[36m[add-header-to-dist-files]\x1b[0m Header added to ${filePath}`);
     }
 };
 
@@ -43,7 +43,9 @@ export const addHeaderToDistFiles = (): Plugin => {
             const distPath = path.resolve("dist");
             // Ensure the dist directory exists
             if (!fs.existsSync(distPath)) {
-                console.warn("[add-header-to-dist-files] Skipped: dist directory not found");
+                console.warn(
+                    `\n\x1b[33m[add-header-to-dist-files]\x1b[0m Skipped: dist directory not found at ${distPath}`,
+                );
                 return;
             }
             // Add header to all .js and .css files in dist
@@ -55,7 +57,7 @@ export const addHeaderToDistFiles = (): Plugin => {
                         await addHeaderToFile(filePath);
                     } catch (error) {
                         console.error(
-                            `[add-header-to-dist-files] Error adding header to ${filePath}:`,
+                            `\n\x1b[31m[add-header-to-dist-files]\x1b[0m Error adding header to ${filePath}:`,
                             error,
                         );
                     }

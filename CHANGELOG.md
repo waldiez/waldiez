@@ -11,6 +11,7 @@ The contents of each release will be used in
 - New json schema to ensure ts and py compatibility.
 - Updated ag2 dependency to 0.9.2.
 - Several ui changes.
+- Added structured IO Stream extension.
 - Image usage support with ag2's Multimodal agent.
 - Swarm depraction and migration to group chats as in ag2.
 - Several bug fixes.

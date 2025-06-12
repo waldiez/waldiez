@@ -45,7 +45,7 @@ export const useWaldiezWrapper = ({
     const onWsMessage = useCallback((event: MessageEvent) => {
         try {
             const data: WebSocketResponse = JSON.parse(event.data);
-            console.log("Received message:", data);
+            console.debug("Received message:", data);
             handleWebSocketMessage(data);
         } catch (error) {
             console.error("Error parsing WebSocket message:", error);
@@ -56,7 +56,7 @@ export const useWaldiezWrapper = ({
      * Handle WebSocket messages
      */
     const handleWebSocketMessage = (data: WebSocketResponse) => {
-        console.debug("Handling WebSocket message:", data);
+        // console.debug("Handling WebSocket message:", data);
         // termination_and_human_reply_no_input
         // using_auto_reply
         switch (data.type) {

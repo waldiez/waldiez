@@ -368,7 +368,7 @@ describe("WaldiezChatMessageProcessor", () => {
             expect(result?.message?.content).toEqual([
                 {
                     type: "image_url",
-                    image_url: { url: "https://example.com/image.jpg" },
+                    image_url: { url: "https://example.com/image.jpg", alt: "Image" },
                 },
             ]);
         });
@@ -385,7 +385,7 @@ describe("WaldiezChatMessageProcessor", () => {
 
             const result = WaldiezChatMessageProcessor.process(message);
 
-            expect(result?.message?.type).toBe("tool_call");
+            expect(result?.message?.type).toBe("system");
         });
 
         it("should generate fallback values for missing fields", async () => {
@@ -617,13 +617,14 @@ describe("WaldiezChatMessageProcessor", () => {
             expect(result?.message?.content).toEqual(contentArray);
         });
 
-        it("should preserve other image_url properties", () => {
+        it("should not preserve other image_url properties", () => {
             const contentArray = [
                 {
                     type: "image_url",
                     image_url: {
                         url: "placeholder-url",
                         detail: "high",
+                        alt: "Placeholder Image",
                     },
                 },
             ];
@@ -648,7 +649,7 @@ describe("WaldiezChatMessageProcessor", () => {
                     type: "image_url",
                     image_url: {
                         url: "https://example.com/image.jpg",
-                        detail: "high",
+                        alt: "Placeholder Image",
                     },
                 },
             ]);

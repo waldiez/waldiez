@@ -26,6 +26,7 @@ import { XYPosition } from '@xyflow/react';
 export declare type BaseMessageData = {
     type: string;
     id?: string;
+    uuid?: string;
     timestamp?: string;
 };
 

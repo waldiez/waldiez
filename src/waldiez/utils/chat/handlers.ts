@@ -159,12 +159,7 @@ export class TextMessageHandler implements MessageHandler {
      * @returns True if this handler can process the message type, false otherwise.
      */
     canHandle(type: string): boolean {
-        return (
-            type === "text" ||
-            type === "tool_call" ||
-            type === "termination_and_human_reply_no_input" ||
-            type === "using_auto_reply"
-        );
+        return type === "text";
     }
 
     /**
@@ -368,6 +363,104 @@ export class CodeExecutionReplyHandler implements MessageHandler {
             recipient: data.content.recipient,
         };
 
+        return { message };
+    }
+}
+
+export class ToolCallHandler implements MessageHandler {
+    canHandle(type: string): boolean {
+        return type === "tool_call";
+    }
+
+    static isValidToolCall(data: any): boolean {
+        return (
+            data &&
+            typeof data === "object" &&
+            data.type === "tool_call" &&
+            data.content &&
+            typeof data.content === "object"
+        );
+    }
+    static extractToolFunctionNames(data: any): string[] {
+        if (data.content.tool_calls && Array.isArray(data.content.tool_calls)) {
+            return data.content.tool_calls
+                .filter((call: any) => call.function && typeof call.function.name === "string")
+                .map((call: any) => call.function.name);
+        }
+        return [];
+    }
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        if (!ToolCallHandler.isValidToolCall(data)) {
+            return undefined;
+        }
+        let text = "Tool call";
+        const toolCalls = ToolCallHandler.extractToolFunctionNames(data);
+        if (toolCalls.length > 0) {
+            text += `: ${toolCalls.join(", ")}`;
+        }
+        const message: WaldiezChatMessage = {
+            id: data.content.uuid ?? nanoid(),
+            timestamp: new Date().toISOString(),
+            type: "system",
+            content: [
+                {
+                    type: "text",
+                    text,
+                },
+            ],
+            sender: data.content.sender,
+            recipient: data.content.recipient,
+        };
+        return { message };
+    }
+}
+
+export class UsingAutoReplyHandler implements MessageHandler {
+    canHandle(type: string): boolean {
+        return type === "using_auto_reply";
+    }
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
+            return undefined;
+        }
+        const message: WaldiezChatMessage = {
+            id: data.content.uuid,
+            timestamp: new Date().toISOString(),
+            type: "system",
+            content: [
+                {
+                    type: "text",
+                    text: "Using auto reply",
+                },
+            ],
+            sender: data.content.sender,
+            recipient: data.content.recipient,
+        };
+        return { message };
+    }
+}
+
+export class TerminationAndHumanReplyNoInputHandler implements MessageHandler {
+    canHandle(type: string): boolean {
+        return type === "termination_and_human_reply_no_input";
+    }
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        if (!data || typeof data !== "object" || data.type !== "termination_and_human_reply_no_input") {
+            return undefined;
+        }
+        const message: WaldiezChatMessage = {
+            id: data.content.uuid,
+            timestamp: new Date().toISOString(),
+            type: "system",
+            content: [
+                {
+                    type: "text",
+                    text: "Termination and human reply without input",
+                },
+            ],
+            sender: data.content.sender,
+            recipient: data.content.recipient,
+        };
         return { message };
     }
 }

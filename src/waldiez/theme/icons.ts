@@ -4,6 +4,7 @@
  */
 import assistantWebp from "@waldiez/assets/assistant.webp";
 import captainWebp from "@waldiez/assets/captain.webp";
+import generic from "@waldiez/assets/generic.webp";
 import azure from "@waldiez/assets/logos/azure.svg";
 import bedrock from "@waldiez/assets/logos/bedrock.svg";
 import anthropic from "@waldiez/assets/logos/claude.svg";
@@ -51,3 +52,5 @@ export const AGENT_ICONS = {
     reasoning: reasoningWebp,
     group_manager: managerWebp,
 };
+
+export const WADLIEZ_ICON = generic;

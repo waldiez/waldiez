@@ -10,8 +10,11 @@ import {
     InputRequestHandler,
     PrintMessageHandler,
     SpeakerSelectionHandler,
+    TerminationAndHumanReplyNoInputHandler,
     TerminationHandler,
     TextMessageHandler,
+    ToolCallHandler,
+    UsingAutoReplyHandler,
 } from "@waldiez/utils/chat/handlers";
 import {
     BaseMessageData,
@@ -29,6 +32,9 @@ export class WaldiezChatMessageProcessor {
         new GroupChatRunHandler(),
         new SpeakerSelectionHandler(),
         new CodeExecutionReplyHandler(),
+        new ToolCallHandler(),
+        new TerminationAndHumanReplyNoInputHandler(),
+        new UsingAutoReplyHandler(),
     ];
 
     /**

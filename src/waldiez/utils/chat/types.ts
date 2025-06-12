@@ -16,6 +16,7 @@ import { WaldiezChatMessage, WaldiezMediaContent } from "@waldiez/types";
 export type BaseMessageData = {
     type: string;
     id?: string;
+    uuid?: string;
     timestamp?: string;
 };
 

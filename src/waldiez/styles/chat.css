@@ -293,10 +293,20 @@
 /* Message Header */
 .flow-wrapper .message-header {
   display: flex;
+  align-items: center;
+  gap: 8px;
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 0.8rem;
   opacity: 0.8;
+}
+
+.flow-wrapper .message-header.user-message {
+  justify-content: flex-end;
+}
+
+.flow-wrapper .message-header.assistant-message {
+  justify-content: flex-start;
 }
 
 .flow-wrapper .message-timestamp {
@@ -582,4 +592,46 @@
 
 .flow-wrapper.dark .password-toggle-button:hover {
   background-color: rgb(255 255 255 / 10%) !important;
+}
+
+/* .avatar-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+} */
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ccc;
+  color: #fff;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-avatar {
+  /* background: #fff; */
+  background: #5bb6ff;
+  color: #fff;
+
+  /* border: 1.5px solid #5bb6ff;
+  color: #0084ff; */
+  border: 1.5px solid #0084ff;
+}
+
+.assistant-avatar {
+  background: #aaa;
+  color: #222;
 }

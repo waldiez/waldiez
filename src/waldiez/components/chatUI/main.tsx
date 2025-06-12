@@ -8,6 +8,7 @@ import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageModal } from "@waldiez/components/chatUI/imageModal";
 import { ChatUIProps, WaldiezChatMessage } from "@waldiez/components/chatUI/types";
 import { parseMessageContent } from "@waldiez/components/chatUI/utils";
+import { WADLIEZ_ICON } from "@waldiez/theme";
 
 type ChatUIMessage = {
     id: string;
@@ -113,19 +114,63 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
                         // Skip messages that failed to parse
                         return null;
                     }
+                    const messageClass = getMessageClass(processedMsg);
+                    const showAvatar =
+                        messageClass === "user-message" || messageClass === "assistant-message";
                     return (
                         <div
                             key={getMessageKey(msg, index)}
                             className={`message-bubble ${getMessageClass(processedMsg)}`}
                             data-testid="rf-chat-message"
                         >
-                            <div className="message-header">
-                                {processedMsg.sender && (
-                                    <span className="message-sender">{processedMsg.sender}</span>
+                            <div className={`message-header ${showAvatar && messageClass}`}>
+                                {messageClass === "assistant-message" ? (
+                                    <>
+                                        {/* Avatar left */}
+                                        {showAvatar && (
+                                            <div className="avatar-container">
+                                                <div className={"avatar assistant-avatar"}>
+                                                    <img
+                                                        src={WADLIEZ_ICON}
+                                                        alt="Assistant Avatar"
+                                                        className="avatar-image"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                        {processedMsg.sender && (
+                                            <span className="message-sender">{processedMsg.sender}</span>
+                                        )}
+                                        <span className="message-timestamp">
+                                            {new Date(msg.timestamp).toLocaleTimeString()}
+                                        </span>
+                                    </>
+                                ) : messageClass === "user-message" ? (
+                                    <>
+                                        {/* Avatar right */}
+                                        <span className="message-timestamp">
+                                            {new Date(msg.timestamp).toLocaleTimeString()}
+                                        </span>
+                                        {processedMsg.sender && (
+                                            <span className="message-sender">{processedMsg.sender}</span>
+                                        )}
+                                        {showAvatar && (
+                                            <div className="avatar-container">
+                                                <div className={"avatar user-avatar"}>U</div>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* Fallback for other message types (no avatar) */}
+                                        {processedMsg.sender && (
+                                            <span className="message-sender">{processedMsg.sender}</span>
+                                        )}
+                                        <span className="message-timestamp">
+                                            {new Date(msg.timestamp).toLocaleTimeString()}
+                                        </span>
+                                    </>
                                 )}
-                                <span className="message-timestamp">
-                                    {new Date(msg.timestamp).toLocaleTimeString()}
-                                </span>
                             </div>
                             <div className="message-content">{processedMsg.node}</div>
                         </div>

@@ -33,13 +33,14 @@ export class MessageUtils {
     }
 
     static generateMessageId(data: BaseMessageData): string {
-        return data.id || nanoid();
+        return data.id || data.uuid || nanoid();
     }
 
     static generateTimestamp(data: BaseMessageData): string {
         return data.timestamp || new Date().toISOString();
     }
 
+    // eslint-disable-next-line max-statements
     static replaceImageUrls(content: unknown, imageUrl: string): WaldiezChatContent {
         const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
 
@@ -67,16 +68,28 @@ export class MessageUtils {
 
         // Handle arrays
         if (Array.isArray(content)) {
-            return content.map(item => {
-                if (item.type === "image_url" && item.image_url?.url) {
-                    return updateImageUrl(item);
-                }
-                if (item.type === "text" && item.text) {
-                    const processed = processTextContent(item.text);
-                    return processed || item;
-                }
-                return item;
-            });
+            return content
+                .map(item => {
+                    if (typeof item === "string") {
+                        const processed = processTextContent(item);
+                        if (!processed) {
+                            return { type: "text", text: item };
+                        }
+                        return processed;
+                    }
+                    if (typeof item !== "object" || item === null || !("type" in item)) {
+                        return null;
+                    }
+                    if (item.type === "image_url" && item.image_url?.url) {
+                        return updateImageUrl(item);
+                    }
+                    if (item.type === "text" && item.text) {
+                        const processed = processTextContent(item.text);
+                        return processed || item;
+                    }
+                    return item;
+                })
+                .filter(Boolean);
         }
 
         // Handle objects with type property
@@ -103,12 +116,15 @@ export class MessageUtils {
         // Handle strings
         if (typeof content === "string") {
             const processed = processTextContent(content);
-            return (processed || content) as WaldiezChatContent;
+            if (!processed) {
+                return [{ type: "text", text: content }] as WaldiezChatContent;
+            }
+            return processed as WaldiezChatContent;
         }
-
         return content as WaldiezChatContent;
     }
 
+    // eslint-disable-next-line max-statements
     static normalizeContent(content: WaldiezChatContent, imageUrl?: string): WaldiezChatContent {
         if (typeof content === "string") {
             if (imageUrl) {
@@ -136,7 +152,19 @@ export class MessageUtils {
                 return normalized;
             }) as WaldiezChatContent;
         }
-
+        if (typeof content === "object" && content !== null && "type" in content) {
+            if (content.type === "text" && typeof content.text === "string") {
+                return [{ type: "text", text: content.text }];
+            }
+            if (content.type === "image_url" && content.image_url?.url) {
+                return [
+                    {
+                        type: "image_url",
+                        image_url: { url: content.image_url.url, alt: content.image_url.alt || "Image" },
+                    },
+                ];
+            }
+        }
         return [content] as WaldiezMediaContent[];
     }
 

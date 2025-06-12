@@ -176,6 +176,12 @@ class AsyncWebsocketsIOStream(IOStream):
                 "request_id": request_id,
                 "prompt": prompt,
                 "password": password,
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt,
+                    }
+                ],
             }
         )
         await self.websocket.send(prompt_dump)

@@ -69,14 +69,25 @@ export class MessageValidator {
      */
     static isValidTextMessage(data: any): data is TextMessageData {
         return (
-            data &&
-            typeof data === "object" &&
-            (data.type === "text" || data.type === "tool_call") &&
-            data.content &&
-            typeof data.content === "object" &&
-            data.content.content !== undefined &&
-            typeof data.content.sender === "string" &&
-            typeof data.content.recipient === "string"
+            (data &&
+                typeof data === "object" &&
+                data.type === "text" &&
+                data.content &&
+                typeof data.content === "object" &&
+                data.content.content !== undefined &&
+                typeof data.content.sender === "string" &&
+                typeof data.content.recipient === "string") ||
+            (Array.isArray(data.content) &&
+                data.content.every(
+                    (item: any) =>
+                        typeof item === "string" ||
+                        (typeof item === "object" &&
+                            item !== null &&
+                            "type" in item &&
+                            item.type === "text" &&
+                            "text" in item &&
+                            typeof item.text === "string"),
+                ))
         );
     }
 
@@ -87,12 +98,13 @@ export class MessageValidator {
      */
     static isValidTerminationMessage(data: any): data is TerminationMessageData {
         return (
-            data &&
-            typeof data === "object" &&
-            data.type === "termination" &&
-            data.content &&
-            typeof data.content === "object" &&
-            typeof data.content.termination_reason === "string"
+            (data &&
+                typeof data === "object" &&
+                data.type === "termination" &&
+                data.content &&
+                typeof data.content === "object" &&
+                typeof data.content.termination_reason === "string") ||
+            (data.termination_reason && typeof data.termination_reason === "string")
         );
     }
 
