@@ -230,7 +230,13 @@ def get_the_imports_string(
         final_string += "\n"
 
     if is_async:
-        final_string += "\nnest_asyncio.apply()  # pyright: ignore\n"
+        final_string += (
+            "# pylint: disable=broad-exception-caught\n"
+            "try:\n"
+            "    nest_asyncio.apply()  # pyright: ignore\n"
+            "except BaseException:\n"
+            "    pass  # maybe on uvloop?\n"
+        )
 
     return final_string.replace("\n\n\n", "\n\n")  # avoid too many newlines
 
