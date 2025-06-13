@@ -313,6 +313,7 @@ def stop_logging() -> None:
 
 def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
     """Start chatting.
+
     Returns
     -------
     Union[ChatResult, list[ChatResult], dict[int, ChatResult]]

@@ -63,10 +63,14 @@ from autogen import (
     UserProxyAgent,
     runtime_logging,
 )
-from autogen.agentchat.chat import initiate_chats
+from autogen.agentchat.chat import a_initiate_chats
 import numpy as np
 
-nest_asyncio.apply()  # pyright: ignore
+# pylint: disable=broad-exception-caught
+try:
+    nest_asyncio.apply()  # pyright: ignore
+except BaseException:
+    pass  # maybe on uvloop?
 #
 # let's try to avoid:
 # module 'numpy' has no attribute '_no_nep50_warning'"
@@ -320,13 +324,14 @@ async def stop_logging() -> None:
 
 async def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
     """Start chatting.
+
     Returns
     -------
     Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
         The result of the chat session, which can be a single ChatResult,
         a list of ChatResults, or a dictionary mapping integers to ChatResults.
     """
-    results = initiate_chats(
+    results = await a_initiate_chats(
         [
             {
                 "sender": personal_information_agent,
