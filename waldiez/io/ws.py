@@ -40,7 +40,7 @@ class AsyncWebsocketsIOStream(IOStream):
         is_async: bool = False,
         uploads_root: str | Path | None = None,
         verbose: bool = False,
-        receive_timeout: float | None = 30.0,
+        receive_timeout: float | None = 120.0,
     ) -> None:
         """Initialize the AsyncWebsocketsIOStream instance.
 
@@ -56,7 +56,7 @@ class AsyncWebsocketsIOStream(IOStream):
             Whether to enable verbose logging.
         receive_timeout : float | None
             Default timeout for receiving messages in seconds.
-            If None, no timeout is applied.
+            If None, defaults to 120 seconds.
         """
         super().__init__()
 
