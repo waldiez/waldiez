@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from waldiez import __version__
+from waldiez import __version__  # pyright: ignore
 from waldiez.__main__ import app as waldiez_main  # type: ignore
 from waldiez.cli import app
 from waldiez.models import WaldiezFlow
