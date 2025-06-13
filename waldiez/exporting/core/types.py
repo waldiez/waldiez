@@ -3,7 +3,7 @@
 
 """Core dataclasses for the exporting system."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Any, Optional, TypeVar
 
@@ -276,6 +276,34 @@ class ExportConfig:
         if not self.output_extension:
             raise ValueError("ExportConfig output_extension cannot be empty")
 
+    @classmethod
+    def create(cls, **kwargs: Any) -> "ExportConfig":
+        """Create a new ExportConfig instance with the provided values.
+
+        Parameters
+        ----------
+        **kwargs : Any
+            Keyword arguments to initialize the ExportConfig.
+
+        Returns
+        -------
+        ExportConfig
+            A new instance of ExportConfig.
+        """
+        valid_fields = {f.name for f in fields(cls)}
+        output_extension = kwargs.pop("output_extension", "py")
+        for_notebook = kwargs.pop("for_notebook", output_extension == "ipynb")
+        if for_notebook is True:
+            output_extension = "ipynb"
+        cache_seed = kwargs.pop("cache_seed", None)
+        if cache_seed is not None and not isinstance(cache_seed, int):
+            cache_seed = None
+        return cls(
+            cache_seed=cache_seed,
+            output_extension=output_extension,
+            **{k: v for k, v in kwargs.items() if k in valid_fields},
+        )
+
     def update(self, **kwargs: Any) -> None:
         """Update the export configuration with new values.
 
@@ -289,8 +317,13 @@ class ExportConfig:
         ValueError
             If an invalid configuration key is provided.
         """
+        valid_fields = {f.name for f in fields(self)}
         for key, value in kwargs.items():
-            if hasattr(self, key):
+            if key in valid_fields:
                 setattr(self, key, value)
-            else:
-                raise ValueError(f"Invalid configuration key: {key}")
+        if (
+            "for_notebook" in kwargs
+            and isinstance(kwargs["for_notebook"], bool)
+            and "output_extension" not in kwargs
+        ):  # pragma: no cover
+            self.output_extension = "ipynb" if kwargs["for_notebook"] else "py"

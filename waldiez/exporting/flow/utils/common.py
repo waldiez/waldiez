@@ -112,6 +112,7 @@ def main_doc_string() -> str:
         The docstring for the main function.
     """
     return f'''"""Start chatting.
+
     Returns
     -------
     {RETURN_TYPE_HINT}

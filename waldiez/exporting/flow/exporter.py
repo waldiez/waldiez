@@ -43,7 +43,6 @@ class FlowExporter(Exporter[FlowExtras]):
 
         self.waldiez = waldiez
         self.output_dir = Path(output_dir) if output_dir is not None else None
-        self.for_notebook = for_notebook
         self.flow_config = self.context.get_config(
             name=waldiez.name,
             description=waldiez.description,

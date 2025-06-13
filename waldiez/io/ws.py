@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=too-many-try-statements
 """WebSocket IOStream implementation for AsyncIO."""
 
 import asyncio
@@ -78,6 +79,25 @@ class AsyncWebsocketsIOStream(IOStream):
             uploads_root = uploads_root.resolve()
         self.uploads_root = uploads_root
 
+    def _try_send(self, json_dump: str) -> None:
+        try:
+            # Check if we're already in an async context
+            loop = None
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                pass
+
+            if loop is not None:
+                # We're in an async context, create a task
+                asyncio.create_task(self.websocket.send_message(json_dump))
+            else:
+                # We're not in an async context, run the coroutine
+                asyncio.run(self.websocket.send_message(json_dump))
+
+        except BaseException as error:  # pylint: disable=broad-exception-caught
+            LOG.error("Error sending message: %s", error)
+
     def print(self, *args: Any, **kwargs: Any) -> None:
         """Print to the WebSocket connection.
 
@@ -107,13 +127,7 @@ class AsyncWebsocketsIOStream(IOStream):
 
         if self.verbose:
             LOG.info(json_dump)
-
-        try:
-            asyncio.run(
-                self.websocket.send_message(json_dump),
-            )
-        except BaseException as error:  # pylint: disable=broad-exception-caught
-            LOG.error("Error sending message: %s", error)
+        self._try_send(json_dump)
 
     def send(self, message: BaseEvent) -> None:
         """Send a message to the WebSocket connection.
@@ -142,12 +156,7 @@ class AsyncWebsocketsIOStream(IOStream):
         if self.verbose:
             LOG.info("sending: \n%s\n", json_dump)
 
-        try:
-            asyncio.run(
-                self.websocket.send_message(json_dump),
-            )
-        except BaseException as error:  # pylint: disable=broad-exception-caught
-            LOG.error("Error sending message: %s", error)
+        self._try_send(json_dump)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
         """Sync-compatible input (will run the async version in the loop).

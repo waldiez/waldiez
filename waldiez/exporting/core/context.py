@@ -84,7 +84,7 @@ class ExporterContext:
         kwargs: dict[str, Any] = {
             "requirements": requirements or [],
             "tags": tags or [],
-            "is_async": is_async,
+            "is_async": self.config.is_async if self.config else is_async,
         }
         if output_extension is not None:
             kwargs["output_extension"] = output_extension
@@ -99,8 +99,18 @@ class ExporterContext:
         if self.config is not None:
             self.config.update(**kwargs)
         else:
-            self.config = ExportConfig(**kwargs)
+            self.config = ExportConfig.create(**kwargs)
         return self.config
+
+    def set_config(self, config: ExportConfig) -> None:
+        """Set the export configuration.
+
+        Parameters
+        ----------
+        config : ExportConfig
+            The export configuration to set.
+        """
+        self.config = config
 
     def get_logger(self) -> ExportingLogger:
         """Get logger or create a default one.

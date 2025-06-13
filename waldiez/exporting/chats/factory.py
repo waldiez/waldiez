@@ -22,9 +22,6 @@ def create_chats_exporter(
     chat_names: dict[str, str],
     main_chats: list[WaldiezAgentConnection],
     root_group_manager: Optional[WaldiezGroupManager] = None,
-    for_notebook: bool = False,
-    is_async: bool = False,
-    cache_seed: Optional[int] = None,
     context: Optional[ExporterContext] = None,
     **kwargs: Any,
 ) -> ChatsExporter:
@@ -44,12 +41,6 @@ def create_chats_exporter(
         Main chats that are connections between agents.
     root_group_manager : Optional[WaldiezGroupManager], optional
         The root group manager for managing chat groups, if any.
-    for_notebook : bool, optional
-        Whether the export is intended for a notebook, by default False
-    is_async : bool, optional
-        Whether the exporter operates asynchronously, by default False
-    cache_seed : Optional[int], optional
-        The cache seed for any caching mechanism, if applicable, by default None
     context : Optional[ExporterContext], optional
         Exporter context with dependencies, by default None
     **kwargs : Any
@@ -62,7 +53,6 @@ def create_chats_exporter(
     """
     if context is None:
         context = get_default_exporter_context()
-
     return ChatsExporter(
         all_agents=all_agents,
         agent_names=agent_names,
@@ -70,9 +60,6 @@ def create_chats_exporter(
         chat_names=chat_names,
         main_chats=main_chats,
         root_group_manager=root_group_manager,
-        for_notebook=for_notebook,
-        is_async=is_async,
-        cache_seed=cache_seed,
         context=context,
         **kwargs,
     )

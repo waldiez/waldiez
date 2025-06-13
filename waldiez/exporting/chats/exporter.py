@@ -26,9 +26,6 @@ class ChatsExporter(Exporter[ChatExtras]):
         chat_names: dict[str, str],
         main_chats: list[WaldiezAgentConnection],
         root_group_manager: Optional[WaldiezGroupManager],
-        for_notebook: bool,
-        is_async: bool,
-        cache_seed: Optional[int],
         context: Optional[ExporterContext] = None,
         **kwargs: Any,
     ) -> None:
@@ -48,12 +45,6 @@ class ChatsExporter(Exporter[ChatExtras]):
             Main chats that are connections between agents.
         root_group_manager : Optional[WaldiezGroupManager]
             The root group manager for managing chat groups, if any.
-        for_notebook : bool
-            Whether the export is intended for a notebook environment.
-        is_async : bool
-            Whether the exporter operates asynchronously.
-        cache_seed : Optional[int]
-            The cache seed for any caching mechanism, if applicable.
         context : Optional[ExporterContext], optional
             Exporter context with dependencies, by default None
         **kwargs : Any
@@ -67,10 +58,10 @@ class ChatsExporter(Exporter[ChatExtras]):
         self.chat_names = chat_names
         self.main_chats = main_chats
         self.root_group_manager = root_group_manager
-        self.for_notebook = for_notebook
-        self.is_async = is_async
-        self.cache_seed = cache_seed
-
+        config = self.context.get_config()
+        self.for_notebook = config.for_notebook
+        self.is_async = config.is_async
+        self.cache_seed = config.cache_seed
         # Initialize extras with processed chat content
         self._extras = self._create_chat_extras()
 

@@ -19,6 +19,7 @@ from .protocols import ExportContributor
 from .result import ExportResult, ExportResultBuilder
 from .types import (
     EnvironmentVariable,
+    ExportConfig,
     Extras,
     ImportStatement,
 )
@@ -41,7 +42,12 @@ class Exporter(abc.ABC, Generic[Extras]):
         **kwargs : Any
             Additional keyword arguments for subclasses.
         """
-        self._context = context or DefaultExporterContext()
+        self._context = context or DefaultExporterContext(
+            config=ExportConfig.create(**kwargs)
+        )
+        config = self._context.get_config()
+        config.update(**kwargs)
+        self._context.set_config(config)
         self._result = ExportResult()
         self._initialized = False
         self._builder = ExportResultBuilder()
@@ -140,7 +146,9 @@ class Exporter(abc.ABC, Generic[Extras]):
     # Convenience methods for adding content
 
     def add_import(
-        self, statement: str, position: ImportPosition = DEFAULT_IMPORT_POSITION
+        self,
+        statement: str,
+        position: ImportPosition = DEFAULT_IMPORT_POSITION,
     ) -> None:
         """Add an import statement.
 

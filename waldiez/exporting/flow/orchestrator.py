@@ -274,8 +274,6 @@ class ExportOrchestrator:
                 all_chats=self.chats,
                 main_chats=self.waldiez.initial_chats,
                 chat_names=self.chat_names,
-                for_notebook=self.config.for_notebook,
-                cache_seed=self.config.cache_seed,
                 output_dir=self.config.output_directory,
                 context=self.context,
             )
