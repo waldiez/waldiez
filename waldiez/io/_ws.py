@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# flake8: noqa: E501
+# pylint: disable=line-too-long
 """WebSocket IOStream implementation for AsyncIO."""
 
 import asyncio
@@ -8,14 +10,14 @@ from typing import Any, Protocol
 HAS_WS_LIB = False
 
 try:
-    from starlette.websockets import WebSocket
+    from starlette.websockets import WebSocket  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 
     HAS_WS_LIB = True  # pyright: ignore
 except ImportError:
     pass
 
 try:
-    import websockets
+    import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 
     HAS_WS_LIB = True  # pyright: ignore
 except ImportError:  # pragma: no cover
