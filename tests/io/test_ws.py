@@ -37,11 +37,11 @@ class TestAsyncWebsocketsIOStream:
     def setup_method(self) -> None:
         """Set up test fixtures."""
         self.sync_websocket = MagicMock()
-        self.sync_websocket.send = MagicMock()
-        self.sync_websocket.recv = MagicMock()
+        self.sync_websocket.send_message = MagicMock()
+        self.sync_websocket.receive_message = MagicMock(return_value="")
         self.async_websocket = MagicMock()
-        self.async_websocket.send = AsyncMock()
-        self.async_websocket.recv = AsyncMock()
+        self.async_websocket.send_message = AsyncMock()
+        self.async_websocket.receive_message = AsyncMock(return_value="")
 
         self.sync_stream = AsyncWebsocketsIOStream(
             websocket=self.sync_websocket,
@@ -72,7 +72,8 @@ class TestAsyncWebsocketsIOStream:
         """Test initialization with uploads_root as string."""
         uploads_path = tmp_path / "uploads"
         stream = AsyncWebsocketsIOStream(
-            websocket=self.sync_websocket, uploads_root=uploads_path
+            websocket=self.sync_websocket,
+            uploads_root=uploads_path,
         )
         assert isinstance(stream.uploads_root, Path)
         assert str(stream.uploads_root).endswith("uploads")
@@ -81,14 +82,16 @@ class TestAsyncWebsocketsIOStream:
         """Test initialization with uploads_root as Path."""
         uploads_path = tmp_path / "uploads"
         stream = AsyncWebsocketsIOStream(
-            websocket=self.sync_websocket, uploads_root=uploads_path
+            websocket=self.sync_websocket,
+            uploads_root=uploads_path,
         )
         assert stream.uploads_root == uploads_path.resolve()
 
     def test_init_verbose(self) -> None:
         """Test initialization with verbose logging."""
         stream = AsyncWebsocketsIOStream(
-            websocket=self.sync_websocket, verbose=True
+            websocket=self.sync_websocket,
+            verbose=True,
         )
         assert stream.verbose is True
 
@@ -113,7 +116,8 @@ class TestAsyncWebsocketsIOStream:
         """Test print with verbose logging."""
         # Create a verbose stream
         verbose_stream = AsyncWebsocketsIOStream(
-            websocket=self.sync_websocket, verbose=True
+            websocket=self.sync_websocket,
+            verbose=True,
         )
 
         # Call the print method
@@ -205,8 +209,8 @@ class TestAsyncWebsocketsIOStream:
     def test_input_runtime_error_fallback(self) -> None:
         """Test input fallback when asyncio.run raises RuntimeError."""
         sync_websocket = MagicMock()
-        sync_websocket.send = MagicMock()
-        sync_websocket.recv = MagicMock()
+        sync_websocket.send_message = MagicMock()
+        sync_websocket.receive_message = MagicMock()
 
         sync_stream = AsyncWebsocketsIOStream(
             websocket=sync_websocket,
@@ -259,7 +263,9 @@ class TestAsyncWebsocketsIOStream:
 
         # Mock the response
         response_data = {"request_id": request_id, "data": "async user input"}
-        self.async_websocket.recv.return_value = json.dumps(response_data)
+        self.async_websocket.receive_message.return_value = json.dumps(
+            response_data
+        )
 
         with patch("uuid.uuid4") as mock_uuid:
             mock_uuid.return_value.hex = request_id
@@ -268,11 +274,13 @@ class TestAsyncWebsocketsIOStream:
         assert result == "async user input"
 
         # Verify websocket interactions
-        self.async_websocket.send.assert_called_once()
-        self.async_websocket.recv.assert_called_once()
+        self.async_websocket.send_message.assert_called_once()
+        self.async_websocket.receive_message.assert_called_once()
 
         # Check the sent data
-        sent_data = json.loads(self.async_websocket.send.call_args[0][0])
+        sent_data = json.loads(
+            self.async_websocket.send_message.call_args[0][0]
+        )
         assert sent_data["type"] == "input_request"
         assert sent_data["request_id"] == request_id
         assert sent_data["prompt"] == "Enter text: "
@@ -284,7 +292,9 @@ class TestAsyncWebsocketsIOStream:
         request_id = "test_request_id"
 
         response_data = {"request_id": request_id, "data": "secret_password"}
-        self.async_websocket.recv.return_value = json.dumps(response_data)
+        self.async_websocket.receive_message.return_value = json.dumps(
+            response_data
+        )
 
         with patch("uuid.uuid4") as mock_uuid:
             mock_uuid.return_value.hex = request_id
@@ -295,7 +305,9 @@ class TestAsyncWebsocketsIOStream:
         assert result == "secret_password"
 
         # Check the sent data includes password flag
-        sent_data = json.loads(self.async_websocket.send.call_args[0][0])
+        sent_data = json.loads(
+            self.async_websocket.send_message.call_args[0][0]
+        )
         assert sent_data["password"] is True
 
     @pytest.mark.asyncio
@@ -305,7 +317,7 @@ class TestAsyncWebsocketsIOStream:
 
         # Mock bytes response
         response_data = {"request_id": request_id, "data": "bytes response"}
-        self.async_websocket.recv.return_value = json.dumps(
+        self.async_websocket.receive_message.return_value = json.dumps(
             response_data
         ).encode("utf-8")
 
@@ -325,7 +337,9 @@ class TestAsyncWebsocketsIOStream:
 
         request_id = "test_request_id"
         response_data = {"request_id": request_id, "data": "verbose response"}
-        self.async_websocket.recv.return_value = json.dumps(response_data)
+        self.async_websocket.receive_message.return_value = json.dumps(
+            response_data
+        )
 
         with patch("uuid.uuid4") as mock_uuid:
             mock_uuid.return_value.hex = request_id
@@ -339,7 +353,9 @@ class TestAsyncWebsocketsIOStream:
     @pytest.mark.asyncio
     async def test_a_input_non_json_response(self) -> None:
         """Test async input with non-JSON response."""
-        self.async_websocket.recv.return_value = "plain text response"
+        self.async_websocket.receive_message.return_value = (
+            "plain text response"
+        )
 
         result = await self.async_stream.a_input("Enter text: ")
 
@@ -348,7 +364,7 @@ class TestAsyncWebsocketsIOStream:
     @pytest.mark.asyncio
     async def test_a_input_invalid_json_response(self) -> None:
         """Test async input with invalid JSON response."""
-        self.async_websocket.recv.return_value = "{invalid json"
+        self.async_websocket.receive_message.return_value = "{invalid json"
 
         result = await self.async_stream.a_input("Enter text: ")
 
@@ -358,7 +374,9 @@ class TestAsyncWebsocketsIOStream:
     @patch("waldiez.io.ws.LOG")
     async def test_a_input_non_dict_response(self, mock_log: MagicMock) -> None:
         """Test async input with non-dict JSON response."""
-        self.async_websocket.recv.return_value = json.dumps("string response")
+        self.async_websocket.receive_message.return_value = json.dumps(
+            "string response"
+        )
 
         result = await self.async_stream.a_input("Enter text: ")
 

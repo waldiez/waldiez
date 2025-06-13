@@ -9,20 +9,26 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-try:
-    import websockets
-except ImportError as error:  # pragma: no cover
-    raise ImportError(
-        "websockets package is required for AsyncWebsocketsIOStream. "
-        "Please install it with `pip install websockets`."
-    ) from error
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 
+from ._ws import (
+    WebSocketConnection,
+    create_websocket_adapter,
+    is_websocket_available,
+)
 from .models import UserResponse
 from .utils import is_json_dumped, now, try_parse_maybe_serialized
 
 LOG = logging.getLogger(__name__)
+
+if not is_websocket_available():
+    raise ImportError(
+        "WebSocket support requires "
+        "either the 'websockets' or 'starlette' package. "
+        "Please install one of them with "
+        "`pip install websockets` or `pip install starlette`."
+    )
 
 
 class AsyncWebsocketsIOStream(IOStream):
@@ -30,29 +36,43 @@ class AsyncWebsocketsIOStream(IOStream):
 
     def __init__(
         self,
-        websocket: websockets.ServerConnection,
+        websocket: Any,
         is_async: bool = False,
         uploads_root: str | Path | None = None,
         verbose: bool = False,
+        receive_timeout: float | None = 30.0,
     ) -> None:
-        """Initialize the AsyncIOWebsockets instance.
+        """Initialize the AsyncWebsocketsIOStream instance.
 
         Parameters
         ----------
-        websocket : websockets.ServerConnection
-            The WebSocket connection to handle.
+        websocket : Any
+            The WebSocket connection (either websockets or Starlette/FastAPI).
         is_async : bool
             Whether the connection is asynchronous.
         uploads_root : str | Path | None
             The root directory for uploads.
         verbose : bool
             Whether to enable verbose logging.
+        receive_timeout : float | None
+            Default timeout for receiving messages in seconds.
+            If None, no timeout is applied.
         """
         super().__init__()
-        self.websocket = websocket
+
+        # Create the WebSocket adapter
+        if hasattr(websocket, "send_message") and hasattr(
+            websocket, "receive_message"
+        ):
+            self.websocket: WebSocketConnection = websocket
+        else:
+            self.websocket = create_websocket_adapter(websocket)
+
         self.is_async = is_async
         self.verbose = verbose
-        if isinstance(uploads_root, str):  # pragma: no cover
+        self.receive_timeout = receive_timeout
+
+        if isinstance(uploads_root, str):
             uploads_root = Path(uploads_root)
         if uploads_root is not None:
             uploads_root = uploads_root.resolve()
@@ -70,24 +90,27 @@ class AsyncWebsocketsIOStream(IOStream):
         """
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
-        msg = sep.join(str(arg) for arg in args)  # + end
+        msg = sep.join(str(arg) for arg in args)
 
         is_dumped = is_json_dumped(msg)
         if is_dumped and end.endswith("\n"):
             msg = json.loads(msg)
         else:
             msg = f"{msg}{end}"
+
         json_dump = json.dumps(
             {
                 "type": "print",
                 "data": msg,
             }
         )
+
         if self.verbose:
             LOG.info(json_dump)
+
         try:
             asyncio.run(
-                self.websocket.send(json_dump),
+                self.websocket.send_message(json_dump),
             )
         except BaseException as error:  # pylint: disable=broad-exception-caught
             LOG.error("Error sending message: %s", error)
@@ -97,11 +120,11 @@ class AsyncWebsocketsIOStream(IOStream):
 
         Parameters
         ----------
-        message : str
+        message : BaseEvent
             The message to send.
         """
         message_dump = message.model_dump(mode="json")
-        # message_dump = message.model_dump(mode="json")
+
         if message_dump.get("type") == "text":
             content_block = message_dump.get("content")
             if (
@@ -113,12 +136,15 @@ class AsyncWebsocketsIOStream(IOStream):
                 content_block["content"] = try_parse_maybe_serialized(
                     inner_content
                 )
+
         json_dump = json.dumps(message_dump, ensure_ascii=False)
+
         if self.verbose:
             LOG.info("sending: \n%s\n", json_dump)
+
         try:
             asyncio.run(
-                self.websocket.send(json_dump),
+                self.websocket.send_message(json_dump),
             )
         except BaseException as error:  # pylint: disable=broad-exception-caught
             LOG.error("Error sending message: %s", error)
@@ -140,10 +166,8 @@ class AsyncWebsocketsIOStream(IOStream):
         """
         coro = self.a_input(prompt, password=password)
         if self.is_async:
-            # conversable_agent has:
-            # iostream = IOStream.get_default()
-            # reply = await iostream.input(prompt)  # ? await ?
             return coro  # type: ignore  # pragma: no cover
+
         try:
             return asyncio.run(coro)
         except RuntimeError:
@@ -151,8 +175,13 @@ class AsyncWebsocketsIOStream(IOStream):
             future = asyncio.run_coroutine_threadsafe(coro, loop)
             return future.result()
 
-    # pylint: disable=unused-argument,no-self-use
-    async def a_input(self, prompt: str = "", *, password: bool = False) -> str:
+    async def a_input(
+        self,
+        prompt: str = "",
+        *,
+        password: bool = False,
+        timeout: float | None = None,
+    ) -> str:
         """Get input from the WebSocket connection.
 
         Parameters
@@ -161,12 +190,18 @@ class AsyncWebsocketsIOStream(IOStream):
             The prompt to display.
         password : bool
             Whether to hide the input.
+        timeout : float | None
+            Timeout for receiving the response in seconds.
+            If None, uses the instance's default receive_timeout.
 
         Returns
         -------
         str
-            The user input.
+            The user input, or empty string if timeout exceeded.
         """
+        if timeout is None:
+            timeout = self.receive_timeout or 120.0
+
         request_id = uuid.uuid4().hex
         prompt_dump = json.dumps(
             {
@@ -184,21 +219,28 @@ class AsyncWebsocketsIOStream(IOStream):
                 ],
             }
         )
-        await self.websocket.send(prompt_dump)
-        response = await self.websocket.recv()
-        # response = asyncio.run(self.websocket.recv())
-        if isinstance(response, bytes):
-            response = response.decode("utf-8")
+
+        await self.websocket.send_message(prompt_dump)
+        response = await self.websocket.receive_message(timeout=timeout)
+
+        # Handle empty response from timeout
+        if not response:
+            LOG.warning("Input request timed out after %s seconds", timeout)
+            return ""
+
         if self.verbose:
             LOG.info("Got input: %s ...", response[:300])
+
         response_dict: dict[str, Any] | str
         try:
             response_dict = json.loads(response)
         except json.JSONDecodeError:
-            return response if isinstance(response, str) else str(response)
+            return response
+
         if not isinstance(response_dict, dict):
             LOG.error("Invalid input response: %s", response)
             return ""
+
         return self._parse_response(response_dict, request_id)
 
     def _parse_response(self, response: dict[str, Any], request_id: str) -> str:
@@ -210,6 +252,11 @@ class AsyncWebsocketsIOStream(IOStream):
             The response from the WebSocket connection.
         request_id : str
             The request ID of the input request.
+
+        Returns
+        -------
+        str
+            The parsed response content.
         """
         if "data" in response:
             response_data = response["data"]
@@ -221,11 +268,13 @@ class AsyncWebsocketsIOStream(IOStream):
                     pass
                 else:
                     response["data"] = parsed
+
         try:
             user_response = UserResponse.model_validate(response)
         except Exception as error:  # pylint: disable=broad-exception-caught
             LOG.error("Error parsing user input response: %s", error)
             return ""
+
         if user_response.request_id != request_id:
             LOG.error(
                 "User response request ID mismatch: %s != %s",
@@ -233,6 +282,7 @@ class AsyncWebsocketsIOStream(IOStream):
                 request_id,
             )
             return ""
+
         return user_response.to_string(
             uploads_root=self.uploads_root,
             base_name=request_id,
