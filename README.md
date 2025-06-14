@@ -60,7 +60,7 @@ To include waldiez on your website using CDN, here is a simple example:
                 background-color: white;
                 color: black;
             }
-             @media (prefers-color-scheme: dark) {
+            @media (prefers-color-scheme: dark) {
                 body {
                     background-color: black;
                     color: white;
