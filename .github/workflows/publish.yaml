@@ -36,8 +36,8 @@ jobs:
           mv README.npm.md README.md
           bun build:lib
           bun publish
-          mv README.md README.npm.md
-          mv .local/README.md.bak README.md
+          mv README.md README.npm.md 2>/dev/null || true
+          mv .local/README.md.bak README.md 2>/dev/null || true
 
       - name: Dry-run publish to NPM
         if: github.event_name == 'workflow_dispatch'
