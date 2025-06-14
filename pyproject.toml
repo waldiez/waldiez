@@ -81,15 +81,15 @@ mqtt = [
 ]
 # jupyterlab extension
 jupyter = [
-  "waldiez_jupyter==0.4.7",
+  "waldiez_jupyter==0.4.8",
   "jupyterlab>=4.3.0,<5.0",
   "jupyter_server==2.16.0",
 ]
 runner = [
-  "waldiez_runner==0.4.7; python_version >= '3.11'",
+  "waldiez_runner==0.4.8; python_version >= '3.11'",
 ]
 studio = [
-  "waldiez_studio==0.4.7",
+  "waldiez_studio==0.4.8",
 ]
 ag2_extras = [
   # models
