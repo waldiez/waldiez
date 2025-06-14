@@ -1,7 +1,7 @@
 {
   "id": "wf-jOphYSUKyn-5j_21p8M2B",
   "type": "flow",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "storageId": "wf-jOphYSUKyn-5j_21p8M2B",
   "name": "AutoDefense Flow",
   "description": "Multi-Agent LLM Defense against Jailbreak Attacks",

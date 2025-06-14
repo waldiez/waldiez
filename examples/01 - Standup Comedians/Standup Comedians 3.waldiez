@@ -1,7 +1,7 @@
 {
   "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "type": "flow",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "Standup comedians 3",
   "description": "Standup comedians without user input, with termination keywords.",

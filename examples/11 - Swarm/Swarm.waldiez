@@ -1,7 +1,7 @@
 {
   "id": "wf-7wDX3rqHOJudv58ZpunWH",
   "type": "flow",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "storageId": "wf-7wDX3rqHOJudv58ZpunWH",
   "name": "Swarm",
   "description": "Enhanced Swarm Orchestration with AG2. Based on <https://docs.ag2.ai/latest/docs/use-cases/notebooks/notebooks/agentchat_swarm_enhanced>",

@@ -1,7 +1,7 @@
 {
   "id": "wf-57v7v5V-k6fIlTP5E6QFL",
   "type": "flow",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "storageId": "wf-57v7v5V-k6fIlTP5E6QFL",
   "name": "3 - With agent lib and tool lib",
   "description": "Using CaptainAgent with agent library and tool library. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-both-agent-library-and-tool-library>",

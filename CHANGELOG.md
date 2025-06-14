@@ -5,15 +5,15 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## [Unreleased]
+## 0.4.8
 
 - Breaking news and changes.
 - Updated ag2 dependency to 0.9.2.
+- Swarm depraction and migration to group chats as in ag2.
 - New json schema to ensure ts and py compatibility.
 - Several ui changes.
 - Added structured IO Stream.
 - Image usage support with ag2's Multimodal agent.
-- Swarm depraction and migration to group chats as in ag2.
 - Several bug fixes.
 - Updated dependencies.
 - NOTE: Previously created waldiez flows will not work.
