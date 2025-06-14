@@ -250,7 +250,8 @@
     "resolutions": {
         "cross-spawn": "^7.0.6",
         "ws": "^8.18.2",
-        "got": "^14.4.7"
+        "got": "^14.4.7",
+        "ajv": "^8.17.1"
     },
     "packageManager": "bun@1.2.16"
 }
