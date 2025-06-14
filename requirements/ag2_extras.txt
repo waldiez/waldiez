@@ -5,6 +5,7 @@ ag2[cohere]==0.9.2
 ag2[gemini]==0.9.2;sys_platform != 'win32'
 ag2[gemini]==0.9.2;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
 ag2[groq]==0.9.2
+ag2[interop-crewai]==0.9.2
 ag2[interop-langchain]==0.9.2
 ag2[lmm]==0.9.2
 ag2[mistral]==0.9.2

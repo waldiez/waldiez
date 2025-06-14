@@ -4,11 +4,11 @@ aiofiles==24.1.0
 aiosqlite==0.21.0
 asyncer==0.0.8
 click<8.2
-graphviz==0.20.3
+graphviz<=0.20.3
 httpx<1
 jupytext
 nest_asyncio==1.6.0
-numpy<=2.2.6
+numpy<=2.3.0
 pandas>=2
 parso==0.8.4
 pillow
