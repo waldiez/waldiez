@@ -1,8 +1,8 @@
 {
-  "id": "wf-7wDX3rqHOJudv58ZpunWH",
+  "id": "id-4393da83-9299-4713-8318-7f826a44d26e",
   "type": "flow",
   "version": "0.4.8",
-  "storageId": "wf-7wDX3rqHOJudv58ZpunWH",
+  "storageId": "wf-1749917363618dDBjyGH51ZF39JzT7zyq7",
   "name": "Swarm",
   "description": "Enhanced Swarm Orchestration with AG2. Based on <https://docs.ag2.ai/latest/docs/use-cases/notebooks/notebooks/agentchat_swarm_enhanced>",
   "tags": [
@@ -11,7 +11,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-19T16:27:28.320Z",
-  "updatedAt": "2025-06-04T09:45:32.316Z",
+  "updatedAt": "2025-06-14T16:54:20.577Z",
   "data": {
     "nodes": [
       {
@@ -22,8 +22,8 @@
           "y": 10
         },
         "measured": {
-          "width": 182,
-          "height": 182
+          "width": 180,
+          "height": 100
         },
         "selected": false,
         "hidden": true,
@@ -122,8 +122,8 @@
           "y": 405
         },
         "measured": {
-          "width": 154,
-          "height": 155
+          "width": 130,
+          "height": 120
         },
         "selected": false,
         "dragging": false,
@@ -142,8 +142,8 @@
         },
         "extent": "parent",
         "measured": {
-          "width": 184,
-          "height": 174
+          "width": 180,
+          "height": 120
         },
         "selected": false,
         "dragging": false,
@@ -163,10 +163,10 @@
         },
         "extent": "parent",
         "measured": {
-          "width": 184,
-          "height": 174
+          "width": 180,
+          "height": 120
         },
-        "selected": false,
+        "selected": true,
         "dragging": false,
         "className": "",
         "hidden": false,
@@ -207,8 +207,8 @@
           "y": 435
         },
         "measured": {
-          "width": 184,
-          "height": 159
+          "width": 180,
+          "height": 120
         },
         "selected": false,
         "dragging": false,
@@ -226,8 +226,8 @@
           "y": 75
         },
         "measured": {
-          "width": 184,
-          "height": 159
+          "width": 180,
+          "height": 120
         },
         "selected": false,
         "dragging": false,
@@ -406,9 +406,9 @@
       }
     ],
     "viewport": {
-      "x": 279.2216427640156,
-      "y": 167.5749674054759,
-      "zoom": 0.7092568448500652
+      "x": 183.5,
+      "y": 27.5,
+      "zoom": 0.5
     },
     "agents": {
       "groupManagerAgents": [
@@ -552,16 +552,7 @@
             "modelIds": [
               "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy"
             ],
-            "tools": [
-              {
-                "id": "wt-1748065573985IkTZBvXE6SDhmd14Ry0w_",
-                "executorId": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM"
-              },
-              {
-                "id": "wt-1748065131080HvikLOMWz2syY_Wms4rO4",
-                "executorId": "wa-1747672170039_pXmnMM3Zf8571R3C9KYM"
-              }
-            ],
+            "tools": [],
             "parentId": "wa-1747672141671XNKFFNqEjBZfMyL7K_FUz",
             "nestedChats": [
               {
@@ -635,11 +626,11 @@
                 ],
                 "messages": [
                   {
-                    "id": "we-1748067562820jGS3ON7rSna9NH6bV39xa",
+                    "id": "we-1748067596653CiYJ0k4uxPs7Uu-SK6wiB",
                     "isReply": false
                   },
                   {
-                    "id": "we-1748067596653CiYJ0k4uxPs7Uu-SK6wiB",
+                    "id": "we-1748067562820jGS3ON7rSna9NH6bV39xa",
                     "isReply": false
                   }
                 ],
@@ -837,12 +828,12 @@
       {
         "id": "wt-1747672095486uUT-F0ZxOpV6OrKqTwToy",
         "type": "model",
-        "name": "gpt-4-turbo",
+        "name": "gpt-4.1",
         "description": "A new model",
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T16:28:15.486Z",
-        "updatedAt": "2025-05-29T08:16:43.143Z",
+        "updatedAt": "2025-06-14T16:36:03.565Z",
         "data": {
           "apiKey": "REPLACE_ME",
           "apiType": "openai",
@@ -938,7 +929,7 @@
         "data": {
           "sourceType": "user_proxy",
           "targetType": "group_manager",
-          "name": "Customer => Manager",
+          "name": "orderRequest",
           "order": -1,
           "description": "New connection",
           "position": 1,
@@ -1094,11 +1085,11 @@
           "prerequisites": [],
           "condition": {
             "conditionType": "string_llm",
-            "prompt": "The customer is logged in, continue with the order triage."
+            "prompt": "The customer is logged in, continue with the order mgmt agent."
           },
           "available": {
-            "type": "expression",
-            "value": "!(${logged_in})"
+            "type": "none",
+            "value": "!(${has_order_id})"
           },
           "afterWork": null,
           "silent": false,
@@ -1163,7 +1154,7 @@
           "description": "Check the order details.",
           "position": 6,
           "clearHistory": true,
-          "maxTurns": null,
+          "maxTurns": 1,
           "message": {
             "type": "none",
             "content": null,
@@ -1212,7 +1203,7 @@
           "description": "GetOrderStatus",
           "position": 7,
           "clearHistory": true,
-          "maxTurns": null,
+          "maxTurns": 1,
           "message": {
             "type": "none",
             "content": null,
@@ -1294,7 +1285,6 @@
       }
     ],
     "isAsync": false,
-    "cacheSeed": 42,
     "silent": false
   }
 }
