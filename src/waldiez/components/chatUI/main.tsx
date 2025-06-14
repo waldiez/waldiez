@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { FaRegUser } from "react-icons/fa6";
 
 import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageModal } from "@waldiez/components/chatUI/imageModal";
@@ -156,7 +157,9 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
                                         )}
                                         {showAvatar && (
                                             <div className="avatar-container">
-                                                <div className={"avatar user-avatar"}>U</div>
+                                                <div className={"avatar user-avatar"}>
+                                                    <FaRegUser size={24} />
+                                                </div>
                                             </div>
                                         )}
                                     </>

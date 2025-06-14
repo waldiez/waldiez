@@ -622,13 +622,8 @@
 }
 
 .user-avatar {
-  /* background: #fff; */
-  background: #5bb6ff;
-  color: #fff;
-
-  /* border: 1.5px solid #5bb6ff;
-  color: #0084ff; */
-  border: 1.5px solid #0084ff;
+  background-color: #d0e7ff;
+  color: #0e60b3;
 }
 
 .assistant-avatar {
