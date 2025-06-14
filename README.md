@@ -36,7 +36,81 @@ If you’re looking for the React component, please refer to [README.npm](https:
 
 > Note: The React component is only for creating and editing flows — it is not needed to convert or run flows (that functionality is handled by the Python package).
 
-Quick install:
+To include waldiez on your website using CDN, here is a simple example:
+
+```html
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <script type="importmap">
+          {
+            "imports": {
+              "react": "https://esm.sh/react@19.1.0",
+              "react-dom/client": "https://esm.sh/react-dom@19.1.0/client",
+              "@waldiez/react": "https://esm.sh/@waldiez/react"
+            }
+          }
+        </script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                justify-content: center;
+                background-color: white;
+            }
+            #loading {
+                width: 100vw;
+                height: 100vh;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                color: black;
+            }
+            #root {
+                display: flex;
+                flex-direction: column;
+                width: 100vw;
+                height: 100vh;
+            }
+            #waldiez-root {
+                position: relative;
+                width: 80vw;
+                height: 80vh;
+                margin: auto;
+            }
+             @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: black;
+                    color: white;
+                }
+            }
+        </style>
+        <link rel="stylesheet" href="https://esm.sh/@waldiez/react/dist/@waldiez.css">
+    </head>
+    <body>
+        <div id="root"></div>
+        <div id="loading">
+            Loading...
+        </div>
+        <script type="module" src="https://esm.sh/tsx"></script>
+        <script type="text/babel">
+          import { createRoot } from "react-dom/client"
+           import { Waldiez } from "@waldiez/react";
+           const root = document.getElementById("root");
+           document.getElementById("loading").style.display = "none";
+           createRoot(root).render(
+                <div id="waldiez-root">
+                    <Waldiez />
+                </div>
+            )
+        </script>
+    </body>
+</html>
+```
+
+To add the waldiez library to your app:
 
 ```shell
 npm install @waldiez/react
@@ -53,7 +127,7 @@ bun add @waldiez/react
 ### UI Options
 
 - For creating-only (no exporting or running) waldiez flows, you can use the playground at <https://waldiez.github.io>.
-- There is also a jupyterlab extension [here](https://github.com/waldiez/jupyter)
+- There is also a jupyterlab extension here: [waldiez/jupyter](https://github.com/waldiez/jupyter)
 - You also can use the vscode extension:
   - [repo](https://github.com/waldiez/vscode)
   - [marketplace](https://marketplace.visualstudio.com/items?itemName=Waldiez.waldiez-vscode)
@@ -101,9 +175,9 @@ docker run --rm `
   waldiez/waldiez run --file $hostInputFile --output $containerOutputFile
 ```
 
-!!! Note
-    If using Hyper-V mode, make sure your files are in a shared folder Docker Desktop has access to.  
-    More info: <https://docs.docker.com/desktop/settings/windows/#file-sharing>
+> Note
+  If using Hyper-V mode, make sure your files are in a shared folder Docker Desktop has access to.  
+  More info: <https://docs.docker.com/desktop/settings/windows/#file-sharing>
 
 ### 🐧 Linux/macOS/WSL (Docker or Podman)
 
