@@ -58,6 +58,13 @@ To include waldiez on your website using CDN, here is a simple example:
                 padding: 0;
                 justify-content: center;
                 background-color: white;
+                color: black;
+            }
+             @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: black;
+                    color: white;
+                }
             }
             #loading {
                 width: 100vw;
@@ -66,7 +73,6 @@ To include waldiez on your website using CDN, here is a simple example:
                 margin: 0;
                 display: flex;
                 align-items: center;
-                color: black;
             }
             #root {
                 display: flex;
@@ -79,12 +85,6 @@ To include waldiez on your website using CDN, here is a simple example:
                 width: 80vw;
                 height: 80vh;
                 margin: auto;
-            }
-             @media (prefers-color-scheme: dark) {
-                body {
-                    background-color: black;
-                    color: white;
-                }
             }
         </style>
         <link rel="stylesheet" href="https://esm.sh/@waldiez/react/dist/@waldiez.css">
