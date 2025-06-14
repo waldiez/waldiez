@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Bump waldiez-extras.
+"""Pin waldiez-extras.
 
 waldiez has as extras:
 - waldiez[jupyter]
@@ -10,7 +10,7 @@ waldiez has as extras:
 Each of them, depend on the latest version of waldiez.
 So when we bump the core version, we need to bump the extras versions too
 `uv sync` will complain if the extras are not yet released.
-So let's bump them before we release waldiez (in CI).
+So let's pin them before we release waldiez (in CI).
 """
 
 # flake8: noqa: E501
@@ -23,7 +23,7 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent
 
-EXTRAS_TO_BUMP = [
+EXTRAS_TO_PIN = [
     "waldiez_studio",
     "waldiez_jupyter",
     "waldiez_runner",
@@ -55,7 +55,7 @@ def get_waldiez_version() -> str:
 
 
 def main() -> None:
-    """Bump the version of waldiez-extras.
+    """Pin the version of waldiez-extras.
 
     Raises
     ------
@@ -68,7 +68,7 @@ def main() -> None:
         raise FileNotFoundError(f"File not found: {py_project_toml}")
     with open(py_project_toml, "r", encoding="utf-8") as f:
         data = f.read()
-    for extra in EXTRAS_TO_BUMP:
+    for extra in EXTRAS_TO_PIN:
         # find the line with the extra
         # e.g.
         # waldiez_jupyter==x.y.z or
@@ -91,7 +91,7 @@ def main() -> None:
     # write the file
     with open(py_project_toml, "w", encoding="utf-8") as f:
         f.write(data)
-    print(f"Bumped {EXTRAS_TO_BUMP} to {waldiez_version} in {py_project_toml}")
+    print(f"Pinned {EXTRAS_TO_PIN} to {waldiez_version} in {py_project_toml}")
 
 
 if __name__ == "__main__":

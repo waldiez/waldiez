@@ -74,39 +74,65 @@ pip install waldiez[studio,jupyter]
 # Convert a Waldiez flow to a python script or a jupyter notebook
 waldiez convert --file /path/to/a/flow.waldiez --output /path/to/an/output/flow[.py|.ipynb]
 # Convert and run the script, optionally force generation if the output file already exists
-waldiez run --file /path/to/a/flow.waldiez --output /path/to/an/output/flow[.py] [--force]
+waldiez run --file /path/to/a/flow.waldiez --output /path/to/an/output/flow[.py|.ipynb] [--force]
 ```
 
 ### Using docker/podman
 
-```shell
-CONTAINER_COMMAND=docker # or podman
-# pull the image
-$CONTAINER_COMMAND pull waldiez/waldiez
-# Convert a Waldiez flow to a python script or a jupyter notebook
-$CONTAINER_COMMAND run \
-  --rm \
-  -v /path/to/a/flow.waldiez:/flow.waldiez \
-  -v /path/to/an/output:/output \
-  waldiez/waldiez convert --file /flow.waldiez --output /output/flow[.py|.ipynb] [--force]
+### 🪟 Windows (PowerShell with Docker or Podman Desktop)
 
-# with selinux and/or podman, you might get permission (or file not found) errors, so you can try:
-$CONTAINER_COMMAND run \
-  --rm \
-  -v /path/to/a/flow.waldiez:/flow.waldiez \
-  -v /path/to/an/output:/output \
-  --userns=keep-id \
-  --security-opt label=disable \
-  waldiez/waldiez convert --file /flow.waldiez --output /output/flow[.py|.ipynb] [--force]
+```powershell
+$hostInputFile = "C:\Users\YourName\Documents\flow.waldiez"
+$containerInputFile = "/home/waldiez/workspace/flow.waldiez"
+$hostOutputDir = "C:\Users\YourName\Documents\waldiez_output"
+$containerOutputDir = "/home/waldiez/output"
+$containerOutputFile = "/home/waldiez/output/flow.ipynb"
+
+# Convert a flow to Jupyter Notebook
+docker run --rm `
+  -v "$hostInputFile:$containerInputFile" `
+  -v "$hostOutputDir:$containerOutputDir" `
+  waldiez/waldiez convert --file $hostInputFile --output $containerOutputFile
+
+# Convert and run it
+docker run --rm `
+  -v "$flow:/home/waldiez/workspace/flow.waldiez" `
+  -v "$output:/output" `
+  waldiez/waldiez run --file $hostInputFile --output $containerOutputFile
 ```
 
+!!! Note
+    If using Hyper-V mode, make sure your files are in a shared folder Docker Desktop has access to.  
+    More info: <https://docs.docker.com/desktop/settings/windows/#file-sharing>
+
+### 🐧 Linux/macOS/WSL (Docker or Podman)
+
 ```shell
-# Convert and run the script
-$CONTAINER_COMMAND run \
-  --rm \
-  -v /path/to/a/flow.waldiez:/flow.waldiez \
-  -v /path/to/an/output:/output \
-  waldiez/waldiez run --file /flow.waldiez --output /output/output[.py]
+CONTAINER_COMMAND=docker # or podman
+# Asuming ./flow.waldiez exists
+HOST_INPUT="$(pwd)/flow.waldiez"
+CONTAINER_INPUT="/home/waldiez/workspace/flow.waldiez"
+HOST_OUTPUT_DIR="$(pwd)/output"
+CONTAINER_OUTPUT_DIR="/home/waldiez/output"
+mkdir -p ${HOST_OUTPUT_DIR}
+
+# Convert a flow to a Python script
+$CONTAINER_COMMAND run --rm \
+  -v ${HOST_INPUT}:${CONTAINER_INPUT} \
+  -v ${HOST_OUTPUT_DIR}:${CONTAINER_OUTPUT_DIR} \
+  waldiez/waldiez convert --file $HOST_INPUT --output ${CONTAINER_OUTPUT_DIR}/flow.py
+
+# Convert to a Jupyter Notebook instead
+$CONTAINER_COMMAND run --rm \
+  -v ${HOST_INPUT}:${CONTAINER_INPUT} \
+  -v ${HOST_OUTPUT_DIR}:${CONTAINER_OUTPUT_DIR} \
+  waldiez/waldiez convert --file $HOST_INPUT --output ${CONTAINER_OUTPUT_DIR}/flow.ipynb
+
+# Convert and run it (force override generated file if it exists)
+$CONTAINER_COMMAND run --rm -it \
+  -v ${HOST_INPUT}:${CONTAINER_INPUT} \
+  -v ${HOST_OUTPUT_DIR}:${CONTAINER_OUTPUT_DIR} \
+  waldiez/waldiez run --file $HOST_INPUT --force
 ```
 
 ### As a library

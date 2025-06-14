@@ -25,7 +25,7 @@ RUN pip install -r /tmp/main.txt && \
 WORKDIR /app
 COPY . /app
 # let's also make sure the extras have the same version
-RUN python scripts/bump_extras.py
+RUN python scripts/pin_extras.py
 RUN python -m build --wheel --outdir dist
 
 #####################################################################################
@@ -68,10 +68,14 @@ RUN apt update && \
     libxcomposite1 \
     libxdamage1 \
     libxrandr2 \
+    tzdata \
+    locales \
     xdg-utils \
     xvfb \
     firefox-esr \
     chromium && \
+    sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen en_US.UTF-8 && \
     curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh && \
     bash nodesource_setup.sh && \
     rm nodesource_setup.sh && \
@@ -103,17 +107,28 @@ RUN GECKO_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/rel
     chmod +x /usr/local/bin/geckodriver && \
     rm /tmp/geckodriver.tar.gz
 
+# Ensure /usr/local/bin is in the PATH
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Set locale and timezone
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    LC_CTYPE=en_US.UTF-8 \
+    TZ=Etc/UTC
+
 # Add a non-root user
 RUN useradd -m -s /bin/bash waldiez && \
-    mkdir -p /home/waldiez/workspace /home/waldiez/.local && \
+    mkdir -p /home/waldiez/workspace /home/waldiez/output /home/waldiez/.local && \
     chown -R waldiez:waldiez /home/waldiez
 USER waldiez
 
 RUN npx playwright install chromium firefox
 
 ENV PATH="/home/waldiez/.local/bin:${PATH}"
+RUN echo "export PATH=\"/home/waldiez/.local/bin:\$PATH\"" >> /home/waldiez/.bashrc
 
-# make pip always install as user
+# set pip environment variables
 ENV PIP_USER=1
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 

@@ -93,24 +93,28 @@ This option gives you:
     - `waldiez/waldiez` — CLI-only: convert and run flows
     - `waldiez/jupyter` — JupyterLab server with Waldiez extension
     - `waldiez/studio` — FastAPI web UI for local flow editing and running
+    - `waldiez/runner` - Serve and run waldiez flow in isolated environments
 
 ### 🪟 Windows (PowerShell with Docker or Podman Desktop)
 
 ```powershell
-$flow = "C:\Users\YourName\Documents\flow.waldiez"
-$output = "C:\Users\YourName\Documents\waldiez_output"
+$hostInputFile = "C:\Users\YourName\Documents\flow.waldiez"
+$containerInputFile = "/home/waldiez/workspace/flow.waldiez"
+$hostOutputDir = "C:\Users\YourName\Documents\waldiez_output"
+$containerOutputDir = "/home/waldiez/output"
+$containerOutputFile = "/home/waldiez/output/flow.ipynb"
 
-# Convert a flow to Python
+# Convert a flow to Jupyter Notebook
 docker run --rm `
-  -v "$flow:/flow.waldiez" `
-  -v "$output:/output" `
-  waldiez/waldiez convert --file /flow.waldiez --output /output/flow.py
+  -v "$hostInputFile:$containerInputFile" `
+  -v "$hostOutputDir:$containerOutputDir" `
+  waldiez/waldiez convert --file $hostInputFile --output $containerOutputFile
 
 # Convert and run it
 docker run --rm `
-  -v "$flow:/flow.waldiez" `
+  -v "$flow:/home/waldiez/workspace/flow.waldiez" `
   -v "$output:/output" `
-  waldiez/waldiez run --file /flow.waldiez --output /output/output.py
+  waldiez/waldiez run --file $hostInputFile --output $containerOutputFile
 ```
 
 !!! Note
@@ -120,23 +124,31 @@ docker run --rm `
 ### 🐧 Linux/macOS/WSL (Docker or Podman)
 
 ```shell
+CONTAINER_COMMAND=docker # or podman
+# Asuming ./flow.waldiez exists
+HOST_INPUT="$(pwd)/flow.waldiez"
+CONTAINER_INPUT="/home/waldiez/workspace/flow.waldiez"
+HOST_OUTPUT_DIR="$(pwd)/output"
+CONTAINER_OUTPUT_DIR="/home/waldiez/output"
+mkdir -p ${HOST_OUTPUT_DIR}
+
 # Convert a flow to a Python script
-docker run --rm \
-  -v $(pwd)/flow.waldiez:/flow.waldiez \
-  -v $(pwd)/output:/output \
-  waldiez/waldiez convert --file /flow.waldiez --output /output/flow.py
+$CONTAINER_COMMAND run --rm \
+  -v ${HOST_INPUT}:${CONTAINER_INPUT} \
+  -v ${HOST_OUTPUT_DIR}:${CONTAINER_OUTPUT_DIR} \
+  waldiez/waldiez convert --file $HOST_INPUT --output ${CONTAINER_OUTPUT_DIR}/flow.py
 
 # Convert to a Jupyter Notebook instead
-docker run --rm \
-  -v $(pwd)/flow.waldiez:/flow.waldiez \
-  -v $(pwd)/output:/output \
-  waldiez/waldiez convert --file /flow.waldiez --output /output/flow.ipynb
+$CONTAINER_COMMAND run --rm \
+  -v ${HOST_INPUT}:${CONTAINER_INPUT} \
+  -v ${HOST_OUTPUT_DIR}:${CONTAINER_OUTPUT_DIR} \
+  waldiez/waldiez convert --file $HOST_INPUT --output ${CONTAINER_OUTPUT_DIR}/flow.ipynb
 
-# Convert and immediately run it
-docker run --rm -it \
-  -v $(pwd)/flow.waldiez:/flow.waldiez \
-  -v $(pwd)/output:/output \
-  waldiez/waldiez run --file /flow.waldiez --output /output/output.py
+# Convert and run it (force override generated file if it exists)
+$CONTAINER_COMMAND run --rm -it \
+  -v ${HOST_INPUT}:${CONTAINER_INPUT} \
+  -v ${HOST_OUTPUT_DIR}:${CONTAINER_OUTPUT_DIR} \
+  waldiez/waldiez run --file $HOST_INPUT --force
 ```
 
 !!! Note
@@ -154,11 +166,11 @@ docker run --rm -it \
         podman run \
             --rm \
             -it \
-            -v $(pwd)/flow.waldiez:/flow.waldiez \
-            -v $(pwd)/output:/output \
+            -v $(pwd)/flow.waldiez:/home/waldiez/workspace/flow.waldiez \
+            -v $(pwd)/output:/home/waldiez/output \
             --userns=keep-id \
             --security-opt label=disable \
-            waldiez/waldiez convert --file /flow.waldiez --output /output/flow.py
+            waldiez/waldiez convert --file /home/waldiez/workspace --output /home/waldiez/output/flow.py
         ```
     * 💬 If you run into any issues, feel free to open an issue on [Github](https://github.com/waldiez/waldiez/issues). We’re happy to help!
 
