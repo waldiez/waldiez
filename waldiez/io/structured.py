@@ -36,9 +36,13 @@ class StructuredIOStream(IOStream):
     uploads_root: Path | None = None
 
     def __init__(
-        self, timeout: float = 120, uploads_root: Path | str | None = None
+        self,
+        timeout: float = 120,
+        uploads_root: Path | str | None = None,
+        is_async: bool = False,
     ) -> None:
         self.timeout = timeout
+        self.is_async = is_async
         if uploads_root is not None:
             self.uploads_root = Path(uploads_root).resolve()
             if not self.uploads_root.exists():
@@ -106,6 +110,22 @@ class StructuredIOStream(IOStream):
             uploads_root=self.uploads_root,
             base_name=request_id,
         )
+        # let's keep an eye here:
+        # https://github.com/ag2ai/ag2/blob/main/autogen/agentchat/conversable_agent.py#L2973
+        # reply = await iostream.input(prompt) ???? (await???)
+        if self.is_async:
+            # let's make a coroutine to just return the user response
+            async def async_input() -> str:
+                """Asynchronous input method.
+
+                Returns
+                -------
+                str
+                    The line read from the input stream.
+                """
+                return user_response
+
+            return async_input()  # type: ignore
         return user_response
 
     # noinspection PyMethodMayBeStatic
