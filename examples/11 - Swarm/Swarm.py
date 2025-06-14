@@ -278,10 +278,10 @@ def login_customer_by_username(
 
 # Models
 
-gpt_4_turbo_llm_config: dict[str, Any] = {
-    "model": "gpt-4-turbo",
+gpt_4_1_llm_config: dict[str, Any] = {
+    "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_swarm_model_api_key("gpt_4_turbo"),
+    "api_key": get_swarm_model_api_key("gpt_4_1"),
 }
 
 # Agents
@@ -306,9 +306,9 @@ authentication_agent = ConversableAgent(
     update_agent_state_before_reply=[],
     llm_config=autogen.LLMConfig(
         config_list=[
-            gpt_4_turbo_llm_config,
+            gpt_4_1_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
@@ -342,9 +342,9 @@ order_mgmt_agent = ConversableAgent(
     ],
     llm_config=autogen.LLMConfig(
         config_list=[
-            gpt_4_turbo_llm_config,
+            gpt_4_1_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
@@ -359,9 +359,9 @@ order_retrieval_agent = AssistantAgent(
     is_termination_msg=None,  # pyright: ignore
     llm_config=autogen.LLMConfig(
         config_list=[
-            gpt_4_turbo_llm_config,
+            gpt_4_1_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
@@ -376,9 +376,9 @@ order_summariser_agent = AssistantAgent(
     is_termination_msg=None,  # pyright: ignore
     llm_config=autogen.LLMConfig(
         config_list=[
-            gpt_4_turbo_llm_config,
+            gpt_4_1_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
@@ -390,10 +390,7 @@ order_triage_agent = ConversableAgent(
     default_auto_reply="",
     code_execution_config=False,
     is_termination_msg=None,  # pyright: ignore
-    functions=[
-        check_order_id,
-        record_order_id,
-    ],
+    functions=[],
     update_agent_state_before_reply=[
         UpdateSystemMessage(
             "You are an order triage agent, working with a customer and a group of agents to provide support for your e-commerce platform.\n\nAn agent needs to be logged in to be able to access their order. The authentication_agent will work with the customer to verify their identity, transfer to them to start with.\nThe order_mgmt_agent will manage all order related tasks, such as tracking orders, managing orders, etc. Be sure to check the order as one step. Then if it's valid you can record it in the context.\n\nAsk the customer for further information when necessary.\n\nThe current status of this workflow is:\nCustomer name: {customer_name}\nLogged in: {logged_in}\nEnquiring for Order ID: {order_id}"
@@ -401,9 +398,9 @@ order_triage_agent = ConversableAgent(
     ],
     llm_config=autogen.LLMConfig(
         config_list=[
-            gpt_4_turbo_llm_config,
+            gpt_4_1_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
@@ -457,17 +454,19 @@ def nested_chat_message_wc_getorderstatus(
 order_mgmt_agent_handoff_nested_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
-        "clear_history": True,
-        "chat_id": 5,
-        "recipient": order_summariser_agent,
-        "message": "Summarise the order details provided in a tabulated, text-based, order sheet format.",
-    },
-    {
-        "summary_method": "last_msg",
+        "max_turns": 1,
         "clear_history": True,
         "chat_id": 6,
         "recipient": order_retrieval_agent,
         "message": nested_chat_message_wc_getorderstatus,
+    },
+    {
+        "summary_method": "last_msg",
+        "max_turns": 1,
+        "clear_history": True,
+        "chat_id": 5,
+        "recipient": order_summariser_agent,
+        "message": "Summarise the order details provided in a tabulated, text-based, order sheet format.",
     },
 ]
 
@@ -499,10 +498,7 @@ order_triage_agent.handoffs.add_llm_condition(
     condition=OnCondition(
         target=AgentTarget(order_mgmt_agent),
         condition=StringLLMCondition(
-            prompt="The customer is logged in, continue with the order triage."
-        ),
-        available=ExpressionAvailableCondition(
-            expression=ContextExpression("!(${logged_in})")
+            prompt="The customer is logged in, continue with the order mgmt agent."
         ),
     )
 )
@@ -515,7 +511,7 @@ manager_pattern = DefaultPattern(
     group_manager_args={
         "llm_config": autogen.LLMConfig(
             config_list=[
-                gpt_4_turbo_llm_config,
+                gpt_4_1_llm_config,
             ],
             cache_seed=None,
         ),
@@ -595,14 +591,13 @@ def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
         The result of the chat session, which can be a single ChatResult,
         a list of ChatResults, or a dictionary mapping integers to ChatResults.
     """
-    with Cache.disk(cache_seed=42) as cache:  # pyright: ignore
-        results, _, __ = initiate_group_chat(
-            pattern=manager_pattern,
-            messages="Help me with my order",
-            max_rounds=40,
-        )
+    results, _, __ = initiate_group_chat(
+        pattern=manager_pattern,
+        messages="Help me with my order",
+        max_rounds=40,
+    )
 
-        stop_logging()
+    stop_logging()
     return results
 
 

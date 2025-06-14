@@ -67,8 +67,7 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
         f'{tab}{tab}"distance_threshold": -1,' + "\n"
         f'{tab}{tab}"vector_db": ChromaVectorDB(' + "\n"
         f"{tab}{tab}{tab}client={agent.name}_client," + "\n"
-        f'{tab}{tab}{tab}embedding_function=SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2"),'
-        + "\n"
+        f"{tab}{tab}{tab}embedding_function=agent1_embedding_function," + "\n"
         f"{tab}{tab})," + "\n"
         f'{tab}{tab}"client": {agent.name}_client,' + "\n"
         f"{tab}}}," + "\n"
@@ -92,9 +91,18 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
         "\n"
         + f"{agent.name}_client = chromadb.Client(Settings(anonymized_telemetry=False))"
         + "\n"
+        f"{agent.name}_embedding_function = SentenceTransformerEmbeddingFunction(\n"
+        f'    model_name="all-MiniLM-L6-v2",\n'
+        ")\n"
         "try:\n"
-        f'{tab}{agent.name}_client.get_collection("autogen-docs")' + "\n"
+        f"{tab}{agent.name}_client.get_collection(\n"
+        f'{tab}{tab}"autogen-docs",\n'
+        f"{tab}{tab}embedding_function={agent.name}_embedding_function,\n"
+        f"{tab})\n"
         "except ValueError:\n"
-        f'{tab}{agent.name}_client.create_collection("autogen-docs")'
+        f"{tab}{agent.name}_client.create_collection(\n"
+        f'{tab}{tab}"autogen-docs",\n'
+        f"{tab}{tab}embedding_function={agent.name}_embedding_function,\n"
+        f"{tab})"
     )
     assert exporter.extras.before_agent == expected_before

@@ -60,15 +60,24 @@ def test_get_rag_user_vector_db_string_chroma() -> None:
         "\n"
         f'    path=r"{local_path}",'
         "\n    settings=Settings(anonymized_telemetry=False),\n)\n"
+        "rag_user_embedding_function = SentenceTransformerEmbeddingFunction(\n"
+        '    model_name="model",\n'
+        ")\n"
         "try:\n"
-        '    rag_user_client.get_collection("collection_name")\n'
+        "    rag_user_client.get_collection(\n"
+        '        "collection_name",\n'
+        "        embedding_function=rag_user_embedding_function,\n"
+        "    )\n"
         "except ValueError:\n"
-        '    rag_user_client.create_collection("collection_name")\n'
+        "    rag_user_client.create_collection(\n"
+        '        "collection_name",\n'
+        "        embedding_function=rag_user_embedding_function,\n"
+        "    )\n"
     )
     assert extras.vector_db_arg == (
         "ChromaVectorDB(\n"
         "            client=rag_user_client,\n"
-        '            embedding_function=SentenceTransformerEmbeddingFunction(model_name="model"),\n'
+        "            embedding_function=rag_user_embedding_function,\n"
         "        )"
     )
     assert extras.imports == {
@@ -272,9 +281,15 @@ rag_user_client = chromadb.PersistentClient(
     settings=Settings(anonymized_telemetry=False),
 )
 try:
-    rag_user_client.get_collection("collection_name")
+    rag_user_client.get_collection(
+        "collection_name",
+        embedding_function=custom_embedding_function_rag_user,
+    )
 except ValueError:
-    rag_user_client.create_collection("collection_name")
+    rag_user_client.create_collection(
+        "collection_name",
+        embedding_function=custom_embedding_function_rag_user,
+    )
 
 
 def custom_embedding_function_rag_user() -> Callable[..., Any]:
@@ -345,16 +360,25 @@ rag_user_client = chromadb.PersistentClient(
     path=r"{local_path}",
     settings=Settings(anonymized_telemetry=False),
 )
+rag_user_embedding_function = SentenceTransformerEmbeddingFunction(
+    model_name="model",
+)
 try:
-    rag_user_client.get_collection("collection_name")
+    rag_user_client.get_collection(
+        "collection_name",
+        embedding_function=rag_user_embedding_function,
+    )
 except ValueError:
-    rag_user_client.create_collection("collection_name")
+    rag_user_client.create_collection(
+        "collection_name",
+        embedding_function=rag_user_embedding_function,
+    )
 """
     )
     assert extras.vector_db_arg == (
         "ChromaVectorDB(\n"
         "            client=rag_user_client,\n"
-        '            embedding_function=SentenceTransformerEmbeddingFunction(model_name="model"),\n'
+        "            embedding_function=rag_user_embedding_function,\n"
         "            metadata={\n"
         '                "hnsw:space": "ip",\n'
         '                "hnsw:construction_ef": 30,\n'

@@ -25,7 +25,7 @@ import { temporal } from "zundo";
 import { createStore } from "zustand";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaChevronDown, FaChevronUp, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaGear, FaTrashCan, FaLock, FaTrash as FaTrash$1, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { FaX, FaRegUser, FaChevronDown, FaChevronUp, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaGear, FaTrashCan, FaLock, FaTrash as FaTrash$1, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -7286,7 +7286,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
             ] }) : messageClass === "user-message" ? /* @__PURE__ */ jsxs(Fragment, { children: [
               /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() }),
               processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              showAvatar && /* @__PURE__ */ jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsx("div", { className: "avatar user-avatar", children: "U" }) })
+              showAvatar && /* @__PURE__ */ jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsx("div", { className: "avatar user-avatar", children: /* @__PURE__ */ jsx(FaRegUser, { size: 24 }) }) })
             ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
               processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
               /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })

@@ -164,7 +164,13 @@ gpt_4_1_llm_config: dict[str, Any] = {
 # Agents
 
 boss_assistant_client = chromadb.Client(Settings(anonymized_telemetry=False))
-boss_assistant_client.get_or_create_collection("autogen-docs")
+boss_assistant_embedding_function = SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2",
+)
+boss_assistant_client.get_or_create_collection(
+    "autogen-docs",
+    embedding_function=boss_assistant_embedding_function,
+)
 
 boss_assistant = RetrieveUserProxyAgent(
     name="boss_assistant",
@@ -197,9 +203,7 @@ boss_assistant = RetrieveUserProxyAgent(
         "distance_threshold": -1.0,
         "vector_db": ChromaVectorDB(
             client=boss_assistant_client,
-            embedding_function=SentenceTransformerEmbeddingFunction(
-                model_name="all-MiniLM-L6-v2"
-            ),
+            embedding_function=boss_assistant_embedding_function,
         ),
         "client": boss_assistant_client,
     },

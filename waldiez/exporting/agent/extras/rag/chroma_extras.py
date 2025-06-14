@@ -65,15 +65,13 @@ def _get_chroma_embedding_function_string(
     to_import = ""
     embedding_function_arg = ""
     embedding_function_content = ""
-    vector_db_model = agent.retrieve_config.db_config.model
     if not agent.retrieve_config.use_custom_embedding:
         to_import = (
             "from chromadb.utils.embedding_functions."
             "sentence_transformer_embedding_function import "
             "SentenceTransformerEmbeddingFunction"
         )
-        embedding_function_arg = "SentenceTransformerEmbeddingFunction("
-        embedding_function_arg += f'model_name="{vector_db_model}")'
+        embedding_function_arg = f"{agent_name}_embedding_function"
     else:
         embedding_function_content, embedding_function_arg = (
             agent.retrieve_config.get_custom_embedding_function(
@@ -124,21 +122,35 @@ def get_chroma_db_args(
     # manually initializing the collection before running the flow,
     # might be a workaround.
     content_before = f"{agent_name}_client = {client_str}" + "\n"
+    vector_db_model = agent.retrieve_config.db_config.model
+    if not embedding_function_body:
+        content_before += (
+            f"{agent_name}_embedding_function = "
+            "SentenceTransformerEmbeddingFunction(\n"
+            f'    model_name="{vector_db_model}",' + "\n"
+            ")\n"
+        )
     collection_name = agent.retrieve_config.collection_name
     get_or_create = agent.retrieve_config.get_or_create
     if collection_name:
         if get_or_create:
             content_before += (
-                f"{agent_name}_client.get_or_create_collection("
-                f'"{collection_name}")' + "\n"
+                f"{agent_name}_client.get_or_create_collection" + "(\n"
+                f'    "{collection_name}",' + "\n"
+                f"    embedding_function={embedding_function_arg}," + "\n"
+                ")" + "\n"
             )
         else:
             content_before += (
                 "try:\n"
-                f'    {agent_name}_client.get_collection("{collection_name}")'
-                + "\n"
+                f"    {agent_name}_client.get_collection(" + "\n"
+                f'        "{collection_name}",' + "\n"
+                f"        embedding_function={embedding_function_arg}," + "\n"
+                "    )\n"
                 "except ValueError:\n"
-                f"    {agent_name}_client.create_collection("
-                f'"{collection_name}")' + "\n"
+                f"    {agent_name}_client.create_collection(" + "\n"
+                f'        "{collection_name}",' + "\n"
+                f"        embedding_function={embedding_function_arg}," + "\n"
+                "    )\n"
             )
     return kwarg_string, to_import, embedding_function_body, content_before
