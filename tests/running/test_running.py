@@ -7,14 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from waldiez.running.running import (
+from waldiez.running import (
     a_chdir,
     a_install_requirements,
     after_run,
     before_run,
     chdir,
-    get_printer,
-    get_what_to_print,
     install_requirements,
 )
 
@@ -93,18 +91,10 @@ def test_before_run(tmp_path: Path) -> None:
     assert file_name == "waldiez_flow.py"
 
 
-def test_get_printer() -> None:
-    """Test get_printer."""
-    # When
-    printer = get_printer()
-    # Then
-    assert callable(printer)
-
-
 def test_install_requirements() -> None:
     """Test install_requirements."""
     extra_requirements = {"pytest"}
-    install_requirements(extra_requirements, print)
+    install_requirements(extra_requirements)
     assert True
 
 
@@ -112,7 +102,7 @@ def test_install_requirements() -> None:
 async def test_a_install_requirements() -> None:
     """Test a_install_requirements."""
     extra_requirements = {"pytest"}
-    await a_install_requirements(extra_requirements, print)
+    await a_install_requirements(extra_requirements)
 
 
 def test_after_run(tmp_path: Path) -> None:
@@ -128,7 +118,12 @@ def test_after_run(tmp_path: Path) -> None:
     tmp_dir.mkdir(parents=True, exist_ok=True)
     output_path = str(tmp_path / "output_path" / "output.py")
 
-    after_run(tmp_dir, output_path, print, flow_name, skip_mmd=False)
+    after_run(
+        temp_dir=tmp_dir,
+        output_path=output_path,
+        flow_name=flow_name,
+        skip_mmd=False,
+    )
 
     logs_dir = tmp_dir / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
@@ -140,34 +135,17 @@ def test_after_run(tmp_path: Path) -> None:
             "start,source_id,source_name,agent_module,agent_class_name,id,{},000000000\n"  # noqa: E501
         )
 
-    after_run(tmp_dir, output_path, print, flow_name, skip_mmd=False)
+    after_run(
+        temp_dir=tmp_dir,
+        output_path=output_path,
+        flow_name=flow_name,
+        skip_mmd=False,
+    )
 
     tmp_dir.mkdir(parents=True, exist_ok=True)
-    after_run(tmp_dir, None, print, flow_name, skip_mmd=True)
-
-
-def test_get_what_to_print() -> None:
-    """Test get_what_to_print."""
-    msg, flush = get_what_to_print(
-        "Hello, World!", sep=" ", end="\n", flush=False
+    after_run(
+        temp_dir=tmp_dir,
+        output_path=None,
+        flow_name=flow_name,
+        skip_mmd=True,
     )
-    assert msg == "Hello, World!\n"
-    assert flush is False
-
-    msg, flush = get_what_to_print(
-        "Hello, World!", sep=" ", end="\n", flush=True
-    )
-    assert msg == "Hello, World!\n"
-    assert flush is True
-
-    msg, flush = get_what_to_print(
-        "Hello, World!", sep="", end="-", flush="True"
-    )
-    assert msg == "Hello, World!-"
-    assert flush is False
-
-    msg, flush = get_what_to_print("Hello, World!", sep=4, end="-", flush=True)
-    assert msg == "Hello, World!-"
-
-    msg, flush = get_what_to_print("Hello, World!", sep=4, end=5, flush=True)
-    assert msg == "Hello, World!\n"

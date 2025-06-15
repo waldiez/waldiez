@@ -135,7 +135,7 @@ def test_cli_run(
     with pytest.raises(SystemExit):
         waldiez_main()
     captured = capsys.readouterr()
-    assert "Summary" in escape_ansi(captured.out)
+    assert "Workflow finished" in escape_ansi(captured.out)
 
 
 def test_cli_check(

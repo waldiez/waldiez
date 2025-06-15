@@ -12,7 +12,6 @@ from autogen.io import IOStream  # type: ignore
 
 from waldiez.models import Waldiez, WaldiezFlow
 from waldiez.runner import WaldiezRunner
-from waldiez.running.running import get_printer
 
 
 class CustomIOStream(IOStream):
@@ -165,24 +164,3 @@ class BadIOStream(IOStream):
             If the string is invalid
         """
         raise UnicodeEncodeError("utf-8", "", 0, 1, "invalid string")
-
-
-def test_get_printer(capsys: pytest.CaptureFixture[str]) -> None:
-    """Test get_printer.
-
-    Parameters
-    ----------
-    capsys : pytest.CaptureFixture[str]
-        Pytest fixture to capture stdout and stderr.
-    """
-    with IOStream.set_default(CustomIOStream()):
-        printer = get_printer()
-        invalid_str = "This is an invalid string: 🤯"
-        printer(invalid_str)
-        assert "This is an invalid string: " in capsys.readouterr().out
-        invalid_encoded = "This is an invalid encoded string".encode("cp1252")
-        printer(invalid_encoded)
-        assert "This is an invalid encoded string" in capsys.readouterr().out
-    with IOStream.set_default(BadIOStream()):  # pyright: ignore
-        printer1 = get_printer()
-        printer1(invalid_str)

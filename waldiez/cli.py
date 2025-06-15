@@ -2,43 +2,25 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # flake8: noqa: E501
 # pylint: disable=missing-function-docstring,missing-param-doc,missing-raises-doc
+# pylint: disable=line-too-long
 """Command line interface to convert or run a waldiez file."""
 
 import json
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import Any, Optional
 
 import anyio
 import typer
 from dotenv import load_dotenv
 from typing_extensions import Annotated
 
-# pylint: disable=import-error,line-too-long
-# pyright: reportMissingImports=false
-try:  # pragma: no cover
-    # fmt: off
-    from ._version import __version__ # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
-    # fmt: on
-except ImportError:  # pragma: no cover
-    import warnings
-
-    warnings.warn(
-        "Importing __version__ failed. Using 'dev' as version.", stacklevel=2
-    )
-    __version__ = "dev"
-
-
 from .exporter import WaldiezExporter
 from .io import StructuredIOStream
 from .logger import get_logger
 from .models import Waldiez
 from .runner import WaldiezRunner
-from .utils import add_cli_extras
-
-if TYPE_CHECKING:
-    from autogen import ChatResult  # type: ignore[import-untyped]
-
+from .utils import add_cli_extras, get_waldiez_version
 
 load_dotenv()
 LOG = get_logger()
@@ -71,7 +53,7 @@ def show_version(
 ) -> None:
     """Show the version of the Waldiez package and exit."""
     if version:
-        typer.echo(f"waldiez version: {__version__}")
+        typer.echo(f"waldiez version: {get_waldiez_version()}")
         raise typer.Exit()
 
 
@@ -130,27 +112,12 @@ def run(
         except json.decoder.JSONDecodeError as error:
             typer.echo("Invalid .waldiez file. Not a valid json?")
             raise typer.Exit(code=1) from error
-    results = _do_run(
+    _do_run(
         data,
         structured=structured,
         uploads_root=uploads_root,
         output_path=output_path,
     )
-    if isinstance(results, list):
-        LOG.info("Results:")
-        for result in results:
-            _log_result(result)
-            sep = "-" * 80
-            print("\n" + f"{sep}" + "\n")
-    elif isinstance(results, dict):
-        LOG.info("Results:")
-        for key, result in results.items():
-            LOG.info("Order: %s", key)
-            _log_result(result)
-            sep = "-" * 80
-            print("\n" + f"{sep}" + "\n")
-    else:
-        _log_result(results)
 
 
 @app.command()
@@ -239,7 +206,7 @@ def _do_run(
     structured: bool,
     uploads_root: Optional[Path],
     output_path: Optional[Path],
-) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
+) -> None:
     """Run the Waldiez flow and get the results."""
     waldiez = Waldiez.from_dict(data)
     if structured:
@@ -247,30 +214,29 @@ def _do_run(
         with StructuredIOStream.set_default(stream):
             runner = WaldiezRunner(waldiez)
             if waldiez.is_async:
-                results = anyio.run(
+                anyio.run(
                     runner.a_run,
                     output_path,
                     uploads_root,
                 )
             else:
-                results = runner.run(
+                runner.run(
                     output_path=output_path,
                     uploads_root=uploads_root,
                 )
     else:
         runner = WaldiezRunner(waldiez)
         if waldiez.is_async:
-            results = anyio.run(
+            anyio.run(
                 runner.a_run,
                 output_path,
                 uploads_root,
             )
         else:
-            results = runner.run(
+            runner.run(
                 output_path=output_path,
                 uploads_root=uploads_root,
             )
-    return results
 
 
 def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
@@ -284,16 +250,6 @@ def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
             raise typer.Exit(code=1)
         output.unlink()
     return output
-
-
-def _log_result(result: "ChatResult") -> None:
-    """Log the result of the Waldiez flow."""
-    LOG.info("Chat History:\n")
-    LOG.info(result.chat_history)
-    LOG.info("Summary:\n")
-    LOG.info(result.summary)
-    LOG.info("Cost:\n")
-    LOG.info(result.cost)
 
 
 add_cli_extras(app)

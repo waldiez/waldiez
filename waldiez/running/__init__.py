@@ -9,14 +9,18 @@ from .environment import (
     reset_env_vars,
     set_env_vars,
 )
-from .running import (
-    a_chdir,
+from .post_run import after_run
+from .pre_run import (
     a_install_requirements,
-    after_run,
     before_run,
-    chdir,
-    get_printer,
     install_requirements,
+)
+from .util import (
+    a_chdir,
+    chdir,
+    create_async_subprocess,
+    create_sync_subprocess,
+    strip_ansi,
 )
 
 __all__ = [
@@ -24,8 +28,10 @@ __all__ = [
     "a_install_requirements",
     "after_run",
     "before_run",
+    "create_async_subprocess",
+    "create_sync_subprocess",
+    "strip_ansi",
     "chdir",
-    "get_printer",
     "in_virtualenv",
     "is_root",
     "install_requirements",

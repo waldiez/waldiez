@@ -4,7 +4,6 @@
 """Environment related utilities."""
 
 import os
-import site
 import sys
 from typing import Generator
 
@@ -45,78 +44,6 @@ def is_root() -> bool:  # pragma: no cover  # os specific
         return os.getuid() == 0
 
 
-# pylint: disable=too-complex,too-many-try-statements,unused-import
-def reload_autogen() -> None:  # noqa: C901
-    """Reload the autogen package.
-
-    Try to avoid "please install package x" errors
-    when we already have the package installed
-    (but autogen is imported before it).
-
-    Raises
-    ------
-    ImportError
-        If the autogen package cannot be reloaded.
-    AttributeError
-        If the autogen package cannot be reloaded due to missing attributes.
-    TypeError
-        If the autogen package cannot be reloaded due to type errors.
-    Exception
-        If any other error occurs during the reload process.
-    """
-    site.main()
-
-    # Store IOStream state before deletion (if it exists)
-    default_io_stream = None
-    try:
-        from autogen.io import IOStream  # type: ignore
-
-        default_io_stream = IOStream.get_default()
-    except (ImportError, AttributeError):
-        pass
-
-    try:
-        # Remove autogen modules in reverse dependency order
-        autogen_modules = sorted(
-            [
-                name
-                for name in sys.modules
-                if name.startswith("autogen.")
-                and not name.startswith("autogen.io")
-            ],
-            key=len,
-            reverse=True,  # Longer names (deeper modules) first
-        )
-        for mod_name in autogen_modules:
-            if mod_name in sys.modules:
-                del sys.modules[mod_name]
-
-        if "autogen" in sys.modules:
-            del sys.modules["autogen"]
-
-        # Re-import autogen
-        # pylint: disable=unused-import
-        import autogen  # pyright: ignore
-
-        # Restore IOStream state if we had it
-        if default_io_stream is not None:
-            try:
-                from autogen.io import IOStream  # pyright: ignore
-
-                IOStream.set_default(default_io_stream)
-            except (ImportError, AttributeError, TypeError):
-                # If the old IOStream instance is incompatible, ignore
-                pass
-
-    except Exception as e:
-        # If reload fails, at least try to re-import autogen
-        try:
-            import autogen  # type: ignore  # noqa: F401
-        except ImportError:
-            pass
-        raise e
-
-
 def refresh_environment() -> None:
     """Refresh the environment."""
     # a group chat without a user agent
@@ -125,7 +52,6 @@ def refresh_environment() -> None:
     # default code execution with docker
     # temp (until we handle/detect docker setup)
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
-    # reload_autogen()
     try_handle_the_np_thing()
 
 
