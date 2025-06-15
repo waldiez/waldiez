@@ -34,31 +34,13 @@ import sys
 from dataclasses import asdict
 from pprint import pprint
 from types import ModuleType
-from typing import (
-    Annotated,
-    Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-)
+from typing import Annotated, Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 import autogen  # type: ignore
-from autogen import (
-    Agent,
-    Cache,
-    ChatResult,
-    ConversableAgent,
-    GroupChat,
-    UserProxyAgent,
-    runtime_logging,
-)
+from autogen import Agent, Cache, ChatResult, ConversableAgent, GroupChat, UserProxyAgent, runtime_logging
 from autogen.agentchat.contrib.captainagent import CaptainAgent
+from autogen.coding import LocalCommandLineCodeExecutor
 import numpy as np
-
 #
 # let's try to avoid:
 # module 'numpy' has no attribute '_no_nep50_warning'"
@@ -81,11 +63,9 @@ if not hasattr(np, "_no_pep50_warning"):
             Nothing.
         """
         yield
-
     setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
 
 # Start logging.
-
 
 def start_logging() -> None:
     """Start logging."""
@@ -125,7 +105,6 @@ def load_api_key_module(flow_name: str) -> ModuleType:
         return importlib.reload(sys.modules[module_name])
     return importlib.import_module(module_name)
 
-
 __MODELS_MODULE__ = load_api_key_module("wf_1___simple")
 
 
@@ -149,10 +128,14 @@ def get_wf_1___simple_model_api_key(model_name: str) -> str:
 gpt_4o_llm_config: dict[str, Any] = {
     "model": "gpt-4o",
     "api_type": "openai",
-    "api_key": get_wf_1___simple_model_api_key("gpt_4o"),
+    "api_key": get_wf_1___simple_model_api_key("gpt_4o")
 }
 
 # Agents
+
+captain_executor = LocalCommandLineCodeExecutor(
+    work_dir="groupchat",
+)
 
 captain = CaptainAgent(
     name="captain",
@@ -160,38 +143,40 @@ captain = CaptainAgent(
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
-    code_execution_config=False,
+    code_execution_config={"executor": captain_executor},
     is_termination_msg=None,  # pyright: ignore
     agent_config_save_path=os.getcwd(),
     nested_config={
         "autobuild_init_config": {
             "config_file_or_env": "captain_llm_config.json",
             "builder_model": "gpt-4o",
-            "agent_model": "gpt-4o",
+            "agent_model": "gpt-4o"
         },
         "autobuild_build_config": {
             "default_llm_config": {
                 "temperature": 1,
                 "top_p": 0.95,
-                "max_tokens": 2048,
+                "max_tokens": 2048
             },
             "code_execution_config": {
                 "timeout": 300,
                 "work_dir": "groupchat",
                 "last_n_messages": 1,
-                "use_docker": False,
+                "use_docker": False
             },
-            "coding": False,
+            "coding": True
         },
-        "group_chat_config": {"max_round": 10},
+        "group_chat_config": {
+            "max_round": 10
+        },
         "group_chat_llm_config": None,
-        "max_turns": 5,
+        "max_turns": 5
     },
     llm_config=autogen.LLMConfig(
         config_list=[
             gpt_4o_llm_config,
         ],
-        cache_seed=None,
+        cache_seed=42,
     ),
 )
 
@@ -205,7 +190,6 @@ user_proxy = UserProxyAgent(
     is_termination_msg=None,  # pyright: ignore
     llm_config=False,  # pyright: ignore
 )
-
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
     """Convert a sqlite table to csv and json files.
@@ -238,7 +222,6 @@ def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
     with open(json_file, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
-
 def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
@@ -257,8 +240,8 @@ def stop_logging() -> None:
         get_sqlite_out("flow.db", table, dest)
 
 
-# Start chatting
 
+# Start chatting
 
 def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
     """Start chatting.
@@ -269,15 +252,17 @@ def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
         The result of the chat session, which can be a single ChatResult,
         a list of ChatResults, or a dictionary mapping integers to ChatResults.
     """
-    results = user_proxy.initiate_chat(
-        captain,
-        summary_method="last_msg",
-        max_turns=1,
-        clear_history=True,
-        message="Find a recent paper about large language models on arxiv and find its potential applications in software.",
-    )
+    with Cache.disk(cache_seed=42) as cache:  # pyright: ignore
+        results = user_proxy.initiate_chat(
+            captain,
+            cache=cache,
+            summary_method="last_msg",
+            max_turns=1,
+            clear_history=True,
+            message="Find a recent paper about large language models on arxiv and find its potential applications in software.",
+        )
 
-    stop_logging()
+        stop_logging()
     return results
 
 
