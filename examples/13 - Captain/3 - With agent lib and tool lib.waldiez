@@ -1,8 +1,8 @@
 {
-  "id": "wf-57v7v5V-k6fIlTP5E6QFL",
+  "id": "id-600a2fcd-fc0f-49c9-8021-c2f2ac46ddf4",
   "type": "flow",
   "version": "0.4.8",
-  "storageId": "wf-57v7v5V-k6fIlTP5E6QFL",
+  "storageId": "wf-1749917363618dDBjyGH51ZF39JzT7zyq7",
   "name": "3 - With agent lib and tool lib",
   "description": "Using CaptainAgent with agent library and tool library. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-both-agent-library-and-tool-library>",
   "tags": [
@@ -11,7 +11,7 @@
   ],
   "requirements": [],
   "createdAt": "2025-05-19T09:58:46.340Z",
-  "updatedAt": "2025-05-31T16:07:37.491Z",
+  "updatedAt": "2025-06-15T12:25:42.814Z",
   "data": {
     "nodes": [
       {
@@ -22,11 +22,28 @@
           "y": 10
         },
         "measured": {
-          "width": 182,
-          "height": 182
+          "width": 180,
+          "height": 100
         },
         "selected": false,
-        "hidden": true
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1749990056659sM6PZTTu_2TMpWXy-tPx5",
+        "type": "tool",
+        "position": {
+          "x": -15,
+          "y": 15
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": true,
+        "hidden": false,
+        "className": "",
+        "dragging": false
       },
       {
         "id": "wa-1747648766582tyFZXTAdhSx1lmNiWn2C5",
@@ -35,15 +52,17 @@
           "width": 130
         },
         "position": {
-          "x": 221.82354736328125,
-          "y": 318
+          "x": 495,
+          "y": 90
         },
-        "hidden": false,
+        "hidden": true,
         "measured": {
-          "width": 200,
-          "height": 240
+          "width": 130,
+          "height": 120
         },
-        "selected": false
+        "selected": false,
+        "dragging": false,
+        "className": ""
       },
       {
         "id": "wa-1747648770281G2SIflV6LiGugWwlAknFI",
@@ -52,15 +71,17 @@
           "width": 180
         },
         "position": {
-          "x": 765.8235473632812,
-          "y": 245
+          "x": 795,
+          "y": 90
         },
         "measured": {
-          "width": 200,
-          "height": 245
+          "width": 180,
+          "height": 120
         },
         "selected": false,
-        "hidden": false
+        "hidden": true,
+        "className": "",
+        "dragging": false
       }
     ],
     "edges": [
@@ -87,9 +108,9 @@
       }
     ],
     "viewport": {
-      "x": -222.62977083267708,
-      "y": -235.3689516129033,
-      "zoom": 1.5040322580645162
+      "x": 20,
+      "y": 40,
+      "zoom": 0.9837837837837838
     },
     "agents": {
       "groupManagerAgents": [],
@@ -154,7 +175,9 @@
           "data": {
             "systemMessage": null,
             "humanInputMode": "NEVER",
-            "codeExecutionConfig": false,
+            "codeExecutionConfig": {
+              "workDir": "groupchat"
+            },
             "agentDefaultAutoReply": null,
             "maxConsecutiveAutoReply": null,
             "termination": {
@@ -295,7 +318,7 @@
         "tags": [],
         "requirements": [],
         "createdAt": "2025-05-19T09:59:05.935Z",
-        "updatedAt": "2025-05-19T09:59:21.728Z",
+        "updatedAt": "2025-06-15T12:08:54.971Z",
         "data": {
           "apiKey": "REPLACE_ME",
           "apiType": "openai",
@@ -320,7 +343,26 @@
         }
       }
     ],
-    "tools": [],
+    "tools": [
+      {
+        "id": "wt-1749990056659sM6PZTTu_2TMpWXy-tPx5",
+        "type": "tool",
+        "name": "new_tool",
+        "description": "A new tool",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-15T12:20:56.659Z",
+        "updatedAt": "2025-06-15T12:25:42.814Z",
+        "data": {
+          "content": "\n\"\"\"Replace this with your code.\n\nAdd any code here that will be placed at the top of the whole flow.\n\"\"\"\n\n# Example:\n# global variable\n# DATABASE = {\n#     \"users\": [\n#         {\"id\": 1, \"name\": \"Alice\"},\n#         {\"id\": 2, \"name\": \"Bob\"},\n#     ],\n#     \"posts\": [\n#         {\"id\": 1, \"title\": \"Hello, world!\", \"author_id\": 1},\n#         {\"id\": 2, \"title\": \"Another post\", \"author_id\": 2},\n#     ],\n# }\n#\n# Add your code below\nRAPID_API_KEY = os.environ[\"RAPID_API_KEY\"]\n",
+          "toolType": "shared",
+          "secrets": {
+            "gpt-4o": "REPLACE_ME",
+            "RAPID_API_KEY": "REPLACE_ME"
+          }
+        }
+      }
+    ],
     "chats": [
       {
         "id": "we-1747648772944jIxHrVO5yLLfWtfvwmp0C",
@@ -330,15 +372,15 @@
         "data": {
           "sourceType": "user_proxy",
           "targetType": "captain",
-          "name": "User proxy => Captain",
+          "name": "getTranscript",
           "order": 0,
           "description": "New connection",
           "position": 1,
           "clearHistory": true,
           "maxTurns": 1,
           "message": {
-            "type": "string",
-            "content": "Find a recent paper about large language models on arxiv and find its potential applications in software.",
+            "type": "method",
+            "content": "\"\"\"Custom message function.\"\"\"\n# provide the message to be sent when the sender and the recipient are connected\n# complete the `callable_message` below. Do not change the name or the arguments of the function.\n# only complete the function body and the docstring and return the:\n# final message: (str) or a dictionary with the final message and additional data (dict)\n#\n# the recipient and the sender are 'autogen.ConversableAgent' objects\n# the context is generated from the sender's initiate_chat additional keyword arguments\n# example:\n# def callable_message(sender, recipient, context):\n#   # type: (ConversableAgent, ConversableAgent, dict) -> Union[str, Dict]\n#   carryover = context.get(\"carryover\", \"\")\n#    if isinstance(carryover, list):\n#        carryover = carryover[-1]\n#    final_msg = \"Write a blogpost.\" + \"\\nContext: \\n\" + carryover\n#    return final_msg\n#\ndef callable_message(sender, recipient, context):\n    query = \"\"\"# Task\n    Your task is to solve a question given by a user.\n\n    # Question\n    Examine the video at https://www.youtube.com/watch?v=1htKBjuUWec.\n\n    What does Teal'c say in response to the question \"Isn't that hot?\"\n    \"\"\".strip()\n    return query",
             "context": {},
             "useCarryover": false
           },
@@ -368,7 +410,6 @@
       }
     ],
     "isAsync": false,
-    "cacheSeed": null,
     "silent": false
   }
 }
