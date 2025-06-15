@@ -114,6 +114,7 @@ export default defineConfig(({ command }) => ({
                     "react/jsx-runtime": "jsxRuntime",
                     nanoid: "nanoid",
                     "@xyflow/react": "XYFlowReact",
+                    "@fontsource/fredoka": "fredoka",
                     "react-hotkeys-hook": "reactHotkeysHook",
                     "react-icons/fa": "reactIconsFa",
                     "react-icons/fa6": "reactIconsFa6",

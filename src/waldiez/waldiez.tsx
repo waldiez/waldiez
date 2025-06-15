@@ -8,6 +8,10 @@
  * @showCategories
  * @module
  */
+import "@fontsource/fredoka";
+import "@fontsource/fredoka/400.css";
+import "@fontsource/fredoka/600.css";
+
 import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
