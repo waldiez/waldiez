@@ -18,7 +18,6 @@ from pathlib import Path
 from types import ModuleType, TracebackType
 from typing import (
     TYPE_CHECKING,
-    Callable,
     Optional,
     Set,
     Type,
@@ -34,7 +33,6 @@ from .running import (
     after_run,
     before_run,
     chdir,
-    get_printer,
     install_requirements,
     refresh_environment,
     reset_env_vars,
@@ -166,25 +164,22 @@ class WaldiezRunner:
     def install_requirements(self) -> None:
         """Install the requirements for the flow."""
         self._called_install_requirements = True
-        printer = get_printer()
         extra_requirements = self.gather_requirements()
         if extra_requirements:
-            install_requirements(extra_requirements, printer)
+            install_requirements(extra_requirements)
 
     async def a_install_requirements(self) -> None:
         """Install the requirements for the flow asynchronously."""
         self._called_install_requirements = True
-        printer = get_printer()
         extra_requirements = self.gather_requirements()
         if extra_requirements:
-            await a_install_requirements(extra_requirements, printer)
+            await a_install_requirements(extra_requirements)
 
     def _before_run(
         self,
         temp_dir: Path,
         file_name: str,
         module_name: str,
-        printer: Callable[..., None],
     ) -> tuple[ModuleType, dict[str, str]]:
         self._exporter.export(Path(file_name))
         # unique_names = self._exporter.context.get_unique_names()
@@ -197,8 +192,8 @@ class WaldiezRunner:
         old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        printer("<Waldiez> - Starting workflow...")
-        printer(self.waldiez.info.model_dump_json())
+        print("<Waldiez> - Starting workflow...")
+        print(self.waldiez.info.model_dump_json())
         return module, old_vars
 
     def _run(
@@ -232,8 +227,7 @@ class WaldiezRunner:
         if not self._called_install_requirements:
             self.install_requirements()
         refresh_environment()
-        printer = get_printer()
-        printer(
+        print(
             "Requirements installed.\n"
             "NOTE: If new packages were added and you are using Jupyter, "
             "you might need to restart the kernel."
@@ -246,7 +240,6 @@ class WaldiezRunner:
                 temp_dir=temp_dir,
                 file_name=file_name,
                 module_name=module_name,
-                printer=printer,
             )
             if use_structured_io:
                 stream = StructuredIOStream(
@@ -257,13 +250,12 @@ class WaldiezRunner:
                     results = module.main()
             else:
                 results = module.main()
-            printer("<Waldiez> - Workflow finished")
+            print("<Waldiez> - Workflow finished")
             sys.path.pop(0)
             reset_env_vars(old_vars)
         after_run(
             temp_dir=temp_dir,
             output_path=output_path,
-            printer=printer,
             flow_name=self.waldiez.name,
             skip_mmd=skip_mmd,
         )
@@ -285,8 +277,7 @@ class WaldiezRunner:
         if not self._called_install_requirements:
             await self.a_install_requirements()
         refresh_environment()
-        printer = get_printer()
-        printer(
+        print(
             "Requirements installed.\n"
             "NOTE: If new packages were added and you are using Jupyter, "
             "you might need to restart the kernel."
@@ -299,7 +290,6 @@ class WaldiezRunner:
                 temp_dir=temp_dir,
                 file_name=file_name,
                 module_name=module_name,
-                printer=printer,
             )
             if use_structured_io:
                 stream = StructuredIOStream(
@@ -315,7 +305,6 @@ class WaldiezRunner:
         after_run(
             temp_dir=temp_dir,
             output_path=output_path,
-            printer=printer,
             flow_name=self.waldiez.name,
             skip_mmd=skip_mmd,
         )
