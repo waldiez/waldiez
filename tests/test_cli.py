@@ -8,10 +8,10 @@ from pathlib import Path
 
 import pytest
 
-from waldiez import __version__  # pyright: ignore
 from waldiez.__main__ import app as waldiez_main  # type: ignore
 from waldiez.cli import app
 from waldiez.models import WaldiezFlow
+from waldiez.utils import get_waldiez_version
 
 
 def escape_ansi(text: str) -> str:
@@ -43,7 +43,7 @@ def test_get_version(capsys: pytest.CaptureFixture[str]) -> None:
         sys.argv = ["waldiez", "--version"]
         app()
     captured = capsys.readouterr()
-    assert __version__ in captured.out
+    assert get_waldiez_version() in captured.out
 
 
 def test_help(capsys: pytest.CaptureFixture[str]) -> None:

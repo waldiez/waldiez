@@ -34,13 +34,32 @@ import sys
 from dataclasses import asdict
 from pprint import pprint
 from types import ModuleType
-from typing import Annotated, Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 import autogen  # type: ignore
-from autogen import Agent, Cache, ChatResult, ConversableAgent, GroupChat, UserProxyAgent, runtime_logging
+from autogen import (
+    Agent,
+    Cache,
+    ChatResult,
+    ConversableAgent,
+    GroupChat,
+    UserProxyAgent,
+    runtime_logging,
+)
 from autogen.agentchat.contrib.captainagent import CaptainAgent
 from autogen.coding import LocalCommandLineCodeExecutor
 import numpy as np
+
 #
 # let's try to avoid:
 # module 'numpy' has no attribute '_no_nep50_warning'"
@@ -63,9 +82,11 @@ if not hasattr(np, "_no_pep50_warning"):
             Nothing.
         """
         yield
+
     setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
 
 # Start logging.
+
 
 def start_logging() -> None:
     """Start logging."""
@@ -105,6 +126,7 @@ def load_api_key_module(flow_name: str) -> ModuleType:
         return importlib.reload(sys.modules[module_name])
     return importlib.import_module(module_name)
 
+
 __MODELS_MODULE__ = load_api_key_module("wf_3___with_agent_lib_a")
 
 
@@ -120,7 +142,9 @@ def get_wf_3___with_agent_lib_a_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_wf_3___with_agent_lib_a_model_api_key(model_name)
+    return __MODELS_MODULE__.get_wf_3___with_agent_lib_a_model_api_key(
+        model_name
+    )
 
 
 # Tools
@@ -153,6 +177,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
         return importlib.reload(sys.modules[module_name])
     return importlib.import_module(module_name)
 
+
 load_tool_secrets_module("wf_3___with_agent_lib_a", "new_tool")
 
 """Replace this with your code.
@@ -181,7 +206,7 @@ RAPID_API_KEY = os.environ["RAPID_API_KEY"]
 gpt_4o_llm_config: dict[str, Any] = {
     "model": "gpt-4o",
     "api_type": "openai",
-    "api_key": get_wf_3___with_agent_lib_a_model_api_key("gpt_4o")
+    "api_key": get_wf_3___with_agent_lib_a_model_api_key("gpt_4o"),
 }
 
 # Agents
@@ -205,27 +230,25 @@ captain = CaptainAgent(
         "autobuild_init_config": {
             "config_file_or_env": "captain_llm_config.json",
             "builder_model": "gpt-4o",
-            "agent_model": "gpt-4o"
+            "agent_model": "gpt-4o",
         },
         "autobuild_build_config": {
             "default_llm_config": {
                 "temperature": 1,
                 "top_p": 0.95,
-                "max_tokens": 2048
+                "max_tokens": 2048,
             },
             "code_execution_config": {
                 "timeout": 300,
                 "work_dir": "groupchat",
                 "last_n_messages": 1,
-                "use_docker": False
+                "use_docker": False,
             },
-            "coding": True
+            "coding": True,
         },
-        "group_chat_config": {
-            "max_round": 10
-        },
+        "group_chat_config": {"max_round": 10},
         "group_chat_llm_config": None,
-        "max_turns": 5
+        "max_turns": 5,
     },
     llm_config=autogen.LLMConfig(
         config_list=[
@@ -245,6 +268,7 @@ user_proxy = UserProxyAgent(
     is_termination_msg=None,  # pyright: ignore
     llm_config=False,  # pyright: ignore
 )
+
 
 def callable_message_gettranscript(
     sender: ConversableAgent,
@@ -293,6 +317,7 @@ def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
     with open(json_file, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
+
 def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
@@ -311,8 +336,8 @@ def stop_logging() -> None:
         get_sqlite_out("flow.db", table, dest)
 
 
-
 # Start chatting
+
 
 def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
     """Start chatting.
