@@ -125,7 +125,7 @@ def refresh_environment() -> None:
     # default code execution with docker
     # temp (until we handle/detect docker setup)
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
-    reload_autogen()
+    # reload_autogen()
     try_handle_the_np_thing()
 
 
