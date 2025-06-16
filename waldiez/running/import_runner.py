@@ -16,7 +16,7 @@ import threading
 import time
 from pathlib import Path
 from types import ModuleType
-from typing import Union
+from typing import Callable, Union
 
 from autogen import ChatResult  # type: ignore[import-untyped]
 from autogen.io import IOStream  # type: ignore
@@ -52,6 +52,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         self._execution_loop: asyncio.AbstractEventLoop | None = None
         self._loaded_module: ModuleType | None = None
 
+    # pylint: disable=too-many-statements
     def _run(
         self,
         temp_dir: Path,
@@ -72,6 +73,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
 
         def _execute_workflow() -> None:
             patch_io_stream(self.waldiez.is_async)
+            printer: Callable[..., None] = print
             try:
                 file_name = output_file.name
                 module_name = file_name.replace(".py", "")
@@ -84,28 +86,30 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=False
                     )
+                    printer = stream.print
                     with IOStream.set_default(stream):
                         self._loaded_module = importlib.util.module_from_spec(
                             spec
                         )
                         spec.loader.exec_module(self._loaded_module)
-                        self.log.info("<Waldiez> - Starting workflow...")
-                        self.log.info(self.waldiez.info.model_dump_json())
+                        printer("<Waldiez> - Starting workflow...")
+                        printer(self.waldiez.info.model_dump_json())
                         results = self._loaded_module.main()
                 else:
+                    printer = IOStream.get_default().print
                     self._loaded_module = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(self._loaded_module)
-                    self.log.info("<Waldiez> - Starting workflow...")
-                    self.log.info(self.waldiez.info.model_dump_json())
+                    printer("<Waldiez> - Starting workflow...")
+                    printer(self.waldiez.info.model_dump_json())
                     results = self._loaded_module.main()
                 result_container["results"] = results
-                self.log.success("<Waldiez> - Workflow finished")
+                printer("<Waldiez> - Workflow finished")
             except SystemExit:
-                self.log.info("Workflow stopped by user")
+                printer("<Waldiez> - Workflow stopped by user")
                 result_container["results"] = []
             except Exception as e:  # pylint: disable=broad-exception-caught
                 result_container["exception"] = e
-                self.log.error("Workflow execution failed: %s", e)
+                printer("<Waldiez> - Workflow execution failed: %s", e)
             finally:
                 self._execution_loop = None
                 self._execution_thread = None

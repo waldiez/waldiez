@@ -255,13 +255,18 @@ def get_set_structured_io_stream(
     upload_root_arg = f'r"{uploads_root}"' if uploads_root else "None"
     return f"""
 # set structured IO
-from autogen.io import IOStream
-from waldiez.io import StructuredIOStream
-stream = StructuredIOStream(
-    is_async={is_async},
-    uploads_root={upload_root_arg}
-)
-IOStream.set_default(stream)
+try:
+    # pylint: disable=import-outside-toplevel
+    from autogen.io import IOStream
+    from waldiez.io import StructuredIOStream
+    stream = StructuredIOStream(
+        is_async={is_async},
+        uploads_root={upload_root_arg}
+    )
+    IOStream.set_default(stream)
+except BaseException:  # pylint: disable=broad-exception-caught
+    # allow running the flow without structured IO
+    pass
 """
 
 
@@ -281,7 +286,11 @@ def get_patch_default_io_stream(is_async: bool) -> str:
     # copy from waldiez/running/patch_io_stream.py
     return f"""
 # patch the default IOStream
-# pylint: disable=import-outside-toplevel
-from waldiez.running.patch_io_stream import patch_io_stream
-patch_io_stream(is_async={is_async})
+try:
+    # pylint: disable=import-outside-toplevel
+    from waldiez.running.patch_io_stream import patch_io_stream
+    patch_io_stream(is_async={is_async})
+except BaseException:  # pylint: disable=broad-exception-caught
+    # allow running the flow without patching the IOStream
+    pass
 """
