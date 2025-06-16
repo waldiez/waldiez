@@ -16,6 +16,7 @@ class WaldiezRunResults(TypedDict):
         "ChatResult",
         list["ChatResult"],
         dict[int, "ChatResult"],
+        None,
     ]
     exception: Exception | None
     completed: bool

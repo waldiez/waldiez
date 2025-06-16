@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pylint: disable=unused-argument
 """Utilities for running code."""
 
 import datetime
@@ -51,16 +53,6 @@ def after_run(
                     shutil.copyfile(mmd_path, mmd_dir / f"{flow_name}.mmd")
                 except BaseException:  # pylint: disable=broad-exception-caught
                     pass
-    if uploads_root is not None:
-        # copy the uploads root to the temp dir
-        uploads_root = uploads_root.resolve()
-        if not uploads_root.exists():
-            print(f"Uploads root {uploads_root} does not exist.")
-        else:
-            print(f"Copying uploads root {uploads_root} to {temp_dir}")
-            shutil.copytree(
-                uploads_root, temp_dir / "uploads", dirs_exist_ok=True
-            )
     if output_file:
         destination_dir = output_file.parent
         destination_dir = (

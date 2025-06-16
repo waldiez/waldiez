@@ -13,6 +13,7 @@ variables specified in the waldiez file are set.
 import asyncio
 import importlib.util
 import threading
+import time
 from pathlib import Path
 from types import ModuleType
 from typing import Callable, Union
@@ -66,52 +67,75 @@ class WaldiezImportRunner(WaldiezBaseRunner):
     ]:
         """Run the Waldiez workflow."""
         results_container: WaldiezRunResults = {
-            "results": [],
+            "results": None,
             "exception": None,
             "completed": False,
         }
 
-        if not structured_io:
-            patch_io_stream(self.waldiez.is_async)
-        printer: Callable[..., None] = print
-        try:
-            file_name = output_file.name
-            module_name = file_name.replace(".py", "")
-            spec = importlib.util.spec_from_file_location(
-                module_name, temp_dir / file_name
-            )
-            if not spec or not spec.loader:
-                raise ImportError("Could not import the flow")
-            if structured_io:
-                stream = StructuredIOStream(
-                    uploads_root=uploads_root, is_async=False
+        def _execute_workflow() -> None:
+            if not structured_io:
+                patch_io_stream(self.waldiez.is_async)
+            printer: Callable[..., None] = print
+            try:
+                file_name = output_file.name
+                module_name = file_name.replace(".py", "")
+                spec = importlib.util.spec_from_file_location(
+                    module_name, temp_dir / file_name
                 )
-                printer = stream.print
-                with IOStream.set_default(stream):
+                if not spec or not spec.loader:
+                    raise ImportError("Could not import the flow")
+                if structured_io:
+                    stream = StructuredIOStream(
+                        uploads_root=uploads_root, is_async=False
+                    )
+                    printer = stream.print
+                    with IOStream.set_default(stream):
+                        self._loaded_module = importlib.util.module_from_spec(
+                            spec
+                        )
+                        spec.loader.exec_module(self._loaded_module)
+                        printer("<Waldiez> - Starting workflow...")
+                        printer(self.waldiez.info.model_dump_json())
+                        results = self._loaded_module.main()
+                else:
+                    printer = IOStream.get_default().print
                     self._loaded_module = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(self._loaded_module)
                     printer("<Waldiez> - Starting workflow...")
                     printer(self.waldiez.info.model_dump_json())
                     results = self._loaded_module.main()
-            else:
-                printer = IOStream.get_default().print
-                self._loaded_module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(self._loaded_module)
-                printer("<Waldiez> - Starting workflow...")
-                printer(self.waldiez.info.model_dump_json())
-                results = self._loaded_module.main()
-            results_container["results"] = results
-            printer("<Waldiez> - Workflow finished")
-        except SystemExit:
-            printer("<Waldiez> - Workflow stopped by user")
-            results_container["results"] = []
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            results_container["exception"] = e
-            printer("<Waldiez> - Workflow execution failed: %s", e)
-        finally:
-            results_container["completed"] = True
-            self._execution_loop = None
-            self._execution_thread = None
+                results_container["results"] = results
+                printer("<Waldiez> - Workflow finished")
+            except SystemExit:
+                printer("<Waldiez> - Workflow stopped by user")
+                results_container["results"] = []
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                results_container["exception"] = e
+                printer("<Waldiez> - Workflow execution failed: %s", e)
+            finally:
+                results_container["completed"] = True
+                self._execution_loop = None
+                self._execution_thread = None
+
+        # Execute in a separate thread for responsive stopping
+        self._execution_thread = threading.Thread(
+            target=_execute_workflow, daemon=True
+        )
+        self._execution_thread.start()
+
+        # Wait for completion while checking for stop requests
+        while self._execution_thread and self._execution_thread.is_alive():
+            if self._stop_requested.is_set():
+                self.log.info(
+                    "Stop requested, waiting for graceful shutdown..."
+                )
+                self._execution_thread.join(timeout=5.0)
+                if self._execution_thread.is_alive():
+                    self.log.warning("Workflow did not stop gracefully")
+                break
+            if results_container["completed"] is True:
+                break
+            time.sleep(0.1)
 
         # Handle results
         exception = results_container["exception"]
