@@ -96,6 +96,20 @@ def run(
             "If set, running the flow will use structured io stream instead of the default 'input/print' "
         ),
     ),
+    threaded: bool = typer.Option(  # noqa: B008
+        False,
+        help=(
+            "If set, the flow will be run in a separate thread. "
+            "This is useful for running flows that require user input or print output."
+        ),
+    ),
+    patch_io: bool = typer.Option(  # noqa: B008
+        False,
+        help=(
+            "If set, the flow will patch ag2's IOStream to safe print and input methods. "
+            "This is useful for running flows that require user input or print output."
+        ),
+    ),
     force: bool = typer.Option(  # noqa: B008
         False,
         help="Override the output file if it already exists.",
@@ -119,13 +133,16 @@ def run(
             output_path,
             uploads_root,
             structured,
-            False,
+            not patch_io,  # skip_patch_io
+            False,  # skip_mmd
         )
     else:
         runner.run(
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured,
+            threaded=threaded,
+            skip_patch_io=not patch_io,
             skip_mmd=False,
         )
 

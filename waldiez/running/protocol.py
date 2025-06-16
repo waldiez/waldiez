@@ -123,6 +123,7 @@ class WaldiezRunnerProtocol(Protocol):
         output_path: str | Path | None,
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
+        threaded: bool | None = None,
         skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
     ) -> Union[
@@ -140,6 +141,8 @@ class WaldiezRunnerProtocol(Protocol):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        threaded : bool | None
+            Whether to run the flow in a separate thread.
         skip_patch_io : bool
             Whether to skip patching I/O, by default None.
             If None, it will use the value from the context.

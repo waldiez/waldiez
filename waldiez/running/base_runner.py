@@ -378,6 +378,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
+        threaded: bool | None = None,
         skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
     ) -> Union[
@@ -396,6 +397,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print',
             by default False.
+        threaded : bool | None
+            Whether to run the flow in a threaded environment, by default None.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram, by default False.
         skip_patch_io : bool | None
@@ -417,6 +420,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             self._skip_patch_io = skip_patch_io
         if structured_io is not None:
             self._structured_io = structured_io
+        if threaded is not None:
+            self._threaded = threaded
         if self.is_running():
             raise RuntimeError("Workflow already running")
         if self.waldiez.is_async:
