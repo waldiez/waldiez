@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# flake8: noqa: C901
 # pylint: disable=too-many-try-statements,import-outside-toplevel,
 # pylint: disable=too-complex,unused-argument
 """Run a waldiez flow.
@@ -139,7 +140,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         return results_container["results"] or []
 
     # pylint: disable=too-many-statements,duplicate-code
-    def _run_threaded(  # noqa: C901
+    def _run_threaded(
         self,
         temp_dir: Path,
         output_file: Path,
@@ -250,6 +251,9 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             dict[int, "ChatResult"],
         ]:
             """Execute the workflow in an async context."""
+            printer: Callable[..., None] = print
+            if not self._structured_io and not self._skip_patch_io:
+                patch_io_stream(self.waldiez.is_async)
             try:
                 file_name = output_file.name
                 module_name = file_name.replace(".py", "")
@@ -262,9 +266,10 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=True
                     )
+                    printer = stream.print
                     with IOStream.set_default(stream):
-                        self.log.info("<Waldiez> - Starting workflow...")
-                        self.log.info(self.waldiez.info.model_dump_json())
+                        printer("<Waldiez> - Starting workflow...")
+                        printer(self.waldiez.info.model_dump_json())
                         self._loaded_module = importlib.util.module_from_spec(
                             spec
                         )
@@ -276,15 +281,15 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                     spec.loader.exec_module(self._loaded_module)
                     results = await self._loaded_module.main()
                     self._last_results = results
-                self.log.info("<Waldiez> - Workflow finished")
+                printer("<Waldiez> - Workflow finished")
                 return results
 
             except SystemExit:
-                self.log.info("Workflow stopped by user")
+                printer("Workflow stopped by user")
                 return []
             except Exception as e:
                 self._last_exception = e
-                self.log.error("Workflow execution failed: %s", e)
+                printer("Workflow execution failed: %s", e)
                 raise
 
         # Create cancellable task
