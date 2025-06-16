@@ -1,7 +1,7 @@
 {
   "id": "wf-1olHWN_NvlfwsHwhc5PwK",
   "type": "flow",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "storageId": "wf-1olHWN_NvlfwsHwhc5PwK",
   "name": "ReAct",
   "description": "ReAct using Tavily",

@@ -1,5 +1,5 @@
 {
-    "$id": "https://github.com/waldiez/waldiez/tree/v0.4.8/schema.json",
+    "$id": "https://github.com/waldiez/waldiez/tree/v0.4.9/schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "additionalProperties": false,

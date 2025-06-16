@@ -1,7 +1,7 @@
 {
   "id": "wf-LK_YLIqsyKHjbVTa0G_9-",
   "type": "flow",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "storageId": "wf-LK_YLIqsyKHjbVTa0G_9-",
   "name": "RAG",
   "description": "Group Chat with Retrieval Augmented Generation.",
