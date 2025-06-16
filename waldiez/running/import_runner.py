@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pylint: disable=too-many-try-statements,import-outside-toplevel,too-complex
+# pylint: disable=too-many-try-statements,import-outside-toplevel,
+# pylint: disable=too-complex,unused-argument
 """Run a waldiez flow.
 
 The flow is first converted to an autogen flow with agents, chats, and tools.
@@ -39,6 +40,8 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
         isolated: bool = False,
+        threaded: bool = True,
+        skip_patch_io: bool = False,
     ) -> None:
         """Initialize the Waldiez manager."""
         super().__init__(
@@ -47,18 +50,100 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             structured_io=structured_io,
             isolated=isolated,
+            threaded=threaded,
+            skip_patch_io=skip_patch_io,
         )
         self._execution_thread: threading.Thread | None = None
         self._execution_loop: asyncio.AbstractEventLoop | None = None
         self._loaded_module: ModuleType | None = None
 
-    # pylint: disable=too-many-statements,too-complex
-    def _run(  # noqa: C901
+    def _run(
         self,
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
+        skip_mmd: bool,
+    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
+        """Run the Waldiez workflow."""
+        if self._threaded:
+            return self._run_threaded(
+                temp_dir=temp_dir,
+                output_file=output_file,
+                uploads_root=uploads_root,
+                skip_mmd=skip_mmd,
+            )
+
+        return self._run_not_threaded(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            skip_mmd=skip_mmd,
+        )
+
+    def _run_not_threaded(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        skip_mmd: bool,
+    ) -> Union[
+        "ChatResult",
+        list["ChatResult"],
+        dict[int, "ChatResult"],
+    ]:
+        """Run the Waldiez workflow in a blocking manner."""
+        results_container: WaldiezRunResults = {
+            "results": None,
+            "exception": None,
+            "completed": False,
+        }
+        if not self._structured_io and not self._skip_patch_io:
+            patch_io_stream(self.waldiez.is_async)
+        printer: Callable[..., None] = print
+        try:
+            file_name = output_file.name
+            module_name = file_name.replace(".py", "")
+            spec = importlib.util.spec_from_file_location(
+                module_name, temp_dir / file_name
+            )
+            if not spec or not spec.loader:
+                raise ImportError("Could not import the flow")
+            if self._structured_io:
+                stream = StructuredIOStream(
+                    uploads_root=uploads_root, is_async=False
+                )
+                printer = stream.print
+                with IOStream.set_default(stream):
+                    self._loaded_module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(self._loaded_module)
+                    printer("<Waldiez> - Starting workflow...")
+                    printer(self.waldiez.info.model_dump_json())
+                    results = self._loaded_module.main()
+            else:
+                printer = IOStream.get_default().print
+                self._loaded_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(self._loaded_module)
+                printer("<Waldiez> - Starting workflow...")
+                printer(self.waldiez.info.model_dump_json())
+                results = self._loaded_module.main()
+            results_container["results"] = results
+            printer("<Waldiez> - Workflow finished")
+        except SystemExit:
+            printer("<Waldiez> - Workflow stopped by user")
+            results_container["results"] = []
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            results_container["exception"] = e
+            printer("<Waldiez> - Workflow execution failed: %s", e)
+        finally:
+            results_container["completed"] = True
+        return results_container["results"] or []
+
+    # pylint: disable=too-many-statements,duplicate-code
+    def _run_threaded(  # noqa: C901
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
         skip_mmd: bool,
     ) -> Union[
         "ChatResult",
@@ -73,7 +158,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         }
 
         def _execute_workflow() -> None:
-            if not structured_io:
+            if not self._structured_io and not self._skip_patch_io:
                 patch_io_stream(self.waldiez.is_async)
             printer: Callable[..., None] = print
             try:
@@ -84,7 +169,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 )
                 if not spec or not spec.loader:
                     raise ImportError("Could not import the flow")
-                if structured_io:
+                if self._structured_io:
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=False
                     )
@@ -151,7 +236,6 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         skip_mmd: bool,
     ) -> Union[
         "ChatResult",
@@ -174,7 +258,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 )
                 if not spec or not spec.loader:
                     raise ImportError("Could not import the flow")
-                if structured_io:
+                if self._structured_io:
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=True
                     )
@@ -230,17 +314,15 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         ],
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         temp_dir: Path,
         skip_mmd: bool,
     ) -> None:
         super()._after_run(
-            results,
-            output_file,
-            uploads_root,
-            structured_io,
-            temp_dir,
-            skip_mmd,
+            results=results,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            temp_dir=temp_dir,
+            skip_mmd=skip_mmd,
         )
 
         # Clean up module reference
@@ -251,7 +333,6 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> None:
         """Start the Waldiez workflow."""
@@ -260,8 +341,11 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             """Run the workflow in a background thread."""
             try:
                 # Reuse the blocking run logic but in a background thread
-                self._run(
-                    temp_dir, output_file, uploads_root, structured_io, skip_mmd
+                self._run_threaded(
+                    temp_dir=temp_dir,
+                    output_file=output_file,
+                    uploads_root=uploads_root,
+                    skip_mmd=skip_mmd,
                 )
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self._last_exception = e
@@ -278,7 +362,6 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> None:
         """Start the Waldiez workflow asynchronously."""
@@ -287,7 +370,10 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             """Run the workflow in an async context."""
             try:
                 await self._a_run(
-                    temp_dir, output_file, uploads_root, structured_io, skip_mmd
+                    temp_dir=temp_dir,
+                    output_file=output_file,
+                    uploads_root=uploads_root,
+                    skip_mmd=skip_mmd,
                 )
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self._last_exception = e

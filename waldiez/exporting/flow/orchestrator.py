@@ -183,15 +183,16 @@ class ExportOrchestrator:
             order=ContentOrder.CLEANUP.value + 1,  # after imports
             skip_strip=True,  # keep newlines
         )
-        merged_result.add_content(
-            get_set_io_stream(
-                use_structured_io=self.config.structured_io,
-                is_async=self.waldiez.is_async,
-                uploads_root=self.config.uploads_root,
-            ),
-            position=ExportPosition.IMPORTS,  # after imports, before models
-            order=ContentOrder.CLEANUP.value + 2,  # after start logging
-        )
+        if not self.config.skip_patch_io:
+            merged_result.add_content(
+                get_set_io_stream(
+                    use_structured_io=self.config.structured_io,
+                    is_async=self.waldiez.is_async,
+                    uploads_root=self.config.uploads_root,
+                ),
+                position=ExportPosition.IMPORTS,  # after imports, before models
+                order=ContentOrder.CLEANUP.value + 2,  # after start logging
+            )
         # merged_result.add_content
         merged_result.add_content(
             get_sqlite_out(is_async=self.waldiez.is_async),

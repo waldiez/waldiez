@@ -63,6 +63,7 @@ class WaldiezExporter:
         path: str | Path,
         structured_io: bool = False,
         uploads_root: Path | None = None,
+        skip_patch_io: bool = True,
         force: bool = False,
         debug: bool = False,
     ) -> None:
@@ -77,6 +78,8 @@ class WaldiezExporter:
             by default False.
         uploads_root : str | Path | None, (optional)
             The uploads root, to get user-uploaded files, by default None.
+        skip_patch_io : bool, (optional)
+            Whether to skip patching I/O, by default True.
         force : bool, (optional)
             Override the output file if it already exists, by default False.
         debug : bool, (optional)
@@ -109,6 +112,7 @@ class WaldiezExporter:
                 path,
                 structured_io=structured_io,
                 uploads_root=uploads_root,
+                skip_patch_io=skip_patch_io,
                 debug=debug,
             )
         elif extension == ".ipynb":
@@ -116,6 +120,7 @@ class WaldiezExporter:
                 path,
                 structured_io=structured_io,
                 uploads_root=uploads_root,
+                skip_patch_io=skip_patch_io,
                 debug=debug,
             )
         else:
@@ -126,6 +131,7 @@ class WaldiezExporter:
         path: str | Path,
         structured_io: bool = False,
         uploads_root: Path | None = None,
+        skip_patch_io: bool = True,
         debug: bool = False,
     ) -> None:
         """Export flow to jupyter notebook.
@@ -139,6 +145,8 @@ class WaldiezExporter:
             by default False.
         uploads_root : Path | None, optional
             The uploads root, to get user-uploaded files, by default None.
+        skip_patch_io : bool, optional
+            Whether to skip patching I/O, by default True.
         debug : bool, optional
             Whether to enable debug mode, by default False.
 
@@ -157,6 +165,7 @@ class WaldiezExporter:
             uploads_root=uploads_root,
             structured_io=structured_io,
             for_notebook=True,
+            skip_patch_io=skip_patch_io,
             debug=debug,
         )
         self.flow_extras = exporter.extras
@@ -193,6 +202,7 @@ class WaldiezExporter:
         path: str | Path,
         structured_io: bool = False,
         uploads_root: Path | None = None,
+        skip_patch_io: bool = True,
         debug: bool = False,
     ) -> None:
         """Export waldiez flow to a python script.
@@ -206,6 +216,8 @@ class WaldiezExporter:
             by default False.
         uploads_root : Path | None, optional
             The uploads root, to get user-uploaded files, by default None.
+        skip_patch_io : bool, optional
+            Whether to skip patching I/O, by default True.
         debug : bool, optional
             Whether to enable debug mode, by default False.
 
@@ -222,6 +234,7 @@ class WaldiezExporter:
             for_notebook=False,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            skip_patch_io=skip_patch_io,
             debug=debug,
         )
         self.flow_extras = exporter.extras

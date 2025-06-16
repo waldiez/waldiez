@@ -259,6 +259,8 @@ class ExportConfig:
         The file extension for the exported content.
     is_async : bool
         Whether the exported content should be asynchronous.
+    skip_patch_io : bool
+        Whether to skip patching I/O operations.
     """
 
     name: str = "Waldiez Flow"
@@ -273,6 +275,7 @@ class ExportConfig:
     uploads_root: Optional[Path] = None
     cache_seed: Optional[int] = None
     structured_io: bool = False
+    skip_patch_io: bool = True
 
     @property
     def for_notebook(self) -> bool:

@@ -54,6 +54,8 @@ class ExporterContext:
         is_async: bool = False,
         output_directory: Optional[str] = None,
         cache_seed: Optional[int] = None,
+        structured_io: bool = False,
+        skip_patch_io: bool = True,
     ) -> ExportConfig:
         """Get export config or return default.
 
@@ -75,6 +77,10 @@ class ExporterContext:
             The directory where the output will be saved, by default None
         cache_seed : Optional[int], optional
             The seed for caching, by default None
+        structured_io : bool, optional
+            Whether to use structured I/O, by default False
+        skip_patch_io : bool, optional
+            Whether to skip patching I/O, by default True
 
         Returns
         -------
@@ -85,6 +91,12 @@ class ExporterContext:
             "requirements": requirements or [],
             "tags": tags or [],
             "is_async": self.config.is_async if self.config else is_async,
+            "structured_io": (
+                self.config.structured_io if self.config else structured_io
+            ),
+            "skip_patch_io": (
+                self.config.skip_patch_io if self.config else skip_patch_io
+            ),
         }
         if output_extension is not None:
             kwargs["output_extension"] = output_extension

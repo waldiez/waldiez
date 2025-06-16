@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=protected-access
+
+# pylint: disable=protected-access,too-many-arguments
+# pylint: disable=too-many-positional-arguments
 """Run a waldiez flow.
 
 The flow is first converted to an autogen flow with agents, chats, and tools.
@@ -37,6 +39,8 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
         isolated: bool = False,
+        threaded: bool = False,
+        skip_patch_io: bool = True,
     ) -> None:
         """Create a new Waldiez runner.
 
@@ -56,6 +60,12 @@ class WaldiezRunner(WaldiezBaseRunner):
         isolated : bool, optional
             If True, the flow will be run in an isolated subprocess.
             Defaults to False.
+        threaded : bool, optional
+            If True, the flow will be run in a threaded manner.
+            Defaults to False.
+        skip_patch_io : bool, optional
+            If True, the IO patching will be skipped.
+            Defaults to True.
 
         Returns
         -------
@@ -68,6 +78,8 @@ class WaldiezRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             structured_io=structured_io,
             isolated=isolated,
+            threaded=threaded,
+            skip_patch_io=skip_patch_io,
         )
         if isolated:
             self._implementation = WaldiezSubprocessRunner(
@@ -76,6 +88,8 @@ class WaldiezRunner(WaldiezBaseRunner):
                 uploads_root=uploads_root,
                 structured_io=structured_io,
                 isolated=True,
+                threaded=threaded,
+                skip_patch_io=skip_patch_io,
             )
         else:
             self._implementation = WaldiezImportRunner(
@@ -84,6 +98,8 @@ class WaldiezRunner(WaldiezBaseRunner):
                 uploads_root=uploads_root,
                 structured_io=structured_io,
                 isolated=False,
+                threaded=threaded,
+                skip_patch_io=skip_patch_io,
             )
 
     @classmethod
@@ -98,6 +114,8 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
         isolated: bool = False,
+        threaded: bool = False,
+        skip_patch_io: bool = True,
     ) -> "WaldiezRunner":
         """Load a waldiez flow from a file and create a runner.
 
@@ -127,6 +145,12 @@ class WaldiezRunner(WaldiezBaseRunner):
         isolated : bool, optional
             If True, the flow will be run in an isolated subprocess.
             Defaults to False.
+        threaded : bool, optional
+            If True, the flow will be run in a threaded manner.
+            Defaults to False.
+        skip_patch_io : bool, optional
+            If True, the IO patching will be skipped.
+            Defaults to True.
 
         Returns
         -------
@@ -146,13 +170,14 @@ class WaldiezRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             structured_io=structured_io,
             isolated=isolated,
+            threaded=threaded,
+            skip_patch_io=skip_patch_io,
         )
 
     def _before_run(
         self,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
     ) -> Path:
         """Actions to perform before running the flow.
 
@@ -162,18 +187,16 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         """
         return self._implementation._before_run(
-            output_file, uploads_root, structured_io
+            output_file=output_file,
+            uploads_root=uploads_root,
         )
 
     async def _a_before_run(
         self,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
     ) -> Path:
         """Asynchronously perform actions before running the flow.
 
@@ -183,8 +206,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
 
         Returns
         -------
@@ -192,7 +213,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             The path to the temporary directory created for the run.
         """
         return await self._implementation._a_before_run(
-            output_file, uploads_root, structured_io
+            output_file, uploads_root
         )
 
     def _run(
@@ -200,7 +221,6 @@ class WaldiezRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool = False,
         skip_mmd: bool = False,
     ) -> Union[
         "ChatResult",
@@ -217,8 +237,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
 
@@ -233,7 +251,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
-            structured_io=structured_io,
             skip_mmd=skip_mmd,
         )
 
@@ -242,7 +259,6 @@ class WaldiezRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         skip_mmd: bool,
     ) -> Union[
         "ChatResult",
@@ -259,8 +275,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
 
@@ -275,7 +289,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
-            structured_io=structured_io,
             skip_mmd=skip_mmd,
         )
 
@@ -288,7 +301,6 @@ class WaldiezRunner(WaldiezBaseRunner):
         ],
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         temp_dir: Path,
         skip_mmd: bool,
     ) -> None:
@@ -315,7 +327,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             results,
             output_file,
             uploads_root,
-            structured_io,
             temp_dir,
             skip_mmd,
         )
@@ -329,7 +340,6 @@ class WaldiezRunner(WaldiezBaseRunner):
         ],
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         temp_dir: Path,
         skip_mmd: bool,
     ) -> None:
@@ -352,7 +362,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             results,
             output_file,
             uploads_root,
-            structured_io,
             temp_dir,
             skip_mmd,
         )
@@ -361,8 +370,9 @@ class WaldiezRunner(WaldiezBaseRunner):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
-        structured_io: bool,
-        skip_mmd: bool,
+        structured_io: bool | None = None,
+        skip_patch_io: bool | None = None,
+        skip_mmd: bool = False,
     ) -> None:
         """Start the flow.
 
@@ -372,13 +382,20 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output path, by default None.
         uploads_root : str | Path | None
             The runtime uploads root.
-        structured_io : bool
+        structured_io : bool | None
             Whether to use structured IO instead of the default 'input/print'.
-        skip_mmd : bool
+            If None, it will use the value from the context.
+        skip_patch_io : bool | None = None
+            Whether to skip patching I/O, by default None.
+            If None, it will use the value from the context.
+        skip_mmd : bool = False
             Whether to skip generating the mermaid diagram.
         """
         self._implementation.start(
-            output_path, uploads_root, structured_io, skip_mmd
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            skip_patch_io=skip_patch_io,
         )
 
     def _start(
@@ -386,7 +403,6 @@ class WaldiezRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         skip_mmd: bool,
     ) -> None:
         """Start the flow.
@@ -397,8 +413,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         """
@@ -406,7 +420,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
-            structured_io=structured_io,
             skip_mmd=skip_mmd,
         )
 
@@ -414,8 +427,9 @@ class WaldiezRunner(WaldiezBaseRunner):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
-        structured_io: bool,
-        skip_mmd: bool,
+        structured_io: bool | None = None,
+        skip_patch_io: bool | None = None,
+        skip_mmd: bool = False,
     ) -> None:
         """Asynchronously start the flow.
 
@@ -425,13 +439,19 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output path, by default None.
         uploads_root : str | Path | None
             The runtime uploads root.
-        structured_io : bool
+        structured_io : bool | None
             Whether to use structured IO instead of the default 'input/print'.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
+        skip_patch_io : bool | None = None
+            Whether to skip patching I/O, by default None.
+        skip_mmd : bool = False
+            Whether to skip generating the mermaid diagram, by default False.
         """
         await self._implementation.a_start(
-            output_path, uploads_root, structured_io, skip_mmd
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            skip_patch_io=skip_patch_io,
+            skip_mmd=skip_mmd,
         )
 
     async def _a_start(
@@ -439,7 +459,6 @@ class WaldiezRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         skip_mmd: bool,
     ) -> None:
         """Asynchronously start the flow.
@@ -452,8 +471,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         """
@@ -461,7 +478,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
-            structured_io=structured_io,
             skip_mmd=skip_mmd,
         )
 

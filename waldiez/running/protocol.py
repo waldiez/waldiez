@@ -18,7 +18,6 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
     ) -> Path:  # pyright: ignore
         """Actions to perform before running the flow.
 
@@ -28,8 +27,6 @@ class WaldiezRunnerProtocol(Protocol):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
 
         Returns
         -------
@@ -41,7 +38,6 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
     ) -> Path:  # pyright: ignore
         """Asynchronously perform actions before running the flow.
 
@@ -51,8 +47,6 @@ class WaldiezRunnerProtocol(Protocol):
             The output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
 
         Returns
         -------
@@ -64,8 +58,9 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
-        structured_io: bool,
-        skip_mmd: bool,
+        structured_io: bool | None = None,
+        skip_patch_io: bool | None = None,
+        skip_mmd: bool = False,
     ) -> None:
         """Start running the Waldiez flow in a non-blocking way.
 
@@ -79,6 +74,9 @@ class WaldiezRunnerProtocol(Protocol):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        skip_patch_io : bool | None
+            Whether to skip patching I/O, by default None.
+            If None, it will use the value from the context.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
 
@@ -92,8 +90,9 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
-        structured_io: bool,
-        skip_mmd: bool,
+        structured_io: bool | None = None,
+        skip_patch_io: bool | None = None,
+        skip_mmd: bool = False,
     ) -> None:
         """Asynchronously start running the Waldiez flow in a non-blocking way.
 
@@ -107,6 +106,9 @@ class WaldiezRunnerProtocol(Protocol):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        skip_patch_io : bool | None
+            Whether to skip patching I/O, by default None.
+            If None, it will use the value from the context.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
 
@@ -120,8 +122,9 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
-        structured_io: bool,
-        skip_mmd: bool,
+        structured_io: bool | None = None,
+        skip_patch_io: bool | None = None,
+        skip_mmd: bool = False,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -137,6 +140,9 @@ class WaldiezRunnerProtocol(Protocol):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        skip_patch_io : bool
+            Whether to skip patching I/O, by default None.
+            If None, it will use the value from the context.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
 
@@ -152,8 +158,9 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
-        structured_io: bool,
-        skip_mmd: bool,
+        structured_io: bool | None = None,
+        skip_patch_io: bool | None = None,
+        skip_mmd: bool = False,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -169,6 +176,9 @@ class WaldiezRunnerProtocol(Protocol):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        skip_patch_io : bool
+            Whether to skip patching I/O, by default None.
+            If None, it will use the value from the context.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
 
@@ -189,7 +199,6 @@ class WaldiezRunnerProtocol(Protocol):
         ],
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         temp_dir: Path,
         skip_mmd: bool,
     ) -> None:
@@ -205,8 +214,6 @@ class WaldiezRunnerProtocol(Protocol):
             The path to the output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         temp_dir : Path
             The path to the temporary directory.
         skip_mmd : bool
@@ -222,7 +229,6 @@ class WaldiezRunnerProtocol(Protocol):
         ],
         output_file: Path,
         uploads_root: Path | None,
-        structured_io: bool,
         temp_dir: Path,
         skip_mmd: bool,
     ) -> None:
@@ -238,8 +244,6 @@ class WaldiezRunnerProtocol(Protocol):
             The path to the output file.
         uploads_root : Path | None
             The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         temp_dir : Path
             The path to the temporary directory.
         skip_mmd : bool
