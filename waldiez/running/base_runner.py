@@ -75,8 +75,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             "ChatResult",
             list["ChatResult"],
             dict[int, "ChatResult"],
-            None,
-        ] = None
+        ] = []
         self._last_exception: Exception | None = None
 
     def is_running(self) -> bool:

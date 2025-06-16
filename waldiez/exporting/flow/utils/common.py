@@ -230,7 +230,10 @@ def get_set_io_stream(
         The content to set structured IO.
     """
     if use_structured_io:
-        return ""
+        return get_set_structured_io_stream(
+            is_async=is_async,
+            uploads_root=uploads_root,
+        )
     return get_patch_default_io_stream(is_async)
 
 
