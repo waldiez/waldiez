@@ -215,7 +215,6 @@ test = [
   "ag2[websockets]==0.9.2",
   "fakeredis>=2.28.1",
   "paho-mqtt>=2.1.0,<3.0",
-
   "pytest==8.4.0",
   "pytest-asyncio==1.0.0",
   "pytest-cov==6.1.1",
@@ -283,6 +282,10 @@ pytest -c pyproject.toml --cov=waldiez/exporting --cov-branch --cov-report=term-
 test-io = """
 hatch run pre-test
 pytest -c pyproject.toml --cov=waldiez/io --cov-branch --cov-report=term-missing:skip-covered -vv tests/io
+"""
+test-running = """
+hatch run pre-test
+pytest -c pyproject.toml --cov=waldiez/running --cov-branch --cov-report=term-missing:skip-covered -vv tests/running
 """
 
 format-black = "black --config pyproject.toml waldiez tests scripts"
