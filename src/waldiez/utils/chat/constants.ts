@@ -5,7 +5,11 @@
 export const MESSAGE_CONSTANTS = {
     DEFAULT_PROMPT: "Enter your message to start the conversation:",
     GENERIC_PROMPTS: [">", "> "] as string[],
-    WORKFLOW_END_MARKER: "<Waldiez> - Workflow finished",
+    WORKFLOW_END_MARKERS: [
+        "<Waldiez> - Workflow finished",
+        "<Waldiez> - Workflow stopped by user",
+        "<Waldiez> - Workflow execution failed:",
+    ],
     PARTICIPANTS_KEY: "participants",
     SYSTEM_MESSAGES: {
         GROUP_CHAT_RUN: "Group chat run",

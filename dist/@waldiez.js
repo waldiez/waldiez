@@ -197,7 +197,11 @@ class MessageValidator {
 const MESSAGE_CONSTANTS = {
   DEFAULT_PROMPT: "Enter your message to start the conversation:",
   GENERIC_PROMPTS: [">", "> "],
-  WORKFLOW_END_MARKER: "<Waldiez> - Workflow finished",
+  WORKFLOW_END_MARKERS: [
+    "<Waldiez> - Workflow finished",
+    "<Waldiez> - Workflow stopped by user",
+    "<Waldiez> - Workflow execution failed:"
+  ],
   PARTICIPANTS_KEY: "participants",
   SYSTEM_MESSAGES: {
     GROUP_CHAT_RUN: "Group chat run",
@@ -398,6 +402,17 @@ class PrintMessageHandler {
   canHandle(type) {
     return type === "print";
   }
+  isEndOfWorkflow(message) {
+    if (typeof message === "string") {
+      return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some((marker) => message.includes(marker));
+    }
+    if (typeof message !== "object" && !message.content && !message.data) {
+      return false;
+    }
+    const dataContent = "data" in message ? message.data : message.content;
+    const stringContent = typeof dataContent === "string" ? dataContent : JSON.stringify(dataContent);
+    return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some((marker) => stringContent.includes(marker));
+  }
   /**
    * Handles the print message.
    * Validates the message data, checks for workflow end markers, and extracts participants if present.
@@ -406,13 +421,15 @@ class PrintMessageHandler {
    */
   handle(data) {
     if (!MessageValidator.isValidPrintMessage(data)) {
-      console.warn("Invalid print message data:", data);
+      if (this.isEndOfWorkflow(data)) {
+        return { isWorkflowEnd: true };
+      }
       return void 0;
     }
-    const dataContent = data.content.data;
-    if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.WORKFLOW_END_MARKER)) {
+    if (this.isEndOfWorkflow(data.content)) {
       return { isWorkflowEnd: true };
     }
+    const dataContent = data.content.data;
     if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
       return this.extractParticipants(dataContent);
     }

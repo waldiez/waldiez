@@ -188,7 +188,6 @@ describe("WaldiezChatMessageProcessor", () => {
             });
 
             const result = WaldiezChatMessageProcessor.process(message);
-
             expect(result).toEqual({
                 isWorkflowEnd: true,
             });

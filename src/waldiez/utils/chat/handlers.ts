@@ -79,6 +79,18 @@ export class PrintMessageHandler implements MessageHandler {
         return type === "print";
     }
 
+    isEndOfWorkflow(message: any): boolean {
+        if (typeof message === "string") {
+            return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some(marker => message.includes(marker));
+        }
+        if (typeof message !== "object" && !message.content && !message.data) {
+            return false;
+        }
+        const dataContent = "data" in message ? message.data : message.content;
+        const stringContent = typeof dataContent === "string" ? dataContent : JSON.stringify(dataContent);
+        return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some(marker => stringContent.includes(marker));
+    }
+
     /**
      * Handles the print message.
      * Validates the message data, checks for workflow end markers, and extracts participants if present.
@@ -87,16 +99,18 @@ export class PrintMessageHandler implements MessageHandler {
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
         if (!MessageValidator.isValidPrintMessage(data)) {
-            console.warn("Invalid print message data:", data);
+            if (this.isEndOfWorkflow(data)) {
+                return { isWorkflowEnd: true };
+            }
             return undefined;
+        }
+
+        if (this.isEndOfWorkflow(data.content)) {
+            return { isWorkflowEnd: true };
         }
 
         const dataContent = data.content.data;
 
-        // Check for workflow end
-        if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.WORKFLOW_END_MARKER)) {
-            return { isWorkflowEnd: true };
-        }
         // Check for participants
         if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
             return this.extractParticipants(dataContent);
