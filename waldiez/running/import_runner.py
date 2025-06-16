@@ -277,6 +277,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                         results = await self._loaded_module.main()
                         self._last_results = results
                 else:
+                    printer = IOStream.get_default().print
                     printer("<Waldiez> - Starting workflow...")
                     printer(self.waldiez.info.model_dump_json())
                     self._loaded_module = importlib.util.module_from_spec(spec)
