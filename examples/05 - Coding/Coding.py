@@ -102,6 +102,11 @@ def start_logging() -> None:
 
 start_logging()
 
+# patch the default IOStream
+# pylint: disable=import-outside-toplevel
+from waldiez.running.patch_io_stream import patch_io_stream
+
+patch_io_stream(is_async=False)
 # Load model API keys
 # NOTE:
 # This section assumes that a file named "coding_api_keys"
