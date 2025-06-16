@@ -11,7 +11,6 @@ to trigger the chat(s).
 """
 
 from pathlib import Path
-from typing import Union
 
 import jupytext  # type: ignore[import-untyped]
 from jupytext.config import (  # type: ignore[import-untyped]
@@ -61,7 +60,9 @@ class WaldiezExporter:
 
     def export(
         self,
-        path: Union[str, Path],
+        path: str | Path,
+        structured_io: bool = False,
+        uploads_root: Path | None = None,
         force: bool = False,
         debug: bool = False,
     ) -> None:
@@ -69,8 +70,13 @@ class WaldiezExporter:
 
         Parameters
         ----------
-        path : Union[str, Path]
+        path : str | Path
             The path to export to.
+        structured_io : bool, (optional)
+            Whether to use structured IO instead of the default 'input/print',
+            by default False.
+        uploads_root : str | Path | None, (optional)
+            The uploads root, to get user-uploaded files, by default None.
         force : bool, (optional)
             Override the output file if it already exists, by default False.
         debug : bool, (optional)
@@ -99,23 +105,40 @@ class WaldiezExporter:
         if extension == ".waldiez":
             self.to_waldiez(path, debug=debug)
         elif extension == ".py":
-            self.to_py(path, debug=debug)
+            self.to_py(
+                path,
+                structured_io=structured_io,
+                uploads_root=uploads_root,
+                debug=debug,
+            )
         elif extension == ".ipynb":
-            self.to_ipynb(path, debug=debug)
+            self.to_ipynb(
+                path,
+                structured_io=structured_io,
+                uploads_root=uploads_root,
+                debug=debug,
+            )
         else:
             raise ValueError(f"Invalid extension: {extension}")
 
     def to_ipynb(
         self,
-        path: Path,
+        path: str | Path,
+        structured_io: bool = False,
+        uploads_root: Path | None = None,
         debug: bool = False,
     ) -> None:
         """Export flow to jupyter notebook.
 
         Parameters
         ----------
-        path : Path
+        path : str | Path
             The path to export to.
+        structured_io : bool, optional
+            Whether to use structured IO instead of the default 'input/print',
+            by default False.
+        uploads_root : Path | None, optional
+            The uploads root, to get user-uploaded files, by default None.
         debug : bool, optional
             Whether to enable debug mode, by default False.
 
@@ -126,9 +149,13 @@ class WaldiezExporter:
         """
         # we first create a .py file with the content
         # and then convert it to a notebook using jupytext
+        if not isinstance(path, Path):
+            path = Path(path)
         exporter = create_flow_exporter(
             waldiez=self.waldiez,
             output_dir=path.parent,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
             for_notebook=True,
             debug=debug,
         )
@@ -161,13 +188,24 @@ class WaldiezExporter:
         Path(ipynb_path).rename(ipynb_path.replace(".tmp.ipynb", ".ipynb"))
         py_path.unlink(missing_ok=True)
 
-    def to_py(self, path: Path, debug: bool = False) -> None:
+    def to_py(
+        self,
+        path: str | Path,
+        structured_io: bool = False,
+        uploads_root: Path | None = None,
+        debug: bool = False,
+    ) -> None:
         """Export waldiez flow to a python script.
 
         Parameters
         ----------
-        path : Path
+        path : str | Path
             The path to export to.
+        structured_io : bool, optional
+            Whether to use structured IO instead of the default 'input/print',
+            by default False.
+        uploads_root : Path | None, optional
+            The uploads root, to get user-uploaded files, by default None.
         debug : bool, optional
             Whether to enable debug mode, by default False.
 
@@ -176,10 +214,14 @@ class WaldiezExporter:
         RuntimeError
             If the python script could not be generated.
         """
+        if not isinstance(path, Path):
+            path = Path(path)
         exporter = create_flow_exporter(
             waldiez=self.waldiez,
             output_dir=path.parent,
             for_notebook=False,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
             debug=debug,
         )
         self.flow_extras = exporter.extras

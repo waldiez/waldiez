@@ -7,13 +7,14 @@ from pathlib import Path
 
 import pytest
 
-from waldiez.running import (
-    a_chdir,
+from waldiez.running.post_run import after_run
+from waldiez.running.pre_run import (
     a_install_requirements,
-    after_run,
-    before_run,
-    chdir,
     install_requirements,
+)
+from waldiez.running.utils import (
+    a_chdir,
+    chdir,
 )
 
 
@@ -54,43 +55,6 @@ async def test_a_chdir(tmp_path: Path) -> None:
     assert os.getcwd() == old_cwd
 
 
-def test_before_run(tmp_path: Path) -> None:
-    """Test before_run.
-
-    Parameters
-    ----------
-    tmp_path : Path
-        The temporary path.
-    """
-    # When
-    file_path = tmp_path / "test_before_run.py"
-    file_name = before_run(file_path, None)
-    # Then
-    assert file_name == "test_before_run.py"
-
-    # When
-    file_path = tmp_path / "test_before_run.json"
-    file_name = before_run(file_path, None)
-    # Then
-    assert file_name == "test_before_run.py"
-
-    # When
-    file_path = tmp_path / "test_before_run.waldiez"
-    file_name = before_run(file_path, None)
-    # Then
-    assert file_name == "test_before_run.py"
-
-    # When
-    file_name = before_run("test_before_run", None)
-    # Then
-    assert file_name == "test_before_run.py"
-
-    # When
-    file_name = before_run(None, tmp_path / "uploads")
-    # Then
-    assert file_name == "waldiez_flow.py"
-
-
 def test_install_requirements() -> None:
     """Test install_requirements."""
     extra_requirements = {"pytest"}
@@ -116,12 +80,13 @@ def test_after_run(tmp_path: Path) -> None:
     flow_name = "flow_name"
     tmp_dir = tmp_path / "test_after_run"
     tmp_dir.mkdir(parents=True, exist_ok=True)
-    output_path = str(tmp_path / "output_path" / "output.py")
+    output_file = str(tmp_path / "output_path" / "output.py")
 
     after_run(
         temp_dir=tmp_dir,
-        output_path=output_path,
+        output_file=output_file,
         flow_name=flow_name,
+        uploads_root=None,
         skip_mmd=False,
     )
 
@@ -137,15 +102,17 @@ def test_after_run(tmp_path: Path) -> None:
 
     after_run(
         temp_dir=tmp_dir,
-        output_path=output_path,
+        output_file=output_file,
         flow_name=flow_name,
         skip_mmd=False,
+        uploads_root=None,
     )
 
     tmp_dir.mkdir(parents=True, exist_ok=True)
     after_run(
         temp_dir=tmp_dir,
-        output_path=None,
+        output_file=None,
         flow_name=flow_name,
+        uploads_root=None,
         skip_mmd=True,
     )

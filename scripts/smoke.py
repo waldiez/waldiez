@@ -208,13 +208,13 @@ def convert_remote_examples() -> None:
         LOG.info("Converting %s to py...", example)
         exporter = WaldiezExporter.load(Path(example_path))
         output_py_path = example_path.replace(".waldiez", ".py")
-        exporter.export(output_py_path, True)
+        exporter.export(output_py_path, force=True)
         if not os.path.exists(output_py_path):
             raise ExporterError(f"Failed to convert {example} to py")
             # raise Exception(f"Failed to convert {example}")
         LOG.info("Converting %s to ipynb...", example)
         output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
-        exporter.export(output_ipynb_path, True)
+        exporter.export(output_ipynb_path, force=True)
         if not os.path.exists(output_ipynb_path):
             raise ExporterError(f"Failed to convert {example} to ipynb")
         move_to_dot_local(example_dir, example_path, exporter.waldiez.name)
@@ -327,7 +327,7 @@ def convert_local_example(example_path: str) -> None:
     """
     exporter = WaldiezExporter.load(Path(example_path))
     output_py_path = example_path.replace(".waldiez", ".py")
-    exporter.export(output_py_path, True)
+    exporter.export(output_py_path, force=True)
     if not os.path.exists(output_py_path):
         raise ExporterError(f"Failed to convert {example_path} to py")
     try:
@@ -337,7 +337,7 @@ def convert_local_example(example_path: str) -> None:
         LOG.error(_log)
         raise e
     output_ipynb_path = example_path.replace(".waldiez", ".ipynb")
-    exporter.export(output_ipynb_path, True)
+    exporter.export(output_ipynb_path, force=True)
     if not os.path.exists(output_ipynb_path):
         raise ExporterError(f"Failed to convert {example_path} to ipynb")
     try:

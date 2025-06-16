@@ -239,6 +239,22 @@ class ExportConfig:
 
     Attributes
     ----------
+    name : str
+        The name of the export.
+    description : str
+        A brief description of the export.
+    requirements : list[str]
+        A list of requirements for the export.
+    tags : list[str]
+        A list of tags associated with the export.
+    output_directory : Optional[str | Path]
+        The directory where the exported content will be saved.
+    uploads_root : Optional[str | Path]
+        The root directory for uploads, if applicable.
+    cache_seed : Optional[int]
+        The seed for caching, if applicable.
+    structured_io : bool
+        Whether the export should use structured I/O.
     output_extension : str
         The file extension for the exported content.
     is_async : bool
@@ -254,7 +270,9 @@ class ExportConfig:
     output_extension: str = "py"
     is_async: bool = False
     output_directory: Optional[str | Path] = None
+    uploads_root: Optional[Path] = None
     cache_seed: Optional[int] = None
+    structured_io: bool = False
 
     @property
     def for_notebook(self) -> bool:

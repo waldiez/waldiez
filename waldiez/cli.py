@@ -8,7 +8,7 @@
 import json
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 import anyio
 import typer
@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 from typing_extensions import Annotated
 
 from .exporter import WaldiezExporter
-from .io import StructuredIOStream
 from .logger import get_logger
 from .models import Waldiez
 from .runner import WaldiezRunner
@@ -112,12 +111,23 @@ def run(
         except json.decoder.JSONDecodeError as error:
             typer.echo("Invalid .waldiez file. Not a valid json?")
             raise typer.Exit(code=1) from error
-    _do_run(
-        data,
-        structured=structured,
-        uploads_root=uploads_root,
-        output_path=output_path,
-    )
+    waldiez = Waldiez.from_dict(data)
+    runner = WaldiezRunner(waldiez)
+    if waldiez.is_async:
+        anyio.run(
+            runner.a_run,
+            output_path,
+            uploads_root,
+            structured,
+            False,
+        )
+    else:
+        runner.run(
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured,
+            skip_mmd=False,
+        )
 
 
 @app.command()
@@ -201,42 +211,50 @@ def check(
     LOG.success("Waldiez flow seems valid.")
 
 
-def _do_run(
-    data: dict[str, Any],
-    structured: bool,
-    uploads_root: Optional[Path],
-    output_path: Optional[Path],
-) -> None:
-    """Run the Waldiez flow and get the results."""
-    waldiez = Waldiez.from_dict(data)
-    if structured:
-        stream = StructuredIOStream(uploads_root=uploads_root)
-        with StructuredIOStream.set_default(stream):
-            runner = WaldiezRunner(waldiez)
-            if waldiez.is_async:
-                anyio.run(
-                    runner.a_run,
-                    output_path,
-                    uploads_root,
-                )
-            else:
-                runner.run(
-                    output_path=output_path,
-                    uploads_root=uploads_root,
-                )
-    else:
-        runner = WaldiezRunner(waldiez)
-        if waldiez.is_async:
-            anyio.run(
-                runner.a_run,
-                output_path,
-                uploads_root,
-            )
-        else:
-            runner.run(
-                output_path=output_path,
-                uploads_root=uploads_root,
-            )
+# def _do_run(
+#     data: dict[str, Any],
+#     structured: bool,
+#     uploads_root: Optional[Path],
+#     output_path: Optional[Path],
+# ) -> None:
+#     """Run the Waldiez flow and get the results."""
+#     waldiez = Waldiez.from_dict(data)
+#     if structured:
+#         stream = StructuredIOStream(uploads_root=uploads_root)
+#         with StructuredIOStream.set_default(stream):
+#             runner = WaldiezRunner(waldiez)
+#             if waldiez.is_async:
+#                 anyio.run(
+#                     runner.a_run,
+#                     output_path,
+#                     uploads_root,
+#                     True,  # structured_io
+#                     False,  # skip_mmd
+#                 )
+#             else:
+#                 runner.run(
+#                     output_path=output_path,
+#                     uploads_root=uploads_root,
+#                     structured_io=True,
+#                     skip_mmd=False,
+#                 )
+#     else:
+#         runner = WaldiezRunner(waldiez)
+#         if waldiez.is_async:
+#             anyio.run(
+#                 runner.a_run,
+#                 output_path,
+#                 uploads_root,
+#                 False,  # structured_io
+#                 False,  # skip_mmd
+#             )
+#         else:
+#             runner.run(
+#                 output_path=output_path,
+#                 uploads_root=uploads_root,
+#                 structured_io=False,
+#                 skip_mmd=False,
+#             )
 
 
 def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:

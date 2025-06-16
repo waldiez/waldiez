@@ -65,6 +65,7 @@ def _export_flow(
         else create_flow_exporter(
             waldiez,
             output_dir=output_dir,
+            uploads_root=None,
             for_notebook=for_notebook,
             is_async=is_async,
         )

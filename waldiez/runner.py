@@ -1,96 +1,137 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=protected-access
 """Run a waldiez flow.
 
 The flow is first converted to an autogen flow with agents, chats, and tools.
-We then chown to temporary directory, call the flow's `main()` and
-return the results. Before running the flow, any additional environment
+We then chown to temporary directory and:
+    either import and call the flow's `main()` (if not isolated),
+    or run the flow in a subprocess (if isolated).
+Before running the flow, any additional environment
 variables specified in the waldiez file are set.
 """
 
-# pylint: disable=import-outside-toplevel,reimported
-
-import gc
-import importlib.util
-import sys
-import tempfile
 from pathlib import Path
-from types import ModuleType, TracebackType
-from typing import (
-    TYPE_CHECKING,
-    Optional,
-    Set,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Union
 
-from .exporter import WaldiezExporter
-from .io import StructuredIOStream
 from .models.waldiez import Waldiez
 from .running import (
-    a_chdir,
-    a_install_requirements,
-    after_run,
-    before_run,
-    chdir,
-    install_requirements,
-    refresh_environment,
-    reset_env_vars,
-    set_env_vars,
+    WaldiezBaseRunner,
+    WaldiezImportRunner,
+    WaldiezSubprocessRunner,
 )
 
 if TYPE_CHECKING:
     from autogen import ChatResult  # type: ignore
 
 
-class WaldiezRunner:
+class WaldiezRunner(WaldiezBaseRunner):
     """Waldiez runner class."""
 
+    _implementation: WaldiezBaseRunner
+
     def __init__(
-        self, waldiez: Waldiez, file_path: Optional[Union[str, Path]] = None
+        self,
+        waldiez: Waldiez,
+        output_path: str | Path | None = None,
+        uploads_root: str | Path | None = None,
+        structured_io: bool = False,
+        isolated: bool = False,
     ) -> None:
-        """Initialize the Waldiez manager."""
-        self._waldiez = waldiez
-        self._running = False
-        self._file_path = file_path
-        self._exporter = WaldiezExporter(waldiez)
-        self._called_install_requirements = False
+        """Create a new Waldiez runner.
+
+        Parameters
+        ----------
+        waldiez : Waldiez
+            The waldiez flow to run.
+        output_path : str | Path | None, optional
+            The path to the output directory where the results will be stored.
+            If None, a temporary directory will be used.
+        uploads_root : str | Path | None, optional
+            The root directory for uploads. If None, the default uploads
+            directory will be used.
+        structured_io : bool, optional
+            If True, the flow will use
+            structured IO instead of the default 'input/print'.
+        isolated : bool, optional
+            If True, the flow will be run in an isolated subprocess.
+            Defaults to False.
+
+        Returns
+        -------
+        WaldiezBaseRunner
+            The runner instance that will execute the flow.
+        """
+        super().__init__(
+            waldiez,
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            isolated=isolated,
+        )
+        if isolated:
+            self._implementation = WaldiezSubprocessRunner(
+                waldiez,
+                output_path=output_path,
+                uploads_root=uploads_root,
+                structured_io=structured_io,
+                isolated=True,
+            )
+        else:
+            self._implementation = WaldiezImportRunner(
+                waldiez,
+                output_path=output_path,
+                uploads_root=uploads_root,
+                structured_io=structured_io,
+                isolated=False,
+            )
 
     @classmethod
     def load(
         cls,
-        waldiez_file: Union[str, Path],
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        requirements: Optional[list[str]] = None,
+        waldiez_file: str | Path,
+        name: str | None = None,
+        description: str | None = None,
+        tags: list[str] | None = None,
+        requirements: list[str] | None = None,
+        output_path: str | Path | None = None,
+        uploads_root: str | Path | None = None,
+        structured_io: bool = False,
+        isolated: bool = False,
     ) -> "WaldiezRunner":
-        """Create a WaldiezRunner instance from a file.
+        """Load a waldiez flow from a file and create a runner.
 
         Parameters
         ----------
-        waldiez_file : Union[str, Path]
-            The file path.
-        name : Optional[str], optional
-            The name of the Waldiez, by default None.
-        description : Optional[str], optional
-            The description of the Waldiez, by default None.
-        tags : Optional[list[str]], optional
-            The tags of the Waldiez, by default None.
-        requirements : Optional[list[str]], optional
-            The requirements of the Waldiez, by default None.
+        waldiez_file : str | Path
+            The path to the waldiez file.
+        name : str | None, optional
+            The name of the flow.
+            If None, the name from the waldiez file will be used.
+        description : str | None, optional
+            The description of the flow.
+            If None, the description from the waldiez file will be used.
+        tags : list[str] | None, optional
+            The tags for the flow. If None, no tags will be set.
+        requirements : list[str] | None, optional
+            The requirements for the flow. If None, no requirements will be set.
+        output_path : str | Path | None, optional
+            The path to the output directory where the results will be stored.
+            If None, a temporary directory will be used.
+        uploads_root : str | Path | None, optional
+            The root directory for uploads. If None, the default uploads
+            directory will be used.
+        structured_io : bool, optional
+            If True, the flow will use
+            structured IO instead of the default 'input/print'.
+        isolated : bool, optional
+            If True, the flow will be run in an isolated subprocess.
+            Defaults to False.
 
         Returns
         -------
-        WaldiezRunner
-            The Waldiez runner instance.
-
-        Raises
-        ------
-        FileNotFoundError
-            If the file is not found.
-        RuntimeError
-            If the file is not a valid Waldiez file.
+        WaldiezBaseRunner
+            The runner instance that will execute the flow.
         """
         waldiez = Waldiez.load(
             waldiez_file,
@@ -99,317 +140,341 @@ class WaldiezRunner:
             tags=tags,
             requirements=requirements,
         )
-        return cls(waldiez, file_path=waldiez_file)
-
-    def __enter__(
-        self,
-    ) -> "WaldiezRunner":
-        """Enter the context manager."""
-        return self
-
-    async def __aenter__(
-        self,
-    ) -> "WaldiezRunner":
-        """Enter the context manager asynchronously."""
-        return self
-
-    def __exit__(
-        self,
-        exc_type: Type[BaseException],
-        exc_value: BaseException,
-        traceback: TracebackType,
-    ) -> None:
-        """Exit the context manager."""
-        if self._running:
-            self._running = False
-
-    async def __aexit__(
-        self,
-        exc_type: Type[BaseException],
-        exc_value: BaseException,
-        traceback: TracebackType,
-    ) -> None:
-        """Exit the context manager asynchronously."""
-        if self._running:
-            self._running = False
-
-    @property
-    def waldiez(self) -> Waldiez:
-        """Get the Waldiez instance."""
-        return self._waldiez
-
-    @property
-    def is_async(self) -> bool:
-        """Check if the workflow is async."""
-        return self.waldiez.is_async
-
-    @property
-    def running(self) -> bool:
-        """Get the running status."""
-        return self._running
-
-    def gather_requirements(self) -> Set[str]:
-        """Gather extra requirements to install before running the flow.
-
-        Returns
-        -------
-        Set[str]
-            The extra requirements.
-        """
-        extra_requirements = {
-            req for req in self.waldiez.requirements if req not in sys.modules
-        }
-        return extra_requirements
-
-    def install_requirements(self) -> None:
-        """Install the requirements for the flow."""
-        self._called_install_requirements = True
-        extra_requirements = self.gather_requirements()
-        if extra_requirements:
-            install_requirements(extra_requirements)
-
-    async def a_install_requirements(self) -> None:
-        """Install the requirements for the flow asynchronously."""
-        self._called_install_requirements = True
-        extra_requirements = self.gather_requirements()
-        if extra_requirements:
-            await a_install_requirements(extra_requirements)
+        return cls(
+            waldiez,
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            isolated=isolated,
+        )
 
     def _before_run(
         self,
-        temp_dir: Path,
-        file_name: str,
-        module_name: str,
-    ) -> tuple[ModuleType, dict[str, str]]:
-        self._exporter.export(Path(file_name))
-        # unique_names = self._exporter.context.get_unique_names()
-        spec = importlib.util.spec_from_file_location(
-            module_name, temp_dir / file_name
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+    ) -> Path:
+        """Actions to perform before running the flow.
+
+        Parameters
+        ----------
+        output_file : Path
+            The output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        """
+        return self._implementation._before_run(
+            output_file, uploads_root, structured_io
         )
-        if not spec or not spec.loader:
-            raise ImportError("Could not import the flow")
-        sys.path.insert(0, str(temp_dir))
-        old_vars = set_env_vars(self.waldiez.get_flow_env_vars())
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        print("<Waldiez> - Starting workflow...")
-        print(self.waldiez.info.model_dump_json())
-        return module, old_vars
+
+    async def _a_before_run(
+        self,
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+    ) -> Path:
+        """Asynchronously perform actions before running the flow.
+
+        Parameters
+        ----------
+        output_file : str | Path
+            The output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+
+        Returns
+        -------
+        Path
+            The path to the temporary directory created for the run.
+        """
+        return await self._implementation._a_before_run(
+            output_file, uploads_root, structured_io
+        )
 
     def _run(
         self,
-        output_path: Optional[Union[str, Path]],
-        uploads_root: Optional[Union[str, Path]],
-        use_structured_io: bool = False,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool = False,
         skip_mmd: bool = False,
-    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
-        """Run the Waldiez workflow.
+    ) -> Union[
+        "ChatResult",
+        list["ChatResult"],
+        dict[int, "ChatResult"],
+    ]:
+        """Run the flow.
 
         Parameters
         ----------
-        output_path : Optional[Union[str, Path]]
-            The output path.
-        uploads_root : Optional[Union[str, Path]]
+        temp_dir : Path
+            The path to the temporary directory created for the run.
+        output_file : Path
+            The output file.
+        uploads_root : Path | None
             The runtime uploads root.
-        use_structured_io : bool
+        structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
-            Whether to skip the Mermaid diagram generation.
+            Whether to skip generating the mermaid diagram.
 
         Returns
         -------
-        Union[ChatResult, list[ChatResult]]
-            The result(s) of the chat(s).
+        ChatResult | list[ChatResult] | dict[int, ChatResult]
+            The result of the run, which can be a single ChatResult,
+            a list of ChatResults,
+            or a dictionary mapping indices to ChatResults.
         """
-        temp_dir = Path(tempfile.mkdtemp())
-        file_name = before_run(output_path, uploads_root)
-        module_name = file_name.replace(".py", "")
-        if not self._called_install_requirements:
-            self.install_requirements()
-        refresh_environment()
-        print(
-            "Requirements installed.\n"
-            "NOTE: If new packages were added and you are using Jupyter, "
-            "you might need to restart the kernel."
-        )
-        results: Union[
-            "ChatResult", list["ChatResult"], dict[int, "ChatResult"]
-        ] = []
-        with chdir(to=temp_dir):
-            module, old_vars = self._before_run(
-                temp_dir=temp_dir,
-                file_name=file_name,
-                module_name=module_name,
-            )
-            if use_structured_io:
-                stream = StructuredIOStream(
-                    timeout=120,  # 2 minutes
-                    uploads_root=uploads_root,
-                )
-                with StructuredIOStream.set_default(stream):
-                    results = module.main()
-            else:
-                results = module.main()
-            print("<Waldiez> - Workflow finished")
-            sys.path.pop(0)
-            reset_env_vars(old_vars)
-        after_run(
+        return self._implementation._run(
             temp_dir=temp_dir,
-            output_path=output_path,
-            flow_name=self.waldiez.name,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
             skip_mmd=skip_mmd,
         )
-        gc.collect()
-        refresh_environment()
-        return results
 
     async def _a_run(
         self,
-        output_path: Optional[Union[str, Path]],
-        uploads_root: Optional[Union[str, Path]],
-        use_structured_io: bool = False,
-        skip_mmd: bool = False,
-    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
-        """Run the Waldiez workflow asynchronously."""
-        temp_dir = Path(tempfile.mkdtemp())
-        file_name = before_run(output_path, uploads_root)
-        module_name = file_name.replace(".py", "")
-        if not self._called_install_requirements:
-            await self.a_install_requirements()
-        refresh_environment()
-        print(
-            "Requirements installed.\n"
-            "NOTE: If new packages were added and you are using Jupyter, "
-            "you might need to restart the kernel."
-        )
-        results: Union[
-            "ChatResult", list["ChatResult"], dict[int, "ChatResult"]
-        ] = []
-        async with a_chdir(to=temp_dir):
-            module, old_vars = self._before_run(
-                temp_dir=temp_dir,
-                file_name=file_name,
-                module_name=module_name,
-            )
-            if use_structured_io:
-                stream = StructuredIOStream(
-                    timeout=120,  # 2 minutes
-                    uploads_root=uploads_root,
-                )
-                with StructuredIOStream.set_default(stream):
-                    results = await module.main()
-            else:
-                results = await module.main()
-            sys.path.pop(0)
-            reset_env_vars(old_vars)
-        after_run(
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+        skip_mmd: bool,
+    ) -> Union[
+        "ChatResult",
+        list["ChatResult"],
+        dict[int, "ChatResult"],
+    ]:  # pyright: ignore
+        """Asynchronously run the flow.
+
+        Parameters
+        ----------
+        temp_dir : Path
+            The path to the temporary directory created for the run.
+        output_file : Path
+            The output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+
+        Returns
+        -------
+        Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
+            The result of the run, which can be a single ChatResult,
+            a list of ChatResults,
+            or a dictionary mapping indices to ChatResults.
+        """
+        return await self._implementation._a_run(
             temp_dir=temp_dir,
-            output_path=output_path,
-            flow_name=self.waldiez.name,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
             skip_mmd=skip_mmd,
         )
-        gc.collect()
-        refresh_environment()
-        return results
 
-    def run(
+    def _after_run(
         self,
-        output_path: Optional[Union[str, Path]] = None,
-        uploads_root: Optional[Union[str, Path]] = None,
-        use_structured_io: bool = False,
-        skip_mmd: bool = False,
-    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
-        """Run the Waldiez workflow.
+        results: Union[
+            "ChatResult",
+            list["ChatResult"],
+            dict[int, "ChatResult"],
+        ],
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+        temp_dir: Path,
+        skip_mmd: bool,
+    ) -> None:
+        """Actions to perform after running the flow.
 
         Parameters
         ----------
-        output_path : Optional[Union[str, Path]], optional
-            The output path, by default None.
-        uploads_root : Optional[Union[str, Path]], optional
-            The uploads root, to get user-uploaded files, by default None.
-        use_structured_io : bool, optional
-            Whether to use structured IO instead of the default 'input/print',
-            by default False.
-        skip_mmd : bool, optional
-            Whether to skip the Mermaid diagram generation, by default False.
-
-        Returns
-        -------
-        Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]
-            The result(s) of the chat(s).
-
-        Raises
-        ------
-        RuntimeError
-            If the workflow is already running.
+        results : Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
+            The results of the run, which can be a single ChatResult,
+            a list of ChatResults,
+            or a dictionary mapping indices to ChatResults.
+        output_file : Path
+            The path to the output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        temp_dir : Path
+            The path to the temporary directory created for the run.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
         """
-        if self.waldiez.is_async:
-            # pylint: disable=import-outside-toplevel
-            from anyio.from_thread import start_blocking_portal
+        self._implementation._after_run(
+            results,
+            output_file,
+            uploads_root,
+            structured_io,
+            temp_dir,
+            skip_mmd,
+        )
 
-            with start_blocking_portal(backend="asyncio") as portal:
-                return portal.call(
-                    self._a_run,
-                    output_path,
-                    uploads_root,
-                    use_structured_io,
-                    skip_mmd,
-                )
-        if self._running is True:
-            raise RuntimeError("Workflow already running")
-        self._running = True
-        file_path = output_path or self._file_path
-        try:
-            return self._run(
-                file_path,
-                uploads_root=uploads_root,
-                use_structured_io=use_structured_io,
-                skip_mmd=skip_mmd,
-            )
-        finally:
-            self._running = False
-
-    async def a_run(
+    async def _a_after_run(
         self,
-        output_path: Optional[Union[str, Path]] = None,
-        uploads_root: Optional[Union[str, Path]] = None,
-        use_structured_io: bool = False,
-        skip_mmd: bool = False,
-    ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
-        """Run the Waldiez workflow asynchronously.
+        results: Union[
+            "ChatResult",
+            list["ChatResult"],
+            dict[int, "ChatResult"],
+        ],
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+        temp_dir: Path,
+        skip_mmd: bool,
+    ) -> None:
+        """Asynchronously perform actions after running the flow.
 
         Parameters
         ----------
-        output_path : Optional[Union[str, Path]], optional
-            The output path, by default None.
-        uploads_root : Optional[Union[str, Path]], optional
-            The uploads root, to get user-uploaded files, by default None.
-        use_structured_io : bool, optional
-            Whether to use structured IO instead of the default 'input/print',
-            by default False.
-        skip_mmd : bool, optional
-            Whether to skip the Mermaid diagram generation, by default False.
-
-        Returns
-        -------
-        Union[ChatResult, list[ChatResult]], dict[int, ChatResult]
-            The result(s) of the chat(s).
-
-        Raises
-        ------
-        RuntimeError
-            If the workflow is already running.
+        output_file : Path
+            The path to the output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        temp_dir : Path
+            The path to the temporary directory created for the run.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
         """
-        if self._running is True:
-            raise RuntimeError("Workflow already running")
-        self._running = True
-        file_path = output_path or self._file_path
-        try:
-            return await self._a_run(
-                file_path,
-                uploads_root=uploads_root,
-                use_structured_io=use_structured_io,
-                skip_mmd=skip_mmd,
-            )
-        finally:
-            self._running = False
+        await self._implementation._a_after_run(
+            results,
+            output_file,
+            uploads_root,
+            structured_io,
+            temp_dir,
+            skip_mmd,
+        )
+
+    def start(
+        self,
+        output_path: str | Path | None,
+        uploads_root: str | Path | None,
+        structured_io: bool,
+        skip_mmd: bool,
+    ) -> None:
+        """Start the flow.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            The output path, by default None.
+        uploads_root : str | Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+        """
+        self._implementation.start(
+            output_path, uploads_root, structured_io, skip_mmd
+        )
+
+    def _start(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+        skip_mmd: bool,
+    ) -> None:
+        """Start the flow.
+
+        Parameters
+        ----------
+        output_file : Path
+            The output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+        """
+        self._implementation._start(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            skip_mmd=skip_mmd,
+        )
+
+    async def a_start(
+        self,
+        output_path: str | Path | None,
+        uploads_root: str | Path | None,
+        structured_io: bool,
+        skip_mmd: bool,
+    ) -> None:
+        """Asynchronously start the flow.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            The output path, by default None.
+        uploads_root : str | Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+        """
+        await self._implementation.a_start(
+            output_path, uploads_root, structured_io, skip_mmd
+        )
+
+    async def _a_start(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        structured_io: bool,
+        skip_mmd: bool,
+    ) -> None:
+        """Asynchronously start the flow.
+
+        Parameters
+        ----------
+        temp_dir : Path
+            The path to the temporary directory created for the run.
+        output_file : Path
+            The output file.
+        uploads_root : Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+        """
+        await self._implementation._a_start(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            skip_mmd=skip_mmd,
+        )
+
+    def _stop(self) -> None:
+        """Actions to perform when stopping the flow.
+
+        This method should be overridden in subclasses if needed.
+        """
+        self._implementation._stop()
+
+    async def _a_stop(self) -> None:
+        """Asynchronously perform actions when stopping the flow.
+
+        This method should be overridden in subclasses if needed.
+        """
+        await self._implementation._a_stop()

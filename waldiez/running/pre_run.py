@@ -7,54 +7,10 @@ import io
 import os
 import subprocess
 import sys
-import tempfile
-from pathlib import Path
-from typing import Callable, Optional, Union
+from typing import Callable
 
 from .environment import in_virtualenv, is_root
-from .util import strip_ansi
-
-
-def before_run(
-    output_path: Optional[Union[str, Path]],
-    uploads_root: Optional[Union[str, Path]],
-) -> str:
-    """Actions to perform before running the flow.
-
-    Parameters
-    ----------
-    output_path : Optional[Union[str, Path]]
-        The output path.
-    uploads_root : Optional[Union[str, Path]]
-        The runtime uploads root.
-
-    Returns
-    -------
-    str
-        The file name.
-    """
-    if not uploads_root:
-        uploads_root = Path(tempfile.mkdtemp())
-    else:
-        uploads_root = Path(uploads_root)
-    if not uploads_root.exists():
-        uploads_root.mkdir(parents=True)
-    output_dir = Path.cwd()
-    if output_path and isinstance(output_path, str):
-        output_path = Path(output_path)
-    if output_path:
-        if output_path.is_dir():
-            output_dir = output_path
-        else:
-            output_dir = output_path.parent if output_path else Path.cwd()
-    if not output_dir.exists():
-        output_dir.mkdir(parents=True, exist_ok=True)
-    file_name = Path(output_path).name if output_path else "waldiez_flow.py"
-    if file_name.endswith((".json", ".waldiez")):
-        file_name = file_name.replace(".json", ".py").replace(".waldiez", ".py")
-    if not file_name.endswith(".py"):
-        file_name += ".py"
-    return file_name
+from .utils import strip_ansi
 
 
 def install_requirements(

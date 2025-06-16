@@ -20,6 +20,7 @@ from .exporter import FlowExporter
 def create_flow_exporter(
     waldiez: Waldiez,
     output_dir: Path | None,
+    uploads_root: Path | None,
     for_notebook: bool,
     context: Optional[ExporterContext] = None,
     **kwargs: Any,
@@ -32,6 +33,8 @@ def create_flow_exporter(
         The Waldiez instance containing the flow data.
     output_dir : Path
         The directory where the exported flow will be saved.
+    uploads_root : Path
+        The root directory for uploads, if applicable.
     for_notebook : bool
         Whether the export is intended for a notebook environment.
     context : Optional[ExporterContext], optional
@@ -44,6 +47,7 @@ def create_flow_exporter(
     ChatsExporter
         The created chats exporter.
     """
+    structured_io = kwargs.pop("structured_io", False)
     if context is None:
         config = ExportConfig(
             name=waldiez.name,
@@ -53,7 +57,9 @@ def create_flow_exporter(
             output_extension="ipynb" if for_notebook else "py",
             is_async=waldiez.is_async,
             output_directory=output_dir,
+            uploads_root=uploads_root,
             cache_seed=waldiez.cache_seed,
+            structured_io=structured_io,
         )
         context = ExporterContext(
             config=config,
@@ -71,7 +77,9 @@ def create_flow_exporter(
                 output_extension="ipynb" if for_notebook else "py",
                 is_async=waldiez.is_async,
                 output_directory=output_dir,
+                uploads_root=uploads_root,
                 cache_seed=waldiez.cache_seed,
+                structured_io=structured_io,
             )
         else:
             context.config.update(
@@ -82,13 +90,17 @@ def create_flow_exporter(
                 output_extension="ipynb" if for_notebook else "py",
                 is_async=waldiez.is_async,
                 output_directory=output_dir,
+                uploads_root=uploads_root,
                 cache_seed=waldiez.cache_seed,
+                structured_io=structured_io,
             )
 
     return FlowExporter(
         waldiez=waldiez,
         output_dir=output_dir,
+        uploads_root=uploads_root,
         for_notebook=for_notebook,
+        structured_io=structured_io,
         context=context,
         **kwargs,
     )
