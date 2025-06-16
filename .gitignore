@@ -29,6 +29,7 @@ dmypy.json
 .coverage
 **/*.coverage*
 **/*_db
+**/*.db
 **/*cache
 **/*.log
 **/*.pid
