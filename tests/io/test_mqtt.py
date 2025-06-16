@@ -196,7 +196,7 @@ def test_connection_failure() -> None:
             ConnectionError,
             match="Failed to connect to MQTT broker within timeout",
         ):
-            MqttIOStream(broker_host="localhost")
+            MqttIOStream(broker_host="localhost", connect_timeout=1)
 
 
 def test_context_manager(mock_mqtt: Mock) -> None:

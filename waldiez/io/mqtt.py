@@ -82,6 +82,7 @@ class MqttIOStream(IOStream):
         broker_port: int = 1883,
         task_id: str | None = None,
         input_timeout: int = 120,
+        connect_timeout: int = 10,
         max_retain_messages: int = 1000,
         on_input_request: Optional[Callable[[str, str, str], None]] = None,
         on_input_response: Optional[Callable[[str, str], None]] = None,
@@ -104,6 +105,8 @@ class MqttIOStream(IOStream):
             An ID to use for the topics. If not provided, a random UUID will be generated.
         input_timeout : int, optional
             The time to wait for user input in seconds, by default 120.
+        connect_timeout : int, optional
+            The time to wait for MQTT connection in seconds, by default 10.
         on_input_request : Optional[Callable[[str, str, str], None]], optional
             Callback for input request, by default None
             parameters: prompt, request_id, task_id
@@ -129,6 +132,7 @@ class MqttIOStream(IOStream):
         self.broker_port = broker_port
         self.task_id = task_id or uuid.uuid4().hex
         self.input_timeout = input_timeout
+        self.connect_timeout = connect_timeout
         self.on_input_request = on_input_request
         self.on_input_response = on_input_response
         self.max_retain_messages = max_retain_messages
@@ -191,7 +195,7 @@ class MqttIOStream(IOStream):
             self.client.loop_start()
 
             # Wait for connection
-            timeout = 10  # seconds
+            timeout = self.connect_timeout  # seconds
             start_time = time.time()
             while (
                 not self.client.is_connected()
