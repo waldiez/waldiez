@@ -97,10 +97,14 @@ def start_logging() -> None:
 start_logging()
 
 # patch the default IOStream
-# pylint: disable=import-outside-toplevel
-from waldiez.running.patch_io_stream import patch_io_stream
+try:
+    # pylint: disable=import-outside-toplevel
+    from waldiez.running.patch_io_stream import patch_io_stream
 
-patch_io_stream(is_async=False)
+    patch_io_stream(is_async=False)
+except BaseException:  # pylint: disable=broad-exception-caught
+    # allow running the flow without patching the IOStream
+    pass
 # Load model API keys
 # NOTE:
 # This section assumes that a file named "standup_comedians_1_api_keys"
