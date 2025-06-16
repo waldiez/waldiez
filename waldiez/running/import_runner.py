@@ -52,8 +52,8 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         self._execution_loop: asyncio.AbstractEventLoop | None = None
         self._loaded_module: ModuleType | None = None
 
-    # pylint: disable=too-many-statements
-    def _run(
+    # pylint: disable=too-many-statements,too-complex
+    def _run(  # noqa: C901
         self,
         temp_dir: Path,
         output_file: Path,
@@ -66,13 +66,15 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         dict[int, "ChatResult"],
     ]:
         """Run the Waldiez workflow."""
-        result_container: WaldiezRunResults = {
+        results_container: WaldiezRunResults = {
             "results": None,
             "exception": None,
+            "completed": False,
         }
 
         def _execute_workflow() -> None:
-            patch_io_stream(self.waldiez.is_async)
+            if not structured_io:
+                patch_io_stream(self.waldiez.is_async)
             printer: Callable[..., None] = print
             try:
                 file_name = output_file.name
@@ -102,15 +104,16 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                     printer("<Waldiez> - Starting workflow...")
                     printer(self.waldiez.info.model_dump_json())
                     results = self._loaded_module.main()
-                result_container["results"] = results
+                results_container["results"] = results
                 printer("<Waldiez> - Workflow finished")
             except SystemExit:
                 printer("<Waldiez> - Workflow stopped by user")
-                result_container["results"] = []
+                results_container["results"] = []
             except Exception as e:  # pylint: disable=broad-exception-caught
-                result_container["exception"] = e
+                results_container["exception"] = e
                 printer("<Waldiez> - Workflow execution failed: %s", e)
             finally:
+                results_container["completed"] = True
                 self._execution_loop = None
                 self._execution_thread = None
 
@@ -130,15 +133,17 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 if self._execution_thread.is_alive():
                     self.log.warning("Workflow did not stop gracefully")
                 break
+            if results_container["completed"] is True:
+                break
             time.sleep(0.1)
 
         # Handle results
-        exception = result_container["exception"]
+        exception = results_container["exception"]
         if exception is not None:
             self._last_exception = exception
             raise exception
 
-        self._last_results = result_container["results"] or []
+        self._last_results = results_container["results"] or []
         return self._last_results
 
     async def _a_run(

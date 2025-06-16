@@ -19,3 +19,4 @@ class WaldiezRunResults(TypedDict):
         None,
     ]
     exception: Exception | None
+    completed: bool
