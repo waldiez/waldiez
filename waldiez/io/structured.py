@@ -101,7 +101,11 @@ class StructuredIOStream(IOStream):
             The line read from the input stream.
         """
         request_id = uuid4().hex
-        prompt = prompt or "> "
+        prompt = prompt or ">"
+        if not prompt or prompt in [">", "> "]:
+            # if the prompt is just ">" or "> ",
+            # let's use a more descriptive one
+            prompt = "Enter your message to start the conversation: "
 
         self._send_input_request(prompt, request_id, password)
         user_input_raw = self._read_user_input(prompt, password, request_id)
