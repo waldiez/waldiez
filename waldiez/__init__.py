@@ -5,7 +5,7 @@
 from .exporter import WaldiezExporter
 from .models import Waldiez
 from .runner import WaldiezRunner
-from .utils import check_conflicts, check_flaml_warnings
+from .utils import check_conflicts
 
 # flake8: noqa: F401
 # pylint: disable=import-error,line-too-long
@@ -28,7 +28,6 @@ __waldiez_initialized = False
 if not __waldiez_initialized:
     __waldiez_initialized = True
     check_conflicts()
-    check_flaml_warnings()
 
 __all__ = [
     "Waldiez",

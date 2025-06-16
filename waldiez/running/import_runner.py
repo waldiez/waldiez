@@ -18,17 +18,16 @@ import threading
 import time
 from pathlib import Path
 from types import ModuleType
-from typing import Callable, Union
+from typing import TYPE_CHECKING, Callable, Union
 
-from autogen import ChatResult  # type: ignore[import-untyped]
-from autogen.io import IOStream  # type: ignore
-
-from waldiez.io import StructuredIOStream
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.patch_io_stream import patch_io_stream
 
 from .base_runner import WaldiezBaseRunner
 from .run_results import WaldiezRunResults
+
+if TYPE_CHECKING:
+    from autogen import ChatResult  # type: ignore
 
 
 class WaldiezImportRunner(WaldiezBaseRunner):
@@ -66,7 +65,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         skip_mmd: bool,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow."""
-        if self._threaded:
+        if self.threaded:
             return self._run_threaded(
                 temp_dir=temp_dir,
                 output_file=output_file,
@@ -93,12 +92,16 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         dict[int, "ChatResult"],
     ]:
         """Run the Waldiez workflow in a blocking manner."""
+        from autogen.io import IOStream  # type: ignore
+
+        from waldiez.io import StructuredIOStream
+
         results_container: WaldiezRunResults = {
             "results": None,
             "exception": None,
             "completed": False,
         }
-        if not self._structured_io and not self._skip_patch_io:
+        if not self.structured_io and not self.skip_patch_io:
             patch_io_stream(self.waldiez.is_async)
         printer: Callable[..., None] = print
         try:
@@ -109,7 +112,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             )
             if not spec or not spec.loader:
                 raise ImportError("Could not import the flow")
-            if self._structured_io:
+            if self.structured_io:
                 stream = StructuredIOStream(
                     uploads_root=uploads_root, is_async=False
                 )
@@ -159,7 +162,12 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         }
 
         def _execute_workflow() -> None:
-            if not self._structured_io and not self._skip_patch_io:
+            """Execute the workflow in a separate thread."""
+            from autogen.io import IOStream  # pyright: ignore
+
+            from waldiez.io import StructuredIOStream
+
+            if not self.structured_io and not self.skip_patch_io:
                 patch_io_stream(self.waldiez.is_async)
             printer: Callable[..., None] = print
             try:
@@ -170,7 +178,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 )
                 if not spec or not spec.loader:
                     raise ImportError("Could not import the flow")
-                if self._structured_io:
+                if self.structured_io:
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=False
                     )
@@ -251,8 +259,12 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             dict[int, "ChatResult"],
         ]:
             """Execute the workflow in an async context."""
+            from autogen.io import IOStream  # pyright: ignore
+
+            from waldiez.io import StructuredIOStream
+
             printer: Callable[..., None] = print
-            if not self._structured_io and not self._skip_patch_io:
+            if not self.structured_io and not self.skip_patch_io:
                 patch_io_stream(self.waldiez.is_async)
             try:
                 file_name = output_file.name
@@ -262,7 +274,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 )
                 if not spec or not spec.loader:
                     raise ImportError("Could not import the flow")
-                if self._structured_io:
+                if self.structured_io:
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=True
                     )

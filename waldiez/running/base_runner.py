@@ -53,6 +53,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         - _a_stop: Async actions to perform when stopping the flow.
     """
 
+    _threaded: bool
+    _structured_io: bool
+    _isolated: bool
+    _output_path: str | Path | None
+    _uploads_root: str | Path | None
+    _skip_patch_io: bool
+    _running: bool
+
     def __init__(
         self,
         waldiez: Waldiez,
@@ -65,13 +73,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     ) -> None:
         """Initialize the Waldiez manager."""
         self._waldiez = waldiez
-        self._running = False
-        self._structured_io = structured_io
-        self._isolated = isolated
-        self._output_path = output_path
-        self._uploads_root = uploads_root
-        self._threaded = threaded
-        self._skip_patch_io = skip_patch_io
+        WaldiezBaseRunner._running = False
+        WaldiezBaseRunner._structured_io = structured_io
+        WaldiezBaseRunner._isolated = isolated
+        WaldiezBaseRunner._output_path = output_path
+        WaldiezBaseRunner._uploads_root = uploads_root
+        WaldiezBaseRunner._threaded = threaded
+        WaldiezBaseRunner._skip_patch_io = skip_patch_io
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
@@ -91,7 +99,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         bool
             True if the workflow is running, False otherwise.
         """
-        return self._running
+        return WaldiezBaseRunner._running
 
     # ===================================================================
     # PRIVATE METHODS TO OVERRIDE IN SUBCLASSES
@@ -111,8 +119,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                 force=True,
                 uploads_root=uploads_root,
                 # if not isolated, we use structured IO in a context manager
-                structured_io=self._structured_io and self._isolated,
-                skip_patch_io=self._skip_patch_io,
+                structured_io=WaldiezBaseRunner._structured_io
+                and WaldiezBaseRunner._isolated,
+                skip_patch_io=WaldiezBaseRunner._skip_patch_io,
             )
         return temp_dir
 
@@ -128,7 +137,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             self._exporter.export(
                 path=file_name,
                 uploads_root=uploads_root,
-                structured_io=self._structured_io,
+                structured_io=self.structured_io,
                 force=True,
             )
         return temp_dir
@@ -266,9 +275,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     # ===================================================================
     # HELPER METHODS
     # ===================================================================
-
+    @staticmethod
     def _prepare_paths(
-        self,
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
     ) -> tuple[Path, Path | None]:
@@ -276,14 +284,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root_path: Path | None = None
         if uploads_root is not None:
             uploads_root_path = Path(uploads_root)
-            self._uploads_root = uploads_root_path
+            WaldiezBaseRunner._uploads_root = uploads_root_path
 
         if output_path is not None:
             output_path = Path(output_path)
-            self._output_path = output_path
-        if not self._output_path:
-            self._output_path = Path.cwd() / "waldiez_flow.py"
-        output_file: Path = Path(self._output_path)
+            WaldiezBaseRunner._output_path = output_path
+        if not WaldiezBaseRunner._output_path:
+            WaldiezBaseRunner._output_path = Path.cwd() / "waldiez_flow.py"
+        output_file: Path = Path(WaldiezBaseRunner._output_path)
         return output_file, uploads_root_path
 
     def gather_requirements(self) -> set[str]:
@@ -417,11 +425,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             If the runner is already running.
         """
         if skip_patch_io is not None:
-            self._skip_patch_io = skip_patch_io
+            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
-            self._structured_io = structured_io
+            WaldiezBaseRunner._structured_io = structured_io
         if threaded is not None:
-            self._threaded = threaded
+            WaldiezBaseRunner._threaded = threaded
         if self.is_running():
             raise RuntimeError("Workflow already running")
         if self.waldiez.is_async:
@@ -444,7 +452,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         )
         self.install_requirements()
         refresh_environment()
-        self._running = True
+        WaldiezBaseRunner._running = True
         results: Union[
             "ChatResult",
             list["ChatResult"],
@@ -461,7 +469,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                     skip_mmd=skip_mmd,
                 )
         finally:
-            self._running = False
+            WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
         self.after_run(
             results=results,
@@ -515,9 +523,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             If the runner is already running.
         """
         if skip_patch_io is not None:
-            self._skip_patch_io = skip_patch_io
+            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
-            self._structured_io = structured_io
+            WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
         output_file, uploads_root_path = self._prepare_paths(
@@ -530,7 +538,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         )
         await self.a_install_requirements()
         refresh_environment()
-        self._running = True
+        WaldiezBaseRunner._running = True
         results: Union[
             "ChatResult",
             list["ChatResult"],
@@ -546,7 +554,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                     skip_mmd=skip_mmd,
                 )
         finally:
-            self._running = False
+            WaldiezBaseRunner._running = False
         await self._a_after_run(
             results=results,
             output_file=output_file,
@@ -587,9 +595,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             If the runner is already running.
         """
         if skip_patch_io is not None:
-            self._skip_patch_io = skip_patch_io
+            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
-            self._structured_io = structured_io
+            WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
         output_file, uploads_root_path = self._prepare_paths(
@@ -602,7 +610,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         )
         self.install_requirements()
         refresh_environment()
-        self._running = True
+        WaldiezBaseRunner._running = True
         self._start(
             temp_dir=temp_dir,
             output_file=output_file,
@@ -639,9 +647,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             If the runner is already running.
         """
         if skip_patch_io is not None:
-            self._skip_patch_io = skip_patch_io
+            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
-            self._structured_io = structured_io
+            WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
         output_file, uploads_root_path = self._prepare_paths(
@@ -654,7 +662,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         )
         await self.a_install_requirements()
         refresh_environment()
-        self._running = True
+        WaldiezBaseRunner._running = True
         await self._a_start(
             temp_dir=temp_dir,
             output_file=output_file,
@@ -739,7 +747,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         try:
             self._stop()
         finally:
-            self._running = False
+            WaldiezBaseRunner._running = False
 
     async def a_stop(self) -> None:
         """Asynchronously stop the runner if it is running."""
@@ -748,7 +756,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         try:
             await self._a_stop()
         finally:
-            self._running = False
+            WaldiezBaseRunner._running = False
 
     # ===================================================================
     # PROPERTIES AND CONTEXT MANAGERS
@@ -773,6 +781,36 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     def log(self) -> WaldiezLogger:
         """Get the logger for the runner."""
         return self._logger
+
+    @property
+    def threaded(self) -> bool:
+        """Check if the runner is running in a threaded environment."""
+        return WaldiezBaseRunner._threaded
+
+    @property
+    def structured_io(self) -> bool:
+        """Check if the runner is using structured IO."""
+        return WaldiezBaseRunner._structured_io
+
+    @property
+    def isolated(self) -> bool:
+        """Check if the runner is running in an isolated environment."""
+        return WaldiezBaseRunner._isolated
+
+    @property
+    def output_path(self) -> str | Path | None:
+        """Get the output path for the runner."""
+        return WaldiezBaseRunner._output_path
+
+    @property
+    def uploads_root(self) -> str | Path | None:
+        """Get the uploads root path for the runner."""
+        return WaldiezBaseRunner._uploads_root
+
+    @property
+    def skip_patch_io(self) -> bool:
+        """Check if the runner is skipping patching IO."""
+        return WaldiezBaseRunner._skip_patch_io
 
     @classmethod
     def load(

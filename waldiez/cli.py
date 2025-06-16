@@ -119,15 +119,18 @@ def run(
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
     os.environ["NEP50_DISABLE_WARNING"] = "1"
     output_path = _get_output_path(output, force)
-    with file.open("r", encoding="utf-8") as _file:
-        try:
-            data = json.load(_file)
-        except json.decoder.JSONDecodeError as error:
-            typer.echo("Invalid .waldiez file. Not a valid json?")
-            raise typer.Exit(code=1) from error
-    waldiez = Waldiez.from_dict(data)
-    runner = WaldiezRunner(waldiez)
-    if waldiez.is_async:
+    try:
+        runner = WaldiezRunner.load(file)
+    except FileNotFoundError as error:
+        typer.echo(f"File not found: {file}")
+        raise typer.Exit(code=1) from error
+    except json.decoder.JSONDecodeError as error:
+        typer.echo("Invalid .waldiez file. Not a valid json?")
+        raise typer.Exit(code=1) from error
+    except ValueError as error:
+        typer.echo(f"Invalid .waldiez file: {error}")
+        raise typer.Exit(code=1) from error
+    if runner.is_async:
         anyio.run(
             runner.a_run,
             output_path,
