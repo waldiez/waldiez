@@ -4,7 +4,7 @@
 # flake8: noqa: E501
 # pylint: disable=too-many-try-statements,broad-exception-caught,
 # pylint: disable=line-too-long,unused-argument,too-many-instance-attributes
-# pylint: disable=too-many-arguments,too-many-positional-arguments
+# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
 
 """An MQTT I/O stream for handling print and input messages."""
 

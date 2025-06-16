@@ -3,6 +3,7 @@
 
 # pylint: disable=too-many-instance-attributes,unused-argument
 # pylint: disable=too-many-arguments,too-many-positional-arguments
+# pylint: disable=too-many-public-methods,too-many-locals
 
 """Base runner for Waldiez workflows."""
 
