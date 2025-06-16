@@ -197,7 +197,7 @@ captain = CaptainAgent(
         config_list=[
             gpt_4o_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
@@ -275,17 +275,15 @@ def main() -> Union[ChatResult, list[ChatResult], dict[int, ChatResult]]:
         The result of the chat session, which can be a single ChatResult,
         a list of ChatResults, or a dictionary mapping integers to ChatResults.
     """
-    with Cache.disk(cache_seed=42) as cache:  # pyright: ignore
-        results = user_proxy.initiate_chat(
-            captain,
-            cache=cache,
-            summary_method="last_msg",
-            max_turns=1,
-            clear_history=True,
-            message="Find a recent paper about large language models on arxiv and find its potential applications in software.",
-        )
+    results = user_proxy.initiate_chat(
+        captain,
+        summary_method="last_msg",
+        max_turns=1,
+        clear_history=True,
+        message="Find a recent paper about large language models on arxiv and find its potential applications in software.",
+    )
 
-        stop_logging()
+    stop_logging()
     return results
 
 
