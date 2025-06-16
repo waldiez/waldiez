@@ -425,6 +425,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                     self.a_run,
                     output_path,
                     uploads_root,
+                    structured_io,
+                    skip_patch_io,
                     skip_mmd,
                 )
         output_file, uploads_root_path = self._prepare_paths(
