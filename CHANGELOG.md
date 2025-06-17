@@ -5,7 +5,7 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## [Unrelreasd]
+## [Unreleased]
 
 - Breaking news and changes.
 - Updated ag2 dependency to 0.9.2.
