@@ -193,7 +193,7 @@ def get_async_sqlite_out() -> str:
         query = f"SELECT * FROM {table}"  # nosec
         try:
             cursor = await conn.execute(query)
-        except BaseException:  # pylint: disable=broad-except
+        except BaseException:  # pylint: disable=broad-exception-caught
             await conn.close()
             return
         rows = await cursor.fetchall()
@@ -210,6 +210,7 @@ def get_async_sqlite_out() -> str:
             await file.write(json.dumps(data, indent=4, ensure_ascii=False)
     ```
     """
+    # fmt: off
     content = "\n\n"
     content += "async def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:\n"
     content += '    """Convert a sqlite table to csv and json files.\n\n'
@@ -226,7 +227,7 @@ def get_async_sqlite_out() -> str:
     content += '    query = f"SELECT * FROM {table}"  # nosec\n'
     content += "    try:\n"
     content += "        cursor = await conn.execute(query)\n"
-    content += "    except BaseException:  # pylint: disable=broad-except\n"
+    content += "    except BaseException:  # pylint: disable=broad-exception-caught\n"
     content += "        await conn.close()\n"
     content += "        return\n"
     content += "    rows = await cursor.fetchall()\n"
@@ -235,10 +236,7 @@ def get_async_sqlite_out() -> str:
     content += "    data = [dict(zip(column_names, row)) for row in rows]\n"
     content += "    await cursor.close()\n"
     content += "    await conn.close()\n"
-    content += (
-        '    async with aiofiles.open(csv_file, "w", newline="", '
-        'encoding="utf-8") as file:\n'
-    )
+    content += '    async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
     content += '        csv_writer = AsyncDictWriter(file, fieldnames=column_names, dialect="unix")\n'
     content += "        await csv_writer.writeheader()\n"
     content += "        await csv_writer.writerows(data)\n"
@@ -246,6 +244,7 @@ def get_async_sqlite_out() -> str:
     content += '    async with aiofiles.open(json_file, "w", encoding="utf-8") as file:\n'
     content += "        await file.write(json.dumps(data, indent=4, ensure_ascii=False))\n"
     content += "\n"
+    # fmt: on
     return content
 
 

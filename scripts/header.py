@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pylint: disable=broad-except,too-many-try-statements
+# pylint: disable=broad-exception-caught,too-many-try-statements
 
 """Ensure a notice with the license and the copyright exists in every py."""
 

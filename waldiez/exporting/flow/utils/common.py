@@ -153,7 +153,7 @@ def get_after_run_content(
         if agent.is_reasoning:
             agent_name = agent_names[agent.id]
             content += f"""
-{space}# pylint: disable=broad-except,too-many-try-statements
+{space}# pylint: disable=broad-exception-caught,too-many-try-statements
 {space}try:
 {space}{tab}{agent_name}.visualize_tree()
 {space}{tab}if os.path.exists("tree_of_thoughts.png"):
@@ -162,8 +162,9 @@ def get_after_run_content(
 {space}except BaseException:
 {space}{tab}pass
 {space}# save the tree to json
+{space}# pylint: disable=protected-access
 {space}try:
-{space}{tab}data = {agent_name}._root.to_dict()  # pylint: disable=protected-access  # pyright: ignore
+{space}{tab}data = {agent_name}._root.to_dict()  # pyright: ignore
 {space}{tab}with open("{agent_name}_reasoning_tree.json", "w", encoding="utf-8") as f:
 {space}{tab}{tab}json.dump(data, f)
 {space}except BaseException:

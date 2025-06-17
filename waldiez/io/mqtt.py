@@ -284,7 +284,7 @@ class MqttIOStream(IOStream):
             while reconnect_count < MQTT_MAX_RECONNECT_COUNT:
                 LOG.info("Reconnecting in %d seconds...", reconnect_delay)
                 time.sleep(reconnect_delay)
-                # pylint: disable=broad-except
+                # pylint: disable=broad-exception-caught
                 try:
                     client.reconnect()
                 except Exception as err:

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportConstantRedefinition=false
 """Build the container image."""
 
 import argparse
@@ -267,7 +269,7 @@ def check_other_platform(container_command: str, platform_arg: str) -> bool:
                     "yes",
                 ]
             )
-        except BaseException:  # pylint: disable=broad-except
+        except BaseException:  # pylint: disable=broad-exception-caught
             pass
     return is_other_platform
 
@@ -285,7 +287,7 @@ def main() -> None:
         If an error occurs.
     """
     args, _ = cli().parse_known_args()
-    build_args = args.build_args or []
+    build_args: list[str] = args.build_args or []
     container_file = "Containerfile"
     platform_arg = args.platform
     container_command = args.container_command
@@ -307,7 +309,7 @@ def main() -> None:
                 image_platform=platform_arg,
                 container_command=container_command,
             )
-    except BaseException as exc:  # pylint: disable=broad-except
+    except BaseException as exc:  # pylint: disable=broad-exception-caught
         if allow_error:
             print(f"Error: {exc}")
         else:

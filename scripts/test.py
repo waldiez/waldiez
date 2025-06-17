@@ -3,6 +3,8 @@
 # Requirement:
 # The (final) coverage report must be in the `coverage` directory.
 # It must be in the `lcov` format. (file `coverage/lcov.info`)
+
+# pyright: reportConstantRedefinition=false
 """Run the tests."""
 
 import os

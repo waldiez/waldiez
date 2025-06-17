@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pylint: disable=consider-using-with,too-many-try-statements
 """Development server runner - starts both backend and frontend."""
 
 import signal
@@ -11,8 +13,6 @@ from types import FrameType
 from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-
-# pylint: disable=consider-using-with,too-many-try-statements
 
 
 def run_dev_servers(py_port: int | None) -> None:

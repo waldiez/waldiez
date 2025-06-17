@@ -14,7 +14,8 @@ So let's pin them before we release waldiez (in CI).
 """
 
 # flake8: noqa: E501
-# pylint: disable=import-error,import-outside-toplevel,too-few-public-methods,broad-except
+# pylint: disable=import-error,import-outside-toplevel,too-few-public-methods
+# pylint: disable=broad-exception-caught
 # isort: skip_file
 import json
 import re

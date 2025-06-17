@@ -73,7 +73,7 @@ def parse_code_string(
         If valid, None and the ast module.
         If invalid, the error message and None.
     """
-    # pylint: disable=broad-except
+    # pylint: disable=broad-exception-caught
     try:
         tree = ast.parse(code_string)
     except SyntaxError as e:

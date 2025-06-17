@@ -22,6 +22,7 @@ DIR_PATTERNS = [
     os.path.join("coverage", "py"),
     "build",
     "site",
+    "waldiez_out",
 ]
 
 
@@ -53,7 +54,7 @@ def _remove_dirs() -> None:
             print(f"removing dir: {dirpath}")
             try:
                 shutil.rmtree(dirpath)
-            except BaseException:  # pylint: disable=broad-except
+            except BaseException:  # pylint: disable=broad-exception-caught
                 print(f"failed to remove dir: {dirpath}", file=sys.stderr)
 
 
@@ -68,7 +69,7 @@ def _remove_files() -> None:
             print(f"removing file: {filepath}")
             try:
                 os.remove(filepath)
-            except BaseException:  # pylint: disable=broad-except
+            except BaseException:  # pylint: disable=broad-exception-caught
                 print(f"failed to remove file: {filepath}", file=sys.stderr)
 
 

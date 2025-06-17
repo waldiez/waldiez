@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportConstantRedefinition=false
 """Build the documentation."""
 
 import sys
@@ -17,6 +19,7 @@ try:
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from _lib import (  # type: ignore
+        ROOT_DIR,
         ensure_dev_requirements,
         ensure_docs_requirements,
         run_command,

@@ -137,9 +137,10 @@ class WaldiezTool(WaldiezBase):
             raise FileNotFoundError(f"File not found: {resolved}")
         with resolved.open("r", encoding="utf-8") as file:
             data_string = file.read()
+            # pylint: disable=broad-exception-caught
             try:
                 data_dict = json.loads(data_string)
-            except BaseException as exc:  # pylint: disable=broad-except
+            except BaseException as exc:
                 raise ValueError(f"Invalid WaldiezTool/JSON: {exc}") from exc
             return WaldiezTool.model_validate(data_dict)
 

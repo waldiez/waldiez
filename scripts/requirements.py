@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # flake8: noqa: E501
-# pylint: disable=import-error,import-outside-toplevel,too-few-public-methods,broad-except
+# pylint: disable=import-error,import-outside-toplevel,too-few-public-methods
+# pylint: disable=broad-exception-caught
 # isort: skip_file
 # pyright: reportReturnType=none
 """Generate requirements/*.txt files from pyproject.toml."""
