@@ -216,7 +216,8 @@ class TestMisc:
         """Test that caller info is formatted correctly."""
         logger = WaldiezLogger()
         info = logger._get_caller_info()
-        assert ":" in info and info.split(":")[1].isdigit()
+        # Could be C://... so let's use the last part of the split
+        assert ":" in info and info.split(":")[-1].isdigit()
 
     def test_timestamp_output(self) -> None:
         """Test that timestamps are formatted correctly."""
