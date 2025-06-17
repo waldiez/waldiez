@@ -7,7 +7,7 @@ import { afterEach, vi } from "vitest";
 import { getProps, startApp } from "..";
 
 const flowLinksBaseUrl = "https://raw.githubusercontent.com/waldiez/examples/refs/heads/main";
-const flowLink = `${flowLinksBaseUrl}/examples/01 - Standup Comedians/Standup Comedians 1.waldiez`;
+const flowLink = `${flowLinksBaseUrl}/01 - Standup Comedians/Standup Comedians 1.waldiez`;
 
 describe("index", () => {
     beforeEach(() => {
