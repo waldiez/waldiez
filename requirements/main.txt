@@ -4,7 +4,7 @@ aiofiles==24.1.0
 aiosqlite==0.21.0
 asyncer==0.0.8
 click<8.2
-graphviz<=0.20.3
+graphviz<=0.21
 httpx<1
 jupytext
 nest_asyncio==1.6.0

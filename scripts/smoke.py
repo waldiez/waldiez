@@ -36,11 +36,13 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DOT_LOCAL = ROOT_DIR / ".local"
 DOT_LOCAL.mkdir(exist_ok=True, parents=True)
 
-BRANCH = "dev"
-REPO_URL = (
-    "https://raw.githubusercontent.com/waldiez/waldiez/"
-    f"refs/heads/{BRANCH}/examples"
-)
+# Git repo details
+BRANCH = "main"
+REPO = "waldiez/examples"
+REPO_URL = f"https://raw.githubusercontent.com/{REPO}/refs/heads/{BRANCH}"
+
+EXAMPLES_CWD = ROOT_DIR / "examples"  # submodule path
+
 EXAMPLES = [
     "01 - Standup Comedians/Standup Comedians 1.waldiez",
     "01 - Standup Comedians/Standup Comedians 2.waldiez",
@@ -259,6 +261,7 @@ def diff_has_only_id_changes(file_path: str) -> bool:
         capture_output=True,
         text=True,
         check=True,
+        cwd=str(EXAMPLES_CWD),
     )
     diff_output = result.stdout.strip()
 
@@ -305,6 +308,7 @@ def git_restore(*files: str) -> None:
         capture_output=True,
         text=True,
         check=True,
+        cwd=str(EXAMPLES_CWD),
     )
     if result.returncode != 0:
         raise RuntimeError(

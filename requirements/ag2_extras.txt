@@ -33,7 +33,7 @@ ipython
 langchain-community>=0.3.12,<1
 litellm
 markdownify
-mcp>=1.4.0,<1.6
+mcp>=1.4.0,<2
 mistralai>=1.8.1
 networkx;python_version < '3.11'
 networkx>=3.5;python_version >= '3.11'

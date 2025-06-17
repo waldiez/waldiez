@@ -268,9 +268,15 @@ class WaldiezDevServer:
             with IOStream.set_default(io_steam):
                 runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
                 if runner.is_async:
-                    await runner.a_run()
+                    await runner.a_run(
+                        uploads_root=UPLOADS_DIR,
+                        skip_patch_io=True,
+                    )
                 else:
-                    runner.run()
+                    runner.run(
+                        uploads_root=UPLOADS_DIR,
+                        skip_patch_io=True,
+                    )
         except Exception as e:
             to_log = f"Error running flow: {e}"
             logger.error(traceback.format_exc())
