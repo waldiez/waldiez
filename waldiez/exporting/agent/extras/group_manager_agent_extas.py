@@ -415,7 +415,7 @@ class GroupManagerProcessor:
             transitions_dict[agent_name] = transition_names
 
         # Serialize transitions
-        transitions_str = self.serializer(transitions_dict, 1)
+        transitions_str = self.serializer(transitions_dict, tabs=1)
         transitions_str = transitions_str.replace('"', "").replace("'", "")
 
         lines.extend(
