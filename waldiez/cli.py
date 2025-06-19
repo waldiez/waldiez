@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # flake8: noqa: E501
-# pylint: disable=missing-function-docstring,missing-param-doc,missing-raises-doc
-# pylint: disable=line-too-long
+# pylint: disable=missing-function-docstring, missing-param-doc, missing-raises-doc
+# pylint: disable=line-too-long, import-outside-toplevel
 """Command line interface to convert or run a waldiez file."""
 
 import json
@@ -15,11 +15,10 @@ import typer
 from dotenv import load_dotenv
 from typing_extensions import Annotated
 
-from .exporter import WaldiezExporter
+from .cli_extras import add_cli_extras
 from .logger import get_logger
 from .models import Waldiez
-from .runner import WaldiezRunner
-from .utils import add_cli_extras, get_waldiez_version
+from .utils import get_waldiez_version
 
 load_dotenv()
 LOG = get_logger()
@@ -119,6 +118,8 @@ def run(
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
     os.environ["NEP50_DISABLE_WARNING"] = "1"
     output_path = _get_output_path(output, force)
+    from waldiez.runner import WaldiezRunner
+
     try:
         runner = WaldiezRunner.load(file)
     except FileNotFoundError as error:
@@ -181,6 +182,13 @@ def convert(
         False,
         help="Override the output file if it already exists.",
     ),
+    patch_io: bool = typer.Option(  # noqa: B008
+        False,
+        help=(
+            "If set, the exported script will inlclude a snippet to patch ag2's IOStream "
+            "to safe print and input methods. "
+        ),
+    ),
     debug: bool = typer.Option(
         False,
         "--debug",
@@ -199,12 +207,19 @@ def convert(
             typer.echo("Invalid .waldiez file. Not a valid json?")
             raise typer.Exit(code=1) from error
     waldiez = Waldiez.from_dict(data)
+    from waldiez.exporter import WaldiezExporter
+
     exporter = WaldiezExporter(waldiez)
     if debug:
         LOG.set_level("DEBUG")
     if output is None:
         output = Path(file).with_suffix(".py").resolve()
-    exporter.export(output, force=force, debug=debug)
+    exporter.export(
+        output,
+        force=force,
+        skip_patch_io=not patch_io,
+        debug=debug,
+    )
     generated = str(output).replace(os.getcwd(), ".")
     typer.echo(f"Generated: {generated}")
 
@@ -229,52 +244,6 @@ def check(
         data = json.load(_file)
     Waldiez.from_dict(data)
     LOG.success("Waldiez flow seems valid.")
-
-
-# def _do_run(
-#     data: dict[str, Any],
-#     structured: bool,
-#     uploads_root: Optional[Path],
-#     output_path: Optional[Path],
-# ) -> None:
-#     """Run the Waldiez flow and get the results."""
-#     waldiez = Waldiez.from_dict(data)
-#     if structured:
-#         stream = StructuredIOStream(uploads_root=uploads_root)
-#         with StructuredIOStream.set_default(stream):
-#             runner = WaldiezRunner(waldiez)
-#             if waldiez.is_async:
-#                 anyio.run(
-#                     runner.a_run,
-#                     output_path,
-#                     uploads_root,
-#                     True,  # structured_io
-#                     False,  # skip_mmd
-#                 )
-#             else:
-#                 runner.run(
-#                     output_path=output_path,
-#                     uploads_root=uploads_root,
-#                     structured_io=True,
-#                     skip_mmd=False,
-#                 )
-#     else:
-#         runner = WaldiezRunner(waldiez)
-#         if waldiez.is_async:
-#             anyio.run(
-#                 runner.a_run,
-#                 output_path,
-#                 uploads_root,
-#                 False,  # structured_io
-#                 False,  # skip_mmd
-#             )
-#         else:
-#             runner.run(
-#                 output_path=output_path,
-#                 uploads_root=uploads_root,
-#                 structured_io=False,
-#                 skip_mmd=False,
-#             )
 
 
 def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
