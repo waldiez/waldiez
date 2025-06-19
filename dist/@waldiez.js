@@ -16370,7 +16370,7 @@ const useAgentContentView = (id, data) => {
           ] })
         ] })
       ] }),
-      !hasTools && data.agentType !== "user_proxy" && /* @__PURE__ */ jsx("div", { className: "agent-tools-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-tool-name", children: "No tools" }) })
+      !hasTools && !["user_proxy", "rag_user_proxy"].includes(data.agentType) && /* @__PURE__ */ jsx("div", { className: "agent-tools-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-tool-name", children: "No tools" }) })
     ] });
   }, [
     agentModelNames,
@@ -20087,13 +20087,16 @@ const WaldiezAgentRagUserTabs = memo(
       id,
       data,
       models,
+      tools,
       flowId,
+      agentConnections,
       isDarkMode,
       isModalOpen,
       onDataChange,
       filesToUpload,
       onFilesToUploadChange,
-      uploadsEnabled
+      uploadsEnabled,
+      showNestedChatsTab
     } = props;
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     useEffect(() => {
@@ -20112,6 +20115,24 @@ const WaldiezAgentRagUserTabs = memo(
               data,
               models,
               onDataChange
+            }
+          ) }) }),
+          /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+            WaldiezAgentCodeExecution,
+            {
+              id,
+              data,
+              tools,
+              onDataChange
+            }
+          ) }) }),
+          showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+            WaldiezAgentNestedChats,
+            {
+              id,
+              data,
+              onDataChange,
+              agentConnections
             }
           ) }) }),
           /* @__PURE__ */ jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsx(
@@ -21102,6 +21123,9 @@ const WaldiezNodeAgentModalTabs = memo(
           isDarkMode,
           isModalOpen,
           models,
+          tools,
+          agentConnections,
+          showNestedChatsTab,
           uploadsEnabled,
           data,
           onDataChange,
