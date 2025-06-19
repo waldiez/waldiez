@@ -43,6 +43,14 @@
   color: var(--user-proxy-agent-color);
 }
 
+.flow-wrapper .agent-edge-box.reasoning .agent-edge-view {
+  color: var(--reasoning-agent-color);
+}
+
+.flow-wrapper .agent-edge-box.captain .agent-edge-view {
+  color: var(--captain-agent-color);
+}
+
 .flow-wrapper .agent-edge-box.assistant .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--assistant-agent-color);
 }

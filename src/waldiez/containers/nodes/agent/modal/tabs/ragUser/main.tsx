@@ -5,7 +5,9 @@
 import { memo, useEffect, useState } from "react";
 
 import { TabItem, TabItems } from "@waldiez/components";
+import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
+import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
 import {
     WaldiezAgentRagUserAdvanced,
     WaldiezAgentRagUserCustomFunctions,
@@ -25,13 +27,16 @@ export const WaldiezAgentRagUserTabs: React.FC<WaldiezAgentRagUserTabsProps> = m
             id,
             data,
             models,
+            tools,
             flowId,
+            agentConnections,
             isDarkMode,
             isModalOpen,
             onDataChange,
             filesToUpload,
             onFilesToUploadChange,
             uploadsEnabled,
+            showNestedChatsTab,
         } = props;
 
         // Tab state
@@ -59,7 +64,28 @@ export const WaldiezAgentRagUserTabs: React.FC<WaldiezAgentRagUserTabsProps> = m
                             />
                         </div>
                     </TabItem>
-
+                    <TabItem label="Code Execution" id={`wf-${flowId}-wa-${id}-codeExecution`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentCodeExecution
+                                id={id}
+                                data={data}
+                                tools={tools}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                    {showNestedChatsTab && (
+                        <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-nested`}>
+                            <div className="modal-tab-body">
+                                <WaldiezAgentNestedChats
+                                    id={id}
+                                    data={data}
+                                    onDataChange={onDataChange}
+                                    agentConnections={agentConnections}
+                                />
+                            </div>
+                        </TabItem>
+                    )}
                     {/* Retrieve Config Tab */}
                     <TabItem label="Retrieve Config" id={`wf-${flowId}-wa-${id}-rag-retrieveConfig`}>
                         <WaldiezAgentRagUserRetrieveConfig

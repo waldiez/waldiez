@@ -288,7 +288,7 @@ const useAgentContentView = (id: string, data: WaldiezNodeAgentData) => {
                 )}
 
                 {/* No tools message */}
-                {!hasTools && data.agentType !== "user_proxy" && (
+                {!hasTools && !["user_proxy", "rag_user_proxy"].includes(data.agentType) && (
                     <div className="agent-tools-preview">
                         <div className="font-small agent-tool-name">No tools</div>
                     </div>
