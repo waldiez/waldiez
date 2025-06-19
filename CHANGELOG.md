@@ -8,7 +8,7 @@ The contents of each release will be used in
 ## [Unreleased]
 
 - Breaking news and changes.
-- Updated ag2 dependency to 0.9.2.
+- Updated ag2 dependency to 0.9.3.
 - Swarm depraction and migration to group chats as in ag2.
 - New json schema to ensure ts and py compatibility.
 - Several ui changes.
