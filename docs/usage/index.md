@@ -3,12 +3,12 @@
 
 You can use Waldiez in one of the following ways — pick the one that works best for you:
 
-1. 🌐 Use the Playground – no installation required
-2. 🐍 Install from PyPI – for full control and customization
-3. 🐳 Use Docker – no setup, great for reproducibility
-4. 📦 Use the JupyterLab extension – for interactive notebooks
-5. 🖥️ Use the Visual Studio Code extension – for a familiar IDE experience
-6. 🎬 Use Waldiez Studio – for a FastAPI-based web UI
+1. 🌐 Use the [Playground](https://waldiez.github.io) – no installation required
+2. 🐍 Install from [PyPI](https://pypi.org/project/waldiez/) – for full control and customization
+3. 🐳 Use [Docker](https://hub.docker.com/u/waldiez) – no setup, great for reproducibility
+4. 📦 Use the [JupyterLab](https://github.com/waldiez/jupyter.git) extension – for interactive notebooks
+5. 🖥️ Use the Visual Studio Code [extension](https://marketplace.visualstudio.com/items?itemName=Waldiez.waldiez-vscode) – for a familiar IDE experience
+6. 🎬 Use Waldiez [Studio](https://github.com/waldiez/studio) – for a FastAPI-based web UI
 
 ### 🌐 1. Use the Playground (No Installation Required)
 

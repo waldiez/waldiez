@@ -4,8 +4,8 @@ Once you have created and configured agents, you can connect them to create a fl
 
 ## Chats
 
-![Chat Preview](../static/images/light/chats_2.webp#only-light)
-![Chat Dark Preview](../static/images/dark/chats_2.webp#only-dark)
+![Chat Preview](../static/images/light/chats.webp#only-light)
+![Chat Dark Preview](../static/images/dark/chats.webp#only-dark)
 
 ### **Message Type and Content**
 

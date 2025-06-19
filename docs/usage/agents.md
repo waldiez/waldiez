@@ -1,7 +1,10 @@
 In the agents view, you can design and organize agent workflows by connecting nodes representing different components in the process.
 
+![Assistant Preview](../static/images/light/agents_1.webp#only-light)
+![Assistant Dark Preview](../static/images/dark/agents_1.webp#only-dark)
+
 - **Adding Agents**:
-  - On the left sidebar, you'll find options such as "User Proxy," "Assistant," and "Group Manager." Drag and drop any of these to the canvas to start building your workflow.
+  - On the left sidebar, you'll find options such as "User Proxy", "Assistant" and "Group Manager." Drag and drop any of these to the canvas to start building your workflow.
 
 - **Connecting Nodes**:
   - Connect nodes by dragging lines from one node to another. This is used to create the information flow between agents.
@@ -10,224 +13,335 @@ In the agents view, you can design and organize agent workflows by connecting no
   - Each agent has settings where you can specify the model, add a system message, and set other properties.
   - Double-clicking an agent allows you to edit its properties, such as setting the agent's name, linking models and tools to it, and defining the agent's behavior.
 
-![Assistant Preview](../static/images/light/assistant_1.webp#only-light)
-![Assistant Dark Preview](../static/images/dark/assistant_1.webp#only-dark)
+## User Proxy Agent
 
-## User Proxy Agent, Assistant Agent
-
-The assistant agent is a conversational agent that can interact with users and execute code. You can configure the assistant's behavior, termination settings, code execution settings, and model configuration. The user proxy agent acts as an intermediary between the user and the assistant. The settings for these agents are similar, with some differences in the default configurations.
-
-![Agent Modal Preview](../static/images/light/agent_1.webp#only-light)
-![Agent Modal Dark Preview](../static/images/dark/agent_1.webp#only-dark)
+A User Proxy agent acts as an intermediary between the real user and the rest of the agent flow. It is responsible for sending user messages into the system and optionally simulating replies when human input is not available.
 
 ### **General Settings**
 
-This section allows you to configure the general behavior of the assistant agent.
+In the User tab:
 
-- **Human Input Mode:** Select how often the agent should ask for human input after sending a message.
-  - **Always:** Prompts for human input every time. This is the default setting for a user proxy agent.
-  - **Terminate:** Only prompts if a termination message is received or after reaching a maximum number of consecutive auto-replies.
-  - **Never:** Never prompts for human input unless a termination message is received. This is the default setting for an assistant agent.
-  
-- **Max Consecutive Auto Reply:** Set the maximum number of consecutive auto-replies before pausing for human input.
-- **Agent Default Auto Reply:** Enter the default reply message the agent will use when there’s no human input.
+- **Name**: Set a label to identify this agent (e.g., "User", "Researcher").
+- **Max Consecutive Auto Reply**: Define how many automatic replies the agent can send before waiting for human input.
+- **Default Auto Reply**: Provide a fallback message that will be used if no input is received (e.g., "Okay", "Continue").
+
+This configuration helps control how the agent behaves in cases where no user is actively participating.
+
+![User agent - Basic setup preview](../static/images/light/user_1.webp#only-light)
+![User agent - Basic setup preview](../static/images/dark/user_1.webp#only-dark)
+
+### Code Execution Settings
+
+In the Code Execution tab:
+
+- **Enable Code Execution**: Allows the user proxy to execute Python snippets (for testing flows or simulating dynamic behavior).
+- **Working Directory**: Specify where any temporary code files should be executed.
+- **Last N Messages**: Determines how many previous messages should be included as context. ~auto~ will use all available.
+- **Timeout**: Optional timeout to prevent long-running code.
+
+This is useful for simulating scenarios where a user performs code-based tasks or replies with dynamically computed results.
+
+![User Agent - Code execution preview](../static/images/light/user_2.webp#only-light)
+![User Agent - Code execution preview](../static/images/dark/user_2.webp#only-dark)
+
+## Assistant Agent
+
+An Assistant Agent is an AI-powered responder in your workflow. It receives messages from other agents (like the User Proxy), processes them using a selected model, and replies intelligently. It can also run tools, execute code, and stop responding based on termination conditions you define.
+
+This agent is ideal for handling conversations, reasoning over tasks, using external tools, or automating replies.
+
+### Basic Setup
+
+In the Agent tab:
+
+- **Name & Description**: Customize how the agent is labeled in your flow.
+- **System Message**: Define the assistant’s behavior or role. For example: "You are a helpful research assistant."
+- **Human Input Mode**:
+  - **Always**: Waits for user input every time before replying.
+  - **Terminate**: Waits only after max auto replies or when a termination condition is met.
+  - **Never**: Replies without asking for user input.
+- **Auto Reply Settings**: Set how many replies the assistant should send before waiting and/or what default message to use.
+
+![Assistant agent - Basic setup preview](../static/images/light/assistant_1.webp#only-light)
+![Assistant agent - Basic setup preview](../static/images/dark/assistant_1.webp#only-dark)
+
+### Model Configuration
+
+In the Models tab:
+
+- **Model Selection**: Choose a language model (e.g. gpt-4.1) to power your assistant.
+- You can assign different models to different agents for flexibility.
+
+### Termination Conditions
+
+Control if and when the Assistant should stop responding:
+
+- By Keyword: Stop when specific keywords are found (e.g., “stop”, “done”).
+- By Method: Use a custom Python function to decide when to stop.
+
+Examples:
+
+- "Keyword is found" — stops when a phrase appears.
+- "Exact match" — stops only if the reply is exactly the keyword.
+
+![Assistant agent - Termination setup preview](../static/images/light/assistant_2.webp#only-light)
+![Assistant agent - Termination setup preview](../static/images/dark/assistant_2.webp#only-dark)
+
+### Tools
+
+Assistants can use tools (e.g., search, calculations, APIs) with executors (other agents like User or Assistant) that run them.
+
+- Tool: Choose a defined tool from your system.
+- Executor: Select which agent will handle the tool execution.
+- Add to bind the tool to this assistant.
+
+![Assistant agent - Tools setup preview](../static/images/light/assistant_3.webp#only-light)
+![Assistant agent - Tools setup preview](../static/images/dark/assistant_3.webp#only-dark)
+
+## RAG User Agent
+
+A RAG (Retrieval-Augmented Generation) User Agent enhances your assistant by letting it fetch and reference documents before responding. It combines language model reasoning with contextual data retrieval—ideal for question-answering, documentation helpers, or research bots.
+
+This agent is more advanced than the standard Assistant because it uses an external document database (Vector DB) and can be finely tuned for chunking, relevance filtering, and custom behavior.
+
+![RAG agent - Setup preview](../static/images/light/rag_1.webp#only-light)
+![RAG agent - Setup preview](../static/images/dark/rag_1.webp#only-dark)
+
+### Retrieve Config
+
+### Text Splitting
+
+In the Text Splitting tab, control how your source documents are broken into chunks before indexing.
+
+- **Chunk Token Size**: Max token length per chunk.
+- **Context Max Tokens**: Limit on how much is passed to the model at once.
+- **Chunk Mode**: Split by lines or full paragraphs.
+- **Must Break at Empty Line**: Force chunk breaks at empty lines.
+
+### Vector DB Configuration
+
+Connect the agent to your vector database.
+
+- **Vector DB Type**: Choose from options like Chroma, Qdrant, PGVector, or MongoDB.
+- **Embedding Model**: Select a model for turning text into embeddings (e.g., all-MiniLM-L6-v2).
+- **Storage Path & URL**: Where to persist vectors and how to connect.
+
+### Custom Functions (Optional)
+
+Advanced users can define custom Python functions for:
+
+- **Embeddings**
+- **Token Count**
+- **Text Splitting**
+
+![RAG agent - Custom functions preview](../static/images/light/rag_2.webp#only-light)
+![RAG agent - Custom functions preview](../static/images/dark/rag_2.webp#only-dark)
+
+These functions let you override the default logic. You’ll see editable code blocks when these options are toggled on.
+
+### Advanced Options
+
+Extra controls for fine-tuning the retrieval logic:
+
+- Customized Prompt / Answer Prefix
+- Flags like Update Context, Recursive, Overwrite, etc. help control how responses evolve across messages.
+
+## Reasoning Agent
+
+A Reasoning Agent is designed for structured multi-step thinking. It doesn’t just generate a single response—it explores different reasoning paths, evaluates them, and selects or pools the best answers.
+
+This agent is best used when decisions require evaluation, ranking, or planning — such as chain-of-thought tasks, multi-step reasoning, or agent voting.ß
+
+### Reasoning Tab
+
+In the Reasoning tab, you can choose the search strategy and fine-tune how reasoning paths are explored.
+
+- Verbose: When enabled, the agent provides insights into its internal decision-making process (great for debugging or teaching).
+- Reasoning Method: Choose how reasoning paths are explored:
+- Beam Search: Prioritizes best candidates at each step.
+- Monte Carlo Tree Search: Simulates and scores multiple paths randomly.
+- Language Agent Tree Search: A hybrid search using agents.
+- Depth First Search: Explores one branch fully before backtracking.
+
+![Reasoning agent - Reasoning setup preview](../static/images/light/reasoning.webp#only-light)
+![Reasoning agent - Reasoning setup preview](../static/images/dark/reasoning.webp#only-dark)
+
+#### Fine-Tuning Parameters
+
+Each method can be tuned using the sliders below:
+
+- Max Depth: How many steps deep to explore (limits the reasoning chain).
+- Forest Size: Number of reasoning trees (parallel threads of thought).
+- Rating Scale: Used for evaluating and scoring candidate answers.
+- Beam Size: Number of options kept at each step in beam search.
+- Answer Approach:
+  - Best: Picks the highest-scoring path.
+  - Pool: Combines multiple paths into a single answer.
+
+### Shared Tabs
+
+The following tabs function just like in the Assistant Agent:
+
+- Agent: Name, description, and system message.
+- Termination: Rules for stopping the agent.
+- Code Execution: Optional code block evaluation.
+- Models / Tools: Assign models or enable tool-based workflows.
+
+## Captain Agent
+
+A *Captain Agent* orchestrates a conversation by dynamically creating agents and tools from a pre-defined library. It’s particularly useful for simulations, planning sessions, and AI-driven multi-agent environments where the participants and tools are defined at runtime.
+
+![Gaptain agent - Setup preview](../static/images/light/captain.webp#only-light)
+![Gaptain agent - Setup preview](../static/images/dark/captain.webp#only-dark)
+
+### Configuration
+
+In the Captain tab, you define the scope and components of the simulated group chat:
+
+- Max Round: The maximum number of message rounds to run in the generated conversation.
+- Include Tool Lib: If enabled, tools from a pre-defined library will be included.
+<!-- → You can view available tools here. -->
+- Include Agent Lib: If enabled, the Captain will dynamically generate agents from a provided agent library file.
+<!-- → Example agent library: agent_library_example.json -->
+- File Upload Box: Drop in your custom agent or tool library as a JSON file.
+
+### Common Tabs
+
+Like other agents, the Captain also includes the standard configuration tabs:
+
+- Termination
+- Code Execution
+- Models
+- Tools
+
+Refer to the Assistant Agent section above for guidance on these.
+
+## Group Manager
+
+The Group Manager Agent allows you to create multi-agent group chats with dynamic conversation flows. It coordinates the interaction between agents based on your speaker selection and group configuration.
+
+![Gaptain agent - Setup preview](../static/images/light/group_1.webp#only-light)
+![Gaptain agent - Setup preview](../static/images/dark/group_1.webp#only-dark)
+
+### Group Tab
+
+Configure the overall group metadata:
+
+- **Group Name**: Set a custom name for this group.
+- **Initial Agent**: Choose the agent that will start the conversation.
+- **Context Variables**: Define key-value pairs to share context between agents.
+
+### Group Manager Tab
+
+Configure the manager that oversees the group:
+
+- **Models to use**: Assign the model(s) the group manager will use.
+- **Group Manager’s Name:** A label to refer to the manager (e.g., Manager).
+- **Description**: Optional description of the manager’s role.
+- **System Message**: Set the behavioral instruction or system-level message for the group manager.
+- **Send Introductions**: When enabled, sends a round of introductions at the start of the conversation so agents know who they can interact with.
+- **Enable Clear History**: If checked, history is reset after each conversation round.
+
+### Speakers Tab
+
+Define how speakers take turns in the conversation:
+
+- Speaker Selection Method:
+- **Auto**: The LLM automatically selects the next speaker.
+- **Manual**: You manually select the next speaker.
+- **Default**: Uses the explicitly defined transitions in the flow.
+- **Random**: Randomly picks the next speaker.
+- **Round Robin**: Cycles through speakers in the provided order.
+
+![Gaptain agent - Setup preview](../static/images/light/group_2.webp#only-light)
+![Gaptain agent - Setup preview](../static/images/dark/group_2.webp#only-dark)
+
+- **Max Retries for Selecting a Speaker**: Set the number of attempts allowed to pick the next speaker before giving up.
+
+## Nested Chats
+
+Nested chats let agents launch sub-conversations when certain triggers occur—such as receiving a message from another agent or fulfilling a condition. They’re useful when an agent needs to temporarily delegate part of its task to others and later return with the result.
+
+### When Available
+
+- Only visible when an agent is connected to at least one other agent.
+- The “Nested Chat” tab will then appear in the source agent's configuration.
+
+![Nested chat - Setup preview](../static/images/light/nested_1.webp#only-light)
+![Nested chat - Setup preview](../static/images/dark/nested_1.webp#only-dark)
+
+### Configuration Tabs
+
+#### Queue
+
+Define the order in which connected agents should be evaluated during the nested chat.
+
+- Agents are prioritized top to bottom.
+- You can drag or click the up/down arrows to reorder them.
+
+#### Condition
+
+Specify when a nested chat transition is allowed:
+
+- **Static LLM Prompt**: Fixed message evaluated by the LLM.
+- **Dynamic LLM Prompt**: Uses context variables in a templated message.
+- **Variable Check**: Checks if a given variable is truthy.
+- **Expression Check**: Allows short logic expressions like `${is_logged_in} and not ${is_banned}`.
+
+#### Availability
+
+Fine-tune when a specific nested chat is considered usable.
+
+- Enables filtering based on dynamic runtime conditions.
+
+### Group Agent Variations
+
+When agents are part of a group (i.e. nested inside a Group Manager), nested chat logic is governed by the `Handoffs` and group settings:
+
+- Group speaker mode must be set to `default` for nested chat to take effect.
+- Handoffs tab will show an entry like:
+
+  ```text
+  2. Nested Chat → Assistant 2 + 1 more
+  ```
 
 ---
 
-### **Termination Settings**
+## Group Membership and Handoffs
 
-The termination settings specify the conditions under which the assistant should stop replying.
+If a group manager is available in the flow, an option to join and configure each agent's group membership is also included.
 
-- **Termination:** Choose the type of termination condition (e.g., by keyword or custom method).
-- **Termination Criterion:** Set the specific criterion (e.g., "Keyword is found").
-- **Termination Keywords:** Enter the keywords that will trigger termination.
+![Group membership preview](../static/images/light/group_membership.webp#only-light)
+![Group membership previeww](../static/images/dark/group_membership.webp#only-dark)
 
----
+### Group Tab (per agent)
 
-### **Code Execution Settings**
+Each agent can define what happens after its turn ends:
 
-If your assistant can execute code, configure these options here.
+- **Membership**: Determines if the agent belongs to a group.
+- **Handoffs**: Sets the next agent or nested chat flow. Ordered top-down.
+- **State**: Lets the agent update its system message before replying.
+  - Can be a function or templated string using context vars.
+- **Afterwards**: Specify fallback behavior (e.g., return to user, terminate, ask manager).
 
-- **Use Code Execution:** Check this box to enable code execution capabilities.
-- **Working Directory:** Set the directory where code will be executed.
-- **Last N Messages:** Specify the number of previous messages to consider when executing code.
-- **Timeout:** Set a timeout limit for code execution.
-- **Use Docker:** Enable Docker for isolated code execution, if needed.
-- **Functions:** Select specific functions the assistant can use.
+### Handoff Priorities
 
----
+If group’s speaker mode is `default`, handoffs are processed top to bottom:
 
-### **Model Configuration**
-
-Link models to your agent in this section.
-
-- **Models linked to agent:** Select the model you wish to link. Multiple models can be linked for various functionalities.
+1. First match is executed (based on condition or availability)
+2. If no match is valid, fallback in `Afterwards` tab is used
 
 ---
 
-### **Tool Management**
+### Nested + Group Example
 
-Define specific tools for the assistant.
+![Nested Chat handoff preview](../static/images/light/nested_handoff.webp#only-light)
+![Nested Chat handoff previeww](../static/images/dark/nested_handoff.webp#only-dark)
 
-- **Tool:** Select a previously defined tool to link to the agent.
-- **Executor:** Choose the executor responsible for running the tool.
-- **Current Tools:** View and manage currently linked tools.
+- Assistant is in a group.
+- It connects to Assistant 2 and 3 via nested chat.
+- In Handoffs, "Nested Chat" comes after a direct connection.
+- If `Assistant 2` is unavailable or condition fails, `Assistant 3` is used.
+- Once both finish, control is handed back to the group or user.
 
----
-
-### Nested Chats Configuration
-
-When an agent is connected to another agent, you can configure the nested chat settings to create a multi-step conversation flow.
-This allows you to set up automated chat sequences that are triggered based on specific messages. This can be used to guide conversations through predefined paths.
- <!-- More on this in # TODO: (In flow.md we 'll add nested chat section) -->
-
-#### Overview
-
-- **Triggered by:** Select who initiates the nested chat.
-  - For example, `User => Assistant` means the user sends a message to the assistant, which then triggers the nested chat.
-  
-- **Agent's Reply:** Check this box if the message should be sent from the assistant back to the user. If unchecked, the message will be directed to the next agent in the nested sequence.
-
-- **Messages:**
-  - Use this to specify the nested chat that will be triggered.
-  - The final message in the sequence will return to the main chat.
-  - If the **Agent's Reply** box is checked, the trigger message is sent to the assistant; otherwise, it is sent to the user.
-
-![Agent Nested Chats Preview](../static/images/light/nested_1.webp#only-light)
-![Agent Nested Chats Dark Preview](../static/images/dark/nested_1.webp#only-dark)
-
-#### Configure Nested Chats
-
-1. **Define Trigger:**
-   - Select the interaction pattern for triggering nested chats (e.g., `User => Assistant`).
-   - Click **Add** to include this trigger.
-
-2. **Set Messages:**
-   - In the **Messages** dropdown, select the message or nested chat sequence you wish to include.
-   - Check **Agent's Reply** if this message should be sent back to the assistant; otherwise, leave it unchecked.
-
-3. **Add or Remove Steps:**
-   - Use **Add** to include additional messages or nested chat sequences.
-   - **Remove** steps as needed to refine the flow.
-
----
-
-Use these settings to create complex conversation flows that can help automate responses and guide users through a series of related interactions.
-
-Each of these sections allows you to customize the assistant's behavior and capabilities. Make sure to save changes before exiting the modal.
-
-## Group Manager Agent
-
-A group manager agent is used to manage group chats and multi-agent conversations. It allows you to configure group settings, speaker selection, and transitions between speakers.
-
-### Group Chat Configuration
-
-The **Group Chat** configuration allows you to manage group settings, speaker selection, and transitions between speakers in a multi-agent chat environment.
-
-#### Configuration
-
-##### Settings
-
-- **Admin Name:** Define the name of the group admin.
-- **Max Rounds:** Set the maximum number of conversation rounds for the group.
-- **Enable Clear History:** Check this to allow history to be cleared after each conversation.
-- **Send Introductions:** Enable this to automatically send introductions at the beginning.
-- **Max Retries for Selecting Speaker:** Define the maximum retries for selecting a speaker.
-
----
-
-#### Speakers
-
-##### Speaker Selection
-
-- **Speaker Repetition Mode:** Choose how often a speaker can repeat.
-  - **Disabled (Use transitions):** The next speaker is chosen based on transitions.
-  - **Enabled:** Allows the same speaker to repeat based on set parameters.
-  
-- **Speaker Selection Method:** Select the method for determining the next speaker:
-  - **Auto:** Automatically selects the next speaker.
-  - **Manual:** Allows manual selection of the next speaker.
-  - **Random:** Randomly selects the next speaker.
-  - **Round Robin:** Selects speakers in a round-robin fashion.
-  - **Custom Method:** Use a custom function to select the next speaker.
-
-##### Speaker Transitions
-
-Set specific transitions between speakers.
-
-1. **From / To:** Choose which agents the transition applies to. You can select more than one agents for the "To" field.
-2. **Transitions Mode:** Select if transitions are **Allowed** or **Blocked**.
-3. **Add Transition:** Click **Add** to save the transition.
-
----
-
-These settings allow you to manage complex group conversations and control transitions between speakers that are members of the same group.
-
-## RAG User Proxy Agent
-
-A RAG User Proxy agent is used to enable retrieval-augmented generation (RAG) for generating responses. You can configure the agent to use RAG, set up document retrieval, customize text splitting, and define advanced settings. This can be useful for creating responses based on dynamic content retrieval and custom function integration.
-
-![RAG Preview](../static/images/light/rag.webp#only-light)
-![RAG Dark Preview](../static/images/dark/rag.webp#only-dark)
-
-### **Enable RAG and Basic Settings**
-
-In the **Agent** tab, you can enable RAG to allow the agent to use retrieval-augmented generation for generating responses.
-
-- **Use RAG:** Check this box to activate RAG for the agent.
-- **Name, Description, System Message:** Fill out the name, description, and any system message for the agent.
-- **Human Input Mode:** Set when the agent should request human input.
-- **Max Consecutive Auto Reply:** Define the limit for consecutive auto-replies.
-- **Agent Default Auto Reply:** Specify a default message if there’s no human input.
-
----
-
-#### **RAG Configuration - Retrieve Config**
-
-In the **RAG** tab, configure the retrieval settings for the agent.
-
-- **Task:** Select the RAG task, such as `code`, `qa`, or `default`. The task affects the system prompt used.
-- **Docs Paths:** Specify paths to any documents you wish to include.
-- **Collection Name:** Set the collection name (e.g., `autogen-docs`).
-- **Number of Results:** Define the number of documents to retrieve for responses.
-- **Distance Threshold:** Set a distance threshold for document retrieval relevance.
-
----
-
-#### **RAG Configuration - Text Splitting**
-
-Customize text splitting settings to control how the retrieved content is processed.
-
-- **Chunk Token Size:** Set the size of text chunks in tokens.
-- **Context Max Tokens:** Define the maximum number of tokens for context.
-- **Chunk Mode:** Choose the chunking mode (`Multi Lines`, `Single Line`, etc.).
-- **Must Break at Empty Line:** Check this if chunks should only break at empty lines when in `Multi Lines` mode.
-
----
-
-#### **RAG Configuration - Vector DB Config**
-
-Set up the Vector Database for embedding and retrieval.
-
-- **Embedding Model:** Choose the model for embeddings. Available models include `all-MiniLM-L6-v2`, `bge-small-en-v1.5`, etc.
-- **Use Persistent Storage:** Enable this to store embeddings persistently.
-- **Connection URL:** Enter the connection URL for the vector database.
-
----
-
-#### **RAG Configuration - Custom Functions**
-
-Enable and define custom functions for embedding, token count, and text splitting.
-
-- **Use Custom Embedding Function:** Check this box to enable a custom function for embeddings.
-- **Embedding Function:** Define the Python function for custom embeddings. Refer to the code example provided to see how to structure the function.
-
----
-
-#### **RAG Configuration - Advanced Settings**
-
-The Advanced tab offers additional configuration options. You probably won't need to adjust these settings unless you have specific requirements.
-
-- **Customized Prompt:** Specify a custom prompt for generating responses.
-- **Customized Answer Prefix:** Add a prefix for responses generated by the agent.
-- **Options:** Check options like `Update Context`, `Get or Create`, `New Docs`, `Overwrite`, and `Recursive` to further control document handling and context updates.
+This structure enables powerful branching, fallback logic, and temporary delegation.

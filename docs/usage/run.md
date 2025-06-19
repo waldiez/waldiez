@@ -9,12 +9,6 @@ Once we have setup the models, agents, and connections in the flow, we open the 
 
 During the flow execution, you might encounter errors that can interrupt the conversation. Here are some common errors and solutions to help you resolve them.
 
-!!! Warning
-    If you are on python 3.13, and trying to use a crewAI Tool, this will probably not work, because python3.13 is not yet supported on crawAI (unless we haven't updated this page 😛). Here are some links to check the compatibility:
-
-    * <https://github.com/ag2ai/ag2/blob/main/pyproject.toml#L178-L180>
-    * <https://github.com/crewAIInc/crewAI/blob/main/pyproject.toml#L6>
-
 ### Troubleshooting Common Errors
 
 !!! Note

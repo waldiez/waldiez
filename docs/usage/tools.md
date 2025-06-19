@@ -8,12 +8,13 @@
 ![Tools Dark Preview](../static/images/dark/tools.webp#only-dark)
 
 - **Basic Information**:
+  - **Type**: Select the type of the tool. `Shared` tools can have methods or variables that are available on the whole lifecycle of the flow (for example a simple record acting as a database).
   - **Name**: Enter a unique name for the tool (e.g., `new_tool`).
   - **Description**: Provide a brief description of the tool's purpose.
   !!! note
       The tool name should match the function name in the code.
 
-- **Content Section**:
+- ***Content Section***:
   - This is where you define the code for your tool
   - **Template Code**:
     - Replace the provided template code with your actual implementation.
@@ -30,9 +31,13 @@
             # Add your logic here
       ```
 
-- **Environment Variables** (Optional):
-  - Add any necessary environment variables as key-value pairs to support the tool.
-  - Click the **+** button to add multiple environment variables if required.
+- **Advanced tab**:
+  - Here you can handle advanced parameters for the tool like:
+  - ***Environment Variables***:
+    - Add any necessary environment variables as key-value pairs to support the tool.
+    - Click the **+** button to add multiple environment variables if required.
+  - ***Requirements***:
+    - If the tool requires aditional packages to be installed you can add them here.
 
 - **Save the Configuration**:
   - Once you have entered the tool details and code, click **Save** to confirm and apply the tool configuration.
