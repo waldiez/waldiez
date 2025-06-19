@@ -115,18 +115,24 @@ To skip user input and directly start the conversation, you can modify the chat 
 
 You can also disable the "max turns" setting in the chat link and use a termination condition to end the conversation based on specific criteria. Specify the termination settings in each agent's configuration to control the flow's duration and completion.
 
-![No max turns preview 1](../../static/images/light/examples/1/no_max_turns1.webp#only-light)
-![No max turns preview 1](../../static/images/dark/examples/1/no_max_turns1.webp#only-dark)
+![No max turns preview 1](../../static/images/light/examples/1/no_max_turns_1.webp#only-light)
+![No max turns preview 1](../../static/images/dark/examples/1/no_max_turns_1.webp#only-dark)
 
 Also, make sure you update the agents' system messages to reflect the termination condition.
 
-![No max turns preview 2](../../static/images/light/examples/1/no_max_turns2.webp#only-light)
-![No max turns preview 2](../../static/images/dark/examples/1/no_max_turns2.webp#only-dark)
+![No max turns preview 2](../../static/images/light/examples/1/no_max_turns_2.webp#only-light)
+![No max turns preview 2](../../static/images/dark/examples/1/no_max_turns_2.webp#only-dark)
 
 ---
 
 Files used in this example:
 
-- Using User input: [Standup Comedians 1.waldiez](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%201.waldiez)
-- Without user input: [Standup Comedians 2.waldiez](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%202.waldiez)
-- Without user input and max turns (termination): [Standup Comedians 3.waldiez](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%203.waldiez)
+- Using User input:
+  - Waldiez flow: [Standup Comedians 1.waldiez](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%201.waldiez)
+  - Generated notebook: [Standup Comedians 1.ipynb](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%201.ipynb)
+- Without user input:
+  - Waldiez flow: [Standup Comedians 2.waldiez](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%202.waldiez)
+  - Generated notebook: [Standup Comedians 2.ipynb](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%202.ipynb)
+- Without user input and max turns (termination):
+  - Waldiez flow: [Standup Comedians 3.waldiez](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%203.waldiez)
+  - Generated notebook: [Standup Comedians 3.ipynb](https://github.com/waldiez/examples/blob/main/01%20-%20Standup%20Comedians/Standup%20Comedians%203.ipynb)
