@@ -20081,11 +20081,237 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
   );
 });
 WaldiezAgentRagUserCustomFunctions.displayName = "WaldiezAgentRagUserCustomFunctions";
+const useWaldiezAgentTools = (props) => {
+  const { id, data, tools, agents, onDataChange } = props;
+  const updateAgentData = useWaldiez((state) => state.updateAgentData);
+  const [selectedTool, setSelectedTool] = useState(null);
+  const [selectedExecutor, setSelectedExecutor] = useState(null);
+  useEffect(() => {
+    const currentToolIds = tools.map((tool) => tool.id);
+    const newTools = data.tools.filter((tool) => currentToolIds.includes(tool.id));
+    if (newTools.length !== data.tools.length) {
+      updateAgentData(id, { tools: newTools });
+    }
+  }, [tools, data.tools, updateAgentData, id]);
+  const selectedTools = useMemo(
+    () => data.tools.map((tool) => {
+      const toolFound = tools.find((t) => t.id === tool.id);
+      if (!toolFound) {
+        return null;
+      }
+      return {
+        label: toolFound.data.label,
+        value: toolFound
+      };
+    }),
+    [data.tools, tools]
+  );
+  const onSelectedToolsChange = useCallback(
+    (newValue) => {
+      if (!newValue || newValue.length === 0) {
+        onDataChange({ tools: [] });
+      } else {
+        onDataChange({
+          tools: newValue.filter((tool) => tool !== null).map((tool) => ({
+            id: tool.value.id,
+            executorId: id
+          }))
+        });
+      }
+    },
+    [onDataChange, id]
+  );
+  const toolOptions = useMemo(
+    () => tools.filter((tool) => tool.data.toolType !== "shared").map((tool) => ({
+      label: tool.data.label ?? "Unknown tool",
+      value: tool
+    })),
+    [tools]
+  );
+  const agentOptions = useMemo(
+    () => agents.map((agent) => ({
+      label: agent.data.label ?? "Unknown Agent",
+      value: agent
+    })),
+    [agents]
+  );
+  const getToolName = useCallback(
+    (linkedTool) => {
+      const toolFound = tools.find((tool) => tool.id === linkedTool.id);
+      if (!toolFound) {
+        return "Unknown tool";
+      }
+      return toolFound.data.label;
+    },
+    [tools]
+  );
+  const getAgentName2 = useCallback(
+    (linkedTool) => {
+      const agentFound = agents.find((agent) => agent.id === linkedTool.executorId);
+      if (!agentFound) {
+        return "Unknown Agent";
+      }
+      return agentFound.data.label;
+    },
+    [agents]
+  );
+  const onAddTool = useCallback(() => {
+    if (!selectedTool || !selectedExecutor) {
+      return;
+    }
+    const linkedTool = selectedTool.value;
+    const linkedToolExecutor = selectedExecutor.value;
+    const toolAlready = data.tools.find(
+      (entry) => entry.executorId === linkedToolExecutor.id && entry.id === linkedTool.id
+    );
+    if (!toolAlready) {
+      const newTool = {
+        id: linkedTool.id,
+        executorId: linkedToolExecutor.id
+      };
+      const newTools = [...data.tools, newTool];
+      onDataChange({ tools: newTools });
+      setSelectedTool(null);
+      setSelectedExecutor(null);
+    }
+  }, [selectedTool, selectedExecutor, data.tools, onDataChange]);
+  const onRemoveTool = useCallback(
+    (index) => {
+      const newTools = data.tools.filter((_, i) => i !== index);
+      onDataChange({ tools: newTools });
+    },
+    [data.tools, onDataChange]
+  );
+  return {
+    toolOptions,
+    agentOptions,
+    selectedTool,
+    selectedTools,
+    selectedExecutor,
+    getToolName,
+    getAgentName: getAgentName2,
+    onSelectedToolChange: setSelectedTool,
+    onSelectedToolsChange,
+    onSelectedExecutorChange: setSelectedExecutor,
+    onAddTool,
+    onRemoveTool
+  };
+};
+const WaldiezAgentTools = memo((props) => {
+  const { id, data, tools, skipExecutor } = props;
+  const {
+    toolOptions,
+    agentOptions,
+    selectedTool,
+    selectedTools,
+    selectedExecutor,
+    getToolName,
+    getAgentName: getAgentName2,
+    onSelectedToolChange,
+    onSelectedToolsChange,
+    onSelectedExecutorChange,
+    onAddTool,
+    onRemoveTool
+  } = useWaldiezAgentTools(props);
+  if (tools.length === 0) {
+    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
+  }
+  if (skipExecutor === true) {
+    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
+      /* @__PURE__ */ jsx(
+        Select,
+        {
+          options: toolOptions,
+          onChange: onSelectedToolsChange,
+          value: selectedTools,
+          isMulti: true,
+          isClearable: true,
+          inputId: `select-agent-tool-${id}`,
+          "aria-label": "Select tools"
+        }
+      )
+    ] }) });
+  }
+  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsxs("div", { className: "agent-panel-add-tool", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
+      /* @__PURE__ */ jsx(
+        Select,
+        {
+          options: toolOptions,
+          onChange: onSelectedToolChange,
+          value: selectedTool,
+          inputId: `select-agent-tool-${id}`,
+          "aria-label": "Select tool"
+        }
+      ),
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-executor-${id}`, children: "Executor:" }),
+      /* @__PURE__ */ jsx(
+        Select,
+        {
+          options: agentOptions,
+          onChange: onSelectedExecutorChange,
+          value: selectedExecutor,
+          inputId: `select-agent-tool-executor-${id}`,
+          "aria-label": "Select executor agent"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          title: "Add tool",
+          disabled: !selectedTool || !selectedExecutor,
+          onClick: onAddTool,
+          "data-testid": `add-agent-tool-${id}`,
+          "aria-label": "Add tool",
+          children: "Add"
+        }
+      )
+    ] }),
+    data.tools.length > 0 && /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
+      /* @__PURE__ */ jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
+      data.tools.map((tool, index) => /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: "agent-panel-current-tool",
+          children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tool-entry", children: [
+            /* @__PURE__ */ jsxs("div", { className: "tool-item", children: [
+              "Tool:",
+              " ",
+              /* @__PURE__ */ jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index}`, children: getToolName(tool) })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "agent-item", children: [
+              "Executor:",
+              " ",
+              /* @__PURE__ */ jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index}`, children: getAgentName2(tool) })
+            ] }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                title: "Remove tool",
+                onClick: () => onRemoveTool(index),
+                "data-testid": `remove-agent-tool-${id}-${index}`,
+                "aria-label": `Remove ${getToolName(tool)}`,
+                children: "Remove"
+              }
+            )
+          ] })
+        },
+        `tool-${id}-${tool.id}-${tool.executorId}`
+      ))
+    ] })
+  ] }) });
+});
+WaldiezAgentTools.displayName = "WaldiezAgentTools";
 const WaldiezAgentRagUserTabs = memo(
   (props) => {
     const {
       id,
       data,
+      agents,
       models,
       tools,
       flowId,
@@ -20123,6 +20349,17 @@ const WaldiezAgentRagUserTabs = memo(
               id,
               data,
               tools,
+              onDataChange
+            }
+          ) }) }),
+          /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+            WaldiezAgentTools,
+            {
+              id,
+              data,
+              agents,
+              tools,
+              skipExecutor: false,
               onDataChange
             }
           ) }) }),
@@ -20712,233 +20949,8 @@ const WaldiezAgentTermination = memo((props) => {
   ] });
 });
 WaldiezAgentTermination.displayName = "WaldiezAgentTermination";
-const useWaldiezAgentTools = (props) => {
-  const { id, data, tools, agents, onDataChange } = props;
-  const updateAgentData = useWaldiez((state) => state.updateAgentData);
-  const [selectedTool, setSelectedTool] = useState(null);
-  const [selectedExecutor, setSelectedExecutor] = useState(null);
-  useEffect(() => {
-    const currentToolIds = tools.map((tool) => tool.id);
-    const newTools = data.tools.filter((tool) => currentToolIds.includes(tool.id));
-    if (newTools.length !== data.tools.length) {
-      updateAgentData(id, { tools: newTools });
-    }
-  }, [tools, data.tools, updateAgentData, id]);
-  const selectedTools = useMemo(
-    () => data.tools.map((tool) => {
-      const toolFound = tools.find((t) => t.id === tool.id);
-      if (!toolFound) {
-        return null;
-      }
-      return {
-        label: toolFound.data.label,
-        value: toolFound
-      };
-    }),
-    [data.tools, tools]
-  );
-  const onSelectedToolsChange = useCallback(
-    (newValue) => {
-      if (!newValue || newValue.length === 0) {
-        onDataChange({ tools: [] });
-      } else {
-        onDataChange({
-          tools: newValue.filter((tool) => tool !== null).map((tool) => ({
-            id: tool.value.id,
-            executorId: id
-          }))
-        });
-      }
-    },
-    [onDataChange, id]
-  );
-  const toolOptions = useMemo(
-    () => tools.filter((tool) => tool.data.toolType !== "shared").map((tool) => ({
-      label: tool.data.label ?? "Unknown tool",
-      value: tool
-    })),
-    [tools]
-  );
-  const agentOptions = useMemo(
-    () => agents.map((agent) => ({
-      label: agent.data.label ?? "Unknown Agent",
-      value: agent
-    })),
-    [agents]
-  );
-  const getToolName = useCallback(
-    (linkedTool) => {
-      const toolFound = tools.find((tool) => tool.id === linkedTool.id);
-      if (!toolFound) {
-        return "Unknown tool";
-      }
-      return toolFound.data.label;
-    },
-    [tools]
-  );
-  const getAgentName2 = useCallback(
-    (linkedTool) => {
-      const agentFound = agents.find((agent) => agent.id === linkedTool.executorId);
-      if (!agentFound) {
-        return "Unknown Agent";
-      }
-      return agentFound.data.label;
-    },
-    [agents]
-  );
-  const onAddTool = useCallback(() => {
-    if (!selectedTool || !selectedExecutor) {
-      return;
-    }
-    const linkedTool = selectedTool.value;
-    const linkedToolExecutor = selectedExecutor.value;
-    const toolAlready = data.tools.find(
-      (entry) => entry.executorId === linkedToolExecutor.id && entry.id === linkedTool.id
-    );
-    if (!toolAlready) {
-      const newTool = {
-        id: linkedTool.id,
-        executorId: linkedToolExecutor.id
-      };
-      const newTools = [...data.tools, newTool];
-      onDataChange({ tools: newTools });
-      setSelectedTool(null);
-      setSelectedExecutor(null);
-    }
-  }, [selectedTool, selectedExecutor, data.tools, onDataChange]);
-  const onRemoveTool = useCallback(
-    (index) => {
-      const newTools = data.tools.filter((_, i) => i !== index);
-      onDataChange({ tools: newTools });
-    },
-    [data.tools, onDataChange]
-  );
-  return {
-    toolOptions,
-    agentOptions,
-    selectedTool,
-    selectedTools,
-    selectedExecutor,
-    getToolName,
-    getAgentName: getAgentName2,
-    onSelectedToolChange: setSelectedTool,
-    onSelectedToolsChange,
-    onSelectedExecutorChange: setSelectedExecutor,
-    onAddTool,
-    onRemoveTool
-  };
-};
-const WaldiezAgentTools = memo((props) => {
-  const { id, data, tools, skipExecutor } = props;
-  const {
-    toolOptions,
-    agentOptions,
-    selectedTool,
-    selectedTools,
-    selectedExecutor,
-    getToolName,
-    getAgentName: getAgentName2,
-    onSelectedToolChange,
-    onSelectedToolsChange,
-    onSelectedExecutorChange,
-    onAddTool,
-    onRemoveTool
-  } = useWaldiezAgentTools(props);
-  if (tools.length === 0) {
-    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
-  }
-  if (skipExecutor === true) {
-    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
-      /* @__PURE__ */ jsx(
-        Select,
-        {
-          options: toolOptions,
-          onChange: onSelectedToolsChange,
-          value: selectedTools,
-          isMulti: true,
-          isClearable: true,
-          inputId: `select-agent-tool-${id}`,
-          "aria-label": "Select tools"
-        }
-      )
-    ] }) });
-  }
-  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsxs("div", { className: "agent-panel-add-tool", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
-      /* @__PURE__ */ jsx(
-        Select,
-        {
-          options: toolOptions,
-          onChange: onSelectedToolChange,
-          value: selectedTool,
-          inputId: `select-agent-tool-${id}`,
-          "aria-label": "Select tool"
-        }
-      ),
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-executor-${id}`, children: "Executor:" }),
-      /* @__PURE__ */ jsx(
-        Select,
-        {
-          options: agentOptions,
-          onChange: onSelectedExecutorChange,
-          value: selectedExecutor,
-          inputId: `select-agent-tool-executor-${id}`,
-          "aria-label": "Select executor agent"
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          type: "button",
-          title: "Add tool",
-          disabled: !selectedTool || !selectedExecutor,
-          onClick: onAddTool,
-          "data-testid": `add-agent-tool-${id}`,
-          "aria-label": "Add tool",
-          children: "Add"
-        }
-      )
-    ] }),
-    data.tools.length > 0 && /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
-      /* @__PURE__ */ jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
-      data.tools.map((tool, index) => /* @__PURE__ */ jsx(
-        "div",
-        {
-          className: "agent-panel-current-tool",
-          children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tool-entry", children: [
-            /* @__PURE__ */ jsxs("div", { className: "tool-item", children: [
-              "Tool:",
-              " ",
-              /* @__PURE__ */ jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index}`, children: getToolName(tool) })
-            ] }),
-            /* @__PURE__ */ jsxs("div", { className: "agent-item", children: [
-              "Executor:",
-              " ",
-              /* @__PURE__ */ jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index}`, children: getAgentName2(tool) })
-            ] }),
-            /* @__PURE__ */ jsx(
-              "button",
-              {
-                type: "button",
-                title: "Remove tool",
-                onClick: () => onRemoveTool(index),
-                "data-testid": `remove-agent-tool-${id}-${index}`,
-                "aria-label": `Remove ${getToolName(tool)}`,
-                children: "Remove"
-              }
-            )
-          ] })
-        },
-        `tool-${id}-${tool.id}-${tool.executorId}`
-      ))
-    ] })
-  ] }) });
-});
-WaldiezAgentTools.displayName = "WaldiezAgentTools";
 const WaldiezAgentUserTabs = memo((props) => {
-  const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections } = props;
+  const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections, agents } = props;
   const onNameChange = useCallback(
     (event) => {
       onDataChange({ label: event.target.value });
@@ -21010,6 +21022,17 @@ const WaldiezAgentUserTabs = memo((props) => {
         id,
         data,
         tools,
+        onDataChange
+      }
+    ) }) }),
+    /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      WaldiezAgentTools,
+      {
+        id,
+        data,
+        agents,
+        tools,
+        skipExecutor: false,
         onDataChange
       }
     ) }) }),
@@ -21122,6 +21145,7 @@ const WaldiezNodeAgentModalTabs = memo(
           flowId,
           isDarkMode,
           isModalOpen,
+          agents,
           models,
           tools,
           agentConnections,
@@ -21143,6 +21167,7 @@ const WaldiezNodeAgentModalTabs = memo(
           isDarkMode,
           isModalOpen,
           data,
+          agents,
           tools,
           showNestedChatsTab,
           agentConnections,

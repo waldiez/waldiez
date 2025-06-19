@@ -16,6 +16,7 @@ import {
     WaldiezAgentRagUserVectorDb,
 } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs";
 import { WaldiezAgentRagUserTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/types";
+import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 
 /**
  * Component for configuring RAG User settings
@@ -26,6 +27,7 @@ export const WaldiezAgentRagUserTabs: React.FC<WaldiezAgentRagUserTabsProps> = m
         const {
             id,
             data,
+            agents,
             models,
             tools,
             flowId,
@@ -70,6 +72,18 @@ export const WaldiezAgentRagUserTabs: React.FC<WaldiezAgentRagUserTabsProps> = m
                                 id={id}
                                 data={data}
                                 tools={tools}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                    <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentTools
+                                id={id}
+                                data={data}
+                                agents={agents}
+                                tools={tools}
+                                skipExecutor={false}
                                 onDataChange={onDataChange}
                             />
                         </div>

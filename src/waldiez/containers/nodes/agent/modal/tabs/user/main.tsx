@@ -7,11 +7,18 @@ import { memo, useCallback } from "react";
 import { NumberInput, TabItem, TabItems, TextInput, TextareaInput } from "@waldiez/components";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
 import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
-import { WaldiezAgentConnections, WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
+import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
+import {
+    WaldiezAgentConnections,
+    WaldiezNodeAgent,
+    WaldiezNodeAgentData,
+    WaldiezNodeTool,
+} from "@waldiez/models";
 
 export const WaldiezAgentUserTabs: React.FC<{
     id: string;
     data: WaldiezNodeAgentData;
+    agents: WaldiezNodeAgent[];
     tools: WaldiezNodeTool[];
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>) => void;
     flowId: string;
@@ -20,7 +27,7 @@ export const WaldiezAgentUserTabs: React.FC<{
     showNestedChatsTab: boolean;
     agentConnections: WaldiezAgentConnections;
 }> = memo(props => {
-    const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections } = props;
+    const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections, agents } = props;
 
     const onNameChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +102,18 @@ export const WaldiezAgentUserTabs: React.FC<{
                             id={id}
                             data={data}
                             tools={tools}
+                            onDataChange={onDataChange}
+                        />
+                    </div>
+                </TabItem>
+                <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
+                    <div className="modal-tab-body">
+                        <WaldiezAgentTools
+                            id={id}
+                            data={data}
+                            agents={agents}
+                            tools={tools}
+                            skipExecutor={false}
                             onDataChange={onDataChange}
                         />
                     </div>

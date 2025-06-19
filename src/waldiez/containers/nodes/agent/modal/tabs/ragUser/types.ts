@@ -4,6 +4,7 @@
  */
 import {
     WaldiezAgentConnections,
+    WaldiezNodeAgent,
     WaldiezNodeAgentData,
     WaldiezNodeAgentRagUserData,
     WaldiezNodeModel,
@@ -14,6 +15,7 @@ export type WaldiezAgentRagUserTabsProps = {
     id: string;
     flowId: string;
     data: WaldiezNodeAgentRagUserData;
+    agents: WaldiezNodeAgent[];
     models: WaldiezNodeModel[];
     tools: WaldiezNodeTool[];
     isModalOpen: boolean;
