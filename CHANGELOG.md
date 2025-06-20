@@ -12,7 +12,7 @@ The contents of each release will be used in
 - New json schema to ensure ts and py compatibility.
 - Several ui changes.
 - Added structured IO Stream.
-- Image usage support with ag2's Multimodal agent.
+- Image usage support with ag2 Multimodal agent.
 - Several bug fixes.
 - Updated dependencies.
 - NOTE: Previously created waldiez flows will not work.
