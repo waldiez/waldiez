@@ -11,15 +11,15 @@ import { agentId, flowId } from "../../data";
 
 const goToRagTab = () => {
     renderAgent("rag_user_proxy", { openModal: true });
-    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
-    // fireEvent.click(ragUserTab);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    fireEvent.click(ragUserTab);
 };
 
 describe("Rag User tab main", () => {
     it("should render the Rag User tab", async () => {
         goToRagTab();
-        // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
-        // expect(ragUserTab).toBeInTheDocument();
+        const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+        expect(ragUserTab).toBeInTheDocument();
     });
     it("should render the Rag User sub-tabs", async () => {
         goToRagTab();

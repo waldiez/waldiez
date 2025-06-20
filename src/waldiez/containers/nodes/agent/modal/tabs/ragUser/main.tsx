@@ -100,43 +100,62 @@ export const WaldiezAgentRagUserTabs: React.FC<WaldiezAgentRagUserTabsProps> = m
                             </div>
                         </TabItem>
                     )}
-                    {/* Retrieve Config Tab */}
-                    <TabItem label="Retrieve Config" id={`wf-${flowId}-wa-${id}-rag-retrieveConfig`}>
-                        <WaldiezAgentRagUserRetrieveConfig
-                            id={id}
-                            flowId={flowId}
-                            data={data}
-                            onDataChange={onDataChange}
-                            uploadsEnabled={uploadsEnabled}
-                            filesToUpload={filesToUpload}
-                            onFilesToUploadChange={onFilesToUploadChange}
-                        />
-                    </TabItem>
+                    <TabItem label="RAG" id={`wf-${flowId}-wa-${id}-rag`}>
+                        <TabItems activeTabIndex={0}>
+                            {/* Retrieve Config Tab */}
+                            <TabItem label="Retrieve Config" id={`wf-${flowId}-wa-${id}-rag-retrieveConfig`}>
+                                <WaldiezAgentRagUserRetrieveConfig
+                                    id={id}
+                                    flowId={flowId}
+                                    data={data}
+                                    onDataChange={onDataChange}
+                                    uploadsEnabled={uploadsEnabled}
+                                    filesToUpload={filesToUpload}
+                                    onFilesToUploadChange={onFilesToUploadChange}
+                                />
+                            </TabItem>
 
-                    {/* Text Splitting Tab */}
-                    <TabItem label="Text splitting" id={`wf-${flowId}-wa-${id}-rag-textSplit`}>
-                        <WaldiezAgentRagUserTextSplit id={id} data={data} onDataChange={onDataChange} />
-                    </TabItem>
+                            {/* Text Splitting Tab */}
+                            <TabItem label="Text splitting" id={`wf-${flowId}-wa-${id}-rag-textSplit`}>
+                                <WaldiezAgentRagUserTextSplit
+                                    id={id}
+                                    data={data}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
 
-                    {/* Vector DB Config Tab */}
-                    <TabItem label="Vector DB Config" id={`wf-${flowId}-wa-${id}-rag-vectorDb`}>
-                        <WaldiezAgentRagUserVectorDb id={id} data={data} onDataChange={onDataChange} />
-                    </TabItem>
+                            {/* Vector DB Config Tab */}
+                            <TabItem label="Vector DB Config" id={`wf-${flowId}-wa-${id}-rag-vectorDb`}>
+                                <WaldiezAgentRagUserVectorDb
+                                    id={id}
+                                    data={data}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
 
-                    {/* Custom Functions Tab */}
-                    <TabItem label="Custom Functions" id={`wf-${flowId}-wa-${id}-rag-customFunctions`}>
-                        <WaldiezAgentRagUserCustomFunctions
-                            id={id}
-                            flowId={flowId}
-                            data={data}
-                            isDarkMode={isDarkMode}
-                            onDataChange={onDataChange}
-                        />
-                    </TabItem>
+                            {/* Custom Functions Tab */}
+                            <TabItem
+                                label="Custom Functions"
+                                id={`wf-${flowId}-wa-${id}-rag-customFunctions`}
+                            >
+                                <WaldiezAgentRagUserCustomFunctions
+                                    id={id}
+                                    flowId={flowId}
+                                    data={data}
+                                    isDarkMode={isDarkMode}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
 
-                    {/* Advanced Tab */}
-                    <TabItem label="Advanced" id={`wf-${flowId}-wa-${id}-rag-advanced`}>
-                        <WaldiezAgentRagUserAdvanced id={id} data={data} onDataChange={onDataChange} />
+                            {/* Advanced Tab */}
+                            <TabItem label="Advanced" id={`wf-${flowId}-wa-${id}-rag-advanced`}>
+                                <WaldiezAgentRagUserAdvanced
+                                    id={id}
+                                    data={data}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
+                        </TabItems>
                     </TabItem>
                 </TabItems>
             </div>

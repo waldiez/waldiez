@@ -14,8 +14,8 @@ const goToVectorDbTab = async (isQdrant: boolean = false) => {
     renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
-    // fireEvent.click(ragUserTab);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    fireEvent.click(ragUserTab);
     const vectorDbTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-vectorDb`);
     fireEvent.click(vectorDbTab);
     await waitFor(() => {

@@ -30,8 +30,8 @@ const goToRetrieveConfigTab = async () => {
         },
         uploadsHandler,
     );
-    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
-    // fireEvent.click(ragUserTab);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    fireEvent.click(ragUserTab);
     const retrieveConfigTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-retrieveConfig`);
     fireEvent.click(retrieveConfigTab);
 };

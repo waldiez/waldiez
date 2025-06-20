@@ -12,8 +12,8 @@ const goToAdvancedTab = () => {
     renderAgent("rag_user_proxy", {
         openModal: true,
     });
-    // const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
-    // fireEvent.click(ragUserTab);
+    const ragUserTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag`);
+    fireEvent.click(ragUserTab);
     const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-advanced`);
     fireEvent.click(advancedTab);
 };

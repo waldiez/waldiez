@@ -20372,31 +20372,61 @@ const WaldiezAgentRagUserTabs = memo(
               agentConnections
             }
           ) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsx(
-            WaldiezAgentRagUserRetrieveConfig,
-            {
-              id,
-              flowId,
-              data,
-              onDataChange,
-              uploadsEnabled,
-              filesToUpload,
-              onFilesToUploadChange
-            }
-          ) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Text splitting", id: `wf-${flowId}-wa-${id}-rag-textSplit`, children: /* @__PURE__ */ jsx(WaldiezAgentRagUserTextSplit, { id, data, onDataChange }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Vector DB Config", id: `wf-${flowId}-wa-${id}-rag-vectorDb`, children: /* @__PURE__ */ jsx(WaldiezAgentRagUserVectorDb, { id, data, onDataChange }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Custom Functions", id: `wf-${flowId}-wa-${id}-rag-customFunctions`, children: /* @__PURE__ */ jsx(
-            WaldiezAgentRagUserCustomFunctions,
-            {
-              id,
-              flowId,
-              data,
-              isDarkMode,
-              onDataChange
-            }
-          ) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `wf-${flowId}-wa-${id}-rag-advanced`, children: /* @__PURE__ */ jsx(WaldiezAgentRagUserAdvanced, { id, data, onDataChange }) })
+          /* @__PURE__ */ jsx(TabItem, { label: "RAG", id: `wf-${flowId}-wa-${id}-rag`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+            /* @__PURE__ */ jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsx(
+              WaldiezAgentRagUserRetrieveConfig,
+              {
+                id,
+                flowId,
+                data,
+                onDataChange,
+                uploadsEnabled,
+                filesToUpload,
+                onFilesToUploadChange
+              }
+            ) }),
+            /* @__PURE__ */ jsx(TabItem, { label: "Text splitting", id: `wf-${flowId}-wa-${id}-rag-textSplit`, children: /* @__PURE__ */ jsx(
+              WaldiezAgentRagUserTextSplit,
+              {
+                id,
+                data,
+                onDataChange
+              }
+            ) }),
+            /* @__PURE__ */ jsx(TabItem, { label: "Vector DB Config", id: `wf-${flowId}-wa-${id}-rag-vectorDb`, children: /* @__PURE__ */ jsx(
+              WaldiezAgentRagUserVectorDb,
+              {
+                id,
+                data,
+                onDataChange
+              }
+            ) }),
+            /* @__PURE__ */ jsx(
+              TabItem,
+              {
+                label: "Custom Functions",
+                id: `wf-${flowId}-wa-${id}-rag-customFunctions`,
+                children: /* @__PURE__ */ jsx(
+                  WaldiezAgentRagUserCustomFunctions,
+                  {
+                    id,
+                    flowId,
+                    data,
+                    isDarkMode,
+                    onDataChange
+                  }
+                )
+              }
+            ),
+            /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `wf-${flowId}-wa-${id}-rag-advanced`, children: /* @__PURE__ */ jsx(
+              WaldiezAgentRagUserAdvanced,
+              {
+                id,
+                data,
+                onDataChange
+              }
+            ) })
+          ] }) })
         ] })
       }
     );
