@@ -1600,7 +1600,7 @@ const ValidConditionTypes = [
 class WaldiezFlow {
   constructor(props) {
     __publicField(this, "type", "flow");
-    __publicField(this, "version", "0.4.11");
+    __publicField(this, "version", "0.5.0");
     __publicField(this, "id");
     __publicField(this, "name");
     __publicField(this, "description");
@@ -1629,7 +1629,7 @@ const getFlowId = () => {
 const aFlowId = getFlowId();
 const emptyFlow = {
   type: "flow",
-  version: "0.4.11",
+  version: "0.5.0",
   id: aFlowId,
   storageId: aFlowId,
   name: "Waldiez Flow",
@@ -5278,7 +5278,7 @@ const flowMapper = {
     const waldiezFlow = {
       id: flow.flowId,
       type: "flow",
-      version: "0.4.11",
+      version: "0.5.0",
       storageId: flow.storageId,
       name: flow.name,
       description: flow.description,
