@@ -52,7 +52,7 @@
         "monaco": "bun scripts/monaco.ts",
         "build": "bun clean && bun build:lib && bun build:web && bun archive",
         "build:lib": "tsc -b && vite build",
-        "build:web": "tsc -b && vite build --config vite.web.config.ts",
+        "build:web": "bun monaco && bun build:lib --config vite.web.config.ts",
         "build:site": "bun monaco && bun build:web && bun scripts/afterSite.ts",
         "docs": "typedoc --tsconfig tsconfig.docs.json",
         "examples:build:check": "bun build:lib && node --import=tsx scripts/examples.ts --check",
