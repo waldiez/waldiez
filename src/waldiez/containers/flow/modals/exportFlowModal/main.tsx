@@ -7,7 +7,7 @@ import { memo, useCallback, useState } from "react";
 import { CheckboxInput, DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
 
 // Constants
-const HUB_URL = "https://hub.waldiez.io";
+const HUB_URL = "https://api.waldiez.io";
 const HUB_UPLOAD_URL = `${HUB_URL}/api/files`;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const UPLOAD_TIMEOUT = 10000; // 10 seconds
