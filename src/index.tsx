@@ -103,7 +103,7 @@ const featureFlags = {
     readOnly: undefined, // If true, only viewing is allowed (no editing)
     skipImport: false, // If true, hides the import button
     skipExport: false, // If true, hides the export button
-    skipHub: isProd, // If true, skips hub integration for import/export
+    skipHub: false, // If true, skips hub integration for import/export
 };
 
 /**

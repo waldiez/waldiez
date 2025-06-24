@@ -13509,7 +13509,7 @@ const ChatModal = memo((props) => {
 });
 ChatModal.displayName = "ChatModal";
 const HUB_URL = "https://hub.waldiez.io";
-const HUB_UPLOAD_URL = `${HUB_URL}/api/files`;
+const API_FILES_URL = "https://api.waldiez.io/api/files";
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const UPLOAD_TIMEOUT = 1e4;
 const ADDITIONAL_FILE_TIMEOUT = 3e4;
@@ -13554,7 +13554,7 @@ const ExportFlowModal = memo((props) => {
         const fileData = new Blob([flowString], { type: "application/json" });
         const formData = new FormData();
         formData.append("file", fileData, `${flowId}.waldiez`);
-        const response = await fetch(`${HUB_UPLOAD_URL}/upload`, {
+        const response = await fetch(`${API_FILES_URL}/upload`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${hubApiToken}`,
@@ -13570,7 +13570,7 @@ const ExportFlowModal = memo((props) => {
         if (additionalFile) {
           const additionalFormData = new FormData();
           additionalFormData.append("file", additionalFile, additionalFile.name);
-          const additionalResponse = await fetch(`${HUB_UPLOAD_URL}/${data.id}/example`, {
+          const additionalResponse = await fetch(`${API_FILES_URL}/${data.id}/example`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${hubApiToken}`,

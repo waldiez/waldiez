@@ -7,8 +7,8 @@ import { memo, useCallback, useState } from "react";
 import { CheckboxInput, DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
 
 // Constants
-const HUB_URL = "https://api.waldiez.io";
-const HUB_UPLOAD_URL = `${HUB_URL}/api/files`;
+const HUB_URL = "https://hub.waldiez.io";
+const API_FILES_URL = "https://api.waldiez.io/api/files";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const UPLOAD_TIMEOUT = 10000; // 10 seconds
 const ADDITIONAL_FILE_TIMEOUT = 30000; // 30 seconds
@@ -82,7 +82,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                 formData.append("file", fileData, `${flowId}.waldiez`);
 
                 // Upload the flow file
-                const response = await fetch(`${HUB_UPLOAD_URL}/upload`, {
+                const response = await fetch(`${API_FILES_URL}/upload`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${hubApiToken}`,
@@ -103,7 +103,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                     const additionalFormData = new FormData();
                     additionalFormData.append("file", additionalFile, additionalFile.name);
 
-                    const additionalResponse = await fetch(`${HUB_UPLOAD_URL}/${data.id}/example`, {
+                    const additionalResponse = await fetch(`${API_FILES_URL}/${data.id}/example`, {
                         method: "POST",
                         headers: {
                             Authorization: `Bearer ${hubApiToken}`,
