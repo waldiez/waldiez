@@ -5,6 +5,11 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.5.1
+
+- Add upload to hub option when exporting a flow
+- Dependency updates
+
 ## v0.5.0
 
 - Updated ag2 dependency to 0.9.3.
