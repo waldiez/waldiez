@@ -132,9 +132,10 @@ export const toolMapper = {
      */
     asNode: (tool: WaldiezTool, position?: { x: number; y: number }): WaldiezNodeTool => {
         const nodePosition = getNodePositionFromJSON(tool, position);
+        const toolLabel = tool.rest?.label || tool.name;
         const nodeData = {
             ...tool.data,
-            label: tool.name,
+            label: toolLabel,
             description: tool.description,
             tags: tool.tags,
             requirements: tool.requirements,

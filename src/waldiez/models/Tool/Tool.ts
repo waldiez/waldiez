@@ -60,8 +60,8 @@ export class WaldiezTool {
     static create(): WaldiezTool {
         return new WaldiezTool({
             id: `wt-${getId()}`,
-            name: "new_tool",
-            description: "A new tool",
+            name: "waldiez_shared",
+            description: "Shared code to used in the whole flow.",
             tags: [],
             requirements: [],
             createdAt: new Date().toISOString(),

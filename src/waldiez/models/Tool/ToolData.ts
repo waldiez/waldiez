@@ -22,17 +22,17 @@ export class WaldiezToolData {
             secrets: { [key: string]: unknown };
             kwargs?: { [key: string]: unknown };
         } = {
-            content: DEFAULT_CUSTOM_TOOL_CONTENT,
-            toolType: "custom",
+            content: DEFAULT_SHARED_TOOL_CONTENT,
+            toolType: "shared",
             secrets: {},
             kwargs: {},
         },
     ) {
-        const { content, toolType, secrets } = props;
+        const { content, toolType, secrets, kwargs } = props;
         this.toolType = toolType;
         this.content = content;
         this.secrets = secrets;
-        this.kwargs = props.kwargs || {};
+        this.kwargs = kwargs || {};
     }
 }
 

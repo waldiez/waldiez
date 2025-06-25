@@ -66,7 +66,12 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
      * Update tool label
      */
     const onToolLabelChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (item: React.ChangeEvent<HTMLInputElement> | string) => {
+            if (typeof item === "string") {
+                onDataChange({ label: item });
+                return;
+            }
+            const e = item as React.ChangeEvent<HTMLInputElement>;
             onDataChange({ label: e.target.value });
         },
         [onDataChange],
@@ -76,7 +81,12 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
      * Update tool description
      */
     const onToolDescriptionChange = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (item: React.ChangeEvent<HTMLTextAreaElement> | string) => {
+            if (typeof item === "string") {
+                onDataChange({ description: item });
+                return;
+            }
+            const e = item as React.ChangeEvent<HTMLTextAreaElement>;
             onDataChange({ description: e.target.value });
         },
         [onDataChange],

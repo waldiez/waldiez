@@ -18,7 +18,7 @@ class WikipediaSearchToolImpl(PredefinedTool):
     @property
     def description(self) -> str:
         """Tool description."""
-        return "Search Wikipedia for a given query and return the summary."
+        return "Search Wikipedia for a given query."
 
     @property
     def required_secrets(self) -> list[str]:

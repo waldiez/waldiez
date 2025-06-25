@@ -47,6 +47,7 @@ export type WaldiezToolDataCommon = {
  * WaldiezNodeToolData
  * Represents the data of a node tool.
  * @param label - The label of the tool
+ * @param name - The name of the tool
  * @param content - The content of the tool
  * @param toolType - The type of tool
  * @param description - The description of the tool

@@ -9,12 +9,27 @@ import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import { WaldiezToolType } from "@waldiez/models";
 
+const PREDEFINED_TOOL_TYPES = ["wikipedia_search"];
+
+const DEFAULT_NAME: { [key: string]: string } = {
+    wikipedia_search: "Wikipedia Search",
+    shared: "waldiez_shared",
+    custom: "tool_name",
+};
+
+const DEFAULT_DESCRIPTION: { [key: string]: string } = {
+    wikipedia_search: "Search Wikipedia for a given query.",
+    shared: "Shared code to used in the whole flow.",
+    custom: "A custom tool that you define.",
+};
+
 // Define tool type options outside the component to prevent recreation
-const TOOL_TYPE_OPTIONS: { value: WaldiezToolType; label: string }[] = [
-    { value: "shared", label: "Shared" },
-    { value: "custom", label: "Custom" },
-    { value: "langchain", label: "Langchain" },
-    { value: "crewai", label: "CrewAI" },
+const TOOL_TYPE_OPTIONS: { value: string; label: string }[] = [
+    { value: "wikipedia_search", label: "Wikipedia Search" },
+    { value: "shared", label: "Shared Code" },
+    { value: "custom", label: "Custom Tool" },
+    // { value: "langchain", label: "Langchain" },
+    // { value: "crewai", label: "CrewAI" },
 ];
 
 /**
@@ -37,13 +52,23 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
      * Handle tool type selection change
      */
     const onToolTypeSelectChange = useCallback(
-        (option: SingleValue<{ value: WaldiezToolType; label: string }>) => {
+        (option: SingleValue<{ value: string; label: string }>) => {
             if (!option) {
                 return;
             }
-            onToolTypeChange(option.value);
+            if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
+                // If the selected type is a predefined tool, set the content to an empty string
+                onToolTypeChange("predefined");
+                onToolLabelChange(option.value);
+                onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
+            } else {
+                onToolTypeChange(option.value as WaldiezToolType);
+                onToolLabelChange(DEFAULT_NAME[option.value]);
+                onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
+            }
+            // onToolTypeChange(option.value);
         },
-        [onToolTypeChange],
+        [onToolTypeChange, onToolLabelChange, onToolDescriptionChange],
     );
 
     // Generate element IDs for accessibility
@@ -54,11 +79,6 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
 
     return (
         <div className="flex-column">
-            <div className="info margin-bottom-10">
-                Enter the tool details below. You can follow the instructions for each tool type in the
-                comments of the content editor.
-            </div>
-
             <div className="margin-bottom-10">
                 <label htmlFor={typeSelectId}>Type:</label>
                 <div className="margin-top-10" />
@@ -71,48 +91,51 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                     aria-label="Tool type"
                 />
             </div>
-
-            <div className="margin-bottom-10">
-                <label htmlFor={labelInputId}>Name:</label>
-                <div className="margin-top-10" />
-                <input
-                    title="Name"
-                    type="text"
-                    value={data.label || ""}
-                    data-testid={labelInputId}
-                    id={labelInputId}
-                    onChange={onToolLabelChange}
-                    className="full-width"
-                    aria-label="Tool name"
-                />
-            </div>
-
-            <div className="margin-bottom-10">
-                <label htmlFor={descriptionInputId}>Description:</label>
-                <div className="margin-top-10" />
-                <TextareaInput
-                    title="Description"
-                    rows={2}
-                    value={data.description || ""}
-                    data-testid={descriptionInputId}
-                    id={descriptionInputId}
-                    onChange={onToolDescriptionChange}
-                    className="full-width"
-                    aria-label="Tool description"
-                />
-            </div>
-
-            <div>
-                <label htmlFor={contentEditorId}>Content:</label>
-                <div className="margin-top-10" />
-                <Editor
-                    value={data.content || ""}
-                    onChange={onToolContentChange}
-                    darkMode={darkMode}
-                    aria-label="Tool content"
-                    data-testid={contentEditorId}
-                />
-            </div>
+            {data.toolType !== "predefined" && (
+                <div className="margin-bottom-10">
+                    <label htmlFor={labelInputId}>Name:</label>
+                    <div className="margin-top-10" />
+                    <input
+                        title="Name"
+                        type="text"
+                        value={data.label || ""}
+                        data-testid={labelInputId}
+                        id={labelInputId}
+                        onChange={onToolLabelChange}
+                        className="full-width"
+                        aria-label="Tool name"
+                    />
+                </div>
+            )}
+            {data.toolType !== "predefined" && (
+                <div className="margin-bottom-10">
+                    <label htmlFor={descriptionInputId}>Description:</label>
+                    <div className="margin-top-10" />
+                    <TextareaInput
+                        title="Description"
+                        rows={2}
+                        value={data.description || ""}
+                        data-testid={descriptionInputId}
+                        id={descriptionInputId}
+                        onChange={onToolDescriptionChange}
+                        className="full-width"
+                        aria-label="Tool description"
+                    />
+                </div>
+            )}
+            {data.toolType !== "predefined" && (
+                <div>
+                    <label htmlFor={contentEditorId}>Content:</label>
+                    <div className="margin-top-10" />
+                    <Editor
+                        value={data.content || ""}
+                        onChange={onToolContentChange}
+                        darkMode={darkMode}
+                        aria-label="Tool content"
+                        data-testid={contentEditorId}
+                    />
+                </div>
+            )}
         </div>
     );
 });
