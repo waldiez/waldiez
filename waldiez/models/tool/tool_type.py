@@ -4,5 +4,7 @@
 
 from typing_extensions import Literal
 
-WaldiezToolType = Literal["shared", "custom", "langchain", "crewai"]
+WaldiezToolType = Literal[
+    "shared", "custom", "langchain", "crewai", "predefined"
+]
 """Possible types of a Waldiez Tool."""

@@ -2,6 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Tool model."""
 
+from typing import Any
+
 from pydantic import Field
 from typing_extensions import Annotated
 
@@ -49,3 +51,13 @@ class WaldiezToolData(WaldiezBase):
             description="The secrets (environment variables) of the tool.",
         ),
     ]
+    kwargs: Annotated[
+        dict[str, Any],
+        Field(
+            default_factory=dict,
+            title="Keyword Arguments",
+            description=(
+                "Keyword arguments for the tool, used for initialization."
+            ),
+        ),
+    ] = {}

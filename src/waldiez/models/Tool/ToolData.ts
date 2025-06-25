@@ -14,21 +14,25 @@ export class WaldiezToolData {
     content: string;
     toolType: WaldiezToolType;
     secrets: { [key: string]: unknown };
+    kwargs?: { [key: string]: unknown } = {};
     constructor(
         props: {
             content: string;
             toolType: WaldiezToolType;
             secrets: { [key: string]: unknown };
+            kwargs?: { [key: string]: unknown };
         } = {
             content: DEFAULT_CUSTOM_TOOL_CONTENT,
             toolType: "custom",
             secrets: {},
+            kwargs: {},
         },
     ) {
         const { content, toolType, secrets } = props;
         this.toolType = toolType;
         this.content = content;
         this.secrets = secrets;
+        this.kwargs = props.kwargs || {};
     }
 }
 
@@ -129,4 +133,5 @@ export const DEFAULT_TOOL_CONTENT_MAP: Record<WaldiezToolType, string> = {
     custom: DEFAULT_CUSTOM_TOOL_CONTENT,
     langchain: DEFAULT_LANGCHAIN_TOOL_CONTENT,
     crewai: DEFAULT_CREWAI_TOOL_CONTENT,
+    predefined: "",
 };

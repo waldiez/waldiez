@@ -264,8 +264,8 @@ dependencies = ["waldiez[dev,test,docs,ag2_extras,redis,websockets,mqtt]"]
 
 [tool.hatch.envs.default.scripts]
 pre-test = """
-python -m pip install --upgrade pip
-pip install -r requirements/test.txt
+python -m pip install -q --upgrade pip
+pip install -q -r requirements/test.txt
 """
 test = """
 hatch run pre-test

@@ -66,10 +66,12 @@ export const toolMapper = {
         const toolType = getToolDataType(jsonObject.data || (jsonObject as any), name);
         const content = getToolDataContent(jsonObject.data || (jsonObject as any));
         const secrets = getToolDataSecrets(jsonObject.data || (jsonObject as any));
+        const kwargs = getToolDataKwargs(jsonObject.data || (jsonObject as any));
         const data = new WaldiezToolData({
             toolType,
             content,
             secrets,
+            kwargs,
         });
         return new WaldiezTool({
             id,
@@ -116,6 +118,7 @@ export const toolMapper = {
                 content: toolNode.data.content,
                 toolType,
                 secrets,
+                kwargs: toolNode.data.kwargs,
             },
             ...rest,
         };
@@ -236,4 +239,26 @@ const getToolDataType = (json: Record<string, unknown>, toolName: string): Waldi
         toolType = "shared";
     }
     return toolType;
+};
+
+/**
+ * Gets the keyword arguments (kwargs) from the tool data in the JSON object.
+ * If kwargs are not present or not an object, it returns an empty object.
+ * @param json - The JSON object containing tool data.
+ * @returns An object containing the keyword arguments of the tool data.
+ */
+const getToolDataKwargs = (json: Record<string, unknown>): { [key: string]: unknown } => {
+    let kwargs: { [key: string]: unknown } = {};
+    if ("kwargs" in json && typeof json.kwargs === "object") {
+        if (json.kwargs !== null) {
+            kwargs = Object.entries(json.kwargs).reduce(
+                (acc, [key, value]) => {
+                    acc[key] = value;
+                    return acc;
+                },
+                {} as { [key: string]: unknown },
+            );
+        }
+    }
+    return kwargs;
 };

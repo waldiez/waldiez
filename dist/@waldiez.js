@@ -1797,15 +1797,18 @@ class WaldiezToolData {
   content;
   toolType;
   secrets;
+  kwargs = {};
   constructor(props = {
     content: DEFAULT_CUSTOM_TOOL_CONTENT,
     toolType: "custom",
-    secrets: {}
+    secrets: {},
+    kwargs: {}
   }) {
     const { content, toolType, secrets } = props;
     this.toolType = toolType;
     this.content = content;
     this.secrets = secrets;
+    this.kwargs = props.kwargs || {};
   }
 }
 const DEFAULT_CUSTOM_TOOL_CONTENT = `
@@ -1895,7 +1898,8 @@ const DEFAULT_TOOL_CONTENT_MAP = {
   shared: DEFAULT_SHARED_TOOL_CONTENT,
   custom: DEFAULT_CUSTOM_TOOL_CONTENT,
   langchain: DEFAULT_LANGCHAIN_TOOL_CONTENT,
-  crewai: DEFAULT_CREWAI_TOOL_CONTENT
+  crewai: DEFAULT_CREWAI_TOOL_CONTENT,
+  predefined: ""
 };
 class WaldiezTool {
   type = "tool";
@@ -4620,10 +4624,12 @@ const toolMapper = {
     const toolType = getToolDataType(jsonObject.data || jsonObject, name);
     const content = getToolDataContent(jsonObject.data || jsonObject);
     const secrets = getToolDataSecrets(jsonObject.data || jsonObject);
+    const kwargs = getToolDataKwargs(jsonObject.data || jsonObject);
     const data = new WaldiezToolData({
       toolType,
       content,
-      secrets
+      secrets,
+      kwargs
     });
     return new WaldiezTool({
       id,
@@ -4668,7 +4674,8 @@ const toolMapper = {
       data: {
         content: toolNode.data.content,
         toolType,
-        secrets
+        secrets,
+        kwargs: toolNode.data.kwargs
       },
       ...rest
     };
@@ -4743,6 +4750,21 @@ const getToolDataType = (json, toolName) => {
     toolType = "shared";
   }
   return toolType;
+};
+const getToolDataKwargs = (json) => {
+  let kwargs = {};
+  if ("kwargs" in json && typeof json.kwargs === "object") {
+    if (json.kwargs !== null) {
+      kwargs = Object.entries(json.kwargs).reduce(
+        (acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        },
+        {}
+      );
+    }
+  }
+  return kwargs;
 };
 const exportTool = (tool, nodes, hideSecrets) => {
   const waldiezTool = toolMapper.exportTool(tool, hideSecrets);

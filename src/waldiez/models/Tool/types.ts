@@ -14,8 +14,9 @@ export type { WaldiezToolData } from "@waldiez/models/Tool/ToolData";
  * @param custom - Custom tool
  * @param langchain - LangChain tool
  * @param crewai - CrewAI tool
+ * @param predefined - Predefined tool
  */
-export type WaldiezToolType = "shared" | "custom" | "langchain" | "crewai";
+export type WaldiezToolType = "shared" | "custom" | "langchain" | "crewai" | "predefined";
 
 /**
  * WaldiezToolDataCommon
@@ -24,6 +25,7 @@ export type WaldiezToolType = "shared" | "custom" | "langchain" | "crewai";
  * @param toolType - The type of tool
  * @param description - The description of the tool
  * @param secrets - The secrets associated with the tool
+ * @param kwargs - Additional keyword arguments for the tool initialization
  * @param requirements - The requirements for the tool
  * @param tags - The tags associated with the tool
  * @param createdAt - The creation date of the tool
@@ -34,6 +36,7 @@ export type WaldiezToolDataCommon = {
     toolType: WaldiezToolType;
     description: string;
     secrets: { [key: string]: unknown };
+    kwargs?: { [key: string]: unknown };
     requirements: string[];
     tags: string[];
     createdAt: string;

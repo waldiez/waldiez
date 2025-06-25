@@ -2020,6 +2020,10 @@
                 "secrets": {
                     "type": "object",
                     "additionalProperties": {}
+                },
+                "kwargs": {
+                    "type": "object",
+                    "additionalProperties": {}
                 }
             },
             "required": ["content", "toolType", "secrets"],
@@ -2028,7 +2032,7 @@
         },
         "WaldiezToolType": {
             "type": "string",
-            "enum": ["shared", "custom", "langchain", "crewai"],
+            "enum": ["shared", "custom", "langchain", "crewai", "predefined"],
             "description": "WaldiezToolType Represents the type of tool used in Waldiez."
         },
         "WaldiezChat": {

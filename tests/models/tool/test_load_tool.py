@@ -4,6 +4,7 @@
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -21,7 +22,7 @@ def test_load_tool_from_file(tmp_path: Path) -> None:
     tool_content = '''def custom_tool() -> str:
     """Custom tool."""
     return "This is a custom tool."'''
-    tool = {
+    tool: dict[str, Any] = {
         "id": "test_tool",
         "type": "tool",
         "name": "custom_tool",
@@ -34,6 +35,7 @@ def test_load_tool_from_file(tmp_path: Path) -> None:
             "toolType": "custom",
             "content": tool_content,
             "secrets": {},
+            "kwargs": {},
         },
     }
     tool_file = tmp_path / "test_load_tool_from_file.WaldiezTool"
@@ -60,7 +62,7 @@ def test_load_tool_from_dict() -> None:
     tool_content = '''def custom_tool() -> str:
     """Custom tool."""
     return "This is a custom tool."'''
-    tool = {
+    tool: dict[str, Any] = {
         "id": "test_tool",
         "type": "tool",
         "name": "custom_tool",
@@ -73,6 +75,7 @@ def test_load_tool_from_dict() -> None:
             "toolType": "custom",
             "content": tool_content,
             "secrets": {},
+            "kwargs": {},
         },
     }
 
@@ -131,7 +134,7 @@ custom_tool = "This is a custom tool."
 # we should not convert the tool
 interop.convert_tool(tool="custom", type="langchain")
 """
-    tool = {
+    tool: dict[str, Any] = {
         "id": "test_tool",
         "type": "tool",
         "name": "custom_tool",
@@ -144,6 +147,7 @@ interop.convert_tool(tool="custom", type="langchain")
             "toolType": "langchain",
             "content": tool_content,
             "secrets": {},
+            "kwargs": {},
         },
     }
 

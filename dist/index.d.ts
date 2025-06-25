@@ -3628,10 +3628,16 @@ export declare class WaldiezToolData {
     secrets: {
         [key: string]: unknown;
     };
+    kwargs?: {
+        [key: string]: unknown;
+    };
     constructor(props?: {
         content: string;
         toolType: WaldiezToolType;
         secrets: {
+            [key: string]: unknown;
+        };
+        kwargs?: {
             [key: string]: unknown;
         };
     });
@@ -3644,6 +3650,7 @@ export declare class WaldiezToolData {
  * @param toolType - The type of tool
  * @param description - The description of the tool
  * @param secrets - The secrets associated with the tool
+ * @param kwargs - Additional keyword arguments for the tool initialization
  * @param requirements - The requirements for the tool
  * @param tags - The tags associated with the tool
  * @param createdAt - The creation date of the tool
@@ -3654,6 +3661,9 @@ export declare type WaldiezToolDataCommon = {
     toolType: WaldiezToolType;
     description: string;
     secrets: {
+        [key: string]: unknown;
+    };
+    kwargs?: {
         [key: string]: unknown;
     };
     requirements: string[];
@@ -3669,8 +3679,9 @@ export declare type WaldiezToolDataCommon = {
  * @param custom - Custom tool
  * @param langchain - LangChain tool
  * @param crewai - CrewAI tool
+ * @param predefined - Predefined tool
  */
-export declare type WaldiezToolType = "shared" | "custom" | "langchain" | "crewai";
+export declare type WaldiezToolType = "shared" | "custom" | "langchain" | "crewai" | "predefined";
 
 /**
  * The type of target in a handoff transition.

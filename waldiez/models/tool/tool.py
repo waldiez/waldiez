@@ -180,6 +180,17 @@ class WaldiezTool(WaldiezBase):
         return self.tool_type == "shared" or self.name == SHARED_TOOL_NAME
 
     @property
+    def is_predefined(self) -> bool:
+        """Check if the tool is predefined.
+
+        Returns
+        -------
+        bool
+            True if the tool is predefined, False otherwise.
+        """
+        return self.tool_type == "predefined"
+
+    @property
     def is_interop(self) -> bool:
         """Check if the tool is interoperability.
 
