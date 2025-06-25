@@ -3,9 +3,6 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 import stripAnsi from "strip-ansi";
 import { nanoid } from "nanoid";
 import JSZip from "jszip";
@@ -34,6 +31,20 @@ import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
 import { AiFillCode, AiFillOpenAI } from "react-icons/ai";
 class WaldiezAgentData {
+  systemMessage;
+  humanInputMode;
+  codeExecutionConfig;
+  agentDefaultAutoReply;
+  maxConsecutiveAutoReply;
+  termination;
+  modelIds;
+  tools;
+  parentId;
+  nestedChats;
+  contextVariables;
+  updateAgentStateBeforeReply;
+  afterWork;
+  handoffs;
   // handoff / edge ids
   constructor(props = {
     humanInputMode: "NEVER",
@@ -69,20 +80,6 @@ class WaldiezAgentData {
     afterWork: null,
     handoffs: []
   }) {
-    __publicField(this, "systemMessage");
-    __publicField(this, "humanInputMode");
-    __publicField(this, "codeExecutionConfig");
-    __publicField(this, "agentDefaultAutoReply");
-    __publicField(this, "maxConsecutiveAutoReply");
-    __publicField(this, "termination");
-    __publicField(this, "modelIds");
-    __publicField(this, "tools");
-    __publicField(this, "parentId");
-    __publicField(this, "nestedChats");
-    __publicField(this, "contextVariables");
-    __publicField(this, "updateAgentStateBeforeReply");
-    __publicField(this, "afterWork");
-    __publicField(this, "handoffs");
     this.systemMessage = props.systemMessage;
     this.humanInputMode = props.humanInputMode;
     this.codeExecutionConfig = props.codeExecutionConfig;
@@ -235,7 +232,6 @@ class MessageUtils {
   }
   // eslint-disable-next-line max-statements
   static replaceImageUrls(content, imageUrl) {
-    var _a;
     const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
     const processTextContent = (text) => {
       const matched = text.match(imgRegex);
@@ -257,7 +253,6 @@ class MessageUtils {
     });
     if (Array.isArray(content)) {
       return content.map((item) => {
-        var _a2;
         if (typeof item === "string") {
           const processed = processTextContent(item);
           if (!processed) {
@@ -268,7 +263,7 @@ class MessageUtils {
         if (typeof item !== "object" || item === null || !("type" in item)) {
           return null;
         }
-        if (item.type === "image_url" && ((_a2 = item.image_url) == null ? void 0 : _a2.url)) {
+        if (item.type === "image_url" && item.image_url?.url) {
           return updateImageUrl(item);
         }
         if (item.type === "text" && item.text) {
@@ -279,7 +274,7 @@ class MessageUtils {
       }).filter(Boolean);
     }
     if (typeof content === "object" && content !== null && "type" in content) {
-      if (content.type === "image_url" && "image_url" in content && content.image_url && typeof content.image_url === "object" && "url" in content.image_url && ((_a = content.image_url) == null ? void 0 : _a.url)) {
+      if (content.type === "image_url" && "image_url" in content && content.image_url && typeof content.image_url === "object" && "url" in content.image_url && content.image_url?.url) {
         return updateImageUrl(content);
       }
       if (content.type === "text" && "text" in content && typeof content.text === "string") {
@@ -298,7 +293,6 @@ class MessageUtils {
   }
   // eslint-disable-next-line max-statements
   static normalizeContent(content, imageUrl) {
-    var _a;
     if (typeof content === "string") {
       if (imageUrl) {
         const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
@@ -328,7 +322,7 @@ class MessageUtils {
       if (content.type === "text" && typeof content.text === "string") {
         return [{ type: "text", text: content.text }];
       }
-      if (content.type === "image_url" && ((_a = content.image_url) == null ? void 0 : _a.url)) {
+      if (content.type === "image_url" && content.image_url?.url) {
         return [
           {
             type: "image_url",
@@ -454,10 +448,7 @@ class PrintMessageHandler {
           return this.extractParticipants(innerDumped);
         }
         const allParticipants = parsedData.participants.map((p) => p.name).filter(Boolean);
-        const userParticipants = parsedData.participants.filter((p) => {
-          var _a;
-          return ((_a = p.humanInputMode) == null ? void 0 : _a.toUpperCase()) === "ALWAYS";
-        }).map((p) => p.name).filter(Boolean);
+        const userParticipants = parsedData.participants.filter((p) => p.humanInputMode?.toUpperCase() === "ALWAYS").map((p) => p.name).filter(Boolean);
         return {
           isWorkflowEnd: false,
           participants: {
@@ -731,7 +722,19 @@ class TerminationAndHumanReplyNoInputHandler {
     return { message };
   }
 }
-const _WaldiezChatMessageProcessor = class _WaldiezChatMessageProcessor {
+class WaldiezChatMessageProcessor {
+  static handlers = [
+    new InputRequestHandler(),
+    new PrintMessageHandler(),
+    new TextMessageHandler(),
+    new TerminationHandler(),
+    new GroupChatRunHandler(),
+    new SpeakerSelectionHandler(),
+    new CodeExecutionReplyHandler(),
+    new ToolCallHandler(),
+    new TerminationAndHumanReplyNoInputHandler(),
+    new UsingAutoReplyHandler()
+  ];
   /**
    * Process a raw message and return the result
    * @param rawMessage - The raw message string to process
@@ -740,11 +743,11 @@ const _WaldiezChatMessageProcessor = class _WaldiezChatMessageProcessor {
    */
   static process(rawMessage, requestId, imageUrl) {
     const message = stripAnsi(rawMessage.replace("\n", "")).trim();
-    const data = _WaldiezChatMessageProcessor.parseMessage(message);
+    const data = WaldiezChatMessageProcessor.parseMessage(message);
     if (!data) {
       return void 0;
     }
-    const handler = _WaldiezChatMessageProcessor.findHandler(data.type);
+    const handler = WaldiezChatMessageProcessor.findHandler(data.type);
     if (!handler) {
       return void 0;
     }
@@ -772,20 +775,7 @@ const _WaldiezChatMessageProcessor = class _WaldiezChatMessageProcessor {
   static findHandler(type) {
     return this.handlers.find((handler) => handler.canHandle(type));
   }
-};
-__publicField(_WaldiezChatMessageProcessor, "handlers", [
-  new InputRequestHandler(),
-  new PrintMessageHandler(),
-  new TextMessageHandler(),
-  new TerminationHandler(),
-  new GroupChatRunHandler(),
-  new SpeakerSelectionHandler(),
-  new CodeExecutionReplyHandler(),
-  new ToolCallHandler(),
-  new TerminationAndHumanReplyNoInputHandler(),
-  new UsingAutoReplyHandler()
-]);
-let WaldiezChatMessageProcessor = _WaldiezChatMessageProcessor;
+}
 const getCrypto = () => {
   if (window.crypto && window.crypto.subtle) {
     return window.crypto;
@@ -904,8 +894,7 @@ const getId = () => {
   return `${Date.now()}${nanoid()}`;
 };
 const importItem = (event, itemGetter, onLoad) => {
-  var _a;
-  const file = (_a = event.target.files) == null ? void 0 : _a[0];
+  const file = event.target.files?.[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -944,18 +933,18 @@ const toCamelCase = (str) => {
   return str.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([0-9])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/-/g, " ").trim().toLowerCase().split(" ").map((word) => capitalize(word)).join("").replace(/^[A-Z]/, (match) => match.toLowerCase());
 };
 class WaldiezAgent {
+  id;
+  type = "agent";
+  agentType;
+  name;
+  description;
+  tags;
+  requirements;
+  createdAt;
+  updatedAt;
+  data;
+  rest;
   constructor(props) {
-    __publicField(this, "id");
-    __publicField(this, "type", "agent");
-    __publicField(this, "agentType");
-    __publicField(this, "name");
-    __publicField(this, "description");
-    __publicField(this, "tags");
-    __publicField(this, "requirements");
-    __publicField(this, "createdAt");
-    __publicField(this, "updatedAt");
-    __publicField(this, "data");
-    __publicField(this, "rest");
     this.id = props.id;
     this.agentType = props.agentType;
     this.name = props.name;
@@ -1087,16 +1076,17 @@ const addGroupManagerProps = (agentData) => {
   };
 };
 class WaldiezAgentAssistant extends WaldiezAgent {
+  data;
+  agentType = "assistant";
   constructor(props) {
     super(props);
-    __publicField(this, "data");
-    __publicField(this, "agentType", "assistant");
     this.agentType = "assistant";
     this.data = props.data;
     this.rest = props.rest || {};
   }
 }
 class WaldiezAgentAssistantData extends WaldiezAgentData {
+  isMultimodal;
   constructor(props = {
     humanInputMode: "NEVER",
     systemMessage: null,
@@ -1133,21 +1123,24 @@ class WaldiezAgentAssistantData extends WaldiezAgentData {
     isMultimodal: false
   }) {
     super(props);
-    __publicField(this, "isMultimodal");
     this.isMultimodal = props.isMultimodal;
   }
 }
 class WaldiezAgentCaptain extends WaldiezAgent {
+  data;
+  agentType = "captain";
   constructor(props) {
     super(props);
-    __publicField(this, "data");
-    __publicField(this, "agentType", "captain");
     this.data = props.data;
     this.agentType = "captain";
     this.rest = props.rest || {};
   }
 }
 class WaldiezAgentCaptainData extends WaldiezAgentData {
+  agentLib;
+  toolLib;
+  maxRound;
+  maxTurns;
   constructor(props = {
     humanInputMode: "NEVER",
     systemMessage: null,
@@ -1187,10 +1180,6 @@ class WaldiezAgentCaptainData extends WaldiezAgentData {
     maxTurns: 5
   }) {
     super(props);
-    __publicField(this, "agentLib");
-    __publicField(this, "toolLib");
-    __publicField(this, "maxRound");
-    __publicField(this, "maxTurns");
     this.agentLib = props.agentLib;
     this.toolLib = props.toolLib;
     this.maxRound = props.maxRound;
@@ -1198,16 +1187,23 @@ class WaldiezAgentCaptainData extends WaldiezAgentData {
   }
 }
 class WaldiezAgentGroupManager extends WaldiezAgent {
+  data;
+  agentType = "group_manager";
   constructor(props) {
     super(props);
-    __publicField(this, "data");
-    __publicField(this, "agentType", "group_manager");
     this.agentType = "group_manager";
     this.data = props.data;
     this.rest = props.rest || {};
   }
 }
 class WaldiezAgentGroupManagerData extends WaldiezAgentData {
+  maxRound;
+  adminName;
+  speakers;
+  enableClearHistory;
+  sendIntroductions;
+  groupName;
+  initialAgentId;
   constructor(props = {
     humanInputMode: "NEVER",
     systemMessage: null,
@@ -1260,13 +1256,6 @@ class WaldiezAgentGroupManagerData extends WaldiezAgentData {
   }) {
     props.parentId = void 0;
     super(props);
-    __publicField(this, "maxRound");
-    __publicField(this, "adminName");
-    __publicField(this, "speakers");
-    __publicField(this, "enableClearHistory");
-    __publicField(this, "sendIntroductions");
-    __publicField(this, "groupName");
-    __publicField(this, "initialAgentId");
     this.maxRound = props.maxRound;
     this.adminName = props.adminName;
     this.speakers = props.speakers;
@@ -1277,10 +1266,10 @@ class WaldiezAgentGroupManagerData extends WaldiezAgentData {
   }
 }
 class WaldiezAgentRagUser extends WaldiezAgent {
+  data;
+  agentType = "rag_user_proxy";
   constructor(props) {
     super(props);
-    __publicField(this, "data");
-    __publicField(this, "agentType", "rag_user_proxy");
     this.data = props.data;
     this.agentType = "rag_user_proxy";
     this.rest = props.rest || {};
@@ -1324,6 +1313,7 @@ const defaultRetrieveConfig = {
   nResults: null
 };
 class WaldiezAgentRagUserData extends WaldiezAgentData {
+  retrieveConfig;
   constructor(props = {
     humanInputMode: "ALWAYS",
     systemMessage: null,
@@ -1360,15 +1350,14 @@ class WaldiezAgentRagUserData extends WaldiezAgentData {
     retrieveConfig: defaultRetrieveConfig
   }) {
     super(props);
-    __publicField(this, "retrieveConfig");
     this.retrieveConfig = props.retrieveConfig;
   }
 }
 let WaldiezAgentReasoning$1 = class WaldiezAgentReasoning extends WaldiezAgent {
+  data;
+  agentType = "reasoning";
   constructor(props) {
     super(props);
-    __publicField(this, "data");
-    __publicField(this, "agentType", "reasoning");
     this.data = props.data;
     this.agentType = "reasoning";
     this.rest = props.rest || {};
@@ -1385,6 +1374,8 @@ const defaultReasonConfig = {
   explorationConstant: 1.41
 };
 class WaldiezAgentReasoningData extends WaldiezAgentData {
+  verbose;
+  reasonConfig;
   constructor(props = {
     humanInputMode: "NEVER",
     systemMessage: null,
@@ -1422,17 +1413,15 @@ class WaldiezAgentReasoningData extends WaldiezAgentData {
     reasonConfig: defaultReasonConfig
   }) {
     super(props);
-    __publicField(this, "verbose");
-    __publicField(this, "reasonConfig");
     this.verbose = props.verbose;
     this.reasonConfig = props.reasonConfig;
   }
 }
 class WaldiezAgentUserProxy extends WaldiezAgent {
+  data;
+  agentType = "user_proxy";
   constructor(props) {
     super(props);
-    __publicField(this, "data");
-    __publicField(this, "agentType", "user_proxy");
     this.agentType = "user_proxy";
     this.data = props.data;
     this.rest = props.rest || {};
@@ -1447,6 +1436,30 @@ const ValidAgentTypes$2 = [
   "group_manager"
 ];
 class WaldiezChatData {
+  sourceType;
+  targetType;
+  name;
+  description;
+  position;
+  order;
+  clearHistory;
+  message;
+  maxTurns;
+  summary;
+  nestedChat;
+  prerequisites = [];
+  realSource = null;
+  realTarget = null;
+  available = {
+    type: "none",
+    value: ""
+  };
+  condition = {
+    conditionType: "string_llm",
+    prompt: ""
+  };
+  afterWork = null;
+  silent = false;
   constructor(props = {
     sourceType: "user_proxy",
     targetType: "assistant",
@@ -1485,30 +1498,6 @@ class WaldiezChatData {
     realTarget: null,
     silent: false
   }) {
-    __publicField(this, "sourceType");
-    __publicField(this, "targetType");
-    __publicField(this, "name");
-    __publicField(this, "description");
-    __publicField(this, "position");
-    __publicField(this, "order");
-    __publicField(this, "clearHistory");
-    __publicField(this, "message");
-    __publicField(this, "maxTurns");
-    __publicField(this, "summary");
-    __publicField(this, "nestedChat");
-    __publicField(this, "prerequisites", []);
-    __publicField(this, "realSource", null);
-    __publicField(this, "realTarget", null);
-    __publicField(this, "available", {
-      type: "none",
-      value: ""
-    });
-    __publicField(this, "condition", {
-      conditionType: "string_llm",
-      prompt: ""
-    });
-    __publicField(this, "afterWork", null);
-    __publicField(this, "silent", false);
     const {
       sourceType,
       targetType,
@@ -1550,13 +1539,13 @@ class WaldiezChatData {
   }
 }
 class WaldiezChat {
+  id;
+  type = "chat";
+  source;
+  target;
+  data;
+  rest;
   constructor(props) {
-    __publicField(this, "id");
-    __publicField(this, "type", "chat");
-    __publicField(this, "source");
-    __publicField(this, "target");
-    __publicField(this, "data");
-    __publicField(this, "rest");
     this.id = props.id;
     this.source = props.source;
     this.target = props.target;
@@ -1598,19 +1587,19 @@ const ValidConditionTypes = [
   "expression_context"
 ];
 class WaldiezFlow {
+  type = "flow";
+  version = "0.5.0";
+  id;
+  name;
+  description;
+  tags;
+  requirements;
+  data;
+  storageId;
+  createdAt;
+  updatedAt;
+  rest = {};
   constructor(props) {
-    __publicField(this, "type", "flow");
-    __publicField(this, "version", "0.5.0");
-    __publicField(this, "id");
-    __publicField(this, "name");
-    __publicField(this, "description");
-    __publicField(this, "tags");
-    __publicField(this, "requirements");
-    __publicField(this, "data");
-    __publicField(this, "storageId");
-    __publicField(this, "createdAt");
-    __publicField(this, "updatedAt");
-    __publicField(this, "rest", {});
     this.id = props.id;
     this.name = props.name;
     this.description = props.description;
@@ -1660,6 +1649,16 @@ const emptyFlow = {
   rest: {}
 };
 class WaldiezFlowData {
+  nodes;
+  edges;
+  viewport;
+  agents;
+  models;
+  tools;
+  chats;
+  isAsync = false;
+  cacheSeed = 42;
+  silent = false;
   constructor(props = {
     nodes: [],
     edges: [],
@@ -1683,16 +1682,6 @@ class WaldiezFlowData {
     cacheSeed: 42,
     silent: false
   }) {
-    __publicField(this, "nodes");
-    __publicField(this, "edges");
-    __publicField(this, "viewport");
-    __publicField(this, "agents");
-    __publicField(this, "models");
-    __publicField(this, "tools");
-    __publicField(this, "chats");
-    __publicField(this, "isAsync", false);
-    __publicField(this, "cacheSeed", 42);
-    __publicField(this, "silent", false);
     this.nodes = props.nodes;
     this.edges = props.edges;
     this.viewport = props.viewport;
@@ -1706,6 +1695,17 @@ class WaldiezFlowData {
   }
 }
 class WaldiezModelData {
+  baseUrl;
+  apiKey;
+  apiType;
+  apiVersion;
+  temperature;
+  topP;
+  maxTokens;
+  aws;
+  extras;
+  defaultHeaders;
+  price;
   constructor(props = {
     baseUrl: null,
     apiKey: null,
@@ -1728,17 +1728,6 @@ class WaldiezModelData {
       completionTokenPricePer1k: null
     }
   }) {
-    __publicField(this, "baseUrl");
-    __publicField(this, "apiKey");
-    __publicField(this, "apiType");
-    __publicField(this, "apiVersion");
-    __publicField(this, "temperature");
-    __publicField(this, "topP");
-    __publicField(this, "maxTokens");
-    __publicField(this, "aws");
-    __publicField(this, "extras");
-    __publicField(this, "defaultHeaders");
-    __publicField(this, "price");
     const {
       baseUrl,
       apiKey,
@@ -1766,17 +1755,17 @@ class WaldiezModelData {
   }
 }
 class WaldiezModel {
+  type = "model";
+  id;
+  name;
+  description;
+  tags;
+  requirements;
+  createdAt;
+  updatedAt;
+  data;
+  rest = {};
   constructor(props) {
-    __publicField(this, "type", "model");
-    __publicField(this, "id");
-    __publicField(this, "name");
-    __publicField(this, "description");
-    __publicField(this, "tags");
-    __publicField(this, "requirements");
-    __publicField(this, "createdAt");
-    __publicField(this, "updatedAt");
-    __publicField(this, "data");
-    __publicField(this, "rest", {});
     this.id = props.id;
     this.name = props.name;
     this.description = props.description;
@@ -1805,14 +1794,14 @@ class WaldiezModel {
   }
 }
 class WaldiezToolData {
+  content;
+  toolType;
+  secrets;
   constructor(props = {
     content: DEFAULT_CUSTOM_TOOL_CONTENT,
     toolType: "custom",
     secrets: {}
   }) {
-    __publicField(this, "content");
-    __publicField(this, "toolType");
-    __publicField(this, "secrets");
     const { content, toolType, secrets } = props;
     this.toolType = toolType;
     this.content = content;
@@ -1909,17 +1898,17 @@ const DEFAULT_TOOL_CONTENT_MAP = {
   crewai: DEFAULT_CREWAI_TOOL_CONTENT
 };
 class WaldiezTool {
+  type = "tool";
+  id;
+  name;
+  description;
+  tags;
+  requirements;
+  createdAt;
+  updatedAt;
+  data;
+  rest = {};
   constructor(props) {
-    __publicField(this, "type", "tool");
-    __publicField(this, "id");
-    __publicField(this, "name");
-    __publicField(this, "description");
-    __publicField(this, "tags");
-    __publicField(this, "requirements");
-    __publicField(this, "createdAt");
-    __publicField(this, "updatedAt");
-    __publicField(this, "data");
-    __publicField(this, "rest", {});
     this.id = props.id;
     this.name = props.name;
     this.description = props.description;
@@ -3773,7 +3762,7 @@ const getChatType = (edge, json) => {
   } else if ("data" in json && typeof json.data === "object" && json.data !== null && "type" in json.data && typeof json.data.type === "string" && json.data.type && ValidChatTypes$1.includes(json.data.type)) {
     edgeType = json.data.type;
   }
-  let chatType = (edge == null ? void 0 : edge.type) ?? edgeType;
+  let chatType = edge?.type ?? edgeType;
   if (!ValidChatTypes$1.includes(chatType)) {
     chatType = "chat";
   }
@@ -4071,7 +4060,6 @@ const chatMapper = {
    * @returns A WaldiezEdge instance representing the chat.
    */
   asEdge: (chat) => {
-    var _a, _b;
     const data = {
       label: chat.data.name,
       sourceType: chat.data.sourceType,
@@ -4092,7 +4080,7 @@ const chatMapper = {
       realTarget: chat.data.realTarget,
       silent: chat.data.silent
     };
-    const style = ((_a = chat.rest) == null ? void 0 : _a.style) || {};
+    const style = chat.rest?.style || {};
     style.strokeWidth = 1;
     return {
       id: chat.id,
@@ -4100,7 +4088,7 @@ const chatMapper = {
       target: chat.target,
       type: chat.type,
       data,
-      hidden: ((_b = chat.rest) == null ? void 0 : _b.hidden) === true || chat.type === "hidden",
+      hidden: chat.rest?.hidden === true || chat.type === "hidden",
       ...chat.rest,
       style
     };
@@ -5415,13 +5403,12 @@ const getRFEdges = (flow) => {
   return flowEdges;
 };
 const getEdgeHandles = (flow, chat) => {
-  var _a, _b;
   let sourceHandle;
   let targetHandle;
-  if (((_a = chat.rest) == null ? void 0 : _a.sourceHandle) && typeof chat.rest.sourceHandle === "string") {
+  if (chat.rest?.sourceHandle && typeof chat.rest.sourceHandle === "string") {
     sourceHandle = chat.rest.sourceHandle;
   }
-  if (((_b = chat.rest) == null ? void 0 : _b.targetHandle) && typeof chat.rest.targetHandle === "string") {
+  if (chat.rest?.targetHandle && typeof chat.rest.targetHandle === "string") {
     targetHandle = chat.rest.targetHandle;
   }
   if (!sourceHandle || !targetHandle) {
@@ -5610,7 +5597,7 @@ const Snackbar = ({
     if (!root) {
       root = document.body;
     }
-    const modalContent = root == null ? void 0 : root.querySelector("dialog[open] .modal-content");
+    const modalContent = root?.querySelector("dialog[open] .modal-content");
     setContainer(modalContent instanceof HTMLElement ? modalContent : root);
   }, [flowId]);
   if (!container) {
@@ -5817,7 +5804,7 @@ const getAgentEdgeConnections = (nodeId, edge, nodes, options) => {
   return { sourceNode, targetNode };
 };
 const calculateNewNodePosition = (rfInstance, flowWrapper, currentNodesCount, entriesDistance) => {
-  const zoom = (rfInstance == null ? void 0 : rfInstance.getZoom()) ?? 1;
+  const zoom = rfInstance?.getZoom() ?? 1;
   const flowWrapperRect = flowWrapper.getBoundingClientRect();
   const canvasWidth = flowWrapperRect.width / zoom;
   const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
@@ -5911,16 +5898,14 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
     const index = defaultContexts.length;
     defaultContexts = [...defaultContexts, defaultContext];
     const Provider = (props) => {
-      var _a;
       const { scope, children, ...context } = props;
-      const Context = ((_a = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a[index]) || BaseContext;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
       const value = React.useMemo(() => context, Object.values(context));
       return /* @__PURE__ */ jsx(Context.Provider, { value, children });
     };
     Provider.displayName = rootComponentName + "Provider";
     function useContext2(consumerName, scope) {
-      var _a;
-      const Context = ((_a = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a[index]) || BaseContext;
+      const Context = scope?.[scopeName]?.[index] || BaseContext;
       const context = React.useContext(Context);
       if (context) return context;
       if (defaultContext !== void 0) return defaultContext;
@@ -5933,7 +5918,7 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
       return React.createContext(defaultContext);
     });
     return function useScope(scope) {
-      const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
+      const contexts = scope?.[scopeName] || scopeContexts;
       return React.useMemo(
         () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
         [scope, contexts]
@@ -5965,13 +5950,13 @@ function composeContextScopes(...scopes) {
 }
 function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
   return function handleEvent(event) {
-    originalEventHandler == null ? void 0 : originalEventHandler(event);
+    originalEventHandler?.(event);
     if (checkForDefaultPrevented === false || !event.defaultPrevented) {
-      return ourEventHandler == null ? void 0 : ourEventHandler(event);
+      return ourEventHandler?.(event);
     }
   };
 }
-var useLayoutEffect2 = (globalThis == null ? void 0 : globalThis.document) ? React.useLayoutEffect : () => {
+var useLayoutEffect2 = globalThis?.document ? React.useLayoutEffect : () => {
 };
 var useInsertionEffect = React[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
 function useControllableState({
@@ -6003,11 +5988,10 @@ function useControllableState({
   }
   const setValue = React.useCallback(
     (nextValue) => {
-      var _a;
       if (isControlled) {
         const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
         if (value2 !== prop) {
-          (_a = onChangeRef.current) == null ? void 0 : _a.call(onChangeRef, value2);
+          onChangeRef.current?.(value2);
         }
       } else {
         setUncontrolledProp(nextValue);
@@ -6028,9 +6012,8 @@ function useUncontrolledState({
     onChangeRef.current = onChange;
   }, [onChange]);
   React.useEffect(() => {
-    var _a;
     if (prevValueRef.current !== value) {
-      (_a = onChangeRef.current) == null ? void 0 : _a.call(onChangeRef, value);
+      onChangeRef.current?.(value);
       prevValueRef.current = value;
     }
   }, [value, prevValueRef]);
@@ -6130,7 +6113,7 @@ function usePresence(present) {
       const currentAnimationName = getAnimationName(styles);
       if (present) {
         send("MOUNT");
-      } else if (currentAnimationName === "none" || (styles == null ? void 0 : styles.display) === "none") {
+      } else if (currentAnimationName === "none" || styles?.display === "none") {
         send("UNMOUNT");
       } else {
         const isAnimating = prevAnimationName !== currentAnimationName;
@@ -6190,16 +6173,15 @@ function usePresence(present) {
   };
 }
 function getAnimationName(styles) {
-  return (styles == null ? void 0 : styles.animationName) || "none";
+  return styles?.animationName || "none";
 }
 function getElementRef$1(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.ref;
   }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
   mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.props.ref;
@@ -6276,13 +6258,12 @@ function mergeProps(slotProps, childProps) {
   return { ...slotProps, ...overrideProps };
 }
 function getElementRef(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.ref;
   }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
   mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.props.ref;
@@ -6395,7 +6376,7 @@ var CheckboxTrigger = React.forwardRef(
     const composedRefs = useComposedRefs(forwardedRef, setControl);
     const initialCheckedStateRef = React.useRef(checked);
     React.useEffect(() => {
-      const form = control == null ? void 0 : control.form;
+      const form = control?.form;
       if (form) {
         const reset = () => setChecked(initialCheckedStateRef.current);
         form.addEventListener("reset", reset);
@@ -6672,13 +6653,13 @@ const AfterWork = memo(
   ({ target, agents, onChange, isForGroupChat = true }) => {
     const [enabled, setEnabled] = useState(!!target);
     const [selectedTargetType, setSelectedTargetType] = useState(
-      target == null ? void 0 : target.targetType
+      target?.targetType
     );
     const [selectedAgentTargetId, setSelectedAgentTargetId] = useState(
-      (target == null ? void 0 : target.targetType) === "AgentTarget" ? target.value[0] : void 0
+      target?.targetType === "AgentTarget" ? target.value[0] : void 0
     );
     const [selectedRandomAgentTargetIds, setSelectedRandomAgentTargetIds] = useState(
-      (target == null ? void 0 : target.targetType) === "RandomAgentTarget" ? target.value : []
+      target?.targetType === "RandomAgentTarget" ? target.value : []
     );
     const optionsToExclude = useMemo(
       () => isForGroupChat ? targetTypesToExcludeForGroupChat : targetTypesToExclude,
@@ -6708,13 +6689,10 @@ const AfterWork = memo(
       [selectedTargetType]
     );
     const selectedAgentOption = useMemo(
-      () => {
-        var _a;
-        return {
-          label: (_a = agentTargetOptions.find((option) => option.value === selectedAgentTargetId)) == null ? void 0 : _a.label,
-          value: selectedAgentTargetId
-        };
-      },
+      () => ({
+        label: agentTargetOptions.find((option) => option.value === selectedAgentTargetId)?.label,
+        value: selectedAgentTargetId
+      }),
       [agentTargetOptions, selectedAgentTargetId]
     );
     const onEnabledChange = useCallback(
@@ -6729,7 +6707,7 @@ const AfterWork = memo(
     );
     const onTargetTypeChange = useCallback(
       (selectedOption) => {
-        if (!(selectedOption == null ? void 0 : selectedOption.value)) {
+        if (!selectedOption?.value) {
           return;
         }
         const targetType = selectedOption.value;
@@ -6763,7 +6741,7 @@ const AfterWork = memo(
     );
     const onAgentTargetChange = useCallback(
       (selectedOption) => {
-        if (!(selectedOption == null ? void 0 : selectedOption.value) || selectedTargetType !== "AgentTarget") {
+        if (!selectedOption?.value || selectedTargetType !== "AgentTarget") {
           return;
         }
         setSelectedAgentTargetId(selectedOption.value);
@@ -6840,13 +6818,10 @@ const AfterWork = memo(
             {
               inputId: "afterWorkTargetIds",
               options: agentTargetOptions,
-              value: selectedRandomAgentTargetIds.map((id) => {
-                var _a;
-                return {
-                  label: (_a = agentTargetOptions.find((option) => option.value === id)) == null ? void 0 : _a.label,
-                  value: id
-                };
-              }),
+              value: selectedRandomAgentTargetIds.map((id) => ({
+                label: agentTargetOptions.find((option) => option.value === id)?.label,
+                value: id
+              })),
               onChange: onRandomAgentTargetsChange,
               isClearable: true,
               isSearchable: false,
@@ -7109,7 +7084,6 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
 Markdown.displayName = "Markdown";
 const parseStructuredContent = (items, isDarkMode, onImageClick) => {
   const children = items.map((item, idx) => {
-    var _a, _b;
     if (!item || !item.type) {
       console.warn("Invalid item in structured content", item);
       return null;
@@ -7125,7 +7099,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
         `text-${idx}`
       );
     }
-    if (item.type === "image_url" && ((_a = item.image_url) == null ? void 0 : _a.url)) {
+    if (item.type === "image_url" && item.image_url?.url) {
       return /* @__PURE__ */ jsx(
         ImageWithRetry,
         {
@@ -7136,7 +7110,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
         `img-${idx}`
       );
     }
-    if (item.type === "image" && ((_b = item.image) == null ? void 0 : _b.url)) {
+    if (item.type === "image" && item.image?.url) {
       return /* @__PURE__ */ jsx(
         ImageWithRetry,
         {
@@ -7587,8 +7561,7 @@ const useDropZone = (props) => {
   const { flowId, onUpload, allowedFileExtensions: allowedFileExtensions2, multiple = false } = props;
   const isValidFile = useCallback(
     (file) => {
-      var _a;
-      const extension = (_a = file.name.split(".").pop()) == null ? void 0 : _a.toLowerCase();
+      const extension = file.name.split(".").pop()?.toLowerCase();
       if (!extension || !allowedFileExtensions2.some((ext) => ext.toLowerCase() === `.${extension}`)) {
         showSnackbar({
           flowId,
@@ -7725,8 +7698,8 @@ Editor.displayName = "Editor";
 const TextareaInput = ({ value, onChange, autoFocus = false, ...props }) => {
   const ref = useRef(null);
   const cursorPositionRef = useRef({
-    selectionStart: (value == null ? void 0 : value.length) || 0,
-    selectionEnd: (value == null ? void 0 : value.length) || 0
+    selectionStart: value?.length || 0,
+    selectionEnd: value?.length || 0
   });
   const isFirstRender = useRef(true);
   const handleChange = useCallback(
@@ -8054,14 +8027,14 @@ const HandoffCondition = (props) => {
     [updateConditionField]
   );
   const selectedTypeOption = useMemo(
-    () => (currentHandoffCondition == null ? void 0 : currentHandoffCondition.conditionType) ? {
+    () => currentHandoffCondition?.conditionType ? {
       label: conditionTypeMapping[currentHandoffCondition.conditionType],
       value: currentHandoffCondition.conditionType
     } : null,
-    [currentHandoffCondition == null ? void 0 : currentHandoffCondition.conditionType]
+    [currentHandoffCondition?.conditionType]
   );
   const renderConditionInput = useCallback(() => {
-    if (!(currentHandoffCondition == null ? void 0 : currentHandoffCondition.conditionType)) {
+    if (!currentHandoffCondition?.conditionType) {
       return null;
     }
     const conditionType = currentHandoffCondition.conditionType;
@@ -8295,7 +8268,7 @@ const useHandoffNames = (agents, allEdges, nestedChats) => {
   const getAgentName2 = useCallback(
     (agentId) => {
       const agent = agents.find((a) => a.id === agentId);
-      return (agent == null ? void 0 : agent.data.label) || (agent == null ? void 0 : agent.data.name) || agentId;
+      return agent?.data.label || agent?.data.name || agentId;
     },
     [agents]
   );
@@ -8560,19 +8533,19 @@ const useMessageInput = (props) => {
   );
   const onAddContextEntry = useCallback(
     (key, value) => {
-      handleAddContextEntry == null ? void 0 : handleAddContextEntry(key, value);
+      handleAddContextEntry?.(key, value);
     },
     [handleAddContextEntry]
   );
   const onRemoveContextEntry = useCallback(
     (key) => {
-      handleRemoveContextEntry == null ? void 0 : handleRemoveContextEntry(key);
+      handleRemoveContextEntry?.(key);
     },
     [handleRemoveContextEntry]
   );
   const onUpdateContextEntries = useCallback(
     (entries) => {
-      handleUpdateContextEntries == null ? void 0 : handleUpdateContextEntries(entries);
+      handleUpdateContextEntries?.(entries);
     },
     [handleUpdateContextEntries]
   );
@@ -8920,7 +8893,7 @@ const useModal = (props) => {
       return;
     }
     resetModalState();
-    onClose == null ? void 0 : onClose();
+    onClose?.();
     setModalOpen(false);
   }, [
     isMinimized,
@@ -8933,7 +8906,7 @@ const useModal = (props) => {
   ]);
   const handleSaveAndClose = useCallback(() => {
     resetModalState();
-    onSaveAndClose == null ? void 0 : onSaveAndClose();
+    onSaveAndClose?.();
     setModalOpen(false);
   }, [resetModalState, onSaveAndClose, setModalOpen]);
   const handleCancel = useCallback(
@@ -9052,11 +9025,10 @@ const Modal = memo((props) => {
     onMouseDown
   } = useModal({ ...props, modalRef });
   useEffect(() => {
-    var _a, _b;
     if (isOpen) {
-      (_a = modalRef.current) == null ? void 0 : _a.showModal();
+      modalRef.current?.showModal();
     } else {
-      (_b = modalRef.current) == null ? void 0 : _b.close();
+      modalRef.current?.close();
     }
   }, [isOpen]);
   useLayoutEffect(() => {
@@ -9286,9 +9258,8 @@ var Slider = React.forwardRef(
       prop: value,
       defaultProp: defaultValue,
       onChange: (value2) => {
-        var _a;
         const thumbs = [...thumbRefs.current];
-        (_a = thumbs[valueIndexToChangeRef.current]) == null ? void 0 : _a.focus();
+        thumbs[valueIndexToChangeRef.current]?.focus();
         onValueChange(value2);
       }
     });
@@ -9425,20 +9396,20 @@ var SliderHorizontal = React.forwardRef(
             },
             onSlideStart: (event) => {
               const value = getValueFromPointer(event.clientX);
-              onSlideStart == null ? void 0 : onSlideStart(value);
+              onSlideStart?.(value);
             },
             onSlideMove: (event) => {
               const value = getValueFromPointer(event.clientX);
-              onSlideMove == null ? void 0 : onSlideMove(value);
+              onSlideMove?.(value);
             },
             onSlideEnd: () => {
               rectRef.current = void 0;
-              onSlideEnd == null ? void 0 : onSlideEnd();
+              onSlideEnd?.();
             },
             onStepKeyDown: (event) => {
               const slideDirection = isSlidingFromLeft ? "from-left" : "from-right";
               const isBackKey = BACK_KEYS[slideDirection].includes(event.key);
-              onStepKeyDown == null ? void 0 : onStepKeyDown({ event, direction: isBackKey ? -1 : 1 });
+              onStepKeyDown?.({ event, direction: isBackKey ? -1 : 1 });
             }
           }
         )
@@ -9490,20 +9461,20 @@ var SliderVertical = React.forwardRef(
             },
             onSlideStart: (event) => {
               const value = getValueFromPointer(event.clientY);
-              onSlideStart == null ? void 0 : onSlideStart(value);
+              onSlideStart?.(value);
             },
             onSlideMove: (event) => {
               const value = getValueFromPointer(event.clientY);
-              onSlideMove == null ? void 0 : onSlideMove(value);
+              onSlideMove?.(value);
             },
             onSlideEnd: () => {
               rectRef.current = void 0;
-              onSlideEnd == null ? void 0 : onSlideEnd();
+              onSlideEnd?.();
             },
             onStepKeyDown: (event) => {
               const slideDirection = isSlidingFromBottom ? "from-bottom" : "from-top";
               const isBackKey = BACK_KEYS[slideDirection].includes(event.key);
-              onStepKeyDown == null ? void 0 : onStepKeyDown({ event, direction: isBackKey ? -1 : 1 });
+              onStepKeyDown?.({ event, direction: isBackKey ? -1 : 1 });
             }
           }
         )
@@ -9639,7 +9610,7 @@ var SliderThumbImpl = React.forwardRef(
     const value = context.values[index];
     const percent = value === void 0 ? 0 : convertValueToPercentage(value, context.min, context.max);
     const label = getLabel(index, context.values.length);
-    const orientationSize = size == null ? void 0 : size[orientation.size];
+    const orientationSize = size?.[orientation.size];
     const thumbInBoundsOffset = orientationSize ? getThumbInBoundsOffset(orientationSize, percent, orientation.direction) : 0;
     React.useEffect(() => {
       if (thumb) {
@@ -10067,7 +10038,7 @@ const TabItems = memo((props) => {
   const handleTabClick = useCallback(
     (index) => {
       setActiveTab(index);
-      onTabChange == null ? void 0 : onTabChange(index);
+      onTabChange?.(index);
     },
     [onTabChange]
   );
@@ -10629,8 +10600,7 @@ const updateNestedEdges = (get, set) => {
 const resetSyncEdgeOrders = (get, set) => {
   const edges = get().edges;
   const newEdges = edges.map((edge, index) => {
-    var _a;
-    let edgeOrder = (_a = edge.data) == null ? void 0 : _a.order;
+    let edgeOrder = edge.data?.order;
     if (edgeOrder === void 0) {
       edgeOrder = -1;
     }
@@ -10646,15 +10616,11 @@ const resetSyncEdgeOrders = (get, set) => {
 };
 const resetAsyncEdgeOrders = (get, set) => {
   const usedEdges = get().edges.filter(
-    (edge) => {
-      var _a;
-      return ((_a = edge.data) == null ? void 0 : _a.order) !== void 0 && edge.data.order >= 0;
-    }
+    (edge) => edge.data?.order !== void 0 && edge.data.order >= 0
   );
   resetEdgePrerequisites(usedEdges, get, set);
 };
 const resetEdgePrerequisites = (edges, get, set) => {
-  var _a;
   const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
   const edgesMap = new Map(edges.map((edge) => [edge.id, edge]));
   const computeOrder = (edge) => {
@@ -10663,9 +10629,8 @@ const resetEdgePrerequisites = (edges, get, set) => {
     }
     return Math.max(
       ...edge.data.prerequisites.map((id) => {
-        var _a2;
         const edge2 = edges.find((e) => e.id === id);
-        return ((_a2 = edge2 == null ? void 0 : edge2.data) == null ? void 0 : _a2.order) ?? 0;
+        return edge2?.data?.order ?? 0;
       })
     ) + 1;
   };
@@ -10674,7 +10639,7 @@ const resetEdgePrerequisites = (edges, get, set) => {
     changed = false;
     for (const edge of edges) {
       const newOrder = computeOrder(edge);
-      if (((_a = edgesMap.get(edge.id).data) == null ? void 0 : _a.order) !== newOrder) {
+      if (edgesMap.get(edge.id).data?.order !== newOrder) {
         edgesMap.get(edge.id).data.order = newOrder;
         changed = true;
       }
@@ -10848,314 +10813,14 @@ const reArrangeTools = (get, set) => {
   return nodes;
 };
 class WaldiezAgentStore {
+  get;
+  set;
   /**
    * Constructor for the WaldiezAgentStore class.
    * @param get - Function to get the current state of the store.
    * @param set - Function to set the new state of the store.
    */
   constructor(get, set) {
-    __publicField(this, "get");
-    __publicField(this, "set");
-    /**
-     * Retrieves the current state of the agent store.
-     * @returns The current state of the agent store.
-     * @see {@link IWaldiezAgentStore.getAgents}
-     */
-    __publicField(this, "getAgents", () => {
-      return this.get().nodes.filter((node) => node.type === "agent");
-    });
-    /**
-     * Retrieves an agent by its ID.
-     * @param id - The ID of the agent to retrieve.
-     * @returns The agent with the specified ID, or null if not found.
-     * @see {@link IWaldiezAgentStore.getAgentById}
-     */
-    __publicField(this, "getAgentById", (id) => {
-      const agent = this.get().nodes.find((node) => node.id === id);
-      if (!agent || agent.type !== "agent") {
-        return null;
-      }
-      return agent;
-    });
-    /**
-     * Adds a new agent to the store.
-     * @param agentType - The type of the agent to add.
-     * @param position - The position of the agent in the graph.
-     * @param parentId - The ID of the parent agent, if any.
-     * @returns The newly added agent node.
-     * @see {@link IWaldiezAgentStore.addAgent}
-     */
-    __publicField(this, "addAgent", (agentType, position, parentId) => {
-      const agentNode = getAgentNode(agentType, position, parentId);
-      agentNode.style = {
-        width: agentType === "group_manager" ? INITIAL_AGENT_SIZE.group_manager.width : agentType !== "user_proxy" ? INITIAL_AGENT_SIZE.other.width : INITIAL_AGENT_SIZE.user.width
-      };
-      if (agentType === "group_manager") {
-        this.set({
-          nodes: [agentNode, ...this.get().nodes],
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-      } else {
-        this.set({
-          nodes: [...this.get().nodes, agentNode],
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-      }
-      return agentNode;
-    });
-    /**
-     * Clones an existing agent by its ID.
-     * @param id - The ID of the agent to clone.
-     * @returns The cloned agent node, or null if the agent was not found.
-     * @see {@link IWaldiezAgentStore.cloneAgent}
-     */
-    __publicField(this, "cloneAgent", (id) => {
-      const agent = this.get().nodes.find((node) => node.id === id);
-      if (agent) {
-        const newName = agent.data.label + " (copy)";
-        const position = {
-          x: agent.position.x + (agent.width ?? 100) + 40,
-          y: agent.position.y + (agent.height ?? 100) + 40
-        };
-        const newAgent = {
-          ...agent,
-          position,
-          id: getId(),
-          data: { ...agent.data, label: newName }
-        };
-        this.set({
-          nodes: [...this.get().nodes, newAgent],
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-        setTimeout(() => {
-          this.set({
-            nodes: this.get().nodes.map((node) => {
-              if (node.id === newAgent.id) {
-                return { ...node, selected: true };
-              }
-              return { ...node, selected: false };
-            })
-          });
-        }, 10);
-        return newAgent;
-      }
-      return null;
-    });
-    /**
-     * Updates the data of an agent by its ID.
-     * @param id - The ID of the agent to update.
-     * @param data - The new data to set for the agent.
-     * @see {@link IWaldiezAgentStore.updateAgentData}
-     */
-    __publicField(this, "updateAgentData", (id, data) => {
-      this.set({
-        nodes: this.get().nodes.map((node) => {
-          if (node.id === id) {
-            if (data.parentId !== node.data.parentId) {
-              node.parentId = data.parentId ?? void 0;
-              node.extent = data.parentId ? "parent" : void 0;
-            }
-            return {
-              ...node,
-              data: { ...node.data, ...data }
-            };
-          }
-          return node;
-        }),
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      resetEdgeOrdersAndPositions(this.get, this.set);
-    });
-    /**
-     * Deletes an agent by its ID.
-     * @param id - The ID of the agent to delete.
-     * @see {@link IWaldiezAgentStore.deleteAgent}
-     */
-    __publicField(this, "deleteAgent", (id) => {
-      const agent = this.get().nodes.find((node) => node.id === id);
-      if (agent) {
-        const idsToRemove = [id];
-        const idsToResetParent = [];
-        if (agent.data.agentType === "group_manager") {
-          const groupMembers = this.getGroupMembers(id);
-          idsToResetParent.push(...groupMembers.map((member) => member.id));
-        }
-        this.set({
-          nodes: this.get().nodes.filter((node) => !idsToRemove.includes(node.id)).map((node) => {
-            if (idsToResetParent.includes(node.id)) {
-              node.parentId = void 0;
-              node.data.parentId = void 0;
-              node.extent = void 0;
-            }
-            return node;
-          }),
-          edges: this.get().edges.filter(
-            (edge) => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target)
-          ).map((edge) => {
-            if (idsToResetParent.includes(edge.source) || idsToResetParent.includes(edge.target)) {
-              return {
-                ...edge,
-                animated: false,
-                type: "chat"
-              };
-            }
-            return edge;
-          }),
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-      } else {
-        this.set({
-          nodes: this.get().nodes.filter((node) => node.id !== id),
-          edges: this.get().edges.filter((edge) => edge.source !== id && edge.target !== id),
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-      }
-      resetEdgeOrdersAndPositions(this.get, this.set);
-    });
-    /**
-     * Imports an agent from a JSON object.
-     * @param agent - The agent data to import.
-     * @param agentId - The ID to assign to the imported agent.
-     * @param skipLinks - Whether to skip importing links.
-     * @param position - The position to place the imported agent in the graph.
-     * @param save - Whether to save the imported agent to the store.
-     * @returns The newly imported agent node.
-     * @see {@link IWaldiezAgentStore.importAgent}
-     */
-    __publicField(this, "importAgent", (agent, agentId, skipLinks, position, save = true) => {
-      const newAgent = agentMapper.importAgent(agent, agentId);
-      const newAgentNode = agentMapper.asNode(newAgent, position, skipLinks);
-      if (position) {
-        newAgentNode.position = position;
-      }
-      if (save) {
-        this.set({
-          nodes: [...this.get().nodes, { ...newAgentNode }],
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-      }
-      return newAgentNode;
-    });
-    /**
-     * Exports an agent by its ID.
-     * @param agentId - The ID of the agent to export.
-     * @param hideSecrets - Whether to hide sensitive information in the exported data.
-     * @returns The exported agent data.
-     * @see {@link IWaldiezAgentStore.exportAgent}
-     */
-    __publicField(this, "exportAgent", (agentId, hideSecrets) => {
-      const agent = this.get().nodes.find((node) => node.id === agentId);
-      if (!agent) {
-        return {};
-      }
-      return agentMapper.exportAgent(agent, hideSecrets);
-    });
-    /**
-     * Retrieves the connections of an agent by its ID.
-     * @param nodeId - The ID of the agent to get connections for.
-     * @param options - Options to filter connections (sourcesOnly, targetsOnly).
-     * @returns An array of connections for the specified agent.
-     * @see {@link IWaldiezAgentStore.getAgentConnections}
-     */
-    __publicField(this, "getAgentConnections", (nodeId, options) => {
-      if (!options) {
-        options = {
-          sourcesOnly: false,
-          targetsOnly: false
-        };
-      }
-      return getAgentConnections(this.get().nodes, this.get().edges, nodeId, options);
-    });
-    /**
-     * Sets the agent group for a specific agent.
-     * @param agentId - The ID of the agent to set the group for.
-     * @param groupId - The ID of the group to set.
-     * @param position - The position to place the agent in the group.
-     * @see {@link IWaldiezAgentStore.setAgentGroup}
-     */
-    __publicField(this, "setAgentGroup", (agentId, groupId, position) => {
-      this.set({
-        nodes: this.get().nodes.map((node) => {
-          if (node.id === agentId) {
-            return {
-              ...node,
-              position: position ?? node.position,
-              parentId: groupId,
-              extent: "parent",
-              data: {
-                ...node.data,
-                parentId: groupId
-              }
-            };
-          }
-          return node;
-        }),
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    });
-    /**
-     * Retrieves the group members of a specific group by its ID.
-     * @param groupId - The ID of the group to get members for.
-     * @returns An array of agents that are members of the specified group.
-     * @see {@link IWaldiezAgentStore.getGroupMembers}
-     */
-    __publicField(this, "getGroupMembers", (groupId) => {
-      return this.get().nodes.filter(
-        (node) => node.type === "agent" && node.data.parentId === groupId
-      );
-    });
-    /**
-     * Adds a member to a group by its ID.
-     * @param groupId - The ID of the group to add the member to.
-     * @param memberId - The ID of the member to add.
-     * @param position - The position to place the member in the group.
-     * @see {@link IWaldiezAgentStore.addGroupMember}
-     */
-    __publicField(this, "addGroupMember", (groupId, memberId, position) => {
-      this.set({
-        nodes: this.get().nodes.map((node) => {
-          if (node.id === memberId) {
-            return {
-              ...node,
-              position: position || node.position,
-              parentId: groupId,
-              extent: "parent",
-              data: { ...node.data, parentId: groupId }
-            };
-          }
-          return node;
-        }),
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      resetEdgeOrdersAndPositions(this.get, this.set);
-    });
-    /**
-     * Removes a member from a group by its ID.
-     * @param groupId - The ID of the group to remove the member from.
-     * @param memberId - The ID of the member to remove.
-     * @see {@link IWaldiezAgentStore.removeGroupMember}
-     */
-    __publicField(this, "removeGroupMember", (groupId, memberId) => {
-      const nodes = [
-        ...this.get().nodes.map((node) => {
-          if (node.id === memberId && node.data.parentId === groupId) {
-            node.data.parentId = void 0;
-            node.parentId = void 0;
-            node.extent = void 0;
-            node.position = {
-              x: node.position.x + 50,
-              y: node.position.y + 50
-            };
-          }
-          return { ...node };
-        })
-      ];
-      this.set({
-        nodes,
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      resetEdgeOrdersAndPositions(this.get, this.set);
-    });
     this.get = get;
     this.set = set;
   }
@@ -11168,312 +10833,316 @@ class WaldiezAgentStore {
   static create(get, set) {
     return new WaldiezAgentStore(get, set);
   }
-}
-class WaldiezEdgeStore {
   /**
-   * Creates an instance of WaldiezEdgeStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
+   * Retrieves the current state of the agent store.
+   * @returns The current state of the agent store.
+   * @see {@link IWaldiezAgentStore.getAgents}
    */
-  constructor(get, set) {
-    __publicField(this, "get");
-    __publicField(this, "set");
-    /**
-     * Retrieves all edges from the store.
-     * @returns An array of WaldiezEdge objects.
-     * @see {@link WaldiezEdge}
-     * @see {@link IWaldiezEdgeStore.getEdges}
-     */
-    __publicField(this, "getEdges", () => this.get().edges);
-    /**
-     * Retrieves an edge by its ID.
-     * @param id - The ID of the edge to retrieve.
-     * @returns The WaldiezEdge object if found, otherwise undefined.
-     * @see {@link WaldiezEdge}
-     * @see {@link IWaldiezEdgeStore.getEdgeById}
-     */
-    __publicField(this, "getEdgeById", (id) => {
-      const edge = this.get().edges.find((edge2) => edge2.id === id);
-      return edge;
-    });
-    /**
-     * Deletes an edge by its ID.
-     * This method also updates the nested chats of agent nodes to remove messages associated with the deleted edge.
-     * @param id - The ID of the edge to delete.
-     * @see {@link IWaldiezEdgeStore.deleteEdge}
-     */
-    __publicField(this, "deleteEdge", (id) => {
-      const agents = this.get().nodes.filter((node) => node.type === "agent");
-      const notaAgentNodes = this.get().nodes.filter((node) => node.type !== "agent");
-      const agentNodes = agents.map((agentNode) => {
-        const nestedChats = agentNode.data.nestedChats ?? [];
-        return {
-          ...agentNode,
-          data: {
-            ...agentNode.data,
-            nestedChats: nestedChats.map((nestedChat) => {
-              return {
-                ...nestedChat,
-                messages: nestedChat.messages.filter((message) => message.id !== id),
-                // also check if the edge sources (agent's triggeredBy) are still valid
-                triggeredBy: nestedChat.triggeredBy
-              };
-            })
-          }
-        };
-      });
-      const nodes = [...notaAgentNodes, ...agentNodes];
-      const newEdges = this.get().edges.filter((edge) => edge.id !== id);
+  getAgents = () => {
+    return this.get().nodes.filter((node) => node.type === "agent");
+  };
+  /**
+   * Retrieves an agent by its ID.
+   * @param id - The ID of the agent to retrieve.
+   * @returns The agent with the specified ID, or null if not found.
+   * @see {@link IWaldiezAgentStore.getAgentById}
+   */
+  getAgentById = (id) => {
+    const agent = this.get().nodes.find((node) => node.id === id);
+    if (!agent || agent.type !== "agent") {
+      return null;
+    }
+    return agent;
+  };
+  /**
+   * Adds a new agent to the store.
+   * @param agentType - The type of the agent to add.
+   * @param position - The position of the agent in the graph.
+   * @param parentId - The ID of the parent agent, if any.
+   * @returns The newly added agent node.
+   * @see {@link IWaldiezAgentStore.addAgent}
+   */
+  addAgent = (agentType, position, parentId) => {
+    const agentNode = getAgentNode(agentType, position, parentId);
+    agentNode.style = {
+      width: agentType === "group_manager" ? INITIAL_AGENT_SIZE.group_manager.width : agentType !== "user_proxy" ? INITIAL_AGENT_SIZE.other.width : INITIAL_AGENT_SIZE.user.width
+    };
+    if (agentType === "group_manager") {
       this.set({
-        nodes,
-        edges: newEdges.map((edge, index) => {
-          return {
-            ...edge,
-            data: { ...edge.data, position: index + 1 }
-          };
-        }),
+        nodes: [agentNode, ...this.get().nodes],
         updatedAt: (/* @__PURE__ */ new Date()).toISOString()
       });
-      this.resetEdgeOrdersAndPositions();
-    });
-    /**
-     * Updates the data of an edge by its ID.
-     * @param id - The ID of the edge to update.
-     * @param data - Partial data to update the edge with.
-     * @see {@link IWaldiezEdgeStore.updateEdgeData}
-     */
-    __publicField(this, "updateEdgeData", (id, data) => {
-      const edge = this.get().edges.find((edge2) => edge2.id === id);
-      if (edge) {
-        const updatedEdge = { ...edge, data: { ...edge.data, ...data } };
-        const edges = this.get().edges.map((edge2) => edge2.id === id ? updatedEdge : edge2);
-        this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
-        this.resetEdgeOrdersAndPositions();
-      }
-    });
-    /**
-     * Updates the type of an edge by its ID.
-     * @param id - The ID of the edge to update.
-     * @param edgeType - The new type for the edge.
-     * @see {@link IWaldiezEdgeStore.updateEdgeType}
-     */
-    __publicField(this, "updateEdgeType", (id, edgeType) => {
+    } else {
       this.set({
-        edges: this.get().edges.map((edge) => {
-          var _a, _b;
-          if (edge.id === id) {
-            const sourceNode = this.get().nodes.find((node) => node.id === edge.source);
-            if (!sourceNode) {
-              throw new Error(`Source node not found for edge ${id}`);
+        nodes: [...this.get().nodes, agentNode],
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    }
+    return agentNode;
+  };
+  /**
+   * Clones an existing agent by its ID.
+   * @param id - The ID of the agent to clone.
+   * @returns The cloned agent node, or null if the agent was not found.
+   * @see {@link IWaldiezAgentStore.cloneAgent}
+   */
+  cloneAgent = (id) => {
+    const agent = this.get().nodes.find((node) => node.id === id);
+    if (agent) {
+      const newName = agent.data.label + " (copy)";
+      const position = {
+        x: agent.position.x + (agent.width ?? 100) + 40,
+        y: agent.position.y + (agent.height ?? 100) + 40
+      };
+      const newAgent = {
+        ...agent,
+        position,
+        id: getId(),
+        data: { ...agent.data, label: newName }
+      };
+      this.set({
+        nodes: [...this.get().nodes, newAgent],
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+      setTimeout(() => {
+        this.set({
+          nodes: this.get().nodes.map((node) => {
+            if (node.id === newAgent.id) {
+              return { ...node, selected: true };
             }
-            const color = AGENT_COLORS[sourceNode.data.agentType];
+            return { ...node, selected: false };
+          })
+        });
+      }, 10);
+      return newAgent;
+    }
+    return null;
+  };
+  /**
+   * Updates the data of an agent by its ID.
+   * @param id - The ID of the agent to update.
+   * @param data - The new data to set for the agent.
+   * @see {@link IWaldiezAgentStore.updateAgentData}
+   */
+  updateAgentData = (id, data) => {
+    this.set({
+      nodes: this.get().nodes.map((node) => {
+        if (node.id === id) {
+          if (data.parentId !== node.data.parentId) {
+            node.parentId = data.parentId ?? void 0;
+            node.extent = data.parentId ? "parent" : void 0;
+          }
+          return {
+            ...node,
+            data: { ...node.data, ...data }
+          };
+        }
+        return node;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  /**
+   * Deletes an agent by its ID.
+   * @param id - The ID of the agent to delete.
+   * @see {@link IWaldiezAgentStore.deleteAgent}
+   */
+  deleteAgent = (id) => {
+    const agent = this.get().nodes.find((node) => node.id === id);
+    if (agent) {
+      const idsToRemove = [id];
+      const idsToResetParent = [];
+      if (agent.data.agentType === "group_manager") {
+        const groupMembers = this.getGroupMembers(id);
+        idsToResetParent.push(...groupMembers.map((member) => member.id));
+      }
+      this.set({
+        nodes: this.get().nodes.filter((node) => !idsToRemove.includes(node.id)).map((node) => {
+          if (idsToResetParent.includes(node.id)) {
+            node.parentId = void 0;
+            node.data.parentId = void 0;
+            node.extent = void 0;
+          }
+          return node;
+        }),
+        edges: this.get().edges.filter(
+          (edge) => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target)
+        ).map((edge) => {
+          if (idsToResetParent.includes(edge.source) || idsToResetParent.includes(edge.target)) {
             return {
               ...edge,
-              type: edgeType,
-              hidden: false,
-              data: {
-                ...edge.data,
-                type: edgeType,
-                order: edgeType === "nested" ? -1 : ((_a = edge.data) == null ? void 0 : _a.order) ?? -1,
-                prerequisites: edgeType === "nested" ? [] : ((_b = edge.data) == null ? void 0 : _b.prerequisites) ?? []
-              },
-              animated: edgeType === "nested",
-              ...edgeCommonStyle(edgeType, color)
+              animated: false,
+              type: "chat"
             };
           }
           return edge;
         }),
         updatedAt: (/* @__PURE__ */ new Date()).toISOString()
       });
-      this.resetEdgeOrdersAndPositions();
-    });
-    /**
-     * Updates the path of an edge by its ID and agent type.
-     * @param id - The ID of the edge to update.
-     * @param agentType - The agent type to determine the edge color and style.
-     * @see {@link IWaldiezEdgeStore.updateEdgePath}
-     */
-    __publicField(this, "updateEdgePath", (id, agentType) => {
-      const currentEdge = this.get().edges.find((edge) => edge.id === id);
-      if (!currentEdge) {
-        console.error(`Edge with id ${id} not found`);
-        return;
-      }
-      const edgeType = currentEdge.type;
-      const color = AGENT_COLORS[agentType];
-      const { style, markerEnd } = edgeCommonStyle(edgeType, color);
+    } else {
       this.set({
-        edges: this.get().edges.map((edge) => {
-          if (edge.id === id) {
-            return { ...edge, style, markerEnd };
-          }
-          return { ...edge };
-        }),
+        nodes: this.get().nodes.filter((node) => node.id !== id),
+        edges: this.get().edges.filter((edge) => edge.source !== id && edge.target !== id),
         updatedAt: (/* @__PURE__ */ new Date()).toISOString()
       });
-      this.resetEdgeOrdersAndPositions();
-    });
-    /**
-     * Adds a new edge to the store.
-     * @param options - An object containing the flow ID, connection details, and whether the edge is hidden.
-     * @returns The newly added WaldiezEdge object or null if the edge could not be created.
-     * @see {@link IWaldiezEdgeStore.addEdge}
-     */
-    __publicField(this, "addEdge", (options) => {
-      const { flowId, connection, hidden } = options;
-      const nodes = this.get().nodes;
-      const edges = this.get().edges;
-      const positionGetter = (chatType) => edges.filter((edge) => edge.type === chatType).length;
-      const { source, target, sourceHandle, targetHandle } = connection;
-      const { sourceNode, targetNode } = getNewEdgeNodes(nodes, source, target);
-      if (!sourceNode || !targetNode) {
-        return null;
-      }
-      const newEdge = getNewEdge({
-        flowId,
-        hidden,
-        sourceNode,
-        targetNode,
-        positionGetter,
-        edges
-      });
-      if (!newEdge) {
-        return null;
-      }
+    }
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  /**
+   * Imports an agent from a JSON object.
+   * @param agent - The agent data to import.
+   * @param agentId - The ID to assign to the imported agent.
+   * @param skipLinks - Whether to skip importing links.
+   * @param position - The position to place the imported agent in the graph.
+   * @param save - Whether to save the imported agent to the store.
+   * @returns The newly imported agent node.
+   * @see {@link IWaldiezAgentStore.importAgent}
+   */
+  importAgent = (agent, agentId, skipLinks, position, save = true) => {
+    const newAgent = agentMapper.importAgent(agent, agentId);
+    const newAgentNode = agentMapper.asNode(newAgent, position, skipLinks);
+    if (position) {
+      newAgentNode.position = position;
+    }
+    if (save) {
       this.set({
-        edges: [...this.get().edges, { ...newEdge, sourceHandle, targetHandle }],
+        nodes: [...this.get().nodes, { ...newAgentNode }],
         updatedAt: (/* @__PURE__ */ new Date()).toISOString()
       });
-      this.resetEdgeOrdersAndPositions();
-      const newStoredEdge = this.get().edges.find((edge) => edge.id === newEdge.id);
-      return newStoredEdge ?? newEdge;
-    });
-    /**
-     * Handles the double-click event on an edge.
-     * If a dialog is open, it does nothing. Otherwise, it finds the flow root and triggers the appropriate modal button.
-     * @param _event - The event object.
-     * @param edge - The WaldiezEdge that was double-clicked.
-     * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
-     */
-    __publicField(this, "onEdgeDoubleClick", (_event, edge) => {
-      const openDialogs = document.querySelectorAll("dialog[open]");
-      if (openDialogs.length > 0) {
-        return;
-      }
-      const flowRoot = getFlowRoot(this.get().flowId);
-      if (flowRoot) {
-        const srcModalBtn = flowRoot.querySelector(
-          `[data-edge-node-id="${edge.source}"]`
-        );
-        if (srcModalBtn) {
-          srcModalBtn.setAttribute("data-edge-id", edge.id);
-          srcModalBtn.click();
-        } else {
-          const dstModalBtn = flowRoot.querySelector(
-            `[data-edge-node-id="${edge.target}"]`
-          );
-          if (dstModalBtn) {
-            dstModalBtn.setAttribute("data-edge-id", edge.id);
-            dstModalBtn.click();
-          }
-        }
-      }
-    });
-    /**
-     * Retrieves the source agent of an edge.
-     * @param edge - The WaldiezEdge to get the source agent from.
-     * @returns The WaldiezNodeAgent if found, otherwise undefined.
-     * @see {@link IWaldiezEdgeStore.getEdgeSourceAgent}
-     */
-    __publicField(this, "getEdgeSourceAgent", (edge) => {
-      const agent = this.get().nodes.find((node) => node.id === edge.source);
-      if (agent && agent.type === "agent") {
-        return agent;
-      }
-      return void 0;
-    });
-    /**
-     * Retrieves the target agent of an edge.
-     * @param edge - The WaldiezEdge to get the target agent from.
-     * @returns The WaldiezNodeAgent if found, otherwise undefined.
-     * @see {@link IWaldiezEdgeStore.getEdgeTargetAgent}
-     */
-    __publicField(this, "getEdgeTargetAgent", (edge) => {
-      const agent = this.get().nodes.find((node) => node.id === edge.target);
-      if (agent && agent.type === "agent") {
-        return agent;
-      }
-      return void 0;
-    });
-    /**
-     * Handles the reconnection of an edge when the source or target node changes.
-     * It updates the edge's source and target properties, and adjusts the edge's label if necessary.
-     * @param oldEdge - The original edge that is being reconnected.
-     * @param newConnection - The new connection details for the edge.
-     * @see {@link IWaldiezEdgeStore.onReconnect}
-     */
-    __publicField(this, "onReconnect", (oldEdge, newConnection) => {
-      var _a;
-      const nodes = this.get().nodes;
-      if (!shouldReconnect(newConnection, nodes)) {
-        return;
-      }
-      const { oldSourceNode, oldTargetNode, newSourceNode, newTargetNode, color } = getNewEdgeConnectionProps(oldEdge, newConnection, nodes);
-      if (!oldSourceNode || !oldTargetNode || !newSourceNode || !newTargetNode) {
-        console.error("Not all nodes found");
-        return;
-      }
-      if (!color) {
-        return false;
-      }
-      const oldLabel = (_a = oldEdge.data) == null ? void 0 : _a.label;
-      if (oldEdge.data && oldLabel === `${oldSourceNode.data.agentType} => ${oldTargetNode.data.agentType}`) {
-        oldEdge.data.label = getNewEdgeName(newSourceNode, newTargetNode);
-      }
-      this.set({
-        edges: [
-          ...this.get().edges.map((edge) => {
-            if (edge.id !== oldEdge.id) {
-              return edge;
+    }
+    return newAgentNode;
+  };
+  /**
+   * Exports an agent by its ID.
+   * @param agentId - The ID of the agent to export.
+   * @param hideSecrets - Whether to hide sensitive information in the exported data.
+   * @returns The exported agent data.
+   * @see {@link IWaldiezAgentStore.exportAgent}
+   */
+  exportAgent = (agentId, hideSecrets) => {
+    const agent = this.get().nodes.find((node) => node.id === agentId);
+    if (!agent) {
+      return {};
+    }
+    return agentMapper.exportAgent(agent, hideSecrets);
+  };
+  /**
+   * Retrieves the connections of an agent by its ID.
+   * @param nodeId - The ID of the agent to get connections for.
+   * @param options - Options to filter connections (sourcesOnly, targetsOnly).
+   * @returns An array of connections for the specified agent.
+   * @see {@link IWaldiezAgentStore.getAgentConnections}
+   */
+  getAgentConnections = (nodeId, options) => {
+    if (!options) {
+      options = {
+        sourcesOnly: false,
+        targetsOnly: false
+      };
+    }
+    return getAgentConnections(this.get().nodes, this.get().edges, nodeId, options);
+  };
+  /**
+   * Sets the agent group for a specific agent.
+   * @param agentId - The ID of the agent to set the group for.
+   * @param groupId - The ID of the group to set.
+   * @param position - The position to place the agent in the group.
+   * @see {@link IWaldiezAgentStore.setAgentGroup}
+   */
+  setAgentGroup = (agentId, groupId, position) => {
+    this.set({
+      nodes: this.get().nodes.map((node) => {
+        if (node.id === agentId) {
+          return {
+            ...node,
+            position: position ?? node.position,
+            parentId: groupId,
+            extent: "parent",
+            data: {
+              ...node.data,
+              parentId: groupId
             }
-            return {
-              ...oldEdge,
-              source: newConnection.source,
-              target: newConnection.target,
-              sourceHandle: newConnection.sourceHandle,
-              targetHandle: newConnection.targetHandle,
-              ...edgeCommonStyle(oldEdge.type, color),
-              data: {
-                ...edge.data,
-                realSource: newSourceNode.id,
-                realTarget: newTargetNode.id,
-                sourceType: newSourceNode.data.agentType,
-                targetType: newTargetNode.data.agentType
-              }
-            };
-          })
-        ],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      this.resetEdgeOrdersAndPositions();
+          };
+        }
+        return node;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
     });
-    /**
-     * Handles changes to edges, applying the changes to the current edges in the store.
-     * @param changes - An array of EdgeChange objects representing the changes to apply.
-     * @see {@link IWaldiezEdgeStore.onEdgesChange}
-     */
-    __publicField(this, "onEdgesChange", (changes) => {
-      const edges = applyEdgeChanges(changes, this.get().edges);
-      this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+  };
+  /**
+   * Retrieves the group members of a specific group by its ID.
+   * @param groupId - The ID of the group to get members for.
+   * @returns An array of agents that are members of the specified group.
+   * @see {@link IWaldiezAgentStore.getGroupMembers}
+   */
+  getGroupMembers = (groupId) => {
+    return this.get().nodes.filter(
+      (node) => node.type === "agent" && node.data.parentId === groupId
+    );
+  };
+  /**
+   * Adds a member to a group by its ID.
+   * @param groupId - The ID of the group to add the member to.
+   * @param memberId - The ID of the member to add.
+   * @param position - The position to place the member in the group.
+   * @see {@link IWaldiezAgentStore.addGroupMember}
+   */
+  addGroupMember = (groupId, memberId, position) => {
+    this.set({
+      nodes: this.get().nodes.map((node) => {
+        if (node.id === memberId) {
+          return {
+            ...node,
+            position: position || node.position,
+            parentId: groupId,
+            extent: "parent",
+            data: { ...node.data, parentId: groupId }
+          };
+        }
+        return node;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
     });
-    /**
-     * Resets the edge orders and positions in the store.
-     * This method is typically called after adding, deleting, or updating edges to ensure the order and positions are consistent.
-     * @see {@link IWaldiezEdgeStore.resetEdgeOrdersAndPositions}
-     */
-    __publicField(this, "resetEdgeOrdersAndPositions", () => {
-      resetEdgeOrdersAndPositions(this.get, this.set);
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  /**
+   * Removes a member from a group by its ID.
+   * @param groupId - The ID of the group to remove the member from.
+   * @param memberId - The ID of the member to remove.
+   * @see {@link IWaldiezAgentStore.removeGroupMember}
+   */
+  removeGroupMember = (groupId, memberId) => {
+    const nodes = [
+      ...this.get().nodes.map((node) => {
+        if (node.id === memberId && node.data.parentId === groupId) {
+          node.data.parentId = void 0;
+          node.parentId = void 0;
+          node.extent = void 0;
+          node.position = {
+            x: node.position.x + 50,
+            y: node.position.y + 50
+          };
+        }
+        return { ...node };
+      })
+    ];
+    this.set({
+      nodes,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
     });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+}
+class WaldiezEdgeStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   */
+  constructor(get, set) {
     this.get = get;
     this.set = set;
   }
@@ -11486,309 +11155,310 @@ class WaldiezEdgeStore {
   static create(get, set) {
     return new WaldiezEdgeStore(get, set);
   }
+  /**
+   * Retrieves all edges from the store.
+   * @returns An array of WaldiezEdge objects.
+   * @see {@link WaldiezEdge}
+   * @see {@link IWaldiezEdgeStore.getEdges}
+   */
+  getEdges = () => this.get().edges;
+  /**
+   * Retrieves an edge by its ID.
+   * @param id - The ID of the edge to retrieve.
+   * @returns The WaldiezEdge object if found, otherwise undefined.
+   * @see {@link WaldiezEdge}
+   * @see {@link IWaldiezEdgeStore.getEdgeById}
+   */
+  getEdgeById = (id) => {
+    const edge = this.get().edges.find((edge2) => edge2.id === id);
+    return edge;
+  };
+  /**
+   * Deletes an edge by its ID.
+   * This method also updates the nested chats of agent nodes to remove messages associated with the deleted edge.
+   * @param id - The ID of the edge to delete.
+   * @see {@link IWaldiezEdgeStore.deleteEdge}
+   */
+  deleteEdge = (id) => {
+    const agents = this.get().nodes.filter((node) => node.type === "agent");
+    const notaAgentNodes = this.get().nodes.filter((node) => node.type !== "agent");
+    const agentNodes = agents.map((agentNode) => {
+      const nestedChats = agentNode.data.nestedChats ?? [];
+      return {
+        ...agentNode,
+        data: {
+          ...agentNode.data,
+          nestedChats: nestedChats.map((nestedChat) => {
+            return {
+              ...nestedChat,
+              messages: nestedChat.messages.filter((message) => message.id !== id),
+              // also check if the edge sources (agent's triggeredBy) are still valid
+              triggeredBy: nestedChat.triggeredBy
+            };
+          })
+        }
+      };
+    });
+    const nodes = [...notaAgentNodes, ...agentNodes];
+    const newEdges = this.get().edges.filter((edge) => edge.id !== id);
+    this.set({
+      nodes,
+      edges: newEdges.map((edge, index) => {
+        return {
+          ...edge,
+          data: { ...edge.data, position: index + 1 }
+        };
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Updates the data of an edge by its ID.
+   * @param id - The ID of the edge to update.
+   * @param data - Partial data to update the edge with.
+   * @see {@link IWaldiezEdgeStore.updateEdgeData}
+   */
+  updateEdgeData = (id, data) => {
+    const edge = this.get().edges.find((edge2) => edge2.id === id);
+    if (edge) {
+      const updatedEdge = { ...edge, data: { ...edge.data, ...data } };
+      const edges = this.get().edges.map((edge2) => edge2.id === id ? updatedEdge : edge2);
+      this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+      this.resetEdgeOrdersAndPositions();
+    }
+  };
+  /**
+   * Updates the type of an edge by its ID.
+   * @param id - The ID of the edge to update.
+   * @param edgeType - The new type for the edge.
+   * @see {@link IWaldiezEdgeStore.updateEdgeType}
+   */
+  updateEdgeType = (id, edgeType) => {
+    this.set({
+      edges: this.get().edges.map((edge) => {
+        if (edge.id === id) {
+          const sourceNode = this.get().nodes.find((node) => node.id === edge.source);
+          if (!sourceNode) {
+            throw new Error(`Source node not found for edge ${id}`);
+          }
+          const color = AGENT_COLORS[sourceNode.data.agentType];
+          return {
+            ...edge,
+            type: edgeType,
+            hidden: false,
+            data: {
+              ...edge.data,
+              type: edgeType,
+              order: edgeType === "nested" ? -1 : edge.data?.order ?? -1,
+              prerequisites: edgeType === "nested" ? [] : edge.data?.prerequisites ?? []
+            },
+            animated: edgeType === "nested",
+            ...edgeCommonStyle(edgeType, color)
+          };
+        }
+        return edge;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Updates the path of an edge by its ID and agent type.
+   * @param id - The ID of the edge to update.
+   * @param agentType - The agent type to determine the edge color and style.
+   * @see {@link IWaldiezEdgeStore.updateEdgePath}
+   */
+  updateEdgePath = (id, agentType) => {
+    const currentEdge = this.get().edges.find((edge) => edge.id === id);
+    if (!currentEdge) {
+      console.error(`Edge with id ${id} not found`);
+      return;
+    }
+    const edgeType = currentEdge.type;
+    const color = AGENT_COLORS[agentType];
+    const { style, markerEnd } = edgeCommonStyle(edgeType, color);
+    this.set({
+      edges: this.get().edges.map((edge) => {
+        if (edge.id === id) {
+          return { ...edge, style, markerEnd };
+        }
+        return { ...edge };
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Adds a new edge to the store.
+   * @param options - An object containing the flow ID, connection details, and whether the edge is hidden.
+   * @returns The newly added WaldiezEdge object or null if the edge could not be created.
+   * @see {@link IWaldiezEdgeStore.addEdge}
+   */
+  addEdge = (options) => {
+    const { flowId, connection, hidden } = options;
+    const nodes = this.get().nodes;
+    const edges = this.get().edges;
+    const positionGetter = (chatType) => edges.filter((edge) => edge.type === chatType).length;
+    const { source, target, sourceHandle, targetHandle } = connection;
+    const { sourceNode, targetNode } = getNewEdgeNodes(nodes, source, target);
+    if (!sourceNode || !targetNode) {
+      return null;
+    }
+    const newEdge = getNewEdge({
+      flowId,
+      hidden,
+      sourceNode,
+      targetNode,
+      positionGetter,
+      edges
+    });
+    if (!newEdge) {
+      return null;
+    }
+    this.set({
+      edges: [...this.get().edges, { ...newEdge, sourceHandle, targetHandle }],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+    const newStoredEdge = this.get().edges.find((edge) => edge.id === newEdge.id);
+    return newStoredEdge ?? newEdge;
+  };
+  /**
+   * Handles the double-click event on an edge.
+   * If a dialog is open, it does nothing. Otherwise, it finds the flow root and triggers the appropriate modal button.
+   * @param _event - The event object.
+   * @param edge - The WaldiezEdge that was double-clicked.
+   * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
+   */
+  onEdgeDoubleClick = (_event, edge) => {
+    const openDialogs = document.querySelectorAll("dialog[open]");
+    if (openDialogs.length > 0) {
+      return;
+    }
+    const flowRoot = getFlowRoot(this.get().flowId);
+    if (flowRoot) {
+      const srcModalBtn = flowRoot.querySelector(
+        `[data-edge-node-id="${edge.source}"]`
+      );
+      if (srcModalBtn) {
+        srcModalBtn.setAttribute("data-edge-id", edge.id);
+        srcModalBtn.click();
+      } else {
+        const dstModalBtn = flowRoot.querySelector(
+          `[data-edge-node-id="${edge.target}"]`
+        );
+        if (dstModalBtn) {
+          dstModalBtn.setAttribute("data-edge-id", edge.id);
+          dstModalBtn.click();
+        }
+      }
+    }
+  };
+  /**
+   * Retrieves the source agent of an edge.
+   * @param edge - The WaldiezEdge to get the source agent from.
+   * @returns The WaldiezNodeAgent if found, otherwise undefined.
+   * @see {@link IWaldiezEdgeStore.getEdgeSourceAgent}
+   */
+  getEdgeSourceAgent = (edge) => {
+    const agent = this.get().nodes.find((node) => node.id === edge.source);
+    if (agent && agent.type === "agent") {
+      return agent;
+    }
+    return void 0;
+  };
+  /**
+   * Retrieves the target agent of an edge.
+   * @param edge - The WaldiezEdge to get the target agent from.
+   * @returns The WaldiezNodeAgent if found, otherwise undefined.
+   * @see {@link IWaldiezEdgeStore.getEdgeTargetAgent}
+   */
+  getEdgeTargetAgent = (edge) => {
+    const agent = this.get().nodes.find((node) => node.id === edge.target);
+    if (agent && agent.type === "agent") {
+      return agent;
+    }
+    return void 0;
+  };
+  /**
+   * Handles the reconnection of an edge when the source or target node changes.
+   * It updates the edge's source and target properties, and adjusts the edge's label if necessary.
+   * @param oldEdge - The original edge that is being reconnected.
+   * @param newConnection - The new connection details for the edge.
+   * @see {@link IWaldiezEdgeStore.onReconnect}
+   */
+  onReconnect = (oldEdge, newConnection) => {
+    const nodes = this.get().nodes;
+    if (!shouldReconnect(newConnection, nodes)) {
+      return;
+    }
+    const { oldSourceNode, oldTargetNode, newSourceNode, newTargetNode, color } = getNewEdgeConnectionProps(oldEdge, newConnection, nodes);
+    if (!oldSourceNode || !oldTargetNode || !newSourceNode || !newTargetNode) {
+      console.error("Not all nodes found");
+      return;
+    }
+    if (!color) {
+      return false;
+    }
+    const oldLabel = oldEdge.data?.label;
+    if (oldEdge.data && oldLabel === `${oldSourceNode.data.agentType} => ${oldTargetNode.data.agentType}`) {
+      oldEdge.data.label = getNewEdgeName(newSourceNode, newTargetNode);
+    }
+    this.set({
+      edges: [
+        ...this.get().edges.map((edge) => {
+          if (edge.id !== oldEdge.id) {
+            return edge;
+          }
+          return {
+            ...oldEdge,
+            source: newConnection.source,
+            target: newConnection.target,
+            sourceHandle: newConnection.sourceHandle,
+            targetHandle: newConnection.targetHandle,
+            ...edgeCommonStyle(oldEdge.type, color),
+            data: {
+              ...edge.data,
+              realSource: newSourceNode.id,
+              realTarget: newTargetNode.id,
+              sourceType: newSourceNode.data.agentType,
+              targetType: newTargetNode.data.agentType
+            }
+          };
+        })
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Handles changes to edges, applying the changes to the current edges in the store.
+   * @param changes - An array of EdgeChange objects representing the changes to apply.
+   * @see {@link IWaldiezEdgeStore.onEdgesChange}
+   */
+  onEdgesChange = (changes) => {
+    const edges = applyEdgeChanges(changes, this.get().edges);
+    this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+  };
+  /**
+   * Resets the edge orders and positions in the store.
+   * This method is typically called after adding, deleting, or updating edges to ensure the order and positions are consistent.
+   * @see {@link IWaldiezEdgeStore.resetEdgeOrdersAndPositions}
+   */
+  resetEdgeOrdersAndPositions = () => {
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
 }
 class WaldiezFlowStore {
+  get;
+  set;
   /**
    * Creates an instance of WaldiezFlowStore.
    * @param get - A function to get the current state.
    * @param set - A function to set the new state.
    */
   constructor(get, set) {
-    __publicField(this, "get");
-    __publicField(this, "set");
-    /**
-     * Gets the current flow state's viewport.
-     * @returns The current viewport of the flow.
-     * @see {@link IWaldiezFlowStore.viewport}
-     */
-    __publicField(this, "getViewport", () => this.get().viewport);
-    /**
-     * Gets the current flow state's react flow instance.
-     * @returns The current ReactFlowInstance of the flow.
-     * @see {@link IWaldiezFlowStore.getRfInstance}
-     */
-    __publicField(this, "getRfInstance", () => this.get().rfInstance);
-    /**
-     * Sets the current flow state's react flow instance.
-     * @param instance - The ReactFlowInstance to set.
-     * @returns void
-     * @see {@link IWaldiezFlowStore.setRfInstance}
-     */
-    __publicField(this, "setRfInstance", (instance) => {
-      const currentInstance = this.get().rfInstance;
-      this.set({ rfInstance: instance });
-      if (!currentInstance) {
-        reArrangeModels(this.get, this.set);
-        reArrangeTools(this.get, this.set);
-      }
-    });
-    /**
-     * Gets the current flow information.
-     * @returns An object containing the flow's information.
-     * @see {@link IWaldiezFlowStore.getFlowInfo}
-     */
-    __publicField(this, "getFlowInfo", () => {
-      const {
-        flowId,
-        storageId,
-        name,
-        description,
-        tags,
-        requirements,
-        createdAt,
-        updatedAt,
-        isAsync,
-        cacheSeed
-      } = this.get();
-      return {
-        flowId,
-        storageId: storageId ?? flowId,
-        name: name ?? "Untitled Flow",
-        description: description ?? "A new Waldiez flow",
-        tags: tags ?? [],
-        requirements: requirements ?? [],
-        createdAt,
-        updatedAt,
-        isAsync: isAsync ?? false,
-        cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 42
-      };
-    });
-    /**
-     * Handles changes in the flow.
-     * This method exports the current flow state and calls the onChange callback if provided.
-     * @returns The exported flow state.
-     * @see {@link IWaldiezFlowStore.onFlowChanged}
-     */
-    __publicField(this, "onFlowChanged", () => {
-      const { onChange } = this.get();
-      const exported = this.exportFlow(false);
-      if (onChange) {
-        onChange(JSON.stringify(exported));
-      }
-      return exported;
-    });
-    /**
-     * Gets the flow edges, separating used and remaining edges.
-     * Used edges are those with a defined order, while remaining edges do not have an order.
-     * @returns An object containing used and remaining edges.
-     * @see {@link IWaldiezFlowStore.getFlowEdges}
-     */
-    __publicField(this, "getFlowEdges", () => {
-      const allEdges = this.get().edges.filter((edge) => edge.type === "chat");
-      const usedEdges = [];
-      const remainingEdges = [];
-      allEdges.forEach((edge) => {
-        var _a;
-        let edgeOrder;
-        if (typeof ((_a = edge.data) == null ? void 0 : _a.order) === "number") {
-          edgeOrder = edge.data.order;
-        } else {
-          edgeOrder = -1;
-        }
-        if (edgeOrder >= 0) {
-          usedEdges.push(edge);
-        } else {
-          remainingEdges.push(edge);
-        }
-      });
-      const sortedEdgesUsed = usedEdges.sort((a, b) => {
-        var _a, _b;
-        return (((_a = a.data) == null ? void 0 : _a.order) ?? 0) - (((_b = b.data) == null ? void 0 : _b.order) ?? 0);
-      });
-      return { used: sortedEdgesUsed, remaining: remainingEdges };
-    });
-    /**
-     * Saves the current flow state.
-     * This method calls the onSave callback with the exported flow data.
-     * @returns void
-     * @see {@link IWaldiezFlowStore.saveFlow}
-     */
-    __publicField(this, "saveFlow", () => {
-      const { onSave } = this.get();
-      if (typeof onSave === "function") {
-        const exported = this.exportFlow(false);
-        onSave(JSON.stringify(exported));
-      }
-    });
-    /**
-     * Handles changes in the viewport.
-     * If the zoom level has changed, it rearranges nodes and sets the new viewport.
-     * @param viewport - The new viewport object containing x, y, and zoom properties.
-     * @param nodeType - The type of node being viewed (model or tool).
-     * @returns void
-     * @see {@link IWaldiezFlowStore.onViewportChange}
-     */
-    __publicField(this, "onViewportChange", (viewport, nodeType) => {
-      var _a;
-      if (nodeType === "model" || nodeType === "tool") {
-        const zoomChanged = viewport.zoom !== ((_a = this.get().viewport) == null ? void 0 : _a.zoom);
-        if (zoomChanged) {
-          const { nodes, rfInstance, flowId } = this.get();
-          this.set({
-            nodes: reArrangeNodes(nodes, flowId, nodeType, rfInstance),
-            updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-          });
-          setTimeout(() => {
-            setViewPortTopLeft(this.get().rfInstance);
-            this.set({
-              viewport
-            });
-          }, 100);
-        }
-      } else {
-        this.set({ viewport });
-      }
-    });
-    /**
-     * Imports a flow from the provided data.
-     * This method loads the flow data, updates the current flow state, and rearranges nodes and edges.
-     * It also fits the view of the React Flow instance after importing.
-     * @param items - The items to import from.
-     * @param flowData - The imported flow data.
-     * @param typeShown - The type of node being shown (model or tool).
-     * @returns void
-     * @see {@link IWaldiezFlowStore.importFlow}
-     */
-    __publicField(this, "importFlow", (items, flowData, typeShown) => {
-      const {
-        storageId,
-        name: currentName,
-        description: currentDescription,
-        tags: currentTags,
-        requirements: currentRequirements,
-        nodes: currentNodes,
-        edges: currentEdges,
-        isAsync: currentIsAsync,
-        rfInstance
-      } = this.get();
-      const currentFlow = {
-        name: currentName ?? "Untitled Flow",
-        description: currentDescription ?? "A new Waldiez flow",
-        tags: currentTags ?? [],
-        requirements: currentRequirements ?? [],
-        nodes: currentNodes,
-        edges: currentEdges,
-        isAsync: currentIsAsync ?? false
-      };
-      const { name, createdAt, description, tags, requirements, isAsync, nodes, edges } = loadFlow(
-        items,
-        currentFlow,
-        flowData,
-        typeShown
-      );
-      this.set({
-        name,
-        description,
-        tags,
-        requirements,
-        isAsync,
-        storageId: storageId ?? `wf-${getId()}`,
-        createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        nodes,
-        edges
-      });
-      resetEdgeOrdersAndPositions(this.get, this.set);
-      reArrangeModels(this.get, this.set);
-      reArrangeTools(this.get, this.set);
-      setTimeout(() => {
-        rfInstance == null ? void 0 : rfInstance.fitView({
-          includeHiddenNodes: false,
-          padding: 0.2,
-          duration: 100
-          // maxZoom: rfInstance?.getZoom(),
-          // minZoom: rfInstance?.getZoom(),
-        });
-      }, 200);
-    });
-    /**
-     * Exports the current flow state.
-     * This method creates a flow object with the current state and returns it.
-     * @param hideSecrets - A boolean indicating whether to hide secrets in the exported flow.
-     * @returns The exported flow object.
-     * @see {@link IWaldiezFlowStore.exportFlow}
-     */
-    __publicField(this, "exportFlow", (hideSecrets) => {
-      const {
-        isAsync,
-        cacheSeed,
-        viewport,
-        rfInstance,
-        name,
-        description,
-        tags,
-        requirements,
-        createdAt,
-        updatedAt,
-        flowId,
-        storageId
-      } = this.get();
-      const flow = {
-        nodes: this.get().nodes,
-        edges: this.get().edges,
-        viewport: (rfInstance == null ? void 0 : rfInstance.getViewport()) ?? viewport ?? { zoom: 1, x: 20, y: 20 },
-        name: name ?? "Untitled Flow",
-        description: description ?? "A new Waldiez flow",
-        tags: tags ?? [],
-        requirements: requirements ?? [],
-        createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
-        updatedAt: updatedAt ?? (/* @__PURE__ */ new Date()).toISOString(),
-        flowId,
-        storageId: storageId ?? flowId,
-        isAsync: isAsync ?? false,
-        cacheSeed
-      };
-      return flowMapper.exportFlow(flow, hideSecrets, false);
-    });
-    /**
-     * Updates the viewport of the flow.
-     * This method sets the new viewport state and rearranges nodes if necessary.
-     * @param viewport - The new viewport object containing x, y, and zoom properties.
-     * @returns void
-     * @see {@link IWaldiezFlowStore.updateViewport}
-     */
-    __publicField(this, "updateFlowOrder", (data) => {
-      const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-      this.set({
-        edges: this.get().edges.map((edge) => {
-          var _a, _b;
-          const order = ((_a = data.find((d) => d.id === edge.id)) == null ? void 0 : _a.order) ?? ((_b = edge.data) == null ? void 0 : _b.order) ?? -1;
-          return {
-            ...edge,
-            data: { ...edge.data, order }
-          };
-        }),
-        updatedAt
-      });
-    });
-    /**
-     * Updates the flow edges' prerequisites.
-     * This method resets the prerequisites of the edges based on the provided edges.
-     * @param edges - An array of WaldiezEdge objects to update prerequisites for.
-     * @returns void
-     * @see {@link IWaldiezFlowStore.updateFlowPrerequisites}
-     */
-    __publicField(this, "updateFlowPrerequisites", (edges) => {
-      resetEdgePrerequisites(edges, this.get, this.set);
-    });
-    /**
-     * Updates the information of the flow.
-     * This method sets the new flow information such as name, description, tags, requirements, and other properties.
-     * @param data - An object containing the new flow information.
-     * @returns void
-     * @see {@link IWaldiezFlowStore.updateFlowInfo}
-     */
-    __publicField(this, "updateFlowInfo", (data) => {
-      this.set({
-        name: data.name,
-        description: data.description,
-        tags: data.tags,
-        requirements: data.requirements,
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        isAsync: data.isAsync,
-        cacheSeed: data.cacheSeed
-      });
-    });
     this.get = get;
     this.set = set;
   }
@@ -11801,236 +11471,303 @@ class WaldiezFlowStore {
   static create(get, set) {
     return new WaldiezFlowStore(get, set);
   }
+  /**
+   * Gets the current flow state's viewport.
+   * @returns The current viewport of the flow.
+   * @see {@link IWaldiezFlowStore.viewport}
+   */
+  getViewport = () => this.get().viewport;
+  /**
+   * Gets the current flow state's react flow instance.
+   * @returns The current ReactFlowInstance of the flow.
+   * @see {@link IWaldiezFlowStore.getRfInstance}
+   */
+  getRfInstance = () => this.get().rfInstance;
+  /**
+   * Sets the current flow state's react flow instance.
+   * @param instance - The ReactFlowInstance to set.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.setRfInstance}
+   */
+  setRfInstance = (instance) => {
+    const currentInstance = this.get().rfInstance;
+    this.set({ rfInstance: instance });
+    if (!currentInstance) {
+      reArrangeModels(this.get, this.set);
+      reArrangeTools(this.get, this.set);
+    }
+  };
+  /**
+   * Gets the current flow information.
+   * @returns An object containing the flow's information.
+   * @see {@link IWaldiezFlowStore.getFlowInfo}
+   */
+  getFlowInfo = () => {
+    const {
+      flowId,
+      storageId,
+      name,
+      description,
+      tags,
+      requirements,
+      createdAt,
+      updatedAt,
+      isAsync,
+      cacheSeed
+    } = this.get();
+    return {
+      flowId,
+      storageId: storageId ?? flowId,
+      name: name ?? "Untitled Flow",
+      description: description ?? "A new Waldiez flow",
+      tags: tags ?? [],
+      requirements: requirements ?? [],
+      createdAt,
+      updatedAt,
+      isAsync: isAsync ?? false,
+      cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 42
+    };
+  };
+  /**
+   * Handles changes in the flow.
+   * This method exports the current flow state and calls the onChange callback if provided.
+   * @returns The exported flow state.
+   * @see {@link IWaldiezFlowStore.onFlowChanged}
+   */
+  onFlowChanged = () => {
+    const { onChange } = this.get();
+    const exported = this.exportFlow(false);
+    if (onChange) {
+      onChange(JSON.stringify(exported));
+    }
+    return exported;
+  };
+  /**
+   * Gets the flow edges, separating used and remaining edges.
+   * Used edges are those with a defined order, while remaining edges do not have an order.
+   * @returns An object containing used and remaining edges.
+   * @see {@link IWaldiezFlowStore.getFlowEdges}
+   */
+  getFlowEdges = () => {
+    const allEdges = this.get().edges.filter((edge) => edge.type === "chat");
+    const usedEdges = [];
+    const remainingEdges = [];
+    allEdges.forEach((edge) => {
+      let edgeOrder;
+      if (typeof edge.data?.order === "number") {
+        edgeOrder = edge.data.order;
+      } else {
+        edgeOrder = -1;
+      }
+      if (edgeOrder >= 0) {
+        usedEdges.push(edge);
+      } else {
+        remainingEdges.push(edge);
+      }
+    });
+    const sortedEdgesUsed = usedEdges.sort((a, b) => (a.data?.order ?? 0) - (b.data?.order ?? 0));
+    return { used: sortedEdgesUsed, remaining: remainingEdges };
+  };
+  /**
+   * Saves the current flow state.
+   * This method calls the onSave callback with the exported flow data.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.saveFlow}
+   */
+  saveFlow = () => {
+    const { onSave } = this.get();
+    if (typeof onSave === "function") {
+      const exported = this.exportFlow(false);
+      onSave(JSON.stringify(exported));
+    }
+  };
+  /**
+   * Handles changes in the viewport.
+   * If the zoom level has changed, it rearranges nodes and sets the new viewport.
+   * @param viewport - The new viewport object containing x, y, and zoom properties.
+   * @param nodeType - The type of node being viewed (model or tool).
+   * @returns void
+   * @see {@link IWaldiezFlowStore.onViewportChange}
+   */
+  onViewportChange = (viewport, nodeType) => {
+    if (nodeType === "model" || nodeType === "tool") {
+      const zoomChanged = viewport.zoom !== this.get().viewport?.zoom;
+      if (zoomChanged) {
+        const { nodes, rfInstance, flowId } = this.get();
+        this.set({
+          nodes: reArrangeNodes(nodes, flowId, nodeType, rfInstance),
+          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+        });
+        setTimeout(() => {
+          setViewPortTopLeft(this.get().rfInstance);
+          this.set({
+            viewport
+          });
+        }, 100);
+      }
+    } else {
+      this.set({ viewport });
+    }
+  };
+  /**
+   * Imports a flow from the provided data.
+   * This method loads the flow data, updates the current flow state, and rearranges nodes and edges.
+   * It also fits the view of the React Flow instance after importing.
+   * @param items - The items to import from.
+   * @param flowData - The imported flow data.
+   * @param typeShown - The type of node being shown (model or tool).
+   * @returns void
+   * @see {@link IWaldiezFlowStore.importFlow}
+   */
+  importFlow = (items, flowData, typeShown) => {
+    const {
+      storageId,
+      name: currentName,
+      description: currentDescription,
+      tags: currentTags,
+      requirements: currentRequirements,
+      nodes: currentNodes,
+      edges: currentEdges,
+      isAsync: currentIsAsync,
+      rfInstance
+    } = this.get();
+    const currentFlow = {
+      name: currentName ?? "Untitled Flow",
+      description: currentDescription ?? "A new Waldiez flow",
+      tags: currentTags ?? [],
+      requirements: currentRequirements ?? [],
+      nodes: currentNodes,
+      edges: currentEdges,
+      isAsync: currentIsAsync ?? false
+    };
+    const { name, createdAt, description, tags, requirements, isAsync, nodes, edges } = loadFlow(
+      items,
+      currentFlow,
+      flowData,
+      typeShown
+    );
+    this.set({
+      name,
+      description,
+      tags,
+      requirements,
+      isAsync,
+      storageId: storageId ?? `wf-${getId()}`,
+      createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      nodes,
+      edges
+    });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+    reArrangeModels(this.get, this.set);
+    reArrangeTools(this.get, this.set);
+    setTimeout(() => {
+      rfInstance?.fitView({
+        includeHiddenNodes: false,
+        padding: 0.2,
+        duration: 100
+        // maxZoom: rfInstance?.getZoom(),
+        // minZoom: rfInstance?.getZoom(),
+      });
+    }, 200);
+  };
+  /**
+   * Exports the current flow state.
+   * This method creates a flow object with the current state and returns it.
+   * @param hideSecrets - A boolean indicating whether to hide secrets in the exported flow.
+   * @returns The exported flow object.
+   * @see {@link IWaldiezFlowStore.exportFlow}
+   */
+  exportFlow = (hideSecrets) => {
+    const {
+      isAsync,
+      cacheSeed,
+      viewport,
+      rfInstance,
+      name,
+      description,
+      tags,
+      requirements,
+      createdAt,
+      updatedAt,
+      flowId,
+      storageId
+    } = this.get();
+    const flow = {
+      nodes: this.get().nodes,
+      edges: this.get().edges,
+      viewport: rfInstance?.getViewport() ?? viewport ?? { zoom: 1, x: 20, y: 20 },
+      name: name ?? "Untitled Flow",
+      description: description ?? "A new Waldiez flow",
+      tags: tags ?? [],
+      requirements: requirements ?? [],
+      createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: updatedAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+      flowId,
+      storageId: storageId ?? flowId,
+      isAsync: isAsync ?? false,
+      cacheSeed
+    };
+    return flowMapper.exportFlow(flow, hideSecrets, false);
+  };
+  /**
+   * Updates the viewport of the flow.
+   * This method sets the new viewport state and rearranges nodes if necessary.
+   * @param viewport - The new viewport object containing x, y, and zoom properties.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.updateViewport}
+   */
+  updateFlowOrder = (data) => {
+    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    this.set({
+      edges: this.get().edges.map((edge) => {
+        const order = data.find((d) => d.id === edge.id)?.order ?? edge.data?.order ?? -1;
+        return {
+          ...edge,
+          data: { ...edge.data, order }
+        };
+      }),
+      updatedAt
+    });
+  };
+  /**
+   * Updates the flow edges' prerequisites.
+   * This method resets the prerequisites of the edges based on the provided edges.
+   * @param edges - An array of WaldiezEdge objects to update prerequisites for.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.updateFlowPrerequisites}
+   */
+  updateFlowPrerequisites = (edges) => {
+    resetEdgePrerequisites(edges, this.get, this.set);
+  };
+  /**
+   * Updates the information of the flow.
+   * This method sets the new flow information such as name, description, tags, requirements, and other properties.
+   * @param data - An object containing the new flow information.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.updateFlowInfo}
+   */
+  updateFlowInfo = (data) => {
+    this.set({
+      name: data.name,
+      description: data.description,
+      tags: data.tags,
+      requirements: data.requirements,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      isAsync: data.isAsync,
+      cacheSeed: data.cacheSeed
+    });
+  };
 }
 class WaldiezModelStore {
+  get;
+  set;
   /**
    * Creates an instance of WaldiezModelStore.
    * @param get - A function to get the current state of the store.
    * @param set - A function to set the new state of the store.
    */
   constructor(get, set) {
-    __publicField(this, "get");
-    __publicField(this, "set");
-    /**
-     * Gets all models from the store.
-     * @returns An array of WaldiezNodeModel objects.
-     * @see {@link WaldiezNodeModel}
-     * @see {@link IWaldiezModelStore.getModels}
-     */
-    __publicField(this, "getModels", () => {
-      return this.get().nodes.filter((node) => node.type === "model");
-    });
-    /**
-     * Gets a model by its ID.
-     * @param id - The ID of the model to retrieve.
-     * @returns The WaldiezNodeModel object if found, otherwise null.
-     * @see {@link WaldiezNodeModel}
-     * @see {@link IWaldiezModelStore.getModelById}
-     */
-    __publicField(this, "getModelById", (id) => {
-      const model = this.get().nodes.find((node) => node.id === id);
-      if (!model || model.type !== "model") {
-        return null;
-      }
-      return model;
-    });
-    /**
-     * Adds a new model to the store.
-     * @returns The newly created WaldiezNodeModel object.
-     * @see {@link WaldiezNodeModel}
-     * @see {@link IWaldiezModelStore.addModel}
-     */
-    __publicField(this, "addModel", () => {
-      const existingModels = this.get().nodes.filter((node) => node.type === "model");
-      const modelCount = existingModels.length;
-      const flowId = this.get().flowId;
-      const rfInstance = this.get().rfInstance;
-      const position = getNewNodePosition(modelCount, flowId, rfInstance);
-      const newModel = WaldiezModel.create();
-      const newNode = modelMapper.asNode(newModel, position);
-      this.set({
-        nodes: [
-          ...this.get().nodes,
-          {
-            ...newNode,
-            type: "model"
-          }
-        ],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      reArrangeModels(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-      const model = this.get().nodes.find((node) => node.id === newNode.id);
-      return model;
-    });
-    /**
-     * Clones an existing model by its ID.
-     * @param id - The ID of the model to clone.
-     * @returns The cloned WaldiezNodeModel object if successful, otherwise null.
-     * @see {@link WaldiezNodeModel}
-     * @see {@link IWaldiezModelStore.cloneModel}
-     */
-    __publicField(this, "cloneModel", (id) => {
-      const model = this.get().nodes.find((node) => node.id === id);
-      if (!model || model.type !== "model") {
-        return null;
-      }
-      const rfInstance = this.get().rfInstance;
-      reArrangeModels(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-      const newLabel = model.data.label + " (copy)";
-      const newModel = this.getClonedModel(id, rfInstance);
-      newModel.data.label = newLabel;
-      this.set({
-        nodes: [
-          ...this.get().nodes.map((node) => {
-            if (node.id === id) {
-              return { ...node, selected: false };
-            }
-            return node;
-          }),
-          {
-            ...newModel,
-            type: "model",
-            selected: true
-          }
-        ],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      reArrangeModels(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-      const modelWithNewPosition = this.get().nodes.find((node) => node.id === newModel.id);
-      return modelWithNewPosition;
-    });
-    /**
-     * Updates the data of an existing model by its ID.
-     * @param id - The ID of the model to update.
-     * @param data - The partial data to update the model with.
-     * @see {@link WaldiezNodeModelData}
-     * @see {@link IWaldiezModelStore.updateModelData}
-     */
-    __publicField(this, "updateModelData", (id, data) => {
-      const model = this.get().nodes.find((node) => node.id === id);
-      if (!model || model.type !== "model") {
-        return;
-      }
-      const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-      this.set({
-        nodes: [
-          ...this.get().nodes.map((node) => {
-            if (node.id === id) {
-              return {
-                ...node,
-                data: { ...node.data, ...data, updatedAt }
-              };
-            }
-            return node;
-          })
-        ],
-        updatedAt
-      });
-    });
-    /**
-     * Deletes a model by its ID.
-     * @param id - The ID of the model to delete.
-     * @see {@link IWaldiezModelStore.deleteModel}
-     */
-    __publicField(this, "deleteModel", (id) => {
-      const rfInstance = this.get().rfInstance;
-      const newNodes = this.getNodesAfterModelDeletion(id, rfInstance);
-      this.set({
-        nodes: newNodes,
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      reArrangeModels(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-    });
-    /**
-     * Imports a model from a given model object.
-     * @param model - The model object to import.
-     * @param modelId - The ID to assign to the imported model.
-     * @param position - The position to place the imported model in the flow.
-     * @param save - Whether to save the imported model immediately (default: true).
-     * @returns The imported WaldiezNodeModel object.
-     * @see {@link WaldiezNodeModel}
-     * @see {@link IWaldiezModelStore.importModel}
-     */
-    __publicField(this, "importModel", (model, modelId, position, save = true) => {
-      const newModel = modelMapper.importModel(model);
-      const modelNode = modelMapper.asNode(newModel, position);
-      modelNode.id = modelId;
-      if (position) {
-        modelNode.position = position;
-      }
-      if (save) {
-        this.set({
-          nodes: this.get().nodes.map((node) => node.id === modelId ? modelNode : node)
-        });
-      }
-      return modelNode;
-    });
-    /**
-     * Exports a model by its ID.
-     * @param modelId - The ID of the model to export.
-     * @param hideSecrets - Whether to hide secrets in the exported model (default: true).
-     * @returns The exported model object.
-     * @see {@link IWaldiezModelStore.exportModel}
-     */
-    __publicField(this, "exportModel", (modelId, hideSecrets) => {
-      const model = this.get().nodes.find((node) => node.id === modelId);
-      if (!model || model.type !== "model") {
-        throw new Error(`Model with id ${modelId} not found`);
-      }
-      return modelMapper.exportModel(model, hideSecrets);
-    });
-    __publicField(this, "getClonedModel", (modelId, rfInstance) => {
-      const model = this.get().nodes.find((node) => node.id === modelId);
-      if (!model) {
-        throw new Error(`Model with id ${modelId} not found`);
-      }
-      const existingModels = this.get().nodes.filter((node) => node.type === "model");
-      const modelCount = existingModels.length;
-      const flowId = this.get().flowId;
-      const position = getNewNodePosition(modelCount, flowId, rfInstance);
-      const newModel = WaldiezModel.create();
-      return modelMapper.asNode(newModel, position);
-    });
-    /**
-     * Gets the nodes after a model deletion.
-     * This method rearranges the nodes and updates the positions of the remaining model nodes.
-     * It also checks if the deleted model was linked to any agents and updates them accordingly.
-     * @param modelId - The ID of the model that was deleted.
-     * @param rfInstance - The React Flow instance to get the new positions for the nodes.
-     * @returns An array of updated nodes after the model deletion.
-     */
-    __publicField(this, "getNodesAfterModelDeletion", (modelId, rfInstance) => {
-      const newModelNodes = this.get().nodes.filter((node) => node.type === "model" && node.id !== modelId);
-      const newModelNodesCount = newModelNodes.length;
-      const flowId = this.get().flowId;
-      for (let i = 0; i < newModelNodesCount; i++) {
-        const node = newModelNodes[i];
-        const position = getNewNodePosition(i, flowId, rfInstance);
-        newModelNodes[i] = { ...node, position };
-      }
-      const allNodes = newModelNodes.concat(this.get().nodes.filter((node) => node.type !== "model"));
-      const newNodes = [];
-      allNodes.forEach((node) => {
-        if (node.type === "agent") {
-          const agent = node;
-          if (agent.data.modelIds.includes(modelId)) {
-            newNodes.push({
-              ...agent,
-              data: { ...agent.data, modelIds: agent.data.modelIds.filter((id) => id !== modelId) }
-            });
-          } else {
-            newNodes.push(agent);
-          }
-        } else {
-          newNodes.push(node);
-        }
-      });
-      return newNodes;
-    });
     this.get = get;
     this.set = set;
   }
@@ -12043,180 +11780,236 @@ class WaldiezModelStore {
   static create(get, set) {
     return new WaldiezModelStore(get, set);
   }
+  /**
+   * Gets all models from the store.
+   * @returns An array of WaldiezNodeModel objects.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.getModels}
+   */
+  getModels = () => {
+    return this.get().nodes.filter((node) => node.type === "model");
+  };
+  /**
+   * Gets a model by its ID.
+   * @param id - The ID of the model to retrieve.
+   * @returns The WaldiezNodeModel object if found, otherwise null.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.getModelById}
+   */
+  getModelById = (id) => {
+    const model = this.get().nodes.find((node) => node.id === id);
+    if (!model || model.type !== "model") {
+      return null;
+    }
+    return model;
+  };
+  /**
+   * Adds a new model to the store.
+   * @returns The newly created WaldiezNodeModel object.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.addModel}
+   */
+  addModel = () => {
+    const existingModels = this.get().nodes.filter((node) => node.type === "model");
+    const modelCount = existingModels.length;
+    const flowId = this.get().flowId;
+    const rfInstance = this.get().rfInstance;
+    const position = getNewNodePosition(modelCount, flowId, rfInstance);
+    const newModel = WaldiezModel.create();
+    const newNode = modelMapper.asNode(newModel, position);
+    this.set({
+      nodes: [
+        ...this.get().nodes,
+        {
+          ...newNode,
+          type: "model"
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const model = this.get().nodes.find((node) => node.id === newNode.id);
+    return model;
+  };
+  /**
+   * Clones an existing model by its ID.
+   * @param id - The ID of the model to clone.
+   * @returns The cloned WaldiezNodeModel object if successful, otherwise null.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.cloneModel}
+   */
+  cloneModel = (id) => {
+    const model = this.get().nodes.find((node) => node.id === id);
+    if (!model || model.type !== "model") {
+      return null;
+    }
+    const rfInstance = this.get().rfInstance;
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const newLabel = model.data.label + " (copy)";
+    const newModel = this.getClonedModel(id, rfInstance);
+    newModel.data.label = newLabel;
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node) => {
+          if (node.id === id) {
+            return { ...node, selected: false };
+          }
+          return node;
+        }),
+        {
+          ...newModel,
+          type: "model",
+          selected: true
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const modelWithNewPosition = this.get().nodes.find((node) => node.id === newModel.id);
+    return modelWithNewPosition;
+  };
+  /**
+   * Updates the data of an existing model by its ID.
+   * @param id - The ID of the model to update.
+   * @param data - The partial data to update the model with.
+   * @see {@link WaldiezNodeModelData}
+   * @see {@link IWaldiezModelStore.updateModelData}
+   */
+  updateModelData = (id, data) => {
+    const model = this.get().nodes.find((node) => node.id === id);
+    if (!model || model.type !== "model") {
+      return;
+    }
+    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node) => {
+          if (node.id === id) {
+            return {
+              ...node,
+              data: { ...node.data, ...data, updatedAt }
+            };
+          }
+          return node;
+        })
+      ],
+      updatedAt
+    });
+  };
+  /**
+   * Deletes a model by its ID.
+   * @param id - The ID of the model to delete.
+   * @see {@link IWaldiezModelStore.deleteModel}
+   */
+  deleteModel = (id) => {
+    const rfInstance = this.get().rfInstance;
+    const newNodes = this.getNodesAfterModelDeletion(id, rfInstance);
+    this.set({
+      nodes: newNodes,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+  };
+  /**
+   * Imports a model from a given model object.
+   * @param model - The model object to import.
+   * @param modelId - The ID to assign to the imported model.
+   * @param position - The position to place the imported model in the flow.
+   * @param save - Whether to save the imported model immediately (default: true).
+   * @returns The imported WaldiezNodeModel object.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.importModel}
+   */
+  importModel = (model, modelId, position, save = true) => {
+    const newModel = modelMapper.importModel(model);
+    const modelNode = modelMapper.asNode(newModel, position);
+    modelNode.id = modelId;
+    if (position) {
+      modelNode.position = position;
+    }
+    if (save) {
+      this.set({
+        nodes: this.get().nodes.map((node) => node.id === modelId ? modelNode : node)
+      });
+    }
+    return modelNode;
+  };
+  /**
+   * Exports a model by its ID.
+   * @param modelId - The ID of the model to export.
+   * @param hideSecrets - Whether to hide secrets in the exported model (default: true).
+   * @returns The exported model object.
+   * @see {@link IWaldiezModelStore.exportModel}
+   */
+  exportModel = (modelId, hideSecrets) => {
+    const model = this.get().nodes.find((node) => node.id === modelId);
+    if (!model || model.type !== "model") {
+      throw new Error(`Model with id ${modelId} not found`);
+    }
+    return modelMapper.exportModel(model, hideSecrets);
+  };
+  getClonedModel = (modelId, rfInstance) => {
+    const model = this.get().nodes.find((node) => node.id === modelId);
+    if (!model) {
+      throw new Error(`Model with id ${modelId} not found`);
+    }
+    const existingModels = this.get().nodes.filter((node) => node.type === "model");
+    const modelCount = existingModels.length;
+    const flowId = this.get().flowId;
+    const position = getNewNodePosition(modelCount, flowId, rfInstance);
+    const newModel = WaldiezModel.create();
+    return modelMapper.asNode(newModel, position);
+  };
+  /**
+   * Gets the nodes after a model deletion.
+   * This method rearranges the nodes and updates the positions of the remaining model nodes.
+   * It also checks if the deleted model was linked to any agents and updates them accordingly.
+   * @param modelId - The ID of the model that was deleted.
+   * @param rfInstance - The React Flow instance to get the new positions for the nodes.
+   * @returns An array of updated nodes after the model deletion.
+   */
+  getNodesAfterModelDeletion = (modelId, rfInstance) => {
+    const newModelNodes = this.get().nodes.filter((node) => node.type === "model" && node.id !== modelId);
+    const newModelNodesCount = newModelNodes.length;
+    const flowId = this.get().flowId;
+    for (let i = 0; i < newModelNodesCount; i++) {
+      const node = newModelNodes[i];
+      const position = getNewNodePosition(i, flowId, rfInstance);
+      newModelNodes[i] = { ...node, position };
+    }
+    const allNodes = newModelNodes.concat(this.get().nodes.filter((node) => node.type !== "model"));
+    const newNodes = [];
+    allNodes.forEach((node) => {
+      if (node.type === "agent") {
+        const agent = node;
+        if (agent.data.modelIds.includes(modelId)) {
+          newNodes.push({
+            ...agent,
+            data: { ...agent.data, modelIds: agent.data.modelIds.filter((id) => id !== modelId) }
+          });
+        } else {
+          newNodes.push(agent);
+        }
+      } else {
+        newNodes.push(node);
+      }
+    });
+    return newNodes;
+  };
 }
 class WaldiezNodeStore {
+  get;
+  set;
   /**
    * Creates an instance of WaldiezNodeStore.
    * @param get - A function to get the current state.
    * @param set - A function to set the new state.
    */
   constructor(get, set) {
-    __publicField(this, "get");
-    __publicField(this, "set");
-    /**
-     * Shows nodes of a specific type and hides others.
-     * If the node type is "agent", it restores the previous viewport.
-     * Otherwise, it stores the current viewport before changing the visibility.
-     * @param nodeType - The type of nodes to show.
-     * @see {@link WaldiezNodeType}
-     * @see {@link IWaldiezNodeStore.showNodes}
-     */
-    __publicField(this, "showNodes", (nodeType) => {
-      if (nodeType !== "agent") {
-        if (this.isShowingAgents()) {
-          this.storePreviousViewport();
-        }
-        setViewPortTopLeft(this.get().rfInstance);
-      } else {
-        this.restorePreviousViewport();
-      }
-      this.set({
-        nodes: this.get().nodes.map((node) => {
-          if (node.type === nodeType) {
-            return { ...node, hidden: false };
-          }
-          return { ...node, hidden: true };
-        })
-      });
-    });
-    /**
-     * Checks if there are any visible agent nodes in the current state.
-     * @returns True if there are visible agent nodes, false otherwise.
-     * @see {@link IWaldiezNodeStore.isShowingAgents}
-     */
-    __publicField(this, "isShowingAgents", () => {
-      return this.get().nodes.some((node) => node.type === "agent" && node.hidden === false);
-    });
-    /**
-     * Stores the current viewport before changing visibility of nodes.
-     * @see {@link IWaldiezNodeStore.storePreviousViewport}
-     */
-    __publicField(this, "storePreviousViewport", () => {
-      const rfInstance = this.get().rfInstance;
-      let previousViewport = void 0;
-      if (rfInstance) {
-        previousViewport = {
-          x: rfInstance.getViewport().x,
-          y: rfInstance.getViewport().y,
-          zoom: rfInstance.getViewport().zoom
-        };
-      } else {
-        previousViewport = this.get().viewport;
-      }
-      this.set({
-        previousViewport,
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    });
-    /**
-     * Restores the previous viewport stored in the state.
-     * If a previous viewport exists, it sets the current viewport to that value
-     * and updates the rfInstance if available.
-     * @see {@link IWaldiezNodeStore.restorePreviousViewport}
-     */
-    __publicField(this, "restorePreviousViewport", () => {
-      const previousViewport = this.get().previousViewport;
-      if (previousViewport) {
-        this.set({
-          viewport: previousViewport,
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-        const rfInstance = this.get().rfInstance;
-        if (rfInstance) {
-          rfInstance.setViewport(previousViewport);
-        }
-      }
-    });
-    /**
-     * Handles changes to nodes.
-     * It applies the changes to the current nodes and updates the state.
-     * @param changes - An array of NodeChange objects representing the changes to apply.
-     * @see {@link IWaldiezNodeStore.onNodesChange}
-     */
-    __publicField(this, "onNodesChange", (changes) => {
-      const nodes = applyNodeChanges(changes, this.get().nodes);
-      this.set({ nodes, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
-    });
-    /**
-     * Handles double-click events on nodes.
-     * If a dialog is open, it does nothing.
-     * Otherwise, it finds the flow root and triggers a click on the button associated with the node.
-     * @param _event - The event object.
-     * @param node - The node that was double-clicked.
-     * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
-     */
-    __publicField(this, "onNodeDoubleClick", (_event, node) => {
-      const openDialogs = document.querySelectorAll("dialog[open]");
-      if (openDialogs.length > 0) {
-        return;
-      }
-      const flowId = this.get().flowId;
-      const flowRoot = getFlowRoot(flowId);
-      if (flowRoot) {
-        const openModalBtn = flowRoot.querySelector(`[data-node-id="${node.id}"]`);
-        if (openModalBtn) {
-          openModalBtn.click();
-        }
-      }
-    });
-    /**
-     * Selects a node by its ID.
-     * If the node is already selected, it deselects it.
-     * Otherwise, it selects the node and deselects all others.
-     * @param id - The ID of the node to select.
-     * @see {@link IWaldiezNodeStore.reselectNode}
-     */
-    __publicField(this, "reselectNode", (id) => {
-      const node = this.get().nodes.find((n) => n.id === id);
-      if (!node) {
-        return;
-      }
-      if (node.selected) {
-        this.set({
-          nodes: this.get().nodes.map((node2) => {
-            if (node2.id === id) {
-              return { ...node2, selected: false };
-            }
-            return node2;
-          })
-        });
-      }
-      this.set({
-        nodes: this.get().nodes.map((node2) => {
-          if (node2.id === id) {
-            return { ...node2, selected: true };
-          }
-          return { ...node2, selected: false };
-        })
-      });
-    });
-    /**
-     * Highlights a node by its ID.
-     * It sets the className of the node to "highlight" if it matches the ID.
-     * Otherwise, it clears the highlight by setting className to an empty string.
-     * @param nodeId - The ID of the node to highlight.
-     * @see {@link IWaldiezNodeStore.highlightNode}
-     */
-    __publicField(this, "highlightNode", (nodeId) => {
-      this.set({
-        nodes: this.get().nodes.map((node) => ({
-          ...node,
-          className: node.id === nodeId ? "highlight" : ""
-        }))
-      });
-    });
-    /**
-     * Clears the highlight from all nodes by setting their className to an empty string.
-     * @see {@link IWaldiezNodeStore.clearNodeHighlight}
-     */
-    __publicField(this, "clearNodeHighlight", () => {
-      this.set({
-        nodes: this.get().nodes.map((node) => ({
-          ...node,
-          className: ""
-        }))
-      });
-    });
     this.get = get;
     this.set = set;
   }
@@ -12229,259 +12022,180 @@ class WaldiezNodeStore {
   static create(get, set) {
     return new WaldiezNodeStore(get, set);
   }
+  /**
+   * Shows nodes of a specific type and hides others.
+   * If the node type is "agent", it restores the previous viewport.
+   * Otherwise, it stores the current viewport before changing the visibility.
+   * @param nodeType - The type of nodes to show.
+   * @see {@link WaldiezNodeType}
+   * @see {@link IWaldiezNodeStore.showNodes}
+   */
+  showNodes = (nodeType) => {
+    if (nodeType !== "agent") {
+      if (this.isShowingAgents()) {
+        this.storePreviousViewport();
+      }
+      setViewPortTopLeft(this.get().rfInstance);
+    } else {
+      this.restorePreviousViewport();
+    }
+    this.set({
+      nodes: this.get().nodes.map((node) => {
+        if (node.type === nodeType) {
+          return { ...node, hidden: false };
+        }
+        return { ...node, hidden: true };
+      })
+    });
+  };
+  /**
+   * Checks if there are any visible agent nodes in the current state.
+   * @returns True if there are visible agent nodes, false otherwise.
+   * @see {@link IWaldiezNodeStore.isShowingAgents}
+   */
+  isShowingAgents = () => {
+    return this.get().nodes.some((node) => node.type === "agent" && node.hidden === false);
+  };
+  /**
+   * Stores the current viewport before changing visibility of nodes.
+   * @see {@link IWaldiezNodeStore.storePreviousViewport}
+   */
+  storePreviousViewport = () => {
+    const rfInstance = this.get().rfInstance;
+    let previousViewport = void 0;
+    if (rfInstance) {
+      previousViewport = {
+        x: rfInstance.getViewport().x,
+        y: rfInstance.getViewport().y,
+        zoom: rfInstance.getViewport().zoom
+      };
+    } else {
+      previousViewport = this.get().viewport;
+    }
+    this.set({
+      previousViewport,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+  };
+  /**
+   * Restores the previous viewport stored in the state.
+   * If a previous viewport exists, it sets the current viewport to that value
+   * and updates the rfInstance if available.
+   * @see {@link IWaldiezNodeStore.restorePreviousViewport}
+   */
+  restorePreviousViewport = () => {
+    const previousViewport = this.get().previousViewport;
+    if (previousViewport) {
+      this.set({
+        viewport: previousViewport,
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+      const rfInstance = this.get().rfInstance;
+      if (rfInstance) {
+        rfInstance.setViewport(previousViewport);
+      }
+    }
+  };
+  /**
+   * Handles changes to nodes.
+   * It applies the changes to the current nodes and updates the state.
+   * @param changes - An array of NodeChange objects representing the changes to apply.
+   * @see {@link IWaldiezNodeStore.onNodesChange}
+   */
+  onNodesChange = (changes) => {
+    const nodes = applyNodeChanges(changes, this.get().nodes);
+    this.set({ nodes, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+  };
+  /**
+   * Handles double-click events on nodes.
+   * If a dialog is open, it does nothing.
+   * Otherwise, it finds the flow root and triggers a click on the button associated with the node.
+   * @param _event - The event object.
+   * @param node - The node that was double-clicked.
+   * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
+   */
+  onNodeDoubleClick = (_event, node) => {
+    const openDialogs = document.querySelectorAll("dialog[open]");
+    if (openDialogs.length > 0) {
+      return;
+    }
+    const flowId = this.get().flowId;
+    const flowRoot = getFlowRoot(flowId);
+    if (flowRoot) {
+      const openModalBtn = flowRoot.querySelector(`[data-node-id="${node.id}"]`);
+      if (openModalBtn) {
+        openModalBtn.click();
+      }
+    }
+  };
+  /**
+   * Selects a node by its ID.
+   * If the node is already selected, it deselects it.
+   * Otherwise, it selects the node and deselects all others.
+   * @param id - The ID of the node to select.
+   * @see {@link IWaldiezNodeStore.reselectNode}
+   */
+  reselectNode = (id) => {
+    const node = this.get().nodes.find((n) => n.id === id);
+    if (!node) {
+      return;
+    }
+    if (node.selected) {
+      this.set({
+        nodes: this.get().nodes.map((node2) => {
+          if (node2.id === id) {
+            return { ...node2, selected: false };
+          }
+          return node2;
+        })
+      });
+    }
+    this.set({
+      nodes: this.get().nodes.map((node2) => {
+        if (node2.id === id) {
+          return { ...node2, selected: true };
+        }
+        return { ...node2, selected: false };
+      })
+    });
+  };
+  /**
+   * Highlights a node by its ID.
+   * It sets the className of the node to "highlight" if it matches the ID.
+   * Otherwise, it clears the highlight by setting className to an empty string.
+   * @param nodeId - The ID of the node to highlight.
+   * @see {@link IWaldiezNodeStore.highlightNode}
+   */
+  highlightNode = (nodeId) => {
+    this.set({
+      nodes: this.get().nodes.map((node) => ({
+        ...node,
+        className: node.id === nodeId ? "highlight" : ""
+      }))
+    });
+  };
+  /**
+   * Clears the highlight from all nodes by setting their className to an empty string.
+   * @see {@link IWaldiezNodeStore.clearNodeHighlight}
+   */
+  clearNodeHighlight = () => {
+    this.set({
+      nodes: this.get().nodes.map((node) => ({
+        ...node,
+        className: ""
+      }))
+    });
+  };
 }
 class WaldiezToolStore {
+  get;
+  set;
   /**
    * Creates an instance of WaldiezToolStore.
    * @param get - A function to get the current state.
    * @param set - A function to set the new state.
    */
   constructor(get, set) {
-    __publicField(this, "get");
-    __publicField(this, "set");
-    /**
-     * Returns the type of the store.
-     * @returns The type of the store, which is "tool".
-     * @see {@link IWaldiezToolStore.getTools}
-     */
-    __publicField(this, "getTools", () => {
-      return this.get().nodes.filter((node) => node.type === "tool");
-    });
-    /**
-     * Returns a tool by its ID.
-     * @param id - The ID of the tool to retrieve.
-     * @returns The tool with the specified ID, or null if not found or not a tool.
-     * @see {@link IWaldiezToolStore.getToolById}
-     */
-    __publicField(this, "getToolById", (id) => {
-      const tool = this.get().nodes.find((node) => node.id === id);
-      if (!tool || tool.type !== "tool") {
-        return null;
-      }
-      return tool;
-    });
-    /**
-     * Adds a new tool to the store.
-     * @returns The newly added tool with its position.
-     * @see {@link IWaldiezToolStore.addTool}
-     */
-    __publicField(this, "addTool", () => {
-      const existingTools = this.get().nodes.filter((node) => node.type === "tool");
-      const flowId = this.get().flowId;
-      const rfInstance = this.get().rfInstance;
-      const toolCount = existingTools.length;
-      const position = getNewNodePosition(toolCount, flowId, rfInstance);
-      const newTool = WaldiezTool.create();
-      const newNode = toolMapper.asNode(newTool, position);
-      this.set({
-        nodes: [
-          ...this.get().nodes,
-          {
-            ...newNode,
-            type: "tool"
-          }
-        ],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      reArrangeTools(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-      const toolWithNewPosition = this.get().nodes.find((node) => node.id === newNode.id);
-      return toolWithNewPosition;
-    });
-    /**
-     * Clones an existing tool by its ID.
-     * @param id - The ID of the tool to clone.
-     * @returns The cloned tool with its new position, or null if the tool is not found or not a tool.
-     * @see {@link IWaldiezToolStore.cloneTool}
-     */
-    __publicField(this, "cloneTool", (id) => {
-      const tool = this.get().nodes.find((node) => node.id === id);
-      if (!tool || tool.type !== "tool") {
-        return null;
-      }
-      const rfInstance = this.get().rfInstance;
-      const newTool = this.getClonedTool(tool, rfInstance);
-      this.set({
-        nodes: [
-          ...this.get().nodes.map((node) => {
-            if (node.id === id) {
-              return { ...node, selected: false };
-            }
-            return node;
-          }),
-          {
-            ...newTool,
-            type: "tool",
-            selected: true
-          }
-        ],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      reArrangeTools(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-      const toolWithNewPosition = this.get().nodes.find((node) => node.id === newTool.id);
-      return toolWithNewPosition;
-    });
-    /**
-     * Updates the data of an existing tool by its ID.
-     * @param id - The ID of the tool to update.
-     * @param data - The new data to update the tool with.
-     * @see {@link IWaldiezToolStore.updateToolData}
-     */
-    __publicField(this, "updateToolData", (id, data) => {
-      const tool = this.get().nodes.find((node) => node.id === id);
-      if (!tool || tool.type !== "tool") {
-        return;
-      }
-      const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-      this.set({
-        nodes: [
-          ...this.get().nodes.map((node) => {
-            if (node.type === "tool" && node.id === id) {
-              return {
-                ...node,
-                data: { ...tool.data, ...data, updatedAt }
-              };
-            }
-            return node;
-          })
-        ],
-        updatedAt
-      });
-    });
-    /**
-     * Deletes a tool by its ID.
-     * @param id - The ID of the tool to delete.
-     * @see {@link IWaldiezToolStore.deleteTool}
-     */
-    __publicField(this, "deleteTool", (id) => {
-      const rfInstance = this.get().rfInstance;
-      const allNodes = this.getAgentsAfterToolDeletion(id, rfInstance);
-      this.set({
-        nodes: allNodes,
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      reArrangeTools(this.get, this.set);
-      setViewPortTopLeft(rfInstance);
-    });
-    /**
-     * Imports a tool from an external source.
-     * @param tool - The tool data to import.
-     * @param toolId - The ID to assign to the imported tool.
-     * @param position - The position to place the imported tool, if any.
-     * @param save - Whether to save the imported tool immediately.
-     * @returns The imported tool as a node.
-     * @see {@link IWaldiezToolStore.importTool}
-     */
-    __publicField(this, "importTool", (tool, toolId, position, save) => {
-      const newTool = toolMapper.importTool(tool);
-      const toolNode = toolMapper.asNode(newTool, position);
-      toolNode.id = toolId;
-      if (position) {
-        toolNode.position = position;
-      }
-      if (save) {
-        this.set({
-          nodes: this.get().nodes.map((node) => node.id === toolId ? toolNode : node)
-        });
-      }
-      return toolNode;
-    });
-    /**
-     * Exports a tool by its ID.
-     * @param toolId - The ID of the tool to export.
-     * @param hideSecrets - Whether to hide secrets in the exported tool data.
-     * @returns The exported tool data.
-     * @see {@link IWaldiezToolStore.exportTool}
-     */
-    __publicField(this, "exportTool", (toolId, hideSecrets) => {
-      const tool = this.get().nodes.find((node) => node.id === toolId);
-      if (!tool || tool.type !== "tool") {
-        return {};
-      }
-      return toolMapper.exportTool(tool, hideSecrets);
-    });
-    /**
-     * Gets a cloned version of a tool with a new ID and position.
-     * @param tool - The tool to clone.
-     * @param rfInstance - The React Flow instance to use for positioning.
-     * @returns A cloned tool with a new ID, position, and updated timestamps.
-     */
-    __publicField(this, "getClonedTool", (tool, rfInstance) => {
-      const createdAt = (/* @__PURE__ */ new Date()).toISOString();
-      const updatedAt = createdAt;
-      const toolsCount = this.get().nodes.filter((node) => node.type === "tool").length;
-      const flowId = this.get().flowId;
-      const position = getNewNodePosition(toolsCount, flowId, rfInstance);
-      const label = tool.data.label + " (copy)";
-      const clonedTool = {
-        ...tool,
-        id: `wt-${getId()}`,
-        data: { ...tool.data, label, createdAt, updatedAt },
-        position
-      };
-      return clonedTool;
-    });
-    /**
-     * Gets the agent after a tool has been deleted.
-     * @param toolId - The ID of the tool that was deleted.
-     * @param agent - The agent to update.
-     * @returns The updated agent with the tool removed.
-     */
-    __publicField(this, "getAgentAfterToolDeletion", (toolId, agent) => {
-      const tools = agent.data.tools;
-      const newTools = tools.filter((tool) => tool.id !== toolId);
-      const codeExecution = agent.data.codeExecutionConfig;
-      if (typeof codeExecution === "boolean") {
-        return {
-          ...agent,
-          data: {
-            ...agent.data,
-            tools: newTools
-          }
-        };
-      }
-      const functions = codeExecution.functions ?? [];
-      const newFunctions = functions.filter((func) => func !== toolId);
-      return {
-        ...agent,
-        data: {
-          ...agent.data,
-          tools: newTools,
-          codeExecutionConfig: {
-            ...codeExecution,
-            functions: newFunctions
-          }
-        }
-      };
-    });
-    /**
-     * Gets all agents after a tool has been deleted.
-     * @param toolId - The ID of the tool that was deleted.
-     * @param rfInstance - The React Flow instance to use for positioning.
-     * @returns An array of updated nodes with agents reflecting the tool deletion.
-     */
-    __publicField(this, "getAgentsAfterToolDeletion", (toolId, rfInstance) => {
-      const newToolNodes = this.get().nodes.filter((node) => node.type === "tool" && node.id !== toolId);
-      const newToolNodesCount = newToolNodes.length;
-      const flowId = this.get().flowId;
-      for (let i = 0; i < newToolNodesCount; i++) {
-        const node = newToolNodes[i];
-        const position = getNewNodePosition(i, flowId, rfInstance);
-        newToolNodes[i] = { ...node, position };
-      }
-      const allNodes = newToolNodes.concat(this.get().nodes.filter((node) => node.type !== "tool"));
-      const newNodes = [];
-      allNodes.forEach((node) => {
-        if (node.type === "agent") {
-          const agent = this.getAgentAfterToolDeletion(toolId, node);
-          newNodes.push(agent);
-        } else {
-          newNodes.push(node);
-        }
-      });
-      return newNodes;
-    });
     this.get = get;
     this.set = set;
   }
@@ -12494,6 +12208,249 @@ class WaldiezToolStore {
   static create(get, set) {
     return new WaldiezToolStore(get, set);
   }
+  /**
+   * Returns the type of the store.
+   * @returns The type of the store, which is "tool".
+   * @see {@link IWaldiezToolStore.getTools}
+   */
+  getTools = () => {
+    return this.get().nodes.filter((node) => node.type === "tool");
+  };
+  /**
+   * Returns a tool by its ID.
+   * @param id - The ID of the tool to retrieve.
+   * @returns The tool with the specified ID, or null if not found or not a tool.
+   * @see {@link IWaldiezToolStore.getToolById}
+   */
+  getToolById = (id) => {
+    const tool = this.get().nodes.find((node) => node.id === id);
+    if (!tool || tool.type !== "tool") {
+      return null;
+    }
+    return tool;
+  };
+  /**
+   * Adds a new tool to the store.
+   * @returns The newly added tool with its position.
+   * @see {@link IWaldiezToolStore.addTool}
+   */
+  addTool = () => {
+    const existingTools = this.get().nodes.filter((node) => node.type === "tool");
+    const flowId = this.get().flowId;
+    const rfInstance = this.get().rfInstance;
+    const toolCount = existingTools.length;
+    const position = getNewNodePosition(toolCount, flowId, rfInstance);
+    const newTool = WaldiezTool.create();
+    const newNode = toolMapper.asNode(newTool, position);
+    this.set({
+      nodes: [
+        ...this.get().nodes,
+        {
+          ...newNode,
+          type: "tool"
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeTools(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const toolWithNewPosition = this.get().nodes.find((node) => node.id === newNode.id);
+    return toolWithNewPosition;
+  };
+  /**
+   * Clones an existing tool by its ID.
+   * @param id - The ID of the tool to clone.
+   * @returns The cloned tool with its new position, or null if the tool is not found or not a tool.
+   * @see {@link IWaldiezToolStore.cloneTool}
+   */
+  cloneTool = (id) => {
+    const tool = this.get().nodes.find((node) => node.id === id);
+    if (!tool || tool.type !== "tool") {
+      return null;
+    }
+    const rfInstance = this.get().rfInstance;
+    const newTool = this.getClonedTool(tool, rfInstance);
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node) => {
+          if (node.id === id) {
+            return { ...node, selected: false };
+          }
+          return node;
+        }),
+        {
+          ...newTool,
+          type: "tool",
+          selected: true
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeTools(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const toolWithNewPosition = this.get().nodes.find((node) => node.id === newTool.id);
+    return toolWithNewPosition;
+  };
+  /**
+   * Updates the data of an existing tool by its ID.
+   * @param id - The ID of the tool to update.
+   * @param data - The new data to update the tool with.
+   * @see {@link IWaldiezToolStore.updateToolData}
+   */
+  updateToolData = (id, data) => {
+    const tool = this.get().nodes.find((node) => node.id === id);
+    if (!tool || tool.type !== "tool") {
+      return;
+    }
+    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node) => {
+          if (node.type === "tool" && node.id === id) {
+            return {
+              ...node,
+              data: { ...tool.data, ...data, updatedAt }
+            };
+          }
+          return node;
+        })
+      ],
+      updatedAt
+    });
+  };
+  /**
+   * Deletes a tool by its ID.
+   * @param id - The ID of the tool to delete.
+   * @see {@link IWaldiezToolStore.deleteTool}
+   */
+  deleteTool = (id) => {
+    const rfInstance = this.get().rfInstance;
+    const allNodes = this.getAgentsAfterToolDeletion(id, rfInstance);
+    this.set({
+      nodes: allNodes,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeTools(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+  };
+  /**
+   * Imports a tool from an external source.
+   * @param tool - The tool data to import.
+   * @param toolId - The ID to assign to the imported tool.
+   * @param position - The position to place the imported tool, if any.
+   * @param save - Whether to save the imported tool immediately.
+   * @returns The imported tool as a node.
+   * @see {@link IWaldiezToolStore.importTool}
+   */
+  importTool = (tool, toolId, position, save) => {
+    const newTool = toolMapper.importTool(tool);
+    const toolNode = toolMapper.asNode(newTool, position);
+    toolNode.id = toolId;
+    if (position) {
+      toolNode.position = position;
+    }
+    if (save) {
+      this.set({
+        nodes: this.get().nodes.map((node) => node.id === toolId ? toolNode : node)
+      });
+    }
+    return toolNode;
+  };
+  /**
+   * Exports a tool by its ID.
+   * @param toolId - The ID of the tool to export.
+   * @param hideSecrets - Whether to hide secrets in the exported tool data.
+   * @returns The exported tool data.
+   * @see {@link IWaldiezToolStore.exportTool}
+   */
+  exportTool = (toolId, hideSecrets) => {
+    const tool = this.get().nodes.find((node) => node.id === toolId);
+    if (!tool || tool.type !== "tool") {
+      return {};
+    }
+    return toolMapper.exportTool(tool, hideSecrets);
+  };
+  /**
+   * Gets a cloned version of a tool with a new ID and position.
+   * @param tool - The tool to clone.
+   * @param rfInstance - The React Flow instance to use for positioning.
+   * @returns A cloned tool with a new ID, position, and updated timestamps.
+   */
+  getClonedTool = (tool, rfInstance) => {
+    const createdAt = (/* @__PURE__ */ new Date()).toISOString();
+    const updatedAt = createdAt;
+    const toolsCount = this.get().nodes.filter((node) => node.type === "tool").length;
+    const flowId = this.get().flowId;
+    const position = getNewNodePosition(toolsCount, flowId, rfInstance);
+    const label = tool.data.label + " (copy)";
+    const clonedTool = {
+      ...tool,
+      id: `wt-${getId()}`,
+      data: { ...tool.data, label, createdAt, updatedAt },
+      position
+    };
+    return clonedTool;
+  };
+  /**
+   * Gets the agent after a tool has been deleted.
+   * @param toolId - The ID of the tool that was deleted.
+   * @param agent - The agent to update.
+   * @returns The updated agent with the tool removed.
+   */
+  getAgentAfterToolDeletion = (toolId, agent) => {
+    const tools = agent.data.tools;
+    const newTools = tools.filter((tool) => tool.id !== toolId);
+    const codeExecution = agent.data.codeExecutionConfig;
+    if (typeof codeExecution === "boolean") {
+      return {
+        ...agent,
+        data: {
+          ...agent.data,
+          tools: newTools
+        }
+      };
+    }
+    const functions = codeExecution.functions ?? [];
+    const newFunctions = functions.filter((func) => func !== toolId);
+    return {
+      ...agent,
+      data: {
+        ...agent.data,
+        tools: newTools,
+        codeExecutionConfig: {
+          ...codeExecution,
+          functions: newFunctions
+        }
+      }
+    };
+  };
+  /**
+   * Gets all agents after a tool has been deleted.
+   * @param toolId - The ID of the tool that was deleted.
+   * @param rfInstance - The React Flow instance to use for positioning.
+   * @returns An array of updated nodes with agents reflecting the tool deletion.
+   */
+  getAgentsAfterToolDeletion = (toolId, rfInstance) => {
+    const newToolNodes = this.get().nodes.filter((node) => node.type === "tool" && node.id !== toolId);
+    const newToolNodesCount = newToolNodes.length;
+    const flowId = this.get().flowId;
+    for (let i = 0; i < newToolNodesCount; i++) {
+      const node = newToolNodes[i];
+      const position = getNewNodePosition(i, flowId, rfInstance);
+      newToolNodes[i] = { ...node, position };
+    }
+    const allNodes = newToolNodes.concat(this.get().nodes.filter((node) => node.type !== "tool"));
+    const newNodes = [];
+    allNodes.forEach((node) => {
+      if (node.type === "agent") {
+        const agent = this.getAgentAfterToolDeletion(toolId, node);
+        newNodes.push(agent);
+      } else {
+        newNodes.push(node);
+      }
+    });
+    return newNodes;
+  };
 }
 const createWaldiezStore = (props) => {
   const {
@@ -12521,7 +12478,7 @@ const createWaldiezStore = (props) => {
   return createStore()(
     temporal(
       (set, get) => ({
-        rfInstance: props == null ? void 0 : props.rfInstance,
+        rfInstance: props?.rfInstance,
         flowId,
         isAsync,
         isReadOnly,
@@ -12686,7 +12643,7 @@ const useDnD = (onNewAgent) => {
         return void 0;
       }
       const parentPos = rfInstance.getInternalNode(parent.id);
-      if (parentPos == null ? void 0 : parentPos.internals.positionAbsolute) {
+      if (parentPos?.internals.positionAbsolute) {
         return {
           x: parentPos.internals.positionAbsolute.x,
           y: parentPos.internals.positionAbsolute.y
@@ -12728,7 +12685,7 @@ const useDnD = (onNewAgent) => {
   const addAgentNode = useCallback(
     (event, agentType) => {
       const { position, parent } = getAgentPositionAndParent(event);
-      const newNode = addAgent(agentType, position, parent == null ? void 0 : parent.id);
+      const newNode = addAgent(agentType, position, parent?.id);
       if (parent) {
         newNode.parentId = parent.id;
         newNode.data.parentId = parent.id;
@@ -12879,7 +12836,7 @@ const useKeys = (flowId, onSave) => {
     if (isReadOnly) {
       return;
     }
-    if ((event == null ? void 0 : event.key) === "Delete" || (event == null ? void 0 : event.key) === "Backspace") {
+    if (event?.key === "Delete" || event?.key === "Backspace") {
       if (isFlowVisible()) {
         onDeleteKey(event);
       }
@@ -13248,7 +13205,6 @@ function IoIosSend(props) {
   return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M435.9 64.9l-367.1 160c-6.5 3.1-6.3 12.4.3 15.3l99.3 56.1c5.9 3.3 13.2 2.6 18.3-1.8l195.8-168.8c1.3-1.1 4.4-3.2 5.6-2 1.3 1.3-.7 4.3-1.8 5.6L216.9 320.1c-4.7 5.3-5.4 13.1-1.6 19.1l64.9 104.1c3.2 6.3 12.3 6.2 15.2-.2L447.2 76c3.3-7.2-4.2-14.5-11.3-11.1z" }, "child": [] }] })(props);
 }
 const ChatModal = memo((props) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
   const { flowId, chat } = props;
   const [textInput, setTextInput] = useState("");
   const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
@@ -13256,22 +13212,20 @@ const ChatModal = memo((props) => {
   const [showPassword, setShowPassword] = useState(false);
   const inputRef = useRef(null);
   useEffect(() => {
-    if (chat == null ? void 0 : chat.showUI) {
+    if (chat?.showUI) {
       setTextInput("");
       setImagePreview(null);
       requestAnimationFrame(() => {
-        var _a2, _b2, _c2;
-        if ((_a2 = chat.activeRequest) == null ? void 0 : _a2.request_id) {
-          (_b2 = inputRef.current) == null ? void 0 : _b2.focus();
+        if (chat.activeRequest?.request_id) {
+          inputRef.current?.focus();
         } else {
-          (_c2 = inputRef.current) == null ? void 0 : _c2.blur();
+          inputRef.current?.blur();
         }
       });
     }
-  }, [chat == null ? void 0 : chat.showUI, (_a = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _a.request_id, chat == null ? void 0 : chat.messages]);
+  }, [chat?.showUI, chat?.activeRequest?.request_id, chat?.messages]);
   const createInputResponse = useCallback(
     (includeData = true) => {
-      var _a2;
       const data = [];
       if (includeData) {
         data.push({
@@ -13291,22 +13245,21 @@ const ChatModal = memo((props) => {
       }
       return {
         id: `${flowId}-${Date.now()}`,
-        request_id: ((_a2 = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _a2.request_id) || "",
+        request_id: chat?.activeRequest?.request_id || "",
         type: "input_response",
         timestamp: (/* @__PURE__ */ new Date()).toISOString(),
         data
       };
     },
-    [flowId, chat == null ? void 0 : chat.activeRequest, textInput, imagePreview]
+    [flowId, chat?.activeRequest, textInput, imagePreview]
   );
   const handleSubmit = useCallback(() => {
-    var _a2, _b2;
-    (_b2 = (_a2 = chat == null ? void 0 : chat.handlers) == null ? void 0 : _a2.onUserInput) == null ? void 0 : _b2.call(_a2, createInputResponse());
+    chat?.handlers?.onUserInput?.(createInputResponse());
     setTimeout(() => {
       setTextInput("");
       setImagePreview(null);
     }, 10);
-  }, [chat == null ? void 0 : chat.handlers, createInputResponse]);
+  }, [chat?.handlers, createInputResponse]);
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "Enter" && !event.shiftKey) {
@@ -13320,8 +13273,7 @@ const ChatModal = memo((props) => {
     setTextInput(event.target.value);
   }, []);
   const handleImageChange = useCallback((event) => {
-    var _a2;
-    const file = (_a2 = event.target.files) == null ? void 0 : _a2[0];
+    const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -13336,19 +13288,17 @@ const ChatModal = memo((props) => {
     setImagePreview(null);
   }, []);
   const handleClose = useCallback(() => {
-    var _a2, _b2;
     setTextInput("");
     setImagePreview(null);
-    (_b2 = (_a2 = chat == null ? void 0 : chat.handlers) == null ? void 0 : _a2.onClose) == null ? void 0 : _b2.call(_a2);
-  }, [chat == null ? void 0 : chat.handlers]);
+    chat?.handlers?.onClose?.();
+  }, [chat?.handlers]);
   const openFileSelectModal = useCallback(() => {
     setIsFileSelectModalOpen(true);
   }, []);
   const closeFileSelectModal = useCallback(() => {
     setIsFileSelectModalOpen(false);
     setTimeout(() => {
-      var _a2;
-      (_a2 = inputRef.current) == null ? void 0 : _a2.focus();
+      inputRef.current?.focus();
     }, 0);
   }, []);
   const handleCancel = useCallback(
@@ -13366,8 +13316,8 @@ const ChatModal = memo((props) => {
   const inputId = `rf-${flowId}-chat-modal-input`;
   const imageInputId = `rf-${flowId}-chat-modal-image`;
   const modalTestId = `rf-${flowId}-chat-modal`;
-  const isModalOpen = (chat == null ? void 0 : chat.showUI) === true || chat !== void 0 && chat.messages.length > 0;
-  const leftIcon = ((_b = chat == null ? void 0 : chat.handlers) == null ? void 0 : _b.onInterrupt) ? /* @__PURE__ */ jsx(
+  const isModalOpen = chat?.showUI === true || chat !== void 0 && chat.messages.length > 0;
+  const leftIcon = chat?.handlers?.onInterrupt ? /* @__PURE__ */ jsx(
     "div",
     {
       role: "button",
@@ -13377,7 +13327,7 @@ const ChatModal = memo((props) => {
       children: /* @__PURE__ */ jsx(FaStop, { size: 18 })
     }
   ) : void 0;
-  const allowImage = !chat || !(chat == null ? void 0 : chat.mediaConfig) ? true : (_c = chat == null ? void 0 : chat.mediaConfig) == null ? void 0 : _c.allowedTypes.includes("image");
+  const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
   return /* @__PURE__ */ jsx(
     Modal,
     {
@@ -13389,10 +13339,10 @@ const ChatModal = memo((props) => {
       beforeTitle: leftIcon,
       className: "chat-modal",
       hasMaximizeBtn: true,
-      hasCloseBtn: (chat == null ? void 0 : chat.showUI) === false,
+      hasCloseBtn: chat?.showUI === false,
       dataTestId: modalTestId,
       children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
-        (chat == null ? void 0 : chat.messages) && chat.messages.length > 0 && /* @__PURE__ */ jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsx(
+        chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsx(
           ChatUI,
           {
             isDarkMode: false,
@@ -13401,8 +13351,8 @@ const ChatModal = memo((props) => {
             activeRequest: chat.activeRequest
           }
         ) }),
-        /* @__PURE__ */ jsx("div", { className: "input-prompt", children: (_d = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _d.prompt }),
-        ((_e = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _e.request_id) !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-container", children: [
+        /* @__PURE__ */ jsx("div", { className: "input-prompt", children: chat?.activeRequest?.prompt }),
+        chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-container", children: [
           imagePreview && /* @__PURE__ */ jsx("div", { className: "chat-image-preview", children: /* @__PURE__ */ jsxs("div", { className: "chat-image-wrapper", children: [
             /* @__PURE__ */ jsx("img", { src: imagePreview, alt: "Preview", className: "chat-preview-image" }),
             /* @__PURE__ */ jsx(
@@ -13417,7 +13367,7 @@ const ChatModal = memo((props) => {
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx("div", { className: "chat-input-field-container", children: ((_f = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _f.password) === true ? /* @__PURE__ */ jsxs("div", { className: "password-toggle-container", children: [
+          /* @__PURE__ */ jsx("div", { className: "chat-input-field-container", children: chat?.activeRequest?.password === true ? /* @__PURE__ */ jsxs("div", { className: "password-toggle-container", children: [
             /* @__PURE__ */ jsx(
               "input",
               {
@@ -13427,7 +13377,7 @@ const ChatModal = memo((props) => {
                 id: inputId,
                 "data-testid": inputId,
                 value: textInput,
-                disabled: ((_g = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _g.request_id) === void 0,
+                disabled: chat?.activeRequest?.request_id === void 0,
                 onKeyDown: handleKeyDown,
                 onChange: handleTextChange,
                 className: "chat-text-input password-input",
@@ -13445,7 +13395,7 @@ const ChatModal = memo((props) => {
                 onClick: () => setShowPassword(!showPassword),
                 title: showPassword ? "Hide password" : "Show password",
                 "aria-label": showPassword ? "Hide password" : "Show password",
-                disabled: ((_h = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _h.request_id) === void 0,
+                disabled: chat?.activeRequest?.request_id === void 0,
                 children: showPassword ? /* @__PURE__ */ jsx(FiEyeOff, { size: 18 }) : /* @__PURE__ */ jsx(FiEye, { size: 18 })
               }
             )
@@ -13458,7 +13408,7 @@ const ChatModal = memo((props) => {
               id: inputId,
               "data-testid": inputId,
               value: textInput,
-              disabled: ((_i = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _i.request_id) === void 0,
+              disabled: chat?.activeRequest?.request_id === void 0,
               onKeyDown: handleKeyDown,
               onChange: handleTextChange,
               className: "chat-text-input",
@@ -13468,7 +13418,7 @@ const ChatModal = memo((props) => {
               "aria-label": "User input"
             }
           ) }),
-          ((_j = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _j.request_id) !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-actions", children: [
+          chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-actions", children: [
             allowImage ? /* @__PURE__ */ jsxs("label", { htmlFor: imageInputId, className: "chat-upload-button", children: [
               /* @__PURE__ */ jsx(FiPaperclip, { size: 18, "aria-hidden": "true" }),
               /* @__PURE__ */ jsx("span", { className: "hidden", children: "Upload an image" }),
@@ -13476,7 +13426,7 @@ const ChatModal = memo((props) => {
                 "input",
                 {
                   type: "file",
-                  disabled: ((_k = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _k.request_id) === void 0,
+                  disabled: chat?.activeRequest?.request_id === void 0,
                   "aria-label": "Upload an image",
                   id: imageInputId,
                   "data-testid": imageInputId,
@@ -13493,7 +13443,7 @@ const ChatModal = memo((props) => {
               {
                 type: "button",
                 title: "Send",
-                disabled: ((_l = chat == null ? void 0 : chat.activeRequest) == null ? void 0 : _l.request_id) === void 0,
+                disabled: chat?.activeRequest?.request_id === void 0,
                 onClick: handleSubmit,
                 className: "chat-send-button",
                 "data-testid": `rf-${flowId}-chat-modal-submit`,
@@ -13601,7 +13551,6 @@ const ExportFlowModal = memo((props) => {
   );
   const onAdditionalFilesUpload = useCallback(
     (files) => {
-      var _a;
       if (files.length === 0) {
         setAdditionalFile(null);
         return;
@@ -13611,7 +13560,7 @@ const ExportFlowModal = memo((props) => {
         showError("File size exceeds 5MB.");
         return;
       }
-      const extension = (_a = file.name.split(".").pop()) == null ? void 0 : _a.toLowerCase();
+      const extension = file.name.split(".").pop()?.toLowerCase();
       if (extension !== "csv") {
         showError("File is not a CSV.");
         return;
@@ -13989,8 +13938,8 @@ const useFlowAgents = (props) => {
   const { flowId, state, onStateChange } = props;
   const { selectedProps, loadedFlowData: flowData } = state;
   const agentNodes = useMemo(
-    () => (flowData == null ? void 0 : flowData.nodes.filter((node) => node.type === "agent")) || [],
-    [flowData == null ? void 0 : flowData.nodes]
+    () => flowData?.nodes.filter((node) => node.type === "agent") || [],
+    [flowData?.nodes]
   );
   const onSelectedPropsChange = useCallback(
     (thingsToImport) => {
@@ -14173,8 +14122,8 @@ const useFlowModels = (props) => {
   const { flowId, state, onStateChange } = props;
   const { selectedProps, loadedFlowData: flowData } = state;
   const modelNodes = useMemo(
-    () => (flowData == null ? void 0 : flowData.nodes.filter((node) => node.type === "model")) || [],
-    [flowData == null ? void 0 : flowData.nodes]
+    () => flowData?.nodes.filter((node) => node.type === "model") || [],
+    [flowData?.nodes]
   );
   const onSelectedPropsChange = useCallback(
     (thingsToImport) => {
@@ -14242,8 +14191,8 @@ const useFlowTools = (props) => {
   const { flowId, state, onStateChange } = props;
   const { selectedProps, loadedFlowData: flowData } = state;
   const toolNodes = useMemo(
-    () => (flowData == null ? void 0 : flowData.nodes.filter((node) => node.type === "tool")) || [],
-    [flowData == null ? void 0 : flowData.nodes]
+    () => flowData?.nodes.filter((node) => node.type === "tool") || [],
+    [flowData?.nodes]
   );
   const onSelectedPropsChange = useCallback(
     (thingsToImport) => {
@@ -14313,7 +14262,7 @@ const FlowAgents = (props) => {
   const { agentNodes, onAgentsChange, onAllNoneAgentsChange } = useFlowAgents(props);
   return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
     /* @__PURE__ */ jsx("h4", { children: "Agents" }),
-    agentNodes && (agentNodes == null ? void 0 : agentNodes.length) > 1 && /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+    agentNodes && agentNodes?.length > 1 && /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         label: /* @__PURE__ */ jsx("div", { className: "bold", children: "Select All | None" }),
@@ -14323,7 +14272,7 @@ const FlowAgents = (props) => {
         "data-testid": `import-flow-modal-agent-all-none-${flowId}`
       }
     ) }),
-    agentNodes == null ? void 0 : agentNodes.map((node) => {
+    agentNodes?.map((node) => {
       const agentNode = node;
       return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
@@ -14340,14 +14289,14 @@ const FlowAgents = (props) => {
         }
       ) }, node.id);
     }),
-    (agentNodes == null ? void 0 : agentNodes.length) === 0 && /* @__PURE__ */ jsx("div", { children: "No agents in this flow" })
+    agentNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No agents in this flow" })
   ] });
 };
 const FlowInfo = (props) => {
   const { flowId, state } = props;
   const { loadedFlowData: flowData, selectedProps } = state;
-  const tagsString = (flowData == null ? void 0 : flowData.tags.length) ? flowData == null ? void 0 : flowData.tags.join(", ") : "None";
-  const requirementsString = (flowData == null ? void 0 : flowData.requirements.length) ? flowData == null ? void 0 : flowData.requirements.join(", ") : "None";
+  const tagsString = flowData?.tags.length ? flowData?.tags.join(", ") : "None";
+  const requirementsString = flowData?.requirements.length ? flowData?.requirements.join(", ") : "None";
   const {
     onOverrideChange,
     onAllNoneInfoChange,
@@ -14402,7 +14351,7 @@ const FlowInfo = (props) => {
         {
           label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-name-preview", children: [
             "Name: ",
-            flowData == null ? void 0 : flowData.name
+            flowData?.name
           ] }),
           isChecked: selectedProps.name,
           onCheckedChange: onNameChange,
@@ -14415,7 +14364,7 @@ const FlowInfo = (props) => {
         {
           label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-description-preview", children: [
             "Description: ",
-            flowData == null ? void 0 : flowData.description
+            flowData?.description
           ] }),
           isChecked: selectedProps.description,
           onCheckedChange: onDescriptionChange,
@@ -14468,7 +14417,7 @@ const FlowModels = (props) => {
   const { selectedProps } = state;
   return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
     /* @__PURE__ */ jsx("h4", { children: "Models" }),
-    modelNodes && (modelNodes == null ? void 0 : modelNodes.length) > 1 && /* @__PURE__ */ jsx(
+    modelNodes && modelNodes?.length > 1 && /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         id: `import-flow-modal-models-all-none-${props.flowId}`,
@@ -14478,7 +14427,7 @@ const FlowModels = (props) => {
         "data-testid": `import-flow-modal-model-all-none-${props.flowId}`
       }
     ),
-    modelNodes == null ? void 0 : modelNodes.map((node) => {
+    modelNodes?.map((node) => {
       const modelNode = node;
       return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
@@ -14495,7 +14444,7 @@ const FlowModels = (props) => {
         }
       ) }, node.id);
     }),
-    (modelNodes == null ? void 0 : modelNodes.length) === 0 && /* @__PURE__ */ jsx("div", { children: "No models in this flow" })
+    modelNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No models in this flow" })
   ] });
 };
 const FlowTools = (props) => {
@@ -14504,7 +14453,7 @@ const FlowTools = (props) => {
   const { toolNodes, onToolsChange, onAllNoneToolsChange } = useFlowTools(props);
   return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
     /* @__PURE__ */ jsx("h4", { children: "Tools" }),
-    toolNodes && (toolNodes == null ? void 0 : toolNodes.length) > 1 && /* @__PURE__ */ jsx(
+    toolNodes && toolNodes?.length > 1 && /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         id: `import-flow-modal-tools-all-none-${flowId}`,
@@ -14514,7 +14463,7 @@ const FlowTools = (props) => {
         "data-testid": `import-flow-modal-tool-all-none-${flowId}`
       }
     ),
-    toolNodes == null ? void 0 : toolNodes.map((node) => {
+    toolNodes?.map((node) => {
       const toolNode = node;
       return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
@@ -14531,7 +14480,7 @@ const FlowTools = (props) => {
         }
       ) }, node.id);
     }),
-    (toolNodes == null ? void 0 : toolNodes.length) === 0 && /* @__PURE__ */ jsx("div", { children: "No tools in this flow" })
+    toolNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No tools in this flow" })
   ] });
 };
 const FlowDataPreviewStep = (props) => {
@@ -14705,11 +14654,10 @@ const WaldiezFlowPanels = (props) => {
   ] });
 };
 const EdgeLabel = ({ edge, transform }) => {
-  var _a;
   if (!edge) {
     return null;
   }
-  const label = ((_a = edge.data) == null ? void 0 : _a.label) ?? "";
+  const label = edge.data?.label ?? "";
   if (label === "") {
     return null;
   }
@@ -14817,7 +14765,6 @@ const useWaldiezEdge = (props) => {
     }
   }, [getAgentById, source]);
   const getEdgeNumber = useCallback(() => {
-    var _a;
     if (!sourceAgent || !data) {
       return "";
     }
@@ -14826,7 +14773,7 @@ const useWaldiezEdge = (props) => {
     }
     if (type === "nested") {
       const sourceLabel = sourceAgent.data.label;
-      const sourceInitial = ((_a = sourceLabel == null ? void 0 : sourceLabel.charAt(0)) == null ? void 0 : _a.toUpperCase()) || "";
+      const sourceInitial = sourceLabel?.charAt(0)?.toUpperCase() || "";
       return `${sourceInitial}.${data.position}`;
     }
     return "";
@@ -15243,7 +15190,6 @@ function requireReactFastCompare() {
 var reactFastCompareExports = requireReactFastCompare();
 const isEqual = /* @__PURE__ */ getDefaultExportFromCjs(reactFastCompareExports);
 const useWaldiezEdgeModal = (props) => {
-  var _a;
   const { edgeId, onClose } = props;
   const getEdgeSourceAgent = useWaldiez((s) => s.getEdgeSourceAgent);
   const getEdgeTargetAgent = useWaldiez((s) => s.getEdgeTargetAgent);
@@ -15256,15 +15202,12 @@ const useWaldiezEdgeModal = (props) => {
   const edge = getEdgeById(edgeId);
   const sourceAgent = useMemo(() => edge ? getEdgeSourceAgent(edge) : null, [edge, getEdgeSourceAgent]);
   const targetAgent = useMemo(() => edge ? getEdgeTargetAgent(edge) : null, [edge, getEdgeTargetAgent]);
-  const [edgeType, setEdgeType] = useState((edge == null ? void 0 : edge.type) ?? "chat");
-  const [edgeData, setEdgeData] = useState(edge == null ? void 0 : edge.data);
+  const [edgeType, setEdgeType] = useState(edge?.type ?? "chat");
+  const [edgeData, setEdgeData] = useState(edge?.data);
   const [isDirty, setIsDirty] = useState(false);
   const isRagUserProxy = useMemo(
-    () => {
-      var _a2;
-      return ((_a2 = sourceAgent == null ? void 0 : sourceAgent.data) == null ? void 0 : _a2.agentType) === "rag_user_proxy";
-    },
-    [(_a = sourceAgent == null ? void 0 : sourceAgent.data) == null ? void 0 : _a.agentType]
+    () => sourceAgent?.data?.agentType === "rag_user_proxy",
+    [sourceAgent?.data?.agentType]
   );
   const onDataChange = useCallback(
     (data) => {
@@ -15276,9 +15219,9 @@ const useWaldiezEdgeModal = (props) => {
         ...data
       };
       setEdgeData(newData);
-      setIsDirty(!isEqual(newData, edge == null ? void 0 : edge.data));
+      setIsDirty(!isEqual(newData, edge?.data));
     },
-    [edgeData, edge == null ? void 0 : edge.data]
+    [edgeData, edge?.data]
   );
   const onTypeChange = useCallback(
     (option) => {
@@ -15351,7 +15294,6 @@ const SUMMARY_METHOD_MAPPING = {
   none: "None"
 };
 const useWaldiezEdgeBasicTab = (props) => {
-  var _a, _b, _c, _d;
   const { data, edgeType, onDataChange } = props;
   const onDescriptionChange = useCallback(
     (e) => {
@@ -15431,32 +15373,24 @@ const useWaldiezEdgeBasicTab = (props) => {
     [onDataChange, data.summary.method, data.summary.prompt, data.summary.args]
   );
   const getEdgeSummaryLabel = useCallback(() => {
-    var _a2;
-    const args = ((_a2 = data.summary) == null ? void 0 : _a2.args) || {};
+    const args = data.summary?.args || {};
     if ("summary_role" in args && ["system", "user", "assistant"].includes(args.summary_role)) {
       const role = args.summary_role;
       return role[0].toUpperCase() + role.slice(1);
     }
     return "System";
-  }, [(_a = data.summary) == null ? void 0 : _a.args]);
+  }, [data.summary?.args]);
   const summaryMethodLabel = useMemo(
-    () => {
-      var _a2;
-      return SUMMARY_METHOD_MAPPING[((_a2 = data.summary) == null ? void 0 : _a2.method) ?? "none"];
-    },
-    [(_b = data.summary) == null ? void 0 : _b.method]
+    () => SUMMARY_METHOD_MAPPING[data.summary?.method ?? "none"],
+    [data.summary?.method]
   );
   const summaryRoleValue = useMemo(
-    () => {
-      var _a2, _b2;
-      return ((_b2 = (_a2 = data.summary) == null ? void 0 : _a2.args) == null ? void 0 : _b2.summary_role) ?? "system";
-    },
-    [(_d = (_c = data.summary) == null ? void 0 : _c.args) == null ? void 0 : _d.summary_role]
+    () => data.summary?.args?.summary_role ?? "system",
+    [data.summary?.args?.summary_role]
   );
   const summaryRoleLabel = useMemo(() => getEdgeSummaryLabel(), [getEdgeSummaryLabel]);
   const currentSelectedChatType = useMemo(() => {
-    var _a2;
-    const chatTypeLabel = ((_a2 = EDGE_TYPE_OPTIONS.find((option) => option.value === edgeType)) == null ? void 0 : _a2.label) || "Chat";
+    const chatTypeLabel = EDGE_TYPE_OPTIONS.find((option) => option.value === edgeType)?.label || "Chat";
     return {
       label: chatTypeLabel,
       value: edgeType
@@ -15829,16 +15763,15 @@ const useWaldiezEdgeNestedTab = (props) => {
   };
 };
 const WaldiezEdgeNestedTab = (props) => {
-  var _a, _b;
   const { flowId, edgeId, darkMode, data } = props;
   const { onNestedMessageTypeChange, onNestedMessageChange, onNestedReplyTypeChange, onNestedReplyChange } = useWaldiezEdgeNestedTab(props);
-  const currentMessageInput = ((_a = data.nestedChat) == null ? void 0 : _a.message) ?? {
+  const currentMessageInput = data.nestedChat?.message ?? {
     type: "none",
     useCarryover: false,
     content: null,
     context: {}
   };
-  const currentReplyInput = ((_b = data.nestedChat) == null ? void 0 : _b.reply) ?? {
+  const currentReplyInput = data.nestedChat?.reply ?? {
     type: "none",
     useCarryover: false,
     content: null,
@@ -15989,7 +15922,7 @@ const WaldiezEdgeModal = memo((props) => {
       return "nested";
     }
     return "handoff";
-  }, [edgeType, edgeData == null ? void 0 : edgeData.targetType, edgeData == null ? void 0 : edgeData.sourceType, targetAgent == null ? void 0 : targetAgent.parentId]);
+  }, [edgeType, edgeData?.targetType, edgeData?.sourceType, targetAgent?.parentId]);
   const tabIds = useMemo(
     () => ({
       properties: `wc-${flowId}-edge-properties-${edgeId}`,
@@ -16020,11 +15953,10 @@ const WaldiezEdgeModal = memo((props) => {
   }, []);
   const onNestedMessageTypeChange = useCallback(
     (type) => {
-      var _a, _b;
       const updatedMessage = {
         ...edgeData.nestedChat.message,
-        content: ((_a = edgeData.nestedChat.message) == null ? void 0 : _a.content) || "",
-        context: ((_b = edgeData.nestedChat.message) == null ? void 0 : _b.context) || {},
+        content: edgeData.nestedChat.message?.content || "",
+        context: edgeData.nestedChat.message?.context || {},
         type
       };
       onDataChange({
@@ -16222,14 +16154,8 @@ const useAgentContentView = (id, data) => {
   const { tools, agentModelNames, agentWaldiezModelAPITypes, agentModelLogos } = useMemo(() => {
     const models = getModels2();
     const tools2 = getTools2();
-    const agentModelNames2 = data.modelIds.map((modelId) => {
-      var _a;
-      return ((_a = models.find((model) => model.id === modelId)) == null ? void 0 : _a.data.label) ?? "";
-    }).filter((entry) => entry !== "");
-    const agentWaldiezModelAPITypes2 = data.modelIds.map((modelId) => {
-      var _a;
-      return ((_a = models.find((model) => model.id === modelId)) == null ? void 0 : _a.data.apiType) ?? "";
-    }).filter((entry) => entry !== "");
+    const agentModelNames2 = data.modelIds.map((modelId) => models.find((model) => model.id === modelId)?.data.label ?? "").filter((entry) => entry !== "");
+    const agentWaldiezModelAPITypes2 = data.modelIds.map((modelId) => models.find((model) => model.id === modelId)?.data.apiType ?? "").filter((entry) => entry !== "");
     const agentModelLogos2 = agentWaldiezModelAPITypes2.map((apiType) => LOGOS[apiType] ?? "").filter((entry) => entry !== "");
     return {
       tools: tools2,
@@ -16280,7 +16206,7 @@ const useAgentContentView = (id, data) => {
       }
       const updateVisibleCounts = () => {
         const reactFlowNode = node.closest(".react-flow__node");
-        const nodeHeight = (reactFlowNode == null ? void 0 : reactFlowNode.offsetHeight) || node.offsetHeight;
+        const nodeHeight = reactFlowNode?.offsetHeight || node.offsetHeight;
         const FOOTER_HEIGHT = 20;
         const PADDING = 20;
         const LABEL_HEIGHT = 40;
@@ -16601,22 +16527,20 @@ const useWaldiezNodeAgentModal = (id, isOpen, data, onClose) => {
     const newLabel = agentData.label;
     const oldLabel = data.label;
     sourceEdges.forEach((sourceEdge) => {
-      var _a, _b;
       const toSearch = ` => ${oldLabel}`;
       const toReplace = ` => ${newLabel}`;
-      const labelIndex = (_a = sourceEdge.data) == null ? void 0 : _a.label.indexOf(toSearch);
+      const labelIndex = sourceEdge.data?.label.indexOf(toSearch);
       if (typeof labelIndex === "number" && labelIndex > -1) {
-        const label = (_b = sourceEdge.data) == null ? void 0 : _b.label.replace(toSearch, toReplace);
+        const label = sourceEdge.data?.label.replace(toSearch, toReplace);
         updateEdgeData(sourceEdge.id, { ...sourceEdge.data, label });
       }
     });
     targetEdges.forEach((targetEdge) => {
-      var _a, _b;
       const toSearch = `${oldLabel} => `;
       const toReplace = `${newLabel} => `;
-      const labelIndex = (_a = targetEdge.data) == null ? void 0 : _a.label.indexOf(toSearch);
+      const labelIndex = targetEdge.data?.label.indexOf(toSearch);
       if (typeof labelIndex === "number" && labelIndex > -1) {
-        const label = (_b = targetEdge.data) == null ? void 0 : _b.label.replace(toSearch, toReplace);
+        const label = targetEdge.data?.label.replace(toSearch, toReplace);
         updateEdgeData(targetEdge.id, { ...targetEdge.data, label });
       }
     });
@@ -16767,7 +16691,7 @@ const useWaldiezNodeAgentModal = (id, isOpen, data, onClose) => {
   );
   const onImportLoad = useCallback(
     (agent, jsonData) => {
-      const newAgent = importAgent(jsonData, id, true, agent == null ? void 0 : agent.position, false);
+      const newAgent = importAgent(jsonData, id, true, agent?.position, false);
       onDataChange({ ...newAgent.data });
     },
     [id, importAgent, onDataChange]
@@ -17016,7 +16940,7 @@ const useGroupManagerTabs = (props) => {
   );
   const onSpeakerSelectionMethodChange = useCallback(
     (option) => {
-      const selectionMethod = (option == null ? void 0 : option.value) ?? void 0;
+      const selectionMethod = option?.value ?? void 0;
       setSpeakerData({ selectionMethod });
     },
     [setSpeakerData]
@@ -17120,7 +17044,6 @@ const WaldiezAgentModels = memo((props) => {
 });
 WaldiezAgentModels.displayName = "WaldiezAgentModels";
 const WaldiezNodeGroupManagerTabs = memo((props) => {
-  var _a, _b, _c, _d;
   const { isModalOpen, flowId, id, data } = props;
   const {
     groupMembers,
@@ -17160,22 +17083,15 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
     []
   );
   const speakerSelectionValue = useMemo(
-    () => {
-      var _a2, _b2;
-      return {
-        label: ((_a2 = speakerSelectionOptions.find((option) => {
-          var _a3;
-          return option.value === ((_a3 = data.speakers) == null ? void 0 : _a3.selectionMethod);
-        })) == null ? void 0 : _a2.label) ?? "Auto",
-        value: ((_b2 = data.speakers) == null ? void 0 : _b2.selectionMethod) ?? "auto"
-      };
-    },
-    [(_a = data.speakers) == null ? void 0 : _a.selectionMethod, speakerSelectionOptions]
+    () => ({
+      label: speakerSelectionOptions.find((option) => option.value === data.speakers?.selectionMethod)?.label ?? "Auto",
+      value: data.speakers?.selectionMethod ?? "auto"
+    }),
+    [data.speakers?.selectionMethod, speakerSelectionOptions]
   );
-  const showAfterwardsTab = !["manual", "auto"].includes((_b = data.speakers) == null ? void 0 : _b.selectionMethod);
+  const showAfterwardsTab = !["manual", "auto"].includes(data.speakers?.selectionMethod);
   const getAgentName2 = (agentId) => {
-    var _a2;
-    return ((_a2 = groupMembers.find((agent) => agent.id === agentId)) == null ? void 0 : _a2.data.label) ?? agentId;
+    return groupMembers.find((agent) => agent.id === agentId)?.data.label ?? agentId;
   };
   return /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
     /* @__PURE__ */ jsx(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body  agent-panel", children: [
@@ -17350,7 +17266,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         {
           name: "max-retries-for-selecting",
           label: "Max Retries for selecting a speaker:",
-          value: ((_c = data.speakers) == null ? void 0 : _c.maxRetriesForSelecting) ?? 0,
+          value: data.speakers?.maxRetriesForSelecting ?? 0,
           onChange: onMaxRetriesForSelectingChange,
           min: 0,
           max: 100,
@@ -17363,7 +17279,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Maximum retries for speaker selection"
         }
       ),
-      ((_d = data.speakers) == null ? void 0 : _d.selectionMethod) === "round_robin" && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+      data.speakers?.selectionMethod === "round_robin" && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
         /* @__PURE__ */ jsx("div", { className: "info", children: "The order in which the speakers will be selected in round robin mode. If not provided, the order will be automatically determined based on the agents in the group." }),
         /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index) => {
           const isInitialAgent = data.initialAgentId === speaker;
@@ -17865,7 +17781,7 @@ const useWaldiezAgentCodeExecution = (props) => {
   const getToolName = useCallback(
     (toolId) => {
       const tool = tools.find((tool2) => tool2.id === toolId);
-      return (tool == null ? void 0 : tool.data.label) ?? "Unknown Tool";
+      return tool?.data.label ?? "Unknown Tool";
     },
     [tools]
   );
@@ -17877,11 +17793,10 @@ const useWaldiezAgentCodeExecution = (props) => {
     [tools]
   );
   const codeExecutionValue = useMemo(() => {
-    var _a;
     if (data.codeExecutionConfig === false) {
       return [];
     }
-    return (((_a = data.codeExecutionConfig) == null ? void 0 : _a.functions) ?? []).map((func) => ({
+    return (data.codeExecutionConfig?.functions ?? []).map((func) => ({
       label: getToolName(func),
       value: func
     }));
@@ -17936,7 +17851,7 @@ const useWaldiezAgentCodeExecution = (props) => {
         return;
       }
       const selectedFunctions = Array.isArray(newValue) ? newValue : [newValue];
-      const selectedFunctionIds = selectedFunctions.map((f) => f == null ? void 0 : f.value).filter(Boolean);
+      const selectedFunctionIds = selectedFunctions.map((f) => f?.value).filter(Boolean);
       onDataChange({
         codeExecutionConfig: typeof data.codeExecutionConfig === "object" ? { ...data.codeExecutionConfig, functions: selectedFunctionIds } : { functions: selectedFunctionIds }
       });
@@ -17956,7 +17871,6 @@ const useWaldiezAgentCodeExecution = (props) => {
   };
 };
 const WaldiezAgentCodeExecution = memo((props) => {
-  var _a, _b, _c, _d, _e, _f;
   const { id, data, tools } = props;
   const {
     codeExecutionValue,
@@ -17969,8 +17883,8 @@ const WaldiezAgentCodeExecution = memo((props) => {
     onExecutionFunctionsChange
   } = useWaldiezAgentCodeExecution(props);
   const isCodeExecutionEnabled = data.codeExecutionConfig !== false;
-  const lastNMessagesValue = isCodeExecutionEnabled && data.codeExecutionConfig !== false && ((_a = data.codeExecutionConfig) == null ? void 0 : _a.lastNMessages) && ((_b = data.codeExecutionConfig) == null ? void 0 : _b.lastNMessages) !== "auto" ? (_c = data.codeExecutionConfig) == null ? void 0 : _c.lastNMessages : 0;
-  const isDockerEnabled = isCodeExecutionEnabled && data.codeExecutionConfig !== false && ((_d = data.codeExecutionConfig) == null ? void 0 : _d.useDocker) === true;
+  const lastNMessagesValue = isCodeExecutionEnabled && data.codeExecutionConfig !== false && data.codeExecutionConfig?.lastNMessages && data.codeExecutionConfig?.lastNMessages !== "auto" ? data.codeExecutionConfig?.lastNMessages : 0;
+  const isDockerEnabled = isCodeExecutionEnabled && data.codeExecutionConfig !== false && data.codeExecutionConfig?.useDocker === true;
   const shouldShowFunctions = isCodeExecutionEnabled && !isDockerEnabled && tools.length > 0;
   return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel", children: [
     /* @__PURE__ */ jsx(
@@ -17992,7 +17906,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
           placeholder: "Working directory",
           className: "margin-top-10",
           name: "working-directory",
-          value: ((_e = data.codeExecutionConfig) == null ? void 0 : _e.workDir) ?? "",
+          value: data.codeExecutionConfig?.workDir ?? "",
           onChange: onCodeExecutionWorkDirChange,
           dataTestId: `agent-code-execution-work-dir-${id}`,
           "aria-label": "Code execution working directory"
@@ -18021,7 +17935,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
         {
           label: "Timeout:",
           name: "timeout",
-          value: ((_f = data.codeExecutionConfig) == null ? void 0 : _f.timeout) ?? 0,
+          value: data.codeExecutionConfig?.timeout ?? 0,
           onChange: onCodeExecutionTimeoutChange,
           min: 0,
           max: 1e3,
@@ -18104,7 +18018,7 @@ const useWaldiezAgentGroupMember = (props) => {
     []
   );
   const onJoinGroup = useCallback(() => {
-    onDataChange({ parentId: selectedGroup == null ? void 0 : selectedGroup.id });
+    onDataChange({ parentId: selectedGroup?.id });
   }, [selectedGroup, onDataChange]);
   const onLeaveGroup = useCallback(() => {
     onDataChange({ parentId: void 0 });
@@ -18268,8 +18182,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
   const { id, flowId, agentConnections, data, edges, onDataChange } = props;
   const nestedChats = useMemo(() => getNestedChats(data, edges), [data, edges]);
   useEffect(() => {
-    var _a;
-    if (!((_a = data == null ? void 0 : data.nestedChats) == null ? void 0 : _a.length)) {
+    if (!data?.nestedChats?.length) {
       return;
     }
     const currentMessageIds = new Set(data.nestedChats[0].messages.map((m) => m.id));
@@ -18440,30 +18353,23 @@ const useWaldiezAgentNestedChats = (props) => {
   );
   const allEdges = useMemo(() => sources.edges.concat(targets.edges), [sources.edges, targets.edges]);
   const triggerSelectOptions = useMemo(
-    () => allNodes.map((node) => {
-      var _a;
-      return {
-        label: (_a = node.data) == null ? void 0 : _a.label,
-        value: node.id
-      };
-    }),
+    () => allNodes.map((node) => ({
+      label: node.data?.label,
+      value: node.id
+    })),
     [allNodes]
   );
   const messageSelectOptions = useMemo(
-    () => allEdges.map((edge) => {
-      var _a;
-      return {
-        label: (_a = edge.data) == null ? void 0 : _a.label,
-        value: edge.id
-      };
-    }),
+    () => allEdges.map((edge) => ({
+      label: edge.data?.label,
+      value: edge.id
+    })),
     [allEdges]
   );
   const getEdgeLabel = useCallback(
     (id) => {
-      var _a;
       const edge = allEdges.find((e) => e.id === id);
-      return ((_a = edge == null ? void 0 : edge.data) == null ? void 0 : _a.label) || "Unknown";
+      return edge?.data?.label || "Unknown";
     },
     [allEdges]
   );
@@ -18575,7 +18481,7 @@ const useWaldiezAgentNestedChats = (props) => {
       if (option && option.value) {
         setSelectedRecipient((prevState) => ({
           id: option.value,
-          isReply: (prevState == null ? void 0 : prevState.isReply) || false
+          isReply: prevState?.isReply || false
         }));
       } else {
         setSelectedRecipient(null);
@@ -18663,7 +18569,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
         {
           id: `new-nested-chat-recipient-is-agent-reply-${id}`,
           label: "Agent's reply",
-          isChecked: (selectedRecipient == null ? void 0 : selectedRecipient.isReply) ?? false,
+          isChecked: selectedRecipient?.isReply ?? false,
           onCheckedChange: onSelectedRecipientIsReplyChange,
           "data-testid": `new-nested-chat-recipient-is-agent-reply-${id}`
         }
@@ -18769,7 +18675,7 @@ const WaldiezAgentNestedChatsTriggers = memo((props) => {
     () => selectedTriggers.map((trigger) => {
       const option = selectOptions.find((option2) => option2.value === trigger);
       return {
-        label: (option == null ? void 0 : option.label) || "Unknown",
+        label: option?.label || "Unknown",
         value: trigger
       };
     }),
@@ -20445,13 +20351,10 @@ const useWaldiezAgentReasoning = (props) => {
     []
   );
   const reasoningMethodValue = useMemo(
-    () => {
-      var _a;
-      return {
-        value: data.reasonConfig.method,
-        label: ((_a = reasoningMethodOptions.find((option) => option.value === data.reasonConfig.method)) == null ? void 0 : _a.label) || "Beam Search"
-      };
-    },
+    () => ({
+      value: data.reasonConfig.method,
+      label: reasoningMethodOptions.find((option) => option.value === data.reasonConfig.method)?.label || "Beam Search"
+    }),
     [data.reasonConfig.method, reasoningMethodOptions]
   );
   const answerApproachOptions = useMemo(
@@ -20462,13 +20365,10 @@ const useWaldiezAgentReasoning = (props) => {
     []
   );
   const answerApproachValue = useMemo(
-    () => {
-      var _a;
-      return {
-        value: data.reasonConfig.answerApproach,
-        label: ((_a = answerApproachOptions.find((option) => option.value === data.reasonConfig.answerApproach)) == null ? void 0 : _a.label) || "Pool"
-      };
-    },
+    () => ({
+      value: data.reasonConfig.answerApproach,
+      label: answerApproachOptions.find((option) => option.value === data.reasonConfig.answerApproach)?.label || "Pool"
+    }),
     [data.reasonConfig.answerApproach, answerApproachOptions]
   );
   const isSimulationBasedMethod = useMemo(
@@ -20884,7 +20784,6 @@ const useWaldiezAgentTermination = (props) => {
   };
 };
 const WaldiezAgentTermination = memo((props) => {
-  var _a;
   const { id } = props;
   const {
     data,
@@ -20900,13 +20799,10 @@ const WaldiezAgentTermination = memo((props) => {
     onTerminationKeywordChange
   } = useWaldiezAgentTermination(props);
   const terminationTypeValue = useMemo(
-    () => {
-      var _a2, _b;
-      return {
-        label: ((_a2 = terminationTypeOptions2.find((option) => option.value === data.termination.type)) == null ? void 0 : _a2.label) ?? "None",
-        value: ((_b = data.termination) == null ? void 0 : _b.type) ?? "none"
-      };
-    },
+    () => ({
+      label: terminationTypeOptions2.find((option) => option.value === data.termination.type)?.label ?? "None",
+      value: data.termination?.type ?? "none"
+    }),
     [data.termination.type, terminationTypeOptions2]
   );
   const terminationCriterionValue = useMemo(() => {
@@ -20967,7 +20863,7 @@ const WaldiezAgentTermination = memo((props) => {
         {
           viewLabel: "Termination Keywords:",
           viewLabelInfo: "List of keywords to check for termination.",
-          items: ((_a = data.termination) == null ? void 0 : _a.keywords) ?? [],
+          items: data.termination?.keywords ?? [],
           itemsType: "termination-keyword",
           onItemAdded: onAddTerminationKeyword,
           onItemDeleted: onDeleteTerminationKeyword,
@@ -22246,10 +22142,9 @@ const fetchWithTimeout = async (url, options) => {
   }
 };
 const parseErrorResponse = async (res) => {
-  var _a;
   try {
     const errorBody = await res.json().catch(() => ({}));
-    const errorDetails = ((_a = errorBody == null ? void 0 : errorBody.error) == null ? void 0 : _a.message) || res.statusText || "Unknown error";
+    const errorDetails = errorBody?.error?.message || res.statusText || "Unknown error";
     let errorMessage = "API error";
     if (res.status === 404) {
       errorMessage = "Model not found";
@@ -22361,7 +22256,7 @@ const useWaldiezNodeModel = (id, data) => {
   }, [cloneModel, id, onFlowChanged]);
   const onImportLoad = useCallback(
     (model, jsonData) => {
-      const nodeModel = importModel(jsonData, id, model == null ? void 0 : model.position, false);
+      const nodeModel = importModel(jsonData, id, model?.position, false);
       setModelData(nodeModel.data);
       setIsDirty(!isEqual(data, nodeModel.data));
     },
@@ -22431,7 +22326,7 @@ const useWaldiezNodeModel = (id, data) => {
     setLogo(newLogo);
     updateModelData(id, modelData);
     const storedModel = getModelById(id);
-    if (storedModel == null ? void 0 : storedModel.data) {
+    if (storedModel?.data) {
       setModelData(storedModel.data);
     }
     setIsDirty(false);
@@ -22670,7 +22565,6 @@ const WaldiezNodeModelModalAdvancedTab = memo(
   }
 );
 const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
-  var _a, _b, _c, _d, _e;
   const onAwsAccessKeyChange = useCallback(
     (event) => {
       onDataChange({ aws: { ...data.aws, accessKey: event.target.value } });
@@ -22705,7 +22599,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     /* @__PURE__ */ jsx(
       TextInput,
       {
-        value: ((_a = data.aws) == null ? void 0 : _a.accessKey) || "",
+        value: data.aws?.accessKey || "",
         name: "aws-access-key",
         label: "AWS Access Key:",
         placeholder: "AWS Access Key",
@@ -22715,7 +22609,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     /* @__PURE__ */ jsx(
       TextInput,
       {
-        value: ((_b = data.aws) == null ? void 0 : _b.secretKey) || "",
+        value: data.aws?.secretKey || "",
         name: "aws-secret-key",
         label: "AWS Secret Key:",
         placeholder: "AWS Secret Key",
@@ -22725,7 +22619,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     /* @__PURE__ */ jsx(
       TextInput,
       {
-        value: ((_c = data.aws) == null ? void 0 : _c.region) || "",
+        value: data.aws?.region || "",
         name: "aws-region",
         label: "AWS Region:",
         placeholder: "AWS Region",
@@ -22735,7 +22629,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     /* @__PURE__ */ jsx(
       TextInput,
       {
-        value: ((_d = data.aws) == null ? void 0 : _d.profileName) || "",
+        value: data.aws?.profileName || "",
         name: "aws-profile-name",
         label: "AWS Profile Name:",
         placeholder: "AWS Profile Name",
@@ -22745,7 +22639,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     /* @__PURE__ */ jsx(
       TextInput,
       {
-        value: ((_e = data.aws) == null ? void 0 : _e.sessionToken) || "",
+        value: data.aws?.sessionToken || "",
         name: "aws-session-token",
         label: "AWS Session Token:",
         placeholder: "AWS Session Token",
@@ -22779,11 +22673,10 @@ const useModelModalBasicTab = (props) => {
   );
   const onApiTypeChange = useCallback(
     (option) => {
-      var _a;
       if (!option) {
         return;
       }
-      (_a = predefinedModelsSelectRef.current) == null ? void 0 : _a.clearValue();
+      predefinedModelsSelectRef.current?.clearValue();
       onDataChange({ apiType: option.value });
       onLogoChange(LOGOS[option.value]);
     },
@@ -23068,16 +22961,14 @@ const WaldiezNodeModelModalBasicTab = memo(
 );
 WaldiezNodeModelModalBasicTab.displayName = "WaldiezNodeModelModalBasicTab";
 const useModelModalPriceTab = (props) => {
-  var _a, _b;
   const { data, onDataChange } = props;
   const onPricePromptChange = useCallback(
     (e) => {
-      var _a2;
       const parsedValue = parseFloat(e.target.value);
       if (isNaN(parsedValue)) {
         return;
       }
-      const completionTokenPricePer1k = ((_a2 = data.price) == null ? void 0 : _a2.completionTokenPricePer1k) ?? null;
+      const completionTokenPricePer1k = data.price?.completionTokenPricePer1k ?? null;
       onDataChange({
         price: {
           completionTokenPricePer1k,
@@ -23085,16 +22976,15 @@ const useModelModalPriceTab = (props) => {
         }
       });
     },
-    [(_a = data.price) == null ? void 0 : _a.completionTokenPricePer1k, onDataChange]
+    [data.price?.completionTokenPricePer1k, onDataChange]
   );
   const onPriceCompletionChange = useCallback(
     (e) => {
-      var _a2;
       const parsedValue = parseFloat(e.target.value);
       if (isNaN(parsedValue)) {
         return;
       }
-      const promptPricePer1k = ((_a2 = data.price) == null ? void 0 : _a2.promptPricePer1k) ?? null;
+      const promptPricePer1k = data.price?.promptPricePer1k ?? null;
       onDataChange({
         price: {
           completionTokenPricePer1k: parsedValue >= 0 ? parsedValue : null,
@@ -23102,7 +22992,7 @@ const useModelModalPriceTab = (props) => {
         }
       });
     },
-    [(_b = data.price) == null ? void 0 : _b.promptPricePer1k, onDataChange]
+    [data.price?.promptPricePer1k, onDataChange]
   );
   return {
     onPricePromptChange,
@@ -23111,22 +23001,15 @@ const useModelModalPriceTab = (props) => {
 };
 const WaldiezNodeModelModalPriceTab = memo(
   (props) => {
-    var _a, _b;
     const { modelId, data } = props;
     const { onPricePromptChange, onPriceCompletionChange } = useModelModalPriceTab(props);
     const promptPriceValue = useMemo(
-      () => {
-        var _a2;
-        return ((_a2 = data.price) == null ? void 0 : _a2.promptPricePer1k) !== null ? data.price.promptPricePer1k : -1;
-      },
-      [(_a = data.price) == null ? void 0 : _a.promptPricePer1k]
+      () => data.price?.promptPricePer1k !== null ? data.price.promptPricePer1k : -1,
+      [data.price?.promptPricePer1k]
     );
     const completionPriceValue = useMemo(
-      () => {
-        var _a2;
-        return ((_a2 = data.price) == null ? void 0 : _a2.completionTokenPricePer1k) !== null ? data.price.completionTokenPricePer1k : -1;
-      },
-      [(_b = data.price) == null ? void 0 : _b.completionTokenPricePer1k]
+      () => data.price?.completionTokenPricePer1k !== null ? data.price.completionTokenPricePer1k : -1,
+      [data.price?.completionTokenPricePer1k]
     );
     const promptTestId = `model-modal-price-prompt-${modelId}`;
     const completionTestId = `model-modal-price-completion-${modelId}`;
@@ -23440,7 +23323,7 @@ const useWaldiezNodeTool = (id, data) => {
   }, [data.label, exportTool2, id]);
   const onImportLoad = useCallback(
     (tool, jsonData) => {
-      const newTool = importTool(jsonData, id, tool == null ? void 0 : tool.position, false);
+      const newTool = importTool(jsonData, id, tool?.position, false);
       setToolData(newTool.data);
       setIsDirty(!isEqual(data, newTool.data));
     },
@@ -23456,7 +23339,7 @@ const useWaldiezNodeTool = (id, data) => {
   const onSave = useCallback(() => {
     updateToolData(id, toolData);
     const storedTool = getToolById(id);
-    if (storedTool == null ? void 0 : storedTool.data) {
+    if (storedTool?.data) {
       setToolData(storedTool.data);
     }
     setIsDirty(false);
@@ -24156,8 +24039,7 @@ const useEditFlowModal = (props) => {
     }
   };
   const getNewEdgeOrder = () => {
-    var _a, _b;
-    let lastOrder = (_b = (_a = sortedEdgesState[sortedEdgesState.length - 1]) == null ? void 0 : _a.data) == null ? void 0 : _b.order;
+    let lastOrder = sortedEdgesState[sortedEdgesState.length - 1]?.data?.order;
     if (lastOrder === void 0) {
       lastOrder = sortedEdgesState.length;
     } else {
@@ -24244,12 +24126,11 @@ const useEditFlowModal = (props) => {
     setIsDirty(true);
   };
   const onMoveEdgeDown = (index) => {
-    var _a, _b;
     if (sortedEdgesState.find((e) => e.id === sortedEdgesState[index].id)) {
       const nextEdge = sortedEdgesState[index + 1];
-      const nextOrder = (_a = nextEdge.data) == null ? void 0 : _a.order;
+      const nextOrder = nextEdge.data?.order;
       const currentEdge = sortedEdgesState[index];
-      const currentOrder = (_b = currentEdge.data) == null ? void 0 : _b.order;
+      const currentOrder = currentEdge.data?.order;
       const newSortedEdges = sortedEdgesState.slice();
       newSortedEdges[index + 1] = {
         ...currentEdge,
@@ -24283,7 +24164,6 @@ const useEditFlowModal = (props) => {
   };
 };
 const HandleASyncChatOrderAndPrerequisites = (props) => {
-  var _a;
   const {
     sortedEdges,
     remainingEdges,
@@ -24304,28 +24184,23 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
   return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites-wrapper", children: [
     /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their prerequisites (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
     sortedEdges.map((edge, index) => {
-      var _a2, _b;
       return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites", children: [
-        /* @__PURE__ */ jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsx("span", { children: (_a2 = edge.data) == null ? void 0 : _a2.label }) }),
+        /* @__PURE__ */ jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsx("span", { children: edge.data?.label }) }),
         sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisite-actions", children: [
           /* @__PURE__ */ jsx("label", { htmlFor: "chat-pre-requisites-select", children: "Prerequisites:" }),
           /* @__PURE__ */ jsx(
             Select,
             {
               placeholder: "Select prerequisites...",
-              options: sortedEdges.filter((e) => e.id !== edge.id).map((edge2) => {
-                var _a3;
-                return {
-                  value: edge2,
-                  label: (_a3 = edge2.data) == null ? void 0 : _a3.label
-                };
-              }),
-              value: (_b = edge.data) == null ? void 0 : _b.prerequisites.map((prerequisite) => {
-                var _a3;
+              options: sortedEdges.filter((e) => e.id !== edge.id).map((edge2) => ({
+                value: edge2,
+                label: edge2.data?.label
+              })),
+              value: edge.data?.prerequisites.map((prerequisite) => {
                 const edge2 = sortedEdges.find((e) => e.id === prerequisite);
                 return edge2 ? {
                   value: edge2,
-                  label: (_a3 = edge2.data) == null ? void 0 : _a3.label
+                  label: edge2.data?.label
                 } : [];
               }),
               onChange: onSetChatPrerequisitesChange.bind(null, edge),
@@ -24353,16 +24228,13 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
         /* @__PURE__ */ jsx(
           Select,
           {
-            options: remainingEdges.map((edge) => {
-              var _a2;
-              return {
-                value: edge,
-                label: (_a2 = edge.data) == null ? void 0 : _a2.label
-              };
-            }),
+            options: remainingEdges.map((edge) => ({
+              value: edge,
+              label: edge.data?.label
+            })),
             value: selectedNewEdge ? {
               value: selectedNewEdge,
-              label: (_a = selectedNewEdge.data) == null ? void 0 : _a.label
+              label: selectedNewEdge.data?.label
             } : null,
             onChange: onSelectedNewEdgeChange,
             inputId: "new-edge-select"
@@ -24385,7 +24257,6 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
   ] });
 };
 const HandleSyncChatOrder = (props) => {
-  var _a;
   const {
     sortedEdges,
     remainingEdges,
@@ -24399,9 +24270,8 @@ const HandleSyncChatOrder = (props) => {
   return /* @__PURE__ */ jsxs("div", { className: "flow-chat-order-wrapper", children: [
     /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their order (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
     sortedEdges.map((edge, index) => {
-      var _a2;
       return /* @__PURE__ */ jsxs("div", { className: "flow-order-item-wrapper", children: [
-        /* @__PURE__ */ jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsx("span", { className: "flow-order-item-entry", children: (_a2 = edge.data) == null ? void 0 : _a2.label }) }),
+        /* @__PURE__ */ jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsx("span", { className: "flow-order-item-entry", children: edge.data?.label }) }),
         sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-order-item-actions", children: [
           index > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsx(
             "button",
@@ -24445,16 +24315,13 @@ const HandleSyncChatOrder = (props) => {
         /* @__PURE__ */ jsx(
           Select,
           {
-            options: remainingEdges.map((edge) => {
-              var _a2;
-              return {
-                value: edge,
-                label: (_a2 = edge.data) == null ? void 0 : _a2.label
-              };
-            }),
+            options: remainingEdges.map((edge) => ({
+              value: edge,
+              label: edge.data?.label
+            })),
             value: selectedNewEdge ? {
               value: selectedNewEdge,
-              label: (_a = selectedNewEdge.data) == null ? void 0 : _a.label
+              label: selectedNewEdge.data?.label
             } : null,
             onChange: onSelectedNewEdgeChange,
             inputId: "new-edge-select"
@@ -24947,7 +24814,6 @@ const SideBar = (props) => {
   );
 };
 const WaldiezFlowView = memo((props) => {
-  var _a, _b;
   const { flowId, skipExport, skipImport, skipHub, chat } = props;
   const rfParent = useRef(null);
   const selectedNodeType = useRef("agent");
@@ -25091,8 +24957,8 @@ const WaldiezFlowView = memo((props) => {
               connectOnClick: true,
               zoomOnDoubleClick: false,
               noWheelClassName: "no-wheel",
-              width: (_a = rfParent.current) == null ? void 0 : _a.clientWidth,
-              height: (_b = rfParent.current) == null ? void 0 : _b.clientHeight,
+              width: rfParent.current?.clientWidth,
+              height: rfParent.current?.clientHeight,
               onNodeDrag,
               onNodeDragStop,
               children: [
