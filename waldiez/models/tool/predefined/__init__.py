@@ -8,13 +8,17 @@ from ._protocol import PredefinedTool
 from .registry import (
     PREDEFINED_TOOLS,
     get_predefined_tool_config,
+    get_predefined_tool_imports,
     get_predefined_tool_requirements,
+    list_predefined_tools,
 )
 
 __all__ = [
     "PredefinedTool",
     "PredefinedToolConfig",
     "PREDEFINED_TOOLS",
+    "get_predefined_tool_imports",
     "get_predefined_tool_config",
     "get_predefined_tool_requirements",
+    "list_predefined_tools",
 ]

@@ -22,14 +22,14 @@ import { temporal } from "zundo";
 import { createStore } from "zustand";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronDown, FaChevronUp, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaGear, FaTrashCan, FaLock, FaTrash as FaTrash$1, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { FaX, FaRegUser, FaChevronDown, FaChevronUp, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaGear, FaTrashCan, FaCode, FaGoogle, FaYoutube, FaWikipediaW, FaLock, FaTrash as FaTrash$1, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { MdIosShare, MdMessage } from "react-icons/md";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
-import { AiFillCode, AiFillOpenAI } from "react-icons/ai";
+import { AiFillOpenAI, AiFillCode } from "react-icons/ai";
 class WaldiezAgentData {
   systemMessage;
   humanInputMode;
@@ -1799,16 +1799,16 @@ class WaldiezToolData {
   secrets;
   kwargs = {};
   constructor(props = {
-    content: DEFAULT_CUSTOM_TOOL_CONTENT,
-    toolType: "custom",
+    content: DEFAULT_SHARED_TOOL_CONTENT,
+    toolType: "shared",
     secrets: {},
     kwargs: {}
   }) {
-    const { content, toolType, secrets } = props;
+    const { content, toolType, secrets, kwargs } = props;
     this.toolType = toolType;
     this.content = content;
     this.secrets = secrets;
-    this.kwargs = props.kwargs || {};
+    this.kwargs = kwargs || {};
   }
 }
 const DEFAULT_CUSTOM_TOOL_CONTENT = `
@@ -1930,8 +1930,8 @@ class WaldiezTool {
   static create() {
     return new WaldiezTool({
       id: `wt-${getId()}`,
-      name: "new_tool",
-      description: "A new tool",
+      name: "waldiez_shared",
+      description: "Shared code available to all agents.",
       tags: [],
       requirements: [],
       createdAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -4688,9 +4688,11 @@ const toolMapper = {
    */
   asNode: (tool, position) => {
     const nodePosition = getNodePositionFromJSON(tool, position);
+    const toolLabel = tool.rest?.label || tool.name;
     const nodeData = {
       ...tool.data,
-      label: tool.name,
+      label: toolLabel,
+      name: tool.name,
       description: tool.description,
       tags: tool.tags,
       requirements: tool.requirements,
@@ -4711,7 +4713,7 @@ const toolMapper = {
   }
 };
 const getToolDataContent = (json) => {
-  let content = DEFAULT_CUSTOM_TOOL_CONTENT;
+  let content = DEFAULT_SHARED_TOOL_CONTENT;
   if ("content" in json && typeof json.content === "string") {
     content = json.content;
   }
@@ -4742,8 +4744,8 @@ const getNodeMeta = (json) => {
   return { name, description, tags, requirements, createdAt, updatedAt };
 };
 const getToolDataType = (json, toolName) => {
-  let toolType = "custom";
-  if ("toolType" in json && typeof json.toolType === "string" && ["shared", "custom", "langchain", "crewai"].includes(json.toolType)) {
+  let toolType = "shared";
+  if ("toolType" in json && typeof json.toolType === "string" && ["shared", "custom", "langchain", "crewai", "predefined"].includes(json.toolType)) {
     toolType = json.toolType;
   }
   if (toolName === "waldiez_shared") {
@@ -5159,11 +5161,11 @@ const getTools = (json, nodes) => {
         delete nodeExtras.data;
         delete nodeExtras.type;
         delete nodeExtras.parentId;
-        const waldiezModel = toolMapper.importTool({
+        const waldiezTool = toolMapper.importTool({
           ...toolJson,
           ...nodeExtras
         });
-        tools.push(waldiezModel);
+        tools.push(waldiezTool);
       }
     }
   });
@@ -16153,6 +16155,40 @@ const WaldiezEdgeModal = memo((props) => {
   );
 });
 WaldiezEdgeModal.displayName = "WaldiezEdgeModal";
+const PREDEFINED_TOOL_TYPES = ["wikipedia_search", "youtube_search", "google_search"];
+const DEFAULT_NAME = {
+  wikipedia_search: "Wikipedia Search",
+  youtube_search: "YouTube Search",
+  google_search: "Google Search",
+  shared: "waldiez_shared",
+  custom: "tool_name"
+};
+const DEFAULT_DESCRIPTION = {
+  wikipedia_search: "Search Wikipedia for a given query.",
+  youtube_search: "Search YouTube for a given query.",
+  google_search: "Search Google for a given query.",
+  shared: "Shared code available to all agents.",
+  custom: "A custom tool that you define."
+};
+const getToolIcon = (toolType) => {
+  switch (toolType) {
+    case "wikipedia_search":
+      return /* @__PURE__ */ jsx(FaWikipediaW, { "aria-hidden": "true" });
+    case "youtube_search":
+      return /* @__PURE__ */ jsx(FaYoutube, { "aria-hidden": "true" });
+    case "google_search":
+      return /* @__PURE__ */ jsx(FaGoogle, { "aria-hidden": "true" });
+    default:
+      return /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true" });
+  }
+};
+const TOOL_TYPE_OPTIONS = [
+  { value: "shared", label: "Shared Code" },
+  { value: "wikipedia_search", label: "Wikipedia Search" },
+  { value: "youtube_search", label: "YouTube Search" },
+  { value: "google_search", label: "Google Search" },
+  { value: "custom", label: "Custom Tool" }
+];
 const WaldiezNodeAgentBody = memo(
   (props) => {
     const { id, data } = props;
@@ -16295,7 +16331,7 @@ const useAgentContentView = (id, data) => {
               className: "agent-tool-preview",
               "data-testid": "agent-tool-preview",
               children: [
-                /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: /* @__PURE__ */ jsx(AiFillCode, { "aria-hidden": "true" }) }),
+                /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label) }),
                 /* @__PURE__ */ jsx(
                   "div",
                   {
@@ -23305,6 +23341,7 @@ const useWaldiezNodeTool = (id, data) => {
   const [toolData, setToolData] = useState(data);
   const [isDirty, setIsDirty] = useState(false);
   const updatedAt = useMemo(() => getDateString(data.updatedAt), [data.updatedAt]);
+  const logo = useMemo(() => getToolIcon(data.label), [data.label]);
   useEffect(() => {
     setToolData(data);
     setIsDirty(false);
@@ -23375,6 +23412,7 @@ const useWaldiezNodeTool = (id, data) => {
     flowId,
     isModalOpen,
     isDirty,
+    logo,
     toolData,
     isDark,
     updatedAt,
@@ -23425,13 +23463,23 @@ const useToolNodeModal = (props) => {
     [onDataChange]
   );
   const onToolLabelChange = useCallback(
-    (e) => {
+    (item) => {
+      if (typeof item === "string") {
+        onDataChange({ label: item });
+        return;
+      }
+      const e = item;
       onDataChange({ label: e.target.value });
     },
     [onDataChange]
   );
   const onToolDescriptionChange = useCallback(
-    (e) => {
+    (item) => {
+      if (typeof item === "string") {
+        onDataChange({ description: item });
+        return;
+      }
+      const e = item;
       onDataChange({ description: e.target.value });
     },
     [onDataChange]
@@ -23568,34 +23616,35 @@ const WaldiezToolAdvancedTab = (props) => {
     )
   ] });
 };
-const TOOL_TYPE_OPTIONS = [
-  { value: "shared", label: "Shared" },
-  { value: "custom", label: "Custom" },
-  { value: "langchain", label: "Langchain" },
-  { value: "crewai", label: "CrewAI" }
-];
 const WaldiezToolBasicTab = memo((props) => {
   const { toolId, data, darkMode } = props;
   const { onToolContentChange, onToolLabelChange, onToolDescriptionChange, onToolTypeChange } = useToolNodeModal(props);
   const selectedToolType = useMemo(
-    () => TOOL_TYPE_OPTIONS.find((option) => option.value === data.toolType) || TOOL_TYPE_OPTIONS[0],
-    [data.toolType]
+    () => TOOL_TYPE_OPTIONS.find((option) => option.value === data.toolType) || TOOL_TYPE_OPTIONS.find((option) => option.value === data.label) || TOOL_TYPE_OPTIONS[0],
+    [data.toolType, data.label]
   );
   const onToolTypeSelectChange = useCallback(
     (option) => {
       if (!option) {
         return;
       }
-      onToolTypeChange(option.value);
+      if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
+        onToolTypeChange("predefined");
+        onToolLabelChange(option.value);
+        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
+      } else {
+        onToolTypeChange(option.value);
+        onToolLabelChange(DEFAULT_NAME[option.value]);
+        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
+      }
     },
-    [onToolTypeChange]
+    [onToolTypeChange, onToolLabelChange, onToolDescriptionChange]
   );
   const typeSelectId = `tool-type-select-${toolId}`;
   const labelInputId = `tool-label-input-${toolId}`;
   const descriptionInputId = `tool-description-input-${toolId}`;
   const contentEditorId = `tool-content-editor-${toolId}`;
   return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "Enter the tool details below. You can follow the instructions for each tool type in the comments of the content editor." }),
     /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: typeSelectId, children: "Type:" }),
       /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
@@ -23611,7 +23660,7 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: labelInputId, children: "Name:" }),
       /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
       /* @__PURE__ */ jsx(
@@ -23628,7 +23677,7 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: descriptionInputId, children: "Description:" }),
       /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
       /* @__PURE__ */ jsx(
@@ -23645,7 +23694,7 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { children: [
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { children: [
       /* @__PURE__ */ jsx("label", { htmlFor: contentEditorId, children: "Content:" }),
       /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
       /* @__PURE__ */ jsx(
@@ -23745,6 +23794,7 @@ const WaldiezNodeToolView = (props) => {
     isDirty,
     toolData: data,
     isDark,
+    logo,
     onOpen,
     onClone,
     onDelete,
@@ -23769,7 +23819,8 @@ const WaldiezNodeToolView = (props) => {
           children: /* @__PURE__ */ jsx(FaGear, {})
         }
       ),
-      /* @__PURE__ */ jsx("div", { "data-testid": `node-label-${id}`, className: "node-label", children: data.label })
+      /* @__PURE__ */ jsx("div", { "data-testid": `node-label-${id}`, className: "node-label", children: data.label }),
+      /* @__PURE__ */ jsx("div", { className: `tool-logo ${data.toolType}`, children: logo })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "tool-content", children: /* @__PURE__ */ jsx("div", { className: "description", "data-test-id": `node-description-${id}`, children: data.description }) }),
     /* @__PURE__ */ jsxs("div", { className: "tool-footer", "data-testid": `tool-footer-${id}`, children: [

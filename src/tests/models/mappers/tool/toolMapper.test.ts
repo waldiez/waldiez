@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_CUSTOM_TOOL_CONTENT, WaldiezNodeTool, WaldiezTool, WaldiezToolData } from "@waldiez/models";
+import { DEFAULT_SHARED_TOOL_CONTENT, WaldiezNodeTool, WaldiezTool, WaldiezToolData } from "@waldiez/models";
 import { toolMapper } from "@waldiez/models/mappers";
 
 describe("toolMapper", () => {
@@ -40,7 +40,7 @@ describe("toolMapper", () => {
         expect(tool).toBeTruthy();
         expect(tool.id).toBeTypeOf("string");
         expect(tool.name).toBe("new_tool");
-        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
     });
     it("should import a tool with no data in json", () => {
         const tool = toolMapper.importTool({
@@ -50,7 +50,7 @@ describe("toolMapper", () => {
         expect(tool).toBeTruthy();
         expect(tool.id).toBe("1");
         expect(tool.name).toBe("new_tool");
-        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
     });
     it("should use the label when no name is provided", () => {
         const tool = toolMapper.importTool({
@@ -61,7 +61,7 @@ describe("toolMapper", () => {
         expect(tool).toBeTruthy();
         expect(tool.id).toBe("1");
         expect(tool.name).toBe("custom_label");
-        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
     });
     it("should export a tool node", () => {
         const toolData = new WaldiezToolData();

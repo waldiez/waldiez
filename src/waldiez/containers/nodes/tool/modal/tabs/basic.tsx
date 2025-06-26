@@ -7,30 +7,13 @@ import { memo, useCallback, useMemo } from "react";
 import { Editor, Select, SingleValue, TextareaInput } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
+import {
+    DEFAULT_DESCRIPTION,
+    DEFAULT_NAME,
+    PREDEFINED_TOOL_TYPES,
+    TOOL_TYPE_OPTIONS,
+} from "@waldiez/containers/nodes/tool/utils";
 import { WaldiezToolType } from "@waldiez/models";
-
-const PREDEFINED_TOOL_TYPES = ["wikipedia_search"];
-
-const DEFAULT_NAME: { [key: string]: string } = {
-    wikipedia_search: "Wikipedia Search",
-    shared: "waldiez_shared",
-    custom: "tool_name",
-};
-
-const DEFAULT_DESCRIPTION: { [key: string]: string } = {
-    wikipedia_search: "Search Wikipedia for a given query.",
-    shared: "Shared code to used in the whole flow.",
-    custom: "A custom tool that you define.",
-};
-
-// Define tool type options outside the component to prevent recreation
-const TOOL_TYPE_OPTIONS: { value: string; label: string }[] = [
-    { value: "wikipedia_search", label: "Wikipedia Search" },
-    { value: "shared", label: "Shared Code" },
-    { value: "custom", label: "Custom Tool" },
-    // { value: "langchain", label: "Langchain" },
-    // { value: "crewai", label: "CrewAI" },
-];
 
 /**
  * Basic tab component for tool properties in the tool modal
@@ -44,8 +27,11 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
 
     // Memoize the selected tool type option
     const selectedToolType = useMemo(
-        () => TOOL_TYPE_OPTIONS.find(option => option.value === data.toolType) || TOOL_TYPE_OPTIONS[0],
-        [data.toolType],
+        () =>
+            TOOL_TYPE_OPTIONS.find(option => option.value === data.toolType) ||
+            TOOL_TYPE_OPTIONS.find(option => option.value === data.label) ||
+            TOOL_TYPE_OPTIONS[0],
+        [data.toolType, data.label],
     );
 
     /**

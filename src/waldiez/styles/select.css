@@ -18,9 +18,9 @@
   padding: 2px 4px;
 }
 
-.flow-wrapper .w-select__menu {
+/* .flow-wrapper .w-select__menu {
   position: relative;
-}
+} */
 
 .flow-wrapper.dark .select,
 .flow-wrapper.dark .select * {

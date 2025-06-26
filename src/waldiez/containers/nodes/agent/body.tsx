@@ -3,11 +3,12 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { AiFillCode } from "react-icons/ai";
 
 import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
+
+import { getToolIcon } from "../tool/utils";
 
 type WaldiezNodeAgentBodyProps = {
     flowId: string;
@@ -262,9 +263,7 @@ const useAgentContentView = (id: string, data: WaldiezNodeAgentData) => {
                                     className="agent-tool-preview"
                                     data-testid="agent-tool-preview"
                                 >
-                                    <div className="agent-tool-img">
-                                        <AiFillCode aria-hidden="true" />
-                                    </div>
+                                    <div className="agent-tool-img">{getToolIcon(tool.data.label)}</div>
                                     <div
                                         className="font-small agent-tool-name"
                                         data-testid={`agent-${id}-linked-tool-${index}`}

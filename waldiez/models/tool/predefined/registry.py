@@ -3,17 +3,14 @@
 """Predefined tools registry for Waldiez."""
 
 from ._config import PredefinedToolConfig
-from ._wikipedia import WikipediaSearchTool
+from ._google import GoogleSearchConfig
+from ._wikipedia import WikipediaSearchConfig
+from ._youtube import YouTubeSearchConfig
 
 PREDEFINED_TOOLS: dict[str, PredefinedToolConfig] = {
-    WikipediaSearchTool.name: PredefinedToolConfig(
-        name=WikipediaSearchTool.name,
-        description=WikipediaSearchTool.description,
-        required_secrets=WikipediaSearchTool.required_secrets,
-        requirements=WikipediaSearchTool.requirements,
-        tags=WikipediaSearchTool.tags,
-        implementation=WikipediaSearchTool,
-    ),
+    GoogleSearchConfig.name: GoogleSearchConfig,
+    WikipediaSearchConfig.name: WikipediaSearchConfig,
+    YouTubeSearchConfig.name: YouTubeSearchConfig,
 }
 
 
@@ -49,3 +46,32 @@ def get_predefined_tool_requirements(tool_name: str) -> list[str]:
     """
     config = get_predefined_tool_config(tool_name)
     return config.requirements if config else []
+
+
+def get_predefined_tool_imports(tool_name: str) -> list[str]:
+    """Get imports for a predefined tool.
+
+    Parameters
+    ----------
+    tool_name : str
+        Name of the tool to retrieve imports for.
+
+    Returns
+    -------
+    list[str]
+        List of imports for the tool,
+        or an empty list if the tool does not exist.
+    """
+    config = get_predefined_tool_config(tool_name)
+    return config.implementation.tool_imports if config else []
+
+
+def list_predefined_tools() -> list[str]:
+    """List all available predefined tools.
+
+    Returns
+    -------
+    list[str]
+        List of all predefined tool names.
+    """
+    return list(PREDEFINED_TOOLS.keys())

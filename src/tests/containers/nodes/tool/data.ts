@@ -11,6 +11,7 @@ export const flowId = "wf-1";
 export const toolId = "wt-1";
 export const toolData = {
     label: "label",
+    name: "name",
     description: "description",
     content: "content",
     toolType: "custom" as WaldiezToolType,

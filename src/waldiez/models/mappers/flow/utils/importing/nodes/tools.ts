@@ -25,11 +25,11 @@ export const getTools = (json: Record<string, unknown>, nodes: Node[]) => {
                 delete nodeExtras.data;
                 delete nodeExtras.type;
                 delete nodeExtras.parentId;
-                const waldiezModel = toolMapper.importTool({
+                const waldiezTool = toolMapper.importTool({
                     ...toolJson,
                     ...nodeExtras,
                 });
-                tools.push(waldiezModel);
+                tools.push(waldiezTool);
             }
         }
     });

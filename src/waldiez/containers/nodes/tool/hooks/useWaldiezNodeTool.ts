@@ -7,6 +7,7 @@ import { Node } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
+import { getToolIcon } from "@waldiez/containers/nodes/tool/utils";
 import { WaldiezNodeToolData } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
@@ -34,6 +35,8 @@ export const useWaldiezNodeTool = (id: string, data: WaldiezNodeToolData) => {
 
     // Format last updated date
     const updatedAt = useMemo(() => getDateString(data.updatedAt), [data.updatedAt]);
+
+    const logo = useMemo(() => getToolIcon(data.label), [data.label]);
 
     // Update local tool data when external data changes
     useEffect(() => {
@@ -152,6 +155,7 @@ export const useWaldiezNodeTool = (id: string, data: WaldiezNodeToolData) => {
         flowId,
         isModalOpen,
         isDirty,
+        logo,
         toolData,
         isDark,
         updatedAt,

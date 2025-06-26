@@ -17,6 +17,10 @@ from ..common import (
     now,
     parse_code_string,
 )
+from .predefined import (
+    get_predefined_tool_config,
+    list_predefined_tools,
+)
 from .tool_data import WaldiezToolData
 from .tool_type import WaldiezToolType
 
@@ -201,6 +205,16 @@ class WaldiezTool(WaldiezBase):
         """
         return self.tool_type in ("langchain", "crewai")
 
+    @property
+    def content(self) -> str:
+        """Get the content (source) of the tool."""
+        return self.data.content
+
+    @property
+    def secrets(self) -> dict[str, str]:
+        """Get the secrets (environment variables) of the tool."""
+        return self.data.secrets or {}
+
     def get_content(self) -> str:
         """Get the content of the tool.
 
@@ -209,10 +223,25 @@ class WaldiezTool(WaldiezBase):
         str
             The content of the tool.
         """
+        if self.is_predefined:
+            return self._generate_predefined_content()
         if self.is_shared or self.is_interop:
             return self.data.content
         # if custom, only the function content
         return get_function(self.data.content, self.name)
+
+    def _generate_predefined_content(self) -> str:
+        """Generate the content for a predefined tool.
+
+        Returns
+        -------
+        str
+            The content of the predefined tool.
+        """
+        config = get_predefined_tool_config(self.name)
+        if not config:
+            return ""
+        return config.get_content(self.data.secrets)
 
     def _validate_interop_tool(self) -> None:
         """Validate the interoperability tool.
@@ -264,6 +293,45 @@ class WaldiezTool(WaldiezBase):
             if error is not None or tree is None:
                 raise ValueError(f"Invalid tool content: {error}")
 
+    def _validate_predefined_tool(self) -> None:
+        """Validate a predefined tool.
+
+        Raises
+        ------
+        ValueError
+            If the tool name is not in the content.
+            If the tool content is invalid.
+        """
+        if self.is_predefined:
+            config = get_predefined_tool_config(self.name)
+            if not config:
+                available_tools = list_predefined_tools()
+                raise ValueError(
+                    f"Unknown predefined tool: {self.name}. "
+                    f"Available tools: {available_tools}"
+                )
+            missing_secrets = config.validate_secrets(self.data.secrets)
+            if missing_secrets:
+                raise ValueError(
+                    f"Missing required secrets for {self.name}: "
+                    f"{missing_secrets}"
+                )
+
+            # Update tool metadata from predefined config
+            if not self.description:
+                self.description = config.description
+
+            # Merge requirements
+            predefined_reqs = set(config.requirements)
+            existing_reqs = set(self.requirements)
+            self.requirements = list(predefined_reqs | existing_reqs)
+
+            # Merge tags
+            predefined_tags = set(config.tags)
+            existing_tags = set(self.tags)
+            self.tags = list(predefined_tags | existing_tags)
+            self.data.content = config.get_content(self.data.secrets)
+
     @model_validator(mode="after")
     def validate_data(self) -> Self:
         """Validate the data.
@@ -281,9 +349,18 @@ class WaldiezTool(WaldiezBase):
         """
         self._validate_custom_tool()
         self._validate_interop_tool()
-        self._tool_imports = gather_code_imports(
-            self.data.content, self.is_interop
-        )
+        self._validate_predefined_tool()
+        if self.is_predefined:
+            config = get_predefined_tool_config(self.name)
+            if config:
+                self._tool_imports = (
+                    ["import os"],
+                    config.implementation.tool_imports,
+                )
+        else:
+            self._tool_imports = gather_code_imports(
+                self.data.content, self.is_interop
+            )
         # remove the imports from the content
         # we will place them at the top of the file
         all_imports = self._tool_imports[0] + self._tool_imports[1]
@@ -301,13 +378,3 @@ class WaldiezTool(WaldiezBase):
             valid_lines.pop()
         self.data.content = "\n".join(valid_lines)
         return self
-
-    @property
-    def content(self) -> str:
-        """Get the content (source) of the tool."""
-        return self.data.content
-
-    @property
-    def secrets(self) -> dict[str, str]:
-        """Get the secrets (environment variables) of the tool."""
-        return self.data.secrets or {}

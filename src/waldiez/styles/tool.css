@@ -7,8 +7,8 @@
   width: 180px;
   min-width: 180px;
   max-width: 180px;
-  min-height: 100px;
-  max-height: 100px;
+  min-height: 120px;
+  max-height: 120px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -16,7 +16,7 @@
 
 .flow-wrapper .tool-node .tool-header {
   display: flex;
-  padding: 0 8px;
+  padding: 8px;
   height: 40px;
   justify-content: space-between;
   align-items: center;
@@ -28,11 +28,22 @@
 
 .flow-wrapper .tool-node .tool-header .node-label {
   width: 100%;
-  max-width: 110px;
+  max-width: 100px;
   white-space: nowrap;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.flow-wrapper .tool-logo {
+  display: flex;
+  align-items: center;
+}
+
+.flow-wrapper .tool-logo svg {
+  width: 20px;
+  max-width: 20px;
+  height: auto;
 }
 
 .flow-wrapper .tool-node .tool-content {
@@ -46,6 +57,14 @@
 .flow-wrapper .tool-node .modal-body label {
   margin-top: 10px;
   padding: 4px;
+}
+
+.flow-wrapper .tool-node .description {
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  line-clamp: 1 !important;
+  -webkit-box-orient: vertical;
 }
 
 .flow-wrapper .tool-node .date-info {

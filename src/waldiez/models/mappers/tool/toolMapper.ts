@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import {
-    DEFAULT_CUSTOM_TOOL_CONTENT,
+    DEFAULT_SHARED_TOOL_CONTENT,
     WaldiezNodeTool,
     WaldiezTool,
     WaldiezToolData,
@@ -136,6 +136,7 @@ export const toolMapper = {
         const nodeData = {
             ...tool.data,
             label: toolLabel,
+            name: tool.name,
             description: tool.description,
             tags: tool.tags,
             requirements: tool.requirements,
@@ -163,7 +164,7 @@ export const toolMapper = {
  * @returns The content of the tool data.
  */
 const getToolDataContent = (json: Record<string, unknown>): string => {
-    let content = DEFAULT_CUSTOM_TOOL_CONTENT;
+    let content = DEFAULT_SHARED_TOOL_CONTENT;
     if ("content" in json && typeof json.content === "string") {
         content = json.content;
     }
@@ -228,11 +229,11 @@ const getNodeMeta = (
  * @returns The tool type as a WaldiezToolType.
  */
 const getToolDataType = (json: Record<string, unknown>, toolName: string): WaldiezToolType => {
-    let toolType: WaldiezToolType = "custom";
+    let toolType: WaldiezToolType = "shared";
     if (
         "toolType" in json &&
         typeof json.toolType === "string" &&
-        ["shared", "custom", "langchain", "crewai"].includes(json.toolType)
+        ["shared", "custom", "langchain", "crewai", "predefined"].includes(json.toolType)
     ) {
         toolType = json.toolType as WaldiezToolType;
     }

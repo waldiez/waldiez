@@ -61,7 +61,7 @@ export class WaldiezTool {
         return new WaldiezTool({
             id: `wt-${getId()}`,
             name: "waldiez_shared",
-            description: "Shared code to used in the whole flow.",
+            description: "Shared code available to all agents.",
             tags: [],
             requirements: [],
             createdAt: new Date().toISOString(),

@@ -5,6 +5,7 @@
 import { Node } from "@xyflow/react";
 
 import {
+    DEFAULT_CUSTOM_TOOL_CONTENT,
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
     WaldiezAgentGroupManager,
@@ -104,6 +105,8 @@ export const getAgentNode = (
 
 export const getToolNodes = () => {
     const toolData = new WaldiezToolData();
+    toolData.toolType = "custom";
+    toolData.content = DEFAULT_CUSTOM_TOOL_CONTENT;
     const tool1 = toolMapper.asNode(
         toolMapper.importTool({
             ...toolData,
