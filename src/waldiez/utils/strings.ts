@@ -67,3 +67,34 @@ export const toCamelCase = (str: string) => {
             .replace(/^[A-Z]/, match => match.toLowerCase())
     );
 };
+
+export const toKebabCase = (str: string) => {
+    return str
+        .replace(/([a-z])([A-Z])/g, "$1-$2")
+        .replace(/([0-9])([A-Z])/g, "$1-$2")
+        .replace(/_/g, "-")
+        .replace(/ /g, "-")
+        .toLowerCase();
+};
+
+export const toSnakeCase = (str: string) => {
+    return str
+        .replace(/([a-z])([A-Z])/g, "$1_$2")
+        .replace(/([0-9])([A-Z])/g, "$1_$2")
+        .replace(/-/g, "_")
+        .replace(/ /g, "_")
+        .toLowerCase();
+};
+
+export const toPascalCase = (str: string) => {
+    return str
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .replace(/([0-9])([A-Z])/g, "$1 $2")
+        .replace(/_/g, " ")
+        .replace(/-/g, " ")
+        .trim()
+        .toLowerCase()
+        .split(" ")
+        .map(word => capitalize(word))
+        .join("");
+};

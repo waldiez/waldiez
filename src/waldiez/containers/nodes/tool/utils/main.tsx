@@ -5,6 +5,14 @@
 import { FaCode, FaGoogle, FaWikipediaW, FaYoutube } from "react-icons/fa6";
 
 export const PREDEFINED_TOOL_TYPES = ["wikipedia_search", "youtube_search", "google_search"];
+export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; key: string }[] } = {
+    wikipedia_search: [],
+    youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
+    google_search: [
+        { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" },
+        { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" },
+    ],
+};
 export const DEFAULT_NAME: { [key: string]: string } = {
     wikipedia_search: "Wikipedia Search",
     youtube_search: "YouTube Search",

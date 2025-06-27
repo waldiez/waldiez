@@ -10,6 +10,7 @@ import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/
 import {
     DEFAULT_DESCRIPTION,
     DEFAULT_NAME,
+    PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_TYPES,
     TOOL_TYPE_OPTIONS,
 } from "@waldiez/containers/nodes/tool/utils";
@@ -22,8 +23,13 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     const { toolId, data, darkMode } = props;
 
     // Get handlers from custom hook
-    const { onToolContentChange, onToolLabelChange, onToolDescriptionChange, onToolTypeChange } =
-        useToolNodeModal(props);
+    const {
+        onToolContentChange,
+        onToolLabelChange,
+        onToolDescriptionChange,
+        onToolTypeChange,
+        onUpdateSecrets,
+    } = useToolNodeModal(props);
 
     // Memoize the selected tool type option
     const selectedToolType = useMemo(
@@ -62,6 +68,14 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     const labelInputId = `tool-label-input-${toolId}`;
     const descriptionInputId = `tool-description-input-${toolId}`;
     const contentEditorId = `tool-content-editor-${toolId}`;
+
+    const onPredefinedToolEnvChange = useCallback(
+        (envVar: string, event: React.ChangeEvent<HTMLInputElement>) => {
+            const value = event.target.value;
+            onUpdateSecrets({ [envVar]: value });
+        },
+        [onUpdateSecrets],
+    );
 
     return (
         <div className="flex-column">
@@ -120,6 +134,26 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                         aria-label="Tool content"
                         data-testid={contentEditorId}
                     />
+                </div>
+            )}
+            {data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && (
+                <div className="margin-top-10">
+                    {PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => (
+                        <div key={index} className="margin-bottom-5">
+                            <label htmlFor={`env-var-${index}`}>{envVar.label}:</label>
+                            <div className="margin-top-10" />
+                            <input
+                                type="text"
+                                id={`env-var-${index}`}
+                                value={(data.secrets[envVar.key] as string) || ""}
+                                onChange={onPredefinedToolEnvChange.bind(null, envVar.key)}
+                                className="full-width"
+                                aria-label={`Environment variable ${envVar.label}`}
+                                data-testid={`env-var-input-${index}`}
+                                placeholder={envVar.key}
+                            />
+                        </div>
+                    ))}
                 </div>
             )}
         </div>
