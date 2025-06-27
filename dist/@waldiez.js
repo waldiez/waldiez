@@ -6631,7 +6631,6 @@ const Select = forwardRef(
         ...props,
         className: `select ${props.className ? ` ${props.className}` : ""}`,
         classNamePrefix: "w-select",
-        menuPlacement: "auto",
         styles: {
           menuPortal: (base) => ({
             ...base,
@@ -6828,8 +6827,8 @@ const AfterWork = memo(
               options: agentTargetOptions,
               value: selectedAgentOption,
               onChange: onAgentTargetChange,
-              isClearable: false,
-              isSearchable: false,
+              isClearable: true,
+              isSearchable: true,
               isMulti: false
             }
           )
@@ -6848,7 +6847,7 @@ const AfterWork = memo(
               })),
               onChange: onRandomAgentTargetsChange,
               isClearable: true,
-              isSearchable: false,
+              isSearchable: true,
               isMulti: true
             }
           )
@@ -16156,6 +16155,14 @@ const WaldiezEdgeModal = memo((props) => {
 });
 WaldiezEdgeModal.displayName = "WaldiezEdgeModal";
 const PREDEFINED_TOOL_TYPES = ["wikipedia_search", "youtube_search", "google_search"];
+const PREDEFINED_TOOL_REQUIRED_ENVS = {
+  wikipedia_search: [],
+  youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
+  google_search: [
+    { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" },
+    { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }
+  ]
+};
 const DEFAULT_NAME = {
   wikipedia_search: "Wikipedia Search",
   youtube_search: "YouTube Search",
@@ -23618,7 +23625,13 @@ const WaldiezToolAdvancedTab = (props) => {
 };
 const WaldiezToolBasicTab = memo((props) => {
   const { toolId, data, darkMode } = props;
-  const { onToolContentChange, onToolLabelChange, onToolDescriptionChange, onToolTypeChange } = useToolNodeModal(props);
+  const {
+    onToolContentChange,
+    onToolLabelChange,
+    onToolDescriptionChange,
+    onToolTypeChange,
+    onUpdateSecrets
+  } = useToolNodeModal(props);
   const selectedToolType = useMemo(
     () => TOOL_TYPE_OPTIONS.find((option) => option.value === data.toolType) || TOOL_TYPE_OPTIONS.find((option) => option.value === data.label) || TOOL_TYPE_OPTIONS[0],
     [data.toolType, data.label]
@@ -23644,6 +23657,13 @@ const WaldiezToolBasicTab = memo((props) => {
   const labelInputId = `tool-label-input-${toolId}`;
   const descriptionInputId = `tool-description-input-${toolId}`;
   const contentEditorId = `tool-content-editor-${toolId}`;
+  const onPredefinedToolEnvChange = useCallback(
+    (envVar, event) => {
+      const value = event.target.value;
+      onUpdateSecrets({ [envVar]: value });
+    },
+    [onUpdateSecrets]
+  );
   return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
     /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: typeSelectId, children: "Type:" }),
@@ -23707,7 +23727,27 @@ const WaldiezToolBasicTab = memo((props) => {
           "data-testid": contentEditorId
         }
       )
-    ] })
+    ] }),
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => /* @__PURE__ */ jsxs("div", { className: "margin-bottom-5", children: [
+      /* @__PURE__ */ jsxs("label", { htmlFor: `env-var-${index}`, children: [
+        envVar.label,
+        ":"
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "text",
+          id: `env-var-${index}`,
+          value: data.secrets[envVar.key] || "",
+          onChange: onPredefinedToolEnvChange.bind(null, envVar.key),
+          className: "full-width",
+          "aria-label": `Environment variable ${envVar.label}`,
+          "data-testid": `env-var-input-${index}`,
+          placeholder: envVar.key
+        }
+      )
+    ] }, index)) })
   ] });
 });
 WaldiezToolBasicTab.displayName = "WaldiezToolBasicTab";
@@ -23743,7 +23783,7 @@ const WaldiezNodeToolModal = (props) => {
       children: [
         /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
           /* @__PURE__ */ jsx(TabItem, { label: "Basic", id: `tool-basic-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolBasicTab, { ...props }) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `tool-advanced-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolAdvancedTab, { ...props }) }) })
+          data.toolType !== "predefined" && /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `tool-advanced-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolAdvancedTab, { ...props }) }) })
         ] }) }),
         /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
           /* @__PURE__ */ jsx(

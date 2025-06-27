@@ -22,6 +22,10 @@
   white-space: nowrap;
 }
 
+.agent-panel-add-tool .w-select__menu {
+  position: absolute !important;
+}
+
 /* Remove button */
 .agent-panel-current-tool-entry button {
   background: color-mix(in srgb, #ef4444 85%, var(--background-color));
@@ -153,7 +157,7 @@
     justify-self: start;
   }
 
-  .agent-panel-add-tool .select {
+  .agent-panel-add-tool .w-select {
     min-width: 100%;
   }
 

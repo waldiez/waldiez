@@ -298,7 +298,6 @@ exports[`All > should render Waldiez components 1`] = `
                 aria-label="Control Panel"
                 class="react-flow__panel react-flow__controls vertical bottom left"
                 data-testid="rf__controls"
-                style="pointer-events: all;"
               >
                 <button
                   aria-label="Zoom In"
@@ -363,7 +362,6 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
               <div
                 class="react-flow__panel top right"
-                style="pointer-events: all;"
               >
                 <div
                   class="editor-nav-actions"
@@ -470,7 +468,6 @@ exports[`All > should render Waldiez components 1`] = `
               <div
                 class="react-flow__panel react-flow__attribution bottom right"
                 data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
-                style="pointer-events: all;"
               >
                 <a
                   aria-label="React Flow attribution"
@@ -863,7 +860,6 @@ exports[`All > should render Waldiez components 1`] = `
               aria-label="Control Panel"
               class="react-flow__panel react-flow__controls vertical bottom left"
               data-testid="rf__controls"
-              style="pointer-events: all;"
             >
               <button
                 aria-label="Zoom In"
@@ -928,7 +924,6 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
             <div
               class="react-flow__panel top right"
-              style="pointer-events: all;"
             >
               <div
                 class="editor-nav-actions"
@@ -1035,7 +1030,6 @@ exports[`All > should render Waldiez components 1`] = `
             <div
               class="react-flow__panel react-flow__attribution bottom right"
               data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
-              style="pointer-events: all;"
             >
               <a
                 aria-label="React Flow attribution"

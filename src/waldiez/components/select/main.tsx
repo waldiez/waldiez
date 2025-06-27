@@ -29,7 +29,7 @@ export const Select = forwardRef(
                 {...props}
                 className={`select ${props.className ? ` ${props.className}` : ""}`}
                 classNamePrefix="w-select"
-                menuPlacement="auto"
+                // menuPlacement="auto"
                 styles={{
                     menuPortal: base => ({
                         ...base,

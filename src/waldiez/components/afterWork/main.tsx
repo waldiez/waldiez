@@ -246,8 +246,8 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                                     options={agentTargetOptions}
                                     value={selectedAgentOption}
                                     onChange={onAgentTargetChange}
-                                    isClearable={false}
-                                    isSearchable={false}
+                                    isClearable
+                                    isSearchable
                                     isMulti={false}
                                 />
                             </div>
@@ -264,8 +264,8 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                                         value: id,
                                     }))}
                                     onChange={onRandomAgentTargetsChange}
-                                    isClearable={true}
-                                    isSearchable={false}
+                                    isClearable
+                                    isSearchable
                                     isMulti
                                 />
                             </div>
