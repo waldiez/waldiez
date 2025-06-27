@@ -5,7 +5,7 @@ autoflake==2.3.1
 bandit==1.8.5
 black[jupyter]==25.1.0
 build==1.2.2.post1
-fakeredis>=2.30
+fakeredis==2.30.1
 fastjsonschema>=2.21.1
 flake8==7.3.0
 hatchling==1.27.0
