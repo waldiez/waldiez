@@ -85,6 +85,46 @@ def cli() -> argparse.ArgumentParser:
     return parser
 
 
+def is_podman_running() -> bool:
+    """Check if Podman is running.
+
+    Returns
+    -------
+    bool
+        True if Podman is running, False otherwise.
+    """
+    try:
+        subprocess.run(  # nosemgrep # nosec
+            ["podman", "ps"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except subprocess.CalledProcessError:
+        return False
+    return True
+
+
+def is_docker_running() -> bool:
+    """Check if Docker is running.
+
+    Returns
+    -------
+    bool
+        True if Docker is running, False otherwise.
+    """
+    try:
+        subprocess.run(  # nosemgrep # nosec
+            ["docker", "ps"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except subprocess.CalledProcessError:
+        return False
+    return True
+
+
 def get_container_cmd() -> str:
     """Get the container command to use.
 
@@ -92,20 +132,17 @@ def get_container_cmd() -> str:
     -------
     str
         The container command to use. Either "docker" or "podman".
-
-    Raises
-    ------
-    RuntimeError
-        If neither "docker" nor "podman" is found.
     """
     from_env = os.environ.get("CONTAINER_COMMAND", "")
     if from_env and from_env in ["docker", "podman"]:
         return from_env
     # prefer podman over docker if found
-    if shutil.which("podman"):
+    if shutil.which("podman") and is_podman_running():
         return "podman"
-    if not shutil.which("docker"):
-        raise RuntimeError("Could not find docker or podman.")
+    if not shutil.which("docker") or not is_docker_running():
+        # let's just exit (skip creating image)
+        # if no running container engine is found
+        sys.exit(0)
     return "docker"
 
 
