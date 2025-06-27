@@ -14,7 +14,8 @@
           "scrollbar-width: thin",
           "width: stretch",
           "scrollbar-color",
-          "-webkit-overflow-scrolling"
+          "-webkit-overflow-scrolling",
+          "backdrop-filter"
         ]
       }
     ],
