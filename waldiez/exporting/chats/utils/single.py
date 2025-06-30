@@ -26,7 +26,7 @@ def export_single_chat(
     tabs: int,
     is_async: bool,
     skip_cache: bool,
-    tab_leng: int = 4,
+    tab_length: int = 4,
 ) -> tuple[str, str]:
     """Get the chat string when there is only one chat in the flow.
 
@@ -50,7 +50,7 @@ def export_single_chat(
         Whether the chat is asynchronous.
     skip_cache : bool
         Whether to skip the cache argument.
-    tab_leng : int, optional
+    tab_length : int, optional
         The length of the tab string, by default 4.
 
     Returns
@@ -94,7 +94,7 @@ def export_single_chat(
     )
     ```
     """
-    tab = " " * tab_leng * tabs if tabs > 0 else ""
+    tab = " " * tab_length * tabs if tabs > 0 else ""
     chat_args = chat.get_chat_args(for_queue=False, sender=sender)
     # chat_args = update_summary_chat_args(chat_args, skip_summary=True)
     if not chat_args:

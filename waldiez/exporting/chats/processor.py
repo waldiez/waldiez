@@ -103,10 +103,10 @@ class ChatsProcessor:
         """Process the chats export."""
         self._gather_imports()
         self._handle_chat_registrations()
-        chat_initiation = self._generate_chat_initation()
+        chat_initiation = self._generate_chat_initiation()
         self._extras.set_chat_initiation(chat_initiation)
 
-    def _generate_chat_initation(self) -> str:
+    def _generate_chat_initiation(self) -> str:
         """Generate the chat definition string.
 
         Returns
@@ -120,7 +120,7 @@ class ChatsProcessor:
             return export_group_chats(
                 agent_names=self._agent_names,
                 manager=self._root_group_manager,
-                intial_chat=None,
+                initial_chat=None,
                 tabs=self._chat_tabs,
                 is_async=self._is_async,
             )
@@ -139,7 +139,7 @@ class ChatsProcessor:
                 return export_group_chats(
                     agent_names=self._agent_names,
                     manager=recipient,
-                    intial_chat=chat_massage_string,
+                    initial_chat=chat_massage_string,
                     tabs=self._chat_tabs,
                     is_async=self._is_async,
                 )

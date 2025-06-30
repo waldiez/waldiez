@@ -14,7 +14,7 @@ from waldiez.models import WaldiezGroupManager
 def export_group_chats(
     agent_names: dict[str, str],
     manager: WaldiezGroupManager,
-    intial_chat: str | None,
+    initial_chat: str | None,
     tabs: int,
     is_async: bool,
 ) -> str:
@@ -26,7 +26,7 @@ def export_group_chats(
         The agent names.
     manager : WaldiezGroupManager
         The group manager agent.
-    intial_chat : str | None
+    initial_chat : str | None
         The initial chat to use if any.
     tabs : int
         The number of tabs for indentation.
@@ -46,8 +46,8 @@ def export_group_chats(
     pattern_name = f"{manager_name}_pattern"
     content = f"{tab}results, _, __ = {initiate_group_chat}(" + "\n"
     content += f"{tab}    pattern={pattern_name}," + "\n"
-    if intial_chat:
-        content += f"{tab}    messages={json.dumps(intial_chat)}," + "\n"
+    if initial_chat:
+        content += f"{tab}    messages={json.dumps(initial_chat)}," + "\n"
     else:
         content += f'{tab}    messages="",\n'
     content += f"{tab}    max_rounds={manager.data.max_round},\n"

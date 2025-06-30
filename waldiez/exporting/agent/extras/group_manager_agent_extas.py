@@ -353,8 +353,12 @@ class GroupManagerProcessor:
 
         # Selection method
         if speakers.selection_method != "custom":
+            selection_method = speakers.selection_method
+            if selection_method == "default":
+                # this only on pattern based group chats :(
+                selection_method = "auto"
             config_lines.append(
-                f'    speaker_selection_method="{speakers.selection_method}",'
+                f'    speaker_selection_method="{selection_method}",'
             )
         else:
             # Custom selection method

@@ -40,7 +40,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -68,7 +68,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=True,
         )
@@ -97,7 +97,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=initial_chat,
+            initial_chat=initial_chat,
             tabs=1,
             is_async=False,
         )
@@ -122,7 +122,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=initial_chat,
+            initial_chat=initial_chat,
             tabs=1,
             is_async=True,
         )
@@ -147,7 +147,7 @@ class TestExportGroupChats:
         result_0_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=0,
             is_async=False,
         )
@@ -159,7 +159,7 @@ class TestExportGroupChats:
         result_2_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=2,
             is_async=False,
         )
@@ -173,7 +173,7 @@ class TestExportGroupChats:
         result_3_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=3,
             is_async=False,
         )
@@ -192,7 +192,7 @@ class TestExportGroupChats:
         result_1 = export_group_chats(
             agent_names=agent_names,
             manager=manager_1,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -203,7 +203,7 @@ class TestExportGroupChats:
         result_100 = export_group_chats(
             agent_names=agent_names,
             manager=manager_100,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -214,7 +214,7 @@ class TestExportGroupChats:
         result_0 = export_group_chats(
             agent_names=agent_names,
             manager=manager_0,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -229,7 +229,7 @@ class TestExportGroupChats:
         result_simple = export_group_chats(
             agent_names=agent_names_simple,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -240,7 +240,7 @@ class TestExportGroupChats:
         result_complex = export_group_chats(
             agent_names=agent_names_complex,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -254,7 +254,7 @@ class TestExportGroupChats:
         result_numeric = export_group_chats(
             agent_names=agent_names_numeric,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -270,7 +270,7 @@ class TestExportGroupChats:
         result_quotes = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=initial_chat_quotes,
+            initial_chat=initial_chat_quotes,
             tabs=1,
             is_async=False,
         )
@@ -284,7 +284,7 @@ class TestExportGroupChats:
         result_multiline = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=initial_chat_multiline,
+            initial_chat=initial_chat_multiline,
             tabs=1,
             is_async=False,
         )
@@ -300,7 +300,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat="",
+            initial_chat="",
             tabs=1,
             is_async=False,
         )
@@ -316,7 +316,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -332,7 +332,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -363,7 +363,7 @@ class TestEdgeCases:
             export_group_chats(
                 agent_names=agent_names,
                 manager=manager,
-                intial_chat=None,
+                initial_chat=None,
                 tabs=1,
                 is_async=False,
             )
@@ -381,7 +381,7 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=False,
         )
@@ -397,7 +397,7 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=-1,
             is_async=False,
         )
@@ -415,7 +415,7 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=special_chat,
+            initial_chat=special_chat,
             tabs=1,
             is_async=False,
         )
@@ -436,7 +436,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat="Hello",
+            initial_chat="Hello",
             tabs=2,
             is_async=False,
         )
@@ -459,7 +459,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=1,
             is_async=True,
         )
@@ -482,7 +482,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            intial_chat=None,
+            initial_chat=None,
             tabs=0,
             is_async=False,
         )
