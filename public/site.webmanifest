@@ -9,12 +9,7 @@
   "start_url": "%BASE_URL%",
   "id": "/",
   "icons": [
-    {
-      "src": "%BASE_URL%icons/192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
+
     {
       "src": "%BASE_URL%icons/512x512.png",
       "sizes": "512x512",
@@ -22,16 +17,28 @@
       "purpose": "any"
     },
     {
-      "src": "%BASE_URL%icons/192x192.png",
+      "src": "%BASE_URL%icons/maskable_192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "%BASE_URL%icons/512x512.png",
+      "src": "%BASE_URL%icons/maskable_512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+        "src": "%BASE_URL%icons/logo.svg",
+        "type": "image/svg+xml",
+        "sizes": "any",
+        "purpose":"any"
+    },
+    {
+        "src": "%BASE_URL%icons/favicon.ico",
+        "type": "image/x-icon",
+        "sizes": "72x72 96x96 128x128",
+        "purpose": "any"
     }
   ],
   "screenshots": [
