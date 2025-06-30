@@ -25,7 +25,15 @@
     "detect-css-reflows/composite": "off",
     "detect-css-reflows/paint": "off",
     "detect-css-reflows/layout": "off",
-    "axe/aria": "off"
+    "axe/aria": "off",
+    "compat-api/html": [
+      "default",
+      {
+        "ignore": [
+          "meta[name=theme-color]"
+        ]
+      }
+    ]
   },
   "browserslist": [
     "defaults",
