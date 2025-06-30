@@ -18,16 +18,16 @@ const undoAction = async (user: UserEvent) => {
     expect(modelFooter).toBeTruthy();
     const cloneDiv = screen.getByTestId("clone-node-model-0");
     expect(cloneDiv).toBeTruthy();
-    const modelParent = screen.queryAllByDisplayValue("Model Node 0");
-    expect(modelParent.length).toBe(1);
+    const modelParent = document.querySelectorAll(".model-node");
+    expect(modelParent.length).toBe(2); // two initial models
     fireEvent.click(cloneDiv as HTMLElement);
     vi.advanceTimersByTime(50);
     const modelDivBeforeUndo = document.querySelectorAll(".model-node");
-    expect(modelDivBeforeUndo.length).toBeGreaterThanOrEqual(1);
+    expect(modelDivBeforeUndo.length).toBe(3);
     await user.keyboard("{Control>}z{/Control}");
     vi.advanceTimersByTime(50);
     const modelDivAfterUndo = document.querySelectorAll(".model-node");
-    expect(modelDivAfterUndo.length).toBe(modelDivBeforeUndo.length - 1);
+    expect(modelDivAfterUndo.length).toBe(2);
 };
 
 describe("Flow Undo Redo", () => {

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .description {
+.description {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -10,63 +10,64 @@
   -webkit-box-orient: vertical;
 }
 
-.flow-wrapper .import-flow-label {
+.import-flow-label {
   cursor: pointer;
   border: none;
   padding: 0.5rem;
   font-size: unset;
 }
 
-.flow-wrapper .add-node {
+.add-node {
   display: flex;
   align-items: center;
   background-color: transparent !important;
 }
 
-.flow-wrapper .add-node svg {
+.add-node svg {
   margin-right: 0.5rem;
   font-size: 1rem !important;
 }
 
-.flow-wrapper .editor-nav-action {
+.editor-nav-action {
   padding: 8px;
   background-color: transparent !important;
+  border: none !important;
 }
 
-.flow-wrapper .editor-nav-action svg {
+.editor-nav-action svg {
   font-size: 1.3rem;
 }
 
-.flow-wrapper .flow-main {
+.flow-main {
   flex-direction: row;
   display: flex;
   flex-grow: 1;
   height: 100%;
 }
 
-.flow-wrapper .flow-main .react-flow-wrapper {
+.flow-main .react-flow-wrapper {
   flex-grow: 1;
   height: 100%;
 }
 
-.flow-wrapper .chat-modal .input-prompt {
+.chat-modal .input-prompt {
   margin: 10px 4px;
 }
 
-/* .flow-wrapper .edit-flow-modal .modal-actions,
-.flow-wrapper .chat-modal .modal-actions {
+/* .edit-flow-modal .modal-actions,
+.chat-modal .modal-actions {
   margin-top: 1rem;
 } */
 
-.flow-wrapper .flow-data-preview {
+.flow-data-preview {
   max-height: 60vh;
   overflow-y: auto;
 }
 
-.flow-wrapper .flow-data-preview-body-section {
+.flow-data-preview-body-section {
   margin-top: 1rem;
 }
 
-.flow-wrapper .flow-data-preview-body-section h4 {
+.flow-data-preview-body-section h4 {
   margin: 10px 0;
 }

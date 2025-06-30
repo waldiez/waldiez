@@ -2,31 +2,31 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .list-entries-view {
+.list-entries-view {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper .list-entries-label {
+.list-entries-label {
   margin-bottom: 10px;
 }
 
-.flow-wrapper .list-entries-view label {
+.list-entries-view label {
   padding-bottom: 0 !important;
 }
 
-.flow-wrapper .list-entries-list {
+.list-entries-list {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper .list-entry {
+.list-entry {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.flow-wrapper .add-list-entry-view {
+.add-list-entry-view {
   display: flex;
   align-items: center;
   margin-bottom: 10px;

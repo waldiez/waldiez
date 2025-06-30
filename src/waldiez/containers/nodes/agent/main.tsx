@@ -6,7 +6,8 @@ import { NodeResizer } from "@xyflow/react";
 
 import { useMemo } from "react";
 import { FaCopy } from "react-icons/fa";
-import { FaGear, FaTrash } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa6";
+import { VscSettings } from "react-icons/vsc";
 
 import { WaldiezEdgeModal } from "@waldiez/containers/edges/modal";
 import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
@@ -127,7 +128,7 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
                             aria-label="Clone Agent"
                         />
                     )}
-                    <FaGear
+                    <VscSettings
                         role="button"
                         className="clickable cog-icon"
                         onClick={onOpenNodeModal}

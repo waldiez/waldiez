@@ -2,67 +2,67 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .react-flow__panel {
+.react-flow__panel {
   margin-top: 10px !important;
 }
 
-.flow-wrapper .react-flow__node-agent {
+.react-flow__node-agent {
   display: flex;
   align-items: stretch;
 }
 
-.flow-wrapper .react-flow__handle {
+.react-flow__handle {
   border: none;
 }
 
-.flow-wrapper .react-flow__handle.not-selected {
+.react-flow__handle.not-selected {
   opacity: 1;
 }
 
-.flow-wrapper .react-flow__handle:hover {
+.react-flow__handle:hover {
   opacity: 1;
 }
 
-.flow-wrapper .agent-node .react-flow__handle.source {
+.agent-node .react-flow__handle.source {
   width: 12px;
   height: 12px;
   border-radius: 50%;
 }
 
-.flow-wrapper .agent-node .react-flow__handle.target {
+.agent-node .react-flow__handle.target {
   width: 14px;
   height: 2px;
   border-radius: 0;
 }
 
-.flow-wrapper .agent-node .react-flow__handle.target.top,
-.flow-wrapper .agent-node .react-flow__handle.target.bottom {
+.agent-node .react-flow__handle.target.top,
+.agent-node .react-flow__handle.target.bottom {
   width: 2px;
   height: 14px;
 }
 
-.flow-wrapper .react-flow__panel button {
+.react-flow__panel button {
   cursor: pointer;
   border: none;
 }
 
-.flow-wrapper .agent-node.assistant .react-flow__handle {
+.agent-node.assistant .react-flow__handle {
   background-color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-node.user_proxy .react-flow__handle {
+.agent-node.user_proxy .react-flow__handle {
   background-color: var(--user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-node.rag_user_proxy .react-flow__handle {
+.agent-node.rag_user_proxy .react-flow__handle {
   background-color: var(--rag-user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-node.reasoning .react-flow__handle {
+.agent-node.reasoning .react-flow__handle {
   background-color: var(--reasoning-agent-color);
 }
 
-.flow-wrapper .agent-node.captain .react-flow__handle {
+.agent-node.captain .react-flow__handle {
   background-color: var(--captain-agent-color);
 }
 
@@ -111,12 +111,19 @@
   padding: 10px;
 }
 
+.react-flow__controls {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .react-flow__controls-button {
-  width: 16px !important;
-  height: 16px !important;
-  border-radius: 4px;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50%;
   padding: 8px !important;
   margin: 4px !important;
+  border: none !important;
 }
 
 .react-flow__background-pattern.dots {

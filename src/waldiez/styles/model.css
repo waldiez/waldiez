@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .model-node {
+.model-node {
   border-radius: 10px;
   width: 180px;
   min-width: 180px;
@@ -14,7 +14,7 @@
   justify-content: space-between;
 }
 
-.flow-wrapper .model-node .model-header {
+.model-node .model-header {
   display: flex;
   padding: 0 8px;
   height: 40px;
@@ -22,76 +22,76 @@
   align-items: center;
 }
 
-.flow-wrapper .model-node .model-header div[role="button"] {
+.model-node .model-header div[role="button"] {
   display: flex;
 }
 
-.flow-wrapper .model-logo {
+.model-logo {
   display: flex;
   align-items: center;
   background-color: transparent !important;
 }
 
-.flow-wrapper .model-logo img {
+.model-logo img {
   width: 30px;
   max-width: 30px;
   height: auto;
   background-color: transparent !important;
 }
 
-.flow-wrapper .model-logo.bedrock img,
-.flow-wrapper .model-logo.other img {
+.model-logo.bedrock img,
+.model-logo.other img {
   width: 20px !important;
   max-width: 20px !important;
 }
 
-.flow-wrapper .model-logo.openai img {
+.model-logo.openai img {
   margin-left: 2px !important;
   width: 18px !important;
   max-width: 18px !important;
 }
 
-.flow-wrapper .model-logo.cohere img {
+.model-logo.cohere img {
   width: 24px !important;
   max-width: 24px !important;
 }
 
-.flow-wrapper .model-logo.anthropic img {
+.model-logo.anthropic img {
   width: 24px !important;
   max-width: 24px !important;
 }
 
-.flow-wrapper .model-logo.google img {
+.model-logo.google img {
   width: 22px !important;
   max-width: 22px !important;
 }
 
-.flow-wrapper .model-logo.azure img {
+.model-logo.azure img {
   width: 22px !important;
   max-width: 22px !important;
 }
 
-.flow-wrapper .model-logo.deepseek img {
+.model-logo.deepseek img {
   width: 22px !important;
   max-width: 22px !important;
 }
 
-.flow-wrapper .model-logo.mistral img {
+.model-logo.mistral img {
   width: 22px !important;
   max-width: 22px !important;
 }
 
-.flow-wrapper .model-logo.nim img {
+.model-logo.nim img {
   width: 24px !important;
   max-width: 24px !important;
 }
 
-.flow-wrapper .model-logo.groq img {
+.model-logo.groq img {
   width: 18px !important;
   max-width: 18px !important;
 }
 
-.flow-wrapper .model-node .model-header .node-label {
+.model-node .model-header .node-label {
   width: 100%;
   max-width: 110px;
   white-space: nowrap;
@@ -100,7 +100,7 @@
   text-overflow: ellipsis;
 }
 
-.flow-wrapper .model-node .model-content {
+.model-node .model-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -108,17 +108,17 @@
   padding: 8px;
 }
 
-.flow-wrapper .model-node .modal-body label {
+.model-node .modal-body label {
   margin-top: 10px;
   padding: 4px;
 }
 
-.flow-wrapper .model-node .date-info {
+.model-node .date-info {
   font-size: 0.7rem;
   color: #666;
 }
 
-.flow-wrapper .model-node .model-footer {
+.model-node .model-footer {
   display: flex;
   padding: 0 8px;
   height: 40px;
@@ -126,18 +126,18 @@
   align-items: center;
 }
 
-.flow-wrapper.light .model-node {
+body.waldiez-light .model-node {
   border: 1px solid #ccc;
   background-color: white;
 }
 
-.flow-wrapper.dark .model-node {
+body.waldiez-dark .model-node {
   border: 1px solid #333;
   background-color: #222;
 }
 
-.flow-wrapper.dark .model-logo.other img,
-.flow-wrapper.dark .model-logo.bedrock img,
-.flow-wrapper.dark .model-logo.openai img {
+body.waldiez-dark .model-logo.other img,
+body.waldiez-dark .model-logo.bedrock img,
+body.waldiez-dark .model-logo.openai img {
   filter: invert(1);
 }

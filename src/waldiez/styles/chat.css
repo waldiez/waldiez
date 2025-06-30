@@ -4,7 +4,7 @@
  */
 
 /* Chat Input Container */
-.flow-wrapper .chat-input-container {
+.chat-input-container {
   padding: 8px;
   border-radius: 8px;
   display: flex;
@@ -12,23 +12,23 @@
   flex-direction: column;
 }
 
-.flow-wrapper.light .chat-input-container {
+body.waldiez-light .chat-input-container {
   background-color: #eee;
 }
 
-.flow-wrapper.dark .chat-input-container {
+body.waldiez-dark .chat-input-container {
   background-color: #222;
 }
 
 /* Chat Input Actions */
-.flow-wrapper .chat-input-actions {
+.chat-input-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 }
 
-.flow-wrapper .chat-upload-button {
+.chat-upload-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,34 +36,34 @@
   cursor: pointer;
 }
 
-.flow-wrapper.light .chat-upload-button {
+body.waldiez-light .chat-upload-button {
   color: #333;
 }
 
-.flow-wrapper.dark .chat-upload-button {
+body.waldiez-dark .chat-upload-button {
   color: #ddd;
 }
 
 /* Chat Image Preview */
-.flow-wrapper .chat-image-preview {
+.chat-image-preview {
   margin-bottom: 8px;
   display: flex;
   justify-content: flex-start;
 }
 
-.flow-wrapper .chat-image-wrapper {
+.chat-image-wrapper {
   position: relative;
   display: inline-block;
 }
 
-.flow-wrapper .chat-preview-image {
+.chat-preview-image {
   max-width: 120px;
   max-height: 80px;
   border-radius: 8px;
   object-fit: cover;
 }
 
-.flow-wrapper .chat-remove-image-button {
+.chat-remove-image-button {
   position: absolute;
   top: -6px;
   right: -6px;
@@ -75,24 +75,24 @@
   justify-content: center;
 }
 
-.flow-wrapper.light .chat-remove-image-button {
+body.waldiez-light .chat-remove-image-button {
   background-color: #eee;
   border: 1px solid #ccc;
   color: #000;
 }
 
-.flow-wrapper.dark .chat-remove-image-button {
+body.waldiez-dark .chat-remove-image-button {
   background-color: #222;
   border: 1px solid #444;
   color: #fff;
 }
 
-.flow-wrapper .chat-upload-input {
+.chat-upload-input {
   display: none;
 }
 
 /* Chat Text Input */
-.flow-wrapper .chat-text-input {
+.chat-text-input {
   flex-grow: 1;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -101,18 +101,18 @@
   outline: none;
 }
 
-.flow-wrapper.light .chat-text-input {
+body.waldiez-light .chat-text-input {
   background-color: #eee !important;
   color: #333;
 }
 
-.flow-wrapper.dark .chat-text-input {
+body.waldiez-dark .chat-text-input {
   background-color: #222 !important;
   color: #eee;
 }
 
 /* Chat Send Button */
-.flow-wrapper .chat-send-button {
+.chat-send-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,50 +124,50 @@
   transition: background-color 0.2s ease;
 }
 
-.flow-wrapper.light .chat-send-button {
+body.waldiez-light .chat-send-button {
   background-color: #0084ff;
   color: #fff;
 }
 
-.flow-wrapper.dark .chat-send-button {
+body.waldiez-dark .chat-send-button {
   background-color: #0084ff;
   color: #fff;
 }
 
-.flow-wrapper.light .chat-send-button:hover {
+body.waldiez-light .chat-send-button:hover {
   background-color: #0072db;
 }
 
-.flow-wrapper.dark .chat-send-button:hover {
+body.waldiez-dark .chat-send-button:hover {
   background-color: #0072db;
 }
 
-.flow-wrapper.light .chat-send-button:disabled,
-.flow-wrapper.dark .chat-send-button:disabled {
+body.waldiez-light .chat-send-button:disabled,
+body.waldiez-dark .chat-send-button:disabled {
   background-color: #555;
   color: #999;
   cursor: not-allowed;
 }
 
 /* Chat Container */
-.flow-wrapper .chat-wrapper {
+.chat-wrapper {
   border-radius: 5px;
   padding: 10px;
   margin-top: 10px;
   text-wrap: wrap;
 }
 
-.flow-wrapper.light .chat-wrapper {
+body.waldiez-light .chat-wrapper {
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
 }
 
-.flow-wrapper.dark .chat-wrapper {
+body.waldiez-dark .chat-wrapper {
   background-color: #222;
   border: 1px solid #444;
 }
 
-.flow-wrapper .chat-container {
+.chat-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -178,40 +178,40 @@
   scrollbar-width: thin;
 }
 
-.flow-wrapper .chat-container::-webkit-scrollbar {
+.chat-container::-webkit-scrollbar {
   width: 6px;
 }
 
-.flow-wrapper.light .chat-container::-webkit-scrollbar-track {
+body.waldiez-light .chat-container::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
 
-.flow-wrapper.dark .chat-container::-webkit-scrollbar-track {
+body.waldiez-dark .chat-container::-webkit-scrollbar-track {
   background: #333;
   border-radius: 10px;
 }
 
-.flow-wrapper.light .chat-container::-webkit-scrollbar-thumb {
+body.waldiez-light .chat-container::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 10px;
 }
 
-.flow-wrapper.dark .chat-container::-webkit-scrollbar-thumb {
+body.waldiez-dark .chat-container::-webkit-scrollbar-thumb {
   background: #666;
   border-radius: 10px;
 }
 
-.flow-wrapper.light .chat-container::-webkit-scrollbar-thumb:hover {
+body.waldiez-light .chat-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
-.flow-wrapper.dark .chat-container::-webkit-scrollbar-thumb:hover {
+body.waldiez-dark .chat-container::-webkit-scrollbar-thumb:hover {
   background: #888;
 }
 
 /* Message Bubbles */
-.flow-wrapper .message-bubble {
+.message-bubble {
   padding: 12px;
   border-radius: 12px;
   max-width: 70%;
@@ -221,25 +221,25 @@
   transition: all 0.2s ease;
 }
 
-.flow-wrapper .message-bubble:hover {
+.message-bubble:hover {
   box-shadow: 0 2px 5px rgb(0 0 0 / 15%);
 }
 
-.flow-wrapper .user-message {
+.user-message {
   align-self: flex-end;
   background-color: #0084ff;
   color: white;
   border-bottom-right-radius: 4px;
 }
 
-.flow-wrapper .assistant-message {
+.assistant-message {
   align-self: flex-start;
   background-color: #f0f0f0;
   color: #333;
   border-bottom-left-radius: 4px;
 }
 
-.flow-wrapper.dark .assistant-message {
+body.waldiez-dark .assistant-message {
   background-color: #333;
   color: #eee;
 }
@@ -255,12 +255,12 @@
   padding: 8px 16px;
 }
 
-.flow-wrapper.dark .neutral-message {
+body.waldiez-dark .neutral-message {
   background-color: #2a2a2a;
   color: #ddd;
 }
 
-.flow-wrapper .error-message {
+.error-message {
   align-self: center;
   background-color: #fdd;
   color: #d32f2f;
@@ -269,13 +269,13 @@
   text-align: center;
 }
 
-.flow-wrapper.dark .error-message {
+body.waldiez-dark .error-message {
   background-color: rgb(244 67 54 / 20%);
   color: #ff6b6b;
 }
 
-.flow-wrapper .system-message,
-.flow-wrapper .request-message {
+.system-message,
+.request-message {
   align-self: center;
   background-color: #e6f7ff;
   color: #0076de;
@@ -284,14 +284,14 @@
   font-weight: 500;
 }
 
-.flow-wrapper.dark .system-message,
-.flow-wrapper.dark .request-message {
+body.waldiez-dark .system-message,
+body.waldiez-dark .request-message {
   background-color: rgb(24 144 255 / 20%);
   color: #69c0ff;
 }
 
 /* Message Header */
-.flow-wrapper .message-header {
+.message-header {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -301,45 +301,45 @@
   opacity: 0.8;
 }
 
-.flow-wrapper .message-header.user-message {
+.message-header.user-message {
   justify-content: flex-end;
 }
 
-.flow-wrapper .message-header.assistant-message {
+.message-header.assistant-message {
   justify-content: flex-start;
 }
 
-.flow-wrapper .message-timestamp {
+.message-timestamp {
   font-size: 0.7rem;
   opacity: 0.7;
   margin-left: 8px;
 }
 
-.flow-wrapper .message-sender {
+.message-sender {
   font-weight: 600;
   font-size: 0.8rem;
 }
 
-.flow-wrapper .user-message .message-sender {
+.user-message .message-sender {
   color: rgb(255 255 255 / 85%);
 }
 
-.flow-wrapper .assistant-message .message-sender {
+.assistant-message .message-sender {
   color: rgb(0 0 0 / 75%);
 }
 
-.flow-wrapper.dark .assistant-message .message-sender {
+body.waldiez-dark .assistant-message .message-sender {
   color: rgb(255 255 255 / 85%);
 }
 
 /* Message Content */
-.flow-wrapper .message-content {
+.message-content {
   overflow-wrap: anywhere;
   line-height: 1.4;
 }
 
 /* Chat Images */
-.flow-wrapper .chat-image {
+.chat-image {
   max-width: 100%;
   max-height: 100px;
   border-radius: 8px;
@@ -351,16 +351,16 @@
   display: block;
 }
 
-.flow-wrapper .chat-image:hover {
+.chat-image:hover {
   transform: scale(1.01);
 }
 
-.flow-wrapper.dark .chat-image {
+body.waldiez-dark .chat-image {
   border-color: rgb(255 255 255 / 20%);
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
-.flow-wrapper .chat-image.loading {
+.chat-image.loading {
   min-height: 100px;
   min-width: 100px;
   background-color: #f0f0f0;
@@ -371,11 +371,11 @@
   overflow: hidden;
 }
 
-.flow-wrapper.dark .chat-image.loading {
+body.waldiez-dark .chat-image.loading {
   background-color: #333;
 }
 
-.flow-wrapper .chat-image.loading::after {
+.chat-image.loading::after {
   content: "";
   position: absolute;
   width: 50%;
@@ -385,7 +385,7 @@
   animation: loading 1.5s infinite;
 }
 
-.flow-wrapper.dark .chat-image.loading::after {
+body.waldiez-dark .chat-image.loading::after {
   background-color: rgb(255 255 255 / 10%);
 }
 
@@ -400,23 +400,23 @@
 }
 
 /* Structured Content */
-.flow-wrapper .structured-content {
+.structured-content {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.flow-wrapper .structured-content span {
+.structured-content span {
   display: inline-block;
 }
 
-.flow-wrapper .structured-content img + span,
-.flow-wrapper .structured-content span + img {
+.structured-content img + span,
+.structured-content span + img {
   margin-top: 8px;
 }
 
 /* Content with Images */
-.flow-wrapper .content-with-images {
+.content-with-images {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -424,7 +424,7 @@
 }
 
 /* Image Placeholder */
-.flow-wrapper .image-placeholder {
+.image-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -439,14 +439,14 @@
   min-height: 100px;
 }
 
-.flow-wrapper.dark .image-placeholder {
+body.waldiez-dark .image-placeholder {
   background-color: #333;
   border-color: #555;
   color: #aaa;
 }
 
 /* Image Modal for Fullscreen View */
-.flow-wrapper .image-modal {
+.image-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -464,19 +464,19 @@
     visibility 0.3s ease;
 }
 
-.flow-wrapper .image-modal.open {
+.image-modal.open {
   opacity: 1;
   visibility: visible;
 }
 
-.flow-wrapper .modal-image {
+.modal-image {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
   box-shadow: 0 5px 25px rgb(0 0 0 / 50%);
 }
 
-.flow-wrapper .modal-close {
+.modal-close {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -494,16 +494,16 @@
   transition: background 0.2s ease;
 }
 
-.flow-wrapper .modal-close:hover {
+.modal-close:hover {
   background: rgb(255 255 255 / 30%);
 }
 
-.flow-wrapper .chat-image.previously-failed {
+.chat-image.previously-failed {
   opacity: 0.8;
   transition: opacity 0.3s ease;
 }
 
-.flow-wrapper .chat-image.previously-failed:not(.loading) {
+.chat-image.previously-failed:not(.loading) {
   opacity: 1;
   animation: fade-in 0.5s ease;
 }
@@ -538,25 +538,25 @@
 }
 
 /* Password Input Styling */
-.flow-wrapper .chat-input-field-container {
+.chat-input-field-container {
   width: 100%;
   position: relative;
   margin-bottom: 8px;
 }
 
 /* Password toggle container */
-.flow-wrapper .password-toggle-container {
+.password-toggle-container {
   position: relative;
   width: 100%;
 }
 
 /* Input styling for password fields */
-.flow-wrapper .password-input {
+.password-input {
   padding-right: 40px !important; /* Make room for the toggle button */
 }
 
 /* Password toggle button */
-.flow-wrapper .password-toggle-button {
+.password-toggle-button {
   position: absolute;
   right: 8px;
   top: 50%;
@@ -573,24 +573,24 @@
   transition: background-color 0.2s ease;
 }
 
-.flow-wrapper .password-toggle-button:disabled {
+.password-toggle-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.flow-wrapper.light .password-toggle-button {
+body.waldiez-light .password-toggle-button {
   color: #555;
 }
 
-.flow-wrapper.dark .password-toggle-button {
+body.waldiez-dark .password-toggle-button {
   color: #ccc;
 }
 
-.flow-wrapper.light .password-toggle-button:hover {
+body.waldiez-light .password-toggle-button:hover {
   background-color: rgb(0 0 0 / 5%) !important;
 }
 
-.flow-wrapper.dark .password-toggle-button:hover {
+body.waldiez-dark .password-toggle-button:hover {
   background-color: rgb(255 255 255 / 10%) !important;
 }
 

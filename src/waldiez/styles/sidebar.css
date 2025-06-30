@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .flow-main .sidebar {
+.flow-main .sidebar {
   padding: 0;
   font-size: small;
   display: flex;
@@ -13,22 +13,22 @@
   overflow-y: auto;
 }
 
-.flow-wrapper.light .flow-main .sidebar {
+body.waldiez-light .flow-main .sidebar {
   border-right: 1px solid #eee;
 }
 
-.flow-wrapper.dark .flow-main .sidebar {
+body.waldiez-dark .flow-main .sidebar {
   border-right: 1px solid #333;
 }
 
-.flow-wrapper .flow-main .sidebar .sidebar-header {
+.flow-main .sidebar .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 9999999;
+  z-index: 9;
 }
 
-.flow-wrapper .flow-main .sidebar .sidebar-header .title {
+.flow-main .sidebar .sidebar-header .title {
   font-size: 1.2rem;
   font-weight: 600;
   padding: 10px;
@@ -37,29 +37,29 @@
   font-family: Fredoka, sans-serif;
 }
 
-.flow-wrapper .flow-main .sidebar .sidebar-header .sidebar-toggle {
+.flow-main .sidebar .sidebar-header .sidebar-toggle {
   padding: 10px;
   font-weight: 600;
   cursor: pointer;
 }
 
-.flow-wrapper .flow-main .sidebar .spacer {
+.flow-main .sidebar .spacer {
   flex-grow: 1;
 }
 
-.flow-wrapper .flow-main .sidebar svg {
+.flow-main .sidebar svg {
   font-size: larger;
   height: 1rem;
   vertical-align: -0.2rem;
 }
 
-.flow-wrapper .flow-main .sidebar.sidebar.collapsed .sidebar-header {
+.flow-main .sidebar.sidebar.collapsed .sidebar-header {
   justify-content: center;
   padding: 10px;
   padding-bottom: 0;
 }
 
-.flow-wrapper .flow-main .sidebar ul {
+.flow-main .sidebar ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -67,47 +67,47 @@
   margin-left: 4px;
 }
 
-.flow-wrapper .flow-main .sidebar ul li {
+.flow-main .sidebar ul li {
   padding: 10px;
   cursor: pointer;
 }
 
-.flow-wrapper .flow-main .sidebar ul li.expandable {
+.flow-main .sidebar ul li.expandable {
   display: flex;
   justify-content: space-between;
 }
 
-.flow-wrapper .flow-main .sidebar ul li :first-child {
+.flow-main .sidebar ul li :first-child {
   margin-right: 10px;
 }
 
-.flow-wrapper .flow-main .sidebar .sidebar-footer {
+.flow-main .sidebar .sidebar-footer {
   margin-bottom: 8px;
 }
 
-.flow-wrapper .flow-main .sidebar.sidebar.collapsed .sidebar-footer ul li :first-child {
+.flow-main .sidebar.sidebar.collapsed .sidebar-footer ul li :first-child {
   margin-right: 0;
   margin-top: -2px;
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-description {
+.flow-main .sidebar .dnd-description {
   margin: 10px;
   font-size: small;
 }
 
-.flow-wrapper .flow-main .sidebar.sidebar.collapsed ul {
+.flow-main .sidebar.sidebar.collapsed ul {
   display: none;
 }
 
-.flow-wrapper .flow-main .sidebar.sidebar.collapsed .sidebar-footer ul {
+.flow-main .sidebar.sidebar.collapsed .sidebar-footer ul {
   display: unset;
 }
 
-.flow-wrapper .flow-main .sidebar.sidebar.collapsed .dnd-description {
+.flow-main .sidebar.sidebar.collapsed .dnd-description {
   display: none;
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area {
+.flow-main .sidebar .dnd-area {
   padding: 1px 10px;
   border-radius: 5px;
   margin: 4px;
@@ -120,39 +120,39 @@
   align-items: center;
 }
 
-.flow-wrapper.light .flow-main .sidebar .dnd-area {
+body.waldiez-light .flow-main .sidebar .dnd-area {
   border: 2px dotted #ccc;
 }
 
-.flow-wrapper.dark .flow-main .sidebar .dnd-area {
+body.waldiez-dark .flow-main .sidebar .dnd-area {
   border: 2px dotted #999;
 }
 
-.flow-wrapper .flow-main .sidebar.sidebar.collapsed .dnd-area {
+.flow-main .sidebar.sidebar.collapsed .dnd-area {
   display: none;
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area img {
+.flow-main .sidebar .dnd-area img {
   max-width: 40px;
   margin-right: 8px;
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area.user-proxy {
+.flow-main .sidebar .dnd-area.user-proxy {
   border-color: var(--user-proxy-agent-color);
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area.assistant {
+.flow-main .sidebar .dnd-area.assistant {
   border-color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area.rag-user {
+.flow-main .sidebar .dnd-area.rag-user {
   border-color: var(--rag-user-proxy-agent-color);
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area.reasoning {
+.flow-main .sidebar .dnd-area.reasoning {
   border-color: var(--reasoning-agent-color);
 }
 
-.flow-wrapper .flow-main .sidebar .dnd-area.captain {
+.flow-main .sidebar .dnd-area.captain {
   border-color: var(--captain-agent-color);
 }

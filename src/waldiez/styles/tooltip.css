@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .tooltip-container .tooltip {
+.tooltip-container .tooltip {
   display: none;
 }
 
-.flow-wrapper .tooltip-container:hover .tooltip {
+.tooltip-container:hover .tooltip {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 5px;
@@ -17,7 +17,7 @@
   width: max-content;
 }
 
-.flow-wrapper .tooltip-container:hover .tooltip::after {
+.tooltip-container:hover .tooltip::after {
   content: "";
   position: absolute;
   top: 50%;

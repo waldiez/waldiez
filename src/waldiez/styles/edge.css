@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .agent-edge-box {
+.agent-edge-box {
   display: flex;
   cursor: pointer;
   align-items: stretch;
@@ -10,7 +10,7 @@
   background-color: transparent !important;
 }
 
-.flow-wrapper .agent-edge-view {
+.agent-edge-view {
   font-size: small;
   font-weight: 500;
   border-radius: 4px;
@@ -21,69 +21,69 @@
   justify-content: center;
 }
 
-/* .flow-wrapper.light .agent-edge-view {
+/* body.waldiez-light .agent-edge-view {
   background-color: #f8f8f8;
   border: 1px solid #cccccc50;
 }
 
-.flow-wrapper.dark .agent-edge-view {
+body.waldiez-dark .agent-edge-view {
   background-color: #222;
   border: 1px solid #33333350;
 } */
 
-.flow-wrapper .agent-edge-box.assistant .agent-edge-view {
+.agent-edge-box.assistant .agent-edge-view {
   color: var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.rag_user_proxy .agent-edge-view {
+.agent-edge-box.rag_user_proxy .agent-edge-view {
   color: var(--rag-user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.user_proxy .agent-edge-view {
+.agent-edge-box.user_proxy .agent-edge-view {
   color: var(--user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.reasoning .agent-edge-view {
+.agent-edge-box.reasoning .agent-edge-view {
   color: var(--reasoning-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.captain .agent-edge-view {
+.agent-edge-box.captain .agent-edge-view {
   color: var(--captain-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.assistant .agent-edge-view:hover {
+.agent-edge-box.assistant .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--assistant-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.rag_user_proxy .agent-edge-view:hover {
+.agent-edge-box.rag_user_proxy .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--rag-user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.user_proxy .agent-edge-view:hover {
+.agent-edge-box.user_proxy .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--user-proxy-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.reasoning .agent-edge-view:hover {
+.agent-edge-box.reasoning .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--reasoning-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.captain .agent-edge-view:hover {
+.agent-edge-box.captain .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--captain-agent-color);
 }
 
-.flow-wrapper .agent-edge-box.group_manager .agent-edge-view:hover {
+.agent-edge-box.group_manager .agent-edge-view:hover {
   box-shadow: 0 0 4px var(--group-manager-agent-color);
 }
 
-.flow-wrapper.dark .edge-position-warning-icon {
+body.waldiez-dark .edge-position-warning-icon {
   fill: yellow;
 }
 
-.flow-wrapper.light .edge-position-warning-icon {
+body.waldiez-light .edge-position-warning-icon {
   fill: red;
 }
 
-.flow-wrapper .edge-actions {
+.edge-actions {
   position: absolute;
   top: -40px;
   left: calc(50% - 30px);
@@ -95,11 +95,11 @@
   border: 1px solid;
 }
 
-.flow-wrapper .edge-actions.with-position {
+.edge-actions.with-position {
   left: 0;
 }
 
-.flow-wrapper .edge-actions div {
+.edge-actions div {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,27 +110,27 @@
   opacity: 0.8;
 }
 
-.flow-wrapper .edge-actions div.delete-edge {
+.edge-actions div.delete-edge {
   color: #dc3545;
 }
 
-.flow-wrapper .edge-actions div:hover {
+.edge-actions div:hover {
   opacity: 1;
 }
 
-.flow-wrapper .edge-actions div svg {
+.edge-actions div svg {
   width: 16px;
   height: 16px;
   fill: currentcolor;
 }
 
-.flow-wrapper.dark .edge-actions {
+body.waldiez-dark .edge-actions {
   /* background-color: #222; */
   border-color: #333;
   background-color: rgb(34 34 34 / 80%);
 }
 
-.flow-wrapper.light .edge-actions {
+body.waldiez-light .edge-actions {
   /* background-color: #f8f8f8; */
   border-color: #ccc;
   background-color: rgb(248 248 248 / 80%);

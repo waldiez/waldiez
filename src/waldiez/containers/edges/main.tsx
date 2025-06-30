@@ -6,10 +6,10 @@ import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
 
 import { memo, useCallback, useMemo, useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { FaGear } from "react-icons/fa6";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert } from "react-icons/go";
 import { MdMessage } from "react-icons/md";
+import { VscSettings } from "react-icons/vsc";
 
 import { EdgeLabel } from "@waldiez/containers/edges/edgeLabel";
 import { EdgePosition } from "@waldiez/containers/edges/edgePosition";
@@ -310,7 +310,7 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
                                 data-testid={`open-edge-modal-${id}`}
                                 aria-label="Edit edge"
                             >
-                                <FaGear size={12} />
+                                <VscSettings size={12} />
                             </div>
                         </div>
                     )}

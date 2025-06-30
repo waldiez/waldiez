@@ -165,7 +165,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
      * Handle modal cancel
      */
     const handleCancel = useCallback(
-        (event: React.SyntheticEvent<HTMLDialogElement, Event> | KeyboardEvent) => {
+        (event: React.SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | KeyboardEvent) => {
             event.preventDefault();
             event.stopPropagation();
 

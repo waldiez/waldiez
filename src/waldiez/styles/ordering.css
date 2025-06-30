@@ -1,10 +1,10 @@
-.flow-wrapper .reorder-buttons {
+.reorder-buttons {
   display: flex;
   flex-direction: column;
   margin-right: 0.75rem;
 }
 
-.flow-wrapper.light .order-badge {
+body.waldiez-light .order-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -17,7 +17,7 @@
   color: #495057;
 }
 
-.flow-wrapper.dark .order-badge {
+body.waldiez-dark .order-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -30,15 +30,15 @@
   color: #d1d5db;
 }
 
-.flow-wrapper .up-btn {
+.up-btn {
   margin-bottom: 2px;
 }
 
-.flow-wrapper .down-btn {
+.down-btn {
   margin-top: 2px;
 }
 
-.flow-wrapper .reorder-btn {
+.reorder-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -48,31 +48,31 @@
   transition: color 0.2s;
 }
 
-.flow-wrapper .reorder-btn:hover {
+.reorder-btn:hover {
   color: #0d6efd !important;
 }
 
-.flow-wrapper .reorder-btn:focus {
+.reorder-btn:focus {
   outline: none !important;
   color: #0d6efd !important;
 }
 
-.flow-wrapper.light .reorder-btn {
+body.waldiez-light .reorder-btn {
   color: #6c757d;
 }
 
-.flow-wrapper.dark .reorder-btn {
+body.waldiez-dark .reorder-btn {
   background-color: #222;
   color: #a0a0a0;
 }
 
 /* Ordered items container */
-.flow-wrapper .ordered-items-list {
+.ordered-items-list {
   margin: 0.5rem 0;
 }
 
 /* Individual order item */
-.flow-wrapper .ordered-item {
+.ordered-item {
   display: flex;
   align-items: center;
   padding: 0.75rem;
@@ -81,31 +81,31 @@
   transition: all 0.2s ease;
 }
 
-.flow-wrapper .ordered-item-content {
+.ordered-item-content {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.flow-wrapper.light .ordered-item {
+body.waldiez-light .ordered-item {
   background-color: #fff;
   border: 1px solid #e9ecef;
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
 }
 
-.flow-wrapper.dark .ordered-item {
+body.waldiez-dark .ordered-item {
   background-color: #292929;
   border: 1px solid #3a3a3a;
   box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
-.flow-wrapper.dark .ordered-item:hover {
+body.waldiez-dark .ordered-item:hover {
   border-color: #505050 !important;
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%) !important;
 }
 
-.flow-wrapper.light .ordered-item:hover {
+body.waldiez-light .ordered-item:hover {
   border-color: #adb5bd !important;
   box-shadow: 0 2px 4px rgb(0 0 0 /10%) !important;
 }

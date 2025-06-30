@@ -4,152 +4,152 @@
  */
 
 /* stylelint-disable selector-class-pattern */
-.flow-wrapper .select,
-.flow-wrapper .select * {
+.select,
+.select * {
   outline: none;
   box-shadow: none;
 }
 
-.flow-wrapper .w-select__single-value {
+.w-select__single-value {
   margin-top: 4px;
 }
 
-.flow-wrapper .w-select__multi-value {
+.w-select__multi-value {
   padding: 2px 4px;
 }
 
-.flow-wrapper .w-select__menu {
+.w-select__menu {
   position: relative;
 }
 
-.flow-wrapper.dark .select,
-.flow-wrapper.dark .select * {
+.w-select__control:hover {
+  border-color: #3b82f6;
+}
+
+body.waldiez-dark .select,
+body.waldiez-dark .select * {
   background-color: #222;
   color: #f8f8f8;
   border-radius: 4px;
   border: none;
 }
 
-.flow-wrapper.light .w-select__menu {
+body.waldiez-light .w-select__menu {
   border: 1px solid #ccc !important;
 }
 
-.flow-wrapper.dark .w-select__menu {
+body.waldiez-dark .w-select__menu {
   background-color: #333;
   border: 1px solid #444 !important;
 }
 
-.flow-wrapper.dark .w-select__input-container {
+body.waldiez-dark .w-select__input-container {
   background-color: unset;
   outline: none !important;
   box-shadow: none !important;
   color: unset !important;
 }
 
-.flow-wrapper .w-select__input {
+.w-select__input {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
 }
 
-.flow-wrapper .w-select__input:focus {
+.w-select__input:focus {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
 }
 
-.flow-wrapper.light .w-select__multi-value,
-.flow-wrapper.light .w-select__multi-value__label,
-.flow-wrapper.light .w-select__multi-value__remove {
+body.waldiez-light .w-select__multi-value,
+body.waldiez-light .w-select__multi-value__label,
+body.waldiez-light .w-select__multi-value__remove {
   background-color: #f3f3f3;
   color: #333;
 }
 
-.flow-wrapper.dark .w-select__multi-value,
-.flow-wrapper.dark .w-select__multi-value__label,
-.flow-wrapper.dark .w-select__multi-value__remove {
+body.waldiez-dark .w-select__multi-value,
+body.waldiez-dark .w-select__multi-value__label,
+body.waldiez-dark .w-select__multi-value__remove {
   background-color: #2a2a2a;
   color: #f8f8f8;
 }
 
-.flow-wrapper.light .w-select__multi-value {
+body.waldiez-light .w-select__multi-value {
   background-color: #e9ecef;
   border-radius: 4px;
 }
 
-.flow-wrapper.light .w-select__multi-value__label {
+body.waldiez-light .w-select__multi-value__label {
   color: #495057;
   font-size: 0.85rem;
   padding: 0.2rem 0.4rem;
 }
 
-.flow-wrapper.light .w-select__multi-value__remove {
+body.waldiez-light .w-select__multi-value__remove {
   color: #6c757d;
   padding: 0 0.4rem;
   cursor: pointer;
 }
 
-.flow-wrapper.dark .w-select__multi-value__remove {
+body.waldiez-dark .w-select__multi-value__remove {
   color: #a0a0a0;
   padding: 0 0.4rem;
   cursor: pointer;
 }
 
-.flow-wrapper.light .w-select__multi-value__remove:hover {
+body.waldiez-light .w-select__multi-value__remove:hover {
   background-color: #ced4da;
   color: #495057;
   border-radius: 0 4px 4px 0;
 }
 
-.flow-wrapper.dark .w-select__multi-value {
+body.waldiez-dark .w-select__multi-value {
   background-color: #333;
   border-radius: 4px;
 }
 
-.flow-wrapper.dark .w-select__multi-value__label {
+body.waldiez-dark .w-select__multi-value__label {
   color: #d1d5db;
   font-size: 0.85rem;
   padding: 0.2rem 0.4rem;
 }
 
-.flow-wrapper.dark .w-select__multi-value__remove:hover {
+body.waldiez-dark .w-select__multi-value__remove:hover {
   background-color: #444;
   color: #d1d5db;
   border-radius: 0 4px 4px 0;
 }
 
-.flow-wrapper.dark .w-select__control {
+body.waldiez-dark .w-select__control {
   background-color: #292929;
   border-radius: 6px;
   border: 1px solid color-mix(in srgb, var(--text-color) 20%, var(--background-color));
 }
 
-.flow-wrapper .w-select__control:hover {
-  border-color: #3b82f6;
-}
-
-.flow-wrapper.dark .w-select__control--is-focused {
+body.waldiez-dark .w-select__control--is-focused {
   border-color: #3b82f6;
   box-shadow: 0 0 0 1px #3b82f6;
 }
 
-.flow-wrapper.dark .w-select__option {
+body.waldiez-dark .w-select__option {
   background-color: #333;
   color: #d1d5db;
 }
 
-.flow-wrapper.dark .w-select__option--is-focused {
+body.waldiez-dark .w-select__option--is-focused {
   background-color: #3b82f6;
   color: white;
 }
 
-.flow-wrapper.dark .w-select__option--is-selected {
+body.waldiez-dark .w-select__option--is-selected {
   background-color: #2563eb;
   color: white;
 }
 
-.flow-wrapper.dark .w-select__input-container,
-.flow-wrapper.dark .w-select__placeholder,
-.flow-wrapper.dark .w-select__single-value {
+body.waldiez-dark .w-select__input-container,
+body.waldiez-dark .w-select__placeholder,
+body.waldiez-dark .w-select__single-value {
   color: #d1d5db;
 }

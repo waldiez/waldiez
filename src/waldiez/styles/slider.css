@@ -1,4 +1,4 @@
-.flow-wrapper .slider-root {
+.slider-root {
   position: relative;
   display: flex;
   align-items: center;
@@ -8,7 +8,7 @@
   height: 20px;
 }
 
-.flow-wrapper .slider-track {
+.slider-track {
   background-color: color-mix(in srgb, var(--text-color) 15%, var(--background-color));
   position: relative;
   flex-grow: 1;
@@ -16,14 +16,14 @@
   height: 6px;
 }
 
-.flow-wrapper .slider-range {
+.slider-range {
   position: absolute;
   background-color: #3b82f6;
   border-radius: 9999px;
   height: 100%;
 }
 
-.flow-wrapper .slider-thumb {
+.slider-thumb {
   display: block;
   width: 16px;
   height: 16px;
@@ -34,12 +34,12 @@
   cursor: pointer;
 }
 
-.flow-wrapper .slider-thumb:hover {
+.slider-thumb:hover {
   transform: scale(1.1);
   box-shadow: 0 0 0 4px color-mix(in srgb, #3b82f6 20%, transparent);
 }
 
-.flow-wrapper .slider-thumb:focus {
+.slider-thumb:focus {
   outline: none;
   box-shadow: 0 0 0 6px color-mix(in srgb, #3b82f6 30%, transparent);
 }

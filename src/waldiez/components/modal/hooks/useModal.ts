@@ -10,8 +10,10 @@ export const useModal = (props: {
     preventCloseIfUnsavedChanges?: boolean;
     onClose?: () => void;
     onSaveAndClose?: () => void;
-    onCancel?: (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => void;
-    modalRef: React.RefObject<HTMLDialogElement | null>;
+    onCancel?: (
+        event: React.SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | React.KeyboardEvent,
+    ) => void;
+    modalRef: React.RefObject<HTMLDialogElement | HTMLDivElement | null>;
 }) => {
     const {
         isOpen,
@@ -26,10 +28,17 @@ export const useModal = (props: {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isFullScreen, setFullScreen] = useState(false);
     const [isMinimized, setMinimized] = useState(false);
-    const [position, setPosition] = useState({ x: 10, y: 20 });
+    const [position, setPosition] = useState<{ x: string | number; y: string | number }>({
+        x: window.innerWidth / 4,
+        y: "10%",
+    });
     const [dragging, setDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [preMinimizeHeight, setPreMinimizeHeight] = useState<string>("");
+    const [preMinimizePosition, setPreMinimizePosition] = useState<{
+        x: string | number;
+        y: string | number;
+    } | null>(null);
 
     // Derived state
     const cannotClose = preventCloseIfUnsavedChanges && hasUnsavedChanges;
@@ -37,10 +46,11 @@ export const useModal = (props: {
 
     // Reset modal state to defaults
     const resetModalState = useCallback(() => {
-        setPosition({ x: 10, y: 50 });
+        setPosition({ x: window.innerWidth / 4, y: "10%" });
         setFullScreen(false);
         setMinimized(false);
         setShowConfirmation(false);
+        setPreMinimizePosition(null);
 
         if (modalRef.current) {
             modalRef.current.style.width = "";
@@ -48,18 +58,19 @@ export const useModal = (props: {
         }
     }, [modalRef]);
 
-    // Control modal open/close state
+    // Control modal open/close state (for dialog compatibility)
     const setModalOpen = useCallback(
         (open: boolean) => {
             const modalElement = modalRef.current;
             if (!modalElement) {
                 return;
             }
-
-            if (open) {
-                modalElement.showModal();
-            } else {
-                modalElement.close();
+            if (Object.prototype.hasOwnProperty.call(modalElement, "showModal")) {
+                if (open) {
+                    (modalElement as HTMLDialogElement).showModal();
+                } else {
+                    (modalElement as HTMLDialogElement).close();
+                }
             }
         },
         [modalRef],
@@ -73,9 +84,14 @@ export const useModal = (props: {
             if (modalRef.current) {
                 modalRef.current.style.height = preMinimizeHeight || "";
             }
+            // Restore position when exiting minimize
+            if (preMinimizePosition) {
+                setPosition(preMinimizePosition);
+                setPreMinimizePosition(null);
+            }
         }
         setFullScreen(prev => !prev);
-    }, [modalRef, isMinimized, preMinimizeHeight]);
+    }, [modalRef, isMinimized, preMinimizeHeight, preMinimizePosition]);
 
     // Toggle minimized mode
     const onToggleMinimize = useCallback(() => {
@@ -86,21 +102,25 @@ export const useModal = (props: {
 
         setMinimized(prev => {
             if (!prev) {
-                // Save current height before minimizing
+                // Save current height and position before minimizing
                 if (modalRef.current) {
                     setPreMinimizeHeight(
                         modalRef.current.style.height || window.getComputedStyle(modalRef.current).height,
                     );
                 }
+                setPreMinimizePosition({ ...position });
             } else {
-                // Restore height when un-minimizing
+                // Restore height and position when un-minimizing
                 if (modalRef.current && preMinimizeHeight) {
                     modalRef.current.style.height = preMinimizeHeight;
+                }
+                if (preMinimizePosition) {
+                    setPosition(preMinimizePosition);
                 }
             }
             return !prev;
         });
-    }, [modalRef, isMinimized, isFullScreen, preMinimizeHeight]);
+    }, [modalRef, isMinimized, isFullScreen, preMinimizeHeight, position, preMinimizePosition]);
 
     // Hide confirmation dialog
     const hideConfirmation = useCallback(() => {
@@ -139,7 +159,7 @@ export const useModal = (props: {
 
     // Handle cancel event
     const handleCancel = useCallback(
-        (event: React.SyntheticEvent<HTMLDialogElement, Event> | React.KeyboardEvent) => {
+        (event: React.SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | React.KeyboardEvent) => {
             if (onCancel) {
                 onCancel(event);
             } else {
@@ -164,36 +184,41 @@ export const useModal = (props: {
     // Drag handlers
     const onMouseDown = useCallback(
         (e: React.MouseEvent) => {
-            if (!modalRef.current || isFullScreen) {
+            if (!modalRef.current || isFullScreen || isMinimized) {
                 return;
             }
 
             setDragging(true);
 
-            const style = window.getComputedStyle(modalRef.current);
-            const left = parseInt(style.left, 10) || 0;
-            const top = parseInt(style.top, 10) || 0;
-
+            const rect = modalRef.current.getBoundingClientRect();
             setOffset({
-                x: e.clientX - left,
-                y: e.clientY - top,
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
             });
         },
-        [isFullScreen, modalRef],
+        [isFullScreen, isMinimized, modalRef],
     );
 
     const handleMouseMove = useCallback(
         (e: MouseEvent) => {
-            if (!dragging) {
+            if (!dragging || !modalRef.current) {
                 return;
             }
 
+            const newX = e.clientX - offset.x;
+            const newY = e.clientY - offset.y;
+
+            // Ensure modal stays within viewport bounds
+            const modalRect = modalRef.current.getBoundingClientRect();
+            const maxX = window.innerWidth - modalRect.width;
+            const maxY = window.innerHeight - modalRect.height;
+
             setPosition({
-                x: e.clientX - offset.x,
-                y: e.clientY - offset.y,
+                x: `${Math.max(0, Math.min(newX, maxX))}px`,
+                y: `${Math.max(0, Math.min(newY, maxY))}px`,
             });
         },
-        [dragging, offset],
+        [dragging, offset, modalRef],
     );
 
     const handleMouseUp = useCallback(() => {
@@ -218,7 +243,6 @@ export const useModal = (props: {
 
     // Effect to open/close the modal when isOpen changes
     useEffect(() => {
-        // console.log("Modal open state changed:", isOpen);
         setModalOpen(isOpen);
     }, [isOpen, setModalOpen]);
 

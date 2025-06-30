@@ -34,7 +34,7 @@
     "Noto Color Emoji";
 }
 
-.flow-wrapper.dark {
+body.waldiez-dark {
   --captain-agent-color: #133164;
   --captain-agent-alt-color: #3d558a;
   --rag-user-proxy-agent-background: rgb(207 69 97 / 20%);
@@ -49,7 +49,7 @@
   color-scheme: dark;
 }
 
-.flow-wrapper.light {
+body.waldiez-light {
   --captain-agent-color: #2957a4;
   --captain-agent-alt-color: #aac4e6;
   --rag-user-proxy-agent-background: rgb(207 69 97 / 10%);
@@ -87,15 +87,15 @@
     "Noto Color Emoji";
 }
 
-.flow-wrapper * {
+* {
   box-sizing: border-box;
   scrollbar-width: thin;
 }
 
-.flow-wrapper *::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 10px;
 }
 
-.flow-wrapper *:focus {
+*:focus {
   outline: none;
 }

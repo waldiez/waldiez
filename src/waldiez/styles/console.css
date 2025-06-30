@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .console {
+.console {
   border-radius: 5px;
   padding: 10px;
   margin-top: 10px;
@@ -11,12 +11,12 @@
   text-wrap: wrap;
 }
 
-.flow-wrapper.light .console {
+body.waldiez-light .console {
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
 }
 
-.flow-wrapper.dark .console {
+body.waldiez-dark .console {
   background-color: #141414;
   border: 1px solid #444;
 }

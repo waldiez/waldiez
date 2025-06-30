@@ -2,50 +2,50 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper label {
+label {
   padding: 12px 8px 4px;
 }
 
-.flow-wrapper label.hidden {
+label.hidden {
   padding: 0;
 }
 
-.flow-wrapper .file-label {
+.file-label {
   padding: unset !important;
 }
 
-.flow-wrapper .info-label {
+.info-label {
   position: relative;
   display: inline-block;
   width: 100%;
   margin: 10px 0;
 }
 
-.flow-wrapper .number-input-info-label-wrapper {
+.number-input-info-label-wrapper {
   min-height: 50px;
   display: flex;
   align-items: center;
 }
 
-.flow-wrapper .number-input-info-label-inner {
+.number-input-info-label-inner {
   min-height: 50px;
   display: inline-flex;
   align-items: center;
 }
 
-.flow-wrapper .number-input-label-wrapper {
+.number-input-label-wrapper {
   min-height: 70px;
   display: flex;
   align-items: center;
 }
 
-.flow-wrapper .info-label label {
+.info-label label {
   margin-right: 4px;
   margin-top: 10px;
   margin-bottom: 0;
 }
 
-.flow-wrapper .info-label .info-icon {
+.info-label .info-icon {
   cursor: pointer;
   font-size: unset !important;
   margin-top: 10px;
@@ -53,7 +53,7 @@
   color: #007bff;
 }
 
-.flow-wrapper .info-label .info-description {
+.info-label .info-description {
   display: none;
   width: auto;
   padding: 8px;
@@ -71,34 +71,34 @@
   display: unset;
 }
 
-.flow-wrapper.light .info-label .info-description {
+body.waldiez-light .info-label .info-description {
   color: #004085;
   background-color: #cce5ff;
   border: 1px solid #b8daff;
 }
 
-.flow-wrapper.dark .info-label .info-description {
+body.waldiez-dark .info-label .info-description {
   color: #cce5ff;
   background-color: #1e2a3a;
   border: 1px solid #374151;
 }
 
 /* on info-icon hover */
-.flow-wrapper .info-label .info-icon:hover {
+.info-label .info-icon:hover {
   color: #0056b3;
   cursor: help;
 }
 
-.flow-wrapper .info-label .info-icon:hover + .info-description {
+.info-label .info-icon:hover + .info-description {
   display: unset;
 }
 
-.flow-wrapper .checkbox-label {
+.checkbox-label {
   cursor: pointer;
   padding-top: unset !important;
   padding-bottom: unset !important;
 }
 
-.flow-wrapper .checkbox-label input {
+.checkbox-label input {
   margin-right: 8px;
 }

@@ -1,4 +1,4 @@
-.flow-wrapper .agent-node {
+.agent-node {
   width: 100%;
   height: 100%;
   min-width: 130px;
@@ -13,28 +13,28 @@
   container-type: inline-size;
 }
 
-.flow-wrapper .agent-node.group_manager {
+.agent-node.group_manager {
   min-width: 480px;
   min-height: 320px;
   border-color: var(--group-manager-agent-color) !important;
   background-color: var(--group-manager-agent-background) !important;
 }
 
-.flow-wrapper .agent-node .agent-main {
+.agent-node .agent-main {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
 }
 
-.flow-wrapper .agent-node .agent-top {
+.agent-node .agent-top {
   display: flex;
   flex: 1;
   gap: 8px;
   min-width: 0;
 }
 
-.flow-wrapper .agent-node .agent-icon-with-label {
+.agent-node .agent-icon-with-label {
   margin-right: 5px;
   flex-shrink: 0;
   align-self: flex-start;
@@ -44,12 +44,12 @@
   gap: 4px;
 }
 
-.flow-wrapper .agent-node .agent-icon-image {
+.agent-node .agent-icon-image {
   width: 60px;
   height: auto;
 }
 
-.flow-wrapper .agent-node .agent-icon-label {
+.agent-node .agent-icon-label {
   font-weight: 600;
   font-size: 12px;
   margin: 0;
@@ -66,7 +66,7 @@
   text-align: center;
 }
 
-.flow-wrapper .agent-node .agent-content {
+.agent-node .agent-content {
   margin-top: 4px;
   flex: 1;
   display: flex;
@@ -76,7 +76,7 @@
   min-height: 0;
 }
 
-.flow-wrapper .agent-node .agent-label {
+.agent-node .agent-label {
   font-weight: 600;
   font-size: 12px;
   color: var(--text-color);
@@ -90,8 +90,8 @@
   min-width: 0;
 }
 
-.flow-wrapper .agent-node .agent-models-preview,
-.flow-wrapper .agent-node .agent-tools-preview {
+.agent-node .agent-models-preview,
+.agent-node .agent-tools-preview {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -106,29 +106,29 @@
 }
 
 @container (max-width: 130px) {
-  .flow-wrapper .agent-node .agent-content {
+  .agent-node .agent-content {
     display: none;
   }
 
-  .flow-wrapper .agent-node .agent-top {
+  .agent-node .agent-top {
     justify-content: center;
   }
 
-  .flow-wrapper .agent-node .agent-icon-with-label {
+  .agent-node .agent-icon-with-label {
     width: 100%;
   }
 
-  .flow-wrapper .agent-node .agent-icon-image {
+  .agent-node .agent-icon-image {
     margin: auto;
   }
 
-  .flow-wrapper .agent-node .agent-icon-label {
+  .agent-node .agent-icon-label {
     display: block;
   }
 }
 
-.flow-wrapper .agent-node .agent-model-preview,
-.flow-wrapper .agent-node .agent-tool-preview {
+.agent-node .agent-model-preview,
+.agent-node .agent-tool-preview {
   display: flex;
   gap: 4px;
   align-items: center;
@@ -139,8 +139,8 @@
   line-height: 18px;
 }
 
-.flow-wrapper .agent-node .agent-model-img,
-.flow-wrapper .agent-node .agent-tool-img {
+.agent-node .agent-model-img,
+.agent-node .agent-tool-img {
   width: 20px;
   height: 14px;
   flex-shrink: 0;
@@ -150,23 +150,23 @@
   justify-content: center;
 }
 
-.flow-wrapper .agent-node .agent-model-img img,
-.flow-wrapper .agent-node .agent-tool-img img,
-.flow-wrapper .agent-node .agent-tool-img svg {
+.agent-node .agent-model-img img,
+.agent-node .agent-tool-img img,
+.agent-node .agent-tool-img svg {
   width: 100%;
   height: 100%;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.flow-wrapper.dark .agent-model-preview .agent-model-img.other img,
-.flow-wrapper.dark .agent-model-preview .agent-model-img.bedrock img,
-.flow-wrapper.dark .agent-model-preview .agent-model-img.openai img {
+body.waldiez-dark .agent-model-preview .agent-model-img.other img,
+body.waldiez-dark .agent-model-preview .agent-model-img.bedrock img,
+body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
   filter: invert(1);
 }
 
-.flow-wrapper .agent-node .agent-model-name,
-.flow-wrapper .agent-node .agent-tool-name {
+.agent-node .agent-model-name,
+.agent-node .agent-tool-name {
   color: var(--text-secondary-color);
   white-space: nowrap;
   overflow: hidden;
@@ -177,12 +177,12 @@
   line-height: 1.2;
 }
 
-.flow-wrapper .agent-node .agent-model-name:only-child,
-.flow-wrapper .agent-node .agent-tool-name:only-child {
+.agent-node .agent-model-name:only-child,
+.agent-node .agent-tool-name:only-child {
   flex: none;
 }
 
-.flow-wrapper .agent-actions {
+.agent-actions {
   position: absolute;
   top: -40px;
   left: 50%;
@@ -197,120 +197,120 @@
   justify-content: space-between;
 }
 
-.flow-wrapper .agent-actions.assistant {
+.agent-actions.assistant {
   background-color: var(--assistant-agent-background);
   border-color: color-mix(in srgb, var(--assistant-agent-alt-color) 50%, var(--background-color));
 }
 
-.flow-wrapper .agent-actions.user_proxy {
+.agent-actions.user_proxy {
   background-color: var(--user-proxy-agent-background);
   border-color: color-mix(in srgb, var(--user-proxy-agent-alt-color) 50%, var(--background-color));
 }
 
-.flow-wrapper .agent-actions.rag_user_proxy {
+.agent-actions.rag_user_proxy {
   background-color: var(--rag-user-proxy-agent-background);
   border-color: color-mix(in srgb, var(--rag-user-proxy-agent-alt-color) 50%, var(--background-color));
 }
 
-.flow-wrapper .agent-actions.reasoning {
+.agent-actions.reasoning {
   background-color: var(--reasoning-agent-background);
   border-color: color-mix(in srgb, var(--reasoning-agent-alt-color) 50%, var(--background-color));
 }
 
-.flow-wrapper .agent-actions.captain {
+.agent-actions.captain {
   background-color: var(--captain-agent-background);
   border-color: color-mix(in srgb, var(--captain-agent-alt-color) 50%, var(--background-color));
 }
 
-.flow-wrapper .agent-actions.group_manager {
+.agent-actions.group_manager {
   background-color: var(--group-manager-agent-background);
   border-color: color-mix(in srgb, var(--group-manager-agent-alt-color) 50%, var(--background-color));
 }
 
-.flow-wrapper .agent-actions .delete-icon,
-.flow-wrapper .agent-actions .cog-icon,
-.flow-wrapper .agent-actions .copy-icon,
-.flow-wrapper .agent-actions .clone-icon {
+.agent-actions .delete-icon,
+.agent-actions .cog-icon,
+.agent-actions .copy-icon,
+.agent-actions .clone-icon {
   cursor: pointer;
   opacity: 0.8;
 }
 
-.flow-wrapper .agent-actions .delete-icon {
+.agent-actions .delete-icon {
   color: #dc3545;
 }
 
-.flow-wrapper .agent-actions .delete-icon:hover,
-.flow-wrapper .agent-actions .clone-icon:hover,
-.flow-wrapper .agent-actions .cog-icon:hover,
-.flow-wrapper .agent-actions .copy-icon:hover {
+.agent-actions .delete-icon:hover,
+.agent-actions .clone-icon:hover,
+.agent-actions .cog-icon:hover,
+.agent-actions .copy-icon:hover {
   opacity: 1;
 }
 
-.flow-wrapper .agent-node.user_proxy {
+.agent-node.user_proxy {
   border-color: var(--user-proxy-agent-color) !important;
   background-color: var(--user-proxy-agent-background) !important;
 }
 
-.flow-wrapper .agent-node.user_proxy:hover {
+.agent-node.user_proxy:hover {
   box-shadow: 0 0 8px var(--user-proxy-agent-alt-color);
 }
 
-.flow-wrapper .agent-node.assistant {
+.agent-node.assistant {
   border-color: var(--assistant-agent-color) !important;
   background-color: var(--assistant-agent-background) !important;
 }
 
-.flow-wrapper .agent-node.assistant:hover {
+.agent-node.assistant:hover {
   box-shadow: 0 0 8px var(--assistant-agent-alt-color);
 }
 
-.flow-wrapper .agent-node.rag_user_proxy {
+.agent-node.rag_user_proxy {
   border-color: var(--rag-user-proxy-agent-color) !important;
   background-color: var(--rag-user-proxy-agent-background) !important;
 }
 
-.flow-wrapper .agent-node.rag_user_proxy:hover {
+.agent-node.rag_user_proxy:hover {
   box-shadow: 0 0 8px var(--rag-user-proxy-agent-alt-color);
 }
 
-.flow-wrapper .agent-node.reasoning {
+.agent-node.reasoning {
   border-color: var(--reasoning-agent-color) !important;
   background-color: var(--reasoning-agent-background) !important;
 }
 
-.flow-wrapper .agent-node.reasoning:hover {
+.agent-node.reasoning:hover {
   box-shadow: 0 0 8px var(--reasoning-agent-alt-color);
 }
 
-.flow-wrapper .agent-node.captain {
+.agent-node.captain {
   border-color: var(--captain-agent-color) !important;
   background-color: var(--captain-agent-background) !important;
 }
 
-.flow-wrapper .agent-node.captain:hover {
+.agent-node.captain:hover {
   box-shadow: 0 0 8px var(--captain-agent-alt-color);
 }
 
-/* .flow-wrapper .agent-node.group_manager:hover {
+/* .agent-node.group_manager:hover {
   box-shadow: 0 0 8px var(--group-manager-agent-alt-color);
 } */
 
-.flow-wrapper .agent-panel {
+.agent-panel {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper .agent-model-preview .agent-model-img,
-.flow-wrapper .agent-skill-preview .agent-skill-img {
+.agent-model-preview .agent-model-img,
+.agent-skill-preview .agent-skill-img {
   display: flex;
 }
 
-.flow-wrapper.dark .agent-model-preview .agent-model-img.other img,
-.flow-wrapper.dark .agent-model-preview .agent-model-img.openai img {
+body.waldiez-dark .agent-model-preview .agent-model-img.other img,
+body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
   filter: invert(1);
 }
 
-.flow-wrapper .agent-node .agent-more-indicator {
+.agent-node .agent-more-indicator {
   display: flex;
   gap: 4px;
   align-items: center;
@@ -322,8 +322,8 @@
   font-style: italic;
 }
 
-.flow-wrapper .agent-node .agent-more-indicator .agent-model-img,
-.flow-wrapper .agent-node .agent-more-indicator .agent-tool-img {
+.agent-node .agent-more-indicator .agent-model-img,
+.agent-node .agent-more-indicator .agent-tool-img {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
@@ -334,8 +334,8 @@
   color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
 }
 
-.flow-wrapper .agent-node .agent-more-indicator .agent-model-name,
-.flow-wrapper .agent-node .agent-more-indicator .agent-tool-name {
+.agent-node .agent-more-indicator .agent-model-name,
+.agent-node .agent-more-indicator .agent-tool-name {
   color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
   white-space: nowrap;
   overflow: hidden;

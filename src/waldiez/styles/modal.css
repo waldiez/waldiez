@@ -13,7 +13,7 @@
   max-height: 95vh;
   min-width: 320px;
   min-height: 200px;
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 0;
   box-shadow:
     0 25px 50px color-mix(in srgb, #000 25%, transparent),
@@ -27,9 +27,15 @@
   /* transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); this makes moving the modal not smooth */
 }
 
-.flow-wrapper .agent-node .modal {
+.agent-node .modal {
   width: fit-content;
   min-width: 50vw;
+}
+
+body.waldiez-dark .modal {
+  box-shadow:
+    0 25px 50px color-mix(in srgb, #000 40%, transparent),
+    0 0 0 1px color-mix(in srgb, #fff 8%, transparent);
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -54,6 +60,7 @@
   min-height: 0 !important;
   resize: none !important;
   overflow: hidden;
+  max-width: 240px;
 }
 
 .modal-minimized .modal-content.hidden {
@@ -64,7 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 0.25rem 1rem;
   cursor: move;
   -webkit-user-select: none;
   user-select: none;
@@ -135,19 +142,21 @@
 .modal-close-btn:hover {
   background: color-mix(in srgb, #ef4444 15%, var(--background-color));
   color: #ef4444;
-  transform: scale(1.05);
+
+  /* transform: scale(1.05); */
 }
 
 .modal-fullscreen-btn:hover {
   background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
   color: #3b82f6;
-  transform: scale(1.05);
+
+  /* transform: scale(1.05); */
 }
 
-.modal-close-btn:active,
+/* .modal-close-btn:active,
 .modal-fullscreen-btn:active {
   transform: scale(0.95);
-}
+} */
 
 .modal-minimize-btn {
   all: unset;
@@ -165,35 +174,40 @@
 }
 
 .modal-minimize-btn:hover {
-  background: color-mix(in srgb, var(--text-color) 10%, var(--background-color));
-  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
-  transform: scale(1.05);
+  /* background: color-mix(in srgb, var(--text-color) 10%, var(--background-color));
+  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color)); */
+
+  /* transform: scale(1.05); */
+
+  background-color: rgb(245 158 11 / 15%);
+  color: #d97706;
 }
 
+/*
 .modal-minimize-btn:active {
   transform: scale(0.95);
-}
+} */
 
-.flow-wrapper .modal-header-import-export {
+.modal-header-import-export {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.flow-wrapper .modal-header-export-button {
+.modal-header-export-button {
   border: none !important;
   padding: 3px 6px;
   margin-top: -1px;
   color: unset;
 }
 
-.flow-wrapper .modal-header-export-button svg {
+.modal-header-export-button svg {
   width: 16px;
   height: 16px;
 }
 
-.flow-wrapper .modal-header-import-button,
-.flow-wrapper .modal-header-export-button {
+.modal-header-import-button,
+.modal-header-export-button {
   all: unset;
   display: flex;
   align-items: center;
@@ -207,20 +221,20 @@
   font-size: 14px;
 }
 
-.flow-wrapper .modal-header-import-button:hover:not(:disabled),
-.flow-wrapper .modal-header-export-button:hover:not(:disabled) {
+.modal-header-import-button:hover:not(:disabled),
+.modal-header-export-button:hover:not(:disabled) {
   background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
   color: #3b82f6;
   transform: scale(1.05);
 }
 
-.flow-wrapper .modal-header-import-button svg,
-.flow-wrapper .modal-header-export-button svg {
+.modal-header-import-button svg,
+.modal-header-export-button svg {
   width: 16px;
   height: 16px;
 }
 
-.flow-wrapper .modal-content {
+.modal-content {
   padding: 24px;
   flex: 1;
   min-width: 320px;
@@ -232,7 +246,7 @@
   overflow: auto;
 }
 
-.flow-wrapper .modal-body {
+.modal-body {
   display: flex;
   height: auto;
   flex-direction: column;
@@ -244,11 +258,11 @@
   gap: 16px;
 }
 
-.flow-wrapper .modal.confirmation .modal-content {
+.modal.confirmation .modal-content {
   min-height: unset;
 }
 
-.flow-wrapper .modal-actions {
+.modal-actions {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -259,7 +273,7 @@
   margin-top: auto;
 }
 
-.flow-wrapper .modal-actions button {
+.modal-actions button {
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -278,7 +292,7 @@
   gap: 8px;
 }
 
-.flow-wrapper .modal-actions button:disabled {
+.modal-actions button:disabled {
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -299,9 +313,9 @@
 }
 
 /* Secondary button (Cancel) */
-.flow-wrapper .modal-actions button.secondary,
-.flow-wrapper .modal-actions button[data-action="cancel"],
-.flow-wrapper .modal-actions button:first-child:not(.primary, .danger, .save, .neutral, .danger) {
+.modal-actions button.secondary,
+.modal-actions button[data-action="cancel"],
+.modal-actions button:first-child:not(.primary, .danger, .save, .neutral, .danger) {
   background: linear-gradient(135deg, #9e37a2, #8b2f96);
   color: #fff;
   border-color: #8b2f96;
@@ -309,9 +323,9 @@
 }
 
 /* Primary button */
-.flow-wrapper .modal-actions button[type="submit"],
-.flow-wrapper .modal-actions button.primary,
-.flow-wrapper .modal-actions button:last-child:not(.secondary, .danger, .save) {
+.modal-actions button[type="submit"],
+.modal-actions button.primary,
+.modal-actions button:last-child:not(.secondary, .danger, .save) {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
   border-color: #2563eb;
@@ -319,8 +333,8 @@
 }
 
 /* Save button */
-.flow-wrapper .modal-actions button.save,
-.flow-wrapper .modal-actions button[data-action="save"]:not([data-action="save-close"]) {
+.modal-actions button.save,
+.modal-actions button[data-action="save"]:not([data-action="save-close"]) {
   background: color-mix(in srgb, #3b82f6 12%, var(--background-color));
   color: #3b82f6;
   border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
@@ -328,37 +342,37 @@
 }
 
 /* Neutral button  no colors */
-.flow-wrapper .modal-actions button.neutral,
-.flow-wrapper .modal-actions button[data-action="neutral"] {
+.modal-actions button.neutral,
+.modal-actions button[data-action="neutral"] {
   background: color-mix(in srgb, var(--text-color) 5%, var(--background-color));
   color: var(--text-color);
 }
 
-.flow-wrapper .modal-actions button[type="submit"]:hover:not(:disabled),
-.flow-wrapper .modal-actions button.primary:hover:not(:disabled),
-.flow-wrapper .modal-actions button:last-child:not(:disabled, .secondary, .danger, .save):hover {
+.modal-actions button[type="submit"]:hover:not(:disabled),
+.modal-actions button.primary:hover:not(:disabled),
+.modal-actions button:last-child:not(:disabled, .secondary, .danger, .save):hover {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   border-color: #1d4ed8;
   box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 35%, transparent);
 }
 
-.flow-wrapper .modal-actions button.save:hover:not(:disabled),
-.flow-wrapper .modal-actions button[data-action="save"]:not(:disabled, [data-action="save-close"]):hover {
+.modal-actions button.save:hover:not(:disabled),
+.modal-actions button[data-action="save"]:not(:disabled, [data-action="save-close"]):hover {
   background: color-mix(in srgb, #3b82f6 20%, var(--background-color));
   border-color: color-mix(in srgb, #3b82f6 50%, var(--background-color));
   box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent);
 }
 
-.flow-wrapper .modal-actions button.save:hover:disabled,
-.flow-wrapper .modal-actions button[data-action="save"]:not([data-action="save-close"]):hover:disabled {
+.modal-actions button.save:hover:disabled,
+.modal-actions button[data-action="save"]:not([data-action="save-close"]):hover:disabled {
   border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
   background: color-mix(in srgb, #3b82f6 12%, var(--background-color));
   transition: none;
 }
 
-.flow-wrapper .modal-actions button.secondary:hover:not(:disabled),
-.flow-wrapper .modal-actions button[data-action="cancel"]:hover:not(:disabled),
-.flow-wrapper .modal-actions button:first-child:not(:disabled, .neutral, .primary, .danger, .save):hover {
+.modal-actions button.secondary:hover:not(:disabled),
+.modal-actions button[data-action="cancel"]:hover:not(:disabled),
+.modal-actions button:first-child:not(:disabled, .neutral, .primary, .danger, .save):hover {
   background: linear-gradient(135deg, #8b2f96, #7a2785);
   border-color: #7a2785;
   box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 35%, transparent);
@@ -408,25 +422,19 @@
     font-size: 16px;
   }
 
-  .flow-wrapper .modal-content {
+  .modal-content {
     padding: 16px;
   }
 
-  .flow-wrapper .modal-actions {
+  .modal-actions {
     flex-direction: column-reverse;
     gap: 12px;
   }
 
-  .flow-wrapper .modal-actions button {
+  .modal-actions button {
     width: 100%;
     min-width: unset;
   }
-}
-
-.flow-wrapper.dark .modal {
-  box-shadow:
-    0 25px 50px color-mix(in srgb, #000 40%, transparent),
-    0 0 0 1px color-mix(in srgb, #fff 8%, transparent);
 }
 
 @media (prefers-contrast: more) {
@@ -438,7 +446,7 @@
     border-bottom-width: 2px;
   }
 
-  .flow-wrapper .modal-actions {
+  .modal-actions {
     border-top-width: 2px;
   }
 }
@@ -447,7 +455,7 @@
   .modal,
   .modal-close-btn,
   .modal-fullscreen-btn,
-  .flow-wrapper .modal-actions button {
+  .modal-actions button {
     transition: none;
   }
 }

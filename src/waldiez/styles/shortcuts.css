@@ -3,19 +3,19 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* stylelint-disable selector-class-pattern */
-.flow-wrapper .center {
+.center {
   text-align: center;
 }
 
-.flow-wrapper .currentColor {
+.currentColor {
   color: currentcolor;
 }
 
-.flow-wrapper .transparent {
+.transparent {
   background-color: transparent;
 }
 
-.flow-wrapper .hidden {
+.hidden {
   visibility: hidden;
   margin: 0 !important;
   padding: 0 !important;
@@ -23,292 +23,302 @@
   height: 0 !important;
 }
 
-.flow-wrapper label.hidden {
+label.hidden {
   display: block !important;
 }
 
-.flow-wrapper .full-width {
+.full-width {
   width: 100%;
 }
 
-.flow-wrapper .full-height {
+.full-height {
   height: 100%;
 }
 
-.flow-wrapper .full-size {
+.full-size {
   width: 100%;
   height: 100%;
 }
 
-.flow-wrapper .no-border {
+.no-border {
   border: none;
 }
 
-.flow-wrapper .flex-start {
+.flex-start {
   display: flex;
   align-items: flex-start !important;
 }
 
-.flow-wrapper .flex-end {
+.flex-end {
   display: flex;
   align-items: flex-end !important;
 }
 
-.flow-wrapper .flex-baseline {
+.flex-baseline {
   display: flex;
   align-items: baseline !important;
 }
 
-.flow-wrapper .fill-available-width {
+.fill-available-width {
   width: -moz-available;
   width: -webkit-fill-available;
   width: stretch;
 }
 
-.flow-wrapper .fill-available-height {
+.fill-available-height {
   height: -moz-available;
   height: -webkit-fill-available;
   height: stretch;
 }
 
-.flow-wrapper .bold {
+.bold {
   font-weight: bold;
 }
 
-.flow-wrapper .italic {
+.italic {
   font-style: italic;
 }
 
-.flow-wrapper .underline {
+.underline {
   text-decoration: underline;
 }
 
-.flow-wrapper .uppercase {
+.uppercase {
   text-transform: uppercase;
 }
 
-.flow-wrapper .lowercase {
+.lowercase {
   text-transform: lowercase;
 }
 
-.flow-wrapper .font-small {
+.font-small {
   font-size: 0.8em;
 }
 
-.flow-wrapper .font-xsmall {
+.font-xsmall {
   font-size: 0.7em;
 }
 
-.flow-wrapper .font-medium {
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-medium {
   font-size: 1em;
 }
 
-.flow-wrapper .font-large {
+.font-large {
   font-size: 1.2em;
 }
 
-.flow-wrapper .font-xlarge {
+.font-xlarge {
   font-size: 1.5em;
 }
 
-.flow-wrapper .flex {
+.flex {
   display: flex;
   align-items: center;
 }
 
-.flow-wrapper .flex-column {
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flex-column {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper .flex-align-center {
+.flex-align-center {
   display: flex;
   align-items: center;
 }
 
-.flow-wrapper .flex-justify-center {
+.flex-justify-center {
   display: flex;
   justify-content: center;
 }
 
-.flow-wrapper .flex-center {
+.flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.flow-wrapper .flex-1 {
+.flex-1 {
   flex: 1;
 }
 
-.flow-wrapper .space-between {
+.space-between {
   justify-content: space-between;
 }
 
-.flow-wrapper .no-margin {
+.no-margin {
   margin: 0;
 }
 
-.flow-wrapper .margin-10 {
+.margin-10 {
   margin: 10px;
 }
 
-.flow-wrapper .margin-top-5 {
+.margin-top-5 {
   margin-top: 5px;
 }
 
-.flow-wrapper .margin-top--5 {
+.margin-top--5 {
   margin-top: -5px;
 }
 
-.flow-wrapper .margin-top-10 {
+.margin-top-10 {
   margin-top: 10px;
 }
 
-.flow-wrapper .margin-top--10 {
+.margin-top--10 {
   margin-top: -10px;
 }
 
-.flow-wrapper .margin-top-20 {
+.margin-top-20 {
   margin-top: 20px;
 }
 
-.flow-wrapper .margin-top--20 {
+.margin-top--20 {
   margin-top: -20px;
 }
 
-.flow-wrapper .margin-bottom-5 {
+.margin-bottom-5 {
   margin-bottom: 5px;
 }
 
-.flow-wrapper .margin-bottom--5 {
+.margin-bottom--5 {
   margin-bottom: -5px;
 }
 
-.flow-wrapper .margin-bottom-10 {
+.margin-bottom-10 {
   margin-bottom: 10px;
 }
 
-.flow-wrapper .margin-bottom--10 {
+.margin-bottom--10 {
   margin-bottom: -10px;
 }
 
-.flow-wrapper .margin-bottom-20 {
+.margin-bottom-20 {
   margin-bottom: 20px;
 }
 
-.flow-wrapper .margin-bottom--20 {
+.margin-bottom--20 {
   margin-bottom: -20px;
 }
 
-.flow-wrapper .margin-left-5 {
+.margin-left-5 {
   margin-left: 5px;
 }
 
-.flow-wrapper .margin-left--5 {
+.margin-left--5 {
   margin-left: -5px;
 }
 
-.flow-wrapper .margin-left-10 {
+.margin-left-10 {
   margin-left: 10px;
 }
 
-.flow-wrapper .margin-left--10 {
+.margin-left--10 {
   margin-left: -10px;
 }
 
-.flow-wrapper .margin-left-20 {
+.margin-left-20 {
   margin-left: 20px;
 }
 
-.flow-wrapper .margin-left--20 {
+.margin-left--20 {
   margin-left: -20px;
 }
 
-.flow-wrapper .margin-right-5 {
+.margin-right-5 {
   margin-right: 5px;
 }
 
-.flow-wrapper .margin-right--5 {
+.margin-right--5 {
   margin-right: -5px;
 }
 
-.flow-wrapper .margin-right-10 {
+.margin-right-10 {
   margin-right: 10px;
 }
 
-.flow-wrapper .margin-right--10 {
+.margin-right--10 {
   margin-right: -10px;
 }
 
-.flow-wrapper .margin-right-20 {
+.margin-right-20 {
   margin-right: 20px;
 }
 
-.flow-wrapper .margin-right--20 {
+.margin-right--20 {
   margin-right: -20px;
 }
 
-.flow-wrapper .no-padding {
+.no-padding {
   padding: 0;
 }
 
-.flow-wrapper .padding-5 {
+.padding-5 {
   padding: 5px;
 }
 
-.flow-wrapper .padding-10 {
+.padding-10 {
   padding: 10px;
 }
 
-.flow-wrapper .padding-20 {
+.padding-20 {
   padding: 20px;
 }
 
-.flow-wrapper .padding-top-5 {
+.padding-top-5 {
   padding-top: 5px;
 }
 
-.flow-wrapper .padding-top-10 {
+.padding-top-10 {
   padding-top: 10px;
 }
 
-.flow-wrapper .padding-top-20 {
+.padding-top-20 {
   padding-top: 20px;
 }
 
-.flow-wrapper .padding-bottom-5 {
+.padding-bottom-5 {
   padding-bottom: 5px;
 }
 
-.flow-wrapper .padding-bottom-10 {
+.padding-bottom-10 {
   padding-bottom: 10px;
 }
 
-.flow-wrapper .padding-bottom-20 {
+.padding-bottom-20 {
   padding-bottom: 20px;
 }
 
-.flow-wrapper .padding-left-5 {
+.padding-left-5 {
   padding-left: 5px;
 }
 
-.flow-wrapper .padding-left-10 {
+.padding-left-10 {
   padding-left: 10px;
 }
 
-.flow-wrapper .padding-left-20 {
+.padding-left-20 {
   padding-left: 20px;
 }
 
-.flow-wrapper .padding-right-5 {
+.padding-right-5 {
   padding-right: 5px;
 }
 
-.flow-wrapper .padding-right-10 {
+.padding-right-10 {
   padding-right: 10px;
 }
 
-.flow-wrapper .padding-right-20 {
+.padding-right-20 {
   padding-right: 20px;
 }

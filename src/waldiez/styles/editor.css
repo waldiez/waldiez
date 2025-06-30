@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .code-editor {
+.code-editor {
   width: 100%;
   height: 35vh;
   max-height: 340px;
@@ -10,10 +10,10 @@
   text-align: center;
 }
 
-.flow-wrapper.light .code-editor {
+body.waldiez-light .code-editor {
   border: 1px solid #ccc;
 }
 
-.flow-wrapper.dark .code-editor {
+body.waldiez-dark .code-editor {
   border: 1px solid #333;
 }

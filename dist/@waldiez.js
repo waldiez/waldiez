@@ -22,7 +22,7 @@ import { temporal } from "zundo";
 import { createStore } from "zustand";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronDown, FaChevronUp, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaGear, FaTrashCan, FaCode, FaLock, FaTrash as FaTrash$1, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaTrashCan, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -8854,17 +8854,22 @@ const useModal = (props) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isFullScreen, setFullScreen] = useState(false);
   const [isMinimized, setMinimized] = useState(false);
-  const [position, setPosition] = useState({ x: 10, y: 20 });
+  const [position, setPosition] = useState({
+    x: window.innerWidth / 4,
+    y: "10%"
+  });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [preMinimizeHeight, setPreMinimizeHeight] = useState("");
+  const [preMinimizePosition, setPreMinimizePosition] = useState(null);
   const cannotClose = preventCloseIfUnsavedChanges && hasUnsavedChanges;
   const canClose = !cannotClose;
   const resetModalState = useCallback(() => {
-    setPosition({ x: 10, y: 50 });
+    setPosition({ x: window.innerWidth / 4, y: "10%" });
     setFullScreen(false);
     setMinimized(false);
     setShowConfirmation(false);
+    setPreMinimizePosition(null);
     if (modalRef.current) {
       modalRef.current.style.width = "";
       modalRef.current.style.height = "";
@@ -8876,10 +8881,12 @@ const useModal = (props) => {
       if (!modalElement) {
         return;
       }
-      if (open) {
-        modalElement.showModal();
-      } else {
-        modalElement.close();
+      if (Object.prototype.hasOwnProperty.call(modalElement, "showModal")) {
+        if (open) {
+          modalElement.showModal();
+        } else {
+          modalElement.close();
+        }
       }
     },
     [modalRef]
@@ -8890,9 +8897,13 @@ const useModal = (props) => {
       if (modalRef.current) {
         modalRef.current.style.height = preMinimizeHeight || "";
       }
+      if (preMinimizePosition) {
+        setPosition(preMinimizePosition);
+        setPreMinimizePosition(null);
+      }
     }
     setFullScreen((prev) => !prev);
-  }, [modalRef, isMinimized, preMinimizeHeight]);
+  }, [modalRef, isMinimized, preMinimizeHeight, preMinimizePosition]);
   const onToggleMinimize = useCallback(() => {
     if (isFullScreen && !isMinimized) {
       setFullScreen(false);
@@ -8904,14 +8915,18 @@ const useModal = (props) => {
             modalRef.current.style.height || window.getComputedStyle(modalRef.current).height
           );
         }
+        setPreMinimizePosition({ ...position });
       } else {
         if (modalRef.current && preMinimizeHeight) {
           modalRef.current.style.height = preMinimizeHeight;
         }
+        if (preMinimizePosition) {
+          setPosition(preMinimizePosition);
+        }
       }
       return !prev;
     });
-  }, [modalRef, isMinimized, isFullScreen, preMinimizeHeight]);
+  }, [modalRef, isMinimized, isFullScreen, preMinimizeHeight, position, preMinimizePosition]);
   const hideConfirmation = useCallback(() => {
     setShowConfirmation(false);
   }, []);
@@ -8962,31 +8977,34 @@ const useModal = (props) => {
   );
   const onMouseDown = useCallback(
     (e) => {
-      if (!modalRef.current || isFullScreen) {
+      if (!modalRef.current || isFullScreen || isMinimized) {
         return;
       }
       setDragging(true);
-      const style = window.getComputedStyle(modalRef.current);
-      const left = parseInt(style.left, 10) || 0;
-      const top = parseInt(style.top, 10) || 0;
+      const rect = modalRef.current.getBoundingClientRect();
       setOffset({
-        x: e.clientX - left,
-        y: e.clientY - top
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
       });
     },
-    [isFullScreen, modalRef]
+    [isFullScreen, isMinimized, modalRef]
   );
   const handleMouseMove = useCallback(
     (e) => {
-      if (!dragging) {
+      if (!dragging || !modalRef.current) {
         return;
       }
+      const newX = e.clientX - offset.x;
+      const newY = e.clientY - offset.y;
+      const modalRect = modalRef.current.getBoundingClientRect();
+      const maxX = window.innerWidth - modalRect.width;
+      const maxY = window.innerHeight - modalRect.height;
       setPosition({
-        x: e.clientX - offset.x,
-        y: e.clientY - offset.y
+        x: `${Math.max(0, Math.min(newX, maxX))}px`,
+        y: `${Math.max(0, Math.min(newY, maxY))}px`
       });
     },
-    [dragging, offset]
+    [dragging, offset, modalRef]
   );
   const handleMouseUp = useCallback(() => {
     setDragging(false);
@@ -9035,12 +9053,14 @@ const Modal = memo((props) => {
     hasMinimizeBtn = true,
     children,
     className = "",
+    hasUnsavedChanges,
     onSaveAndClose
   } = props;
   const modalRef = useRef(null);
   const dragRef = useRef(null);
   const [lockedWidth, setLockedWidth] = useState(void 0);
   const [tabCount, setTabCount] = useState(0);
+  const [portalContainer, setPortalContainer] = useState(null);
   const {
     showConfirmation,
     isFullScreen,
@@ -9056,12 +9076,23 @@ const Modal = memo((props) => {
     onMouseDown
   } = useModal({ ...props, modalRef });
   useEffect(() => {
-    if (isOpen) {
-      modalRef.current?.showModal();
-    } else {
-      modalRef.current?.close();
+    const container = document.getElementById("modal-root") || document.body;
+    setPortalContainer(container);
+  }, []);
+  useEffect(() => {
+    if (!isOpen || isMinimized) {
+      return;
     }
-  }, [isOpen]);
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        handleCancel(e);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, isMinimized, handleCancel]);
   useLayoutEffect(() => {
     if (isOpen && modalRef.current && !lockedWidth) {
       const measureAndLockWidth = () => {
@@ -9109,72 +9140,104 @@ const Modal = memo((props) => {
   }, [children, isOpen, tabCount, lockedWidth, checkTabSpaceAndResize]);
   const modalClasses = [
     "modal",
-    "no-wheel no-pan no-drag",
-    isFullScreen ? "modal-fullscreen" : "",
-    isMinimized ? "modal-minimized" : "",
-    showConfirmation ? "confirmation" : "",
+    isFullScreen ? "modal-fullscreen" : "no-wheel no-pan no-drag",
+    isMinimized ? "modal-minimized" : "no-wheel no-pan no-drag",
+    showConfirmation ? "confirmation no-wheel no-pan no-drag" : "no-wheel no-pan no-drag",
     className
   ].filter(Boolean).join(" ");
-  return /* @__PURE__ */ jsxs(
-    "dialog",
-    {
-      ref: modalRef,
-      id,
-      "data-testid": dataTestId,
-      onKeyDown,
-      onCancel: handleCancel,
-      className: modalClasses,
-      style: {
-        ...lockedWidth ? { width: lockedWidth } : {},
-        ...isFullScreen ? {} : { top: position.y, left: position.x }
-      },
-      children: [
-        /* @__PURE__ */ jsxs("div", { className: "modal-header", ref: dragRef, onMouseDown, children: [
-          /* @__PURE__ */ jsx("div", { children: beforeTitle }),
-          /* @__PURE__ */ jsx("h3", { className: "modal-title", children: title }),
-          /* @__PURE__ */ jsxs("div", { className: "modal-header-actions", children: [
-            hasMinimizeBtn && /* @__PURE__ */ jsx(
-              "div",
-              {
-                className: "modal-minimize-btn clickable",
-                role: "button",
-                title: isMinimized ? "Restore" : "Minimize",
-                onClick: onToggleMinimize,
-                children: isMinimized ? /* @__PURE__ */ jsx(FaChevronDown, {}) : /* @__PURE__ */ jsx(FaChevronUp, {})
-              }
-            ),
-            hasMaximizeBtn && /* @__PURE__ */ jsx(
-              "div",
-              {
-                className: "modal-fullscreen-btn clickable",
-                role: "button",
-                title: isFullScreen ? "Restore" : "Maximize",
-                onClick: onToggleFullScreen,
-                children: isFullScreen ? /* @__PURE__ */ jsx(FaCompress, {}) : /* @__PURE__ */ jsx(FaExpand, {})
-              }
-            ),
-            hasCloseBtn && /* @__PURE__ */ jsx(
-              "div",
-              {
-                className: "modal-close-btn clickable",
-                role: "button",
-                title: "Close",
-                "data-testid": "modal-close-btn",
-                onClick: handleCloseModal,
-                children: /* @__PURE__ */ jsx(FaCircleXmark, {})
-              }
-            )
-          ] })
-        ] }),
-        /* @__PURE__ */ jsx("div", { className: `modal-content ${isMinimized ? "hidden" : ""}`, children: showConfirmation ? renderConfirmationContent({
-          onSaveAndClose,
-          hideConfirmation,
-          handleSaveAndClose,
-          handleCloseModal
-        }) : children })
-      ]
+  if (!isOpen || !portalContainer) {
+    return null;
+  }
+  const modalStyle = {
+    ...lockedWidth ? { width: lockedWidth } : {},
+    ...isFullScreen ? {} : isMinimized ? {
+      position: "fixed",
+      bottom: "20px",
+      right: "20px",
+      top: "auto",
+      left: "auto"
+    } : {
+      top: position.y,
+      left: position.x
     }
-  );
+  };
+  const modalContent = /* @__PURE__ */ jsxs(Fragment, { children: [
+    !isMinimized && /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "modal-backdrop",
+        style: {
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 999
+        }
+      }
+    ),
+    /* @__PURE__ */ jsxs(
+      "div",
+      {
+        ref: modalRef,
+        id,
+        "data-testid": dataTestId,
+        onKeyDown,
+        className: modalClasses,
+        style: modalStyle,
+        children: [
+          /* @__PURE__ */ jsxs("div", { className: "modal-header", ref: dragRef, onMouseDown, children: [
+            !isMinimized && beforeTitle && /* @__PURE__ */ jsx("div", { children: beforeTitle }),
+            /* @__PURE__ */ jsxs("h3", { className: "modal-title font-semibold truncate", children: [
+              title,
+              hasUnsavedChanges && /* @__PURE__ */ jsx("span", { style: { color: "#f97316", marginLeft: "0.25rem" }, children: "*" })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "modal-header-actions", children: [
+              hasMinimizeBtn && /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: "modal-minimize-btn clickable",
+                  role: "button",
+                  title: isMinimized ? "Restore" : "Minimize",
+                  onClick: onToggleMinimize,
+                  children: isMinimized ? /* @__PURE__ */ jsx(FaChevronUp, {}) : /* @__PURE__ */ jsx(FaChevronDown, {})
+                }
+              ),
+              hasMaximizeBtn && /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: "modal-fullscreen-btn clickable",
+                  role: "button",
+                  title: isFullScreen ? "Restore" : "Maximize",
+                  onClick: onToggleFullScreen,
+                  children: isFullScreen ? /* @__PURE__ */ jsx(FaCompress, {}) : /* @__PURE__ */ jsx(FaExpand, {})
+                }
+              ),
+              hasCloseBtn && /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: "modal-close-btn clickable",
+                  role: "button",
+                  title: "Close",
+                  "data-testid": "modal-close-btn",
+                  onClick: handleCloseModal,
+                  children: /* @__PURE__ */ jsx(FaCircleXmark, {})
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: `modal-content ${isMinimized ? "hidden" : ""}`, children: showConfirmation ? renderConfirmationContent({
+            onSaveAndClose,
+            hideConfirmation,
+            handleSaveAndClose,
+            handleCloseModal
+          }) : children })
+        ]
+      }
+    )
+  ] });
+  return createPortal(modalContent, portalContainer);
 });
 Modal.displayName = "Modal";
 function clamp(value, [min, max]) {
@@ -14684,6 +14747,9 @@ const WaldiezFlowPanels = (props) => {
     ] }) })
   ] });
 };
+function VscSettings(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 16 16", "fill": "currentColor" }, "child": [{ "tag": "path", "attr": { "d": "M6 9.5C6.93191 9.5 7.71496 10.1374 7.93699 11H13.5C13.7761 11 14 11.2239 14 11.5C14 11.7455 13.8231 11.9496 13.5899 11.9919L13.5 12L7.93673 12.001C7.71435 12.8631 6.93155 13.5 6 13.5C5.06845 13.5 4.28565 12.8631 4.06327 12.001L2.5 12C2.22386 12 2 11.7761 2 11.5C2 11.2545 2.17688 11.0504 2.41012 11.0081L2.5 11H4.06301C4.28504 10.1374 5.06809 9.5 6 9.5ZM6 10.5C5.44772 10.5 5 10.9477 5 11.5C5 12.0523 5.44772 12.5 6 12.5C6.55228 12.5 7 12.0523 7 11.5C7 10.9477 6.55228 10.5 6 10.5ZM10 2.5C10.9319 2.5 11.715 3.13738 11.937 3.99998L13.5 4C13.7761 4 14 4.22386 14 4.5C14 4.74546 13.8231 4.94961 13.5899 4.99194L13.5 5L11.9367 5.00102C11.7144 5.86312 10.9316 6.5 10 6.5C9.06845 6.5 8.28565 5.86312 8.06327 5.00102L2.5 5C2.22386 5 2 4.77614 2 4.5C2 4.25454 2.17688 4.05039 2.41012 4.00806L2.5 4L8.06301 3.99998C8.28504 3.13738 9.06809 2.5 10 2.5ZM10 3.5C9.44772 3.5 9 3.94772 9 4.5C9 5.05228 9.44772 5.5 10 5.5C10.5523 5.5 11 5.05228 11 4.5C11 3.94772 10.5523 3.5 10 3.5Z" }, "child": [] }] })(props);
+}
 const EdgeLabel = ({ edge, transform }) => {
   if (!edge) {
     return null;
@@ -15121,7 +15187,7 @@ const WaldiezEdgeCommon = memo((props) => {
                 className: "open-edge-modal clickable",
                 "data-testid": `open-edge-modal-${id}`,
                 "aria-label": "Edit edge",
-                children: /* @__PURE__ */ jsx(FaGear, { size: 12 })
+                children: /* @__PURE__ */ jsx(VscSettings, { size: 12 })
               }
             )
           ] }),
@@ -21579,7 +21645,7 @@ const WaldiezNodeAgentView = (props) => {
             }
           ),
           /* @__PURE__ */ jsx(
-            FaGear,
+            VscSettings,
             {
               role: "button",
               className: "clickable cog-icon",

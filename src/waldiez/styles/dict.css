@@ -2,39 +2,39 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .dict-entries-view {
+.dict-entries-view {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper .dict-entries-view label {
+.dict-entries-view label {
   padding-bottom: 0 !important;
 }
 
-.flow-wrapper .dict-entries-list {
+.dict-entries-list {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper .dict-entry {
+.dict-entry {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.flow-wrapper .dict-entry input {
+.dict-entry input {
   padding: 8px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   margin-right: 5px;
 }
 
-.flow-wrapper .add-dict-entry-view {
+.add-dict-entry-view {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.flow-wrapper .add-dict-entry-view input {
+.add-dict-entry-view input {
   margin-right: 5px;
 }

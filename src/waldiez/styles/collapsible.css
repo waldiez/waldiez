@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .collapsible {
+.collapsible {
   padding: 0;
   text-align: left;
   outline: none;
@@ -11,14 +11,14 @@
   border-radius: 4px;
 }
 
-.flow-wrapper .collapsible-header {
+.collapsible-header {
   cursor: pointer;
   display: flex;
   align-items: center;
   padding: 18px;
 }
 
-.flow-wrapper .collapsible-content {
+.collapsible-content {
   padding: 18px;
   margin-left: 0;
 
@@ -29,58 +29,58 @@
   overflow-y: auto;
 }
 
-.flow-wrapper.light .collapsible {
+body.waldiez-light .collapsible {
   background-color: #f8f9fa;
   color: #444;
   border: 1px solid #f8f9fa;
 }
 
-.flow-wrapper.light .collapsible-content {
+body.waldiez-light .collapsible-content {
   background-color: #f8f9fa;
   color: #141414;
 }
 
-.flow-wrapper.light .collapsible-toggle {
+body.waldiez-light .collapsible-toggle {
   background-color: #f1f1f1;
   color: #444;
 }
 
-.flow-wrapper.dark .collapsible {
+body.waldiez-dark .collapsible {
   background-color: #222;
   border: 1px solid #222;
   color: #f1f1f1;
 }
 
-.flow-wrapper.dark .collapsible-content {
+body.waldiez-dark .collapsible-content {
   background-color: #232323;
 }
 
-.flow-wrapper.dark .collapsible-toggle {
+body.waldiez-dark .collapsible-toggle {
   background-color: #232323;
   color: #f1f1f1;
 }
 
-.flow-wrapper.light .collapsible-header {
+body.waldiez-light .collapsible-header {
   background-color: #f4f4f4;
   color: #232323;
 }
 
-.flow-wrapper.light .collapsible.active,
-.flow-wrapper.light .collapsible-toggle.active {
+body.waldiez-light .collapsible.active,
+body.waldiez-light .collapsible-toggle.active {
   background-color: #ccc;
 }
 
-.flow-wrapper.dark .collapsible.active,
-.flow-wrapper.dark .collapsible-toggle.active {
+body.waldiez-dark .collapsible.active,
+body.waldiez-dark .collapsible-toggle.active {
   background-color: #666;
 }
 
-.flow-wrapper .collapsible-header.transparent {
+.collapsible-header.transparent {
   background-color: transparent;
   border: none;
 }
 
-.flow-wrapper .collapsible.transparent {
+.collapsible.transparent {
   background-color: transparent;
   border: none;
 }

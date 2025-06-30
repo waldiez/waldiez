@@ -3,20 +3,20 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-.flow-wrapper a {
+a {
   color: #007bff;
 }
 
-.flow-wrapper a:visited {
+a:visited {
   color: #007bff;
 }
 
-.flow-wrapper input[type="file"] {
+input[type="file"] {
   display: none;
 }
 
-.flow-wrapper input,
-.flow-wrapper textarea {
+input,
+textarea {
   all: unset;
   width: 100%;
   padding: 8px 16px;
@@ -30,45 +30,45 @@
   box-sizing: border-box;
 }
 
-.flow-wrapper textarea {
+textarea {
   resize: vertical;
   min-height: 3rem;
   font-family: inherit;
 }
 
-.flow-wrapper input:hover,
-.flow-wrapper textarea:hover,
-.flow-wrapper input:focus,
-.flow-wrapper textarea:focus {
+input:hover,
+textarea:hover,
+input:focus,
+textarea:focus {
   outline: none;
   border-color: #3b82f6;
 }
 
-.flow-wrapper input::placeholder,
-.flow-wrapper textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: color-mix(in srgb, var(--text-color) 50%, var(--background-color));
 }
 
-.flow-wrapper input[type="number"] {
+input[type="number"] {
   width: auto;
   min-width: 60px;
 }
 
-.flow-wrapper .clickable {
+.clickable {
   cursor: pointer;
 }
 
-.flow-wrapper .number-max-width {
+.number-max-width {
   max-width: 100px;
 }
 
-.flow-wrapper input:disabled {
+input:disabled {
   cursor: unset;
   pointer-events: none;
   opacity: 0.8;
 }
 
-.flow-wrapper button {
+button {
   all: unset;
   cursor: pointer;
   padding: 8px 16px;
@@ -84,110 +84,110 @@
     border-color 0.2s ease;
 }
 
-.flow-wrapper.light button {
+button:disabled {
+  cursor: default !important;
+  transition: none;
+}
+
+body.waldiez-light button {
   border: 1px solid #ccc;
   background-color: #f8f8f8;
   color: #111;
 }
 
-.flow-wrapper.dark button {
+body.waldiez-dark button {
   border: 1px solid #444;
   background-color: #222;
   color: #f8f8f8;
 }
 
-.flow-wrapper button:disabled {
-  cursor: default !important;
-  transition: none;
-}
-
-.flow-wrapper.light button:hover {
+body.waldiez-light button:hover {
   background-color: #f0f0f0;
   border-color: #3b82f6;
 }
 
-.flow-wrapper.dark button:hover {
+body.waldiez-dark button:hover {
   background-color: #111;
   border-color: #3b82f6;
 }
 
-.flow-wrapper.dark button:disabled:hover {
+body.waldiez-dark button:disabled:hover {
   background-color: #222;
   border-color: #444;
   transition: none;
 }
 
-.flow-wrapper.light button:disabled:hover {
+body.waldiez-light button:disabled:hover {
   background-color: #f8f8f8;
   border-color: #ccc;
   transition: none;
 }
 
-.flow-wrapper .no-click {
+.no-click {
   cursor: unset !important;
   pointer-events: none !important;
 }
 
-.flow-wrapper.light {
+body.waldiez-light {
   color-scheme: light;
   background-color: var(--background-color);
   color: var(--text-color);
 }
 
-.flow-wrapper.dark {
+body.waldiez-dark {
   background-color: var(--background-color);
   color: var(--text-color);
   color-scheme: dark;
 }
 
-.flow-wrapper.dark * {
+body.waldiez-dark * {
   scrollbar-color: #ccc #333;
 }
 
-.flow-wrapper.light * {
+body.waldiez-light * {
   scrollbar-color: #333 #fefefe;
 }
 
-.flow-wrapper ::placeholder {
+::placeholder {
   opacity: 0.5;
 }
 
-.flow-wrapper.light input:disabled {
+body.waldiez-light input:disabled {
   color: #222 !important;
 }
 
-.flow-wrapper.light::placeholder {
+body.waldiez-light::placeholder {
   color: #222;
 }
 
-.flow-wrapper.light ::-webkit-input-placeholder {
+body.waldiez-light ::-webkit-input-placeholder {
   color: #222;
 }
 
-.flow-wrapper.light::-moz-placeholder {
+body.waldiez-light::-moz-placeholder {
   color: #222;
 }
 
-.flow-wrapper.dark input:disabled {
+body.waldiez-dark input:disabled {
   color: #ccc !important;
 }
 
-.flow-wrapper.dark ::placeholder {
+body.waldiez-dark ::placeholder {
   color: #ccc;
 }
 
-.flow-wrapper.dark ::-webkit-input-placeholder {
+body.waldiez-dark ::-webkit-input-placeholder {
   color: #ccc;
 }
 
-.flow-wrapper.dark ::-moz-placeholder {
+body.waldiez-dark ::-moz-placeholder {
   color: #ccc;
 }
 
-.flow-wrapper .plus-button,
-.flow-wrapper .trash-button,
-.flow-wrapper .save-button,
-.flow-wrapper .toggle-visibility-btn {
+.plus-button,
+.trash-button,
+.save-button,
+.toggle-visibility-btn {
   border-radius: 5px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   cursor: pointer;
@@ -198,77 +198,77 @@
   flex-direction: column;
 }
 
-.flow-wrapper .plus-button svg,
-.flow-wrapper .trash-button svg,
-.flow-wrapper .save-button svg,
-.flow-wrapper .toggle-visibility-btn svg {
+.plus-button svg,
+.trash-button svg,
+.save-button svg,
+.toggle-visibility-btn svg {
   fill: currentcolor;
 }
 
-.flow-wrapper .plus-button:hover,
-.flow-wrapper .trash-button:hover,
-.flow-wrapper .save-button:hover,
-.flow-wrapper .toggle-visibility-btn:hover {
+.plus-button:hover,
+.trash-button:hover,
+.save-button:hover,
+.toggle-visibility-btn:hover {
   border-color: color-mix(in srgb, #3b82f6 15%, transparent);
   box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
-.flow-wrapper .plus-button:disabled:hover,
-.flow-wrapper .trash-button:disabled:hover,
-.flow-wrapper .save-button:disabled:hover,
-.flow-wrapper .toggle-visibility-btn:disabled:hover {
+.plus-button:disabled:hover,
+.trash-button:disabled:hover,
+.save-button:disabled:hover,
+.toggle-visibility-btn:disabled:hover {
   border-color: unset;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.flow-wrapper.dark .editor-nav-action {
+body.waldiez-dark .editor-nav-action {
   background-color: #141414;
 }
 
-.flow-wrapper.dark .editor-nav-action svg {
+body.waldiez-dark .editor-nav-action svg {
   fill: #fefefe;
 }
 
-.flow-wrapper.light .editor-nav-action {
+body.waldiez-light .editor-nav-action {
   background-color: #fefefe;
 }
 
-.flow-wrapper.light .editor-nav-action svg {
+body.waldiez-light .editor-nav-action svg {
   fill: #141414;
 }
 
-.flow-wrapper.dark .editor-nav-action:hover {
+body.waldiez-dark .editor-nav-action:hover {
   background-color: #141414;
 }
 
-.flow-wrapper.light .editor-nav-action:hover {
+body.waldiez-light .editor-nav-action:hover {
   background-color: #fefefe;
 }
 
-.flow-wrapper.light input[type="text"],
-.flow-wrapper.light input[type="password"],
-.flow-wrapper.light input[type="number"],
-.flow-wrapper.light textarea {
+body.waldiez-light input[type="text"],
+body.waldiez-light input[type="password"],
+body.waldiez-light input[type="number"],
+body.waldiez-light textarea {
   background-color: #fefefe;
   color: #141414;
 }
 
-.flow-wrapper.dark input[type="text"],
-.flow-wrapper.dark input[type="password"],
-.flow-wrapper.dark input[type="number"],
-.flow-wrapper.dark textarea {
+body.waldiez-dark input[type="text"],
+body.waldiez-dark input[type="password"],
+body.waldiez-dark input[type="number"],
+body.waldiez-dark textarea {
   background-color: #222;
   color: #f8f8f8;
 }
 
-.flow-wrapper.dark input[type="number"],
-.flow-wrapper.dark input[type="number"]::-webkit-inner-spin-button,
-.flow-wrapper.dark input[type="number"]::-webkit-outer-spin-button {
+body.waldiez-dark input[type="number"],
+body.waldiez-dark input[type="number"]::-webkit-inner-spin-button,
+body.waldiez-dark input[type="number"]::-webkit-outer-spin-button {
   color-scheme: dark;
 }
 
-.flow-wrapper.light input[type="number"],
-.flow-wrapper.light input[type="number"]::-webkit-inner-spin-button,
-.flow-wrapper.light input[type="number"]::-webkit-outer-spin-button {
+body.waldiez-light input[type="number"],
+body.waldiez-light input[type="number"]::-webkit-inner-spin-button,
+body.waldiez-light input[type="number"]::-webkit-outer-spin-button {
   color-scheme: light;
 }

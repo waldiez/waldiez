@@ -5,27 +5,27 @@
 /* stylelint-disable no-descending-specificity */
 
 /* Container styling - shared across all nested chat components */
-.flow-wrapper.light .nested-chat-container,
-.flow-wrapper.light .nested-chat-triggers,
-.flow-wrapper.light .nested-chat-messages {
+body.waldiez-light .nested-chat-container,
+body.waldiez-light .nested-chat-triggers,
+body.waldiez-light .nested-chat-messages {
   padding: 1rem;
   background-color: #f8f9fa;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
 
-.flow-wrapper.dark .nested-chat-container,
-.flow-wrapper.dark .nested-chat-triggers,
-.flow-wrapper.dark .nested-chat-messages {
+body.waldiez-dark .nested-chat-container,
+body.waldiez-dark .nested-chat-triggers,
+body.waldiez-dark .nested-chat-messages {
   padding: 1rem;
   background-color: #1e1e1e;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
 
-.flow-wrapper.light .nested-chat-container .info,
-.flow-wrapper.light .nested-chat-triggers .info,
-.flow-wrapper.light .nested-chat-messages .info {
+body.waldiez-light .nested-chat-container .info,
+body.waldiez-light .nested-chat-triggers .info,
+body.waldiez-light .nested-chat-messages .info {
   font-size: 0.9rem;
   color: #6c757d;
   margin-bottom: 1rem;
@@ -35,9 +35,9 @@
   border: 1px solid #e9ecef;
 }
 
-.flow-wrapper.dark .nested-chat-container .info,
-.flow-wrapper.dark .nested-chat-triggers .info,
-.flow-wrapper.dark .nested-chat-messages .info {
+body.waldiez-dark .nested-chat-container .info,
+body.waldiez-dark .nested-chat-triggers .info,
+body.waldiez-dark .nested-chat-messages .info {
   font-size: 0.9rem;
   color: #a0a0a0;
   margin-bottom: 1rem;
@@ -47,8 +47,8 @@
   border: 1px solid #2c2c2c;
 }
 
-.flow-wrapper.light .nested-chat-triggers-label,
-.flow-wrapper.light .nested-chat-messages-label {
+body.waldiez-light .nested-chat-triggers-label,
+body.waldiez-light .nested-chat-messages-label {
   font-size: 0.9rem;
   font-weight: 600;
   color: #495057;
@@ -56,8 +56,8 @@
   display: block;
 }
 
-.flow-wrapper.dark .nested-chat-triggers-label,
-.flow-wrapper.dark .nested-chat-messages-label {
+body.waldiez-dark .nested-chat-triggers-label,
+body.waldiez-dark .nested-chat-messages-label {
   font-size: 0.9rem;
   font-weight: 600;
   color: #d1d5db;
@@ -65,7 +65,7 @@
   display: block;
 }
 
-.flow-wrapper.light .nested-chat-select-trigger-view {
+body.waldiez-light .nested-chat-select-trigger-view {
   padding: 0.75rem;
   background-color: #fff;
   border-radius: 6px;
@@ -74,12 +74,12 @@
   transition: all 0.2s ease;
 }
 
-.flow-wrapper.light .nested-chat-select-trigger-view:hover {
+body.waldiez-light .nested-chat-select-trigger-view:hover {
   border-color: #adb5bd;
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.1%);
 }
 
-.flow-wrapper.dark .nested-chat-select-trigger-view {
+body.waldiez-dark .nested-chat-select-trigger-view {
   padding: 0.75rem;
   background-color: #292929;
   border-radius: 6px;
@@ -88,7 +88,7 @@
   transition: all 0.2s ease;
 }
 
-.flow-wrapper.dark .nested-chat-select-trigger-view:hover {
+body.waldiez-dark .nested-chat-select-trigger-view:hover {
   border-color: #505050;
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
@@ -113,15 +113,15 @@
   white-space: nowrap;
 }
 
-.flow-wrapper.light .nested-chat-agent-reply-label {
+body.waldiez-light .nested-chat-agent-reply-label {
   color: #495057;
 }
 
-.flow-wrapper.dark .nested-chat-agent-reply-label {
+body.waldiez-dark .nested-chat-agent-reply-label {
   color: #d1d5db;
 }
 
-.flow-wrapper.light .nested-chat-add-button button {
+body.waldiez-light .nested-chat-add-button button {
   background-color: #0d6efd;
   color: white;
   border: none;
@@ -133,11 +133,11 @@
   transition: background-color 0.2s;
 }
 
-.flow-wrapper.light .nested-chat-add-button button:hover:not(:disabled) {
+body.waldiez-light .nested-chat-add-button button:hover:not(:disabled) {
   background-color: #0b5ed7;
 }
 
-.flow-wrapper.dark .nested-chat-add-button button {
+body.waldiez-dark .nested-chat-add-button button {
   background-color: #3b82f6;
   color: white;
   border: none;
@@ -149,17 +149,17 @@
   transition: background-color 0.2s;
 }
 
-.flow-wrapper.dark .nested-chat-add-button button:hover:not(:disabled) {
+body.waldiez-dark .nested-chat-add-button button:hover:not(:disabled) {
   background-color: #2563eb;
 }
 
-.flow-wrapper.light .nested-chat-add-button button:disabled {
+body.waldiez-light .nested-chat-add-button button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.flow-wrapper.dark .nested-chat-add-button button:disabled {
+body.waldiez-dark .nested-chat-add-button button:disabled {
   background-color: #444;
   cursor: not-allowed;
   opacity: 0.7;
@@ -170,7 +170,7 @@
   margin-top: 0.5rem;
 }
 
-.flow-wrapper.light .nested-chat-registered-message {
+body.waldiez-light .nested-chat-registered-message {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -183,12 +183,12 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
 }
 
-.flow-wrapper.light .nested-chat-registered-message:hover {
+body.waldiez-light .nested-chat-registered-message:hover {
   border-color: #adb5bd;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.flow-wrapper.dark .nested-chat-registered-message {
+body.waldiez-dark .nested-chat-registered-message {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -201,30 +201,30 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
-.flow-wrapper.dark .nested-chat-registered-message:hover {
+body.waldiez-dark .nested-chat-registered-message:hover {
   border-color: #505050;
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
-.flow-wrapper.light .message-label {
+body.waldiez-light .message-label {
   font-size: 0.9rem;
   color: #343a40;
   font-weight: 500;
 }
 
-.flow-wrapper.dark .message-label {
+body.waldiez-dark .message-label {
   font-size: 0.9rem;
   color: #e0e0e0;
   font-weight: 500;
 }
 
-.flow-wrapper.light .reply-indicator {
+body.waldiez-light .reply-indicator {
   font-size: 0.8rem;
   color: #0d6efd;
   font-weight: 600;
 }
 
-.flow-wrapper.dark .reply-indicator {
+body.waldiez-dark .reply-indicator {
   font-size: 0.8rem;
   color: #3b82f6;
   font-weight: 600;
@@ -237,8 +237,8 @@
   gap: 0.5rem;
 }
 
-.flow-wrapper.light .nested-chat-reorder button,
-.flow-wrapper.light .nested-chat-remove button {
+body.waldiez-light .nested-chat-reorder button,
+body.waldiez-light .nested-chat-remove button {
   background: none;
   border: none;
   color: #6c757d;
@@ -249,19 +249,19 @@
   transition: all 0.2s;
 }
 
-.flow-wrapper.light .nested-chat-reorder button {
+body.waldiez-light .nested-chat-reorder button {
   font-size: 1rem;
   line-height: 0.8;
 }
 
-.flow-wrapper.light .nested-chat-reorder button:hover,
-.flow-wrapper.light .nested-chat-remove button:hover {
+body.waldiez-light .nested-chat-reorder button:hover,
+body.waldiez-light .nested-chat-remove button:hover {
   color: #0d6efd;
   background-color: #f0f0f0;
 }
 
-.flow-wrapper.dark .nested-chat-reorder button,
-.flow-wrapper.dark .nested-chat-remove button {
+body.waldiez-dark .nested-chat-reorder button,
+body.waldiez-dark .nested-chat-remove button {
   background: none;
   border: none;
   color: #a0a0a0;
@@ -272,47 +272,47 @@
   transition: all 0.2s;
 }
 
-.flow-wrapper.dark .nested-chat-reorder button {
+body.waldiez-dark .nested-chat-reorder button {
   font-size: 1rem;
   line-height: 0.8;
 }
 
-.flow-wrapper.dark .nested-chat-reorder button:hover,
-.flow-wrapper.dark .nested-chat-remove button:hover {
+body.waldiez-dark .nested-chat-reorder button:hover,
+body.waldiez-dark .nested-chat-remove button:hover {
   color: #3b82f6;
   background-color: #333;
 }
 
-.flow-wrapper.light .nested-chat-remove button {
+body.waldiez-light .nested-chat-remove button {
   color: #dc3545;
 }
 
-.flow-wrapper.light .nested-chat-remove button:hover {
+body.waldiez-light .nested-chat-remove button:hover {
   color: #fff;
   background-color: #dc3545;
 }
 
-.flow-wrapper.dark .nested-chat-remove button {
+body.waldiez-dark .nested-chat-remove button {
   color: #f87171;
 }
 
-.flow-wrapper.dark .nested-chat-remove button:hover {
+body.waldiez-dark .nested-chat-remove button:hover {
   color: #fff;
   background-color: #dc2626;
 }
 
-.flow-wrapper.light .nested-chat-queue {
+body.waldiez-light .nested-chat-queue {
   display: flex;
   flex-direction: column;
 }
 
-.flow-wrapper.dark .nested-chat-queue {
+body.waldiez-dark .nested-chat-queue {
   display: flex;
   flex-direction: column;
 }
 
 /* Queue item styling */
-.flow-wrapper.light .queue-item {
+body.waldiez-light .queue-item {
   display: flex;
   align-items: center;
   padding: 0.75rem;
@@ -324,12 +324,12 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
 }
 
-.flow-wrapper.light .queue-item:hover {
+body.waldiez-light .queue-item:hover {
   border-color: #adb5bd;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.flow-wrapper.dark .queue-item {
+body.waldiez-dark .queue-item {
   display: flex;
   align-items: center;
   padding: 0.75rem;
@@ -341,19 +341,19 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
-.flow-wrapper.dark .queue-item:hover {
+body.waldiez-dark .queue-item:hover {
   border-color: #505050;
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
 /* Reorder buttons styling */
-.flow-wrapper.light .queue-item .reorder-buttons {
+body.waldiez-light .queue-item .reorder-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.flow-wrapper.light .queue-item .reorder-buttons button {
+body.waldiez-light .queue-item .reorder-buttons button {
   background: none;
   border: none;
   color: #6c757d;
@@ -364,17 +364,17 @@
   transition: color 0.2s;
 }
 
-.flow-wrapper.light .queue-item .reorder-buttons button:hover {
+body.waldiez-light .queue-item .reorder-buttons button:hover {
   color: #0d6efd;
 }
 
-.flow-wrapper.dark .queue-item .reorder-buttons {
+body.waldiez-dark .queue-item .reorder-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.flow-wrapper.dark .queue-item .reorder-buttons button {
+body.waldiez-dark .queue-item .reorder-buttons button {
   background: none;
   border: none;
   color: #a0a0a0;
@@ -386,19 +386,19 @@
   transition: color 0.2s;
 }
 
-.flow-wrapper.dark .queue-item .reorder-buttons button:hover {
+body.waldiez-dark .queue-item .reorder-buttons button:hover {
   color: #3b82f6;
 }
 
 /* Recipient name styling */
-.flow-wrapper.light .agent-nested-recipient-name {
+body.waldiez-light .agent-nested-recipient-name {
   font-size: 0.9rem;
   font-weight: 500;
   color: #343a40;
   flex: 1;
 }
 
-.flow-wrapper.dark .agent-nested-recipient-name {
+body.waldiez-dark .agent-nested-recipient-name {
   font-size: 0.9rem;
   font-weight: 500;
   color: #e0e0e0;

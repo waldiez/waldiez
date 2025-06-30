@@ -2,22 +2,22 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-wrapper .wizard {
+.wizard {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.flow-wrapper .wizard .wizard-step {
+.wizard .wizard-step {
   display: none;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
-.flow-wrapper .wizard .wizard-step--active {
+.wizard .wizard-step--active {
   display: unset;
 }
 
-.flow-wrapper .wizard .wizard-actions {
+.wizard .wizard-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;

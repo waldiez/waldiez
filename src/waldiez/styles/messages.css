@@ -3,10 +3,10 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-.flow-wrapper .info,
-.flow-wrapper .success,
-.flow-wrapper .warning,
-.flow-wrapper .error {
+.info,
+.success,
+.warning,
+.error {
   padding: 12px 16px;
   border-radius: 6px;
   border: 1px solid;
@@ -16,68 +16,68 @@
   transition: all 0.2s ease;
 }
 
-.flow-wrapper .info {
+.info {
   color: #1e40af;
   background: color-mix(in srgb, #3b82f6 10%, #fff);
   border-color: color-mix(in srgb, #3b82f6 25%, transparent);
 }
 
-.flow-wrapper.dark .info {
+body.waldiez-dark .info {
   color: #93c5fd;
   background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
   border-color: color-mix(in srgb, #3b82f6 30%, transparent);
 }
 
-.flow-wrapper .success {
+.success {
   color: #166534;
   background: color-mix(in srgb, #10b981 10%, #fff);
   border-color: color-mix(in srgb, #10b981 25%, transparent);
 }
 
-.flow-wrapper.dark .success {
+body.waldiez-dark .success {
   color: #6ee7b7;
   background: color-mix(in srgb, #10b981 15%, var(--background-color));
   border-color: color-mix(in srgb, #10b981 30%, transparent);
 }
 
-.flow-wrapper .warning {
+.warning {
   color: #a16207;
   background: color-mix(in srgb, #f59e0b 10%, #fff);
   border-color: color-mix(in srgb, #f59e0b 25%, transparent);
 }
 
-.flow-wrapper.dark .warning {
+body.waldiez-dark .warning {
   color: #fbbf24;
   background: color-mix(in srgb, #f59e0b 15%, var(--background-color));
   border-color: color-mix(in srgb, #f59e0b 30%, transparent);
 }
 
-.flow-wrapper .error {
+.error {
   color: #dc2626;
   background: color-mix(in srgb, #ef4444 10%, #fff);
   border-color: color-mix(in srgb, #ef4444 25%, transparent);
 }
 
-.flow-wrapper.dark .error {
+body.waldiez-dark .error {
   color: #fca5a5;
   background: color-mix(in srgb, #ef4444 15%, var(--background-color));
   border-color: color-mix(in srgb, #ef4444 30%, transparent);
 }
 
-.flow-wrapper .info a,
-.flow-wrapper .success a,
-.flow-wrapper .warning a,
-.flow-wrapper .error a {
+.info a,
+.success a,
+.warning a,
+.error a {
   color: inherit;
   text-decoration: underline;
   font-weight: 500;
   transition: opacity 0.2s ease;
 }
 
-.flow-wrapper .info a:hover,
-.flow-wrapper .success a:hover,
-.flow-wrapper .warning a:hover,
-.flow-wrapper .error a:hover {
+.info a:hover,
+.success a:hover,
+.warning a:hover,
+.error a:hover {
   opacity: 0.8;
 }
 
@@ -85,7 +85,7 @@
   color: #1e40af !important;
 }
 
-.flow-wrapper.dark .color-info {
+body.waldiez-dark .color-info {
   color: #93c5fd !important;
 }
 
@@ -93,7 +93,7 @@
   color: #166534 !important;
 }
 
-.flow-wrapper.dark .color-success {
+body.waldiez-dark .color-success {
   color: #6ee7b7 !important;
 }
 
@@ -101,7 +101,7 @@
   color: #a16207 !important;
 }
 
-.flow-wrapper.dark .color-warning {
+body.waldiez-dark .color-warning {
   color: #fbbf24 !important;
 }
 
@@ -109,7 +109,7 @@
   color: #dc2626 !important;
 }
 
-.flow-wrapper.dark .color-error {
+body.waldiez-dark .color-error {
   color: #fca5a5 !important;
 }
 
@@ -117,7 +117,7 @@
   background: color-mix(in srgb, #3b82f6 10%, #fff) !important;
 }
 
-.flow-wrapper.dark .background-info {
+body.waldiez-dark .background-info {
   background: color-mix(in srgb, #3b82f6 15%, var(--background-color)) !important;
 }
 
@@ -125,7 +125,7 @@
   background: color-mix(in srgb, #10b981 10%, #fff) !important;
 }
 
-.flow-wrapper.dark .background-success {
+body.waldiez-dark .background-success {
   background: color-mix(in srgb, #10b981 15%, var(--background-color)) !important;
 }
 
@@ -133,7 +133,7 @@
   background: color-mix(in srgb, #f59e0b 10%, #fff) !important;
 }
 
-.flow-wrapper.dark .background-warning {
+body.waldiez-dark .background-warning {
   background: color-mix(in srgb, #f59e0b 15%, var(--background-color)) !important;
 }
 
@@ -141,22 +141,22 @@
   background: color-mix(in srgb, #ef4444 10%, #fff) !important;
 }
 
-.flow-wrapper.dark .background-error {
+body.waldiez-dark .background-error {
   background: color-mix(in srgb, #ef4444 15%, var(--background-color)) !important;
 }
 
-.flow-wrapper .alert-with-icon {
+.alert-with-icon {
   display: flex;
   align-items: flex-start;
   gap: 8px;
 }
 
-.flow-wrapper .alert-dismissible {
+.alert-dismissible {
   position: relative;
   padding-right: 40px;
 }
 
-.flow-wrapper .alert-dismiss {
+.alert-dismiss {
   position: absolute;
   top: 8px;
   right: 12px;
@@ -170,6 +170,6 @@
   transition: opacity 0.2s ease;
 }
 
-.flow-wrapper .alert-dismiss:hover {
+.alert-dismiss:hover {
   opacity: 1;
 }
