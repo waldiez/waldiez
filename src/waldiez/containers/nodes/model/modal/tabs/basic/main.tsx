@@ -10,6 +10,7 @@ import { useModelModalBasicTab } from "@waldiez/containers/nodes/model/modal/tab
 import { ModelSelector } from "@waldiez/containers/nodes/model/modal/tabs/basic/selectModel";
 import { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/basic/types";
 import { modelLinks } from "@waldiez/containers/nodes/model/utils";
+import { LOGOS } from "@waldiez/theme/icons";
 import { WaldiezModelAPIType } from "@waldiez/types";
 import { capitalize } from "@waldiez/utils";
 
@@ -73,6 +74,20 @@ export const WaldiezNodeModelModalBasicTab: React.FC<WaldiezNodeModelModalBasicT
             [],
         );
 
+        const OptionWithIcon = memo(
+            (props: { innerProps: any; data: { label: string; value: WaldiezModelAPIType } }) => {
+                const { innerProps, data } = props;
+                return (
+                    <div {...innerProps} className="flex margin-10">
+                        <div className={`margin-right-10 margin-left-5 model-logo ${data.value}`}>
+                            <img src={LOGOS[data.value]} alt={data.label} style={{ width: 20, height: 20 }} />
+                        </div>
+                        <span className="label">{data.label}</span>
+                    </div>
+                );
+            },
+        );
+
         // Generate input IDs for accessibility
         const nameInputId = `model-name-input-${id}`;
         const apiTypeSelectId = `model-api-type-select-${id}`;
@@ -132,6 +147,7 @@ export const WaldiezNodeModelModalBasicTab: React.FC<WaldiezNodeModelModalBasicT
                             label: apiTypeLabel,
                             value: apiType,
                         }}
+                        components={{ Option: OptionWithIcon }}
                         onChange={onApiTypeChange}
                         inputId={apiTypeSelectId}
                         aria-label="Model API type"

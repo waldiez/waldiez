@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { AiFillCode, AiFillOpenAI } from "react-icons/ai";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTools } from "react-icons/fa";
 import { FaBars, FaRobot } from "react-icons/fa6";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
+import { LuBrain } from "react-icons/lu";
 
 import { useSidebar, useSidebarView } from "@waldiez/containers/sidebar/hooks";
 import { EditFlowModal } from "@waldiez/containers/sidebar/modals";
@@ -76,7 +76,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         data-testid="show-models"
                         onClick={onShowModels}
                     >
-                        <AiFillOpenAI />
+                        <LuBrain />
                         {!isCollapsed && <span>Models</span>}
                     </li>
                     <li
@@ -85,7 +85,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         data-testid="show-tools"
                         onClick={onShowTools}
                     >
-                        <AiFillCode />
+                        <FaTools />
                         {!isCollapsed && <span>Tools</span>}
                     </li>
                     <li

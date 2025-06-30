@@ -36,7 +36,7 @@ export const useWaldiezNodeTool = (id: string, data: WaldiezNodeToolData) => {
     // Format last updated date
     const updatedAt = useMemo(() => getDateString(data.updatedAt), [data.updatedAt]);
 
-    const logo = useMemo(() => getToolIcon(data.label), [data.label]);
+    const logo = useMemo(() => getToolIcon(data.label, 18), [data.label]);
 
     // Update local tool data when external data changes
     useEffect(() => {

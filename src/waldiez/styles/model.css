@@ -29,19 +29,26 @@
 .flow-wrapper .model-logo {
   display: flex;
   align-items: center;
+  background-color: transparent !important;
 }
 
 .flow-wrapper .model-logo img {
   width: 30px;
   max-width: 30px;
   height: auto;
+  background-color: transparent !important;
 }
 
 .flow-wrapper .model-logo.bedrock img,
-.flow-wrapper .model-logo.other img,
-.flow-wrapper .model-logo.openai img {
+.flow-wrapper .model-logo.other img {
   width: 20px !important;
   max-width: 20px !important;
+}
+
+.flow-wrapper .model-logo.openai img {
+  margin-left: 2px !important;
+  width: 18px !important;
+  max-width: 18px !important;
 }
 
 .flow-wrapper .model-logo.cohere img {

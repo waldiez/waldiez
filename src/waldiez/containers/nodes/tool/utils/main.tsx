@@ -2,7 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { FaCode, FaGoogle, FaWikipediaW, FaYoutube } from "react-icons/fa6";
+import { FaCode } from "react-icons/fa6";
+
+import { TOOL_ICONS } from "@waldiez/theme/icons";
+
+const ICON_SIZE = 14;
 
 export const PREDEFINED_TOOL_TYPES = ["wikipedia_search", "youtube_search", "google_search"];
 export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; key: string }[] } = {
@@ -27,22 +31,76 @@ export const DEFAULT_DESCRIPTION: { [key: string]: string } = {
     shared: "Shared code available to all agents.",
     custom: "A custom tool that you define.",
 };
-export const getToolIcon = (toolType: string): React.JSX.Element => {
+
+export const getToolIcon = (toolType: string, size: number = ICON_SIZE): React.JSX.Element => {
     switch (toolType) {
         case "wikipedia_search":
-            return <FaWikipediaW aria-hidden="true" />;
+            return (
+                <img
+                    src={TOOL_ICONS.wikipedia_search}
+                    alt="Wikipedia Search Icon"
+                    style={{ width: size, height: size }}
+                />
+            );
         case "youtube_search":
-            return <FaYoutube aria-hidden="true" />;
+            return (
+                <img
+                    src={TOOL_ICONS.youtube_search}
+                    alt="YouTube Search Icon"
+                    style={{ width: size, height: size }}
+                />
+            );
         case "google_search":
-            return <FaGoogle aria-hidden="true" />;
+            return (
+                <img
+                    src={TOOL_ICONS.google_search}
+                    alt="Google Search Icon"
+                    style={{ width: size, height: size }}
+                />
+            );
         default:
-            return <FaCode aria-hidden="true" />;
+            return <FaCode aria-hidden="true" size={size} style={{ width: size, height: size }} />;
     }
 };
-export const TOOL_TYPE_OPTIONS: { value: string; label: string }[] = [
-    { value: "shared", label: "Shared Code" },
-    { value: "wikipedia_search", label: "Wikipedia Search" },
-    { value: "youtube_search", label: "YouTube Search" },
-    { value: "google_search", label: "Google Search" },
-    { value: "custom", label: "Custom Tool" },
+
+export const TOOL_TYPE_OPTIONS: { value: string; label: string; icon?: React.JSX.Element }[] = [
+    {
+        value: "shared",
+        label: "Shared Code",
+        icon: <FaCode size={20} style={{ width: 20, height: 20 }} />,
+    },
+    {
+        value: "wikipedia_search",
+        label: "Wikipedia Search",
+        icon: (
+            <img
+                src={TOOL_ICONS.wikipedia_search}
+                alt="Wikipedia Search Icon"
+                style={{ width: 20, height: 20 }}
+            />
+        ),
+    },
+    {
+        value: "youtube_search",
+        label: "YouTube Search",
+        icon: (
+            <img
+                src={TOOL_ICONS.youtube_search}
+                alt="YouTube Search Icon"
+                style={{ width: 20, height: 20 }}
+            />
+        ),
+    },
+    {
+        value: "google_search",
+        label: "Google Search",
+        icon: (
+            <img src={TOOL_ICONS.google_search} alt="Google Search Icon" style={{ width: 20, height: 20 }} />
+        ),
+    },
+    {
+        value: "custom",
+        label: "Custom Tool",
+        icon: <FaCode size={20} style={{ width: 20, height: 20 }} />,
+    },
 ];

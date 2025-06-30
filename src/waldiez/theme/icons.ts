@@ -11,11 +11,15 @@ import anthropic from "@waldiez/assets/logos/claude.svg";
 import cohere from "@waldiez/assets/logos/cohere.svg";
 import deepseek from "@waldiez/assets/logos/deepseek.svg";
 import google from "@waldiez/assets/logos/gemini.svg";
+import googleSearchTool from "@waldiez/assets/logos/google.svg";
 import groq from "@waldiez/assets/logos/groq.svg";
 import mistral from "@waldiez/assets/logos/mistral.svg";
 import nim from "@waldiez/assets/logos/nim.svg";
 import openai from "@waldiez/assets/logos/openai.svg";
+import other from "@waldiez/assets/logos/other.svg";
 import together from "@waldiez/assets/logos/together.svg";
+import wikipediaSearchTool from "@waldiez/assets/logos/wikipedia.svg";
+import youtubeSearchTool from "@waldiez/assets/logos/youtube.svg";
 import managerWebp from "@waldiez/assets/manager.webp";
 import ragWebp from "@waldiez/assets/rag.webp";
 import reasoningWebp from "@waldiez/assets/reasoning.webp";
@@ -38,7 +42,7 @@ export const LOGOS = {
     groq,
     together,
     nim,
-    other: openai,
+    other,
 };
 /**
  * A collection of agent icons used in Waldiez.
@@ -53,4 +57,10 @@ export const AGENT_ICONS = {
     group_manager: managerWebp,
 };
 
-export const WADLIEZ_ICON = generic;
+export const TOOL_ICONS = {
+    google_search: googleSearchTool,
+    wikipedia_search: wikipediaSearchTool,
+    youtube_search: youtubeSearchTool,
+};
+
+export const WALDIEZ_ICON = generic;

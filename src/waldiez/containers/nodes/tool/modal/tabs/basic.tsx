@@ -77,6 +77,18 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
         [onUpdateSecrets],
     );
 
+    const ToolOptionWithIcon = memo(
+        (props: { innerProps: any; data: { icon?: React.JSX.Element; label: string } }) => {
+            const { innerProps, data } = props;
+            return (
+                <div {...innerProps} className="flex margin-5">
+                    {data.icon && <div className="icon margin-right-10 margin-left-5">{data.icon}</div>}
+                    <span className="label">{data.label}</span>
+                </div>
+            );
+        },
+    );
+
     return (
         <div className="flex-column">
             <div className="margin-bottom-10">
@@ -89,6 +101,9 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                     onChange={onToolTypeSelectChange}
                     data-testid={typeSelectId}
                     aria-label="Tool type"
+                    components={{
+                        Option: ToolOptionWithIcon,
+                    }}
                 />
             </div>
             {data.toolType !== "predefined" && (

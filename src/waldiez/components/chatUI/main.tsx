@@ -9,7 +9,7 @@ import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageModal } from "@waldiez/components/chatUI/imageModal";
 import { ChatUIProps, WaldiezChatMessage } from "@waldiez/components/chatUI/types";
 import { parseMessageContent } from "@waldiez/components/chatUI/utils";
-import { WADLIEZ_ICON } from "@waldiez/theme";
+import { WALDIEZ_ICON } from "@waldiez/theme";
 
 type ChatUIMessage = {
     id: string;
@@ -132,7 +132,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
                                             <div className="avatar-container">
                                                 <div className={"avatar assistant-avatar"}>
                                                     <img
-                                                        src={WADLIEZ_ICON}
+                                                        src={WALDIEZ_ICON}
                                                         alt="Assistant Avatar"
                                                         className="avatar-image"
                                                     />
