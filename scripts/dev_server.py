@@ -480,6 +480,7 @@ class WaldiezDevServer:
             self.port,
             ping_timeout=None,
             ping_interval=None,
+            max_size=None,
         ):
             to_log = f"Server started at ws://{self.host}:{self.port}"
             logger.info(to_log)
