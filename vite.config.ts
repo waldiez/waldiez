@@ -244,7 +244,7 @@ export default defineConfig(({ command }) => ({
             all: true,
         },
         onConsoleLog(log: string, type: "stdout" | "stderr"): boolean | void {
-            // execpted warnings
+            // expected warnings
             // snackbar provider might not be mounted (we only render specific components in some tests)
             const isSnackbarNotMounted = log.includes("SnackbarProvider is not mounted");
             const isNotFound = log.includes("not found");
@@ -265,7 +265,7 @@ export default defineConfig(({ command }) => ({
             const isNotValidJSON = log.includes("SyntaxError: Expected property name or '}' in JSON");
             const isReceivedNaN = isReceivedNaNRexExp.test(log);
             const isErrorBoundary = log.includes("Cannot read properties of undefined (reading 'x')");
-            const shouldBeignored =
+            const shouldBeIgnored =
                 isNotFound ||
                 isNoItemToExport ||
                 isErrorBoundary ||
@@ -273,7 +273,7 @@ export default defineConfig(({ command }) => ({
                 isNoActWarning ||
                 isNotValidJSON ||
                 isSnackbarNotMounted;
-            return type === "stderr" && !shouldBeignored;
+            return type === "stderr" && !shouldBeIgnored;
         },
         // global test setup
         setupFiles: isBrowserTest ? [] : ["./vitest.setup.tsx"],
