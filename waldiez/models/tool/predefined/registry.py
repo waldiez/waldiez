@@ -4,6 +4,7 @@
 
 from ._config import PredefinedToolConfig
 from ._google import GoogleSearchConfig
+from ._tavily import TavilySearchConfig
 from ._wikipedia import WikipediaSearchConfig
 from ._youtube import YouTubeSearchConfig
 
@@ -11,6 +12,7 @@ PREDEFINED_TOOLS: dict[str, PredefinedToolConfig] = {
     GoogleSearchConfig.name: GoogleSearchConfig,
     WikipediaSearchConfig.name: WikipediaSearchConfig,
     YouTubeSearchConfig.name: YouTubeSearchConfig,
+    TavilySearchConfig.name: TavilySearchConfig,
 }
 
 

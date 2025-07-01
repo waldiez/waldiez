@@ -29,6 +29,7 @@ export const Select = forwardRef(
                 {...props}
                 className={`select ${props.className ? ` ${props.className}` : ""}`}
                 classNamePrefix="w-select"
+                menuPortalTarget={import.meta.env.VITEST ? undefined : document.body}
                 // menuPlacement="auto"
                 styles={{
                     menuPortal: base => ({

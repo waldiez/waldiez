@@ -85,12 +85,12 @@ class YouTubeSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         os.environ["YOUTUBE_API_KEY"] = secrets.get("YOUTUBE_API_KEY", "")
-        content = """
+        content = f"""
 youtube_api_key = os.environ.get("YOUTUBE_API_KEY", "")
 if not youtube_api_key:
     raise ValueError("YOUTUBE_API_KEY is required for YouTube search tool.")
-youtube_tool = YoutubeSearchTool(
-youtube_api_key=youtube_api_key,
+{self.name} = YoutubeSearchTool(
+    youtube_api_key=youtube_api_key,
 )
 """
         return content

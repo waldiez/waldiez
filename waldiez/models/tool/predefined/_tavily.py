@@ -1,56 +1,54 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Predefined Wikipedia search tool for Waldiez."""
+# pylint: disable=line-too-long
+# flake8: noqa: E501
+"""Predefined Tavily search tool for Waldiez."""
 
+import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
 from ._protocol import PredefinedTool
 
 
-class WikipediaSearchToolImpl(PredefinedTool):
-    """Wikipedia search tool for Waldiez."""
+class TavilySearchToolImpl(PredefinedTool):
+    """Tavily search tool for Waldiez."""
 
     @property
     def name(self) -> str:
         """Tool name."""
-        return "wikipedia_search"
+        return "tavily_search"
 
     @property
     def description(self) -> str:
         """Tool description."""
-        return "Search Wikipedia for a given query."
+        return "Search Tavily for a given query."
 
     @property
     def required_secrets(self) -> list[str]:
         """Required secrets/environment variables."""
-        return []
+        return ["TAVILY_API_KEY"]
 
     @property
     def kwargs(self) -> dict[str, Any]:
         """Keyword arguments for the tool, used for initialization."""
-        return {
-            "language": "en",
-            "top_k": 3,
-            "verbose": False,
-        }
+        return {}
 
     @property
     def requirements(self) -> list[str]:
         """Python requirements for the tool."""
-        return ["ag2[wikipedia, openai]"]
+        return ["ag2[tavily, openai]"]
 
     @property
     def tags(self) -> list[str]:
         """Tags for the tool, used for categorization."""
-        return ["wikipedia", "search", "knowledge", "reference"]
+        return ["tavily", "search", "web"]
 
     @property
     def tool_imports(self) -> list[str]:
         """Imports required for the tool implementation."""
         return [
-            "from autogen.tools.experimental import WikipediaQueryRunTool",
-            "from autogen.tools.experimental import WikipediaPageLoadTool",
+            "from autogen.tools.experimental import TavilySearchTool",
         ]
 
     def validate_secrets(self, secrets: dict[str, str]) -> list[str]:
@@ -66,13 +64,16 @@ class WikipediaSearchToolImpl(PredefinedTool):
         list[str]
             List of missing required secrets.
         """
-        return []
+        missing = []
+        if not secrets.get("TAVILY_API_KEY"):
+            missing.append("TAVILY_API_KEY")
+        return missing
 
     def get_content(
         self,
         secrets: dict[str, str],
     ) -> str:
-        """Get the content of the tool.
+        """Get content for the tool.
 
         Parameters
         ----------
@@ -82,21 +83,28 @@ class WikipediaSearchToolImpl(PredefinedTool):
         Returns
         -------
         str
-            Content of the tool.
+            The content for the tool.
         """
-        content = f"{self.name} = WikipediaQueryRunTool(\n"
-        for key, value in self.kwargs.items():
-            content += f"    {key}={value!r},\n"
-        content += ")\n"
+        os.environ["TAVILY_API_KEY"] = secrets.get(
+            "TAVILY_API_KEY", os.environ.get("TAVILY_API_KEY", "")
+        )
+        content = f"""
+tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
+if not tavily_api_key:
+    raise ValueError("TAVILY_API_KEY is required for Tavily search tool.")
+{self.name} = TavilySearchTool(
+    tavily_api_key=tavily_api_key,
+)
+"""
         return content
 
 
-WikipediaSearchTool = WikipediaSearchToolImpl()
-WikipediaSearchConfig = PredefinedToolConfig(
-    name=WikipediaSearchTool.name,
-    description=WikipediaSearchTool.description,
-    required_secrets=WikipediaSearchTool.required_secrets,
-    requirements=WikipediaSearchTool.requirements,
-    tags=WikipediaSearchTool.tags,
-    implementation=WikipediaSearchTool,
+TavilySearchTool = TavilySearchToolImpl()
+TavilySearchConfig = PredefinedToolConfig(
+    name=TavilySearchTool.name,
+    description=TavilySearchTool.description,
+    required_secrets=TavilySearchTool.required_secrets,
+    requirements=TavilySearchTool.requirements,
+    tags=TavilySearchTool.tags,
+    implementation=TavilySearchTool,
 )

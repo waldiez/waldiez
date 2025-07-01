@@ -17,6 +17,7 @@ import mistral from "@waldiez/assets/logos/mistral.svg";
 import nim from "@waldiez/assets/logos/nim.svg";
 import openai from "@waldiez/assets/logos/openai.svg";
 import other from "@waldiez/assets/logos/other.svg";
+import tavily from "@waldiez/assets/logos/tavily.svg";
 import together from "@waldiez/assets/logos/together.svg";
 import wikipediaSearchTool from "@waldiez/assets/logos/wikipedia.svg";
 import youtubeSearchTool from "@waldiez/assets/logos/youtube.svg";
@@ -61,6 +62,7 @@ export const TOOL_ICONS = {
     google_search: googleSearchTool,
     wikipedia_search: wikipediaSearchTool,
     youtube_search: youtubeSearchTool,
+    tavily_search: tavily,
 };
 
 export const WALDIEZ_ICON = generic;

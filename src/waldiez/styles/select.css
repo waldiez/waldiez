@@ -18,10 +18,6 @@
   padding: 2px 4px;
 }
 
-.w-select__menu {
-  position: relative;
-}
-
 .w-select__control:hover {
   border-color: #3b82f6;
 }
@@ -39,7 +35,7 @@ body.waldiez-light .w-select__menu {
 }
 
 body.waldiez-dark .w-select__menu {
-  background-color: #333;
+  background-color: #222 !important;
   border: 1px solid #444 !important;
 }
 

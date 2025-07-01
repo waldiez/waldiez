@@ -23,7 +23,7 @@ from .registration import ToolRegistrationProcessor
 
 
 class ToolsExporter(Exporter[ToolExtras]):
-    """Rools exporter with structured extras."""
+    """Tools exporter with structured extras."""
 
     def __init__(
         self,

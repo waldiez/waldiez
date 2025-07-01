@@ -92,14 +92,14 @@ class GoogleSearchToolImpl(PredefinedTool):
         os.environ["GOOGLE_SEARCH_ENGINE_ID"] = secrets.get(
             "GOOGLE_SEARCH_ENGINE_ID", ""
         )
-        content = """
+        content = f"""
 google_search_api_key = os.environ.get("GOOGLE_SEARCH_API_KEY", "")
 if not google_search_api_key:
     raise ValueError("GOOGLE_SEARCH_API_KEY is required for Google search tool.")
 google_search_engine_id = os.environ.get("GOOGLE_SEARCH_ENGINE_ID", "")
 if not google_search_engine_id:
     raise ValueError("GOOGLE_SEARCH_ENGINE_ID is required for Google search tool.")
-google_search_tool = GoogleSearchTool(
+{self.name} = GoogleSearchTool(
     search_api_key=google_search_api_key,
     search_engine_id=google_search_engine_id,
 )
