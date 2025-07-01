@@ -13307,9 +13307,11 @@ const ChatModal = memo((props) => {
   const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLocallyOpen, setIsLocallyOpen] = useState(true);
   const inputRef = useRef(null);
   useEffect(() => {
     if (chat?.showUI) {
+      setIsLocallyOpen(true);
       setTextInput("");
       setImagePreview(null);
       requestAnimationFrame(() => {
@@ -13387,7 +13389,11 @@ const ChatModal = memo((props) => {
   const handleClose = useCallback(() => {
     setTextInput("");
     setImagePreview(null);
-    chat?.handlers?.onClose?.();
+    if (chat?.handlers?.onClose) {
+      chat.handlers.onClose();
+    } else {
+      setIsLocallyOpen(false);
+    }
   }, [chat?.handlers]);
   const openFileSelectModal = useCallback(() => {
     setIsFileSelectModalOpen(true);
@@ -13413,7 +13419,7 @@ const ChatModal = memo((props) => {
   const inputId = `rf-${flowId}-chat-modal-input`;
   const imageInputId = `rf-${flowId}-chat-modal-image`;
   const modalTestId = `rf-${flowId}-chat-modal`;
-  const isModalOpen = chat?.showUI === true || chat !== void 0 && chat.messages.length > 0;
+  const isModalOpen = isLocallyOpen && (chat?.showUI === true || chat !== void 0 && chat.messages.length > 0);
   const leftIcon = chat?.handlers?.onInterrupt ? /* @__PURE__ */ jsx(
     "div",
     {
@@ -13438,6 +13444,8 @@ const ChatModal = memo((props) => {
       hasMaximizeBtn: true,
       hasCloseBtn: chat?.showUI === false,
       dataTestId: modalTestId,
+      hasUnsavedChanges: false,
+      preventCloseIfUnsavedChanges: false,
       children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
         chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsx(
           ChatUI,

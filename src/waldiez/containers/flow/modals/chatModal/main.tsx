@@ -23,6 +23,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [isLocallyOpen, setIsLocallyOpen] = useState(true);
 
     // Refs
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -30,6 +31,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     // Reset input fields and focus when modal opens
     useEffect(() => {
         if (chat?.showUI) {
+            setIsLocallyOpen(true);
             setTextInput("");
             setImagePreview(null);
 
@@ -142,7 +144,13 @@ export const ChatModal = memo((props: ChatModalProps) => {
         // Reset input state
         setTextInput("");
         setImagePreview(null);
-        chat?.handlers?.onClose?.();
+        // chat?.handlers?.onClose?.();
+        if (chat?.handlers?.onClose) {
+            chat.handlers.onClose();
+        } else {
+            // Fallback: close the modal locally
+            setIsLocallyOpen(false);
+        }
     }, [chat?.handlers]);
 
     /**
@@ -182,7 +190,8 @@ export const ChatModal = memo((props: ChatModalProps) => {
     const inputId = `rf-${flowId}-chat-modal-input`;
     const imageInputId = `rf-${flowId}-chat-modal-image`;
     const modalTestId = `rf-${flowId}-chat-modal`;
-    const isModalOpen = chat?.showUI === true || (chat !== undefined && chat.messages.length > 0);
+    const isModalOpen =
+        isLocallyOpen && (chat?.showUI === true || (chat !== undefined && chat.messages.length > 0));
     const leftIcon = chat?.handlers?.onInterrupt ? (
         <div
             role="button"
@@ -206,6 +215,8 @@ export const ChatModal = memo((props: ChatModalProps) => {
             hasMaximizeBtn={true}
             hasCloseBtn={chat?.showUI === false}
             dataTestId={modalTestId}
+            hasUnsavedChanges={false}
+            preventCloseIfUnsavedChanges={false}
         >
             <div className="modal-body">
                 {chat?.messages && chat.messages.length > 0 && (
