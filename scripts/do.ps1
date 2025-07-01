@@ -52,7 +52,7 @@ function Invoke-Py {
             if (Get-Command uv -ErrorAction SilentlyContinue) {
                 uv sync
                 uv pip install --upgrade pip
-                
+
                 $activateScript = if ($IsWindows) {
                     Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "Scripts", "Activate.ps1"
                 }
@@ -68,7 +68,7 @@ function Invoke-Py {
                     exit 1
                 }
                 $env:PATH = "$ROOT_DIR/.venv/Scripts;$env:PATH"
-                
+
                 Write-Host "Installing requirements..." -ForegroundColor Cyan
                 uv pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
                 if ($LASTEXITCODE -ne 0) {
@@ -78,7 +78,7 @@ function Invoke-Py {
             }
             else {
                 New-Venv
-                
+
                 $activateScript = if ($IsWindows) {
                     Join-Path -Path $ROOT_DIR -ChildPath ".venv" -AdditionalChildPath "Scripts", "Activate.ps1"
                 }
@@ -94,7 +94,7 @@ function Invoke-Py {
                     exit 1
                 }
                 $env:PATH = "$ROOT_DIR/.venv/Scripts;$env:PATH"
-                
+
                 Update-Pip
                 Write-Host "Installing requirements..." -ForegroundColor Cyan
                 pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
@@ -126,7 +126,7 @@ function Invoke-Py {
             $scripts = @("clean.py", "format.py", "lint.py", "test.py", "build.py", "docs.py", "image.py")
             foreach ($script in $scripts) {
                 $scriptPath = Join-Path -Path $ROOT_DIR -ChildPath "scripts" -AdditionalChildPath $script
-                
+
                 if (-not $env:HATCH_ENV_ACTIVE) {
                     if (Get-Command uv -ErrorAction SilentlyContinue) {
                         uv run $scriptPath
