@@ -3,7 +3,15 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable complexity */
-import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { FaChevronDown, FaChevronUp, FaCircleXmark, FaCompress, FaExpand } from "react-icons/fa6";
 
@@ -33,7 +41,26 @@ type ModalProps = {
 // Account for modal padding: header, borders, content padding
 const MODAL_CHROME_WIDTH = 40;
 
-export const Modal = memo<ModalProps>(props => {
+export const Modal = forwardRef<{ close: () => void; showModal: () => void }, ModalProps>((props, ref) => {
+    const [isInternallyOpen, setIsInternallyOpen] = useState(props.isOpen);
+
+    // Expose dialog-like methods
+    useImperativeHandle(ref, () => ({
+        close: () => {
+            setIsInternallyOpen(false);
+            props.onClose?.();
+        },
+        showModal: () => {
+            setIsInternallyOpen(true);
+        },
+    }));
+
+    // Reset when external prop changes
+    useEffect(() => {
+        if (props.isOpen) {
+            setIsInternallyOpen(true);
+        }
+    }, [props.isOpen]);
     const {
         id,
         isOpen,
@@ -177,7 +204,7 @@ export const Modal = memo<ModalProps>(props => {
         .filter(Boolean)
         .join(" ");
 
-    if (!isOpen || !portalContainer) {
+    if (!isOpen || !portalContainer || !isInternallyOpen) {
         return null;
     }
 
