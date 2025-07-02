@@ -4,7 +4,7 @@
 
 from dataclasses import dataclass
 
-from ._protocol import PredefinedTool
+from .protocol import PredefinedTool
 
 
 @dataclass
@@ -14,6 +14,7 @@ class PredefinedToolConfig:
     name: str
     description: str
     required_secrets: list[str]
+    required_kwargs: dict[str, type]
     requirements: list[str]
     tags: list[str]
     implementation: PredefinedTool
@@ -32,6 +33,21 @@ class PredefinedToolConfig:
             List of missing required secrets.
         """
         return self.implementation.validate_secrets(secrets)
+
+    def validate_kwargs(self, kwargs: dict[str, str]) -> list[str]:
+        """Validate keyword arguments and return list of missing required ones.
+
+        Parameters
+        ----------
+        kwargs : dict[str, str]
+            Dictionary of keyword arguments.
+
+        Returns
+        -------
+        list[str]
+            List of missing required keyword arguments.
+        """
+        return self.implementation.validate_kwargs(kwargs)
 
     def get_content(
         self,

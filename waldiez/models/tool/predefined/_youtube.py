@@ -6,11 +6,16 @@ import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
-from ._protocol import PredefinedTool
+from .protocol import PredefinedTool
 
 
 class YouTubeSearchToolImpl(PredefinedTool):
     """YouTube search tool for Waldiez."""
+
+    required_secrets: list[str] = ["YOUTUBE_API_KEY"]
+    required_kwargs: dict[str, type] = {
+        "youtube_search_engine_id": str,
+    }
 
     @property
     def name(self) -> str:
@@ -21,11 +26,6 @@ class YouTubeSearchToolImpl(PredefinedTool):
     def description(self) -> str:
         """Tool description."""
         return "Search YouTube for a given query."
-
-    @property
-    def required_secrets(self) -> list[str]:
-        """Required secrets/environment variables."""
-        return ["YOUTUBE_API_KEY"]
 
     @property
     def kwargs(self) -> dict[str, Any]:
@@ -68,6 +68,21 @@ class YouTubeSearchToolImpl(PredefinedTool):
                 missing.append(secret)
         return missing
 
+    def validate_kwargs(self, kwargs: dict[str, Any]) -> list[str]:
+        """Validate keyword arguments and return list of missing required ones.
+
+        Parameters
+        ----------
+        kwargs : dict[str, Any]
+            Dictionary of keyword arguments.
+
+        Returns
+        -------
+        list[str]
+            List of missing required keyword arguments.
+        """
+        return []
+
     def get_content(
         self,
         secrets: dict[str, str],
@@ -101,6 +116,7 @@ YouTubeSearchConfig = PredefinedToolConfig(
     name=YouTubeSearchTool.name,
     description=YouTubeSearchTool.description,
     required_secrets=YouTubeSearchTool.required_secrets,
+    required_kwargs=YouTubeSearchTool.required_kwargs,
     requirements=YouTubeSearchTool.requirements,
     tags=YouTubeSearchTool.tags,
     implementation=YouTubeSearchTool,

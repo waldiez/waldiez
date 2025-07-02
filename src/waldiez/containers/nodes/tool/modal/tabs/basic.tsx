@@ -4,13 +4,14 @@
  */
 import { memo, useCallback, useMemo } from "react";
 
-import { Editor, Select, SingleValue, TextareaInput } from "@waldiez/components";
+import { Editor, Select, SingleValue, TextInput, TextareaInput } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import {
     DEFAULT_DESCRIPTION,
     DEFAULT_NAME,
     PREDEFINED_TOOL_REQUIRED_ENVS,
+    PREDEFINED_TOOL_REQUIRED_KWARGS,
     PREDEFINED_TOOL_TYPES,
     TOOL_TYPE_OPTIONS,
 } from "@waldiez/containers/nodes/tool/utils";
@@ -23,8 +24,14 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     const { toolId, data, darkMode } = props;
 
     // Get handlers from custom hook
-    const { onToolContentChange, onToolLabelChange, onToolDescriptionChange, onToolTypeChange, onAddSecret } =
-        useToolNodeModal(props);
+    const {
+        onToolContentChange,
+        onToolLabelChange,
+        onToolDescriptionChange,
+        onToolTypeChange,
+        onAddSecret,
+        onSetToolKwarg,
+    } = useToolNodeModal(props);
 
     // Memoize the selected tool type option
     const selectedToolType = useMemo(
@@ -70,6 +77,14 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             onAddSecret(envVar, value);
         },
         [onAddSecret],
+    );
+
+    const onPredefinedToolArgChange = useCallback(
+        (kwarg: string, event: React.ChangeEvent<HTMLInputElement>) => {
+            const value = event.target.value;
+            onSetToolKwarg(kwarg, value);
+        },
+        [onSetToolKwarg],
     );
 
     const ToolOptionWithIcon = memo(
@@ -146,21 +161,37 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                     />
                 </div>
             )}
+            {data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && (
+                <div className="margin-top-10">
+                    {PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].map((kwarg, index) => (
+                        <div key={index} className="margin-bottom-5">
+                            <TextInput
+                                name={kwarg.label}
+                                label={`${kwarg.label}:`}
+                                dataTestId={`env-var-input-${index}-${kwarg.key}`}
+                                value={(data.kwargs ? (data.kwargs[kwarg.key] as string) : "") || ""}
+                                onChange={onPredefinedToolArgChange.bind(null, kwarg.key)}
+                                className="margin-top-10"
+                                isPassword={false}
+                                placeholder={`Enter the ${kwarg.label}`}
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
             {data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && (
                 <div className="margin-top-10">
                     {PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => (
                         <div key={index} className="margin-bottom-5">
-                            <label htmlFor={`env-var-${index}-${envVar.key}`}>{envVar.label}:</label>
-                            <div className="margin-top-10" />
-                            <input
-                                type="text"
-                                id={`env-var-${index}-${envVar.key}`}
+                            <TextInput
+                                name={envVar.label}
+                                label={`${envVar.label}:`}
+                                dataTestId={`env-var-input-${index}-${envVar.key}`}
                                 value={(data.secrets[envVar.key] as string) || ""}
                                 onChange={onPredefinedToolEnvChange.bind(null, envVar.key)}
-                                className="full-width"
-                                aria-label={`Environment variable ${envVar.label}`}
-                                data-testid={`env-var-input-${index}-${envVar.key}`}
-                                placeholder={envVar.key}
+                                className="margin-top-10"
+                                placeholder={`Enter the ${envVar.label}`}
+                                isPassword
                             />
                         </div>
                     ))}

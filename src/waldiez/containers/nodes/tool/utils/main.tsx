@@ -12,11 +12,14 @@ export const PREDEFINED_TOOL_TYPES = ["wikipedia_search", "youtube_search", "goo
 export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; key: string }[] } = {
     wikipedia_search: [],
     youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
-    google_search: [
-        { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" },
-        { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" },
-    ],
+    google_search: [{ label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }],
     tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
+};
+export const PREDEFINED_TOOL_REQUIRED_KWARGS: { [key: string]: { label: string; key: string }[] } = {
+    wikipedia_search: [],
+    youtube_search: [],
+    google_search: [{ label: "Google Search Engine ID", key: "google_search_engine_id" }],
+    tavily_search: [],
 };
 export const DEFAULT_NAME: { [key: string]: string } = {
     wikipedia_search: "Wikipedia Search",

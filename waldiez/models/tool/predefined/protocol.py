@@ -4,12 +4,15 @@
 """Predefined tool protocol definition for Waldiez."""
 
 # pyright: reportReturnType=false
-from typing import Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 
 @runtime_checkable
 class PredefinedTool(Protocol):
     """Protocol for predefined tools in Waldiez."""
+
+    required_secrets: list[str]
+    required_kwargs: dict[str, type]
 
     @property
     def name(self) -> str:
@@ -18,14 +21,6 @@ class PredefinedTool(Protocol):
     @property
     def description(self) -> str:
         """Tool description."""
-
-    @property
-    def required_secrets(self) -> list[str]:
-        """Required secrets/environment variables."""
-
-    @property
-    def kwargs(self) -> dict[str, str]:
-        """Keyword arguments for the tool, used for initialization."""
 
     @property
     def requirements(self) -> list[str]:
@@ -68,4 +63,23 @@ class PredefinedTool(Protocol):
         -------
         list[str]
             List of missing required secrets.
+        """
+
+    def validate_kwargs(self, kwargs: dict[str, Any]) -> list[str]:
+        """Validate keyword arguments and return list of missing required ones.
+
+        Parameters
+        ----------
+        kwargs : dict[str, Any]
+            Dictionary of keyword arguments.
+
+        Returns
+        -------
+        list[str]
+            List of missing required keyword arguments.
+
+        Raises
+        ------
+        ValueError
+            If any required keyword arguments are missing or of incorrect type.
         """

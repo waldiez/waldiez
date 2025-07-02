@@ -22,6 +22,7 @@ type TextInputProps = {
     fullWidth?: boolean;
     className?: string;
     labelClassName?: string;
+    inputClassName?: string;
 };
 
 /**
@@ -41,6 +42,7 @@ export const TextInput = memo<{
     isPassword?: boolean;
     fullWidth?: boolean;
     className?: string;
+    inputClassName?: string;
     labelClassName?: string;
 }>((props: TextInputProps) => {
     const {
@@ -58,6 +60,7 @@ export const TextInput = memo<{
         isPassword = false,
         fullWidth = false,
         labelClassName = "",
+        inputClassName = "",
     } = props;
 
     // State for password visibility
@@ -110,9 +113,9 @@ export const TextInput = memo<{
     return (
         <>
             {renderLabel()}
-            <div className="flex">
+            <div className={`text-input-container flex ${className}`}>
                 <input
-                    className={className}
+                    className={inputClassName}
                     placeholder={placeholder}
                     type={inputType}
                     value={value !== null ? value : onNull}

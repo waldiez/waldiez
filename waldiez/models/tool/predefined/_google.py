@@ -8,11 +8,19 @@ import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
-from ._protocol import PredefinedTool
+from .protocol import PredefinedTool
 
 
 class GoogleSearchToolImpl(PredefinedTool):
     """Google search tool for Waldiez."""
+
+    required_secrets: list[str] = [
+        "GOOGLE_SEARCH_API_KEY",
+    ]
+    required_kwargs: dict[str, type] = {
+        "google_search_engine_id": str,
+    }
+    _kwargs: dict[str, Any] = {}
 
     @property
     def name(self) -> str:
@@ -25,14 +33,9 @@ class GoogleSearchToolImpl(PredefinedTool):
         return "Search Google for a given query."
 
     @property
-    def required_secrets(self) -> list[str]:
-        """Required secrets/environment variables."""
-        return ["GOOGLE_SEARCH_ENGINE_ID", "GOOGLE_SEARCH_API_KEY"]
-
-    @property
     def kwargs(self) -> dict[str, Any]:
         """Keyword arguments for the tool, used for initialization."""
-        return {}
+        return self._kwargs
 
     @property
     def requirements(self) -> list[str]:
@@ -51,6 +54,14 @@ class GoogleSearchToolImpl(PredefinedTool):
             "from autogen.tools.experimental import GoogleSearchTool",
         ]
 
+    @property
+    def google_search_engine_id(self) -> str:
+        """Google search engine ID."""
+        from_env = os.environ.get("GOOGLE_SEARCH_ENGINE_ID", "")
+        if from_env:
+            return from_env
+        return str(self.kwargs.get("google_search_engine_id", ""))
+
     def validate_secrets(self, secrets: dict[str, str]) -> list[str]:
         """Validate secrets and return list of missing required ones.
 
@@ -68,6 +79,45 @@ class GoogleSearchToolImpl(PredefinedTool):
         for secret in self.required_secrets:
             if secret not in secrets:
                 missing.append(secret)
+        return missing
+
+    def validate_kwargs(self, kwargs: dict[str, str]) -> list[str]:
+        """Validate keyword arguments and return list of missing required ones.
+
+        Parameters
+        ----------
+        kwargs : dict[str, str]
+            Dictionary of keyword arguments.
+
+        Returns
+        -------
+        list[str]
+            List of missing required keyword arguments.
+
+        Raises
+        ------
+        ValueError
+            If any keyword argument is invalid
+            (cannot be cast to the required type).
+        """
+        missing: list[str] = []
+        invalid: list[str] = []
+        for name, type_of in self.required_kwargs.items():
+            if name not in kwargs:
+                missing.append(name)
+            elif not isinstance(kwargs[name], type_of):
+                try:
+                    kwargs[name] = type_of(kwargs[name])
+                    self._kwargs[name] = kwargs[name]
+                except Exception:  # pylint: disable=broad-except
+                    invalid.append(name)
+                else:
+                    if name in self._kwargs:
+                        self._kwargs[name] = kwargs[name]
+            else:
+                self._kwargs[name] = kwargs[name]
+        if invalid:
+            raise ValueError(f"Invalid keyword arguments: {invalid}")
         return missing
 
     def get_content(
@@ -89,19 +139,16 @@ class GoogleSearchToolImpl(PredefinedTool):
         os.environ["GOOGLE_SEARCH_API_KEY"] = secrets.get(
             "GOOGLE_SEARCH_API_KEY", ""
         )
-        os.environ["GOOGLE_SEARCH_ENGINE_ID"] = secrets.get(
-            "GOOGLE_SEARCH_ENGINE_ID", ""
-        )
+        google_search_engine_id = self.google_search_engine_id
+        if not google_search_engine_id:
+            google_search_engine_id = secrets.get("GOOGLE_SEARCH_ENGINE_ID", "")
         content = f"""
 google_search_api_key = os.environ.get("GOOGLE_SEARCH_API_KEY", "")
 if not google_search_api_key:
     raise ValueError("GOOGLE_SEARCH_API_KEY is required for Google search tool.")
-google_search_engine_id = os.environ.get("GOOGLE_SEARCH_ENGINE_ID", "")
-if not google_search_engine_id:
-    raise ValueError("GOOGLE_SEARCH_ENGINE_ID is required for Google search tool.")
 {self.name} = GoogleSearchTool(
     search_api_key=google_search_api_key,
-    search_engine_id=google_search_engine_id,
+    search_engine_id="{google_search_engine_id}",
 )
 """
         return content
@@ -112,6 +159,7 @@ GoogleSearchConfig = PredefinedToolConfig(
     name=GoogleSearchTool.name,
     description=GoogleSearchTool.description,
     required_secrets=GoogleSearchTool.required_secrets,
+    required_kwargs=GoogleSearchTool.required_kwargs,
     requirements=GoogleSearchTool.requirements,
     tags=GoogleSearchTool.tags,
     implementation=GoogleSearchTool,

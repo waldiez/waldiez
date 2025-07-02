@@ -98,7 +98,7 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
     const onToolTypeChange = useCallback(
         (toolType: WaldiezToolType) => {
             const newContent = DEFAULT_TOOL_CONTENT_MAP[toolType];
-            onDataChange({ toolType, content: newContent });
+            onDataChange({ toolType, content: newContent, kwargs: {}, secrets: {} });
         },
         [onDataChange],
     );
@@ -175,6 +175,14 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
         [data.requirements, onDataChange],
     );
 
+    const onSetToolKwarg = useCallback(
+        (key: string, value: string) => {
+            const updatedKwargs = { ...data.kwargs, [key]: value };
+            onDataChange({ kwargs: updatedKwargs });
+        },
+        [data.kwargs, onDataChange],
+    );
+
     return {
         onUpdateSecrets,
         onDeleteSecret,
@@ -189,5 +197,6 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
         onAddRequirement,
         onDeleteRequirement,
         onRequirementChange,
+        onSetToolKwarg,
     };
 };

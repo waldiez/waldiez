@@ -65,6 +65,9 @@ EXAMPLES = [
     "13 - Captain/3 - With agent lib and tool lib.waldiez",
     "14 - HR Work Remotely/HR_remote.waldiez",
     "15 - Innovation Ideas/innovator.waldiez",
+    "16 - Weather Travel Tips/travelWeather_single.waldiez",
+    "16 - Weather Travel Tips/travelWeather_roundRobin.waldiez",
+    "16 - Weather Travel Tips/travelWeather_handoffs.waldiez",
 ]
 
 

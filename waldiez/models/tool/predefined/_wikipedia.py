@@ -5,11 +5,19 @@
 from typing import Any
 
 from ._config import PredefinedToolConfig
-from ._protocol import PredefinedTool
+from .protocol import PredefinedTool
 
 
 class WikipediaSearchToolImpl(PredefinedTool):
     """Wikipedia search tool for Waldiez."""
+
+    required_secrets: list[str] = []
+    kwargs_types: dict[str, type] = {
+        "language": str,
+        "top_k": int,
+        "verbose": bool,
+    }
+    required_kwargs: dict[str, type] = {}
 
     @property
     def name(self) -> str:
@@ -20,11 +28,6 @@ class WikipediaSearchToolImpl(PredefinedTool):
     def description(self) -> str:
         """Tool description."""
         return "Search Wikipedia for a given query."
-
-    @property
-    def required_secrets(self) -> list[str]:
-        """Required secrets/environment variables."""
-        return []
 
     @property
     def kwargs(self) -> dict[str, Any]:
@@ -68,6 +71,30 @@ class WikipediaSearchToolImpl(PredefinedTool):
         """
         return []
 
+    def validate_kwargs(self, kwargs: dict[str, Any]) -> list[str]:
+        """Validate keyword arguments and return list of missing required ones.
+
+        Parameters
+        ----------
+        kwargs : dict[str, Any]
+            Dictionary of keyword arguments.
+
+        Returns
+        -------
+        list[str]
+            List of missing required keyword arguments.
+        """
+        for key, _ in self.kwargs.items():
+            if key in kwargs:
+                type_of = self.required_kwargs.get(key, str)
+                try:
+                    casted = type_of(kwargs[key])
+                    if key in self.kwargs:
+                        self.kwargs[key] = casted
+                except Exception:  # pylint: disable=broad-except
+                    pass
+        return []
+
     def get_content(
         self,
         secrets: dict[str, str],
@@ -96,6 +123,7 @@ WikipediaSearchConfig = PredefinedToolConfig(
     name=WikipediaSearchTool.name,
     description=WikipediaSearchTool.description,
     required_secrets=WikipediaSearchTool.required_secrets,
+    required_kwargs=WikipediaSearchTool.required_kwargs,
     requirements=WikipediaSearchTool.requirements,
     tags=WikipediaSearchTool.tags,
     implementation=WikipediaSearchTool,

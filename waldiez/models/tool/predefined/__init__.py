@@ -4,7 +4,7 @@
 """Predefined tools for Waldiez."""
 
 from ._config import PredefinedToolConfig
-from ._protocol import PredefinedTool
+from .protocol import PredefinedTool
 from .registry import (
     PREDEFINED_TOOLS,
     get_predefined_tool_config,

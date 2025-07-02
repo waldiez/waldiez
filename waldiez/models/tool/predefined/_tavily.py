@@ -8,11 +8,14 @@ import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
-from ._protocol import PredefinedTool
+from .protocol import PredefinedTool
 
 
 class TavilySearchToolImpl(PredefinedTool):
     """Tavily search tool for Waldiez."""
+
+    required_secrets: list[str] = ["TAVILY_API_KEY"]
+    required_kwargs: dict[str, type] = {}
 
     @property
     def name(self) -> str:
@@ -23,11 +26,6 @@ class TavilySearchToolImpl(PredefinedTool):
     def description(self) -> str:
         """Tool description."""
         return "Search Tavily for a given query."
-
-    @property
-    def required_secrets(self) -> list[str]:
-        """Required secrets/environment variables."""
-        return ["TAVILY_API_KEY"]
 
     @property
     def kwargs(self) -> dict[str, Any]:
@@ -69,6 +67,21 @@ class TavilySearchToolImpl(PredefinedTool):
             missing.append("TAVILY_API_KEY")
         return missing
 
+    def validate_kwargs(self, kwargs: dict[str, str]) -> list[str]:
+        """Validate keyword arguments and return list of missing required ones.
+
+        Parameters
+        ----------
+        kwargs : dict[str, str]
+            Dictionary of keyword arguments.
+
+        Returns
+        -------
+        list[str]
+            List of missing required keyword arguments.
+        """
+        return []
+
     def get_content(
         self,
         secrets: dict[str, str],
@@ -104,6 +117,7 @@ TavilySearchConfig = PredefinedToolConfig(
     name=TavilySearchTool.name,
     description=TavilySearchTool.description,
     required_secrets=TavilySearchTool.required_secrets,
+    required_kwargs=TavilySearchTool.required_kwargs,
     requirements=TavilySearchTool.requirements,
     tags=TavilySearchTool.tags,
     implementation=TavilySearchTool,

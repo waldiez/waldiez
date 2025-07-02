@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,missing-param-doc
 # flake8: noqa: E501
 """Test waldiez.models.tool.*."""
+
+from typing import Any
 
 import pytest
 
@@ -40,7 +42,7 @@ def test_waldiez_tool() -> None:
 def test_invalid_tool() -> None:
     """Test invalid WaldiezTool."""
     with pytest.raises(ValueError):
-        WaldiezTool()
+        WaldiezTool()  # pyright: ignore
 
     # Given
     tool_id = "wt-1"
@@ -408,3 +410,95 @@ def custom_tool(text: str) -> list[str]:
         "import numpy as np",
         "from nltk.tokenize import word_tokenize",
     ]
+
+
+@pytest.mark.parametrize(
+    "name,description,requirements,secrets,kwargs,content,should_raise",
+    [
+        ("predefined_tool", "description", [], {}, {}, "any", True),
+        (
+            "google_search",
+            "description",
+            [],
+            {"GOOGLE_SEARCH_API_KEY": "your_api_key"},
+            {},
+            "",
+            True,
+        ),
+        (
+            "google_search",
+            "Google search tool",
+            ["google"],
+            {"GOOGLE_SEARCH_API_KEY": "your_api_key"},
+            {"google_search_engine_id": "your_search_engine_id"},
+            "",
+            False,
+        ),
+        (
+            "youtube_search",
+            "YouTube search tool",
+            ["youtube"],
+            {"YOUTUBE_API_KEY": "your_api_key"},
+            {},
+            "",
+            False,
+        ),
+        (
+            "wikipedia",
+            "Wikipedia search tool",
+            ["wikipedia"],
+            {},
+            {},
+            "",
+            True,
+        ),
+        (
+            "wikipedia_search",
+            "Wikipedia search tool",
+            ["wikipedia"],
+            {},
+            {},
+            "",
+            False,
+        ),
+    ],
+)
+def test_predefined_tool_parametrized(
+    name: str,
+    description: str,
+    requirements: list[str],
+    secrets: dict[str, str],
+    kwargs: dict[str, str],
+    content: str,
+    should_raise: bool,
+) -> None:
+    """Test predefined tool with various parameters."""
+    tool_id = "wt-1"
+    data = WaldiezToolData(
+        content=content,
+        secrets=secrets,
+        tool_type="predefined",
+        kwargs=kwargs or {},
+    )
+
+    args: dict[str, Any] = {
+        "id": tool_id,
+        "name": name,
+        "type": "tool",
+        "tags": [],
+        "requirements": requirements,
+        "created_at": "2024-01-01T00:00:00Z",
+        "updated_at": "2024-01-01T00:00:00Z",
+        "description": description,
+        "data": data,
+    }
+
+    if should_raise:
+        with pytest.raises(ValueError):
+            WaldiezTool(**args)
+    else:
+        tool = WaldiezTool(**args)
+        assert tool.id == tool_id
+        assert tool.name == name
+        assert tool.description == description
+        assert tool.content is not None

@@ -316,7 +316,12 @@ class WaldiezTool(WaldiezBase):
                     f"Missing required secrets for {self.name}: "
                     f"{missing_secrets}"
                 )
-
+            invalid_kwargs = config.validate_kwargs(self.data.kwargs)
+            if invalid_kwargs:
+                raise ValueError(
+                    f"Invalid keyword arguments for {self.name}: "
+                    f"{invalid_kwargs}"
+                )
             # Update tool metadata from predefined config
             if not self.description:
                 self.description = config.description

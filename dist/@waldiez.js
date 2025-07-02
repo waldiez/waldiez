@@ -8,7 +8,7 @@ import { nanoid } from "nanoid";
 import JSZip from "jszip";
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import * as React from "react";
-import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo } from "react";
+import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
@@ -7928,7 +7928,8 @@ const TextInput = memo((props) => {
     className = "",
     isPassword = false,
     fullWidth = false,
-    labelClassName = ""
+    labelClassName = "",
+    inputClassName = ""
   } = props;
   const [visible, setVisible] = useState(false);
   const handleChange = useCallback(
@@ -7961,11 +7962,11 @@ const TextInput = memo((props) => {
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     renderLabel(),
-    /* @__PURE__ */ jsxs("div", { className: "flex", children: [
+    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex ${className}`, children: [
       /* @__PURE__ */ jsx(
         "input",
         {
-          className,
+          className: inputClassName,
           placeholder,
           type: inputType,
           value: value !== null ? value : onNull,
@@ -9044,7 +9045,22 @@ const useModal = (props) => {
   };
 };
 const MODAL_CHROME_WIDTH = 40;
-const Modal = memo((props) => {
+const Modal = forwardRef((props, ref) => {
+  const [isInternallyOpen, setIsInternallyOpen] = useState(props.isOpen);
+  useImperativeHandle(ref, () => ({
+    close: () => {
+      setIsInternallyOpen(false);
+      props.onClose?.();
+    },
+    showModal: () => {
+      setIsInternallyOpen(true);
+    }
+  }));
+  useEffect(() => {
+    if (props.isOpen) {
+      setIsInternallyOpen(true);
+    }
+  }, [props.isOpen]);
   const {
     id,
     isOpen,
@@ -9148,7 +9164,7 @@ const Modal = memo((props) => {
     showConfirmation ? "confirmation no-wheel no-pan no-drag" : "no-wheel no-pan no-drag",
     className
   ].filter(Boolean).join(" ");
-  if (!isOpen || !portalContainer) {
+  if (!isOpen || !portalContainer || !isInternallyOpen) {
     return null;
   }
   const modalStyle = {
@@ -16244,11 +16260,14 @@ const PREDEFINED_TOOL_TYPES = ["wikipedia_search", "youtube_search", "google_sea
 const PREDEFINED_TOOL_REQUIRED_ENVS = {
   wikipedia_search: [],
   youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
-  google_search: [
-    { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" },
-    { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }
-  ],
+  google_search: [{ label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }],
   tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }]
+};
+const PREDEFINED_TOOL_REQUIRED_KWARGS = {
+  wikipedia_search: [],
+  youtube_search: [],
+  google_search: [{ label: "Google Search Engine ID", key: "google_search_engine_id" }],
+  tavily_search: []
 };
 const DEFAULT_NAME = {
   wikipedia_search: "Wikipedia Search",
@@ -23662,7 +23681,7 @@ const useToolNodeModal = (props) => {
   const onToolTypeChange = useCallback(
     (toolType) => {
       const newContent = DEFAULT_TOOL_CONTENT_MAP[toolType];
-      onDataChange({ toolType, content: newContent });
+      onDataChange({ toolType, content: newContent, kwargs: {}, secrets: {} });
     },
     [onDataChange]
   );
@@ -23714,6 +23733,13 @@ const useToolNodeModal = (props) => {
     },
     [data.requirements, onDataChange]
   );
+  const onSetToolKwarg = useCallback(
+    (key, value) => {
+      const updatedKwargs = { ...data.kwargs, [key]: value };
+      onDataChange({ kwargs: updatedKwargs });
+    },
+    [data.kwargs, onDataChange]
+  );
   return {
     onUpdateSecrets,
     onDeleteSecret,
@@ -23727,7 +23753,8 @@ const useToolNodeModal = (props) => {
     onTagChange,
     onAddRequirement,
     onDeleteRequirement,
-    onRequirementChange
+    onRequirementChange,
+    onSetToolKwarg
   };
 };
 const WaldiezToolAdvancedTab = (props) => {
@@ -23793,7 +23820,14 @@ const WaldiezToolAdvancedTab = (props) => {
 };
 const WaldiezToolBasicTab = memo((props) => {
   const { toolId, data, darkMode } = props;
-  const { onToolContentChange, onToolLabelChange, onToolDescriptionChange, onToolTypeChange, onAddSecret } = useToolNodeModal(props);
+  const {
+    onToolContentChange,
+    onToolLabelChange,
+    onToolDescriptionChange,
+    onToolTypeChange,
+    onAddSecret,
+    onSetToolKwarg
+  } = useToolNodeModal(props);
   const selectedToolType = useMemo(
     () => TOOL_TYPE_OPTIONS.find((option) => option.value === data.toolType) || TOOL_TYPE_OPTIONS.find((option) => option.value === data.label) || TOOL_TYPE_OPTIONS[0],
     [data.toolType, data.label]
@@ -23825,6 +23859,13 @@ const WaldiezToolBasicTab = memo((props) => {
       onAddSecret(envVar, value);
     },
     [onAddSecret]
+  );
+  const onPredefinedToolArgChange = useCallback(
+    (kwarg, event) => {
+      const value = event.target.value;
+      onSetToolKwarg(kwarg, value);
+    },
+    [onSetToolKwarg]
   );
   const ToolOptionWithIcon = memo(
     (props2) => {
@@ -23902,26 +23943,32 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => /* @__PURE__ */ jsxs("div", { className: "margin-bottom-5", children: [
-      /* @__PURE__ */ jsxs("label", { htmlFor: `env-var-${index}-${envVar.key}`, children: [
-        envVar.label,
-        ":"
-      ] }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
-        "input",
-        {
-          type: "text",
-          id: `env-var-${index}-${envVar.key}`,
-          value: data.secrets[envVar.key] || "",
-          onChange: onPredefinedToolEnvChange.bind(null, envVar.key),
-          className: "full-width",
-          "aria-label": `Environment variable ${envVar.label}`,
-          "data-testid": `env-var-input-${index}-${envVar.key}`,
-          placeholder: envVar.key
-        }
-      )
-    ] }, index)) })
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].map((kwarg, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+      TextInput,
+      {
+        name: kwarg.label,
+        label: `${kwarg.label}:`,
+        dataTestId: `env-var-input-${index}-${kwarg.key}`,
+        value: (data.kwargs ? data.kwargs[kwarg.key] : "") || "",
+        onChange: onPredefinedToolArgChange.bind(null, kwarg.key),
+        className: "margin-top-10",
+        isPassword: false,
+        placeholder: `Enter the ${kwarg.label}`
+      }
+    ) }, index)) }),
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+      TextInput,
+      {
+        name: envVar.label,
+        label: `${envVar.label}:`,
+        dataTestId: `env-var-input-${index}-${envVar.key}`,
+        value: data.secrets[envVar.key] || "",
+        onChange: onPredefinedToolEnvChange.bind(null, envVar.key),
+        className: "margin-top-10",
+        placeholder: `Enter the ${envVar.label}`,
+        isPassword: true
+      }
+    ) }, index)) })
   ] });
 });
 WaldiezToolBasicTab.displayName = "WaldiezToolBasicTab";
