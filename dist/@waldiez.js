@@ -1587,7 +1587,7 @@ const ValidConditionTypes = [
 ];
 class WaldiezFlow {
   type = "flow";
-  version = "0.5.1";
+  version = "0.5.2";
   id;
   name;
   description;
@@ -1617,7 +1617,7 @@ const getFlowId = () => {
 const aFlowId = getFlowId();
 const emptyFlow = {
   type: "flow",
-  version: "0.5.1",
+  version: "0.5.2",
   id: aFlowId,
   storageId: aFlowId,
   name: "Waldiez Flow",
@@ -5310,7 +5310,7 @@ const flowMapper = {
     const waldiezFlow = {
       id: flow.flowId,
       type: "flow",
-      version: "0.5.1",
+      version: "0.5.2",
       storageId: flow.storageId,
       name: flow.name,
       description: flow.description,
