@@ -68,6 +68,10 @@ EXAMPLES = [
     "16 - Weather Travel Tips/travelWeather_single.waldiez",
     "16 - Weather Travel Tips/travelWeather_roundRobin.waldiez",
     "16 - Weather Travel Tips/travelWeather_handoffs.waldiez",
+    "17 - Predefined Tools/google_search.waldiez",
+    "17 - Predefined Tools/tavily.waldiez",
+    "17 - Predefined Tools/wiki.waldiez",
+    "17 - Predefined Tools/youtube.waldiez",
 ]
 
 

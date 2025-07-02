@@ -1781,7 +1781,7 @@ class WaldiezModel {
    */
   static create() {
     return new WaldiezModel({
-      id: `wt-${getId()}`,
+      id: `wm-${getId()}`,
       name: "Model",
       description: "A new model",
       tags: [],
@@ -2073,9 +2073,12 @@ const getCaptainMaxTurns = (json) => {
   return 5;
 };
 const getIdFromJSON = (json) => {
-  let id = `wt-${getId()}`;
+  let id = `w-${getId()}`;
   if ("id" in json && typeof json.id === "string") {
     id = json.id;
+  } else if ("type" in json && typeof json.type === "string" && json.type.length > 0) {
+    const itemType = json.type[0].toLowerCase();
+    id = `w${itemType}-${getId()}`;
   }
   return id;
 };
@@ -4266,7 +4269,7 @@ const modelMapper = {
   importModel: (json) => {
     if (!json || typeof json !== "object") {
       return new WaldiezModel({
-        id: "wt-" + getId(),
+        id: "wm-" + getId(),
         name: "Model",
         description: "A new model",
         tags: [],
@@ -5050,6 +5053,7 @@ const getNodes = (json) => {
     }
     const id = getIdFromJSON(nodeJson);
     const rest = getRestFromJSON(nodeJson, ["id", "type", "parentId", "data"]);
+    delete rest.position;
     nodes.push({
       id,
       type,
@@ -5069,9 +5073,15 @@ const isValidNode = (nodeJson) => {
   if (!("type" in nodeJson) || typeof nodeJson.type !== "string" || !ValidChatTypes.includes(nodeJson.type)) {
     return null;
   }
-  const position = getNodePosition(nodeJson);
-  if (!position) {
-    return null;
+  let position = getNodePosition(nodeJson);
+  if (!position || typeof position !== "object") {
+    position = { x: 20, y: 20 };
+  }
+  if (!("x" in position) || typeof position.x !== "number") {
+    position.x = 20;
+  }
+  if (!("y" in position) || typeof position.y !== "number") {
+    position.y = 20;
   }
   const data = getNodeData(nodeJson, nodeJson.type);
   if (!data) {
