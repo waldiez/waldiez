@@ -8,6 +8,7 @@
 - [Planning and Stock Report Generation](6.md)
 - [Group Chat with Retrieval Augmented Generation](7.md)
 - [ReAct using Tavily](8.md)
+- [Predefined Tools: YouTube Search](9.md)
 
 !!! Note
     The provided examples are inspired by the following sources:

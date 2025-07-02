@@ -19,6 +19,7 @@ nav:
       - Planning: examples/6.md
       - RAG: examples/7.md
       - ReAct: examples/8.md
+      - Predefined Tools: examples/9.md
   - API Reference:
       - Python: reference/python/
       - React: reference/react/
