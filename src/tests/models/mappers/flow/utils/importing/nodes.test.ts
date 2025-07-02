@@ -81,6 +81,11 @@ describe("getNodes", () => {
             ],
         };
         const nodes = getNodes(json);
-        expect(nodes).toEqual([json.nodes[0]]);
+        expect(nodes.length).toBe(3);
+        expect(nodes[0]).toEqual(json.nodes[0]);
+        expect(nodes[1]).not.toEqual(json.nodes[3]);
+        expect(nodes[1].position).toEqual({ x: 20, y: 20 }); // Default position
+        expect(nodes[2]).not.toEqual(json.nodes[4]);
+        expect(nodes[2].position).toEqual({ x: 20, y: 20 }); // Default position
     });
 });

@@ -27,6 +27,7 @@ export const getNodes = (json: Record<string, unknown>) => {
         }
         const id = getIdFromJSON(nodeJson);
         const rest = getRestFromJSON(nodeJson, ["id", "type", "parentId", "data"]);
+        delete rest.position;
         nodes.push({
             id: id,
             type: type,
@@ -51,9 +52,15 @@ const isValidNode = (nodeJson: Record<string, unknown>) => {
     ) {
         return null;
     }
-    const position = getNodePosition(nodeJson);
-    if (!position) {
-        return null;
+    let position = getNodePosition(nodeJson);
+    if (!position || typeof position !== "object") {
+        position = { x: 20, y: 20 }; // Default position if not specified
+    }
+    if (!("x" in position) || typeof position.x !== "number") {
+        position.x = 20; // Default x position if not specified
+    }
+    if (!("y" in position) || typeof position.y !== "number") {
+        position.y = 20; // Default y position if not specified
     }
     const data = getNodeData(nodeJson, nodeJson.type);
     if (!data) {

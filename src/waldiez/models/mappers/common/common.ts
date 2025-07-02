@@ -11,9 +11,12 @@ import { getId } from "@waldiez/utils";
  * @returns The ID as a string.
  */
 export const getIdFromJSON = (json: Record<string, unknown>): string => {
-    let id = `wt-${getId()}`;
+    let id = `w-${getId()}`;
     if ("id" in json && typeof json.id === "string") {
         id = json.id;
+    } else if ("type" in json && typeof json.type === "string" && json.type.length > 0) {
+        const itemType = json.type[0].toLowerCase();
+        id = `w${itemType}-${getId()}`;
     }
     return id;
 };

@@ -59,7 +59,7 @@ export class WaldiezModel {
      */
     static create(): WaldiezModel {
         return new WaldiezModel({
-            id: `wt-${getId()}`,
+            id: `wm-${getId()}`,
             name: "Model",
             description: "A new model",
             tags: [],
