@@ -16277,6 +16277,132 @@ const DEFAULT_NAME = {
   shared: "waldiez_shared",
   custom: "tool_name"
 };
+const PREDEFINED_TOOL_INSTRUCTIONS = {
+  wikipedia_search: void 0,
+  youtube_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the YouTube Search tool, you need to set up a YouTube Data API key." }),
+    /* @__PURE__ */ jsx("p", { children: " Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Go to the",
+        " ",
+        /* @__PURE__ */ jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
+        "."
+      ] }),
+      /* @__PURE__ */ jsx("li", { children: "Create a new project or select an existing one." }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Navigate to ",
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Library" }),
+        "."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Search for ",
+        /* @__PURE__ */ jsx("strong", { children: "YouTube Data API v3" }),
+        " and enable it."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Go to ",
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Credentials" }),
+        "."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Click on ",
+        /* @__PURE__ */ jsx("strong", { children: "Create Credentials > API key" }),
+        " and copy your API key."
+      ] })
+    ] })
+  ] }),
+  google_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the Google Search tool, you need to set up a Google Custom Search Engine (CSE) and obtain an API key." }),
+    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Go to",
+        " ",
+        /* @__PURE__ */ jsx(
+          "a",
+          {
+            href: "https://programmablesearchengine.google.com/about/",
+            target: "_blank",
+            rel: "noopener noreferrer",
+            children: "Google Programmable Search Engine"
+          }
+        ),
+        "."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Click ",
+        /* @__PURE__ */ jsx("strong", { children: "Get Started" }),
+        " and create a search engine."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Under ",
+        /* @__PURE__ */ jsx("strong", { children: "Sites to Search" }),
+        ", select ",
+        /* @__PURE__ */ jsx("strong", { children: "Search the entire web" }),
+        " if you want global search."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Copy the ",
+        /* @__PURE__ */ jsx("strong", { children: "Search Engine ID" }),
+        " from the CSE dashboard (the `cx` parameter from the URL)."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Go to the",
+        " ",
+        /* @__PURE__ */ jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
+        "."
+      ] }),
+      /* @__PURE__ */ jsx("li", { children: "Create a new project." }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Navigate to ",
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Library" }),
+        ", search for",
+        " ",
+        /* @__PURE__ */ jsx("strong", { children: "Custom Search API" }),
+        ", and enable it."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Go to ",
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Credentials" }),
+        ", click on",
+        " ",
+        /* @__PURE__ */ jsx("strong", { children: "Create Credentials > API key" }),
+        ", and copy your API key."
+      ] })
+    ] })
+  ] }),
+  tavily_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the Tavily Search tool, you need to set up a Tavily API key." }),
+    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Visit",
+        " ",
+        /* @__PURE__ */ jsx("a", { href: "https://tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily AI" }),
+        "."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Click ",
+        /* @__PURE__ */ jsx("strong", { children: "Sign Up" }),
+        " and create an account."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Navigate to",
+        " ",
+        /* @__PURE__ */ jsx("a", { href: "https://app.tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily API" }),
+        "."
+      ] }),
+      /* @__PURE__ */ jsxs("li", { children: [
+        "Generate an API key under ",
+        /* @__PURE__ */ jsx("strong", { children: "API Keys" }),
+        "."
+      ] })
+    ] })
+  ] }),
+  shared: void 0,
+  custom: void 0
+};
 const DEFAULT_DESCRIPTION = {
   wikipedia_search: "Search Wikipedia for a given query.",
   youtube_search: "Search YouTube for a given query.",
@@ -23870,7 +23996,7 @@ const WaldiezToolBasicTab = memo((props) => {
   const ToolOptionWithIcon = memo(
     (props2) => {
       const { innerProps, data: data2 } = props2;
-      return /* @__PURE__ */ jsxs("div", { ...innerProps, className: "flex margin-5", children: [
+      return /* @__PURE__ */ jsxs("div", { ...innerProps, className: "flex margin-5 clickable", children: [
         data2.icon && /* @__PURE__ */ jsx("div", { className: "icon margin-right-10 margin-left-5", children: data2.icon }),
         /* @__PURE__ */ jsx("span", { className: "label", children: data2.label })
       ] });
@@ -23943,6 +24069,7 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
+    data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
     data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].map((kwarg, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {

@@ -10,6 +10,7 @@ import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/
 import {
     DEFAULT_DESCRIPTION,
     DEFAULT_NAME,
+    PREDEFINED_TOOL_INSTRUCTIONS,
     PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
     PREDEFINED_TOOL_TYPES,
@@ -91,7 +92,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
         (props: { innerProps: any; data: { icon?: React.JSX.Element; label: string } }) => {
             const { innerProps, data } = props;
             return (
-                <div {...innerProps} className="flex margin-5">
+                <div {...innerProps} className="flex margin-5 clickable">
                     {data.icon && <div className="icon margin-right-10 margin-left-5">{data.icon}</div>}
                     <span className="label">{data.label}</span>
                 </div>
@@ -160,6 +161,9 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                         data-testid={contentEditorId}
                     />
                 </div>
+            )}
+            {data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && (
+                <div className="margin-top-10">{PREDEFINED_TOOL_INSTRUCTIONS[data.label]}</div>
             )}
             {data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && (
                 <div className="margin-top-10">

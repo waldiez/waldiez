@@ -29,6 +29,118 @@ export const DEFAULT_NAME: { [key: string]: string } = {
     shared: "waldiez_shared",
     custom: "tool_name",
 };
+
+export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: React.ReactNode | undefined } = {
+    wikipedia_search: undefined,
+    youtube_search: (
+        <div className="info">
+            <p>To use the YouTube Search tool, you need to set up a YouTube Data API key.</p>
+            <p> Follow these steps:</p>
+            <ol>
+                <li>
+                    Go to the{" "}
+                    <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">
+                        Google Cloud Console
+                    </a>
+                    .
+                </li>
+                <li>Create a new project or select an existing one.</li>
+                <li>
+                    Navigate to <strong>APIs & Services &gt; Library</strong>.
+                </li>
+                <li>
+                    Search for <strong>YouTube Data API v3</strong> and enable it.
+                </li>
+                <li>
+                    Go to <strong>APIs & Services &gt; Credentials</strong>.
+                </li>
+                <li>
+                    Click on <strong>Create Credentials &gt; API key</strong> and copy your API key.
+                </li>
+            </ol>
+        </div>
+    ),
+    google_search: (
+        <div className="info">
+            <p>
+                To use the Google Search tool, you need to set up a Google Custom Search Engine (CSE) and
+                obtain an API key.
+            </p>
+            <p>Follow these steps:</p>
+            <ol>
+                <li>
+                    Go to{" "}
+                    <a
+                        href="https://programmablesearchengine.google.com/about/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Google Programmable Search Engine
+                    </a>
+                    .
+                </li>
+                <li>
+                    Click <strong>Get Started</strong> and create a search engine.
+                </li>
+                <li>
+                    Under <strong>Sites to Search</strong>, select <strong>Search the entire web</strong> if
+                    you want global search.
+                </li>
+                <li>
+                    Copy the <strong>Search Engine ID</strong> from the CSE dashboard (the `cx` parameter from
+                    the URL).
+                </li>
+                <li>
+                    Go to the{" "}
+                    <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer">
+                        Google Cloud Console
+                    </a>
+                    .
+                </li>
+                <li>Create a new project.</li>
+                <li>
+                    Navigate to <strong>APIs & Services &gt; Library</strong>, search for{" "}
+                    <strong>Custom Search API</strong>, and enable it.
+                </li>
+                <li>
+                    Go to <strong>APIs & Services &gt; Credentials</strong>, click on{" "}
+                    <strong>Create Credentials &gt; API key</strong>, and copy your API key.
+                </li>
+            </ol>
+        </div>
+    ),
+    tavily_search: (
+        <div className="info">
+            <p>To use the Tavily Search tool, you need to set up a Tavily API key.</p>
+            <p>Follow these steps:</p>
+            <ol>
+                <li>
+                    Visit{" "}
+                    <a href="https://tavily.com/" target="_blank" rel="noopener noreferrer">
+                        Tavily AI
+                    </a>
+                    .
+                </li>
+                <li>
+                    Click <strong>Sign Up</strong> and create an account.
+                </li>
+                <li>
+                    Navigate to{" "}
+                    <a href="https://app.tavily.com/" target="_blank" rel="noopener noreferrer">
+                        Tavily API
+                    </a>
+                    .
+                </li>
+                <li>
+                    Generate an API key under <strong>API Keys</strong>.
+                </li>
+            </ol>
+        </div>
+    ),
+    shared: undefined,
+    custom: undefined,
+};
+
 export const DEFAULT_DESCRIPTION: { [key: string]: string } = {
     wikipedia_search: "Search Wikipedia for a given query.",
     youtube_search: "Search YouTube for a given query.",
