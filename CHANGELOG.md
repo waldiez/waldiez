@@ -5,6 +5,15 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.5.2
+
+- Added predefined tools
+- Updated ag2 dependency to 0.9.4
+- Updated jupyter dependencies to 4.4.4
+- Minor UI changes
+- Bug fixes
+- Dependency updates
+
 ## v0.5.1
 
 - Add upload to hub option when exporting a flow
