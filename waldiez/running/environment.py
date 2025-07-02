@@ -95,6 +95,7 @@ def reload_autogen() -> None:  # noqa: C901
                 for name in sys.modules
                 if name.startswith("autogen.")
                 and not name.startswith("autogen.io")
+                and not name.startswith("autogen.tools")
             ],
             key=len,
             reverse=True,  # Longer names (deeper modules) first
