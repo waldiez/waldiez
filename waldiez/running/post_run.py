@@ -5,11 +5,13 @@
 """Utilities for running code."""
 
 import datetime
+import json
 import shutil
 from pathlib import Path
 from typing import Optional, Union
 
 from .gen_seq_diagram import generate_sequence_diagram
+from .timeline_processor import TimelineProcessor
 
 
 def after_run(
@@ -18,6 +20,7 @@ def after_run(
     flow_name: str,
     uploads_root: Optional[Path] = None,
     skip_mmd: bool = False,
+    skip_timeline: bool = False,
 ) -> None:
     """Actions to perform after running the flow.
 
@@ -34,25 +37,21 @@ def after_run(
     skip_mmd : bool, optional
         Whether to skip the mermaid sequence diagram generation,
         by default, False
+    skip_timeline : bool, optional
+        Whether to skip the timeline processing, by default False
     """
     if isinstance(output_file, str):
         output_file = Path(output_file)
     mmd_dir = output_file.parent if output_file else Path.cwd()
     if skip_mmd is False:
-        events_csv_path = temp_dir / "logs" / "events.csv"
-        if events_csv_path.exists():
-            print("Generating mermaid sequence diagram...")
-            mmd_path = temp_dir / f"{flow_name}.mmd"
-            generate_sequence_diagram(events_csv_path, mmd_path)
-            if (
-                not output_file
-                and mmd_path.exists()
-                and mmd_path != mmd_dir / f"{flow_name}.mmd"
-            ):
-                try:
-                    shutil.copyfile(mmd_path, mmd_dir / f"{flow_name}.mmd")
-                except BaseException:  # pylint: disable=broad-exception-caught
-                    pass
+        _make_mermaid_diagram(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            flow_name=flow_name,
+            mmd_dir=mmd_dir,
+        )
+    if skip_timeline is False:
+        _make_timeline_json(temp_dir=temp_dir)
     if output_file:
         destination_dir = output_file.parent
         destination_dir = (
@@ -69,6 +68,55 @@ def after_run(
             destination_dir=destination_dir,
         )
     shutil.rmtree(temp_dir)
+
+
+def _make_mermaid_diagram(
+    temp_dir: Path,
+    output_file: Optional[Union[str, Path]],
+    flow_name: str,
+    mmd_dir: Path,
+) -> None:
+    events_csv_path = temp_dir / "logs" / "events.csv"
+    if events_csv_path.exists():
+        print("Generating mermaid sequence diagram...")
+        mmd_path = temp_dir / f"{flow_name}.mmd"
+        generate_sequence_diagram(events_csv_path, mmd_path)
+        if (
+            not output_file
+            and mmd_path.exists()
+            and mmd_path != mmd_dir / f"{flow_name}.mmd"
+        ):
+            try:
+                shutil.copyfile(mmd_path, mmd_dir / f"{flow_name}.mmd")
+            except BaseException:  # pylint: disable=broad-exception-caught
+                pass
+
+
+def _make_timeline_json(
+    temp_dir: Path,
+) -> None:
+    """Make the timeline JSON file."""
+    events_csv_path = temp_dir / "logs" / "events.csv"
+    if events_csv_path.exists():
+        print("Processing timeline...")
+        log_files = TimelineProcessor.get_files(temp_dir)
+        if any(log_files.values()):
+            output_file = temp_dir / "timeline.json"
+            # pylint: disable=too-many-try-statements
+            try:
+                processor = TimelineProcessor()
+                processor.load_csv_files(
+                    agents_file=log_files["agents"],
+                    chat_file=log_files["chat"],
+                    events_file=log_files["events"],
+                    functions_file=log_files["functions"],
+                )
+                result = processor.process_timeline()
+
+                with open(output_file, "w", encoding="utf-8") as f:
+                    json.dump(result, f, indent=2, default=str)
+            except BaseException:  # pylint: disable=broad-exception-caught
+                pass
 
 
 def copy_results(

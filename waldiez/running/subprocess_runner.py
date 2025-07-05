@@ -49,6 +49,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -63,6 +64,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -77,6 +79,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Start the Waldiez workflow."""
         # This method should be implemented to start the workflow
@@ -88,6 +91,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Start the Waldiez workflow asynchronously."""
         # This method should be implemented to start the workflow asynchronously

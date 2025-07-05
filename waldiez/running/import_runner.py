@@ -63,6 +63,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union["ChatResult", list["ChatResult"], dict[int, "ChatResult"]]:
         """Run the Waldiez workflow."""
         if self.threaded:
@@ -71,6 +72,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 output_file=output_file,
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
+                skip_timeline=skip_timeline,
             )
 
         return self._run_not_threaded(
@@ -78,14 +80,17 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             output_file=output_file,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
+    # pylint: disable=too-many-locals
     def _run_not_threaded(
         self,
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -149,6 +154,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -246,6 +252,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -336,6 +343,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         super()._after_run(
             results=results,
@@ -343,6 +351,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
         # Clean up module reference
@@ -354,6 +363,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
     ) -> None:
         """Start the Waldiez workflow."""
 
@@ -366,6 +376,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                     output_file=output_file,
                     uploads_root=uploads_root,
                     skip_mmd=skip_mmd,
+                    skip_timeline=skip_timeline,
                 )
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self._last_exception = e
@@ -383,6 +394,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
     ) -> None:
         """Start the Waldiez workflow asynchronously."""
 
@@ -394,6 +406,7 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                     output_file=output_file,
                     uploads_root=uploads_root,
                     skip_mmd=skip_mmd,
+                    skip_timeline=skip_timeline,
                 )
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self._last_exception = e

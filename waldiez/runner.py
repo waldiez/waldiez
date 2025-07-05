@@ -222,6 +222,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -239,6 +240,8 @@ class WaldiezRunner(WaldiezBaseRunner):
             The runtime uploads root.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
 
         Returns
         -------
@@ -252,6 +255,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             output_file=output_file,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     async def _a_run(
@@ -260,6 +264,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> Union[
         "ChatResult",
         list["ChatResult"],
@@ -277,6 +282,8 @@ class WaldiezRunner(WaldiezBaseRunner):
             The runtime uploads root.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
 
         Returns
         -------
@@ -290,6 +297,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             output_file=output_file,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     def _after_run(
@@ -303,6 +311,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Actions to perform after running the flow.
 
@@ -322,13 +331,16 @@ class WaldiezRunner(WaldiezBaseRunner):
             The path to the temporary directory created for the run.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
         """
         self._implementation._after_run(
             results,
             output_file,
             uploads_root,
             temp_dir,
-            skip_mmd,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     async def _a_after_run(
@@ -342,6 +354,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Asynchronously perform actions after running the flow.
 
@@ -357,13 +370,16 @@ class WaldiezRunner(WaldiezBaseRunner):
             The path to the temporary directory created for the run.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
         """
         await self._implementation._a_after_run(
             results,
             output_file,
             uploads_root,
             temp_dir,
-            skip_mmd,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     def start(
@@ -373,6 +389,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         structured_io: bool | None = None,
         skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
     ) -> None:
         """Start the flow.
 
@@ -390,12 +407,16 @@ class WaldiezRunner(WaldiezBaseRunner):
             If None, it will use the value from the context.
         skip_mmd : bool = False
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool = False
+            Whether to skip generating the timeline JSON.
         """
         self._implementation.start(
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
             skip_patch_io=skip_patch_io,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     def _start(
@@ -404,6 +425,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Start the flow.
 
@@ -415,12 +437,15 @@ class WaldiezRunner(WaldiezBaseRunner):
             The runtime uploads root.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
         """
         self._implementation._start(
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     async def a_start(
@@ -430,6 +455,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         structured_io: bool | None = None,
         skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
     ) -> None:
         """Asynchronously start the flow.
 
@@ -445,6 +471,8 @@ class WaldiezRunner(WaldiezBaseRunner):
             Whether to skip patching I/O, by default None.
         skip_mmd : bool = False
             Whether to skip generating the mermaid diagram, by default False.
+        skip_timeline : bool = False
+            Whether to skip generating the timeline JSON, by default False.
         """
         await self._implementation.a_start(
             output_path=output_path,
@@ -452,6 +480,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             structured_io=structured_io,
             skip_patch_io=skip_patch_io,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     async def _a_start(
@@ -460,6 +489,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_file: Path,
         uploads_root: Path | None,
         skip_mmd: bool,
+        skip_timeline: bool = False,
     ) -> None:
         """Asynchronously start the flow.
 
@@ -473,12 +503,15 @@ class WaldiezRunner(WaldiezBaseRunner):
             The runtime uploads root.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool, optional
+            Whether to skip generating the timeline JSON, by default False.
         """
         await self._implementation._a_start(
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
 
     def _stop(self) -> None:

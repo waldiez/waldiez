@@ -204,6 +204,7 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Actions to perform after running the flow.
 
@@ -221,6 +222,8 @@ class WaldiezRunnerProtocol(Protocol):
             The path to the temporary directory.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
         """
 
     async def a_after_run(
@@ -234,6 +237,7 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
+        skip_timeline: bool,
     ) -> None:
         """Asynchronously perform actions after running the flow.
 
@@ -251,6 +255,8 @@ class WaldiezRunnerProtocol(Protocol):
             The path to the temporary directory.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
         """
 
     def is_running(self) -> bool:  # pyright: ignore

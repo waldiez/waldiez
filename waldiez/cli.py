@@ -139,6 +139,7 @@ def run(
             structured,
             not patch_io,  # skip_patch_io
             False,  # skip_mmd
+            False,  # skip_timeline
         )
     else:
         runner.run(
@@ -148,6 +149,7 @@ def run(
             threaded=threaded,
             skip_patch_io=not patch_io,
             skip_mmd=False,
+            skip_timeline=False,
         )
 
 
