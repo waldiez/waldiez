@@ -10867,7 +10867,11 @@ const updateNestedEdges = (get, set) => {
 };
 const resetSyncEdgeOrders = (get, set) => {
   const edges = get().edges;
-  const newEdges = edges.map((edge, index) => {
+  const newEdges = edges.sort((a, b) => {
+    const orderA = a.data?.order ?? -1;
+    const orderB = b.data?.order ?? -1;
+    return orderA - orderB;
+  }).map((edge, index) => {
     let edgeOrder = edge.data?.order;
     if (edgeOrder === void 0) {
       edgeOrder = -1;

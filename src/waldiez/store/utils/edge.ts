@@ -444,7 +444,8 @@ const updateNestedEdges = (get: typeOfGet, set: typeOfSet) => {
 };
 
 /**
- * Resets the edge orders synchronously by setting the order based on their index.
+ * Resets the edge orders synchronously by setting the order
+ * based on their existing one or their index.
  * If the edge's data.order is less than 0, it leaves it as is.
  * Otherwise, it starts counting from 0.
  * @param get - The function to get the current state.
@@ -452,18 +453,23 @@ const updateNestedEdges = (get: typeOfGet, set: typeOfSet) => {
  */
 const resetSyncEdgeOrders: (get: typeOfGet, set: typeOfSet) => void = (get, set) => {
     // if the edge.data.order is < 0, leave it as is
-    // else start counting from 0
     const edges = get().edges as WaldiezEdge[];
-    const newEdges = edges.map((edge, index) => {
-        let edgeOrder = edge.data?.order;
-        if (edgeOrder === undefined) {
-            edgeOrder = -1;
-        }
-        return {
-            ...edge,
-            data: { ...edge.data, order: edgeOrder < 0 ? edgeOrder : index },
-        };
-    });
+    const newEdges = edges
+        .sort((a, b) => {
+            const orderA = a.data?.order ?? -1;
+            const orderB = b.data?.order ?? -1;
+            return orderA - orderB;
+        })
+        .map((edge, index) => {
+            let edgeOrder = edge.data?.order;
+            if (edgeOrder === undefined) {
+                edgeOrder = -1;
+            }
+            return {
+                ...edge,
+                data: { ...edge.data, order: edgeOrder < 0 ? edgeOrder : index },
+            };
+        });
     set({
         edges: newEdges,
         updatedAt: new Date().toISOString(),
