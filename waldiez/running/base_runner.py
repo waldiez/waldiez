@@ -318,8 +318,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             if req not in sys.modules and "waldiez" not in req
         }
         waldiez_version = get_waldiez_version()
-        if "waldiez" not in sys.modules:
-            extra_requirements.add(f"waldiez=={waldiez_version}")
+        extra_requirements.add(f"waldiez=={waldiez_version}")
         return extra_requirements
 
     def install_requirements(self) -> None:
