@@ -1,6 +1,6 @@
 -r main.txt
-ag2[redis]==0.9.4
-ag2[websockets]==0.9.4
+ag2[redis]==0.9.5
+ag2[websockets]==0.9.5
 autoflake==2.3.1
 bandit==1.8.5
 black[jupyter]==25.1.0
