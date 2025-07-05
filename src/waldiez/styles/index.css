@@ -3,9 +3,11 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 @import url("./base.css");
+@import url("./badge.css");
 @import url("./theme.css");
 @import url("./agent.css");
 @import url("./agent-tools.css");
+@import url("./card.css");
 @import url("./chat.css");
 @import url("./checkbox.css");
 @import url("./console.css");

@@ -1,0 +1,107 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+
+/* Badge base styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* Default variant */
+.badge-default {
+  background-color: var(--card-text);
+  color: var(--card-background);
+}
+
+/* Secondary variant */
+.badge-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  border-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .badge-secondary {
+    background-color: #374151;
+    color: #d1d5db;
+  }
+}
+
+.dark .badge-secondary {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+/* Destructive variant */
+.badge-destructive {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.badge-destructive:hover {
+  background-color: #dc2626;
+}
+
+/* Outline variant */
+.badge-outline {
+  background-color: transparent;
+  color: var(--card-text);
+  border-color: var(--card-border);
+}
+
+.badge-outline:hover {
+  background-color: var(--card-text);
+  color: var(--card-background);
+}
+
+/* Success variant */
+.badge-success {
+  background-color: #10b981;
+  color: #fff;
+}
+
+.badge-success:hover {
+  background-color: #059669;
+}
+
+/* Warning variant */
+.badge-warning {
+  background-color: #f59e0b;
+  color: #fff;
+}
+
+.badge-warning:hover {
+  background-color: #d97706;
+}
+
+/* Info variant */
+.badge-info {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.badge-info:hover {
+  background-color: #2563eb;
+}
+
+/* Small size variant */
+.badge-sm {
+  padding: 0.0625rem 0.5rem;
+  font-size: 0.6875rem;
+}
+
+/* Large size variant */
+.badge-lg {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
