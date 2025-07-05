@@ -15,7 +15,7 @@ from waldiez.models import (
     WaldiezRagUserProxy,
     WaldiezTransitionAvailability,
 )
-from waldiez.models.chat.chat_message import get_last_carryover_method_content
+from waldiez.models.chat.chat_message import RAG_METHOD_WITH_CARRYOVER_BODY
 
 
 def test_single_chat() -> None:
@@ -276,9 +276,7 @@ def test_chat_with_rag_and_carryover() -> None:
     imports = exporter.get_imports()
     assert not imports
     before_export = exporter.extras.chat_prerequisites
-    expected_before_body = get_last_carryover_method_content(
-        "Hello, how are you?"
-    )
+    expected_before_body = RAG_METHOD_WITH_CARRYOVER_BODY
     expected_before = (
         "def callable_message_chat1(\n"
         "    sender: RetrieveUserProxyAgent,\n"

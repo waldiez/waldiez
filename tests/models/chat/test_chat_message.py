@@ -39,7 +39,7 @@ def test_waldiez_chat_message() -> None:
         use_carryover=True,
     )
     assert chat_message.type == "rag_message_generator"
-    expected = get_last_carryover_method_content("content")
+    expected = RAG_METHOD_WITH_CARRYOVER_BODY
     assert chat_message.content_body == expected
     assert chat_message.context == {"key": "value"}
     assert chat_message.is_method()
@@ -51,7 +51,7 @@ def test_waldiez_chat_message() -> None:
         use_carryover=True,
     )
     assert chat_message.type == "rag_message_generator"
-    expected = get_last_carryover_method_content("")
+    expected = RAG_METHOD_WITH_CARRYOVER_BODY
     assert chat_message.content_body == expected
     assert chat_message.context == {"key": "value"}
 
@@ -62,7 +62,9 @@ def test_waldiez_chat_message() -> None:
         use_carryover=False,
     )
     assert chat_message.type == "rag_message_generator"
-    assert chat_message.content_body == RAG_METHOD_WITH_CARRYOVER_BODY
+    assert chat_message.content_body == get_last_carryover_method_content(
+        text_content="content",
+    )
 
     chat_message = WaldiezChatMessage(
         type="none",

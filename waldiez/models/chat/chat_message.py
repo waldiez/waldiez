@@ -159,7 +159,7 @@ class WaldiezChatMessage(WaldiezBase):
                 )
             content = self.content
         if self.type == "rag_message_generator":
-            if self.use_carryover:
+            if not self.use_carryover:
                 content = get_last_carryover_method_content(
                     text_content=self.content or "",
                 )
