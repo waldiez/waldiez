@@ -263,39 +263,39 @@ installer = "uv"
 dependencies = ["waldiez[dev,test,docs,ag2_extras,redis,websockets,mqtt]"]
 
 [tool.hatch.envs.default.scripts]
-pre-test = """
-python -m pip install -qq --upgrade pip
-pip install -qq -r requirements/test.txt
-"""
-test = """
-hatch run pre-test
-pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing:skip-covered --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests
-"""
-test-models = """
-hatch run pre-test
-pytest -c pyproject.toml --cov=waldiez/models --cov-branch --cov-report=term-missing:skip-covered -vv tests/models
-"""
-test-exporting = """
-hatch run pre-test
-pytest -c pyproject.toml --cov=waldiez/exporting --cov-branch --cov-report=term-missing:skip-covered -vv tests/exporting
-"""
-test-io = """
-hatch run pre-test
-pytest -c pyproject.toml --cov=waldiez/io --cov-branch --cov-report=term-missing:skip-covered -vv tests/io
-"""
-test-running = """
-hatch run pre-test
-pytest -c pyproject.toml --cov=waldiez/running --cov-branch --cov-report=term-missing:skip-covered -vv tests/running
-"""
+pre-test = [
+  "python -m pip install -qq --upgrade pip",
+  "pip install -qq -r requirements/test.txt"
+]
+test = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez --cov-branch --cov-report=term-missing:skip-covered --cov-report=lcov:coverage/py/lcov.info --cov-report=html:coverage/py/html --cov-report=xml:coverage/py/coverage.xml --junitxml=coverage/py/xunit.xml tests",
+]
+test-models = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez/models --cov-branch --cov-report=term-missing:skip-covered -vv tests/models"
+]
+test-exporting = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez/exporting --cov-branch --cov-report=term-missing:skip-covered -vv tests/exporting"
+]
+test-io = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez/io --cov-branch --cov-report=term-missing:skip-covered -vv tests/io"
+]
+test-running = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez/running --cov-branch --cov-report=term-missing:skip-covered -vv tests/running"
+]
 
 format-black = "black --config pyproject.toml waldiez tests scripts"
 format-autoflake = "autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive waldiez tests scripts"
 format-ruff = "ruff format --config pyproject.toml waldiez tests scripts"
-format = """
-hatch run format-black
-hatch run format-autoflake
-hatch run format-ruff
-"""
+format = [
+  "hatch run format-black",
+  "hatch run format-autoflake",
+  "hatch run format-ruff"
+]
 
 lint-black = "black --config pyproject.toml --check --diff waldiez tests scripts"
 lint-mypy = "mypy --config pyproject.toml waldiez tests scripts"
@@ -304,20 +304,20 @@ lint-bandit = "bandit -r -c pyproject.toml waldiez scripts"
 lint-yamllint = "yamllint ."
 lint-ruff = "ruff check --config pyproject.toml waldiez tests scripts"
 lint-pylint = "pylint --rcfile=pyproject.toml waldiez tests scripts"
-lint = """
-hatch run lint-black
-hatch run lint-mypy
-hatch run lint-flake8
-hatch run lint-bandit
-hatch run lint-yamllint
-hatch run lint-ruff
-hatch run lint-pylint
-"""
+lint = [
+  "hatch run lint-black",
+  "hatch run lint-mypy",
+  "hatch run lint-flake8",
+  "hatch run lint-bandit",
+  "hatch run lint-yamllint",
+  "hatch run lint-ruff",
+  "hatch run lint-pylint",
+]
 
-forlint = """
-hatch run format
-hatch run lint
-"""
+forlint = [
+  "hatch run format",
+  "hatch run lint"
+]
 
 clean = "python scripts/clean.py"
 smoke = "python scripts/smoke.py"
@@ -329,29 +329,29 @@ docs-live = "python -m mkdocs serve --watch mkdocs.yml --watch docs --watch wald
 build = "python -m build --wheel --sdist --outdir out/dist"
 image = "python scripts/image.py"
 
-check = """
-hatch run clean
-hatch run format
-hatch run lint
-hatch run test
-hatch run smoke
-"""
+check = [
+  "hatch run clean",
+  "hatch run format",
+  "hatch run lint",
+  "hatch run test",
+  "hatch run smoke"
+]
 
 matrix-test = "hatch run test:test"
 # alias
 test-matrix = "hatch run test:test"
 
-release = """
-hatch run check
-hatch run matrix-test
-hatch run docs
-hatch run build
-"""
+release = [
+  "hatch run check",
+  "hatch run matrix-test",
+  "hatch run docs",
+  "hatch run build"
+]
 
-all = """
-hatch run release
-hatch run image
-"""
+all = [
+  "hatch run release",
+  "hatch run image"
+]
 
 [tool.hatch.envs.test]
 inherit = true
@@ -543,15 +543,7 @@ split-on-trailing-comma = true
 
 # pytest
 [tool.pytest.ini_options]
-addopts = """
-    -d \
-    -s \
-    -n auto \
-    --exitfirst \
-    --durations=10 \
-    --color=yes \
-    --timeout=120
-"""
+addopts = "-d -s -n auto --exitfirst --durations=10  --color=yes --timeout=120"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_mode = "auto"
 filterwarnings = [
