@@ -10867,22 +10867,25 @@ const updateNestedEdges = (get, set) => {
 };
 const resetSyncEdgeOrders = (get, set) => {
   const edges = get().edges;
-  const newEdges = edges.sort((a, b) => {
-    const orderA = a.data?.order ?? -1;
-    const orderB = b.data?.order ?? -1;
-    return orderA - orderB;
-  }).map((edge, index) => {
-    let edgeOrder = edge.data?.order;
-    if (edgeOrder === void 0) {
-      edgeOrder = -1;
+  const sorted = edges.slice().sort((a, b) => {
+    const aOrder = a.data?.order ?? -1;
+    const bOrder = b.data?.order ?? -1;
+    return aOrder - bOrder;
+  });
+  const usedOrders = /* @__PURE__ */ new Set();
+  const finalEdges = sorted.map((edge) => {
+    let order = edge.data?.order;
+    if (!order || order < 0) {
+      return { ...edge, data: { ...edge.data, order } };
     }
-    return {
-      ...edge,
-      data: { ...edge.data, order: edgeOrder < 0 ? edgeOrder : index }
-    };
+    while (order > 0 && usedOrders.has(order)) {
+      order++;
+    }
+    usedOrders.add(order);
+    return { ...edge, data: { ...edge.data, order } };
   });
   set({
-    edges: newEdges,
+    edges: finalEdges,
     updatedAt: (/* @__PURE__ */ new Date()).toISOString()
   });
 };

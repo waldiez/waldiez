@@ -452,26 +452,28 @@ const updateNestedEdges = (get: typeOfGet, set: typeOfSet) => {
  * @param set - The function to set the new state.
  */
 const resetSyncEdgeOrders: (get: typeOfGet, set: typeOfSet) => void = (get, set) => {
-    // if the edge.data.order is < 0, leave it as is
     const edges = get().edges as WaldiezEdge[];
-    const newEdges = edges
-        .sort((a, b) => {
-            const orderA = a.data?.order ?? -1;
-            const orderB = b.data?.order ?? -1;
-            return orderA - orderB;
-        })
-        .map((edge, index) => {
-            let edgeOrder = edge.data?.order;
-            if (edgeOrder === undefined) {
-                edgeOrder = -1;
-            }
-            return {
-                ...edge,
-                data: { ...edge.data, order: edgeOrder < 0 ? edgeOrder : index },
-            };
-        });
+    const sorted = edges.slice().sort((a, b) => {
+        const aOrder = a.data?.order ?? -1;
+        const bOrder = b.data?.order ?? -1;
+        return aOrder - bOrder;
+    });
+    const usedOrders = new Set<number>();
+    const finalEdges = sorted.map(edge => {
+        let order = edge.data?.order;
+        if (!order || order < 0) {
+            // Leave negative/undefined as-is
+            return { ...edge, data: { ...edge.data, order } };
+        }
+        // Ensure no duplicate positive orders
+        while (order > 0 && usedOrders.has(order)) {
+            order++;
+        }
+        usedOrders.add(order);
+        return { ...edge, data: { ...edge.data, order } };
+    });
     set({
-        edges: newEdges,
+        edges: finalEdges,
         updatedAt: new Date().toISOString(),
     });
 };
