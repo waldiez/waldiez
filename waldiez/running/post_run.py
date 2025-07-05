@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from .gen_seq_diagram import generate_sequence_diagram
+from .patch_io_stream import get_printer
 from .timeline_processor import TimelineProcessor
 
 
@@ -112,7 +113,14 @@ def _make_timeline_json(
                     functions_file=log_files["functions"],
                 )
                 result = processor.process_timeline()
-
+                printer = get_printer()
+                printer(
+                    json.dumps(
+                        {"type": "timeline", "data": result},
+                        default=str,
+                    ),
+                    flush=True,
+                )
                 with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(result, f, indent=2, default=str)
             except BaseException:  # pylint: disable=broad-exception-caught

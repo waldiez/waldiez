@@ -242,6 +242,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             flow_name=self.waldiez.name,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
         )
         self.log.info("Cleanup completed")
 
