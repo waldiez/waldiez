@@ -140,6 +140,10 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
      */
     const onNResultsChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
+            if (!event.target.value || event.target.value.trim() === "") {
+                setRetrieveConfigConfigData({ nResults: null });
+                return;
+            }
             try {
                 const value = parseInt(event.target.value, 10);
 
@@ -159,6 +163,10 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
      */
     const onDistanceThresholdChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
+            if (!event.target.value || event.target.value.trim() === "") {
+                setRetrieveConfigConfigData({ distanceThreshold: null });
+                return;
+            }
             try {
                 const value = parseFloat(event.target.value);
 
