@@ -44,6 +44,19 @@ const getBaseUrl = (command: "build" | "serve"): string => {
 };
 
 /**
+ * Get the Hub API URL from environment variables or default to a predefined URL.
+ * Validates that the URL starts with "http" to ensure it's a proper URL.
+ * @returns - The Hub API URL as a JSON string.
+ * @throws - Error if the URL is invalid.
+ */
+const getHubUrl = (): string => {
+    const hubUrl = process.env.HUB_API_URL || "https://api.waldiez.io";
+    if (!hubUrl.startsWith("http")) {
+        throw new Error(`Invalid HUB_API_URL: ${hubUrl}`);
+    }
+    return JSON.stringify(hubUrl);
+};
+/**
  * Get the public directory based on the command.
  * If building, only include the logo directory; otherwise, include all public assets.
  * @param command - The command being executed, either "build" or "serve".
@@ -63,6 +76,7 @@ export default defineConfig(({ command }) => {
         base,
         define: {
             __WALDIEZ_VERSION__: getVersion(),
+            __HUB_API_URL__: getHubUrl(),
         },
         build: {
             emptyOutDir: true,
@@ -140,3 +154,9 @@ export default defineConfig(({ command }) => {
         ],
     };
 });
+
+console.log(`Waldiez web build configuration:
+- Version: ${getVersion()}
+- Base URL: ${getBaseUrl("build")}
+- Public Directory: ${getPublicDir("build")}
+- Hub API URL: ${getHubUrl()}`);

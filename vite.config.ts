@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import react from "@vitejs/plugin-react";
+import "dotenv/config";
 import fs from "fs-extra";
 import { resolve } from "path";
 import { defineConfig, normalizePath } from "vite";
@@ -49,6 +50,14 @@ const getVersion = (): string => {
     return JSON.stringify(cleanedVersion);
 };
 
+const getHubUrl = (): string => {
+    const hubUrl = process.env.HUB_API_URL || "https://api.waldiez.io";
+    if (!hubUrl.startsWith("http")) {
+        throw new Error(`Invalid HUB_API_URL: ${hubUrl}`);
+    }
+    return JSON.stringify(hubUrl);
+};
+
 /**
  * Get the public directory based on the command.
  * @param command - The command being executed, either "build" or "serve".
@@ -68,6 +77,7 @@ export default defineConfig(({ command }) => ({
     },
     define: {
         __WALDIEZ_VERSION__: getVersion(),
+        __HUB_API_URL__: getHubUrl(),
     },
     build: {
         emptyOutDir: true,
@@ -299,3 +309,10 @@ export default defineConfig(({ command }) => ({
         },
     },
 }));
+
+console.log(`Waldiez build configuration:
+- Version: ${getVersion()}
+- Hub API URL: ${getHubUrl()}`);
+if (getPublicDir("build")) {
+    console.log(`- Public Directory: ${getPublicDir("build")}`);
+}

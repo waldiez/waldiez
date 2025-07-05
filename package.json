@@ -119,6 +119,7 @@
         "react-icons": "^5.5.0",
         "react-markdown": "^10.1.0",
         "react-select": "^5.10.1",
+        "recharts": "^3.0.2",
         "rehype-highlight": "^7.0.2",
         "remark-gfm": "^4.0.1",
         "zundo": "^2.3.0",

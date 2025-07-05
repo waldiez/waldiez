@@ -16,3 +16,4 @@ interface ImportMeta {
     readonly env: ImportMetaEnv;
 }
 declare const __WALDIEZ_VERSION__: string;
+declare const __HUB_API_URL__: string;

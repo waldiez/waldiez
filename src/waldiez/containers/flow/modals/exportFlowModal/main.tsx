@@ -8,7 +8,7 @@ import { CheckboxInput, DropZone, Modal, TextInput, showSnackbar } from "@waldie
 
 // Constants
 const HUB_URL = "https://hub.waldiez.io";
-const API_FILES_URL = "https://api.waldiez.io/api/files";
+const API_FILES_URL = `${__HUB_API_URL__}/api/files`;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const UPLOAD_TIMEOUT = 10000; // 10 seconds
 const ADDITIONAL_FILE_TIMEOUT = 30000; // 30 seconds
