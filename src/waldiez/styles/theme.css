@@ -188,7 +188,7 @@ body.waldiez-dark ::-moz-placeholder {
 .trash-button,
 .save-button,
 .toggle-visibility-btn {
-  border-radius: 5px;
+  border-radius: 5px !important;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   cursor: pointer;
   margin-left: 5px;

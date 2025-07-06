@@ -15,7 +15,7 @@ body.waldiez-light .order-badge {
   width: 24px;
   height: 24px;
   background-color: #e9ecef;
-  border-radius: 50%;
+  border-radius: 50% !important;
   font-size: 0.75rem;
   font-weight: 600;
   color: #495057;
@@ -28,7 +28,7 @@ body.waldiez-dark .order-badge {
   width: 24px;
   height: 24px;
   background-color: #333;
-  border-radius: 50%;
+  border-radius: 50% !important;
   font-size: 0.75rem;
   font-weight: 600;
   color: #d1d5db;

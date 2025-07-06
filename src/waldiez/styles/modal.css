@@ -130,7 +130,7 @@ body.waldiez-dark .modal {
   all: unset;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 6px !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,7 +163,7 @@ body.waldiez-dark .modal {
   all: unset;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 6px !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -215,7 +215,7 @@ body.waldiez-dark .modal {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 6px !important;
   cursor: pointer;
   color: color-mix(in srgb, var(--text-color) 60%, var(--background-color));
   transition: all 0.2s ease;
@@ -282,7 +282,7 @@ body.waldiez-dark .modal {
   border: 1px solid transparent;
   cursor: pointer;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 8px !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -301,7 +301,7 @@ body.waldiez-dark .modal {
   border: 1px solid transparent;
   cursor: pointer;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 8px !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
