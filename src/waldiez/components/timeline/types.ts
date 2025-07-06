@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-export type TimelineItem = {
+export type WaldiezTimelineItem = {
     id: string;
     type: "session" | "gap";
     start: number;
@@ -26,22 +26,22 @@ export type TimelineItem = {
     real_start_time?: string;
 };
 
-export type CostPoint = {
+export type WaldiezTimelineCostPoint = {
     time: number;
     cumulative_cost: number;
     session_cost: number;
     session_id: number | string;
 };
 
-export type AgentInfo = {
+export type WaldiezTimelineAgentInfo = {
     name: string;
     class: string;
     color: string;
 };
 
-export type TimelineData = {
-    timeline: TimelineItem[];
-    cost_timeline: CostPoint[];
+export type WaldiezTimelineData = {
+    timeline: WaldiezTimelineItem[];
+    cost_timeline: WaldiezTimelineCostPoint[];
     summary: {
         total_sessions: number;
         total_time: number;
@@ -60,5 +60,5 @@ export type TimelineData = {
         cost_range: [number, number];
         colors?: Record<string, string>;
     };
-    agents: AgentInfo[];
+    agents: WaldiezTimelineAgentInfo[];
 };

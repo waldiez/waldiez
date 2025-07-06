@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezChatMessage, WaldiezChatUserInput } from "@waldiez/types";
+import { WaldiezChatMessage, WaldiezChatUserInput, WaldiezTimelineData } from "@waldiez/types";
 
 export type WebSocketMessage = {
     action: "run" | "stop" | "save" | "upload" | "convert" | "userInput" | "getInputPrompt";
@@ -35,6 +35,7 @@ export type WebSocketResponse = {
 };
 
 export type WaldiezWrapperState = {
+    timeline: WaldiezTimelineData | undefined;
     messages: WaldiezChatMessage[];
     userParticipants: string[];
     isRunning: boolean;

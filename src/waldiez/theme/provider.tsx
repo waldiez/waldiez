@@ -15,9 +15,14 @@ import { isInitiallyDark, setIsDarkMode } from "@waldiez/theme/utils";
  */
 export const WaldiezThemeProvider: React.FC<{
     children: ReactNode;
-    initial?: boolean;
-}> = ({ children, initial }) => {
-    const [isDark, setIsDark] = useState(() => (typeof initial === "boolean" ? initial : isInitiallyDark()));
+    initialDark?: boolean;
+}> = ({ children, initialDark }) => {
+    const [isDark, setIsDark] = useState(() =>
+        typeof initialDark === "boolean" ? initialDark : isInitiallyDark(),
+    );
+    if (typeof initialDark === "boolean") {
+        setIsDarkMode(initialDark);
+    }
     const toggleTheme = () => {
         setIsDark(prev => {
             setIsDarkMode(!prev);

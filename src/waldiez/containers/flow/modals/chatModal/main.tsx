@@ -6,8 +6,9 @@ import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "r
 import { FaStop } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
+import { MdTimeline } from "react-icons/md";
 
-import { ChatUI, Modal } from "@waldiez/components";
+import { ChatUI, Modal, TimelineModal } from "@waldiez/components";
 import { ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/types";
 
 /**
@@ -22,6 +23,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     const [textInput, setTextInput] = useState("");
     const [isFileSelectModalOpen, setIsFileSelectModalOpen] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [timelineOpen, setTimelineOpen] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [isLocallyOpen, setIsLocallyOpen] = useState(true);
 
@@ -186,6 +188,20 @@ export const ChatModal = memo((props: ChatModalProps) => {
         [isFileSelectModalOpen, handleClose],
     );
 
+    /**
+     * Handle timeline click
+     */
+    const handleTimelineClick = useCallback(() => {
+        setTimelineOpen(true);
+    }, []);
+
+    /**
+     * Close timeline modal
+     */
+    // const onCloseTimeline = useCallback(() => {
+    //     setTimelineOpen(false);
+    // }, []);
+
     // Generate unique IDs for accessibility
     const inputId = `rf-${flowId}-chat-modal-input`;
     const imageInputId = `rf-${flowId}-chat-modal-image`;
@@ -201,8 +217,27 @@ export const ChatModal = memo((props: ChatModalProps) => {
         >
             <FaStop size={18} />
         </div>
+    ) : chat?.timeline ? (
+        <div
+            role="button"
+            className="chat-modal-action clickable"
+            onClick={handleTimelineClick}
+            title="View Timeline"
+            data-testid={`rf-${flowId}-chat-modal-timeline`}
+        >
+            <MdTimeline size={18} />
+        </div>
     ) : undefined;
     const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
+    if (timelineOpen && chat?.timeline) {
+        return (
+            <TimelineModal
+                isOpen={timelineOpen}
+                onClose={() => setTimelineOpen(false)}
+                data={chat.timeline}
+            />
+        );
+    }
     return (
         <Modal
             id={modalTestId}
@@ -229,7 +264,6 @@ export const ChatModal = memo((props: ChatModalProps) => {
                         />
                     </div>
                 )}
-
                 <div className="input-prompt">{chat?.activeRequest?.prompt}</div>
                 {chat?.activeRequest?.request_id !== undefined && (
                     <div className="chat-input-container">

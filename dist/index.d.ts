@@ -687,7 +687,7 @@ export declare type MessageProcessingContext = {
  * It includes an array of participant objects, each with a name and additional properties.
  * @param participants - An array of participant objects.
  * @param participants.name - The name of the participant.
- * @param participants.[key: string] - Additional properties for the participant.
+ * @param participants\[key: string] - Additional properties for the participant.
  */
 export declare type ParticipantsData = {
     participants: Array<{
@@ -1888,6 +1888,7 @@ export declare type WaldiezChatConfig = {
     activeRequest?: WaldiezActiveRequest;
     error?: WaldiezChatError;
     handlers?: WaldiezChatHandlers;
+    timeline?: WaldiezTimelineData;
     mediaConfig?: WaldiezMediaConfig;
 };
 
@@ -2109,6 +2110,7 @@ export declare type WaldiezChatMessageProcessingResult = {
     message?: WaldiezChatMessage;
     requestId?: string | null;
     isWorkflowEnd?: boolean;
+    timeline?: WaldiezTimelineData;
     participants?: {
         users: string[];
         all: string[];
@@ -2124,6 +2126,7 @@ export declare class WaldiezChatMessageProcessor {
      * @param imageUrl - Optional image URL associated with the message
      */
     static process(rawMessage: string, requestId?: string | null, imageUrl?: string): WaldiezChatMessageProcessingResult | undefined;
+    private static isTimelineMessage;
     /**
      * Parses a raw message string into a BaseMessageData object.
      * Returns null if the message cannot be parsed.
@@ -3567,6 +3570,67 @@ export declare type WaldiezStringLLMCondition = {
     conditionType: "string_llm";
     prompt: string;
     data?: Record<string, any>;
+};
+
+declare type WaldiezTimelineAgentInfo = {
+    name: string;
+    class: string;
+    color: string;
+};
+
+declare type WaldiezTimelineCostPoint = {
+    time: number;
+    cumulative_cost: number;
+    session_cost: number;
+    session_id: number | string;
+};
+
+declare type WaldiezTimelineData = {
+    timeline: WaldiezTimelineItem[];
+    cost_timeline: WaldiezTimelineCostPoint[];
+    summary: {
+        total_sessions: number;
+        total_time: number;
+        total_cost: number;
+        total_agents: number;
+        total_events: number;
+        total_tokens: number;
+        avg_cost_per_session: number;
+        compression_info: {
+            gaps_compressed: number;
+            time_saved: number;
+        };
+    };
+    metadata: {
+        time_range: [number, number];
+        cost_range: [number, number];
+        colors?: Record<string, string>;
+    };
+    agents: WaldiezTimelineAgentInfo[];
+};
+
+declare type WaldiezTimelineItem = {
+    id: string;
+    type: "session" | "gap";
+    start: number;
+    end: number;
+    duration: number;
+    agent?: string;
+    cost?: number;
+    color: string;
+    label: string;
+    gap_type?: string;
+    real_duration?: number;
+    compressed?: boolean;
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    tokens?: number;
+    agent_class?: string;
+    is_cached?: boolean;
+    llm_model?: string;
+    y_position?: number;
+    session_id?: string;
+    real_start_time?: string;
 };
 
 /**

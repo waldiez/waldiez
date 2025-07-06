@@ -36,6 +36,7 @@ type ModalProps = {
     className?: string;
     hasUnsavedChanges?: boolean;
     preventCloseIfUnsavedChanges?: boolean;
+    noHeader?: boolean;
 };
 
 // Account for modal padding: header, borders, content padding
@@ -230,7 +231,7 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
     const modalContent = (
         <>
             {/* Backdrop - only show when not minimized */}
-            {!isMinimized && (
+            {!isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && (
                 <div
                     className="modal-backdrop"
                     style={{
@@ -253,48 +254,51 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
                 className={modalClasses}
                 style={modalStyle}
             >
-                <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
-                    {!isMinimized && beforeTitle && <div>{beforeTitle}</div>}
-                    <h3 className="modal-title font-semibold truncate">
-                        {title}
-                        {hasUnsavedChanges && (
-                            <span style={{ color: "#f97316", marginLeft: "0.25rem" }}>*</span>
-                        )}
-                    </h3>
-                    <div className="modal-header-actions">
-                        {hasMinimizeBtn && (
-                            <div
-                                className="modal-minimize-btn clickable"
-                                role="button"
-                                title={isMinimized ? "Restore" : "Minimize"}
-                                onClick={onToggleMinimize}
-                            >
-                                {isMinimized ? <FaChevronUp /> : <FaChevronDown />}
-                            </div>
-                        )}
-                        {hasMaximizeBtn && (
-                            <div
-                                className="modal-fullscreen-btn clickable"
-                                role="button"
-                                title={isFullScreen ? "Restore" : "Maximize"}
-                                onClick={onToggleFullScreen}
-                            >
-                                {isFullScreen ? <FaCompress /> : <FaExpand />}
-                            </div>
-                        )}
-                        {hasCloseBtn && (
-                            <div
-                                className="modal-close-btn clickable"
-                                role="button"
-                                title="Close"
-                                data-testid="modal-close-btn"
-                                onClick={handleCloseModal}
-                            >
-                                <FaCircleXmark />
-                            </div>
-                        )}
+                {!props.noHeader && (
+                    <div className="modal-header" ref={dragRef} onMouseDown={onMouseDown}>
+                        {!isMinimized && beforeTitle && <div>{beforeTitle}</div>}
+                        <h3 className="modal-title font-semibold truncate">
+                            {title}
+                            {hasUnsavedChanges && (
+                                <span style={{ color: "#f97316", marginLeft: "0.25rem" }}>*</span>
+                            )}
+                        </h3>
+                        <div className="modal-header-actions">
+                            {hasMinimizeBtn && (
+                                <div
+                                    className="modal-minimize-btn clickable"
+                                    role="button"
+                                    title={isMinimized ? "Restore" : "Minimize"}
+                                    onClick={onToggleMinimize}
+                                >
+                                    {isMinimized ? <FaChevronUp /> : <FaChevronDown />}
+                                </div>
+                            )}
+                            {hasMaximizeBtn && (
+                                <div
+                                    className="modal-fullscreen-btn clickable"
+                                    role="button"
+                                    title={isFullScreen ? "Restore" : "Maximize"}
+                                    onClick={onToggleFullScreen}
+                                >
+                                    {isFullScreen ? <FaCompress /> : <FaExpand />}
+                                </div>
+                            )}
+                            {hasCloseBtn && (
+                                <div
+                                    className="modal-close-btn clickable"
+                                    role="button"
+                                    title="Close"
+                                    data-testid="modal-close-btn"
+                                    onClick={handleCloseModal}
+                                >
+                                    <FaCircleXmark />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
+                {/* Confirmation content or main content */}
                 <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
                     {showConfirmation
                         ? renderConfirmationContent({

@@ -40,6 +40,7 @@ body.waldiez-dark .modal {
 
 /* stylelint-disable-next-line no-descending-specificity */
 .modal:has(.image-modal.open),
+.modal:has(.timline-modal.open),
 .modal-fullscreen {
   top: 0 !important;
   left: 0 !important;

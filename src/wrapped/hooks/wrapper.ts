@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { nanoid } from "nanoid";
 
-import { showSnackbar } from "@waldiez/components";
+import { WaldiezTimelineData, showSnackbar } from "@waldiez/components";
 import { WaldiezChatMessage } from "@waldiez/types";
 import { WaldiezChatMessageProcessingResult, WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
 
@@ -27,6 +27,7 @@ export const useWaldiezWrapper = ({
     const inputRequestId = useRef<string | undefined>(undefined);
     const expectingUserInput = useRef<boolean>(false);
     const [userParticipants, setUserParticipants] = useState<string[]>([]);
+    const [timeline, setTimeline] = useState<WaldiezTimelineData | undefined>(undefined);
     const [isRunning, setIsRunning] = useState(false);
     const [messages, setMessages] = useState<WaldiezChatMessage[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -96,6 +97,10 @@ export const useWaldiezWrapper = ({
             inputRequestId.current,
             imageUrl,
         );
+        if (result?.timeline) {
+            setTimeline(result.timeline);
+            return;
+        }
         if (result?.message) {
             const newMessage = result.message as WaldiezChatMessage;
             setMessages(prevMessages => [...prevMessages, newMessage]);
@@ -178,159 +183,6 @@ export const useWaldiezWrapper = ({
         }
     };
     /**
-     * Handle text or print messages
-     */
-    // const handleTextOrPrint = (data: WebSocketResponse) => {
-    //     if (data.content) {
-    //         checkSender(data);
-    //         const chatMessage: WaldiezChatMessage = getNewChatMessage(
-    //             data.content as DataContent,
-    //             data.type as WaldiezChatMessageType,
-    //         );
-    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
-    //     } else if (
-    //         data.message &&
-    //         typeof data.message === "string" &&
-    //         data.message.trim().replace("\n", "") === "<Waldiez> - Workflow finished"
-    //     ) {
-    //         setIsRunning(false);
-    //     }
-    // };
-
-    // /**
-    //  * Handle group chat run chat messages
-    //  */
-    // const handleGroupChatRunChat = (data: WebSocketResponse) => {
-    //     // # {"type": "group_chat_run_chat", "content":
-    //     // #    {"uuid": "3f2d491e-deb3-4f28-8991-cb8eb67ea3a6",
-    //     // #    "speaker": "executor", "silent": false}}
-    //     //
-    //     if (
-    //         data.content &&
-    //         typeof data.content === "object" &&
-    //         data.content !== null &&
-    //         "uuid" in data.content &&
-    //         typeof data.content.uuid === "string" &&
-    //         "speaker" in data.content &&
-    //         typeof data.content.speaker === "string"
-    //     ) {
-    //         const chatMessage: WaldiezChatMessage = {
-    //             id: nanoid(),
-    //             timestamp: new Date().toISOString(),
-    //             type: "system",
-    //             content: [
-    //                 {
-    //                     type: "text",
-    //                     text: "Group chat run",
-    //                 },
-    //             ],
-    //             sender: data.content.speaker,
-    //         };
-    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
-    //     }
-    // };
-
-    // /**
-    //  * Handle generate code execution reply messages
-    //  */
-    // const handleGenerateCodeExecutionReply = (data: WebSocketResponse) => {
-    //     // # {"type": "generate_code_execution_reply", "content":
-    //     // #    {"uuid": "af6e6cfd-edf6-4785-a490-97358ae3d306",
-    //     // #   "code_blocks": ["md"], "sender": "manager", "recipient": "executor"}}
-    //     if (
-    //         data.content &&
-    //         typeof data.content === "object" &&
-    //         data.content !== null &&
-    //         "uuid" in data.content &&
-    //         typeof data.content.uuid === "string" &&
-    //         "sender" in data.content &&
-    //         typeof data.content.sender === "string" &&
-    //         "recipient" in data.content &&
-    //         typeof data.content.recipient === "string"
-    //     ) {
-    //         const chatMessage: WaldiezChatMessage = {
-    //             id: nanoid(),
-    //             timestamp: new Date().toISOString(),
-    //             type: "system",
-    //             content: [
-    //                 {
-    //                     type: "text",
-    //                     text: "Generate code execution reply",
-    //                 },
-    //             ],
-    //             sender: data.content.sender,
-    //             recipient: data.content.recipient,
-    //         };
-    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
-    //     }
-    // };
-
-    // /**
-    //  * Handle select speaker messages
-    //  */
-    // const handleSelectSpeaker = (data: WebSocketResponse) => {
-    //     if (
-    //         data.content &&
-    //         typeof data.content === "object" &&
-    //         data.content !== null &&
-    //         "uuid" in data.content &&
-    //         typeof data.content.uuid === "string" &&
-    //         "agents" in data.content &&
-    //         Array.isArray(data.content.agents) &&
-    //         data.content.agents.every(agent => typeof agent === "string")
-    //     ) {
-    //         const chatMessage: WaldiezChatMessage = {
-    //             id: data.content.uuid,
-    //             timestamp: new Date().toISOString(),
-    //             type: "system",
-    //             content: [
-    //                 {
-    //                     type: "text",
-    //                     text: get_speakerSelectionMd(data.content.agents),
-    //                 },
-    //             ],
-    //         };
-    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
-    //     }
-    // };
-
-    // /**
-    //  * Get speaker selection markdown
-    //  */
-    // const get_speakerSelectionMd = (agents: string[]): string => {
-    //     const agentList = agents.map((agent, index) => {
-    //         return `- ${index + 1}. ${agent}`;
-    //     });
-    //     return `Select a speaker from the list below:\n\n${agentList.join("\n")}`;
-    // };
-    // /**
-    //  * Handle flow termination
-    //  */
-    // const handleFlowTermination = (data: WebSocketResponse) => {
-    //     if (
-    //         data.content &&
-    //         typeof data.content === "object" &&
-    //         data.content !== null &&
-    //         "termination_reason" in data.content &&
-    //         typeof data.content.termination_reason === "string"
-    //     ) {
-    //         const terminationMessage: WaldiezChatMessage = {
-    //             id: nanoid(),
-    //             timestamp: new Date().toISOString(),
-    //             type: "system",
-    //             content: [
-    //                 {
-    //                     type: "text",
-    //                     text: data.content.termination_reason,
-    //                 },
-    //             ],
-    //         };
-    //         setMessages(prevMessages => [...prevMessages, terminationMessage]);
-    //     }
-    //     setIsRunning(false);
-    //     setInputPrompt(undefined);
-    // };
-    /**
      * Handle flow error
      */
     const handleFlowError = (response: WebSocketResponse) => {
@@ -360,88 +212,6 @@ export const useWaldiezWrapper = ({
         setIsRunning(false);
         setInputPrompt(undefined);
     };
-    // /**
-    //  * Handle input request messages
-    //  */
-    // const handleInputRequest = (data: WebSocketResponse) => {
-    //     if (data.prompt) {
-    //         let prompt = data.prompt.trim();
-    //         if (prompt === ">" || prompt === "> ") {
-    //             prompt = "Enter your message to start the conversation:";
-    //             data.prompt = prompt;
-    //         }
-    //         if (data.request_id) {
-    //             inputRequestId.current = data.request_id;
-    //         }
-    //         expectingUserInput.current = true;
-    //         const password = isPasswordPrompt(data);
-    //         setInputPrompt({
-    //             prompt,
-    //             request_id: inputRequestId.current || "<unknown>",
-    //             password,
-    //         });
-    //         addInputRequestMessage(data);
-    //     }
-    // };
-
-    // /**
-    //  * Add input request message to the chat
-    //  */
-    // const addInputRequestMessage = (data: WebSocketResponse) => {
-    //     if (data.prompt && data.request_id) {
-    //         const chatMessage: WaldiezChatMessage = {
-    //             id: nanoid(),
-    //             timestamp: new Date().toISOString(),
-    //             type: "input_request",
-    //             request_id: data.request_id,
-    //             content: [
-    //                 {
-    //                     type: "text",
-    //                     text: data.prompt,
-    //                 },
-    //             ],
-    //         };
-    //         setMessages(prevMessages => [...prevMessages, chatMessage]);
-    //     }
-    // };
-
-    // /**
-    //  * Check if the sender is a user and update the user participants list
-    //  */
-    // const checkSender = (data: WebSocketResponse) => {
-    //     if (
-    //         expectingUserInput.current &&
-    //         typeof data.content === "object" &&
-    //         data.content !== null &&
-    //         "sender" in data.content &&
-    //         typeof data.content.sender === "string"
-    //     ) {
-    //         if (
-    //             "role" in data.content &&
-    //             typeof data.content.role === "string" &&
-    //             data.content.role !== "user"
-    //         ) {
-    //             return;
-    //         }
-    //         if (!userParticipants.includes(data.content.sender)) {
-    //             setUserParticipants(prev => [...prev, (data.content as any).sender]);
-    //         }
-    //         expectingUserInput.current = false;
-    //     }
-    // };
-
-    // /**
-    //  * Check if the prompt is a password prompt
-    //  */
-    // const isPasswordPrompt = (data: WebSocketResponse): boolean => {
-    //     let password = false;
-    //     if (data.password && typeof data.password === "string") {
-    //         password = data.password.toLowerCase() === "true";
-    //     } else if (data.password && typeof data.password === "boolean") {
-    //         password = data.password;
-    //     }
-    //     return password;
-    // };
 
     /**
      * Reset the state
@@ -473,6 +243,7 @@ export const useWaldiezWrapper = ({
     // Return state and actions
     return [
         {
+            timeline,
             messages,
             userParticipants,
             isRunning,

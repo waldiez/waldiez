@@ -1,0 +1,100 @@
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (width >= 768px) {
+  .timeline-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 1024px) {
+  .timeline-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.timeline-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timeline-top .timeline-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #2563eb;
+}
+
+body.waldiez-dark .timeline-icon {
+  color: #60a5fa;
+}
+
+.timeline-top-content > *:not(:last-child) {
+  margin-bottom: 0.25rem; /* space-y-1 */
+}
+
+.timeline-label {
+  font-size: 0.75rem; /* text-xs */
+  color: #475569; /* text-slate-600 */
+  font-weight: 500; /* font-medium */
+}
+
+body.waldiez-dark .timeline-label {
+  color: #9ca3af; /* text-gray-400 */
+}
+
+.timeline-value {
+  font-size: 0.875rem; /* text-sm */
+  color: #6b7280; /* text-gray-600 */
+  font-weight: 600; /* font-semibold */
+}
+
+body.waldiez-dark .timeline-value {
+  color: #f3f4f6; /* text-gray-200 */
+}
+
+.timeline-agent-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.timeline-agent-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #374151;
+
+  /* transition: background 0.2s, color 0.2s; (optional) */
+}
+
+.waldiez.body-dark .timeline-agent-item {
+  background: #374151;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+/* The colored dot */
+.timeline-agent-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #fff;
+
+  /* The backgroundColor is set inline in React: style={{ backgroundColor: agent.color }} */
+}
+
+/* Agent class: faded smaller text */
+.timeline-agent-class {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}

@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
+
 /**
  * Supported media types
  * @param text - Text content
@@ -282,6 +284,9 @@ export type WaldiezChatConfig = {
 
     // Chat-specific handlers
     handlers?: WaldiezChatHandlers;
+
+    // Timeline data generated after the chat
+    timeline?: WaldiezTimelineData;
 
     // Media handling configuration
     mediaConfig?: WaldiezMediaConfig;

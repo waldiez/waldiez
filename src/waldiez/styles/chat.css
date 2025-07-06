@@ -446,6 +446,7 @@ body.waldiez-dark .image-placeholder {
 }
 
 /* Image Modal for Fullscreen View */
+.timeline-modal,
 .image-modal {
   position: fixed;
   top: 0;
@@ -464,6 +465,11 @@ body.waldiez-dark .image-placeholder {
     visibility 0.3s ease;
 }
 
+.timeline-modal {
+  background-color: unset;
+}
+
+.timeline-modal.open,
 .image-modal.open {
   opacity: 1;
   visibility: visible;
@@ -478,20 +484,21 @@ body.waldiez-dark .image-placeholder {
 
 .modal-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
   background: rgb(255 255 255 / 20%);
   color: white;
   border: none;
   border-radius: 50%;
   padding: 4px;
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background 0.2s ease;
+  z-index: 1000000;
 }
 
 .modal-close:hover {

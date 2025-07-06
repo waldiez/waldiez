@@ -4,7 +4,7 @@
  */
 import { nanoid } from "nanoid";
 
-import { WaldiezChatMessage } from "@waldiez/types";
+import { WaldiezChatMessage, WaldiezTimelineData } from "@waldiez/types";
 import { MessageValidator } from "@waldiez/utils/chat/base";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
 import {
@@ -476,5 +476,38 @@ export class TerminationAndHumanReplyNoInputHandler implements MessageHandler {
             recipient: data.content.recipient,
         };
         return { message };
+    }
+}
+
+export class TimelineDataHandler implements MessageHandler {
+    canHandle(type: string): boolean {
+        return type === "timeline";
+    }
+
+    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        if (!data || typeof data !== "object") {
+            return undefined;
+        }
+
+        const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+        const cost_timeline = Array.isArray(data.cost_timeline) ? data.cost_timeline : [];
+        const summary = typeof data.summary === "object" && data.summary !== null ? data.summary : undefined;
+        const metadata =
+            typeof data.metadata === "object" && data.metadata !== null ? data.metadata : undefined;
+        const agents = Array.isArray(data.agents) ? data.agents : [];
+
+        if (!summary || !metadata) {
+            return undefined;
+        }
+
+        const timelineData: WaldiezTimelineData = {
+            timeline,
+            cost_timeline,
+            summary,
+            metadata,
+            agents,
+        };
+
+        return { timeline: timelineData };
     }
 }

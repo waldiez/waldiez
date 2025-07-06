@@ -4,8 +4,6 @@
  */
 import Waldiez from "@waldiez";
 
-import React from "react";
-
 import { WaldiezProps } from "@waldiez/types";
 
 import { useWaldiezWrapper } from "./hooks";
@@ -23,7 +21,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
 }) => {
     // Use the custom hook to get state and actions
     const [
-        { messages, userParticipants, isRunning, inputPrompt },
+        { messages, userParticipants, isRunning, inputPrompt, timeline },
         { handleRun, handleSave, handleUpload, handleConvert, handleUserInput, reset },
     ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId });
 
@@ -39,6 +37,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
             messages,
             userParticipants,
             activeRequest: inputPrompt,
+            timeline,
             handlers: {
                 onUserInput: handleUserInput,
                 // onInterrupt: handleStop,

@@ -20,6 +20,10 @@ export type {
     WaldiezMediaContent,
     WaldiezMediaType,
     WaldiezStreamEvent,
+    WaldiezTimelineAgentInfo,
+    WaldiezTimelineCostPoint,
+    WaldiezTimelineData,
+    WaldiezTimelineItem,
 } from "@waldiez/components/types";
 export type * from "@waldiez/models";
 export type * from "@waldiez/store";

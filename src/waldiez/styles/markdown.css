@@ -3,14 +3,6 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-/* Base container */
-.markdown-renderer {
-  width: 100%;
-  font-size: inherit;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
 /* Light/Dark mode variables */
 body.waldiez-light .markdown-renderer {
   --md-text: #333;
@@ -38,6 +30,41 @@ body.waldiez-dark .markdown-renderer {
   --md-heading-border: #30363d;
 }
 
+.markdown-renderer.markdown-light {
+  --md-text: #333;
+  --md-link: #0366d6;
+  --md-code-bg: rgb(0 0 0 / 5%);
+  --md-blockquote-border: #ddd;
+  --md-blockquote-text: #666;
+  --md-table-border: #e1e4e8;
+  --md-table-bg-alt: #f6f8fa;
+  --md-pre-bg: #f5f5f5;
+  --md-code-block-header: #e9ecef;
+  --md-heading-border: #eaecef;
+}
+
+.markdown-renderer.markdown-dark {
+  --md-text: #eee;
+  --md-link: #58a6ff;
+  --md-code-bg: rgb(255 255 255 / 10%);
+  --md-blockquote-border: #444;
+  --md-blockquote-text: #aaa;
+  --md-table-border: #444;
+  --md-table-bg-alt: #21262d;
+  --md-pre-bg: #282c34;
+  --md-code-block-header: #21252b;
+  --md-heading-border: #30363d;
+}
+
+/* Base container */
+/* stylelint-disable-next-line no-descending-specificity */
+.markdown-renderer {
+  width: 100%;
+  font-size: inherit;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
 /* Headings */
 .markdown-h1,
 .markdown-h2,
@@ -49,7 +76,6 @@ body.waldiez-dark .markdown-renderer {
   margin-bottom: 0.5em;
   font-weight: 600;
   line-height: 1.25;
-  color: var(--md-text);
 }
 
 .markdown-h1 {
@@ -121,11 +147,13 @@ body.waldiez-dark .markdown-renderer {
   max-width: 100%;
   width: auto;
   display: block;
+  color: var(--md-text) !important;
 }
 
 .markdown-pre {
   padding: 0.8em;
   background-color: var(--md-pre-bg);
+  color: var(--md-text) !important;
 }
 
 .markdown-code {
@@ -133,6 +161,7 @@ body.waldiez-dark .markdown-renderer {
   white-space: pre;
   overflow-x: auto;
   max-width: 100%;
+  color: var(--md-text) !important;
 }
 
 .markdown-inline-code {
@@ -148,6 +177,7 @@ body.waldiez-dark .markdown-renderer {
   align-items: center;
   padding: 0.4em 0.8em;
   background-color: var(--md-code-block-header);
+  color: var(--md-text) !important;
   font-size: 0.8em;
   font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 }

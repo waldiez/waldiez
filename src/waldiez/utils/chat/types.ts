@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import { WaldiezChatMessage, WaldiezMediaContent } from "@waldiez/types";
+import { WaldiezChatMessage, WaldiezMediaContent, WaldiezTimelineData } from "@waldiez/types";
 
 /**
  * Base message data structure
@@ -144,6 +144,7 @@ export type WaldiezChatMessageProcessingResult = {
     message?: WaldiezChatMessage;
     requestId?: string | null;
     isWorkflowEnd?: boolean;
+    timeline?: WaldiezTimelineData;
     participants?: {
         users: string[];
         all: string[];
@@ -156,7 +157,7 @@ export type WaldiezChatMessageProcessingResult = {
  * It includes an array of participant objects, each with a name and additional properties.
  * @param participants - An array of participant objects.
  * @param participants.name - The name of the participant.
- * @param participants.[key: string] - Additional properties for the participant.
+ * @param participants\[key: string] - Additional properties for the participant.
  */
 export type ParticipantsData = {
     participants: Array<{

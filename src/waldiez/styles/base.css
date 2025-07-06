@@ -43,8 +43,8 @@ body.waldiez-dark {
   --reasoning-agent-background: rgb(0 150 150 / 20%);
   --captain-agent-background: rgb(14 39 102 / 20%);
   --group-manager-agent-background: rgb(237 138 52 / 20%);
-  --card-background: #1f2937;
-  --card-border: #374151;
+  --card-background: #141414;
+  --card-border: #333;
   --card-text: #f9fafb;
   --card-text-muted: #9ca3af;
   --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 30%), 0 1px 2px 0 rgb(0 0 0 / 20%);
@@ -63,7 +63,7 @@ body.waldiez-light {
   --reasoning-agent-background: rgb(0 150 150 / 10%);
   --captain-agent-background: rgb(14 39 102 / 15%);
   --group-manager-agent-background: rgb(237 138 52 / 10%);
-  --card-background: #fff;
+  --card-background: #fefefe;
   --card-border: #e5e7eb;
   --card-text: #111827;
   --card-text-muted: #6b7280;

@@ -57,7 +57,7 @@ export const ImageModal: React.FC<{
                 onClick={onClose}
                 data-testid="modal-close"
             >
-                <FaX />
+                <FaX size={12} />
             </button>
         </div>
     );

@@ -13,6 +13,7 @@ import {
     TerminationAndHumanReplyNoInputHandler,
     TerminationHandler,
     TextMessageHandler,
+    TimelineDataHandler,
     ToolCallHandler,
     UsingAutoReplyHandler,
 } from "@waldiez/utils/chat/handlers";
@@ -35,6 +36,7 @@ export class WaldiezChatMessageProcessor {
         new ToolCallHandler(),
         new TerminationAndHumanReplyNoInputHandler(),
         new UsingAutoReplyHandler(),
+        new TimelineDataHandler(),
     ];
 
     /**
@@ -50,18 +52,39 @@ export class WaldiezChatMessageProcessor {
     ): WaldiezChatMessageProcessingResult | undefined {
         const message = stripAnsi(rawMessage.replace("\n", "")).trim();
 
-        const data = WaldiezChatMessageProcessor.parseMessage(message);
+        let data = WaldiezChatMessageProcessor.parseMessage(message);
         if (!data) {
             return undefined;
         }
 
-        const handler = WaldiezChatMessageProcessor.findHandler(data.type);
+        let handler = WaldiezChatMessageProcessor.findHandler(data.type);
+        if (data.type === "print") {
+            if (WaldiezChatMessageProcessor.isTimelineMessage(data)) {
+                data = (data as any)?.data?.content as any;
+                handler = WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
+            }
+        }
         if (!handler) {
             return undefined;
         }
 
         const context: MessageProcessingContext = { requestId, imageUrl };
         return handler.handle(data, context);
+    }
+
+    private static isTimelineMessage(data: any): boolean {
+        return (
+            data.type === "timeline" ||
+            (data.type === "print" &&
+                "data" in data &&
+                data.data &&
+                typeof data.data === "object" &&
+                "type" in data.data &&
+                data.data.type === "timeline" &&
+                "content" in data.data &&
+                data.data.content &&
+                typeof data.data.content === "object")
+        );
     }
 
     /**

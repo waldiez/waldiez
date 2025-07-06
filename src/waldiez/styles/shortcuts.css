@@ -322,3 +322,25 @@ label.hidden {
 .padding-right-20 {
   padding-right: 20px;
 }
+
+.space-x-2 {
+  margin-right: 0.5rem;
+}
+
+.space-y-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.space-y-0_5 {
+  margin-top: 0.125rem;
+  margin-bottom: 0.125rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
