@@ -10,6 +10,7 @@ import { Waldiez } from "@waldiez/waldiez";
 export type {
     WaldiezActiveRequest,
     WaldiezChatConfig,
+    WaldiezChatContent,
     WaldiezChatError,
     WaldiezChatHandlers,
     WaldiezChatMessage,
@@ -19,6 +20,10 @@ export type {
     WaldiezMediaContent,
     WaldiezMediaType,
     WaldiezStreamEvent,
+    WaldiezTimelineAgentInfo,
+    WaldiezTimelineCostPoint,
+    WaldiezTimelineData,
+    WaldiezTimelineItem,
 } from "@waldiez/components/types";
 export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";

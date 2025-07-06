@@ -1898,7 +1898,7 @@ export declare type WaldiezChatConfig = {
  * or a string. It is used to represent the content of a chat message.
  * @see {@link WaldiezMediaContent}
  */
-declare type WaldiezChatContent = WaldiezMediaContent | WaldiezMediaContent[] | {
+export declare type WaldiezChatContent = WaldiezMediaContent | WaldiezMediaContent[] | {
     content: WaldiezMediaContent | WaldiezMediaContent[] | string;
 } | string;
 
@@ -3572,20 +3572,20 @@ export declare type WaldiezStringLLMCondition = {
     data?: Record<string, any>;
 };
 
-declare type WaldiezTimelineAgentInfo = {
+export declare type WaldiezTimelineAgentInfo = {
     name: string;
     class: string;
     color: string;
 };
 
-declare type WaldiezTimelineCostPoint = {
+export declare type WaldiezTimelineCostPoint = {
     time: number;
     cumulative_cost: number;
     session_cost: number;
     session_id: number | string;
 };
 
-declare type WaldiezTimelineData = {
+export declare type WaldiezTimelineData = {
     timeline: WaldiezTimelineItem[];
     cost_timeline: WaldiezTimelineCostPoint[];
     summary: {
@@ -3609,7 +3609,7 @@ declare type WaldiezTimelineData = {
     agents: WaldiezTimelineAgentInfo[];
 };
 
-declare type WaldiezTimelineItem = {
+export declare type WaldiezTimelineItem = {
     id: string;
     type: "session" | "gap";
     start: number;
