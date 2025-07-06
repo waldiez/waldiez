@@ -60,7 +60,7 @@ export class WaldiezChatMessageProcessor {
         let handler = WaldiezChatMessageProcessor.findHandler(data.type);
         if (data.type === "print") {
             if (WaldiezChatMessageProcessor.isTimelineMessage(data)) {
-                data = (data as any)?.data?.content as any;
+                data = (data as any)?.data as any;
                 handler = WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
             }
         }

@@ -726,15 +726,15 @@ class TimelineDataHandler {
     return type === "timeline";
   }
   handle(data) {
-    if (!data || typeof data !== "object") {
+    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
       return void 0;
     }
-    const timeline = Array.isArray(data.timeline) ? data.timeline : [];
-    const cost_timeline = Array.isArray(data.cost_timeline) ? data.cost_timeline : [];
-    const summary = typeof data.summary === "object" && data.summary !== null ? data.summary : void 0;
-    const metadata = typeof data.metadata === "object" && data.metadata !== null ? data.metadata : void 0;
-    const agents = Array.isArray(data.agents) ? data.agents : [];
-    if (!summary || !metadata) {
+    const timeline = Array.isArray(data.content.timeline) ? data.content.timeline : [];
+    const cost_timeline = Array.isArray(data.content.cost_timeline) ? data.content.cost_timeline : [];
+    const summary = typeof data.content.summary === "object" && data.content.summary !== null ? data.content.summary : void 0;
+    const metadata = typeof data.content.metadata === "object" && data.content.metadata !== null ? data.content.metadata : void 0;
+    const agents = Array.isArray(data.content.agents) ? data.content.agents : [];
+    if (!summary || !metadata || !Array.isArray(timeline) || timeline.length === 0 || !Array.isArray(cost_timeline) || cost_timeline.length === 0 || !Array.isArray(agents) || agents.length === 0) {
       return void 0;
     }
     const timelineData = {
@@ -776,7 +776,7 @@ class WaldiezChatMessageProcessor {
     let handler = WaldiezChatMessageProcessor.findHandler(data.type);
     if (data.type === "print") {
       if (WaldiezChatMessageProcessor.isTimelineMessage(data)) {
-        data = data?.data?.content;
+        data = data?.data;
         handler = WaldiezChatMessageProcessor.handlers.find((h) => h instanceof TimelineDataHandler);
       }
     }
