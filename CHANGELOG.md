@@ -5,6 +5,14 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## UNRELEASED
+
+- Updated ag2 dependency to 0.9.5
+- Added cost and timeline post-processing steps
+- Minor UI changes
+- Bug fixes
+- Dependency updates
+
 ## v0.5.2
 
 - Added predefined tools
