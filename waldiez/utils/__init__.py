@@ -3,9 +3,10 @@
 """Utils to call on init."""
 
 from .conflict_checker import check_conflicts
-from .version import get_waldiez_version
+from .version import get_waldiez_version, is_testing
 
 __all__ = [
     "check_conflicts",
     "get_waldiez_version",
+    "is_testing",
 ]

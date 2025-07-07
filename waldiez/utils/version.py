@@ -3,6 +3,8 @@
 """Try to get the Waldiez version."""
 
 import json
+import os
+import sys
 from functools import cache
 from pathlib import Path
 
@@ -26,6 +28,20 @@ def _get_waldiez_version_from_version_py() -> str | None:
                 if line.startswith("__version__"):
                     return line.split('"')[1]
     return None
+
+
+@cache
+def is_testing() -> bool:
+    """Check if Waldiez is being tested.
+
+    Returns
+    -------
+    bool
+        True if Waldiez is being tested, False otherwise.
+    """
+    if "pytest" not in sys.modules:
+        return False
+    return os.environ.get("WALDIEZ_TESTING", "0") == "1"
 
 
 @cache
