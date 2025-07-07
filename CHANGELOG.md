@@ -5,10 +5,11 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## UNRELEASED
+## v0.5.3
 
 - Updated ag2 dependency to 0.9.5
-- Added cost and timeline post-processing steps
+- Added cost and timeline post-processing step
+- Vscode extension updates
 - Minor UI changes
 - Bug fixes
 - Dependency updates
