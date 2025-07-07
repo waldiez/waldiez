@@ -30,7 +30,7 @@ export const useModal = (props: {
     const [isMinimized, setMinimized] = useState(false);
     const [position, setPosition] = useState<{ x: string | number; y: string | number }>({
         x: window.innerWidth / 4,
-        y: "10%",
+        y: "20px",
     });
     const [dragging, setDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -46,7 +46,7 @@ export const useModal = (props: {
 
     // Reset modal state to defaults
     const resetModalState = useCallback(() => {
-        setPosition({ x: window.innerWidth / 4, y: "10%" });
+        setPosition({ x: window.innerWidth / 4, y: "20px" });
         setFullScreen(false);
         setMinimized(false);
         setShowConfirmation(false);

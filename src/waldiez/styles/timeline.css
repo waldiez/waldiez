@@ -77,7 +77,7 @@ body.waldiez-dark .timeline-value {
   /* transition: background 0.2s, color 0.2s; (optional) */
 }
 
-.waldiez.body-dark .timeline-agent-item {
+body.waldiez-dark .timeline-agent-item {
   background: #374151;
   border-color: #4b5563;
   color: #e5e7eb;
