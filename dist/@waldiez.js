@@ -8911,7 +8911,7 @@ const useModal = (props) => {
   const [isMinimized, setMinimized] = useState(false);
   const [position, setPosition] = useState({
     x: window.innerWidth / 4,
-    y: "10%"
+    y: "20px"
   });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -8920,7 +8920,7 @@ const useModal = (props) => {
   const cannotClose = preventCloseIfUnsavedChanges && hasUnsavedChanges;
   const canClose = !cannotClose;
   const resetModalState = useCallback(() => {
-    setPosition({ x: window.innerWidth / 4, y: "10%" });
+    setPosition({ x: window.innerWidth / 4, y: "20px" });
     setFullScreen(false);
     setMinimized(false);
     setShowConfirmation(false);
@@ -35875,16 +35875,10 @@ function FiX(props) {
   return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "line", "attr": { "x1": "18", "y1": "6", "x2": "6", "y2": "18" }, "child": [] }, { "tag": "line", "attr": { "x1": "6", "y1": "6", "x2": "18", "y2": "18" }, "child": [] }] })(props);
 }
 const OverlayRects = (props) => {
-  if (!props || !props.height || !props.xAxisMap || !props.yAxisMap || !props.offset || !props.data) {
+  if (!props || !props.xAxisMap || !props.data) {
     console.warn("OverlayRects called with incomplete props:", props);
     return null;
   }
-  console.debug("OverlayRects props.width:", props.width);
-  console.debug("OverlayRects props.height:", props.height);
-  console.debug("OverlayRects props.xAxisMap:", props.xAxisMap);
-  console.debug("OverlayRects props.yAxisMap:", props.yAxisMap);
-  console.debug("OverlayRects props.offset:", props.offset);
-  console.debug("OverlayRects props.keys", Object.keys(props));
   const { xAxisMap, yAxisMap, data } = props;
   const xScale = xAxisMap[0].scale;
   const yScale = yAxisMap.cost.scale;
@@ -35963,7 +35957,7 @@ const TimelineTooltip = ({ active, payload }) => {
 };
 const Timeline = ({ data, height = 400 }) => {
   const { isDark } = useWaldiezTheme();
-  return /* @__PURE__ */ jsxs("div", { className: "full-width", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "full-width padding-10", children: [
     /* @__PURE__ */ jsx("div", { className: "timeline-grid margin-bottom-10", children: [
       { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
       {

@@ -27,7 +27,7 @@ export const Timeline: React.FC<{
 }> = ({ data, height = 400 }) => {
     const { isDark } = useWaldiezTheme();
     return (
-        <div className="full-width">
+        <div className="full-width padding-10">
             <div className="timeline-grid margin-bottom-10">
                 {[
                     { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },

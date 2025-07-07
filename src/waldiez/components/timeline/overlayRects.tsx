@@ -7,21 +7,12 @@ import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 export const OverlayRects = (props: {
     xAxisMap: Record<string, any>;
     yAxisMap: Record<string, any>;
-    offset: number;
-    height: number | string;
-    width?: number | string;
     data: WaldiezTimelineData;
 }) => {
-    if (!props || !props.height || !props.xAxisMap || !props.yAxisMap || !props.offset || !props.data) {
+    if (!props || !props.xAxisMap || !props.data) {
         console.warn("OverlayRects called with incomplete props:", props);
         return null;
     }
-    console.debug("OverlayRects props.width:", props.width);
-    console.debug("OverlayRects props.height:", props.height);
-    console.debug("OverlayRects props.xAxisMap:", props.xAxisMap);
-    console.debug("OverlayRects props.yAxisMap:", props.yAxisMap);
-    console.debug("OverlayRects props.offset:", props.offset);
-    console.debug("OverlayRects props.keys", Object.keys(props));
 
     const { xAxisMap, yAxisMap, data } = props;
     const xScale = xAxisMap[0].scale; // X axis is at key "0"
