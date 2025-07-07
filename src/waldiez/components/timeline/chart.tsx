@@ -147,7 +147,7 @@ export const TimelineChart = ({
                                     >
                                         {item.gap_type === "human_input_waiting"
                                             ? `👤 ${item.real_duration?.toFixed(0)}s`
-                                            : item.label.split(" ")[0]}
+                                            : `${item.label.split(" ")[0]} `}
                                     </text>
                                 )}
                             </g>
