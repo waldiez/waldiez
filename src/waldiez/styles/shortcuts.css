@@ -356,3 +356,11 @@ label.hidden {
 .text-sm {
   font-size: 0.875rem;
 }
+
+.bg-gray-900 {
+  background-color: #111827;
+}
+
+.bg-white {
+  background-color: #fff;
+}
