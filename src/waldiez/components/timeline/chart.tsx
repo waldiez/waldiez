@@ -64,7 +64,6 @@ export const TimelineChart = ({
                 height={height}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={() => setHoveredItem(null)}
-                className={darkMode ? "bg-gray-900" : "bg-white"}
             >
                 <g transform={`translate(${margin.left}, ${margin.top})`}>
                     {/* Grid lines */}
