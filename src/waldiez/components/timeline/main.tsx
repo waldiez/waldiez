@@ -2,21 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
-    CartesianGrid,
-    ComposedChart,
-    Customized,
-    Line,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
+import { ResponsiveContainer } from "recharts";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { FiActivity, FiClock, FiDollarSign, FiFileText, FiUser } from "react-icons/fi";
 
-import { OverlayRects } from "@waldiez/components/timeline/overlayRects";
-import { TimelineTooltip } from "@waldiez/components/timeline/tooltip";
+import { TimelineChart } from "@waldiez/components/timeline/chart";
 import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 import { useWaldiezTheme } from "@waldiez/theme";
 
@@ -26,6 +17,19 @@ export const Timeline: React.FC<{
     height?: number | string;
 }> = ({ data, height = 400 }) => {
     const { isDark } = useWaldiezTheme();
+    const chartRef = useRef<HTMLDivElement>(null);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+    useLayoutEffect(() => {
+        if (chartRef.current) {
+            const svgElement = chartRef.current.querySelector("svg");
+            if (svgElement) {
+                const width = parseInt(svgElement.getAttribute("width") || "800");
+                const height = parseInt(svgElement.getAttribute("height") || "400");
+                setDimensions({ width, height });
+            }
+        }
+    }, []);
     return (
         <div className="full-width padding-10">
             <div className="timeline-grid margin-bottom-10">
@@ -79,62 +83,12 @@ export const Timeline: React.FC<{
                 <div className="card-content">
                     <div className="full-width">
                         <ResponsiveContainer width="100%" height={height}>
-                            <ComposedChart
-                                data={data.cost_timeline}
-                                margin={{ top: 40, right: 100, bottom: 60, left: 80 }}
-                            >
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    stroke={isDark ? "#374151" : "#e2e8f0"}
-                                />
-                                <XAxis
-                                    type="number"
-                                    dataKey="time"
-                                    domain={data.metadata.time_range}
-                                    tick={{ fill: isDark ? "#9CA3AF" : "#64748b" }}
-                                    label={{
-                                        value: "Compressed Timeline (seconds)",
-                                        position: "insideBottom",
-                                        offset: -10,
-                                        fill: isDark ? "#F3F4F6" : "#333",
-                                        fontWeight: 500,
-                                    }}
-                                    tickFormatter={v => `${v.toFixed(1)}s`}
-                                />
-                                <YAxis
-                                    yAxisId="cost"
-                                    orientation="right"
-                                    domain={data.metadata.cost_range}
-                                    stroke="#8B5CF6"
-                                    tick={{ fill: "#8B5CF6" }}
-                                    tickFormatter={v => `${v.toFixed(4)}`}
-                                    label={{
-                                        value: "Cumulative Cost ($)",
-                                        angle: -90,
-                                        position: "insideright",
-                                        offset: 20,
-                                        fill: "#8B5CF6",
-                                        fontWeight: 500,
-                                        dx: 50,
-                                    }}
-                                />
-                                <Tooltip content={<TimelineTooltip />} />
-                                <Line
-                                    yAxisId="cost"
-                                    type="monotone"
-                                    dataKey="cumulative_cost"
-                                    stroke="#8B5CF6"
-                                    strokeWidth={2}
-                                    dot={{ fill: "#8B5CF6", strokeWidth: 2, r: 4 }}
-                                    connectNulls
-                                />
-                                {/* Overlay for session/gap rects, dots, icons */}
-                                <Customized
-                                    component={(props: any) => (
-                                        <OverlayRects {...(props as any)} data={data} />
-                                    )}
-                                />
-                            </ComposedChart>
+                            <TimelineChart
+                                width={dimensions.width}
+                                height={dimensions.height}
+                                data={data}
+                                darkMode={isDark}
+                            />
                         </ResponsiveContainer>
                     </div>
                     {/* Agent Legend */}

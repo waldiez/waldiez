@@ -119,7 +119,7 @@
         "react-icons": "^5.5.0",
         "react-markdown": "^10.1.0",
         "react-select": "^5.10.1",
-        "recharts": "2.15.4",
+        "recharts": "^3.0.2",
         "rehype-highlight": "^7.0.2",
         "remark-gfm": "^4.0.1",
         "zundo": "^2.3.0",
@@ -246,15 +246,13 @@
         "access": "public"
     },
     "overrides": {
-        "rollup": "npm:@rollup/wasm-node",
-        "recharts": "npm:recharts@2.15.4"
+        "rollup": "npm:@rollup/wasm-node"
     },
     "resolutions": {
         "cross-spawn": "^7.0.6",
         "ws": "^8.18.3",
         "got": "^14.4.7",
-        "ajv": "^8.17.1",
-        "recharts": "2.15.4"
+        "ajv": "^8.17.1"
     },
     "packageManager": "bun@1.2.18"
 }

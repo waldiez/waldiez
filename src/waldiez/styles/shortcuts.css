@@ -71,6 +71,18 @@ label.hidden {
   height: stretch;
 }
 
+.relative {
+  position: relative;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.absolute {
+  position: absolute;
+}
+
 .bold {
   font-weight: bold;
 }

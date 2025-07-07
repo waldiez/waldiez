@@ -51,7 +51,7 @@ body.waldiez-dark {
   --background-color: #141414;
   --text-color: #f8f8f8;
 
-  color-scheme: dark;
+  color-scheme: dark !important;
 }
 
 body.waldiez-light {
@@ -72,7 +72,7 @@ body.waldiez-light {
   --background-color: #fefefe;
   --text-color: #141414;
 
-  color-scheme: light;
+  color-scheme: light !important;
 }
 
 .flow-wrapper {
@@ -96,6 +96,16 @@ body.waldiez-light {
     "Segoe UI Emoji",
     "Segoe UI Symbol",
     "Noto Color Emoji";
+}
+
+.flow-wrapper.light {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.flow-wrapper.dark {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 * {
