@@ -15,6 +15,7 @@ from .utils import strip_ansi
 
 def install_requirements(
     extra_requirements: set[str],
+    upgrade: bool = False,
     printer: Callable[..., None] = print,
 ) -> None:
     """Install the requirements.
@@ -23,6 +24,8 @@ def install_requirements(
     ----------
     extra_requirements : set[str]
         The extra requirements.
+    upgrade : bool, optional
+        Whether to upgrade the requirements, by default False.
     printer : Callable[..., None]
         The printer function to use, defaults to print.
     """
@@ -38,6 +41,8 @@ def install_requirements(
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
         if not is_root():
             pip_install.append("--user")
+    if upgrade:
+        pip_install.append("--upgrade")
     pip_install.extend(extra_requirements)
     # pylint: disable=too-many-try-statements
     try:
@@ -63,6 +68,7 @@ def install_requirements(
 
 async def a_install_requirements(
     extra_requirements: set[str],
+    upgrade: bool = False,
     printer: Callable[..., None] = print,
 ) -> None:
     """Install the requirements asynchronously.
@@ -71,6 +77,8 @@ async def a_install_requirements(
     ----------
     extra_requirements : set[str]
         The extra requirements.
+    upgrade : bool, optional
+        Whether to upgrade the requirements, by default False.
     printer : Callable[..., None]
         The printer function to use, defaults to print.
     """
@@ -83,6 +91,8 @@ async def a_install_requirements(
         os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = "1"
         if not is_root():
             pip_install.extend(["--user"])
+    if upgrade:
+        pip_install.append("--upgrade")
     pip_install.extend(extra_requirements)
     # pylint: disable=too-many-try-statements
     try:
@@ -103,3 +113,35 @@ async def a_install_requirements(
                 os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
             else:
                 del os.environ["PIP_BREAK_SYSTEM_PACKAGES"]
+
+
+def install_waldiez(
+    upgrade: bool = True,
+    printer: Callable[..., None] = print,
+) -> None:
+    """Install Waldiez.
+
+    Parameters
+    ----------
+    upgrade : bool, optional
+        Whether to upgrade Waldiez, by default True.
+    printer : Callable[..., None]
+        The printer function to use, defaults to print.
+    """
+    install_requirements({"waldiez"}, upgrade, printer)
+
+
+async def a_install_waldiez(
+    upgrade: bool = True,
+    printer: Callable[..., None] = print,
+) -> None:
+    """Install Waldiez asynchronously.
+
+    Parameters
+    ----------
+    upgrade : bool, optional
+        Whether to upgrade Waldiez, by default True.
+    printer : Callable[..., None]
+        The printer function to use, defaults to print.
+    """
+    await a_install_requirements({"waldiez"}, upgrade, printer)

@@ -3,10 +3,17 @@
 """Try to get the Waldiez version."""
 
 import json
-import os
-import sys
 from functools import cache
+from importlib.metadata import version
 from pathlib import Path
+
+
+def _get_waldiez_version_from_importlib() -> str | None:
+    """Get the Waldiez version from the version package."""
+    try:
+        return version("waldiez")
+    except Exception:  # pylint: disable=broad-exception-caught
+        return None
 
 
 def _get_waldiez_version_from_package_json() -> str | None:
@@ -31,20 +38,6 @@ def _get_waldiez_version_from_version_py() -> str | None:
 
 
 @cache
-def is_testing() -> bool:
-    """Check if Waldiez is being tested.
-
-    Returns
-    -------
-    bool
-        True if Waldiez is being tested, False otherwise.
-    """
-    if "pytest" not in sys.modules:
-        return False
-    return os.environ.get("WALDIEZ_TESTING", "0") == "1"
-
-
-@cache
 def get_waldiez_version() -> str:
     """Get the Waldiez version.
 
@@ -53,7 +46,9 @@ def get_waldiez_version() -> str:
     str
         The Waldiez version, or "dev" if not found.
     """
-    w_version = _get_waldiez_version_from_version_py()
+    w_version = _get_waldiez_version_from_importlib()
+    if not w_version:
+        w_version = _get_waldiez_version_from_version_py()
     if not w_version:
         w_version = _get_waldiez_version_from_package_json()
     if not w_version:

@@ -3,6 +3,7 @@
 # pylint: disable=import-outside-toplevel,reimported
 """Environment related utilities."""
 
+import importlib
 import os
 import site
 import sys
@@ -86,20 +87,19 @@ def reload_autogen() -> None:  # noqa: C901
         default_io_stream = IOStream.get_default()
     except (ImportError, AttributeError):
         pass
-
+    autogen_modules = sorted(
+        [
+            name
+            for name in sys.modules
+            if name.startswith("autogen.")
+            and not name.startswith("autogen.io")
+            and not name.startswith("autogen.tools")
+        ],
+        key=len,
+        reverse=True,  # Longer names (deeper modules) first
+    )
     try:
         # Remove autogen modules in reverse dependency order
-        autogen_modules = sorted(
-            [
-                name
-                for name in sys.modules
-                if name.startswith("autogen.")
-                and not name.startswith("autogen.io")
-                and not name.startswith("autogen.tools")
-            ],
-            key=len,
-            reverse=True,  # Longer names (deeper modules) first
-        )
         for mod_name in autogen_modules:
             if mod_name in sys.modules:
                 del sys.modules[mod_name]
@@ -110,6 +110,14 @@ def reload_autogen() -> None:  # noqa: C901
         # Re-import autogen
         # pylint: disable=unused-import
         import autogen  # pyright: ignore
+
+        for mod_name in sorted(autogen_modules, key=len, reverse=False):
+            # Re-import each module
+            try:
+                importlib.import_module(mod_name)
+            except ImportError as e:
+                # If a module fails to import, we can log it or handle it
+                print(f"Failed to re-import {mod_name}: {e}", file=sys.stderr)
 
         # Restore IOStream state if we had it
         if default_io_stream is not None:
@@ -125,7 +133,18 @@ def reload_autogen() -> None:  # noqa: C901
         # If reload fails, at least try to re-import autogen
         try:
             import autogen  # type: ignore  # noqa: F401
-        except ImportError:
+
+            for mod_name in sorted(autogen_modules, key=len, reverse=False):
+                # Re-import each module
+                try:
+                    importlib.import_module(mod_name)
+                except ImportError as err:
+                    # If a module fails to import, we can log it or handle it
+                    print(
+                        f"Failed to re-import {mod_name}: {err}",
+                        file=sys.stderr,
+                    )
+        except Exception:  # pylint: disable=broad-exception-caught
             pass
         raise e
 

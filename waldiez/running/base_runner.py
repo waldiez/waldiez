@@ -20,7 +20,6 @@ from typing_extensions import Self
 from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
-from waldiez.utils import get_waldiez_version, is_testing
 
 from .environment import refresh_environment, reset_env_vars, set_env_vars
 from .post_run import after_run
@@ -317,11 +316,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             for req in self.waldiez.requirements
             if req not in sys.modules and "waldiez" not in req
         }
-        waldiez_version = get_waldiez_version()
-        if is_testing():
-            extra_requirements.add(f"waldiez>0.5,<={waldiez_version}")
-        else:
-            extra_requirements.add(f"waldiez=={waldiez_version}")
         return extra_requirements
 
     def install_requirements(self) -> None:
