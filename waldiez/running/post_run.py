@@ -112,17 +112,18 @@ def _make_timeline_json(
                     events_file=log_files["events"],
                     functions_file=log_files["functions"],
                 )
-                result = processor.process_timeline()
+                results = processor.process_timeline()
+                with open(output_file, "w", encoding="utf-8") as f:
+                    json.dump(results, f, indent=2, default=str)
+                short_results = TimelineProcessor.get_short_results(results)
                 printer = get_printer()
                 printer(
                     json.dumps(
-                        {"type": "timeline", "content": result},
+                        {"type": "timeline", "content": short_results},
                         default=str,
                     ),
                     flush=True,
                 )
-                with open(output_file, "w", encoding="utf-8") as f:
-                    json.dump(result, f, indent=2, default=str)
             except BaseException:  # pylint: disable=broad-exception-caught
                 pass
 

@@ -769,8 +769,8 @@ class TimelineProcessor:
             len(chat_sorted),
         )
 
-        timeline = []
-        cost_timeline = []
+        timeline: list[dict[str, Any]] = []
+        cost_timeline: list[dict[str, Any]] = []
         current_compressed_time = 0.0
         cumulative_cost = 0.0
         session_id = 1
@@ -993,7 +993,7 @@ class TimelineProcessor:
                             item["agent_class"] = agent_class
 
         # Create agents list
-        agents = []
+        agents: list[dict[str, Any]] = []
         for agent_name in agents_in_timeline:
             if self.is_missing_or_nan(agent_name):
                 continue
@@ -1081,6 +1081,30 @@ class TimelineProcessor:
             "metadata": metadata,
             "agents": agents,
         }
+
+    @staticmethod
+    def get_short_results(results: dict[str, Any]) -> dict[str, Any]:
+        """Remove request/response from the timeline entries.
+
+        Parameters
+        ----------
+        results : dict[str, Any]
+            The original results dictionary.
+
+        Returns
+        -------
+        dict[str, Any]
+            The modified results dictionary with shortened timeline.
+        """
+        new_results = results.copy()
+        new_results["timeline"] = []
+        for item in results["timeline"]:
+            new_item = item.copy()
+            # Remove request and response fields
+            new_item.pop("request", None)
+            new_item.pop("response", None)
+            new_results["timeline"].append(new_item)
+        return new_results
 
     @staticmethod
     def get_files(logs_dir: Path | str) -> dict[str, str | None]:
