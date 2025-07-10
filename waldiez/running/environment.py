@@ -106,7 +106,7 @@ def reload_autogen() -> None:  # noqa: C901
 
         if "autogen" in sys.modules:
             del sys.modules["autogen"]
-
+        site.main()  # Rebuild the site module cache
         # Re-import autogen
         # pylint: disable=unused-import
         import autogen  # pyright: ignore
