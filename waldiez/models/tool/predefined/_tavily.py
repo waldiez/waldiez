@@ -62,7 +62,7 @@ class TavilySearchToolImpl(PredefinedTool):
         list[str]
             List of missing required secrets.
         """
-        missing = []
+        missing: list[str] = []
         if not secrets.get("TAVILY_API_KEY"):
             missing.append("TAVILY_API_KEY")
         return missing
