@@ -10259,131 +10259,107 @@ function getDefaultExportFromCjs(x) {
 }
 var isPercent = (value) => typeof value === "string" && value.indexOf("%") === value.length - 1;
 var throttle$2 = {};
-var debounce$1 = {};
 var debounce = {};
-var hasRequiredDebounce$1;
-function requireDebounce$1() {
-  if (hasRequiredDebounce$1) return debounce;
-  hasRequiredDebounce$1 = 1;
+var hasRequiredDebounce;
+function requireDebounce() {
+  if (hasRequiredDebounce) return debounce;
+  hasRequiredDebounce = 1;
   (function(exports) {
     Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-    function debounce2(func, debounceMs, { signal, edges } = {}) {
-      let pendingThis = void 0;
+    function debounce2(func, wait = 0, options = {}) {
+      if (typeof options !== "object") {
+        options = {};
+      }
       let pendingArgs = null;
-      const leading = edges != null && edges.includes("leading");
-      const trailing = edges == null || edges.includes("trailing");
-      const invoke = () => {
-        if (pendingArgs !== null) {
-          func.apply(pendingThis, pendingArgs);
-          pendingThis = void 0;
-          pendingArgs = null;
-        }
-      };
-      const onTimerEnd = () => {
-        if (trailing) {
-          invoke();
-        }
-        cancel();
-      };
+      let pendingThis = null;
+      let lastCallTime = null;
+      let debounceStartTime = 0;
       let timeoutId = null;
-      const schedule = () => {
-        if (timeoutId != null) {
-          clearTimeout(timeoutId);
+      let lastResult;
+      const { leading = false, trailing = true, maxWait } = options;
+      const hasMaxWait = "maxWait" in options;
+      const maxWaitMs = hasMaxWait ? Math.max(Number(maxWait) || 0, wait) : 0;
+      const invoke = (time) => {
+        if (pendingArgs !== null) {
+          lastResult = func.apply(pendingThis, pendingArgs);
         }
-        timeoutId = setTimeout(() => {
-          timeoutId = null;
-          onTimerEnd();
-        }, debounceMs);
+        pendingArgs = pendingThis = null;
+        debounceStartTime = time;
+        return lastResult;
       };
-      const cancelTimer = () => {
+      const handleLeading = (time) => {
+        debounceStartTime = time;
+        timeoutId = setTimeout(handleTimeout, wait);
+        if (leading && pendingArgs !== null) {
+          return invoke(time);
+        }
+        return lastResult;
+      };
+      const handleTrailing = (time) => {
+        timeoutId = null;
+        if (trailing && pendingArgs !== null) {
+          return invoke(time);
+        }
+        return lastResult;
+      };
+      const checkCanInvoke = (time) => {
+        if (lastCallTime === null) {
+          return true;
+        }
+        const timeSinceLastCall = time - lastCallTime;
+        const hasDebounceDelayPassed = timeSinceLastCall >= wait || timeSinceLastCall < 0;
+        const hasMaxWaitPassed = hasMaxWait && time - debounceStartTime >= maxWaitMs;
+        return hasDebounceDelayPassed || hasMaxWaitPassed;
+      };
+      const calculateRemainingWait = (time) => {
+        const timeSinceLastCall = lastCallTime === null ? 0 : time - lastCallTime;
+        const remainingDebounceTime = wait - timeSinceLastCall;
+        const remainingMaxWaitTime = maxWaitMs - (time - debounceStartTime);
+        return hasMaxWait ? Math.min(remainingDebounceTime, remainingMaxWaitTime) : remainingDebounceTime;
+      };
+      const handleTimeout = () => {
+        const currentTime = Date.now();
+        if (checkCanInvoke(currentTime)) {
+          return handleTrailing(currentTime);
+        }
+        timeoutId = setTimeout(handleTimeout, calculateRemainingWait(currentTime));
+      };
+      const debouncedFunction = function(...args) {
+        const currentTime = Date.now();
+        const canInvoke = checkCanInvoke(currentTime);
+        pendingArgs = args;
+        pendingThis = this;
+        lastCallTime = currentTime;
+        if (canInvoke) {
+          if (timeoutId === null) {
+            return handleLeading(currentTime);
+          }
+          if (hasMaxWait) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(handleTimeout, wait);
+            return invoke(currentTime);
+          }
+        }
+        if (timeoutId === null) {
+          timeoutId = setTimeout(handleTimeout, wait);
+        }
+        return lastResult;
+      };
+      debouncedFunction.cancel = () => {
         if (timeoutId !== null) {
           clearTimeout(timeoutId);
-          timeoutId = null;
         }
+        debounceStartTime = 0;
+        lastCallTime = pendingArgs = pendingThis = timeoutId = null;
       };
-      const cancel = () => {
-        cancelTimer();
-        pendingThis = void 0;
-        pendingArgs = null;
+      debouncedFunction.flush = () => {
+        return timeoutId === null ? lastResult : handleTrailing(Date.now());
       };
-      const flush = () => {
-        cancelTimer();
-        invoke();
-      };
-      const debounced = function(...args) {
-        if (signal?.aborted) {
-          return;
-        }
-        pendingThis = this;
-        pendingArgs = args;
-        const isFirstCall = timeoutId == null;
-        schedule();
-        if (leading && isFirstCall) {
-          invoke();
-        }
-      };
-      debounced.schedule = schedule;
-      debounced.cancel = cancel;
-      debounced.flush = flush;
-      signal?.addEventListener("abort", cancel, { once: true });
-      return debounced;
+      return debouncedFunction;
     }
     exports.debounce = debounce2;
   })(debounce);
   return debounce;
-}
-var hasRequiredDebounce;
-function requireDebounce() {
-  if (hasRequiredDebounce) return debounce$1;
-  hasRequiredDebounce = 1;
-  (function(exports) {
-    Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-    const debounce$12 = /* @__PURE__ */ requireDebounce$1();
-    function debounce2(func, debounceMs = 0, options = {}) {
-      if (typeof options !== "object") {
-        options = {};
-      }
-      const { leading = false, trailing = true, maxWait } = options;
-      const edges = Array(2);
-      if (leading) {
-        edges[0] = "leading";
-      }
-      if (trailing) {
-        edges[1] = "trailing";
-      }
-      let result = void 0;
-      let pendingAt = null;
-      const _debounced = debounce$12.debounce(function(...args) {
-        result = func.apply(this, args);
-        pendingAt = null;
-      }, debounceMs, { edges });
-      const debounced = function(...args) {
-        if (maxWait != null) {
-          if (pendingAt === null) {
-            pendingAt = Date.now();
-          }
-          if (Date.now() - pendingAt >= maxWait) {
-            result = func.apply(this, args);
-            pendingAt = Date.now();
-            _debounced.cancel();
-            _debounced.schedule();
-            return result;
-          }
-        }
-        _debounced.apply(this, args);
-        return result;
-      };
-      const flush = () => {
-        _debounced.flush();
-        return result;
-      };
-      debounced.cancel = _debounced.cancel;
-      debounced.flush = flush;
-      return debounced;
-    }
-    exports.debounce = debounce2;
-  })(debounce$1);
-  return debounce$1;
 }
 var hasRequiredThrottle$1;
 function requireThrottle$1() {
@@ -10393,14 +10369,11 @@ function requireThrottle$1() {
     Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
     const debounce2 = /* @__PURE__ */ requireDebounce();
     function throttle2(func, throttleMs = 0, options = {}) {
-      if (typeof options !== "object") {
-        options = {};
-      }
       const { leading = true, trailing = true } = options;
       return debounce2.debounce(func, throttleMs, {
         leading,
-        trailing,
-        maxWait: throttleMs
+        maxWait: throttleMs,
+        trailing
       });
     }
     exports.throttle = throttle2;
@@ -10574,10 +10547,8 @@ var ResponsiveContainer = /* @__PURE__ */ forwardRef((_ref, ref) => {
         height: calculatedHeight,
         // calculate the actual size and override it.
         style: _objectSpread$1({
-          height: "100%",
-          width: "100%",
-          maxHeight: calculatedHeight,
-          maxWidth: calculatedWidth
+          width: calculatedWidth,
+          height: calculatedHeight
         }, child.props.style)
       });
     });
@@ -10593,7 +10564,13 @@ var ResponsiveContainer = /* @__PURE__ */ forwardRef((_ref, ref) => {
       maxHeight
     }),
     ref: containerRef
-  }, chartContent);
+  }, /* @__PURE__ */ React.createElement("div", {
+    style: {
+      width: 0,
+      height: 0,
+      overflow: "visible"
+    }
+  }, chartContent));
 });
 var DefaultContext = {
   color: void 0,
