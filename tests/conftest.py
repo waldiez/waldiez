@@ -183,6 +183,64 @@ def _cleanup_files() -> None:
                 )
 
 
+def _reset_env_vars() -> None:
+    """Reset environment variables."""
+    dot_env_file = ROOT_DIR / ".env"
+    # pylint: disable=too-many-try-statements
+    try:
+        if dot_env_file.exists():
+            with open(dot_env_file, "r", encoding="utf-8") as file:
+                for line in file:
+                    if not line.startswith("#") and "=" in line:
+                        key, _ = line.strip().split("=", 1)
+                        if key in os.environ:
+                            del os.environ[key]
+    except (OSError, PermissionError, FileNotFoundError):
+        pass
+
+
+def _restore_env_vars() -> None:
+    """Restore environment variables from .env file."""
+    dot_env_file = ROOT_DIR / ".env"
+    # pylint: disable=too-many-try-statements
+    try:
+        if dot_env_file.exists():
+            with open(dot_env_file, "r", encoding="utf-8") as file:
+                for line in file:
+                    if not line.startswith("#") and "=" in line:
+                        key, value = line.strip().split("=", 1)
+                        os.environ[key] = value
+    except (OSError, PermissionError, FileNotFoundError):
+        pass
+
+
+def _backup_dot_env_if_any() -> None:
+    """Backup .env file if it exists."""
+    env_file = ROOT_DIR / ".env"
+    # pylint: disable=too-many-try-statements
+    try:
+        if env_file.exists():
+            backup_file = ROOT_DIR / ".env.bak"
+            if not backup_file.exists():
+                env_file.rename(backup_file)
+    except (OSError, PermissionError, FileNotFoundError):
+        pass
+
+
+def _restore_dot_env_if_any() -> None:
+    """Restore .env file from backup if it exists."""
+    env_file = ROOT_DIR / ".env"
+    backup_file = ROOT_DIR / ".env.bak"
+    # pylint: disable=too-many-try-statements
+    try:
+        if backup_file.exists():
+            if env_file.exists():
+                env_file.unlink()
+            backup_file.rename(env_file)
+    except (OSError, PermissionError, FileNotFoundError):
+        pass
+
+
 @pytest.fixture(scope="session", autouse=True)
 def before_and_after_tests() -> Generator[None, None, None]:
     """Fixture to run before and after all tests.
@@ -194,8 +252,12 @@ def before_and_after_tests() -> Generator[None, None, None]:
     """
     # Code to run before all tests
     _cleanup_files()
+    _reset_env_vars()
+    _backup_dot_env_if_any()
     yield
     _cleanup_files()
+    _restore_dot_env_if_any()
+    _restore_env_vars()
 
 
 @pytest.fixture(scope="function")

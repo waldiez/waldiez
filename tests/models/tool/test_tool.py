@@ -514,6 +514,15 @@ def custom_tool(text: str) -> list[str]:
             "",
             True,
         ),
+        (
+            "searxng_search",
+            "SearxNG search tool",
+            ["searxng"],
+            {},
+            {},
+            "",
+            False,
+        ),
     ],
 )
 def test_predefined_tool_parametrized(
