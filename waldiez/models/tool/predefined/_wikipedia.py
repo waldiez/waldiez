@@ -84,11 +84,11 @@ class WikipediaSearchToolImpl(PredefinedTool):
         list[str]
             List of missing required keyword arguments.
         """
-        for key, _ in self.kwargs.items():
+        for key, value in self.kwargs.items():
             if key in kwargs:
-                type_of = self.required_kwargs.get(key, str)
+                type_of = self.kwargs_types.get(key, str)
                 try:
-                    casted = type_of(kwargs[key])
+                    casted = type_of(value)
                     if key in self.kwargs:
                         self.kwargs[key] = casted
                 except Exception:  # pylint: disable=broad-except
