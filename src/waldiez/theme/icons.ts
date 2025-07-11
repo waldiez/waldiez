@@ -10,6 +10,7 @@ import bedrock from "@waldiez/assets/logos/bedrock.svg";
 import anthropic from "@waldiez/assets/logos/claude.svg";
 import cohere from "@waldiez/assets/logos/cohere.svg";
 import deepseek from "@waldiez/assets/logos/deepseek.svg";
+import duckduckgo from "@waldiez/assets/logos/duckduckgo.svg";
 import google from "@waldiez/assets/logos/gemini.svg";
 import googleSearchTool from "@waldiez/assets/logos/google.svg";
 import groq from "@waldiez/assets/logos/groq.svg";
@@ -17,6 +18,8 @@ import mistral from "@waldiez/assets/logos/mistral.svg";
 import nim from "@waldiez/assets/logos/nim.svg";
 import openai from "@waldiez/assets/logos/openai.svg";
 import other from "@waldiez/assets/logos/other.svg";
+import perplexity from "@waldiez/assets/logos/perplexity.svg";
+import searxng from "@waldiez/assets/logos/searxng.svg";
 import tavily from "@waldiez/assets/logos/tavily.svg";
 import together from "@waldiez/assets/logos/together.svg";
 import wikipediaSearchTool from "@waldiez/assets/logos/wikipedia.svg";
@@ -63,6 +66,9 @@ export const TOOL_ICONS = {
     wikipedia_search: wikipediaSearchTool,
     youtube_search: youtubeSearchTool,
     tavily_search: tavily,
+    perplexity_search: perplexity,
+    duckduckgo_search: duckduckgo,
+    searxng_search: searxng,
 };
 
 export const WALDIEZ_ICON = generic;

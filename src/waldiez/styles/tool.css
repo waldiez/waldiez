@@ -89,3 +89,7 @@ body.waldiez-dark .tool-node {
   border: 1px solid #333;
   background-color: #222;
 }
+
+body.waldiez-dark .perplexity-icon {
+  filter: invert(1) !important;
+}

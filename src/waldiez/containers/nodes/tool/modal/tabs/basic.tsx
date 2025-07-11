@@ -93,7 +93,9 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             const { innerProps, data } = props;
             return (
                 <div {...innerProps} className="flex margin-5 clickable">
-                    {data.icon && <div className="icon margin-right-10 margin-left-5">{data.icon}</div>}
+                    {data.icon && (
+                        <div className="icon margin-right-10 margin-top-5 margin-left-5">{data.icon}</div>
+                    )}
                     <span className="label">{data.label}</span>
                 </div>
             );
