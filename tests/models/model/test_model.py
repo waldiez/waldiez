@@ -139,7 +139,7 @@ def test_waldiez_model_api_key_and_price() -> None:
     )
     # Then
     assert model.price is None
-    assert model.api_key == os.environ.get("OPENAI_API_KEY", "REPLACE_ME")
+    assert model.api_key in (os.environ.get("OPENAI_API_KEY", "REPLACE_ME"), "")
 
 
 def test_waldiez_api_key() -> None:

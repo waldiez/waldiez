@@ -198,6 +198,8 @@ def _reset_env_vars() -> None:
     except (OSError, PermissionError, FileNotFoundError):
         pass
 
+    os.environ.pop("OPENAI_API_KEY", None)
+
 
 def _restore_env_vars() -> None:
     """Restore environment variables from .env file."""
