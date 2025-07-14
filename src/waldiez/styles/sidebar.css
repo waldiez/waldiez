@@ -11,6 +11,7 @@
   max-height: var(--app-height);
   transition: width 0.3s ease;
   overflow-y: auto;
+  overflow-y: hidden;
 }
 
 body.waldiez-light .flow-main .sidebar {
