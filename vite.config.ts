@@ -117,6 +117,8 @@ export default defineConfig(({ command }) => ({
                 "react-error-boundary",
                 "strip-ansi",
                 "framer-motion",
+                "recharts",
+                "@fontsource/fredoka",
             ],
             output: {
                 exports: "named",
@@ -148,6 +150,7 @@ export default defineConfig(({ command }) => ({
                     "react-error-boundary": "reactErrorBoundary",
                     "strip-ansi": "stripAnsi",
                     "framer-motion": "framerMotion",
+                    recharts: "recharts",
                 },
             },
         },
