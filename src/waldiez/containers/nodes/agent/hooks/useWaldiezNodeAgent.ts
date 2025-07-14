@@ -68,14 +68,14 @@ export const useWaldiezNodeAgent = (id: string) => {
         if (!isReadOnly) {
             setIsNodeModalOpen(true);
         }
-    }, [isReadOnly]);
+    }, [isReadOnly, setIsNodeModalOpen]);
 
     /**
      * Closes the node modal
      */
     const onCloseNodeModal = useCallback(() => {
         setIsNodeModalOpen(false);
-    }, []);
+    }, [setIsNodeModalOpen]);
 
     /**
      * Opens the edge modal when an edge is clicked
@@ -94,7 +94,7 @@ export const useWaldiezNodeAgent = (id: string) => {
                 }
             }
         },
-        [isReadOnly, isNodeModalOpen, isEdgeModalOpen, getEdgeById],
+        [isReadOnly, isNodeModalOpen, isEdgeModalOpen, getEdgeById, setIsEdgeModalOpen, setEdge],
     );
 
     /**
@@ -103,7 +103,7 @@ export const useWaldiezNodeAgent = (id: string) => {
     const onCloseEdgeModal = useCallback(() => {
         setIsEdgeModalOpen(false);
         setEdge(null);
-    }, []);
+    }, [setIsEdgeModalOpen, setEdge]);
 
     /**
      * Handles edge connection events
@@ -114,10 +114,9 @@ export const useWaldiezNodeAgent = (id: string) => {
             if (!isReadOnly && !isNodeModalOpen) {
                 const newEdge = addEdge({ flowId, connection, hidden: false });
                 setEdge(newEdge as WaldiezEdge);
-                // Commented out in original: setEdgeModalOpen(true);
             }
         },
-        [isReadOnly, isNodeModalOpen, addEdge, flowId],
+        [isReadOnly, isNodeModalOpen, addEdge, flowId, setEdge],
     );
 
     /**

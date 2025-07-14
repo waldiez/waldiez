@@ -171,17 +171,15 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
                     data-edge-node-id={id}
                     data-edge-id=""
                 />
-                {edge && isEdgeModalOpen && !isNodeModalOpen && (
+                {edge && (
                     <WaldiezEdgeModal isOpen={isEdgeModalOpen} edgeId={edge.id} onClose={onCloseEdgeModal} />
                 )}
-                {isNodeModalOpen && !isEdgeModalOpen && (
-                    <WaldiezNodeAgentModal
-                        id={id}
-                        data={data}
-                        isOpen={isNodeModalOpen}
-                        onClose={onCloseNodeModal}
-                    />
-                )}
+                <WaldiezNodeAgentModal
+                    id={id}
+                    data={data}
+                    isOpen={isNodeModalOpen}
+                    onClose={onCloseNodeModal}
+                />
             </div>
         </div>
     );

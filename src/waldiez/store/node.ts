@@ -131,8 +131,10 @@ export class WaldiezNodeStore implements IWaldiezNodeStore {
      * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
      */
     onNodeDoubleClick = (_event: any, node: Node) => {
-        const openDialogs = document.querySelectorAll("dialog[open]");
-        if (openDialogs.length > 0) {
+        const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+            el => (el.querySelector(".modal-content") as HTMLElement).offsetParent !== null, // Only visible modals
+        );
+        if (openModals.length > 0) {
             return;
         }
         const flowId = this.get().flowId;

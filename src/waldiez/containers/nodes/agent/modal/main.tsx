@@ -113,6 +113,8 @@ export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) =>
         onFilesToUploadChange,
     ]);
 
+    console.log(`[DEBUG] Opening modal for agent ${id}`, isOpen);
+
     return (
         <Modal
             title={modalTitle}

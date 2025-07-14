@@ -240,8 +240,11 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
      * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
      */
     onEdgeDoubleClick = (_event: any, edge: WaldiezEdge) => {
-        const openDialogs = document.querySelectorAll("dialog[open]");
-        if (openDialogs.length > 0) {
+        const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+            el => (el.querySelector(".modal-content") as HTMLElement).offsetParent !== null, // Only visible modals
+        );
+        if (openModals.length > 0) {
+            console.warn("Edge double-click ignored due to open modals");
             return;
         }
         const flowRoot = getFlowRoot(this.get().flowId);

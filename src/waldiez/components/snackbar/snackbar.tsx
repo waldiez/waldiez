@@ -17,13 +17,22 @@ export const Snackbar: React.FC<SnackbarItem & { onClose: () => void }> = ({
 }) => {
     const [container, setContainer] = useState<HTMLElement | null>(null);
 
-    useLayoutEffect(() => {
-        let root: HTMLElement | null = flowId ? document.getElementById(`rf-root-${flowId}`) : null;
-        if (!root) {
-            root = document.body;
+    const resolveSnackbarContainer = (flowId: string | undefined): HTMLElement => {
+        const root = document.getElementById(`rf-root-${flowId}`) ?? document.body;
+
+        const modalContent = document.querySelector(
+            "#modal-root .modal .modal-content",
+        ) as HTMLElement | null;
+
+        if (modalContent && modalContent.getBoundingClientRect().height > 0) {
+            return modalContent;
         }
-        const modalContent = root?.querySelector("dialog[open] .modal-content");
-        setContainer(modalContent instanceof HTMLElement ? modalContent : root);
+
+        return root;
+    };
+
+    useLayoutEffect(() => {
+        setContainer(resolveSnackbarContainer(flowId));
     }, [flowId]);
 
     if (!container) {

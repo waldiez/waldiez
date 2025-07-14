@@ -227,18 +227,25 @@ describe("Snackbar System", () => {
     });
 
     it("renders in modal root if present", async () => {
+        const modalRoot = document.createElement("div");
+        modalRoot.id = "modal-root";
+
+        const modal = document.createElement("div");
+        modal.className = "modal";
+
+        const modalContent = document.createElement("div");
+        modalContent.className = "modal-content";
+
+        modal.appendChild(modalContent);
+        modalRoot.appendChild(modal);
+        document.body.appendChild(modalRoot);
+
         render(
             <Wrapper>
                 <div />
             </Wrapper>,
         );
-        const root = document.getElementById(`rf-root-${FLOW_ID}`)!;
-        const modal = document.createElement("dialog");
-        modal.setAttribute("open", "");
-        const modalContent = document.createElement("div");
-        modalContent.className = "modal-content";
-        modal.appendChild(modalContent);
-        root.appendChild(modal);
+
         act(() => {
             showSnackbar({
                 flowId: FLOW_ID,
@@ -247,9 +254,9 @@ describe("Snackbar System", () => {
             });
         });
 
-        expect(await screen.findByText("Modal Snackbar")).toBeInTheDocument();
-        // Optionally: check it is a child of modalContent
-        expect(modalContent.querySelector(".snackbar")).not.toBeNull();
+        const snackbar = await screen.findByText("Modal Snackbar");
+        expect(snackbar).toBeInTheDocument();
+        expect(modalContent.contains(snackbar)).toBe(true);
     });
     describe("Snackbar fallback container", () => {
         it("renders in document.body if rf-root-<flowId> does not exist", () => {

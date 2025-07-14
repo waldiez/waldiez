@@ -8,7 +8,7 @@ import { nanoid } from "nanoid";
 import JSZip from "jszip";
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import * as React from "react";
-import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo, useImperativeHandle, cloneElement } from "react";
+import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
@@ -26,6 +26,7 @@ import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCir
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
+import { ResponsiveContainer } from "recharts";
 import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
@@ -5683,13 +5684,18 @@ const Snackbar = ({
   onClose
 }) => {
   const [container, setContainer] = useState(null);
-  useLayoutEffect(() => {
-    let root = flowId ? document.getElementById(`rf-root-${flowId}`) : null;
-    if (!root) {
-      root = document.body;
+  const resolveSnackbarContainer = (flowId2) => {
+    const root = document.getElementById(`rf-root-${flowId2}`) ?? document.body;
+    const modalContent = document.querySelector(
+      "#modal-root .modal .modal-content"
+    );
+    if (modalContent && modalContent.getBoundingClientRect().height > 0) {
+      return modalContent;
     }
-    const modalContent = root?.querySelector("dialog[open] .modal-content");
-    setContainer(modalContent instanceof HTMLElement ? modalContent : root);
+    return root;
+  };
+  useLayoutEffect(() => {
+    setContainer(resolveSnackbarContainer(flowId));
   }, [flowId]);
   if (!container) {
     return null;
@@ -10247,337 +10253,6 @@ const TabItems = memo((props) => {
 });
 TabItem.displayName = "TabItem";
 TabItems.displayName = "TabItems";
-function r(e) {
-  var t, f, n = "";
-  if ("string" == typeof e || "number" == typeof e) n += e;
-  else if ("object" == typeof e) if (Array.isArray(e)) {
-    var o = e.length;
-    for (t = 0; t < o; t++) e[t] && (f = r(e[t])) && (n && (n += " "), n += f);
-  } else for (f in e) e[f] && (n && (n += " "), n += f);
-  return n;
-}
-function clsx() {
-  for (var e, t, f = 0, n = "", o = arguments.length; f < o; f++) (e = arguments[f]) && (t = r(e)) && (n && (n += " "), n += t);
-  return n;
-}
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-}
-var isPercent = (value) => typeof value === "string" && value.indexOf("%") === value.length - 1;
-var throttle$2 = {};
-var debounce = {};
-var hasRequiredDebounce;
-function requireDebounce() {
-  if (hasRequiredDebounce) return debounce;
-  hasRequiredDebounce = 1;
-  (function(exports) {
-    Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-    function debounce2(func, wait = 0, options = {}) {
-      if (typeof options !== "object") {
-        options = {};
-      }
-      let pendingArgs = null;
-      let pendingThis = null;
-      let lastCallTime = null;
-      let debounceStartTime = 0;
-      let timeoutId = null;
-      let lastResult;
-      const { leading = false, trailing = true, maxWait } = options;
-      const hasMaxWait = "maxWait" in options;
-      const maxWaitMs = hasMaxWait ? Math.max(Number(maxWait) || 0, wait) : 0;
-      const invoke = (time) => {
-        if (pendingArgs !== null) {
-          lastResult = func.apply(pendingThis, pendingArgs);
-        }
-        pendingArgs = pendingThis = null;
-        debounceStartTime = time;
-        return lastResult;
-      };
-      const handleLeading = (time) => {
-        debounceStartTime = time;
-        timeoutId = setTimeout(handleTimeout, wait);
-        if (leading && pendingArgs !== null) {
-          return invoke(time);
-        }
-        return lastResult;
-      };
-      const handleTrailing = (time) => {
-        timeoutId = null;
-        if (trailing && pendingArgs !== null) {
-          return invoke(time);
-        }
-        return lastResult;
-      };
-      const checkCanInvoke = (time) => {
-        if (lastCallTime === null) {
-          return true;
-        }
-        const timeSinceLastCall = time - lastCallTime;
-        const hasDebounceDelayPassed = timeSinceLastCall >= wait || timeSinceLastCall < 0;
-        const hasMaxWaitPassed = hasMaxWait && time - debounceStartTime >= maxWaitMs;
-        return hasDebounceDelayPassed || hasMaxWaitPassed;
-      };
-      const calculateRemainingWait = (time) => {
-        const timeSinceLastCall = lastCallTime === null ? 0 : time - lastCallTime;
-        const remainingDebounceTime = wait - timeSinceLastCall;
-        const remainingMaxWaitTime = maxWaitMs - (time - debounceStartTime);
-        return hasMaxWait ? Math.min(remainingDebounceTime, remainingMaxWaitTime) : remainingDebounceTime;
-      };
-      const handleTimeout = () => {
-        const currentTime = Date.now();
-        if (checkCanInvoke(currentTime)) {
-          return handleTrailing(currentTime);
-        }
-        timeoutId = setTimeout(handleTimeout, calculateRemainingWait(currentTime));
-      };
-      const debouncedFunction = function(...args) {
-        const currentTime = Date.now();
-        const canInvoke = checkCanInvoke(currentTime);
-        pendingArgs = args;
-        pendingThis = this;
-        lastCallTime = currentTime;
-        if (canInvoke) {
-          if (timeoutId === null) {
-            return handleLeading(currentTime);
-          }
-          if (hasMaxWait) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(handleTimeout, wait);
-            return invoke(currentTime);
-          }
-        }
-        if (timeoutId === null) {
-          timeoutId = setTimeout(handleTimeout, wait);
-        }
-        return lastResult;
-      };
-      debouncedFunction.cancel = () => {
-        if (timeoutId !== null) {
-          clearTimeout(timeoutId);
-        }
-        debounceStartTime = 0;
-        lastCallTime = pendingArgs = pendingThis = timeoutId = null;
-      };
-      debouncedFunction.flush = () => {
-        return timeoutId === null ? lastResult : handleTrailing(Date.now());
-      };
-      return debouncedFunction;
-    }
-    exports.debounce = debounce2;
-  })(debounce);
-  return debounce;
-}
-var hasRequiredThrottle$1;
-function requireThrottle$1() {
-  if (hasRequiredThrottle$1) return throttle$2;
-  hasRequiredThrottle$1 = 1;
-  (function(exports) {
-    Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-    const debounce2 = /* @__PURE__ */ requireDebounce();
-    function throttle2(func, throttleMs = 0, options = {}) {
-      const { leading = true, trailing = true } = options;
-      return debounce2.debounce(func, throttleMs, {
-        leading,
-        maxWait: throttleMs,
-        trailing
-      });
-    }
-    exports.throttle = throttle2;
-  })(throttle$2);
-  return throttle$2;
-}
-var throttle$1;
-var hasRequiredThrottle;
-function requireThrottle() {
-  if (hasRequiredThrottle) return throttle$1;
-  hasRequiredThrottle = 1;
-  throttle$1 = requireThrottle$1().throttle;
-  return throttle$1;
-}
-var throttleExports = /* @__PURE__ */ requireThrottle();
-const throttle = /* @__PURE__ */ getDefaultExportFromCjs(throttleExports);
-var isDev = process.env.NODE_ENV !== "production";
-var warn = function warn2(condition, format) {
-  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-    args[_key - 2] = arguments[_key];
-  }
-  if (isDev && typeof console !== "undefined" && console.warn) {
-    if (format === void 0) {
-      console.warn("LogUtils requires an error message argument");
-    }
-    if (!condition) {
-      if (format === void 0) {
-        console.warn("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings.");
-      } else {
-        var argIndex = 0;
-        console.warn(format.replace(/%s/g, () => args[argIndex++]));
-      }
-    }
-  }
-};
-function ownKeys$1(e, r2) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r2 && (o = o.filter(function(r3) {
-      return Object.getOwnPropertyDescriptor(e, r3).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread$1(e) {
-  for (var r2 = 1; r2 < arguments.length; r2++) {
-    var t = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$1(Object(t), true).forEach(function(r3) {
-      _defineProperty$1(e, r3, t[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys$1(Object(t)).forEach(function(r3) {
-      Object.defineProperty(e, r3, Object.getOwnPropertyDescriptor(t, r3));
-    });
-  }
-  return e;
-}
-function _defineProperty$1(e, r2, t) {
-  return (r2 = _toPropertyKey$1(r2)) in e ? Object.defineProperty(e, r2, { value: t, enumerable: true, configurable: true, writable: true }) : e[r2] = t, e;
-}
-function _toPropertyKey$1(t) {
-  var i = _toPrimitive$1(t, "string");
-  return "symbol" == typeof i ? i : i + "";
-}
-function _toPrimitive$1(t, r2) {
-  if ("object" != typeof t || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r2);
-    if ("object" != typeof i) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r2 ? String : Number)(t);
-}
-var ResponsiveContainer = /* @__PURE__ */ forwardRef((_ref, ref) => {
-  var {
-    aspect,
-    initialDimension = {
-      width: -1,
-      height: -1
-    },
-    width = "100%",
-    height = "100%",
-    /*
-     * default min-width to 0 if not specified - 'auto' causes issues with flexbox
-     * https://github.com/recharts/recharts/issues/172
-     */
-    minWidth = 0,
-    minHeight,
-    maxHeight,
-    children,
-    debounce: debounce2 = 0,
-    id,
-    className,
-    onResize,
-    style = {}
-  } = _ref;
-  var containerRef = useRef(null);
-  var onResizeRef = useRef();
-  onResizeRef.current = onResize;
-  useImperativeHandle(ref, () => containerRef.current);
-  var [sizes, setSizes] = useState({
-    containerWidth: initialDimension.width,
-    containerHeight: initialDimension.height
-  });
-  var setContainerSize = useCallback((newWidth, newHeight) => {
-    setSizes((prevState) => {
-      var roundedWidth = Math.round(newWidth);
-      var roundedHeight = Math.round(newHeight);
-      if (prevState.containerWidth === roundedWidth && prevState.containerHeight === roundedHeight) {
-        return prevState;
-      }
-      return {
-        containerWidth: roundedWidth,
-        containerHeight: roundedHeight
-      };
-    });
-  }, []);
-  useEffect(() => {
-    var callback = (entries) => {
-      var _onResizeRef$current;
-      var {
-        width: containerWidth2,
-        height: containerHeight2
-      } = entries[0].contentRect;
-      setContainerSize(containerWidth2, containerHeight2);
-      (_onResizeRef$current = onResizeRef.current) === null || _onResizeRef$current === void 0 || _onResizeRef$current.call(onResizeRef, containerWidth2, containerHeight2);
-    };
-    if (debounce2 > 0) {
-      callback = throttle(callback, debounce2, {
-        trailing: true,
-        leading: false
-      });
-    }
-    var observer = new ResizeObserver(callback);
-    var {
-      width: containerWidth,
-      height: containerHeight
-    } = containerRef.current.getBoundingClientRect();
-    setContainerSize(containerWidth, containerHeight);
-    observer.observe(containerRef.current);
-    return () => {
-      observer.disconnect();
-    };
-  }, [setContainerSize, debounce2]);
-  var chartContent = useMemo(() => {
-    var {
-      containerWidth,
-      containerHeight
-    } = sizes;
-    if (containerWidth < 0 || containerHeight < 0) {
-      return null;
-    }
-    warn(isPercent(width) || isPercent(height), "The width(%s) and height(%s) are both fixed numbers,\n       maybe you don't need to use a ResponsiveContainer.", width, height);
-    warn(!aspect || aspect > 0, "The aspect(%s) must be greater than zero.", aspect);
-    var calculatedWidth = isPercent(width) ? containerWidth : width;
-    var calculatedHeight = isPercent(height) ? containerHeight : height;
-    if (aspect && aspect > 0) {
-      if (calculatedWidth) {
-        calculatedHeight = calculatedWidth / aspect;
-      } else if (calculatedHeight) {
-        calculatedWidth = calculatedHeight * aspect;
-      }
-      if (maxHeight && calculatedHeight > maxHeight) {
-        calculatedHeight = maxHeight;
-      }
-    }
-    warn(calculatedWidth > 0 || calculatedHeight > 0, "The width(%s) and height(%s) of chart should be greater than 0,\n       please check the style of container, or the props width(%s) and height(%s),\n       or add a minWidth(%s) or minHeight(%s) or use aspect(%s) to control the\n       height and width.", calculatedWidth, calculatedHeight, width, height, minWidth, minHeight, aspect);
-    return React.Children.map(children, (child) => {
-      return /* @__PURE__ */ cloneElement(child, {
-        width: calculatedWidth,
-        height: calculatedHeight,
-        // calculate the actual size and override it.
-        style: _objectSpread$1({
-          width: calculatedWidth,
-          height: calculatedHeight
-        }, child.props.style)
-      });
-    });
-  }, [aspect, children, height, maxHeight, minHeight, minWidth, sizes, width]);
-  return /* @__PURE__ */ React.createElement("div", {
-    id: id ? "".concat(id) : void 0,
-    className: clsx("recharts-responsive-container", className),
-    style: _objectSpread$1(_objectSpread$1({}, style), {}, {
-      width,
-      height,
-      minWidth,
-      minHeight,
-      maxHeight
-    }),
-    ref: containerRef
-  }, /* @__PURE__ */ React.createElement("div", {
-    style: {
-      width: 0,
-      height: 0,
-      overflow: "visible"
-    }
-  }, chartContent));
-});
 var DefaultContext = {
   color: void 0,
   size: void 0,
@@ -10627,23 +10302,23 @@ function _extends() {
   };
   return _extends.apply(this, arguments);
 }
-function ownKeys(e, r2) {
+function ownKeys(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
-    r2 && (o = o.filter(function(r3) {
-      return Object.getOwnPropertyDescriptor(e, r3).enumerable;
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
     })), t.push.apply(t, o);
   }
   return t;
 }
 function _objectSpread(e) {
-  for (var r2 = 1; r2 < arguments.length; r2++) {
-    var t = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys(Object(t), true).forEach(function(r3) {
-      _defineProperty(e, r3, t[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r3) {
-      Object.defineProperty(e, r3, Object.getOwnPropertyDescriptor(t, r3));
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
+      _defineProperty(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
@@ -10661,15 +10336,15 @@ function _toPropertyKey(t) {
   var i = _toPrimitive(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive(t, r2) {
+function _toPrimitive(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
-    var i = e.call(t, r2);
+    var i = e.call(t, r);
     if ("object" != typeof i) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
-  return ("string" === r2 ? String : Number)(t);
+  return ("string" === r ? String : Number)(t);
 }
 function Tree2Element(tree) {
   return tree && tree.map((node, i) => /* @__PURE__ */ React__default.createElement(node.tag, _objectSpread({
@@ -12424,8 +12099,12 @@ class WaldiezEdgeStore {
    * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
    */
   onEdgeDoubleClick = (_event, edge) => {
-    const openDialogs = document.querySelectorAll("dialog[open]");
-    if (openDialogs.length > 0) {
+    const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+      (el) => el.querySelector(".modal-content").offsetParent !== null
+      // Only visible modals
+    );
+    if (openModals.length > 0) {
+      console.warn("Edge double-click ignored due to open modals");
       return;
     }
     const flowRoot = getFlowRoot(this.get().flowId);
@@ -13207,8 +12886,11 @@ class WaldiezNodeStore {
    * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
    */
   onNodeDoubleClick = (_event, node) => {
-    const openDialogs = document.querySelectorAll("dialog[open]");
-    if (openDialogs.length > 0) {
+    const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+      (el) => el.querySelector(".modal-content").offsetParent !== null
+      // Only visible modals
+    );
+    if (openModals.length > 0) {
       return;
     }
     const flowId = this.get().flowId;
@@ -14441,7 +14123,7 @@ const ChatModal = memo((props) => {
 });
 ChatModal.displayName = "ChatModal";
 const HUB_URL = "https://hub.waldiez.io";
-const API_FILES_URL = `${"https://api.waldiez.io"}/api/files`;
+const API_FILES_URL = `${"https://hub.waldiez.io"}/api/files`;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const UPLOAD_TIMEOUT = 1e4;
 const ADDITIONAL_FILE_TIMEOUT = 3e4;
@@ -16091,6 +15773,9 @@ WaldiezEdgeNested.displayName = "WaldiezEdgeNested";
 WaldiezEdgeGroup.displayName = "WaldiezEdgeGroup";
 WaldiezEdgeHidden.displayName = "WaldiezEdgeHidden";
 WaldiezEdgeCommon.displayName = "WaldiezEdgeCommon";
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
 var reactFastCompare;
 var hasRequiredReactFastCompare;
 function requireReactFastCompare() {
@@ -17759,10 +17444,10 @@ const useWaldiezNodeAgent = (id) => {
     if (!isReadOnly) {
       setIsNodeModalOpen(true);
     }
-  }, [isReadOnly]);
+  }, [isReadOnly, setIsNodeModalOpen]);
   const onCloseNodeModal = useCallback(() => {
     setIsNodeModalOpen(false);
-  }, []);
+  }, [setIsNodeModalOpen]);
   const onOpenEdgeModal = useCallback(
     (event) => {
       if (!isReadOnly && !isNodeModalOpen && !isEdgeModalOpen) {
@@ -17776,12 +17461,12 @@ const useWaldiezNodeAgent = (id) => {
         }
       }
     },
-    [isReadOnly, isNodeModalOpen, isEdgeModalOpen, getEdgeById]
+    [isReadOnly, isNodeModalOpen, isEdgeModalOpen, getEdgeById, setIsEdgeModalOpen, setEdge]
   );
   const onCloseEdgeModal = useCallback(() => {
     setIsEdgeModalOpen(false);
     setEdge(null);
-  }, []);
+  }, [setIsEdgeModalOpen, setEdge]);
   const onEdgeConnection = useCallback(
     (connection) => {
       if (!isReadOnly && !isNodeModalOpen) {
@@ -17789,7 +17474,7 @@ const useWaldiezNodeAgent = (id) => {
         setEdge(newEdge);
       }
     },
-    [isReadOnly, isNodeModalOpen, addEdge, flowId]
+    [isReadOnly, isNodeModalOpen, addEdge, flowId, setEdge]
   );
   const onDragOver = useCallback((e) => {
     e.preventDefault();
@@ -22656,6 +22341,7 @@ const WaldiezNodeAgentModal = memo((props) => {
     filesToUpload,
     onFilesToUploadChange
   ]);
+  console.log(`[DEBUG] Opening modal for agent ${id}`, isOpen);
   return /* @__PURE__ */ jsxs(
     Modal,
     {
@@ -22869,8 +22555,8 @@ const WaldiezNodeAgentView = (props) => {
               "data-edge-id": ""
             }
           ),
-          edge && isEdgeModalOpen && !isNodeModalOpen && /* @__PURE__ */ jsx(WaldiezEdgeModal, { isOpen: isEdgeModalOpen, edgeId: edge.id, onClose: onCloseEdgeModal }),
-          isNodeModalOpen && !isEdgeModalOpen && /* @__PURE__ */ jsx(
+          edge && /* @__PURE__ */ jsx(WaldiezEdgeModal, { isOpen: isEdgeModalOpen, edgeId: edge.id, onClose: onCloseEdgeModal }),
+          /* @__PURE__ */ jsx(
             WaldiezNodeAgentModal,
             {
               id,
@@ -24845,7 +24531,7 @@ const useToolNodeModal = (props) => {
   const onDeleteRequirement = useCallback(
     (requirement) => {
       onDataChange({
-        requirements: data.requirements.filter((r2) => r2 !== requirement)
+        requirements: data.requirements.filter((r) => r !== requirement)
       });
     },
     [data.requirements, onDataChange]
@@ -24853,7 +24539,7 @@ const useToolNodeModal = (props) => {
   const onRequirementChange = useCallback(
     (oldRequirement, newRequirement) => {
       onDataChange({
-        requirements: data.requirements.map((r2) => r2 === oldRequirement ? newRequirement : r2)
+        requirements: data.requirements.map((r) => r === oldRequirement ? newRequirement : r)
       });
     },
     [data.requirements, onDataChange]
@@ -25885,12 +25571,12 @@ const EditFlowModalModalTabOther = (props) => {
   };
   const onDeleteRequirement = (requirement) => {
     onDataChange({
-      requirements: requirements.filter((r2) => r2 !== requirement)
+      requirements: requirements.filter((r) => r !== requirement)
     });
   };
   const onRequirementChange = (oldValue, newValue) => {
     onDataChange({
-      requirements: requirements.map((r2) => r2 === oldValue ? newValue : r2)
+      requirements: requirements.map((r) => r === oldValue ? newValue : r)
     });
   };
   const onCacheSeedToggleChange = (checked) => {
