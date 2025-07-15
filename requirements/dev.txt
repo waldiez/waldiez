@@ -27,6 +27,7 @@ pylint==3.3.7
 python-dotenv>=1.1.1
 ruff==0.12.3
 toml==0.10.2; python_version <= '3.10'
+types-aiofiles==24.1.0.20250708
 types-jsonschema==4.24.0.20250708
 types-pyyaml==6.0.12.20250516
 types-redis==4.6.0.20241004

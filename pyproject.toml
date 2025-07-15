@@ -178,6 +178,7 @@ dev = [
   "pylint==3.3.7",
   "python-dotenv>=1.1.1",
   "ruff==0.12.3",
+  "types-aiofiles==24.1.0.20250708",
   "types-pyyaml==6.0.12.20250516",
   "types-jsonschema==4.24.0.20250708",
   "types-redis==4.6.0.20241004",
@@ -283,6 +284,10 @@ test-io = [
 test-running = [
   "hatch run pre-test",
   "pytest -c pyproject.toml --cov=waldiez/running --cov-branch --cov-report=term-missing:skip-covered -vv tests/running"
+]
+test-storage = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez/storage --cov-branch --cov-report=term-missing:skip-covered -vv tests/storage"
 ]
 
 format-black = "black --config pyproject.toml waldiez tests scripts"
