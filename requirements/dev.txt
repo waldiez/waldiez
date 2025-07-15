@@ -13,7 +13,7 @@ jsonschema==4.24.0
 jupyter_server==2.16.0
 jupyterlab>=4.4.0,<5.0
 mypy-extensions>=1.1.0
-mypy==1.16.1
+mypy==1.17.0
 nbclient>=0.10.2
 nbconvert>=7.16.6
 nbformat>=5.10.4
@@ -24,10 +24,10 @@ pandas-stubs==2.3.0.250703
 pre-commit==4.2.0
 pydocstyle==6.3.0
 pylint==3.3.7
-python-dotenv>=1.1.0
-ruff==0.12.2
+python-dotenv>=1.1.1
+ruff==0.12.3
 toml==0.10.2; python_version <= '3.10'
-types-jsonschema==4.24.0.20250528
+types-jsonschema==4.24.0.20250708
 types-pyyaml==6.0.12.20250516
 types-redis==4.6.0.20241004
 types-requests==2.32.4.20250611
