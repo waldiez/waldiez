@@ -109,7 +109,7 @@ export const TimelineChart = ({
                             if (prevSessionIndex !== -1) {
                                 const prevSession = data.timeline[i - 1 - prevSessionIndex];
                                 const prevCostPoint = data.cost_timeline.find(
-                                    (c: any) => c.session_id === prevSession.y_position,
+                                    (c: any) => c.session_id === prevSession?.y_position,
                                 );
                                 itemY = yScale(prevCostPoint?.cumulative_cost || 0) - 10;
                             } else {

@@ -1469,7 +1469,8 @@ const ValidAgentTypes$2 = [
   "rag_user_proxy",
   "reasoning",
   "captain",
-  "group_manager"
+  "group_manager",
+  "doc_agent"
 ];
 class WaldiezChatData {
   sourceType;
@@ -1668,7 +1669,8 @@ const emptyFlow = {
       ragUserProxyAgents: [],
       reasoningAgents: [],
       captainAgents: [],
-      groupManagerAgents: []
+      groupManagerAgents: [],
+      docAgents: []
     },
     models: [],
     tools: [],
@@ -1709,7 +1711,8 @@ class WaldiezFlowData {
       ragUserProxyAgents: [],
       reasoningAgents: [],
       captainAgents: [],
-      groupManagerAgents: []
+      groupManagerAgents: [],
+      docAgents: []
     },
     models: [],
     tools: [],
@@ -2114,7 +2117,7 @@ const getIdFromJSON = (json) => {
   if ("id" in json && typeof json.id === "string") {
     id = json.id;
   } else if ("type" in json && typeof json.type === "string" && json.type.length > 0) {
-    const itemType = json.type[0].toLowerCase();
+    const itemType = json.type[0]?.toLowerCase();
     id = `w${itemType}-${getId()}`;
   }
   return id;
@@ -2469,7 +2472,7 @@ const getNestedChatMessages = (chat) => {
 const getNestedChats$1 = (data) => {
   const chats = [];
   const defaultPrompt = "";
-  const defaultCondition = {
+  const defaultCondition2 = {
     conditionType: "string_llm",
     prompt: defaultPrompt
   };
@@ -2494,7 +2497,7 @@ const getNestedChats$1 = (data) => {
     chats.push({
       triggeredBy: [],
       messages: [],
-      condition: defaultCondition,
+      condition: defaultCondition2,
       available: {
         type: "none",
         value: ""
@@ -3110,6 +3113,7 @@ const AGENT_COLORS = {
   captain: "#0e2766",
   user_proxy: "#bc76f5",
   rag_user_proxy: "#e34561",
+  doc_agent: "#e34561",
   reasoning: "#63D0D4",
   group_manager: "#ed8a34"
 };
@@ -3119,6 +3123,7 @@ const AGENT_COLORS_ALT = {
   captain: "#284ca4",
   user_proxy: "#bc76f5",
   rag_user_proxy: "#e34561",
+  doc_agent: "#e34561",
   reasoning: "#63D0D4",
   group_manager: "#ed8a34"
 };
@@ -3166,6 +3171,7 @@ const LOGOS = {
 const AGENT_ICONS = {
   user_proxy: userWebp,
   rag_user_proxy: ragWebp,
+  doc_agent: ragWebp,
   captain: captainWebp,
   assistant: assistantWebp,
   reasoning: reasoningWebp,
@@ -4235,11 +4241,15 @@ const getAgentNodes = (nodes) => {
   const groupManagerAgentNodes = agentNodes.filter(
     (node) => "data" in node && typeof node.data === "object" && node.data && "agentType" in node.data && node.data.agentType === "group_manager"
   );
+  const docAgentNodes = agentNodes.filter(
+    (node) => "data" in node && typeof node.data === "object" && node.data && "agentType" in node.data && node.data.agentType === "doc_agent"
+  );
   return {
     agentNodes,
     userAgentNodes,
     assistantAgentNodes,
     ragUserNodes,
+    docAgentNodes,
     reasoningAgentNodes,
     captainAgentNodes,
     groupManagerAgentNodes
@@ -4275,7 +4285,7 @@ const ensureAgentNestedChatData = (agent, nodes, edges) => {
   const parentGroupId = agent.data.parentId;
   const nestedEdges = getAgentNestedEdges(agent.id, agents, parentGroupId, edges);
   const existingNestedChats = agent.data.nestedChats || [];
-  if (nestedEdges.length === 0 || existingNestedChats.length > 0 && existingNestedChats[0].messages.length > 0) {
+  if (nestedEdges.length === 0 || existingNestedChats.length > 0 && existingNestedChats[0] && existingNestedChats[0].messages.length > 0) {
     agent.data.nestedChats = existingNestedChats;
   } else {
     agent.data.nestedChats = [
@@ -4921,7 +4931,8 @@ const getAgents = (json, nodes, modelIds, toolIds, chatIds) => {
       ragUserProxyAgents: [],
       reasoningAgents: [],
       captainAgents: [],
-      groupManagerAgents: []
+      groupManagerAgents: [],
+      docAgents: []
     };
   }
   const agentsJson = json.agents;
@@ -4968,6 +4979,14 @@ const getAgents = (json, nodes, modelIds, toolIds, chatIds) => {
     ),
     groupManagerAgents: getFlowAgents(
       "group_manager",
+      agentsJson,
+      nodes,
+      modelIds,
+      toolIds,
+      chatIds
+    ),
+    docAgents: getFlowAgents(
+      "doc_agent",
       agentsJson,
       nodes,
       modelIds,
@@ -5409,6 +5428,7 @@ const getFlowDataToExport = (flow, hideSecrets, skipLinks) => {
   const {
     userAgentNodes,
     assistantAgentNodes,
+    docAgentNodes,
     ragUserNodes,
     reasoningAgentNodes,
     captainAgentNodes,
@@ -5444,7 +5464,8 @@ const getFlowDataToExport = (flow, hideSecrets, skipLinks) => {
       ),
       captainAgents: captainAgentNodes.map(
         (captainAgentNode) => exportAgent(captainAgentNode, nodes, edges, skipLinks)
-      )
+      ),
+      docAgents: docAgentNodes.map((docAgentNode) => exportAgent(docAgentNode, nodes, edges, skipLinks))
     },
     models: modelNodes.map((modelNode) => exportModel(modelNode, nodes, hideSecrets)),
     tools: toolNodes.map((toolNode) => exportTool(toolNode, nodes, hideSecrets)),
@@ -5463,23 +5484,26 @@ const getRFNodes = (flow) => {
   flow.data.tools.forEach((tool) => {
     nodes.push(toolMapper.asNode(tool));
   });
-  flow.data.agents.groupManagerAgents.forEach((groupManagerAgent) => {
+  flow.data.agents.groupManagerAgents?.forEach((groupManagerAgent) => {
     nodes.push(agentMapper.asNode(groupManagerAgent));
   });
-  flow.data.agents.userProxyAgents.forEach((user) => {
+  flow.data.agents.userProxyAgents?.forEach((user) => {
     nodes.push(agentMapper.asNode(user));
   });
-  flow.data.agents.assistantAgents.forEach((assistant) => {
+  flow.data.agents.assistantAgents?.forEach((assistant) => {
     nodes.push(agentMapper.asNode(assistant));
   });
-  flow.data.agents.ragUserProxyAgents.forEach((ragUser) => {
+  flow.data.agents.ragUserProxyAgents?.forEach((ragUser) => {
     nodes.push(agentMapper.asNode(ragUser));
   });
-  flow.data.agents.reasoningAgents.forEach((reasoningAgent) => {
+  flow.data.agents.reasoningAgents?.forEach((reasoningAgent) => {
     nodes.push(agentMapper.asNode(reasoningAgent));
   });
-  flow.data.agents.captainAgents.forEach((captainAgent) => {
+  flow.data.agents.captainAgents?.forEach((captainAgent) => {
     nodes.push(agentMapper.asNode(captainAgent));
+  });
+  flow.data.agents.docAgents?.forEach((docAgent) => {
+    nodes.push(agentMapper.asNode(docAgent));
   });
   return nodes;
 };
@@ -5600,8 +5624,8 @@ const ErrorPage = ({ error }) => {
         src: bot.src,
         alt: bot.alt,
         className: "waldiez-bot-img",
-        animate: botVariants[idx].animate,
-        transition: botVariants[idx].transition,
+        animate: botVariants[idx]?.animate,
+        transition: botVariants[idx]?.transition,
         style: { zIndex: 10 + idx }
       },
       bot.alt
@@ -5661,7 +5685,7 @@ const showSnackbar = (props) => {
   if (!props.flowId) {
     const flowIdMatch = document.querySelectorAll("[data-flow-id]");
     if (flowIdMatch.length === 1) {
-      props.flowId = flowIdMatch[0].getAttribute("data-flow-id") || void 0;
+      props.flowId = flowIdMatch[0]?.getAttribute("data-flow-id") || void 0;
     }
   }
   if (globalEnqueue) {
@@ -5779,10 +5803,10 @@ const SnackbarProvider = ({ children }) => {
   useEffect(() => {
     Object.keys(queues).forEach((flowId) => {
       if (!active[flowId] && queues[flowId] && queues[flowId].length > 0) {
-        setActive((a) => ({ ...a, [flowId]: queues[flowId][0] }));
+        setActive((a) => ({ ...a, [flowId]: queues[flowId]?.[0] ?? null }));
         setQueues((qs) => ({
           ...qs,
-          [flowId]: qs[flowId].slice(1)
+          [flowId]: qs[flowId]?.slice(1) ?? []
         }));
       }
     });
@@ -7041,7 +7065,7 @@ const isReactElementWithProps = (node) => {
 };
 const extractLanguageFromClassName = (className) => {
   const match = /language-(\w+)/.exec(className);
-  return match && match[1] !== "md" ? match[1] : null;
+  return match && match[1] !== "md" ? match[1] || null : null;
 };
 const findLanguageInChildren = (children) => {
   if (isReactElementWithProps(children) && children.props.className) {
@@ -7073,7 +7097,6 @@ const mightBeMarkdown = (text) => {
     // Blockquotes
     /\d+\.\s+.*/,
     // Ordered lists
-    // eslint-disable-next-line no-useless-escape
     /[\*\-\+]\s+.*/,
     // Unordered lists
     /\|(.*?)\|/,
@@ -7247,18 +7270,20 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
         )
       );
     }
-    parts.push(
-      /* @__PURE__ */ jsx(
-        ImageWithRetry,
-        {
-          src: url,
-          className: "chat-image",
-          onClick: () => onImageClick(url)
-        },
-        `img-${match.index}`
-      )
-    );
-    lastIdx = regex.lastIndex;
+    if (url) {
+      parts.push(
+        /* @__PURE__ */ jsx(
+          ImageWithRetry,
+          {
+            src: url,
+            className: "chat-image",
+            onClick: () => onImageClick(url)
+          },
+          `img-${match.index}`
+        )
+      );
+      lastIdx = regex.lastIndex;
+    }
   }
   const remainingText = text.slice(lastIdx);
   if (remainingText) {
@@ -7481,7 +7506,7 @@ const useDict = (props) => {
   }, [stateItems, onUpdate]);
   const isDirty = useCallback(
     (index) => {
-      if (index >= stateItems.length) {
+      if (index >= stateItems.length || !stateItems[index]) {
         return true;
       }
       const [key, value] = stateItems[index];
@@ -8332,7 +8357,7 @@ const useAgentRelationships = (id, data, agents, edges) => {
     if (nestedEdges.length === 0) {
       return existingChats;
     }
-    if (existingChats.length > 0 && existingChats[0].messages.length > 0) {
+    if (existingChats.length > 0 && existingChats[0] && existingChats[0].messages.length > 0) {
       return existingChats;
     }
     return [
@@ -8372,14 +8397,14 @@ const useHandoffNames = (agents, allEdges, nestedChats) => {
   );
   const getNestedChatDisplayName = useCallback(
     (index = 0) => {
-      if (nestedChats.length === 0 || index >= nestedChats.length || nestedChats[index].messages.length === 0) {
+      if (nestedChats.length === 0 || index >= nestedChats.length || nestedChats[index]?.messages.length === 0) {
         return "Nested Chat";
       }
       const nestedChat = nestedChats[index];
-      const targets = nestedChat.messages.map((msg) => {
+      const targets = nestedChat?.messages.map((msg) => {
         const edge = allEdges.find((e) => e.id === msg.id);
         return edge ? getAgentName2(edge.target) : "";
-      }).filter(Boolean);
+      }).filter(Boolean) || [];
       if (targets.length === 0) {
         return "Nested Chat";
       }
@@ -8390,11 +8415,11 @@ const useHandoffNames = (agents, allEdges, nestedChats) => {
   const getTransitionTargetName = (target) => {
     switch (target.targetType) {
       case "AgentTarget":
-        return getAgentName2(target.value[0]);
+        return getAgentName2(target.value[0] ? target.value[0] : "");
       case "RandomAgentTarget":
         return `Random (${target.value.map(getAgentName2).join(", ")})`;
       case "GroupChatTarget":
-        return `Group Chat: ${getAgentName2(target.value[0])}`;
+        return `Group Chat: ${getAgentName2(target.value[0] ? target.value[0] : "")}`;
       case "NestedChatTarget":
         return getNestedChatDisplayName(0);
       case "AskUserTarget":
@@ -8490,7 +8515,7 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
   }, [data.handoffs, groupEdges, nestedChats, getTransitionTargetName]);
   const onMoveTransitionTargetUp = useCallback(
     (index) => {
-      if (index <= 0) {
+      if (index <= 0 || !orderedTransitionTargets[index - 1] || !orderedTransitionTargets[index]) {
         return;
       }
       const newOrderedTargets = [...orderedTransitionTargets];
@@ -9958,6 +9983,9 @@ const NumberInput = memo((props) => {
   const handleSliderChange = useCallback(
     (newValues) => {
       const newValue = newValues[0];
+      if (typeof newValue !== "number") {
+        return;
+      }
       if (newValue === max && setNullOnUpper) {
         onChange(null);
       } else if (newValue === min && setNullOnLower) {
@@ -10491,7 +10519,7 @@ const TimelineChart = ({
               if (prevSessionIndex !== -1) {
                 const prevSession = data.timeline[i - 1 - prevSessionIndex];
                 const prevCostPoint = data.cost_timeline.find(
-                  (c) => c.session_id === prevSession.y_position
+                  (c) => c.session_id === prevSession?.y_position
                 );
                 itemY = yScale(prevCostPoint?.cumulative_cost || 0) - 10;
               } else {
@@ -10867,13 +10895,15 @@ const UpdateState = (props) => {
     [hasUpdateConfig, data.updateAgentStateBeforeReply]
   );
   const [enabled, setEnabled] = useState(hasUpdateConfig);
-  const [selectedType, setSelectedType] = useState(currentConfig.type);
+  const [selectedType, setSelectedType] = useState(
+    currentConfig?.type || "string"
+  );
   useEffect(() => {
     setEnabled(hasUpdateConfig);
     if (hasUpdateConfig) {
-      setSelectedType(currentConfig.type);
+      setSelectedType(currentConfig?.type || "string");
     }
-  }, [hasUpdateConfig, currentConfig.type]);
+  }, [hasUpdateConfig, currentConfig?.type]);
   const updateSystemMessageTypeOptions = useMemo(
     () => [
       { label: "Text", value: "string" },
@@ -10944,11 +10974,11 @@ const UpdateState = (props) => {
     [onDataChange]
   );
   const stringContent = useMemo(
-    () => hasUpdateConfig && currentConfig.type === "string" ? currentConfig.content : "",
+    () => hasUpdateConfig && currentConfig?.type === "string" ? currentConfig.content : "",
     [hasUpdateConfig, currentConfig]
   );
   const callableContent = useMemo(
-    () => hasUpdateConfig && currentConfig.type === "callable" ? currentConfig.content : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
+    () => hasUpdateConfig && currentConfig?.type === "callable" ? currentConfig.content : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
     [hasUpdateConfig, currentConfig]
   );
   return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
@@ -11264,7 +11294,7 @@ const getNewChatsOfType = (allEdges, type) => {
     if (!edgesOfTypeBySource[edge.source]) {
       edgesOfTypeBySource[edge.source] = [];
     }
-    edgesOfTypeBySource[edge.source].push(edge);
+    edgesOfTypeBySource[edge.source]?.push(edge);
   });
   return edgesOfType.map((edge, index) => {
     return {
@@ -12750,7 +12780,7 @@ class WaldiezModelStore {
     for (let i = 0; i < newModelNodesCount; i++) {
       const node = newModelNodes[i];
       const position = getNewNodePosition(i, flowId, rfInstance);
-      newModelNodes[i] = { ...node, position };
+      newModelNodes[i] = { ...node, id: node?.id || `wa-${getId()}`, data: node?.data || {}, position };
     }
     const allNodes = newModelNodes.concat(this.get().nodes.filter((node) => node.type !== "model"));
     const newNodes = [];
@@ -13211,7 +13241,7 @@ class WaldiezToolStore {
     for (let i = 0; i < newToolNodesCount; i++) {
       const node = newToolNodes[i];
       const position = getNewNodePosition(i, flowId, rfInstance);
-      newToolNodes[i] = { ...node, position };
+      newToolNodes[i] = { ...node, id: node?.id || `wa-${getId()}`, data: node?.data || {}, position };
     }
     const allNodes = newToolNodes.concat(this.get().nodes.filter((node) => node.type !== "tool"));
     const newNodes = [];
@@ -14220,6 +14250,10 @@ const ExportFlowModal = memo((props) => {
         return;
       }
       const file = files[0];
+      if (!file) {
+        showError("No file selected.");
+        return;
+      }
       if (file.size > MAX_FILE_SIZE) {
         showError("File size exceeds 5MB.");
         return;
@@ -14438,6 +14472,9 @@ const useLoadFlowStep = (props) => {
         return;
       }
       const file = files[0];
+      if (!file) {
+        return;
+      }
       try {
         const reader = new FileReader();
         reader.onload = () => {
@@ -17650,7 +17687,7 @@ const useWaldiezNodeAgentModal = (id, isOpen, data, onClose) => {
           const docsPath = ragData.retrieveConfig.docsPath;
           const newDocsPath = [...docsPath];
           for (let i = 0; i < filesToUpload.length; i++) {
-            const index = newDocsPath.indexOf(`file:///${filesToUpload[i].name}`);
+            const index = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
             if (index > -1) {
               if (typeof filePaths[i] === "string") {
                 newDocsPath[index] = filePaths[i];
@@ -18672,6 +18709,9 @@ const useWaldiezAgentCaptain = (props) => {
         return;
       }
       const file = files[0];
+      if (!file) {
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         try {
@@ -19020,6 +19060,145 @@ const WaldiezAgentCodeExecution = memo((props) => {
   ] });
 });
 WaldiezAgentCodeExecution.displayName = "WaldiezAgentCodeExecution";
+const WaldiezDocAgentTab = memo((props) => {
+  const { id, flowId, data, onDataChange } = props;
+  const onCollectionNameChange = useCallback(
+    (e) => {
+      onDataChange({ collectionName: e.target.value });
+    },
+    [onDataChange]
+  );
+  const onResetCollectionChange = useCallback(
+    (reset) => {
+      onDataChange({ resetCollection: reset });
+    },
+    [onDataChange]
+  );
+  const onEnableQueryCitationsChange = useCallback(
+    (enable) => {
+      onDataChange({
+        queryEngine: {
+          type: data.queryEngine?.type || "VectorChromaQueryEngine",
+          dbPath: data.queryEngine?.dbPath || null,
+          citationChunkSize: data.queryEngine?.citationChunkSize || 512,
+          enableQueryCitations: enable
+        }
+      });
+    },
+    [data.queryEngine, onDataChange]
+  );
+  const onDbPathChange = useCallback(
+    (e) => {
+      let newValue = e.target.value || null;
+      if (newValue?.trim() === "") {
+        newValue = null;
+      }
+      onDataChange({
+        queryEngine: {
+          type: data.queryEngine?.type || "VectorChromaQueryEngine",
+          enableQueryCitations: data.queryEngine?.enableQueryCitations || false,
+          citationChunkSize: data.queryEngine?.citationChunkSize || 512,
+          dbPath: newValue
+        }
+      });
+    },
+    [data.queryEngine, onDataChange]
+  );
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel", children: [
+    /* @__PURE__ */ jsx(
+      TextInput,
+      {
+        label: "Collection Name:",
+        name: "doc-agent-collection-name",
+        dataTestId: `input-id-wf-${flowId}-wa-${id}-collection-name`,
+        value: data.collectionName,
+        onChange: onCollectionNameChange,
+        placeholder: "Enter collection name",
+        className: "margin-top-5"
+      }
+    ),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+      InfoCheckbox,
+      {
+        label: "Reset Collection",
+        info: "If enabled, the collection will be reset before adding new documents.",
+        id: `checkbox-id-wf-${flowId}-wa-${id}-reset-collection`,
+        checked: data.resetCollection,
+        onChange: onResetCollectionChange
+      }
+    ) }),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+      InfoCheckbox,
+      {
+        label: "Enable Query Citations",
+        info: "If enabled, citations will be included in query results.",
+        id: `checkbox-id-wf-${flowId}-wa-${id}-enable-query-citations`,
+        checked: data.queryEngine?.enableQueryCitations || false,
+        onChange: onEnableQueryCitationsChange
+      }
+    ) }),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+      TextInput,
+      {
+        label: "Database Path:",
+        name: "doc-agent-db-path",
+        dataTestId: `input-id-wf-${flowId}-wa-${id}-db-path`,
+        value: data.queryEngine?.dbPath || "",
+        onChange: onDbPathChange,
+        placeholder: "Enter database path",
+        labelInfo: getHelpInstructions()
+      }
+    ) })
+  ] });
+});
+const getHelpInstructions = () => {
+  const platform = navigator.platform.toLowerCase();
+  const isMac = platform.includes("mac");
+  const isWindows = platform.includes("win");
+  if (isMac) {
+    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Mac:" }),
+      /* @__PURE__ */ jsxs("ol", { children: [
+        /* @__PURE__ */ jsx("li", { children: "Open Finder and navigate to your folder" }),
+        /* @__PURE__ */ jsx("li", { children: 'Right-click the folder and select "Get Info"' }),
+        /* @__PURE__ */ jsx("li", { children: 'Copy the path from "Where:" field' }),
+        /* @__PURE__ */ jsx("li", { children: "Or drag the folder into Terminal to see its path" })
+      ] }),
+      /* @__PURE__ */ jsxs("p", { children: [
+        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
+        " /Users/yourname/Documents/MyProject"
+      ] })
+    ] });
+  } else if (isWindows) {
+    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Windows:" }),
+      /* @__PURE__ */ jsxs("ol", { children: [
+        /* @__PURE__ */ jsx("li", { children: "Open File Explorer and navigate to your folder" }),
+        /* @__PURE__ */ jsx("li", { children: "Click on the address bar (or press Ctrl+L)" }),
+        /* @__PURE__ */ jsx("li", { children: "The full path will be shown - copy it" }),
+        /* @__PURE__ */ jsx("li", { children: "Or right-click folder → Properties → Location" })
+      ] }),
+      /* @__PURE__ */ jsxs("p", { children: [
+        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
+        " C:\\Users\\yourname\\Documents\\MyProject"
+      ] })
+    ] });
+  } else {
+    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsx("h4", { children: "How to find folder path:" }),
+      /* @__PURE__ */ jsxs("ol", { children: [
+        /* @__PURE__ */ jsx("li", { children: "Open your file manager" }),
+        /* @__PURE__ */ jsx("li", { children: "Navigate to the folder you want" }),
+        /* @__PURE__ */ jsx("li", { children: "Look for the path in the address bar" }),
+        /* @__PURE__ */ jsx("li", { children: "Or right-click and check properties" })
+      ] }),
+      /* @__PURE__ */ jsxs("p", { children: [
+        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
+        " /home/yourname/Documents/MyProject"
+      ] })
+    ] });
+  }
+};
 const useWaldiezAgentGroupMember = (props) => {
   const { id, agents, data, onDataChange } = props;
   const groupManagers = useMemo(
@@ -19186,6 +19365,14 @@ const WaldiezAgentGroupMember = memo((props) => {
   ] }) });
 });
 WaldiezAgentGroupMember.displayName = "WaldiezAgentGroupMember";
+const defaultCondition = {
+  conditionType: "string_llm",
+  prompt: ""
+};
+const defaultAvailability = {
+  type: "none",
+  value: ""
+};
 const getNestedChats = (agentData, edges) => {
   const nestedChats = [];
   if (agentData.nestedChats.length > 0 && agentData.nestedChats[0].messages.length > 0) {
@@ -19205,8 +19392,8 @@ const getNestedChats = (agentData, edges) => {
     });
   }
   edges.forEach((edge) => {
-    if (nestedChats.length > 0 && nestedChats[0].messages.findIndex((message) => message.id === edge.id) === -1) {
-      nestedChats[0].messages.push({
+    if (nestedChats.length > 0 && nestedChats[0]?.messages.findIndex((message) => message.id === edge.id) === -1) {
+      nestedChats[0]?.messages.push({
         id: edge.id,
         isReply: false
       });
@@ -19221,10 +19408,10 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     if (!data?.nestedChats?.length) {
       return;
     }
-    const currentMessageIds = new Set(data.nestedChats[0].messages.map((m) => m.id));
+    const currentMessageIds = new Set(data.nestedChats[0]?.messages.map((m) => m.id));
     const edgeIds = new Set(edges.map((e) => e.id));
     const missingEdges = edges.filter((e) => !currentMessageIds.has(e.id));
-    const extraMessages = data.nestedChats[0].messages.filter((m) => !edgeIds.has(m.id));
+    const extraMessages = data.nestedChats[0]?.messages.filter((m) => !edgeIds.has(m.id));
     const needsUpdate = missingEdges.length > 0 || extraMessages.length > 0;
     if (needsUpdate) {
       const updatedMessages = [
@@ -19241,7 +19428,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     }
   }, [data.nestedChats, edges, onDataChange]);
   const nestedChatMessagesCount = useMemo(
-    () => nestedChats.length > 0 ? nestedChats[0].messages.length : 0,
+    () => nestedChats.length > 0 ? nestedChats[0]?.messages.length : 0,
     [nestedChats]
   );
   const getRecipientName = useCallback(
@@ -19261,29 +19448,34 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
   const onMoveNestedChatMessageUp = useCallback(
     (index) => {
       const newNestedChats = [...nestedChats];
-      const temp = newNestedChats[0].messages[index];
-      newNestedChats[0].messages[index] = newNestedChats[0].messages[index - 1];
-      newNestedChats[0].messages[index - 1] = temp;
-      onDataChange({ nestedChats: newNestedChats });
+      if (newNestedChats[0] && Array.isArray(newNestedChats[0].messages) && newNestedChats[0].messages[index] !== void 0 && newNestedChats[0].messages[index - 1] !== void 0) {
+        const temp = newNestedChats[0].messages[index];
+        newNestedChats[0].messages[index] = newNestedChats[0].messages[index - 1];
+        newNestedChats[0].messages[index - 1] = temp;
+        onDataChange({ nestedChats: newNestedChats });
+      }
     },
     [nestedChats, onDataChange]
   );
   const onMoveNestedChatMessageDown = useCallback(
     (index) => {
       const newNestedChats = [...nestedChats];
-      const temp = newNestedChats[0].messages[index];
-      newNestedChats[0].messages[index] = newNestedChats[0].messages[index + 1];
-      newNestedChats[0].messages[index + 1] = temp;
-      onDataChange({
-        nestedChats: structuredClone(newNestedChats)
-      });
+      const messages = newNestedChats[0].messages;
+      if (messages[index + 1] !== void 0) {
+        const temp = messages[index];
+        messages[index] = messages[index + 1];
+        messages[index + 1] = temp;
+        onDataChange({
+          nestedChats: structuredClone(newNestedChats)
+        });
+      }
     },
     [nestedChats, onDataChange]
   );
   const onConditionChange = useCallback(
     (condition) => {
       const newNestedChats = structuredClone(nestedChats);
-      newNestedChats[0].condition = condition;
+      newNestedChats[0].condition = condition || defaultCondition;
       onDataChange({ nestedChats: newNestedChats });
     },
     [nestedChats, onDataChange]
@@ -19291,20 +19483,20 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
   const onAvailabilityChange = useCallback(
     (available) => {
       const newNestedChats = structuredClone(nestedChats);
-      newNestedChats[0].available = available;
+      newNestedChats[0].available = available || defaultAvailability;
       onDataChange({ nestedChats: newNestedChats });
     },
     [nestedChats, onDataChange]
   );
   return /* @__PURE__ */ jsx("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0].messages.map((message, index) => /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index) => /* @__PURE__ */ jsxs(
       "div",
       {
         className: "flex margin-bottom-10 queue-item",
         "data-testid": `nested-chat-queue-item-${index}`,
         children: [
           /* @__PURE__ */ jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
-            index > 0 && nestedChatMessagesCount > 1 && /* @__PURE__ */ jsx(
+            index > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -19316,7 +19508,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
                 children: "↑"
               }
             ),
-            index < nestedChatMessagesCount - 1 && /* @__PURE__ */ jsx(
+            index < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsx(
               "button",
               {
                 title: "Move down",
@@ -19337,7 +19529,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     /* @__PURE__ */ jsx(TabItem, { label: "Condition", id: `wf-${flowId}-wa-${id}-nested-chat-condition`, children: /* @__PURE__ */ jsx(
       HandoffCondition,
       {
-        condition: nestedChats[0].condition,
+        condition: nestedChats[0]?.condition || defaultCondition,
         onDataChange: onConditionChange,
         "aria-label": "Handoff condition settings"
       }
@@ -19345,7 +19537,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     /* @__PURE__ */ jsx(TabItem, { label: "Availability", id: `wf-${flowId}-wa-${id}-nested-chat-availability`, children: /* @__PURE__ */ jsx(
       HandoffAvailability,
       {
-        available: nestedChats[0].available,
+        available: nestedChats[0]?.available || defaultAvailability,
         onDataChange: onAvailabilityChange,
         "aria-label": "Handoff availability settings"
       }
@@ -19377,7 +19569,7 @@ const useWaldiezAgentNestedChats = (props) => {
     }
   }, [data.nestedChats, onDataChange]);
   const chat = useMemo(
-    () => data.nestedChats.length > 0 ? data.nestedChats[0] : getDefaultChat(),
+    () => data.nestedChats.length > 0 ? data.nestedChats[0] || getDefaultChat() : getDefaultChat(),
     [data.nestedChats]
   );
   const [selectedRecipient, setSelectedRecipient] = useState(null);
@@ -19481,9 +19673,11 @@ const useWaldiezAgentNestedChats = (props) => {
         return;
       }
       const recipients = [...chat.messages];
-      const temp = recipients[index];
-      recipients[index] = recipients[index + 1];
-      recipients[index + 1] = temp;
+      if (recipients[index] !== void 0 && recipients[index + 1] !== void 0) {
+        const temp = recipients[index];
+        recipients[index] = recipients[index + 1];
+        recipients[index + 1] = temp;
+      }
       const newChat = {
         ...chat,
         messages: recipients
@@ -22054,11 +22248,12 @@ const WaldiezNodeAgentModalTabs = memo(
         isGroupMember: data.agentType !== "group_manager" && !!data.parentId,
         isRagUser: data.agentType === "rag_user_proxy",
         isReasoning: data.agentType === "reasoning",
-        isCaptain: data.agentType === "captain"
+        isCaptain: data.agentType === "captain",
+        isDocAgent: data.agentType === "doc_agent"
       }),
       [data.agentType, data.parentId]
     );
-    const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain } = agentTypeInfo;
+    const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain, isDocAgent } = agentTypeInfo;
     const derivedData = useMemo(() => {
       const agentConnections2 = getAgentConnections2(id);
       const models2 = getModels2();
@@ -22173,6 +22368,15 @@ const WaldiezNodeAgentModalTabs = memo(
       ) }) }),
       isCaptain && /* @__PURE__ */ jsx(TabItem, { label: "Captain", id: `wf-${flowId}-wa-${id}-captain`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentCaptainTab,
+        {
+          id,
+          flowId,
+          data,
+          onDataChange
+        }
+      ) }) }),
+      isDocAgent && /* @__PURE__ */ jsx(TabItem, { label: "Documents", id: `wf-${flowId}-wa-${id}-documents`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+        WaldiezDocAgentTab,
         {
           id,
           flowId,
@@ -22341,7 +22545,6 @@ const WaldiezNodeAgentModal = memo((props) => {
     filesToUpload,
     onFilesToUploadChange
   ]);
-  console.log(`[DEBUG] Opening modal for agent ${id}`, isOpen);
   return /* @__PURE__ */ jsxs(
     Modal,
     {
@@ -22588,6 +22791,9 @@ const getApiTypeLabel = (text) => {
   }
   if (text === "nim") {
     return "NIM";
+  }
+  if (!text || text.length === 0 || text === "other") {
+    return "Other";
   }
   return text[0].toUpperCase() + text.slice(1);
 };
@@ -22933,7 +23139,7 @@ const awsSignatureUtils = {
    * @returns A string of canonical headers formatted for AWS Signature V4
    */
   buildCanonicalHeaders(headers) {
-    return Object.keys(headers).sort().map((key) => `${key.toLowerCase()}:${headers[key].trim()}
+    return Object.keys(headers).sort().map((key) => `${key.toLowerCase()}:${headers[key]?.trim()}
 `).join("");
   },
   /**
@@ -24654,7 +24860,7 @@ const WaldiezToolBasicTab = memo((props) => {
         onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
       } else {
         onToolTypeChange(option.value);
-        onToolLabelChange(DEFAULT_NAME[option.value]);
+        onToolLabelChange(DEFAULT_NAME[option.value] || "");
         onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
       }
     },
@@ -24755,7 +24961,7 @@ const WaldiezToolBasicTab = memo((props) => {
       )
     ] }),
     data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].map((kwarg, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         name: kwarg.label,
@@ -24768,7 +24974,7 @@ const WaldiezToolBasicTab = memo((props) => {
         placeholder: `Enter the ${kwarg.label}`
       }
     ) }, index)) }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         name: envVar.label,
@@ -25032,6 +25238,12 @@ const useSidebarView = (props) => {
     },
     [onDragStart]
   );
+  const onDocDragStart = useCallback(
+    (event) => {
+      onDragStart(event, "agent", "doc_agent");
+    },
+    [onDragStart]
+  );
   const onReasoningDragStart = useCallback(
     (event) => {
       onDragStart(event, "agent", "reasoning");
@@ -25084,7 +25296,7 @@ const useSidebarView = (props) => {
     onShowModels,
     onShowTools,
     onUserDragStart,
-    onRagDragStart,
+    onDocDragStart,
     onAssistantDragStart,
     onReasoningDragStart,
     onCaptainDragStart,
@@ -25232,7 +25444,7 @@ const useEditFlowModal = (props) => {
     }
   };
   const onMoveEdgeUp = (index) => {
-    if (sortedEdgesState.find((e) => e.id === sortedEdgesState[index].id)) {
+    if (index > 0 && sortedEdgesState[index] !== void 0 && sortedEdgesState[index - 1] !== void 0 && sortedEdgesState.find((e) => e.id === sortedEdgesState[index]?.id)) {
       const previousEdge = sortedEdgesState[index - 1];
       const currentEdge = sortedEdgesState[index];
       const newSortedEdges = sortedEdgesState.slice();
@@ -25256,7 +25468,7 @@ const useEditFlowModal = (props) => {
         data: {
           ...edge.data,
           order: index,
-          prerequisites: [previousEdge.id]
+          prerequisites: [previousEdge?.id]
         }
       };
     });
@@ -25275,19 +25487,19 @@ const useEditFlowModal = (props) => {
     setIsDirty(true);
   };
   const onMoveEdgeDown = (index) => {
-    if (sortedEdgesState.find((e) => e.id === sortedEdgesState[index].id)) {
+    if (sortedEdgesState.find((e) => e.id === sortedEdgesState[index]?.id)) {
       const nextEdge = sortedEdgesState[index + 1];
-      const nextOrder = nextEdge.data?.order;
+      const nextOrder = nextEdge?.data?.order;
       const currentEdge = sortedEdgesState[index];
-      const currentOrder = currentEdge.data?.order;
+      const currentOrder = currentEdge?.data?.order;
       const newSortedEdges = sortedEdgesState.slice();
       newSortedEdges[index + 1] = {
         ...currentEdge,
-        data: { ...currentEdge.data, order: nextOrder }
+        data: { ...currentEdge?.data, order: nextOrder }
       };
       newSortedEdges[index] = {
         ...nextEdge,
-        data: { ...nextEdge.data, order: currentOrder }
+        data: { ...nextEdge?.data, order: currentOrder }
       };
       setSortedEdgesState(setSyncPrerequisites(newSortedEdges));
       setIsDirty(true);
@@ -25772,7 +25984,7 @@ const SideBar = (props) => {
     onShowTools,
     onUserDragStart,
     onAssistantDragStart,
-    onRagDragStart,
+    onDocDragStart,
     onReasoningDragStart,
     onCaptainDragStart,
     onManagerDragStart
@@ -25906,12 +26118,12 @@ const SideBar = (props) => {
               "div",
               {
                 className: "dnd-area",
-                "data-testid": "rag-dnd",
-                onDragStart: onRagDragStart,
+                "data-testid": "doc-dnd",
+                onDragStart: onDocDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.rag_user_proxy, title: "RAG User Proxy Agent" }),
-                  "RAG User"
+                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
+                  "Docs Agent"
                 ]
               }
             ),

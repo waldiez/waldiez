@@ -2,18 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fixupPluginRules } from "@eslint/compat";
-import { FlatCompat } from "@eslint/eslintrc";
-import { default as eslint, default as eslintJs } from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import headers from "eslint-plugin-headers";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import reactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 import eslintPluginTsDoc from "eslint-plugin-tsdoc";
-import path from "path";
 import eslintTs from "typescript-eslint";
-import { fileURLToPath } from "url";
 
 const owner = "Waldiez";
 const startYear = 2024;
@@ -21,33 +16,11 @@ const spdxIdentifier = "Apache-2.0";
 const currentYear = new Date().getFullYear();
 const ownerAndContributors = `${owner} & contributors`;
 
-// https://github.com/import-js/eslint-plugin-import/issues/2948#issuecomment-2148832701
 const project = "./tsconfig.app.json";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: eslintJs.configs.recommended,
-});
-
-function legacyPlugin(name, alias = name) {
-    const plugin = compat.plugins(name)[0]?.plugins?.[alias];
-
-    if (!plugin) {
-        throw new Error(`Unable to resolve plugin ${name} and/or alias ${alias}`);
-    }
-
-    return fixupPluginRules(plugin);
-}
 
 const defaultConfig = eslintTs.config({
     files: ["src/**/*.{ts,tsx}"],
-    extends: [
-        eslint.configs.recommended,
-        ...eslintTs.configs.recommended,
-        ...compat.extends("plugin:import/typescript"),
-        eslintPluginPrettierRecommended,
-    ],
+    extends: [...eslintTs.configs.recommended, eslintPluginPrettierRecommended],
     settings: {
         "import/resolver": {
             typescript: {
@@ -60,7 +33,6 @@ const defaultConfig = eslintTs.config({
     plugins: {
         "@stylistic": stylistic,
         "react-refresh": eslintPluginReactRefresh,
-        import: legacyPlugin("eslint-plugin-import", "import"),
         tsdoc: eslintPluginTsDoc,
         "react-hooks": reactHooks,
         headers,

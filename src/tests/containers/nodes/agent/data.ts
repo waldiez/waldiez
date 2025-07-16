@@ -8,6 +8,7 @@ import {
     DEFAULT_CUSTOM_TOOL_CONTENT,
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
+    WaldiezAgentDocAgent,
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentUserProxy,
@@ -41,6 +42,9 @@ export const getAgentData = (agentType: WaldiezNodeAgentType) => {
     if (agentType === "captain") {
         return WaldiezAgentCaptain.create("captain").data;
     }
+    if (agentType === "doc_agent") {
+        return WaldiezAgentDocAgent.create("doc_agent").data;
+    }
 };
 
 export const getAgentNode = (
@@ -55,7 +59,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType,
                     ...dataOverrides,
                 }),
             );
@@ -64,7 +68,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType,
                     ...dataOverrides,
                 }),
             );
@@ -73,7 +77,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType as any,
+                    agentType,
                     ...dataOverrides,
                 }),
             );
@@ -82,7 +86,7 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType,
+                    agentType,
                     ...dataOverrides,
                 }),
             );
@@ -91,7 +95,16 @@ export const getAgentNode = (
             node = agentMapper.asNode(
                 agentMapper.importAgent({
                     ...agentData,
-                    agentType: agentType,
+                    agentType,
+                    ...dataOverrides,
+                }),
+            );
+            break;
+        case "doc_agent":
+            node = agentMapper.asNode(
+                agentMapper.importAgent({
+                    ...agentData,
+                    agentType,
                     ...dataOverrides,
                 }),
             );

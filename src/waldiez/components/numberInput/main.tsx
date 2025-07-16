@@ -65,6 +65,9 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
         (newValues: number[]) => {
             const newValue = newValues[0];
 
+            if (typeof newValue !== "number") {
+                return;
+            }
             if (newValue === max && setNullOnUpper) {
                 onChange(null);
             } else if (newValue === min && setNullOnLower) {

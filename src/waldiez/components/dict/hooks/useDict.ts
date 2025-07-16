@@ -113,7 +113,7 @@ export const useDict = (props: DictProps) => {
     // Check if an entry has been modified
     const isDirty = useCallback(
         (index: number) => {
-            if (index >= stateItems.length) {
+            if (index >= stateItems.length || !stateItems[index]) {
                 return true;
             }
 

@@ -58,7 +58,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                 onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
             } else {
                 onToolTypeChange(option.value as WaldiezToolType);
-                onToolLabelChange(DEFAULT_NAME[option.value]);
+                onToolLabelChange(DEFAULT_NAME[option.value] || "");
                 onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
             }
             // onToolTypeChange(option.value);
@@ -167,42 +167,46 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
             {data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && (
                 <div className="margin-top-10">{PREDEFINED_TOOL_INSTRUCTIONS[data.label]}</div>
             )}
-            {data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && (
-                <div className="margin-top-10">
-                    {PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].map((kwarg, index) => (
-                        <div key={index} className="margin-bottom-5">
-                            <TextInput
-                                name={kwarg.label}
-                                label={`${kwarg.label}:`}
-                                dataTestId={`env-var-input-${index}-${kwarg.key}`}
-                                value={(data.kwargs ? (data.kwargs[kwarg.key] as string) : "") || ""}
-                                onChange={onPredefinedToolArgChange.bind(null, kwarg.key)}
-                                className="margin-top-10"
-                                isPassword={false}
-                                placeholder={`Enter the ${kwarg.label}`}
-                            />
-                        </div>
-                    ))}
-                </div>
-            )}
-            {data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && (
-                <div className="margin-top-10">
-                    {PREDEFINED_TOOL_REQUIRED_ENVS[data.label].map((envVar, index) => (
-                        <div key={index} className="margin-bottom-5">
-                            <TextInput
-                                name={envVar.label}
-                                label={`${envVar.label}:`}
-                                dataTestId={`env-var-input-${index}-${envVar.key}`}
-                                value={(data.secrets[envVar.key] as string) || ""}
-                                onChange={onPredefinedToolEnvChange.bind(null, envVar.key)}
-                                className="margin-top-10"
-                                placeholder={`Enter the ${envVar.label}`}
-                                isPassword
-                            />
-                        </div>
-                    ))}
-                </div>
-            )}
+            {data.toolType === "predefined" &&
+                PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] &&
+                PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]!.length > 0 && (
+                    <div className="margin-top-10">
+                        {PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index) => (
+                            <div key={index} className="margin-bottom-5">
+                                <TextInput
+                                    name={kwarg.label}
+                                    label={`${kwarg.label}:`}
+                                    dataTestId={`env-var-input-${index}-${kwarg.key}`}
+                                    value={(data.kwargs ? (data.kwargs[kwarg.key] as string) : "") || ""}
+                                    onChange={onPredefinedToolArgChange.bind(null, kwarg.key)}
+                                    className="margin-top-10"
+                                    isPassword={false}
+                                    placeholder={`Enter the ${kwarg.label}`}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+            {data.toolType === "predefined" &&
+                PREDEFINED_TOOL_REQUIRED_ENVS[data.label] &&
+                PREDEFINED_TOOL_REQUIRED_ENVS[data.label]!.length > 0 && (
+                    <div className="margin-top-10">
+                        {PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index) => (
+                            <div key={index} className="margin-bottom-5">
+                                <TextInput
+                                    name={envVar.label}
+                                    label={`${envVar.label}:`}
+                                    dataTestId={`env-var-input-${index}-${envVar.key}`}
+                                    value={(data.secrets[envVar.key] as string) || ""}
+                                    onChange={onPredefinedToolEnvChange.bind(null, envVar.key)}
+                                    className="margin-top-10"
+                                    placeholder={`Enter the ${envVar.label}`}
+                                    isPassword
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
         </div>
     );
 });

@@ -45,7 +45,8 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
      * Get initial chat configuration or create a default one
      */
     const chat = useMemo(
-        (): WaldiezAgentNestedChat => (data.nestedChats.length > 0 ? data.nestedChats[0] : getDefaultChat()),
+        (): WaldiezAgentNestedChat =>
+            data.nestedChats.length > 0 ? data.nestedChats[0] || getDefaultChat() : getDefaultChat(),
         [data.nestedChats],
     );
 
@@ -114,7 +115,7 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
             if (index < 0 || index >= chat.messages.length) {
                 return "Invalid message";
             }
-            return getEdgeLabel(chat.messages[index].id);
+            return getEdgeLabel(chat.messages[index]!.id);
         },
         [chat.messages, getEdgeLabel],
     );
@@ -186,8 +187,8 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
             // Swap messages at index and index-1
             const recipients = [...chat.messages];
             const temp = recipients[index];
-            recipients[index] = recipients[index - 1];
-            recipients[index - 1] = temp;
+            recipients[index] = recipients[index - 1]!;
+            recipients[index - 1] = temp!;
 
             const newChat = {
                 ...chat,
@@ -212,9 +213,11 @@ export const useWaldiezAgentNestedChats = (props: WaldiezAgentNestedChatsProps) 
 
             // Swap messages at index and index+1
             const recipients = [...chat.messages];
-            const temp = recipients[index];
-            recipients[index] = recipients[index + 1];
-            recipients[index + 1] = temp;
+            if (recipients[index] !== undefined && recipients[index + 1] !== undefined) {
+                const temp = recipients[index];
+                recipients[index] = recipients[index + 1]!;
+                recipients[index + 1] = temp;
+            }
 
             const newChat = {
                 ...chat,

@@ -154,14 +154,19 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         }
     };
     const onMoveEdgeUp = (index: number) => {
-        // it should be in the 'sorted' list
-        if (sortedEdgesState.find(e => e.id === sortedEdgesState[index].id)) {
+        // it should be in the 'sorted' list and not the first element
+        if (
+            index > 0 &&
+            sortedEdgesState[index] !== undefined &&
+            sortedEdgesState[index - 1] !== undefined &&
+            sortedEdgesState.find(e => e.id === sortedEdgesState[index]?.id)
+        ) {
             // swap the order between the current and the previous edge
             const previousEdge = sortedEdgesState[index - 1];
             const currentEdge = sortedEdgesState[index];
             const newSortedEdges = sortedEdgesState.slice();
-            newSortedEdges[index - 1] = currentEdge;
-            newSortedEdges[index] = previousEdge;
+            newSortedEdges[index - 1] = currentEdge!;
+            newSortedEdges[index] = previousEdge!;
             setSortedEdgesState(setSyncPrerequisites(newSortedEdges));
             // setSortedEdgesState(newSortedEdges);
             setIsDirty(true);
@@ -183,7 +188,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
                 data: {
                     ...edge.data,
                     order: index,
-                    prerequisites: [previousEdge.id],
+                    prerequisites: [previousEdge?.id],
                 },
             } as WaldiezEdge;
         });
@@ -203,20 +208,20 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     };
     const onMoveEdgeDown = (index: number) => {
         // it should be in the 'sorted' list
-        if (sortedEdgesState.find(e => e.id === sortedEdgesState[index].id)) {
+        if (sortedEdgesState.find(e => e.id === sortedEdgesState[index]?.id)) {
             // swap the order between the current and the next edge
             const nextEdge = sortedEdgesState[index + 1];
-            const nextOrder = nextEdge.data?.order;
+            const nextOrder = nextEdge?.data?.order;
             const currentEdge = sortedEdgesState[index];
-            const currentOrder = currentEdge.data?.order;
+            const currentOrder = currentEdge?.data?.order;
             const newSortedEdges = sortedEdgesState.slice();
             newSortedEdges[index + 1] = {
                 ...currentEdge,
-                data: { ...currentEdge.data, order: nextOrder },
+                data: { ...currentEdge?.data, order: nextOrder },
             } as WaldiezEdge;
             newSortedEdges[index] = {
                 ...nextEdge,
-                data: { ...nextEdge.data, order: currentOrder },
+                data: { ...nextEdge?.data, order: currentOrder },
             } as WaldiezEdge;
             setSortedEdgesState(setSyncPrerequisites(newSortedEdges));
             setIsDirty(true);

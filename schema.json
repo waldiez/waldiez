@@ -119,16 +119,14 @@
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentGroupManager"
                             }
+                        },
+                        "docAgents": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/WaldiezAgentDocAgent"
+                            }
                         }
                     },
-                    "required": [
-                        "userProxyAgents",
-                        "assistantAgents",
-                        "ragUserProxyAgents",
-                        "reasoningAgents",
-                        "captainAgents",
-                        "groupManagerAgents"
-                    ],
                     "additionalProperties": false
                 },
                 "models": {
@@ -227,7 +225,15 @@
         },
         "WaldiezAgentType": {
             "type": "string",
-            "enum": ["user_proxy", "assistant", "rag_user_proxy", "reasoning", "captain", "group_manager"],
+            "enum": [
+                "user_proxy",
+                "assistant",
+                "rag_user_proxy",
+                "reasoning",
+                "captain",
+                "group_manager",
+                "doc_agent"
+            ],
             "description": "Waldiez agent type."
         },
         "WaldiezAgentUserProxyData": {
@@ -1782,6 +1788,199 @@
             "type": "string",
             "enum": ["allowed", "disallowed"],
             "description": "GroupChatSpeakerTransitionsType The type of transitions for the speaker in a group chat. It can be \"allowed\" or \"disallowed\"."
+        },
+        "WaldiezAgentDocAgent": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "agentType": {
+                    "$ref": "#/definitions/WaldiezNodeAgentType"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "requirements": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/WaldiezAgentDocAgentData"
+                },
+                "rest": {
+                    "type": "object",
+                    "additionalProperties": {}
+                }
+            },
+            "required": [
+                "agentType",
+                "createdAt",
+                "data",
+                "description",
+                "id",
+                "name",
+                "requirements",
+                "tags",
+                "type",
+                "updatedAt"
+            ],
+            "additionalProperties": false,
+            "description": "Waldiez Agent Document Agent."
+        },
+        "WaldiezAgentDocAgentData": {
+            "type": "object",
+            "properties": {
+                "systemMessage": {
+                    "type": ["string", "null"]
+                },
+                "humanInputMode": {
+                    "$ref": "#/definitions/WaldiezAgentHumanInputMode"
+                },
+                "codeExecutionConfig": {
+                    "$ref": "#/definitions/WaldiezAgentCodeExecutionConfig"
+                },
+                "agentDefaultAutoReply": {
+                    "type": ["string", "null"]
+                },
+                "maxConsecutiveAutoReply": {
+                    "type": ["number", "null"]
+                },
+                "termination": {
+                    "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
+                },
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tools": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
+                    }
+                },
+                "parentId": {
+                    "type": ["string", "null"]
+                },
+                "nestedChats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "collectionName": {
+                    "type": ["string", "null"]
+                },
+                "emptyCollection": {
+                    "type": "boolean"
+                },
+                "parsedDocsPath": {
+                    "type": ["string", "null"]
+                },
+                "queryEngine": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/RAGQueryEngine"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "afterWork",
+                "agentDefaultAutoReply",
+                "codeExecutionConfig",
+                "collectionName",
+                "contextVariables",
+                "emptyCollection",
+                "handoffs",
+                "humanInputMode",
+                "maxConsecutiveAutoReply",
+                "modelIds",
+                "nestedChats",
+                "parsedDocsPath",
+                "queryEngine",
+                "systemMessage",
+                "termination",
+                "tools",
+                "updateAgentStateBeforeReply"
+            ],
+            "additionalProperties": false,
+            "description": "Waldiez Assistant Agent Data."
+        },
+        "RAGQueryEngine": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "VectorChromaQueryEngine",
+                        "VectorChromaCitationQueryEngine",
+                        "InMemoryQueryEngine"
+                    ]
+                },
+                "dbPath": {
+                    "type": ["string", "null"]
+                },
+                "enableQueryCitations": {
+                    "type": "boolean"
+                },
+                "citationChunkSize": {
+                    "type": "number"
+                }
+            },
+            "required": ["type"],
+            "additionalProperties": false,
+            "description": "RAGQueryEngine The configuration for the RAG query engine used by the document agent. It can be one of the following:"
         },
         "WaldiezModel": {
             "type": "object",

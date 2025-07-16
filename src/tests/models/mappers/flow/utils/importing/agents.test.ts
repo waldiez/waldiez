@@ -18,6 +18,7 @@ describe("getAgents", () => {
             reasoningAgents: [],
             captainAgents: [],
             groupManagerAgents: [],
+            docAgents: [],
         });
     });
     it("should not import agents if agents is not in the json", () => {
@@ -31,6 +32,7 @@ describe("getAgents", () => {
             reasoningAgents: [],
             captainAgents: [],
             groupManagerAgents: [],
+            docAgents: [],
         });
     });
     it("should return empty arrays if there are no nodes", () => {
@@ -52,6 +54,7 @@ describe("getAgents", () => {
             reasoningAgents: [],
             captainAgents: [],
             groupManagerAgents: [],
+            docAgents: [],
         });
     });
     it("should not return agents if there is no match in the nodes", () => {
@@ -72,6 +75,7 @@ describe("getAgents", () => {
             reasoningAgents: [],
             captainAgents: [],
             groupManagerAgents: [],
+            docAgents: [],
         });
     });
 });

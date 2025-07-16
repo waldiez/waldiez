@@ -31,7 +31,7 @@ export const showSnackbar = (props: {
         const flowIdMatch = document.querySelectorAll("[data-flow-id]");
         if (flowIdMatch.length === 1) {
             // only if only one match (multiple tabs?)
-            props.flowId = flowIdMatch[0].getAttribute("data-flow-id") || undefined;
+            props.flowId = flowIdMatch[0]?.getAttribute("data-flow-id") || undefined;
         }
     }
     if (globalEnqueue) {

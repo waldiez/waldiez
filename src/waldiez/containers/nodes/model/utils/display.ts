@@ -20,7 +20,10 @@ export const getApiTypeLabel = (text: WaldiezModelAPIType) => {
     if (text === "nim") {
         return "NIM";
     }
-    return text[0].toUpperCase() + text.slice(1);
+    if (!text || text.length === 0 || text === "other") {
+        return "Other";
+    }
+    return text[0]!.toUpperCase() + text.slice(1);
 };
 export const apiTypeOptions: { label: string; value: WaldiezModelAPIType }[] = [
     { label: "OpenAI", value: "openai" },

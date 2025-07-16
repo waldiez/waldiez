@@ -100,7 +100,7 @@ export const awsSignatureUtils = {
     buildCanonicalHeaders(headers: Record<string, string>): string {
         return Object.keys(headers)
             .sort()
-            .map(key => `${key.toLowerCase()}:${headers[key].trim()}\n`)
+            .map(key => `${key.toLowerCase()}:${headers[key]?.trim()}\n`)
             .join("");
     },
 

@@ -55,6 +55,7 @@ export const LOGOS = {
 export const AGENT_ICONS = {
     user_proxy: userWebp,
     rag_user_proxy: ragWebp,
+    doc_agent: ragWebp,
     captain: captainWebp,
     assistant: assistantWebp,
     reasoning: reasoningWebp,

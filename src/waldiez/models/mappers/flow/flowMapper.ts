@@ -185,6 +185,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
     const {
         userAgentNodes,
         assistantAgentNodes,
+        docAgentNodes,
         ragUserNodes,
         reasoningAgentNodes,
         captainAgentNodes,
@@ -221,6 +222,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
             captainAgents: captainAgentNodes.map(captainAgentNode =>
                 exportAgent(captainAgentNode, nodes, edges, skipLinks),
             ),
+            docAgents: docAgentNodes.map(docAgentNode => exportAgent(docAgentNode, nodes, edges, skipLinks)),
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),
         tools: toolNodes.map(toolNode => exportTool(toolNode, nodes, hideSecrets)),
@@ -246,23 +248,26 @@ const getRFNodes = (flow: WaldiezFlow) => {
         nodes.push(toolMapper.asNode(tool));
     });
     // managers first (so that the parent id (if any) in the rest can be determined)
-    flow.data.agents.groupManagerAgents.forEach(groupManagerAgent => {
+    flow.data.agents.groupManagerAgents?.forEach(groupManagerAgent => {
         nodes.push(agentMapper.asNode(groupManagerAgent));
     });
-    flow.data.agents.userProxyAgents.forEach(user => {
+    flow.data.agents.userProxyAgents?.forEach(user => {
         nodes.push(agentMapper.asNode(user));
     });
-    flow.data.agents.assistantAgents.forEach(assistant => {
+    flow.data.agents.assistantAgents?.forEach(assistant => {
         nodes.push(agentMapper.asNode(assistant));
     });
-    flow.data.agents.ragUserProxyAgents.forEach(ragUser => {
+    flow.data.agents.ragUserProxyAgents?.forEach(ragUser => {
         nodes.push(agentMapper.asNode(ragUser));
     });
-    flow.data.agents.reasoningAgents.forEach(reasoningAgent => {
+    flow.data.agents.reasoningAgents?.forEach(reasoningAgent => {
         nodes.push(agentMapper.asNode(reasoningAgent));
     });
-    flow.data.agents.captainAgents.forEach(captainAgent => {
+    flow.data.agents.captainAgents?.forEach(captainAgent => {
         nodes.push(agentMapper.asNode(captainAgent));
+    });
+    flow.data.agents.docAgents?.forEach(docAgent => {
+        nodes.push(agentMapper.asNode(docAgent));
     });
     return nodes;
 };

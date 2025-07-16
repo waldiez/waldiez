@@ -62,7 +62,9 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
      * Local state
      */
     const [enabled, setEnabled] = useState<boolean>(hasUpdateConfig);
-    const [selectedType, setSelectedType] = useState<WaldiezAgentUpdateSystemMessageType>(currentConfig.type);
+    const [selectedType, setSelectedType] = useState<WaldiezAgentUpdateSystemMessageType>(
+        currentConfig?.type || "string",
+    );
 
     /**
      * Sync local state with props when props change
@@ -70,9 +72,9 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
     useEffect(() => {
         setEnabled(hasUpdateConfig);
         if (hasUpdateConfig) {
-            setSelectedType(currentConfig.type);
+            setSelectedType(currentConfig?.type || "string");
         }
-    }, [hasUpdateConfig, currentConfig.type]);
+    }, [hasUpdateConfig, currentConfig?.type]);
 
     /**
      * Options for dropdown
@@ -180,7 +182,7 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
      * Current content for string editor
      */
     const stringContent = useMemo(
-        () => (hasUpdateConfig && currentConfig.type === "string" ? currentConfig.content : ""),
+        () => (hasUpdateConfig && currentConfig?.type === "string" ? currentConfig.content : ""),
         [hasUpdateConfig, currentConfig],
     );
 
@@ -189,7 +191,7 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
      */
     const callableContent = useMemo(
         () =>
-            hasUpdateConfig && currentConfig.type === "callable"
+            hasUpdateConfig && currentConfig?.type === "callable"
                 ? currentConfig.content
                 : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
         [hasUpdateConfig, currentConfig],

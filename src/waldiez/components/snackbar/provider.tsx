@@ -39,10 +39,10 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     useEffect(() => {
         Object.keys(queues).forEach(flowId => {
             if (!active[flowId] && queues[flowId] && queues[flowId].length > 0) {
-                setActive(a => ({ ...a, [flowId]: queues[flowId][0] }));
+                setActive(a => ({ ...a, [flowId]: queues[flowId]?.[0] ?? null }));
                 setQueues(qs => ({
                     ...qs,
-                    [flowId]: qs[flowId].slice(1),
+                    [flowId]: qs[flowId]?.slice(1) ?? [],
                 }));
             }
         });

@@ -14,6 +14,7 @@ import {
 import { modelMapper } from "@waldiez/models/mappers";
 import { getNewNodePosition, reArrangeModels, setViewPortTopLeft } from "@waldiez/store/utils";
 import { typeOfGet, typeOfSet } from "@waldiez/types";
+import { getId } from "@waldiez/utils/ids";
 
 /**
  * WaldiezModelStore
@@ -246,7 +247,7 @@ export class WaldiezModelStore implements IWaldiezModelStore {
         for (let i = 0; i < newModelNodesCount; i++) {
             const node = newModelNodes[i];
             const position = getNewNodePosition(i, flowId, rfInstance);
-            newModelNodes[i] = { ...node, position };
+            newModelNodes[i] = { ...node, id: node?.id || `wa-${getId()}`, data: node?.data || {}, position };
         }
         const allNodes = newModelNodes.concat(this.get().nodes.filter(node => node.type !== "model"));
         // check if the model is linked to any agent

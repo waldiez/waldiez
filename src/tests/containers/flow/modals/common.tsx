@@ -4,7 +4,7 @@
  */
 import { render } from "@testing-library/react";
 
-import { ReactFlowProvider } from "@xyflow/react";
+import { Node, ReactFlowProvider } from "@xyflow/react";
 
 import { useState } from "react";
 import { HotkeysProvider } from "react-hotkeys-hook";
@@ -34,7 +34,7 @@ export const renderFlow = async (
         previousMessages: [],
     },
 ) => {
-    const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0]] : nodes;
+    const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0] as Node] : nodes;
     const edgesToUse = singleAgent ? [] : edges;
     const Wrapper = () => {
         const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(includeUserInput);

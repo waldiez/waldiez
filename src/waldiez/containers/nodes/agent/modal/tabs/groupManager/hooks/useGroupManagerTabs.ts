@@ -95,9 +95,9 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
 
             const newOrder = [...speakersOrder];
             // Swap with the element above
-            [newOrder[currentIndex - 1], newOrder[currentIndex]] = [
-                newOrder[currentIndex],
-                newOrder[currentIndex - 1],
+            [newOrder[currentIndex - 1]!, newOrder[currentIndex]!] = [
+                newOrder[currentIndex]!,
+                newOrder[currentIndex - 1]!,
             ];
 
             // Update the data (assuming you have a function to update speakers order)
@@ -126,9 +126,9 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
 
             const newOrder = [...speakersOrder];
             // Swap with the element below
-            [newOrder[currentIndex], newOrder[currentIndex + 1]] = [
-                newOrder[currentIndex + 1],
-                newOrder[currentIndex],
+            [newOrder[currentIndex]!, newOrder[currentIndex + 1]!] = [
+                newOrder[currentIndex + 1]!,
+                newOrder[currentIndex]!,
             ];
 
             // Update the data (assuming you have a function to update speakers order)

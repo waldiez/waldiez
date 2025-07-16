@@ -15,7 +15,7 @@ export const getIdFromJSON = (json: Record<string, unknown>): string => {
     if ("id" in json && typeof json.id === "string") {
         id = json.id;
     } else if ("type" in json && typeof json.type === "string" && json.type.length > 0) {
-        const itemType = json.type[0].toLowerCase();
+        const itemType = json.type[0]?.toLowerCase();
         id = `w${itemType}-${getId()}`;
     }
     return id;

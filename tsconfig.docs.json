@@ -2,6 +2,7 @@
     "extends": "./tsconfig.app.json",
     "compilerOptions": {
         "forceConsistentCasingInFileNames": true,
+        "noUncheckedIndexedAccess": true,
         "strict": true,
         "types": []
     },

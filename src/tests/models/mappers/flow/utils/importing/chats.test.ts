@@ -149,7 +149,7 @@ describe("getChats", () => {
                 },
             },
         ]);
-        const edgeData = chats[0].data as any;
+        const edgeData = chats[0]!.data as any;
         delete edgeData.name;
         expect(updatedEdges).toEqual([
             {

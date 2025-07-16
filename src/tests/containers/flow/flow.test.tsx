@@ -6,6 +6,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { Node } from "@xyflow/react";
 import { ReactFlowProvider } from "@xyflow/react";
 
 import { HotkeysProvider } from "react-hotkeys-hook";
@@ -28,7 +29,7 @@ const renderFlow = async (
     readOnly: boolean = false,
     skipHub: boolean = true,
 ) => {
-    const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0]] : nodes;
+    const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0] as Node] : nodes;
     const edgesToUse = singleAgent ? [] : edges;
     render(
         <WaldiezThemeProvider>

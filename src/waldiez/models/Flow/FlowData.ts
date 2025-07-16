@@ -7,6 +7,7 @@ import { Edge, Node, Viewport } from "@xyflow/react";
 import {
     WaldiezAgentAssistant,
     WaldiezAgentCaptain,
+    WaldiezAgentDocAgent,
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
@@ -40,12 +41,13 @@ export class WaldiezFlowData {
     edges: Edge[];
     viewport: Viewport;
     agents: {
-        userProxyAgents: WaldiezAgentUserProxy[];
-        assistantAgents: WaldiezAgentAssistant[];
-        ragUserProxyAgents: WaldiezAgentRagUser[];
-        reasoningAgents: WaldiezAgentReasoning[];
-        captainAgents: WaldiezAgentCaptain[];
-        groupManagerAgents: WaldiezAgentGroupManager[];
+        userProxyAgents?: WaldiezAgentUserProxy[];
+        assistantAgents?: WaldiezAgentAssistant[];
+        ragUserProxyAgents?: WaldiezAgentRagUser[];
+        reasoningAgents?: WaldiezAgentReasoning[];
+        captainAgents?: WaldiezAgentCaptain[];
+        groupManagerAgents?: WaldiezAgentGroupManager[];
+        docAgents?: WaldiezAgentDocAgent[];
     };
     models: WaldiezModel[];
     tools: WaldiezTool[];
@@ -60,12 +62,13 @@ export class WaldiezFlowData {
             edges: Edge[];
             viewport: Viewport;
             agents: {
-                userProxyAgents: WaldiezAgentUserProxy[];
-                assistantAgents: WaldiezAgentAssistant[];
-                ragUserProxyAgents: WaldiezAgentRagUser[];
-                reasoningAgents: WaldiezAgentReasoning[];
-                captainAgents: WaldiezAgentCaptain[];
-                groupManagerAgents: WaldiezAgentGroupManager[];
+                userProxyAgents?: WaldiezAgentUserProxy[];
+                assistantAgents?: WaldiezAgentAssistant[];
+                ragUserProxyAgents?: WaldiezAgentRagUser[];
+                reasoningAgents?: WaldiezAgentReasoning[];
+                captainAgents?: WaldiezAgentCaptain[];
+                groupManagerAgents?: WaldiezAgentGroupManager[];
+                docAgents?: WaldiezAgentDocAgent[];
             };
             models: WaldiezModel[];
             tools: WaldiezTool[];
@@ -88,6 +91,7 @@ export class WaldiezFlowData {
                 reasoningAgents: [],
                 captainAgents: [],
                 groupManagerAgents: [],
+                docAgents: [],
             },
             models: [],
             tools: [],

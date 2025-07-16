@@ -131,6 +131,9 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
             }
 
             const file = files[0];
+            if (!file) {
+                return;
+            }
             const reader = new FileReader();
 
             reader.onload = () => {

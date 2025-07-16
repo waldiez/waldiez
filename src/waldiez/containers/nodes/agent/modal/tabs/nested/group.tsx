@@ -22,6 +22,16 @@ type WaldiezAgentGroupNestedChatTabsProps = {
     onDataChange: (partialData: Partial<WaldiezNodeAgentData>, markDirty?: boolean) => void;
 };
 
+const defaultCondition: WaldiezAgentNestedChat["condition"] = {
+    conditionType: "string_llm",
+    prompt: "",
+};
+
+const defaultAvailability: WaldiezAgentNestedChat["available"] = {
+    type: "none",
+    value: "",
+};
+
 /**
  * Get or create nested chats from agent data and edges
  * Makes sure all edges are included in the nested chat messages
@@ -29,8 +39,8 @@ type WaldiezAgentGroupNestedChatTabsProps = {
 const getNestedChats = (agentData: WaldiezNodeAgentData, edges: WaldiezEdge[]): WaldiezAgentNestedChat[] => {
     // Initialize with existing nested chats or create a new empty one
     const nestedChats: WaldiezAgentNestedChat[] = [];
-    if (agentData.nestedChats.length > 0 && agentData.nestedChats[0].messages.length > 0) {
-        nestedChats.push(agentData.nestedChats[0]);
+    if (agentData.nestedChats.length > 0 && agentData.nestedChats[0]!.messages.length > 0) {
+        nestedChats.push(agentData.nestedChats[0]!);
     } else {
         nestedChats.push({
             triggeredBy: [],
@@ -50,9 +60,9 @@ const getNestedChats = (agentData: WaldiezNodeAgentData, edges: WaldiezEdge[]): 
     edges.forEach(edge => {
         if (
             nestedChats.length > 0 &&
-            nestedChats[0].messages.findIndex(message => message.id === edge.id) === -1
+            nestedChats[0]?.messages.findIndex(message => message.id === edge.id) === -1
         ) {
-            nestedChats[0].messages.push({
+            nestedChats[0]?.messages.push({
                 id: edge.id,
                 isReply: false,
             });
@@ -77,23 +87,23 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
             return;
         }
 
-        const currentMessageIds = new Set(data.nestedChats[0].messages.map(m => m.id));
+        const currentMessageIds = new Set(data.nestedChats[0]?.messages.map(m => m.id));
         const edgeIds = new Set(edges.map(e => e.id));
 
         const missingEdges = edges.filter(e => !currentMessageIds.has(e.id));
-        const extraMessages = data.nestedChats[0].messages.filter(m => !edgeIds.has(m.id));
+        const extraMessages = data.nestedChats[0]?.messages.filter(m => !edgeIds.has(m.id));
 
-        const needsUpdate = missingEdges.length > 0 || extraMessages.length > 0;
+        const needsUpdate = missingEdges.length > 0 || extraMessages!.length > 0;
 
         if (needsUpdate) {
             const updatedMessages = [
-                ...data.nestedChats[0].messages.filter(m => edgeIds.has(m.id)),
+                ...data.nestedChats[0]!.messages.filter(m => edgeIds.has(m.id)),
                 ...missingEdges.map(edge => ({ id: edge.id, isReply: false })),
             ];
 
             const updatedNestedChats: WaldiezAgentNestedChat[] = [
                 {
-                    ...data.nestedChats[0],
+                    ...data.nestedChats[0]!,
                     messages: updatedMessages,
                 },
             ];
@@ -104,7 +114,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
 
     // Calculate message count for UI adjustments
     const nestedChatMessagesCount = useMemo(
-        () => (nestedChats.length > 0 ? nestedChats[0].messages.length : 0),
+        () => (nestedChats.length > 0 ? nestedChats[0]?.messages.length : 0),
         [nestedChats],
     );
 
@@ -134,11 +144,18 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
     const onMoveNestedChatMessageUp = useCallback(
         (index: number) => {
             const newNestedChats = [...nestedChats];
-            const temp = newNestedChats[0].messages[index];
-            newNestedChats[0].messages[index] = newNestedChats[0].messages[index - 1];
-            newNestedChats[0].messages[index - 1] = temp;
+            if (
+                newNestedChats[0] &&
+                Array.isArray(newNestedChats[0].messages) &&
+                newNestedChats[0].messages[index] !== undefined &&
+                newNestedChats[0].messages[index - 1] !== undefined
+            ) {
+                const temp = newNestedChats[0].messages[index];
+                newNestedChats[0].messages[index] = newNestedChats[0].messages[index - 1]!;
+                newNestedChats[0].messages[index - 1] = temp;
 
-            onDataChange({ nestedChats: newNestedChats });
+                onDataChange({ nestedChats: newNestedChats });
+            }
         },
         [nestedChats, onDataChange],
     );
@@ -149,13 +166,16 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
     const onMoveNestedChatMessageDown = useCallback(
         (index: number) => {
             const newNestedChats = [...nestedChats];
-            const temp = newNestedChats[0].messages[index];
-            newNestedChats[0].messages[index] = newNestedChats[0].messages[index + 1];
-            newNestedChats[0].messages[index + 1] = temp;
+            const messages = newNestedChats[0]!.messages;
+            if (messages[index + 1] !== undefined) {
+                const temp = messages[index];
+                messages[index] = messages[index + 1]!;
+                messages[index + 1] = temp!;
 
-            onDataChange({
-                nestedChats: structuredClone(newNestedChats),
-            });
+                onDataChange({
+                    nestedChats: structuredClone(newNestedChats),
+                });
+            }
         },
         [nestedChats, onDataChange],
     );
@@ -166,7 +186,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
     const onConditionChange = useCallback(
         (condition: WaldiezAgentNestedChat["condition"]) => {
             const newNestedChats = structuredClone(nestedChats);
-            newNestedChats[0].condition = condition;
+            newNestedChats[0]!.condition = condition || defaultCondition;
             onDataChange({ nestedChats: newNestedChats });
         },
         [nestedChats, onDataChange],
@@ -178,7 +198,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
     const onAvailabilityChange = useCallback(
         (available: WaldiezAgentNestedChat["available"]) => {
             const newNestedChats = structuredClone(nestedChats);
-            newNestedChats[0].available = available;
+            newNestedChats[0]!.available = available || defaultAvailability;
             onDataChange({ nestedChats: newNestedChats });
         },
         [nestedChats, onDataChange],
@@ -190,7 +210,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                 {/* Queue Tab */}
                 <TabItem label="Queue" id={`wf-${flowId}-wa-${id}-nested-chats-queue`}>
                     <div className="flex-column margin-10 nested-chat-queue">
-                        {nestedChats[0].messages.map((message, index) => (
+                        {nestedChats[0]?.messages.map((message, index) => (
                             <div
                                 key={`agent-${id}-nestedChat-recipient-${index}`}
                                 className="flex margin-bottom-10 queue-item"
@@ -199,7 +219,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                                 {/* Reorder buttons */}
                                 <div className="margin-right-10 reorder-buttons">
                                     {/* Move Up Button - Only shown when not first and more than one message */}
-                                    {index > 0 && nestedChatMessagesCount > 1 && (
+                                    {index > 0 && (nestedChatMessagesCount || 0) > 1 && (
                                         <button
                                             type="button"
                                             title="Move up"
@@ -213,7 +233,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                                     )}
 
                                     {/* Move Down Button - Only shown when not last */}
-                                    {index < nestedChatMessagesCount - 1 && (
+                                    {index < (nestedChatMessagesCount || 0) - 1 && (
                                         <button
                                             title="Move down"
                                             type="button"
@@ -239,7 +259,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                 {/* HandoffCondition Tab - Only shown when in a group */}
                 <TabItem label="Condition" id={`wf-${flowId}-wa-${id}-nested-chat-condition`}>
                     <HandoffCondition
-                        condition={nestedChats[0].condition}
+                        condition={nestedChats[0]?.condition || defaultCondition}
                         onDataChange={onConditionChange}
                         aria-label="Handoff condition settings"
                     />
@@ -247,7 +267,7 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                 {/* HandoffAvailability Tab - Only shown when in a group */}
                 <TabItem label="Availability" id={`wf-${flowId}-wa-${id}-nested-chat-availability`}>
                     <HandoffAvailability
-                        available={nestedChats[0].available}
+                        available={nestedChats[0]?.available || defaultAvailability}
                         onDataChange={onAvailabilityChange}
                         aria-label="Handoff availability settings"
                     />

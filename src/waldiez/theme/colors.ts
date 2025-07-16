@@ -11,6 +11,7 @@ export const AGENT_COLORS = {
     captain: "#0e2766",
     user_proxy: "#bc76f5",
     rag_user_proxy: "#e34561",
+    doc_agent: "#e34561",
     reasoning: "#63D0D4",
     group_manager: "#ed8a34",
 };
@@ -24,6 +25,7 @@ export const AGENT_COLORS_ALT = {
     captain: "#284ca4",
     user_proxy: "#bc76f5",
     rag_user_proxy: "#e34561",
+    doc_agent: "#e34561",
     reasoning: "#63D0D4",
     group_manager: "#ed8a34",
 };

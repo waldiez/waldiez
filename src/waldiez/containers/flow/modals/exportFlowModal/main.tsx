@@ -145,6 +145,10 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
             }
 
             const file = files[0];
+            if (!file) {
+                showError("No file selected.");
+                return;
+            }
 
             // Validate file size
             if (file.size > MAX_FILE_SIZE) {

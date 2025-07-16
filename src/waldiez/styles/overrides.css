@@ -54,7 +54,8 @@
   background-color: var(--user-proxy-agent-color);
 }
 
-.agent-node.rag_user_proxy .react-flow__handle {
+.agent-node.rag_user_proxy .react-flow__handle,
+.agent-node.doc_agent .react-flow__handle {
   background-color: var(--rag-user-proxy-agent-color);
 }
 
@@ -78,7 +79,8 @@
   border-color: var(--user-proxy-agent-color) !important;
 }
 
-.react-flow__resize-control.nodrag.bottom.right.handle.rag_user_proxy {
+.react-flow__resize-control.nodrag.bottom.right.handle.rag_user_proxy,
+.react-flow__resize-control.nodrag.bottom.right.handle.doc_agent {
   border-color: var(--rag-user-proxy-agent-color) !important;
 }
 

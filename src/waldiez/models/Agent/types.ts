@@ -4,6 +4,7 @@
  */
 import { WaldiezNodeAgentAssistant, WaldiezNodeAgentAssistantData } from "@waldiez/models/Agent/Assistant";
 import { WaldiezNodeAgentCaptain, WaldiezNodeAgentCaptainData } from "@waldiez/models/Agent/Captain";
+import { WaldiezNodeAgentDocAgent, WaldiezNodeAgentDocAgentData } from "@waldiez/models/Agent/DocAgent";
 import {
     WaldiezNodeAgentGroupManager,
     WaldiezNodeAgentGroupManagerData,
@@ -15,6 +16,7 @@ import { WaldiezNodeAgentUserProxy, WaldiezNodeAgentUserProxyData } from "@waldi
 export type * from "@waldiez/models/Agent/Assistant/types";
 export type * from "@waldiez/models/Agent/Captain/types";
 export type * from "@waldiez/models/Agent/Common/types";
+export type * from "@waldiez/models/Agent/DocAgent/types";
 export type * from "@waldiez/models/Agent/GroupManager/types";
 export type * from "@waldiez/models/Agent/RagUser/types";
 export type * from "@waldiez/models/Agent/Reasoning/types";
@@ -29,12 +31,14 @@ export type * from "@waldiez/models/Agent/UserProxy/types";
  * @param WaldiezNodeAgentReasoningData - The data for the reasoning agent.
  * @param WaldiezNodeAgentCaptainData - The data for the captain agent.
  * @param WaldiezNodeAgentGroupManagerData - The data for the group manager agent.
+ * @param WaldiezNodeDocAgentData - The data for the document agent.
  * @see {@link WaldiezNodeAgentAssistantData}
  * @see {@link WaldiezNodeAgentUserProxyData}
  * @see {@link WaldiezNodeAgentRagUserData}
  * @see {@link WaldiezNodeAgentReasoningData}
  * @see {@link WaldiezNodeAgentCaptainData}
  * @see {@link WaldiezNodeAgentGroupManagerData}
+ * @see {@link WaldiezNodeAgentDocAgentData}
  */
 export type WaldiezNodeAgentData =
     | WaldiezNodeAgentAssistantData
@@ -42,7 +46,8 @@ export type WaldiezNodeAgentData =
     | WaldiezNodeAgentRagUserData
     | WaldiezNodeAgentReasoningData
     | WaldiezNodeAgentCaptainData
-    | WaldiezNodeAgentGroupManagerData;
+    | WaldiezNodeAgentGroupManagerData
+    | WaldiezNodeAgentDocAgentData;
 
 /**
  * WaldiezNodeAgent
@@ -54,12 +59,14 @@ export type WaldiezNodeAgentData =
  * @param WaldiezNodeAgentReasoning - A reasoning agent node.
  * @param WaldiezNodeAgentCaptain - A captain agent node.
  * @param WaldiezNodeAgentGroupManager - A group manager agent node.
+ * @param WaldiezNodeAgentDocAgent - A document agent node.
  * @see {@link WaldiezNodeAgentAssistant}
  * @see {@link WaldiezNodeAgentUserProxy}
  * @see {@link WaldiezNodeAgentRagUser}
  * @see {@link WaldiezNodeAgentReasoning}
  * @see {@link WaldiezNodeAgentCaptain}
  * @see {@link WaldiezNodeAgentGroupManager}
+ * @see {@link WaldiezNodeAgentDocAgent}
  */
 export type WaldiezNodeAgent =
     | WaldiezNodeAgentAssistant
@@ -67,4 +74,5 @@ export type WaldiezNodeAgent =
     | WaldiezNodeAgentReasoning
     | WaldiezNodeAgentUserProxy
     | WaldiezNodeAgentCaptain
-    | WaldiezNodeAgentGroupManager;
+    | WaldiezNodeAgentGroupManager
+    | WaldiezNodeAgentDocAgent;

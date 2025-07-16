@@ -8,6 +8,7 @@ import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic";
 import { WaldiezAgentCaptainTab } from "@waldiez/containers/nodes/agent/modal/tabs/captain";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
+import { WaldiezDocAgentTab } from "@waldiez/containers/nodes/agent/modal/tabs/docAgent/main";
 import { WaldiezAgentGroupMember } from "@waldiez/containers/nodes/agent/modal/tabs/groupMember";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
 import {
@@ -25,6 +26,7 @@ import {
     WaldiezNodeAgent,
     WaldiezNodeAgentCaptainData,
     WaldiezNodeAgentData,
+    WaldiezNodeAgentDocAgentData,
     WaldiezNodeAgentRagUserData,
     WaldiezNodeAgentReasoningData,
     WaldiezNodeModel,
@@ -74,12 +76,13 @@ export const WaldiezNodeAgentModalTabs = memo(
                 isRagUser: data.agentType === "rag_user_proxy",
                 isReasoning: data.agentType === "reasoning",
                 isCaptain: data.agentType === "captain",
+                isDocAgent: data.agentType === "doc_agent",
             }),
             [data.agentType, data.parentId],
         );
 
         // Extract agent type flags for readability
-        const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain } = agentTypeInfo;
+        const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain, isDocAgent } = agentTypeInfo;
 
         // Compute derived data
         // eslint-disable-next-line max-statements
@@ -239,6 +242,20 @@ export const WaldiezNodeAgentModalTabs = memo(
                     </TabItem>
                 )}
 
+                {/* Doc Agent Tab - Only visible for doc agents */}
+                {isDocAgent && (
+                    <TabItem label="Documents" id={`wf-${flowId}-wa-${id}-documents`}>
+                        <div className="modal-tab-body">
+                            <WaldiezDocAgentTab
+                                id={id}
+                                flowId={flowId}
+                                data={data as WaldiezNodeAgentDocAgentData}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+
                 {/* Termination Tab - Always visible */}
                 <TabItem label="Termination" id={`wf-${flowId}-wa-${id}-termination`}>
                     <div className="modal-tab-body">
@@ -285,7 +302,7 @@ export const WaldiezNodeAgentModalTabs = memo(
                         <div className="modal-tab-body">
                             <WaldiezAgentNestedChats
                                 id={id}
-                                data={data as WaldiezNodeAgentData}
+                                data={data}
                                 onDataChange={onDataChange}
                                 agentConnections={agentConnections}
                             />
@@ -301,7 +318,7 @@ export const WaldiezNodeAgentModalTabs = memo(
                                 id={id}
                                 flowId={flowId}
                                 darkMode={isDarkMode}
-                                data={data as WaldiezNodeAgentData}
+                                data={data}
                                 agentConnections={agentConnections}
                                 edges={connectionsOutsideGroup}
                                 onDataChange={onDataChange}

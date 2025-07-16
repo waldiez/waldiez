@@ -131,14 +131,14 @@ describe("chatMapper.importChat", () => {
         expect(edge.type).toBe("chat");
     });
     it("should use the edge type if provided", () => {
-        const newEdges = [{ ...edges[0], type: "nested" }, edges[1]];
+        const newEdges = [{ ...edges[0], type: "nested" }, edges[1] as any];
         const { chat, edge } = chatMapper.importChat(chatJson, newEdges, agents, 1);
         expect(chat).toBeTruthy();
         expect(edge.type).toBe("nested");
     });
     it("should use the chat type if provided and edge.type is not", () => {
         const newEdges = [...edges];
-        delete newEdges[0].type;
+        delete newEdges[0]!.type;
         const { chat, edge } = chatMapper.importChat(
             {
                 id: "wc-1",
@@ -157,7 +157,7 @@ describe("chatMapper.importChat", () => {
     it("should change the edge type to chat if the edge.type is not a valid type", () => {
         const { chat, edge } = chatMapper.importChat(
             { id: "wc-1", source: "wa-1", target: "wa-2", data: {} },
-            [{ ...edges[0], type: "other" }],
+            [{ ...edges[0], type: "other" } as any],
             agents,
             1,
         );
@@ -216,7 +216,7 @@ describe("chatMapper.importChat", () => {
             ...chatJson,
             type: "nested",
         };
-        const newEdges = [{ ...edges[0], type: "nested" }, edges[1]];
+        const newEdges = [{ ...edges[0], type: "nested" }, edges[1] as any];
         const { chat, edge } = chatMapper.importChat(chatJsonWithNestedChat, newEdges, agents, 1);
         expect(chat).toBeTruthy();
         expect(edge.data?.order).toBe(-1);

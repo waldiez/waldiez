@@ -106,14 +106,14 @@ export const useHandoffs = (
     }, [data.handoffs, groupEdges, nestedChats, getTransitionTargetName]);
     const onMoveTransitionTargetUp = useCallback(
         (index: number) => {
-            if (index <= 0) {
+            if (index <= 0 || !orderedTransitionTargets[index - 1] || !orderedTransitionTargets[index]) {
                 return;
             }
 
             const newOrderedTargets = [...orderedTransitionTargets];
             [newOrderedTargets[index], newOrderedTargets[index - 1]] = [
-                newOrderedTargets[index - 1],
-                newOrderedTargets[index],
+                newOrderedTargets[index - 1]!,
+                newOrderedTargets[index]!,
             ];
 
             const newHandoffs = newOrderedTargets.map(target => target.id);
@@ -130,8 +130,8 @@ export const useHandoffs = (
 
             const newOrderedTargets = [...orderedTransitionTargets];
             [newOrderedTargets[index], newOrderedTargets[index + 1]] = [
-                newOrderedTargets[index + 1],
-                newOrderedTargets[index],
+                newOrderedTargets[index + 1]!,
+                newOrderedTargets[index]!,
             ];
 
             const newHandoffs = newOrderedTargets.map(target => target.id);

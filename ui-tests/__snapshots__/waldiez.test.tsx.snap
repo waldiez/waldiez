@@ -232,14 +232,14 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
               <div
                 class="dnd-area"
-                data-testid="rag-dnd"
+                data-testid="doc-dnd"
                 draggable="true"
               >
                 <img
                   src="/src/waldiez/assets/rag.webp"
-                  title="RAG User Proxy Agent"
+                  title="Document Agent"
                 />
-                RAG User
+                Docs Agent
               </div>
               <div
                 class="dnd-area"
@@ -748,14 +748,14 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
             <div
               class="dnd-area"
-              data-testid="rag-dnd"
+              data-testid="doc-dnd"
               draggable="true"
             >
               <img
                 src="/src/waldiez/assets/rag.webp"
-                title="RAG User Proxy Agent"
+                title="Document Agent"
               />
-              RAG User
+              Docs Agent
             </div>
             <div
               class="dnd-area"

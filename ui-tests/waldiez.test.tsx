@@ -46,7 +46,7 @@ describe("All", () => {
         const addModel = page.getByText(/Add Model/i);
         await userEvent.click(addModel);
         await sleep(1000);
-        // await page.screenshot({ path: 'root.png' });
+        // await page.screenshot({ path: "root.png" });
         // await sleep(1000);
     });
 });

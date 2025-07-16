@@ -64,11 +64,20 @@ export const getAgentNodes = (nodes: Node[]) => {
             "agentType" in node.data &&
             node.data.agentType === "group_manager",
     );
+    const docAgentNodes = agentNodes.filter(
+        node =>
+            "data" in node &&
+            typeof node.data === "object" &&
+            node.data &&
+            "agentType" in node.data &&
+            node.data.agentType === "doc_agent",
+    );
     return {
         agentNodes,
         userAgentNodes,
         assistantAgentNodes,
         ragUserNodes,
+        docAgentNodes,
         reasoningAgentNodes,
         captainAgentNodes,
         groupManagerAgentNodes,
@@ -124,7 +133,9 @@ const ensureAgentNestedChatData = (agent: WaldiezNodeAgent, nodes: Node[], edges
     const existingNestedChats = agent.data.nestedChats || [];
     if (
         nestedEdges.length === 0 ||
-        (existingNestedChats.length > 0 && existingNestedChats[0].messages.length > 0)
+        (existingNestedChats.length > 0 &&
+            existingNestedChats[0] &&
+            existingNestedChats[0].messages.length > 0)
     ) {
         agent.data.nestedChats = existingNestedChats;
     } else {

@@ -56,6 +56,7 @@ const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick:
     return <div className="structured-content">{children}</div>;
 };
 
+// eslint-disable-next-line max-statements
 const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (url: string) => void) => {
     const regex = /\[Image:\s*(.+?)\]/g;
     const parts: React.ReactNode[] = [];
@@ -77,15 +78,17 @@ const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (u
             // parts.push(<span key={`text-${lastIdx}`}>{textBefore}</span>);
         }
 
-        parts.push(
-            <ImageWithRetry
-                key={`img-${match.index}`}
-                src={url}
-                className="chat-image"
-                onClick={() => onImageClick(url)}
-            />,
-        );
-        lastIdx = regex.lastIndex;
+        if (url) {
+            parts.push(
+                <ImageWithRetry
+                    key={`img-${match.index}`}
+                    src={url}
+                    className="chat-image"
+                    onClick={() => onImageClick(url)}
+                />,
+            );
+            lastIdx = regex.lastIndex;
+        }
     }
 
     const remainingText = text.slice(lastIdx);

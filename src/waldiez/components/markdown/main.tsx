@@ -28,7 +28,7 @@ const isReactElementWithProps = (
  */
 const extractLanguageFromClassName = (className: string): string | null => {
     const match = /language-(\w+)/.exec(className);
-    return match && match[1] !== "md" ? match[1] : null;
+    return match && match[1] !== "md" ? match[1] || null : null;
 };
 
 /**
@@ -63,7 +63,7 @@ const mightBeMarkdown = (text: string): boolean => {
         /#+\s+.*/, // Headers
         />\s+.*/, // Blockquotes
         /\d+\.\s+.*/, // Ordered lists
-        // eslint-disable-next-line no-useless-escape
+
         /[\*\-\+]\s+.*/, // Unordered lists
         /\|(.*?)\|/, // Tables
         /!\[(.*?)\]\((.*?)\)/, // Images

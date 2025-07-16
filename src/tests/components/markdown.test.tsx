@@ -84,8 +84,8 @@ print('world')
                 render(<Markdown content={content} />);
                 const codeBlocks = document.querySelectorAll("pre code");
                 expect(codeBlocks.length).toBe(2);
-                expect(codeBlocks[0].textContent).toContain("console.log");
-                expect(codeBlocks[1].textContent).toContain("print('world')");
+                expect(codeBlocks[0]!.textContent).toContain("console.log");
+                expect(codeBlocks[1]!.textContent).toContain("print('world')");
             });
 
             // Test with more complex code

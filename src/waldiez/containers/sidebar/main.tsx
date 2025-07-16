@@ -25,7 +25,7 @@ export const SideBar = (props: SidebarViewProps) => {
         onShowTools,
         onUserDragStart,
         onAssistantDragStart,
-        onRagDragStart,
+        onDocDragStart,
         onReasoningDragStart,
         onCaptainDragStart,
         onManagerDragStart,
@@ -130,12 +130,12 @@ export const SideBar = (props: SidebarViewProps) => {
                         </div>
                         <div
                             className="dnd-area"
-                            data-testid="rag-dnd"
-                            onDragStart={onRagDragStart}
+                            data-testid="doc-dnd"
+                            onDragStart={onDocDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.rag_user_proxy} title="RAG User Proxy Agent" />
-                            RAG User
+                            <img src={AGENT_ICONS.doc_agent} title="Document Agent" />
+                            Docs Agent
                         </div>
                         <div
                             className="dnd-area"

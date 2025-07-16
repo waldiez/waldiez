@@ -56,8 +56,8 @@ export const ErrorPage: React.FC<{ error?: Error }> = ({ error }) => {
                         src={bot.src}
                         alt={bot.alt}
                         className="waldiez-bot-img"
-                        animate={botVariants[idx].animate}
-                        transition={botVariants[idx].transition}
+                        animate={botVariants[idx]?.animate}
+                        transition={botVariants[idx]?.transition}
                         style={{ zIndex: 10 + idx }}
                     />
                 ))}

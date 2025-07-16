@@ -232,10 +232,10 @@ export const useWaldiezNodeAgentModal = (
 
                         // Update file paths with uploaded ones
                         for (let i = 0; i < filesToUpload.length; i++) {
-                            const index = newDocsPath.indexOf(`file:///${filesToUpload[i].name}`);
+                            const index = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
                             if (index > -1) {
                                 if (typeof filePaths[i] === "string") {
-                                    newDocsPath[index] = filePaths[i];
+                                    newDocsPath[index] = filePaths[i]!;
                                 } else {
                                     newDocsPath.splice(index, 1);
                                 }

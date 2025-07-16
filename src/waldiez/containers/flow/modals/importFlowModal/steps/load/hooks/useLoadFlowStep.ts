@@ -87,6 +87,9 @@ export const useLoadFlowStep = (props: {
             }
 
             const file = files[0];
+            if (!file) {
+                return;
+            }
 
             try {
                 const reader = new FileReader();

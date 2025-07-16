@@ -49,8 +49,8 @@ describe("getTools", () => {
                 description: "A test tool",
                 tags: ["test", "tool"],
                 requirements: ["test"],
-                createdAt: json.tools[0].createdAt,
-                updatedAt: json.tools[0].updatedAt,
+                createdAt: json.tools[0]!.createdAt,
+                updatedAt: json.tools[0]!.updatedAt,
                 data: new WaldiezToolData(),
                 rest: {
                     position: { x: 0, y: 0 },

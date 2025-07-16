@@ -211,7 +211,8 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
   border-color: color-mix(in srgb, var(--user-proxy-agent-alt-color) 50%, var(--background-color));
 }
 
-.agent-actions.rag_user_proxy {
+.agent-actions.rag_user_proxy,
+.agent-actions.doc_agent {
   background-color: var(--rag-user-proxy-agent-background);
   border-color: color-mix(in srgb, var(--rag-user-proxy-agent-alt-color) 50%, var(--background-color));
 }
@@ -268,12 +269,14 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
   box-shadow: 0 0 8px var(--assistant-agent-alt-color);
 }
 
-.agent-node.rag_user_proxy {
+.agent-node.rag_user_proxy,
+.agent-node.doc_agent {
   border-color: var(--rag-user-proxy-agent-color) !important;
   background-color: var(--rag-user-proxy-agent-background) !important;
 }
 
-.agent-node.rag_user_proxy:hover {
+.agent-node.rag_user_proxy:hover,
+.agent-node.doc_agent:hover {
   box-shadow: 0 0 8px var(--rag-user-proxy-agent-alt-color);
 }
 

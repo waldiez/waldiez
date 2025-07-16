@@ -278,7 +278,7 @@ const getNewChatsOfType = (allEdges: Edge[], type: string) => {
         if (!edgesOfTypeBySource[edge.source]) {
             edgesOfTypeBySource[edge.source] = [];
         }
-        edgesOfTypeBySource[edge.source].push(edge);
+        edgesOfTypeBySource[edge.source]?.push(edge);
     });
     return edgesOfType.map((edge, index) => {
         return {

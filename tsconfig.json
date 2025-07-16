@@ -1,6 +1,7 @@
 {
     "files": [],
     "compilerOptions": {
+        "noUncheckedIndexedAccess": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true
     },

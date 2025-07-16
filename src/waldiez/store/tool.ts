@@ -273,7 +273,7 @@ export class WaldiezToolStore implements IWaldiezToolStore {
         for (let i = 0; i < newToolNodesCount; i++) {
             const node = newToolNodes[i];
             const position = getNewNodePosition(i, flowId, rfInstance);
-            newToolNodes[i] = { ...node, position };
+            newToolNodes[i] = { ...node, id: node?.id || `wa-${getId()}`, data: node?.data || {}, position };
         }
         const allNodes = newToolNodes.concat(this.get().nodes.filter(node => node.type !== "tool"));
         // check if the tool is linked to any agent

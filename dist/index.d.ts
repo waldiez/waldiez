@@ -710,6 +710,24 @@ export declare type PrintMessageData = BaseMessageData & {
 };
 
 /**
+ * RAGQueryEngine
+ * The configuration for the RAG query engine used by the document agent.
+ * It can be one of the following:
+ * @param type - The type of the query engine.
+ *               Can be "VectorChromaQueryEngine", "VectorChromaCitationQueryEngine",
+ *               or "InMemoryQueryEngine".
+ * @param dbPath - The path to the database (not required for InMemoryQueryEngine).
+ * @param enable_query_citations - Whether to enable query citations (only for VectorChromaCitationQueryEngine).
+ * @param citation_chunk_size - The size of the citation chunks (only for VectorChromaCitationQueryEngine).
+ **/
+export declare type RAGQueryEngine = {
+    type: "VectorChromaQueryEngine" | "VectorChromaCitationQueryEngine" | "InMemoryQueryEngine";
+    dbPath?: string | null;
+    enableQueryCitations?: boolean;
+    citationChunkSize?: number;
+};
+
+/**
  * reasonConfigAnswerApproach
  * The approach used for answering.
  * It can be "pool" or "best".
@@ -1342,6 +1360,92 @@ export declare class WaldiezAgentData {
 }
 
 /**
+ * Waldiez Agent Document Agent.
+ * @param id - The id of the agent
+ * @param type - The type of the node in a graph (agent)
+ * @param agentType - The type of the agent ("doc_agent")
+ * @param name - The name of the agent
+ * @param description - The description of the agent
+ * @param tags - The tags of the agent
+ * @param requirements - The requirements of the agent
+ * @param createdAt - The creation date of the agent
+ * @param updatedAt - The update date of the agent
+ * @param data - The data of the agent. See {@link WaldiezAgentDocAgentData}
+ * @param rest - Any other data
+ * @see {@link WaldiezAgent}
+ */
+declare class WaldiezAgentDocAgent extends WaldiezAgent {
+    data: WaldiezAgentDocAgentData;
+    agentType: WaldiezNodeAgentType;
+    constructor(props: {
+        id: string;
+        agentType: WaldiezNodeAgentType;
+        name: string;
+        description: string;
+        tags: string[];
+        requirements: string[];
+        createdAt: string;
+        updatedAt: string;
+        data: WaldiezAgentDocAgentData;
+        rest?: {
+            [key: string]: unknown;
+        };
+    });
+}
+
+/**
+ * Waldiez Assistant Agent Data.
+ * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "TERMINATE")
+ * @param systemMessage - The system message of the agent
+ * @param codeExecutionConfig - The code execution configuration of the agent
+ * @param agentDefaultAutoReply - The default auto reply of the agent
+ * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
+ * @param termination - The termination message check of the agent
+ * @param modelIds - The agent's model ids
+ * @param tools - The tools available to the agent
+ * @param parentId - The parent id of the agent
+ * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
+ * @param afterWork - The handoff transition after work of the agent
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @see {@link WaldiezAgentData}
+ * @see {@link WaldiezAgentLinkedTool}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
+ */
+declare class WaldiezAgentDocAgentData extends WaldiezAgentData {
+    collectionName: string | null;
+    emptyCollection: boolean;
+    parsedDocsPath: string | null;
+    queryEngine: RAGQueryEngine | null;
+    constructor(props?: {
+        humanInputMode: WaldiezAgentHumanInputMode;
+        systemMessage: string | null;
+        codeExecutionConfig: WaldiezAgentCodeExecutionConfig;
+        agentDefaultAutoReply: string | null;
+        maxConsecutiveAutoReply: number | null;
+        termination: WaldiezAgentTerminationMessageCheck;
+        modelIds: string[];
+        tools: WaldiezAgentLinkedTool[];
+        parentId?: string | null;
+        nestedChats: WaldiezAgentNestedChat[];
+        contextVariables: Record<string, any>;
+        updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
+        afterWork: WaldiezTransitionTarget | null;
+        handoffs?: string[];
+        collectionName?: string | null;
+        emptyCollection?: boolean;
+        parsedDocsPath?: string | null;
+        queryEngine?: RAGQueryEngine | null;
+    });
+}
+
+/**
  * Waldiez Agent Group Manager.
  * @param id - The id of the agent
  * @param type - The type of the node in a graph (agent)
@@ -1717,7 +1821,7 @@ export declare type WaldiezAgentTerminationMessageCheck = {
  * @param captain - Captain
  * @param group_manager - Group manager
  */
-export declare type WaldiezAgentType = "user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain" | "group_manager";
+export declare type WaldiezAgentType = "user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain" | "group_manager" | "doc_agent";
 
 /**
  * Termination type.
@@ -2378,12 +2482,13 @@ export declare class WaldiezFlowData {
     edges: Edge[];
     viewport: Viewport;
     agents: {
-        userProxyAgents: WaldiezAgentUserProxy[];
-        assistantAgents: WaldiezAgentAssistant[];
-        ragUserProxyAgents: WaldiezAgentRagUser[];
-        reasoningAgents: WaldiezAgentReasoning[];
-        captainAgents: WaldiezAgentCaptain[];
-        groupManagerAgents: WaldiezAgentGroupManager[];
+        userProxyAgents?: WaldiezAgentUserProxy[];
+        assistantAgents?: WaldiezAgentAssistant[];
+        ragUserProxyAgents?: WaldiezAgentRagUser[];
+        reasoningAgents?: WaldiezAgentReasoning[];
+        captainAgents?: WaldiezAgentCaptain[];
+        groupManagerAgents?: WaldiezAgentGroupManager[];
+        docAgents?: WaldiezAgentDocAgent[];
     };
     models: WaldiezModel[];
     tools: WaldiezTool[];
@@ -2396,12 +2501,13 @@ export declare class WaldiezFlowData {
         edges: Edge[];
         viewport: Viewport;
         agents: {
-            userProxyAgents: WaldiezAgentUserProxy[];
-            assistantAgents: WaldiezAgentAssistant[];
-            ragUserProxyAgents: WaldiezAgentRagUser[];
-            reasoningAgents: WaldiezAgentReasoning[];
-            captainAgents: WaldiezAgentCaptain[];
-            groupManagerAgents: WaldiezAgentGroupManager[];
+            userProxyAgents?: WaldiezAgentUserProxy[];
+            assistantAgents?: WaldiezAgentAssistant[];
+            ragUserProxyAgents?: WaldiezAgentRagUser[];
+            reasoningAgents?: WaldiezAgentReasoning[];
+            captainAgents?: WaldiezAgentCaptain[];
+            groupManagerAgents?: WaldiezAgentGroupManager[];
+            docAgents?: WaldiezAgentDocAgent[];
         };
         models: WaldiezModel[];
         tools: WaldiezTool[];
@@ -2856,14 +2962,16 @@ export declare type WaldiezNestedChat = {
  * @param WaldiezNodeAgentReasoning - A reasoning agent node.
  * @param WaldiezNodeAgentCaptain - A captain agent node.
  * @param WaldiezNodeAgentGroupManager - A group manager agent node.
+ * @param WaldiezNodeAgentDocAgent - A document agent node.
  * @see {@link WaldiezNodeAgentAssistant}
  * @see {@link WaldiezNodeAgentUserProxy}
  * @see {@link WaldiezNodeAgentRagUser}
  * @see {@link WaldiezNodeAgentReasoning}
  * @see {@link WaldiezNodeAgentCaptain}
  * @see {@link WaldiezNodeAgentGroupManager}
+ * @see {@link WaldiezNodeAgentDocAgent}
  */
-export declare type WaldiezNodeAgent = WaldiezNodeAgentAssistant | WaldiezNodeAgentRagUser | WaldiezNodeAgentReasoning | WaldiezNodeAgentUserProxy | WaldiezNodeAgentCaptain | WaldiezNodeAgentGroupManager;
+export declare type WaldiezNodeAgent = WaldiezNodeAgentAssistant | WaldiezNodeAgentRagUser | WaldiezNodeAgentReasoning | WaldiezNodeAgentUserProxy | WaldiezNodeAgentCaptain | WaldiezNodeAgentGroupManager | WaldiezNodeAgentDocAgent;
 
 /**
  * WaldiezNodeAgentAssistant
@@ -2979,14 +3087,73 @@ export declare type WaldiezNodeAgentCaptainData = WaldiezAgentCommonData & {
  * @param WaldiezNodeAgentReasoningData - The data for the reasoning agent.
  * @param WaldiezNodeAgentCaptainData - The data for the captain agent.
  * @param WaldiezNodeAgentGroupManagerData - The data for the group manager agent.
+ * @param WaldiezNodeDocAgentData - The data for the document agent.
  * @see {@link WaldiezNodeAgentAssistantData}
  * @see {@link WaldiezNodeAgentUserProxyData}
  * @see {@link WaldiezNodeAgentRagUserData}
  * @see {@link WaldiezNodeAgentReasoningData}
  * @see {@link WaldiezNodeAgentCaptainData}
  * @see {@link WaldiezNodeAgentGroupManagerData}
+ * @see {@link WaldiezNodeAgentDocAgentData}
  */
-export declare type WaldiezNodeAgentData = WaldiezNodeAgentAssistantData | WaldiezNodeAgentUserProxyData | WaldiezNodeAgentRagUserData | WaldiezNodeAgentReasoningData | WaldiezNodeAgentCaptainData | WaldiezNodeAgentGroupManagerData;
+export declare type WaldiezNodeAgentData = WaldiezNodeAgentAssistantData | WaldiezNodeAgentUserProxyData | WaldiezNodeAgentRagUserData | WaldiezNodeAgentReasoningData | WaldiezNodeAgentCaptainData | WaldiezNodeAgentGroupManagerData | WaldiezNodeAgentDocAgentData;
+
+/**
+ * WaldiezNodeAgentDocAgent
+ * The document agent node.
+ * @see {@link WaldiezNodeAgentDocAgentData}
+ */
+export declare type WaldiezNodeAgentDocAgent = Node_2<WaldiezNodeAgentDocAgentData, "agent">;
+
+/**
+ * WaldiezNodeAgentDocAgentData
+ * The data for the document agent node.
+ * @param label - The label of the node.
+ * @param name - The name of the agent
+ * @param description - The description of the agent
+ * @param parentId - The parent id of the agent (if in a group)
+ * @param agentType - The agent type
+ * @param systemMessage - The system message
+ * @param humanInputMode - The human input mode
+ * @param codeExecutionConfig - The code execution configuration
+ * @param agentDefaultAutoReply - The agent default auto reply
+ * @param maxConsecutiveAutoReply - The max consecutive auto reply
+ * @param termination - The termination message check
+ * @param nestedChats - The nested chats
+ * @param contextVariables - The context variables
+ * @param updateAgentStateBeforeReply - Optional handler to update the agent state before replying
+ * @param afterWork - The handoff transition after work
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @param modelIds - The agent's model ids
+ * @param tools - The tools available to the agent
+ * @param tags - The tags
+ * @param requirements - The requirements
+ * @param createdAt - The created at date
+ * @param updatedAt - The updated at date
+ * @param collectionName - The name of the collection for the document agent
+ * @param resetCollection - Whether to reset the collection before adding new documents
+ * @param parsedDocsPath - The path to the parsed documents
+ * @param queryEngine - The query engine configuration for the document agent
+ * @see {@link WaldiezAgentCommonData}
+ * @see {@link RAGQueryEngine}
+ * @see {@link WaldiezNodeAgentType}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
+ * @see {@link WaldiezAgentLinkedTool}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezAgentCommonData}
+ */
+export declare type WaldiezNodeAgentDocAgentData = WaldiezAgentCommonData & {
+    label: string;
+    collectionName: string | null;
+    resetCollection: boolean;
+    parsedDocsPath: string | null;
+    queryEngine: RAGQueryEngine | null;
+};
 
 /**
  * WaldiezNodeAgentGroupManager
@@ -3158,10 +3325,11 @@ export declare type WaldiezNodeAgentReasoningData = WaldiezAgentCommonData & {
  * Waldiez node agent type (alias for WaldiezAgentType).
  * @param user_proxy - User proxy
  * @param assistant - Assistant
- * @param rag_user_proxy - RAG user proxy
+ * @param rag_user_proxy - RAG user proxy (deprecated, use "doc_agent")
  * @param reasoning - Reasoning
  * @param captain - Captain
  * @param group_manager - Group manager
+ * @param doc_agent - Document agent
  */
 export declare type WaldiezNodeAgentType = WaldiezAgentType;
 

@@ -132,8 +132,8 @@ describe("TextareaInput", () => {
             // Verify the event structure
             const calls = mockOnChange.mock.calls;
             expect(calls.length).toBeGreaterThan(0);
-            expect(calls[0][0]).toHaveProperty("target");
-            expect(calls[0][0]).toHaveProperty("type", "change");
+            expect(calls[0]![0]).toHaveProperty("target");
+            expect(calls[0]![0]).toHaveProperty("type", "change");
         });
     });
 

@@ -31,18 +31,19 @@ export const useHandoffNames = (
             if (
                 nestedChats.length === 0 ||
                 index >= nestedChats.length ||
-                nestedChats[index].messages.length === 0
+                nestedChats[index]?.messages.length === 0
             ) {
                 return "Nested Chat";
             }
 
             const nestedChat = nestedChats[index];
-            const targets = nestedChat.messages
-                .map(msg => {
-                    const edge = allEdges.find(e => e.id === msg.id);
-                    return edge ? getAgentName(edge.target) : "";
-                })
-                .filter(Boolean);
+            const targets =
+                nestedChat?.messages
+                    .map(msg => {
+                        const edge = allEdges.find(e => e.id === msg.id);
+                        return edge ? getAgentName(edge.target) : "";
+                    })
+                    .filter(Boolean) || [];
 
             if (targets.length === 0) {
                 return "Nested Chat";
@@ -58,11 +59,11 @@ export const useHandoffNames = (
     const getTransitionTargetName = (target: WaldiezTransitionTarget) => {
         switch (target.targetType) {
             case "AgentTarget":
-                return getAgentName(target.value[0]);
+                return getAgentName(target.value[0] ? target.value[0] : "");
             case "RandomAgentTarget":
                 return `Random (${target.value.map(getAgentName).join(", ")})`;
             case "GroupChatTarget":
-                return `Group Chat: ${getAgentName(target.value[0])}`;
+                return `Group Chat: ${getAgentName(target.value[0] ? target.value[0] : "")}`;
             case "NestedChatTarget":
                 return getNestedChatDisplayName(0);
             case "AskUserTarget":
