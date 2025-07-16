@@ -7,6 +7,8 @@ import {
     WaldiezAgentAssistantData,
     WaldiezAgentCaptain,
     WaldiezAgentCaptainData,
+    WaldiezAgentDocAgent,
+    WaldiezAgentDocAgentData,
     WaldiezAgentGroupManager,
     WaldiezAgentGroupManagerData,
     WaldiezAgentRagUser,
@@ -125,6 +127,20 @@ export const getAgent = (
             createdAt,
             updatedAt,
             data: data as WaldiezAgentGroupManagerData,
+            rest,
+        });
+    }
+    if (agentType === "doc_agent") {
+        return new WaldiezAgentDocAgent({
+            id,
+            agentType,
+            name,
+            description,
+            tags,
+            requirements,
+            createdAt,
+            updatedAt,
+            data: data as WaldiezAgentDocAgentData,
             rest,
         });
     }

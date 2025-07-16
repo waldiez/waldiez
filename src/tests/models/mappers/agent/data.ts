@@ -163,3 +163,23 @@ export const reasoningJson = createAgentJson({
     },
     extra: { key: "value" },
 });
+
+export const docAgentJson = createAgentJson({
+    id: "doc_agent",
+    agentType: "doc_agent",
+    name: "Doc Agent",
+    description: "A document agent",
+    position: { x: 100, y: 101 },
+    dataOverrides: {
+        collectionName: "default_collection",
+        resetCollection: false,
+        parsedDocsPath: null,
+        queryEngine: {
+            type: "VectorChromaQueryEngine",
+            dbPath: null,
+            enableQueryCitations: false,
+            citationChunkSize: 512,
+        },
+    },
+    extra: { key: "value" },
+});

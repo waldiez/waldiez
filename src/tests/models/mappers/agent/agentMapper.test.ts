@@ -19,7 +19,15 @@ import {
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers";
 
-import { assistantJson, captainJson, groupManagerJson, ragUserJson, reasoningJson, userJson } from "./data";
+import {
+    assistantJson,
+    captainJson,
+    docAgentJson,
+    groupManagerJson,
+    ragUserJson,
+    reasoningJson,
+    userJson,
+} from "./data";
 
 describe("agentMapper", () => {
     it("should throw an error when importing without a json", () => {
@@ -115,6 +123,12 @@ describe("agentMapper", () => {
         const agentNode = agentMapper.asNode(agent, undefined, false);
         const exported = agentMapper.exportAgent(agentNode, false);
         expect(exported).toEqual(groupManagerJson);
+    });
+    it("should import, convert and export a doc agent node", () => {
+        const agent = agentMapper.importAgent(docAgentJson);
+        const agentNode = agentMapper.asNode(agent, undefined, false);
+        const exported = agentMapper.exportAgent(agentNode, false);
+        expect(exported).toEqual(docAgentJson);
     });
     it("should use the json if data is not present", () => {
         const agentWithoutData = {

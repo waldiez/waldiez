@@ -175,3 +175,27 @@ export const getNodePositionFromJSON = (
     }
     return nodePosition;
 };
+
+/**
+ * Ensures that at least one nested chat exists in the agent data.
+ * If no nested chats are present, it initializes a default nested chat.
+ * @param data - The agent data to check and modify if necessary.
+ */
+export const ensureOneNestedChatExists = (data: any) => {
+    if (!data.nestedChats || data.nestedChats.length === 0) {
+        data.nestedChats = [
+            {
+                messages: [],
+                triggeredBy: [],
+                condition: {
+                    conditionType: "string_llm",
+                    prompt: "",
+                },
+                available: {
+                    type: "none",
+                    value: "",
+                },
+            },
+        ];
+    }
+};

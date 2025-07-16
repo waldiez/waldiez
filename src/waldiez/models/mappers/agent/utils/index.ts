@@ -5,6 +5,7 @@
 export * from "@waldiez/models/mappers/agent/utils/agent";
 export * from "@waldiez/models/mappers/agent/utils/captain";
 export * from "@waldiez/models/mappers/agent/utils/common";
+export * from "@waldiez/models/mappers/agent/utils/docAgent";
 export {
     getAdminName,
     getEnableClearHistory,

@@ -4,13 +4,16 @@
  */
 import {
     WaldiezAgentCodeExecutionConfig,
+    WaldiezAgentData,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentUpdateSystemMessage,
     WaldiezNodeAgentType,
 } from "@waldiez/models/Agent/Common";
+import { getTermination } from "@waldiez/models/mappers/agent/utils/termination";
 import {
+    getAfterWork,
     getCreatedAtFromJSON,
     getDescriptionFromJSON,
     getHandoffAvailability,
@@ -30,6 +33,7 @@ const ValidAgentTypes: WaldiezNodeAgentType[] = [
     "rag_user_proxy",
     "reasoning",
     "group_manager",
+    "doc_agent",
 ];
 
 /**
@@ -440,4 +444,46 @@ export const getHandoffIds = (data: Record<string, unknown>): string[] => {
         return data.handoffs.filter((handoff: any) => typeof handoff === "string") as string[];
     }
     return [];
+};
+
+/**
+ * Extracts common agent data from the provided JSON object based on the agent type.
+ * @param data - The JSON object containing agent data.
+ * @param agentType - The type of the agent.
+ * @returns An instance of WaldiezAgentData containing the common agent data.
+ */
+export const getCommonAgentData = (
+    data: Record<string, unknown>,
+    agentType: WaldiezNodeAgentType,
+): WaldiezAgentData => {
+    const systemMessage = getSystemMessage(data);
+    const humanInputMode = getHumanInputMode(data, agentType);
+    const codeExecutionConfig = getCodeExecutionConfig(data);
+    const agentDefaultAutoReply = getAgentDefaultAutoReply(data);
+    const maxConsecutiveAutoReply = getMaximumConsecutiveAutoReply(data);
+    const termination = getTermination(data);
+    const modelIds = getModelIds(data);
+    const tools = getTools(data);
+    const parentId = getParentId(data, agentType);
+    const nestedChats = getNestedChats(data);
+    const contextVariables = getContextVariables(data);
+    const updateAgentStateBeforeReply = getUpdateAgentStateBeforeReply(data);
+    const afterWork = getAfterWork(data);
+    const handoffs = getHandoffIds(data);
+    return new WaldiezAgentData({
+        systemMessage,
+        humanInputMode,
+        codeExecutionConfig,
+        agentDefaultAutoReply,
+        maxConsecutiveAutoReply,
+        termination,
+        modelIds,
+        tools,
+        parentId,
+        nestedChats,
+        contextVariables,
+        updateAgentStateBeforeReply,
+        afterWork,
+        handoffs,
+    });
 };

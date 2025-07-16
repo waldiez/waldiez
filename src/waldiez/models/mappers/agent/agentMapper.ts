@@ -7,6 +7,7 @@ import {
     WaldiezAgentAssistantData,
     WaldiezAgentCaptainData,
     WaldiezAgentData,
+    WaldiezAgentDocAgentData,
     WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
@@ -18,7 +19,6 @@ import {
 import {
     getAdminName,
     getAgent,
-    getAgentDefaultAutoReply,
     getAgentId,
     getAgentMeta,
     getAgentType,
@@ -26,30 +26,27 @@ import {
     getCaptainMaxRound,
     getCaptainMaxTurns,
     getCaptainToolLib,
-    getCodeExecutionConfig,
-    getContextVariables,
+    getCollectionName,
+    getCommonAgentData,
     getEnableClearHistory,
     getGroupChatMaxRound,
     getGroupName,
-    getHandoffIds,
-    getHumanInputMode,
     getInitialAgentId,
     getIsMultimodal,
-    getMaximumConsecutiveAutoReply,
-    getModelIds,
-    getNestedChats,
-    getParentId,
+    getParsedDocsPath,
+    getQueryEngine,
     getReasonConfig,
+    getResetCollection,
     getRetrieveConfig,
     getSendIntroductions,
     getSpeakers,
-    getSystemMessage,
-    getTermination,
-    getTools,
-    getUpdateAgentStateBeforeReply,
     getVerbose,
 } from "@waldiez/models/mappers/agent/utils";
-import { getAfterWork, getNodePositionFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
+import {
+    ensureOneNestedChatExists,
+    getNodePositionFromJSON,
+    getRestFromJSON,
+} from "@waldiez/models/mappers/common";
 import { INITIAL_AGENT_SIZE } from "@waldiez/theme";
 
 /**
@@ -197,72 +194,6 @@ export const agentMapper = {
 };
 
 /**
- * Ensures that at least one nested chat exists in the agent data.
- * If no nested chats are present, it initializes a default nested chat.
- * @param data - The agent data to check and modify if necessary.
- */
-const ensureOneNestedChatExists = (data: any) => {
-    if (!data.nestedChats || data.nestedChats.length === 0) {
-        data.nestedChats = [
-            {
-                messages: [],
-                triggeredBy: [],
-                condition: {
-                    conditionType: "string_llm",
-                    prompt: "",
-                },
-                available: {
-                    type: "none",
-                    value: "",
-                },
-            },
-        ];
-    }
-};
-
-/**
- * Extracts common agent data from the provided JSON object based on the agent type.
- * @param data - The JSON object containing agent data.
- * @param agentType - The type of the agent.
- * @returns An instance of WaldiezAgentData containing the common agent data.
- */
-const getCommonAgentData = (
-    data: Record<string, unknown>,
-    agentType: WaldiezNodeAgentType,
-): WaldiezAgentData => {
-    const systemMessage = getSystemMessage(data);
-    const humanInputMode = getHumanInputMode(data, agentType);
-    const codeExecutionConfig = getCodeExecutionConfig(data);
-    const agentDefaultAutoReply = getAgentDefaultAutoReply(data);
-    const maxConsecutiveAutoReply = getMaximumConsecutiveAutoReply(data);
-    const termination = getTermination(data);
-    const modelIds = getModelIds(data);
-    const tools = getTools(data);
-    const parentId = getParentId(data, agentType);
-    const nestedChats = getNestedChats(data);
-    const contextVariables = getContextVariables(data);
-    const updateAgentStateBeforeReply = getUpdateAgentStateBeforeReply(data);
-    const afterWork = getAfterWork(data);
-    const handoffs = getHandoffIds(data);
-    return new WaldiezAgentData({
-        systemMessage,
-        humanInputMode,
-        codeExecutionConfig,
-        agentDefaultAutoReply,
-        maxConsecutiveAutoReply,
-        termination,
-        modelIds,
-        tools,
-        parentId,
-        nestedChats,
-        contextVariables,
-        updateAgentStateBeforeReply,
-        afterWork,
-        handoffs,
-    });
-};
-
-/**
  * Returns a list of keys to exclude from the agent data based on the agent type.
  * @param agentType - The type of the agent.
  * @returns An array of keys to exclude from the agent data.
@@ -291,6 +222,9 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
             "sendIntroductions",
             "groupName",
         );
+    }
+    if (agentType === "doc_agent") {
+        toExclude.push("collectionName", "resetCollection", "parsedDocsPath", "queryEngine");
     }
     return toExclude;
 };
@@ -345,6 +279,15 @@ const getAgentDataToImport = (
             enableClearHistory: getEnableClearHistory(jsonData),
             sendIntroductions: getSendIntroductions(jsonData),
             groupName: getGroupName(jsonData),
+        });
+    }
+    if (agentType === "doc_agent") {
+        return new WaldiezAgentDocAgentData({
+            ...data,
+            collectionName: getCollectionName(jsonData),
+            resetCollection: getResetCollection(jsonData),
+            parsedDocsPath: getParsedDocsPath(jsonData),
+            queryEngine: getQueryEngine(jsonData),
         });
     }
     return data;
@@ -410,6 +353,9 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
     if (agentType === "group_manager") {
         updateGroupManager(agentData, data);
     }
+    if (agentType === "doc_agent") {
+        updateDocAgent(agentData, data);
+    }
 };
 
 /**
@@ -461,4 +407,17 @@ const updateGroupManager = (agentData: WaldiezAgentGroupManagerData, data: any) 
     agentData.sendIntroductions = getSendIntroductions(data);
     agentData.initialAgentId = getInitialAgentId(data);
     agentData.groupName = getGroupName(data);
+};
+
+/**
+ * Updates the doc agent data with specific properties required for export.
+ * This includes the collection name, reset collection flag, and query engine configuration.
+ * @param agentData - The doc agent data to update.
+ * @param data - The original data object containing all properties.
+ */
+const updateDocAgent = (agentData: WaldiezAgentDocAgentData, data: any) => {
+    agentData.collectionName = getCollectionName(data);
+    agentData.resetCollection = getResetCollection(data);
+    agentData.queryEngine = getQueryEngine(data);
+    agentData.parsedDocsPath = getParsedDocsPath(data);
 };

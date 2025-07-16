@@ -1918,7 +1918,7 @@
                 "collectionName": {
                     "type": ["string", "null"]
                 },
-                "emptyCollection": {
+                "resetCollection": {
                     "type": "boolean"
                 },
                 "parsedDocsPath": {
@@ -1941,7 +1941,6 @@
                 "codeExecutionConfig",
                 "collectionName",
                 "contextVariables",
-                "emptyCollection",
                 "handoffs",
                 "humanInputMode",
                 "maxConsecutiveAutoReply",
@@ -1949,6 +1948,7 @@
                 "nestedChats",
                 "parsedDocsPath",
                 "queryEngine",
+                "resetCollection",
                 "systemMessage",
                 "termination",
                 "tools",

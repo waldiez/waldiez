@@ -1222,6 +1222,66 @@ class WaldiezAgentCaptainData extends WaldiezAgentData {
     this.maxTurns = props.maxTurns;
   }
 }
+class WaldiezAgentDocAgent extends WaldiezAgent {
+  data;
+  agentType = "doc_agent";
+  constructor(props) {
+    super(props);
+    this.agentType = "doc_agent";
+    this.data = props.data;
+    this.rest = props.rest || {};
+  }
+}
+class WaldiezAgentDocAgentData extends WaldiezAgentData {
+  collectionName;
+  resetCollection;
+  parsedDocsPath;
+  queryEngine;
+  constructor(props = {
+    humanInputMode: "NEVER",
+    systemMessage: null,
+    codeExecutionConfig: false,
+    agentDefaultAutoReply: null,
+    maxConsecutiveAutoReply: null,
+    termination: {
+      type: "none",
+      keywords: [],
+      criterion: null,
+      methodContent: null
+    },
+    modelIds: [],
+    tools: [],
+    parentId: void 0,
+    nestedChats: [
+      {
+        messages: [],
+        triggeredBy: [],
+        condition: {
+          conditionType: "string_llm",
+          prompt: ""
+        },
+        available: {
+          type: "none",
+          value: ""
+        }
+      }
+    ],
+    contextVariables: {},
+    updateAgentStateBeforeReply: [],
+    afterWork: null,
+    handoffs: [],
+    collectionName: null,
+    resetCollection: false,
+    parsedDocsPath: null,
+    queryEngine: null
+  }) {
+    super(props);
+    this.collectionName = props.collectionName ?? null;
+    this.resetCollection = props.resetCollection ?? false;
+    this.parsedDocsPath = props.parsedDocsPath ?? null;
+    this.queryEngine = props.queryEngine ?? null;
+  }
+}
 class WaldiezAgentGroupManager extends WaldiezAgent {
   data;
   agentType = "group_manager";
@@ -2064,6 +2124,20 @@ const getAgent = (agentType, id, name, description, tags, requirements, createdA
       rest
     });
   }
+  if (agentType === "doc_agent") {
+    return new WaldiezAgentDocAgent({
+      id,
+      agentType,
+      name,
+      description,
+      tags,
+      requirements,
+      createdAt,
+      updatedAt,
+      data,
+      rest
+    });
+  }
   return new WaldiezAgent({
     id,
     agentType,
@@ -2111,6 +2185,52 @@ const getCaptainMaxTurns = (json) => {
     }
   }
   return 5;
+};
+const getTermination = (data) => {
+  if ("termination" in data && typeof data.termination === "object" && data.termination) {
+    const termination = data.termination;
+    const type = getTerminationType(termination);
+    const keywords = getTerminationKeywords(termination);
+    const criterion = getTerminationCriterion(termination);
+    const methodContent = getTerminationMethodContent(termination);
+    return {
+      type,
+      keywords,
+      criterion,
+      methodContent
+    };
+  }
+  return {
+    type: "none",
+    keywords: [],
+    criterion: null,
+    methodContent: null
+  };
+};
+const getTerminationType = (data) => {
+  if ("type" in data && typeof data.type === "string" && ["none", "keyword", "method"].includes(data.type)) {
+    return data.type;
+  }
+  return "none";
+};
+const getTerminationKeywords = (data) => {
+  let keywords = [];
+  if ("keywords" in data && Array.isArray(data.keywords)) {
+    keywords = data.keywords.filter((k) => typeof k === "string");
+  }
+  return keywords;
+};
+const getTerminationCriterion = (data) => {
+  if ("criterion" in data && typeof data.criterion === "string" && ["found", "ending", "exact"].includes(data.criterion)) {
+    return data.criterion;
+  }
+  return null;
+};
+const getTerminationMethodContent = (data) => {
+  if ("methodContent" in data && typeof data.methodContent === "string") {
+    return data.methodContent;
+  }
+  return null;
 };
 const getIdFromJSON = (json) => {
   let id = `w-${getId()}`;
@@ -2191,6 +2311,24 @@ const getNodePositionFromJSON = (nodeData, position) => {
     nodePosition.y = nodeData.position.y;
   }
   return nodePosition;
+};
+const ensureOneNestedChatExists = (data) => {
+  if (!data.nestedChats || data.nestedChats.length === 0) {
+    data.nestedChats = [
+      {
+        messages: [],
+        triggeredBy: [],
+        condition: {
+          conditionType: "string_llm",
+          prompt: ""
+        },
+        available: {
+          type: "none",
+          value: ""
+        }
+      }
+    ];
+  }
 };
 const getStringLLMCondition = (data, defaultPrompt = "") => {
   let condition = {
@@ -2322,7 +2460,8 @@ const ValidAgentTypes$1 = [
   "captain",
   "rag_user_proxy",
   "reasoning",
-  "group_manager"
+  "group_manager",
+  "doc_agent"
 ];
 const getAgentId = (data, agentId) => {
   let id = `wa-${getId()}`;
@@ -2545,6 +2684,76 @@ const getHandoffIds = (data) => {
     return data.handoffs.filter((handoff) => typeof handoff === "string");
   }
   return [];
+};
+const getCommonAgentData = (data, agentType) => {
+  const systemMessage = getSystemMessage(data);
+  const humanInputMode = getHumanInputMode(data, agentType);
+  const codeExecutionConfig = getCodeExecutionConfig(data);
+  const agentDefaultAutoReply = getAgentDefaultAutoReply(data);
+  const maxConsecutiveAutoReply = getMaximumConsecutiveAutoReply(data);
+  const termination = getTermination(data);
+  const modelIds = getModelIds(data);
+  const tools = getTools$1(data);
+  const parentId = getParentId(data);
+  const nestedChats = getNestedChats$1(data);
+  const contextVariables = getContextVariables(data);
+  const updateAgentStateBeforeReply = getUpdateAgentStateBeforeReply(data);
+  const afterWork = getAfterWork(data);
+  const handoffs = getHandoffIds(data);
+  return new WaldiezAgentData({
+    systemMessage,
+    humanInputMode,
+    codeExecutionConfig,
+    agentDefaultAutoReply,
+    maxConsecutiveAutoReply,
+    termination,
+    modelIds,
+    tools,
+    parentId,
+    nestedChats,
+    contextVariables,
+    updateAgentStateBeforeReply,
+    afterWork,
+    handoffs
+  });
+};
+const getCollectionName$1 = (data) => {
+  return data.collectionName ? String(data.collectionName) : null;
+};
+const getResetCollection = (data) => {
+  return data.resetCollection === true || String(data.resetCollection).toLowerCase() === "true";
+};
+const getQueryEngine = (data) => {
+  if (!data.queryEngine) {
+    return null;
+  }
+  let engineType = "VectorChromaQueryEngine";
+  if (data.queryEngine.type && typeof data.queryEngine.type === "string" && ["VectorChromaQueryEngine", "VectorChromaCitationQueryEngine", "InMemoryQueryEngine"].includes(
+    data.queryEngine.type
+  )) {
+    engineType = data.queryEngine.type;
+  }
+  let dbPath = null;
+  if (data.queryEngine.dbPath && typeof data.queryEngine.dbPath === "string") {
+    dbPath = data.queryEngine.dbPath;
+  }
+  let enableQueryCitations = false;
+  if (data.queryEngine.enableQueryCitations && typeof data.queryEngine.enableQueryCitations === "boolean") {
+    enableQueryCitations = data.queryEngine.enableQueryCitations;
+  }
+  let citationChunkSize = void 0;
+  if (data.queryEngine.citationChunkSize && typeof data.queryEngine.citationChunkSize === "number" && data.queryEngine.citationChunkSize > 0) {
+    citationChunkSize = data.queryEngine.citationChunkSize;
+  }
+  return {
+    type: engineType,
+    dbPath,
+    enableQueryCitations,
+    citationChunkSize
+  };
+};
+const getParsedDocsPath = (data) => {
+  return data.parsedDocsPath ? String(data.parsedDocsPath) : null;
 };
 const getSpeakers = (json) => {
   let speakers = {
@@ -3061,52 +3270,6 @@ const getNResults = (json) => {
   }
   return nResults;
 };
-const getTermination = (data) => {
-  if ("termination" in data && typeof data.termination === "object" && data.termination) {
-    const termination = data.termination;
-    const type = getTerminationType(termination);
-    const keywords = getTerminationKeywords(termination);
-    const criterion = getTerminationCriterion(termination);
-    const methodContent = getTerminationMethodContent(termination);
-    return {
-      type,
-      keywords,
-      criterion,
-      methodContent
-    };
-  }
-  return {
-    type: "none",
-    keywords: [],
-    criterion: null,
-    methodContent: null
-  };
-};
-const getTerminationType = (data) => {
-  if ("type" in data && typeof data.type === "string" && ["none", "keyword", "method"].includes(data.type)) {
-    return data.type;
-  }
-  return "none";
-};
-const getTerminationKeywords = (data) => {
-  let keywords = [];
-  if ("keywords" in data && Array.isArray(data.keywords)) {
-    keywords = data.keywords.filter((k) => typeof k === "string");
-  }
-  return keywords;
-};
-const getTerminationCriterion = (data) => {
-  if ("criterion" in data && typeof data.criterion === "string" && ["found", "ending", "exact"].includes(data.criterion)) {
-    return data.criterion;
-  }
-  return null;
-};
-const getTerminationMethodContent = (data) => {
-  if ("methodContent" in data && typeof data.methodContent === "string") {
-    return data.methodContent;
-  }
-  return null;
-};
 const AGENT_COLORS = {
   agent: "#005490",
   assistant: "#66bc57",
@@ -3389,56 +3552,6 @@ const agentMapper = {
     return agentNode;
   }
 };
-const ensureOneNestedChatExists = (data) => {
-  if (!data.nestedChats || data.nestedChats.length === 0) {
-    data.nestedChats = [
-      {
-        messages: [],
-        triggeredBy: [],
-        condition: {
-          conditionType: "string_llm",
-          prompt: ""
-        },
-        available: {
-          type: "none",
-          value: ""
-        }
-      }
-    ];
-  }
-};
-const getCommonAgentData = (data, agentType) => {
-  const systemMessage = getSystemMessage(data);
-  const humanInputMode = getHumanInputMode(data, agentType);
-  const codeExecutionConfig = getCodeExecutionConfig(data);
-  const agentDefaultAutoReply = getAgentDefaultAutoReply(data);
-  const maxConsecutiveAutoReply = getMaximumConsecutiveAutoReply(data);
-  const termination = getTermination(data);
-  const modelIds = getModelIds(data);
-  const tools = getTools$1(data);
-  const parentId = getParentId(data);
-  const nestedChats = getNestedChats$1(data);
-  const contextVariables = getContextVariables(data);
-  const updateAgentStateBeforeReply = getUpdateAgentStateBeforeReply(data);
-  const afterWork = getAfterWork(data);
-  const handoffs = getHandoffIds(data);
-  return new WaldiezAgentData({
-    systemMessage,
-    humanInputMode,
-    codeExecutionConfig,
-    agentDefaultAutoReply,
-    maxConsecutiveAutoReply,
-    termination,
-    modelIds,
-    tools,
-    parentId,
-    nestedChats,
-    contextVariables,
-    updateAgentStateBeforeReply,
-    afterWork,
-    handoffs
-  });
-};
 const getKeysToExclude = (agentType) => {
   const toExclude = ["id", "name", "description", "tags", "requirements", "createdAt", "updatedAt", "data"];
   if (agentType === "rag_user_proxy") {
@@ -3463,6 +3576,9 @@ const getKeysToExclude = (agentType) => {
       "sendIntroductions",
       "groupName"
     );
+  }
+  if (agentType === "doc_agent") {
+    toExclude.push("collectionName", "resetCollection", "parsedDocsPath", "queryEngine");
   }
   return toExclude;
 };
@@ -3506,6 +3622,15 @@ const getAgentDataToImport = (jsonData, agentType) => {
       enableClearHistory: getEnableClearHistory(jsonData),
       sendIntroductions: getSendIntroductions(jsonData),
       groupName: getGroupName(jsonData)
+    });
+  }
+  if (agentType === "doc_agent") {
+    return new WaldiezAgentDocAgentData({
+      ...data,
+      collectionName: getCollectionName$1(jsonData),
+      resetCollection: getResetCollection(jsonData),
+      parsedDocsPath: getParsedDocsPath(jsonData),
+      queryEngine: getQueryEngine(jsonData)
     });
   }
   return data;
@@ -3553,6 +3678,9 @@ const updateAgentDataToExport = (agentType, agentData, data) => {
   if (agentType === "group_manager") {
     updateGroupManager(agentData, data);
   }
+  if (agentType === "doc_agent") {
+    updateDocAgent(agentData, data);
+  }
 };
 const updateRagAgent = (agentData, data) => {
   agentData.retrieveConfig = getRetrieveConfig(data);
@@ -3575,6 +3703,12 @@ const updateGroupManager = (agentData, data) => {
   agentData.sendIntroductions = getSendIntroductions(data);
   agentData.initialAgentId = getInitialAgentId(data);
   agentData.groupName = getGroupName(data);
+};
+const updateDocAgent = (agentData, data) => {
+  agentData.collectionName = getCollectionName$1(data);
+  agentData.resetCollection = getResetCollection(data);
+  agentData.queryEngine = getQueryEngine(data);
+  agentData.parsedDocsPath = getParsedDocsPath(data);
 };
 const ValidChatMessageTypes = ["string", "method", "rag_message_generator", "none"];
 const messageMapper = {

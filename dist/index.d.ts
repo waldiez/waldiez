@@ -1409,6 +1409,10 @@ declare class WaldiezAgentDocAgent extends WaldiezAgent {
  * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
  * @param afterWork - The handoff transition after work of the agent
  * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @param collectionName - The name of the collection for the agent
+ * @param resetCollection - Whether the collection should be reset or not
+ * @param parsedDocsPath - The path to the parsed documents for the agent
+ * @param queryEngine - The query engine configuration for the agent
  * @see {@link WaldiezAgentData}
  * @see {@link WaldiezAgentLinkedTool}
  * @see {@link WaldiezAgentNestedChat}
@@ -1417,10 +1421,11 @@ declare class WaldiezAgentDocAgent extends WaldiezAgent {
  * @see {@link WaldiezAgentCodeExecutionConfig}
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
+ * @see {@link RAGQueryEngine}
  */
 declare class WaldiezAgentDocAgentData extends WaldiezAgentData {
     collectionName: string | null;
-    emptyCollection: boolean;
+    resetCollection: boolean;
     parsedDocsPath: string | null;
     queryEngine: RAGQueryEngine | null;
     constructor(props?: {
@@ -1439,7 +1444,7 @@ declare class WaldiezAgentDocAgentData extends WaldiezAgentData {
         afterWork: WaldiezTransitionTarget | null;
         handoffs?: string[];
         collectionName?: string | null;
-        emptyCollection?: boolean;
+        resetCollection?: boolean;
         parsedDocsPath?: string | null;
         queryEngine?: RAGQueryEngine | null;
     });
