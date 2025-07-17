@@ -138,10 +138,18 @@ def test_waldiez_doc_agent_get_llm_requirements_no_models() -> None:
     all_models: list[WaldiezModel] = []
 
     # When
-    requirements = doc_agent.get_llm_requirements(all_models)
+    requirements = doc_agent.get_llm_requirements(
+        all_models=all_models,
+        ag2_version="0.1.0",
+    )
 
     # Then
-    expected = {"llama-index", "llama-index-core", "llama-index-llms-openai"}
+    expected = {
+        "llama-index",
+        "llama-index-core",
+        "llama-index-llms-openai",
+        "ag2[rag]==0.1.0",
+    }
     assert requirements == expected
 
 
@@ -167,10 +175,18 @@ def test_waldiez_doc_agent_get_llm_requirements_with_models() -> None:
     all_models = [model]
 
     # When
-    requirements = doc_agent.get_llm_requirements(all_models)
+    requirements = doc_agent.get_llm_requirements(
+        all_models=all_models,
+        ag2_version="0.1.0",
+    )
 
     # Then
-    expected = {"llama-index", "llama-index-core", "llama-index-llms-openai"}
+    expected = {
+        "llama-index",
+        "llama-index-core",
+        "llama-index-llms-openai",
+        "ag2[rag]==0.1.0",
+    }
     assert requirements == expected
 
 
@@ -187,10 +203,12 @@ def test_waldiez_doc_agent_get_llm_requirements_with_nonexistent_model() -> (
     all_models: list[WaldiezModel] = []
 
     # When
-    requirements = doc_agent.get_llm_requirements(all_models)
-
+    requirements = doc_agent.get_llm_requirements(
+        all_models=all_models,
+        ag2_version="0.1.0",
+    )
     # Then
-    expected = {"llama-index", "llama-index-core"}
+    expected = {"llama-index", "llama-index-core", "ag2[rag]==0.1.0"}
     assert requirements == expected
 
 

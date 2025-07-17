@@ -33,6 +33,7 @@ if TYPE_CHECKING:
 
 def get_llm_requirements(
     model: "WaldiezModel",
+    ag2_version: str,
 ) -> set[str]:
     """Get the LLM requirements for the model.
 
@@ -40,13 +41,19 @@ def get_llm_requirements(
     ----------
     model : WaldiezModel
         The model to get the LLM requirements for.
+    ag2_version : str
+        The version of AG2 to use for the requirements.
 
     Returns
     -------
     set[str]
         The set of LLM requirements for the model.
     """
-    requirements: set[str] = {"llama-index", "llama-index-core"}
+    requirements: set[str] = {
+        "llama-index",
+        "llama-index-core",
+        f"ag2[rag]=={ag2_version}",
+    }
     match model.data.api_type:
         case "openai":
             requirements.add("llama-index-llms-openai")

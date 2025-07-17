@@ -279,7 +279,10 @@ class Waldiez:
             requirements.update(captain_extras)
         for doc_agent in self.flow.data.agents.docAgents:
             requirements.update(
-                doc_agent.get_llm_requirements(list(self.models))
+                doc_agent.get_llm_requirements(
+                    ag2_version=autogen_version,
+                    all_models=list(self.models),
+                )
             )
         requirements.update(
             get_models_extra_requirements(

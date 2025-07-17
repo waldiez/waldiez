@@ -94,12 +94,15 @@ class WaldiezDocAgent(WaldiezAgent):
 
     def get_llm_requirements(
         self,
+        ag2_version: str,
         all_models: list[WaldiezModel],
     ) -> set[str]:
         """Get the LLM requirements for the document agent.
 
         Parameters
         ----------
+        ag2_version : str
+            The version of AG2 to use for the requirements.
         all_models : list[WaldiezModel]
             All the models in the flow.
 
@@ -108,12 +111,16 @@ class WaldiezDocAgent(WaldiezAgent):
         set[str]
             The set of LLM requirements for the document agent.
         """
-        requirements = {"llama-index", "llama-index-core"}
+        requirements = {
+            "llama-index",
+            "llama-index-core",
+            f"ag2[rag]=={ag2_version}",
+        }
         if not self.data.model_ids:
             requirements.add("llama-index-llms-openai")
         else:
             for model_id in self.data.model_ids:
                 model = next((m for m in all_models if m.id == model_id), None)
                 if model:
-                    return model.get_llm_requirements()
+                    return model.get_llm_requirements(ag2_version=ag2_version)
         return requirements

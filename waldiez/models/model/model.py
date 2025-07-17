@@ -234,15 +234,20 @@ class WaldiezModel(WaldiezBase):
             return set_bedrock_aws_config(_llm_config, self.data.aws)
         return set_default_base_url(_llm_config, self.data.api_type)
 
-    def get_llm_requirements(self) -> set[str]:
+    def get_llm_requirements(self, ag2_version: str) -> set[str]:
         """Get the LLM requirements for the model.
+
+        Parameters
+        ----------
+        ag2_version : str
+            The version of AG2 to use for the requirements.
 
         Returns
         -------
         set[str]
             The set of LLM requirements for the model.
         """
-        return get_llm_requirements(self)
+        return get_llm_requirements(self, ag2_version=ag2_version)
 
     def get_llm_imports(self) -> set[str]:
         """Get the LLM import statements for the model.

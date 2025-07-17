@@ -41,10 +41,14 @@ class TestGetLLMRequirements:
         )
 
         # When
-        requirements = get_llm_requirements(model)
+        requirements = get_llm_requirements(
+            model,
+            ag2_version="0.1.0",
+        )
 
         # Then
         expected = {
+            "ag2[rag]==0.1.0",
             "llama-index",
             "llama-index-core",
             "llama-index-llms-openai",
@@ -67,10 +71,14 @@ class TestGetLLMRequirements:
         )
 
         # When
-        requirements = get_llm_requirements(model)
+        requirements = get_llm_requirements(
+            model,
+            ag2_version="0.1.0",
+        )
 
         # Then
         expected = {
+            "ag2[rag]==0.1.0",
             "llama-index",
             "llama-index-core",
             "llama-index-llms-anthropic",
@@ -93,10 +101,14 @@ class TestGetLLMRequirements:
         )
 
         # When
-        requirements = get_llm_requirements(model)
+        requirements = get_llm_requirements(
+            model,
+            ag2_version="0.1.0",
+        )
 
         # Then
         expected = {
+            "ag2[rag]==0.1.0",
             "llama-index",
             "llama-index-core",
             "llama-index-llms-azure-openai",
@@ -119,10 +131,14 @@ class TestGetLLMRequirements:
         )
 
         # When
-        requirements = get_llm_requirements(model)
+        requirements = get_llm_requirements(
+            model,
+            ag2_version="0.1.0",
+        )
 
         # Then
         expected = {
+            "ag2[rag]==0.1.0",
             "llama-index",
             "llama-index-core",
             "llama-index-llms-nvidia",
@@ -148,10 +164,14 @@ class TestGetLLMRequirements:
         )
 
         # When
-        requirements = get_llm_requirements(model)
+        requirements = get_llm_requirements(
+            model,
+            ag2_version="0.1.0",
+        )
 
         # Then
         expected = {
+            "ag2[rag]==0.1.0",
             "llama-index",
             "llama-index-core",
             "llama-index-llms-openai-like",
