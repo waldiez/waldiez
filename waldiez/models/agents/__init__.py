@@ -25,6 +25,11 @@ from .captain import (
     WaldiezCaptainAgentData,
     WaldiezCaptainAgentLibEntry,
 )
+from .doc_agent import (
+    WaldiezDocAgent,
+    WaldiezDocAgentData,
+    WaldiezDocAgentQueryEngine,
+)
 from .extra_requirements import (
     get_captain_agent_extra_requirements,
     get_retrievechat_extra_requirements,
@@ -99,6 +104,8 @@ __all__ = [
     "WaldiezCaptainAgent",
     "WaldiezCaptainAgentData",
     "WaldiezCaptainAgentLibEntry",
+    "WaldiezDocAgent",
+    "WaldiezDocAgentData",
     "WaldiezRagUserProxy",
     "WaldiezRagUserProxyData",
     "WaldiezRagUserProxyModels",
@@ -107,6 +114,7 @@ __all__ = [
     "WaldiezReasoningAgentReasonConfig",
     "WaldiezUserProxy",
     "WaldiezUserProxyData",
+    "WaldiezDocAgentQueryEngine",
     "WaldiezRagUserProxyRetrieveConfig",
     "WaldiezRagUserProxyTask",
     "WaldiezRagUserProxyChunkMode",

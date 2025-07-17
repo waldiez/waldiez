@@ -13,6 +13,7 @@ from waldiez.models import (
 from .agents import (
     get_assistant,
     get_captain_agent,
+    get_doc_agent,
     get_rag_user,
     get_reasoning_agent,
     get_user_proxy,
@@ -49,7 +50,7 @@ def get_flow(
     langchain_tool = get_interop_tool(tool_id="wt-2", tool_type="langchain")
     crewai_tool = get_interop_tool(tool_id="wt-3", tool_type="crewai")
     shared_tool = get_tool(tool_id="wt-4", tool_type="shared")
-    chats = get_chats(is_group=is_group, count=5 if not is_group else 6)
+    chats = get_chats(is_group=is_group, count=6 if not is_group else 7)
     agents = _get_flow_agents(
         is_group=is_group,
         is_pattern_based=is_pattern_based,
@@ -88,6 +89,7 @@ def _get_flow_agents(
     rag_user = get_rag_user()
     reasoning_agent = get_reasoning_agent()
     captain_agent = get_captain_agent()
+    doc_agent = get_doc_agent()
     assistants: list[WaldiezAssistant] = [assistant1]
     group_managers: list[WaldiezGroupManager] = []
     if not is_group:
@@ -102,7 +104,7 @@ def _get_flow_agents(
         assistant1.data.parent_id = "wa-3"  # Set parent_id for group chat
         assistant1.data.handoffs = ["nested-chat"]
         assistant2 = get_assistant(
-            agent_id="wa-7",
+            agent_id="wa-8",
             is_multimodal=True,
             with_nested_chat=is_pattern_based,
         )
@@ -117,5 +119,6 @@ def _get_flow_agents(
         reasoningAgents=[reasoning_agent],
         captainAgents=[captain_agent],
         groupManagerAgents=group_managers,
+        docAgents=[doc_agent],
     )
     return agents

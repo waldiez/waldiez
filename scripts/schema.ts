@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import fs from "fs";
+import fs from "fs-extra";
 import path from "path";
 import tsj from "ts-json-schema-generator";
 import url from "url";
@@ -36,3 +36,5 @@ fs.writeFile(outputPath, schemaString, err => {
     }
     console.info(`Schema written to ${outputPath}`);
 });
+
+// fs.writeFileSync("waldiez-flow.json", JSON.stringify(WaldiezJsonSchema, null, 2));

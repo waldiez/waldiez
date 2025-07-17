@@ -8,7 +8,6 @@ from typing import Optional, Union
 from ..protocols import PathResolver
 
 
-# pylint: disable=too-few-public-methods
 class DefaultPathResolver(PathResolver):
     """Default path resolver for Waldiez items."""
 
@@ -22,36 +21,51 @@ class DefaultPathResolver(PathResolver):
 
         Returns
         -------
-        Optional[Path]
-            The resolved local path or None if not found.
+        str
+            The resolved local path string (raw path format).
         """
-        resolved = _check_local_path(path)
+        resolved = DefaultPathResolver._check_local_path(path)
         if not resolved:
             return _get_raw_path_string(path)
         return _get_raw_path_string(resolved)
 
+    def is_local(self, path: str) -> bool:
+        """Check if the given path is a local path.
 
-def _check_local_path(string: str) -> Optional[Path]:
-    """Check if a string is a local path.
+        Parameters
+        ----------
+        path : str
+            The path to check.
 
-    Parameters
-    ----------
-    string : str
-        The string to check.
+        Returns
+        -------
+        bool
+            True if the path is a local path, False otherwise.
+        """
+        return DefaultPathResolver._check_local_path(path) is not None
 
-    Returns
-    -------
-    bool
-        True if the path is a local path.
-    """
-    # pylint: disable=broad-exception-caught
-    try:
-        path = Path(string).resolve()
-    except BaseException:  # pragma: no cover
+    @staticmethod
+    def _check_local_path(string: str) -> Optional[Path]:
+        """Check if a string is a local path.
+
+        Parameters
+        ----------
+        string : str
+            The string to check.
+
+        Returns
+        -------
+        bool
+            True if the path is a local path.
+        """
+        # pylint: disable=broad-exception-caught
+        try:
+            path = Path(string).resolve()
+        except BaseException:  # pragma: no cover
+            return None
+        if path.exists():
+            return path
         return None
-    if path.exists():
-        return path
-    return None
 
 
 def _get_raw_path_string(path: Union[str, Path]) -> str:
@@ -71,23 +85,7 @@ def _get_raw_path_string(path: Union[str, Path]) -> str:
         path = str(path)
     while path.startswith('r"') and path.endswith('"'):
         path = path[2:-1]
+    while path.startswith("r'") and path.endswith("'"):
+        path = path[2:-1]
+    # return repr(path)
     return f'r"{path}"'
-
-
-# def get_path_string(path: str) -> str:
-#     """Get the path string.
-
-#     Parameters
-#     ----------
-#     path : str
-#         The string to check.
-
-#     Returns
-#     -------
-#     str
-#         The local path string.
-#     """
-#     resolved = _check_local_path(path)
-#     if not resolved:
-#         return _get_raw_path_string(path)
-#     return _get_raw_path_string(resolved)

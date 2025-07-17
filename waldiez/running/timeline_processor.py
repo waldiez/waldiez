@@ -10,7 +10,6 @@ Timeline Analysis Data Processor.
 Processes CSV files and outputs JSON structure for timeline visualization
 """
 
-import argparse
 import json
 import os
 import re
@@ -1165,84 +1164,3 @@ def recursive_search(obj: Any, keys_to_find: list[str]) -> str:
             if result != "Unknown":
                 return result
     return "Unknown"
-
-
-def main() -> int:
-    """Run the timeline processor."""
-    parser = argparse.ArgumentParser(
-        description="Process timeline CSV files and output JSON"
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        required=True,
-        help="Directory to get the csv files from and save the output JSON",
-    )
-
-    args = parser.parse_args()
-
-    output_dir = Path(args.output_dir).resolve()
-    if not output_dir.is_dir():
-        LOG.error("Output directory does not exist: %s", output_dir)
-        return 1
-    LOG.info("Using output directory: %s", output_dir)
-    files = TimelineProcessor.get_files(output_dir)
-    agents_file = files["agents"]
-    chat_file = files["chat"]
-    events_file = files["events"]
-    functions_file = files["functions"]
-    if not any(files.values()):
-        LOG.error(
-            "No CSV files found in the output directory: %s",
-            output_dir,
-        )
-        return 1
-    output_file = os.path.join(output_dir, "timeline.json")
-    if not agents_file or not os.path.exists(agents_file):
-        agents_file = None
-    if not chat_file or not os.path.exists(chat_file):
-        chat_file = None
-    if not events_file or not os.path.exists(events_file):
-        events_file = None
-    if not functions_file or not os.path.exists(functions_file):
-        functions_file = None
-
-    processor = TimelineProcessor()
-
-    try:
-        processor.load_csv_files(
-            agents_file=agents_file,
-            chat_file=chat_file,
-            events_file=events_file,
-            functions_file=functions_file,
-        )
-
-        result = processor.process_timeline()
-
-        with open(output_file, "w", encoding="utf-8") as f:
-            json.dump(result, f, indent=2, default=str)
-
-        print(f"Timeline data saved to {output_file}")
-        print(
-            f"Summary: {result['summary']['total_sessions']} sessions, "
-            f"${result['summary']['total_cost']:.6f} total cost, "
-            f"{result['summary']['total_time']:.1f}s duration"
-        )
-
-        # Print model statistics
-        print("\nModel Statistics:")
-        for model, stats in result["summary"]["model_stats"].items():
-            print(
-                f"  {model}: {stats['count']} sessions, "
-                f"{stats['tokens']} tokens, ${stats['cost']:.6f}"
-            )
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return 1
-
-    return 0
-
-
-if __name__ == "__main__":
-    exit(main())

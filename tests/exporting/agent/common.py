@@ -11,6 +11,7 @@ from waldiez.models import (
     WaldiezAgentType,
     WaldiezAssistant,
     WaldiezCaptainAgent,
+    WaldiezDocAgent,
     WaldiezModel,
     WaldiezRagUserProxy,
     WaldiezReasoningAgent,
@@ -83,6 +84,8 @@ def create_agent(
         agent_cls = WaldiezReasoningAgent
     if agent_type == "captain":
         agent_cls = WaldiezCaptainAgent
+    if agent_type == "doc_agent":
+        agent_cls = WaldiezDocAgent
     agent = agent_cls(
         id=f"wa-{counter}",
         name=f"agent{counter}",

@@ -101,11 +101,12 @@ class BaseExtras(ExportContributor):
         content : str
             The content to prepend.
         """
-        if content and content.strip():
+        stripped = content.rstrip()
+        if stripped and stripped not in self.before_agent:
             if self.before_agent:
-                self.before_agent = content.rstrip() + "\n" + self.before_agent
+                self.before_agent = stripped + "\n" + self.before_agent
             else:
-                self.before_agent = content.rstrip()
+                self.before_agent = stripped
 
     def append_before_agent(self, content: str) -> None:
         """Append content to the before_agent section.
@@ -115,11 +116,12 @@ class BaseExtras(ExportContributor):
         content : str
             The content to append.
         """
-        if content and content.strip():
+        stripped = content.rstrip()
+        if stripped and stripped not in self.before_agent:
             if self.before_agent:
-                self.before_agent += "\n" + content.rstrip()
+                self.before_agent += "\n" + stripped
             else:
-                self.before_agent = content.rstrip()
+                self.before_agent = stripped
 
     def append_after_agent(self, content: str) -> None:
         """Append content to the after_agent section.
@@ -129,11 +131,12 @@ class BaseExtras(ExportContributor):
         content : str
             The content to append.
         """
-        if content and content.strip():
+        stripped = content.rstrip()
+        if stripped and stripped not in self.after_agent:
             if self.after_agent:
-                self.after_agent += "\n" + content.rstrip()
+                self.after_agent += "\n" + stripped
             else:
-                self.after_agent = content.rstrip()
+                self.after_agent = stripped
 
     def append_after_all_agents(self, content: str) -> None:
         """Append content to the after_all_agents section.
@@ -143,11 +146,12 @@ class BaseExtras(ExportContributor):
         content : str
             The content to append.
         """
-        if content and content.strip():
+        stripped = content.rstrip()
+        if stripped and stripped not in self.after_all_agents:
             if self.after_all_agents:
-                self.after_all_agents += "\n" + content.rstrip()
+                self.after_all_agents += "\n" + stripped
             else:
-                self.after_all_agents = content.rstrip()
+                self.after_all_agents = stripped
 
     def prepend_after_all_agents(self, content: str) -> None:
         """Prepend content to the after_all_agents section.
@@ -157,13 +161,12 @@ class BaseExtras(ExportContributor):
         content : str
             The content to prepend.
         """
-        if content and content.strip():
+        stripped = content.rstrip()
+        if stripped and stripped not in self.after_all_agents:
             if self.after_all_agents:
-                self.after_all_agents = (
-                    content.rstrip() + "\n" + self.after_all_agents
-                )
+                self.after_all_agents = stripped + "\n" + self.after_all_agents
             else:
-                self.after_all_agents = content.rstrip()
+                self.after_all_agents = stripped
 
     def contribute_to_export(self, result: ExportResult) -> None:
         """Contribute this extras' content to the export result.

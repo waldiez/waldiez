@@ -277,6 +277,10 @@ class Waldiez:
         if self.has_captain_agents:  # pragma: no branch
             captain_extras = get_captain_agent_extra_requirements()
             requirements.update(captain_extras)
+        for doc_agent in self.flow.data.agents.docAgents:
+            requirements.update(
+                doc_agent.get_llm_requirements(list(self.models))
+            )
         requirements.update(
             get_models_extra_requirements(
                 self.models,

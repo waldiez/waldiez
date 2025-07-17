@@ -83,7 +83,7 @@ class StructuredIOStream(IOStream):
         flush = kwargs.get("flush", True)
         payload_type = kwargs.get("type", "print")
         payload["type"] = payload_type
-        print(json.dumps(payload), flush=flush)
+        print(json.dumps(payload, default=str), flush=flush)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
         """Structured input from stdin.
@@ -154,7 +154,11 @@ class StructuredIOStream(IOStream):
                 content_block["content"] = try_parse_maybe_serialized(
                     inner_content
                 )
-        print(json.dumps(message_dump), flush=True, file=sys.stdout)
+        print(
+            json.dumps(message_dump, default=str),
+            flush=True,
+            file=sys.stdout,
+        )
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use

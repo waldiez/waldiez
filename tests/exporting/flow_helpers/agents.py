@@ -13,6 +13,9 @@ from waldiez.models import (
     WaldiezCaptainAgent,
     WaldiezCaptainAgentData,
     WaldiezDefaultCondition,
+    WaldiezDocAgent,
+    WaldiezDocAgentData,
+    WaldiezDocAgentQueryEngine,
     WaldiezRagUserProxy,
     WaldiezRagUserProxyData,
     WaldiezRagUserProxyRetrieveConfig,
@@ -366,4 +369,53 @@ def get_captain_agent(agent_id: str = "wa-6") -> WaldiezCaptainAgent:
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
         data=data,
+    )
+
+
+def get_doc_agent(agent_id: str = "wa-7") -> WaldiezDocAgent:
+    """Get a WaldiezDocAgent.
+
+    Parameters
+    ----------
+    agent_id : str, optional
+        The agent ID, by default "wa-7"
+
+    Returns
+    -------
+    WaldiezDocAgent
+        A WaldiezDocAgent instance.
+    """
+    return WaldiezDocAgent(
+        id=agent_id,
+        name="doc_agent",
+        description="Document Agent",
+        type="agent",
+        agent_type="doc_agent",
+        tags=["doc_agent"],
+        requirements=[],
+        created_at="2021-01-01T00:00:00.000Z",
+        updated_at="2021-01-01T00:00:00.000Z",
+        data=WaldiezDocAgentData(
+            system_message=None,
+            human_input_mode="NEVER",
+            code_execution_config=False,
+            agent_default_auto_reply="I am a document agent.",
+            max_consecutive_auto_reply=5,
+            termination=WaldiezAgentTerminationMessage(
+                type="keyword",
+                criterion="ending",
+                keywords=["bye", "goodbye"],
+                method_content=None,
+            ),
+            model_ids=[],
+            tools=[],
+            nested_chats=[],
+            collection_name="documents",
+            query_engine=WaldiezDocAgentQueryEngine(
+                type="VectorChromaCitationQueryEngine",
+                db_path=None,
+                enable_query_citations=True,
+                citation_chunk_size=512,
+            ),
+        ),
     )

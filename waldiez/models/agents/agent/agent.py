@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=too-many-public-methods
 """Base agent class to be inherited by all agents."""
 
 import warnings
@@ -151,6 +152,26 @@ class WaldiezAgent(WaldiezBase):
     _checked_handoffs: Annotated[bool, Field(init=False, default=False)] = False
 
     @property
+    def args_to_skip(self) -> list[str]:
+        """Get the set of arguments to skip when generating the agent string.
+
+        Returns
+        -------
+        list[str]
+            The list of arguments to skip.
+        """
+        if self.is_doc_agent:
+            return [
+                "description",
+                "human_input_mode",
+                "max_consecutive_auto_reply",
+                "default_auto_reply",
+                "code_execution_config",
+                "is_termination_msg",
+            ]
+        return []
+
+    @property
     def handoffs(self) -> list[WaldiezHandoff]:
         """Get the handoffs for this agent.
 
@@ -267,6 +288,17 @@ class WaldiezAgent(WaldiezBase):
         )
 
     @property
+    def is_assistant(self) -> bool:
+        """Check if the agent is an assistant.
+
+        Returns
+        -------
+        bool
+            True if the agent is an assistant, False otherwise.
+        """
+        return self.agent_type == "assistant"
+
+    @property
     def is_rag_user(self) -> bool:
         """Check if the agent is a RAG user.
 
@@ -276,6 +308,17 @@ class WaldiezAgent(WaldiezBase):
             True if the agent is a RAG user, False otherwise.
         """
         return self.agent_type in ("rag_user", "rag_user_proxy")
+
+    @property
+    def is_doc_agent(self) -> bool:
+        """Check if the agent is a doc agent.
+
+        Returns
+        -------
+        bool
+            True if the agent is a doc agent, False otherwise.
+        """
+        return self.agent_type == "doc_agent"
 
     @property
     def is_group_manager(self) -> bool:
@@ -293,16 +336,9 @@ class WaldiezAgent(WaldiezBase):
         """Return the AG2 class of the agent."""
         class_name = "ConversableAgent"
         if self.is_group_member:
-            if (
-                getattr(self.data, "is_multimodal", False) is True
-            ):  # pragma: no branch
-                class_name = "MultimodalConversableAgent"
-            return class_name
-        if self.agent_type == "assistant":
-            if getattr(self.data, "is_multimodal", False) is True:
-                class_name = "MultimodalConversableAgent"
-            else:
-                class_name = "AssistantAgent"
+            return self.get_group_member_class_name()
+        if self.is_assistant:  # pragma: no branch
+            return self.get_assistant_class_name()
         if self.is_user:
             class_name = "UserProxyAgent"
         if self.is_rag_user:
@@ -313,40 +349,100 @@ class WaldiezAgent(WaldiezBase):
             class_name = "CaptainAgent"
         if self.is_group_manager:
             class_name = "GroupChatManager"
+        if self.is_doc_agent:
+            class_name = "DocAgent"
+        return class_name  # pragma: no cover
+
+    def get_group_member_class_name(self) -> str:
+        """Get the class name for a group member agent.
+
+        Returns
+        -------
+        str
+            The class name for the group member agent.
+        """
+        if (
+            getattr(self.data, "is_multimodal", False) is True
+        ):  # pragma: no branch
+            return "MultimodalConversableAgent"
+        if self.is_captain:  # pragma: no branch
+            return "CaptainAgent"
+        if self.is_reasoning:  # pragma: no branch
+            return "ReasoningAgent"
+        if self.is_doc_agent:  # pragma: no branch
+            return "DocAgent"
+        return "ConversableAgent"  # pragma: no cover
+
+    def get_assistant_class_name(self) -> str:
+        """Get the class name for an assistant agent.
+
+        Returns
+        -------
+        str
+            The class name for the assistant agent.
+        """
+        if getattr(self.data, "is_multimodal", False) is True:
+            class_name = "MultimodalConversableAgent"
+        else:
+            class_name = "AssistantAgent"
         return class_name  # pragma: no cover
 
     @property
     def ag2_imports(self) -> set[str]:
-        """Return the AG2 imports of the agent."""
+        """Return the AG2 imports of the agent.
+
+        Returns
+        -------
+        set[str]
+            A set of import statements required for the agent class.
+
+        Raises
+        ------
+        ValueError
+            If the agent class is unknown and no imports are defined.
+        """
         agent_class = self.ag2_class
         imports = {"import autogen"}
-        if agent_class == "AssistantAgent":
-            imports.add("from autogen import AssistantAgent")
-        elif agent_class == "UserProxyAgent":
-            imports.add("from autogen import UserProxyAgent")
-        elif agent_class == "RetrieveUserProxyAgent":
-            imports.add(
-                "from autogen.agentchat.contrib.retrieve_user_proxy_agent "
-                "import RetrieveUserProxyAgent"
-            )
-        elif agent_class == "MultimodalConversableAgent":
-            imports.add(
-                "from autogen.agentchat.contrib.multimodal_conversable_agent "
-                "import MultimodalConversableAgent"
-            )
-        elif agent_class == "ReasoningAgent":
-            imports.add(
-                "from autogen.agents.experimental import ReasoningAgent"
-            )
-        elif agent_class == "CaptainAgent":
-            imports.add(
-                "from autogen.agentchat.contrib.captainagent "
-                "import CaptainAgent"
-            )
-        elif agent_class == "GroupChatManager":  # pragma: no branch
-            imports.add("from autogen import GroupChat")
-            imports.add("from autogen.agentchat import GroupChatManager")
-            imports.add("from autogen.agentchat.group import ContextVariables")
+        match agent_class:
+            case "AssistantAgent":
+                imports.add("from autogen import AssistantAgent")
+            case "UserProxyAgent":
+                imports.add("from autogen import UserProxyAgent")
+            case "RetrieveUserProxyAgent":
+                imports.add(
+                    "from autogen.agentchat.contrib.retrieve_user_proxy_agent "
+                    "import RetrieveUserProxyAgent"
+                )
+            case "MultimodalConversableAgent":
+                imports.add(
+                    "from "
+                    "autogen.agentchat.contrib.multimodal_conversable_agent "
+                    "import MultimodalConversableAgent"
+                )
+            case "ReasoningAgent":
+                imports.add(
+                    "from autogen.agents.experimental import ReasoningAgent"
+                )
+            case "CaptainAgent":
+                imports.add(
+                    "from autogen.agentchat.contrib.captainagent "
+                    "import CaptainAgent"
+                )
+            case "GroupChatManager":  # pragma: no branch
+                imports.add("from autogen import GroupChat")
+                imports.add("from autogen.agentchat import GroupChatManager")
+                imports.add(
+                    "from autogen.agentchat.group import ContextVariables"
+                )
+            case "DocAgent":
+                imports.add("from autogen.agents.experimental import DocAgent")
+            case "ConversableAgent":
+                imports.add("from autogen import ConversableAgent")
+            case _:  # pragma: no cover
+                raise ValueError(
+                    f"Unknown agent class: {agent_class}. "
+                    "Please implement the imports for this class."
+                )
         return imports
 
     def validate_linked_tools(

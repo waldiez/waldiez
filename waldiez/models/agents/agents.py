@@ -11,6 +11,7 @@ from ..common import WaldiezBase
 from .agent import WaldiezAgent
 from .assistant import WaldiezAssistant
 from .captain import WaldiezCaptainAgent
+from .doc_agent import WaldiezDocAgent
 from .group_manager import WaldiezGroupManager
 from .rag_user_proxy import WaldiezRagUserProxy
 from .reasoning import WaldiezReasoningAgent
@@ -84,6 +85,14 @@ class WaldiezAgents(WaldiezBase):
             default_factory=list,
         ),
     ] = []
+    docAgents: Annotated[
+        list[WaldiezDocAgent],
+        Field(
+            title="Document Agents.",
+            description="The Document agents in the flow.",
+            default_factory=list,
+        ),
+    ] = []
 
     @property
     def members(self) -> Iterator[WaldiezAgent]:
@@ -100,6 +109,7 @@ class WaldiezAgents(WaldiezBase):
         yield from self.reasoningAgents
         yield from self.captainAgents
         yield from self.groupManagerAgents
+        yield from self.docAgents
 
     @model_validator(mode="after")
     def validate_agents(self) -> Self:

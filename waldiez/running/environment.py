@@ -54,12 +54,13 @@ def refresh_environment() -> None:
     # default code execution with docker
     # temp (until we handle/detect docker setup)
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
+    os.environ["ANONYMIZED_TELEMETRY"] = "False"
     try_handle_the_np_thing()
     reload_autogen()
 
 
 # pylint: disable=too-complex,too-many-try-statements,unused-import
-def reload_autogen() -> None:  # noqa: C901
+def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
     """Reload the autogen package.
 
     Try to avoid "please install package x" errors
@@ -160,7 +161,7 @@ def try_handle_the_np_thing() -> None:
     os.environ["NPY_PROMOTION_STATE"] = "weak"
     import numpy as np
 
-    if not hasattr(np, "_no_pep50_warning"):
+    if not hasattr(np, "_no_pep50_warning"):  # pragma: no branch
         import contextlib
 
         @contextlib.contextmanager

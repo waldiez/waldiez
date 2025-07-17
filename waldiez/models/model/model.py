@@ -9,7 +9,9 @@ from pydantic import Field
 from typing_extensions import Annotated, Literal
 
 from ..common import WaldiezBase, now
-from .model_data import WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelData
+from ._aws import WaldiezModelAWS
+from ._llm import get_llm_arg, get_llm_imports, get_llm_requirements
+from .model_data import WaldiezModelAPIType, WaldiezModelData
 
 DEFAULT_BASE_URLS: dict[WaldiezModelAPIType, str] = {
     "deepseek": "https://api.deepseek.com/v1",
@@ -26,7 +28,7 @@ DEFAULT_BASE_URLS: dict[WaldiezModelAPIType, str] = {
 # we can omit the base_url for these models
 MODEL_NEEDS_BASE_URL: dict[WaldiezModelAPIType, bool] = {
     "openai": False,
-    "azure": False,
+    "azure": True,
     "google": False,
     "anthropic": False,
     "cohere": False,
@@ -172,6 +174,10 @@ class WaldiezModel(WaldiezBase):
         )
         if api_key and api_key != "REPLACE_ME":
             os.environ[env_key] = api_key
+            if api_key == "GOOGLE_GEMINI_API_KEY":
+                # llama-index expects GOOGLE_API_KEY
+                # https://docs.llamaindex.ai/en/stable/examples/llm/gemini/
+                os.environ["GOOGLE_API_KEY"] = api_key
         return api_key or "REPLACE_ME"
 
     @property
@@ -227,6 +233,38 @@ class WaldiezModel(WaldiezBase):
             _llm_config.pop("base_url", None)
             return set_bedrock_aws_config(_llm_config, self.data.aws)
         return set_default_base_url(_llm_config, self.data.api_type)
+
+    def get_llm_requirements(self) -> set[str]:
+        """Get the LLM requirements for the model.
+
+        Returns
+        -------
+        set[str]
+            The set of LLM requirements for the model.
+        """
+        return get_llm_requirements(self)
+
+    def get_llm_imports(self) -> set[str]:
+        """Get the LLM import statements for the model.
+
+        Returns
+        -------
+        set[str]
+            The set of LLM import statements for the model.
+        """
+        return get_llm_imports(self)
+
+    def get_llm_arg(
+        self,
+    ) -> tuple[str, str]:
+        """Get the LLM argument and any content before it.
+
+        Returns
+        -------
+        tuple[str, str]
+            The LLM argument string for the model and any content before it.
+        """
+        return get_llm_arg(self)
 
 
 def set_default_base_url(

@@ -139,6 +139,7 @@ class StandardExtras(BaseExtras):
             instance_id=self.instance_id,
             name="code_execution_config",
             value=argunent,
+            skip_trailing_comma=True,
             tabs=1,
         )
 
@@ -185,7 +186,8 @@ class StandardExtras(BaseExtras):
             name="system_message",
             value=argument,
             skip_if_empty_string=True,
-            with_new_line_before=True,
+            with_new_line_before=False,
+            skip_trailing_comma=True,
             tabs=1,
         )
 

@@ -5132,6 +5132,9 @@ const getAgents = (json, nodes, modelIds, toolIds, chatIds) => {
 };
 const getFlowAgents = (agentType, json, nodes, modelIds, toolIds, chatIds) => {
   let keyToCheck = `${agentType}_agents`;
+  if (agentType === "doc_agent") {
+    keyToCheck = "docAgents";
+  }
   if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
     keyToCheck = toCamelCase(keyToCheck);
     if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {

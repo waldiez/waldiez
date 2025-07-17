@@ -23,6 +23,7 @@ from ..core import (
 )
 from .code_execution import CodeExecutionProcessor
 from .extras.captain_agent_extras import CaptainAgentProcessor
+from .extras.doc_agent_extras import DocAgentProcessor
 from .extras.group_manager_agent_extas import GroupManagerProcessor
 from .extras.group_member_extras import GroupMemberAgentProcessor
 from .extras.rag_user_proxy_agent_extras import RagUserProxyAgentProcessor
@@ -125,6 +126,8 @@ class AgentExporter(Exporter[StandardExtras]):
             return self.create_reasoning_extras()
         if self.agent.is_rag_user:
             return self._create_rag_user_extras()
+        if self.agent.is_doc_agent:
+            return self._create_doc_agent_extras()
         return self._create_standard_extras()
 
     def _create_standard_extras(self) -> StandardExtras:
@@ -225,6 +228,41 @@ class AgentExporter(Exporter[StandardExtras]):
         extras.add_imports(rag_result.extra_imports)
         if rag_result.before_agent:
             extras.prepend_before_agent(rag_result.before_agent)
+        return extras
+
+    def _create_doc_agent_extras(self) -> StandardExtras:
+        """Create doc agent extras."""
+        # Start with standard extras
+        extras = self._create_standard_extras()
+
+        doc_processor = DocAgentProcessor(
+            agent=self.agent,
+            agent_names=self.agent_names,
+            model_names=self.model_names,
+            all_models=self.models,
+            output_dir=self.output_dir,
+            cache_seed=self.cache_seed,
+            serializer=(
+                self.context.get_serializer()
+                if self.context.serializer
+                else None
+            ),
+        )
+        doc_extras = doc_processor.process(
+            system_message_config=extras.system_message_config,
+            termination_config=extras.termination_config,
+            code_execution_config=extras.code_execution_config,
+        )
+        # Add doc agent specific arguments
+        for arg in doc_extras.extra_args:
+            extras.add_arg(arg)
+        # Add doc agent specific imports
+        extras.add_imports(doc_extras.extra_imports)
+        if doc_extras.before_agent:
+            extras.prepend_before_agent(doc_extras.before_agent)
+        if doc_extras.after_agent:
+            extras.append_after_agent(doc_extras.after_agent)
+
         return extras
 
     def _create_captain_extras(self) -> StandardExtras:

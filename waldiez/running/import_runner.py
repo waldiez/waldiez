@@ -16,6 +16,7 @@ import asyncio
 import importlib.util
 import threading
 import time
+import traceback
 from pathlib import Path
 from types import ModuleType
 from typing import TYPE_CHECKING, Callable, Union
@@ -142,7 +143,8 @@ class WaldiezImportRunner(WaldiezBaseRunner):
             results_container["results"] = []
         except Exception as e:  # pylint: disable=broad-exception-caught
             results_container["exception"] = e
-            printer("<Waldiez> - Workflow execution failed: %s", e)
+            traceback.print_exc()
+            printer(f"<Waldiez> - Workflow execution failed: {e}")
         finally:
             results_container["completed"] = True
         return results_container["results"] or []
@@ -211,7 +213,8 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 results_container["results"] = []
             except Exception as e:  # pylint: disable=broad-exception-caught
                 results_container["exception"] = e
-                printer("<Waldiez> - Workflow execution failed: %s", e)
+                traceback.print_exc()
+                printer(f"<Waldiez> - Workflow execution failed: {e}")
             finally:
                 results_container["completed"] = True
                 self._execution_loop = None
@@ -311,7 +314,6 @@ class WaldiezImportRunner(WaldiezBaseRunner):
                 return []
             except Exception as e:
                 self._last_exception = e
-                printer("Workflow execution failed: %s", e)
                 raise
 
         # Create cancellable task

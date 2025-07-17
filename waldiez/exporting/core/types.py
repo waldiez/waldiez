@@ -150,6 +150,7 @@ class InstanceArgument:
     with_new_line_after: bool = False
     with_new_line_if_empty: bool = False
     skip_if_empty_string: bool = True
+    skip_trailing_comma: bool = False
     comment: Optional[str] = None
 
     def has_content(self) -> bool:
@@ -192,9 +193,11 @@ class InstanceArgument:
         ):
             return "\n" if self.with_new_line_if_empty else ""
         space = " " * (self.tabs * self.tabs_length)
-        content = f"{space}{self.name}={self.value}," + (
-            f"  # {self.comment}" if self.comment else ""
-        )
+        content = f"{space}{self.name}={self.value}"
+        if not self.skip_trailing_comma:
+            content += ","
+        if self.comment:
+            content += f"  # {self.comment}"
         if self.with_new_line_before or prepend_new_line:
             content = "\n" + content
         if self.with_new_line_after or append_new_line:

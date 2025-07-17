@@ -87,6 +87,20 @@ class PathResolver(Protocol):
             If the path cannot be resolved.
         """
 
+    def is_local(self, path: str) -> bool:  # pyright: ignore
+        """Check if the given path is a local path.
+
+        Parameters
+        ----------
+        path : str
+            The path to check.
+
+        Returns
+        -------
+        bool
+            True if the path is a local path, False otherwise.
+        """
+
 
 class ContentGenerator(Protocol):
     """Protocol for generating content."""
