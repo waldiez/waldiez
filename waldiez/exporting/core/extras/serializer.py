@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=too-many-return-statements
 # pyright: reportUnknownArgumentType=false,reportUnknownVariableType=false
 """serializer for converting items to formatted strings."""
 
@@ -90,7 +91,7 @@ def serialize_item(
         return _format_primitive(item)
 
     # Handle circular references in containers
-    if isinstance(item, (dict, list)) and id(item) in _visited:
+    if isinstance(item, (dict, list, tuple, set)) and id(item) in _visited:
         return '"<circular reference>"'
 
     next_indent = " " * 4 * (tabs + 1)
@@ -110,6 +111,20 @@ def serialize_item(
             for sub_item in item
         ]
         return _format_container(items, "[", "]", tabs)
+
+    if isinstance(item, tuple):
+        items = [
+            f"{next_indent}{serialize_item(sub_item, tabs + 1, _visited)}"
+            for sub_item in item
+        ]
+        return _format_container(items, "(", ")", tabs)
+
+    if isinstance(item, set):
+        items = [
+            f"{next_indent}{serialize_item(sub_item, tabs + 1, _visited)}"
+            for sub_item in item
+        ]
+        return _format_container(items, "{", "}", tabs)
 
     # Fallback for unknown object types
     return repr(item)

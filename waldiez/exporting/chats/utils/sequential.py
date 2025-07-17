@@ -196,7 +196,7 @@ def _get_chat_dict_string(
                 additional_methods_string += "\n" + method_content
             chat_string += "\n" + f'{tab}    "message": {message},'
         elif chat.data.message.type == "string" and chat.data.message.content:
-            chat_string += "\n" + f'{tab}    "message": "{message}",'
+            chat_string += "\n" + f'{tab}    "message": {message},'
     chat_string += "\n" + tab + "},"
     return chat_string, additional_methods_string
 

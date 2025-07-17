@@ -176,7 +176,7 @@ def get_simple_chat_string(
     if not skip_cache:
         chat_string += "\n" + f"{tab}    cache=cache,"
     for key, value in chat_args.items():
-        if isinstance(value, str):
+        if isinstance(value, str) and key != "message":
             chat_string += "\n" + f'{tab}    {key}="{value}",'
         elif isinstance(value, dict):
             chat_string += (
@@ -303,7 +303,7 @@ def get_chat_message(
             )
         if chat.message.type == "string" and chat.data.message.content:
             return (
-                "\n" + f'{tab}    message="{message}",',
+                "\n" + f"{tab}    message={message},",
                 additional_methods_string,
             )
         if chat.message.type == "rag_message_generator":

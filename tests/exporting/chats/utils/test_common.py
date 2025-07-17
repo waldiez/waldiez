@@ -5,6 +5,7 @@
 # pylint: disable=no-self-use
 """Test waldiez.exporting.chats.utils.common."""
 
+import json
 from typing import Optional
 
 from waldiez.exporting.chats.utils.common import get_chat_message_string
@@ -116,7 +117,7 @@ class TestGetChatMessageString:
 
         result, content = get_chat_message_string(sender, chat, chat_names)
 
-        assert result == message_text
+        assert result == f'"{message_text}"'
         assert content is None
 
     def test_empty_string_message_content(self) -> None:
@@ -143,7 +144,7 @@ class TestGetChatMessageString:
 
         result, content = get_chat_message_string(sender, chat, chat_names)
 
-        assert result == multiline_message
+        assert result == json.dumps(multiline_message)
         assert content is None
 
     def test_different_chat_names(self) -> None:
@@ -177,7 +178,7 @@ class TestGetChatMessageString:
 
         result, content = get_chat_message_string(sender, chat, chat_names)
 
-        assert result == special_message
+        assert result == json.dumps(special_message)
         assert content is None
 
     def test_unicode_in_string_message(self) -> None:
@@ -191,7 +192,7 @@ class TestGetChatMessageString:
 
         result, content = get_chat_message_string(sender, chat, chat_names)
 
-        assert result == unicode_message
+        assert result == f'"{unicode_message}"'
         assert content is None
 
     def test_different_message_types(self) -> None:
@@ -214,7 +215,7 @@ class TestGetChatMessageString:
         result_string, content_string = get_chat_message_string(
             sender, chat_string, chat_names
         )
-        assert result_string == "test"
+        assert result_string == '"test"'
         assert content_string is None
 
         # Test "method" type
@@ -294,7 +295,7 @@ class TestReturnTypes:
 
         result, content = get_chat_message_string(sender, chat, chat_names)
 
-        assert result == message_content
+        assert result == json.dumps(message_content)
         assert content is None
 
     def test_realistic_empty_message_scenario(self) -> None:
@@ -322,7 +323,7 @@ class TestReturnTypes:
             "chat1", message_type="string", message_content="Welcome!"
         )
         result1, content1 = get_chat_message_string(sender1, chat1, chat_names)
-        assert result1 == "Welcome!"
+        assert result1 == '"Welcome!"'
         assert content1 is None
 
         message_content = (
@@ -398,7 +399,7 @@ class TestReturnTypes:
         )
 
         # Verify each step
-        assert intro_result == "Let's begin the task!"
+        assert intro_result == '"Let\'s begin the task!"'
         assert intro_content is None
 
         assert task_result is not None

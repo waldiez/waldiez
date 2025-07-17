@@ -84,7 +84,7 @@ def test_single_chat_with_nested() -> None:
             summary=WaldiezChatSummary(),
             message=WaldiezChatMessage(
                 type="string",
-                content="Hello wa-2 from wa-1",
+                content='Hello "wa-2" from "wa-1"',
                 use_carryover=False,
                 context={
                     "variable1": "value1",
@@ -115,13 +115,13 @@ def test_single_chat_with_nested() -> None:
             nested_chat=WaldiezChatNested(
                 message=WaldiezChatMessage(
                     type="string",
-                    content="Hello wa-3 from wa-1",
+                    content='Hello "wa-3" from "wa-1"',
                     use_carryover=False,
                     context={},
                 ),
                 reply=WaldiezChatMessage(
                     type="string",
-                    content="Hello wa-1 from wa-3",
+                    content='Hello "wa-1" from "wa-3"',
                     use_carryover=False,
                     context={},
                 ),
@@ -162,7 +162,7 @@ def nested_chat_message(recipient, messages, sender, config):
                 ),
                 reply=WaldiezChatMessage(
                     type="string",
-                    content="Hello wa-2 from wa-4",
+                    content='Hello "wa-2" from "wa-4"',
                     use_carryover=False,
                     context={},
                 ),
@@ -204,7 +204,7 @@ def nested_chat_message(recipient, messages, sender, config):
             summary_method="last_msg",
             clear_history=True,
             variable1="value1",
-            message="Hello wa-2 from wa-1",
+            message="Hello \\"wa-2\\" from \\"wa-1\\"",
         )
 """
     assert exporter.extras.chat_initiation == expected
@@ -219,7 +219,7 @@ agent3_chat_queue: list[dict[str, Any]] = [
         "clear_history": True,
         "chat_id": 0,
         "recipient": agent1,
-        "message": "Hello wa-1 from wa-3"
+        "message": "Hello \\"wa-1\\" from \\"wa-3\\""
     },
 ]
 
@@ -237,7 +237,7 @@ agent4_chat_queue: list[dict[str, Any]] = [
         "chat_id": 0,
         "recipient": agent3,
         "sender": agent1,
-        "message": "Hello wa-3 from wa-1"
+        "message": "Hello \\"wa-3\\" from \\"wa-1\\""
     },
 ]
 

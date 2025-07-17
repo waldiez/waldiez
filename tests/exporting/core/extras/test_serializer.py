@@ -79,3 +79,16 @@ def test_default_serializer() -> None:
     # Test with empty structures
     assert serializer.serialize({}) == "{}"
     assert serializer.serialize([]) == "[]"
+
+    item7: tuple[str, int] = ("test", 123)
+    result = serializer.serialize(item7)
+    expected = """(
+        "test",
+        123
+    )"""
+    assert result == expected
+
+    item8: set[str] = {"a", "b", "c"}
+    result = serializer.serialize(item8)
+    assert result.startswith("{") and result.endswith("}")
+    assert "a" in result and "b" in result and "c" in result

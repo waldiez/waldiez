@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common utilities for exporting chats."""
 
+import json
 from typing import Optional
 
 from waldiez.models import WaldiezAgent, WaldiezChat
@@ -36,7 +37,9 @@ def get_chat_message_string(
         if chat.message.content is None:  # pragma: no cover
             # should be coverred previousliy on pydantic validation
             return "None", None
-        return chat.message.content, None
+        if not chat.message.content:
+            return "", None
+        return json.dumps(chat.message.content, ensure_ascii=False), None
 
     is_rag_with_carryover = sender.is_rag_user and chat.message.use_carryover
     chat_name = chat_names[chat.id]

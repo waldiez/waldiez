@@ -270,7 +270,7 @@ def get_chat_nested_string(
         return message.content, None
     chat_name = chat_names[chat.id]
     if is_reply:
-        function_content, function_name = chat.get_nested_chat_message_function(
+        function_content, function_name = chat.get_nested_chat_reply_function(
             name_suffix=chat_name
         )
     else:
