@@ -168,6 +168,8 @@ class WaldiezAgent(WaldiezBase):
                 "default_auto_reply",
                 "code_execution_config",
                 "is_termination_msg",
+                "functions",
+                "update_agent_state_before_reply",
             ]
         return []
 

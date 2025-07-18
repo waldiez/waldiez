@@ -68,8 +68,9 @@ class GroupMemberAgentProcessor:
         self.result = GroupMemberProcessorResult()
         if not self.agent.is_group_member:
             return self.result
-        self._process_agent_functions()
-        self._process_agent_update_state_before_reply()
+        if not self.agent.is_doc_agent:
+            self._process_agent_functions()
+            self._process_agent_update_state_before_reply()
         self._process_handoff_registrations()
         return self.result
 
