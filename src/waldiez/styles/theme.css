@@ -2,21 +2,26 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-
-a {
+/* stylelint-disable */
+.flow-wrapper a,
+#modal-root a {
   color: #007bff;
 }
 
-a:visited {
+.flow-wrapper a:visited,
+#modal-root a:visited {
   color: #007bff;
 }
 
-input[type="file"] {
+.flow-wrapper input[type="file"],
+#modal-root input[type="file"] {
   display: none;
 }
 
-input,
-textarea {
+.flow-wrapper input,
+.flow-wrapper textarea,
+#modal-root input,
+#modal-root textarea {
   all: unset;
   width: 100%;
   padding: 8px 16px;
@@ -30,26 +35,34 @@ textarea {
   box-sizing: border-box;
 }
 
-textarea {
+.flow-wrapper textarea,
+#modal-root textarea {
   resize: vertical;
   min-height: 3rem;
   font-family: inherit;
 }
 
-input:hover,
-textarea:hover,
-input:focus,
-textarea:focus {
+.flow-wrapper input:hover,
+.flow-wrapper textarea:hover,
+.flow-wrapper input:focus,
+.flow-wrapper textarea:focus,
+#modal-root input:hover,
+#modal-root textarea:hover,
+#modal-root input:focus,
+#modal-root textarea:focus {
   outline: none;
   border-color: #3b82f6;
 }
 
-input::placeholder,
-textarea::placeholder {
+.flow-wrapper input::placeholder,
+.flow-wrapper textarea::placeholder,
+#modal-root input::placeholder,
+#modal-root textarea::placeholder {
   color: color-mix(in srgb, var(--text-color) 50%, var(--background-color));
 }
 
-input[type="number"] {
+.flow-wrapper input[type="number"],
+#modal-root input[type="number"] {
   width: auto;
   min-width: 60px;
 }
@@ -62,7 +75,8 @@ input[type="number"] {
   max-width: 100px;
 }
 
-input:disabled {
+.flow-wrapper input:disabled,
+#modal-root input:disabled {
   cursor: unset;
   pointer-events: none;
   opacity: 0.8;
@@ -245,30 +259,41 @@ body.waldiez-light .editor-nav-action:hover {
   background-color: #fefefe;
 }
 
-body.waldiez-light input[type="text"],
-body.waldiez-light input[type="password"],
-body.waldiez-light input[type="number"],
-body.waldiez-light textarea {
+body.waldiez-light .flow-wrapper input[type="text"],
+body.waldiez-light .flow-wrapper input[type="password"],
+body.waldiez-light .flow-wrapper input[type="number"],
+body.waldiez-light .flow-wrapper textarea,
+body.waldiez-light #modal-root input[type="text"],
+body.waldiez-light #modal-root input[type="password"],
+body.waldiez-light #modal-root input[type="number"],
+body.waldiez-light #modal-root textarea {
   background-color: #fefefe;
   color: #141414;
 }
 
-body.waldiez-dark input[type="text"],
-body.waldiez-dark input[type="password"],
-body.waldiez-dark input[type="number"],
-body.waldiez-dark textarea {
+body.waldiez-dark .flow-wrapper input[type="text"],
+body.waldiez-dark .flow-wrapper input[type="password"],
+body.waldiez-dark .flow-wrapper input[type="number"],
+body.waldiez-dark .flow-wrapper textarea,
+body.waldiez-dark #modal-root input[type="text"],
+body.waldiez-dark #modal-root input[type="password"],
+body.waldiez-dark #modal-root input[type="number"],
+body.waldiez-dark #modal-root textarea {
   background-color: #222;
   color: #f8f8f8;
 }
 
-body.waldiez-dark input[type="number"],
-body.waldiez-dark input[type="number"]::-webkit-inner-spin-button,
-body.waldiez-dark input[type="number"]::-webkit-outer-spin-button {
+body.waldiez-dark .flow-wrapper input[type="number"],
+body.waldiez-dark .flow-wrapper input[type="number"]::-webkit-inner-spin-button,
+body.waldiez-dark .flow-wrapper input[type="number"]::-webkit-outer-spin-button,
+body.waldiez-dark #modal-root input[type="number"],
+body.waldiez-dark #modal-root input[type="number"]::-webkit-inner-spin-button,
+body.waldiez-dark #modal-root input[type="number"]::-webkit-outer-spin-button {
   color-scheme: dark;
 }
 
-body.waldiez-light input[type="number"],
-body.waldiez-light input[type="number"]::-webkit-inner-spin-button,
-body.waldiez-light input[type="number"]::-webkit-outer-spin-button {
+body.waldiez-light .flow-wrapper input[type="number"],
+body.waldiez-light .flow-wrapper input[type="number"]::-webkit-inner-spin-button,
+body.waldiez-light .flow-wrapper input[type="number"]::-webkit-outer-spin-button {
   color-scheme: light;
 }
