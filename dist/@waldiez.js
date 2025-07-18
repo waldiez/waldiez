@@ -19394,6 +19394,7 @@ const useWaldiezAgentGroupMember = (props) => {
 };
 const WaldiezAgentGroupMember = memo((props) => {
   const { id, data, darkMode, agents, edges, onDataChange } = props;
+  const isDocAgent = data.agentType === "doc_agent";
   const {
     groupOptions,
     currentGroupManager,
@@ -19481,7 +19482,7 @@ const WaldiezAgentGroupMember = memo((props) => {
         onDataChange
       }
     ) }),
-    showGroupTabs && /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-update-state`, label: "State", children: /* @__PURE__ */ jsx(UpdateState, { data, darkMode, onDataChange }) }),
+    showGroupTabs && !isDocAgent && /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-update-state`, label: "State", children: /* @__PURE__ */ jsx(UpdateState, { data, darkMode, onDataChange }) }),
     showGroupTabs && /* @__PURE__ */ jsx(TabItem, { label: "Afterwards", id: `wa-${id}-group-after-work`, children: /* @__PURE__ */ jsx(
       "div",
       {
@@ -22532,7 +22533,7 @@ const WaldiezNodeAgentModalTabs = memo(
         }
       ) }) }),
       /* @__PURE__ */ jsx(TabItem, { label: "Models", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(WaldiezAgentModels, { id, data, models, onDataChange }) }) }),
-      /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      !(isDocAgent && isGroupMember) && /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentTools,
         {
           id,

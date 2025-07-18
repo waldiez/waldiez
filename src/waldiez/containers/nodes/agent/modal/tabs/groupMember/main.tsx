@@ -24,6 +24,8 @@ type WaldiezAgentGroupProps = {
 export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
     const { id, data, darkMode, agents, edges, onDataChange } = props;
 
+    const isDocAgent = data.agentType === "doc_agent";
+
     // Use the hook for group-related state and handlers
     const {
         groupOptions,
@@ -138,7 +140,7 @@ export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
                 )}
 
                 {/* State Tab - Only shown when in a group */}
-                {showGroupTabs && (
+                {showGroupTabs && !isDocAgent && (
                     <TabItem id={`wa-${id}-group-update-state`} label="State">
                         <UpdateState data={data} darkMode={darkMode} onDataChange={onDataChange} />
                     </TabItem>

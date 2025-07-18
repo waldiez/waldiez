@@ -282,20 +282,21 @@ export const WaldiezNodeAgentModalTabs = memo(
                     </div>
                 </TabItem>
 
-                {/* Tools Tab - Always visible */}
-                <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentTools
-                            id={id}
-                            data={data}
-                            agents={agents}
-                            tools={tools}
-                            skipExecutor={isGroupMember}
-                            onDataChange={onDataChange}
-                        />
-                    </div>
-                </TabItem>
-
+                {/* Tools Tab - not visible if docAgent and group member */}
+                {!(isDocAgent && isGroupMember) && (
+                    <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentTools
+                                id={id}
+                                data={data}
+                                agents={agents}
+                                tools={tools}
+                                skipExecutor={isGroupMember}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
                 {/* Nested Chat Tab - Only visible if agent has connections and is not a group member */}
                 {showNestedChatsTab && (
                     <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-nested`}>
