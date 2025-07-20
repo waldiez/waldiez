@@ -3,6 +3,7 @@
 """Test waldiez.exporting.chats.ChatsExporter with a sequential chat."""
 
 from waldiez.exporting.chats import ChatsExporter
+from waldiez.exporting.chats.utils.common import get_event_handler_string
 from waldiez.models import (
     WaldiezAgent,
     WaldiezAgentConnection,
@@ -137,6 +138,10 @@ def test_sequential_chat() -> None:
             },
         ])
 """
-    assert exporter.extras.chat_initiation == expected
+    tab = "    " * 2
+    assert (
+        exporter.extras.chat_initiation
+        == expected + get_event_handler_string(tab=tab)
+    )
     imports = exporter.get_imports()
     assert imports is not None

@@ -10,7 +10,7 @@ from waldiez.models import (
     WaldiezRagUserProxy,
 )
 
-from .common import get_chat_message_string
+from .common import get_chat_message_string, get_event_handler_string
 
 
 def export_sequential_chat(
@@ -134,6 +134,7 @@ def export_sequential_chat(
         additional_methods_string += additional_methods
         content += "\n" + f"{tab}    {chat_string}"
     content += "\n" + "    " * tabs + "])\n"
+    content += get_event_handler_string(tab=tab)
     return content, additional_methods_string
 
 
