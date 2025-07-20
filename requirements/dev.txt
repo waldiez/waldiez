@@ -9,7 +9,7 @@ fakeredis==2.30.1
 fastjsonschema>=2.21.1
 flake8==7.3.0
 hatchling==1.27.0
-jsonschema==4.24.0
+jsonschema==4.25.0
 jupyter_server==2.16.0
 jupyterlab>=4.4.0,<5.0
 mypy-extensions>=1.1.0
@@ -28,7 +28,7 @@ python-dotenv>=1.1.1
 ruff==0.12.3
 toml==0.10.2; python_version <= '3.10'
 types-aiofiles==24.1.0.20250708
-types-jsonschema==4.24.0.20250708
+types-jsonschema==4.25.0.20250720
 types-pyyaml==6.0.12.20250516
 types-redis==4.6.0.20241004
 types-requests==2.32.4.20250611
