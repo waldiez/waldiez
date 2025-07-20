@@ -12,6 +12,7 @@ export const ImportFlowModal: React.FC<ImportFlowModalProps> = (props: ImportFlo
     const { state, initialState, onStateChange, onClose, onBack, onForward } = useImportFlowModal(props);
     return (
         <Modal
+            flowId={flowId}
             isOpen={isOpen}
             onClose={onClose}
             title="Import Flow"

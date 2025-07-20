@@ -8,12 +8,14 @@ import { Modal, Timeline } from "@waldiez/components";
 import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
 export const TimelineModal: React.FC<{
+    flowId: string;
     isOpen: boolean;
     onClose: () => void;
     data: WaldiezTimelineData;
-}> = ({ isOpen, onClose, data }) => {
+}> = ({ flowId, isOpen, onClose, data }) => {
     return (
         <Modal
+            flowId={flowId}
             id="timeline-modal"
             title="Chat Timeline"
             isOpen={isOpen}

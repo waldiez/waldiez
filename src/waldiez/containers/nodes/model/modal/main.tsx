@@ -17,6 +17,7 @@ export const WaldiezNodeModelModal: React.FC<WaldiezNodeModelModalProps> = (
     props: WaldiezNodeModelModalProps,
 ) => {
     const {
+        flowId,
         modelId,
         data,
         isOpen,
@@ -36,6 +37,7 @@ export const WaldiezNodeModelModal: React.FC<WaldiezNodeModelModalProps> = (
     }, [isOpen]);
     return (
         <Modal
+            flowId={flowId}
             beforeTitle={importExportView}
             title={data.label}
             dataTestId={`model-modal-${modelId}`}

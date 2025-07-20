@@ -170,6 +170,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
 
     return (
         <Modal
+            flowId={flowId}
             isOpen={isOpen}
             onClose={onClose}
             title="Export Flow"

@@ -240,7 +240,7 @@ export class WaldiezEdgeStore implements IWaldiezEdgeStore {
      * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
      */
     onEdgeDoubleClick = (_event: any, edge: WaldiezEdge) => {
-        const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+        const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
             el => (el.querySelector(".modal-content") as HTMLElement).offsetParent !== null, // Only visible modals
         );
         if (openModals.length > 0) {

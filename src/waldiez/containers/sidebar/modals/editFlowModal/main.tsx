@@ -37,6 +37,7 @@ export const EditFlowModal = (props: EditFlowModalProps) => {
     return (
         <Modal
             title="Edit Flow"
+            flowId={flowId}
             isOpen={isOpen}
             onSaveAndClose={onSaveAndClose}
             onClose={onClose}

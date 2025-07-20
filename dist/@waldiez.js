@@ -5858,9 +5858,9 @@ const Snackbar = ({
 }) => {
   const [container, setContainer] = useState(null);
   const resolveSnackbarContainer = (flowId2) => {
-    const root = document.getElementById(`rf-root-${flowId2}`) ?? document.body;
+    const root = document.getElementById(`rf-root-${flowId2}`) ?? document.getElementById(`${flowId2}-modal`) ?? document.body;
     const modalContent = document.querySelector(
-      "#modal-root .modal .modal-content"
+      `#${flowId2}-modal .modal .modal-content`
     );
     if (modalContent && modalContent.getBoundingClientRect().height > 0) {
       return modalContent;
@@ -9300,6 +9300,7 @@ const Modal = forwardRef((props, ref) => {
   }, [props.isOpen]);
   const {
     id,
+    flowId,
     isOpen,
     dataTestId = "modal-dialog",
     beforeTitle,
@@ -9417,7 +9418,22 @@ const Modal = forwardRef((props, ref) => {
       left: position.x
     }
   };
-  const modalContent = /* @__PURE__ */ jsxs(Fragment, { children: [
+  const modalContent = /* @__PURE__ */ jsxs("div", { id: `${flowId}-modal`, className: "modal-root", children: [
+    !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "modal-backdrop",
+        style: {
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 999
+        }
+      }
+    ),
     !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
       "div",
       {
@@ -10983,10 +10999,11 @@ const Timeline = ({ data, height = 400 }) => {
     ] })
   ] });
 };
-const TimelineModal = ({ isOpen, onClose, data }) => {
+const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
   return /* @__PURE__ */ jsxs(
     Modal,
     {
+      flowId,
       id: "timeline-modal",
       title: "Chat Timeline",
       isOpen,
@@ -12278,7 +12295,7 @@ class WaldiezEdgeStore {
    * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
    */
   onEdgeDoubleClick = (_event, edge) => {
-    const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+    const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
       (el) => el.querySelector(".modal-content").offsetParent !== null
       // Only visible modals
     );
@@ -13065,7 +13082,7 @@ class WaldiezNodeStore {
    * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
    */
   onNodeDoubleClick = (_event, node) => {
-    const openModals = Array.from(document.querySelectorAll("#modal-root .modal")).filter(
+    const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
       (el) => el.querySelector(".modal-content").offsetParent !== null
       // Only visible modals
     );
@@ -14163,6 +14180,7 @@ const ChatModal = memo((props) => {
     return /* @__PURE__ */ jsx(
       TimelineModal,
       {
+        flowId,
         isOpen: timelineOpen,
         onClose: () => setTimelineOpen(false),
         data: chat.timeline
@@ -14172,6 +14190,7 @@ const ChatModal = memo((props) => {
   return /* @__PURE__ */ jsx(
     Modal,
     {
+      flowId,
       id: modalTestId,
       title: "Chat",
       isOpen: isModalOpen,
@@ -14419,6 +14438,7 @@ const ExportFlowModal = memo((props) => {
   return /* @__PURE__ */ jsxs(
     Modal,
     {
+      flowId,
       isOpen,
       onClose,
       title: "Export Flow",
@@ -15353,6 +15373,7 @@ const ImportFlowModal = (props) => {
   return /* @__PURE__ */ jsx(
     Modal,
     {
+      flowId,
       isOpen,
       onClose,
       title: "Import Flow",
@@ -16835,6 +16856,7 @@ const WaldiezEdgeModal = memo((props) => {
   return /* @__PURE__ */ jsx(
     Modal,
     {
+      flowId,
       isOpen,
       onClose,
       onSaveAndClose,
@@ -22698,6 +22720,7 @@ const WaldiezNodeAgentModal = memo((props) => {
   return /* @__PURE__ */ jsxs(
     Modal,
     {
+      flowId,
       title: modalTitle,
       isOpen,
       onClose: onCancel,
@@ -24487,6 +24510,7 @@ const WaldiezNodeModelModalPriceTab = memo(
 WaldiezNodeModelModalPriceTab.displayName = "WaldiezNodeModelModalPriceTab";
 const WaldiezNodeModelModal = (props) => {
   const {
+    flowId,
     modelId,
     data,
     isOpen,
@@ -24507,6 +24531,7 @@ const WaldiezNodeModelModal = (props) => {
   return /* @__PURE__ */ jsx(
     Modal,
     {
+      flowId,
       beforeTitle: importExportView,
       title: data.label,
       dataTestId: `model-modal-${modelId}`,
@@ -24672,6 +24697,7 @@ const WaldiezNodeModelView = ({ id, data }) => {
     /* @__PURE__ */ jsx(
       WaldiezNodeModelModal,
       {
+        flowId,
         modelId: id,
         data: modelData,
         isOpen,
@@ -25162,6 +25188,7 @@ const WaldiezNodeToolModal = (props) => {
   return /* @__PURE__ */ jsxs(
     Modal,
     {
+      flowId,
       beforeTitle: importExportView,
       title: data.label,
       isOpen: isModalOpen,
@@ -26042,6 +26069,7 @@ const EditFlowModal = (props) => {
     Modal,
     {
       title: "Edit Flow",
+      flowId,
       isOpen,
       onSaveAndClose,
       onClose,

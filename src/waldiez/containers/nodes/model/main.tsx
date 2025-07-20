@@ -87,6 +87,7 @@ export const WaldiezNodeModelView = ({ id, data }: NodeProps<WaldiezNodeModel>) 
                 </div>
             </div>
             <WaldiezNodeModelModal
+                flowId={flowId}
                 modelId={id}
                 data={modelData}
                 isOpen={isOpen}

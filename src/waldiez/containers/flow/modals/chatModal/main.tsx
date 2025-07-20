@@ -232,6 +232,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     if (timelineOpen && chat?.timeline) {
         return (
             <TimelineModal
+                flowId={flowId}
                 isOpen={timelineOpen}
                 onClose={() => setTimelineOpen(false)}
                 data={chat.timeline}
@@ -240,6 +241,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
     }
     return (
         <Modal
+            flowId={flowId}
             id={modalTestId}
             title="Chat"
             isOpen={isModalOpen}

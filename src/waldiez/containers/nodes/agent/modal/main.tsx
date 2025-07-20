@@ -115,6 +115,7 @@ export const WaldiezNodeAgentModal = memo((props: WaldiezNodeAgentModalProps) =>
 
     return (
         <Modal
+            flowId={flowId}
             title={modalTitle}
             isOpen={isOpen}
             onClose={onCancel}

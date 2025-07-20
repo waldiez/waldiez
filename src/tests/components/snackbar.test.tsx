@@ -228,7 +228,8 @@ describe("Snackbar System", () => {
 
     it("renders in modal root if present", async () => {
         const modalRoot = document.createElement("div");
-        modalRoot.id = "modal-root";
+        modalRoot.id = `${FLOW_ID}-modal`;
+        modalRoot.className = "modal-root";
 
         const modal = document.createElement("div");
         modal.className = "modal";

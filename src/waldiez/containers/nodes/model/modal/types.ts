@@ -5,6 +5,7 @@
 import { WaldiezNodeModelData } from "@waldiez/models";
 
 export type WaldiezNodeModelModalProps = {
+    flowId: string;
     modelId: string;
     data: WaldiezNodeModelData;
     isOpen: boolean;

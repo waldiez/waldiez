@@ -30,6 +30,7 @@ export const WaldiezNodeToolModal: React.FC<WaldiezNodeToolModalProps> = props =
     }, [isModalOpen]);
     return (
         <Modal
+            flowId={flowId}
             beforeTitle={importExportView}
             title={data.label}
             isOpen={isModalOpen}

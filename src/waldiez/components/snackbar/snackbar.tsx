@@ -18,10 +18,13 @@ export const Snackbar: React.FC<SnackbarItem & { onClose: () => void }> = ({
     const [container, setContainer] = useState<HTMLElement | null>(null);
 
     const resolveSnackbarContainer = (flowId: string | undefined): HTMLElement => {
-        const root = document.getElementById(`rf-root-${flowId}`) ?? document.body;
+        const root =
+            document.getElementById(`rf-root-${flowId}`) ??
+            document.getElementById(`${flowId}-modal`) ??
+            document.body;
 
         const modalContent = document.querySelector(
-            "#modal-root .modal .modal-content",
+            `#${flowId}-modal .modal .modal-content`,
         ) as HTMLElement | null;
 
         if (modalContent && modalContent.getBoundingClientRect().height > 0) {

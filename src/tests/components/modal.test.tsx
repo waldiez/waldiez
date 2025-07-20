@@ -11,6 +11,7 @@ describe("Modal", () => {
     it("should render successfully", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -23,6 +24,7 @@ describe("Modal", () => {
     it("should render with before title", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             beforeTitle: "test",
             isOpen: true,
@@ -36,6 +38,7 @@ describe("Modal", () => {
     it("should render with close button", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -48,6 +51,7 @@ describe("Modal", () => {
     it("should render with maximize button", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -60,6 +64,7 @@ describe("Modal", () => {
     it("should render with class name", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -73,6 +78,7 @@ describe("Modal", () => {
     it("should close modal", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -88,6 +94,7 @@ describe("Modal", () => {
     it("should handle escape key", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -103,6 +110,7 @@ describe("Modal", () => {
     it("should toggle full screen", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -121,6 +129,7 @@ describe("Modal", () => {
     it("should prevent close if unsaved changes", () => {
         const onClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,
@@ -142,6 +151,7 @@ describe("Modal", () => {
         const onSave = vi.fn();
         const onSaveAndClose = vi.fn();
         const modalProps = {
+            flowId: "test-flow",
             title: "test",
             isOpen: true,
             onClose,

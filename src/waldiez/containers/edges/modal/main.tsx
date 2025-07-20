@@ -199,6 +199,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
 
     return (
         <Modal
+            flowId={flowId}
             isOpen={isOpen}
             onClose={onClose}
             onSaveAndClose={onSaveAndClose}

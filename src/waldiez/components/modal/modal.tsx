@@ -20,6 +20,7 @@ import { useModal } from "@waldiez/components/modal/hooks";
 
 type ModalProps = {
     id?: string;
+    flowId: string;
     dataTestId?: string;
     beforeTitle?: string | React.ReactNode;
     title: string | React.ReactNode;
@@ -64,6 +65,7 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
     }, [props.isOpen]);
     const {
         id,
+        flowId,
         isOpen,
         dataTestId = "modal-dialog",
         beforeTitle,
@@ -229,7 +231,22 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
     };
 
     const modalContent = (
-        <>
+        <div id={`${flowId}-modal`} className="modal-root">
+            {/* Modal backdrop */}
+            {!isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && (
+                <div
+                    className="modal-backdrop"
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        zIndex: 999,
+                    }}
+                />
+            )}
             {/* Backdrop - only show when not minimized */}
             {!isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && (
                 <div
@@ -310,7 +327,7 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
                         : children}
                 </div>
             </div>
-        </>
+        </div>
     );
 
     return createPortal(modalContent, portalContainer);
