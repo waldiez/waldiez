@@ -197,30 +197,11 @@ class ChatsProcessor:
         """
         if self.is_group_patterned():
             if self._is_async:
-                import_string = (
-                    "from autogen.agentchat import a_initiate_group_chat"
-                )
+                import_string = "from autogen.agentchat import a_run_group_chat"
             else:
-                import_string = (
-                    "from autogen.agentchat import initiate_group_chat"
-                )
+                import_string = "from autogen.agentchat import run_group_chat"
             self._extras.add_import(
                 ImportStatement(
                     statement=import_string, position=ImportPosition.THIRD_PARTY
                 )
             )
-            return
-        if len(self._chats.main) == 1:
-            # no additional imports, it is `sender.initiate_chat(....)`
-            return
-        if self._is_async:
-            import_string = (
-                "from autogen.agentchat.chat import a_initiate_chats"
-            )
-        else:
-            import_string = "from autogen.agentchat.chat import initiate_chats"
-        self._extras.add_import(
-            ImportStatement(
-                statement=import_string, position=ImportPosition.THIRD_PARTY
-            )
-        )

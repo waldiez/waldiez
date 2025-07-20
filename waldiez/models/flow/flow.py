@@ -420,13 +420,13 @@ class WaldiezFlow(WaldiezBase):
         #  - "text" or "none" => no need to create a group manager on ag2
         #  - "function/method" => create a group manager and a group chat on ag2
         # in the first case, the chat would be:
-        # result, context, last_agent = initiate_group_chat(
+        # results = run_group_chat(
         #     pattern=pattern,
         #     messages=...,
         #     max_rounds=10
         # )
         # in the second case, the chat would be:
-        # user.initiate_chat(manager, ...)
+        # user.run(manager, ...)
         user_agent: Optional[WaldiezAgent] = None
         to_root_manager: Optional[WaldiezChat] = None
         root_manager: WaldiezGroupManager = self.get_root_group_manager()

@@ -140,7 +140,3 @@ def test_sequential_chat() -> None:
     assert exporter.extras.chat_initiation == expected
     imports = exporter.get_imports()
     assert imports is not None
-    assert (
-        imports[0].statement
-        == "from autogen.agentchat.chat import initiate_chats"
-    )
