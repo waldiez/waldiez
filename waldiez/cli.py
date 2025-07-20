@@ -92,21 +92,8 @@ def run(
     structured: bool = typer.Option(  # noqa: B008
         False,
         help=(
-            "If set, running the flow will use structured io stream instead of the default 'input/print' "
-        ),
-    ),
-    threaded: bool = typer.Option(  # noqa: B008
-        False,
-        help=(
-            "If set, the flow will be run in a separate thread. "
-            "This is useful for running flows that require user input or print output."
-        ),
-    ),
-    patch_io: bool = typer.Option(  # noqa: B008
-        False,
-        help=(
-            "If set, the flow will patch ag2's IOStream to safe print and input methods. "
-            "This is useful for running flows that require user input or print output."
+            "If set, the output will be structured as a directory with "
+            "the flow file and any additional generated files in it."
         ),
     ),
     force: bool = typer.Option(  # noqa: B008
@@ -136,8 +123,7 @@ def run(
             runner.a_run,
             output_path,
             uploads_root,
-            structured,
-            not patch_io,  # skip_patch_io
+            structured,  # structured_io
             False,  # skip_mmd
             False,  # skip_timeline
         )
@@ -146,8 +132,6 @@ def run(
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured,
-            threaded=threaded,
-            skip_patch_io=not patch_io,
             skip_mmd=False,
             skip_timeline=False,
         )
@@ -184,13 +168,6 @@ def convert(
         False,
         help="Override the output file if it already exists.",
     ),
-    patch_io: bool = typer.Option(  # noqa: B008
-        False,
-        help=(
-            "If set, the exported script will inlclude a snippet to patch ag2's IOStream "
-            "to safe print and input methods. "
-        ),
-    ),
     debug: bool = typer.Option(
         False,
         "--debug",
@@ -219,7 +196,6 @@ def convert(
     exporter.export(
         output,
         force=force,
-        skip_patch_io=not patch_io,
         debug=debug,
     )
     generated = str(output).replace(os.getcwd(), ".")

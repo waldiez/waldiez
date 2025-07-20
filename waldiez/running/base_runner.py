@@ -12,7 +12,15 @@ import tempfile
 import threading
 from pathlib import Path
 from types import TracebackType
-from typing import TYPE_CHECKING, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Coroutine,
+    Optional,
+    Type,
+    Union,
+)
 
 from anyio.from_thread import start_blocking_portal
 from typing_extensions import Self
@@ -34,7 +42,11 @@ from .utils import (
 )
 
 if TYPE_CHECKING:
-    from autogen import ChatResult  # type: ignore[import-untyped]
+    from autogen.events import BaseEvent  # type: ignore[import-untyped]
+    from autogen.io.run_response import (  # type: ignore[import-untyped]
+        AsyncRunResponseProtocol,
+        RunResponseProtocol,
+    )
 
 
 class WaldiezBaseRunner(WaldiezRunnerProtocol):
@@ -53,9 +65,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         - _a_stop: Async actions to perform when stopping the flow.
     """
 
-    _threaded: bool
     _structured_io: bool
-    _isolated: bool
     _output_path: str | Path | None
     _uploads_root: str | Path | None
     _skip_patch_io: bool
@@ -67,29 +77,30 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None,
         uploads_root: str | Path | None,
         structured_io: bool,
-        isolated: bool,
-        threaded: bool,
         skip_patch_io: bool = False,
     ) -> None:
         """Initialize the Waldiez manager."""
         self._waldiez = waldiez
         WaldiezBaseRunner._running = False
         WaldiezBaseRunner._structured_io = structured_io
-        WaldiezBaseRunner._isolated = isolated
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
-        WaldiezBaseRunner._threaded = threaded
         WaldiezBaseRunner._skip_patch_io = skip_patch_io
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
         self._logger = get_logger()
-        self._last_results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
-        ] = []
+        self._print: Callable[..., None] = print
+        self._send: Callable[["BaseEvent"], None] = self._print
+        self._input: (
+            Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
+        ) = input
+        self._last_results: Optional[
+            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
+        ] = None
         self._last_exception: Exception | None = None
+        self._execution_complete_event = threading.Event()
+        self._execution_thread: Optional[threading.Thread] = None
 
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
@@ -101,9 +112,64 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         """
         return WaldiezBaseRunner._running
 
-    # ===================================================================
-    # PRIVATE METHODS TO OVERRIDE IN SUBCLASSES
-    # ===================================================================
+    def wait_for_completion(self, timeout: Optional[float] = None) -> bool:
+        """Wait for non-blocking execution to complete.
+
+        This is a base implementation that subclasses can override if needed.
+
+        Parameters
+        ----------
+        timeout: float | None
+            The maximum time to wait for completion, in seconds.
+            If None, wait indefinitely.
+
+        Returns
+        -------
+        bool
+            True if the workflow completed successfully, False if it timed out.
+        """
+        # Default implementation - subclasses can override
+        if not self.is_running():
+            return True
+
+        if self._execution_thread and self._execution_thread.is_alive():
+            self._execution_thread.join(timeout)
+            return not self._execution_thread.is_alive()
+
+        return self._execution_complete_event.wait(timeout or 0)
+
+    def get_execution_stats(self) -> dict[str, Any]:
+        """Get basic execution statistics.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing execution statistics.
+        - is_running: Whether the runner is currently running.
+        - has_thread: Whether there is an execution thread.
+        - thread_alive: Whether the execution thread is alive.
+        - has_error: Whether there was an error during execution.
+        """
+        return {
+            "is_running": self.is_running(),
+            "has_thread": self._execution_thread is not None,
+            "thread_alive": (
+                self._execution_thread.is_alive()
+                if self._execution_thread
+                else False
+            ),
+            "has_error": self._last_exception is not None,
+        }
+
+    # Helper for subclasses
+    def _signal_completion(self) -> None:
+        """Signal that execution has completed."""
+        self._execution_complete_event.set()
+
+    def _reset_completion_state(self) -> None:
+        """Reset completion state for new execution."""
+        self._execution_complete_event.clear()
+
     def _before_run(
         self,
         output_file: Path,
@@ -118,10 +184,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                 path=file_name,
                 force=True,
                 uploads_root=uploads_root,
-                # if not isolated, we use structured IO in a context manager
-                structured_io=WaldiezBaseRunner._structured_io
-                and WaldiezBaseRunner._isolated,
-                skip_patch_io=WaldiezBaseRunner._skip_patch_io,
+                structured_io=WaldiezBaseRunner._structured_io,
             )
         return temp_dir
 
@@ -149,11 +212,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> Union[
-        "ChatResult",
-        list["ChatResult"],
-        dict[int, "ChatResult"],
-    ]:  # pyright: ignore
+    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow."""
         raise NotImplementedError(
             "The _run method must be implemented in the subclass."
@@ -166,11 +225,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> Union[
-        "ChatResult",
-        list["ChatResult"],
-        dict[int, "ChatResult"],
-    ]:  # pyright: ignore
+    ) -> Optional[Union["AsyncRunResponseProtocol", "RunResponseProtocol"]]:
         """Run the Waldiez flow asynchronously."""
         raise NotImplementedError(
             "The _a_run method must be implemented in the subclass."
@@ -218,10 +273,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     def _after_run(
         self,
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
+        results: Optional[
+            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -247,10 +300,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     async def _a_after_run(
         self,
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
+        results: Optional[
+            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -391,15 +442,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
-        threaded: bool | None = None,
-        skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
-    ) -> Union[
-        "ChatResult",
-        list["ChatResult"],
-        dict[int, "ChatResult"],
-    ]:  # pyright: ignore
+    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow in blocking mode.
 
         Parameters
@@ -411,10 +456,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print',
             by default False.
-        threaded : bool | None
-            Whether to run the flow in a threaded environment, by default None.
-        skip_patch_io : bool | None
-            Whether to skip patching the IO streams, by default None.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
@@ -432,12 +473,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         RuntimeError
             If the runner is already running.
         """
-        if skip_patch_io is not None:
-            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
-        if threaded is not None:
-            WaldiezBaseRunner._threaded = threaded
         if self.is_running():
             raise RuntimeError("Workflow already running")
         if self.waldiez.is_async:
@@ -447,7 +484,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                     output_path,
                     uploads_root,
                     structured_io,
-                    skip_patch_io,
                     skip_mmd,
                 )
         output_file, uploads_root_path = self._prepare_paths(
@@ -461,11 +497,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         self.install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
-        ] = []
+        results: Optional[
+            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
+        ] = None
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             with chdir(to=temp_dir):
@@ -497,14 +531,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
-        skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
-    ) -> Union[
-        "ChatResult",
-        list["ChatResult"],
-        dict[int, "ChatResult"],
-    ]:  # pyright: ignore
+    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow asynchronously.
 
         Parameters
@@ -516,8 +545,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print',
             by default False.
-        skip_patch_io : bool | None
-            Whether to skip patching I/O, by default None.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
@@ -535,8 +562,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         RuntimeError
             If the runner is already running.
         """
-        if skip_patch_io is not None:
-            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -552,11 +577,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         await self.a_install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
-        ] = []
+        results: Optional[
+            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
+        ] = None
+        old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
                 sys.path.insert(0, str(temp_dir))
@@ -569,6 +593,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                 )
         finally:
             WaldiezBaseRunner._running = False
+            reset_env_vars(old_env_vars)
         await self._a_after_run(
             results=results,
             output_file=output_file,
@@ -586,7 +611,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None,
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
-        skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
     ) -> None:
@@ -600,8 +624,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             The runtime uploads root.
         structured_io : bool | None
             Whether to use structured IO instead of the default 'input/print'.
-        skip_patch_io : bool | None
-            Whether to skip patching I/O, by default None.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
@@ -612,8 +634,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         RuntimeError
             If the runner is already running.
         """
-        if skip_patch_io is not None:
-            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -642,7 +662,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None,
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
-        skip_patch_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
     ) -> None:
@@ -656,8 +675,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             The runtime uploads root.
         structured_io : bool | None = None
             Whether to use structured IO instead of the default 'input/print'.
-        skip_patch_io : bool | None = None
-            Whether to skip patching I/O, by default None.
         skip_mmd : bool = False
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool = False
@@ -668,8 +685,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         RuntimeError
             If the runner is already running.
         """
-        if skip_patch_io is not None:
-            WaldiezBaseRunner._skip_patch_io = skip_patch_io
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -695,10 +710,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     def after_run(
         self,
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
+        results: Optional[
+            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -734,10 +747,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     async def a_after_run(
         self,
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
+        results: Optional[
+            Union[
+                "RunResponseProtocol",
+                "AsyncRunResponseProtocol",
+            ]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -814,19 +828,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         return self._logger
 
     @property
-    def threaded(self) -> bool:
-        """Check if the runner is running in a threaded environment."""
-        return WaldiezBaseRunner._threaded
-
-    @property
     def structured_io(self) -> bool:
         """Check if the runner is using structured IO."""
         return WaldiezBaseRunner._structured_io
-
-    @property
-    def isolated(self) -> bool:
-        """Check if the runner is running in an isolated environment."""
-        return WaldiezBaseRunner._isolated
 
     @property
     def output_path(self) -> str | Path | None:
@@ -854,9 +858,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
-        isolated: bool = False,
-        threaded: bool = False,
-        skip_patch_io: bool = True,
     ) -> "WaldiezBaseRunner":
         """Load a waldiez flow from a file and create a runner.
 
@@ -879,12 +880,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io : bool, optional
             Whether to use structured IO instead of the default 'input/print',
             by default False.
-        isolated : bool, optional
-            Whether to run the flow in an isolated environment, default False.
-        threaded : bool, optional
-            Whether to run the flow in a threaded environment, default False.
-        skip_patch_io : bool, optional
-            Whether to skip patching IO, by default True.
 
         Returns
         -------
@@ -903,9 +898,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
-            isolated=isolated,
-            threaded=threaded,
-            skip_patch_io=skip_patch_io,
         )
 
     def __enter__(self) -> Self:

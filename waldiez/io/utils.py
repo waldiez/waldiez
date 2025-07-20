@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Literal, Union
 
 from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
+from autogen.events import BaseEvent  # type: ignore
 
 MessageType = Literal[
     "input_request",
@@ -182,3 +183,34 @@ def try_parse_maybe_serialized(value: str) -> Any:
         except Exception:
             pass  # Try next parser
     return value  # Return original if all parsing fails
+
+
+def get_message_dump(
+    message: BaseEvent,
+) -> dict[str, Any]:
+    """Get the message dump.
+
+    Parameters
+    ----------
+    message : BaseEvent
+        The message to dump.
+
+    Returns
+    -------
+    dict[str, Any]
+        The dumped message.
+    """
+    # pylint: disable=broad-exception-caught
+    try:
+        message_dump = message.model_dump(mode="json")
+    except Exception:
+        try:
+            message_dump = message.model_dump(
+                serialize_as_any=True, mode="json", fallback=str
+            )
+        except Exception as e:
+            message_dump = {
+                "error": str(e),
+                "type": message.__class__.__name__,
+            }
+    return message_dump

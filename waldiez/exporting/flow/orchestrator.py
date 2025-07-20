@@ -23,7 +23,6 @@ from .utils import (
     generate_header,
     get_after_run_content,
     get_np_no_nep50_handle,
-    get_set_io_stream,
     get_sqlite_out,
     get_start_logging,
     get_stop_logging,
@@ -174,24 +173,16 @@ class ExportOrchestrator:
             position=ExportPosition.IMPORTS,  # after imports (need np)
             order=ContentOrder.CLEANUP,
         )
-        merged_result.add_content(
-            get_start_logging(
-                is_async=self.waldiez.is_async,
-                for_notebook=self.config.for_notebook,
-            ),
-            position=ExportPosition.IMPORTS,  # after imports, before models
-            order=ContentOrder.CLEANUP.value + 1,  # after imports
-            skip_strip=True,  # keep newlines
-        )
-        if not self.config.skip_patch_io:
+        skip_logging = self._should_skip_logging()
+        if not skip_logging:
             merged_result.add_content(
-                get_set_io_stream(
-                    use_structured_io=self.config.structured_io,
+                get_start_logging(
                     is_async=self.waldiez.is_async,
-                    uploads_root=self.config.uploads_root,
+                    for_notebook=self.config.for_notebook,
                 ),
                 position=ExportPosition.IMPORTS,  # after imports, before models
-                order=ContentOrder.CLEANUP.value + 2,  # after start logging
+                order=ContentOrder.CLEANUP.value + 1,  # after imports
+                skip_strip=True,  # keep newlines
             )
         # merged_result.add_content
         merged_result.add_content(
@@ -199,12 +190,13 @@ class ExportOrchestrator:
             position=ExportPosition.AGENTS,
             order=ContentOrder.LATE_CLEANUP.value + 1,  # after all agents
         )
-        merged_result.add_content(
-            get_stop_logging(is_async=self.waldiez.is_async),
-            position=ExportPosition.AGENTS,
-            order=ContentOrder.LATE_CLEANUP.value
-            + 2,  # before def main (chats)
-        )
+        if not skip_logging:
+            merged_result.add_content(
+                get_stop_logging(is_async=self.waldiez.is_async),
+                position=ExportPosition.AGENTS,
+                order=ContentOrder.LATE_CLEANUP.value
+                + 2,  # before def main (chats)
+            )
         all_imports: list[tuple[str, ImportPosition]] = [
             (item.statement, item.position)
             for item in merged_result.get_sorted_imports()
@@ -421,3 +413,17 @@ class ExportOrchestrator:
             agent_result = agent_exporter.export()
             results.append(agent_result)
         return results
+
+    def _should_skip_logging(self) -> bool:
+        """Determine if logging should be skipped.
+
+        Returns
+        -------
+        bool
+            True if logging should be skipped, False otherwise.
+        """
+        if not self.waldiez.tools:
+            return False
+        if self.waldiez.flow.is_group_chat:
+            return any(tool.is_predefined for tool in self.waldiez.tools)
+        return False

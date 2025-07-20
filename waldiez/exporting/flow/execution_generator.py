@@ -5,7 +5,7 @@
 # pylint: disable=no-self-use,unused-argument
 
 from ..core import get_comment
-from .utils.common import RETURN_TYPE_HINT, main_doc_string
+from .utils.common import main_doc_string
 
 
 class ExecutionGenerator:
@@ -69,6 +69,7 @@ class ExecutionGenerator:
         cache_seed: int | None,
         after_run: str,
         for_notebook: bool,
+        skip_logging: bool = False,
     ) -> str:
         """Generate the main function for the flow script.
 
@@ -84,6 +85,8 @@ class ExecutionGenerator:
             Additional content to add after the main chat execution.
         for_notebook : bool
             Whether the export is intended for a notebook environment.
+        skip_logging : bool, optional
+            Whether to skip logging setup, by default False
 
         Returns
         -------
@@ -100,9 +103,18 @@ class ExecutionGenerator:
         flow_content += f"{comment}\n"
         if is_async:
             flow_content += "async "
-
-        flow_content += f"def main() -> {RETURN_TYPE_HINT}:\n"
-        flow_content += f"    {main_doc_string()}\n"
+        on_event_arg = "on_event: Optional[Callable[[BaseEvent], bool]] = None"
+        if is_async:
+            on_event_arg = (
+                "on_event: Optional["
+                "Callable[[BaseEvent], Coroutine[None, None, bool]]"
+                "] = None"
+            )
+        return_type_hint = (
+            "AsyncRunResponseProtocol" if is_async else "RunResponseProtocol"
+        )
+        flow_content += f"def main({on_event_arg}) -> {return_type_hint}:\n"
+        flow_content += f"    {main_doc_string(is_async=is_async)}\n"
         space = "    "
         if cache_seed is not None:
             flow_content += (
@@ -111,10 +123,11 @@ class ExecutionGenerator:
             )
             space = f"{space}    "
         flow_content += f"{content}" + "\n"
-        if is_async:
-            flow_content += f"{space}await stop_logging()"
-        else:
-            flow_content += f"{space}stop_logging()"
+        if not skip_logging:
+            if is_async:
+                flow_content += f"{space}await stop_logging()"
+            else:
+                flow_content += f"{space}stop_logging()"
         flow_content += "\n"
         if after_run:
             flow_content += after_run + "\n"
@@ -146,23 +159,16 @@ class ExecutionGenerator:
             return "# %%\nmain()\n"
         if is_async:
             content += "async def call_main() -> None:\n"
+            return_type_hint = "AsyncRunResponseProtocol"
         else:
             content += "def call_main() -> None:\n"
+            return_type_hint = "RunResponseProtocol"
         content += '    """Run the main function and print the results."""\n'
-        content += f"    results: {RETURN_TYPE_HINT} = "
+        content += f"    results: {return_type_hint} = "
         if is_async:
             content += "await "
         content += "main()\n"
-        content += "    if isinstance(results, dict):\n"
-        content += "        # order by key\n"
-        content += "        ordered_results = dict(sorted(results.items()))\n"
-        content += "        for _, result in ordered_results.items():\n"
-        content += "            pprint(asdict(result))\n"
-        content += "    else:\n"
-        content += "        if not isinstance(results, list):\n"
-        content += "            results = [results]\n"
-        content += "        for result in results:\n"
-        content += "            pprint(asdict(result))\n"
+        content += "    print('Results:', results)\n"
         content += "\n"
         return content
 

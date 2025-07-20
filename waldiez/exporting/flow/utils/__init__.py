@@ -6,7 +6,6 @@ from .common import (
     generate_header,
     get_after_run_content,
     get_np_no_nep50_handle,
-    get_set_io_stream,
 )
 from .importing import get_sorted_imports, get_the_imports_string
 from .logging import get_sqlite_out, get_start_logging, get_stop_logging
@@ -20,5 +19,4 @@ __all__ = [
     "get_start_logging",
     "get_stop_logging",
     "get_sqlite_out",
-    "get_set_io_stream",
 ]

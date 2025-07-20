@@ -29,8 +29,8 @@ except ImportError as error:  # pragma: no cover
     raise ImportError(
         "Redis client not installed. Please install redis-py with `pip install redis`."
     ) from error
+from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
-from autogen.messages import BaseMessage  # type: ignore
 
 from .models import (
     PrintMessage,
@@ -39,7 +39,7 @@ from .models import (
     UserInputRequest,
     UserResponse,
 )
-from .utils import gen_id, now
+from .utils import gen_id, get_message_dump, now
 
 if TYPE_CHECKING:
     Redis = redis.Redis[bytes]
@@ -217,7 +217,12 @@ class RedisIOStream(IOStream):
             Additional keyword arguments.
         """
         print_message = PrintMessage.create(*args, **kwargs)
-        payload = print_message.model_dump(mode="json")
+        try:
+            payload = print_message.model_dump(mode="json")
+        except Exception:  # pragma: no cover
+            payload = print_message.model_dump(
+                serialize_as_any=True, mode="json", fallback=str
+            )
         self._print(payload)
 
     def input(
@@ -249,7 +254,12 @@ class RedisIOStream(IOStream):
             prompt=prompt,
             password=password,
         )
-        payload = input_request.model_dump(mode="json")
+        try:
+            payload = input_request.model_dump(mode="json")
+        except Exception:  # pragma: no cover
+            payload = input_request.model_dump(
+                serialize_as_any=True, mode="json", fallback=str
+            )
         payload["password"] = str(password).lower()
         payload["task_id"] = self.task_id
         LOG.debug("Requesting input via Pub/Sub: %s", payload)
@@ -278,7 +288,7 @@ class RedisIOStream(IOStream):
         self._print(payload)
         return user_input
 
-    def send(self, message: BaseMessage) -> None:
+    def send(self, message: BaseEvent) -> None:
         """Send a structured message to Redis.
 
         Parameters
@@ -286,13 +296,7 @@ class RedisIOStream(IOStream):
         message : dict[str, Any]
             The message to send.
         """
-        try:
-            message_dump = message.model_dump(mode="json")
-        except Exception as e:  # pragma: no cover
-            message_dump = {
-                "type": "error",
-                "error": str(e),
-            }
+        message_dump = get_message_dump(message)
         message_type = message_dump.get("type", None)
         if not message_type:
             message_type = message.__class__.__name__

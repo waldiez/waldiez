@@ -4,6 +4,7 @@
 """Test waldiez.exporting.chats.ChatsExporter with a single chat."""
 
 from waldiez.exporting.chats import ChatsExporter
+from waldiez.exporting.chats.utils.common import get_event_handler_string
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
@@ -106,7 +107,7 @@ def callable_message(sender, recipient, context):
     assert not after_export
     generated = exporter.extras.chat_initiation
     expected = """
-        results = agent1.initiate_chat(
+        results = agent1.run(
             agent2,
             cache=cache,
             summary_method="reflection_with_llm",
@@ -120,7 +121,8 @@ def callable_message(sender, recipient, context):
             message=callable_message_chat1,
         )
 """
-    assert generated == expected
+    tab = "        "
+    assert generated == expected + get_event_handler_string(tab=tab)
 
 
 def test_empty_chat() -> None:
@@ -194,14 +196,15 @@ def test_empty_chat() -> None:
     before_export = exporter.extras.chat_prerequisites
     assert not before_export
     generated = exporter.extras.chat_initiation
+    tab = "        "
     expected = (
-        "\n        results = agent1.initiate_chat("
-        "\n            agent2,"
-        "\n            cache=cache,"
-        "\n            clear_history=True,"
-        "\n        )\n"
+        f"\n{tab}results = agent1.run("
+        f"\n{tab}    agent2,"
+        f"\n{tab}    cache=cache,"
+        f"\n{tab}    clear_history=True,"
+        f"\n{tab})\n"
     )
-    assert generated == expected
+    assert generated == expected + get_event_handler_string(tab=tab)
 
 
 def test_chat_with_rag_and_carryover() -> None:
@@ -291,7 +294,7 @@ def test_chat_with_rag_and_carryover() -> None:
     space = tab * 2
     expected = (
         "\n"
-        f"{space}results = {agent1_name}.initiate_chat("
+        f"{space}results = {agent1_name}.run("
         "\n"
         f"{space}{tab}{agent2_name},"
         "\n"
@@ -307,7 +310,7 @@ def test_chat_with_rag_and_carryover() -> None:
         "\n"
         f"{space})"
         "\n"
-    )
+    ) + get_event_handler_string(tab=space)
     assert generated == expected
 
 
@@ -388,7 +391,7 @@ def test_chat_with_rag_no_carryover() -> None:
     space = tab * 2
     expected = (
         "\n"
-        f"{space}results = {agent1_name}.initiate_chat("
+        f"{space}results = {agent1_name}.run("
         "\n"
         f"{space}{tab}{agent2_name},"
         "\n"
@@ -402,5 +405,5 @@ def test_chat_with_rag_no_carryover() -> None:
         "\n"
         f"{space})"
         "\n"
-    )
+    ) + get_event_handler_string(tab=space)
     assert generated == expected

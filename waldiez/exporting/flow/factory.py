@@ -47,8 +47,6 @@ def create_flow_exporter(
     ChatsExporter
         The created chats exporter.
     """
-    structured_io = kwargs.pop("structured_io", False)
-    skip_patch_io = kwargs.pop("skip_patch_io", True)
     if context is None:
         config = ExportConfig(
             name=waldiez.name,
@@ -60,8 +58,6 @@ def create_flow_exporter(
             output_directory=output_dir,
             uploads_root=uploads_root,
             cache_seed=waldiez.cache_seed,
-            structured_io=structured_io,
-            skip_patch_io=skip_patch_io,
         )
         context = ExporterContext(
             config=config,
@@ -81,8 +77,6 @@ def create_flow_exporter(
                 output_directory=output_dir,
                 uploads_root=uploads_root,
                 cache_seed=waldiez.cache_seed,
-                structured_io=structured_io,
-                skip_patch_io=skip_patch_io,
             )
         else:
             context.config.update(
@@ -95,8 +89,6 @@ def create_flow_exporter(
                 output_directory=output_dir,
                 uploads_root=uploads_root,
                 cache_seed=waldiez.cache_seed,
-                structured_io=structured_io,
-                skip_patch_io=skip_patch_io,
             )
 
     return FlowExporter(
@@ -104,7 +96,6 @@ def create_flow_exporter(
         output_dir=output_dir,
         uploads_root=uploads_root,
         for_notebook=for_notebook,
-        structured_io=structured_io,
         context=context,
         **kwargs,
     )

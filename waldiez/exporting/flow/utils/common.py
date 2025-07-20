@@ -4,8 +4,6 @@
 # flake8: noqa: E501
 """Common utils for the final generatio."""
 
-from pathlib import Path
-
 from waldiez.models import Waldiez
 
 from ...core import FILE_HEADER
@@ -16,7 +14,6 @@ from .linting import (
     get_pyright_ignore_comment,
 )
 
-RETURN_TYPE_HINT = "Union[ChatResult, list[ChatResult], dict[int, ChatResult]]"
 GENERATED_WITH = "🧩 generated with ❤️ by Waldiez."
 
 
@@ -105,19 +102,27 @@ Tags: {", ".join(tags)}
 """'''
 
 
-def main_doc_string() -> str:
+def main_doc_string(is_async: bool) -> str:
     """Generate the docstring for the main function.
+
+    Parameters
+    ----------
+    is_async : bool
+        Whether the main function is asynchronous.
 
     Returns
     -------
     str
         The docstring for the main function.
     """
+    return_type_hint = (
+        "AsyncRunResponseProtocol" if is_async else "RunResponseProtocol"
+    )
     return f'''"""Start chatting.
 
     Returns
     -------
-    {RETURN_TYPE_HINT}
+    {return_type_hint}
         The result of the chat session, which can be a single ChatResult,
         a list of ChatResults, or a dictionary mapping integers to ChatResults.
     """'''
@@ -207,94 +212,3 @@ if not hasattr(np, "_no_pep50_warning"):
     setattr(np, "_no_pep50_warning", _np_no_nep50_warning)  # noqa
 '''
     return content
-
-
-def get_set_io_stream(
-    use_structured_io: bool,
-    is_async: bool,
-    uploads_root: Path | None,
-) -> str:
-    """Get the content to set structured IO.
-
-    Parameters
-    ----------
-    use_structured_io : bool
-        Whether to use structured IO or not.
-    is_async : bool
-        Whether the flow is async or not.
-    uploads_root : Path | None
-        The uploads root, to get user-uploaded files, by default None.
-
-    Returns
-    -------
-    str
-        The content to set structured IO.
-    """
-    if use_structured_io:
-        return get_set_structured_io_stream(
-            is_async=is_async,
-            uploads_root=uploads_root,
-        )
-    return get_patch_default_io_stream(is_async)
-
-
-def get_set_structured_io_stream(
-    is_async: bool,
-    uploads_root: Path | None,
-) -> str:
-    """Get the content to set structured IO.
-
-    Parameters
-    ----------
-    is_async : bool
-        Whether the flow is async or not.
-    uploads_root : Path | None
-        The uploads root, to get user-uploaded files, by default None.
-
-    Returns
-    -------
-    str
-        The content to set structured IO.
-    """
-    upload_root_arg = f'r"{uploads_root}"' if uploads_root else "None"
-    return f"""
-# set structured IO
-try:
-    # pylint: disable=import-outside-toplevel
-    from autogen.io import IOStream
-    from waldiez.io import StructuredIOStream
-    stream = StructuredIOStream(
-        is_async={is_async},
-        uploads_root={upload_root_arg}
-    )
-    IOStream.set_default(stream)
-except BaseException:  # pylint: disable=broad-exception-caught
-    # allow running the flow without structured IO
-    pass
-"""
-
-
-def get_patch_default_io_stream(is_async: bool) -> str:
-    """Get the content to patch the default IO stream.
-
-    Parameters
-    ----------
-    is_async : bool
-        Whether the flow is async or not.
-
-    Returns
-    -------
-    str
-        The content to patch the default IO stream.
-    """
-    # copy from waldiez/running/patch_io_stream.py
-    return f"""
-# patch the default IOStream
-try:
-    # pylint: disable=import-outside-toplevel
-    from waldiez.running.patch_io_stream import patch_io_stream
-    patch_io_stream(is_async={is_async})
-except BaseException:  # pylint: disable=broad-exception-caught
-    # allow running the flow without patching the IOStream
-    pass
-"""

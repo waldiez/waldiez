@@ -149,6 +149,17 @@ class WaldiezFlow(WaldiezBase):
         return self.data.is_async
 
     @property
+    def is_group_chat(self) -> bool:
+        """Check if the flow is a group chat.
+
+        Returns
+        -------
+        bool
+            True if the flow is a group chat, False otherwise.
+        """
+        return self._is_group_chat
+
+    @property
     def cache_seed(self) -> Optional[int]:
         """Check if the flow has caching disabled.
 

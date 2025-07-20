@@ -13,7 +13,7 @@ from waldiez.models import (
     WaldiezRagUserProxy,
 )
 
-from .common import get_chat_message_string
+from .common import get_chat_message_string, get_event_handler_string
 
 
 def export_single_chat(
@@ -166,10 +166,10 @@ def get_simple_chat_string(
     """
     tab = "    " * tabs
     sender_name = agent_names[sender.id]
-    initiate = "initiate_chat"
+    initiate = "run"
     if is_async:
         sender_name = f"await {sender_name}"
-        initiate = "a_initiate_chat"
+        initiate = "a_run"
     recipient_name = agent_names[recipient.id]
     chat_string = "\n" + f"{tab}results = {sender_name}.{initiate}(" + "\n"
     chat_string += f"{tab}    {recipient_name},"
@@ -193,6 +193,7 @@ def get_simple_chat_string(
     )
     chat_string += message_arg
     chat_string += "\n" + f"{tab})" + "\n"
+    chat_string += get_event_handler_string(tab=tab)
     return chat_string, additional_methods_string
 
 
@@ -233,7 +234,7 @@ def get_empty_simple_chat_string(
     if is_async:
         sender_name = f"await {sender_name}"
     recipient_name = agent_names[recipient.id]
-    initiate = "a_initiate_chat" if is_async else "initiate_chat"
+    initiate = "a_run" if is_async else "run"
     content = "\n" + f"{tab}results = {sender_name}.{initiate}(" + "\n"
     content += f"{tab}    {recipient_name}," + "\n"
     if not skip_cache:
@@ -247,6 +248,7 @@ def get_empty_simple_chat_string(
     )
     content += message_arg
     content += f"{tab})" + "\n"
+    content += get_event_handler_string(tab=tab)
     return content, ""
 
 

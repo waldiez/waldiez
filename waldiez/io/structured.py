@@ -24,6 +24,7 @@ from .models import (
 from .utils import (
     gen_id,
     get_image,
+    get_message_dump,
     is_json_dumped,
     now,
     try_parse_maybe_serialized,
@@ -133,7 +134,7 @@ class StructuredIOStream(IOStream):
         return user_response
 
     # noinspection PyMethodMayBeStatic
-    # pylint: disable=no-self-use
+    # pylint: disable=no-self-use,broad-exception-caught
     def send(self, message: BaseEvent) -> None:
         """Structured sending of a BaseEvent.
 
@@ -142,7 +143,7 @@ class StructuredIOStream(IOStream):
         message : BaseEvent
             The message to send.
         """
-        message_dump = message.model_dump(mode="json")
+        message_dump = get_message_dump(message)
         if message_dump.get("type") == "text":
             content_block = message_dump.get("content")
             if (

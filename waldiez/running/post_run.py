@@ -99,7 +99,6 @@ def _make_timeline_json(
     """Make the timeline JSON file."""
     events_csv_path = temp_dir / "logs" / "events.csv"
     if events_csv_path.exists():
-        print("Processing timeline...")
         log_files = TimelineProcessor.get_files(temp_dir / "logs")
         if any(log_files.values()):
             output_file = temp_dir / "timeline.json"

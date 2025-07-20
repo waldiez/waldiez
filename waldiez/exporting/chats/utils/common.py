@@ -48,3 +48,31 @@ def get_chat_message_string(
         is_rag=is_rag_with_carryover,
     )
     return function_name, function_content
+
+
+def get_event_handler_string(
+    tab: str,
+) -> str:
+    """Get the event handler string.
+
+    Parameters
+    ----------
+    tab : str
+        The tab string.
+
+    Returns
+    -------
+    str
+        The event handler string.
+    """
+    return (
+        f"{tab}if on_event:\n"
+        f"{tab}    for event in results.events:\n"
+        f"{tab}        should_continue = on_event(event)\n"
+        f"{tab}        if event.type == 'run_completion':\n"
+        f"{tab}            should_continue = False\n"
+        f"{tab}        if not should_continue:\n"
+        f"{tab}            break\n"
+        f"{tab}else:\n"
+        f"{tab}    results.process()\n"
+    )

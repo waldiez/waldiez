@@ -117,9 +117,8 @@ def test_sequential_chat() -> None:
     )
     exporter.export()
     expected = """
-        results = initiate_chats([
+        results = agent1.sequential_run([
             {
-                "sender": agent1,
                 "recipient": agent2,
                 "cache": cache,
                 "summary_method": "last_msg",

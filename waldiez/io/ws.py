@@ -19,7 +19,12 @@ from ._ws import (
     is_websocket_available,
 )
 from .models import UserResponse
-from .utils import is_json_dumped, now, try_parse_maybe_serialized
+from .utils import (
+    get_message_dump,
+    is_json_dumped,
+    now,
+    try_parse_maybe_serialized,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -137,7 +142,7 @@ class AsyncWebsocketsIOStream(IOStream):
         message : BaseEvent
             The message to send.
         """
-        message_dump = message.model_dump(mode="json")
+        message_dump = get_message_dump(message)
 
         if message_dump.get("type") == "text":
             content_block = message_dump.get("content")

@@ -7,6 +7,7 @@ With the agents also having nested chats.
 """
 
 from waldiez.exporting.chats import ChatsExporter
+from waldiez.exporting.chats.utils.common import get_event_handler_string
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
@@ -198,7 +199,7 @@ def nested_chat_message(recipient, messages, sender, config):
     )
     exporter.export()
     expected = """
-        results = agent1.initiate_chat(
+        results = agent1.run(
             agent2,
             cache=cache,
             summary_method="last_msg",
@@ -207,7 +208,10 @@ def nested_chat_message(recipient, messages, sender, config):
             message="Hello \\"wa-2\\" from \\"wa-1\\"",
         )
 """
-    assert exporter.extras.chat_initiation == expected
+    assert (
+        exporter.extras.chat_initiation
+        == expected + get_event_handler_string(tab="        ")
+    )
     registrations = exporter.extras.chat_registration
     # after_export = exporter.get_after_export()
     # assert after_export is not None

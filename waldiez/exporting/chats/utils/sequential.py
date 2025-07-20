@@ -115,9 +115,15 @@ def export_sequential_chat(
     tab = "    " * tabs if tabs > 0 else ""
     content = "\n"
     additional_methods_string = ""
-    content += _get_initiate_chats_line(tab, is_async)
-    for connection in main_chats:
+    sender = main_chats[0]["source"]
+    content += _get_initiate_chats_line(
+        tab=tab,
+        is_async=is_async,
+        sender=agent_names[sender.id],
+    )
+    for idx, connection in enumerate(main_chats):
         chat_string, additional_methods = _get_chat_dict_string(
+            is_first=idx == 0,
             chat_names=chat_names,
             connection=connection,
             agent_names=agent_names,
@@ -133,6 +139,7 @@ def export_sequential_chat(
 
 def _get_chat_dict_string(
     connection: WaldiezAgentConnection,
+    is_first: bool,
     chat_names: dict[str, str],
     agent_names: dict[str, str],
     serializer: Callable[..., str],
@@ -147,6 +154,8 @@ def _get_chat_dict_string(
 
     Parameters
     ----------
+    is_first : bool
+        Whether this is the first chat in the sequence.
     connection : WaldiezAgentConnection
         The connection object containing the chat and agents.
     chat_names : dict[str, str]
@@ -168,8 +177,9 @@ def _get_chat_dict_string(
     tab = "    " * tabs
     chat = connection["chat"]
     sender = connection["source"]
-    chat_string = _get_chat_strig_start(
+    chat_string = _get_chat_string_start(
         connection=connection,
+        is_first=is_first,
         agent_names=agent_names,
         serializer=serializer,
         tabs=tabs,
@@ -201,8 +211,9 @@ def _get_chat_dict_string(
     return chat_string, additional_methods_string
 
 
-def _get_chat_strig_start(
+def _get_chat_string_start(
     connection: WaldiezAgentConnection,
+    is_first: bool,
     agent_names: dict[str, str],
     serializer: Callable[..., str],
     tabs: int,
@@ -215,7 +226,8 @@ def _get_chat_strig_start(
     chat_args = chat.get_chat_args(for_queue=True, sender=sender)
     # chat_args = update_summary_chat_args(chat_args)
     chat_string = "{"
-    chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
+    if not is_first:
+        chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
     chat_string += "\n" + f'{tab}    "recipient": {agent_names[recipient.id]},'
     if skip_cache is False:
         chat_string += "\n" + f'{tab}    "cache": cache,'
@@ -233,6 +245,7 @@ def _get_chat_strig_start(
 def _get_initiate_chats_line(
     tab: str,
     is_async: bool,
+    sender: str,
 ) -> str:
     """Get the initiate chats line.
 
@@ -242,6 +255,8 @@ def _get_initiate_chats_line(
         The tab string.
     is_async : bool
         Whether the chat is asynchronous.
+    sender : str
+        The sender that starts the chat.
 
     Returns
     -------
@@ -249,8 +264,8 @@ def _get_initiate_chats_line(
         The initiate chats line.
     """
     results_is = f"{tab}results = "
-    initiate = "initiate_chats"
+    initiate = f"{sender}.sequential_run"
     if is_async:
         results_is += "await "
-        initiate = "a_initiate_chats"
+        initiate = "a_sequential_run"
     return results_is + initiate + "(["

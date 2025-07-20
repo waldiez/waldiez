@@ -21,6 +21,7 @@ TYPING_IMPORT_NAMES = [
     "Annotated",
     "Any",
     "Callable",
+    "Coroutine",
     "Dict",
     "List",
     "Optional",
@@ -37,6 +38,9 @@ COMMON_AUTOGEN_IMPORTS = [
     "from autogen import ChatResult",
     "from autogen import GroupChat",
     "from autogen import runtime_logging",
+    "from autogen.events import BaseEvent",
+    "from autogen.io.run_response import RunResponseProtocol",
+    "from autogen.io.run_response import AsyncRunResponseProtocol",
 ]
 
 

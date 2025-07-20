@@ -14,93 +14,222 @@ variables specified in the waldiez file are set.
 """
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
+
+from typing_extensions import Literal
 
 from .models.waldiez import Waldiez
 from .running import (
     WaldiezBaseRunner,
-    WaldiezImportRunner,
-    WaldiezSubprocessRunner,
+    WaldiezStandardRunner,
 )
 
 if TYPE_CHECKING:
-    from autogen import ChatResult  # type: ignore
+    from autogen.io.run_response import (  # type: ignore[import-untyped]
+        AsyncRunResponseProtocol,
+        RunResponseProtocol,
+    )
+
+
+def create_runner(
+    waldiez: Waldiez,
+    # mode: Literal["standard", "debug"] = "standard",
+    mode: Literal["standard"] = "standard",
+    output_path: str | Path | None = None,
+    uploads_root: str | Path | None = None,
+    structured_io: bool = False,
+    **kwargs: Any,
+) -> WaldiezBaseRunner:
+    """Create a Waldiez runner of the specified type.
+
+    Parameters
+    ----------
+    waldiez : Waldiez
+        The waldiez flow to run.
+    mode : str, optional
+        Runner mode: "standard", "debug", by default "standard"
+    output_path : str | Path | None, optional
+        Output path for results, by default None
+    uploads_root : str | Path | None, optional
+        Uploads root directory, by default None
+    structured_io : bool, optional
+        Use structured I/O, by default False
+    **kwargs
+        Additional arguments for specific runner types
+
+    Returns
+    -------
+    WaldiezBaseRunner
+        The configured runner instance
+
+    Raises
+    ------
+    ValueError
+        If unknown runner mode is specified
+    """
+    runners: dict[str, type[WaldiezBaseRunner]] = {
+        "standard": WaldiezStandardRunner,
+        # "debug": WaldiezDebugRunner,
+    }
+
+    if mode not in runners:
+        available = ", ".join(runners.keys())
+        raise ValueError(
+            f"Unknown runner mode '{mode}'. Available: {available}"
+        )
+
+    runner_class = runners[mode]
+    return runner_class(
+        waldiez=waldiez,
+        output_path=output_path,
+        uploads_root=uploads_root,
+        structured_io=structured_io,
+        **kwargs,
+    )
 
 
 class WaldiezRunner(WaldiezBaseRunner):
-    """Waldiez runner class."""
+    """Factory class for creating Waldiez runners."""
 
-    _implementation: WaldiezBaseRunner
-
+    # pylint: disable=super-init-not-called
     def __init__(
         self,
         waldiez: Waldiez,
+        # mode: Literal["standard", "debug"] = "standard",
+        mode: Literal["standard"] = "standard",
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
-        isolated: bool = False,
-        threaded: bool = False,
-        skip_patch_io: bool = True,
-    ) -> None:
-        """Create a new Waldiez runner.
+        **kwargs: Any,
+    ):
+        """Create a runner instance.
 
         Parameters
         ----------
         waldiez : Waldiez
             The waldiez flow to run.
+        mode : Literal["standard", "debug"], optional
+            Runner mode: "standard", "debug", by default "standard"
         output_path : str | Path | None, optional
-            The path to the output directory where the results will be stored.
-            If None, a temporary directory will be used.
+            Output path for results, by default None
         uploads_root : str | Path | None, optional
-            The root directory for uploads. If None, the default uploads
-            directory will be used.
+            Uploads root directory, by default None
         structured_io : bool, optional
-            If True, the flow will use
-            structured IO instead of the default 'input/print'.
-        isolated : bool, optional
-            If True, the flow will be run in an isolated subprocess.
-            Defaults to False.
-        threaded : bool, optional
-            If True, the flow will be run in a threaded manner.
-            Defaults to False.
-        skip_patch_io : bool, optional
-            If True, the IO patching will be skipped.
-            Defaults to True.
+            Use structured I/O, by default False
+        **kwargs
+            Additional arguments for specific runner types
 
-        Returns
-        -------
-        WaldiezBaseRunner
-            The runner instance that will execute the flow.
         """
-        super().__init__(
-            waldiez,
+        self._runner = create_runner(
+            waldiez=waldiez,
+            mode=mode,
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
-            isolated=isolated,
-            threaded=threaded,
-            skip_patch_io=skip_patch_io,
+            **kwargs,
         )
-        if isolated:
-            self._implementation = WaldiezSubprocessRunner(
-                waldiez,
-                output_path=output_path,
-                uploads_root=uploads_root,
-                structured_io=structured_io,
-                isolated=True,
-                threaded=threaded,
-                skip_patch_io=skip_patch_io,
-            )
-        else:
-            self._implementation = WaldiezImportRunner(
-                waldiez,
-                output_path=output_path,
-                uploads_root=uploads_root,
-                structured_io=structured_io,
-                isolated=False,
-                threaded=threaded,
-                skip_patch_io=skip_patch_io,
-            )
+
+    def __repr__(self) -> str:
+        """Get the string representation of the runner.
+
+        Returns
+        -------
+        str
+            A string representation of the WaldiezRunner instance.
+        """
+        return f"WaldiezRunner({type(self._runner).__name__})"
+
+    def __getattr__(self, name: str) -> Any:
+        """Delegate attribute access to the underlying runner.
+
+        Parameters
+        ----------
+        name : str
+            The name of the attribute to access.
+
+        Returns
+        -------
+        Any
+            The value of the attribute from the underlying runner.
+        """
+        if hasattr(self._runner, name):
+            return getattr(self._runner, name)
+        raise AttributeError(f"{type(self).__name__} has no attribute '{name}'")
+
+    def _run(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        skip_mmd: bool,
+        skip_timeline: bool,
+        **kwargs: Any,
+    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+        return self._runner._run(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
+            **kwargs,
+        )
+
+    def _start(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        skip_mmd: bool,
+        skip_timeline: bool,
+    ) -> None:
+        """Start the workflow in a non-blocking way."""
+        self._runner._start(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
+        )
+
+    def _stop(self) -> None:
+        self._runner._stop()
+
+    async def _a_run(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        skip_mmd: bool,
+        skip_timeline: bool,
+        **kwargs: Any,
+    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+        return await self._runner._a_run(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
+            **kwargs,
+        )
+
+    async def _a_start(
+        self,
+        temp_dir: Path,
+        output_file: Path,
+        uploads_root: Path | None,
+        skip_mmd: bool,
+        skip_timeline: bool,
+    ) -> None:
+        return await self._runner._a_start(
+            temp_dir=temp_dir,
+            output_file=output_file,
+            uploads_root=uploads_root,
+            skip_mmd=skip_mmd,
+            skip_timeline=skip_timeline,
+        )
+
+    async def _a_stop(self) -> None:
+        return await self._runner._a_stop()
 
     @classmethod
     def load(
@@ -113,49 +242,35 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
-        isolated: bool = False,
-        threaded: bool = False,
-        skip_patch_io: bool = True,
+        **kwargs: Any,
     ) -> "WaldiezRunner":
-        """Load a waldiez flow from a file and create a runner.
+        """Load a waldiez flow and create a runner.
 
         Parameters
         ----------
         waldiez_file : str | Path
-            The path to the waldiez file.
+            Path to the waldiez flow file.
         name : str | None, optional
-            The name of the flow.
-            If None, the name from the waldiez file will be used.
+            Name of the flow, by default None
         description : str | None, optional
-            The description of the flow.
-            If None, the description from the waldiez file will be used.
+            Description of the flow, by default None
         tags : list[str] | None, optional
-            The tags for the flow. If None, no tags will be set.
+            Tags for the flow, by default None
         requirements : list[str] | None, optional
-            The requirements for the flow. If None, no requirements will be set.
+            Requirements for the flow, by default None
         output_path : str | Path | None, optional
-            The path to the output directory where the results will be stored.
-            If None, a temporary directory will be used.
+            Output path for results, by default None
         uploads_root : str | Path | None, optional
-            The root directory for uploads. If None, the default uploads
-            directory will be used.
+            Uploads root directory, by default None
         structured_io : bool, optional
-            If True, the flow will use
-            structured IO instead of the default 'input/print'.
-        isolated : bool, optional
-            If True, the flow will be run in an isolated subprocess.
-            Defaults to False.
-        threaded : bool, optional
-            If True, the flow will be run in a threaded manner.
-            Defaults to False.
-        skip_patch_io : bool, optional
-            If True, the IO patching will be skipped.
-            Defaults to True.
+            Use structured I/O, by default False
+        **kwargs
+            Additional arguments for specific runner types
 
         Returns
         -------
-        WaldiezBaseRunner
-            The runner instance that will execute the flow.
+        WaldiezRunner
+            The configured runner instance
         """
         waldiez = Waldiez.load(
             waldiez_file,
@@ -164,366 +279,17 @@ class WaldiezRunner(WaldiezBaseRunner):
             tags=tags,
             requirements=requirements,
         )
+        mode = kwargs.pop("mode", "standard")
+        # Ensure mode is set correctly, defaulting to "standard" if not provided
+        if not mode or mode not in ["standard", "debug"]:
+            # Default to "standard" if mode is not specified or invalid
+            # This ensures backward compatibility and avoids errors
+            mode = "standard"
         return cls(
-            waldiez,
+            waldiez=waldiez,
+            mode=mode,
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
-            isolated=isolated,
-            threaded=threaded,
-            skip_patch_io=skip_patch_io,
+            **kwargs,
         )
-
-    def _before_run(
-        self,
-        output_file: Path,
-        uploads_root: Path | None,
-    ) -> Path:
-        """Actions to perform before running the flow.
-
-        Parameters
-        ----------
-        output_file : Path
-            The output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        """
-        return self._implementation._before_run(
-            output_file=output_file,
-            uploads_root=uploads_root,
-        )
-
-    async def _a_before_run(
-        self,
-        output_file: Path,
-        uploads_root: Path | None,
-    ) -> Path:
-        """Asynchronously perform actions before running the flow.
-
-        Parameters
-        ----------
-        output_file : str | Path
-            The output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-
-        Returns
-        -------
-        Path
-            The path to the temporary directory created for the run.
-        """
-        return await self._implementation._a_before_run(
-            output_file, uploads_root
-        )
-
-    def _run(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-    ) -> Union[
-        "ChatResult",
-        list["ChatResult"],
-        dict[int, "ChatResult"],
-    ]:
-        """Run the flow.
-
-        Parameters
-        ----------
-        temp_dir : Path
-            The path to the temporary directory created for the run.
-        output_file : Path
-            The output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-
-        Returns
-        -------
-        ChatResult | list[ChatResult] | dict[int, ChatResult]
-            The result of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
-        """
-        return self._implementation._run(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    async def _a_run(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> Union[
-        "ChatResult",
-        list["ChatResult"],
-        dict[int, "ChatResult"],
-    ]:  # pyright: ignore
-        """Asynchronously run the flow.
-
-        Parameters
-        ----------
-        temp_dir : Path
-            The path to the temporary directory created for the run.
-        output_file : Path
-            The output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-
-        Returns
-        -------
-        Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The result of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
-        """
-        return await self._implementation._a_run(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    def _after_run(
-        self,
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
-        ],
-        output_file: Path,
-        uploads_root: Path | None,
-        temp_dir: Path,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Actions to perform after running the flow.
-
-        Parameters
-        ----------
-        results : Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The results of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
-        output_file : Path
-            The path to the output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
-        temp_dir : Path
-            The path to the temporary directory created for the run.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-        """
-        self._implementation._after_run(
-            results,
-            output_file,
-            uploads_root,
-            temp_dir,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    async def _a_after_run(
-        self,
-        results: Union[
-            "ChatResult",
-            list["ChatResult"],
-            dict[int, "ChatResult"],
-        ],
-        output_file: Path,
-        uploads_root: Path | None,
-        temp_dir: Path,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Asynchronously perform actions after running the flow.
-
-        Parameters
-        ----------
-        output_file : Path
-            The path to the output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
-        temp_dir : Path
-            The path to the temporary directory created for the run.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-        """
-        await self._implementation._a_after_run(
-            results,
-            output_file,
-            uploads_root,
-            temp_dir,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    def start(
-        self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
-        structured_io: bool | None = None,
-        skip_patch_io: bool | None = None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-    ) -> None:
-        """Start the flow.
-
-        Parameters
-        ----------
-        output_path : str | Path | None
-            The output path, by default None.
-        uploads_root : str | Path | None
-            The runtime uploads root.
-        structured_io : bool | None
-            Whether to use structured IO instead of the default 'input/print'.
-            If None, it will use the value from the context.
-        skip_patch_io : bool | None = None
-            Whether to skip patching I/O, by default None.
-            If None, it will use the value from the context.
-        skip_mmd : bool = False
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool = False
-            Whether to skip generating the timeline JSON.
-        """
-        self._implementation.start(
-            output_path=output_path,
-            uploads_root=uploads_root,
-            structured_io=structured_io,
-            skip_patch_io=skip_patch_io,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    def _start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Start the flow.
-
-        Parameters
-        ----------
-        output_file : Path
-            The output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-        """
-        self._implementation._start(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    async def a_start(
-        self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
-        structured_io: bool | None = None,
-        skip_patch_io: bool | None = None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-    ) -> None:
-        """Asynchronously start the flow.
-
-        Parameters
-        ----------
-        output_path : str | Path | None
-            The output path, by default None.
-        uploads_root : str | Path | None
-            The runtime uploads root.
-        structured_io : bool | None
-            Whether to use structured IO instead of the default 'input/print'.
-        skip_patch_io : bool | None = None
-            Whether to skip patching I/O, by default None.
-        skip_mmd : bool = False
-            Whether to skip generating the mermaid diagram, by default False.
-        skip_timeline : bool = False
-            Whether to skip generating the timeline JSON, by default False.
-        """
-        await self._implementation.a_start(
-            output_path=output_path,
-            uploads_root=uploads_root,
-            structured_io=structured_io,
-            skip_patch_io=skip_patch_io,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    async def _a_start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool = False,
-    ) -> None:
-        """Asynchronously start the flow.
-
-        Parameters
-        ----------
-        temp_dir : Path
-            The path to the temporary directory created for the run.
-        output_file : Path
-            The output file.
-        uploads_root : Path | None
-            The runtime uploads root.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool, optional
-            Whether to skip generating the timeline JSON, by default False.
-        """
-        await self._implementation._a_start(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    def _stop(self) -> None:
-        """Actions to perform when stopping the flow.
-
-        This method should be overridden in subclasses if needed.
-        """
-        self._implementation._stop()
-
-    async def _a_stop(self) -> None:
-        """Asynchronously perform actions when stopping the flow.
-
-        This method should be overridden in subclasses if needed.
-        """
-        await self._implementation._a_stop()

@@ -351,9 +351,13 @@ class MqttIOStream(IOStream):
         }
         LOG.debug("MQTT log: %s", payload)
         print_message = PrintMessage(data=buf)
-        self._print_to_common_output(
-            payload=print_message.model_dump(mode="json")
-        )
+        try:
+            payload = print_message.model_dump(mode="json")
+        except Exception:
+            payload = print_message.model_dump(
+                serialize_as_any=True, mode="json", fallback=str
+            )
+        self._print_to_common_output(payload=payload)
 
     def _handle_input_response(self, payload: str) -> None:
         """Handle input response message."""
@@ -463,7 +467,12 @@ class MqttIOStream(IOStream):
             Additional keyword arguments.
         """
         print_message = PrintMessage.create(*args, **kwargs)
-        payload = print_message.model_dump(mode="json")
+        try:
+            payload = print_message.model_dump(mode="json")
+        except Exception:
+            payload = print_message.model_dump(
+                serialize_as_any=True, mode="json", fallback=str
+            )
         self._print(payload)
 
     def send(self, message: BaseMessage) -> None:
@@ -476,11 +485,16 @@ class MqttIOStream(IOStream):
         """
         try:
             message_dump = message.model_dump(mode="json")
-        except Exception as e:  # pragma: no cover
-            message_dump = {
-                "error": str(e),
-                "type": message.__class__.__name__,
-            }
+        except Exception:
+            try:
+                message_dump = message.model_dump(
+                    serialize_as_any=True, mode="json", fallback=str
+                )
+            except Exception as e:
+                message_dump = {
+                    "error": str(e),
+                    "type": message.__class__.__name__,
+                }
 
         message_type = message_dump.get("type", None)
         if not message_type:  # pragma: no cover
@@ -523,8 +537,12 @@ class MqttIOStream(IOStream):
             prompt=prompt,
             password=password,
         )
-
-        payload = input_request.model_dump(mode="json")
+        try:
+            payload = input_request.model_dump(mode="json")
+        except Exception:  # pragma: no cover
+            payload = input_request.model_dump(
+                serialize_as_any=True, mode="json", fallback=str
+            )
         payload["task_id"] = self.task_id
         payload["password"] = str(password).lower()
 

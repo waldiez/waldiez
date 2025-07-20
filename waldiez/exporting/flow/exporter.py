@@ -21,8 +21,6 @@ class FlowExporter(Exporter[FlowExtras]):
         waldiez: Waldiez,
         output_dir: Path | None,
         for_notebook: bool,
-        structured_io: bool = False,
-        skip_patch_io: bool = True,
         context: Optional[ExporterContext] = None,
         **kwargs: Any,
     ) -> None:
@@ -54,8 +52,6 @@ class FlowExporter(Exporter[FlowExtras]):
             is_async=waldiez.is_async,
             output_directory=str(self.output_dir) if self.output_dir else None,
             cache_seed=waldiez.cache_seed,
-            structured_io=structured_io,
-            skip_patch_io=skip_patch_io,
         )
         self._extras = self._generate_extras()
 

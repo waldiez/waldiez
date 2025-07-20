@@ -10,6 +10,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from waldiez.exporting.chats.utils.common import get_event_handler_string
 from waldiez.exporting.chats.utils.group import export_group_chats
 from waldiez.models import WaldiezGroupManager, WaldiezGroupManagerData
 
@@ -46,7 +47,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results, _, __ = initiate_group_chat(",
+            "    results = run_group_chat(",
             "        pattern=chat_manager_pattern,",
             '        messages="",',
             "        max_rounds=10,",
@@ -57,8 +58,8 @@ class TestExportGroupChats:
             assert line in result
 
         # Should not contain async function name
-        assert "a_initiate_group_chat" not in result
-        assert "initiate_group_chat(" in result
+        assert "a_run_group_chat" not in result
+        assert "run_group_chat(" in result
 
     def test_basic_async_group_chat_no_initial_chat(self) -> None:
         """Test basic asynchronous group chat without initial chat."""
@@ -74,7 +75,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results, _, __ = a_initiate_group_chat(",
+            "    results = a_run_group_chat(",
             "        pattern=chat_manager_pattern,",
             '        messages="",',
             "        max_rounds=5,",
@@ -85,8 +86,8 @@ class TestExportGroupChats:
             assert line in result
 
         # Should contain async function name
-        assert "a_initiate_group_chat(" in result
-        assert " initiate_group_chat(" not in result
+        assert "a_run_group_chat(" in result
+        assert " run_group_chat(" not in result
 
     def test_sync_group_chat_with_initial_chat(self) -> None:
         """Test synchronous group chat with initial chat message."""
@@ -103,7 +104,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results, _, __ = initiate_group_chat(",
+            "    results = run_group_chat(",
             "        pattern=group_manager_pattern,",
             f"        messages={json.dumps(initial_chat)},",
             "        max_rounds=15,",
@@ -128,7 +129,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results, _, __ = a_initiate_group_chat(",
+            "    results = a_run_group_chat(",
             "        pattern=async_manager_pattern,",
             f"        messages={json.dumps(initial_chat)},",
             "        max_rounds=20,",
@@ -153,7 +154,7 @@ class TestExportGroupChats:
         )
 
         # Should start with no indentation
-        assert result_0_tabs.startswith("results, _, __ = initiate_group_chat(")
+        assert result_0_tabs.startswith("results = run_group_chat(")
 
         # Test with 2 tabs
         result_2_tabs = export_group_chats(
@@ -165,9 +166,7 @@ class TestExportGroupChats:
         )
 
         # Should start with 8 spaces (2 tabs * 4 spaces)
-        assert result_2_tabs.startswith(
-            "        results, _, __ = initiate_group_chat("
-        )
+        assert result_2_tabs.startswith("        results = run_group_chat(")
 
         # Test with 3 tabs
         result_3_tabs = export_group_chats(
@@ -179,9 +178,7 @@ class TestExportGroupChats:
         )
 
         # Should start with 12 spaces (3 tabs * 4 spaces)
-        assert result_3_tabs.startswith(
-            "            results, _, __ = initiate_group_chat("
-        )
+        assert result_3_tabs.startswith("            results = run_group_chat(")
 
     def test_different_max_rounds(self) -> None:
         """Test with different max_rounds values."""
@@ -403,7 +400,7 @@ class TestEdgeCases:
         )
 
         # Should start with no indentation
-        assert result.startswith("results, _, __ = initiate_group_chat(")
+        assert result.startswith("results = run_group_chat(")
 
     def test_special_characters_in_initial_chat(self) -> None:
         """Test with special characters in initial chat."""
@@ -442,12 +439,12 @@ class TestOutputFormat:
         )
 
         expected = (
-            "        results, _, __ = initiate_group_chat(\n"
+            "        results = run_group_chat(\n"
             "            pattern=test_mgr_pattern,\n"
             '            messages="Hello",\n'
             "            max_rounds=5,\n"
             "        )\n"
-        )
+        ) + get_event_handler_string(tab="        ")
 
         assert result == expected
 
@@ -465,12 +462,12 @@ class TestOutputFormat:
         )
 
         expected = (
-            "    results, _, __ = a_initiate_group_chat(\n"
+            "    results = a_run_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
             '        messages="",\n'
             "        max_rounds=3,\n"
             "    )\n"
-        )
+        ) + get_event_handler_string(tab="    ")
 
         assert result == expected
 
@@ -488,11 +485,11 @@ class TestOutputFormat:
         )
 
         expected = (
-            "results, _, __ = initiate_group_chat(\n"
+            "results = run_group_chat(\n"
             "    pattern=no_tab_mgr_pattern,\n"
             '    messages="",\n'
             "    max_rounds=1,\n"
             ")\n"
-        )
+        ) + get_event_handler_string(tab="")
 
         assert result == expected

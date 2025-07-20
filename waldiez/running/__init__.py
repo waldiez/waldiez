@@ -3,11 +3,9 @@
 """Running related functions."""
 
 from .base_runner import WaldiezBaseRunner
-from .import_runner import WaldiezImportRunner
-from .subprocess_runner import WaldiezSubprocessRunner
+from .standard_runner import WaldiezStandardRunner
 
 __all__ = [
     "WaldiezBaseRunner",
-    "WaldiezImportRunner",
-    "WaldiezSubprocessRunner",
+    "WaldiezStandardRunner",
 ]
