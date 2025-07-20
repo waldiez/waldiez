@@ -208,9 +208,10 @@ def nested_chat_message(recipient, messages, sender, config):
             message="Hello \\"wa-2\\" from \\"wa-1\\"",
         )
 """
+    tab = "        "
     assert (
         exporter.extras.chat_initiation
-        == expected + get_event_handler_string(tab="        ")
+        == expected + get_event_handler_string(tab=tab, is_async=False)
     )
     registrations = exporter.extras.chat_registration
     # after_export = exporter.get_after_export()

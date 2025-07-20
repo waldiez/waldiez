@@ -122,7 +122,10 @@ def callable_message(sender, recipient, context):
         )
 """
     tab = "        "
-    assert generated == expected + get_event_handler_string(tab=tab)
+    assert generated == expected + get_event_handler_string(
+        tab=tab,
+        is_async=False,
+    )
 
 
 def test_empty_chat() -> None:
@@ -204,7 +207,10 @@ def test_empty_chat() -> None:
         f"\n{tab}    clear_history=True,"
         f"\n{tab})\n"
     )
-    assert generated == expected + get_event_handler_string(tab=tab)
+    assert generated == expected + get_event_handler_string(
+        tab=tab,
+        is_async=False,
+    )
 
 
 def test_chat_with_rag_and_carryover() -> None:
@@ -310,7 +316,10 @@ def test_chat_with_rag_and_carryover() -> None:
         "\n"
         f"{space})"
         "\n"
-    ) + get_event_handler_string(tab=space)
+    ) + get_event_handler_string(
+        tab=space,
+        is_async=False,
+    )
     assert generated == expected
 
 
@@ -405,5 +414,8 @@ def test_chat_with_rag_no_carryover() -> None:
         "\n"
         f"{space})"
         "\n"
-    ) + get_event_handler_string(tab=space)
+    ) + get_event_handler_string(
+        tab=space,
+        is_async=False,
+    )
     assert generated == expected

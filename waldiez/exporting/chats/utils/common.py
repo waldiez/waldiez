@@ -52,6 +52,7 @@ def get_chat_message_string(
 
 def get_event_handler_string(
     tab: str,
+    is_async: bool,
 ) -> str:
     """Get the event handler string.
 
@@ -59,19 +60,31 @@ def get_event_handler_string(
     ----------
     tab : str
         The tab string.
+    is_async : bool
+        Whether the handler is asynchronous.
 
     Returns
     -------
     str
         The event handler string.
     """
-    return (
+    content = (
         f"{tab}if on_event:\n"
         f"{tab}    if not isinstance(results, list):\n"
         f"{tab}        results = [results]\n"
         f"{tab}    for result in results:\n"
-        f"{tab}        for event in result.events:\n"
-        f"{tab}            should_continue = on_event(event)\n"
+    )
+    if is_async:
+        content += (
+            f"{tab}        async for event in result.events:\n"
+            f"{tab}            should_continue = await on_event(event)\n"
+        )
+    else:
+        content += (
+            f"{tab}        for event in result.events:\n"
+            f"{tab}            should_continue = on_event(event)\n"
+        )
+    content += (
         f"{tab}            if event.type == 'run_completion':\n"
         f"{tab}                should_continue = False\n"
         f"{tab}            if not should_continue:\n"
@@ -80,5 +93,10 @@ def get_event_handler_string(
         f"{tab}    if not isinstance(results, list):\n"
         f"{tab}        results = [results]\n"
         f"{tab}    for result in results:\n"
-        f"{tab}        result.process()\n"
     )
+    if is_async:
+        content += f"{tab}        await result.process()\n"
+    else:
+        content += f"{tab}        result.process()\n"
+
+    return content

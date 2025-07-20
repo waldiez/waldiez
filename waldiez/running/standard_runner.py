@@ -268,7 +268,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                         user_input = await self._input(
                             prompt, password=password
                         )
-                    event.content.respond(user_input)
+                    respond = event.content.respond(user_input)
+                    if asyncio.iscoroutine(respond):  # pyright: ignore
+                        await respond
                 else:
                     event.print(self._print)
             self._processed_events += 1

@@ -54,5 +54,5 @@ def export_group_chats(
         content += f'{tab}    messages="",\n'
     content += f"{tab}    max_rounds={manager.data.max_round},\n"
     content += f"{tab})\n"
-    content += get_event_handler_string(tab=tab)
+    content += get_event_handler_string(tab=tab, is_async=is_async)
     return content

@@ -134,7 +134,7 @@ def export_sequential_chat(
         additional_methods_string += additional_methods
         content += "\n" + f"{tab}    {chat_string}"
     content += "\n" + "    " * tabs + "])\n"
-    content += get_event_handler_string(tab=tab)
+    content += get_event_handler_string(tab=tab, is_async=is_async)
     return content, additional_methods_string
 
 

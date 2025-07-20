@@ -437,14 +437,14 @@ class TestOutputFormat:
             tabs=2,
             is_async=False,
         )
-
+        tab = "        "
         expected = (
             "        results = run_group_chat(\n"
             "            pattern=test_mgr_pattern,\n"
             '            messages="Hello",\n'
             "            max_rounds=5,\n"
             "        )\n"
-        ) + get_event_handler_string(tab="        ")
+        ) + get_event_handler_string(tab=tab, is_async=False)
 
         assert result == expected
 
@@ -460,14 +460,14 @@ class TestOutputFormat:
             tabs=1,
             is_async=True,
         )
-
+        tab = "    "
         expected = (
             "    results = a_run_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
             '        messages="",\n'
             "        max_rounds=3,\n"
             "    )\n"
-        ) + get_event_handler_string(tab="    ")
+        ) + get_event_handler_string(tab=tab, is_async=True)
 
         assert result == expected
 
@@ -483,13 +483,13 @@ class TestOutputFormat:
             tabs=0,
             is_async=False,
         )
-
+        tab = ""
         expected = (
             "results = run_group_chat(\n"
             "    pattern=no_tab_mgr_pattern,\n"
             '    messages="",\n'
             "    max_rounds=1,\n"
             ")\n"
-        ) + get_event_handler_string(tab="")
+        ) + get_event_handler_string(tab=tab, is_async=False)
 
         assert result == expected
