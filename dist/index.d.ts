@@ -749,6 +749,16 @@ export declare type reasonConfigAnswerApproach = "pool" | "best";
  */
 export declare type reasonConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
 
+export declare type RunCompletionResults = {
+    summary: string;
+    history: {
+        content: string;
+        role: string;
+        name?: string;
+    }[];
+    cost: any;
+};
+
 /**
  * Show a snackbar notification.
  * @param props - The properties of the snackbar to show
@@ -2220,6 +2230,7 @@ export declare type WaldiezChatMessageProcessingResult = {
     requestId?: string | null;
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
+    runCompletion?: RunCompletionResults;
     participants?: {
         users: string[];
         all: string[];
@@ -2271,7 +2282,7 @@ export declare class WaldiezChatMessageProcessor {
  * @param text - Text message
  * @param string - Other string types
  */
-export declare type WaldiezChatMessageType = "user" | "agent" | "system" | "input_request" | "input_response" | "tool_call" | "tool_response" | "group_chat_run_chat" | "generate_code_execution_reply" | "termination_and_human_reply_no_input" | "using_auto_reply" | "execute_function" | "generate_code_execution_reply" | "error" | "print" | "text" | (string & {});
+export declare type WaldiezChatMessageType = "user" | "agent" | "system" | "input_request" | "input_response" | "run_completion" | "tool_call" | "tool_response" | "group_chat_run_chat" | "generate_code_execution_reply" | "termination_and_human_reply_no_input" | "using_auto_reply" | "execute_function" | "generate_code_execution_reply" | "error" | "print" | "text" | (string & {});
 
 /**
  * Waldiez Chat Summary

@@ -128,6 +128,16 @@ export type CodeExecutionReplyData = BaseMessageData & {
     };
 };
 
+export type RunCompletionResults = {
+    summary: string;
+    history: {
+        content: string;
+        role: string;
+        name?: string;
+    }[];
+    cost: any;
+};
+
 /**
  * Waldiez chat message type.
  * This is the main type used to represent a chat message in Waldiez.
@@ -145,6 +155,7 @@ export type WaldiezChatMessageProcessingResult = {
     requestId?: string | null;
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
+    runCompletion?: RunCompletionResults;
     participants?: {
         users: string[];
         all: string[];

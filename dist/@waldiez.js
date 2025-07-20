@@ -748,6 +748,17 @@ class TimelineDataHandler {
     return { timeline: timelineData };
   }
 }
+class RunCompletionHandler {
+  canHandle(type) {
+    return type === "run_completion";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
+      return void 0;
+    }
+    return { isWorkflowEnd: true, runCompletion: data.content };
+  }
+}
 class WaldiezChatMessageProcessor {
   static handlers = [
     new InputRequestHandler(),
@@ -760,7 +771,8 @@ class WaldiezChatMessageProcessor {
     new ToolCallHandler(),
     new TerminationAndHumanReplyNoInputHandler(),
     new UsingAutoReplyHandler(),
-    new TimelineDataHandler()
+    new TimelineDataHandler(),
+    new RunCompletionHandler()
   ];
   /**
    * Process a raw message and return the result

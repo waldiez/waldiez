@@ -9,6 +9,7 @@ import {
     GroupChatRunHandler,
     InputRequestHandler,
     PrintMessageHandler,
+    RunCompletionHandler,
     SpeakerSelectionHandler,
     TerminationAndHumanReplyNoInputHandler,
     TerminationHandler,
@@ -37,6 +38,7 @@ export class WaldiezChatMessageProcessor {
         new TerminationAndHumanReplyNoInputHandler(),
         new UsingAutoReplyHandler(),
         new TimelineDataHandler(),
+        new RunCompletionHandler(),
     ];
 
     /**

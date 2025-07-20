@@ -110,6 +110,7 @@ export type WaldiezChatMessageType =
     | "system"
     | "input_request"
     | "input_response"
+    | "run_completion"
     | "tool_call"
     | "tool_response"
     | "group_chat_run_chat"
