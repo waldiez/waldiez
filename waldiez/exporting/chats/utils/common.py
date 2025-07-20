@@ -72,7 +72,8 @@ def get_event_handler_string(
         f"{tab}if on_event:\n"
         f"{tab}    if not isinstance(results, list):\n"
         f"{tab}        results = [results]\n"
-        f"{tab}    for result in results:\n"
+        f"{tab}    for index, result in enumerate(results):\n"
+        f"{tab}        is_last = index == len(results) - 1\n"
     )
     if is_async:
         content += (
@@ -85,7 +86,7 @@ def get_event_handler_string(
             f"{tab}            should_continue = on_event(event)\n"
         )
     content += (
-        f"{tab}            if event.type == 'run_completion':\n"
+        f"{tab}            if event.type == 'run_completion' and is_last:\n"
         f"{tab}                should_continue = False\n"
         f"{tab}            if not should_continue:\n"
         f"{tab}                break\n"
