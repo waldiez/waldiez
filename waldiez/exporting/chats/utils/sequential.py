@@ -268,5 +268,5 @@ def _get_initiate_chats_line(
     initiate = f"{sender}.sequential_run"
     if is_async:
         results_is += "await "
-        initiate = "a_sequential_run"
+        initiate = f"{sender}.a_sequential_run"
     return results_is + initiate + "(["
