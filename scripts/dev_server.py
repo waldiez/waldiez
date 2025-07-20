@@ -134,7 +134,7 @@ class WaldiezDevServer:
         self.host = host
         self.port = port
         self.connections: Set[websockets.ServerConnection] = set()
-        self.run_proc = None
+        self.runner: WaldiezRunner | None = None
 
     async def _send(
         self,
@@ -265,17 +265,15 @@ class WaldiezDevServer:
                 uploads_root=UPLOADS_DIR,
                 verbose=True,
             )
+            self.runner = runner
             with IOStream.set_default(io_steam):
-                runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
                 if runner.is_async:
                     await runner.a_run(
                         uploads_root=UPLOADS_DIR,
-                        skip_patch_io=True,
                     )
                 else:
                     runner.run(
                         uploads_root=UPLOADS_DIR,
-                        skip_patch_io=True,
                     )
         except Exception as e:
             to_log = f"Error running flow: {e}"
@@ -430,7 +428,18 @@ class WaldiezDevServer:
         """
         to_log = "Handling stop action"
         logger.info(to_log)
-        # TODO: find a way to actually stop the runner if it's running
+        if self.runner:
+            try:
+                if self.runner.is_async:
+                    await self.runner.a_stop()
+                else:
+                    self.runner.stop()
+            except Exception as e:
+                to_log = f"Error stopping runner: {e}"
+                logger.error(to_log)
+                return OutgoingMessage(
+                    type="stopResult", success=False, data=to_log
+                )
         return OutgoingMessage(
             type="stopResult",
             success=True,
