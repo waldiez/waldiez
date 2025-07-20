@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # flake8: noqa: E501
-# pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
+# pylint: disable=too-many-try-statements,broad-exception-caught
+# pylint: disable=line-too-long,duplicate-code
 
 """A Redis I/O stream for handling print and input messages."""
 

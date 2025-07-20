@@ -2,9 +2,10 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # flake8: noqa: E501
-# pylint: disable=too-many-try-statements,broad-exception-caught,
-# pylint: disable=line-too-long,unused-argument,too-many-instance-attributes
-# pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+# pylint: disable=too-many-try-statements,broad-exception-caught
+# pylint: disable=line-too-long,duplicate-code,unused-argument
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+# pylint: disable=too-many-locals,too-many-instance-attributes
 
 """An MQTT I/O stream for handling print and input messages."""
 
