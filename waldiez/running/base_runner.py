@@ -95,9 +95,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         self._input: (
             Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
         ) = input
-        self._last_results: Optional[
-            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
-        ] = None
+        self._last_results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
+        ] = []
         self._last_exception: Exception | None = None
         self._execution_complete_event = threading.Event()
         self._execution_thread: Optional[threading.Thread] = None
@@ -212,7 +212,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow."""
         raise NotImplementedError(
             "The _run method must be implemented in the subclass."
@@ -225,7 +225,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> Optional[Union["AsyncRunResponseProtocol", "RunResponseProtocol"]]:
+    ) -> Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]]:
         """Run the Waldiez flow asynchronously."""
         raise NotImplementedError(
             "The _a_run method must be implemented in the subclass."
@@ -273,8 +273,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     def _after_run(
         self,
-        results: Optional[
-            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
+        results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -300,8 +300,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     async def _a_after_run(
         self,
-        results: Optional[
-            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
+        results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -444,7 +444,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
-    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow in blocking mode.
 
         Parameters
@@ -463,10 +463,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
         Returns
         -------
-        Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The result of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
+        Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]
+            The result of the run, which can be a list of RunResponseProtocol
+            or a list of AsyncRunResponseProtocol.
 
         Raises
         ------
@@ -497,9 +496,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         self.install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: Optional[
-            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
-        ] = None
+        results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
+        ] = []
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             with chdir(to=temp_dir):
@@ -533,7 +532,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
-    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow asynchronously.
 
         Parameters
@@ -552,10 +551,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
         Returns
         -------
-        Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The result of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
+        Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]
+            The result of the run, which can be a list of RunResponseProtocol
+            or a list of AsyncRunResponseProtocol.
 
         Raises
         ------
@@ -577,9 +575,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         await self.a_install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: Optional[
-            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
-        ] = None
+        results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
+        ] = []
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
@@ -710,8 +708,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     def after_run(
         self,
-        results: Optional[
-            Union["RunResponseProtocol", "AsyncRunResponseProtocol"]
+        results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -747,11 +745,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     async def a_after_run(
         self,
-        results: Optional[
-            Union[
-                "RunResponseProtocol",
-                "AsyncRunResponseProtocol",
-            ]
+        results: Union[
+            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
         ],
         output_file: Path,
         uploads_root: Path | None,

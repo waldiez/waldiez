@@ -21,7 +21,7 @@ import threading
 import traceback
 from pathlib import Path
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Callable, Coroutine, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Coroutine, Union
 
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.run_results import WaldiezRunResults
@@ -84,7 +84,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez workflow."""
         from autogen.io import IOStream  # type: ignore
 
@@ -95,7 +95,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
         ) = input
         results_container: WaldiezRunResults = {
-            "results": None,
+            "results": [],
             "exception": None,
             "completed": False,
         }
@@ -105,7 +105,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 self.log.info(
                     "Async execution stopped before AG2 workflow start"
                 )
-                return None
+                return []
             if self.structured_io:
                 stream = StructuredIOStream(
                     uploads_root=uploads_root, is_async=False
@@ -124,7 +124,6 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             self._print("<Waldiez> - Workflow finished")
         except SystemExit:
             self._print("<Waldiez> - Workflow stopped by user")
-            results_container["results"] = None
         except Exception as e:  # pylint: disable=broad-exception-caught
             results_container["exception"] = e
             traceback.print_exc()
@@ -288,27 +287,25 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
-    ) -> Optional[Union["AsyncRunResponseProtocol", "RunResponseProtocol"]]:
+    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez workflow asynchronously."""
 
         # fmt: off
-        async def _execute_workflow() -> Optional[
-            Union["AsyncRunResponseProtocol", "RunResponseProtocol"]
-        ]:
+        async def _execute_workflow() -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
             # fmt: on
             """Execute the workflow in an async context."""
             from autogen.io import IOStream  # pyright: ignore
 
             from waldiez.io import StructuredIOStream
 
-            results: Optional["AsyncRunResponseProtocol"] = None
+            results: Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]] = []
             try:
                 self._loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():
                     self.log.info(
                         "Async execution stopped before AG2 workflow start"
                     )
-                    return None
+                    return []
                 if self.structured_io:
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=True
@@ -324,7 +321,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 )
             except SystemExit:
                 self._print("<Waldiez> - Workflow stopped by user")
-                return None
+                return []
             except Exception as e:
                 self._print(
                     f"<Waldiez> - Error loading workflow: {e}\n{traceback.format_exc()}"
@@ -343,14 +340,14 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 if self._stop_requested.is_set():
                     task.cancel()
                     self.log.info("Async execution stopped by user")
-                    return None
+                    break
                 await asyncio.sleep(0.1)
             # Return the task result when completed
             return await task
 
         except asyncio.CancelledError:
             self.log.info("Async execution cancelled")
-            return None
+            return []
 
     async def _a_start(
         self,

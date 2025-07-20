@@ -3,7 +3,7 @@
 
 """Waldiez run results module."""
 
-from typing import TYPE_CHECKING, Optional, TypedDict, Union
+from typing import TYPE_CHECKING, TypedDict, Union
 
 if TYPE_CHECKING:
     from autogen.io.run_response import (  # type: ignore[import-untyped]
@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 class WaldiezRunResults(TypedDict):
     """Results of the Waldiez run."""
 
-    results: Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]
+    results: Union[
+        list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
+    ]
     exception: Exception | None
     completed: bool

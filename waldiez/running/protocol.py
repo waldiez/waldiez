@@ -4,7 +4,7 @@
 """Waldiez Runner protocol."""
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Protocol, Union, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, Union, runtime_checkable
 
 if TYPE_CHECKING:
     from autogen.io.run_response import (  # type: ignore[import-untyped]
@@ -119,11 +119,9 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
-    ) -> Optional[
-        Union[
-            "RunResponseProtocol",
-            "AsyncRunResponseProtocol",
-        ]
+    ) -> Union[
+        list["RunResponseProtocol"],
+        list["AsyncRunResponseProtocol"],
     ]:  # pyright: ignore
         """Run the Waldiez flow in a blocking way.
 
@@ -140,10 +138,12 @@ class WaldiezRunnerProtocol(Protocol):
 
         Returns
         -------
-        Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The result of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
+        Union[
+            list["RunResponseProtocol"],
+            list["AsyncRunResponseProtocol"],
+        ]
+            The result of the run, which can be a list of RunResponseProtocol
+            or a list of AsyncRunResponseProtocol.
         """
 
     async def a_run(
@@ -152,11 +152,9 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
-    ) -> Optional[
-        Union[
-            "AsyncRunResponseProtocol",
-            "RunResponseProtocol",
-        ]
+    ) -> Union[
+        list["RunResponseProtocol"],
+        list["AsyncRunResponseProtocol"],
     ]:  # pyright: ignore
         """Run the Waldiez flow.
 
@@ -173,16 +171,19 @@ class WaldiezRunnerProtocol(Protocol):
 
         Returns
         -------
-        Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The result of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
+        Union[
+            list["RunResponseProtocol"],
+            list["AsyncRunResponseProtocol"],
+        ]
+            The result of the run, which can be a list of RunResponseProtocol
+            or a list of AsyncRunResponseProtocol.
         """
 
     def after_run(
         self,
-        results: Optional[
-            Union["AsyncRunResponseProtocol", "RunResponseProtocol"]
+        results: Union[
+            list["RunResponseProtocol"],
+            list["AsyncRunResponseProtocol"],
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -194,10 +195,12 @@ class WaldiezRunnerProtocol(Protocol):
 
         Parameters
         ----------
-        results : Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The results of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
+        results : Union[
+            list["RunResponseProtocol"],
+            list["AsyncRunResponseProtocol"],
+        ]
+            The results of the run, which can be a list of RunResponseProtocol
+            or a list of AsyncRunResponseProtocol.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None
@@ -212,11 +215,9 @@ class WaldiezRunnerProtocol(Protocol):
 
     async def a_after_run(
         self,
-        results: Optional[
-            Union[
-                "AsyncRunResponseProtocol",
-                "RunResponseProtocol",
-            ]
+        results: Union[
+            list["RunResponseProtocol"],
+            list["AsyncRunResponseProtocol"],
         ],
         output_file: Path,
         uploads_root: Path | None,
@@ -228,10 +229,12 @@ class WaldiezRunnerProtocol(Protocol):
 
         Parameters
         ----------
-        results : Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
-            The results of the run, which can be a single ChatResult,
-            a list of ChatResults,
-            or a dictionary mapping indices to ChatResults.
+        results : Union[
+            list["RunResponseProtocol"],
+            list["AsyncRunResponseProtocol"]
+        ]
+            The results of the run, which can be a list of RunResponseProtocol
+            or a list of AsyncRunResponseProtocol.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None

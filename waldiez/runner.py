@@ -14,7 +14,7 @@ variables specified in the waldiez file are set.
 """
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from typing_extensions import Literal
 
@@ -164,7 +164,10 @@ class WaldiezRunner(WaldiezBaseRunner):
         skip_mmd: bool,
         skip_timeline: bool,
         **kwargs: Any,
-    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+    ) -> Union[
+        list["RunResponseProtocol"],
+        list["AsyncRunResponseProtocol"],
+    ]:
         return self._runner._run(
             temp_dir=temp_dir,
             output_file=output_file,
@@ -202,7 +205,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         skip_mmd: bool,
         skip_timeline: bool,
         **kwargs: Any,
-    ) -> Optional[Union["RunResponseProtocol", "AsyncRunResponseProtocol"]]:
+    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         return await self._runner._a_run(
             temp_dir=temp_dir,
             output_file=output_file,
