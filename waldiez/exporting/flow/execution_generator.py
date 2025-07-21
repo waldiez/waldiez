@@ -159,10 +159,10 @@ class ExecutionGenerator:
             return "# %%\nmain()\n"
         if is_async:
             content += "async def call_main() -> None:\n"
-            return_type_hint = "AsyncRunResponseProtocol"
+            return_type_hint = "list[AsyncRunResponseProtocol]"
         else:
             content += "def call_main() -> None:\n"
-            return_type_hint = "RunResponseProtocol"
+            return_type_hint = "list[RunResponseProtocol]"
         content += '    """Run the main function and print the results."""\n'
         content += f"    results: {return_type_hint} = "
         if is_async:
