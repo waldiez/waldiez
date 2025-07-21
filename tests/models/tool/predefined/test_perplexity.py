@@ -13,7 +13,7 @@ def test_perplexity_search_tool_impl() -> None:
     assert tool.kwargs == {
         "model": "sonar",
         "max_tokens": 1000,
-        "search_domain_filters": None,
+        "search_domain_filter": None,
     }
     assert tool.name == "perplexity_search"
     assert tool.description == "Search Perplexity AI for a given query."
@@ -21,5 +21,9 @@ def test_perplexity_search_tool_impl() -> None:
     assert tool.tags == ["perplexity", "search", "web"]
     assert tool.tool_imports == [
         "from autogen.tools.experimental import PerplexitySearchTool",
+        (
+            "from autogen.tools.experimental.perplexity.perplexity_search"
+            " import SearchResponse"
+        ),
     ]
     assert tool.get_content({"PERPLEXITY_API_KEY": "secret"})

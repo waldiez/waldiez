@@ -110,6 +110,7 @@ class ContentGenerator(Protocol):
         merged_result: ExportResult,
         is_async: bool,
         after_run: str,
+        skip_logging: bool,
         **kwargs: Any,
     ) -> str:  # pyright: ignore
         """Generate content based on provided parameters.
@@ -122,6 +123,8 @@ class ContentGenerator(Protocol):
             Whether to generate async content.
         after_run : str
             Additional content to add after the main flow execution.
+        skip_logging : bool
+            Whether to skip logging setup.
         **kwargs : Any
             Parameters to influence content generation.
 

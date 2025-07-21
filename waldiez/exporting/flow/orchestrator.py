@@ -173,8 +173,7 @@ class ExportOrchestrator:
             position=ExportPosition.IMPORTS,  # after imports (need np)
             order=ContentOrder.CLEANUP,
         )
-        skip_logging = self._should_skip_logging()
-        if not skip_logging:
+        if not self.should_skip_logging():
             merged_result.add_content(
                 get_start_logging(
                     is_async=self.waldiez.is_async,
@@ -190,7 +189,7 @@ class ExportOrchestrator:
             position=ExportPosition.AGENTS,
             order=ContentOrder.LATE_CLEANUP.value + 1,  # after all agents
         )
-        if not skip_logging:
+        if not self.should_skip_logging():
             merged_result.add_content(
                 get_stop_logging(is_async=self.waldiez.is_async),
                 position=ExportPosition.AGENTS,
@@ -414,7 +413,7 @@ class ExportOrchestrator:
             results.append(agent_result)
         return results
 
-    def _should_skip_logging(self) -> bool:
+    def should_skip_logging(self) -> bool:
         """Determine if logging should be skipped.
 
         Returns

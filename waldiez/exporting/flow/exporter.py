@@ -104,4 +104,5 @@ class FlowExporter(Exporter[FlowExtras]):
             merged_result=merged_result,
             is_async=self.waldiez.is_async,
             after_run=after_run,
+            skip_logging=orchestrator.should_skip_logging(),
         )

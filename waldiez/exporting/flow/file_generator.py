@@ -40,6 +40,7 @@ class FileGenerator(ContentGenerator):
         merged_result: ExportResult,
         is_async: bool,
         after_run: str,
+        skip_logging: bool,
         **kwargs: Any,
     ) -> str:
         """Generate the complete flow notebook content.
@@ -52,6 +53,8 @@ class FileGenerator(ContentGenerator):
             Whether to generate async conten
         after_run : str
             Additional content to add after the main flow execution.
+        skip_logging : bool
+            Whether to skip logging setup.
         **kwargs : Any
             Additional keyword arguments for the generator.
 
@@ -101,6 +104,7 @@ class FileGenerator(ContentGenerator):
             is_async=is_async,
             after_run=after_run,
             for_notebook=self.config.for_notebook,
+            skip_logging=skip_logging,
         )
 
         # 5. Combine everything
@@ -160,6 +164,7 @@ class FileGenerator(ContentGenerator):
         is_async: bool,
         for_notebook: bool,
         after_run: str,
+        skip_logging: bool,
     ) -> tuple[str, str, str]:
         cache_seed = (
             self.context.config.cache_seed if self.context.config else None
@@ -172,6 +177,7 @@ class FileGenerator(ContentGenerator):
             for_notebook=for_notebook,
             cache_seed=cache_seed,
             after_run=after_run,
+            skip_logging=skip_logging,
         )
         call_main = execution_gen.generate_call_main_function(
             is_async=is_async,

@@ -10,3 +10,4 @@ def test_youtube_search_tool_impl() -> None:
     tool = YouTubeSearchToolImpl()
     assert "YOUTUBE_API_KEY" in tool.required_secrets
     assert tool.required_kwargs == {"youtube_search_engine_id": str}
+    assert tool.get_content({})

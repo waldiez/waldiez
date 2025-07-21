@@ -13,7 +13,7 @@ def test_duckduckgo_search_tool_impl() -> None:
     assert not tool.kwargs
     assert tool.name == "duckduckgo_search"
     assert tool.description == "Search DuckDuckGo for a given query."
-    assert tool.requirements == ["ag2[duckduckgo]"]
+    assert tool.requirements == ["ag2[duckduckgo]", "ddgs"]
     assert tool.tags == ["duckduckgo", "search", "web"]
     assert tool.tool_imports == [
         "from autogen.tools.experimental import DuckDuckGoSearchTool"

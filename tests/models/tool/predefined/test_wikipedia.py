@@ -12,3 +12,4 @@ def test_wikipedia_search_tool_impl() -> None:
     assert "language" in tool.kwargs_types
     assert "top_k" in tool.kwargs_types
     assert "verbose" in tool.kwargs_types
+    assert tool.get_content({})

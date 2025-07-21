@@ -28,6 +28,7 @@ ag2[ollama]==0.9.6
 ag2[openai-realtime]==0.9.6
 ag2[rag]==0.9.6
 ag2[redis]==0.9.6
+ag2[tavily]==0.9.6
 ag2[together]==0.9.6;sys_platform != 'win32'
 ag2[together]==0.9.6;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
 ag2[twilio]==0.9.6

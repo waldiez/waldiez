@@ -149,23 +149,6 @@ def {self.name}(
         return content
 
 
-#         content = f"""
-# perplexity_api_key = os.environ.get("PERPLEXITY_API_KEY", "")
-# if not perplexity_api_key:
-#     raise ValueError("PERPLEXITY_API_KEY is required for Perplexity search.")
-# {self.name} = PerplexitySearchTool(
-#     perplexity_api_key=perplexity_api_key,
-#     model="{self.kwargs["model"]}",
-#     max_tokens={self.kwargs["max_tokens"]},
-# """
-#         if self.kwargs["search_domain_filters"] is not None:  # pragma: no cover
-#             domain_fileters = self.kwargs["search_domain_filters"]
-#             if isinstance(domain_fileters, list):
-#                 content += f"    search_domain_filters={domain_fileters},\n"
-#         content += ")"
-#         return content
-
-
 PerplexitySearchTool = PerplexitySearchToolImpl()
 PerplexitySearchConfig = PredefinedToolConfig(
     name=PerplexitySearchTool.name,

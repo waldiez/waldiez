@@ -10,3 +10,4 @@ def test_tavily_search_tool_impl() -> None:
     tool = TavilySearchToolImpl()
     assert "TAVILY_API_KEY" in tool.required_secrets
     assert not tool.required_kwargs
+    assert tool.get_content({})
