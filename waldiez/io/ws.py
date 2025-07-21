@@ -155,6 +155,7 @@ class AsyncWebsocketsIOStream(IOStream):
                 content_block["content"] = try_parse_maybe_serialized(
                     inner_content
                 )
+                message_dump["content"] = content_block
 
         json_dump = json.dumps(message_dump, ensure_ascii=False)
 
