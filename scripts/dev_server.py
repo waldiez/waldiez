@@ -183,6 +183,7 @@ class WaldiezDevServer:
                     await self.send_error(websocket, "Invalid JSON")
                 except Exception as e:
                     logger.exception("Error handling message")
+                    traceback.print_exc()
                     await self.send_error(websocket, f"Server error: {str(e)}")
         except websockets.exceptions.ConnectionClosed as e:
             to_log = (
