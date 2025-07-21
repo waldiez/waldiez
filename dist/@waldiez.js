@@ -96,6 +96,17 @@ class WaldiezAgentData {
     this.handoffs = props.handoffs || [];
   }
 }
+class RunCompletionHandler {
+  canHandle(type) {
+    return type === "run_completion";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
+      return void 0;
+    }
+    return { isWorkflowEnd: true, runCompletion: data.content };
+  }
+}
 class MessageValidator {
   /**
    * Validates if the provided data is a valid input request message.
@@ -208,6 +219,41 @@ const MESSAGE_CONSTANTS = {
     SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
   }
 };
+class CodeExecutionReplyHandler {
+  /**
+   * Determines if this handler can process the given message type.
+   * @param type - The type of the message to check.
+   * @returns True if this handler can process the message type, false otherwise.
+   */
+  canHandle(type) {
+    return type === "generate_code_execution_reply";
+  }
+  /**
+   * Handles the code execution reply message.
+   * Validates the message data and constructs a WaldiezChatMessage object with the code execution reply content.
+   * @param data - The raw message data to process.
+   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+   */
+  handle(data) {
+    if (!MessageValidator.isValidCodeExecutionReply(data)) {
+      return void 0;
+    }
+    const message = {
+      id: nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text: MESSAGE_CONSTANTS.SYSTEM_MESSAGES.CODE_EXECUTION_REPLY
+        }
+      ],
+      sender: data.content.sender,
+      recipient: data.content.recipient
+    };
+    return { message };
+  }
+}
 class MessageUtils {
   static isPasswordPrompt(data) {
     if (!data.password) {
@@ -346,6 +392,73 @@ class MessageUtils {
     ].join("\n");
   }
 }
+class GroupChatRunHandler {
+  /**
+   * Determines if this handler can process the given message type.
+   * @param type - The type of the message to check.
+   * @returns True if this handler can process the message type, false otherwise.
+   */
+  canHandle(type) {
+    return type === "group_chat_run_chat";
+  }
+  /**
+   * Handles the group chat run message.
+   * Validates the message data and constructs a WaldiezChatMessage object with a system message.
+   * @param data - The raw message data to process.
+   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+   */
+  handle(data) {
+    if (!MessageValidator.isValidGroupChatRun(data)) {
+      return void 0;
+    }
+    const message = {
+      id: data.content.uuid,
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text: MESSAGE_CONSTANTS.SYSTEM_MESSAGES.GROUP_CHAT_RUN
+        }
+      ],
+      sender: data.content.speaker
+    };
+    return { message };
+  }
+}
+class SpeakerSelectionHandler {
+  /**
+   * Determines if this handler can process the given message type.
+   * @param type - The type of the message to check.
+   * @returns True if this handler can process the message type, false otherwise.
+   */
+  canHandle(type) {
+    return type === "select_speaker" || type === "select_speaker_invalid_input";
+  }
+  /**
+   * Handles the speaker selection message.
+   * Validates the message data and generates a markdown representation of the speaker selection.
+   * @param data - The raw message data to process.
+   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+   */
+  handle(data) {
+    if (!MessageValidator.isValidSpeakerSelection(data)) {
+      return void 0;
+    }
+    const message = {
+      id: data.content.uuid,
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text: MessageUtils.generateSpeakerSelectionMarkdown(data.content.agents)
+        }
+      ]
+    };
+    return { message };
+  }
+}
 class InputRequestHandler {
   /**
    * Determines if this handler can process the given message type.
@@ -385,6 +498,30 @@ class InputRequestHandler {
       message: chatMessage,
       requestId: data.request_id
     };
+  }
+}
+class UsingAutoReplyHandler {
+  canHandle(type) {
+    return type === "using_auto_reply";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
+      return void 0;
+    }
+    const message = {
+      id: data.content.uuid,
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text: "Using auto reply"
+        }
+      ],
+      sender: data.content.sender,
+      recipient: data.content.recipient
+    };
+    return { message };
   }
 }
 class PrintMessageHandler {
@@ -463,6 +600,63 @@ class PrintMessageHandler {
     return void 0;
   }
 }
+class TerminationHandler {
+  /**
+   * Determines if this handler can process the given message type.
+   * @param type - The type of the message to check.
+   * @returns True if this handler can process the message type, false otherwise.
+   */
+  canHandle(type) {
+    return type === "termination";
+  }
+  /**
+   * Handles the termination message.
+   * Validates the message data and extracts the termination reason.
+   * @param data - The raw message data to process.
+   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
+   */
+  handle(data) {
+    if (!MessageValidator.isValidTerminationMessage(data)) {
+      return void 0;
+    }
+    const message = {
+      id: nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text: data.content.termination_reason
+        }
+      ]
+    };
+    return { message };
+  }
+}
+class TerminationAndHumanReplyNoInputHandler {
+  canHandle(type) {
+    return type === "termination_and_human_reply_no_input";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || data.type !== "termination_and_human_reply_no_input") {
+      return void 0;
+    }
+    const message = {
+      id: data.content.uuid,
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text: "Termination and human reply without input"
+        }
+      ],
+      sender: data.content.sender,
+      recipient: data.content.recipient
+    };
+    return { message };
+  }
+}
 class TextMessageHandler {
   /**
    * Determines if this handler can process the given message type.
@@ -501,139 +695,30 @@ class TextMessageHandler {
     };
   }
 }
-class TerminationHandler {
-  /**
-   * Determines if this handler can process the given message type.
-   * @param type - The type of the message to check.
-   * @returns True if this handler can process the message type, false otherwise.
-   */
+class TimelineDataHandler {
   canHandle(type) {
-    return type === "termination";
+    return type === "timeline";
   }
-  /**
-   * Handles the termination message.
-   * Validates the message data and extracts the termination reason.
-   * @param data - The raw message data to process.
-   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
-   */
   handle(data) {
-    if (!MessageValidator.isValidTerminationMessage(data)) {
+    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
       return void 0;
     }
-    const message = {
-      id: nanoid(),
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: data.content.termination_reason
-        }
-      ]
-    };
-    return { message };
-  }
-}
-class GroupChatRunHandler {
-  /**
-   * Determines if this handler can process the given message type.
-   * @param type - The type of the message to check.
-   * @returns True if this handler can process the message type, false otherwise.
-   */
-  canHandle(type) {
-    return type === "group_chat_run_chat";
-  }
-  /**
-   * Handles the group chat run message.
-   * Validates the message data and constructs a WaldiezChatMessage object with a system message.
-   * @param data - The raw message data to process.
-   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
-   */
-  handle(data) {
-    if (!MessageValidator.isValidGroupChatRun(data)) {
+    const timeline = Array.isArray(data.content.timeline) ? data.content.timeline : [];
+    const cost_timeline = Array.isArray(data.content.cost_timeline) ? data.content.cost_timeline : [];
+    const summary = typeof data.content.summary === "object" && data.content.summary !== null ? data.content.summary : void 0;
+    const metadata = typeof data.content.metadata === "object" && data.content.metadata !== null ? data.content.metadata : void 0;
+    const agents = Array.isArray(data.content.agents) ? data.content.agents : [];
+    if (!summary || !metadata || !Array.isArray(timeline) || timeline.length === 0 || !Array.isArray(cost_timeline) || cost_timeline.length === 0 || !Array.isArray(agents) || agents.length === 0) {
       return void 0;
     }
-    const message = {
-      id: data.content.uuid,
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: MESSAGE_CONSTANTS.SYSTEM_MESSAGES.GROUP_CHAT_RUN
-        }
-      ],
-      sender: data.content.speaker
+    const timelineData = {
+      timeline,
+      cost_timeline,
+      summary,
+      metadata,
+      agents
     };
-    return { message };
-  }
-}
-class SpeakerSelectionHandler {
-  /**
-   * Determines if this handler can process the given message type.
-   * @param type - The type of the message to check.
-   * @returns True if this handler can process the message type, false otherwise.
-   */
-  canHandle(type) {
-    return type === "select_speaker" || type === "select_speaker_invalid_input";
-  }
-  /**
-   * Handles the speaker selection message.
-   * Validates the message data and generates a markdown representation of the speaker selection.
-   * @param data - The raw message data to process.
-   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
-   */
-  handle(data) {
-    if (!MessageValidator.isValidSpeakerSelection(data)) {
-      return void 0;
-    }
-    const message = {
-      id: data.content.uuid,
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: MessageUtils.generateSpeakerSelectionMarkdown(data.content.agents)
-        }
-      ]
-    };
-    return { message };
-  }
-}
-class CodeExecutionReplyHandler {
-  /**
-   * Determines if this handler can process the given message type.
-   * @param type - The type of the message to check.
-   * @returns True if this handler can process the message type, false otherwise.
-   */
-  canHandle(type) {
-    return type === "generate_code_execution_reply";
-  }
-  /**
-   * Handles the code execution reply message.
-   * Validates the message data and constructs a WaldiezChatMessage object with the code execution reply content.
-   * @param data - The raw message data to process.
-   * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
-   */
-  handle(data) {
-    if (!MessageValidator.isValidCodeExecutionReply(data)) {
-      return void 0;
-    }
-    const message = {
-      id: nanoid(),
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: MESSAGE_CONSTANTS.SYSTEM_MESSAGES.CODE_EXECUTION_REPLY
-        }
-      ],
-      sender: data.content.sender,
-      recipient: data.content.recipient
-    };
-    return { message };
+    return { timeline: timelineData };
   }
 }
 class ToolCallHandler {
@@ -674,89 +759,56 @@ class ToolCallHandler {
     return { message };
   }
 }
-class UsingAutoReplyHandler {
+class ToolResponseHandler {
   canHandle(type) {
-    return type === "using_auto_reply";
+    return type === "tool_response";
+  }
+  static isValidToolResponse(data) {
+    return data && typeof data === "object" && data.type === "tool_response" && data.content && typeof data.content === "object" && Array.isArray(data.content.tool_responses);
   }
   handle(data) {
-    if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
+    if (!ToolResponseHandler.isValidToolResponse(data)) {
+      return void 0;
+    }
+    const toolResponses = data.content.tool_responses.map((response) => ({
+      tool_call_id: response.tool_call_id,
+      role: response.role,
+      content: response.content
+    }));
+    const message = {
+      id: data.content.uuid ?? nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "tool_response",
+      content: data.content.content,
+      sender: data.content.sender,
+      recipient: data.content.recipient,
+      tool_responses: toolResponses
+    };
+    return { message };
+  }
+}
+class ExecutedFunctionHandler {
+  canHandle(type) {
+    return type === "executed_function";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || data.type !== "executed_function") {
       return void 0;
     }
     const message = {
-      id: data.content.uuid,
+      id: data.content.uuid ?? nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
       type: "system",
       content: [
         {
           type: "text",
-          text: "Using auto reply"
+          text: `Executed function: ${data.content.func_name}`
         }
       ],
       sender: data.content.sender,
       recipient: data.content.recipient
     };
     return { message };
-  }
-}
-class TerminationAndHumanReplyNoInputHandler {
-  canHandle(type) {
-    return type === "termination_and_human_reply_no_input";
-  }
-  handle(data) {
-    if (!data || typeof data !== "object" || data.type !== "termination_and_human_reply_no_input") {
-      return void 0;
-    }
-    const message = {
-      id: data.content.uuid,
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: "Termination and human reply without input"
-        }
-      ],
-      sender: data.content.sender,
-      recipient: data.content.recipient
-    };
-    return { message };
-  }
-}
-class TimelineDataHandler {
-  canHandle(type) {
-    return type === "timeline";
-  }
-  handle(data) {
-    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
-      return void 0;
-    }
-    const timeline = Array.isArray(data.content.timeline) ? data.content.timeline : [];
-    const cost_timeline = Array.isArray(data.content.cost_timeline) ? data.content.cost_timeline : [];
-    const summary = typeof data.content.summary === "object" && data.content.summary !== null ? data.content.summary : void 0;
-    const metadata = typeof data.content.metadata === "object" && data.content.metadata !== null ? data.content.metadata : void 0;
-    const agents = Array.isArray(data.content.agents) ? data.content.agents : [];
-    if (!summary || !metadata || !Array.isArray(timeline) || timeline.length === 0 || !Array.isArray(cost_timeline) || cost_timeline.length === 0 || !Array.isArray(agents) || agents.length === 0) {
-      return void 0;
-    }
-    const timelineData = {
-      timeline,
-      cost_timeline,
-      summary,
-      metadata,
-      agents
-    };
-    return { timeline: timelineData };
-  }
-}
-class RunCompletionHandler {
-  canHandle(type) {
-    return type === "run_completion";
-  }
-  handle(data) {
-    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
-      return void 0;
-    }
-    return { isWorkflowEnd: true, runCompletion: data.content };
   }
 }
 class WaldiezChatMessageProcessor {
@@ -772,7 +824,9 @@ class WaldiezChatMessageProcessor {
     new TerminationAndHumanReplyNoInputHandler(),
     new UsingAutoReplyHandler(),
     new TimelineDataHandler(),
-    new RunCompletionHandler()
+    new RunCompletionHandler(),
+    new ToolResponseHandler(),
+    new ExecutedFunctionHandler()
   ];
   /**
    * Process a raw message and return the result
