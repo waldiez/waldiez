@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Generates the main() and call_main() functions."""
 
-# pylint: disable=no-self-use,unused-argument
+# pylint: disable=no-self-use,unused-argument,line-too-long
+# flake8: noqa: E501
 
 from ..core import get_comment
 from .utils.common import main_doc_string
@@ -153,6 +154,7 @@ class ExecutionGenerator:
             The complete call_main function content.
         """
         content = "\n"
+        tab = "    "
         if for_notebook:
             if is_async:
                 return "# %%\nawait main()\n"
@@ -163,16 +165,36 @@ class ExecutionGenerator:
         else:
             content += "def call_main() -> None:\n"
             return_type_hint = "list[RunResponseProtocol]"
-        content += '    """Run the main function and print the results."""\n'
-        content += f"    results: {return_type_hint} = "
+        content += f'{tab}"""Run the main function and print the results."""\n'
+        content += f"{tab}results: {return_type_hint} = "
         if is_async:
             content += "await "
         content += "main()\n"
-        content += "    for result in results:\n"
-        content += "        print(result.summary)\n"
-        content += "        print(result.messages)\n"
-        content += "        print(result.cost)\n"
+        content += f"{tab}results_dicts: list[dict[str, Any]] = []\n"
+        content += f"{tab}for result in results:\n"
+        if is_async:
+            content += f"{tab}{tab}result_summary = await result.summary\n"
+            content += f"{tab}{tab}result_messages = await result.messages\n"
+            content += f"{tab}{tab}result_cost = await result.cost\n"
+        else:
+            content += f"{tab}{tab}result_summary = result.summary\n"
+            content += f"{tab}{tab}result_messages = result.messages\n"
+            content += f"{tab}{tab}result_cost = result.cost\n"
+        content += f"{tab}{tab}cost: dict[str, Any] | None = None\n"
+        content += f"{tab}{tab}if result_cost:\n"
+        content += f'{tab}{tab}{tab}cost = result_cost.model_dump(mode="json", fallback=str)\n'
+        content += f"{tab}{tab}results_dicts.append(\n"
+        content += f"{tab}{tab}{tab}{{\n"
+        content += f"{tab}{tab}{tab}{tab}'summary': result_summary,\n"
+        content += f"{tab}{tab}{tab}{tab}'messages': result_messages,\n"
+        content += f"{tab}{tab}{tab}{tab}'cost': cost,\n"
+        content += f"{tab}{tab}{tab}}}\n"
+        content += f"{tab}{tab})\n"
         content += "\n"
+        content += f"{tab}results_dict = {{\n"
+        content += f"{tab}{tab}'results': results_dicts,\n"
+        content += f"{tab}}}\n"
+        content += f"{tab}print(json.dumps(results_dict, indent=2))\n"
         return content
 
     @staticmethod

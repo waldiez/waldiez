@@ -252,24 +252,13 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 if event.type == "input_request":
                     prompt = getattr(event, "prompt", "> ")
                     password = getattr(event, "password", False)
-                    if not asyncio.iscoroutinefunction(self._input):
-                        # If input is not async, we need to ensure it is
-                        async def _async_input(
-                            prompt: str, password: bool = False
-                        ) -> str:
-                            """Async wrapper for input."""
-                            return self._input(prompt, password=password)  # type: ignore[return-value]
-
-                        user_input = await _async_input(
-                            prompt, password=password
-                        )
-                    else:
-                        user_input = await self._input(
-                            prompt, password=password
-                        )
-                    respond = event.content.respond(user_input)
-                    if asyncio.iscoroutine(respond):  # pyright: ignore
-                        await respond
+                    user_input = self._input(
+                        prompt,
+                        password=password,
+                    )
+                    if asyncio.iscoroutine(user_input):
+                        user_input = await user_input
+                    await event.content.respond(user_input)
                 else:
                     event.print(self._print)
             self._processed_events += 1

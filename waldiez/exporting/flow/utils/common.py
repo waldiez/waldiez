@@ -125,6 +125,11 @@ def main_doc_string(is_async: bool) -> str:
     {return_type_hint}
         The result of the chat session, which can be a single ChatResult,
         a list of ChatResults, or a dictionary mapping integers to ChatResults.
+
+    Raises
+    ------
+    RuntimeError
+        If the chat session fails.
     """'''
 
 
