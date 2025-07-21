@@ -3,7 +3,7 @@
 
 # flake8: noqa: C901, E501
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
-# pyright: reportAttributeAccessIssue=false
+# pyright: reportAttributeAccessIssue=false,reportUnknownArgumentType=false
 # pylint: disable=too-many-try-statements,import-outside-toplevel,line-too-long,
 # pylint: disable=too-complex,unused-argument,duplicate-code,broad-exception-caught
 """Run a waldiez flow.
@@ -146,9 +146,19 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         try:
             if hasattr(event, "type"):
                 if event.type == "input_request":
+                    prompt = getattr(
+                        event,
+                        "prompt",
+                        getattr(event.content, "prompt", "> "),
+                    )
+                    password = getattr(
+                        event,
+                        "password",
+                        getattr(event.content, "password", False),
+                    )
                     user_input = self._input(
-                        event.content.prompt,
-                        password=event.content.password,
+                        prompt,
+                        password=password,
                     )
                     event.content.respond(user_input)
                 else:
@@ -250,8 +260,16 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         try:
             if hasattr(event, "type"):
                 if event.type == "input_request":
-                    prompt = getattr(event, "prompt", "> ")
-                    password = getattr(event, "password", False)
+                    prompt = getattr(
+                        event,
+                        "prompt",
+                        getattr(event.content, "prompt", "> "),
+                    )
+                    password = getattr(
+                        event,
+                        "password",
+                        getattr(event.content, "password", False),
+                    )
                     user_input = self._input(
                         prompt,
                         password=password,
@@ -260,13 +278,12 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                         user_input = await user_input
                     await event.content.respond(user_input)
                 else:
-                    event.print(self._print)
+                    self._send(event)
             self._processed_events += 1
         except Exception as e:
             raise RuntimeError(
                 f"Error processing event {event}: {e}\n{traceback.format_exc()}"
             ) from e
-
         return not self._stop_requested.is_set()
 
     async def _a_run(
@@ -303,6 +320,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     stream = IOStream.get_default()
                 self._print = stream.print
                 self._input = stream.input
+                self._send = stream.send
                 self._print("<Waldiez> - Starting workflow...")
                 self._print(self.waldiez.info.model_dump_json())
                 results = await self._loaded_module.main(
