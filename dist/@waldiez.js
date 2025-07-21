@@ -254,6 +254,53 @@ class CodeExecutionReplyHandler {
     return { message };
   }
 }
+class ErrorHandler {
+  canHandle(type) {
+    return type === "error";
+  }
+  // examples:
+  //
+  // {"type": "error", "content": {"uuid": "85cef408-3166-4738-bda9-c22bf921342f",
+  // "error": "Error code: 529 - {'type': 'error', 'error':
+  //  {'type': 'overloaded_error', 'message': 'Overloaded'}}"}}
+  //
+  // or:
+  //
+  // {"type": "error", "content":
+  // {"uuid": "b50a258a-0514-4868-b814-7aa04592169c",
+  // "error": "1 validation error for RunCompletionEvent\nsummary\n
+  // Input should be a valid string [type=string_type, input_value={'content': '```json\\n{\"n...one, 'tool_calls': None},
+  //  input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/string_type"}}
+  static isValidError(data) {
+    return data && typeof data === "object" && data.type === "error" && (data.content && typeof data.content === "object" || data.error && typeof data.error === "object");
+  }
+  handle(data) {
+    if (!ErrorHandler.isValidError(data)) {
+      return void 0;
+    }
+    const errorContent = data.content?.error || data.error;
+    if (typeof errorContent !== "string") {
+      return void 0;
+    }
+    const text = `Error: ${errorContent}`;
+    const message = {
+      id: data.content.uuid ?? nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "system",
+      content: [
+        {
+          type: "text",
+          text
+        }
+      ],
+      sender: data.content.sender,
+      recipient: data.content.recipient,
+      error: errorContent
+      // Include error content in the message
+    };
+    return { message };
+  }
+}
 class MessageUtils {
   static isPasswordPrompt(data) {
     if (!data.password) {
@@ -826,7 +873,8 @@ class WaldiezChatMessageProcessor {
     new TimelineDataHandler(),
     new RunCompletionHandler(),
     new ToolResponseHandler(),
-    new ExecutedFunctionHandler()
+    new ExecutedFunctionHandler(),
+    new ErrorHandler()
   ];
   /**
    * Process a raw message and return the result

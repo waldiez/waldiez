@@ -5,6 +5,7 @@
 
 export { RunCompletionHandler } from "@waldiez/utils/chat/handlers/chat_completion";
 export { CodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_execution";
+export { ErrorHandler } from "@waldiez/utils/chat/handlers/error";
 export { GroupChatRunHandler, SpeakerSelectionHandler } from "@waldiez/utils/chat/handlers/group";
 export { InputRequestHandler, UsingAutoReplyHandler } from "@waldiez/utils/chat/handlers/input_request";
 export { PrintMessageHandler } from "@waldiez/utils/chat/handlers/print";

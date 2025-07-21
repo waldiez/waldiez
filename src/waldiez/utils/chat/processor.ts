@@ -6,6 +6,7 @@ import stripAnsi from "strip-ansi";
 
 import {
     CodeExecutionReplyHandler,
+    ErrorHandler,
     ExecutedFunctionHandler,
     GroupChatRunHandler,
     InputRequestHandler,
@@ -43,6 +44,7 @@ export class WaldiezChatMessageProcessor {
         new RunCompletionHandler(),
         new ToolResponseHandler(),
         new ExecutedFunctionHandler(),
+        new ErrorHandler(),
     ];
 
     /**
