@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=line-too-long
+# flake8: noqa: E501
 """Predefined Perplexity AI search tool for Waldiez."""
 
 import os
@@ -36,7 +38,7 @@ class PerplexitySearchToolImpl(PredefinedTool):
         return {
             "model": "sonar",
             "max_tokens": 1000,
-            "search_domain_filters": None,
+            "search_domain_filter": None,
         }
 
     @property
@@ -54,6 +56,7 @@ class PerplexitySearchToolImpl(PredefinedTool):
         """Imports required for the tool implementation."""
         return [
             "from autogen.tools.experimental import PerplexitySearchTool",
+            "from autogen.tools.experimental.perplexity.perplexity_search import SearchResponse",
         ]
 
     def validate_secrets(self, secrets: dict[str, str]) -> list[str]:
@@ -115,21 +118,52 @@ class PerplexitySearchToolImpl(PredefinedTool):
             Content retrieved by the tool.
         """
         os.environ["PERPLEXITY_API_KEY"] = secrets.get("PERPLEXITY_API_KEY", "")
-        content = f"""
-perplexity_api_key = os.environ.get("PERPLEXITY_API_KEY", "")
-if not perplexity_api_key:
-    raise ValueError("PERPLEXITY_API_KEY is required for Perplexity search.")
-{self.name} = PerplexitySearchTool(
-    perplexity_api_key=perplexity_api_key,
-    model="{self.kwargs["model"]}",
-    max_tokens={self.kwargs["max_tokens"]},
-"""
-        if self.kwargs["search_domain_filters"] is not None:  # pragma: no cover
-            domain_fileters = self.kwargs["search_domain_filters"]
-            if isinstance(domain_fileters, list):
-                content += f"    search_domain_filters={domain_fileters},\n"
-        content += ")"
+        content = f'''
+def {self.name}(
+    query: str,
+    model: str = "{self.kwargs["model"]}",
+    max_tokens: int = {self.kwargs["max_tokens"]},
+    search_domain_filter: Optional[list[str]] = {self.kwargs["search_domain_filter"]},
+) -> "SearchResponse":
+    """Perform a Perplexity AI search and return formatted results.
+
+    Args:
+        query: The search query string.
+        model: The model to use for the search. Defaults to "{self.kwargs["model"]}".
+        max_tokens: The maximum number of tokens to return. Defaults to {self.kwargs["max_tokens"]}.
+        search_domain_filter: List of domain filters for the search. Defaults to {self.kwargs["search_domain_filter"]}.
+    Returns:
+        A list of dictionaries of the search results.
+    """
+    perplexity_api_key = os.environ.get("PERPLEXITY_API_KEY", "")
+    if not perplexity_api_key:
+        raise ValueError("PERPLEXITY_API_KEY is required for Perplexity search tool.")
+    perplexity_search_tool = PerplexitySearchTool(
+        api_key=perplexity_api_key,
+        model=model,
+        max_tokens=max_tokens,
+        search_domain_filter=search_domain_filter,
+    )
+    return perplexity_search_tool(query=query)
+'''
         return content
+
+
+#         content = f"""
+# perplexity_api_key = os.environ.get("PERPLEXITY_API_KEY", "")
+# if not perplexity_api_key:
+#     raise ValueError("PERPLEXITY_API_KEY is required for Perplexity search.")
+# {self.name} = PerplexitySearchTool(
+#     perplexity_api_key=perplexity_api_key,
+#     model="{self.kwargs["model"]}",
+#     max_tokens={self.kwargs["max_tokens"]},
+# """
+#         if self.kwargs["search_domain_filters"] is not None:  # pragma: no cover
+#             domain_fileters = self.kwargs["search_domain_filters"]
+#             if isinstance(domain_fileters, list):
+#                 content += f"    search_domain_filters={domain_fileters},\n"
+#         content += ")"
+#         return content
 
 
 PerplexitySearchTool = PerplexitySearchToolImpl()

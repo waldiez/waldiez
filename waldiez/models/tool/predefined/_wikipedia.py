@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=line-too-long
+# flake8: noqa: E501
 """Predefined Wikipedia search tool for Waldiez."""
 
 from typing import Any
@@ -111,10 +113,28 @@ class WikipediaSearchToolImpl(PredefinedTool):
         str
             Content of the tool.
         """
-        content = f"{self.name} = WikipediaQueryRunTool(\n"
+        content = f'''
+def {self.name}(query: str, language: str = "en", top_k: int = 3, verbose: bool = False) -> Union[list[str], str]:
+    """Search Wikipedia for a given query and return results.
+
+    Args:
+        query: The search query string.
+        language: The language to search in (default: "en").
+        top_k: The number of top results to return (default: 3).
+        verbose: Whether to include additional information in the results (default: False).
+
+    Returns
+    -------
+        Union[list[str], str]: A list of search results or a message if no results found.
+    """
+    tool = WikipediaQueryRunTool(
+'''
         for key, value in self.kwargs.items():
-            content += f"    {key}={value!r},\n"
-        content += ")\n"
+            content += f"       {key}={value!r},\n"
+        content += "    )\n"
+        content += """
+    return tool(query=query)
+"""
         return content
 
 

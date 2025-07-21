@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=line-too-long
+# flake8: noqa: E501
 """Predefined YouTube search tool for Waldiez."""
 
 import os
@@ -100,14 +102,40 @@ class YouTubeSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         os.environ["YOUTUBE_API_KEY"] = secrets.get("YOUTUBE_API_KEY", "")
-        content = f"""
-youtube_api_key = os.environ.get("YOUTUBE_API_KEY", "")
-if not youtube_api_key:
-    raise ValueError("YOUTUBE_API_KEY is required for YouTube search tool.")
-{self.name} = YoutubeSearchTool(
-    youtube_api_key=youtube_api_key,
-)
-"""
+        content = f'''
+def {self.name}(
+    query: str,
+    youtube_api_key: str = os.environ.get("YOUTUBE_API_KEY", ""),
+    max_results: int = 5,
+    include_video_details: bool = True,
+) -> list[dict[str, Any]]:
+    """Perform a YouTube search and return formatted results.
+
+    Args:
+        query: The search query string.
+        youtube_api_key: The API key for the YouTube Data API.
+        max_results: The maximum number of results to return. Defaults to 5.
+        include_video_details: Whether to include detailed video information. Defaults to True.
+
+    Returns:
+        A list of dictionaries of the search results.
+
+    Raises:
+        ValueError: If YOUTUBE_API_KEY is not set or if the search fails.
+    """
+    youtube_api_key = os.environ.get("YOUTUBE_API_KEY", "")
+    if not youtube_api_key:
+        raise ValueError("YOUTUBE_API_KEY is required for YouTube search tool.")
+    youtube_search_tool = YoutubeSearchTool(
+        youtube_api_key=youtube_api_key,
+    )
+    return youtube_search_tool(
+        query=query,
+        youtube_api_key=youtube_api_key,
+        max_results=max_results,
+        include_video_details=include_video_details,
+    )
+'''
         return content
 
 

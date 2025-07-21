@@ -32,7 +32,7 @@ class DuckDuckGoSearchToolImpl(PredefinedTool):
     @property
     def requirements(self) -> list[str]:
         """Python requirements for the tool."""
-        return ["ag2[duckduckgo]"]
+        return ["ag2[duckduckgo]", "ddgs"]
 
     @property
     def tags(self) -> list[str]:
@@ -94,7 +94,21 @@ class DuckDuckGoSearchToolImpl(PredefinedTool):
         str
             The content for the tool.
         """
-        return f"{self.name} = DuckDuckGoSearchTool()"
+        content = f'''
+def {self.name}(query: str, num_results: int = 5) -> list[dict[str, Any]]:
+    """Perform a DuckDuckGo search and return formatted results.
+
+    Args:
+        query: The search query string.
+        num_results: The maximum number of results to return. Defaults to 5.
+
+    Returns:
+        A list of dictionaries of the search results.
+    """
+    tool = DuckDuckGoSearchTool()
+    return tool(query=query, num_results=num_results)
+'''
+        return content
 
 
 DuckDuckGoSearchTool = DuckDuckGoSearchToolImpl()

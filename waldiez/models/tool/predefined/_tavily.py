@@ -101,14 +101,51 @@ class TavilySearchToolImpl(PredefinedTool):
         os.environ["TAVILY_API_KEY"] = secrets.get(
             "TAVILY_API_KEY", os.environ.get("TAVILY_API_KEY", "")
         )
-        content = f"""
-tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
-if not tavily_api_key:
-    raise ValueError("TAVILY_API_KEY is required for Tavily search tool.")
-{self.name} = TavilySearchTool(
-    tavily_api_key=tavily_api_key,
-)
-"""
+        content = f'''
+def {self.name}(
+    query: str,
+    tavily_api_key: str = os.environ.get("TAVILY_API_KEY", ""),
+    search_depth: str = "basic",
+    topic: str = "general",
+    include_answer: str = "basic",
+    include_raw_content: bool = False,
+    include_domains: list[str] = [],
+    num_results: int = 5,
+) -> list[dict[str, Any]]:
+    """Performs a search using the Tavily API and returns formatted results.
+
+            Args:
+                query: The search query string.
+                tavily_api_key: The API key for Tavily (injected dependency).
+                search_depth: The depth of the search ('basic' or 'advanced'). Defaults to "basic".
+                include_answer: Whether to include an AI-generated answer ('basic' or 'advanced'). Defaults to "basic".
+                include_raw_content: Whether to include raw content in the results. Defaults to False.
+                include_domains: A list of domains to include in the search. Defaults to [].
+                num_results: The maximum number of results to return. Defaults to 5.
+
+            Returns:
+                A list of dictionaries, each containing 'title', 'link', and 'snippet' of a search result.
+
+            Raises:
+                ValueError: If the Tavily API key is not available.
+    """
+    tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
+    if not tavily_api_key:
+        raise ValueError("TAVILY_API_KEY is required for Tavily search tool.")
+    {self.name}_tool = TavilySearchTool(
+        tavily_api_key=tavily_api_key,
+    )
+    return {self.name}_tool(
+        query=query,
+        tavily_api_key=tavily_api_key,
+        search_depth=search_depth,
+        topic=topic,
+        include_answer=include_answer,
+        include_raw_content=include_raw_content,
+        include_domains=include_domains,
+        num_results=num_results,
+    )
+'''
         return content
 
 

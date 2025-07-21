@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=line-too-long
+# flake8: noqa: E501
 """Predefined SearxNG search tool for Waldiez."""
 
 from typing import Any
@@ -106,11 +108,35 @@ class SearxNGSearchToolImpl(PredefinedTool):
         str
             Content retrieved by the tool.
         """
-        content = f"""
-{self.name} = SearxngSearchTool(
-    base_url="{self.kwargs["base_url"]}",
-)
-"""
+        content = f'''
+def {self.name}(
+        query: str,
+        max_results: int = 5,
+        categories: list[str] | None = None,
+        language: str | None = None,
+    ) -> list[dict[str, Any]]:
+    """Perform a SearxNG search and return formatted results.
+
+    Args:
+        query: The search query string.
+        max_results: The maximum number of results to return. Defaults to 5.
+        categories: List of categories to search in.
+        language: Language code (e.g., 'en-US').
+        base_url: SearxNG instance URL.
+
+    Returns:
+        A list of dictionaries, each containing 'title', 'link', and 'snippet' of a search result.
+    """
+    tool = SearxngSearchTool(
+        base_url="{self.kwargs["base_url"]}",
+    )
+    return tool(
+        query=query,
+        max_results=max_results,
+        categories=categories,
+        language=language,
+    )
+'''
         return content
 
 

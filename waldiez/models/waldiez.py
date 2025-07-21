@@ -164,6 +164,11 @@ class Waldiez:
         return any(agent.is_rag_user for agent in self.agents)
 
     @property
+    def has_doc_agents(self) -> bool:
+        """Check if the flow has document agents."""
+        return any(agent.is_doc_agent for agent in self.agents)
+
+    @property
     def has_multimodal_agents(self) -> bool:
         """Check if the flow has multimodal agents."""
         return any(

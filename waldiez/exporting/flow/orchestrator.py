@@ -422,8 +422,9 @@ class ExportOrchestrator:
         bool
             True if logging should be skipped, False otherwise.
         """
-        if not self.waldiez.tools:
-            return False
-        if self.waldiez.flow.is_group_chat:
-            return any(tool.is_predefined for tool in self.waldiez.tools)
-        return False
+        return self.waldiez.has_doc_agents
+        # if not self.waldiez.tools:
+        #     return False
+        # if self.waldiez.flow.is_group_chat:
+        #     return any(tool.is_predefined for tool in self.waldiez.tools)
+        # return False

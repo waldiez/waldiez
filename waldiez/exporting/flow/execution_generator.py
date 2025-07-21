@@ -168,7 +168,10 @@ class ExecutionGenerator:
         if is_async:
             content += "await "
         content += "main()\n"
-        content += "    print('Results:', results)\n"
+        content += "    for result in results:\n"
+        content += "        print(result.summary)\n"
+        content += "        print(result.messages)\n"
+        content += "        print(result.cost)\n"
         content += "\n"
         return content
 

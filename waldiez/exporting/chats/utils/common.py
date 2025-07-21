@@ -78,12 +78,22 @@ def get_event_handler_string(
     if is_async:
         content += (
             f"{tab}        async for event in result.events:\n"
-            f"{tab}            should_continue = await on_event(event)\n"
+            f"{tab}            try:\n"
+            f"{tab}                should_continue = await on_event(event)\n"
+            f"{tab}            except Exception as e:\n"
+            f"{tab}                raise RuntimeError(\n"
+            f"{tab}                    'Error in event handler: ' + str(e)\n"
+            f"{tab}                ) from e\n"
         )
     else:
         content += (
             f"{tab}        for event in result.events:\n"
-            f"{tab}            should_continue = on_event(event)\n"
+            f"{tab}            try:\n"
+            f"{tab}                should_continue = on_event(event)\n"
+            f"{tab}            except Exception as e:\n"
+            f"{tab}                raise RuntimeError(\n"
+            f"{tab}                    'Error in event handler: ' + str(e)\n"
+            f"{tab}                ) from e\n"
         )
     content += (
         f"{tab}            if event.type == 'run_completion' and is_last:\n"
