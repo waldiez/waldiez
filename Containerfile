@@ -153,8 +153,6 @@ RUN useradd -m -s /bin/bash waldiez && \
     chown -R waldiez:waldiez /home/waldiez
 USER waldiez
 
-RUN npx playwright install chromium firefox
-
 ENV PATH="/home/waldiez/.local/bin:${PATH}"
 RUN echo "export PATH=\"/home/waldiez/.local/bin:\$PATH\"" >> /home/waldiez/.bashrc
 
