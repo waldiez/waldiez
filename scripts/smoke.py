@@ -54,7 +54,7 @@ EXAMPLES = [
     "05 - Coding/Coding.waldiez",
     "06 - Planning/Planning 1.waldiez",
     "06 - Planning/Planning 2.waldiez",
-    "07 - Group chat with RAG/RAG.waldiez",
+    "07 - Group chat with RAG (deprecated)/RAG.waldiez",
     "08 - ReAct using Tavily/ReAct.waldiez",
     "09 - AutoDefence/AutoDefense Flow.waldiez",
     "10 - Travel Planning/Travel Planning.waldiez",
@@ -72,6 +72,7 @@ EXAMPLES = [
     "17 - Predefined Tools/tavily_search.waldiez",
     "17 - Predefined Tools/wiki_search.waldiez",
     "17 - Predefined Tools/youtube_search.waldiez",
+    "18 - Doc Agent/RAG with Doc Agent.waldiez",
 ]
 
 
@@ -323,6 +324,47 @@ def git_restore(*files: str) -> None:
         )
 
 
+def diff_has_path_changes(file_path: str) -> bool:
+    """Check if the diff of a file contains path changes.
+
+    Paths might be defined as relative in .waldiez
+    but resolved on conversion to absolute paths in .py and .ipynb.
+    so we check if ROOT_DIR is in the diff.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file.
+
+    Returns
+    -------
+    bool
+        True if the diff contains path changes, False otherwise.
+    """
+    git_diff_cmd = ["git", "diff", "--", file_path]
+    result = subprocess.run(  # nosemgrep # nosec
+        git_diff_cmd,
+        capture_output=True,
+        text=True,
+        check=True,
+        cwd=str(EXAMPLES_CWD),
+    )
+    diff_output = result.stdout.strip()
+
+    # If no diff, return False (no changes)
+    if not diff_output.strip():
+        return False
+    # Check if ROOT_DIR is in the diff output
+    if str(ROOT_DIR) in diff_output:
+        return True
+    # let's also check more generally for path changes
+    if str(Path.home()) in diff_output:
+        return True
+    if "path=" in diff_output:
+        return True
+    return False
+
+
 def convert_local_example(example_path: str) -> None:
     """Convert the local example to py and ipynb.
 
@@ -357,14 +399,37 @@ def convert_local_example(example_path: str) -> None:
         _log = f"Error linting local example {example_path}: {e}"
         LOG.error(_log)
         raise e
+    check_diffs(output_ipynb_path, output_py_path)
+
+
+def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
+    """Check if the diffs of the converted files are as expected.
+
+    Parameters
+    ----------
+    output_ipynb_path : str
+        The path to the output ipynb file.
+    output_py_path : str
+        The path to the output py file.
+    """
     # let's git restore the ipynb if needed (only cell id changes)
     # (no need to commit the new "id: ..." changes)
     if diff_has_only_id_changes(output_ipynb_path):
         try:
             git_restore(output_ipynb_path)
         except BaseException:  # pylint: disable=broad-exception-caught
-            pass
             # If restore fails (not in git yet?), we can still continue
+            pass
+    if diff_has_path_changes(output_ipynb_path):
+        try:
+            git_restore(output_ipynb_path)
+        except BaseException:  # pylint: disable=broad-exception-caught
+            pass
+    if diff_has_path_changes(output_py_path):
+        try:
+            git_restore(output_py_path)
+        except BaseException:  # pylint: disable=broad-exception-caught
+            pass
 
 
 def lint_example(example_path: str) -> None:
