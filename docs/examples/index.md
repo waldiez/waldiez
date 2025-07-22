@@ -6,7 +6,7 @@
 - [Tool Use and Conversational Chess](4.md)
 - [Coding and Financial Analysis](5.md)
 - [Planning and Stock Report Generation](6.md)
-- [Group Chat with Retrieval Augmented Generation](7.md)
+- [Retrieval Augmented Generation using Doc Agent](7.md)
 - [ReAct using Tavily](8.md)
 - [Predefined Tools: YouTube Search](9.md)
 
