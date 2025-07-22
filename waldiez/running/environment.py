@@ -57,6 +57,7 @@ def refresh_environment() -> None:
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
     try_handle_the_np_thing()
     reload_autogen()
+    reload_chroma_if_needed()
 
 
 # pylint: disable=too-complex,too-many-try-statements,unused-import
@@ -148,6 +149,27 @@ def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
         except Exception:  # pylint: disable=broad-exception-caught
             pass
         raise e
+
+
+def reload_chroma_if_needed() -> None:  # pragma: no cover
+    """Reload the chroma package if it is installed."""
+    cheomadb_modules = [
+        name
+        for name in sys.modules
+        if name.startswith("chromadb.") or name == "chromadb"
+    ]
+    if not cheomadb_modules:
+        return
+
+    for mod_name in sorted(cheomadb_modules, key=len, reverse=True):
+        # Remove chromadb modules in reverse dependency order
+        if mod_name in sys.modules:
+            del sys.modules[mod_name]
+    try:
+        import chromadb  # noqa: F401  # pyright: ignore
+    except ImportError:
+        # If chromadb is not installed, we can ignore this
+        return
 
 
 def try_handle_the_np_thing() -> None:
