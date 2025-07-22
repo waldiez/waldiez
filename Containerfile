@@ -71,9 +71,7 @@ RUN apt update && \
     tzdata \
     locales \
     xdg-utils \
-    xvfb \
-    firefox-esr \
-    chromium && \
+    xvfb && \
     sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen en_US.UTF-8 && \
     curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh && \
@@ -88,24 +86,56 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/cache/apt/archives/*
 
-# Add ChromeDriver
-RUN CHROME_VERSION=$(chromium --version | grep -oP '\d+\.\d+\.\d+') && \
-    echo "Chrome version: $CHROME_VERSION" && \
-    DRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | \
-    jq -r --arg ver "$CHROME_VERSION" '.channels.Stable.version') && \
-    echo "Driver version: $DRIVER_VERSION" && \
-    curl -Lo /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip" && \
+# Add ChromeDriver and Chrome
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then \
+    CHROME_ARCH="linux64"; \
+    elif [ "$ARCH" = "aarch64" ]; then \
+    CHROME_ARCH="linux64"; \
+    else \
+    echo "Unsupported architecture: $ARCH" && exit 1; \
+    fi && \
+    LATEST_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | \
+    jq -r '.channels.Stable.version') && \
+    echo "Installing Chrome and ChromeDriver version: $LATEST_VERSION for $CHROME_ARCH" && \
+    # Install Chrome
+    curl -Lo /tmp/chrome.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_VERSION}/${CHROME_ARCH}/chrome-linux64.zip" && \
+    unzip /tmp/chrome.zip -d /opt && \
+    ln -sf /opt/chrome-linux64/chrome /usr/bin/google-chrome && \
+    # Install ChromeDriver
+    curl -Lo /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_VERSION}/${CHROME_ARCH}/chromedriver-linux64.zip" && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin && \
     mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
     chmod +x /usr/local/bin/chromedriver && \
-    rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
+    rm -rf /tmp/chrome.zip /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
 
 # Add GeckoDriver (for Firefox)
-RUN GECKO_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.tag_name') && \
-    curl -Lo /tmp/geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/${GECKO_VERSION}/geckodriver-${GECKO_VERSION}-linux64.tar.gz" && \
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then \
+    GECKO_ARCH="linux64"; \
+    elif [ "$ARCH" = "aarch64" ]; then \
+    GECKO_ARCH="linux-aarch64"; \
+    else \
+    echo "Unsupported architecture: $ARCH" && exit 1; \
+    fi && \
+    # Add Mozilla's signing key the modern way
+    curl -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg | \
+    gpg --dearmor -o /etc/apt/trusted.gpg.d/mozilla.gpg && \
+    echo "deb https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list && \
+    apt-get update && \
+    apt-get install -y firefox && \
+    # Get Firefox version and find compatible GeckoDriver
+    FIREFOX_VERSION=$(firefox --version | grep -oP '\d+\.\d+') && \
+    echo "Firefox version: $FIREFOX_VERSION" && \
+    # Get latest GeckoDriver (it's generally backward compatible)
+    GECKO_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.tag_name') && \
+    echo "GeckoDriver version: $GECKO_VERSION for $GECKO_ARCH" && \
+    curl -Lo /tmp/geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/${GECKO_VERSION}/geckodriver-${GECKO_VERSION}-${GECKO_ARCH}.tar.gz" && \
     tar -xzf /tmp/geckodriver.tar.gz -C /usr/local/bin && \
     chmod +x /usr/local/bin/geckodriver && \
-    rm /tmp/geckodriver.tar.gz
+    rm /tmp/geckodriver.tar.gz && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Ensure /usr/local/bin is in the PATH
 ENV PATH="/usr/local/bin:${PATH}"
