@@ -521,6 +521,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
         )
+        self._print("<Waldiez> - Done running the flow.")
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
         return results
