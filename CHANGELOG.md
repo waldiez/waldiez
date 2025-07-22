@@ -5,6 +5,16 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## Unreleased
+
+- Updated ag2 dependency to 0.9.6
+- Updated jupyter dependencies to 4.4.5
+- Added more predefined tools
+- Replaced RAG User Proxy agent with Doc Agent
+- Minor UI changes
+- Bug fixes and bug introductions
+- Dependency updates
+
 ## v0.5.3
 
 - Updated ag2 dependency to 0.9.5
