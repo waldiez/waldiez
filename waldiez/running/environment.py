@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=import-outside-toplevel,reimported
+# pylint: disable=import-outside-toplevel,reimported,line-too-long
+# flake8: noqa: E501
 """Environment related utilities."""
 
 import importlib
@@ -166,7 +167,7 @@ def reload_chroma_if_needed() -> None:  # pragma: no cover
         if mod_name in sys.modules:
             del sys.modules[mod_name]
     try:
-        import chromadb  # noqa: F401  # pyright: ignore
+        import chromadb  # noqa: F401  # type: ignore[unused-import,import-not-found,unused-ignore]
     except ImportError:
         # If chromadb is not installed, we can ignore this
         return
