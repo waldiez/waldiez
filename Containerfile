@@ -124,11 +124,19 @@ RUN ARCH=$(uname -m) && \
     echo "deb https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list && \
     apt-get update && \
     apt-get install -y firefox && \
-    # Get Firefox version and find compatible GeckoDriver
     FIREFOX_VERSION=$(firefox --version | grep -oP '\d+\.\d+') && \
     echo "Firefox version: $FIREFOX_VERSION" && \
     # Get latest GeckoDriver (it's generally backward compatible)
-    GECKO_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.tag_name') && \
+    GECKO_VERSION=""; \
+    for i in 1 2 3; do \
+    GECKO_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.tag_name'); \
+    if [ "$GECKO_VERSION" != "null" ] && [ -n "$GECKO_VERSION" ]; then break; fi; \
+    echo "Retrying fetch of GeckoDriver version... ($i)"; \
+    sleep 2; \
+    done && \
+    if [ -z "$GECKO_VERSION" ] || [ "$GECKO_VERSION" = "null" ]; then \
+    echo "Failed to fetch GeckoDriver version" >&2; exit 1; \
+    fi && \
     echo "GeckoDriver version: $GECKO_VERSION for $GECKO_ARCH" && \
     curl -Lo /tmp/geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/${GECKO_VERSION}/geckodriver-${GECKO_VERSION}-${GECKO_ARCH}.tar.gz" && \
     tar -xzf /tmp/geckodriver.tar.gz -C /usr/local/bin && \
