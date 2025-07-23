@@ -16,8 +16,6 @@ export const PREDEFINED_TOOL_TYPES = [
     "duckduckgo_search",
     "perplexity_search",
     "searxng_search",
-    "shared",
-    "custom",
 ];
 export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; key: string }[] } = {
     wikipedia_search: [],

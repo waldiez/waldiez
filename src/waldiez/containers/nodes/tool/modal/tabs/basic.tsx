@@ -21,7 +21,7 @@ import { DEFAULT_TOOL_CONTENT_MAP, WaldiezToolType } from "@waldiez/models";
 /**
  * Basic tab component for tool properties in the tool modal
  */
-// eslint-disable-next-line complexity
+
 export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
     const { toolId, data, darkMode } = props;
 
@@ -149,7 +149,7 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                     />
                 </div>
             )}
-            {selectedToolType?.value !== "predefined" && (
+            {data.toolType !== "predefined" && (
                 <div className="margin-bottom-10">
                     <label htmlFor={descriptionInputId}>Description:</label>
                     <div className="margin-top-10" />
@@ -178,10 +178,10 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                     />
                 </div>
             )}
-            {selectedToolType?.value === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && (
+            {data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && (
                 <div className="margin-top-10">{PREDEFINED_TOOL_INSTRUCTIONS[data.label]}</div>
             )}
-            {selectedToolType?.value === "predefined" &&
+            {data.toolType === "predefined" &&
                 PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] &&
                 PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]!.length > 0 && (
                     <div className="margin-top-10">
@@ -201,7 +201,7 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                         ))}
                     </div>
                 )}
-            {selectedToolType?.value === "predefined" &&
+            {data.toolType === "predefined" &&
                 PREDEFINED_TOOL_REQUIRED_ENVS[data.label] &&
                 PREDEFINED_TOOL_REQUIRED_ENVS[data.label]!.length > 0 && (
                     <div className="margin-top-10">
