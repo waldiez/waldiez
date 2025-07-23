@@ -29,6 +29,7 @@ export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                     autoClosingBrackets: "always",
                     tabSize: 4,
                     minimap: { scale: 1 },
+                    renderWhitespace: "none",
                 }}
                 onChange={onChange}
             />
