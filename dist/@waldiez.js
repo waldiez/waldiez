@@ -22,7 +22,7 @@ import { temporal } from "zundo";
 import { createStore } from "zustand";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaSun, FaMoon, FaTrashCan, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -1799,7 +1799,7 @@ const ValidConditionTypes = [
 ];
 class WaldiezFlow {
   type = "flow";
-  version = "0.5.4";
+  version = "0.5.5";
   id;
   name;
   description;
@@ -1829,7 +1829,7 @@ const getFlowId = () => {
 const aFlowId = getFlowId();
 const emptyFlow = {
   type: "flow",
-  version: "0.5.4",
+  version: "0.5.5",
   id: aFlowId,
   storageId: aFlowId,
   name: "Waldiez Flow",
@@ -5628,7 +5628,7 @@ const flowMapper = {
     const waldiezFlow = {
       id: flow.flowId,
       type: "flow",
-      version: "0.5.4",
+      version: "0.5.5",
       storageId: flow.storageId,
       name: flow.name,
       description: flow.description,
@@ -15611,6 +15611,24 @@ const WaldiezFlowPanels = (props) => {
           title: "Export flow",
           "data-testid": `export-flow-${flowId}-button`,
           children: /* @__PURE__ */ jsx(MdIosShare, { size: 24 })
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          className: "editor-nav-action",
+          title: "Github repository",
+          "data-testid": `open-docs-${flowId}`,
+          children: /* @__PURE__ */ jsx(
+            "a",
+            {
+              href: "https://github.com/waldiez/waldiez",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              children: /* @__PURE__ */ jsx(FaGithub, {})
+            }
+          )
         }
       ),
       /* @__PURE__ */ jsx(

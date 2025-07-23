@@ -5,9 +5,9 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## Unreleased
+## v0.5.5
 
-- Fixed a bug with the monaco editor not loading when a non predefined tool is selected
+- Fixed a bug with the editor not loading when a non predefined tool is selected
 
 ## v0.5.4
 
