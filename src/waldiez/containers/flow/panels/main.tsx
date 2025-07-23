@@ -5,7 +5,7 @@
 import { Panel } from "@xyflow/react";
 
 import { FaPlusCircle } from "react-icons/fa";
-import { FaCirclePlay, FaFileImport, FaMoon, FaPython, FaSun } from "react-icons/fa6";
+import { FaCirclePlay, FaFileImport, FaGithub, FaMoon, FaPython, FaSun } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
 import { SiJupyter } from "react-icons/si";
 
@@ -125,6 +125,20 @@ export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: Waldi
                             <MdIosShare size={24} />
                         </button>
                     )}
+                    <button
+                        type="button"
+                        className="editor-nav-action"
+                        title="Github repository"
+                        data-testid={`open-docs-${flowId}`}
+                    >
+                        <a
+                            href="https://github.com/waldiez/waldiez"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <FaGithub />
+                        </a>
+                    </button>
                     <button
                         type="button"
                         className="editor-nav-action"
