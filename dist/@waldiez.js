@@ -17146,7 +17146,7 @@ const DEFAULT_NAME = {
   perplexity_search: "Perplexity AI Search",
   searxng_search: "SearxNG Search",
   shared: "waldiez_shared",
-  custom: "tool_name"
+  custom: "new_tool"
 };
 const PREDEFINED_TOOL_INSTRUCTIONS = {
   wikipedia_search: void 0,
@@ -24972,10 +24972,27 @@ const useToolNodeModal = (props) => {
     },
     [onDataChange]
   );
-  const onToolTypeChange = useCallback(
-    (toolType) => {
-      const newContent = DEFAULT_TOOL_CONTENT_MAP[toolType];
-      onDataChange({ toolType, content: newContent, kwargs: {}, secrets: {} });
+  const onToolTypeSelectionChange = useCallback(
+    (option) => {
+      if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
+        onDataChange({
+          toolType: option.value,
+          content: DEFAULT_TOOL_CONTENT_MAP[option.value] || "",
+          kwargs: {},
+          secrets: {},
+          label: option.value,
+          description: DEFAULT_DESCRIPTION[option.value] || option.label
+        });
+      } else {
+        onDataChange({
+          toolType: option.value,
+          content: "",
+          kwargs: {},
+          secrets: {},
+          label: DEFAULT_NAME[option.value] || "",
+          description: DEFAULT_DESCRIPTION[option.value] || option.label
+        });
+      }
     },
     [onDataChange]
   );
@@ -25041,7 +25058,7 @@ const useToolNodeModal = (props) => {
     onToolContentChange,
     onToolLabelChange,
     onToolDescriptionChange,
-    onToolTypeChange,
+    onToolTypeSelectionChange,
     onAddTag,
     onDeleteTag,
     onTagChange,
@@ -25118,7 +25135,7 @@ const WaldiezToolBasicTab = (props) => {
     onToolContentChange,
     onToolLabelChange,
     onToolDescriptionChange,
-    onToolTypeChange,
+    onToolTypeSelectionChange,
     onAddSecret,
     onSetToolKwarg
   } = useToolNodeModal(props);
@@ -25127,7 +25144,7 @@ const WaldiezToolBasicTab = (props) => {
     [data]
   );
   const getEditorContent = () => {
-    const currentType = selectedToolType?.value || "";
+    const currentType = selectedToolType?.value || "shared";
     if (currentType === "predefined" && data.label) {
       return "";
     }
@@ -25143,17 +25160,9 @@ const WaldiezToolBasicTab = (props) => {
         console.warn("No tool type option selected");
         return;
       }
-      if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
-        onToolTypeChange("predefined");
-        onToolLabelChange(option.value);
-        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
-      } else {
-        onToolTypeChange(option.value);
-        onToolLabelChange(DEFAULT_NAME[option.value] || "");
-        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
-      }
+      onToolTypeSelectionChange(option);
     },
-    [onToolTypeChange, onToolLabelChange, onToolDescriptionChange]
+    [onToolTypeSelectionChange]
   );
   const typeSelectId = `tool-type-select-${toolId}`;
   const labelInputId = `tool-label-input-${toolId}`;

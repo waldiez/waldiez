@@ -44,7 +44,7 @@ export const DEFAULT_NAME: { [key: string]: string } = {
     perplexity_search: "Perplexity AI Search",
     searxng_search: "SearxNG Search",
     shared: "waldiez_shared",
-    custom: "tool_name",
+    custom: "new_tool",
 };
 
 export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: React.ReactNode | undefined } = {

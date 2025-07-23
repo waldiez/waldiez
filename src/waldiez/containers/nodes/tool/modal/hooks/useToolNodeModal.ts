@@ -5,6 +5,11 @@
 import { useCallback } from "react";
 
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
+import {
+    DEFAULT_DESCRIPTION,
+    DEFAULT_NAME,
+    PREDEFINED_TOOL_TYPES,
+} from "@waldiez/containers/nodes/tool/utils";
 import { DEFAULT_TOOL_CONTENT_MAP, WaldiezToolType } from "@waldiez/models";
 
 /**
@@ -95,10 +100,27 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
     /**
      * Change tool type and update content to default for that type
      */
-    const onToolTypeChange = useCallback(
-        (toolType: WaldiezToolType) => {
-            const newContent = DEFAULT_TOOL_CONTENT_MAP[toolType];
-            onDataChange({ toolType, content: newContent, kwargs: {}, secrets: {} });
+    const onToolTypeSelectionChange = useCallback(
+        (option: { value: string; label: string }) => {
+            if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
+                onDataChange({
+                    toolType: option.value as WaldiezToolType,
+                    content: DEFAULT_TOOL_CONTENT_MAP[option.value as WaldiezToolType] || "",
+                    kwargs: {},
+                    secrets: {},
+                    label: option.value,
+                    description: DEFAULT_DESCRIPTION[option.value] || option.label,
+                });
+            } else {
+                onDataChange({
+                    toolType: option.value as WaldiezToolType,
+                    content: "",
+                    kwargs: {},
+                    secrets: {},
+                    label: DEFAULT_NAME[option.value] || "",
+                    description: DEFAULT_DESCRIPTION[option.value] || option.label,
+                });
+            }
         },
         [onDataChange],
     );
@@ -190,7 +212,7 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
         onToolContentChange,
         onToolLabelChange,
         onToolDescriptionChange,
-        onToolTypeChange,
+        onToolTypeSelectionChange,
         onAddTag,
         onDeleteTag,
         onTagChange,

@@ -8,12 +8,9 @@ import { Editor, Select, SingleValue, TextInput, TextareaInput } from "@waldiez/
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import {
-    DEFAULT_DESCRIPTION,
-    DEFAULT_NAME,
     PREDEFINED_TOOL_INSTRUCTIONS,
     PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
-    PREDEFINED_TOOL_TYPES,
     TOOL_TYPE_OPTIONS,
 } from "@waldiez/containers/nodes/tool/utils";
 import { DEFAULT_TOOL_CONTENT_MAP, WaldiezToolType } from "@waldiez/models";
@@ -30,7 +27,7 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
         onToolContentChange,
         onToolLabelChange,
         onToolDescriptionChange,
-        onToolTypeChange,
+        onToolTypeSelectionChange,
         onAddSecret,
         onSetToolKwarg,
     } = useToolNodeModal(props);
@@ -66,18 +63,9 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                 console.warn("No tool type option selected");
                 return;
             }
-            if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
-                // If the selected type is a predefined tool, set the content to an empty string
-                onToolTypeChange("predefined");
-                onToolLabelChange(option.value);
-                onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
-            } else {
-                onToolTypeChange(option.value as WaldiezToolType);
-                onToolLabelChange(DEFAULT_NAME[option.value] || "");
-                onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
-            }
+            onToolTypeSelectionChange(option);
         },
-        [onToolTypeChange, onToolLabelChange, onToolDescriptionChange],
+        [onToolTypeSelectionChange],
     );
 
     // Generate element IDs for accessibility
