@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import react from "@vitejs/plugin-react";
-import "dotenv/config";
+import dotenv from "dotenv";
 import path from "path";
 import { defineConfig, normalizePath } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -11,6 +11,7 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 import packageJson from "./package.json";
 import { transformPublicFiles } from "./vite.plugins";
 
+dotenv.config({ quiet: true, encoding: "utf8" });
 const normalizedResolve = (...paths: string[]): string => normalizePath(path.resolve(__dirname, ...paths));
 
 /**
