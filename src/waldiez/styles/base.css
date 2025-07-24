@@ -108,15 +108,18 @@ body.waldiez-light {
   color: var(--text-color);
 }
 
-* {
+.flow-wrapper *,
+.modal-root * {
   box-sizing: border-box;
   scrollbar-width: thin;
 }
 
-*::-webkit-scrollbar {
+.flow-wrapper *::-webkit-scrollbar,
+.modal-root *::-webkit-scrollbar {
   width: 10px;
 }
 
-*:focus {
+.flow-wrapper :focus,
+.modal-root :focus {
   outline: none;
 }

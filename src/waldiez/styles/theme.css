@@ -82,8 +82,12 @@
   opacity: 0.8;
 }
 
-button {
+/* button {
   all: unset;
+} */
+
+.flow-wrapper button:not([role="checkbox"]),
+.modal-root button:not([role="checkbox"]) {
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 8px;
@@ -98,40 +102,47 @@ button {
     border-color 0.2s ease;
 }
 
-button:disabled {
-  cursor: default !important;
+.flow-wrapper button:not([role="checkbox"]):disabled,
+.modal-root button:not([role="checkbox"]):disabled {
+  cursor: default;
   transition: none;
 }
 
-body.waldiez-light button {
+body.waldiez-light .flow-wrapper button,
+body.waldiez-light .modal-root button {
   border: 1px solid #ccc;
   background-color: #f8f8f8;
   color: #111;
 }
 
-body.waldiez-dark button {
+body.waldiez-light .flow-wrapper button,
+body.waldiez-dark .modal-root button {
   border: 1px solid #444;
   background-color: #222;
   color: #f8f8f8;
 }
 
-body.waldiez-light button:hover {
+body.waldiez-light .flow-wrapper button:hover,
+body.waldiez-light .modal-root button:hover {
   background-color: #f0f0f0;
   border-color: #3b82f6;
 }
 
-body.waldiez-dark button:hover {
+body.waldiez-dark .flow-wrapper button:hover,
+body.waldiez-dark .modal-root button:hover {
   background-color: #111;
   border-color: #3b82f6;
 }
 
-body.waldiez-dark button:disabled:hover {
+body.waldiez-dark .flow-wrapper button:disabled:hover,
+body.waldiez-dark .modal-root button:disabled:hover {
   background-color: #222;
   border-color: #444;
   transition: none;
 }
 
-body.waldiez-light button:disabled:hover {
+body.waldiez-light .flow-wrapper button:disabled:hover,
+body.waldiez-light .modal-root button:disabled:hover {
   background-color: #f8f8f8;
   border-color: #ccc;
   transition: none;
@@ -142,59 +153,82 @@ body.waldiez-light button:disabled:hover {
   pointer-events: none !important;
 }
 
-body.waldiez-light {
+body.waldiez-light .flow-wrapper,
+body.waldiez-light .modal-root {
   color-scheme: light;
   background-color: var(--background-color);
   color: var(--text-color);
 }
 
-body.waldiez-dark {
+body.waldiez-dark .flow-wrapper,
+body.waldiez-dark .modal-root {
   background-color: var(--background-color);
   color: var(--text-color);
   color-scheme: dark;
 }
 
-body.waldiez-dark * {
+body.waldiez-dark .flow-wrapper *,
+body.waldiez-dark .modal-root * {
   scrollbar-color: #ccc #333;
 }
 
-body.waldiez-light * {
+body.waldiez-light * .flow-wrapper,
+body.waldiez-light * .modal-root {
   scrollbar-color: #333 #fefefe;
 }
 
-::placeholder {
+.flow-wrapper ::placeholder,
+.modal-root ::placeholder {
   opacity: 0.5;
 }
 
-body.waldiez-light input:disabled {
+body.waldiez-light .flow-wrapper input:disabled,
+body.waldiez-light .flow-wrapper textarea:disabled {
   color: #222 !important;
 }
 
-body.waldiez-light::placeholder {
+body.waldiez-light .flow-wrapper input:disabled,
+body.waldiez-light .modal-root textarea:disabled {
+  color: #222 !important;
+}
+
+body.waldiez-light .flow-wrapper::placeholder,
+body.waldiez-light .modal-root::placeholder {
   color: #222;
 }
 
-body.waldiez-light ::-webkit-input-placeholder {
+body.waldiez-light .flow-wrapper ::-webkit-input-placeholder,
+body.waldiez-light .modal-root ::-webkit-input-placeholder {
   color: #222;
 }
 
-body.waldiez-light::-moz-placeholder {
+body.waldiez-light .flow-wrapper::-moz-placeholder,
+body.waldiez-light .modal-root::-moz-placeholder {
   color: #222;
 }
 
-body.waldiez-dark input:disabled {
+body.waldiez-dark .flow-wrapper input:disabled,
+body.waldiez-dark .modal-root input:disabled {
   color: #ccc !important;
 }
 
-body.waldiez-dark ::placeholder {
+body.waldiez-dark .flow-wrapper textarea:disabled,
+body.waldiez-dark .modal-root textarea:disabled {
+  color: #ccc !important;
+}
+
+body.waldiez-dark .flow-wrapper ::placeholder,
+body.waldiez-dark .modal-root ::placeholder {
   color: #ccc;
 }
 
-body.waldiez-dark ::-webkit-input-placeholder {
+body.waldiez-dark .flow-wrapper ::-webkit-input-placeholder,
+body.waldiez-dark .modal-root ::-webkit-input-placeholder {
   color: #ccc;
 }
 
-body.waldiez-dark ::-moz-placeholder {
+body.waldiez-dark .flow-wrapper ::-moz-placeholder,
+body.waldiez-dark .modal-root ::-moz-placeholder {
   color: #ccc;
 }
 
@@ -206,7 +240,7 @@ body.waldiez-dark ::-moz-placeholder {
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   cursor: pointer;
   margin-left: 5px;
-  padding: 10px;
+  padding: 10px !important;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -294,6 +328,9 @@ body.waldiez-dark .modal-root input[type="number"]::-webkit-outer-spin-button {
 
 body.waldiez-light .flow-wrapper input[type="number"],
 body.waldiez-light .flow-wrapper input[type="number"]::-webkit-inner-spin-button,
-body.waldiez-light .flow-wrapper input[type="number"]::-webkit-outer-spin-button {
+body.waldiez-light .flow-wrapper input[type="number"]::-webkit-outer-spin-button,
+body.waldiez-light .modal-root input[type="number"],
+body.waldiez-light .modal-root input[type="number"]::-webkit-inner-spin-button,
+body.waldiez-light .modal-root input[type="number"]::-webkit-outer-spin-button {
   color-scheme: light;
 }

@@ -14424,7 +14424,7 @@ const ChatModal = memo((props) => {
 });
 ChatModal.displayName = "ChatModal";
 const HUB_URL = "https://hub.waldiez.io";
-const API_FILES_URL = `${"https://hub.waldiez.io"}/api/files`;
+const API_FILES_URL = `${"https://api.waldiez.io"}/api/files`;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const UPLOAD_TIMEOUT = 1e4;
 const ADDITIONAL_FILE_TIMEOUT = 3e4;
@@ -20244,7 +20244,7 @@ const WaldiezAgentNestedChats = memo((props) => {
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: "agent-panel agent-nestedChats-panel margin-top--10",
+      className: "agent-panel agent-nestedChats-panel margin-top-10",
       "data-testid": `agent-nested-chats-panel-${id}`,
       children: [
         /* @__PURE__ */ jsx(
@@ -21660,8 +21660,9 @@ const WaldiezAgentTools = memo((props) => {
     return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
   }
   if (skipExecutor === true) {
-    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
+    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
       /* @__PURE__ */ jsx(
         Select,
         {
@@ -21676,9 +21677,10 @@ const WaldiezAgentTools = memo((props) => {
       )
     ] }) });
   }
-  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
+  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsxs("div", { className: "agent-panel-add-tool", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
       /* @__PURE__ */ jsx(
         Select,
         {
