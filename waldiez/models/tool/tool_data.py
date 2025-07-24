@@ -4,8 +4,8 @@
 
 from typing import Any
 
-from pydantic import Field
-from typing_extensions import Annotated
+from pydantic import Field, SerializationInfo, model_serializer, model_validator
+from typing_extensions import Annotated, Self
 
 from ..common import WaldiezBase
 from .tool_type import WaldiezToolType
@@ -61,3 +61,40 @@ class WaldiezToolData(WaldiezBase):
             ),
         ),
     ] = {}
+
+    _raw_content: str = ""
+
+    @model_validator(mode="after")
+    def validate_tool_data(self) -> Self:
+        """Validate the tool data.
+
+        Returns
+        -------
+        Self
+            The validated tool data.
+        """
+        self._raw_content = self.content
+
+        return self
+
+    @model_serializer(mode="plain", when_used="always")
+    def serialize_tool_data(self, info: SerializationInfo) -> dict[str, Any]:
+        """Serialize the tool data.
+
+        Parameters
+        ----------
+        info : SerializationInfo
+            The serialization information.
+
+        Returns
+        -------
+        dict[str, Any]
+            The serialized tool data.
+        """
+        tool_type_key = "toolType" if info.by_alias else "tool_type"
+        return {
+            tool_type_key: self.tool_type,
+            "content": self._raw_content,
+            "secrets": self.secrets,
+            "kwargs": self.kwargs,
+        }

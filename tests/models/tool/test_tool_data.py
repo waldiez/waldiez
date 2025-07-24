@@ -26,3 +26,23 @@ def test_waldiez_tool_data() -> None:
 
     with pytest.raises(ValueError):
         tool_data = WaldiezToolData()  # pyright: ignore
+
+
+def test_serialize_tool_data() -> None:
+    """Test serialization of WaldiezToolData."""
+    # Given
+    content = "print('hello, world')"
+    secrets = {"API_KEY": "api_key"}
+    tool_data = WaldiezToolData(content=content, secrets=secrets)
+    # When
+    serialized_data = tool_data.model_dump(by_alias=True)
+    # Then
+    assert serialized_data["content"] == content
+    assert serialized_data["secrets"] == secrets
+    assert serialized_data["toolType"] == "custom"
+
+    # When
+    serialized_data = tool_data.model_dump(by_alias=False)
+    # Then
+    assert serialized_data["kwargs"] == {}
+    assert serialized_data["tool_type"] == "custom"

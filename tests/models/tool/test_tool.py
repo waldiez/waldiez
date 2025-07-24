@@ -564,3 +564,50 @@ def test_predefined_tool_parametrized(
         assert tool.name == name
         assert tool.description == description
         assert tool.content is not None
+
+
+def test_tool_data_serialization() -> None:
+    """Test serialization of WaldiezToolData."""
+    # Given
+    content = '''
+import os
+from typing import List
+
+def example_tool_function() -> str:
+    """Example tool function."""
+    return "Hello, world!"
+'''
+    secrets = {"API_KEY": "your_api_key"}
+    kwargs = {"example_arg": "value"}
+    tool_args: dict[str, Any] = {
+        "content": content,
+        "secrets": secrets,
+        "kwargs": kwargs,
+        "tool_type": "custom",
+    }
+    tool = WaldiezTool(
+        id="example_tool_id",
+        name="example_tool_function",
+        type="tool",
+        tags=[],
+        requirements=[],
+        created_at="2024-01-01T00:00:00Z",
+        updated_at="2024-01-01T00:00:00Z",
+        description="Example tool function",
+        data=tool_args,  # type: ignore
+    )
+    # When
+    serialized_data = tool.data.model_dump(by_alias=True)
+    # Then
+    # Content should be stripped of imports
+    assert tool.data.content != content
+    assert "import" not in tool.data.content  # imports should be stripped
+    assert tool.get_content() == tool.data.content
+    # but should be serialized exactly as provided
+    assert serialized_data["content"] == content
+    assert serialized_data["secrets"] == secrets
+    assert serialized_data["kwargs"] == kwargs
+    assert serialized_data["toolType"] == "custom"
+    # to_json string should also work correctly (keep raw content)
+    assert "import os" in tool.model_dump_json()
+    assert "from typing import List" in tool.data.model_dump_json()
