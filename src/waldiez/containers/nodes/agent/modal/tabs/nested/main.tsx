@@ -39,7 +39,7 @@ export const WaldiezAgentNestedChats = memo((props: WaldiezAgentNestedChatsProps
 
     return (
         <div
-            className="agent-panel agent-nestedChats-panel margin-top--10"
+            className="agent-panel agent-nestedChats-panel margin-top-10"
             data-testid={`agent-nested-chats-panel-${id}`}
         >
             {/* Triggers Section */}

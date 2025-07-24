@@ -41,9 +41,10 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
 
     if (skipExecutor === true) {
         return (
-            <div className="agent-panel agent-tools-panel margin-bottom-10">
+            <div className="agent-panel agent-tools-panel margin-top-10 margin-bottom-10">
                 <div className="agent-panel-select-tools">
                     <label htmlFor={`select-agent-tools-${id}`}>Tools:</label>
+                    <div className="margin-top-5" />
                     <Select
                         options={toolOptions}
                         onChange={onSelectedToolsChange}
@@ -59,11 +60,12 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
     }
 
     return (
-        <div className="agent-panel agent-tools-panel margin-bottom-10">
+        <div className="agent-panel agent-tools-panel margin-top-10 margin-bottom-10">
             <div>
                 {/* Tool selection controls */}
                 <div className="agent-panel-add-tool">
                     <label htmlFor={`select-agent-tool-${id}`}>Tool:</label>
+                    <div className="margin-top-5" />
                     <Select
                         options={toolOptions}
                         onChange={onSelectedToolChange}
