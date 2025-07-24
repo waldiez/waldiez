@@ -1799,7 +1799,7 @@ const ValidConditionTypes = [
 ];
 class WaldiezFlow {
   type = "flow";
-  version = "0.5.5";
+  version = "0.5.6";
   id;
   name;
   description;
@@ -1829,7 +1829,7 @@ const getFlowId = () => {
 const aFlowId = getFlowId();
 const emptyFlow = {
   type: "flow",
-  version: "0.5.5",
+  version: "0.5.6",
   id: aFlowId,
   storageId: aFlowId,
   name: "Waldiez Flow",
@@ -5628,7 +5628,7 @@ const flowMapper = {
     const waldiezFlow = {
       id: flow.flowId,
       type: "flow",
-      version: "0.5.5",
+      version: "0.5.6",
       storageId: flow.storageId,
       name: flow.name,
       description: flow.description,
@@ -24959,6 +24959,13 @@ const useToolNodeModal = (props) => {
     },
     [data.secrets, onDataChange]
   );
+  const onToolTypeChange = useCallback(
+    (toolType) => {
+      const newContent = DEFAULT_TOOL_CONTENT_MAP[toolType];
+      onDataChange({ toolType, content: newContent, kwargs: {}, secrets: {} });
+    },
+    [onDataChange]
+  );
   const onToolContentChange = useCallback(
     (value) => {
       if (!value) {
@@ -25076,6 +25083,7 @@ const useToolNodeModal = (props) => {
     onToolContentChange,
     onToolLabelChange,
     onToolDescriptionChange,
+    onToolTypeChange,
     onToolTypeSelectionChange,
     onAddTag,
     onDeleteTag,
@@ -25147,40 +25155,36 @@ const WaldiezToolAdvancedTab = (props) => {
     )
   ] });
 };
-const WaldiezToolBasicTab = (props) => {
+const WaldiezToolBasicTab = memo((props) => {
   const { toolId, data, darkMode } = props;
   const {
     onToolContentChange,
     onToolLabelChange,
     onToolDescriptionChange,
-    onToolTypeSelectionChange,
+    onToolTypeChange,
     onAddSecret,
     onSetToolKwarg
   } = useToolNodeModal(props);
   const selectedToolType = useMemo(
     () => TOOL_TYPE_OPTIONS.find((option) => option.value === data.toolType) || TOOL_TYPE_OPTIONS.find((option) => option.value === data.label) || TOOL_TYPE_OPTIONS[0],
-    [data]
+    [data.toolType, data.label]
   );
-  const getEditorContent = () => {
-    const currentType = selectedToolType?.value || "shared";
-    if (currentType === "predefined" && data.label) {
-      return "";
-    }
-    let content = data.content || DEFAULT_TOOL_CONTENT_MAP[currentType] || "";
-    if (content.length === 0) {
-      content = DEFAULT_TOOL_CONTENT_MAP[currentType] || "";
-    }
-    return content;
-  };
   const onToolTypeSelectChange = useCallback(
     (option) => {
       if (!option) {
-        console.warn("No tool type option selected");
         return;
       }
-      onToolTypeSelectionChange(option);
+      if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
+        onToolTypeChange("predefined");
+        onToolLabelChange(option.value);
+        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
+      } else {
+        onToolTypeChange(option.value);
+        onToolLabelChange(DEFAULT_NAME[option.value] || "");
+        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
+      }
     },
-    [onToolTypeSelectionChange]
+    [onToolTypeChange, onToolLabelChange, onToolDescriptionChange]
   );
   const typeSelectId = `tool-type-select-${toolId}`;
   const labelInputId = `tool-label-input-${toolId}`;
@@ -25228,7 +25232,7 @@ const WaldiezToolBasicTab = (props) => {
         }
       )
     ] }),
-    selectedToolType?.value !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: labelInputId, children: "Name:" }),
       /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
       /* @__PURE__ */ jsx(
@@ -25262,13 +25266,13 @@ const WaldiezToolBasicTab = (props) => {
         }
       )
     ] }),
-    ["shared", "custom"].includes(selectedToolType?.value || "") && /* @__PURE__ */ jsxs("div", { children: [
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { children: [
       /* @__PURE__ */ jsx("label", { htmlFor: contentEditorId, children: "Content:" }),
       /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
       /* @__PURE__ */ jsx(
         Editor,
         {
-          value: getEditorContent(),
+          value: data.content || "",
           onChange: onToolContentChange,
           darkMode,
           "aria-label": "Tool content",
@@ -25304,7 +25308,7 @@ const WaldiezToolBasicTab = (props) => {
       }
     ) }, index)) })
   ] });
-};
+});
 WaldiezToolBasicTab.displayName = "WaldiezToolBasicTab";
 const WaldiezNodeToolModal = (props) => {
   const {
