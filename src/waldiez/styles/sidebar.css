@@ -48,6 +48,10 @@ body.waldiez-dark .flow-main .sidebar {
   flex-grow: 1;
 }
 
+.flow-main .sidebar-content {
+  overflow-x: auto;
+}
+
 .flow-main .sidebar svg {
   font-size: larger;
   height: 1rem;
