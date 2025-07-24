@@ -5,6 +5,10 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.5.6
+
+- Fixed a bug with the tools view
+
 ## v0.5.5
 
 - Fixed a bug with the editor not loading when a non predefined tool is selected
