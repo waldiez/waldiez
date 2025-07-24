@@ -55,6 +55,17 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
     );
 
     /**
+     * Change tool type and update content to default for that type
+     */
+    const onToolTypeChange = useCallback(
+        (toolType: WaldiezToolType) => {
+            const newContent = DEFAULT_TOOL_CONTENT_MAP[toolType];
+            onDataChange({ toolType, content: newContent, kwargs: {}, secrets: {} });
+        },
+        [onDataChange],
+    );
+
+    /**
      * Update tool content (code)
      */
     const onToolContentChange = useCallback(
@@ -212,6 +223,7 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
         onToolContentChange,
         onToolLabelChange,
         onToolDescriptionChange,
+        onToolTypeChange,
         onToolTypeSelectionChange,
         onAddTag,
         onDeleteTag,

@@ -8,18 +8,20 @@ import { Editor, Select, SingleValue, TextInput, TextareaInput } from "@waldiez/
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import {
+    DEFAULT_DESCRIPTION,
+    DEFAULT_NAME,
     PREDEFINED_TOOL_INSTRUCTIONS,
     PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
+    PREDEFINED_TOOL_TYPES,
     TOOL_TYPE_OPTIONS,
 } from "@waldiez/containers/nodes/tool/utils";
-import { DEFAULT_TOOL_CONTENT_MAP, WaldiezToolType } from "@waldiez/models";
+import { WaldiezToolType } from "@waldiez/models";
 
 /**
  * Basic tab component for tool properties in the tool modal
  */
-
-export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
+export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     const { toolId, data, darkMode } = props;
 
     // Get handlers from custom hook
@@ -27,7 +29,7 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
         onToolContentChange,
         onToolLabelChange,
         onToolDescriptionChange,
-        onToolTypeSelectionChange,
+        onToolTypeChange,
         onAddSecret,
         onSetToolKwarg,
     } = useToolNodeModal(props);
@@ -38,21 +40,8 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
             TOOL_TYPE_OPTIONS.find(option => option.value === data.toolType) ||
             TOOL_TYPE_OPTIONS.find(option => option.value === data.label) ||
             TOOL_TYPE_OPTIONS[0],
-        [data],
+        [data.toolType, data.label],
     );
-
-    const getEditorContent = () => {
-        const currentType = (selectedToolType?.value || "shared") as WaldiezToolType;
-        if (currentType === "predefined" && data.label) {
-            return "";
-        }
-        let content = data.content || DEFAULT_TOOL_CONTENT_MAP[currentType] || "";
-        if (content.length === 0) {
-            // If content is empty, return the default content for the tool type
-            content = DEFAULT_TOOL_CONTENT_MAP[currentType] || "";
-        }
-        return content;
-    };
 
     /**
      * Handle tool type selection change
@@ -60,12 +49,21 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
     const onToolTypeSelectChange = useCallback(
         (option: SingleValue<{ value: string; label: string }>) => {
             if (!option) {
-                console.warn("No tool type option selected");
                 return;
             }
-            onToolTypeSelectionChange(option);
+            if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
+                // If the selected type is a predefined tool, set the content to an empty string
+                onToolTypeChange("predefined");
+                onToolLabelChange(option.value);
+                onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
+            } else {
+                onToolTypeChange(option.value as WaldiezToolType);
+                onToolLabelChange(DEFAULT_NAME[option.value] || "");
+                onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
+            }
+            // onToolTypeChange(option.value);
         },
-        [onToolTypeSelectionChange],
+        [onToolTypeChange, onToolLabelChange, onToolDescriptionChange],
     );
 
     // Generate element IDs for accessibility
@@ -121,7 +119,7 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                     }}
                 />
             </div>
-            {selectedToolType?.value !== "predefined" && (
+            {data.toolType !== "predefined" && (
                 <div className="margin-bottom-10">
                     <label htmlFor={labelInputId}>Name:</label>
                     <div className="margin-top-10" />
@@ -153,12 +151,12 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                     />
                 </div>
             )}
-            {["shared", "custom"].includes(selectedToolType?.value || "") && (
+            {data.toolType !== "predefined" && (
                 <div>
                     <label htmlFor={contentEditorId}>Content:</label>
                     <div className="margin-top-10" />
                     <Editor
-                        value={getEditorContent()}
+                        value={data.content || ""}
                         onChange={onToolContentChange}
                         darkMode={darkMode}
                         aria-label="Tool content"
@@ -211,6 +209,6 @@ export const WaldiezToolBasicTab = (props: WaldiezNodeToolModalProps) => {
                 )}
         </div>
     );
-};
+});
 
 WaldiezToolBasicTab.displayName = "WaldiezToolBasicTab";
