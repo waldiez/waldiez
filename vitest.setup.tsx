@@ -160,9 +160,6 @@ afterEach(() => {
 beforeAll(async () => {
     await mockWebCrypto();
     global.ResizeObserver = ResizeObserver;
-    HTMLDialogElement.prototype.show = vi.fn();
-    HTMLDialogElement.prototype.showModal = vi.fn();
-    HTMLDialogElement.prototype.close = vi.fn();
     HTMLDivElement.prototype.scrollIntoView = vi.fn();
     HTMLAnchorElement.prototype.click = vi.fn();
     HTMLElement.prototype.getBoundingClientRect = () =>

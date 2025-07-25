@@ -26,9 +26,20 @@ export type ImportFlowModalViewProps = {
     onSubmit: () => void;
 };
 
+export type SearchResult = {
+    id: string;
+    name: string;
+    description: string;
+    tags: string[];
+    url: string;
+    upload_date: string;
+};
+
 export type ImportFlowState = {
     searchTerm: string;
     remoteUrl: string;
+    loading: boolean;
     loadedFlowData: ImportedFlow | null;
     selectedProps: ThingsToImport;
+    searchResults: SearchResult[] | null;
 };

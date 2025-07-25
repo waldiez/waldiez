@@ -20,14 +20,12 @@ describe("Sidebar Import flow modal", () => {
             await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
         const modalTestId = `import-flow-modal-${flowId}`;
-        const modalElement = screen.getByTestId(modalTestId) as HTMLDialogElement;
+        const modalElement = screen.getByTestId(modalTestId) as HTMLDivElement;
         expect(modalElement).toBeTruthy();
         const closeButton = modalElement.querySelector(".modal-close-btn");
         expect(closeButton).toBeTruthy();
         fireEvent.click(closeButton as HTMLElement);
-        // expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
     it("should not display the preview step if the flow data is not loaded", async () => {
         await act(async () => {
@@ -35,7 +33,7 @@ describe("Sidebar Import flow modal", () => {
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const modalTestId = `import-flow-modal-${flowId}`;
-        const modalElement = screen.getByTestId(modalTestId) as HTMLDialogElement;
+        const modalElement = screen.getByTestId(modalTestId) as HTMLDivElement;
         expect(modalElement).toBeTruthy();
         const previewStep = screen.queryByTestId(`import-flow-modal-preview-step-${flowId}`);
         expect(previewStep).toBeFalsy();

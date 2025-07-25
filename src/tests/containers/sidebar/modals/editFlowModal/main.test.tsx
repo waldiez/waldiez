@@ -17,14 +17,12 @@ describe("Sidebar Edit flow modal", () => {
             await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
         const modalTestId = `edit-flow-modal-${flowId}`;
-        const modalElement = screen.getByTestId(modalTestId) as HTMLDialogElement;
+        const modalElement = screen.getByTestId(modalTestId) as HTMLDivElement;
         expect(modalElement).toBeTruthy();
         const closeButton = modalElement.querySelector(".modal-close-btn");
         expect(closeButton).toBeTruthy();
         fireEvent.click(closeButton as HTMLElement);
-        // expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
 
     it("should switch to second tab", async () => {

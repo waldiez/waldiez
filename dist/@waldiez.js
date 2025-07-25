@@ -14625,6 +14625,8 @@ const initialState = {
   searchTerm: "",
   remoteUrl: "",
   loadedFlowData: null,
+  loading: false,
+  searchResults: null,
   selectedProps: {
     everything: true,
     override: true,
@@ -14693,6 +14695,8 @@ const useImportFlowModal = (props) => {
     [importFlowState, onImportFlowStateChange, onClose, onBack, onForward]
   );
 };
+const API_SEARCH_URL = `${"https://api.waldiez.io"}/api/search/`;
+const TIMEOUT_MS = 3e4;
 const useLoadFlowStep = (props) => {
   const { flowId, state, initialState: initialState2, onStateChange } = props;
   const setLoadedFlowData = useCallback(
@@ -14788,10 +14792,10 @@ const useLoadFlowStep = (props) => {
     [setRemoteUrl]
   );
   const onRemoteUrlSubmit = useCallback(() => {
-    const TIMEOUT_MS = 3e4;
     const controller = new AbortController();
     const signal = controller.signal;
     setLoadedFlowData(null);
+    onStateChange({ loading: true });
     const timeoutId = setTimeout(() => {
       controller.abort();
     }, TIMEOUT_MS);
@@ -14820,6 +14824,7 @@ const useLoadFlowStep = (props) => {
       onStateChange(initialState2);
     }).finally(() => {
       clearTimeout(timeoutId);
+      onStateChange({ loading: false, remoteUrl: state.remoteUrl, searchResults: null });
     });
   }, [flowId, state.remoteUrl, onFlowData, setLoadedFlowData, onStateChange, initialState2]);
   const onSelectedPropsChange = useCallback(
@@ -14836,35 +14841,188 @@ const useLoadFlowStep = (props) => {
   const onClearLoadedFlowData = useCallback(() => {
     setLoadedFlowData(null);
   }, [setLoadedFlowData]);
+  const onSearchChange = useCallback(
+    (event) => {
+      const searchTerm = event.target.value.trim();
+      onStateChange({ searchTerm });
+    },
+    [onStateChange]
+  );
+  const onSelectResult = useCallback(
+    (result) => {
+      setRemoteUrl(result.url);
+      setLoadedFlowData(null);
+      onStateChange({ loading: true });
+      const controller = new AbortController();
+      const signal = controller.signal;
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, TIMEOUT_MS);
+      fetch(result.url, {
+        signal,
+        mode: "cors",
+        redirect: "follow",
+        headers: {
+          Accept: "application/json"
+        }
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      }).then((data) => {
+        onFlowData(data);
+      }).catch((error) => {
+        console.error("Error fetching selected result:", error);
+        showSnackbar({
+          flowId,
+          message: `Failed to load flow from selected result: ${error.message}`,
+          level: "error",
+          duration: 5e3
+        });
+        onStateChange(initialState2);
+      }).finally(() => {
+        clearTimeout(timeoutId);
+        onStateChange({ loading: false, remoteUrl: state.remoteUrl });
+      });
+    },
+    [setRemoteUrl, setLoadedFlowData, onStateChange, onFlowData, flowId, initialState2, state.remoteUrl]
+  );
+  const onSearchSubmit = useCallback(() => {
+    const { searchTerm } = state;
+    if (!searchTerm) {
+      showSnackbar({
+        flowId,
+        message: "Please enter a search term",
+        level: "warning",
+        duration: 3e3
+      });
+      return;
+    }
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, TIMEOUT_MS);
+    onStateChange({ loading: true });
+    fetch(`${API_SEARCH_URL}?query=${encodeURIComponent(searchTerm)}`, {
+      signal,
+      headers: {
+        Accept: "application/json"
+      }
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    }).then((data) => {
+      const searchResults = data.files.map((file) => ({
+        id: file.id,
+        name: file.name,
+        description: file.description,
+        tags: file.tags ? file.tags.split(",").map((tag) => tag.trim()) : [],
+        url: file.url,
+        upload_date: file.upload_date
+      }));
+      onStateChange({ searchResults });
+    }).catch((error) => {
+      console.error("Error fetching search results:", error);
+      showSnackbar({
+        flowId,
+        message: `Failed to fetch search results: ${error.message}`,
+        level: "error",
+        duration: 5e3
+      });
+      onStateChange(initialState2);
+    }).finally(() => {
+      clearTimeout(timeoutId);
+      onStateChange({ loading: false, searchTerm, remoteUrl: state.remoteUrl });
+    });
+  }, [flowId, state, onStateChange, initialState2]);
   return {
     onUpload,
     onRemoteUrlChange,
     onRemoteUrlSubmit,
     onSelectedPropsChange,
-    onClearLoadedFlowData
+    onClearLoadedFlowData,
+    onSearchChange,
+    onSearchSubmit,
+    onSelectResult
   };
 };
 const LoadFlowStep = (props) => {
   const { flowId, state } = props;
-  const { remoteUrl, loadedFlowData } = state;
-  const { onUpload, onRemoteUrlChange, onRemoteUrlSubmit, onClearLoadedFlowData } = useLoadFlowStep(props);
+  const { remoteUrl, loadedFlowData, loading } = state;
+  const {
+    onUpload,
+    onRemoteUrlChange,
+    onRemoteUrlSubmit,
+    onClearLoadedFlowData,
+    onSearchChange,
+    onSearchSubmit,
+    onSelectResult
+  } = useLoadFlowStep(props);
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(
       Collapsible,
       {
-        title: "Upload a file",
-        dataTestId: `import-flow-modal-collapsible-local-${flowId}`,
+        title: "Search the hub",
+        dataTestId: `import-flow-modal-collapsible-search-${flowId}`,
         expanded: true,
-        children: /* @__PURE__ */ jsx("div", { className: "padding-10 margin-left--10 margin-right--10", children: /* @__PURE__ */ jsx(
-          DropZone,
-          {
-            flowId,
-            onUpload,
-            allowedFileExtensions: [".waldiez", ".json"]
-          }
-        ) })
+        children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
+          /* @__PURE__ */ jsxs("div", { className: "full-width flex", children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "text",
+                className: "text-input full-width margin-right-10",
+                placeholder: "Search",
+                onChange: onSearchChange,
+                onKeyDown: (e) => {
+                  if (e.key === "Enter") {
+                    onSearchSubmit();
+                  }
+                }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                title: "Search",
+                className: "modal-action-submit",
+                onClick: onSearchSubmit,
+                "data-testid": `import-flow-modal-search-submit-${flowId}`,
+                disabled: loading,
+                children: "Search"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxs("li", { className: "search-result-item", children: [
+            /* @__PURE__ */ jsx(
+              "span",
+              {
+                className: "search-result-title clickable",
+                role: "button",
+                tabIndex: 0,
+                onClick: () => onSelectResult(result),
+                children: result.name
+              }
+            ),
+            /* @__PURE__ */ jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
+            /* @__PURE__ */ jsx("div", { className: "search-result-description", children: result.description })
+          ] }, result.id)) }) })
+        ] })
       }
     ),
+    /* @__PURE__ */ jsx(Collapsible, { title: "Upload a file", dataTestId: `import-flow-modal-collapsible-local-${flowId}`, children: /* @__PURE__ */ jsx("div", { className: "padding-10 margin-left--10 margin-right--10", children: /* @__PURE__ */ jsx(
+      DropZone,
+      {
+        flowId,
+        onUpload,
+        allowedFileExtensions: [".waldiez", ".json"]
+      }
+    ) }) }),
     /* @__PURE__ */ jsx(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
       /* @__PURE__ */ jsx("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsx("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
       /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex", children: [
@@ -14887,7 +15045,7 @@ const LoadFlowStep = (props) => {
             className: "modal-action-submit",
             onClick: onRemoteUrlSubmit,
             "data-testid": `import-flow-modal-url-submit-${flowId}`,
-            disabled: !remoteUrl.startsWith("https://"),
+            disabled: !remoteUrl.startsWith("https://") || loading,
             children: "Load"
           }
         )

@@ -70,7 +70,6 @@ describe("WaldiezNodeTool", () => {
         renderToolNode();
         const openButton = screen.getByTestId(`open-tool-node-modal-${toolId}`);
         fireEvent.click(openButton);
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should close modal", () => {
         renderToolNode();
@@ -78,7 +77,6 @@ describe("WaldiezNodeTool", () => {
         fireEvent.click(openButton);
         const closeButton = screen.getByTestId("modal-close-btn");
         fireEvent.click(closeButton);
-        // expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
     it("should export tool", () => {
         renderToolNode();
@@ -116,7 +114,6 @@ describe("WaldiezNodeTool", () => {
                 "test.waldiezTool",
             ),
         ]);
-        // expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
     it("should use dark theme for editor", () => {
         getItemSpy.mockReturnValue("dark");

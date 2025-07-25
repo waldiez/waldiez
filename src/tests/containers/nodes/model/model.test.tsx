@@ -68,7 +68,6 @@ describe("WaldiezModelNode", () => {
         renderModel();
         const modalButton = screen.getByTestId(`open-model-node-modal-${modelId}`);
         fireEvent.click(modalButton);
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("it switch model's modal tabs", () => {
         renderModel({}, true);
@@ -90,7 +89,6 @@ describe("WaldiezModelNode", () => {
         expect(modalElement).toBeInTheDocument();
         const closeButton = screen.getByTestId("modal-close-btn");
         fireEvent.click(closeButton);
-        // expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
     it("should clone the model", () => {
         renderModel();

@@ -4,7 +4,7 @@
  */
 import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Mock, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { renderAgent } from "./common";
 import { agentId, flowId, getAgentData } from "./data";
@@ -21,31 +21,25 @@ describe("WaldiezAgentNode", () => {
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should not open a user's modal if it's already open", () => {
         renderAgent("rag_user_proxy", { openModal: true });
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
-        (HTMLDialogElement.prototype.showModal as Mock).mockClear();
         fireEvent.click(editButton);
-        // expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
     });
     it("should open an assistant's modal", () => {
         renderAgent("assistant");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should open a rag user's modal", () => {
         renderAgent("rag_user_proxy");
         const editButton = screen.getByTestId(`open-agent-node-modal-${agentId}`);
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should import a user agent", async () => {
         renderAgent("assistant", { openModal: true });

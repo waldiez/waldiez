@@ -14,13 +14,15 @@ afterEach(() => {
 
 export const loadFlow = async () => {
     fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
-    const modalTestId = `import-flow-modal-${flowId}`;
-    const modalElement = screen.getByTestId(modalTestId) as HTMLDialogElement;
-    expect(modalElement).toBeTruthy();
     expect(screen.queryByTestId(`import-flow-modal-preview-step-${flowId}-view`)).not.toBeTruthy();
-    const dropZone = screen.getByTestId(`drop-zone-${flowId}`);
+    const localCollapsible = screen.getByTestId(`import-flow-modal-collapsible-local-${flowId}`);
+    expect(localCollapsible).toBeTruthy();
+    const header = localCollapsible?.querySelector(".collapsible-header");
+    expect(header).toBeTruthy();
+    fireEvent.click(header as HTMLElement);
+    const dropZone = screen.queryByTestId(`drop-zone-${flowId}`);
     expect(dropZone).toBeTruthy();
-    fireEvent.click(dropZone);
+    fireEvent.click(dropZone as HTMLElement);
     const file = new File([JSON.stringify(flow)], "test.waldiez");
     const fileInput = screen.getByTestId("drop-zone-file-input");
     expect(fileInput).toBeTruthy();
@@ -37,14 +39,12 @@ describe("Import flow modal load step", () => {
             await renderFlow();
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
         const modalTestId = `import-flow-modal-${flowId}`;
-        const modalElement = screen.getByTestId(modalTestId) as HTMLDialogElement;
+        const modalElement = screen.getByTestId(modalTestId) as HTMLDivElement;
         expect(modalElement).toBeTruthy();
         const closeButton = modalElement.querySelector(".modal-close-btn");
         expect(closeButton).toBeTruthy();
         fireEvent.click(closeButton as HTMLElement);
-        // expect(HTMLDialogElement.prototype.close).toHaveBeenCalled();
     });
     it("should load a flow from a file", async () => {
         await act(async () => {

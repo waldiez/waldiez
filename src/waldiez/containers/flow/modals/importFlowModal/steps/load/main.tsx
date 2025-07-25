@@ -8,19 +8,79 @@ import { Collapsible, DropZone } from "@waldiez/components";
 import { useLoadFlowStep } from "@waldiez/containers/flow/modals/importFlowModal/steps/load/hooks";
 import { LoadFlowStepProps } from "@waldiez/containers/flow/modals/importFlowModal/steps/types";
 
-const includeSearch = false;
-
 export const LoadFlowStep = (props: LoadFlowStepProps) => {
     const { flowId, state } = props;
-    const { remoteUrl, loadedFlowData } = state;
-    const { onUpload, onRemoteUrlChange, onRemoteUrlSubmit, onClearLoadedFlowData } = useLoadFlowStep(props);
+    const { remoteUrl, loadedFlowData, loading } = state;
+    const {
+        onUpload,
+        onRemoteUrlChange,
+        onRemoteUrlSubmit,
+        onClearLoadedFlowData,
+        onSearchChange,
+        onSearchSubmit,
+        onSelectResult,
+    } = useLoadFlowStep(props);
     return (
         <>
             <Collapsible
-                title="Upload a file"
-                dataTestId={`import-flow-modal-collapsible-local-${flowId}`}
-                expanded={!includeSearch}
+                title="Search the hub"
+                dataTestId={`import-flow-modal-collapsible-search-${flowId}`}
+                expanded
             >
+                <div className="margin-top-10 margin-bottom-10 full-width flex-column">
+                    <div className="full-width flex">
+                        <input
+                            type="text"
+                            className="text-input full-width margin-right-10"
+                            placeholder="Search"
+                            onChange={onSearchChange}
+                            onKeyDown={e => {
+                                if (e.key === "Enter") {
+                                    onSearchSubmit();
+                                }
+                            }}
+                        />
+                        <button
+                            type="button"
+                            title="Search"
+                            className="modal-action-submit"
+                            onClick={onSearchSubmit}
+                            data-testid={`import-flow-modal-search-submit-${flowId}`}
+                            disabled={loading}
+                        >
+                            Search
+                        </button>
+                    </div>
+
+                    <div className="margin-top-10">
+                        {state.searchResults && state.searchResults.length > 0 && (
+                            <ul className="search-results-list">
+                                {state.searchResults.map(result => (
+                                    <li key={result.id} className="search-result-item">
+                                        <span
+                                            className="search-result-title clickable"
+                                            role="button"
+                                            tabIndex={0}
+                                            onClick={() => onSelectResult(result)}
+                                        >
+                                            {result.name}
+                                        </span>
+                                        <span className="search-result-tags">
+                                            {result.tags.map(tag => (
+                                                <span key={tag} className="search-result-tag">
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </span>
+                                        <div className="search-result-description">{result.description}</div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
+            </Collapsible>
+            <Collapsible title="Upload a file" dataTestId={`import-flow-modal-collapsible-local-${flowId}`}>
                 <div className="padding-10 margin-left--10 margin-right--10">
                     <DropZone
                         flowId={flowId}
@@ -49,7 +109,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                             className="modal-action-submit"
                             onClick={onRemoteUrlSubmit}
                             data-testid={`import-flow-modal-url-submit-${flowId}`}
-                            disabled={!remoteUrl.startsWith("https://")}
+                            disabled={!remoteUrl.startsWith("https://") || loading}
                         >
                             Load
                         </button>
@@ -73,34 +133,3 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
         </>
     );
 };
-
-/*
-Once we can `Search the hub`
-  <Collapsible
-    title="Search the hub"
-    dataTestId={`import-flow-modal-collapsible-search-${flowId}`}
-    expanded
-  >
-    <div className="margin-top-10 full-width flex">
-      <input
-        type="text"
-        className="text-input full-width margin-right-10"
-        placeholder="Search"
-        onChange={onSearchChange}
-        value={searchTerm}
-        data-testid={`import-flow-modal-search-input-${flowId}`}
-      />
-      <button
-        type="button"
-        title="Search"
-        className="modal-action-submit"
-        onClick={onSearchSubmit}
-        data-testid={`import-flow-modal-search-submit-${flowId}`}
-      >
-        Search
-      </button>
-    </div>
-    {/ * Also have something here ? with the search results * /}
-    </Collapsible>
-  )}
-*/

@@ -5,9 +5,12 @@
 import { useCallback } from "react";
 
 import { showSnackbar } from "@waldiez/components";
-import { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
+import { ImportFlowState, SearchResult } from "@waldiez/containers/flow/modals/importFlowModal/types";
 import { flowMapper } from "@waldiez/models/mappers";
 import { ImportedFlow, ThingsToImport } from "@waldiez/types";
+
+const API_SEARCH_URL = `${__HUB_API_URL__}/api/search/`;
+const TIMEOUT_MS = 30000;
 
 /**
  * Custom hook for handling flow loading functionality in import flow modal
@@ -143,11 +146,11 @@ export const useLoadFlowStep = (props: {
      * Fetch flow from remote URL
      */
     const onRemoteUrlSubmit = useCallback(() => {
-        const TIMEOUT_MS = 30000;
         const controller = new AbortController();
         const signal = controller.signal;
 
         setLoadedFlowData(null);
+        onStateChange({ loading: true });
 
         const timeoutId = setTimeout(() => {
             controller.abort();
@@ -182,6 +185,7 @@ export const useLoadFlowStep = (props: {
             })
             .finally(() => {
                 clearTimeout(timeoutId);
+                onStateChange({ loading: false, remoteUrl: state.remoteUrl, searchResults: null });
             });
     }, [flowId, state.remoteUrl, onFlowData, setLoadedFlowData, onStateChange, initialState]);
 
@@ -207,11 +211,135 @@ export const useLoadFlowStep = (props: {
         setLoadedFlowData(null);
     }, [setLoadedFlowData]);
 
+    /**
+     * Handle search input change
+     */
+    const onSearchChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const searchTerm = event.target.value.trim();
+            onStateChange({ searchTerm });
+        },
+        [onStateChange],
+    );
+
+    /**
+     * Handle search result selection
+     */
+    const onSelectResult = useCallback(
+        (result: SearchResult) => {
+            setRemoteUrl(result.url);
+            setLoadedFlowData(null);
+            onStateChange({ loading: true });
+            const controller = new AbortController();
+            const signal = controller.signal;
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+            }, TIMEOUT_MS);
+            fetch(result.url, {
+                signal,
+                mode: "cors",
+                redirect: "follow",
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    onFlowData(data);
+                })
+                .catch(error => {
+                    console.error("Error fetching selected result:", error);
+                    showSnackbar({
+                        flowId,
+                        message: `Failed to load flow from selected result: ${error.message}`,
+                        level: "error",
+                        duration: 5000,
+                    });
+                    onStateChange(initialState);
+                })
+                .finally(() => {
+                    clearTimeout(timeoutId);
+                    onStateChange({ loading: false, remoteUrl: state.remoteUrl });
+                });
+        },
+        [setRemoteUrl, setLoadedFlowData, onStateChange, onFlowData, flowId, initialState, state.remoteUrl],
+    );
+
+    /**
+     * Handle search submit
+     */
+    const onSearchSubmit = useCallback(() => {
+        const { searchTerm } = state;
+        if (!searchTerm) {
+            showSnackbar({
+                flowId,
+                message: "Please enter a search term",
+                level: "warning",
+                duration: 3000,
+            });
+            return;
+        }
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+        }, TIMEOUT_MS);
+        onStateChange({ loading: true });
+
+        fetch(`${API_SEARCH_URL}?query=${encodeURIComponent(searchTerm)}`, {
+            signal,
+            headers: {
+                Accept: "application/json",
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const searchResults = data.files.map((file: any) => ({
+                    id: file.id,
+                    name: file.name,
+                    description: file.description,
+                    tags: file.tags ? file.tags.split(",").map((tag: string) => tag.trim()) : [],
+                    url: file.url,
+                    upload_date: file.upload_date,
+                }));
+                onStateChange({ searchResults });
+            })
+            .catch(error => {
+                console.error("Error fetching search results:", error);
+                showSnackbar({
+                    flowId,
+                    message: `Failed to fetch search results: ${error.message}`,
+                    level: "error",
+                    duration: 5000,
+                });
+                onStateChange(initialState);
+            })
+            .finally(() => {
+                clearTimeout(timeoutId);
+                onStateChange({ loading: false, searchTerm, remoteUrl: state.remoteUrl });
+            });
+    }, [flowId, state, onStateChange, initialState]);
+
+    // Return all handlers for use in the component
     return {
         onUpload,
         onRemoteUrlChange,
         onRemoteUrlSubmit,
         onSelectedPropsChange,
         onClearLoadedFlowData,
+        onSearchChange,
+        onSearchSubmit,
+        onSelectResult,
     };
 };

@@ -12,6 +12,8 @@ const initialState: ImportFlowState = {
     searchTerm: "",
     remoteUrl: "",
     loadedFlowData: null,
+    loading: false,
+    searchResults: null,
     selectedProps: {
         everything: true,
         override: true,

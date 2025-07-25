@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { fireEvent, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { renderEdge } from "./common";
 import { edgeProps, flowId } from "./data";
@@ -19,9 +19,6 @@ describe("WaldiezEdgeHidden", () => {
 });
 
 describe("WaldiezEdgeChat", () => {
-    afterEach(() => {
-        (HTMLDialogElement.prototype.showModal as any).mockClear();
-    });
     it("should render", () => {
         renderEdge("chat", { order: "invalid" }, false);
     });
@@ -43,9 +40,7 @@ describe("WaldiezEdgeChat", () => {
         renderEdge("chat", { order: 2 }, false);
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
-        // expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should change the tab in the modal", () => {
         renderEdge("chat", { order: 3 }, false);
@@ -58,9 +53,6 @@ describe("WaldiezEdgeChat", () => {
 });
 
 describe("WaldiezEdgeNested", () => {
-    afterEach(() => {
-        (HTMLDialogElement.prototype.showModal as any).mockClear();
-    });
     it("should render", () => {
         renderEdge("nested", { order: "invalid" }, false);
     });
@@ -72,11 +64,9 @@ describe("WaldiezEdgeNested", () => {
     });
     it("should open the edge modal", () => {
         renderEdge("nested", { order: 2 }, false);
-        // expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
         const toGainFocus = screen.getByTestId(`edge-${edgeProps.id}-box`);
         fireEvent.click(toGainFocus);
         fireEvent.click(screen.getByTestId(`open-edge-modal-${edgeProps.id}`));
-        // expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalled();
     });
     it("should change the tab in the modal", () => {
         renderEdge("nested", { order: 3 }, false);
