@@ -37,6 +37,7 @@ dmypy.json
 **/*.tsbuildinfo
 **/*.egg-info
 **/.DS_Store
+chroma/
 waldiez/_version.py
 **/*.mmd
 docs/contribute/index.md
