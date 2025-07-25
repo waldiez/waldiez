@@ -317,66 +317,66 @@ body.waldiez-dark .modal {
 .modal-actions button.secondary,
 .modal-actions button[data-action="cancel"],
 .modal-actions button:first-child:not(.primary, .danger, .save, .neutral, .danger) {
-  background: linear-gradient(135deg, #9e37a2, #8b2f96);
-  color: #fff;
-  border-color: #8b2f96;
-  box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 25%, transparent);
+  background: linear-gradient(135deg, #9e37a2, #8b2f96) !important;
+  color: #fff !important;
+  border-color: #8b2f96 !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 25%, transparent) !important;
 }
 
 /* Primary button */
 .modal-actions button[type="submit"],
 .modal-actions button.primary,
 .modal-actions button:last-child:not(.secondary, .danger, .save) {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-  border-color: #2563eb;
-  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent);
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  color: white !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent) !important;
 }
 
 /* Save button */
 .modal-actions button.save,
 .modal-actions button[data-action="save"]:not([data-action="save-close"]) {
-  background: color-mix(in srgb, #3b82f6 12%, var(--background-color));
-  color: #3b82f6;
-  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
-  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 15%, transparent);
+  background: color-mix(in srgb, #3b82f6 12%, var(--background-color)) !important;
+  color: #3b82f6 !important;
+  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color)) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 15%, transparent) !important;
 }
 
 /* Neutral button  no colors */
 .modal-actions button.neutral,
 .modal-actions button[data-action="neutral"] {
-  background: color-mix(in srgb, var(--text-color) 5%, var(--background-color));
-  color: var(--text-color);
+  background: color-mix(in srgb, var(--text-color) 5%, var(--background-color)) !important;
+  color: var(--text-color) !important;
 }
 
 .modal-actions button[type="submit"]:hover:not(:disabled),
 .modal-actions button.primary:hover:not(:disabled),
 .modal-actions button:last-child:not(:disabled, .secondary, .danger, .save):hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  border-color: #1d4ed8;
-  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 35%, transparent);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  border-color: #1d4ed8 !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 35%, transparent) !important;
 }
 
 .modal-actions button.save:hover:not(:disabled),
 .modal-actions button[data-action="save"]:not(:disabled, [data-action="save-close"]):hover {
-  background: color-mix(in srgb, #3b82f6 20%, var(--background-color));
-  border-color: color-mix(in srgb, #3b82f6 50%, var(--background-color));
-  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent);
+  background: color-mix(in srgb, #3b82f6 20%, var(--background-color)) !important;
+  border-color: color-mix(in srgb, #3b82f6 50%, var(--background-color)) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent) !important;
 }
 
 .modal-actions button.save:hover:disabled,
 .modal-actions button[data-action="save"]:not([data-action="save-close"]):hover:disabled {
-  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color));
-  background: color-mix(in srgb, #3b82f6 12%, var(--background-color));
-  transition: none;
+  border-color: color-mix(in srgb, #3b82f6 30%, var(--background-color)) !important;
+  background: color-mix(in srgb, #3b82f6 12%, var(--background-color)) !important;
+  transition: none !important;
 }
 
 .modal-actions button.secondary:hover:not(:disabled),
 .modal-actions button[data-action="cancel"]:hover:not(:disabled),
 .modal-actions button:first-child:not(:disabled, .neutral, .primary, .danger, .save):hover {
-  background: linear-gradient(135deg, #8b2f96, #7a2785);
-  border-color: #7a2785;
-  box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 35%, transparent);
+  background: linear-gradient(135deg, #8b2f96, #7a2785) !important;
+  border-color: #7a2785 !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 35%, transparent) !important;
 }
 
 .modal::-webkit-scrollbar,
