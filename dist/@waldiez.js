@@ -14998,20 +14998,20 @@ const LoadFlowStep = (props) => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxs("li", { className: "search-result-item", children: [
-            /* @__PURE__ */ jsx(
-              "span",
-              {
-                className: "search-result-title clickable",
-                role: "button",
-                tabIndex: 0,
-                onClick: () => onSelectResult(result),
-                children: result.name
-              }
-            ),
-            /* @__PURE__ */ jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
-            /* @__PURE__ */ jsx("div", { className: "search-result-description", children: result.description })
-          ] }, result.id)) }) })
+          /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxs(
+            "li",
+            {
+              className: "search-result-item clickable",
+              role: "button",
+              onClick: () => onSelectResult(result),
+              children: [
+                /* @__PURE__ */ jsx("span", { className: "search-result-title", children: result.name }),
+                /* @__PURE__ */ jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
+                /* @__PURE__ */ jsx("div", { className: "search-result-description", children: result.description })
+              ]
+            },
+            result.id
+          )) }) })
         ] })
       }
     ),

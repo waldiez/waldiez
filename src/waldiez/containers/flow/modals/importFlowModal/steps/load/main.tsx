@@ -56,15 +56,13 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                         {state.searchResults && state.searchResults.length > 0 && (
                             <ul className="search-results-list">
                                 {state.searchResults.map(result => (
-                                    <li key={result.id} className="search-result-item">
-                                        <span
-                                            className="search-result-title clickable"
-                                            role="button"
-                                            tabIndex={0}
-                                            onClick={() => onSelectResult(result)}
-                                        >
-                                            {result.name}
-                                        </span>
+                                    <li
+                                        key={result.id}
+                                        className="search-result-item clickable"
+                                        role="button"
+                                        onClick={() => onSelectResult(result)}
+                                    >
+                                        <span className="search-result-title">{result.name}</span>
                                         <span className="search-result-tags">
                                             {result.tags.map(tag => (
                                                 <span key={tag} className="search-result-tag">
