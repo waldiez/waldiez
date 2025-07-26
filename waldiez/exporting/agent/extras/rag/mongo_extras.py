@@ -25,7 +25,6 @@ def _get_mongodb_embedding_function_string(
         The 'embedding_function', the import and the custom_embedding_function.
     """
     to_import = ""
-    embedding_function_arg = ""
     embedding_function_content = ""
     if not agent.retrieve_config.use_custom_embedding:
         to_import = "from sentence_transformers import SentenceTransformer"

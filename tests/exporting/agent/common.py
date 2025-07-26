@@ -35,8 +35,8 @@ def create_agent(
 
     Returns
     -------
-    WaldiezAgent
-        The agent.
+    WaldiezAgent, list[WaldiezTool], list[WaldiezModel]
+        The agent, tools, and models.
     """
     # fmt: off
     tool1 = WaldiezTool(
@@ -86,6 +86,7 @@ def create_agent(
         agent_cls = WaldiezCaptainAgent
     if agent_type == "doc_agent":
         agent_cls = WaldiezDocAgent
+    # noinspection PyTypeChecker
     agent = agent_cls(
         id=f"wa-{counter}",
         name=f"agent{counter}",

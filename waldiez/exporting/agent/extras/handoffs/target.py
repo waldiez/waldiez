@@ -87,6 +87,7 @@ class TransitionTargetProcessor:
         what = target.target_type
         result.extra_imports.add(f"from {where} import {what}")
 
+        # noinspection DuplicatedCode
         processors: dict[str, Callable[[WaldiezTransitionTarget], str]] = {
             "AgentTarget": self._process_agent_target,
             "RandomAgentTarget": self._process_random_agent_target,
@@ -152,6 +153,7 @@ class TransitionTargetProcessor:
         target_arg = f'nested_chat_config={{"chat_queue": {chat_name}}}'
         return f"NestedChatTarget({target_arg})"
 
+    # noinspection DuplicatedCode
     def _process_nested_chat_target_full(
         self, _: WaldiezTransitionTarget
     ) -> TargetResult:
@@ -178,6 +180,7 @@ class TransitionTargetProcessor:
         return result
 
     # pylint: disable=no-self-use
+    # noinspection PyMethodMayBeStatic
     def _process_simple_target(self, target: WaldiezTransitionTarget) -> str:
         """Process simple targets that don't need parameters.
 

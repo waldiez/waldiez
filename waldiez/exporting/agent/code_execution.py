@@ -5,6 +5,8 @@
 
 import json
 
+from typing_extensions import Literal
+
 from waldiez.models import WaldiezAgent, WaldiezAgentCodeExecutionConfig
 
 from ..core import CodeExecutionConfig, ImportPosition, ImportStatement
@@ -57,6 +59,7 @@ class CodeExecutionProcessor:
             ),
         )
 
+    # noinspection PyMethodMayBeStatic
     def _get_executor_class_name(self, use_docker: bool) -> str:
         """Get the appropriate executor class name."""
         return (
@@ -66,9 +69,13 @@ class CodeExecutionProcessor:
         )
 
     def _build_executor_content(
-        self, config: WaldiezAgentCodeExecutionConfig, use_docker: bool
+        self,
+        config: WaldiezAgentCodeExecutionConfig | Literal[False],
+        use_docker: bool,
     ) -> str:
         """Build the executor content string."""
+        if config is False:
+            return ""
         executor_class = self._get_executor_class_name(use_docker)
         lines = [f"{self.agent_name}_executor = {executor_class}("]
 

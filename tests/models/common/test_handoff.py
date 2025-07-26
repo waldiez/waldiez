@@ -147,6 +147,7 @@ class TestWaldiezGroupOrNestedTarget:
         target_type : Literal["GroupChatTarget", "NestedChatTarget"]
             The type of the target.
         """
+        # noinspection PyTypeChecker
         target = WaldiezGroupOrNestedTarget(
             target_type=target_type,
             value=["group123"],

@@ -16,10 +16,12 @@ class ChatExtras(BaseExtras):
 
     Attributes
     ----------
-    chat_definition : str
-        The chat definition content.
+    chat_prerequisites : str
+        The chat prerequisites content.
     chat_initiation : str
         The chat initiation content.
+    chat_registration : str
+        The chat registration content.
     """
 
     chat_prerequisites: str = ""

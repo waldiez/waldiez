@@ -48,8 +48,9 @@ def get_vector_db_extras(
 
     Returns
     -------
-    tuple[str, str, Set[str]]
-        The content before the arg if any, the arg and the related imports.
+    VectorDBExtras
+        The vector db extras containing the before content, vector db arg,
+        and imports.
     """
     before = ""
     imports: set[str] = set()

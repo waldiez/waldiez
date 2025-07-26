@@ -61,7 +61,7 @@ class TestDetectMediaType:
 
     def test_detect_media_type_by_key_presence_image_url(self) -> None:
         """Test detection by key presence - image_url."""
-        value = {"image_url": "http://example.com/image.jpg"}
+        value = {"image_url": "https://example.com/image.jpg"}
         result = detect_media_type(value)
         assert result == "image_url"
 

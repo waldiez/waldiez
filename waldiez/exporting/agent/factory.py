@@ -5,7 +5,7 @@
 """Factory for creating agent exporter."""
 
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -30,11 +30,11 @@ def create_agent_exporter(
     initial_chats: list[WaldiezAgentConnection],
     is_async: bool = False,
     for_notebook: bool = False,
-    cache_seed: Optional[int] = None,
-    group_chat_members: Optional[list[WaldiezAgent]] = None,
-    arguments_resolver: Optional[Callable[[WaldiezAgent], list[str]]] = None,
-    output_dir: Optional[Union[str, Path]] = None,
-    context: Optional[ExporterContext] = None,
+    cache_seed: int | None = None,
+    group_chat_members: list[WaldiezAgent] | None = None,
+    arguments_resolver: Callable[[WaldiezAgent], list[str]] | None = None,
+    output_dir: str | Path | None = None,
+    context: ExporterContext | None = None,
     **kwargs: Any,
 ) -> AgentExporter:
     """Create an agent exporter.
@@ -57,15 +57,15 @@ def create_agent_exporter(
         Whether exporting for notebook, by default False
     cache_seed : Optional[int], optional
         Cache seed if any, by default None
-    initial_chats : Optional[list[WaldiezAgentConnection]], optional
+    initial_chats : list[WaldiezAgentConnection]
         Initial chats for group managers, by default None
-    group_chat_members : Optional[list[WaldiezAgent]], optional
+    group_chat_members : list[WaldiezAgent], optional
         Group chat members if group manager, by default None
-    arguments_resolver : Optional[Callable], optional
+    arguments_resolver : Callable, optional
         Function to resolve additional arguments, by default None
-    output_dir : Optional[Union[str, Path]], optional
+    output_dir : str | Path | None, optional
         Output directory for generated files, by default None
-    context : Optional[ExporterContext], optional
+    context : ExporterContext | None, optional
         Exporter context with dependencies, by default None
     **kwargs : Any
         Additional keyword arguments.

@@ -5,7 +5,6 @@
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 from waldiez.models import WaldiezTool
 
@@ -34,7 +33,7 @@ class ToolProcessor:
         flow_name: str,
         tools: list[WaldiezTool],
         tool_names: dict[str, str],
-        output_dir: Optional[Path] = None,
+        output_dir: Path | None = None,
     ):
         """Initialize the tool processor.
 
@@ -46,7 +45,7 @@ class ToolProcessor:
             The tools to process.
         tool_names : dict[str, str]
             Mapping of tool IDs to names.
-        output_dir : Optional[Path], optional
+        output_dir : Path | None, optional
             Output directory for generated files, by default None
         """
         self.flow_name = flow_name
@@ -217,6 +216,7 @@ ag2_{tool_name} = ag2_{tool_name}_interop.convert_tool(
         )
 
     # pylint: disable=no-self-use
+    # noinspection PyMethodMayBeStatic
     def _sort_imports(self, imports: list[str]) -> list[str]:
         """Sort imports: 'import' statements first, then 'from' statements.
 

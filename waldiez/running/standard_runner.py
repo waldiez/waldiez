@@ -15,6 +15,7 @@ variables specified in the waldiez file are set.
 """
 
 import asyncio
+import getpass
 import importlib.util
 import sys
 import threading
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
         AsyncRunResponseProtocol,
         RunResponseProtocol,
     )
+    from autogen.messages import BaseMessage  # type: ignore
 
 
 class WaldiezStandardRunner(WaldiezBaseRunner):
@@ -77,6 +79,26 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._loaded_module = module
         return module
 
+    @staticmethod
+    def standard_input(prompt: str, *, password: bool = False) -> str:
+        """Fallback / common input function for the workflow.
+
+        Parameters
+        ----------
+        prompt : str
+            The prompt to display to the user.
+        password : bool, optional
+            If True, use getpass to hide input (default is False).
+
+        Returns
+        -------
+        str
+            The user input as a string.
+        """
+        if password:
+            return getpass.getpass(prompt)
+        return input(prompt)
+
     def _run(
         self,
         temp_dir: Path,
@@ -84,6 +106,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        **kwargs: Any,
     ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez workflow."""
         from autogen.io import IOStream  # type: ignore
@@ -93,7 +116,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._print: Callable[..., None] = print
         self._input: (
             Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
-        ) = input
+        ) = WaldiezStandardRunner.standard_input
         results_container: WaldiezRunResults = {
             "results": [],
             "exception": None,
@@ -134,7 +157,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
     def _on_event(
         self,
-        event: "BaseEvent",
+        event: Union["BaseEvent", "BaseMessage"],
     ) -> bool:
         """Process an event from the workflow."""
         self._event_count += 1
@@ -248,7 +271,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
     async def _a_on_event(
         self,
-        event: "BaseEvent",
+        event: Union["BaseEvent", "BaseMessage"],
     ) -> bool:
         """Process an event from the workflow asynchronously."""
         self._event_count += 1
@@ -293,6 +316,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        **kwargs: Any,
     ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez workflow asynchronously."""
 
@@ -304,7 +328,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
             from waldiez.io import StructuredIOStream
 
-            results: Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]] = []
+            results: Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]]
             try:
                 self._loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():

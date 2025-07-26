@@ -57,6 +57,7 @@ def get_chats(is_group: bool, count: int = 5) -> list[WaldiezChat]:
             index=index,
             is_group=is_group,
         )
+        # noinspection PyTypeChecker
         chat = WaldiezChat(
             id=chat_id,
             type=chat_type,

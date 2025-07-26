@@ -104,8 +104,8 @@ def get_llm_imports(model: "WaldiezModel") -> set[str]:
 
     Returns
     -------
-    str
-        The LLM import statements for the model.
+    set[str]
+        A set of import statements needed for the model's LLM.
 
     Raises
     ------
@@ -358,6 +358,7 @@ def do_cohere_llm(model: "WaldiezModel") -> tuple[str, str]:
     return arg, before
 
 
+# noinspection DuplicatedCode
 def do_deepseek_llm(model: "WaldiezModel") -> tuple[str, str]:
     """Get the DeepSeek LLM argument and any content before it.
 
@@ -394,6 +395,7 @@ def do_google_llm(model: "WaldiezModel") -> tuple[str, str]:
     return arg, before
 
 
+# noinspection DuplicatedCode
 def do_groq_llm(model: "WaldiezModel") -> tuple[str, str]:
     """Get the Groq LLM argument and any content before it.
 

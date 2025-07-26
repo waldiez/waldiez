@@ -90,12 +90,12 @@ class Exporter(abc.ABC, Generic[Extras]):
         """
 
     @abc.abstractmethod
-    def generate_main_content(self) -> Optional[str]:
+    def generate_main_content(self) -> str | None:
         """Generate the main export content.
 
         Returns
         -------
-        Optional[str]
+        str | None
             The main content, or None if no content should be generated.
         """
 
@@ -182,8 +182,8 @@ class Exporter(abc.ABC, Generic[Extras]):
         content: str,
         position: ExportPosition,
         order: ContentOrder = ContentOrder.MAIN_CONTENT,
-        agent_id: Optional[str] = None,
-        agent_position: Optional[AgentPosition] = None,
+        agent_id: str | None = None,
+        agent_position: AgentPosition | None = None,
         skip_strip: bool | None = None,
         **metadata: Any,
     ) -> None:
@@ -195,11 +195,11 @@ class Exporter(abc.ABC, Generic[Extras]):
             The content to add.
         position : ExportPosition
             The position of the content.
-        order : int, optional
-            The order within the position, by default 0
-        agent_id : Optional[str], optional
+        order : ContentOrder, optional
+            The order within the position, by default ContentOrder.MAIN_CONTENT
+        agent_id : str | None, optional
             Agent ID for agent-relative positioning, by default None
-        agent_position : Optional[AgentPosition], optional
+        agent_position : AgentPosition | None, optional
             Position relative to agent, by default None
         skip_strip : bool | None, optional
             Whether to skip stripping whitespace, by default None
@@ -223,7 +223,7 @@ class Exporter(abc.ABC, Generic[Extras]):
         self,
         name: str,
         value: str,
-        description: Optional[str] = None,
+        description: str | None = None,
         required: bool = True,
     ) -> None:
         """Add environment variable.
@@ -234,7 +234,7 @@ class Exporter(abc.ABC, Generic[Extras]):
             The name of the environment variable.
         value : str
             The value of the environment variable.
-        description : Optional[str], optional
+        description : str | None, optional
             Description of the variable, by default None
         required : bool, optional
             Whether the variable is required, by default True

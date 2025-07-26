@@ -43,9 +43,9 @@ class ChatsExporter(Exporter[ChatExtras]):
             Mapping of chat IDs to their names.
         main_chats : list[WaldiezAgentConnection]
             Main chats that are connections between agents.
-        root_group_manager : Optional[WaldiezGroupManager]
+        root_group_manager : WaldiezGroupManager | None
             The root group manager for managing chat groups, if any.
-        context : Optional[ExporterContext], optional
+        context : ExporterContext | None, optional
             Exporter context with dependencies, by default None
         **kwargs : Any
             Additional keyword arguments for the exporter.

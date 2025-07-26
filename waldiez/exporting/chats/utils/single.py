@@ -4,7 +4,7 @@
 # pylint: disable=line-too-long
 """Utilities for exporting a single chat in a flow."""
 
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -57,42 +57,6 @@ def export_single_chat(
     -------
     tuple[str, str]
         The chat string and additional methods string if any
-
-    Example
-    -------
-    ```python
-    >>> from waldiez.models import WaldiezAgent, WaldiezChat, WaldiezChatData, WaldiezChatMessage
-    >>> chat = WaldiezChat(
-    ...     id="wc-1",
-    ...     name="chat1",
-    ...     description="A chat between two agents.",
-    ...     tags=["chat", "chat1"],
-    ...     requirements=[],
-    ...     data=WaldiezChatData(
-    ...         sender="wa-1",
-    ...         recipient="wa-2",
-    ...         message=WaldiezChatMessage(
-    ...             type="string",
-    ...             content="Hello, how are you?",
-    ...         ),
-    ...     ),
-    ... )
-    >>> agent_names = {"wa-1": "agent1", "wa-2": "agent2"}
-    >>> chat_names = {"wc-1": "chat1"}
-    >>> export_single_chat_string(
-    ...     sender=agent1,
-    ...     recipient=agent2,
-    ...     chat=chat,
-    ...     agent_names=agent_names,
-    ...     chat_names=chat_names,
-    ...     tabs=0,
-    ... )
-    agent1.initiate_chat(
-        agent2,
-        message="Hello, how are you?",
-        cache=cache,
-    )
-    ```
     """
     tab = " " * tab_length * tabs if tabs > 0 else ""
     chat_args = chat.get_chat_args(for_queue=False, sender=sender)
@@ -280,7 +244,6 @@ def get_chat_message(
         The message argument and additional methods string if any.
     """
     additional_methods_string = ""
-    method_content: Optional[str] = None
     if (
         sender.is_rag_user
         and isinstance(sender, WaldiezRagUserProxy)

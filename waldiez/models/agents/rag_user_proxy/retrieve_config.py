@@ -50,6 +50,7 @@ CUSTOM_TEXT_SPLIT_FUNCTION_TYPES = (
     ["str", "int", "str", "bool", "int"],
     "list[str]",
 )
+# noinspection HttpUrlsUsage
 NOT_LOCAL = (
     "http://",
     "https://",
@@ -162,25 +163,8 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
     distance_threshold : float
         The threshold for the distance score, only distance smaller than it
         will be returned. Will be ignored if < 0. Default is -1.
-    embedding_function_string : Optional[str]
-        The embedding function string (if use_custom_embedding is True).
-    token_count_function_string : Optional[str]
-        The token count function string (if use_custom_token_count is True).
-    text_split_function_string : Optional[str]
-        The text split function string (if use_custom_text_split is True).
     n_results: Optional[int]
         The number of results to return. Default is None, which will return all
-
-    Functions
-    ---------
-    validate_custom_embedding_function
-        Validate the custom embedding function.
-    validate_custom_token_count_function
-        Validate the custom token count function.
-    validate_custom_text_split_function
-        Validate the custom text split function.
-    validate_rag_user_data
-        Validate the RAG user data.
     """
 
     task: Annotated[

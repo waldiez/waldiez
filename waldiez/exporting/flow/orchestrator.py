@@ -22,6 +22,7 @@ from .merger import ContentMerger
 from .utils import (
     generate_header,
     get_after_run_content,
+    get_common_env_var_setup,
     get_np_no_nep50_handle,
     get_sqlite_out,
     get_start_logging,
@@ -31,6 +32,7 @@ from .utils import (
 
 
 # pylint: disable=no-self-use,too-many-instance-attributes
+# noinspection PyMethodMayBeStatic
 class ExportOrchestrator:
     """Coordinates the export process."""
 
@@ -169,9 +171,14 @@ class ExportOrchestrator:
             order=ContentOrder.EARLY_SETUP,
         )
         merged_result.add_content(
+            get_common_env_var_setup(),
+            position=ExportPosition.IMPORTS,  # after imports (need os)
+            order=ContentOrder.CLEANUP,
+        )
+        merged_result.add_content(
             get_np_no_nep50_handle(),
             position=ExportPosition.IMPORTS,  # after imports (need np)
-            order=ContentOrder.CLEANUP,
+            order=ContentOrder.CLEANUP.value + 1,
         )
         if not self.should_skip_logging():
             merged_result.add_content(
@@ -180,7 +187,7 @@ class ExportOrchestrator:
                     for_notebook=self.config.for_notebook,
                 ),
                 position=ExportPosition.IMPORTS,  # after imports, before models
-                order=ContentOrder.CLEANUP.value + 1,  # after imports
+                order=ContentOrder.CLEANUP.value + 2,  # after imports and np
                 skip_strip=True,  # keep newlines
             )
         # merged_result.add_content
@@ -266,6 +273,7 @@ class ExportOrchestrator:
     def _get_chats_exporter(self) -> ChatsExporter:
         """Get or create chats exporter."""
         if self._chats_exporter is None:
+            # noinspection PyTypeChecker
             self._chats_exporter = create_chats_exporter(
                 waldiez=self.waldiez,
                 all_agents=self.agents,
@@ -325,6 +333,7 @@ class ExportOrchestrator:
         agent_arguments: dict[str, list[str]],
     ) -> AgentExporter:
         """Create an exporter for a specific agent."""
+        # noinspection PyTypeChecker
         return create_agent_exporter(
             agent=agent,
             agent_names=self.agent_names,
@@ -343,6 +352,7 @@ class ExportOrchestrator:
             ),
         )
 
+    # noinspection PyMethodMayBeStatic
     def _extract_agent_arguments_from_result(
         self, result: ExportResult
     ) -> dict[str, list[str]]:

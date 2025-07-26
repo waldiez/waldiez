@@ -3,7 +3,7 @@
 """Default path resolver for Waldiez items."""
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 from ..protocols import PathResolver
 
@@ -45,7 +45,7 @@ class DefaultPathResolver(PathResolver):
         return DefaultPathResolver._check_local_path(path) is not None
 
     @staticmethod
-    def _check_local_path(string: str) -> Optional[Path]:
+    def _check_local_path(string: str) -> Path | None:
         """Check if a string is a local path.
 
         Parameters
@@ -55,10 +55,12 @@ class DefaultPathResolver(PathResolver):
 
         Returns
         -------
-        bool
-            True if the path is a local path.
+        Path | None
+            The resolved local path string (raw path format) or
+            None if it does not exist.
         """
         # pylint: disable=broad-exception-caught
+        # noinspection PyBroadException
         try:
             path = Path(string).resolve()
         except BaseException:  # pragma: no cover

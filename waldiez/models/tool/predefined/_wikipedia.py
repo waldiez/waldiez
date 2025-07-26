@@ -73,6 +73,7 @@ class WikipediaSearchToolImpl(PredefinedTool):
         """
         return []
 
+    # noinspection DuplicatedCode
     def validate_kwargs(self, kwargs: dict[str, Any]) -> list[str]:
         """Validate keyword arguments and return list of missing required ones.
 
@@ -89,14 +90,17 @@ class WikipediaSearchToolImpl(PredefinedTool):
         for key, value in self.kwargs.items():
             if key in kwargs:
                 type_of = self.kwargs_types.get(key, str)
+                # pylint: disable=broad-exception-caught
+                # noinspection PyBroadException
                 try:
                     casted = type_of(value)
                     if key in self.kwargs:
                         self.kwargs[key] = casted
-                except Exception:  # pylint: disable=broad-except
+                except Exception:
                     pass
         return []
 
+    # pylint: disable=unused-argument
     def get_content(
         self,
         secrets: dict[str, str],

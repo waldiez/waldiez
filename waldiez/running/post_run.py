@@ -15,6 +15,7 @@ from .patch_io_stream import get_printer
 from .timeline_processor import TimelineProcessor
 
 
+# noinspection PyUnusedLocal
 def after_run(
     temp_dir: Path,
     output_file: Optional[Union[str, Path]],
@@ -71,6 +72,7 @@ def after_run(
     shutil.rmtree(temp_dir)
 
 
+# noinspection PyBroadException
 def _make_mermaid_diagram(
     temp_dir: Path,
     output_file: Optional[Union[str, Path]],
@@ -93,6 +95,7 @@ def _make_mermaid_diagram(
                 pass
 
 
+# noinspection PyBroadException
 def _make_timeline_json(
     temp_dir: Path,
 ) -> None:

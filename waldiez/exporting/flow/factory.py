@@ -31,9 +31,9 @@ def create_flow_exporter(
     ----------
     waldiez : Waldiez
         The Waldiez instance containing the flow data.
-    output_dir : Path
+    output_dir : Path | None
         The directory where the exported flow will be saved.
-    uploads_root : Path
+    uploads_root : Path | None
         The root directory for uploads, if applicable.
     for_notebook : bool
         Whether the export is intended for a notebook environment.

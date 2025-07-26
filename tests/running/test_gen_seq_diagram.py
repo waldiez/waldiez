@@ -5,6 +5,8 @@
 """Test waldiez.running.gen_seq_diagram.*."""
 
 import json
+
+# noinspection PyUnresolvedReferences
 from io import StringIO
 from pathlib import Path
 from typing import Any
@@ -159,7 +161,8 @@ def test_escape_mermaid_text() -> None:
     expected_output = "Line1<br/>Line2"
     assert escape_mermaid_text(input_text) == expected_output
     input_text = "Line1\nLine2\n\n    \nLine3"
-    expected_output = "Line1<br/>Line2<br/><br/><br/>Line3"
+    expected_output = "Line1<br/>Line2<br/><br/>    <br/>Line3"
+    assert escape_mermaid_text(input_text) == expected_output
 
 
 def test_process_events(sample_events_csv: StringIO) -> None:

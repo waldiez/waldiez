@@ -12,6 +12,7 @@ from typing import Any, Literal, Union
 
 from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
 from autogen.events import BaseEvent  # type: ignore
+from autogen.messages import BaseMessage  # type: ignore
 
 MessageType = Literal[
     "input_request",
@@ -169,6 +170,7 @@ def try_parse_maybe_serialized(value: str) -> Any:
     """
     for parser in (json.loads, ast.literal_eval):
         # pylint: disable=broad-exception-caught, too-many-try-statements
+        # noinspection PyBroadException
         try:
             parsed: dict[str, Any] | list[Any] | str = parser(value)
             # Normalize: if it's a single-item list of a string
@@ -185,14 +187,12 @@ def try_parse_maybe_serialized(value: str) -> Any:
     return value  # Return original if all parsing fails
 
 
-def get_message_dump(
-    message: BaseEvent,
-) -> dict[str, Any]:
+def get_message_dump(message: BaseEvent | BaseMessage) -> dict[str, Any]:
     """Get the message dump.
 
     Parameters
     ----------
-    message : BaseEvent
+    message : BaseEvent | BaseMessage
         The message to dump.
 
     Returns
@@ -200,7 +200,14 @@ def get_message_dump(
     dict[str, Any]
         The dumped message.
     """
+    if not hasattr(message, "model_dump"):  # pragma: no cover
+        return {
+            "error": "Message does not have model_dump method.",
+            "type": message.__class__.__name__,
+        }
+
     # pylint: disable=broad-exception-caught
+    # noinspection PyBroadException
     try:
         message_dump = message.model_dump(mode="json")
     except Exception:

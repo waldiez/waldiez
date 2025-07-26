@@ -22,7 +22,8 @@ def test_export_captain_agent(tmp_path: Path) -> None:
     agent, tools, models = create_agent(1, "captain")
     output_dir = tmp_path / "test_captain_agent_exporter"
     output_dir.mkdir(exist_ok=True)
-    model_names = {model.id: model.name for model in models}
+    model_names: dict[str, str] = {model.id: model.name for model in models}
+    # noinspection PyTypeChecker
     exporter = AgentExporter(
         agent=agent,
         agent_names={agent.id: agent.name},

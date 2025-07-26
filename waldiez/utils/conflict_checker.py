@@ -40,6 +40,6 @@ def check_conflicts() -> None:  # pragma: no cover
     """Check for conflicts."""
     # pylint: disable=global-statement
     global __waldiez_checked_conflicts
-    if __waldiez_checked_conflicts is False:
+    if not __waldiez_checked_conflicts:
         __waldiez_checked_conflicts = True
         _check_conflicts()

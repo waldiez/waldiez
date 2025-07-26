@@ -4,7 +4,7 @@
 """Tools exporter."""
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -32,8 +32,8 @@ class ToolsExporter(Exporter[ToolExtras]):
         agent_names: dict[str, str],
         tools: list[WaldiezTool],
         tool_names: dict[str, str],
-        output_dir: Optional[Union[str, Path]] = None,
-        context: Optional[ExporterContext] = None,
+        output_dir: str | Path | None = None,
+        context: ExporterContext | None = None,
         **kwargs: Any,
     ):
         """Initialize the tools exporter.
@@ -50,9 +50,9 @@ class ToolsExporter(Exporter[ToolExtras]):
             The tools to export.
         tool_names : dict[str, str]
             Mapping of tool IDs to names.
-        output_dir : Optional[Union[str, Path]], optional
+        output_dir : str | Path | None
             Output directory for generated files, by default None
-        context : Optional[ExporterContext], optional
+        context : ExporterContext | None
             Exporter context with dependencies, by default None
         **kwargs
             Additional keyword arguments.

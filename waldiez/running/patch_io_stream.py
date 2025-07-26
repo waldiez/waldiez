@@ -95,6 +95,7 @@ def get_printer() -> Callable[..., None]:  # noqa: C901
         The printer function that handles Unicode encoding errors gracefully.
     """
     try:
+        # noinspection PyUnresolvedReferences
         from autogen.io import IOStream  # pyright: ignore
 
         printer = IOStream.get_default().print
@@ -102,6 +103,7 @@ def get_printer() -> Callable[..., None]:  # noqa: C901
         # Fallback to standard print if autogen is not available
         printer = print
 
+    # noinspection PyBroadException
     def safe_printer(*args: Any, **kwargs: Any) -> None:  # noqa: C901
         """Safe printer that handles Unicode encoding errors.
 

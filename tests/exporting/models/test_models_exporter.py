@@ -132,7 +132,7 @@ def test_models_exporter(tmp_path: Path) -> None:
         cache_seed=43,
         output_dir=str(output_dir),
     )
-    generated_string = models_exporter.generate_main_content()
+    _ = models_exporter.generate_main_content()
     assert (output_dir / f"{flow_name}_api_keys.py").exists()
     shutil.rmtree(output_dir)
 

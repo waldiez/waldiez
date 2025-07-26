@@ -11,7 +11,7 @@ definitions and their optional additional tools to be used.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator
 
 from .agents import (
     WaldiezAgent,
@@ -43,11 +43,11 @@ class Waldiez:
     def from_dict(
         cls,
         data: dict[str, Any],
-        flow_id: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        requirements: Optional[list[str]] = None,
+        flow_id: str | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        tags: list[str] | None = None,
+        requirements: list[str] | None = None,
     ) -> "Waldiez":
         """Create a Waldiez from dict.
 
@@ -55,15 +55,15 @@ class Waldiez:
         ----------
         data : dict[str, Any]
             The data.
-        flow_id : Optional[str], optional
+        flow_id : str | None, optional
             The flow id, by default None (retrieved from data or generated).
-        name : Optional[str], optional
+        name: str | None, optional
             The name, by default None (retrieved from data).
-        description : Optional[str], optional
+        description : str | None, optional
             The description, by default None (retrieved from data).
-        tags : Optional[list[str]], optional
+        tags: list[str] | None, optional
             The tags, by default None (retrieved from data).
-        requirements : Optional[list[str]], optional
+        requirements: list[str] | None, optional
             The requirements, by default None (retrieved from data).
 
         Returns
@@ -86,10 +86,10 @@ class Waldiez:
     def load(
         cls,
         waldiez_file: str | Path,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        requirements: Optional[list[str]] = None,
+        name: str | None = None,
+        description: str | None = None,
+        tags: list[str] | None = None,
+        requirements: list[str] | None = None,
     ) -> "Waldiez":
         """Load a Waldiez from a file.
 
@@ -97,14 +97,14 @@ class Waldiez:
         ----------
         waldiez_file : Union[str, Path]
             The Waldiez file.
-        name : Optional[str], optional
-            The name, by default None.
-        description : Optional[str], optional
-            The description, by default None.
-        tags : Optional[list[str]], optional
-            The tags, by default None.
-        requirements : Optional[list[str]], optional
-            The requirements, by default None.
+        name: str | None, optional
+            The name, by default None (retrieved from data).
+        description : str | None, optional
+            The description, by default None (retrieved from data).
+        tags: list[str] | None, optional
+            The tags, by default None (retrieved from data).
+        requirements: list[str] | None, optional
+            The requirements, by default None (retrieved from data).
 
         Returns
         -------
@@ -133,7 +133,7 @@ class Waldiez:
         )
 
     def model_dump_json(
-        self, by_alias: bool = True, indent: Optional[int] = None
+        self, by_alias: bool = True, indent: int | None = None
     ) -> str:
         """Get the model dump json.
 
@@ -143,7 +143,7 @@ class Waldiez:
         ----------
         by_alias : bool, optional
             Use alias (toCamel), by default True.
-        indent : Optional[int], optional
+        indent : int | None, optional
             The indent, by default None.
 
         Returns
@@ -250,7 +250,7 @@ class Waldiez:
         return self.flow.is_async
 
     @property
-    def cache_seed(self) -> Optional[int]:
+    def cache_seed(self) -> int | None:
         """Get the cache seed."""
         return self.flow.cache_seed
 
@@ -275,7 +275,7 @@ class Waldiez:
         requirements = set(requirements_list)
         requirements.add(f"ag2[openai]=={autogen_version}")
         if self.has_rag_agents:  # pragma: no branch
-            rag_extras = get_retrievechat_extra_requirements(self.agents)
+            rag_extras = get_retrievechat_extra_requirements(list(self.agents))
             requirements.update(rag_extras)
         if self.has_multimodal_agents:  # pragma: no branch
             requirements.add(f"ag2[lmm]=={autogen_version}")
@@ -291,13 +291,13 @@ class Waldiez:
             )
         requirements.update(
             get_models_extra_requirements(
-                self.models,
+                list(self.models),
                 autogen_version=autogen_version,
             )
         )
         requirements.update(
             get_tools_extra_requirements(
-                self.tools,
+                list(self.tools),
                 autogen_version=autogen_version,
             )
         )

@@ -66,7 +66,7 @@ class WaldiezChatSummary(WaldiezBase):
     @classmethod
     def validate_summary_method(
         cls, value: Optional[WaldiezChatSummaryMethod]
-    ) -> Optional[WaldiezChatSummaryMethod]:
+    ) -> WaldiezChatSummaryMethod | None:
         """Validate the summary method.
 
         Parameters
@@ -76,7 +76,7 @@ class WaldiezChatSummary(WaldiezBase):
 
         Returns
         -------
-        Optional[WaldiezChatSummaryMethod]
+        WaldiezChatSummaryMethod | None
             The validated message summary method
         """
         if str(value).lower() == "none":
@@ -85,6 +85,8 @@ class WaldiezChatSummary(WaldiezBase):
             return "last_msg"
         if value == "reflectionWithLlm":
             return "reflection_with_llm"
+        if value not in ("last_msg", "reflection_with_llm"):
+            return None
         return value
 
     # noinspection PyNestedDecorators
@@ -107,7 +109,7 @@ class WaldiezChatSummary(WaldiezBase):
         Any
             The serialized value.
         """
-        if info.by_alias is True:
+        if info.by_alias:
             if value == "reflection_with_llm":
                 return "reflectionWithLlm"
             if value == "last_msg":

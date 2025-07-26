@@ -50,16 +50,13 @@ class WaldiezAgentNestedChat(WaldiezBase):
     messages : list[WaldiezAgentNestedChatMessage]
         The list of messages (chat ids and 'is_reply'z)
         to include the in the nested chat registration.
-    order : int
-        The order of the nested chat (if used as a handoff).
-        Defaults to 0.
     """
 
     triggered_by: Annotated[
         list[str],
         Field(
             title="Triggered By",
-            description=("A list of agent ids that trigger the nested chat."),
+            description="A list of agent ids that trigger the nested chat.",
             alias="triggeredBy",
             default_factory=list,
         ),

@@ -5,6 +5,7 @@
 
 import pytest
 
+# noinspection PyProtectedMember
 from waldiez.models.model._price import WaldiezModelPrice
 
 
@@ -45,6 +46,7 @@ def test_waldiez_model_price() -> None:
     completion_token_price_per_1k = 0.2
     # When
     with pytest.raises(ValueError):
+        # noinspection PyTypeChecker
         WaldiezModelPrice(
             prompt_price_per_1k=prompt_price_per_1k,  # pyright: ignore
             completion_token_price_per_1k=completion_token_price_per_1k,

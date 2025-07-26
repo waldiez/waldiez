@@ -25,8 +25,6 @@ class WaldiezRagUserProxy(WaldiezAgent):
     data : WaldiezRagUserProxyData
         The RAG user agent's data.
         See `WaldiezRagUserProxyData` for more info.
-    retrieve_config : WaldiezRagUserProxyRetrieveConfig
-        The RAG user agent's retrieve config.
     """
 
     agent_type: Annotated[  # pyright: ignore

@@ -292,7 +292,6 @@ class DocAgentProcessor:
         if not isinstance(self.agent, WaldiezDocAgent):  # pragma: no cover
             raise TypeError("Agent must be a WaldiezDocAgent instance.")
         query_engine = self.agent.get_query_engine()
-        db_path_str = ""
         if query_engine.get_db_path():
             db_path_str = query_engine.get_db_path()
         else:
@@ -302,7 +301,7 @@ class DocAgentProcessor:
                 db_path_str = str(chroma_dir)
             else:
                 db_path_str = query_engine.get_db_path()
-        if self.agent.data.reset_collection is True:
+        if self.agent.data.reset_collection:
             shutil.rmtree(db_path_str, ignore_errors=True)
             Path(db_path_str).mkdir(parents=True, exist_ok=True)
         return self.path_resolver.resolve(db_path_str)
@@ -333,7 +332,7 @@ class DocAgentProcessor:
             parsed_docs_path = str(Path.cwd() / parsed_docs_path)
         if not Path(parsed_docs_path).is_dir():
             Path(parsed_docs_path).mkdir(parents=True, exist_ok=True)
-        if self.agent.data.reset_collection is True:
+        if self.agent.data.reset_collection:
             shutil.rmtree(parsed_docs_path, ignore_errors=True)
             Path(parsed_docs_path).mkdir(parents=True, exist_ok=True)
         return self.path_resolver.resolve(str(parsed_docs_path))

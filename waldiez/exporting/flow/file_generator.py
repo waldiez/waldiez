@@ -17,6 +17,7 @@ from .execution_generator import ExecutionGenerator
 from .utils.common import generate_header
 
 
+# noinspection PyProtocol
 class FileGenerator(ContentGenerator):
     """Generate the complete flow notebook content."""
 
@@ -34,7 +35,7 @@ class FileGenerator(ContentGenerator):
         self.context = context
         self.config = context.get_config()
 
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,unused-argument
     def generate(
         self,
         merged_result: ExportResult,
@@ -42,26 +43,26 @@ class FileGenerator(ContentGenerator):
         after_run: str,
         skip_logging: bool,
         **kwargs: Any,
-    ) -> str:
-        """Generate the complete flow notebook content.
+    ) -> str:  # pyright: ignore
+        """Generate content based on provided parameters.
 
         Parameters
         ----------
         merged_result : ExportResult
             The merged export result containing all content.
         is_async : bool
-            Whether to generate async conten
+            Whether to generate async content.
         after_run : str
             Additional content to add after the main flow execution.
         skip_logging : bool
             Whether to skip logging setup.
         **kwargs : Any
-            Additional keyword arguments for the generator.
+            Parameters to influence content generation.
 
         Returns
         -------
         str
-            The complete flow notebook content.
+            The generated content.
 
         Raises
         ------
@@ -214,7 +215,7 @@ class FileGenerator(ContentGenerator):
                 tags=self.config.tags,
                 for_notebook=self.config.for_notebook,
             )
-        header_string = "\n".join(content.content for content in from_result)
+        header_string = "\n".join(item.content for item in from_result)
         while not header_string.endswith("\n\n"):
             header_string += "\n"
         return header_string

@@ -64,6 +64,7 @@ DEFAULT_AGENT_COLOR = "#E5E7EB"
 LOG = WaldiezLogger()
 
 
+# noinspection PyMethodMayBeStatic
 class TimelineProcessor:
     """Class to process timeline data from CSV files."""
 
@@ -147,6 +148,7 @@ class TimelineProcessor:
                         default_name,
                     )
             else:
+                # noinspection PyTypeChecker
                 last_valid_name = current_name
 
         return data
@@ -215,6 +217,7 @@ class TimelineProcessor:
         pd.Timestamp
             The parsed datetime.
         """
+        # noinspection PyBroadException
         try:
             return pd.to_datetime(date_str)
         except Exception:
@@ -223,6 +226,7 @@ class TimelineProcessor:
                 return coerced
             return pd.Timestamp("1970-01-01")
 
+    # noinspection PyMethodMayBeStatic
     def generate_agent_colors(self, agent_names: list[str]) -> dict[str, str]:
         """Generate color mapping for agents.
 
@@ -502,7 +506,11 @@ class TimelineProcessor:
             if matches:
                 # Return the first match, but prefer longer matches
                 best_match = max(matches, key=len)
-                return best_match
+                return (
+                    best_match
+                    if isinstance(best_match, str)
+                    else str(best_match)
+                )
 
         # Last resort: look for any word that might be a model name
         # This catches custom or unknown models
@@ -520,6 +528,7 @@ class TimelineProcessor:
 
         return "Unknown"
 
+    # noinspection PyTypeChecker
     def is_human_input_waiting_period(
         self,
         prev_session: Series,
@@ -631,6 +640,7 @@ class TimelineProcessor:
 
         return False
 
+    # noinspection PyTypeChecker
     def categorize_gap_activity(
         self,
         prev_session: Series,
@@ -727,6 +737,7 @@ class TimelineProcessor:
             "detail": f"Processing ({gap_duration:.1f}s)",
         }
 
+    # noinspection PyUnusedLocal
     def compress_timeline(
         self,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], float, float]:

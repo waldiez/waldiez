@@ -15,8 +15,6 @@ def _get_qdrant_client_string(agent: WaldiezRagUserProxy) -> tuple[str, str]:
     ----------
     agent : WaldiezRagUserProxy
         The agent.
-    agent_name : str
-        The agent's name.
 
     Returns
     -------
@@ -62,7 +60,6 @@ def _get_qdrant_embedding_function_string(
         and the custom_embedding_function if used.
     """
     to_import = ""
-    embedding_function_arg = ""
     embedding_function_content = ""
     vector_db_model = agent.retrieve_config.db_config.model
     if not agent.retrieve_config.use_custom_embedding:

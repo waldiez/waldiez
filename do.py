@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Simple wrapper to call "do" in the scripts directory."""
+"""Simple wrapper to call "do" in the "scripts" directory."""
 
 import platform
 import subprocess

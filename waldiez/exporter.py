@@ -97,7 +97,7 @@ class WaldiezExporter:
         if path.is_dir():
             raise IsADirectoryError(f"Output is a directory: {path}")
         if path.exists():
-            if force is False:
+            if not force:
                 raise FileExistsError(f"File already exists: {path}")
             path.unlink(missing_ok=True)
         path.parent.mkdir(parents=True, exist_ok=True)

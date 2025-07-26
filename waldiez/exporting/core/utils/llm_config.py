@@ -52,6 +52,7 @@ def get_agent_llm_config_arg(
     )
 
 
+# noinspection DuplicatedCode
 def _get_agent_llm_config_arg_as_arg(
     agent: WaldiezAgent,
     all_models: list[WaldiezModel],
@@ -85,6 +86,7 @@ def _get_agent_llm_config_arg_as_arg(
     return content
 
 
+# noinspection DuplicatedCode
 def _get_agent_llm_config_arg_as_dict(
     agent: WaldiezAgent,
     all_models: list[WaldiezModel],

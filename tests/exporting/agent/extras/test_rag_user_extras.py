@@ -24,6 +24,7 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
     output_dir = tmp_path / "test_rag_user_agent_exporter"
     output_dir.mkdir(exist_ok=True)
     model_names = {model.id: model.name for model in models}
+    # noinspection PyTypeChecker
     exporter = AgentExporter(
         agent=agent,
         agent_names={agent.id: agent.name},

@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from ...chat import WaldiezChat
 
 
+# noinspection PyUnresolvedReferences
 class WaldiezAgent(WaldiezBase):
     """Waldiez Agent to be inherited by all other agents.
 

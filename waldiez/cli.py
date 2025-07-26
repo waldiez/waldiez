@@ -230,7 +230,7 @@ def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
     if output is not None and not output.parent.exists():
         output.parent.mkdir(parents=True)
     if output is not None and output.exists():
-        if force is False:
+        if not force:
             LOG.error("Output file already exists.")
             raise typer.Exit(code=1)
         output.unlink()

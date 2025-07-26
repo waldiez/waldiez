@@ -21,6 +21,7 @@ class UserResponse(StructuredBase):
     type: MessageType = "input_response"
     data: UserInputData | list[UserInputData] | str
 
+    # noinspection PyNestedDecorators
     @field_validator("data", mode="before")
     @classmethod
     def validate_data(

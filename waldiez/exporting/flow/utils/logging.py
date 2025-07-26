@@ -49,7 +49,7 @@ def get_start_logging(is_async: bool, for_notebook: bool) -> str:
         "Start logging.",
         for_notebook=for_notebook,
     )
-    if is_async is False:
+    if not is_async:
         return f'''
 {tab}{comment}
 {tab}def start_logging() -> None:
@@ -83,6 +83,7 @@ def get_start_logging(is_async: bool, for_notebook: bool) -> str:
 
 
 # pylint: disable=differing-param-doc,differing-type-doc
+# noinspection PyUnresolvedReferences
 def get_sync_sqlite_out() -> str:
     r"""Get the sqlite to csv and json conversion code string.
 
@@ -165,6 +166,7 @@ def get_sync_sqlite_out() -> str:
 
 
 # pylint: disable=differing-param-doc,differing-type-doc,line-too-long
+# noinspection PyUnresolvedReferences
 def get_async_sqlite_out() -> str:
     r"""Get the sqlite to csv and json conversion code string.
 
@@ -325,6 +327,7 @@ def get_sqlite_out_call(tabs: int, is_async: bool) -> str:
     return content
 
 
+# noinspection PyUnresolvedReferences
 def get_stop_logging(is_async: bool, tabs: int = 0) -> str:
     r"""Get the function to stop logging and gather logs.
 
@@ -343,7 +346,7 @@ def get_stop_logging(is_async: bool, tabs: int = 0) -> str:
     Example
     -------
     ```python
-    >>> get_logging_stop_string()
+    >>> get_stop_logging()
     def stop_logging() -> None:
         \"\"\"Stop logging.\"\"\"
         runtime_logging.stop()

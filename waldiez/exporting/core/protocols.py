@@ -132,6 +132,12 @@ class ContentGenerator(Protocol):
         -------
         str
             The generated content.
+
+
+        Raises
+        ------
+        ExporterContentError
+            If exporting fails.
         """
 
 

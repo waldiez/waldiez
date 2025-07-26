@@ -93,6 +93,7 @@ class WebSocketsAdapter:
             The received message, decoded as a string.
         """
         # pylint: disable=too-many-try-statements
+        # noinspection PyBroadException
         try:
             response = await asyncio.wait_for(
                 self.websocket.recv(), timeout=timeout
@@ -143,6 +144,7 @@ class StarletteAdapter:
         str
             The received message, decoded as a string.
         """
+        # noinspection PyBroadException
         try:
             return await asyncio.wait_for(
                 self.websocket.receive_text(), timeout=timeout

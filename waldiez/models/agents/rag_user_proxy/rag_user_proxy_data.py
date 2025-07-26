@@ -16,8 +16,6 @@ class WaldiezRagUserProxyData(WaldiezUserProxyData):
 
     Attributes
     ----------
-    use_message_generator: bool
-        Whether to use the message generator in user's chats. Defaults to False.
     retrieve_config : WaldiezRagUserProxyRetrieveConfig
         The RAG user agent's retrieve config.
 

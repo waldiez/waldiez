@@ -402,6 +402,8 @@ def convert_local_example(example_path: str) -> None:
     check_diffs(output_ipynb_path, output_py_path)
 
 
+# pylint: disable=broad-exception-caught
+# noinspection PyBroadException
 def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
     """Check if the diffs of the converted files are as expected.
 
@@ -417,18 +419,18 @@ def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
     if diff_has_only_id_changes(output_ipynb_path):
         try:
             git_restore(output_ipynb_path)
-        except BaseException:  # pylint: disable=broad-exception-caught
+        except BaseException:
             # If restore fails (not in git yet?), we can still continue
             pass
     if diff_has_path_changes(output_ipynb_path):
         try:
             git_restore(output_ipynb_path)
-        except BaseException:  # pylint: disable=broad-exception-caught
+        except BaseException:
             pass
     if diff_has_path_changes(output_py_path):
         try:
             git_restore(output_py_path)
-        except BaseException:  # pylint: disable=broad-exception-caught
+        except BaseException:
             pass
 
 

@@ -62,7 +62,7 @@ def get_interop_tool(
     ----------
     tool_id : str, optional
         The tool ID, by default "wt-2"
-    tool_type : Literal["langchain", "crewai"], optional
+    tool_type : Literal["langchain", "crewai"]
         The tool type, by default "langchain"
 
     Returns
@@ -71,6 +71,7 @@ def get_interop_tool(
         A WaldiezTool instance.
     """
     tool_name = f"{tool_type}_tool"
+    # noinspection PyTypeChecker
     return WaldiezTool(
         id=tool_id,
         name=tool_name,
@@ -81,7 +82,7 @@ def get_interop_tool(
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
         data=WaldiezToolData(
-            content=(f"{tool_name} = lambda: 'Interop Tool Response'"),
+            content=f"{tool_name} = lambda: 'Interop Tool Response'",
             tool_type=tool_type,
             secrets={},
         ),

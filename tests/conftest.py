@@ -35,7 +35,7 @@ ROOT_DIR = Path(__file__).parent.parent
 def get_runnable_flow() -> WaldiezFlow:
     """Get a runnable WaldiezFlow instance.
 
-    without models and tools
+    Without models and tools
 
     Returns
     -------
@@ -230,7 +230,7 @@ def _backup_dot_env_if_any() -> None:
 
 
 def _restore_dot_env_if_any() -> None:
-    """Restore .env file from backup if it exists."""
+    """Restore .env from backup if it exists."""
     env_file = ROOT_DIR / ".env"
     backup_file = ROOT_DIR / ".env.bak"
     # pylint: disable=too-many-try-statements
@@ -266,7 +266,7 @@ def before_and_after_tests() -> Generator[None, None, None]:
 def waldiez_flow() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance.
 
-    without models and tools
+    Without models and tools
 
     Returns
     -------
@@ -280,7 +280,7 @@ def waldiez_flow() -> WaldiezFlow:
 def waldiez_flow_no_human_input() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance with no human input.
 
-    without models and tools
+    Without models and tools
 
     Returns
     -------
@@ -300,7 +300,7 @@ def waldiez_flow_no_human_input() -> WaldiezFlow:
 def waldiez_flow_with_captain_agent() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance with a captain agent.
 
-    with a dummy model
+    With a model
 
     Returns
     -------
@@ -336,6 +336,12 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
             updated_at="2021-01-01T00:00:00.000Z",
             data=WaldiezCaptainAgentData(  # pyright: ignore
                 model_ids=["wm-1"],
+                termination=WaldiezAgentTerminationMessage(
+                    type="keyword",
+                    keywords=["bye", "goodbye"],
+                    criterion="found",
+                    method_content=None,
+                ),
             ),
         )
     ]

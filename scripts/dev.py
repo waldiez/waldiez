@@ -76,6 +76,7 @@ def run_dev_servers(py_port: int | None) -> None:
 
 
 # pylint: disable=unused-argument
+# noinspection PyUnusedLocal
 def signal_handler(signum: int, frame: FrameType | None) -> None:
     """Handle Ctrl+C gracefully.
 

@@ -5,7 +5,7 @@
 import json
 import re
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -44,9 +44,9 @@ class WaldiezTool(WaldiezBase):
         The tags of the tool.
     requirements : list[str]
         The requirements of the tool.
-    created_at : str
+    created_at : str, optional
         The date and time when the tool was created.
-    updated_at : str
+    updated_at : str, optional
         The date and time when the tool was last updated.
     data : WaldiezToolData
         The data of the tool. See `WaldiezToolData`.
@@ -81,7 +81,7 @@ class WaldiezTool(WaldiezBase):
             description="The tags of the tool.",
             default_factory=list,
         ),
-    ]
+    ] = []
     requirements: Annotated[
         list[str],
         Field(
@@ -89,7 +89,7 @@ class WaldiezTool(WaldiezBase):
             description="The requirements of the tool.",
             default_factory=list,
         ),
-    ]
+    ] = []
     data: Annotated[
         WaldiezToolData,
         Field(..., title="Data", description="The data of the tool."),
@@ -112,12 +112,12 @@ class WaldiezTool(WaldiezBase):
     ]
 
     @staticmethod
-    def load(data_or_path: Union[str, Path, dict[str, Any]]) -> "WaldiezTool":
+    def load(data_or_path: str | Path | dict[str, Any]) -> "WaldiezTool":
         """Load a tool from a read-only file.
 
         Parameters
         ----------
-        data_or_path : Union[str, Path, dict[str, Any]]
+        data_or_path : str | Path | dict[str, Any]
             The path to the read-only file or the loaded data.
 
         Returns

@@ -75,13 +75,6 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         The type of transition rules to use if
         if a mapping (agent => list[agents]) is used:
         `allowed` (default) or `disallowed`
-    custom_method_string : Optional[str]
-        The custom method string.
-
-    Functions
-    ---------
-    validate_group_speakers_config()
-        Validate the speakers config.
     """
 
     selection_method: Annotated[

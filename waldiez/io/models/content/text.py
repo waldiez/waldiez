@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from typing_extensions import Literal
 
 
+# noinspection PyUnusedLocal
 class TextMediaContent(BaseModel):
     """Text media content."""
 

@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from .base import FileContent
 
 
+# noinspection PyUnusedLocal
 class FileMediaContent(BaseModel):
     """File media content."""
 

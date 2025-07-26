@@ -133,7 +133,7 @@ class EnvironmentVariable:
         tuple[str, str]
             The environment variable as a tuple.
         """
-        return (self.name, self.value)
+        return self.name, self.value
 
 
 # Instance Argument
@@ -311,7 +311,7 @@ class ExportConfig:
         valid_fields = {f.name for f in fields(cls)}
         output_extension = kwargs.pop("output_extension", "py")
         for_notebook = kwargs.pop("for_notebook", output_extension == "ipynb")
-        if for_notebook is True:
+        if for_notebook:
             output_extension = "ipynb"
         cache_seed = kwargs.pop("cache_seed", None)
         if cache_seed is not None and not isinstance(cache_seed, int):

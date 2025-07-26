@@ -33,6 +33,7 @@ except ImportError as error:  # pragma: no cover
         "MQTT client not installed. Please install paho-mqtt with `pip install paho-mqtt`."
     ) from error
 
+from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
 from autogen.messages import BaseMessage  # type: ignore
 
@@ -54,6 +55,7 @@ MQTT_MAX_RECONNECT_COUNT = 12
 MQTT_MAX_RECONNECT_DELAY = 60
 
 
+# noinspection PyUnusedLocal,PyBroadException
 class MqttIOStream(IOStream):
     """MQTT I/O stream."""
 
@@ -299,6 +301,7 @@ class MqttIOStream(IOStream):
                 reconnect_count += 1
             LOG.info("Reconnect failed after %s attempts.", reconnect_count)
 
+    # noinspection PyUnresolvedReferences
     def _on_message(
         self, client: mqtt.Client, userdata: Any, msg: mqtt.MQTTMessage
     ) -> None:
@@ -476,13 +479,13 @@ class MqttIOStream(IOStream):
             )
         self._print(payload)
 
-    def send(self, message: BaseMessage) -> None:
+    def send(self, message: BaseEvent | BaseMessage) -> None:
         """Send a structured message to MQTT.
 
         Parameters
         ----------
-        message : BaseMessage
-            The message to send.
+        message : BaseEvent | BaseMessage
+            The message or event to send.
         """
         try:
             message_dump = message.model_dump(mode="json")

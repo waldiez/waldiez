@@ -272,6 +272,7 @@ class WaldiezModel(WaldiezBase):
         return get_llm_arg(self)
 
 
+# noinspection PyTypeChecker
 def set_default_base_url(
     llm_config: dict[str, Any], api_type: WaldiezModelAPIType
 ) -> dict[str, Any]:
@@ -303,7 +304,7 @@ def set_default_base_url(
 
 def set_bedrock_aws_config(
     llm_config: dict[str, Any],
-    aws_config: Optional[WaldiezModelAWS],
+    aws_config: WaldiezModelAWS | None,
 ) -> dict[str, Any]:
     """Set the AWS config for Bedrock.
 
@@ -311,7 +312,7 @@ def set_bedrock_aws_config(
     ----------
     llm_config : dict[str, Any]
         The llm config dictionary.
-    aws_config : Optional[WaldiezModelAWS]
+    aws_config : WaldiezModelAWS | None
         The passed aws config if any.
 
     Returns

@@ -3,8 +3,6 @@
 
 """Test waldiez.agents.extra_requirements."""
 
-from typing import Iterator
-
 from waldiez.models.agents import (
     WaldiezAgent,
     WaldiezRagUserProxy,
@@ -15,7 +13,7 @@ from waldiez.models.agents import (
 
 def test_get_retrievechat_extra_requirements() -> None:
     """Test get_retrievechat_extra_requirements."""
-    agents_list = [
+    agents_list: list[WaldiezAgent] = [
         WaldiezRagUserProxy(
             id="wa-1",
             name="rag_user",
@@ -24,6 +22,8 @@ def test_get_retrievechat_extra_requirements() -> None:
                     "vector_db": "pgvector",
                 },
             },
+            created_at="2024-01-01T00:00:00Z",
+            updated_at="2024-01-01T00:00:00Z",
         ),
         WaldiezRagUserProxy(
             id="wa-2",
@@ -33,6 +33,8 @@ def test_get_retrievechat_extra_requirements() -> None:
                     "vector_db": "mongodb",
                 },
             },
+            created_at="2024-01-01T00:00:00Z",
+            updated_at="2024-01-01T00:00:00Z",
         ),
         WaldiezRagUserProxy(
             id="wa-3",
@@ -42,6 +44,8 @@ def test_get_retrievechat_extra_requirements() -> None:
                     "vector_db": "qdrant",
                 },
             },
+            created_at="2024-01-01T00:00:00Z",
+            updated_at="2024-01-01T00:00:00Z",
         ),
         WaldiezRagUserProxy(
             id="wa-4",
@@ -51,9 +55,10 @@ def test_get_retrievechat_extra_requirements() -> None:
                     "vector_db": "chroma",
                 },
             },
+            created_at="2024-01-01T00:00:00Z",
+            updated_at="2024-01-01T00:00:00Z",
         ),
     ]
-    agents_iter: Iterator[WaldiezAgent] = iter(agents_list)
     expected_packages = [
         "protobuf==5.29.3",
         "chromadb>=0.5.23",
@@ -67,7 +72,7 @@ def test_get_retrievechat_extra_requirements() -> None:
         "pymongo>=4.11",
         "qdrant_client[fastembed]",
     ]
-    rag_requirements = get_retrievechat_extra_requirements(agents_iter)
+    rag_requirements = get_retrievechat_extra_requirements(agents_list)
     for package in expected_packages:
         assert package in rag_requirements
 

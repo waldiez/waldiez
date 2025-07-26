@@ -77,6 +77,7 @@ class PerplexitySearchToolImpl(PredefinedTool):
             missing_secrets.append("PERPLEXITY_API_KEY")
         return missing_secrets
 
+    # noinspection DuplicatedCode
     def validate_kwargs(self, kwargs: dict[str, Any]) -> list[str]:
         """Validate keyword arguments and return list of missing required ones.
 
@@ -93,11 +94,13 @@ class PerplexitySearchToolImpl(PredefinedTool):
         for key, value in self.kwargs.items():
             if key in kwargs:  # pragma: no branch
                 type_of = self.kwarg_types.get(key, str)
+                # pylint: disable=broad-exception-caught
+                # noinspection PyBroadException
                 try:
                     casted = type_of(value)
                     if key in self.kwargs:  # pragma: no branch
                         self.kwargs[key] = casted
-                except Exception:  # pylint: disable=broad-except
+                except Exception:
                     pass
         return []
 

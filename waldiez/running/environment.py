@@ -135,6 +135,7 @@ def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
 
     except Exception as e:
         # If reload fails, at least try to re-import autogen
+        # noinspection PyBroadException
         try:
             import autogen  # type: ignore  # noqa: F401
 
@@ -174,6 +175,7 @@ def reload_chroma_if_needed() -> None:  # pragma: no cover
         return
 
 
+# noinspection DuplicatedCode
 def try_handle_the_np_thing() -> None:
     """Try to handle the numpy deprecation warning."""
     # we might get:

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Factory function for creating a ChatsExporter instance."""
 
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.models import (
     WaldiezAgent,
@@ -21,8 +21,8 @@ def create_chats_exporter(
     all_chats: list[WaldiezChat],
     chat_names: dict[str, str],
     main_chats: list[WaldiezAgentConnection],
-    root_group_manager: Optional[WaldiezGroupManager] = None,
-    context: Optional[ExporterContext] = None,
+    root_group_manager: WaldiezGroupManager | None = None,
+    context: ExporterContext | None = None,
     **kwargs: Any,
 ) -> ChatsExporter:
     """Create a chats exporter.
@@ -39,9 +39,9 @@ def create_chats_exporter(
         Mapping of chat IDs to their names.
     main_chats : list[WaldiezAgentConnection]
         Main chats that are connections between agents.
-    root_group_manager : Optional[WaldiezGroupManager], optional
+    root_group_manager : WaldiezGroupManager | None, optional
         The root group manager for managing chat groups, if any.
-    context : Optional[ExporterContext], optional
+    context : ExporterContext | None, optional
         Exporter context with dependencies, by default None
     **kwargs : Any
         Additional keyword arguments for the exporter.

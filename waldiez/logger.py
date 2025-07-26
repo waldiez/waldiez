@@ -6,6 +6,7 @@
 import inspect
 import os
 import re
+import string
 import threading
 import traceback
 from datetime import datetime
@@ -323,6 +324,7 @@ class WaldiezLogger:
     def _get_caller_info(cls) -> str:
         """Get caller information (filename and line number) from the stack."""
         frame = inspect.currentframe()
+        # noinspection PyBroadException
         try:
             if frame is None:  # pragma: no cover
                 return ""
@@ -377,7 +379,15 @@ class WaldiezLogger:
     @staticmethod
     def _has_format_braces(msg_str: str) -> bool:
         """Check if the message contains .format() style placeholders."""
-        return bool(re.search(r"\{[^}]*\}", msg_str))
+        # noinspection PyBroadException
+        try:
+            formatter = string.Formatter()
+            for _, field_name, _, _ in formatter.parse(msg_str):
+                if field_name is not None:
+                    return True
+            return False
+        except Exception:  # pylint: disable=broad-exception-caught
+            return False
 
     @staticmethod
     def _has_percent_placeholders(msg_str: str) -> bool:

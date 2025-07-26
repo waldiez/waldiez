@@ -3,7 +3,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatchling==1.27.0",
-  "hatch-nodejs-version==0.3.2",
+  "hatch-nodejs-version==0.4.0",
 ]
 [project]
 classifiers = [
@@ -47,11 +47,11 @@ dependencies = [
   # together>=1.2 depends on typer>=0.9,<0.16
   "typer>=0.9.0,<1",
   "click<8.2",
-  # ../site-packages/click/types.py", line 54, in init
+  # ../site-packages/click/types.py, line 54, in init
   #     self.name = func.name
   #                 ^^^^^^^^^^^^^
   # AttributeError: 'tuple' object has no attribute 'name'
-  # ../site-packages/httpx/_main.py", line 379, in <module>
+  # ../site-packages/httpx/_main.py, line 379, in <module>
   #   @click.option(
   #    ~~~~~~~~~~~~^
   #       "--auth",
@@ -499,7 +499,7 @@ exclude_dirs = [
 # B104: bind to all interfaces (0.0.0.0)
 # B110: allow pass on try/except
 # B404: allow import subprocess
-# B602, B603: allow shell=True (subprocess,popen)
+# B602, B603: allow shell=True (subprocess, popen)
 skips = ["B104", "B110", "B404", "B602", "B603"]
 [tool.bandit.assert_used]
 skips = ["*_test.py", "*/test_*.py"]

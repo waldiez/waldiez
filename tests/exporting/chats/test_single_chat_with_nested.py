@@ -180,6 +180,7 @@ def nested_chat_message(recipient, messages, sender, config):
         "wa-4": agent4_name,
     }
     chat_names = {"wc-1": chat_name, "wc-2": chat_name, "wc-3": chat_name}
+    # noinspection PyTypeChecker
     exporter = ChatsExporter(
         all_agents=[agent1, agent2, agent3, agent4],
         agent_names=agent_names,

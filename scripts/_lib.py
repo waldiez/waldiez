@@ -139,9 +139,11 @@ def ensure_package_exists(package_name: str) -> None:
     package_name : str
         Name of the package to ensure exists.
     """
+    # pylint: disable=broad-exception-caught
+    # noinspection PyBroadException
     try:
         package_version(package_name)
-    except BaseException:  # pylint: disable=broad-exception-caught
+    except BaseException:
         # let's check in venv
         if os.path.exists(ROOT_DIR / ".venv"):
             if sys.platform != "win32":

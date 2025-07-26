@@ -2,14 +2,14 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez tool extra requirements."""
 
-from typing import Iterator, Set
+from typing import Set
 
 from .predefined import get_predefined_tool_requirements
 from .tool import WaldiezTool
 
 
 def get_tools_extra_requirements(
-    tools: Iterator[WaldiezTool],
+    tools: list[WaldiezTool],
     autogen_version: str,
 ) -> Set[str]:
     """Get the tools extra requirements.

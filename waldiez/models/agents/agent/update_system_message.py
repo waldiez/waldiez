@@ -27,9 +27,9 @@ class WaldiezAgentUpdateSystemMessage(WaldiezBase):
 
     Attributes
     ----------
-    update_function_type : Literal["string", "callable"]
+    type : Literal["string", "callable"]
         The type of the update function. Can be either a string or a callable.
-    update_function : str
+    content : str
         The string template or function definition to update
         the agent's system message. Can be a string or a Callable.
         If the `function_type` is 'string' it will be used as a

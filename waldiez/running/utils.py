@@ -7,6 +7,8 @@ import os
 import re
 import subprocess
 import sys
+
+# noinspection PyProtectedMember
 from asyncio.subprocess import Process
 from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass

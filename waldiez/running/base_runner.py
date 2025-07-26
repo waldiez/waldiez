@@ -212,6 +212,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        **kwargs: Any,
     ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow."""
         raise NotImplementedError(
@@ -225,6 +226,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        **kwargs: Any,
     ) -> Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]]:
         """Run the Waldiez flow asynchronously."""
         raise NotImplementedError(
@@ -262,8 +264,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             The path to the output file.
         uploads_root : Path | None
             The root path for uploads, if any.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         """
@@ -444,6 +444,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        **kwargs: Any,
     ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
         """Run the Waldiez flow in blocking mode.
 
@@ -460,6 +461,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        **kwargs : Any
+            Additional keyword arguments for the run method.
 
         Returns
         -------
@@ -498,7 +501,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         WaldiezBaseRunner._running = True
         results: Union[
             list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ] = []
+        ]
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             with chdir(to=temp_dir):
@@ -526,6 +529,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             sys.path.pop(0)
         return results
 
+    # noinspection DuplicatedCode
     async def a_run(
         self,
         output_path: str | Path | None = None,
@@ -578,7 +582,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         WaldiezBaseRunner._running = True
         results: Union[
             list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ] = []
+        ]
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
@@ -656,6 +660,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             skip_timeline=skip_timeline,
         )
 
+    # noinspection DuplicatedCode
     async def a_start(
         self,
         output_path: str | Path | None,

@@ -14,6 +14,7 @@ from uuid import uuid4
 
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
+from autogen.messages import BaseMessage  # type: ignore
 
 from .models import (
     PrintMessage,
@@ -135,12 +136,12 @@ class StructuredIOStream(IOStream):
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use,broad-exception-caught
-    def send(self, message: BaseEvent) -> None:
-        """Structured sending of a BaseEvent.
+    def send(self, message: BaseEvent | BaseMessage) -> None:
+        """Structured sending of a BaseEvent or BaseMessage.
 
         Parameters
         ----------
-        message : BaseEvent
+        message : BaseEvent | BaseMessage
             The message to send.
         """
         message_dump = get_message_dump(message)
@@ -251,7 +252,7 @@ class StructuredIOStream(IOStream):
         str | dict[str, Any]
             The loaded user input, either as a string or a dictionary.
         """
-        response: str | dict[str, Any] = user_input_raw
+        response: str | dict[str, Any]
         try:
             # Attempt to parse the input as JSON
             response = json.loads(user_input_raw)
@@ -283,8 +284,8 @@ class StructuredIOStream(IOStream):
 
         Parameters
         ----------
-        user_input : str
-            The raw user input string.
+        user_input : dict[str, Any]
+            The user input dictionary containing the response data.
         request_id : str
             The request ID to match against.
 
@@ -341,6 +342,7 @@ class StructuredIOStream(IOStream):
             data="",
         )
 
+    # noinspection PyMethodMayBeStatic
     def _handle_list_response(
         self,
         data: list[dict[str, Any]],

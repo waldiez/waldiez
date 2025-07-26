@@ -32,6 +32,7 @@ except ImportError as error:  # pragma: no cover
     ) from error
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
+from autogen.messages import BaseMessage  # type: ignore
 
 from .models import (
     PrintMessage,
@@ -52,6 +53,7 @@ else:
 LOG = logging.getLogger(__name__)
 
 
+# noinspection PyBroadException
 class RedisIOStream(IOStream):
     """Redis I/O stream."""
 
@@ -158,10 +160,8 @@ class RedisIOStream(IOStream):
 
         Parameters
         ----------
-        message : str
+        payload : dict[str, Any]
             The message to print.
-        message_type : str
-            The message type.
         """
         LOG.debug("Sending print message: %s", payload)
         RedisIOStream.try_do(
@@ -177,10 +177,8 @@ class RedisIOStream(IOStream):
 
         Parameters
         ----------
-        message : str
+        payload : dict[str, Any]
             The message to print.
-        message_type : str
-            The message type.
         """
         LOG.debug("Sending print message: %s", payload)
         RedisIOStream.try_do(
@@ -289,12 +287,12 @@ class RedisIOStream(IOStream):
         self._print(payload)
         return user_input
 
-    def send(self, message: BaseEvent) -> None:
+    def send(self, message: BaseEvent | BaseMessage) -> None:
         """Send a structured message to Redis.
 
         Parameters
         ----------
-        message : dict[str, Any]
+        message : BaseEvent | BaseMessage
             The message to send.
         """
         message_dump = get_message_dump(message)
@@ -549,7 +547,7 @@ class RedisIOStream(IOStream):
 
         Parameters
         ----------
-        func : Awaitable[Any]
+        func : Callable[..., Awaitable[Any]]
             The async function to call.
         args : Any
             The positional arguments.

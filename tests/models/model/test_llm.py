@@ -7,6 +7,8 @@ import os
 from unittest.mock import patch
 
 from waldiez.models.model import WaldiezModel, WaldiezModelAWS, WaldiezModelData
+
+# noinspection PyProtectedMember
 from waldiez.models.model._llm import (
     do_cohere_llm,
     do_deepseek_llm,

@@ -53,8 +53,8 @@ class AgentProcessor:
 
         Returns
         -------
-        str
-            The generated agent definition string.
+        AgentProcessingResult
+            The result containing the agent definition string.
         """
         if (
             isinstance(self.extras, GroupManagerExtras)
@@ -226,6 +226,7 @@ class AgentProcessor:
             )
         return f"    default_auto_reply={default_auto_reply},\n"
 
+    # noinspection PyMethodMayBeStatic
     def add_extra_args(self, agent_str: str, extra_args: str) -> str:
         """Add extra agent args.
 

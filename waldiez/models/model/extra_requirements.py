@@ -2,14 +2,14 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez model extra requirements."""
 
-from typing import Iterator, Set
+from typing import Set
 
 from .model import WaldiezModel
 
 
 def get_models_extra_requirements(
-    models: Iterator[WaldiezModel], autogen_version: str
-) -> Set[str]:
+    models: list[WaldiezModel], autogen_version: str
+) -> set[str]:
     """Get the models extra requirements.
 
     Parameters

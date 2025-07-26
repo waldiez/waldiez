@@ -215,7 +215,7 @@ class ExportResult:
         self,
         content: str,
         position: ExportPosition = DEFAULT_EXPORT_POSITION,
-        order: Union[ContentOrder, int] = ContentOrder.MAIN_CONTENT,
+        order: ContentOrder | int = ContentOrder.MAIN_CONTENT,
         skip_strip: bool = False,
         agent_id: Optional[str] = None,
         agent_position: Optional[AgentPosition] = None,
@@ -229,15 +229,15 @@ class ExportResult:
             The content to add.
         position : ExportPosition, optional
             The position of the content, by default AGENTS
-        order : int, optional
+        order : ContentOrder | int, optional
             The order within the position, by default 0
         skip_strip : bool, optional
             Whether to skip stripping whitespace from content, by default False
-        agent_id : Optional[str], optional
+        agent_id : str | None, optional
             The agent ID if positioned relative to an agent, by default None
-        agent_position : Optional[AgentPosition], optional
+        agent_position : AgentPosition | None, optional
             The position relative to the agent, by default None
-        metadata : Optional[dict[str, Any]], optional
+        metadata : dict[str, Any] | None, optional
             Additional metadata for the content, by default None
         """
         order_value = order.value if isinstance(order, ContentOrder) else order
@@ -662,6 +662,7 @@ def merge_export_results(*results: ExportResult) -> ExportResult:
         return ExportResult()
 
     merged = ExportResult()
+    # noinspection PyTypeChecker
     for result in results:
         merged.merge_with(result)
 
@@ -681,7 +682,7 @@ def create_empty_result() -> ExportResult:
 
 def create_result_with_content(
     main_content: str,
-    imports: Optional[list[str]] = None,
+    imports: list[str] | None = None,
 ) -> ExportResult:
     """Create an ExportResult with basic content.
 
@@ -689,7 +690,7 @@ def create_result_with_content(
     ----------
     main_content : str
         The main content.
-    imports : Optional[list[str]], optional
+    imports : list[str], optional
         list of import statements, by default None
 
     Returns

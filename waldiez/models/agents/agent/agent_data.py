@@ -146,7 +146,7 @@ class WaldiezAgentData(WaldiezBase):
         Field(
             default_factory=list,
             title="Tools",
-            description=("A list of tools (id and executor) to register."),
+            description="A list of tools (id and executor) to register.",
         ),
     ] = []
     nested_chats: Annotated[
@@ -194,7 +194,7 @@ class WaldiezAgentData(WaldiezBase):
         Field(
             default_factory=list,
             title="Handoffs",
-            description=("A list of handoffs (target ids) to register."),
+            description="A list of handoffs (target ids) to register.",
         ),
     ] = []
     after_work: Annotated[

@@ -4,7 +4,6 @@
 """Waldiez flow model."""
 
 from functools import cached_property
-from typing import Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -133,7 +132,7 @@ class WaldiezFlow(WaldiezBase):
             description="The date and time when the flow was last updated.",
         ),
     ]
-    _ordered_flow: Optional[list[WaldiezAgentConnection]] = None
+    _ordered_flow: list[WaldiezAgentConnection] | None = None
     _single_agent_mode: bool = False
     _is_group_chat: bool = False
 
@@ -160,7 +159,7 @@ class WaldiezFlow(WaldiezBase):
         return self._is_group_chat
 
     @property
-    def cache_seed(self) -> Optional[int]:
+    def cache_seed(self) -> int | None:
         """Check if the flow has caching disabled.
 
         Returns
@@ -351,6 +350,7 @@ class WaldiezFlow(WaldiezBase):
     ) -> list[WaldiezAgentConnection]:
         """Get the ordered flow."""
         if self._is_group_chat:
+            # noinspection PyTypeChecker
             return self._get_group_chat_flow()
         # in the chats, there is the 'order' field, we use this,
         # we only keep the ones with order >=0
@@ -408,7 +408,7 @@ class WaldiezFlow(WaldiezBase):
 
         Returns
         -------
-        list[tuple[WaldiezChat, WaldiezAgent, WaldiezAgent]]
+        list[WaldiezAgentConnection]
             The ordered flow for group chat.
         """
         # in a group chat there is no "order", the group manager
@@ -427,8 +427,8 @@ class WaldiezFlow(WaldiezBase):
         # )
         # in the second case, the chat would be:
         # user.run(manager, ...)
-        user_agent: Optional[WaldiezAgent] = None
-        to_root_manager: Optional[WaldiezChat] = None
+        user_agent: WaldiezAgent | None = None
+        to_root_manager: WaldiezChat | None = None
         root_manager: WaldiezGroupManager = self.get_root_group_manager()
         for chat in self.data.chats:
             if chat.target == root_manager.id:
@@ -438,7 +438,9 @@ class WaldiezFlow(WaldiezBase):
                     user_agent = source
                     to_root_manager = chat
                     break
-        if not to_root_manager or not user_agent:
+        if not to_root_manager:
+            return []
+        if not user_agent:
             return []
         return [
             {

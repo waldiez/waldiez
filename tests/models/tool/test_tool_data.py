@@ -19,13 +19,13 @@ def test_waldiez_tool_data() -> None:
     assert tool_data.secrets == secrets
 
     # Given
-    tool_data = WaldiezToolData(content=content)  # pyright: ignore
+    tool_data = WaldiezToolData(content=content, secrets={})  # pyright: ignore
     # Then
     assert tool_data.content == content
     assert not tool_data.secrets
 
     with pytest.raises(ValueError):
-        tool_data = WaldiezToolData()  # pyright: ignore
+        _ = WaldiezToolData()  # pyright: ignore
 
 
 def test_serialize_tool_data() -> None:

@@ -106,10 +106,12 @@ class GoogleSearchToolImpl(PredefinedTool):
             if name not in kwargs:
                 missing.append(name)
             elif not isinstance(kwargs[name], type_of):
+                # pylint: disable=broad-exception-caught
+                # noinspection PyBroadException
                 try:
                     kwargs[name] = type_of(kwargs[name])
                     self._kwargs[name] = kwargs[name]
-                except Exception:  # pylint: disable=broad-except
+                except Exception:
                     invalid.append(name)
                 else:
                     if name in self._kwargs:

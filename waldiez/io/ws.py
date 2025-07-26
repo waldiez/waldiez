@@ -12,6 +12,7 @@ from typing import Any
 
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
+from autogen.messages import BaseMessage  # type: ignore
 
 from ._ws import (
     WebSocketConnection,
@@ -110,7 +111,7 @@ class AsyncWebsocketsIOStream(IOStream):
         ----------
         args : tuple
             The arguments to print.
-        kwargs : dict
+        kwargs : Any
             The keyword arguments to print.
         """
         sep = kwargs.get("sep", " ")
@@ -134,12 +135,12 @@ class AsyncWebsocketsIOStream(IOStream):
             LOG.info(json_dump)
         self._try_send(json_dump)
 
-    def send(self, message: BaseEvent) -> None:
+    def send(self, message: BaseEvent | BaseMessage) -> None:
         """Send a message to the WebSocket connection.
 
         Parameters
         ----------
-        message : BaseEvent
+        message : BaseEvent | BaseMessage
             The message to send.
         """
         message_dump = get_message_dump(message)

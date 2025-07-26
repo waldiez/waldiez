@@ -14,6 +14,7 @@ from ..protocols import Serializer
 class DefaultSerializer(Serializer):
     """Default serializer for Waldiez items."""
 
+    # noinspection PyProtocol
     def serialize(self, obj: Any, **kwargs: Any) -> str:
         """Serialize an item to a formatted string.
 

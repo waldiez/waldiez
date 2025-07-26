@@ -183,6 +183,22 @@ def get_after_run_content(
     return content
 
 
+def get_common_env_var_setup() -> str:
+    """Get common environment variable setup for Waldiez flows.
+
+    Returns
+    -------
+    str
+        The content to set up common environment variables.
+    """
+    content = """
+# Common environment variable setup for Waldiez flows
+os.environ["AUTOGEN_USE_DOCKER"] = "0"
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+"""
+    return content
+
+
 def get_np_no_nep50_handle() -> str:
     """Handle the "module numpy has no attribute _no_pep50_warning" error.
 

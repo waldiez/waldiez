@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.tool.predefined.registry.*."""
 
+# noinspection PyProtectedMember
 from waldiez.models.tool.predefined._config import PredefinedToolConfig
 from waldiez.models.tool.predefined.registry import PREDEFINED_TOOLS
 

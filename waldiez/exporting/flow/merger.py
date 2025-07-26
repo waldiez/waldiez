@@ -4,7 +4,6 @@
 """Content merger for combining multiple export results."""
 
 from dataclasses import dataclass, field
-from typing import Optional, Union
 
 from ..core import (
     ContentOrder,
@@ -34,12 +33,12 @@ class MergeStatistics:
 class ContentMerger:
     """Intelligently merges multiple ExportResult objects."""
 
-    def __init__(self, context: Optional[ExporterContext] = None):
+    def __init__(self, context: ExporterContext | None = None):
         """Initialize the content merger.
 
         Parameters
         ----------
-        context : Optional[ExporterContext], optional
+        context : ExporterContext | None, optional
             The exporter context, by default None
         """
         self.context = context or ExporterContext()
@@ -245,12 +244,13 @@ class ContentMerger:
         )
 
     # pylint: disable=no-self-use
-    def _get_order_value(self, order: Union[int, ContentOrder]) -> int:
+    # noinspection PyMethodMayBeStatic
+    def _get_order_value(self, order: int | ContentOrder) -> int:
         """Get numeric value from order for sorting.
 
         Parameters
         ----------
-        order : Union[int, ContentOrder]
+        order : int | ContentOrder
             The order value
 
         Returns
@@ -352,7 +352,8 @@ class ContentMerger:
             warnings=all_warnings,
         )
 
-    def _merge_main_content(self, results: list[ExportResult]) -> Optional[str]:
+    # noinspection PyMethodMayBeStatic
+    def _merge_main_content(self, results: list[ExportResult]) -> str | None:
         """Merge main content from results.
 
         For flow exports, main content is typically empty since all content
@@ -365,7 +366,7 @@ class ContentMerger:
 
         Returns
         -------
-        Optional[str]
+        str | None
             The merged main content, or None
         """
         main_contents: list[str] = []

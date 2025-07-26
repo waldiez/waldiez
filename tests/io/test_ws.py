@@ -17,6 +17,7 @@ from waldiez.io.ws import AsyncWebsocketsIOStream
 
 
 # Create a mock BaseEvent for testing
+# noinspection PyUnusedLocal
 class MockEvent:
     """Mock event for testing purposes."""
 
@@ -31,6 +32,7 @@ class MockEvent:
         return {"type": self.type, "content": self.content}
 
 
+# noinspection PyTypeChecker,PyUnusedLocal
 class TestAsyncWebsocketsIOStream:
     """Test suite for AsyncWebsocketsIOStream class."""
 

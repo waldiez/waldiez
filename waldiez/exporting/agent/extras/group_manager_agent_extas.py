@@ -433,6 +433,7 @@ class GroupManagerProcessor:
 
         return lines
 
+    # noinspection PyMethodMayBeStatic
     def _should_check_for_after_work(self, pattern_class: str) -> bool:
         """Check if pattern should have after work configuration."""
         return pattern_class not in ["ManualPattern", "AutoPattern"]

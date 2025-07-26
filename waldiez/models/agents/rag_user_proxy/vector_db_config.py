@@ -39,11 +39,6 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
     metadata : Optional[dict[str, Any]]
         The metadata to use for the vector db.
         Example: {"hnsw:space": "ip", "hnsw:construction_ef": 30, "hnsw:M": 32}
-
-    Functions
-    ---------
-    validate_vector_db_config()
-        Validate the vector db config.
     """
 
     model_config = ConfigDict(

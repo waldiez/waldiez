@@ -33,13 +33,6 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         The method must be called `is_termination_message`,
         have one argument (`message`) which is a dict, and
         return a bool (whether the message is a termination message or not.)
-    string : str
-        The value of the termination message.
-
-    Functions
-    ---------
-    validate_termination_message() -> Self
-        Validate the termination message configuration.
     """
 
     type: Annotated[

@@ -22,7 +22,7 @@ def export_sequential_chat(
     is_async: bool,
     skip_cache: bool,
 ) -> tuple[str, str]:
-    r"""Get the chats content, when there are more than one chats in the flow.
+    """Get the chats content, when there are more than one chats in the flow.
 
     Parameters
     ----------
@@ -45,72 +45,6 @@ def export_sequential_chat(
     -------
     tuple[str, str]
         The main chats content and additional methods string if any.
-
-    Example
-    -------
-    ```python
-    >>> from waldiez.models import (
-    ...     WaldiezAgent,
-    ...     WaldiezChat,
-    ...     WaldiezChatData,
-    ...     WaldiezChatMessage,
-    ... )
-    >>> chat1 = WaldiezChat(
-    ...     id="wc-1",
-    ...     name="chat1",
-    ...     description="A chat between two agents.",
-    ...     tags=["chat", "chat1"],
-    ...     requirements=[],
-    ...     data=WaldiezChatData(
-    ...         sender="wa-1",
-    ...         recipient="wa-2",
-    ...         position=0,
-    ...         message=WaldiezChatMessage(
-    ...             type="string",
-    ...             content="Hello, how are you?",
-    ...         ),
-    ...     ),
-    ... )
-    >>> chat2 = WaldiezChat(
-    ...     id="wc-2",
-    ...     name="chat2",
-    ...     description="A chat between two agents.",
-    ...     tags=["chat", "chat2"],
-    ...     requirements=[],
-    ...     data=WaldiezChatData(
-    ...         sender="wa-2",
-    ...         recipient="wa-1",
-    ...         position=1,
-    ...         message=WaldiezChatMessage(
-    ...             type="string",
-    ...             content="I am good, thank you. How about you?",
-    ...         ),
-    ...     ),
-    ... )
-    >>> agent_names = {"wa-1": "agent1", "wa-2": "agent2"}
-    >>> chat_names = {"wc-1": "chat1", "wc-2": "chat2"}
-    >>> serializer = lambda x: x.replace('"', "\"").replace("\n", "\\n")
-    >>>  export_sequential_chat(
-    ...     main_chats=[(chat1, agent1, agent2), (chat2, agent2, agent1)],
-    ...     chat_names=chat_names,
-    ...     agent_names=agent_names,
-    ...     serializer=serializer,
-    ...     tabs=0,
-    ...     is_async=False,
-    ... )
-    results = initiate_chats([
-        {
-            "sender": agent1,
-            "recipient": agent2,
-            "message": "Hello, how are you?",
-        },
-        {
-            "sender": agent2,
-            "recipient": agent1,
-            "message": "I am good, thank you. How about you?",
-        },
-    ])
-    ```
     """
     tab = "    " * tabs if tabs > 0 else ""
     content = "\n"
@@ -138,6 +72,7 @@ def export_sequential_chat(
     return content, additional_methods_string
 
 
+# noinspection PyTypeChecker
 def _get_chat_dict_string(
     connection: WaldiezAgentConnection,
     is_first: bool,
@@ -230,7 +165,7 @@ def _get_chat_string_start(
     if not is_first:
         chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
     chat_string += "\n" + f'{tab}    "recipient": {agent_names[recipient.id]},'
-    if skip_cache is False:
+    if not skip_cache:
         chat_string += "\n" + f'{tab}    "cache": cache,'
     # additional_methods_string = ""
     for key, value in chat_args.items():

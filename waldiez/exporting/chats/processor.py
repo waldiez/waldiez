@@ -39,6 +39,7 @@ class ChatParams:
 
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments
+# noinspection PyTypeChecker
 class ChatsProcessor:
     """Processor for chats export."""
 
@@ -49,7 +50,7 @@ class ChatsProcessor:
         all_chats: list[WaldiezChat],
         chat_names: dict[str, str],
         main_chats: list[WaldiezAgentConnection],
-        root_group_manager: Optional[WaldiezGroupManager],
+        root_group_manager: WaldiezGroupManager | None,
         for_notebook: bool,
         is_async: bool,
         cache_seed: Optional[int],
@@ -60,6 +61,26 @@ class ChatsProcessor:
 
         Parameters
         ----------
+        all_agents : list[WaldiezAgent]
+            All agents involved in the chats.
+        agent_names : dict[str, str]
+            Mapping of agent IDs to their names.
+        all_chats : list[WaldiezChat]
+            All chats to be exported.
+        chat_names : dict[str, str]
+            Mapping of chat IDs to their names.
+        main_chats : list[WaldiezAgentConnection]
+            Main chats that are connections between agents.
+        root_group_manager : WaldiezGroupManager | None
+            The root group manager for managing chat groups, if any.
+        for_notebook : bool
+            Whether the export is for a notebook.
+        is_async : bool
+            Whether the chat is asynchronous.
+        cache_seed : int | None
+            The cache seed for the export, if any.
+        serializer : Serializer
+            The serializer to use for escaping quotes in strings.
         extras : ChatExtras
             The structured extras for the chats export.
         """

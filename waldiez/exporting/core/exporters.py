@@ -12,6 +12,16 @@ from .types import Extras
 class SimpleExporter(Exporter[None]):
     """Simple exporter that doesn't use extras system."""
 
+    def generate_main_content(self) -> str | None:
+        """Generate main content for the exporter.
+
+        Returns
+        -------
+        str | None
+            The main content as a string or None if not applicable.
+        """
+        raise NotImplementedError("Subclasses must implement this method.")
+
     @property
     def extras(self) -> None:
         """Simple exporters don't have extras."""
@@ -23,6 +33,22 @@ class SimpleExporter(Exporter[None]):
 
 class ConfigurableExporter(Exporter[Extras]):
     """Exporter with configuration support."""
+
+    @property
+    def extras(self) -> Extras:
+        """Get the extras for this exporter.
+
+        Returns
+        -------
+        Extras
+            The extras associated with this exporter.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in a subclass.
+        """
+        raise NotImplementedError("Subclasses must implement this method.")
 
     def __init__(self, config: Optional[dict[str, Any]] = None, **kwargs: Any):
         """Initialize with configuration.
@@ -36,6 +62,16 @@ class ConfigurableExporter(Exporter[Extras]):
         """
         super().__init__(**kwargs)
         self._config = config or {}
+
+    def generate_main_content(self) -> str | None:
+        """Generate main content for the exporter.
+
+        Returns
+        -------
+        str | None
+            The main content as a string or None if not applicable.
+        """
+        raise NotImplementedError("Subclasses must implement this method.")
 
     def get_config_value(self, key: str, default: Any = None) -> Any:
         """Get a configuration value.

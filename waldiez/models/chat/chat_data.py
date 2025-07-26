@@ -57,8 +57,6 @@ class WaldiezChatData(WaldiezBase):
         Whether to run the chat silently, by default False (not silent).
     summary_args : Optional[dict[str, Any]]
         The summary args to use in autogen.
-    handoff_condition : Optional[WaldiezHandoffCondition], optional
-        The handoff condition to use, by default None (for group chat).
     real_source : Optional[str]
         The real source of the chat (overrides the source).
     real_target : Optional[str]

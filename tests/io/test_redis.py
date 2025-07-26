@@ -77,6 +77,7 @@ def test_print_with_file_string_io(fake_redis: fakeredis.FakeRedis) -> None:
     stream = RedisIOStream("redis://localhost", task_id)
     stream.redis = fake_redis
 
+    # noinspection PyUnresolvedReferences
     output = io.StringIO()
     output.write(" Hello, World!")
     stream.print("Hello", "World", file=output)
@@ -96,6 +97,7 @@ def test_print_with_file_bytes_io(fake_redis: fakeredis.FakeRedis) -> None:
     stream = RedisIOStream("redis://localhost", task_id)
     stream.redis = fake_redis
 
+    # noinspection PyUnresolvedReferences
     output = io.BytesIO()
     output.write(b" Hello, World!")
     stream.print("Hello", "World", file=output)
@@ -581,6 +583,7 @@ def test_print_with_bytes_file_encoding_issues(
     class MockFileWithBytes:
         """Mock file-like object with getvalue() returning bytes."""
 
+        # noinspection PyMethodMayBeStatic
         def getvalue(self) -> bytes:
             """Return bytes with invalid UTF-8 encoding."""
             return b"\xff\xfe Invalid UTF-8"

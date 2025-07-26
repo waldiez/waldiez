@@ -115,6 +115,7 @@ class ReloadHandler(FileSystemEventHandler):
         )
 
 
+# noinspection PyMethodMayBeStatic,PyUnusedLocal
 class WaldiezDevServer:
     """Simple websocket server for development purposes.
 
@@ -186,9 +187,12 @@ class WaldiezDevServer:
                     traceback.print_exc()
                     await self.send_error(websocket, f"Server error: {str(e)}")
         except websockets.exceptions.ConnectionClosed as e:
+            code = e.rcvd.code if e.rcvd else e.code
+            # noinspection PyDeprecation
+            reason = e.rcvd.reason if e.rcvd else e.reason
             to_log = (
                 f"Client {client_id} connection closed: "
-                f"code={e.code}, reason='{e.reason}'"
+                f"code={code}, reason='{reason}'"
             )
             logger.info(to_log)
         except Exception as e:

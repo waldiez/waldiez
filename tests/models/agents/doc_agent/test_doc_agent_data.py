@@ -6,7 +6,6 @@
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
 
 from waldiez.models.agents.doc_agent.doc_agent_data import WaldiezDocAgentData
 from waldiez.models.agents.doc_agent.rag_query_engine import (
@@ -304,27 +303,3 @@ def test_waldiez_doc_agent_data_inheritance() -> None:
     assert data.collection_name == "test_collection"
     assert data.system_message == "You are a document agent."
     assert data.model_ids == ["model-1", "model-2"]
-
-
-@patch("waldiez.models.agents.doc_agent.doc_agent_data.user_data_dir")
-def test_waldiez_doc_agent_data_get_parsed_docs_path_mocked_user_data_dir(
-    mock_user_data_dir: Any,
-    tmp_path: Path,
-) -> None:
-    """Test get_parsed_docs_path with mocked user_data_dir."""
-    # Given
-    mock_user_data_dir.return_value = tmp_path
-    data = WaldiezDocAgentData()  # pyrgight: ignore
-
-    # When
-    parsed_docs_path = data.get_parsed_docs_path()
-
-    # Then
-    expected_path = tmp_path / "parsed_docs"
-    assert parsed_docs_path == str(expected_path.resolve())
-    assert expected_path.exists()
-    assert expected_path.is_dir()
-    mock_user_data_dir.assert_called_once_with(
-        appname="waldiez",
-        appauthor="waldiez",
-    )

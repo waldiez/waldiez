@@ -11,6 +11,7 @@ from typing_extensions import Literal
 from .base import VideoContent
 
 
+# noinspection PyUnusedLocal
 class VideoMediaContent(BaseModel):
     """Video media content."""
 

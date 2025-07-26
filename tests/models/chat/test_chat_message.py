@@ -98,7 +98,7 @@ def test_waldiez_chat_message() -> None:
     assert chat_message.context == {"key": "value"}
 
     with pytest.raises(ValueError):
-        chat_message = WaldiezChatMessage(
+        _ = WaldiezChatMessage(
             type="invalid",  # type: ignore
             content="content",
             context={"key": "value"},
@@ -106,7 +106,7 @@ def test_waldiez_chat_message() -> None:
         )
 
     with pytest.raises(ValueError):
-        chat_message = WaldiezChatMessage(
+        _ = WaldiezChatMessage(
             type="method",
             content=None,
             use_carryover=False,

@@ -13,6 +13,7 @@ from .environment import in_virtualenv, is_root
 from .utils import strip_ansi
 
 
+# noinspection PyUnresolvedReferences
 def install_requirements(
     extra_requirements: set[str],
     upgrade: bool = False,

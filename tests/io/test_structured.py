@@ -32,6 +32,7 @@ class MockEvent(BaseEvent):
 
 
 # pylint: disable=too-many-public-methods
+# noinspection PyUnusedLocal
 class TestStructuredIOStream:
     """Test suite for StructuredIOStream class."""
 

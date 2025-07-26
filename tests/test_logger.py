@@ -173,9 +173,11 @@ class TestLogMethods:
         """Test logging an exception with traceback."""
         logger = WaldiezLogger(level="debug")
         with capture_log_output() as echo:
+            # noinspection PyBroadException
+            # pylint: disable=broad-exception-caught
             try:
                 raise ValueError("boom")
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:
                 logger.exception("Failed")
         calls = [c[0][0] for c in echo.call_args_list]
         assert any("[EXCEPTION]" in line for line in calls)

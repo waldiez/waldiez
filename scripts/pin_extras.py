@@ -67,6 +67,7 @@ def main() -> None:
     py_project_toml = ROOT_DIR / "pyproject.toml"
     if not py_project_toml.exists():
         raise FileNotFoundError(f"File not found: {py_project_toml}")
+    data = ""
     with open(py_project_toml, "r", encoding="utf-8") as f:
         data = f.read()
     for extra in EXTRAS_TO_PIN:

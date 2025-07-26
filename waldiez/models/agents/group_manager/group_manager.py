@@ -13,6 +13,7 @@ from .group_manager_data import WaldiezGroupManagerData
 from .speakers import WaldiezGroupManagerSpeakers
 
 
+# noinspection PyNestedDecorators
 class WaldiezGroupManager(WaldiezAgent):
     """Group chat manager agent.
 
@@ -26,11 +27,6 @@ class WaldiezGroupManager(WaldiezAgent):
         The agent type: 'group_manager' for a group manager agent
     data : WaldiezGroupManagerData
         The group manager agent's data.
-
-    Functions
-    ---------
-    validate_transitions(agent_ids: list[str])
-        Validate the transitions.
     """
 
     agent_type: Annotated[  # pyright: ignore
@@ -174,6 +170,6 @@ class WaldiezGroupManager(WaldiezAgent):
         ) in speakers.allowed_or_disallowed_transitions.items():
             if agent_id not in agent_ids:
                 raise ValueError(f"Invalid agent id: {agent_id}")
-            for agent_id in transitions:
-                if agent_id not in agent_ids:
+            for target_agent_id in transitions:
+                if target_agent_id not in agent_ids:
                     raise ValueError(f"Invalid agent id: {agent_id}")

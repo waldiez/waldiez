@@ -40,7 +40,7 @@ def test_waldiez_chat_summary() -> None:
     assert summary_dump["method"] == "reflection_with_llm"
 
     with pytest.raises(ValueError):
-        chat_summary = WaldiezChatSummary(prompt=1)  # type: ignore
+        _ = WaldiezChatSummary(prompt=1)  # type: ignore
 
     chat_summary = WaldiezChatSummary(
         method=None,

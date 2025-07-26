@@ -41,6 +41,7 @@ def get_valid_python_variable_name(
     # \W matches any non-word character, but in Python's re module,
     # \w includes Unicode letters by default, so we need to be more explicit
     # to replace Unicode letters with underscores for valid Python identifiers
+    # noinspection RegExpSimplifiable
     possible = re.sub(r"[^\w]", "_", possible)  # Replace non-word chars
     possible = re.sub(r"[^\x00-\x7F]", "_", possible)  # Replace non-ASCII chars
 

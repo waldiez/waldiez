@@ -5,7 +5,6 @@
 from pathlib import Path
 from typing import Optional, Union
 
-from platformdirs import user_data_dir
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
 
@@ -78,19 +77,10 @@ class WaldiezDocAgentData(WaldiezAgentData):
             The instance with validated `parsed_docs_path`.
         """
         if not self.parsed_docs_path:
-            data_dir = user_data_dir(
-                appname="waldiez",
-                appauthor="waldiez",
-            )
-            parsed_docs_path = Path(data_dir) / "parsed_docs"
-            parsed_docs_path.mkdir(parents=True, exist_ok=True)
-            self.parsed_docs_path = str(parsed_docs_path.resolve())
-        resolved = Path(self.parsed_docs_path).resolve()
-        if not resolved.is_absolute():
-            self.parsed_docs_path = str(Path.cwd() / self.parsed_docs_path)
-        if not Path(self.parsed_docs_path).is_dir():
-            Path(self.parsed_docs_path).mkdir(parents=True, exist_ok=True)
-        self.parsed_docs_path = str(Path(self.parsed_docs_path).resolve())
+            self.parsed_docs_path = get_parsed_docs_path()
+        parsed_docs_path = Path(self.parsed_docs_path).resolve()
+        parsed_docs_path.mkdir(parents=True, exist_ok=True)
+        self.parsed_docs_path = str(parsed_docs_path)
         return self
 
     def get_query_engine(self) -> WaldiezDocAgentQueryEngine:
@@ -134,16 +124,33 @@ class WaldiezDocAgentData(WaldiezAgentData):
             The parsed documents path for the document agent.
         """
         if not self.parsed_docs_path:
-            data_dir = user_data_dir(
-                appname="waldiez",
-                appauthor="waldiez",
-            )
-            parsed_docs_path = Path(data_dir) / "parsed_docs"
-            parsed_docs_path.mkdir(parents=True, exist_ok=True)
-            self.parsed_docs_path = str(parsed_docs_path.resolve())
-        resolved = Path(self.parsed_docs_path).resolve()
-        if not resolved.is_absolute():
-            self.parsed_docs_path = str(Path.cwd() / self.parsed_docs_path)
-        if not Path(self.parsed_docs_path).is_dir():
-            Path(self.parsed_docs_path).mkdir(parents=True, exist_ok=True)
+            self.parsed_docs_path = get_parsed_docs_path(self.parsed_docs_path)
         return str(self.parsed_docs_path)
+
+
+def get_parsed_docs_path(
+    parsed_docs_path: Optional[Union[str, Path]] = None,
+) -> str:
+    """Get the parsed documents path for the document agent.
+
+    Parameters
+    ----------
+    parsed_docs_path : Optional[Union[str, Path]]
+        The path to the parsed documents.
+
+    Returns
+    -------
+    str
+        The parsed documents path for the document agent.
+    """
+    if not parsed_docs_path:
+        parsed_docs_path_str = str(Path.cwd() / "parsed_docs")
+    else:
+        parsed_docs_path_str = str(parsed_docs_path)
+    if not Path(parsed_docs_path_str).is_absolute():
+        parsed_docs_path_str = str(Path.cwd() / parsed_docs_path_str)
+    resolved_path = Path(parsed_docs_path_str).resolve()
+    if resolved_path.is_file():
+        resolved_path = resolved_path.parent
+    resolved_path.mkdir(parents=True, exist_ok=True)
+    return str(resolved_path)

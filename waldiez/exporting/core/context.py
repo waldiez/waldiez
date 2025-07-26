@@ -18,11 +18,11 @@ from .types import ExportConfig
 class ExporterContext:
     """Context object containing common exporter dependencies."""
 
-    serializer: Optional[Serializer] = None
-    path_resolver: Optional[PathResolver] = None
-    validator: Optional[Validator] = None
-    config: Optional[ExportConfig] = None
-    logger: Optional[ExportingLogger] = None
+    serializer: Serializer | None = None
+    path_resolver: PathResolver | None = None
+    validator: Validator | None = None
+    config: ExportConfig | None = None
+    logger: ExportingLogger | None = None
 
     def get_serializer(self) -> Serializer:
         """Get serializer or raise if not set.
@@ -46,34 +46,34 @@ class ExporterContext:
 
     def get_config(
         self,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        requirements: Optional[list[str]] = None,
-        tags: Optional[list[str]] = None,
-        output_extension: Optional[str] = None,
+        name: str | None = None,
+        description: str | None = None,
+        requirements: list[str] | None = None,
+        tags: list[str] | None = None,
+        output_extension: str | None = None,
         is_async: bool = False,
-        output_directory: Optional[str] = None,
-        cache_seed: Optional[int] = None,
+        output_directory: str | None = None,
+        cache_seed: int | None = None,
     ) -> ExportConfig:
         """Get export config or return default.
 
         Parameters
         ----------
-        name : Optional[str], optional
+        name : str], optional
             The name of the export, by default None
-        description : Optional[str], optional
+        description : str], optional
             A brief description of the export, by default None
-        requirements : Optional[list[str]], optional
+        requirements : list[str]], optional
             A list of requirements for the export, by default None
-        tags : Optional[list[str]], optional
+        tags : list[str]], optional
             A list of tags associated with the export, by default None
-        output_extension : Optional[str], optional
+        output_extension : str], optional
             The file extension for the output, by default None
         is_async : bool, optional
             Whether the export is asynchronous, by default False
-        output_directory : Optional[str], optional
+        output_directory : str], optional
             The directory where the output will be saved, by default None
-        cache_seed : Optional[int], optional
+        cache_seed : int], optional
             The seed for caching, by default None
 
         Returns
@@ -124,6 +124,7 @@ class ExporterContext:
 
 
 # pylint: disable=too-few-public-methods
+# noinspection PyUnresolvedReferences,PyTypeChecker
 class DefaultExporterContext(ExporterContext):
     """Singleton context for exporters.
 
@@ -164,11 +165,11 @@ class DefaultExporterContext(ExporterContext):
 
     def __init__(
         self,
-        serializer: Optional[Serializer] = None,
-        validator: Optional[Validator] = None,
-        path_resolver: Optional[PathResolver] = None,
-        logger: Optional[ExportingLogger] = None,
-        config: Optional[ExportConfig] = None,
+        serializer: Serializer | None = None,
+        validator: Validator | None = None,
+        path_resolver: PathResolver | None = None,
+        logger: ExportingLogger | None = None,
+        config: ExportConfig | None = None,
     ) -> None:
         if hasattr(self, "_initialized"):
             return
@@ -183,16 +184,16 @@ class DefaultExporterContext(ExporterContext):
 
 
 def get_default_exporter_context(
-    config: Optional[ExportConfig] = None,
-    logger: Optional[ExportingLogger] = None,
+    config: ExportConfig | None = None,
+    logger: ExportingLogger | None = None,
 ) -> ExporterContext:
     """Get the default exporter context.
 
     Parameters
     ----------
-    config : Optional[ExportConfig], optional
+    config : ExportConfig | None, optional
         The export configuration, by default None
-    logger : Optional[ExportingLogger], optional
+    logger : ExportingLogger | None, optional
         The logger instance, by default None
 
     Returns
@@ -209,25 +210,25 @@ def get_default_exporter_context(
 
 
 def create_exporter_context(
-    serializer: Optional[Serializer] = None,
-    validator: Optional[Validator] = None,
-    path_resolver: Optional[PathResolver] = None,
-    config: Optional[ExportConfig] = None,
-    logger: Optional[ExportingLogger] = None,
+    serializer: Serializer | None = None,
+    validator: Validator | None = None,
+    path_resolver: PathResolver | None = None,
+    config: ExportConfig | None = None,
+    logger: ExportingLogger | None = None,
 ) -> ExporterContext:
     """Create an exporter context with the given components.
 
     Parameters
     ----------
-    serializer : Optional[Serializer], optional
+    serializer : Serializer | None, optional
         The serializer component, by default None
-    path_resolver : Optional[PathResolver], optional
+    path_resolver : PathResolver | None, optional
         The path resolver component, by default None
-    validator : Optional[Validator], optional
+    validator : Validator | None, optional
         The validator component, by default None
-    config : Optional[ExportConfig], optional
+    config : ExportConfig | None, optional
         The export configuration, by default None
-    logger : Optional[ExportingLogger], optional
+    logger : ExportingLogger | None, optional
         The logger instance, by default None
 
     Returns

@@ -99,6 +99,7 @@ class ToolRegistrationProcessor:
         return "\n".join(registrations) if registrations else ""
 
     # pylint: disable=no-self-use
+    # noinspection PyMethodMayBeStatic
     def _create_registration(
         self,
         caller_name: str,

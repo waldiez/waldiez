@@ -93,7 +93,7 @@ def ensure_db_path(db_path: str | Path | None) -> str:
 
     Parameters
     ----------
-    db_path : Optional[str]
+    db_path : str | Path | None
         The database path to validate.
 
     Returns

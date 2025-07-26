@@ -12,6 +12,7 @@ from ...utils import get_image
 from .base import ImageContent
 
 
+# noinspection DuplicatedCode
 class ImageMediaContent(BaseModel):
     """Image media content."""
 

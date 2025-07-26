@@ -10,6 +10,7 @@ from pathlib import Path
 
 def _get_waldiez_version_from_importlib() -> str | None:
     """Get the Waldiez version from the version package."""
+    # noinspection PyBroadException
     try:
         return version("waldiez")
     except Exception:  # pylint: disable=broad-exception-caught

@@ -14,6 +14,7 @@ from waldiez.exporting.core.utils.llm_config import (
     get_agent_llm_config_arg,
 )
 from waldiez.models import (
+    WaldiezAgentTerminationMessage,
     WaldiezAssistant,
     WaldiezAssistantData,
     WaldiezModel,
@@ -39,6 +40,9 @@ def create_test_agent(
         updated_at="2023-10-01T00:00:00Z",
         data=WaldiezAssistantData(  # pyright: ignore
             model_ids=model_ids,
+            termination=WaldiezAgentTerminationMessage(
+                type="none",
+            ),
         ),
     )
 
@@ -77,7 +81,7 @@ def create_test_model(
 
 def create_test_setup(
     model_ids: list[str],
-    model_configs: Optional[list[dict[str, Any]]] = None,
+    model_configs: list[dict[str, Any]] | None = None,
 ) -> tuple[WaldiezAssistant, list[WaldiezModel], dict[str, str]]:
     """Create a complete test setup with agent, models, and model_names.
 
@@ -85,7 +89,7 @@ def create_test_setup(
     ----------
     model_ids : List[str]
         List of model IDs to assign to the agent
-    model_configs : Optional[List[Dict]]
+    model_configs : List[Dict] | None, optional
         List of dicts with model configuration. Each dict can contain:
         - id: model ID (required)
         - name: model name (defaults to id)
@@ -112,6 +116,7 @@ def create_test_setup(
         temperature = config.get("temperature", 0.7)
         api_type = config.get("api_type", "openai")
 
+        # noinspection PyTypeChecker
         model = create_test_model(model_id, name, temperature, api_type)
         models.append(model)
         model_names[model_id] = name

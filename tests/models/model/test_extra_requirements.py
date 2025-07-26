@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test waldiez.models.model.extra_requirements."""
 
-from typing import Iterator
-
 from waldiez.models.common import get_autogen_version
 from waldiez.models.model import WaldiezModel, get_models_extra_requirements
 
@@ -69,7 +67,6 @@ def test_get_models_extra_requirements() -> None:
             },
         ),
     ]
-    models_iter: Iterator[WaldiezModel] = iter(models_list)
     autogen_version = get_autogen_version()
     expected_packages = [
         "requests",
@@ -82,7 +79,7 @@ def test_get_models_extra_requirements() -> None:
         # f"ag2[bedrock]=={autogen_version}",
     ]
     model_requirements = get_models_extra_requirements(
-        models=models_iter, autogen_version=autogen_version
+        models=models_list, autogen_version=autogen_version
     )
     for package in expected_packages:
         assert package in model_requirements

@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Extra requirements for agents."""
-
 # pylint: disable=line-too-long
-from typing import Iterator, Set
+
+from typing import Set
 
 from .agent import WaldiezAgent
 from .rag_user_proxy import WaldiezRagUserProxy
 
 
 def get_retrievechat_extra_requirements(
-    agents: Iterator[WaldiezAgent],
-) -> Set[str]:
+    agents: list[WaldiezAgent],
+) -> set[str]:
     """Get the retrievechat extra requirements.
 
     Parameters
@@ -21,7 +21,7 @@ def get_retrievechat_extra_requirements(
 
     Returns
     -------
-    Set[str]
+    set[str]
         The retrievechat extra requirements.
     """
     # https://github.com/ag2ai/ag2/blob/main/pyproject.toml

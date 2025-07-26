@@ -248,6 +248,7 @@ class CaptainAgentProcessor:
                 return model
         return self._get_default_model(model_id)
 
+    # noinspection PyMethodMayBeStatic
     def _get_default_model(self, model_id: str) -> WaldiezModel:
         """Get the default model.
 

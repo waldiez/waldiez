@@ -82,7 +82,7 @@ def nested_chat_reply(recipient, messages, sender, config):
     assert chat_nested.reply_content == '    return "Hi"'
 
     with pytest.raises(ValueError):
-        chat_nested = WaldiezChatNested(
+        _ = WaldiezChatNested(
             message=WaldiezChatMessage(
                 type="string",
                 use_carryover=False,

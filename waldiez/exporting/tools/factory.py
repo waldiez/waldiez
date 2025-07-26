@@ -3,7 +3,6 @@
 """Factory function for creating a ToolsExporter instance."""
 
 from pathlib import Path
-from typing import Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -17,8 +16,8 @@ def create_tools_exporter(
     agent_names: dict[str, str],
     tools: list[WaldiezTool],
     tool_names: dict[str, str],
-    output_dir: Optional[Union[str, Path]] = None,
-    context: Optional[ExporterContext] = None,
+    output_dir: str | Path | None = None,
+    context: ExporterContext | None = None,
 ) -> ToolsExporter:
     """Create a tools exporter.
 
@@ -34,9 +33,9 @@ def create_tools_exporter(
         The tools to export.
     tool_names : dict[str, str]
         Mapping of tool IDs to names.
-    output_dir : Optional[Union[str, Path]], optional
+    output_dir : str | Path | None, optional
         Output directory for generated files, by default None
-    context : Optional[ExporterContext], optional
+    context : ExporterContext | None, optional
         Exporter context with dependencies, by default None
 
     Returns

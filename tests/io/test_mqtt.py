@@ -80,6 +80,7 @@ def test_print_with_file_string_io(mock_mqtt: Mock) -> None:
 
     stream = MqttIOStream(broker_host="localhost", task_id=task_id)
 
+    # noinspection PyUnresolvedReferences
     output = io.StringIO()
     output.write(" Hello, World!")
     stream.print("Hello", "World", file=output)
@@ -99,6 +100,7 @@ def test_print_with_file_bytes_io(mock_mqtt: Mock) -> None:
 
     stream = MqttIOStream(broker_host="localhost", task_id=task_id)
 
+    # noinspection PyUnresolvedReferences
     output = io.BytesIO()
     output.write(b" Hello, World!")
     stream.print("Hello", "World", file=output)
@@ -475,6 +477,7 @@ def test_print_with_bytes_file_encoding_issues(mock_mqtt: Mock) -> None:
         """Mock file-like object with getvalue() returning bytes."""
 
         # pylint: disable=no-self-use
+        # noinspection PyMethodMayBeStatic
         def getvalue(self) -> bytes:
             """Return bytes with invalid UTF-8 encoding."""
             return b"\xff\xfe Invalid UTF-8"

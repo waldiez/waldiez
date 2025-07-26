@@ -105,6 +105,7 @@ def test_sequential_chat() -> None:
             "target": agent3,
         },
     ]
+    # noinspection PyTypeChecker
     exporter = ChatsExporter(
         all_agents=[agent1, agent2, agent3],
         agent_names=agent_names,

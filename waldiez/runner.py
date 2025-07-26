@@ -92,6 +92,7 @@ class WaldiezRunner(WaldiezBaseRunner):
     """Factory class for creating Waldiez runners."""
 
     # pylint: disable=super-init-not-called
+    # noinspection PyMissingConstructor
     def __init__(
         self,
         waldiez: Waldiez,

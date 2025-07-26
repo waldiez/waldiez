@@ -34,6 +34,7 @@ def test_refresh_environment() -> None:
         from autogen import ConversableAgent  # type: ignore  # noqa
         from autogen.io import IOStream  # type: ignore  # noqa
 
+    # noinspection PyUnboundLocalVariable
     default_io_stream = IOStream.get_default()
     # When
     refresh_environment()
@@ -75,7 +76,7 @@ def test_reset_env_vars() -> None:
 
     # Given
     flow_env_vars = [("FLOW_ENV_VAR", "value")]
-    old_vars = set_env_vars(flow_env_vars)
+    _ = set_env_vars(flow_env_vars)
     # When
     reset_env_vars({})
     # Then

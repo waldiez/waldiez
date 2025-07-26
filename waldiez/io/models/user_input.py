@@ -186,6 +186,7 @@ class UserInputData(BaseModel):
 
         return None  # pragma: no cover
 
+    # noinspection PyNestedDecorators
     @field_validator("content", mode="before")
     @classmethod
     def validate_content(cls, v: Any) -> MediaContent:  # noqa: C901,D102

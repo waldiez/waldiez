@@ -43,7 +43,7 @@ class BaseExtras(ExportContributor):
 
         Parameters
         ----------
-        arg : InstanceArgument
+        arg : InstanceArgument | str
             The argument to add.
         tabs : int, optional
             The number of tabs to indent the argument, by default 0.
@@ -76,7 +76,7 @@ class BaseExtras(ExportContributor):
 
         Parameters
         ----------
-        import_statement : str
+        import_statement : ImportStatement
             The import statement to add.
         """
         if import_statement and import_statement.statement.strip():

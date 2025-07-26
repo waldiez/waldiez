@@ -208,6 +208,8 @@ def test_waldiez_invalid_model() -> None:
             type="model",
             tags=["tag1", "tag2"],
             requirements=["requirement1", "requirement2"],
+            created_at="2021-01-01T00:00:00.000Z",
+            updated_at="2021-01-01T00:00:00.000Z",
         )
 
 

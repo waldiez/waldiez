@@ -3,7 +3,6 @@
 """Factory function for creating a ModelsExporter instance."""
 
 from pathlib import Path
-from typing import Optional, Union
 
 from waldiez.models import WaldiezAgent, WaldiezModel
 
@@ -19,9 +18,9 @@ def create_models_exporter(
     models: list[WaldiezModel],
     model_names: dict[str, str],
     for_notebook: bool = False,
-    cache_seed: Optional[int] = None,
-    output_dir: Optional[Union[str, Path]] = None,
-    context: Optional[ExporterContext] = None,
+    cache_seed: int | None = None,
+    output_dir: str | Path | None = None,
+    context: ExporterContext | None = None,
 ) -> ModelsExporter:
     """Create a models exporter.
 
@@ -39,11 +38,11 @@ def create_models_exporter(
         Mapping of model IDs to names.
     for_notebook : bool, optional
         Whether the export is for a notebook, by default False
-    cache_seed : Optional[int], optional
+    cache_seed : int | None, optional
         The cache seed if any, by default None
-    output_dir : Optional[Union[str, Path]], optional
+    output_dir : str | Path | None, optional
         Output directory for generated files, by default None
-    context : Optional[ExporterContext], optional
+    context : ExporterContext | None, optional
         Exporter context with dependencies, by default None
 
     Returns

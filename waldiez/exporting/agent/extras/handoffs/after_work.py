@@ -17,10 +17,10 @@ class AfterWorkResult:
 
     Attributes
     ----------
-    registration : str
-        Code to register the after-work transition.
-    after_agent : str
-        Code to be placed after the agent definition.
+    content : str
+        The registration string for the after-work transition.
+    before_content : str
+        Any additional code that should be placed before the main content,
     extra_imports : set[str]
         Additional imports required for the after-work transition.
     """

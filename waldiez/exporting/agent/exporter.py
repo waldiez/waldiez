@@ -174,7 +174,7 @@ class AgentExporter(Exporter[StandardExtras]):
             model_names=self.model_names,
             initial_chats=self.initial_chats,
             group_chat_members=self.group_chat_members,
-            serializer=(self.context.get_serializer().serialize),
+            serializer=self.context.get_serializer().serialize,
         )
 
         group_manager_extras = group_manager_processor.process(
@@ -376,6 +376,7 @@ class AgentExporter(Exporter[StandardExtras]):
 
 
 # pylint: disable=unused-argument
+# noinspection PyUnusedLocal
 def fallback_args_resolver(agent: WaldiezAgent) -> list[str]:
     """Fallback resolver for agent arguments.
 

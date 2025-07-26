@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from .base import AudioContent
 
 
+# noinspection PyUnusedLocal
 class AudioMediaContent(BaseModel):
     """Audio media content."""
 

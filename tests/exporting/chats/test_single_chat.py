@@ -7,6 +7,7 @@ from waldiez.exporting.chats import ChatsExporter
 from waldiez.exporting.chats.utils.common import get_event_handler_string
 from waldiez.models import (
     WaldiezAgent,
+    WaldiezAgentConnection,
     WaldiezChat,
     WaldiezChatData,
     WaldiezChatMessage,
@@ -72,6 +73,12 @@ def callable_message(sender, recipient, context):
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
+    agent_connection: WaldiezAgentConnection = {
+        "source": agent1,
+        "target": agent2,
+        "chat": chat,
+    }
+    # noinspection PyTypeChecker
     exporter = ChatsExporter(
         all_agents=[agent1, agent2],
         agent_names=agent_names,
@@ -79,13 +86,7 @@ def callable_message(sender, recipient, context):
         chat_names=chat_names,
         root_group_manager=None,
         cache_seed=42,
-        main_chats=[
-            {
-                "chat": chat,
-                "source": agent1,
-                "target": agent2,
-            }
-        ],
+        main_chats=[agent_connection],
         for_notebook=False,
         is_async=False,
     )
@@ -128,6 +129,7 @@ def callable_message(sender, recipient, context):
     )
 
 
+# noinspection PyTypeChecker
 def test_empty_chat() -> None:
     """Test ChatsExporter with an empty chat."""
     agent1_name = "agent1"
@@ -265,6 +267,7 @@ def test_chat_with_rag_and_carryover() -> None:
     )
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
+    # noinspection PyTypeChecker
     exporter = ChatsExporter(
         all_agents=[agent1, agent2],
         agent_names=agent_names,
@@ -323,6 +326,7 @@ def test_chat_with_rag_and_carryover() -> None:
     assert generated == expected
 
 
+# noinspection PyTypeChecker
 def test_chat_with_rag_no_carryover() -> None:
     """Test ChatsExporter with a chat with rag message generator."""
     agent1_name = "agent1"

@@ -45,10 +45,8 @@ def _get_pgvector_embedding_function_string(
         The 'embedding_function', the import and the custom_embedding_function.
     """
     to_import = ""
-    embedding_function_arg = ""
     embedding_function_content = ""
     if agent.retrieve_config.use_custom_embedding:
-        embedding_function_arg = f"custom_embedding_function_{agent_name}"
         embedding_function_content, embedding_function_arg = (
             agent.retrieve_config.get_custom_embedding_function(
                 name_suffix=agent_name

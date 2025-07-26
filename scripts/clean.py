@@ -52,9 +52,11 @@ def _remove_dirs() -> None:
             ):
                 continue
             print(f"removing dir: {dirpath}")
+            # pylint: disable=broad-exception-caught
+            # noinspection PyBroadException
             try:
                 shutil.rmtree(dirpath)
-            except BaseException:  # pylint: disable=broad-exception-caught
+            except BaseException:
                 print(f"failed to remove dir: {dirpath}", file=sys.stderr)
 
 
@@ -67,9 +69,11 @@ def _remove_files() -> None:
             ):
                 continue
             print(f"removing file: {filepath}")
+            # pylint: disable=broad-exception-caught
+            # noinspection PyBroadException
             try:
                 os.remove(filepath)
-            except BaseException:  # pylint: disable=broad-exception-caught
+            except BaseException:
                 print(f"failed to remove file: {filepath}", file=sys.stderr)
 
 

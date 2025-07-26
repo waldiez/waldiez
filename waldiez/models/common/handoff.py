@@ -27,6 +27,7 @@ __all__ = [
     "WaldiezHandoffTransition",
     "WaldiezLLMBasedCondition",
     "WaldiezContextBasedCondition",
+    "WaldiezDefaultCondition",
 ]
 
 
@@ -39,9 +40,6 @@ class WaldiezAgentTarget(WaldiezBase):
         The type of the transition target.
     value : str
         The agent id to transfer control to.
-    order : int
-        The order of the target in the list of targets.
-        If -1, the order is automatically determined by the json data.
     """
 
     target_type: Annotated[
@@ -67,9 +65,6 @@ class WaldiezRandomAgentTarget(WaldiezBase):
         The type of the transition target.
     value : list[str]
         A list of agent ids to randomly select from.
-    order : int
-        The order of the target in the list of targets.
-        If -1, the order is automatically determined by the json data.
     """
 
     target_type: Annotated[
@@ -104,11 +99,9 @@ class WaldiezSimpleTarget(WaldiezBase):
         "TerminateTarget"
     ]
         The type of the transition target.
-    order : int
-        The order of the target in the list of targets.
-        If -1, the order is automatically determined by the json data.
-    target : str
-        The id of the group or nested chat to transfer control to.
+    value : list[str]
+        A list of values for the target, not actually used
+        (just for consistency with other targets).
     """
 
     target_type: Annotated[
@@ -140,8 +133,6 @@ class WaldiezGroupOrNestedTarget(WaldiezBase):
         The type of the transition target.
     value : str
         The id of the group or nested chat to transfer control to.
-    order : int
-        The order of the target in the list of targets.
     """
 
     target_type: Annotated[
@@ -338,10 +329,14 @@ class WaldiezTransitionAvailability(WaldiezBase):
 
     Attributes
     ----------
-    available : bool
-        Whether the transition is available.
-    data : dict[str, Any]
-        Additional data for the availability condition.
+    type : Literal["string", "expression", "none"]
+        The type of the availability condition.
+        Can be "string", "expression", or "none".
+    value : str
+        The value of the availability condition.
+        If type is "none", this value is ignored.
+        If type is "string", this is a string condition.
+        If type is "expression", this is an expression condition.
     """
 
     type: Literal["string", "expression", "none"] = "none"
@@ -371,7 +366,20 @@ WaldiezHandoffTransition = Union[
 
 
 class WaldiezHandoff(WaldiezBase):
-    """Handoff class for Waldiez agents and chats."""
+    """Handoff class for Waldiez agents and chats.
+
+    Attributes
+    ----------
+    target : WaldiezTransitionTarget
+        The target to transfer control to.
+        Can be an agent, group, nested chat, or simple target.
+    condition : WaldiezHandoffCondition
+        The condition to use for the handoff.
+        If not provided, the handoff will always be available.
+    available : WaldiezTransitionAvailability
+        The availability of the handoff.
+        If not provided, the handoff will always be available.
+    """
 
     target: Annotated[
         WaldiezTransitionTarget,

@@ -15,15 +15,12 @@ def _get_chroma_client_string(agent: WaldiezRagUserProxy) -> tuple[str, str]:
     ----------
     agent : WaldiezRagUserProxy
         The agent.
-    agent_name : str
-        The agent's name.
 
     Returns
     -------
     tuple[str, str]
         The 'client' and what to import.
     """
-    # TODO: also check `connection_url` (chroma in client-server mode)
     to_import = "import chromadb"
     client_str = "chromadb."
     if (
@@ -63,7 +60,6 @@ def _get_chroma_embedding_function_string(
         The 'embedding_function', the import and the custom embedding function.
     """
     to_import = ""
-    embedding_function_arg = ""
     embedding_function_content = ""
     if not agent.retrieve_config.use_custom_embedding:
         to_import = (

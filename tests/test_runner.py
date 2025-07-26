@@ -15,6 +15,7 @@ from waldiez.runner import WaldiezRunner
 from waldiez.running.patch_io_stream import get_printer
 
 
+# noinspection PyMethodMayBeStatic,PyUnusedLocal
 class CustomIOStream(IOStream):
     """Custom IOStream class."""
 
