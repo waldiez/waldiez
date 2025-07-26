@@ -10,6 +10,7 @@ To just include waldiez on your website using CDN, here is a simple example:
 
 ```html
 <!doctype html>
+<!--suppress JSUnresolvedLibraryURL, NpmUsedModulesInstalled -->
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -125,6 +126,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       viewport={viewport}
     />
   </React.StrictMode>
+);
 ```
 
 ### Configuration Options
@@ -148,7 +150,7 @@ These properties define the basic identity and metadata of your flow:
 
 #### Monaco Editor Configuration
 
-Monaco editor is used for code editing in several components(like in a waldiez tool). You can either host the required files locally or use a CDN. The `monacoVsPath` prop allows you to specify the path to the Monaco editor files.
+Monaco editor is used for code editing in several components (like in a waldiez tool). You can either host the required files locally or use a CDN. The `monacoVsPath` prop allows you to specify the path to the Monaco editor files.
 
 ```tsx
 // In development, use local 'vs' folder in public directory
@@ -258,6 +260,8 @@ Handles file uploads, particularly useful for RAG nodes:
 Display an input prompt to the user and handle their response:
 
 ```tsx
+// noinspection JSAnnotator
+
 import { useState } from "react";
 import { WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/react";
 
@@ -316,64 +320,64 @@ onUserInput?: ((input: WaldiezUserInput) => void) | null;
 // - 'userParticipants' to determine if a message comes from a user, an assistant or the system 
 */
 function FlowWithInput() {
-  const [messages, setMessages] = useState<{
-    previousMessages: WaldiezPreviousMessage[];
-    request_id: string;
-    prompt: string;
-    userParticipants: Set<string>;
-  } | null>(null);
-  
-  const handleUserInput = (input: WaldiezUserInput) => {
-    console.log("User input:", input.data.text || "");
-    console.log("Request ID:", input.request_id);
-    // Process input (send to the backend, etc.)
-    // and close the prompt
-    setInputPrompt(null);
-  };
+    const [messages, setMessages] = useState<{
+        previousMessages: WaldiezPreviousMessage[];
+        request_id: string;
+        prompt: string;
+        userParticipants: Set<string>;
+    } | null>(null);
 
- // just an example here, this depends on how
- // we handle the messages when "onRun" is triggered
-  const onNewMessage = (message: Record<string, unknown>) => {
-    // extract the message.type, message.data, message.sender, message.recipient, message.request_id ...
-    const newMessage: WaldiezPreviousMessage = {
-      id: message.id,
-      timestamp: message.timestamp,
-      type: message.type,
-      request_id: message.request_id,
-      data: message.data,
+    const handleUserInput = (input: WaldiezUserInput) => {
+        console.log("User input:", input.data.text || "");
+        console.log("Request ID:", input.request_id);
+        // Process input (send to the backend, etc.)
+        // and close the prompt
+        setInputPrompt(null);
     };
-    setMessages((prev) => {
-      if (prev) {
-        return {
-          ...prev,
-          previousMessages: [...prev.previousMessages, newMessage],
+
+    // just an example here, this depends on how
+    // we handle the messages when "onRun" is triggered
+    const onNewMessage = (message: Record<string, unknown>) => {
+        // extract the message.type, message.data, message.sender, message.recipient, message.request_id ...
+        const newMessage: WaldiezPreviousMessage = {
+            id: message.id,
+            timestamp: message.timestamp,
+            type: message.type,
+            request_id: message.request_id,
+            data: message.data,
         };
-      }
-      return {
-        previousMessages: [newMessage],
-        request_id: message.request_id,
-        prompt: "Please provide your input:",
-        userParticipants: new Set([message.sender]),
-      };
-    });
-  };
-  
-  // Show a prompt (e.g., in response to some flow action)
-  const showPrompt = () => {
-    setInputPrompt(messages);
-  };
-  
-  return (
-    <div>
-      <Waldiez
-        flowId="flow-with-input"
-        storageId="storage-with-input"
-        inputPrompt={inputPrompt}
-        onUserInput={handleUserInput}
-        // ...other props
-      />
-    </div>
-  );
+        setMessages((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    previousMessages: [...prev.previousMessages, newMessage],
+                };
+            }
+            return {
+                previousMessages: [newMessage],
+                request_id: message.request_id,
+                prompt: "Please provide your input:",
+                userParticipants: new Set([message.sender]),
+            };
+        });
+    };
+
+    // Show a prompt (e.g., in response to some flow action)
+    const showPrompt = () => {
+        setInputPrompt(messages);
+    };
+
+    return (
+        <div>
+            <Waldiez
+                flowId="flow-with-input"
+                storageId="storage-with-input"
+                inputPrompt={inputPrompt}
+                onUserInput={handleUserInput}
+                // ...other props
+            />
+        </div>
+    );
 }
 ```
 
