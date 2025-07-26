@@ -3,7 +3,7 @@ root = true
 
 [*]
 charset = utf-8
-end-of-line = lf
+end_of_line = lf
 indent_size = 4
 indent_style = space
 insert_final_newline = true
@@ -25,5 +25,4 @@ end_of_line = unset
 insert_final_newline = unset
 trim_trailing_whitespace = unset
 indent_style = unset
-indent_size = unset
 indent_size = unset
