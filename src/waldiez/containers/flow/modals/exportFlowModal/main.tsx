@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 
 import { CheckboxInput, DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
 
@@ -93,6 +93,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                 });
 
                 if (!response.ok) {
+                    // noinspection ExceptionCaughtLocallyJS
                     throw new Error(`Error uploading to hub: ${response.statusText}`);
                 }
 
@@ -114,6 +115,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                     });
 
                     if (!additionalResponse.ok) {
+                        // noinspection ExceptionCaughtLocallyJS
                         throw new Error(`Error uploading additional file: ${additionalResponse.statusText}`);
                     }
                 }

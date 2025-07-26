@@ -18,6 +18,7 @@ const ownerAndContributors = `${owner} & contributors`;
 
 const project = "./tsconfig.app.json";
 
+// noinspection JSCheckFunctionSignatures
 const defaultConfig = eslintTs.config({
     files: ["src/**/*.{ts,tsx}"],
     extends: [...eslintTs.configs.recommended, eslintPluginPrettierRecommended],

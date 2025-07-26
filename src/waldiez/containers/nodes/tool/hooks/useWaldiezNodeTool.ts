@@ -4,7 +4,7 @@
  */
 import { Node } from "@xyflow/react";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { getToolIcon } from "@waldiez/containers/nodes/tool/utils";

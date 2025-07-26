@@ -9,6 +9,7 @@ import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
 
 // Mock the hook
+// noinspection JSUnusedGlobalSymbols
 vi.mock("@waldiez/components/chatUI/hooks", () => ({
     useImageRetry: () => ({
         registerImage: vi.fn(),

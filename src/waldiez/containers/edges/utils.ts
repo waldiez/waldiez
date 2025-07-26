@@ -262,6 +262,7 @@ export const getEdgeLabelTransformNodeOffset = (
 };
 
 // Convenience wrapper
+// noinspection JSUnusedGlobalSymbols
 export const getEdgeLabelTransforms = (
     sourceX: number,
     sourceY: number,

@@ -5,6 +5,8 @@
 import { waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import React from "react";
+
 import { importItem } from "@waldiez/utils";
 
 describe("importItem", () => {

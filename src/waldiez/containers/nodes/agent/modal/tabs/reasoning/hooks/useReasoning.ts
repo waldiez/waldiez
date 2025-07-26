@@ -153,6 +153,7 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
         [onChange, data.reasonConfig],
     );
 
+    // noinspection DuplicatedCode
     /**
      * Handle max depth change
      */
@@ -187,6 +188,7 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
         [onChange, data.reasonConfig],
     );
 
+    // noinspection DuplicatedCode
     /**
      * Handle beam size change
      */
@@ -204,6 +206,7 @@ export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
         [onChange, data.reasonConfig],
     );
 
+    // noinspection DuplicatedCode
     /**
      * Handle number of simulations change
      */

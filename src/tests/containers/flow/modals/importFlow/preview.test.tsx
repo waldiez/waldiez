@@ -4,7 +4,7 @@
  */
 import { act, fireEvent, screen } from "@testing-library/react";
 
-import { flow, flowId } from "../../../flow/data";
+import { flow, flowId } from "../../data";
 import { renderFlow } from "../common";
 import { loadFlow } from "./load.test";
 

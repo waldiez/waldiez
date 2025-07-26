@@ -23,6 +23,7 @@ export const Select = forwardRef(
         props: Props<Option, IsMulti, Group>,
         ref: React.Ref<SelectInstance<Option, IsMulti, Group>>,
     ) => {
+        // noinspection JSUnusedGlobalSymbols
         return (
             <ReactSelect
                 ref={ref}

@@ -37,7 +37,7 @@ export const WaldiezAgentReasoning = memo((props: WaldiezAgentReasoningProps) =>
             <InfoCheckbox
                 label="Verbose"
                 info="When enabled, the agent will provide additional information about the reasoning process."
-                checked={data.verbose === true}
+                checked={data.verbose}
                 onChange={onVerboseChange}
                 id={`agent-reasoning-verbose-toggle-${id}`}
                 aria-label="Enable verbose reasoning output"

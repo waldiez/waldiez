@@ -20,8 +20,7 @@ export const useImageRetry = (maxRetries = 3, retryDelay = 1000) => {
                 if (retryCount < maxRetries) {
                     retries.current.set(url, retryCount + 1);
                     setTimeout(() => {
-                        const retryUrl = `${url}${url.includes("?") ? "&" : "?"}retry=${retryCount + 1}`;
-                        img.src = retryUrl;
+                        img.src = `${url}${url.includes("?") ? "&" : "?"}retry=${retryCount + 1}`;
                     }, retryDelay);
                 } else {
                     img.classList.remove("loading");

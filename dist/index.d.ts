@@ -4,6 +4,7 @@
  */
 
 import { Connection } from '@xyflow/react';
+import { default as default_2 } from 'react';
 import { Edge } from '@xyflow/react';
 import { EdgeChange } from '@xyflow/react';
 import { Node as Node_2 } from '@xyflow/react';
@@ -94,6 +95,8 @@ export declare const emptyFlow: WaldiezFlow;
 /**
  * Export a flow to a JSON object.
  * @param data - The flow to export
+ * @param hideSecrets - Whether to hide secrets in the exported flow
+ * @param skipLinks - Whether to skip links in the exported flow
  * @returns The exported JSON object
  * @see {@link Waldiez}
  * @see {@link WaldiezFlow}
@@ -379,7 +382,7 @@ export declare interface IWaldiezEdgeStore {
      * @param event - The double-click event.
      * @param edge - The edge that was double-clicked.
      */
-    onEdgeDoubleClick: (event: React.MouseEvent, edge: WaldiezEdge) => void;
+    onEdgeDoubleClick: (event: default_2.MouseEvent, edge: WaldiezEdge) => void;
     /**
      * Callback function to handle edge connection events.
      * @param oldEdge - The old edge before the connection.
@@ -687,7 +690,6 @@ export declare type MessageProcessingContext = {
  * It includes an array of participant objects, each with a name and additional properties.
  * @param participants - An array of participant objects.
  * @param participants.name - The name of the participant.
- * @param participants\[key: string] - Additional properties for the participant.
  */
 export declare type ParticipantsData = {
     participants: Array<{
@@ -981,7 +983,7 @@ export declare const ValidTransitionTargetTypes: TransitionTargetType[];
  ```
  * @see {@link WaldiezProps}
  */
-declare const Waldiez: React.FC<Partial<WaldiezProps>>;
+declare const Waldiez: default_2.FC<Partial<WaldiezProps>>;
 export { Waldiez }
 export default Waldiez;
 
@@ -3532,7 +3534,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
  * @param onSave - The handler for saving the flow (send to backend)
  * @param monacoVsPath - The path to the monaco vs code editor
  */
-export declare type WaldiezProviderProps = React.PropsWithChildren<WaldiezStoreProps>;
+export declare type WaldiezProviderProps = default_2.PropsWithChildren<WaldiezStoreProps>;
 
 /**
  * WaldiezRagUserRetrieveConfig

@@ -4,7 +4,7 @@
  */
 import { Connection } from "@xyflow/react";
 
-import { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { WaldiezEdge } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
@@ -41,7 +41,7 @@ export const useWaldiezNodeAgent = (id: string) => {
      * Only triggers if not in read-only mode and modal is not open
      */
     const onDelete = useCallback(() => {
-        if (isReadOnly === true || isModalOpen) {
+        if (isReadOnly || isModalOpen) {
             return;
         }
 
@@ -54,7 +54,7 @@ export const useWaldiezNodeAgent = (id: string) => {
      * Only triggers if not in read-only mode and modal is not open
      */
     const onClone = useCallback(() => {
-        if (isReadOnly === true || isModalOpen) {
+        if (isReadOnly || isModalOpen) {
             return;
         }
 

@@ -114,7 +114,7 @@ const zundoEquality = (pastState: Partial<WaldiezState>, currentState: Partial<W
         return true;
     }
     // console.log(diffs);
-    const equal = diffs.every(diff => {
+    return diffs.every(diff => {
         if (diff.type === "CREATE" && diff.path.length === 2) {
             // new node or edge
             return false;
@@ -129,13 +129,10 @@ const zundoEquality = (pastState: Partial<WaldiezState>, currentState: Partial<W
         if (diff.path.includes("nodes") && diff.path.includes("data")) {
             return false;
         }
-        if (diff.path.includes("edges") && diff.path.includes("data") && !diff.path.includes("position")) {
-            return false;
-        }
-        return true;
+        return !(
+            diff.path.includes("edges") &&
+            diff.path.includes("data") &&
+            !diff.path.includes("position")
+        );
     });
-    // if (!equal) {
-    //   console.log(diffs);
-    // }
-    return equal;
 };

@@ -47,9 +47,12 @@ export const importFlow = (data: any) => {
     return flowMapper.toReactFlow(flow);
 };
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Export a flow to a JSON object.
  * @param data - The flow to export
+ * @param hideSecrets - Whether to hide secrets in the exported flow
+ * @param skipLinks - Whether to skip links in the exported flow
  * @returns The exported JSON object
  * @see {@link Waldiez}
  * @see {@link WaldiezFlow}

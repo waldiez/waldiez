@@ -8,6 +8,7 @@ import { useMemo } from "react";
 
 import { WaldiezNodeAgentType } from "@waldiez/types";
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Creates connection handles for an agent node based on its type
  * Group managers only have target handles, while other types have both source and target handles

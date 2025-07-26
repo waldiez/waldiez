@@ -11,20 +11,6 @@ export type ImportFlowModalProps = {
     typeShown: WaldiezNodeType;
     onTypeShownChange: (nodeType: WaldiezNodeType) => void;
 };
-export type ImportFlowModalViewProps = {
-    flowId: string;
-    isOpen: boolean;
-    state: ImportFlowState;
-    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onSearchSubmit: () => void;
-    onRemoteUrlChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onRemoteUrlSubmit: () => void;
-    onUpload: (files: File[]) => void;
-    onClearLoadedFlowData: () => void;
-    onClose: () => void;
-    onSelectedPropsChange: (selectedProps: Partial<ThingsToImport>) => void;
-    onSubmit: () => void;
-};
 
 export type SearchResult = {
     id: string;

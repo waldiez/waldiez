@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { StringListProps } from "@waldiez/components/stringList/types";
 

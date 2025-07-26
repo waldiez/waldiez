@@ -65,6 +65,7 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
         (newValues: number[]) => {
             const newValue = newValues[0];
 
+            // noinspection SuspiciousTypeOfGuard
             if (typeof newValue !== "number") {
                 return;
             }

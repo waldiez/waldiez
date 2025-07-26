@@ -4,7 +4,7 @@
  */
 import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
 
-import { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert } from "react-icons/go";

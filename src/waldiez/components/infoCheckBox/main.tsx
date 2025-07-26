@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo } from "react";
+import React, { memo } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";

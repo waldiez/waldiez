@@ -53,8 +53,11 @@ const findLanguageInChildren = (children: React.ReactNode): string | null => {
 
 /**
  * Detects if text might contain markdown syntax
+ * @param text - The text to check
+ * @returns boolean - True if the text might be markdown, false otherwise
  */
 const mightBeMarkdown = (text: string): boolean => {
+    // noinspection RegExpRedundantEscape
     const markdownPatterns = [
         /\*\*(.*?)\*\*/, // Bold
         /__(.*?)__/, // Bold

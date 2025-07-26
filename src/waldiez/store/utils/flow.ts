@@ -213,10 +213,9 @@ const selectivelyOverrideOrMergeFlow = (
         ? newFlowNodesToUse
         : mergeNodes(currentFlow.nodes, newFlowNodesToUse, typeShown);
     mergedFlow.nodes = mergedNodes;
-    const mergedEdges: Edge[] = items.override
+    mergedFlow.edges = items.override
         ? newFlow.edges
         : mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges);
-    mergedFlow.edges = mergedEdges;
 };
 
 /**

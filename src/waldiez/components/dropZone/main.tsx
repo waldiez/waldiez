@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 
 import { useDropZone } from "@waldiez/components/dropZone/hooks";

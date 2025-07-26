@@ -113,6 +113,8 @@ export const flowMapper = {
     /**
      * Convert a react flow instance to a WaldiezFlow.
      * @param flow - The WaldiezFlowProps to convert
+     * @param hideSecrets - Whether to hide secrets in the exported data
+     * @param skipLinks - Whether to skip links in the exported data
      * @returns The WaldiezFlow instance
      */
     exportFlow: (flow: WaldiezFlowProps, hideSecrets: boolean, skipLinks: boolean = false) => {

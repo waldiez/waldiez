@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";

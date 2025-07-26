@@ -4,7 +4,7 @@
  */
 import { Background, BackgroundVariant, Controls, ReactFlow, Viewport } from "@xyflow/react";
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";

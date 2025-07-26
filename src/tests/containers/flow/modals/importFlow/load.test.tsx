@@ -5,7 +5,7 @@
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { flow, flowId } from "../../../flow/data";
+import { flow, flowId } from "../../data";
 import { renderFlow } from "../common";
 
 afterEach(() => {
@@ -34,6 +34,7 @@ export const loadFlow = async () => {
 };
 
 describe("Import flow modal load step", () => {
+    // noinspection DuplicatedCode
     it("should open and close the modal", async () => {
         await act(async () => {
             await renderFlow();

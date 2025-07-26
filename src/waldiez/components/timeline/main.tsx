@@ -4,7 +4,7 @@
  */
 import { ResponsiveContainer } from "recharts";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { FiActivity, FiClock, FiDollarSign, FiFileText, FiUser } from "react-icons/fi";
 
 import { TimelineChart } from "@waldiez/components/timeline/chart";

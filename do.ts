@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /**
- * Simple wrapper to call "do" in the scripts directory.
+ * Simple wrapper to call "do" in the "scripts" directory.
  */
 import { spawnSync } from "child_process";
 import { platform } from "os";

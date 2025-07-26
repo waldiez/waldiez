@@ -5,6 +5,7 @@
 import { WaldiezToolData } from "@waldiez/models/Tool/ToolData";
 import { getId } from "@waldiez/utils";
 
+// noinspection DuplicatedCode
 /**
  * Waldiez Tool
  * @param type - The type (tool)

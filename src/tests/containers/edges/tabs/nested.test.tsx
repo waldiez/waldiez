@@ -12,6 +12,7 @@ import { edgeId, edgeProps, flowId } from "../data";
 
 describe("WaldiezEdgeModalTabNested", () => {
     it("updates the nested chat message type", async () => {
+        // noinspection DuplicatedCode
         renderEdge("nested");
         const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeId}`);
         fireEvent.click(tab);
@@ -25,6 +26,7 @@ describe("WaldiezEdgeModalTabNested", () => {
         });
     });
     it("updates the nested chat message content", async () => {
+        // noinspection DuplicatedCode
         renderEdge("nested");
         const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeId}`);
         fireEvent.click(tab);
@@ -43,6 +45,7 @@ describe("WaldiezEdgeModalTabNested", () => {
         expect(messageContentInput.value).toBe("Updated message content");
     });
     it("updates the nested chat reply type", async () => {
+        // noinspection DuplicatedCode
         renderEdge("nested");
         const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);
@@ -58,6 +61,7 @@ describe("WaldiezEdgeModalTabNested", () => {
         });
     });
     it("updates the nested chat reply content", async () => {
+        // noinspection DuplicatedCode
         renderEdge("nested");
         const tab = screen.getByTestId(`tab-id-wc-${flowId}-edge-nested-${edgeProps.id}`);
         fireEvent.click(tab);

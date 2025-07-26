@@ -233,7 +233,7 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
     const available = getHandoffAvailability(json);
     const afterWork = getAfterWork(json);
     const silent = getChatSilent(json);
-    const data = new WaldiezChatData({
+    return new WaldiezChatData({
         sourceType,
         targetType,
         name,
@@ -253,5 +253,4 @@ const getChatData = (json: { [key: string]: any }, index: number): WaldiezChatDa
         afterWork,
         silent,
     });
-    return data;
 };

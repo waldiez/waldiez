@@ -32,6 +32,7 @@ const thresholds = {
     lines: 80,
 };
 
+// noinspection DuplicatedCode
 /**
  * Get the version from package.json, ensuring it is a valid semver.
  * @returns - The version string, cleaned and validated.
@@ -68,6 +69,8 @@ const getPublicDir = (command: "build" | "serve"): string | false => {
     return command === "build" ? false : normalizedResolve("public");
 };
 // https://vitejs.dev/config/
+/// <reference types="vitest/config" /
+// noinspection JSUnusedGlobalSymbols
 export default defineConfig(({ command }) => ({
     publicDir: getPublicDir(command),
     server: {

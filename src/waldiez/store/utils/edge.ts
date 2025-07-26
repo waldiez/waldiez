@@ -74,8 +74,7 @@ export const getNewEdgeNodes = (allNodes: Node[], source: string, target: string
 export const getNewEdgeName = (sourceNode: Node, targetNode: Node) => {
     const sourceLabel = (sourceNode.data.label as string).slice(0, 15);
     const targetLabel = (targetNode.data.label as string).slice(0, 15);
-    const edgeName = `${sourceLabel} => ${targetLabel}`;
-    return edgeName;
+    return `${sourceLabel} => ${targetLabel}`;
 };
 
 /**
@@ -348,10 +347,7 @@ export const resetEdgeOrdersAndPositions = (get: typeOfGet, set: typeOfSet) => {
 export const shouldReconnect = (newConnection: Connection, nodes: Node[]): boolean => {
     const newTarget = nodes.find(node => node.id === newConnection.target);
     const newSource = nodes.find(node => node.id === newConnection.source);
-    if (!newSource || !newTarget) {
-        return false;
-    }
-    return true;
+    return !(!newSource || !newTarget);
 };
 
 /**
@@ -558,7 +554,7 @@ export const resetEdgePrerequisites: (edges: WaldiezEdge[], get: typeOfGet, set:
  */
 const resetEdgeOrders: (get: typeOfGet, set: typeOfSet) => void = (get, set) => {
     const isAsync = get().isAsync;
-    isAsync === true ? resetAsyncEdgeOrders(get, set) : resetSyncEdgeOrders(get, set);
+    isAsync ? resetAsyncEdgeOrders(get, set) : resetSyncEdgeOrders(get, set);
 };
 
 /**

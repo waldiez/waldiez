@@ -5,6 +5,8 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import React from "react";
+
 import { Snackbar, SnackbarProvider, showSnackbar, useSnackbar } from "@waldiez/components/snackbar";
 
 const FLOW_ID = "test-flow";

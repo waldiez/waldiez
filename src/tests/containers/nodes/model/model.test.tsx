@@ -125,6 +125,7 @@ describe("WaldiezModelNode", () => {
 });
 describe("WaldiezModelNode with branches", () => {
     // handle null values/branches in advanced and price tabs
+    // noinspection DuplicatedCode
     it("should handle null temperature", () => {
         renderModel({ temperature: null });
         const modalButton = screen.getByTestId(`open-model-node-modal-${modelId}`);
@@ -146,6 +147,7 @@ describe("WaldiezModelNode with branches", () => {
         fireEvent.click(advancedTabButton);
         expect(advancedTabButton).toHaveClass("tab-btn--active");
     });
+    // noinspection DuplicatedCode
     it("should handle null maxTokens", () => {
         renderModel({ maxTokens: null });
         const modalButton = screen.getByTestId(`open-model-node-modal-${modelId}`);

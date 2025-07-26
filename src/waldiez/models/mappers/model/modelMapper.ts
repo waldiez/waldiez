@@ -397,7 +397,7 @@ const getModelData = (jsonData: Record<string, unknown>): WaldiezModelData => {
     const extras = getExtras(jsonData);
     const defaultHeaders = getDefaultHeaders(jsonData);
     const price = getPrice(jsonData);
-    const data = new WaldiezModelData({
+    return new WaldiezModelData({
         baseUrl,
         apiKey,
         apiType,
@@ -410,5 +410,4 @@ const getModelData = (jsonData: Record<string, unknown>): WaldiezModelData => {
         defaultHeaders,
         price,
     });
-    return data;
 };

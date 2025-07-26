@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 
 import { InfoLabel } from "@waldiez/components";
 import { useModelModalPriceTab } from "@waldiez/containers/nodes/model/modal/tabs/price/hooks";

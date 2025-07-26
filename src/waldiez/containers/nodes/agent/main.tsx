@@ -4,7 +4,7 @@
  */
 import { NodeResizer } from "@xyflow/react";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { FaCopy } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import { VscSettings } from "react-icons/vsc";

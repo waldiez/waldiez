@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { Collapsible, InfoLabel, Select } from "@waldiez/components";

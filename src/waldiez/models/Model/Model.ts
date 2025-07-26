@@ -5,6 +5,7 @@
 import { WaldiezModelData } from "@waldiez/models/Model/ModelData";
 import { getId } from "@waldiez/utils";
 
+// noinspection DuplicatedCode
 /**
  * Waldiez Model
  * @param type - The type (model)

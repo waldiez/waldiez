@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 import { WaldiezChatUserInput } from "@waldiez/types";
 

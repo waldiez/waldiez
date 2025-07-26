@@ -37,6 +37,7 @@ describe("Sidebar Edit flow modal", () => {
         expect(screen.getByTestId(extrasPanelTestId)).toBeTruthy();
     });
     it("should update flow data on submit", async () => {
+        // noinspection DuplicatedCode
         await act(async () => {
             await renderFlow();
         });
@@ -60,6 +61,7 @@ describe("Sidebar Edit flow modal", () => {
         expect(onChange).toHaveBeenCalled();
     });
     it("should discard changes on cancel", async () => {
+        // noinspection DuplicatedCode
         await act(async () => {
             await renderFlow();
         });

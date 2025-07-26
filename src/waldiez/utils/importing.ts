@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React from "react";
+
 /**
  * Utility function to import an item from a JSON file.
  * This function reads a file input, parses the JSON content,

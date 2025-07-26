@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { SidebarViewProps } from "@waldiez/containers/sidebar/types";
 import { useWaldiez } from "@waldiez/store";

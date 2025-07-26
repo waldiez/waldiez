@@ -17,6 +17,7 @@ export type WaldiezFlowData = Omit<FlowData, "nodes" | "edges" | "viewport"> & {
     viewport?: object;
 };
 
+// noinspection JSUnusedGlobalSymbols
 export type WaldiezFlowSchema = Omit<WaldiezFlow, "data"> & {
     data: WaldiezFlowData;
 };

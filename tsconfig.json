@@ -3,7 +3,9 @@
     "compilerOptions": {
         "noUncheckedIndexedAccess": true,
         "forceConsistentCasingInFileNames": true,
-        "strict": true
+        "strict": true,
+        "module": "ESNext",
+        "target": "ES2020"
     },
     "references": [
         {

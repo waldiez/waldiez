@@ -5,7 +5,7 @@
 /**
  * Custom hook for handling file drag and drop functionality
  */
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 import { DropZoneProps } from "@waldiez/components/dropZone/types";
 import { showSnackbar } from "@waldiez/components/snackbar";

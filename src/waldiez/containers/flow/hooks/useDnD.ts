@@ -4,7 +4,7 @@
  */
 import { Node, XYPosition, useReactFlow } from "@xyflow/react";
 
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { ValidAgentTypes, WaldiezNodeAgentType } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";

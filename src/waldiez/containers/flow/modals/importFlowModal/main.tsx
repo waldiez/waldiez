@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React from "react";
+
 import { Modal, Wizard, WizardStep } from "@waldiez/components";
 import { useImportFlowModal } from "@waldiez/containers/flow/modals/importFlowModal/hooks";
 import { FlowDataPreviewStep, LoadFlowStep } from "@waldiez/containers/flow/modals/importFlowModal/steps";

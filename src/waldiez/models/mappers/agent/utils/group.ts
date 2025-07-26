@@ -227,6 +227,7 @@ const getAllowedOrDisallowedTransitions = (json: Record<string, unknown>): { [ke
         // dist[str, list[str]]
         const transitions: { [key: string]: string[] } = {};
         for (const [key, value] of Object.entries(json.allowedOrDisallowedTransitions)) {
+            // noinspection SuspiciousTypeOfGuard
             if (typeof key === "string" && Array.isArray(value)) {
                 transitions[key] = value.filter(v => typeof v === "string");
             }

@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React from "react";
+
 import { WaldiezNodeToolData } from "@waldiez/models";
 
 export type WaldiezNodeToolModalProps = {

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { MultiValue } from "@waldiez/components";
 import { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";

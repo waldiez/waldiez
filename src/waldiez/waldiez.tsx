@@ -13,7 +13,7 @@ import "@fontsource/fredoka/600.css";
 import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HotkeysProvider } from "react-hotkeys-hook";
 

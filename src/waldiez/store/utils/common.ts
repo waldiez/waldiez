@@ -88,11 +88,13 @@ export const getNewNodePosition = (
 export const setViewPortTopLeft = (rfInstance?: ReactFlowInstance) => {
     if (rfInstance) {
         const zoom = rfInstance.getZoom();
-        rfInstance.setViewport({
-            zoom,
-            x: 20,
-            y: 40,
-        });
+        rfInstance
+            .setViewport({
+                zoom,
+                x: 20,
+                y: 40,
+            })
+            .then(() => {});
     }
 };
 

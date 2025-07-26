@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
 import { FaStop } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
@@ -239,6 +239,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             />
         );
     }
+    // noinspection PointlessBooleanExpressionJS
     return (
         <Modal
             flowId={flowId}

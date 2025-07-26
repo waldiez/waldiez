@@ -15,8 +15,8 @@ import { getFlowRoot } from "@waldiez/utils";
  * @see {@link IWaldiezNodeStore}
  */
 export class WaldiezNodeStore implements IWaldiezNodeStore {
-    private get: typeOfGet;
-    private set: typeOfSet;
+    private readonly get: typeOfGet;
+    private readonly set: typeOfSet;
 
     /**
      * Creates an instance of WaldiezNodeStore.

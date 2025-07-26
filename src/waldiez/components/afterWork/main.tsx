@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 import { MultiValue, Select, SingleValue } from "@waldiez/components/select";

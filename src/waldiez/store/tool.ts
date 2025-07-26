@@ -16,8 +16,8 @@ import { getId } from "@waldiez/utils";
  * @see {@link IWaldiezToolStore}
  */
 export class WaldiezToolStore implements IWaldiezToolStore {
-    private get: typeOfGet;
-    private set: typeOfSet;
+    private readonly get: typeOfGet;
+    private readonly set: typeOfSet;
     /**
      * Creates an instance of WaldiezToolStore.
      * @param get - A function to get the current state.
@@ -219,13 +219,12 @@ export class WaldiezToolStore implements IWaldiezToolStore {
         const flowId = this.get().flowId;
         const position = getNewNodePosition(toolsCount, flowId, rfInstance);
         const label = tool.data.label + " (copy)";
-        const clonedTool = {
+        return {
             ...tool,
             id: `wt-${getId()}`,
             data: { ...tool.data, label, createdAt, updatedAt },
             position,
         };
-        return clonedTool;
     };
     /**
      * Gets the agent after a tool has been deleted.

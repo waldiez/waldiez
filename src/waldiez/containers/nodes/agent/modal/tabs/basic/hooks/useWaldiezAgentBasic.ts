@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 import { SingleValue } from "@waldiez/components";
 import { WaldiezAgentHumanInputMode, WaldiezNodeAgentData } from "@waldiez/models";

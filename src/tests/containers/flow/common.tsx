@@ -17,7 +17,6 @@ import { createdAt, edges, flowId, nodes, updatedAt } from "./data";
 
 export const onRun = vi.fn();
 export const onChange = vi.fn();
-export const onUserInput = vi.fn();
 export const onConvert = vi.fn();
 export const onSave = vi.fn();
 

@@ -4,6 +4,8 @@
  */
 import Waldiez from "@waldiez";
 
+import React from "react";
+
 import { WaldiezProps } from "@waldiez/types";
 
 import { useWaldiezWrapper } from "./hooks";

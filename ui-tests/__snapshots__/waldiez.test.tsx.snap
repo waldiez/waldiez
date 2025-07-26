@@ -214,6 +214,7 @@ exports[`All > should render Waldiez components 1`] = `
                 draggable="true"
               >
                 <img
+                  alt="User proxy icon"
                   src="/src/waldiez/assets/user.webp"
                   title="User Proxy Agent"
                 />
@@ -225,6 +226,7 @@ exports[`All > should render Waldiez components 1`] = `
                 draggable="true"
               >
                 <img
+                  alt="Assistant agent icon"
                   src="/src/waldiez/assets/assistant.webp"
                   title="Assistant Agent"
                 />
@@ -236,6 +238,7 @@ exports[`All > should render Waldiez components 1`] = `
                 draggable="true"
               >
                 <img
+                  alt="Doc agent icon"
                   src="/src/waldiez/assets/rag.webp"
                   title="Document Agent"
                 />
@@ -247,6 +250,7 @@ exports[`All > should render Waldiez components 1`] = `
                 draggable="true"
               >
                 <img
+                  alt="Reasoning agent icon"
                   src="/src/waldiez/assets/reasoning.webp"
                   title="Reasoning Agent"
                 />
@@ -258,6 +262,7 @@ exports[`All > should render Waldiez components 1`] = `
                 draggable="true"
               >
                 <img
+                  alt="Captain agent icon"
                   src="/src/waldiez/assets/captain.webp"
                   title="Captain Agent"
                 />
@@ -269,6 +274,7 @@ exports[`All > should render Waldiez components 1`] = `
                 draggable="true"
               >
                 <img
+                  alt="Group manager icon"
                   src="/src/waldiez/assets/manager.webp"
                   title="Group Manager Agent"
                 />
@@ -756,6 +762,7 @@ exports[`All > should render Waldiez components 1`] = `
               draggable="true"
             >
               <img
+                alt="User proxy icon"
                 src="/src/waldiez/assets/user.webp"
                 title="User Proxy Agent"
               />
@@ -767,6 +774,7 @@ exports[`All > should render Waldiez components 1`] = `
               draggable="true"
             >
               <img
+                alt="Assistant agent icon"
                 src="/src/waldiez/assets/assistant.webp"
                 title="Assistant Agent"
               />
@@ -778,6 +786,7 @@ exports[`All > should render Waldiez components 1`] = `
               draggable="true"
             >
               <img
+                alt="Doc agent icon"
                 src="/src/waldiez/assets/rag.webp"
                 title="Document Agent"
               />
@@ -789,6 +798,7 @@ exports[`All > should render Waldiez components 1`] = `
               draggable="true"
             >
               <img
+                alt="Reasoning agent icon"
                 src="/src/waldiez/assets/reasoning.webp"
                 title="Reasoning Agent"
               />
@@ -800,6 +810,7 @@ exports[`All > should render Waldiez components 1`] = `
               draggable="true"
             >
               <img
+                alt="Captain agent icon"
                 src="/src/waldiez/assets/captain.webp"
                 title="Captain Agent"
               />
@@ -811,6 +822,7 @@ exports[`All > should render Waldiez components 1`] = `
               draggable="true"
             >
               <img
+                alt="Group manager icon"
                 src="/src/waldiez/assets/manager.webp"
                 title="Group Manager Agent"
               />

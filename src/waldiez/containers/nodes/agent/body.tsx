@@ -2,13 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 
+import { getToolIcon } from "@waldiez/containers/nodes/tool/utils";
 import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
-
-import { getToolIcon } from "../tool/utils";
 
 type WaldiezNodeAgentBodyProps = {
     flowId: string;
@@ -44,9 +43,7 @@ export const WaldiezNodeAgentBody: React.FC<WaldiezNodeAgentBodyProps> = memo(
         }
 
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        const agentContentView = useAgentContentView(id, data);
-
-        return agentContentView;
+        return useAgentContentView(id, data);
     },
 );
 

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 import { SingleValue } from "@waldiez/components";
 import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
@@ -33,6 +33,7 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
         [data, onDataChange],
     );
 
+    // noinspection DuplicatedCode
     /**
      * Handle chunk token size changes
      */
@@ -57,6 +58,7 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
         [setRetrieveConfigConfigData],
     );
 
+    // noinspection DuplicatedCode
     /**
      * Handle context max tokens changes
      */

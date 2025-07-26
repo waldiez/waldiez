@@ -4,7 +4,7 @@
  */
 import { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyflow/react";
 
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { showSnackbar } from "@waldiez/components";
 import { WaldiezEdge } from "@waldiez/models";
@@ -62,16 +62,19 @@ export const useFlowEvents = (flowId: string) => {
                 // Use double RAF for reliable rendering
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        instance.fitView({
-                            includeHiddenNodes: false,
-                            padding: 0.2,
-                            duration: 100,
-                        });
-                        setRfInstance(instance);
+                        instance
+                            .fitView({
+                                includeHiddenNodes: false,
+                                padding: 0.2,
+                                duration: 100,
+                            })
+                            .then(() => {
+                                setRfInstance(instance);
+                            });
                     });
                 });
             } else {
-                instance.setViewport({ x: 0, y: 0, zoom: 1 });
+                instance.setViewport({ x: 0, y: 0, zoom: 1 }).then(() => {});
                 setRfInstance(instance);
             }
         },

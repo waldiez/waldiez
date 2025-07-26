@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo, useCallback } from "react";
+import React, { memo, useCallback } from "react";
 
 import { InfoCheckbox, TextInput } from "@waldiez/components";
 import { WaldiezNodeAgentData, WaldiezNodeAgentDocAgentData } from "@waldiez/models";
@@ -102,8 +102,52 @@ export const WaldiezDocAgentTab = memo((props: WaldiezDocAgentTabProps) => {
     );
 });
 
+// eslint-disable-next-line max-statements
+const getPlatform = (): string => {
+    try {
+        if (
+            "userAgentData" in navigator &&
+            navigator.userAgentData &&
+            // @ts-expect-error userAgentData is not defined in all browsers
+            "platform" in navigator.userAgentData &&
+            typeof navigator.userAgentData.platform === "string"
+        ) {
+            return navigator.userAgentData.platform.toLowerCase().replace(/\s/g, "");
+        }
+
+        // Fallback to deprecated navigator.platform
+        // noinspection JSDeprecatedSymbols
+        if (navigator.platform) {
+            // noinspection JSDeprecatedSymbols
+            return navigator.platform.toLowerCase().replace(/\s/g, "");
+        }
+
+        // Ultimate fallback - parse user agent string
+        const userAgent = navigator.userAgent.toLowerCase();
+        if (userAgent.includes("mac")) {
+            return "macos";
+        }
+        if (userAgent.includes("win")) {
+            return "windows";
+        }
+        if (userAgent.includes("linux")) {
+            return "linux";
+        }
+        if (userAgent.includes("android")) {
+            return "android";
+        }
+        if (userAgent.includes("iphone") || userAgent.includes("ipad")) {
+            return "ios";
+        }
+
+        return "unknown";
+    } catch {
+        return "unknown";
+    }
+};
+
 const getHelpInstructions = () => {
-    const platform = navigator.platform.toLowerCase();
+    const platform = getPlatform();
     const isMac = platform.includes("mac");
     const isWindows = platform.includes("win");
 

@@ -4,6 +4,8 @@
  */
 import { motion } from "framer-motion";
 
+import React from "react";
+
 import { AGENT_ICONS } from "@waldiez/theme";
 
 const botVariants = [

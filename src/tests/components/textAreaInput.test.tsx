@@ -6,6 +6,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import React from "react";
+
 import { TextareaInput } from "@waldiez/components/textareaInput";
 
 // Mock requestAnimationFrame and keep track of calls

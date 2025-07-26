@@ -15,6 +15,7 @@ afterEach(() => {
 });
 
 describe("Sidebar Import flow modal", () => {
+    // noinspection DuplicatedCode
     it("should open and close the modal", async () => {
         await act(async () => {
             await renderFlow();

@@ -80,7 +80,7 @@ describe("HandoffCondition", () => {
         const mock = vi.fn();
         setup({ conditionType: "string_llm", prompt: "..." }, mock);
         const select = screen.getByRole("combobox");
-        selectEvent.clearFirst(select);
+        await selectEvent.clearFirst(select);
         expect(mock).not.toHaveBeenCalled();
     });
 });

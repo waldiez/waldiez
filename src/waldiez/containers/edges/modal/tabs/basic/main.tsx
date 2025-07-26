@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React from "react";
+
 import { CheckboxInput, InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic/hooks";
 import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
@@ -65,7 +67,7 @@ export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: W
             <div className="margin-top-10" />
             <CheckboxInput
                 label="Clear History"
-                isChecked={data.clearHistory === true}
+                isChecked={data.clearHistory}
                 onCheckedChange={onClearHistoryChange}
                 id={`edge-${edgeId}-clear-history-checkbox`}
             />

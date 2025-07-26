@@ -4,6 +4,8 @@
  */
 import { Edge, Node, ReactFlowInstance, Viewport } from "@xyflow/react";
 
+import React from "react";
+
 import { createWaldiezStore } from "@waldiez/store/creator";
 import {
     IWaldiezAgentStore,

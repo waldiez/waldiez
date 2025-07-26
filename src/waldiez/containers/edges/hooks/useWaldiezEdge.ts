@@ -4,7 +4,7 @@
  */
 import { EdgeProps, getSimpleBezierPath } from "@xyflow/react";
 
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import {
     ValidAgentTypes,
@@ -104,6 +104,7 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
         }
 
         if (type === "chat") {
+            // noinspection SuspiciousTypeOfGuard
             return typeof data.order === "number" ? (data.order >= 0 ? `${data.order + 1}` : "0") : "0";
         }
 

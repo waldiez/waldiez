@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 
 import { Dict, StringList } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 
-export const WaldiezToolAdvancedTab = (props: WaldiezNodeToolModalProps) => {
+export const WaldiezToolAdvancedTab = memo((props: WaldiezNodeToolModalProps) => {
     const { data } = props;
     const {
         onUpdateSecrets,
@@ -61,4 +61,4 @@ export const WaldiezToolAdvancedTab = (props: WaldiezNodeToolModalProps) => {
             />
         </>
     );
-};
+});

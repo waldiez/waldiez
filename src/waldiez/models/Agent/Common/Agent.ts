@@ -6,6 +6,7 @@ import { WaldiezAgentData } from "@waldiez/models/Agent/Common/AgentData";
 import { WaldiezAgentType, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common/types";
 import { capitalize, getId } from "@waldiez/utils";
 
+// noinspection DuplicatedCode
 /**
  * Waldiez Agent.
  * @param id - The id of the agent

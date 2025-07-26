@@ -34,8 +34,8 @@ import { getId } from "@waldiez/utils";
  * @see {@link IWaldiezFlowStore}
  */
 export class WaldiezFlowStore implements IWaldiezFlowStore {
-    private get: typeOfGet;
-    private set: typeOfSet;
+    private readonly get: typeOfGet;
+    private readonly set: typeOfSet;
     /**
      * Creates an instance of WaldiezFlowStore.
      * @param get - A function to get the current state.
@@ -295,11 +295,11 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
         return flowMapper.exportFlow(flow, hideSecrets, false);
     };
     /**
-     * Updates the viewport of the flow.
-     * This method sets the new viewport state and rearranges nodes if necessary.
-     * @param viewport - The new viewport object containing x, y, and zoom properties.
+     * Updates the flow's order.
+     * This method updates the order of the edges in the flow based on the provided data.
+     * @param data - An array of objects containing the edge id and its new order.
      * @returns void
-     * @see {@link IWaldiezFlowStore.updateViewport}
+     * @see {@link IWaldiezFlowStore.updateFlowOrder}
      */
     updateFlowOrder: (data: { id: string; order: number }[]) => void = data => {
         const updatedAt = new Date().toISOString();

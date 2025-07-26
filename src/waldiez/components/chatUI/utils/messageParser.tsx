@@ -58,6 +58,7 @@ const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick:
 
 // eslint-disable-next-line max-statements
 const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (url: string) => void) => {
+    // noinspection RegExpRedundantEscape
     const regex = /\[Image:\s*(.+?)\]/g;
     const parts: React.ReactNode[] = [];
     let lastIdx = 0;

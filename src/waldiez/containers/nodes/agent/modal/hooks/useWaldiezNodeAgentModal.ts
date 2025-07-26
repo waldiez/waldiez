@@ -4,7 +4,7 @@
  */
 import { Node } from "@xyflow/react";
 
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import {
@@ -266,6 +266,7 @@ export const useWaldiezNodeAgentModal = (
                 const docsPath = ragData.retrieveConfig.docsPath;
 
                 // Filter out invalid paths
+                // noinspection SuspiciousTypeOfGuard
                 dataToSubmit.retrieveConfig.docsPath = docsPath.filter(
                     entry => typeof entry === "string" && entry.length > 0 && !entry.startsWith("file:///"),
                 );

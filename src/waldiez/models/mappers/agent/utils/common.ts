@@ -47,6 +47,7 @@ const ValidAgentTypes: WaldiezNodeAgentType[] = [
  */
 export const getAgentId = (data: any, agentId?: string) => {
     let id = `wa-${getId()}`;
+    // noinspection SuspiciousTypeOfGuard
     if (!agentId || typeof agentId !== "string") {
         id = getIdFromJSON(data);
     } else {

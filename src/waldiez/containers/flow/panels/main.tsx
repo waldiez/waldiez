@@ -4,6 +4,7 @@
  */
 import { Panel } from "@xyflow/react";
 
+import React from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaCirclePlay, FaFileImport, FaGithub, FaMoon, FaPython, FaSun } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";

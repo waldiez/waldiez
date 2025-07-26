@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import "@testing-library/jest-dom";
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, vi } from "vitest";
@@ -85,8 +87,9 @@ vi.mock("@monaco-editor/react", async () => {
     return {
         __esModule: true,
         ...(await vi.importActual("@monaco-editor/react")),
-        default: props => {
+        default: (props: any) => {
             return (
+                // @ts-ignore
                 <textarea
                     placeholder="mocked-monaco-editor"
                     data-testid={props["data-testid"] ?? "mocked-monaco-editor"}
@@ -96,8 +99,9 @@ vi.mock("@monaco-editor/react", async () => {
                 ></textarea>
             );
         },
-        Editor: props => {
+        Editor: (props: any) => {
             return (
+                // @ts-ignore
                 <textarea
                     placeholder="mocked-monaco-editor"
                     data-testid={props["data-testid"] ?? "mocked-monaco-editor"}

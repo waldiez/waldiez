@@ -303,16 +303,13 @@ class ErrorHandler {
 }
 class MessageUtils {
   static isPasswordPrompt(data) {
-    if (!data.password) {
+    if (!data.password || typeof data.password !== "string" && typeof data.password !== "boolean") {
       return false;
     }
     if (typeof data.password === "boolean") {
       return data.password;
     }
-    if (typeof data.password === "string") {
-      return data.password.toLowerCase() === "true";
-    }
-    return false;
+    return data.password.toLowerCase() === "true";
   }
   static normalizePrompt(prompt) {
     return MESSAGE_CONSTANTS.GENERIC_PROMPTS.includes(prompt) ? MESSAGE_CONSTANTS.DEFAULT_PROMPT : prompt;
@@ -329,7 +326,7 @@ class MessageUtils {
     const processTextContent = (text) => {
       const matched = text.match(imgRegex);
       if (matched && matched.length === 1) {
-        const mediaUrl = matched[0].replace(imgRegex, `<img src="${imageUrl}" />`);
+        const mediaUrl = matched[0].replace(imgRegex, `<img alt="Image" src="${imageUrl}" />`);
         return {
           type: "image_url",
           image_url: { url: mediaUrl, alt: "Image" }
@@ -391,7 +388,10 @@ class MessageUtils {
         const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
         const matched = content.match(imgRegex);
         if (matched && matched.length === 1) {
-          const imgurlContent = matched[0].replace(imgRegex, `<img src="${imageUrl}" />`);
+          const imgurlContent = matched[0].replace(
+            imgRegex,
+            `<img alt="Image" src="${imageUrl}" />`
+          );
           return [
             {
               type: "image_url",
@@ -4447,7 +4447,7 @@ const getChatData = (json, index) => {
   const available = getHandoffAvailability(json);
   const afterWork = getAfterWork(json);
   const silent = getChatSilent(json);
-  const data = new WaldiezChatData({
+  return new WaldiezChatData({
     sourceType,
     targetType,
     name,
@@ -4467,7 +4467,6 @@ const getChatData = (json, index) => {
     afterWork,
     silent
   });
-  return data;
 };
 const getAgentNodes = (nodes) => {
   const agentNodes = nodes.filter((node) => node.type === "agent");
@@ -4879,7 +4878,7 @@ const getModelData = (jsonData) => {
   const extras = getExtras(jsonData);
   const defaultHeaders = getDefaultHeaders(jsonData);
   const price = getPrice(jsonData);
-  const data = new WaldiezModelData({
+  return new WaldiezModelData({
     baseUrl,
     apiKey,
     apiType,
@@ -4892,7 +4891,6 @@ const getModelData = (jsonData) => {
     defaultHeaders,
     price
   });
-  return data;
 };
 const exportModel = (model, nodes, hideSecrets) => {
   const waldiezModel = modelMapper.exportModel(model, hideSecrets);
@@ -5622,6 +5620,8 @@ const flowMapper = {
   /**
    * Convert a react flow instance to a WaldiezFlow.
    * @param flow - The WaldiezFlowProps to convert
+   * @param hideSecrets - Whether to hide secrets in the exported data
+   * @param skipLinks - Whether to skip links in the exported data
    * @returns The WaldiezFlow instance
    */
   exportFlow: (flow, hideSecrets, skipLinks = false) => {
@@ -6212,6 +6212,7 @@ const setViewPortTopLeft = (rfInstance) => {
       zoom,
       x: 20,
       y: 40
+    }).then(() => {
     });
   }
 };
@@ -7272,8 +7273,7 @@ const useImageRetry = (maxRetries = 3, retryDelay = 1e3) => {
         if (retryCount < maxRetries) {
           retries.current.set(url, retryCount + 1);
           setTimeout(() => {
-            const retryUrl = `${url}${url.includes("?") ? "&" : "?"}retry=${retryCount + 1}`;
-            img.src = retryUrl;
+            img.src = `${url}${url.includes("?") ? "&" : "?"}retry=${retryCount + 1}`;
           }, retryDelay);
         } else {
           img.classList.remove("loading");
@@ -11446,8 +11446,7 @@ const getNewEdgeNodes = (allNodes, source, target) => {
 const getNewEdgeName = (sourceNode, targetNode) => {
   const sourceLabel = sourceNode.data.label.slice(0, 15);
   const targetLabel = targetNode.data.label.slice(0, 15);
-  const edgeName = `${sourceLabel} => ${targetLabel}`;
-  return edgeName;
+  return `${sourceLabel} => ${targetLabel}`;
 };
 const getNewChatType = (sourceNode, targetNode, hidden) => {
   if (hidden) {
@@ -11591,10 +11590,7 @@ const resetEdgeOrdersAndPositions = (get, set) => {
 const shouldReconnect = (newConnection, nodes) => {
   const newTarget = nodes.find((node) => node.id === newConnection.target);
   const newSource = nodes.find((node) => node.id === newConnection.source);
-  if (!newSource || !newTarget) {
-    return false;
-  }
-  return true;
+  return !(!newSource || !newTarget);
 };
 const getNewEdgeConnectionProps = (oldEdge, newConnection, nodes) => {
   let oldSourceNode;
@@ -11725,7 +11721,7 @@ const resetEdgePrerequisites = (edges, get, set) => {
 };
 const resetEdgeOrders = (get, set) => {
   const isAsync = get().isAsync;
-  isAsync === true ? resetAsyncEdgeOrders(get, set) : resetSyncEdgeOrders(get, set);
+  isAsync ? resetAsyncEdgeOrders(get, set) : resetSyncEdgeOrders(get, set);
 };
 const resetEdgePositions = (get, set) => {
   const edges = get().edges;
@@ -11848,8 +11844,7 @@ const selectivelyOverrideOrMergeFlow = (items, currentFlow, newFlow, typeShown, 
   const newFlowNodesToUse = newFlow.nodes.filter((node) => itemNodeIds.includes(node.id));
   const mergedNodes = items.override ? newFlowNodesToUse : mergeNodes(currentFlow.nodes, newFlowNodesToUse, typeShown);
   mergedFlow.nodes = mergedNodes;
-  const mergedEdges = items.override ? newFlow.edges : mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges);
-  mergedFlow.edges = mergedEdges;
+  mergedFlow.edges = items.override ? newFlow.edges : mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges);
 };
 const isEdgeAnimated = (edge, nodes) => {
   if (edge.type === "nested") {
@@ -12781,11 +12776,11 @@ class WaldiezFlowStore {
     return flowMapper.exportFlow(flow, hideSecrets, false);
   };
   /**
-   * Updates the viewport of the flow.
-   * This method sets the new viewport state and rearranges nodes if necessary.
-   * @param viewport - The new viewport object containing x, y, and zoom properties.
+   * Updates the flow's order.
+   * This method updates the order of the edges in the flow based on the provided data.
+   * @param data - An array of objects containing the edge id and its new order.
    * @returns void
-   * @see {@link IWaldiezFlowStore.updateViewport}
+   * @see {@link IWaldiezFlowStore.updateFlowOrder}
    */
   updateFlowOrder = (data) => {
     const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
@@ -13456,13 +13451,12 @@ class WaldiezToolStore {
     const flowId = this.get().flowId;
     const position = getNewNodePosition(toolsCount, flowId, rfInstance);
     const label = tool.data.label + " (copy)";
-    const clonedTool = {
+    return {
       ...tool,
       id: `wt-${getId()}`,
       data: { ...tool.data, label, createdAt, updatedAt },
       position
     };
-    return clonedTool;
   };
   /**
    * Gets the agent after a tool has been deleted.
@@ -13602,7 +13596,7 @@ const zundoEquality = (pastState, currentState) => {
   if (diffs.length === 0) {
     return true;
   }
-  const equal = diffs.every((diff2) => {
+  return diffs.every((diff2) => {
     if (diff2.type === "CREATE" && diff2.path.length === 2) {
       return false;
     }
@@ -13612,12 +13606,8 @@ const zundoEquality = (pastState, currentState) => {
     if (diff2.path.includes("nodes") && diff2.path.includes("data")) {
       return false;
     }
-    if (diff2.path.includes("edges") && diff2.path.includes("data") && !diff2.path.includes("position")) {
-      return false;
-    }
-    return true;
+    return !(diff2.path.includes("edges") && diff2.path.includes("data") && !diff2.path.includes("position"));
   });
-  return equal;
 };
 function WaldiezProvider({ children, ...props }) {
   const storeRef = useRef(void 0);
@@ -13845,7 +13835,7 @@ const useKeys = (flowId, onSave) => {
   const deleteModel = useWaldiez((s) => s.deleteModel);
   const deleteTool = useWaldiez((s) => s.deleteTool);
   const saveFlow = useWaldiez((s) => s.saveFlow);
-  const listenForSave = typeof onSave === "function" && isReadOnly === false;
+  const listenForSave = typeof onSave === "function" && !isReadOnly;
   const isFlowVisible = () => {
     const rootDiv = getFlowRoot(flowId);
     if (!rootDiv) {
@@ -13981,12 +13971,14 @@ const useFlowEvents = (flowId) => {
               includeHiddenNodes: false,
               padding: 0.2,
               duration: 100
+            }).then(() => {
+              setRfInstance(instance);
             });
-            setRfInstance(instance);
           });
         });
       } else {
-        instance.setViewport({ x: 0, y: 0, zoom: 1 });
+        instance.setViewport({ x: 0, y: 0, zoom: 1 }).then(() => {
+        });
         setRfInstance(instance);
       }
     },
@@ -16633,7 +16625,7 @@ const WaldiezEdgeBasicTab = (props) => {
       CheckboxInput,
       {
         label: "Clear History",
-        isChecked: data.clearHistory === true,
+        isChecked: data.clearHistory,
         onCheckedChange: onClearHistoryChange,
         id: `edge-${edgeId}-clear-history-checkbox`
       }
@@ -17662,8 +17654,7 @@ const WaldiezNodeAgentBody = memo(
     if (agentType === "user_proxy") {
       return /* @__PURE__ */ jsx("div", { className: "agent-content", children: /* @__PURE__ */ jsx("div", { className: "agent-label margin-top-20", "data-testid": `agent-${id}-label`, children: data.label }) });
     }
-    const agentContentView = useAgentContentView(id, data);
-    return agentContentView;
+    return useAgentContentView(id, data);
   }
 );
 const useAgentContentView = (id, data) => {
@@ -17912,14 +17903,14 @@ const useWaldiezNodeAgent = (id) => {
   const [isDragging, setIsDragging] = useState(false);
   const isModalOpen = useMemo(() => isNodeModalOpen || isEdgeModalOpen, [isNodeModalOpen, isEdgeModalOpen]);
   const onDelete = useCallback(() => {
-    if (isReadOnly === true || isModalOpen) {
+    if (isReadOnly || isModalOpen) {
       return;
     }
     deleteAgent(id);
     onFlowChanged();
   }, [isReadOnly, isModalOpen, deleteAgent, id, onFlowChanged]);
   const onClone = useCallback(() => {
-    if (isReadOnly === true || isModalOpen) {
+    if (isReadOnly || isModalOpen) {
       return;
     }
     cloneAgent(id);
@@ -19599,8 +19590,38 @@ const WaldiezDocAgentTab = memo((props) => {
     ) })
   ] });
 });
+const getPlatform = () => {
+  try {
+    if ("userAgentData" in navigator && navigator.userAgentData && // @ts-expect-error userAgentData is not defined in all browsers
+    "platform" in navigator.userAgentData && typeof navigator.userAgentData.platform === "string") {
+      return navigator.userAgentData.platform.toLowerCase().replace(/\s/g, "");
+    }
+    if (navigator.platform) {
+      return navigator.platform.toLowerCase().replace(/\s/g, "");
+    }
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes("mac")) {
+      return "macos";
+    }
+    if (userAgent.includes("win")) {
+      return "windows";
+    }
+    if (userAgent.includes("linux")) {
+      return "linux";
+    }
+    if (userAgent.includes("android")) {
+      return "android";
+    }
+    if (userAgent.includes("iphone") || userAgent.includes("ipad")) {
+      return "ios";
+    }
+    return "unknown";
+  } catch {
+    return "unknown";
+  }
+};
 const getHelpInstructions = () => {
-  const platform = navigator.platform.toLowerCase();
+  const platform = getPlatform();
   const isMac = platform.includes("mac");
   const isWindows = platform.includes("win");
   if (isMac) {
@@ -22239,7 +22260,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
       {
         label: "Verbose",
         info: "When enabled, the agent will provide additional information about the reasoning process.",
-        checked: data.verbose === true,
+        checked: data.verbose,
         onChange: onVerboseChange,
         id: `agent-reasoning-verbose-toggle-${id}`,
         "aria-label": "Enable verbose reasoning output"
@@ -25254,7 +25275,7 @@ const useToolNodeModal = (props) => {
     onSetToolKwarg
   };
 };
-const WaldiezToolAdvancedTab = (props) => {
+const WaldiezToolAdvancedTab = memo((props) => {
   const { data } = props;
   const {
     onUpdateSecrets,
@@ -25314,7 +25335,7 @@ const WaldiezToolAdvancedTab = (props) => {
       }
     )
   ] });
-};
+});
 const WaldiezToolBasicTab = memo((props) => {
   const { toolId, data, darkMode } = props;
   const {
@@ -26578,7 +26599,14 @@ const SideBar = (props) => {
                 onDragStart: onUserDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.user_proxy, title: "User Proxy Agent" }),
+                  /* @__PURE__ */ jsx(
+                    "img",
+                    {
+                      src: AGENT_ICONS.user_proxy,
+                      alt: "User proxy icon",
+                      title: "User Proxy Agent"
+                    }
+                  ),
                   "User"
                 ]
               }
@@ -26591,7 +26619,14 @@ const SideBar = (props) => {
                 onDragStart: onAssistantDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.assistant, title: "Assistant Agent" }),
+                  /* @__PURE__ */ jsx(
+                    "img",
+                    {
+                      alt: "Assistant agent icon",
+                      src: AGENT_ICONS.assistant,
+                      title: "Assistant Agent"
+                    }
+                  ),
                   "Assistant"
                 ]
               }
@@ -26604,7 +26639,7 @@ const SideBar = (props) => {
                 onDragStart: onDocDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
+                  /* @__PURE__ */ jsx("img", { alt: "Doc agent icon", src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
                   "Docs Agent"
                 ]
               }
@@ -26617,7 +26652,14 @@ const SideBar = (props) => {
                 onDragStart: onReasoningDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.reasoning, title: "Reasoning Agent" }),
+                  /* @__PURE__ */ jsx(
+                    "img",
+                    {
+                      alt: "Reasoning agent icon",
+                      src: AGENT_ICONS.reasoning,
+                      title: "Reasoning Agent"
+                    }
+                  ),
                   "Reasoning"
                 ]
               }
@@ -26630,7 +26672,7 @@ const SideBar = (props) => {
                 onDragStart: onCaptainDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.captain, title: "Captain Agent" }),
+                  /* @__PURE__ */ jsx("img", { alt: "Captain agent icon", src: AGENT_ICONS.captain, title: "Captain Agent" }),
                   "Captain"
                 ]
               }
@@ -26643,7 +26685,14 @@ const SideBar = (props) => {
                 onDragStart: onManagerDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { src: AGENT_ICONS.group_manager, title: "Group Manager Agent" }),
+                  /* @__PURE__ */ jsx(
+                    "img",
+                    {
+                      alt: "Group manager icon",
+                      src: AGENT_ICONS.group_manager,
+                      title: "Group Manager Agent"
+                    }
+                  ),
                   "Group Manager"
                 ]
               }

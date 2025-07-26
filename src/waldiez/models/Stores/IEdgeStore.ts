@@ -4,6 +4,8 @@
  */
 import { Connection, Edge, EdgeChange } from "@xyflow/react";
 
+import React from "react";
+
 import {
     WaldiezEdge,
     WaldiezEdgeData,

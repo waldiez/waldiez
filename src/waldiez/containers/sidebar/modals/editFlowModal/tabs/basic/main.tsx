@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import React from "react";
+
 import { CheckboxInput, TextareaInput } from "@waldiez/components";
 import { HandleASyncChatOrderAndPrerequisites } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/asyncChat";
 import { HandleSyncChatOrder } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/syncChat";

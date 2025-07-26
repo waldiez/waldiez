@@ -15,14 +15,6 @@ export type WebSocketMessage = {
     input?: WaldiezChatUserInput;
 };
 
-export type DataContent =
-    | string
-    | boolean
-    | number
-    | string[]
-    | { [key: string]: unknown }
-    | { [key: string]: unknown }[];
-
 export type WebSocketResponse = {
     type: string;
     request_id?: string;

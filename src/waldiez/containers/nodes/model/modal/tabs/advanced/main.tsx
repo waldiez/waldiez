@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { memo } from "react";
+import React, { memo } from "react";
 
 import { Dict, NumberInput, StringList } from "@waldiez/components";
 import { useModelModalAdvancedTab } from "@waldiez/containers/nodes/model/modal/tabs/advanced/hooks";

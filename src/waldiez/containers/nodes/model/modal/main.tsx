@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Modal, TabItem, TabItems } from "@waldiez/components";
 import {

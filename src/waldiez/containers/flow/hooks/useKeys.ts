@@ -17,7 +17,7 @@ export const useKeys = (flowId: string, onSave?: ((flow: string) => void) | null
     const deleteModel = useWaldiez(s => s.deleteModel);
     const deleteTool = useWaldiez(s => s.deleteTool);
     const saveFlow = useWaldiez(s => s.saveFlow);
-    const listenForSave = typeof onSave === "function" && isReadOnly === false;
+    const listenForSave = typeof onSave === "function" && !isReadOnly;
     const isFlowVisible = () => {
         // if on jupyter, we might have more than one tabs with a flow
         // let's check if the current flow is visible (i.e. we are in the right tab)

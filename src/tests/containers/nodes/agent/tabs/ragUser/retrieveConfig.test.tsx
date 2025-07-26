@@ -57,6 +57,7 @@ describe("Rag User tab Retrieve Config", () => {
         submitAgentChanges();
     });
     it("should add a docs path", async () => {
+        // noinspection DuplicatedCode
         await goToRetrieveConfigTab();
         const docsPathInput = screen.getByTestId("new-list-entry-rag-doc-item") as HTMLInputElement;
         expect(docsPathInput).toBeInTheDocument();
@@ -71,6 +72,7 @@ describe("Rag User tab Retrieve Config", () => {
         submitAgentChanges();
     });
     it("should remove a docs path", async () => {
+        // noinspection DuplicatedCode
         await goToRetrieveConfigTab();
         const docsPathInput = screen.getByTestId("new-list-entry-rag-doc-item") as HTMLInputElement;
         expect(docsPathInput).toBeInTheDocument();

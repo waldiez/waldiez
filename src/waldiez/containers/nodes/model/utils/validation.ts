@@ -18,7 +18,6 @@ export enum ValidationMessage {
     ApiError = "API error",
     AzureApiError = "Azure API error",
     ModelFetchFailed = "Model fetch failed",
-    ResponseParseError = "Failed to parse response",
     InvalidResponse = "Invalid response",
     CouldNotFetchModel = "Could not fetch model",
     CouldNotGetAResponse = "Could not get a response from the model's endpoint",
@@ -238,7 +237,7 @@ const validateAzureModel = async (
 };
 /**
  * Validate a bedrock model
- * @param headers - Request headers
+ * @param additionalHeaders - Additional headers for the request
  * @param modelName - Model name to validate
  * @param aws - AWS configuration
  * @returns Validation result

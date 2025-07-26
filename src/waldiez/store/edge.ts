@@ -39,8 +39,8 @@ type Connection = {
  * @see {@link IWaldiezEdgeStore}
  */
 export class WaldiezEdgeStore implements IWaldiezEdgeStore {
-    private get: typeOfGet;
-    private set: typeOfSet;
+    private readonly get: typeOfGet;
+    private readonly set: typeOfSet;
 
     /**
      * Creates an instance of WaldiezEdgeStore.

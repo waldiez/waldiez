@@ -5,6 +5,8 @@
 import { render, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import React from "react";
+
 import { WaldiezThemeProvider, isInitiallyDark, setIsDarkMode, useWaldiezTheme } from "@waldiez/theme";
 
 describe("WaldiezThemeProvider", () => {

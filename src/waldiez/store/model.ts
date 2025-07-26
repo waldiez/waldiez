@@ -23,8 +23,8 @@ import { getId } from "@waldiez/utils/ids";
  * @see {@link IWaldiezModelStore}
  */
 export class WaldiezModelStore implements IWaldiezModelStore {
-    private get: typeOfGet;
-    private set: typeOfSet;
+    private readonly get: typeOfGet;
+    private readonly set: typeOfSet;
     /**
      * Creates an instance of WaldiezModelStore.
      * @param get - A function to get the current state of the store.

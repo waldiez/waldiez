@@ -116,7 +116,11 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onUserDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.user_proxy} title="User Proxy Agent" />
+                            <img
+                                src={AGENT_ICONS.user_proxy}
+                                alt="User proxy icon"
+                                title="User Proxy Agent"
+                            />
                             User
                         </div>
                         <div
@@ -125,7 +129,11 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onAssistantDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.assistant} title="Assistant Agent" />
+                            <img
+                                alt="Assistant agent icon"
+                                src={AGENT_ICONS.assistant}
+                                title="Assistant Agent"
+                            />
                             Assistant
                         </div>
                         <div
@@ -134,7 +142,7 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onDocDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.doc_agent} title="Document Agent" />
+                            <img alt="Doc agent icon" src={AGENT_ICONS.doc_agent} title="Document Agent" />
                             Docs Agent
                         </div>
                         <div
@@ -143,7 +151,11 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onReasoningDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.reasoning} title="Reasoning Agent" />
+                            <img
+                                alt="Reasoning agent icon"
+                                src={AGENT_ICONS.reasoning}
+                                title="Reasoning Agent"
+                            />
                             Reasoning
                         </div>
                         <div
@@ -152,7 +164,7 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onCaptainDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.captain} title="Captain Agent" />
+                            <img alt="Captain agent icon" src={AGENT_ICONS.captain} title="Captain Agent" />
                             Captain
                         </div>
                         <div
@@ -161,7 +173,11 @@ export const SideBar = (props: SidebarViewProps) => {
                             onDragStart={onManagerDragStart}
                             draggable
                         >
-                            <img src={AGENT_ICONS.group_manager} title="Group Manager Agent" />
+                            <img
+                                alt="Group manager icon"
+                                src={AGENT_ICONS.group_manager}
+                                title="Group Manager Agent"
+                            />
                             Group Manager
                         </div>
                     </>

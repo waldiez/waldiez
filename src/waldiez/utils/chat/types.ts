@@ -168,7 +168,6 @@ export type WaldiezChatMessageProcessingResult = {
  * It includes an array of participant objects, each with a name and additional properties.
  * @param participants - An array of participant objects.
  * @param participants.name - The name of the participant.
- * @param participants\[key: string] - Additional properties for the participant.
  */
 export type ParticipantsData = {
     participants: Array<{

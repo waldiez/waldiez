@@ -6,12 +6,12 @@ import { nanoid } from "nanoid";
 
 import { WaldiezChatContent, WaldiezMediaContent } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import { BaseMessageData, InputRequestData } from "@waldiez/utils/chat/types";
+import { BaseMessageData } from "@waldiez/utils/chat/types";
 
 // Utility functions
 export class MessageUtils {
-    static isPasswordPrompt(data: InputRequestData): boolean {
-        if (!data.password) {
+    static isPasswordPrompt(data: any): boolean {
+        if (!data.password || (typeof data.password !== "string" && typeof data.password !== "boolean")) {
             return false;
         }
 
@@ -19,11 +19,7 @@ export class MessageUtils {
             return data.password;
         }
 
-        if (typeof data.password === "string") {
-            return data.password.toLowerCase() === "true";
-        }
-
-        return false;
+        return data.password.toLowerCase() === "true";
     }
 
     static normalizePrompt(prompt: string): string {
@@ -48,7 +44,7 @@ export class MessageUtils {
         const processTextContent = (text: string) => {
             const matched = text.match(imgRegex);
             if (matched && matched.length === 1) {
-                const mediaUrl = matched[0].replace(imgRegex, `<img src="${imageUrl}" />`);
+                const mediaUrl = matched[0].replace(imgRegex, `<img alt="Image" src="${imageUrl}" />`);
                 return {
                     type: "image_url" as const,
                     image_url: { url: mediaUrl, alt: "Image" },
@@ -131,7 +127,10 @@ export class MessageUtils {
                 const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
                 const matched = content.match(imgRegex);
                 if (matched && matched.length === 1) {
-                    const imgurlContent = matched[0].replace(imgRegex, `<img src="${imageUrl}" />`);
+                    const imgurlContent = matched[0].replace(
+                        imgRegex,
+                        `<img alt="Image" src="${imageUrl}" />`,
+                    );
                     return [
                         {
                             type: "image_url",
@@ -153,6 +152,7 @@ export class MessageUtils {
             }) as WaldiezChatContent;
         }
         if (typeof content === "object" && content !== null && "type" in content) {
+            // noinspection SuspiciousTypeOfGuard
             if (content.type === "text" && typeof content.text === "string") {
                 return [{ type: "text", text: content.text }];
             }

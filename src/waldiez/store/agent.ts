@@ -25,8 +25,8 @@ import { getId } from "@waldiez/utils";
  * @see {@link IWaldiezAgentStore}
  */
 export class WaldiezAgentStore implements IWaldiezAgentStore {
-    private get: typeOfGet;
-    private set: typeOfSet;
+    private readonly get: typeOfGet;
+    private readonly set: typeOfSet;
     /**
      * Constructor for the WaldiezAgentStore class.
      * @param get - Function to get the current state of the store.

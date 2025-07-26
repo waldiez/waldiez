@@ -10,7 +10,7 @@ import { parseMessageContent } from "@waldiez/components/chatUI/utils/messagePar
 // Mock ImageWithRetry and Markdown
 vi.mock("@waldiez/components/chatUI/imageWithRetry", () => ({
     ImageWithRetry: ({ src, onClick }: any) => (
-        <img data-testid="image" src={src} onClick={() => onClick(src)} />
+        <img alt="Image" data-testid="image" src={src} onClick={() => onClick(src)} />
     ),
 }));
 
