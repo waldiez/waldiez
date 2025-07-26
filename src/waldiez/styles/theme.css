@@ -115,7 +115,7 @@ body.waldiez-light .modal-root button {
   color: #111;
 }
 
-body.waldiez-light .flow-wrapper button,
+body.waldiez-dark .flow-wrapper button,
 body.waldiez-dark .modal-root button {
   border: 1px solid #444;
   background-color: #222;

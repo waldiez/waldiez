@@ -22,12 +22,9 @@
   border-color: #3b82f6;
 }
 
-body.waldiez-dark .select,
-body.waldiez-dark .select * {
-  background-color: #222;
-  color: #f8f8f8;
-  border-radius: 4px;
-  border: none;
+.w-select__menu-portal {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 body.waldiez-light .w-select__menu {

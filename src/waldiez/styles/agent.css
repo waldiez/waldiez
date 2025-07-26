@@ -171,7 +171,6 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
 
 .agent-node .agent-model-name,
 .agent-node .agent-tool-name {
-  color: var(--text-secondary-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

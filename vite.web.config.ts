@@ -2,6 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import path from "path";
@@ -14,6 +18,7 @@ import { transformPublicFiles } from "./vite.plugins";
 dotenv.config({ quiet: true, encoding: "utf8" });
 const normalizedResolve = (...paths: string[]): string => normalizePath(path.resolve(__dirname, ...paths));
 
+// noinspection DuplicatedCode
 /**
  * Get the version from package.json, ensuring it is a valid semver.
  * @returns - The version string, cleaned and validated.
@@ -60,7 +65,7 @@ const getHubUrl = (): string => {
 /**
  * Get the public directory based on the command.
  * If building, only include the logo directory; otherwise, include all public assets.
- * @param command - The command being executed, either "build" or "serve".
+ * @param _command - The command being executed, either "build" or "serve".
  * @returns - The path to the public directory.
  */
 const getPublicDir = (_command: "build" | "serve"): string => {
@@ -92,9 +97,15 @@ export default defineConfig(({ command }) => {
             outDir: normalizedResolve(__dirname, "out", "static"),
             rollupOptions: {
                 output: {
-                    manualChunks(id) {
+                    manualChunks: function (id) {
                         if (id.includes("node_modules")) {
-                            return id.toString().split("node_modules/")[1].split("/")[0].toString();
+                            // Split the path to get the package name
+                            const parts = id.split("node_modules/");
+                            if (parts.length > 0 && parts[1]) {
+                                // Return the package name, which is the first part after "node_modules/"
+                                return parts[1].split("/")[0];
+                            }
+                            // return id.toString().split("node_modules/")[1].split("/")[0].toString();
                         }
                     },
                 },
