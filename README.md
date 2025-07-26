@@ -34,7 +34,7 @@ python -m pip install git+https://github.com/waldiez/waldiez.git
 
 If you’re looking for the React component, please refer to [README.npm](https://github.com/waldiez/waldiez/blob/main/README.npm.md).
 
-> Note: The React component is only for creating and editing flows — it is not needed to convert or run flows (that functionality is handled by the Python package).
+> Note: The React component is only for creating and editing flows — it is not used for converting or running flows (that functionality is handled by the Python package).
 
 To add the waldiez library to your app:
 
@@ -137,14 +137,15 @@ $CONTAINER_COMMAND run --rm -it \
 
 ### As a library
 
-#### Export a flow
+#### Generate a script or a notebook from a flow
 
 ```python
 # Export a Waldiez flow to a python script or a jupyter notebook
+from pathlib import Path
 from waldiez import WaldiezExporter
 flow_path = "/path/to/a/flow.waldiez"
 output_path = "/path/to/an/output.py"  # or .ipynb
-exporter = WaldiezExporter.load(flow_path)
+exporter = WaldiezExporter.load(Path(flow_path))
 exporter.export(output_path)
 ```
 
@@ -152,10 +153,11 @@ exporter.export(output_path)
 
 ```python
 # Run a flow
+from pathlib import Path
 from waldiez import WaldiezRunner
 flow_path = "/path/to/a/flow.waldiez"
 output_path = "/path/to/an/output.py"
-runner = WaldiezRunner.load(flow_path)
+runner = WaldiezRunner.load(Path(flow_path))
 runner.run(output_path=output_path)
 ```
 
@@ -193,6 +195,7 @@ runner.run(output_path=output_path)
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
+<!--suppress ALL -->
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -210,8 +213,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" size="13px" colspan="7">
         <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
-          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
-        </img>
+        <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
       </td>
     </tr>
   </tfoot>
