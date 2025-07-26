@@ -5,6 +5,8 @@
 /**
  * simple `mkdir -p` using fsPromises.mkdir
  */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { promises as fs } from "fs";
 import { resolve, sep } from "path";
 

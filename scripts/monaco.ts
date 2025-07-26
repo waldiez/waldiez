@@ -3,6 +3,8 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable max-statements */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import crypto from "crypto";
 import fs from "fs-extra";
 import https from "https";

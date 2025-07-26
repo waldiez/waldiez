@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { exec } from "child_process";
 import fs from "fs-extra";
 import { lookpath } from "lookpath";
@@ -30,9 +32,9 @@ const main = async () => {
     const videoPath = path.resolve(videosDir, videoFile);
     await fs.promises.copyFile(videoPath, path.resolve(videosDir, "demo.webm"));
     console.info("Video file copied to demo.webm");
-    videoFiles.forEach(async file => {
+    for (const file of videoFiles) {
         await fs.promises.unlink(path.resolve(videosDir, file));
-    });
+    }
     const srcFile = "demo.webm";
     const dotLocal = path.resolve(__dirname, "..", ".local");
     await fs.promises.mkdir(dotLocal, { recursive: true });

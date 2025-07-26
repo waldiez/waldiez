@@ -13,12 +13,6 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 $HERE = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $ROOT_DIR = Split-Path -Parent -Path $HERE
 
-$requirementsFiles = @(
-    (Join-Path -Path $ROOT_DIR -ChildPath "requirements" -AdditionalChildPath "main.txt"),
-    (Join-Path -Path $ROOT_DIR -ChildPath "requirements" -AdditionalChildPath "dev.txt"),
-    (Join-Path -Path $ROOT_DIR -ChildPath "requirements" -AdditionalChildPath "test.txt")
-)
-
 Set-Location -Path $ROOT_DIR
 
 function Update-Pip {

@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import fs from "fs-extra";
-import path from "path";
-import url from "url";
+import * as fs from "fs-extra";
+import * as path from "path";
+import * as url from "url";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

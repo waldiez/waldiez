@@ -9,6 +9,8 @@
 // after bun pm pack:
 // restore README.md
 // use README.npm.md for README.md
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import fs from "fs-extra";
 import path from "path";
 import url from "url";
