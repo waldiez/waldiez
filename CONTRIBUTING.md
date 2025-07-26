@@ -4,7 +4,7 @@ Thank you for your interest in contributing to our projects! This document outli
 
 ## [Project Specific Guidelines]
 
-This project consists of two components:
+This project consists of two parts:
 
 - A **Python package**, located in the `waldiez` folder, built using [`hatch`](https://hatch.pypa.io/latest/)
 - A **TypeScript (React) library and web application**, located in the `src` folder, built using [`bun`](https://bun.sh/)
@@ -19,22 +19,22 @@ The Python backend is a package managed primarily using [Hatch](https://hatch.py
 
 1. Install Hatch:
 
-```shell
-pip install hatch
-```
+    ```shell
+    pip install hatch
+    ```
 
 2. Create the dev environment:
-
-```shell
-hatch env create
-hatch shell
-```
+    
+    ```shell
+    hatch env create
+    hatch shell
+    ```
 
 3. All optional dependencies are managed via extras (`dev`, `test`, `docs`, etc.), and available via:
-
-```shell
-hatch run pip list
-```
+    
+    ```shell
+    hatch run pip list
+    ```
 
 ---
 
@@ -42,22 +42,22 @@ hatch run pip list
 
 1. Install uv:
 
-```shell
-pip install uv
-```
+    ```shell
+    pip install uv
+    ```
 
 2. Create and activate an environment:
-
-```shell
-uv venv --python 3.12
-source .venv/bin/activate   # Windows: .venv\\Scripts\\activate
-```
+    
+    ```shell
+    uv venv --python 3.12
+    source .venv/bin/activate   # Windows: .venv\\Scripts\\activate
+    ```
 
 3. Install extras:
-
-```shell
-uv pip install '.[dev,test,docs]'
-```
+    
+    ```shell
+    uv pip install '.[dev,test,docs]'
+    ```
 
 ---
 
@@ -66,21 +66,21 @@ uv pip install '.[dev,test,docs]'
 This project also supports traditional requirements-based setup:
 
 1. Create a virtualenv:
-
-```shell
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\\Scripts\\activate
-```
+    
+    ```shell
+    python -m venv .venv
+    source .venv/bin/activate   # Windows: .venv\\Scripts\\activate
+    ```
 
 2. Install dependencies:
-
-```shell
-pip install -r requirements/all.txt
-# or (to manually select what you need):
-pip install -r requirements/dev.txt
-pip install -r requirements/test.txt
-pip install -r requirements/docs.txt
-```
+    
+    ```shell
+    pip install -r requirements/all.txt
+    # or (to manually select what you need):
+    pip install -r requirements/dev.txt
+    pip install -r requirements/test.txt
+    pip install -r requirements/docs.txt
+    ```
 
 > If using this method, you won’t have access to Hatch’s `hatch run` commands. Instead, use:
 >
@@ -170,14 +170,14 @@ hatch run build
 
 To generate the documentation:
 
-> Note: For the "full" documentation (and the react related parts), we should first generate the React markdown files using `bun docs`.
+> Note: For the "full" documentation (and the React related parts), we should first generate the React related md files using `bun docs`.
 > Then, we can generate the full documentation using:
 
 ```shell
 hatch run docs
 ```
 
-To run all checks + matrix tests + docs + build:
+To run all checks, matrix tests, docs, build:
 
 ```shell
 hatch run all
@@ -202,16 +202,16 @@ The React frontend is a TypeScript project built with [Bun](https://bun.sh/), an
 
 1. Clone the repository if not already done:
 
-```shell
-git clone https://github.com/waldiez/waldiez.git -b dev
-cd waldiez
-```
+    ```shell
+    git clone https://github.com/waldiez/waldiez.git -b dev
+    cd waldiez
+    ```
 
 2. Install the dependencies:
 
-```shell
-bun install
-```
+    ```shell
+    bun install
+    ```
 
 ---
 
@@ -301,7 +301,7 @@ Full build pipeline (library + web app + archive):
 bun run build
 ```
 
-Build documentation (this will only generate the React markdown files in `docs/reference/react`):
+Build documentation (this will only generate the React related md files in `docs/reference/react`):
 
 ```shell
 bun docs
@@ -360,34 +360,34 @@ This will:
 
 1. Ensure lint and tests pass:
 
-```shell
-# either on the react part:
-bun format
-bun lint
-bun test
-bun schema
-# or on the python part:
-hatch run format
-hatch run lint
-hatch run test
-# or the make/python way:
-make forlint
-make test
-```
+    ```shell
+    # either on the react part:
+    bun format
+    bun lint
+    bun test
+    bun schema
+    # or on the python part:
+    hatch run format
+    hatch run lint
+    hatch run test
+    # or the make/python way:
+    make forlint
+    make test
+    ```
 
 2. Optionally (but recommended) ensure everything (Python + React) is working:
 
-```shell
-# or ./scripts/do.{sh,ps1} all
-./do all
-```
+    ```shell
+    # or ./scripts/do.{sh,ps1} all
+    ./do all
+    ```
 
 3. Commit and push:
 
-```shell
-git commit -m "feat: my feature"
-git push origin feature/my-feature
-```
+    ```shell
+    git commit -m "feat: my feature"
+    git push origin feature/my-feature
+    ```
 
 4. Open a pull request targeting the `dev` branch.
 
@@ -439,7 +439,7 @@ If you would like to contribute code changes, please follow these steps:
 
 ## Contributor License Agreement (CLA)
 
-By submitting code changes, you agree to the terms of our [Contributor License Agreement (CLA)](https://github.com/waldiez/waldiez/blob/main//governance/CLA.md). Please read the CLA carefully before submitting your changes. If you have any questions or concerns about the CLA, please contact us, and we will be happy to assist you.
+By submitting code changes, you agree to the terms of our [Contributor License Agreement (CLA)](https://github.com/waldiez/waldiez/blob/main//governance/CLA.md). Please read the CLA carefully before submitting your changes. If you have any questions or concerns about the CLA, please contact us, and we will be happy to help you.
 
 ## Developer Certificate of Origin (DCO)
 
@@ -451,4 +451,4 @@ If you discover a security vulnerability in any of our projects, please report i
 
 ## License
 
-By contributing to Waldiez projects, you agree to the terms of our [License](https://github.com/waldiez/waldiez/blob/main/LICENSE). Please read the license carefully before submitting your contributions. If you have any questions or concerns about the license, please contact us, and we will be happy to assist you.
+By contributing to Waldiez projects, you agree to the terms of our [License](https://github.com/waldiez/waldiez/blob/main/LICENSE). Please read the license carefully before submitting your contributions. If you have any questions or concerns about the license, please contact us, and we will be happy to help you.
