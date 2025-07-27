@@ -37,7 +37,7 @@ ag2[websurfer]==0.9.7
 ag2[wikipedia]==0.9.7
 chromadb>=0.5.10;sys_platform != 'win32'
 chromadb>=0.5.10;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-couchbase>=4.3.0
+couchbase>=4.4.0
 fastembed>=0.3.1
 pgvector>=0.4.0
 psycopg>=3.2.6;sys_platform == 'linux'
