@@ -120,9 +120,11 @@
 }
 
 .react-flow__controls-button {
-  padding: 8px !important;
+  padding: 10px !important;
   margin: 4px !important;
   border: none !important;
+  width: 30px !important;
+  height: 30px !important;
 }
 
 .react-flow__background-pattern.dots {
