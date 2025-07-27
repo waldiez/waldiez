@@ -120,9 +120,6 @@
 }
 
 .react-flow__controls-button {
-  width: 20px !important;
-  height: 20px !important;
-  border-radius: 50% !important;
   padding: 8px !important;
   margin: 4px !important;
   border: none !important;

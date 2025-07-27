@@ -28,13 +28,13 @@
 }
 
 .checkbox-root[data-state="checked"] {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
 }
 
 .checkbox-root[data-state="checked"]:hover {
-  background-color: #2563eb;
-  border-color: #2563eb;
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
 }
 
 .checkbox-indicator {

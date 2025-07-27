@@ -131,6 +131,7 @@ export const WaldiezAgentCodeExecution = memo((props: WaldiezAgentCodeExecutionP
                     {shouldShowFunctions && (
                         <div className="codeExecution-functions">
                             <div className="agent-node-functions">
+                                <div className="margin-top-20" />
                                 <label htmlFor={`agent-code-execution-functions-${id}`}>Functions:</label>
                                 <div className="margin-top-10">
                                     <Select

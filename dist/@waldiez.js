@@ -19058,6 +19058,7 @@ const WaldiezAgentBasic = memo((props) => {
       }
     ),
     /* @__PURE__ */ jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
     /* @__PURE__ */ jsx(
       TextareaInput,
       {
@@ -19482,6 +19483,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
         }
       ),
       shouldShowFunctions && /* @__PURE__ */ jsx("div", { className: "codeExecution-functions", children: /* @__PURE__ */ jsxs("div", { className: "agent-node-functions", children: [
+        /* @__PURE__ */ jsx("div", { className: "margin-top-20" }),
         /* @__PURE__ */ jsx("label", { htmlFor: `agent-code-execution-functions-${id}`, children: "Functions:" }),
         /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
           Select,
@@ -21841,7 +21843,6 @@ const WaldiezAgentTools = memo((props) => {
   if (skipExecutor === true) {
     return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
       /* @__PURE__ */ jsx(
         Select,
         {
@@ -21859,7 +21860,6 @@ const WaldiezAgentTools = memo((props) => {
   return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsxs("div", { className: "agent-panel-add-tool", children: [
       /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
       /* @__PURE__ */ jsx(
         Select,
         {
@@ -22648,6 +22648,7 @@ const WaldiezAgentUserTabs = memo((props) => {
       ),
       /* @__PURE__ */ jsx("div", { className: "margin-bottom-20" }),
       /* @__PURE__ */ jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
       /* @__PURE__ */ jsx(
         TextareaInput,
         {

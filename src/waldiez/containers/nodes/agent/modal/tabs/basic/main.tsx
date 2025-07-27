@@ -173,9 +173,9 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
                 dataTestId={`agent-max-consecutive-auto-reply-input-${id}`}
                 aria-label="Maximum consecutive auto replies"
             />
-
             {/* Default auto reply input */}
             <label htmlFor={`agent-default-auto-reply-input-${id}`}>Default Auto Reply:</label>
+            <div className="margin-top-5" />
             <TextareaInput
                 className="full-width margin-top-5"
                 value={data.agentDefaultAutoReply ?? ""}

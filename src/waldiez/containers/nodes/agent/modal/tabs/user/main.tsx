@@ -85,6 +85,7 @@ export const WaldiezAgentUserTabs: React.FC<{
                         <div className="margin-bottom-20" />
                         {/* Default auto reply input */}
                         <label htmlFor={`agent-default-auto-reply-input-${id}`}>Default Auto Reply:</label>
+                        <div className="margin-top-5" />
                         <TextareaInput
                             className="full-width margin-top-5"
                             value={data.agentDefaultAutoReply ?? ""}
