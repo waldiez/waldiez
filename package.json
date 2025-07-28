@@ -2,7 +2,7 @@
     "name": "@waldiez/react",
     "description": "Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez.",
     "license": "Apache-2.0",
-    "version": "0.5.6",
+    "version": "0.5.7",
     "type": "module",
     "main": "./dist/@waldiez.umd.cjs",
     "module": "./dist/@waldiez.js",
@@ -24,7 +24,7 @@
     "bugs": {
         "url": "https://github.com/waldiez/waldiez/issues"
     },
-    "icon": "https://github.com/waldiez/waldiez/blob/main/public/logo-128x128.png",
+    "icon": "https://raw.githubusercontent.com/waldiez/waldiez/refs/heads/main/public/icons/128x128.png",
     "contributors": [
         {
             "name": "Panagiotis Kasnesis",

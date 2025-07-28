@@ -5,6 +5,14 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.5.7
+
+- Added search to hub
+- Updated ag2 dependency to 0.9.7
+- Minor UI changes
+- Bug fixes
+- Dependency updates
+
 ## v0.5.6
 
 - Fixed a bug with the tools view
