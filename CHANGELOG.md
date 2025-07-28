@@ -7,7 +7,7 @@ The contents of each release will be used in
 
 ## v0.5.7
 
-- Added search to hub
+- Added hub search functionality
 - Updated ag2 dependency to 0.9.7
 - Minor UI changes
 - Bug fixes
