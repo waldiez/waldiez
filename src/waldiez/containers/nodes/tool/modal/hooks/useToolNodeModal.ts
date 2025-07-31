@@ -6,11 +6,12 @@ import React, { useCallback } from "react";
 
 import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import {
-    DEFAULT_DESCRIPTION,
-    DEFAULT_NAME,
+    DEFAULT_PREDEFINED_TOOL_DESCRIPTION,
+    DEFAULT_PREDEFINED_TOOL_NAME,
+    DEFAULT_TOOL_CONTENT_MAP,
     PREDEFINED_TOOL_TYPES,
-} from "@waldiez/containers/nodes/tool/utils";
-import { DEFAULT_TOOL_CONTENT_MAP, WaldiezToolType } from "@waldiez/models";
+    WaldiezToolType,
+} from "@waldiez/models";
 
 /**
  * Custom hook for managing tool node modal state and interactions
@@ -120,7 +121,7 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
                     kwargs: {},
                     secrets: {},
                     label: option.value,
-                    description: DEFAULT_DESCRIPTION[option.value] || option.label,
+                    description: DEFAULT_PREDEFINED_TOOL_DESCRIPTION[option.value] || option.label,
                 });
             } else {
                 onDataChange({
@@ -128,8 +129,8 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
                     content: "",
                     kwargs: {},
                     secrets: {},
-                    label: DEFAULT_NAME[option.value] || "",
-                    description: DEFAULT_DESCRIPTION[option.value] || option.label,
+                    label: DEFAULT_PREDEFINED_TOOL_NAME[option.value] || "",
+                    description: DEFAULT_PREDEFINED_TOOL_DESCRIPTION[option.value] || option.label,
                 });
             }
         },

@@ -88,7 +88,11 @@ export const modelMapper = {
      * @returns A JSON representation of the model.
      */
     exportModel: (modelNode: WaldiezNodeModel, replaceSecrets: boolean) => {
-        const apiKey = modelNode.data.apiKey ? (replaceSecrets ? "REPLACE_ME" : modelNode.data.apiKey) : null;
+        const apiKey = modelNode.data.apiKey
+            ? replaceSecrets
+                ? "REPLACE_ME"
+                : modelNode.data.apiKey
+            : "REPLACE_ME";
         const rest = getRestFromJSON(modelNode, ["id", "type", "parentId", "data"]);
         const { defaultHeaders, extras, aws } = replaceSecrets
             ? replaceModelSecrets(modelNode)
@@ -163,25 +167,25 @@ const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
     const extras = { ...modelNode.data.extras };
     const aws: { [key: string]: string | undefined | null } = {
         ...(modelNode.data.aws || {
-            region: null,
-            accessKey: null,
-            secretKey: null,
-            sessionToken: null,
-            profileName: null,
+            region: "REPLACE_ME",
+            accessKey: "REPLACE_ME",
+            secretKey: "REPLACE_ME",
+            sessionToken: "REPLACE_ME",
+            profileName: "REPLACE_ME",
         }),
     };
     for (const key in defaultHeaders) {
-        if (typeof defaultHeaders[key] === "string") {
+        if (typeof defaultHeaders[key] === "string" || !defaultHeaders[key]) {
             defaultHeaders[key] = "REPLACE_ME";
         }
     }
     for (const key in extras) {
-        if (typeof extras[key] === "string") {
+        if (typeof extras[key] === "string" || !extras[key]) {
             extras[key] = "REPLACE_ME";
         }
     }
     for (const key in aws) {
-        if (typeof aws[key] === "string") {
+        if (typeof aws[key] === "string" || !aws[key]) {
             aws[key] = "REPLACE_ME";
         }
     }

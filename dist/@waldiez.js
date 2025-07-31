@@ -2006,6 +2006,55 @@ class WaldiezModel {
     });
   }
 }
+const PREDEFINED_TOOL_TYPES = [
+  "wikipedia_search",
+  "youtube_search",
+  "google_search",
+  "tavily_search",
+  "duckduckgo_search",
+  "perplexity_search",
+  "searxng_search"
+];
+const DEFAULT_PREDEFINED_TOOL_DESCRIPTION = {
+  wikipedia_search: "Search Wikipedia for a given query.",
+  youtube_search: "Search YouTube for a given query.",
+  google_search: "Search Google for a given query.",
+  tavily_search: "Search Tavily for a given query.",
+  duckduckgo_search: "Search DuckDuckGo for a given query.",
+  perplexity_search: "Search Perplexity AI for a given query.",
+  searxng_search: "Search SearxNG for a given query.",
+  shared: "Shared code available to all agents.",
+  custom: "A custom tool that you define."
+};
+const DEFAULT_PREDEFINED_TOOL_NAME = {
+  wikipedia_search: "Wikipedia Search",
+  youtube_search: "YouTube Search",
+  google_search: "Google Search",
+  tavily_search: "Tavily Search",
+  duckduckgo_search: "DuckDuckGo Search",
+  perplexity_search: "Perplexity AI Search",
+  searxng_search: "SearxNG Search",
+  shared: "waldiez_shared",
+  custom: "new_tool"
+};
+const PREDEFINED_TOOL_REQUIRED_ENVS = {
+  wikipedia_search: [],
+  youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
+  google_search: [{ label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }],
+  tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
+  duckduckgo_search: [],
+  perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
+  searxng_search: []
+};
+const PREDEFINED_TOOL_REQUIRED_KWARGS = {
+  wikipedia_search: [],
+  youtube_search: [],
+  google_search: [{ label: "Google Search Engine ID", key: "google_search_engine_id" }],
+  tavily_search: [],
+  duckduckgo_search: [],
+  perplexity_search: [],
+  searxng_search: []
+};
 class WaldiezToolData {
   content;
   toolType;
@@ -4620,7 +4669,7 @@ const modelMapper = {
    * @returns A JSON representation of the model.
    */
   exportModel: (modelNode, replaceSecrets) => {
-    const apiKey = modelNode.data.apiKey ? replaceSecrets ? "REPLACE_ME" : modelNode.data.apiKey : null;
+    const apiKey = modelNode.data.apiKey ? replaceSecrets ? "REPLACE_ME" : modelNode.data.apiKey : "REPLACE_ME";
     const rest = getRestFromJSON(modelNode, ["id", "type", "parentId", "data"]);
     const { defaultHeaders, extras, aws } = replaceSecrets ? replaceModelSecrets(modelNode) : modelNode.data;
     return {
@@ -4685,25 +4734,25 @@ const replaceModelSecrets = (modelNode) => {
   const extras = { ...modelNode.data.extras };
   const aws = {
     ...modelNode.data.aws || {
-      region: null,
-      accessKey: null,
-      secretKey: null,
-      sessionToken: null,
-      profileName: null
+      region: "REPLACE_ME",
+      accessKey: "REPLACE_ME",
+      secretKey: "REPLACE_ME",
+      sessionToken: "REPLACE_ME",
+      profileName: "REPLACE_ME"
     }
   };
   for (const key in defaultHeaders) {
-    if (typeof defaultHeaders[key] === "string") {
+    if (typeof defaultHeaders[key] === "string" || !defaultHeaders[key]) {
       defaultHeaders[key] = "REPLACE_ME";
     }
   }
   for (const key in extras) {
-    if (typeof extras[key] === "string") {
+    if (typeof extras[key] === "string" || !extras[key]) {
       extras[key] = "REPLACE_ME";
     }
   }
   for (const key in aws) {
-    if (typeof aws[key] === "string") {
+    if (typeof aws[key] === "string" || !aws[key]) {
       aws[key] = "REPLACE_ME";
     }
   }
@@ -4968,13 +5017,9 @@ const toolMapper = {
    * @returns A JSON representation of the tool.
    */
   exportTool: (toolNode, replaceSecrets) => {
-    const secrets = { ...toolNode.data.secrets };
+    let secrets = { ...toolNode.data.secrets };
     if (replaceSecrets) {
-      for (const key in secrets) {
-        if (typeof secrets[key] === "string") {
-          secrets[key] = "REPLACE_ME";
-        }
-      }
+      secrets = replaceToolSecrets(toolNode);
     }
     const rest = getRestFromJSON(toolNode, ["id", "type", "parentId", "data"]);
     const toolName = toolNode.data.label;
@@ -5047,6 +5092,33 @@ const getToolDataSecrets = (json) => {
         },
         {}
       );
+    }
+  }
+  return secrets;
+};
+const replaceToolSecrets = (toolNode) => {
+  const secrets = { ...toolNode.data.secrets };
+  if (toolNode.data.toolType === "predefined") {
+    const requiredEnvs = PREDEFINED_TOOL_REQUIRED_ENVS[toolNode.data.label] || [];
+    const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || [];
+    for (const env of requiredEnvs) {
+      if (secrets[env.key] && typeof secrets[env.key] === "string") {
+        secrets[env.key] = "REPLACE_ME";
+      } else {
+        secrets[env.key] = "REPLACE_ME";
+      }
+    }
+    for (const kwarg of requiredKwargs) {
+      if (toolNode.data.kwargs && toolNode.data.kwargs[kwarg.key]) {
+        secrets[kwarg.key] = "REPLACE_ME";
+      } else {
+        secrets[kwarg.key] = "REPLACE_ME";
+      }
+    }
+  }
+  for (const key in secrets) {
+    if (typeof secrets[key] === "string" || !secrets[key]) {
+      secrets[key] = "REPLACE_ME";
     }
   }
   return secrets;
@@ -17278,44 +17350,6 @@ const WaldiezEdgeModal = memo((props) => {
 });
 WaldiezEdgeModal.displayName = "WaldiezEdgeModal";
 const ICON_SIZE = 14;
-const PREDEFINED_TOOL_TYPES = [
-  "wikipedia_search",
-  "youtube_search",
-  "google_search",
-  "tavily_search",
-  "duckduckgo_search",
-  "perplexity_search",
-  "searxng_search"
-];
-const PREDEFINED_TOOL_REQUIRED_ENVS = {
-  wikipedia_search: [],
-  youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
-  google_search: [{ label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }],
-  tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
-  duckduckgo_search: [],
-  perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
-  searxng_search: []
-};
-const PREDEFINED_TOOL_REQUIRED_KWARGS = {
-  wikipedia_search: [],
-  youtube_search: [],
-  google_search: [{ label: "Google Search Engine ID", key: "google_search_engine_id" }],
-  tavily_search: [],
-  duckduckgo_search: [],
-  perplexity_search: [],
-  searxng_search: []
-};
-const DEFAULT_NAME = {
-  wikipedia_search: "Wikipedia Search",
-  youtube_search: "YouTube Search",
-  google_search: "Google Search",
-  tavily_search: "Tavily Search",
-  duckduckgo_search: "DuckDuckGo Search",
-  perplexity_search: "Perplexity AI Search",
-  searxng_search: "SearxNG Search",
-  shared: "waldiez_shared",
-  custom: "new_tool"
-};
 const PREDEFINED_TOOL_INSTRUCTIONS = {
   wikipedia_search: void 0,
   youtube_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
@@ -17479,17 +17513,6 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
   searxng_search: void 0,
   shared: void 0,
   custom: void 0
-};
-const DEFAULT_DESCRIPTION = {
-  wikipedia_search: "Search Wikipedia for a given query.",
-  youtube_search: "Search YouTube for a given query.",
-  google_search: "Search Google for a given query.",
-  tavily_search: "Search Tavily for a given query.",
-  duckduckgo_search: "Search DuckDuckGo for a given query.",
-  perplexity_search: "Search Perplexity AI for a given query.",
-  searxng_search: "Search SearxNG for a given query.",
-  shared: "Shared code available to all agents.",
-  custom: "A custom tool that you define."
 };
 const getToolIcon = (toolType, size = ICON_SIZE) => {
   switch (toolType) {
@@ -25188,7 +25211,7 @@ const useToolNodeModal = (props) => {
           kwargs: {},
           secrets: {},
           label: option.value,
-          description: DEFAULT_DESCRIPTION[option.value] || option.label
+          description: DEFAULT_PREDEFINED_TOOL_DESCRIPTION[option.value] || option.label
         });
       } else {
         onDataChange({
@@ -25196,8 +25219,8 @@ const useToolNodeModal = (props) => {
           content: "",
           kwargs: {},
           secrets: {},
-          label: DEFAULT_NAME[option.value] || "",
-          description: DEFAULT_DESCRIPTION[option.value] || option.label
+          label: DEFAULT_PREDEFINED_TOOL_NAME[option.value] || "",
+          description: DEFAULT_PREDEFINED_TOOL_DESCRIPTION[option.value] || option.label
         });
       }
     },
@@ -25359,11 +25382,11 @@ const WaldiezToolBasicTab = memo((props) => {
       if (PREDEFINED_TOOL_TYPES.includes(option.value)) {
         onToolTypeChange("predefined");
         onToolLabelChange(option.value);
-        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || option.label);
+        onToolDescriptionChange(DEFAULT_PREDEFINED_TOOL_DESCRIPTION[option.value] || option.label);
       } else {
         onToolTypeChange(option.value);
-        onToolLabelChange(DEFAULT_NAME[option.value] || "");
-        onToolDescriptionChange(DEFAULT_DESCRIPTION[option.value] || "");
+        onToolLabelChange(DEFAULT_PREDEFINED_TOOL_NAME[option.value] || "");
+        onToolDescriptionChange(DEFAULT_PREDEFINED_TOOL_DESCRIPTION[option.value] || "");
       }
     },
     [onToolTypeChange, onToolLabelChange, onToolDescriptionChange]

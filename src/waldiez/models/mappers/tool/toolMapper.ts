@@ -4,6 +4,8 @@
  */
 import {
     DEFAULT_SHARED_TOOL_CONTENT,
+    PREDEFINED_TOOL_REQUIRED_ENVS,
+    PREDEFINED_TOOL_REQUIRED_KWARGS,
     WaldiezNodeTool,
     WaldiezTool,
     WaldiezToolData,
@@ -94,13 +96,9 @@ export const toolMapper = {
      * @returns A JSON representation of the tool.
      */
     exportTool: (toolNode: WaldiezNodeTool, replaceSecrets: boolean): { [key: string]: unknown } => {
-        const secrets = { ...toolNode.data.secrets };
+        let secrets: { [key: string]: string } = { ...toolNode.data.secrets } as { [key: string]: string };
         if (replaceSecrets) {
-            for (const key in secrets) {
-                if (typeof secrets[key] === "string") {
-                    secrets[key] = "REPLACE_ME";
-                }
-            }
+            secrets = replaceToolSecrets(toolNode);
         }
         const rest = getRestFromJSON(toolNode, ["id", "type", "parentId", "data"]);
         const toolName = toolNode.data.label;
@@ -188,6 +186,42 @@ const getToolDataSecrets = (json: Record<string, unknown>): { [key: string]: str
                 },
                 {} as { [key: string]: string },
             );
+        }
+    }
+    return secrets;
+};
+
+/**
+ * Replaces the secrets in the tool node with "REPLACE_ME".
+ * It checks for required environment variables and keyword arguments for predefined tools.
+ * @param toolNode - The WaldiezNodeTool instance to process.
+ * @returns An object containing the modified secrets.
+ */
+// eslint-disable-next-line max-statements
+const replaceToolSecrets = (toolNode: WaldiezNodeTool): { [key: string]: string } => {
+    const secrets = { ...toolNode.data.secrets } as { [key: string]: string };
+    if (toolNode.data.toolType === "predefined") {
+        // check required secrets for predefined tools
+        const requiredEnvs = PREDEFINED_TOOL_REQUIRED_ENVS[toolNode.data.label] || [];
+        const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || [];
+        for (const env of requiredEnvs) {
+            if (secrets[env.key] && typeof secrets[env.key] === "string") {
+                secrets[env.key] = "REPLACE_ME";
+            } else {
+                secrets[env.key] = "REPLACE_ME";
+            }
+        }
+        for (const kwarg of requiredKwargs) {
+            if (toolNode.data.kwargs && toolNode.data.kwargs[kwarg.key]) {
+                secrets[kwarg.key] = "REPLACE_ME";
+            } else {
+                secrets[kwarg.key] = "REPLACE_ME";
+            }
+        }
+    }
+    for (const key in secrets) {
+        if (typeof secrets[key] === "string" || !secrets[key]) {
+            secrets[key] = "REPLACE_ME";
         }
     }
     return secrets;

@@ -160,20 +160,6 @@ describe("modelMapper", () => {
         expect(modelNode.data.label).toBe("model_name");
         expect(modelNode.position).toEqual({ x: 20, y: 20 });
     });
-    it("should not need to replace a null apiKey", () => {
-        const modelData = new WaldiezModelData();
-        modelData.apiKey = null;
-        const modelNode = {
-            id: "1",
-            data: { ...modelData, label: "Model" },
-            position: { x: 0, y: 0 },
-        } as WaldiezNodeModel;
-        const modelJson = modelMapper.exportModel(modelNode, true);
-        expect(modelJson).toBeTruthy();
-        expect(modelJson.id).toBe("1");
-        expect(modelJson.type).toBe("model");
-        expect((modelJson.data as any).apiKey).toBeNull();
-    });
     it("should import, convert and export a model", () => {
         const modelJson = {
             type: "model",
