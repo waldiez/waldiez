@@ -4734,11 +4734,11 @@ const replaceModelSecrets = (modelNode) => {
   const extras = { ...modelNode.data.extras };
   const aws = {
     ...modelNode.data.aws || {
-      region: "REPLACE_ME",
-      accessKey: "REPLACE_ME",
-      secretKey: "REPLACE_ME",
-      sessionToken: "REPLACE_ME",
-      profileName: "REPLACE_ME"
+      region: null,
+      accessKey: null,
+      secretKey: null,
+      sessionToken: null,
+      profileName: null
     }
   };
   for (const key in defaultHeaders) {

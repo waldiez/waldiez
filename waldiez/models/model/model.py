@@ -338,11 +338,11 @@ def set_bedrock_aws_config(
         value = getattr(aws_config, param, "") if aws_config else ""
 
         # If not found, try environment variable
-        if not value:  # pragma: no cover
+        if not value or value == "REPLACE_ME":  # pragma: no cover
             value = os.environ.get(env_var, "")
 
         # Add to extra_args if value exists
-        if value:  # pragma: no branch
+        if value and value != "REPLACE_ME":  # pragma: no branch
             extra_args[config_key] = value
 
     # Update llm_config with extra_args

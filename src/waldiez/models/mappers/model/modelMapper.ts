@@ -162,16 +162,17 @@ export const modelMapper = {
  * @param modelNode - The WaldiezNodeModel instance representing the model.
  * @returns An object containing the modified defaultHeaders, extras, and aws properties.
  */
+// eslint-disable-next-line max-statements
 const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
     const defaultHeaders = { ...modelNode.data.defaultHeaders };
     const extras = { ...modelNode.data.extras };
     const aws: { [key: string]: string | undefined | null } = {
         ...(modelNode.data.aws || {
-            region: "REPLACE_ME",
-            accessKey: "REPLACE_ME",
-            secretKey: "REPLACE_ME",
-            sessionToken: "REPLACE_ME",
-            profileName: "REPLACE_ME",
+            region: null,
+            accessKey: null,
+            secretKey: null,
+            sessionToken: null,
+            profileName: null,
         }),
     };
     for (const key in defaultHeaders) {
@@ -184,9 +185,17 @@ const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
             extras[key] = "REPLACE_ME";
         }
     }
-    for (const key in aws) {
-        if (typeof aws[key] === "string" || !aws[key]) {
-            aws[key] = "REPLACE_ME";
+    if (modelNode.data.apiType === "bedrock") {
+        for (const key in aws) {
+            if (typeof aws[key] === "string" || !aws[key]) {
+                aws[key] = "REPLACE_ME";
+            }
+        }
+    } else {
+        for (const key in aws) {
+            if (typeof aws[key] === "string") {
+                aws[key] = "REPLACE_ME";
+            }
         }
     }
     return {
