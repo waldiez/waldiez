@@ -4,7 +4,14 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_SHARED_TOOL_CONTENT, WaldiezNodeTool, WaldiezTool, WaldiezToolData } from "@waldiez/models";
+import {
+    DEFAULT_SHARED_TOOL_CONTENT,
+    PREDEFINED_TOOL_REQUIRED_KWARGS,
+    PREDEFINED_TOOL_TYPES,
+    WaldiezNodeTool,
+    WaldiezTool,
+    WaldiezToolData,
+} from "@waldiez/models";
 import { toolMapper } from "@waldiez/models/mappers";
 
 describe("toolMapper", () => {
@@ -95,6 +102,36 @@ describe("toolMapper", () => {
         expect(toolJson.type).toBe("tool");
         expect((toolJson.data as any).secrets).toEqual({
             secret: "REPLACE_ME",
+        });
+    });
+    it("should export a predefined tool with the required secrets and args replaced", () => {
+        const allPredefinedTools = Object.values(PREDEFINED_TOOL_TYPES);
+        allPredefinedTools.forEach(toolType => {
+            const toolData = new WaldiezToolData();
+            toolData.content = DEFAULT_SHARED_TOOL_CONTENT;
+            toolData.secrets = { secret: "value" };
+            const toolNode = {
+                id: "1",
+                data: { ...toolData, label: toolType, toolType: "predefined" },
+                position: { x: 0, y: 0 },
+            } as WaldiezNodeTool;
+            const toolJson = toolMapper.exportTool(toolNode, true);
+            expect(toolJson).toBeTruthy();
+            expect(toolJson.id).toBe("1");
+            expect(toolJson.type).toBe("tool");
+            if (
+                PREDEFINED_TOOL_REQUIRED_KWARGS[toolType] &&
+                Object.keys(PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]).length > 0
+            ) {
+                Object.entries(PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]).forEach(([key, _]) => {
+                    expect((toolJson.data as any).kwargs[key]).toBe("REPLACE_ME");
+                });
+            }
+            if (PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]) {
+                Object.entries(PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]).forEach(([key, _]) => {
+                    expect((toolJson.data as any).kwargs[key]).toBe("REPLACE_ME");
+                });
+            }
         });
     });
     it("should convert a tool to a tool node", () => {

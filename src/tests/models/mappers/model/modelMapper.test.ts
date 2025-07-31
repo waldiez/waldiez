@@ -114,32 +114,35 @@ describe("modelMapper", () => {
             key: "REPLACE_ME",
         });
     });
-    it("should convert a model to a model node", () => {
+    it("should export a bedrock model node with aws keys replaced", () => {
         const modelData = new WaldiezModelData();
-        const model = new WaldiezModel({
+        modelData.apiType = "bedrock";
+        modelData.aws!.accessKey = "aws_access_key";
+        modelData.aws!.secretKey = "aws_secret_key";
+        modelData.aws!.sessionToken = "aws_session_token";
+        const model = {
             id: "1",
+            type: "model",
             name: "model_name",
             description: "model_description",
             tags: [],
             requirements: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            data: modelData,
-            rest: { position: { x: 10, y: 11 } },
-        });
+            data: { ...modelData, label: "Model" },
+            position: { x: 0, y: 0 },
+        } as WaldiezModel;
         const modelNode = modelMapper.asNode(model);
-        expect(modelNode).toBeTruthy();
-        expect(modelNode.id).toBe("1");
-        expect(modelNode.data.label).toBe("model_name");
-        expect(modelNode.data.baseUrl).toBe(modelData.baseUrl);
-        expect(modelNode.data.apiKey).toBe(modelData.apiKey);
-        expect(modelNode.data.apiType).toBe(modelData.apiType);
-        expect(modelNode.data.apiVersion).toBe(modelData.apiVersion);
-        expect(modelNode.data.temperature).toBe(modelData.temperature);
-        expect(modelNode.data.topP).toBe(modelData.topP);
-        expect(modelNode.data.maxTokens).toBe(modelData.maxTokens);
-        expect(modelNode.data.defaultHeaders).toEqual(modelData.defaultHeaders);
-        expect(modelNode.data.price).toEqual(modelData.price);
+        const modelJson = modelMapper.exportModel(modelNode, true);
+        expect(modelJson).toBeTruthy();
+        expect(modelJson.id).toBe("1");
+        expect(modelJson.type).toBe("model");
+        expect(modelJson.name).toBe(modelNode.data.label);
+        expect((modelJson.data as any).aws.accessKey).toBe("REPLACE_ME");
+        expect((modelJson.data as any).aws.secretKey).toBe("REPLACE_ME");
+        expect((modelJson.data as any).aws.sessionToken).toBe("REPLACE_ME");
+        expect((modelJson.data as any).aws.profileName).toBe("REPLACE_ME");
+        expect((modelJson.data as any).aws.region).toBe("REPLACE_ME");
     });
     it("should convert a model to a model node with position", () => {
         const modelData = new WaldiezModelData();
