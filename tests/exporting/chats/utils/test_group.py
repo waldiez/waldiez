@@ -75,7 +75,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results = a_run_group_chat(",
+            "    results = await a_run_group_chat(",
             "        pattern=chat_manager_pattern,",
             '        messages="",',
             "        max_rounds=5,",
@@ -129,7 +129,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results = a_run_group_chat(",
+            "    results = await a_run_group_chat(",
             "        pattern=async_manager_pattern,",
             f"        messages={json.dumps(initial_chat)},",
             "        max_rounds=20,",
@@ -462,7 +462,7 @@ class TestOutputFormat:
         )
         tab = "    "
         expected = (
-            "    results = a_run_group_chat(\n"
+            "    results = await a_run_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
             '        messages="",\n'
             "        max_rounds=3,\n"

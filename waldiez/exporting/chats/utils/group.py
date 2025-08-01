@@ -43,7 +43,7 @@ def export_group_chats(
     tab = "    " * tabs
     run_group_chat = "run_group_chat"
     if is_async:
-        run_group_chat = "a_run_group_chat"
+        run_group_chat = "await a_run_group_chat"
     manager_name = agent_names[manager.id]
     pattern_name = f"{manager_name}_pattern"
     content = f"{tab}results = {run_group_chat}(" + "\n"
