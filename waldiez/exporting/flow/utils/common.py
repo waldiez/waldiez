@@ -102,29 +102,21 @@ Tags: {", ".join(tags)}
 """'''
 
 
-def main_doc_string(is_async: bool) -> str:
+def main_doc_string() -> str:
     """Generate the docstring for the main function.
-
-    Parameters
-    ----------
-    is_async : bool
-        Whether the main function is asynchronous.
 
     Returns
     -------
     str
         The docstring for the main function.
     """
-    return_type_hint = (
-        "AsyncRunResponseProtocol" if is_async else "RunResponseProtocol"
-    )
+    return_type_hint = "list[dict[str, Any]]"
     return f'''"""Start chatting.
 
     Returns
     -------
     {return_type_hint}
-        The result of the chat session, which can be a single ChatResult,
-        a list of ChatResults, or a dictionary mapping integers to ChatResults.
+        The result of the chat session.
 
     Raises
     ------

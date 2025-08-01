@@ -115,11 +115,14 @@ class ExecutionGenerator:
                 "Callable[[BaseEvent], Coroutine[None, None, bool]]"
                 "] = None"
             )
-        return_type_hint = (
-            "AsyncRunResponseProtocol" if is_async else "RunResponseProtocol"
-        )
+        return_type_hint = "list[dict[str, Any]]"
         flow_content += f"def main({on_event_arg}) -> {return_type_hint}:\n"
-        flow_content += f"    {main_doc_string(is_async=is_async)}\n"
+        flow_content += f"    {main_doc_string()}\n"
+        if not is_async:
+            flow_content += "    results: list[RunResponseProtocol] | RunResponseProtocol = []\n"
+        else:
+            flow_content += "    results: list[AsyncRunResponseProtocol] | AsyncRunResponseProtocol = []\n"
+        flow_content += "    result_dicts: list[dict[str, Any]] = []\n"
         space = "    "
         if cache_seed is not None:
             flow_content += (
@@ -138,7 +141,7 @@ class ExecutionGenerator:
             flow_content += after_run + "\n"
         if cache_seed is not None:
             space = space[4:]
-        flow_content += f"{space}return results\n"
+        flow_content += f"{space}return result_dicts\n"
         return flow_content
 
     @staticmethod
@@ -163,42 +166,19 @@ class ExecutionGenerator:
             if is_async:
                 return "# %%\nawait main()\n"
             return "# %%\nmain()\n"
+        return_type_hint = "list[dict[str, Any]]"
         if is_async:
             content += "async def call_main() -> None:\n"
-            return_type_hint = "list[AsyncRunResponseProtocol]"
         else:
             content += "def call_main() -> None:\n"
-            return_type_hint = "list[RunResponseProtocol]"
         content += f'{tab}"""Run the main function and print the results."""\n'
         content += f"{tab}results: {return_type_hint} = "
         if is_async:
             content += "await "
         content += "main()\n"
-        content += f"{tab}results_dicts: list[dict[str, Any]] = []\n"
-        content += f"{tab}for result in results:\n"
-        if is_async:
-            content += f"{tab}{tab}result_summary = await result.summary\n"
-            content += f"{tab}{tab}result_messages = await result.messages\n"
-            content += f"{tab}{tab}result_cost = await result.cost\n"
-        else:
-            content += f"{tab}{tab}result_summary = result.summary\n"
-            content += f"{tab}{tab}result_messages = result.messages\n"
-            content += f"{tab}{tab}result_cost = result.cost\n"
-        content += f"{tab}{tab}cost: dict[str, Any] | None = None\n"
-        content += f"{tab}{tab}if result_cost:\n"
-        content += f'{tab}{tab}{tab}cost = result_cost.model_dump(mode="json", fallback=str)\n'
-        content += f"{tab}{tab}results_dicts.append(\n"
-        content += f"{tab}{tab}{tab}{{\n"
-        content += f"{tab}{tab}{tab}{tab}'summary': result_summary,\n"
-        content += f"{tab}{tab}{tab}{tab}'messages': result_messages,\n"
-        content += f"{tab}{tab}{tab}{tab}'cost': cost,\n"
-        content += f"{tab}{tab}{tab}}}\n"
-        content += f"{tab}{tab})\n"
-        content += "\n"
-        content += f"{tab}results_dict = {{\n"
-        content += f"{tab}{tab}'results': results_dicts,\n"
-        content += f"{tab}}}\n"
-        content += f"{tab}print(json.dumps(results_dict, indent=2))\n"
+        content += (
+            f"{tab}print(json.dumps(results, indent=2, ensure_ascii=False))\n"
+        )
         return content
 
     @staticmethod
@@ -226,3 +206,45 @@ class ExecutionGenerator:
         else:
             content += "    call_main()\n"
         return content
+
+
+def get_result_dicts_string(space: str, is_async: bool) -> str:
+    """Get the result dicts string.
+
+    Parameters
+    ----------
+    space : str
+        The space string to use for indentation.
+    is_async : bool
+        Whether the function is asynchronous.
+
+    Returns
+    -------
+    str
+        The result dicts string.
+    """
+    flow_content = f"{space}for index, result in enumerate(results):\n"
+    if not is_async:
+        flow_content += f"{space}    result_dict = {{\n"
+        flow_content += f"{space}        'index': index,\n"
+        flow_content += f"{space}        'messages': result.messages,\n"
+        flow_content += f"{space}        'summary': result.summary,\n"
+        flow_content += f"{space}        'cost': result.cost.model_dump(mode='json', fallback=str) if result.cost else None,\n"
+        flow_content += f"{space}        'context_variables': result.context_variables.model_dump(mode='json', fallback=str) if result.context_variables else None,\n"
+        flow_content += f"{space}        'last_speaker': result.last_speaker,\n"
+        flow_content += f"{space}        'uuid': str(result.uuid),\n"
+        flow_content += f"{space}    }}\n"
+    else:
+        flow_content += f"{space}    result_dict = {{\n"
+        flow_content += f"{space}        'index': index,\n"
+        flow_content += f"{space}        'messages': await result.messages,\n"
+        flow_content += f"{space}        'summary': await result.summary,\n"
+        flow_content += f"{space}        'cost': (await result.cost).model_dump(mode='json', fallback=str) if await result.cost else None,\n"
+        flow_content += f"{space}        'context_variables': (await result.context_variables).model_dump(mode='json', fallback=str) if await result.context_variables else None,\n"
+        flow_content += (
+            f"{space}        'last_speaker': await result.last_speaker,\n"
+        )
+        flow_content += f"{space}        'uuid': str(result.uuid),\n"
+        flow_content += f"{space}    }}\n"
+    flow_content += f"{space}    result_dicts.append(result_dict)\n"
+    return flow_content

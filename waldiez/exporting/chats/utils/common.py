@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=line-too-long
+# flake8: noqa: E501
 """Common utilities for exporting chats."""
 
 import json
@@ -99,14 +101,56 @@ def get_event_handler_string(
         f"{tab}                should_continue = False\n"
         f"{tab}            if not should_continue:\n"
         f"{tab}                break\n"
+    )
+    content += get_result_dicts_string(tab, is_async)
+    content += (
         f"{tab}else:\n"
         f"{tab}    if not isinstance(results, list):\n"
         f"{tab}        results = [results]\n"
-        f"{tab}    for result in results:\n"
+        f"{tab}    for index, result in enumerate(results):\n"
     )
     if is_async:
         content += f"{tab}        await result.process()\n"
     else:
         content += f"{tab}        result.process()\n"
+    content += get_result_dicts_string(tab, is_async)
 
     return content
+
+
+def get_result_dicts_string(tab: str, is_async: bool) -> str:
+    """Get the result dicts string.
+
+    Parameters
+    ----------
+    tab : str
+        The space string to use for indentation.
+    is_async : bool
+        Whether the function is asynchronous.
+
+    Returns
+    -------
+    str
+        The result dicts string.
+    """
+    space = f"{tab}        "
+    flow_content = f"{space}result_dict = {{\n"
+    flow_content += f"{space}    'index': index,\n"
+    if is_async:
+        flow_content += f"{space}    'messages': await result.messages,\n"
+        flow_content += f"{space}    'summary': await result.summary,\n"
+        flow_content += f"{space}    'cost': (await result.cost).model_dump(mode='json', fallback=str) if await result.cost else None,\n"
+        flow_content += f"{space}    'context_variables': (await result.context_variables).model_dump(mode='json', fallback=str) if await result.context_variables else None,\n"
+        flow_content += (
+            f"{space}    'last_speaker': await result.last_speaker,\n"
+        )
+    else:
+        flow_content += f"{space}    'messages': result.messages,\n"
+        flow_content += f"{space}    'summary': result.summary,\n"
+        flow_content += f"{space}    'cost': result.cost.model_dump(mode='json', fallback=str) if result.cost else None,\n"
+        flow_content += f"{space}    'context_variables': result.context_variables.model_dump(mode='json', fallback=str) if result.context_variables else None,\n"
+        flow_content += f"{space}    'last_speaker': result.last_speaker,\n"
+    flow_content += f"{space}    'uuid': str(result.uuid),\n"
+    flow_content += f"{space}}}\n"
+    flow_content += f"{space}result_dicts.append(result_dict)\n"
+    return flow_content

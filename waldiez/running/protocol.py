@@ -1,16 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-
+# pyright: reportReturnType=false
 """Waldiez Runner protocol."""
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol, Union, runtime_checkable
-
-if TYPE_CHECKING:
-    from autogen.io.run_response import (  # type: ignore[import-untyped]
-        AsyncRunResponseProtocol,
-        RunResponseProtocol,
-    )
+from typing import Any, Protocol, runtime_checkable
 
 
 @runtime_checkable
@@ -119,10 +113,7 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
-    ) -> Union[
-        list["RunResponseProtocol"],
-        list["AsyncRunResponseProtocol"],
-    ]:  # pyright: ignore
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez flow in a blocking way.
 
         Parameters
@@ -138,12 +129,8 @@ class WaldiezRunnerProtocol(Protocol):
 
         Returns
         -------
-        Union[
-            list["RunResponseProtocol"],
-            list["AsyncRunResponseProtocol"],
-        ]
-            The result of the run, which can be a list of RunResponseProtocol
-            or a list of AsyncRunResponseProtocol.
+        list[dict[str, Any]]
+            The result of the run.
         """
 
     async def a_run(
@@ -152,10 +139,7 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
-    ) -> Union[
-        list["RunResponseProtocol"],
-        list["AsyncRunResponseProtocol"],
-    ]:  # pyright: ignore
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez flow.
 
         Parameters
@@ -171,20 +155,13 @@ class WaldiezRunnerProtocol(Protocol):
 
         Returns
         -------
-        Union[
-            list["RunResponseProtocol"],
-            list["AsyncRunResponseProtocol"],
-        ]
-            The result of the run, which can be a list of RunResponseProtocol
-            or a list of AsyncRunResponseProtocol.
+        list[dict[str, Any]]
+            The result of the run.
         """
 
     def after_run(
         self,
-        results: Union[
-            list["RunResponseProtocol"],
-            list["AsyncRunResponseProtocol"],
-        ],
+        results: list[dict[str, Any]],
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
@@ -195,12 +172,8 @@ class WaldiezRunnerProtocol(Protocol):
 
         Parameters
         ----------
-        results : Union[
-            list["RunResponseProtocol"],
-            list["AsyncRunResponseProtocol"],
-        ]
-            The results of the run, which can be a list of RunResponseProtocol
-            or a list of AsyncRunResponseProtocol.
+        results : list[dict[str, Any]]
+            The results of the run.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None
@@ -215,10 +188,7 @@ class WaldiezRunnerProtocol(Protocol):
 
     async def a_after_run(
         self,
-        results: Union[
-            list["RunResponseProtocol"],
-            list["AsyncRunResponseProtocol"],
-        ],
+        results: list[dict[str, Any]],
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
@@ -229,12 +199,8 @@ class WaldiezRunnerProtocol(Protocol):
 
         Parameters
         ----------
-        results : Union[
-            list["RunResponseProtocol"],
-            list["AsyncRunResponseProtocol"]
-        ]
-            The results of the run, which can be a list of RunResponseProtocol
-            or a list of AsyncRunResponseProtocol.
+        results : list[dict[str, Any]]
+            The results of the run.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None

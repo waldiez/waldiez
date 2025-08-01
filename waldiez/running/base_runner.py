@@ -19,7 +19,6 @@ from typing import (
     Coroutine,
     Optional,
     Type,
-    Union,
 )
 
 from anyio.from_thread import start_blocking_portal
@@ -43,10 +42,6 @@ from .utils import (
 
 if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore[import-untyped]
-    from autogen.io.run_response import (  # type: ignore[import-untyped]
-        AsyncRunResponseProtocol,
-        RunResponseProtocol,
-    )
 
 
 class WaldiezBaseRunner(WaldiezRunnerProtocol):
@@ -95,9 +90,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         self._input: (
             Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
         ) = input
-        self._last_results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ] = []
+        self._last_results: list[dict[str, Any]] = []
         self._last_exception: Exception | None = None
         self._execution_complete_event = threading.Event()
         self._execution_thread: Optional[threading.Thread] = None
@@ -213,7 +206,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         skip_mmd: bool,
         skip_timeline: bool,
         **kwargs: Any,
-    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez flow."""
         raise NotImplementedError(
             "The _run method must be implemented in the subclass."
@@ -227,7 +220,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         skip_mmd: bool,
         skip_timeline: bool,
         **kwargs: Any,
-    ) -> Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez flow asynchronously."""
         raise NotImplementedError(
             "The _a_run method must be implemented in the subclass."
@@ -273,9 +266,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     def _after_run(
         self,
-        results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ],
+        results: list[dict[str, Any]],
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
@@ -300,9 +291,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     async def _a_after_run(
         self,
-        results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ],
+        results: list[dict[str, Any]],
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
@@ -445,7 +434,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         **kwargs: Any,
-    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez flow in blocking mode.
 
         Parameters
@@ -466,9 +455,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
         Returns
         -------
-        Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]
-            The result of the run, which can be a list of RunResponseProtocol
-            or a list of AsyncRunResponseProtocol.
+        list[dict[str, Any]]
+            The result of the run.
 
         Raises
         ------
@@ -499,9 +487,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         self.install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ]
+        results: list[dict[str, Any]] = []
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             with chdir(to=temp_dir):
@@ -537,7 +523,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
-    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez flow asynchronously.
 
         Parameters
@@ -556,9 +542,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
         Returns
         -------
-        Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]
-            The result of the run, which can be a list of RunResponseProtocol
-            or a list of AsyncRunResponseProtocol.
+        list[dict[str, Any]]
+            The result of the run.
 
         Raises
         ------
@@ -580,9 +565,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         await self.a_install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ]
+        results: list[dict[str, Any]] = []
         old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
@@ -714,9 +697,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     def after_run(
         self,
-        results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ],
+        results: list[dict[str, Any]],
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
@@ -727,7 +708,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
         Parameters
         ----------
-        results : Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
+        results : list[dict[str, Any]]
             The results of the flow run.
         output_file : Path
             The path to the output file.
@@ -751,9 +732,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
     async def a_after_run(
         self,
-        results: Union[
-            list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]
-        ],
+        results: list[dict[str, Any]],
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
@@ -764,7 +743,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
 
         Parameters
         ----------
-        results : Union[ChatResult, list[ChatResult], dict[int, ChatResult]]
+        results : list[dict[str, Any]]
             The results of the flow run.
         output_file : Path
             The path to the output file.
