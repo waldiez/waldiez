@@ -946,10 +946,28 @@ const sha256 = async (message) => {
     throw new Error("Failed to compute SHA-256 hash. Ensure you are using a supported environment.");
   }
 };
+const toBufferSource = (input) => {
+  if (typeof input === "string") {
+    return new TextEncoder().encode(input);
+  }
+  if (input instanceof ArrayBuffer) {
+    return new Uint8Array(input);
+  }
+  if (ArrayBuffer.isView(input)) {
+    if (input.buffer instanceof SharedArrayBuffer) {
+      const data = new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+      const newBuffer = new ArrayBuffer(input.byteLength);
+      new Uint8Array(newBuffer).set(data);
+      return new Uint8Array(newBuffer);
+    }
+    return input;
+  }
+  throw new TypeError("Input must be string, ArrayBuffer, or ArrayBufferView");
+};
 const hmacSha256 = async (key, message, outputFormat = "") => {
   try {
     const crypto = getCrypto();
-    const keyBuffer = typeof key === "string" ? new TextEncoder().encode(key) : key;
+    const keyBuffer = toBufferSource(key);
     const messageBuffer = new TextEncoder().encode(message);
     const cryptoKey = await crypto.subtle.importKey(
       "raw",
@@ -23672,7 +23690,7 @@ const awsSignatureUtils = {
    * @param dateStamp - The date in YYYYMMDD format
    * @param regionName - The AWS region name
    * @param serviceName - The AWS service name
-   * @returns A promise that resolves to the signing key as a Uint8Array
+   * @returns A promise that resolves to the signing key as a Uint8Array or hex string
    * @throws Error if the key derivation fails
    */
   async getSignatureKey(key, dateStamp, regionName, serviceName) {

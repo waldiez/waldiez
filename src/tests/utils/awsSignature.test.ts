@@ -131,7 +131,11 @@ describe("awsSignatureUtils", () => {
                 "bedrock-runtime",
             );
 
-            expect(Array.from(key1)).toEqual(Array.from(key2));
+            expect(key1).toBeInstanceOf(Uint8Array);
+            expect(key2).toBeInstanceOf(Uint8Array);
+            expect(key1.length).toBe(key2.length);
+            // Compare byte arrays
+            expect(key1).toEqual(key2);
         });
 
         it("should produce different keys for different inputs", async () => {
@@ -149,7 +153,11 @@ describe("awsSignatureUtils", () => {
                 "bedrock-runtime",
             );
 
-            expect(Array.from(key1)).not.toEqual(Array.from(key2));
+            expect(key1).not.toEqual(key2);
+            // Type 'Uint8Array<ArrayBuffer>' is not assignable to type 'ArrayLike<string>'.
+            expect(key1 instanceof Uint8Array).toBe(true);
+            expect(key2 instanceof Uint8Array).toBe(true);
+            expect(Array.from(key1 as Uint8Array)).not.toEqual(Array.from(key2 as Uint8Array));
         });
     });
 

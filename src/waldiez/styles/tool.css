@@ -64,7 +64,6 @@
   display: -webkit-box !important;
   -webkit-line-clamp: 1 !important;
   line-clamp: 1 !important;
-  -webkit-box-orient: vertical;
 }
 
 .tool-node .date-info {

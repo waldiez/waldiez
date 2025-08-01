@@ -122,7 +122,7 @@ export const awsSignatureUtils = {
      * @param dateStamp - The date in YYYYMMDD format
      * @param regionName - The AWS region name
      * @param serviceName - The AWS service name
-     * @returns A promise that resolves to the signing key as a Uint8Array
+     * @returns A promise that resolves to the signing key as a Uint8Array or hex string
      * @throws Error if the key derivation fails
      */
     async getSignatureKey(
@@ -130,10 +130,10 @@ export const awsSignatureUtils = {
         dateStamp: string,
         regionName: string,
         serviceName: string,
-    ): Promise<Uint8Array> {
-        const kDate = (await hmacSha256("AWS4" + key, dateStamp)) as Uint8Array;
-        const kRegion = (await hmacSha256(kDate, regionName)) as Uint8Array;
-        const kService = (await hmacSha256(kRegion, serviceName)) as Uint8Array;
-        return (await hmacSha256(kService, "aws4_request")) as Uint8Array;
+    ): Promise<string | Uint8Array<ArrayBuffer>> {
+        const kDate = await hmacSha256("AWS4" + key, dateStamp);
+        const kRegion = await hmacSha256(kDate, regionName);
+        const kService = await hmacSha256(kRegion, serviceName);
+        return await hmacSha256(kService, "aws4_request");
     },
 };

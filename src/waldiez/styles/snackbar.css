@@ -35,7 +35,7 @@
 
 .snackbar .message {
   margin-right: 40px;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   line-height: 1.5;
   font-size: 14px;
   font-weight: 500;

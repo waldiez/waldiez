@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+
 /**
  * Get the crypto object for browser environment
  * @returns - Crypto The Crypto object
@@ -39,6 +40,34 @@ export const sha256 = async (message: string): Promise<string> => {
 };
 
 /**
+ * Converts input to a BufferSource (ArrayBuffer or ArrayBufferView)
+ * @param input - The input to convert (string, ArrayBuffer, or ArrayBufferView)
+ * @returns A BufferSource representation of the input
+ * @throws TypeError if the input is not a valid type
+ */
+const toBufferSource = (input: string | BufferSource): BufferSource => {
+    if (typeof input === "string") {
+        return new TextEncoder().encode(input);
+    }
+
+    if (input instanceof ArrayBuffer) {
+        return new Uint8Array(input) as BufferSource;
+    }
+
+    if (ArrayBuffer.isView(input)) {
+        if (input.buffer instanceof SharedArrayBuffer) {
+            const data = new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+            const newBuffer = new ArrayBuffer(input.byteLength);
+            new Uint8Array(newBuffer).set(data);
+            return new Uint8Array(newBuffer);
+        }
+        return input as BufferSource;
+    }
+
+    throw new TypeError("Input must be string, ArrayBuffer, or ArrayBufferView");
+};
+
+/**
  * Helper function to compute HMAC SHA-256
  * @param key - The key (either string or Uint8Array)
  * @param message - The message to sign
@@ -46,13 +75,13 @@ export const sha256 = async (message: string): Promise<string> => {
  * @returns The HMAC result
  */
 export const hmacSha256 = async (
-    key: string | Uint8Array,
+    key: string | Uint8Array<ArrayBuffer>,
     message: string,
     outputFormat = "",
-): Promise<string | Uint8Array> => {
+): Promise<string | Uint8Array<ArrayBuffer>> => {
     try {
         const crypto = getCrypto();
-        const keyBuffer = typeof key === "string" ? new TextEncoder().encode(key) : key;
+        const keyBuffer = toBufferSource(key);
         const messageBuffer = new TextEncoder().encode(message);
 
         const cryptoKey = await crypto.subtle.importKey(
