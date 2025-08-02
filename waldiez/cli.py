@@ -100,6 +100,19 @@ def run(
         False,
         help="Override the output file if it already exists.",
     ),
+    env_file: Optional[Path] = typer.Option(  # noqa: B008
+        None,
+        "--env-file",
+        "-e",
+        help=(
+            "Path to a .env file containing additional environment variables. "
+            "These variables will be set before running the flow."
+        ),
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+    ),
 ) -> None:
     """Run a Waldiez flow."""
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
@@ -126,6 +139,7 @@ def run(
             structured,  # structured_io
             False,  # skip_mmd
             False,  # skip_timeline
+            env_file,
         )
     else:
         runner.run(
@@ -134,6 +148,7 @@ def run(
             structured_io=structured,
             skip_mmd=False,
             skip_timeline=False,
+            dot_env=env_file,
         )
 
 
@@ -157,7 +172,7 @@ def convert(
             "Path to the output file. "
             "The file extension determines the output format: "
             "`.py` for Python script, `.ipynb` for Jupyter notebook."
-            " If not provided, the output will be saved in the same directory as the input file."
+            " If not provided, the output (.py) will be saved in the same directory as the input file."
             " If the file already exists, it will not be overwritten unless --force is used."
         ),
         file_okay=True,

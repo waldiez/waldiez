@@ -7,6 +7,7 @@
 
 """Base runner for Waldiez workflows."""
 
+import shutil
 import sys
 import tempfile
 import threading
@@ -21,6 +22,7 @@ from typing import (
     Type,
 )
 
+from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
 from typing_extensions import Self
 
@@ -47,6 +49,14 @@ if TYPE_CHECKING:
 class WaldiezBaseRunner(WaldiezRunnerProtocol):
     """Base runner for Waldiez.
 
+    Initialization parameters:
+        - waldiez: The Waldiez flow to run.
+        - output_path: Path to save the output file.
+        - uploads_root: Root directory for uploads.
+        - structured_io: Whether to use structured I/O.
+        - skip_patch_io: Whether to skip patching I/O functions.
+        - dot_env: Path to a .env file for environment variables.
+
     Methods to override:
         - _before_run: Actions to perform before running the flow.
         - _a_before_run: Async actions to perform before running the flow.
@@ -63,6 +73,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     _structured_io: bool
     _output_path: str | Path | None
     _uploads_root: str | Path | None
+    _dot_env_path: str | Path | None
     _skip_patch_io: bool
     _running: bool
 
@@ -73,6 +84,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root: str | Path | None,
         structured_io: bool,
         skip_patch_io: bool = False,
+        dot_env: str | Path | None = None,
     ) -> None:
         """Initialize the Waldiez manager."""
         self._waldiez = waldiez
@@ -81,6 +93,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
         WaldiezBaseRunner._skip_patch_io = skip_patch_io
+        WaldiezBaseRunner._dot_env_path = dot_env
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
@@ -179,6 +192,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                 uploads_root=uploads_root,
                 structured_io=WaldiezBaseRunner._structured_io,
             )
+            if self._dot_env_path:
+                shutil.copyfile(
+                    str(self._dot_env_path),
+                    str(temp_dir / ".env"),
+                )
         return temp_dir
 
     async def _a_before_run(
@@ -196,6 +214,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
                 structured_io=self.structured_io,
                 force=True,
             )
+            if self._dot_env_path:
+                wrapped = wrap(shutil.copyfile)
+                await wrapped(
+                    str(self._dot_env_path),
+                    str(temp_dir / ".env"),
+                )
         return temp_dir
 
     def _run(
@@ -356,6 +380,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             for req in self.waldiez.requirements
             if req not in sys.modules and "waldiez" not in req
         }
+        if "python-dotenv" not in extra_requirements:
+            extra_requirements.add("python-dotenv")
         return extra_requirements
 
     def install_requirements(self) -> None:
@@ -433,6 +459,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez flow in blocking mode.
@@ -450,6 +477,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
         **kwargs : Any
             Additional keyword arguments for the run method.
 
@@ -463,6 +492,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         RuntimeError
             If the runner is already running.
         """
+        if dot_env is not None:
+            resolved = Path(dot_env).resolve()
+            if resolved.is_file():
+                WaldiezBaseRunner._dot_env_path = resolved
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -523,6 +556,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez flow asynchronously.
 
@@ -539,6 +574,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
             Whether to skip generating the timeline JSON, by default False.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the run method.
 
         Returns
         -------
@@ -550,6 +589,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         RuntimeError
             If the runner is already running.
         """
+        if dot_env is not None:
+            resolved = Path(dot_env).resolve()
+            if resolved.is_file():
+                WaldiezBaseRunner._dot_env_path = resolved
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -599,6 +642,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> None:
         """Start running the Waldiez flow in a non-blocking way.
 
@@ -614,12 +659,20 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool
             Whether to skip generating the timeline JSON, by default False.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the start method.
 
         Raises
         ------
         RuntimeError
             If the runner is already running.
         """
+        if dot_env is not None:
+            resolved = Path(dot_env).resolve()
+            if resolved.is_file():
+                WaldiezBaseRunner._dot_env_path = resolved
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -651,6 +704,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> None:
         """Asynchronously start running the Waldiez flow in a non-blocking way.
 
@@ -666,12 +721,20 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             Whether to skip generating the mermaid diagram, by default False.
         skip_timeline : bool = False
             Whether to skip generating the timeline JSON, by default False.
+        dot_env : str | Path | None = None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the start method.
 
         Raises
         ------
         RuntimeError
             If the runner is already running.
         """
+        if dot_env is not None:
+            resolved = Path(dot_env).resolve()
+            if resolved.is_file():
+                WaldiezBaseRunner._dot_env_path = resolved
         if structured_io is not None:
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
@@ -813,6 +876,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         return WaldiezBaseRunner._structured_io
 
     @property
+    def dot_env_path(self) -> str | Path | None:
+        """Get the path to the .env file, if any."""
+        return WaldiezBaseRunner._dot_env_path
+
+    @property
     def output_path(self) -> str | Path | None:
         """Get the output path for the runner."""
         return WaldiezBaseRunner._output_path
@@ -838,6 +906,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
+        dot_env: str | Path | None = None,
     ) -> "WaldiezBaseRunner":
         """Load a waldiez flow from a file and create a runner.
 
@@ -860,6 +929,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         structured_io : bool, optional
             Whether to use structured IO instead of the default 'input/print',
             by default False.
+        dot_env : str | Path | None, optional
+            The path to the .env file, if any, by default None.
 
         Returns
         -------
@@ -878,6 +949,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            dot_env=dot_env,
         )
 
     def __enter__(self) -> Self:

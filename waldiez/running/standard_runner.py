@@ -32,10 +32,6 @@ from .utils import chdir
 
 if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore
-    from autogen.io.run_response import (  # type: ignore
-        AsyncRunResponseProtocol,
-        RunResponseProtocol,
-    )
     from autogen.messages import BaseMessage  # type: ignore
 
 
@@ -48,6 +44,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> None:
         """Initialize the Waldiez manager."""
         super().__init__(
@@ -55,6 +53,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            dot_env=dot_env,
+            **kwargs,
         )
         self._execution_thread: threading.Thread | None = None
         self._loaded_module: ModuleType | None = None
@@ -107,7 +107,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         skip_mmd: bool,
         skip_timeline: bool,
         **kwargs: Any,
-    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow."""
         from autogen.io import IOStream  # type: ignore
 
@@ -185,7 +185,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     )
                     event.content.respond(user_input)
                 else:
-                    self._send(event)
+                    self._send(event)  # pyright: ignore
             self._processed_events += 1
         except Exception as e:
             raise RuntimeError(
@@ -301,7 +301,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                         user_input = await user_input
                     await event.content.respond(user_input)
                 else:
-                    self._send(event)
+                    self._send(event)  # pyright: ignore
             self._processed_events += 1
         except Exception as e:
             raise RuntimeError(
@@ -317,18 +317,18 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         **kwargs: Any,
-    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow asynchronously."""
 
         # fmt: off
-        async def _execute_workflow() -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+        async def _execute_workflow() -> list[dict[str, Any]]:
             # fmt: on
             """Execute the workflow in an async context."""
             from autogen.io import IOStream  # pyright: ignore
 
             from waldiez.io import StructuredIOStream
 
-            results: Union[list["AsyncRunResponseProtocol"], list["RunResponseProtocol"]]
+            results: list[dict[str, Any]] = []
             try:
                 self._loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():

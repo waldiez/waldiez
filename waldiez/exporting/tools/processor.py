@@ -192,7 +192,12 @@ ag2_{tool_name} = ag2_{tool_name}_interop.convert_tool(
                 )
                 f.write("import os\n\n")
                 for key, value in tool.secrets.items():
-                    f.write(f'os.environ["{key}"] = "{value}"\n')
+                    # f.write(f'os.environ["{key}"] = "{value}"\n')
+                    # check first if the key already exists in os.environ
+                    f.write(
+                        f'os.environ["{key}"] = '
+                        f'os.environ.get("{key}", "{value}")\n'
+                    )
         except Exception as exc:  # pragma: no cover
             raise ExporterContentError(
                 f"Failed to write secrets file for tool '{tool_name}': {exc}"

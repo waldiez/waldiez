@@ -100,7 +100,8 @@ def sort_imports(
             third_party_imports.append(import_string)
         elif position == ImportPosition.LOCAL:  # pragma: no branch
             local_imports.append(import_string)
-
+    if "from dotenv import load_dotenv" not in third_party_imports:
+        third_party_imports.append("from dotenv import load_dotenv")
     autogen_imports = clean_and_group_autogen_imports(autogen_imports)
     third_party_imports = ensure_np_import(third_party_imports)
     sorted_builtins = get_sorted_imports(builtin_imports)

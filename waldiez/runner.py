@@ -14,7 +14,7 @@ variables specified in the waldiez file are set.
 """
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Union
+from typing import Any
 
 from typing_extensions import Literal
 
@@ -24,12 +24,6 @@ from .running import (
     WaldiezStandardRunner,
 )
 
-if TYPE_CHECKING:
-    from autogen.io.run_response import (  # type: ignore[import-untyped]
-        AsyncRunResponseProtocol,
-        RunResponseProtocol,
-    )
-
 
 def create_runner(
     waldiez: Waldiez,
@@ -38,6 +32,7 @@ def create_runner(
     output_path: str | Path | None = None,
     uploads_root: str | Path | None = None,
     structured_io: bool = False,
+    dot_env: str | Path | None = None,
     **kwargs: Any,
 ) -> WaldiezBaseRunner:
     """Create a Waldiez runner of the specified type.
@@ -54,6 +49,8 @@ def create_runner(
         Uploads root directory, by default None
     structured_io : bool, optional
         Use structured I/O, by default False
+    dot_env : str | Path | None, optional
+        Path to a .env file for environment variables, by default None
     **kwargs
         Additional arguments for specific runner types
 
@@ -84,6 +81,7 @@ def create_runner(
         output_path=output_path,
         uploads_root=uploads_root,
         structured_io=structured_io,
+        dot_env=dot_env,
         **kwargs,
     )
 
@@ -101,6 +99,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
+        dot_env: str | Path | None = None,
         **kwargs: Any,
     ):
         """Create a runner instance.
@@ -117,9 +116,10 @@ class WaldiezRunner(WaldiezBaseRunner):
             Uploads root directory, by default None
         structured_io : bool, optional
             Use structured I/O, by default False
+        dot_env : str | Path | None, optional
+            Path to a .env file for environment variables, by default None
         **kwargs
             Additional arguments for specific runner types
-
         """
         self._runner = create_runner(
             waldiez=waldiez,
@@ -127,6 +127,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            dot_env=dot_env,
             **kwargs,
         )
 
@@ -165,10 +166,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         skip_mmd: bool,
         skip_timeline: bool,
         **kwargs: Any,
-    ) -> Union[
-        list["RunResponseProtocol"],
-        list["AsyncRunResponseProtocol"],
-    ]:
+    ) -> list[dict[str, Any]]:
         return self._runner._run(
             temp_dir=temp_dir,
             output_file=output_file,
@@ -205,14 +203,16 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        dot_env: str | Path | None = None,
         **kwargs: Any,
-    ) -> Union[list["RunResponseProtocol"], list["AsyncRunResponseProtocol"]]:
+    ) -> list[dict[str, Any]]:
         return await self._runner._a_run(
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            dot_env=dot_env,
             **kwargs,
         )
 
@@ -246,6 +246,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
+        dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> "WaldiezRunner":
         """Load a waldiez flow and create a runner.
@@ -268,6 +269,8 @@ class WaldiezRunner(WaldiezBaseRunner):
             Uploads root directory, by default None
         structured_io : bool, optional
             Use structured I/O, by default False
+        dot_env : str | Path | None, optional
+            Path to a .env file for environment variables, by default None
         **kwargs
             Additional arguments for specific runner types
 
@@ -295,5 +298,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            dot_env=dot_env,
             **kwargs,
         )

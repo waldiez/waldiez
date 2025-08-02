@@ -57,6 +57,9 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> None:
         """Start running the Waldiez flow in a non-blocking way.
 
@@ -72,6 +75,12 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the start method.
 
         Raises
         ------
@@ -85,6 +94,9 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> None:
         """Asynchronously start running the Waldiez flow in a non-blocking way.
 
@@ -100,6 +112,12 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the start method.
 
         Raises
         ------
@@ -113,6 +131,9 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez flow in a blocking way.
 
@@ -126,6 +147,12 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the run method.
 
         Returns
         -------
@@ -139,6 +166,9 @@ class WaldiezRunnerProtocol(Protocol):
         uploads_root: str | Path | None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez flow.
 
@@ -152,6 +182,12 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the a_run method.
 
         Returns
         -------
