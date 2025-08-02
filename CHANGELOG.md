@@ -5,6 +5,13 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## Unreleased
+
+- Added support for custom .env files in the runner
+- Changed the runner to return a list of dicts
+- Fixed a missing await in a_run_group_chat
+- Dependency updates
+
 ## v0.5.7
 
 - Added hub search functionality
