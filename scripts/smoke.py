@@ -484,7 +484,6 @@ def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
     # let's git restore the ipynb if needed (only cell id changes)
     # (no need to commit the new "id: ..." changes)
     if diff_has_only_id_changes(output_ipynb_path):
-        LOG.warning("The converted .ipynb file has only 'id: ...' changes.")
         try:
             git_restore(output_ipynb_path)
         except BaseException:
