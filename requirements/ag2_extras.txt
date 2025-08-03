@@ -9,10 +9,6 @@ ag2[commsagent-slack]==0.9.7
 ag2[commsagent-telegram]==0.9.7
 ag2[crawl4ai]==0.9.7
 ag2[duckduckgo]==0.9.7
-ag2[gemini-realtime]==0.9.7;sys_platform != 'win32'
-ag2[gemini-realtime]==0.9.7;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-ag2[gemini]==0.9.7;sys_platform != 'win32'
-ag2[gemini]==0.9.7;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
 ag2[google-api]==0.9.7
 ag2[google-client]==0.9.7
 ag2[google-search]==0.9.7

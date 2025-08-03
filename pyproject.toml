@@ -82,16 +82,16 @@ mqtt = [
 ]
 # jupyterlab extension
 jupyter = [
-  "waldiez_jupyter==0.5.8",
+  "waldiez_jupyter==0.5.9",
   "jupyterlab==4.4.5",
   "ipywidgets==8.1.7",
   "jupyter_server==2.16.0",
 ]
 runner = [
-  "waldiez_runner==0.5.8; python_version >= '3.11'",
+  "waldiez_runner==0.5.9; python_version >= '3.11'",
 ]
 studio = [
-  "waldiez_studio==0.5.8",
+  "waldiez_studio==0.5.9",
 ]
 ag2_extras = [
   "ag2[anthropic]==0.9.7",
@@ -104,10 +104,10 @@ ag2_extras = [
   "ag2[commsagent-telegram]==0.9.7",
   "ag2[crawl4ai]==0.9.7",
   "ag2[duckduckgo]==0.9.7",
-  "ag2[gemini-realtime]==0.9.7;sys_platform != 'win32'",
-  "ag2[gemini-realtime]==0.9.7;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
-  "ag2[gemini]==0.9.7;sys_platform != 'win32'",
-  "ag2[gemini]==0.9.7;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  # "ag2[gemini-realtime]==0.9.7;sys_platform != 'win32'",
+  # "ag2[gemini-realtime]==0.9.7;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  # "ag2[gemini]==0.9.7;sys_platform != 'win32'",
+  # "ag2[gemini]==0.9.7;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "ag2[google-api]==0.9.7",
   "ag2[google-client]==0.9.7",
   "ag2[google-search]==0.9.7",
