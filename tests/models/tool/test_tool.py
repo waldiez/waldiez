@@ -429,8 +429,11 @@ def custom_tool(text: str) -> list[str]:
             "google_search",
             "Google search tool",
             ["google"],
-            {"GOOGLE_SEARCH_API_KEY": "your_api_key"},
-            {"google_search_engine_id": "your_search_engine_id"},
+            {
+                "GOOGLE_SEARCH_API_KEY": "your_api_key",
+                "GOOGLE_SEARCH_ENGINE_ID": "your_search_engine_id",
+            },
+            {},
             "",
             False,
         ),

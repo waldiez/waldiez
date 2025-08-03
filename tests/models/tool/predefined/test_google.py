@@ -10,5 +10,6 @@ def test_google_search_tool_impl() -> None:
     """Test GoogleSearchToolImpl properties."""
     tool = GoogleSearchToolImpl()
     assert "GOOGLE_SEARCH_API_KEY" in tool.required_secrets
-    assert tool.required_kwargs == {"google_search_engine_id": str}
+    assert "GOOGLE_SEARCH_ENGINE_ID" in tool.required_secrets
+    assert not tool.required_kwargs
     assert tool.get_content({})

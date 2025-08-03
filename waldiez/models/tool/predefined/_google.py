@@ -16,10 +16,9 @@ class GoogleSearchToolImpl(PredefinedTool):
 
     required_secrets: list[str] = [
         "GOOGLE_SEARCH_API_KEY",
+        "GOOGLE_SEARCH_ENGINE_ID",
     ]
-    required_kwargs: dict[str, type] = {
-        "google_search_engine_id": str,
-    }
+    required_kwargs: dict[str, type] = {}
     _kwargs: dict[str, Any] = {}
 
     @property
@@ -163,8 +162,8 @@ def {self.name}(
     )
     return {self.name}_tool(
         query=query,
-        search_api_key=search_api_key,
-        search_engine_id=search_engine_id,
+        search_api_key=google_search_api_key,
+        search_engine_id=google_search_engine_id,
         num_results=num_results
     )
 '''

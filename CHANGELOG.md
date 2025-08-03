@@ -5,6 +5,16 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.5.9
+
+- Added support for custom .env files in the runner
+- Changed the runner to return a list of dicts
+- Fixed a missing await in a_run_group_chat
+- Make the generated code search the os.environ first for the tool and model secrets
+- Dependency updates
+- Handled a version conflict on aiohttp between waldiez_runner and waldiez_studio
+- Made google search engine id a secret instead of a kwarg in the google search tool
+
 ## v0.5.8
 
 - Added support for custom .env files in the runner
