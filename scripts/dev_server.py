@@ -48,6 +48,7 @@ if PUBLIC_DIR.exists():
 # Create directories if they don't exist
 SAVE_PATH.mkdir(exist_ok=True, parents=True)
 UPLOADS_DIR.mkdir(exist_ok=True, parents=True)
+DOT_ENV_PATH = ROOT_DIR / ".env"
 
 IncomingAction = Literal["run", "save", "upload", "convert"]
 OutgoingAction = Literal[
@@ -262,6 +263,7 @@ class WaldiezDevServer:
         """
         logger.info("Handling run action")
         await self.handle_save(websocket, flow)
+        dot_env: Path | None = DOT_ENV_PATH if DOT_ENV_PATH.exists() else None
         try:
             runner = WaldiezRunner.load(MY_DIR / "save" / "flow.waldiez")
             io_steam = AsyncWebsocketsIOStream(
@@ -275,10 +277,12 @@ class WaldiezDevServer:
                 if runner.is_async:
                     await runner.a_run(
                         uploads_root=UPLOADS_DIR,
+                        dot_env=dot_env,
                     )
                 else:
                     runner.run(
                         uploads_root=UPLOADS_DIR,
+                        dot_env=dot_env,
                     )
         except Exception as e:
             to_log = f"Error running flow: {e}"
