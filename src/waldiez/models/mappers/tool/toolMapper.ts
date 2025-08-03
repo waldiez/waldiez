@@ -209,25 +209,16 @@ const getToolDataSecrets = (json: Record<string, unknown>): { [key: string]: str
  * @param toolNode - The WaldiezNodeTool instance to process.
  * @returns An object containing the modified secrets.
  */
-// eslint-disable-next-line max-statements
 const replaceToolSecrets = (toolNode: WaldiezNodeTool): { [key: string]: string } => {
     const secrets = { ...toolNode.data.secrets } as { [key: string]: string };
     if (toolNode.data.toolType === "predefined") {
         // check required secrets for predefined tools
         const requiredEnvs = PREDEFINED_TOOL_REQUIRED_ENVS[toolNode.data.label] || [];
-        const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || [];
         for (const env of requiredEnvs) {
             if (secrets[env.key] && typeof secrets[env.key] === "string") {
                 secrets[env.key] = "REPLACE_ME";
             } else {
                 secrets[env.key] = "REPLACE_ME";
-            }
-        }
-        for (const kwarg of requiredKwargs) {
-            if (toolNode.data.kwargs && toolNode.data.kwargs[kwarg.key]) {
-                secrets[kwarg.key] = "REPLACE_ME";
-            } else {
-                secrets[kwarg.key] = "REPLACE_ME";
             }
         }
     }

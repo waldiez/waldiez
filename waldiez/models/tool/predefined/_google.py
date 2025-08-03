@@ -138,25 +138,15 @@ class GoogleSearchToolImpl(PredefinedTool):
         str
             The content for the tool.
         """
-        os.environ["GOOGLE_SEARCH_API_KEY"] = secrets.get(
-            "GOOGLE_SEARCH_API_KEY", ""
-        )
-        google_search_engine_id = self.google_search_engine_id
-        if not google_search_engine_id:
-            google_search_engine_id = secrets.get("GOOGLE_SEARCH_ENGINE_ID", "")
         content = f'''
 def {self.name}(
     query: str,
-    search_api_key: str,
-    search_engine_id: str,
     num_results: int = 10,
 ) -> list[dict[str, Any]]:
     """Perform a Google search and return formatted results.
 
     Args:
         query: The search query string.
-        search_api_key: The API key for the Google Search API.
-        search_engine_id: The search engine ID for the Google Search API.
         num_results: The maximum number of results to return. Defaults to 10.
     Returns:
         A list of dictionaries of the search results.
@@ -164,9 +154,12 @@ def {self.name}(
     google_search_api_key = os.environ.get("GOOGLE_SEARCH_API_KEY", "")
     if not google_search_api_key:
         raise ValueError("GOOGLE_SEARCH_API_KEY is required for Google search tool.")
+    google_search_engine_id = os.environ.get("GOOGLE_SEARCH_ENGINE_ID", "")
+    if not google_search_engine_id:
+        raise ValueError("Google Search Engine ID is required for Google search tool.")
     {self.name}_tool = GoogleSearchTool(
         search_api_key=google_search_api_key,
-        search_engine_id="{google_search_engine_id}",
+        search_engine_id=google_search_engine_id,
     )
     return {self.name}_tool(
         query=query,

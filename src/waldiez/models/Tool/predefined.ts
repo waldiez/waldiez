@@ -39,7 +39,10 @@ export const DEFAULT_PREDEFINED_TOOL_NAME: { [key: string]: string } = {
 export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; key: string }[] } = {
     wikipedia_search: [],
     youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
-    google_search: [{ label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }],
+    google_search: [
+        { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" },
+        { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" },
+    ],
     tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
     duckduckgo_search: [],
     perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
@@ -48,7 +51,7 @@ export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; ke
 export const PREDEFINED_TOOL_REQUIRED_KWARGS: { [key: string]: { label: string; key: string }[] } = {
     wikipedia_search: [],
     youtube_search: [],
-    google_search: [{ label: "Google Search Engine ID", key: "google_search_engine_id" }],
+    google_search: [],
     tavily_search: [],
     duckduckgo_search: [],
     perplexity_search: [],

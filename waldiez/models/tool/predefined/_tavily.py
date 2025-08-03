@@ -4,7 +4,6 @@
 # flake8: noqa: E501
 """Predefined Tavily search tool for Waldiez."""
 
-import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
@@ -98,13 +97,9 @@ class TavilySearchToolImpl(PredefinedTool):
         str
             The content for the tool.
         """
-        os.environ["TAVILY_API_KEY"] = secrets.get(
-            "TAVILY_API_KEY", os.environ.get("TAVILY_API_KEY", "")
-        )
         content = f'''
 def {self.name}(
     query: str,
-    tavily_api_key: str = os.environ.get("TAVILY_API_KEY", ""),
     search_depth: str = "basic",
     topic: str = "general",
     include_answer: str = "basic",
@@ -116,7 +111,6 @@ def {self.name}(
 
             Args:
                 query: The search query string.
-                tavily_api_key: The API key for Tavily (injected dependency).
                 search_depth: The depth of the search ('basic' or 'advanced'). Defaults to "basic".
                 include_answer: Whether to include an AI-generated answer ('basic' or 'advanced'). Defaults to "basic".
                 include_raw_content: Whether to include raw content in the results. Defaults to False.

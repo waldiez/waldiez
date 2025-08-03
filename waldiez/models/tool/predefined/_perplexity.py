@@ -4,7 +4,6 @@
 # flake8: noqa: E501
 """Predefined Perplexity AI search tool for Waldiez."""
 
-import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
@@ -120,21 +119,23 @@ class PerplexitySearchToolImpl(PredefinedTool):
         str
             Content retrieved by the tool.
         """
-        os.environ["PERPLEXITY_API_KEY"] = secrets.get("PERPLEXITY_API_KEY", "")
+        model = self.kwargs["model"]
+        max_tokens = self.kwargs["max_tokens"]
+        search_domain_filter = self.kwargs["search_domain_filter"]
         content = f'''
 def {self.name}(
     query: str,
-    model: str = "{self.kwargs["model"]}",
-    max_tokens: int = {self.kwargs["max_tokens"]},
-    search_domain_filter: Optional[list[str]] = {self.kwargs["search_domain_filter"]},
+    model: str = "{model}",
+    max_tokens: int = {max_tokens},
+    search_domain_filter: Optional[list[str]] = {search_domain_filter},
 ) -> "SearchResponse":
     """Perform a Perplexity AI search and return formatted results.
 
     Args:
         query: The search query string.
-        model: The model to use for the search. Defaults to "{self.kwargs["model"]}".
-        max_tokens: The maximum number of tokens to return. Defaults to {self.kwargs["max_tokens"]}.
-        search_domain_filter: List of domain filters for the search. Defaults to {self.kwargs["search_domain_filter"]}.
+        model: The model to use for the search. Defaults to "{model}".
+        max_tokens: The maximum number of tokens to return. Defaults to {max_tokens}.
+        search_domain_filter: List of domain filters for the search. Defaults to {search_domain_filter}.
     Returns:
         A list of dictionaries of the search results.
     """

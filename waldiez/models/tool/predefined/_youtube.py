@@ -4,7 +4,6 @@
 # flake8: noqa: E501
 """Predefined YouTube search tool for Waldiez."""
 
-import os
 from typing import Any
 
 from ._config import PredefinedToolConfig
@@ -101,11 +100,9 @@ class YouTubeSearchToolImpl(PredefinedTool):
         str
             The content for the tool.
         """
-        os.environ["YOUTUBE_API_KEY"] = secrets.get("YOUTUBE_API_KEY", "")
         content = f'''
 def {self.name}(
     query: str,
-    youtube_api_key: str = os.environ.get("YOUTUBE_API_KEY", ""),
     max_results: int = 5,
     include_video_details: bool = True,
 ) -> list[dict[str, Any]]:
@@ -113,7 +110,6 @@ def {self.name}(
 
     Args:
         query: The search query string.
-        youtube_api_key: The API key for the YouTube Data API.
         max_results: The maximum number of results to return. Defaults to 5.
         include_video_details: Whether to include detailed video information. Defaults to True.
 

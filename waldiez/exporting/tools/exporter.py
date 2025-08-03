@@ -176,7 +176,8 @@ class ToolsExporter(Exporter[ToolExtras]):
             for_notebook=self.config.for_notebook,
         )
         loader_script = f'''{comment}# NOTE:
-# This section assumes that a file named "{self.flow_name}_{tool_name}_secrets"
+# This section assumes that a file named:
+# "{self.flow_name}_{tool_name}_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.

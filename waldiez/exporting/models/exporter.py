@@ -186,7 +186,8 @@ class ModelsExporter(Exporter[ModelExtras]):
             for_notebook=self.config.for_notebook,
         )
         loader_script = f'''{comment}# NOTE:
-# This section assumes that a file named "{self.flow_name}_api_keys"
+# This section assumes that a file named:
+# "{self.flow_name}_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.

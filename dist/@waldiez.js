@@ -1817,7 +1817,7 @@ const ValidConditionTypes = [
 ];
 class WaldiezFlow {
   type = "flow";
-  version = "0.5.7";
+  version = "0.5.8";
   id;
   name;
   description;
@@ -1847,7 +1847,7 @@ const getFlowId = () => {
 const aFlowId = getFlowId();
 const emptyFlow = {
   type: "flow",
-  version: "0.5.7",
+  version: "0.5.8",
   id: aFlowId,
   storageId: aFlowId,
   name: "Waldiez Flow",
@@ -2058,7 +2058,10 @@ const DEFAULT_PREDEFINED_TOOL_NAME = {
 const PREDEFINED_TOOL_REQUIRED_ENVS = {
   wikipedia_search: [],
   youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
-  google_search: [{ label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" }],
+  google_search: [
+    { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" },
+    { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" }
+  ],
   tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
   duckduckgo_search: [],
   perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
@@ -2067,7 +2070,7 @@ const PREDEFINED_TOOL_REQUIRED_ENVS = {
 const PREDEFINED_TOOL_REQUIRED_KWARGS = {
   wikipedia_search: [],
   youtube_search: [],
-  google_search: [{ label: "Google Search Engine ID", key: "google_search_engine_id" }],
+  google_search: [],
   tavily_search: [],
   duckduckgo_search: [],
   perplexity_search: [],
@@ -5137,19 +5140,11 @@ const replaceToolSecrets = (toolNode) => {
   const secrets = { ...toolNode.data.secrets };
   if (toolNode.data.toolType === "predefined") {
     const requiredEnvs = PREDEFINED_TOOL_REQUIRED_ENVS[toolNode.data.label] || [];
-    const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || [];
     for (const env of requiredEnvs) {
       if (secrets[env.key] && typeof secrets[env.key] === "string") {
         secrets[env.key] = "REPLACE_ME";
       } else {
         secrets[env.key] = "REPLACE_ME";
-      }
-    }
-    for (const kwarg of requiredKwargs) {
-      if (toolNode.data.kwargs && toolNode.data.kwargs[kwarg.key]) {
-        secrets[kwarg.key] = "REPLACE_ME";
-      } else {
-        secrets[kwarg.key] = "REPLACE_ME";
       }
     }
   }
@@ -5737,7 +5732,7 @@ const flowMapper = {
     const waldiezFlow = {
       id: flow.flowId,
       type: "flow",
-      version: "0.5.7",
+      version: "0.5.8",
       storageId: flow.storageId,
       name: flow.name,
       description: flow.description,

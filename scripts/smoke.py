@@ -399,7 +399,74 @@ def convert_local_example(example_path: str) -> None:
         _log = f"Error linting local example {example_path}: {e}"
         LOG.error(_log)
         raise e
+    replace_root_dir_in_py(output_py_path)
+    replace_root_dir_in_ipynb(output_ipynb_path)
     check_diffs(output_ipynb_path, output_py_path)
+
+
+def replace_root_dir_in_ipynb(file_path: str) -> None:
+    """Replace the ROOT_DIR in the ipynb file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the ipynb file.
+    """
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+    should_update = False
+    if str(ROOT_DIR) in content:
+        patterns_to_try: list[str] = [
+            rf'r\\"{re.escape(str(ROOT_DIR))}{re.escape(os.path.sep)}',
+            rf'r\\"({re.escape(str(ROOT_DIR))}{re.escape(os.path.sep)})',
+            rf'\\"{re.escape(str(ROOT_DIR))}{re.escape(os.path.sep)}',
+            rf'r"{re.escape(str(ROOT_DIR))}{re.escape(os.path.sep)}',
+            rf'"({re.escape(str(ROOT_DIR))}{re.escape(os.path.sep)})',
+        ]
+
+        for i, pattern in enumerate(patterns_to_try):
+            if re.search(pattern, content):
+                should_update = True
+                if i == 0:  # r\"ROOT_DIR/
+                    content = re.sub(pattern, r"\"", content)
+                    break
+                if i == 1:  # r\"(ROOT_DIR/)
+                    content = re.sub(pattern, r"\"", content)
+                    break
+                if i == 2:  # \"ROOT_DIR/
+                    content = re.sub(pattern, r"\"", content)
+                    break
+                if i == 3:  # r"ROOT_DIR/
+                    content = re.sub(pattern, r'"', content)
+                    break
+                if i == 4:  # "(ROOT_DIR/)
+                    content = re.sub(pattern, r'"', content)
+                    break
+    if should_update:
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(content)
+
+
+def replace_root_dir_in_py(file_path: str) -> None:
+    """Replace the ROOT_DIR in the file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file.
+    """
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+    should_update = False
+    root_pattern = (
+        rf'r?(["\']){re.escape(str(ROOT_DIR))}{re.escape(os.path.sep)}'
+    )
+    if re.search(root_pattern, content):
+        content = re.sub(root_pattern, r"\1", content)
+        should_update = True
+    if should_update:
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(content)
 
 
 # pylint: disable=broad-exception-caught
@@ -417,17 +484,20 @@ def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
     # let's git restore the ipynb if needed (only cell id changes)
     # (no need to commit the new "id: ..." changes)
     if diff_has_only_id_changes(output_ipynb_path):
+        LOG.warning("The converted .ipynb file has only 'id: ...' changes.")
         try:
             git_restore(output_ipynb_path)
         except BaseException:
             # If restore fails (not in git yet?), we can still continue
             pass
     if diff_has_path_changes(output_ipynb_path):
+        LOG.warning("The converted .ipynb file has path changes.")
         try:
             git_restore(output_ipynb_path)
         except BaseException:
             pass
     if diff_has_path_changes(output_py_path):
+        LOG.warning("The converted .py file has path changes.")
         try:
             git_restore(output_py_path)
         except BaseException:
@@ -500,14 +570,14 @@ def convert_local_examples() -> None:
             _log = f"Error converting local example {example}: {e}"
             LOG.error(_log)
             raise e
-        # try:
-        #     lint_example(example_path.replace(".waldiez", ".py"))
-        #     lint_example(example_path.replace(".waldiez", ".ipynb"))
-        # except Exception as e:
-        #     _log = f"Error linting local example {example}: {e}"
-        #     LOG.error(_log)
-        #     raise e
-        # LOG.success(f"Local example {example} linted successfully.")
+        try:
+            lint_example(example_path.replace(".waldiez", ".py"))
+            lint_example(example_path.replace(".waldiez", ".ipynb"))
+        except Exception as e:
+            _log = f"Error linting local example {example}: {e}"
+            LOG.error(_log)
+            raise e
+        LOG.success(f"Local example {example} linted successfully.")
 
 
 def handle_remote() -> None:
