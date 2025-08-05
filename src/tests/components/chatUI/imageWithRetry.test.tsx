@@ -2,21 +2,24 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { act, fireEvent, render, renderHook, waitFor } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
 
 // Mock the hook
-// noinspection JSUnusedGlobalSymbols
+const mockRegisterImage = vi.fn();
 vi.mock("@waldiez/components/chatUI/hooks", () => ({
     useImageRetry: () => ({
-        registerImage: vi.fn(),
+        registerImage: mockRegisterImage,
     }),
 }));
 
 describe("ImageWithRetry", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it("renders and registers the image", () => {
         const { getByAltText } = render(<ImageWithRetry src="https://example.com/image.jpg" alt="Example" />);
 
@@ -34,18 +37,43 @@ describe("ImageWithRetry", () => {
         fireEvent.click(getByAltText("Chat image"));
         expect(handleClick).toHaveBeenCalled();
     });
-    it("does not retry after reaching maxRetries", () => {
-        const { result } = renderHook(() => useImageRetry(1, 500));
-        const img = document.createElement("img");
-        result.current.registerImage(img, "foo.png");
 
-        act(() => img.onerror?.(new Event("error")));
-        vi.advanceTimersByTime(1000);
+    it("applies additional className", () => {
+        const { getByAltText } = render(
+            <ImageWithRetry src="test.jpg" className="custom-class" alt="Test" />,
+        );
 
-        // One retry, now force another error (should not trigger setTimeout again)
-        act(() => img.onerror?.(new Event("error")));
-        waitFor(() => {
-            expect(img.classList.contains("failed")).toBe(true);
-        });
+        const img = getByAltText("Test");
+        expect(img).toHaveClass("custom-class");
+    });
+
+    it("renders with default alt text when not provided", () => {
+        const { getByAltText } = render(<ImageWithRetry src="test.jpg" />);
+
+        const img = getByAltText("Chat image");
+        expect(img).toBeInTheDocument();
+    });
+
+    it("calls registerImage on mount", () => {
+        render(<ImageWithRetry src="test.jpg" />);
+
+        // registerImage should be called when component mounts
+        expect(mockRegisterImage).toHaveBeenCalled();
+    });
+
+    it("passes correct parameters to registerImage", () => {
+        const { getByAltText } = render(<ImageWithRetry src="https://example.com/test.jpg" alt="Test" />);
+
+        const img = getByAltText("Test");
+
+        // Check that registerImage was called with the image element and URL
+        expect(mockRegisterImage).toHaveBeenCalledWith(img, "https://example.com/test.jpg");
+    });
+
+    it("handles image with loading class initially", () => {
+        const { getByAltText } = render(<ImageWithRetry src="test.jpg" alt="Loading Test" />);
+
+        const img = getByAltText("Loading Test");
+        expect(img).toHaveClass("loading");
     });
 });
