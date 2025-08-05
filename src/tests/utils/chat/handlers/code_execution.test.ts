@@ -5,6 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
+import { CodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_execution";
 
 // Mock dependencies
 vi.mock("strip-ansi", () => ({
@@ -66,6 +67,32 @@ describe("WaldiezChatMessageProcessor", () => {
             const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
+        });
+    });
+    describe("isValidCodeExecutionReply", () => {
+        it("should return true for valid code execution reply data", () => {
+            const data = {
+                type: "generate_code_execution_reply",
+                content: {
+                    uuid: "code-uuid-123",
+                    sender: "manager",
+                    recipient: "executor",
+                },
+            };
+
+            expect(CodeExecutionReplyHandler.isValidCodeExecutionReply(data)).toBe(true);
+        });
+
+        it("should return false for invalid code execution reply data", () => {
+            const data = {
+                type: "generate_code_execution_reply",
+                content: {
+                    // missing required fields
+                    uuid: "code-uuid-123",
+                },
+            };
+
+            expect(CodeExecutionReplyHandler.isValidCodeExecutionReply(data)).toBe(false);
         });
     });
 });

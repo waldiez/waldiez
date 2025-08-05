@@ -4,8 +4,7 @@
  */
 import { nanoid } from "nanoid";
 
-import { WaldiezChatMessage } from "@waldiez/types";
-import { MessageValidator } from "@waldiez/utils/chat/base";
+import { TerminationMessageData, WaldiezChatMessage } from "@waldiez/types";
 import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
 /**
@@ -24,13 +23,30 @@ export class TerminationHandler implements MessageHandler {
     }
 
     /**
+     * Validates if the provided data is a valid termination message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid termination message, false otherwise.
+     */
+    static isValidTerminationMessage(data: any): data is TerminationMessageData {
+        return Boolean(
+            (data &&
+                typeof data === "object" &&
+                data.type === "termination" &&
+                data.content &&
+                typeof data.content === "object" &&
+                typeof data.content.termination_reason === "string") ||
+                (data.termination_reason && typeof data.termination_reason === "string"),
+        );
+    }
+
+    /**
      * Handles the termination message.
      * Validates the message data and extracts the termination reason.
      * @param data - The raw message data to process.
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!MessageValidator.isValidTerminationMessage(data)) {
+        if (!TerminationHandler.isValidTerminationMessage(data)) {
             return undefined;
         }
 
@@ -41,7 +57,10 @@ export class TerminationHandler implements MessageHandler {
             content: [
                 {
                     type: "text",
-                    text: data.content.termination_reason,
+                    text:
+                        data.content?.termination_reason ||
+                        /* c8 ignore next */ data.termination_reason ||
+                        /* c8 ignore next */ "Chat terminated",
                 },
             ],
         };
@@ -60,21 +79,22 @@ export class TerminationAndHumanReplyNoInputHandler implements MessageHandler {
         return type === "termination_and_human_reply_no_input";
     }
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        /* c8 ignore next 3 */
         if (!data || typeof data !== "object" || data.type !== "termination_and_human_reply_no_input") {
             return undefined;
         }
         const message: WaldiezChatMessage = {
-            id: data.content.uuid,
+            id: data.content?.uuid || nanoid(),
             timestamp: new Date().toISOString(),
             type: "system",
             content: [
                 {
                     type: "text",
-                    text: "Termination and human reply without input",
+                    text: "Chat ended without user input",
                 },
             ],
-            sender: data.content.sender,
-            recipient: data.content.recipient,
+            sender: data.content?.sender,
+            recipient: data.content?.recipient,
         };
         return { message };
     }

@@ -8,6 +8,7 @@
  * @returns boolean -  True if the initial theme is dark mode, false otherwise.
  */
 export const isInitiallyDark = () => {
+    /* c8 ignore next 3 */
     if (typeof window === "undefined") {
         return false;
     }

@@ -3,11 +3,38 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { BASE_EXTENSION, exportItem, getFilenameForExporting } from "@waldiez/utils";
 
+// Mock JSZip with inline functions
+vi.mock("jszip", () => {
+    const mockZipFile = vi.fn();
+    const mockZipGenerateAsync = vi.fn();
+    const MockJSZip = vi.fn(() => ({
+        file: mockZipFile,
+        generateAsync: mockZipGenerateAsync,
+    }));
+
+    // Attach mocks to the constructor so we can access them in tests
+    Object.defineProperty(MockJSZip, "mockZipFile", { get: () => mockZipFile, configurable: true });
+    Object.defineProperty(MockJSZip, "mockZipGenerateAsync", {
+        get: () => mockZipGenerateAsync,
+        configurable: true,
+    });
+    // MockJSZip.mockZipFile = mockZipFile;
+    // MockJSZip.mockZipGenerateAsync = mockZipGenerateAsync;
+
+    return {
+        default: MockJSZip,
+    };
+});
+
 describe("exportItem", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it("should export an item", () => {
         vi.spyOn(URL, "createObjectURL");
         const exporter = () => ({ id: "1" });
@@ -15,12 +42,59 @@ describe("exportItem", () => {
         waitFor(() => expect(URL.createObjectURL).toHaveBeenCalled());
         waitFor(() => expect(URL.revokeObjectURL).toHaveBeenCalled());
     });
+
     it("should not export an item", () => {
         vi.spyOn(URL, "createObjectURL");
         const exporter = () => null;
         exportItem("test", "model", exporter);
         waitFor(() => expect(URL.createObjectURL).not.toHaveBeenCalled());
         waitFor(() => expect(URL.revokeObjectURL).toHaveBeenCalled());
+    });
+
+    it("should export as ZIP on macOS", async () => {
+        // Mock macOS
+        Object.defineProperty(navigator, "userAgent", {
+            value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_2)",
+            configurable: true,
+        });
+
+        const JSZip = (await import("jszip")).default;
+        const mockJSZip = vi.mocked(JSZip);
+        const mockBlob = new Blob(["test"]);
+
+        // Access the attached mock functions
+        // @ts-expect-error mocked JSZip does not have a type definition for mockZipFile
+        mockJSZip.mockZipGenerateAsync.mockResolvedValue(mockBlob);
+        vi.spyOn(URL, "createObjectURL");
+
+        const exporter = () => ({ id: "1" });
+        await exportItem("test", "flow", exporter);
+
+        expect(mockJSZip).toHaveBeenCalled();
+        // @ts-expect-error mocked JSZip does not have a type definition for mockZipFile
+        expect(mockJSZip.mockZipFile).toHaveBeenCalled();
+        // @ts-expect-error mocked JSZip does not have a type definition for mockZipGenerateAsync
+        expect(mockJSZip.mockZipGenerateAsync).toHaveBeenCalled();
+    });
+
+    it("should handle ZIP error", async () => {
+        // Mock macOS
+        Object.defineProperty(navigator, "userAgent", {
+            value: "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_2)",
+            configurable: true,
+        });
+
+        const JSZip = (await import("jszip")).default;
+        const mockJSZip = vi.mocked(JSZip);
+
+        // @ts-expect-error mocked JSZip does not have a type definition for mockZipGenerateAsync
+        mockJSZip.mockZipGenerateAsync.mockRejectedValue(new Error("ZIP failed"));
+        const onError = vi.fn();
+
+        const exporter = () => ({ id: "1" });
+        await exportItem("test", "flow", exporter, onError);
+
+        expect(onError).toHaveBeenCalled();
     });
 });
 

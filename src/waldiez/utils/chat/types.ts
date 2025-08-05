@@ -72,9 +72,10 @@ export type TextMessageData = BaseMessageData & {
  */
 export type TerminationMessageData = BaseMessageData & {
     type: "termination";
-    content: {
+    content?: {
         termination_reason: string;
     };
+    termination_reason?: string;
 };
 
 /**

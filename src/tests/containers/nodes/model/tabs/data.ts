@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezModelAPIType } from "@waldiez/models";
+import { WaldiezModelAPIType, WaldiezModelAWS } from "@waldiez/models";
 
 export const createdAt = new Date().toISOString();
 export const updatedAt = new Date().toISOString();
@@ -32,6 +32,13 @@ export const modelData = {
     requirements: [] as string[],
     createdAt,
     updatedAt,
+    aws: {
+        region: null as WaldiezModelAWS["region"],
+        accessKey: null as WaldiezModelAWS["accessKey"],
+        secretKey: null as WaldiezModelAWS["secretKey"],
+        sessionToken: null as WaldiezModelAWS["sessionToken"],
+        profileName: null as WaldiezModelAWS["profileName"],
+    } as Partial<WaldiezModelAWS>,
 };
 
 export const storedModels = [

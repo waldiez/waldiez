@@ -18,13 +18,13 @@ export class ToolCallHandler implements MessageHandler {
     }
 
     static isValidToolCall(data: any): boolean {
-        return (
-            data &&
-            typeof data === "object" &&
-            data.type === "tool_call" &&
-            data.content &&
-            typeof data.content === "object"
-        );
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+        if (data.type !== "tool_call") {
+            return false;
+        }
+        return !(!data.content || typeof data.content !== "object");
     }
     static extractToolFunctionNames(data: any): string[] {
         if (data.content.tool_calls && Array.isArray(data.content.tool_calls)) {
@@ -70,14 +70,16 @@ export class ToolResponseHandler implements MessageHandler {
         return type === "tool_response";
     }
     static isValidToolResponse(data: any): boolean {
-        return (
-            data &&
-            typeof data === "object" &&
-            data.type === "tool_response" &&
-            data.content &&
-            typeof data.content === "object" &&
-            Array.isArray(data.content.tool_responses)
-        );
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+        if (data.type !== "tool_response") {
+            return false;
+        }
+        if (!data.content || typeof data.content !== "object") {
+            return false;
+        }
+        return Array.isArray(data.content.tool_responses);
     }
 
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {

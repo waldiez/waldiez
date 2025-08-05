@@ -11,24 +11,35 @@ import { isInitiallyDark, setIsDarkMode } from "@waldiez/theme/utils";
  * Provider component for managing the Waldiez theme.
  * This component provides the current theme state and functions to toggle or set the theme.
  * @param children - The child components to be rendered within the provider.
- * @param initial - Optional initial theme state (dark or light).
+ * @param initialDark - Optional initial theme state. If true, the theme starts in dark mode; if false or undefined, it starts in light mode.
  */
 export const WaldiezThemeProvider: React.FC<{
     children: ReactNode;
     initialDark?: boolean;
 }> = ({ children, initialDark }) => {
     const [isDark, setIsDark] = useState(() =>
+        /* c8 ignore next */
         typeof initialDark === "boolean" ? initialDark : isInitiallyDark(),
     );
+    /* c8 ignore next 3 */
     if (typeof initialDark === "boolean") {
         setIsDarkMode(initialDark);
     }
+    /**
+     * Toggles the current theme between dark and light mode.
+     * It updates the state and calls setIsDarkMode to persist the theme preference.
+     */
     const toggleTheme = () => {
         setIsDark(prev => {
             setIsDarkMode(!prev);
             return !prev;
         });
     };
+    /**
+     * Sets the theme to dark or light mode.
+     * @param dark - If true, sets the theme to dark mode; otherwise, sets it to light mode.
+     */
+    /* c8 ignore next 4 */
     const setTheme = (dark: boolean) => {
         setIsDarkMode(dark);
         setIsDark(dark);

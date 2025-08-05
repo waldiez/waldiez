@@ -38,6 +38,56 @@ describe("WaldiezChatMessageProcessor", () => {
             });
         });
 
+        it("should not detect workflow end with different marker", () => {
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: "Chat completed successfully - <Waldiez>",
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toBeUndefined();
+        });
+
+        it("should detect workflow end from string message directly", () => {
+            const message = "<Waldiez> - Workflow finished successfully";
+
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toEqual({
+                isWorkflowEnd: true,
+            });
+        });
+
+        it("should detect workflow end from object with data property", () => {
+            const data = {
+                type: "print",
+                data: "<Waldiez> - Workflow finished successfully",
+            };
+
+            const result = WaldiezChatMessageProcessor.process(JSON.stringify(data));
+            expect(result).toEqual({
+                isWorkflowEnd: true,
+            });
+        });
+
+        it("should detect workflow end from nested content", () => {
+            const data = {
+                type: "print",
+                content: {
+                    data: {
+                        message: "<Waldiez> - Workflow finished successfully",
+                        status: "completed",
+                    },
+                },
+            };
+
+            const result = WaldiezChatMessageProcessor.process(JSON.stringify(data));
+            expect(result).toEqual({
+                isWorkflowEnd: true,
+            });
+        });
+
         it("should extract participants from print message", () => {
             const participantsData = {
                 participants: [
@@ -64,6 +114,32 @@ describe("WaldiezChatMessageProcessor", () => {
             });
         });
 
+        it("should extract participants from object data", () => {
+            const participantsData = {
+                participants: [
+                    { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
+                    { name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
+                ],
+            };
+
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: participantsData,
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({
+                isWorkflowEnd: false,
+                participants: {
+                    all: ["user_proxy", "assistant_1"],
+                    users: ["user_proxy"],
+                },
+            });
+        });
+
         it("should handle double dumped participants data", () => {
             const participantsData = {
                 participants: [
@@ -76,7 +152,7 @@ describe("WaldiezChatMessageProcessor", () => {
             const message = JSON.stringify({
                 type: "print",
                 content: {
-                    data: JSON.stringify(participantsData),
+                    data: JSON.stringify(JSON.stringify(participantsData)),
                 },
             });
             const result = WaldiezChatMessageProcessor.process(message);
@@ -84,6 +160,59 @@ describe("WaldiezChatMessageProcessor", () => {
                 isWorkflowEnd: false,
                 participants: {
                     all: ["user_proxy", "assistant_1", "assistant_2", "assistant_3"],
+                    users: ["user_proxy"],
+                },
+            });
+        });
+
+        it("should handle case insensitive humanInputMode", () => {
+            const participantsData = {
+                participants: [
+                    { name: "user_proxy", humanInputMode: "always", agentType: "user_proxy" },
+                    { name: "user_proxy2", humanInputMode: "Always", agentType: "user_proxy" },
+                    { name: "assistant_1", humanInputMode: "never", agentType: "assistant" },
+                ],
+            };
+
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: JSON.stringify(participantsData),
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({
+                isWorkflowEnd: false,
+                participants: {
+                    all: ["user_proxy", "user_proxy2", "assistant_1"],
+                    users: ["user_proxy", "user_proxy2"],
+                },
+            });
+        });
+
+        it("should handle participants with missing humanInputMode", () => {
+            const participantsData = {
+                participants: [
+                    { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
+                    { name: "assistant_1", agentType: "assistant" }, // missing humanInputMode
+                ],
+            };
+
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: JSON.stringify(participantsData),
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({
+                isWorkflowEnd: false,
+                participants: {
+                    all: ["user_proxy", "assistant_1"],
                     users: ["user_proxy"],
                 },
             });
@@ -113,6 +242,57 @@ describe("WaldiezChatMessageProcessor", () => {
             const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result).toBeUndefined();
+        });
+
+        it("should handle non-array participants", () => {
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: JSON.stringify({ participants: "not-an-array" }),
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toBeUndefined();
+        });
+
+        it("should handle missing participants key", () => {
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: JSON.stringify({ other_data: "some value" }),
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toBeUndefined();
+        });
+
+        it("should handle invalid message structure", () => {
+            const message = JSON.stringify({
+                type: "print",
+                // missing content
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toBeUndefined();
+        });
+        it("should handle message with string content that is not JSON", () => {
+            const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+            const message = JSON.stringify({
+                type: "print",
+                content: {
+                    data: "plain text message without participants",
+                },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toBeUndefined();
+            expect(consoleSpy).toHaveBeenCalled();
         });
     });
 });

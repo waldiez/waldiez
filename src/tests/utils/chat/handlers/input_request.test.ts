@@ -5,6 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
+import { InputRequestHandler } from "@waldiez/utils/chat/handlers";
 
 // Mock dependencies
 vi.mock("strip-ansi", () => ({
@@ -147,6 +148,71 @@ describe("WaldiezChatMessageProcessor", () => {
             const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.password).toBe(false);
+        });
+    });
+    describe("input_request_invalid_input handling", () => {
+        it("should return undefined for invalid input request", () => {
+            const message = JSON.stringify({
+                type: "input_request_invalid_input",
+                request_id: "req-123",
+                prompt: "Invalid input provided.",
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toBeUndefined();
+        });
+        it("should not process non-input_request messages", () => {
+            const message = {
+                type: "non_input_request",
+                request_id: "req-123",
+                prompt: "This should not be processed.",
+            };
+            const isValid = InputRequestHandler.isValidInputRequest(message);
+            expect(isValid).toBe(false);
+            const messageWithoutRequestId = {
+                type: "input_request",
+                prompt: "This should not be processed.",
+            };
+            const isValid2 = InputRequestHandler.isValidInputRequest(messageWithoutRequestId);
+            expect(isValid2).toBe(false);
+            const stringMessage = "input_request";
+            const isValid3 = InputRequestHandler.isValidInputRequest(stringMessage);
+            expect(isValid3).toBe(false);
+            const messageWithoutPrompt = JSON.stringify({
+                type: "input_request",
+                request_id: "req-123",
+            });
+            const result = WaldiezChatMessageProcessor.process(messageWithoutPrompt);
+            expect(result).toBeUndefined();
+            const result2 = new InputRequestHandler().handle(message, {});
+            expect(result2).toBeUndefined();
+        });
+    });
+    describe("UsingAutoReplyHandler", () => {
+        it("should handle using auto reply", () => {
+            const message = JSON.stringify({
+                type: "using_auto_reply",
+                request_id: "req-123",
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({
+                message: {
+                    id: "mock-nanoid-id",
+                    timestamp: "2024-01-01T12:00:00.000Z",
+                    type: "system",
+                    content: [
+                        {
+                            type: "text",
+                            text: "Using auto reply",
+                        },
+                    ],
+                    sender: undefined,
+                    recipient: undefined,
+                },
+            });
         });
     });
 });

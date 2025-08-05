@@ -54,20 +54,26 @@ export class WaldiezChatMessageProcessor {
      * @param imageUrl - Optional image URL associated with the message
      */
     static process(
-        rawMessage: string,
+        rawMessage: string | undefined | null,
         requestId?: string | null,
         imageUrl?: string,
     ): WaldiezChatMessageProcessingResult | undefined {
+        if (!rawMessage) {
+            return undefined;
+        }
         const message = stripAnsi(rawMessage.replace("\n", "")).trim();
 
         let data = WaldiezChatMessageProcessor.parseMessage(message);
         if (!data) {
-            return undefined;
+            return WaldiezChatMessageProcessor.findHandler("print")?.handle(message, {
+                requestId,
+                imageUrl,
+            });
         }
 
         let handler = WaldiezChatMessageProcessor.findHandler(data.type);
         if (data.type === "print") {
-            if (WaldiezChatMessageProcessor.isTimelineMessage(data)) {
+            if (PrintMessageHandler.isTimelineMessage(data)) {
                 data = (data as any)?.data as any;
                 handler = WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
             }
@@ -79,22 +85,6 @@ export class WaldiezChatMessageProcessor {
         const context: MessageProcessingContext = { requestId, imageUrl };
         return handler.handle(data, context);
     }
-
-    private static isTimelineMessage(data: any): boolean {
-        return (
-            data.type === "timeline" ||
-            (data.type === "print" &&
-                "data" in data &&
-                data.data &&
-                typeof data.data === "object" &&
-                "type" in data.data &&
-                data.data.type === "timeline" &&
-                "content" in data.data &&
-                data.data.content &&
-                typeof data.data.content === "object")
-        );
-    }
-
     /**
      * Parses a raw message string into a BaseMessageData object.
      * Returns null if the message cannot be parsed.

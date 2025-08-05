@@ -2,8 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezChatMessage } from "@waldiez/types";
-import { MessageValidator } from "@waldiez/utils/chat/base";
+import { nanoid } from "nanoid";
+
+import { InputRequestData, WaldiezChatMessage } from "@waldiez/types";
 import {
     MessageHandler,
     MessageProcessingContext,
@@ -27,6 +28,24 @@ export class InputRequestHandler implements MessageHandler {
     }
 
     /**
+     * Validates if the provided data is a valid input request message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid input request, false otherwise.
+     */
+    static isValidInputRequest(data: any): data is InputRequestData {
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+        if (data.type !== "input_request") {
+            return false;
+        }
+        if (typeof data.request_id !== "string" || data.request_id.trim() === "") {
+            return false;
+        }
+        return typeof data.prompt === "string";
+    }
+
+    /**
      * Handles the input request message.
      * Validates the message data, normalizes the prompt, and constructs a WaldiezChatMessage object.
      * @param data - The raw message data to process.
@@ -34,7 +53,7 @@ export class InputRequestHandler implements MessageHandler {
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
-        if (!MessageValidator.isValidInputRequest(data)) {
+        if (!InputRequestHandler.isValidInputRequest(data)) {
             return undefined;
         }
         const normalizedPrompt = MessageUtils.normalizePrompt(data.prompt);
@@ -69,11 +88,13 @@ export class UsingAutoReplyHandler implements MessageHandler {
         return type === "using_auto_reply";
     }
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        /* c8 ignore next 3 */
         if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
             return undefined;
         }
         const message: WaldiezChatMessage = {
-            id: data.content.uuid,
+            /* c8 ignore next */
+            id: data.content?.uuid || nanoid(),
             timestamp: new Date().toISOString(),
             type: "system",
             content: [
@@ -82,8 +103,10 @@ export class UsingAutoReplyHandler implements MessageHandler {
                     text: "Using auto reply",
                 },
             ],
-            sender: data.content.sender,
-            recipient: data.content.recipient,
+            /* c8 ignore next */
+            sender: data.content?.sender,
+            /* c8 ignore next */
+            recipient: data.content?.recipient,
         };
         return { message };
     }

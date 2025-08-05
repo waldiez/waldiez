@@ -24,6 +24,12 @@ describe("WaldiezChatMessageProcessor", () => {
     });
 
     describe("process method", () => {
+        it("should return undefined for null/undefined messages", () => {
+            expect(WaldiezChatMessageProcessor.process(null)).toBeUndefined();
+            expect(WaldiezChatMessageProcessor.process(undefined)).toBeUndefined();
+            expect(WaldiezChatMessageProcessor.process("")).toBeUndefined();
+        });
+
         it("should return undefined for non-JSON messages", () => {
             const result = WaldiezChatMessageProcessor.process("invalid json");
             expect(result).toBeUndefined();
@@ -48,7 +54,146 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(stripAnsi).toHaveBeenCalledWith("\u001b[31m" + message + "\u001b[0m");
         });
+
+        it("should handle newline characters in raw messages", () => {
+            const message = JSON.stringify({
+                type: "input_request",
+                request_id: "test",
+                prompt: "Enter input:",
+            });
+            const messageWithNewlines = message + "\n";
+
+            const result = WaldiezChatMessageProcessor.process(messageWithNewlines);
+
+            expect(result).toBeDefined();
+            expect(result?.message?.id).toBe("test");
+        });
+
+        it("should fall back to print handler when JSON parsing fails", () => {
+            const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+            // This should trigger the fallback to print handler
+            const message = "<Waldiez> - Workflow finished successfully";
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({ isWorkflowEnd: true });
+
+            consoleSpy.mockRestore();
+        });
     });
+
+    describe("timeline message handling", () => {
+        it("should handle print message with timeline data", () => {
+            const timelineData = {
+                type: "print",
+                data: {
+                    type: "timeline",
+                    content: {
+                        timeline: [
+                            { timestamp: "2024-01-01T10:00:00Z", event: "start", agent: "user" },
+                            { timestamp: "2024-01-01T10:01:00Z", event: "message", agent: "assistant" },
+                        ],
+                        cost_timeline: [
+                            { timestamp: "2024-01-01T10:00:00Z", cost: 0.001 },
+                            { timestamp: "2024-01-01T10:01:00Z", cost: 0.002 },
+                        ],
+                        summary: {
+                            total_messages: 2,
+                            total_cost: 0.003,
+                            duration: 60,
+                        },
+                        metadata: {
+                            model: "gpt-4",
+                            temperature: 0.7,
+                        },
+                        agents: ["user", "assistant"],
+                    },
+                },
+            };
+
+            const message = JSON.stringify(timelineData);
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({
+                timeline: {
+                    timeline: [
+                        { timestamp: "2024-01-01T10:00:00Z", event: "start", agent: "user" },
+                        { timestamp: "2024-01-01T10:01:00Z", event: "message", agent: "assistant" },
+                    ],
+                    cost_timeline: [
+                        { timestamp: "2024-01-01T10:00:00Z", cost: 0.001 },
+                        { timestamp: "2024-01-01T10:01:00Z", cost: 0.002 },
+                    ],
+                    summary: {
+                        total_messages: 2,
+                        total_cost: 0.003,
+                        duration: 60,
+                    },
+                    metadata: {
+                        model: "gpt-4",
+                        temperature: 0.7,
+                    },
+                    agents: ["user", "assistant"],
+                },
+            });
+        });
+
+        it("should handle print message with invalid timeline data", () => {
+            const timelineData = {
+                type: "print",
+                data: {
+                    type: "timeline",
+                    content: {
+                        // Missing required fields
+                        timeline: [],
+                        summary: null,
+                    },
+                },
+            };
+
+            const message = JSON.stringify(timelineData);
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toBeUndefined();
+        });
+
+        it("should handle direct timeline message type", () => {
+            const timelineData = {
+                type: "timeline",
+                content: {
+                    timeline: [{ timestamp: "2024-01-01T10:00:00Z", event: "start", agent: "user" }],
+                    cost_timeline: [{ timestamp: "2024-01-01T10:00:00Z", cost: 0.001 }],
+                    summary: {
+                        total_messages: 1,
+                        total_cost: 0.001,
+                    },
+                    metadata: {
+                        model: "gpt-4",
+                    },
+                    agents: ["user"],
+                },
+            };
+
+            const message = JSON.stringify(timelineData);
+            const result = WaldiezChatMessageProcessor.process(message);
+
+            expect(result).toEqual({
+                timeline: {
+                    timeline: [{ timestamp: "2024-01-01T10:00:00Z", event: "start", agent: "user" }],
+                    cost_timeline: [{ timestamp: "2024-01-01T10:00:00Z", cost: 0.001 }],
+                    summary: {
+                        total_messages: 1,
+                        total_cost: 0.001,
+                    },
+                    metadata: {
+                        model: "gpt-4",
+                    },
+                    agents: ["user"],
+                },
+            });
+        });
+    });
+
     describe("image URL replacement", () => {
         it("should not modify non-image content", () => {
             const contentArray = [{ type: "text", text: "Hello" }];
@@ -133,6 +278,38 @@ describe("WaldiezChatMessageProcessor", () => {
 
             const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toBeUndefined();
+        });
+
+        it("should handle message with no type property", () => {
+            const message = JSON.stringify({
+                content: { data: "some data" },
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toBeUndefined();
+        });
+
+        it("should handle print message that is not timeline but has data property", () => {
+            const message = JSON.stringify({
+                type: "print",
+                data: "regular print message data",
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toBeUndefined();
+        });
+
+        it("should pass context correctly to handlers", () => {
+            const message = JSON.stringify({
+                type: "input_request",
+                request_id: "test-req",
+                prompt: "Enter input:",
+            });
+
+            const result = WaldiezChatMessageProcessor.process(message, "context-req", "https://image.url");
+
+            expect(result?.message?.request_id).toBe("context-req");
+            expect(result?.requestId).toBe("test-req");
         });
     });
 });

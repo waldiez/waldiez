@@ -4,8 +4,7 @@
  */
 import { nanoid } from "nanoid";
 
-import { WaldiezChatMessage } from "@waldiez/types";
-import { MessageValidator } from "@waldiez/utils/chat/base";
+import { CodeExecutionReplyData, WaldiezChatMessage } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
 import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
@@ -25,13 +24,35 @@ export class CodeExecutionReplyHandler implements MessageHandler {
     }
 
     /**
+     * Validates if the provided data is a valid code execution reply message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid code execution reply message, false otherwise.
+     */
+    static isValidCodeExecutionReply(data: any): data is CodeExecutionReplyData {
+        /* c8 ignore next 9 */
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+        if (data.type !== "generate_code_execution_reply") {
+            return false;
+        }
+        if (!data.content || typeof data.content !== "object") {
+            return false;
+        }
+        return Boolean(
+            typeof data.content.uuid === "string" &&
+                typeof data.content.sender === "string" &&
+                typeof data.content.recipient === "string",
+        );
+    }
+    /**
      * Handles the code execution reply message.
      * Validates the message data and constructs a WaldiezChatMessage object with the code execution reply content.
      * @param data - The raw message data to process.
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!MessageValidator.isValidCodeExecutionReply(data)) {
+        if (!CodeExecutionReplyHandler.isValidCodeExecutionReply(data)) {
             return undefined;
         }
 

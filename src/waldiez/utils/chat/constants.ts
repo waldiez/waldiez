@@ -9,6 +9,7 @@ export const MESSAGE_CONSTANTS = {
         "<Waldiez> - Workflow finished",
         "<Waldiez> - Workflow stopped by user",
         "<Waldiez> - Workflow execution failed:",
+        "<Waldiez> - Done running the flow.",
     ],
     PARTICIPANTS_KEY: "participants",
     SYSTEM_MESSAGES: {

@@ -107,108 +107,14 @@ class RunCompletionHandler {
     return { isWorkflowEnd: true, runCompletion: data.content };
   }
 }
-class MessageValidator {
-  /**
-   * Validates if the provided data is a valid input request message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid input request, false otherwise.
-   */
-  static isValidInputRequest(data) {
-    return data && typeof data === "object" && data.type === "input_request" && typeof data.request_id === "string" && typeof data.prompt === "string";
-  }
-  /**
-   * Validates if the provided data is a valid print message.
-   * @param message - The message data to validate.
-   * @returns True if the message is a valid print message, false otherwise.
-   */
-  static isValidPrintMessage(message) {
-    if (!message || typeof message !== "object") {
-      return false;
-    }
-    if (typeof message.type !== "string" || message.type !== "print") {
-      return false;
-    }
-    if ("data" in message && (typeof message.data === "string" || typeof message.data === "object")) {
-      message.content = { data: message.data };
-      return true;
-    }
-    if (!message.content || typeof message.content !== "object") {
-      return false;
-    }
-    if (!message.content.data) {
-      return false;
-    }
-    return typeof message.content.data === "string" || Array.isArray(message.content.data) || typeof message.content.data === "object";
-  }
-  /**
-   * Validates if the provided data is a valid text message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid text message, false otherwise.
-   */
-  static isValidTextMessage(data) {
-    return data && typeof data === "object" && data.type === "text" && data.content && typeof data.content === "object" && data.content.content !== void 0 && typeof data.content.sender === "string" && typeof data.content.recipient === "string" || Array.isArray(data.content) && data.content.every(
-      (item) => typeof item === "string" || typeof item === "object" && item !== null && "type" in item && item.type === "text" && "text" in item && typeof item.text === "string"
-    );
-  }
-  /**
-   * Validates if the provided data is a valid termination message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid termination message, false otherwise.
-   */
-  static isValidTerminationMessage(data) {
-    return data && typeof data === "object" && data.type === "termination" && data.content && typeof data.content === "object" && typeof data.content.termination_reason === "string" || data.termination_reason && typeof data.termination_reason === "string";
-  }
-  /**
-   * Validates if the provided data is a valid group chat run message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid group chat run message, false otherwise.
-   */
-  static isValidGroupChatRun(data) {
-    return data && typeof data === "object" && data.type === "group_chat_run_chat" && data.content && typeof data.content === "object" && typeof data.content.uuid === "string" && typeof data.content.speaker === "string";
-  }
-  /**
-   * Validates if the provided data is a valid speaker selection message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid speaker selection message, false otherwise.
-   */
-  static isValidSpeakerSelection(data) {
-    return data && typeof data === "object" && (data.type === "select_speaker" || data.type === "select_speaker_invalid_input") && data.content && typeof data.content === "object" && typeof data.content.uuid === "string" && Array.isArray(data.content.agents) && data.content.agents.every((agent) => typeof agent === "string");
-  }
-  /**
-   * Validates if the provided data is a valid code execution reply message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid code execution reply message, false otherwise.
-   */
-  static isValidCodeExecutionReply(data) {
-    return data && typeof data === "object" && data.type === "generate_code_execution_reply" && data.content && typeof data.content === "object" && typeof data.content.uuid === "string" && typeof data.content.sender === "string" && typeof data.content.recipient === "string";
-  }
-  /**
-   * Validates if the provided data is a valid participants data.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid participants data, false otherwise.
-   */
-  static isValidParticipantsData(data) {
-    if (data && typeof data === "object" && Array.isArray(data.participants) && data.participants.length > 0 && data.participants.every((p) => p && typeof p.name === "string")) {
-      return true;
-    }
-    if (data && typeof data === "string") {
-      try {
-        const parsedData = JSON.parse(data);
-        return MessageValidator.isValidParticipantsData(parsedData);
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  }
-}
 const MESSAGE_CONSTANTS = {
   DEFAULT_PROMPT: "Enter your message to start the conversation:",
   GENERIC_PROMPTS: [">", "> "],
   WORKFLOW_END_MARKERS: [
     "<Waldiez> - Workflow finished",
     "<Waldiez> - Workflow stopped by user",
-    "<Waldiez> - Workflow execution failed:"
+    "<Waldiez> - Workflow execution failed:",
+    "<Waldiez> - Done running the flow."
   ],
   PARTICIPANTS_KEY: "participants",
   SYSTEM_MESSAGES: {
@@ -229,13 +135,32 @@ class CodeExecutionReplyHandler {
     return type === "generate_code_execution_reply";
   }
   /**
+   * Validates if the provided data is a valid code execution reply message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid code execution reply message, false otherwise.
+   */
+  static isValidCodeExecutionReply(data) {
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (data.type !== "generate_code_execution_reply") {
+      return false;
+    }
+    if (!data.content || typeof data.content !== "object") {
+      return false;
+    }
+    return Boolean(
+      typeof data.content.uuid === "string" && typeof data.content.sender === "string" && typeof data.content.recipient === "string"
+    );
+  }
+  /**
    * Handles the code execution reply message.
    * Validates the message data and constructs a WaldiezChatMessage object with the code execution reply content.
    * @param data - The raw message data to process.
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!MessageValidator.isValidCodeExecutionReply(data)) {
+    if (!CodeExecutionReplyHandler.isValidCodeExecutionReply(data)) {
       return void 0;
     }
     const message = {
@@ -272,19 +197,21 @@ class ErrorHandler {
   // Input should be a valid string [type=string_type, input_value={'content': '```json\\n{\"n...one, 'tool_calls': None},
   //  input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/string_type"}}
   static isValidError(data) {
-    return data && typeof data === "object" && data.type === "error" && (data.content && typeof data.content === "object" || data.error && typeof data.error === "object");
+    return Boolean(
+      data && typeof data === "object" && data.type === "error" && (data.content && typeof data.content === "object" || data.error && (typeof data.error === "object" || typeof data.error === "string"))
+    );
   }
   handle(data) {
     if (!ErrorHandler.isValidError(data)) {
       return void 0;
     }
-    const errorContent = data.content?.error || data.error;
+    const errorContent = data.content?.error || data.error?.error || data.error;
     if (typeof errorContent !== "string") {
       return void 0;
     }
     const text = `Error: ${errorContent}`;
     const message = {
-      id: data.content.uuid ?? nanoid(),
+      id: data.content?.uuid ?? nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
       type: "system",
       content: [
@@ -293,8 +220,8 @@ class ErrorHandler {
           text
         }
       ],
-      sender: data.content.sender,
-      recipient: data.content.recipient,
+      sender: data.content?.sender,
+      recipient: data.content?.recipient,
       error: errorContent
       // Include error content in the message
     };
@@ -449,13 +376,23 @@ class GroupChatRunHandler {
     return type === "group_chat_run_chat";
   }
   /**
+   * Validates if the provided data is a valid group chat run message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid group chat run message, false otherwise.
+   */
+  static isValidGroupChatRun(data) {
+    return Boolean(
+      data && typeof data === "object" && data.type === "group_chat_run_chat" && data.content && typeof data.content === "object" && typeof data.content.uuid === "string" && typeof data.content.speaker === "string"
+    );
+  }
+  /**
    * Handles the group chat run message.
    * Validates the message data and constructs a WaldiezChatMessage object with a system message.
    * @param data - The raw message data to process.
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!MessageValidator.isValidGroupChatRun(data)) {
+    if (!GroupChatRunHandler.isValidGroupChatRun(data)) {
       return void 0;
     }
     const message = {
@@ -483,13 +420,23 @@ class SpeakerSelectionHandler {
     return type === "select_speaker" || type === "select_speaker_invalid_input";
   }
   /**
+   * Validates if the provided data is a valid speaker selection message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid speaker selection message, false otherwise.
+   */
+  static isValidSpeakerSelection(data) {
+    return Boolean(
+      data && typeof data === "object" && (data.type === "select_speaker" || data.type === "select_speaker_invalid_input") && data.content && typeof data.content === "object" && typeof data.content.uuid === "string" && Array.isArray(data.content.agents) && data.content.agents.every((agent) => typeof agent === "string")
+    );
+  }
+  /**
    * Handles the speaker selection message.
    * Validates the message data and generates a markdown representation of the speaker selection.
    * @param data - The raw message data to process.
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!MessageValidator.isValidSpeakerSelection(data)) {
+    if (!SpeakerSelectionHandler.isValidSpeakerSelection(data)) {
       return void 0;
     }
     const message = {
@@ -516,6 +463,23 @@ class InputRequestHandler {
     return type === "input_request";
   }
   /**
+   * Validates if the provided data is a valid input request message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid input request, false otherwise.
+   */
+  static isValidInputRequest(data) {
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (data.type !== "input_request") {
+      return false;
+    }
+    if (typeof data.request_id !== "string" || data.request_id.trim() === "") {
+      return false;
+    }
+    return typeof data.prompt === "string";
+  }
+  /**
    * Handles the input request message.
    * Validates the message data, normalizes the prompt, and constructs a WaldiezChatMessage object.
    * @param data - The raw message data to process.
@@ -523,7 +487,7 @@ class InputRequestHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data, context) {
-    if (!MessageValidator.isValidInputRequest(data)) {
+    if (!InputRequestHandler.isValidInputRequest(data)) {
       return void 0;
     }
     const normalizedPrompt = MessageUtils.normalizePrompt(data.prompt);
@@ -556,7 +520,8 @@ class UsingAutoReplyHandler {
       return void 0;
     }
     const message = {
-      id: data.content.uuid,
+      /* c8 ignore next */
+      id: data.content?.uuid || nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
       type: "system",
       content: [
@@ -565,8 +530,10 @@ class UsingAutoReplyHandler {
           text: "Using auto reply"
         }
       ],
-      sender: data.content.sender,
-      recipient: data.content.recipient
+      /* c8 ignore next */
+      sender: data.content?.sender,
+      /* c8 ignore next */
+      recipient: data.content?.recipient
     };
     return { message };
   }
@@ -589,7 +556,66 @@ class PrintMessageHandler {
     }
     const dataContent = "data" in message ? message.data : message.content;
     const stringContent = typeof dataContent === "string" ? dataContent : JSON.stringify(dataContent);
+    if (!stringContent) {
+      return false;
+    }
     return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some((marker) => stringContent.includes(marker));
+  }
+  /**
+   * Validates if the provided data is a valid print message.
+   * @param message - The message data to validate.
+   * @returns True if the message is a valid print message, false otherwise.
+   */
+  static isValidPrintMessage(message) {
+    if (!message || typeof message !== "object") {
+      return false;
+    }
+    if (typeof message.type !== "string" || message.type !== "print") {
+      return false;
+    }
+    if ("data" in message && (typeof message.data === "string" || typeof message.data === "object")) {
+      message.content = { data: message.data };
+      return true;
+    }
+    if (!message.content || typeof message.content !== "object") {
+      return false;
+    }
+    if (!message.content.data) {
+      return false;
+    }
+    return Boolean(
+      typeof message.content.data === "string" || Array.isArray(message.content.data) || typeof message.content.data === "object"
+    );
+  }
+  /**
+   * Validates if the provided data is a valid participants data.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid participants data, false otherwise.
+   */
+  static isValidParticipantsData(data) {
+    if (data && typeof data === "object" && Array.isArray(data.participants) && data.participants.length > 0 && data.participants.every((p) => p && typeof p.name === "string")) {
+      return true;
+    }
+    if (data && typeof data === "string") {
+      try {
+        const parsedData = JSON.parse(data);
+        return PrintMessageHandler.isValidParticipantsData(parsedData);
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+  /**
+   * Validates if the provided data is a valid timeline message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid timeline message, false otherwise.
+   */
+  static isTimelineMessage(data) {
+    return Boolean(
+      data.type === "timeline" || /* c8 ignore next 9 */
+      data.type === "print" && "data" in data && data.data && typeof data.data === "object" && "type" in data.data && data.data.type === "timeline" && "content" in data.data && data.data.content && typeof data.data.content === "object"
+    );
   }
   /**
    * Handles the print message.
@@ -598,7 +624,7 @@ class PrintMessageHandler {
    * @returns A WaldiezChatMessageProcessingResult containing participants or indicating workflow end, or undefined if invalid.
    */
   handle(data) {
-    if (!MessageValidator.isValidPrintMessage(data)) {
+    if (!PrintMessageHandler.isValidPrintMessage(data)) {
       if (this.isEndOfWorkflow(data)) {
         return { isWorkflowEnd: true };
       }
@@ -626,10 +652,14 @@ class PrintMessageHandler {
   extractParticipants(dataContent) {
     try {
       const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
-      if (MessageValidator.isValidParticipantsData(parsedData)) {
+      if (PrintMessageHandler.isValidParticipantsData(parsedData)) {
         if (typeof parsedData === "string") {
-          const innerDumped = JSON.parse(parsedData);
-          return this.extractParticipants(innerDumped);
+          try {
+            const innerDumped = JSON.parse(parsedData);
+            return this.extractParticipants(innerDumped);
+          } catch (_) {
+            return void 0;
+          }
         }
         const allParticipants = parsedData.participants.map((p) => p.name).filter(Boolean);
         const userParticipants = parsedData.participants.filter((p) => p.humanInputMode?.toUpperCase() === "ALWAYS").map((p) => p.name).filter(Boolean);
@@ -657,13 +687,23 @@ class TerminationHandler {
     return type === "termination";
   }
   /**
+   * Validates if the provided data is a valid termination message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid termination message, false otherwise.
+   */
+  static isValidTerminationMessage(data) {
+    return Boolean(
+      data && typeof data === "object" && data.type === "termination" && data.content && typeof data.content === "object" && typeof data.content.termination_reason === "string" || data.termination_reason && typeof data.termination_reason === "string"
+    );
+  }
+  /**
    * Handles the termination message.
    * Validates the message data and extracts the termination reason.
    * @param data - The raw message data to process.
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!MessageValidator.isValidTerminationMessage(data)) {
+    if (!TerminationHandler.isValidTerminationMessage(data)) {
       return void 0;
     }
     const message = {
@@ -673,7 +713,9 @@ class TerminationHandler {
       content: [
         {
           type: "text",
-          text: data.content.termination_reason
+          text: data.content?.termination_reason || /* c8 ignore next */
+          data.termination_reason || /* c8 ignore next */
+          "Chat terminated"
         }
       ]
     };
@@ -689,17 +731,17 @@ class TerminationAndHumanReplyNoInputHandler {
       return void 0;
     }
     const message = {
-      id: data.content.uuid,
+      id: data.content?.uuid || nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
       type: "system",
       content: [
         {
           type: "text",
-          text: "Termination and human reply without input"
+          text: "Chat ended without user input"
         }
       ],
-      sender: data.content.sender,
-      recipient: data.content.recipient
+      sender: data.content?.sender,
+      recipient: data.content?.recipient
     };
     return { message };
   }
@@ -714,6 +756,34 @@ class TextMessageHandler {
     return type === "text";
   }
   /**
+   * Validates if the provided data is a valid text message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid text message, false otherwise.
+   */
+  static isValidTextMessage(data) {
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (data.type !== "text") {
+      return false;
+    }
+    if (Array.isArray(data.content)) {
+      return data.content.every(isValidContentItem);
+    }
+    const content = data.content;
+    if (!content || typeof content !== "object" || typeof content.sender !== "string" || typeof content.recipient !== "string") {
+      return false;
+    }
+    const inner = content.content;
+    if (typeof inner === "string") {
+      return true;
+    }
+    if (Array.isArray(inner)) {
+      return inner.every(isValidContentItem);
+    }
+    return isValidContentItem(inner);
+  }
+  /**
    * Handles the text message.
    * Validates the message data, normalizes the content, and replaces image URLs if provided.
    * @param data - The raw message data to process.
@@ -721,7 +791,7 @@ class TextMessageHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data, context) {
-    if (!MessageValidator.isValidTextMessage(data)) {
+    if (!TextMessageHandler.isValidTextMessage(data)) {
       return void 0;
     }
     let content = MessageUtils.normalizeContent(data.content.content, context.imageUrl);
@@ -741,6 +811,9 @@ class TextMessageHandler {
       requestId: null
     };
   }
+}
+function isValidContentItem(item) {
+  return typeof item === "string" || item && typeof item === "object" && typeof item.type === "string" && (item.type === "text" && typeof item.text === "string" || item.type === "image_url" && item.image_url && typeof item.image_url.url === "string");
 }
 class TimelineDataHandler {
   canHandle(type) {
@@ -773,7 +846,13 @@ class ToolCallHandler {
     return type === "tool_call";
   }
   static isValidToolCall(data) {
-    return data && typeof data === "object" && data.type === "tool_call" && data.content && typeof data.content === "object";
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (data.type !== "tool_call") {
+      return false;
+    }
+    return !(!data.content || typeof data.content !== "object");
   }
   static extractToolFunctionNames(data) {
     if (data.content.tool_calls && Array.isArray(data.content.tool_calls)) {
@@ -811,7 +890,16 @@ class ToolResponseHandler {
     return type === "tool_response";
   }
   static isValidToolResponse(data) {
-    return data && typeof data === "object" && data.type === "tool_response" && data.content && typeof data.content === "object" && Array.isArray(data.content.tool_responses);
+    if (!data || typeof data !== "object") {
+      return false;
+    }
+    if (data.type !== "tool_response") {
+      return false;
+    }
+    if (!data.content || typeof data.content !== "object") {
+      return false;
+    }
+    return Array.isArray(data.content.tool_responses);
   }
   handle(data) {
     if (!ToolResponseHandler.isValidToolResponse(data)) {
@@ -883,14 +971,20 @@ class WaldiezChatMessageProcessor {
    * @param imageUrl - Optional image URL associated with the message
    */
   static process(rawMessage, requestId, imageUrl) {
+    if (!rawMessage) {
+      return void 0;
+    }
     const message = stripAnsi(rawMessage.replace("\n", "")).trim();
     let data = WaldiezChatMessageProcessor.parseMessage(message);
     if (!data) {
-      return void 0;
+      return WaldiezChatMessageProcessor.findHandler("print")?.handle(message, {
+        requestId,
+        imageUrl
+      });
     }
     let handler = WaldiezChatMessageProcessor.findHandler(data.type);
     if (data.type === "print") {
-      if (WaldiezChatMessageProcessor.isTimelineMessage(data)) {
+      if (PrintMessageHandler.isTimelineMessage(data)) {
         data = data?.data;
         handler = WaldiezChatMessageProcessor.handlers.find((h) => h instanceof TimelineDataHandler);
       }
@@ -900,9 +994,6 @@ class WaldiezChatMessageProcessor {
     }
     const context = { requestId, imageUrl };
     return handler.handle(data, context);
-  }
-  static isTimelineMessage(data) {
-    return data.type === "timeline" || data.type === "print" && "data" in data && data.data && typeof data.data === "object" && "type" in data.data && data.data.type === "timeline" && "content" in data.data && data.data.content && typeof data.data.content === "object";
   }
   /**
    * Parses a raw message string into a BaseMessageData object.
@@ -933,7 +1024,7 @@ const getCrypto = () => {
   if (globalThis.crypto && globalThis.crypto.subtle) {
     return globalThis.crypto;
   }
-  throw new Error("Web Crypto API not supported in this browser. Please use a modern browser with HTTPS.");
+  throw new Error("Web Crypto API not supported in this browser.");
 };
 const sha256 = async (message) => {
   try {
@@ -3583,7 +3674,10 @@ const setStorageTheme = (isDark) => {
 };
 const WaldiezThemeProvider = ({ children, initialDark }) => {
   const [isDark, setIsDark] = useState(
-    () => typeof initialDark === "boolean" ? initialDark : isInitiallyDark()
+    () => (
+      /* c8 ignore next */
+      typeof initialDark === "boolean" ? initialDark : isInitiallyDark()
+    )
   );
   if (typeof initialDark === "boolean") {
     setIsDarkMode(initialDark);

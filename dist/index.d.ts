@@ -804,9 +804,10 @@ export declare type SpeakerSelectionData = BaseMessageData & {
  */
 export declare type TerminationMessageData = BaseMessageData & {
     type: "termination";
-    content: {
+    content?: {
         termination_reason: string;
     };
+    termination_reason?: string;
 };
 
 /**
@@ -2247,8 +2248,7 @@ export declare class WaldiezChatMessageProcessor {
      * @param requestId - Optional request ID for the message
      * @param imageUrl - Optional image URL associated with the message
      */
-    static process(rawMessage: string, requestId?: string | null, imageUrl?: string): WaldiezChatMessageProcessingResult | undefined;
-    private static isTimelineMessage;
+    static process(rawMessage: string | undefined | null, requestId?: string | null, imageUrl?: string): WaldiezChatMessageProcessingResult | undefined;
     /**
      * Parses a raw message string into a BaseMessageData object.
      * Returns null if the message cannot be parsed.

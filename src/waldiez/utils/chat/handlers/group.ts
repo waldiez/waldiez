@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezChatMessage } from "@waldiez/types";
-import { MessageValidator } from "@waldiez/utils/chat/base";
+import { GroupChatRunData, SpeakerSelectionData, WaldiezChatMessage } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
 import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 import { MessageUtils } from "@waldiez/utils/chat/utils";
@@ -22,6 +21,22 @@ export class GroupChatRunHandler implements MessageHandler {
     canHandle(type: string): boolean {
         return type === "group_chat_run_chat";
     }
+    /**
+     * Validates if the provided data is a valid group chat run message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid group chat run message, false otherwise.
+     */
+    static isValidGroupChatRun(data: any): data is GroupChatRunData {
+        return Boolean(
+            data &&
+                typeof data === "object" &&
+                data.type === "group_chat_run_chat" &&
+                data.content &&
+                typeof data.content === "object" &&
+                typeof data.content.uuid === "string" &&
+                typeof data.content.speaker === "string",
+        );
+    }
 
     /**
      * Handles the group chat run message.
@@ -30,7 +45,7 @@ export class GroupChatRunHandler implements MessageHandler {
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!MessageValidator.isValidGroupChatRun(data)) {
+        if (!GroupChatRunHandler.isValidGroupChatRun(data)) {
             return undefined;
         }
 
@@ -67,13 +82,31 @@ export class SpeakerSelectionHandler implements MessageHandler {
     }
 
     /**
+     * Validates if the provided data is a valid speaker selection message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid speaker selection message, false otherwise.
+     */
+    static isValidSpeakerSelection(data: any): data is SpeakerSelectionData {
+        return Boolean(
+            data &&
+                typeof data === "object" &&
+                (data.type === "select_speaker" || data.type === "select_speaker_invalid_input") &&
+                data.content &&
+                typeof data.content === "object" &&
+                typeof data.content.uuid === "string" &&
+                Array.isArray(data.content.agents) &&
+                data.content.agents.every((agent: any) => typeof agent === "string"),
+        );
+    }
+
+    /**
      * Handles the speaker selection message.
      * Validates the message data and generates a markdown representation of the speaker selection.
      * @param data - The raw message data to process.
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!MessageValidator.isValidSpeakerSelection(data)) {
+        if (!SpeakerSelectionHandler.isValidSpeakerSelection(data)) {
             return undefined;
         }
 

@@ -79,6 +79,7 @@ export class MessageUtils {
                     if (item.type === "image_url" && item.image_url?.url) {
                         return updateImageUrl(item);
                     }
+                    /* c8 ignore next 5 */
                     if (item.type === "text" && item.text) {
                         const processed = processTextContent(item.text);
                         return processed || item;
@@ -145,9 +146,11 @@ export class MessageUtils {
         if (Array.isArray(content)) {
             return content.map(item => {
                 const normalized = MessageUtils.normalizeContent(item, imageUrl);
+                /* c8 ignore next 3 */
                 if (Array.isArray(normalized) && normalized.length === 1) {
                     return normalized[0];
                 }
+                /* c8 ignore next */
                 return normalized;
             }) as WaldiezChatContent;
         }

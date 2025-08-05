@@ -1,0 +1,730 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+/* eslint-disable max-lines-per-function, max-lines */
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import {
+    ExecutedFunctionHandler,
+    ToolCallHandler,
+    ToolResponseHandler,
+} from "@waldiez/utils/chat/handlers/tools";
+
+// Mock dependencies
+vi.mock("nanoid", () => ({
+    nanoid: vi.fn(() => "mock-nanoid-id"),
+}));
+
+describe("Tools Handlers", () => {
+    let mockDate: Date;
+
+    beforeEach(() => {
+        mockDate = new Date("2024-01-01T12:00:00.000Z");
+        vi.setSystemTime(mockDate);
+        vi.clearAllMocks();
+    });
+
+    describe("ToolCallHandler", () => {
+        let handler: ToolCallHandler;
+
+        beforeEach(() => {
+            handler = new ToolCallHandler();
+        });
+
+        describe("canHandle", () => {
+            it("should return true for tool_call type", () => {
+                expect(handler.canHandle("tool_call")).toBe(true);
+            });
+
+            it("should return false for other types", () => {
+                expect(handler.canHandle("text")).toBe(false);
+                expect(handler.canHandle("tool_response")).toBe(false);
+                expect(handler.canHandle("system")).toBe(false);
+            });
+        });
+
+        describe("isValidToolCall", () => {
+            it("should return true for valid tool call structure", () => {
+                const validData = {
+                    type: "tool_call",
+                    content: {
+                        sender: "user",
+                        recipient: "assistant",
+                    },
+                };
+
+                expect(ToolCallHandler.isValidToolCall(validData)).toBe(true);
+            });
+
+            it("should return false for null or undefined data", () => {
+                expect(ToolCallHandler.isValidToolCall(null)).toBe(false);
+                expect(ToolCallHandler.isValidToolCall(undefined)).toBe(false);
+            });
+
+            it("should return false for non-object data", () => {
+                expect(ToolCallHandler.isValidToolCall("string")).toBe(false);
+                expect(ToolCallHandler.isValidToolCall(123)).toBe(false);
+                expect(ToolCallHandler.isValidToolCall(true)).toBe(false);
+            });
+
+            it("should return false for wrong type", () => {
+                const invalidData = {
+                    type: "text",
+                    content: {},
+                };
+
+                expect(ToolCallHandler.isValidToolCall(invalidData)).toBe(false);
+            });
+
+            it("should return false for missing content", () => {
+                const invalidData = {
+                    type: "tool_call",
+                };
+
+                expect(ToolCallHandler.isValidToolCall(invalidData)).toBe(false);
+            });
+
+            it("should return false for non-object content", () => {
+                const invalidData = {
+                    type: "tool_call",
+                    content: "string-content",
+                };
+
+                expect(ToolCallHandler.isValidToolCall(invalidData)).toBe(false);
+            });
+        });
+
+        describe("extractToolFunctionNames", () => {
+            it("should extract function names from tool calls", () => {
+                const data = {
+                    content: {
+                        tool_calls: [
+                            {
+                                function: {
+                                    name: "get_weather",
+                                    arguments: '{"location": "New York"}',
+                                },
+                            },
+                            {
+                                function: {
+                                    name: "search_database",
+                                    arguments: '{"query": "users"}',
+                                },
+                            },
+                        ],
+                    },
+                };
+
+                const result = ToolCallHandler.extractToolFunctionNames(data);
+                expect(result).toEqual(["get_weather", "search_database"]);
+            });
+
+            it("should return empty array when tool_calls is not an array", () => {
+                const data = {
+                    content: {
+                        tool_calls: "not-an-array",
+                    },
+                };
+
+                const result = ToolCallHandler.extractToolFunctionNames(data);
+                expect(result).toEqual([]);
+            });
+
+            it("should return empty array when tool_calls is missing", () => {
+                const data = {
+                    content: {},
+                };
+
+                const result = ToolCallHandler.extractToolFunctionNames(data);
+                expect(result).toEqual([]);
+            });
+
+            it("should filter out tool calls without function names", () => {
+                const data = {
+                    content: {
+                        tool_calls: [
+                            {
+                                function: {
+                                    name: "valid_function",
+                                    arguments: "{}",
+                                },
+                            },
+                            {
+                                function: {
+                                    // missing name
+                                    arguments: "{}",
+                                },
+                            },
+                            {
+                                // missing function
+                            },
+                            {
+                                function: {
+                                    name: 123, // non-string name
+                                    arguments: "{}",
+                                },
+                            },
+                        ],
+                    },
+                };
+
+                const result = ToolCallHandler.extractToolFunctionNames(data);
+                expect(result).toEqual(["valid_function"]);
+            });
+
+            it("should handle empty tool_calls array", () => {
+                const data = {
+                    content: {
+                        tool_calls: [],
+                    },
+                };
+
+                const result = ToolCallHandler.extractToolFunctionNames(data);
+                expect(result).toEqual([]);
+            });
+        });
+
+        describe("handle", () => {
+            it("should handle valid tool call with function names", () => {
+                const data = {
+                    type: "tool_call",
+                    content: {
+                        uuid: "tool-call-uuid-123",
+                        sender: "user",
+                        recipient: "assistant",
+                        tool_calls: [
+                            {
+                                function: {
+                                    name: "get_weather",
+                                    arguments: '{"location": "New York"}',
+                                },
+                            },
+                            {
+                                function: {
+                                    name: "search_database",
+                                    arguments: '{"query": "users"}',
+                                },
+                            },
+                        ],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "tool-call-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Tool call: get_weather, search_database",
+                            },
+                        ],
+                        sender: "user",
+                        recipient: "assistant",
+                    },
+                });
+            });
+
+            it("should handle tool call without function names", () => {
+                const data = {
+                    type: "tool_call",
+                    content: {
+                        uuid: "tool-call-uuid-123",
+                        sender: "user",
+                        recipient: "assistant",
+                        tool_calls: [],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "tool-call-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Tool call",
+                            },
+                        ],
+                        sender: "user",
+                        recipient: "assistant",
+                    },
+                });
+            });
+
+            it("should generate nanoid when uuid is missing", () => {
+                const data = {
+                    type: "tool_call",
+                    content: {
+                        sender: "user",
+                        recipient: "assistant",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result?.message?.id).toBe("mock-nanoid-id");
+            });
+
+            it("should return undefined for invalid tool call", () => {
+                const data = {
+                    type: "invalid",
+                    content: {},
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toBeUndefined();
+            });
+
+            it("should handle tool call with missing sender/recipient", () => {
+                const data = {
+                    type: "tool_call",
+                    content: {
+                        uuid: "tool-call-uuid-123",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "tool-call-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Tool call",
+                            },
+                        ],
+                        sender: undefined,
+                        recipient: undefined,
+                    },
+                });
+            });
+        });
+    });
+
+    describe("ToolResponseHandler", () => {
+        let handler: ToolResponseHandler;
+
+        beforeEach(() => {
+            handler = new ToolResponseHandler();
+        });
+
+        describe("canHandle", () => {
+            it("should return true for tool_response type", () => {
+                expect(handler.canHandle("tool_response")).toBe(true);
+            });
+
+            it("should return false for other types", () => {
+                expect(handler.canHandle("text")).toBe(false);
+                expect(handler.canHandle("tool_call")).toBe(false);
+                expect(handler.canHandle("system")).toBe(false);
+            });
+        });
+
+        describe("isValidToolResponse", () => {
+            it("should return true for valid tool response structure", () => {
+                const validData = {
+                    type: "tool_response",
+                    content: {
+                        tool_responses: [
+                            { tool_call_id: "call-1", role: "assistant", content: "Response 1" },
+                        ],
+                    },
+                };
+
+                expect(ToolResponseHandler.isValidToolResponse(validData)).toBe(true);
+            });
+
+            it("should return false for null or undefined data", () => {
+                expect(ToolResponseHandler.isValidToolResponse(null)).toBe(false);
+                expect(ToolResponseHandler.isValidToolResponse(undefined)).toBe(false);
+            });
+
+            it("should return false for non-object data", () => {
+                expect(ToolResponseHandler.isValidToolResponse("string")).toBe(false);
+                expect(ToolResponseHandler.isValidToolResponse(123)).toBe(false);
+            });
+
+            it("should return false for wrong type", () => {
+                const invalidData = {
+                    type: "tool_call",
+                    content: {
+                        tool_responses: [],
+                    },
+                };
+
+                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+            });
+
+            it("should return false for missing content", () => {
+                const invalidData = {
+                    type: "tool_response",
+                };
+
+                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+            });
+
+            it("should return false for non-object content", () => {
+                const invalidData = {
+                    type: "tool_response",
+                    content: "string-content",
+                };
+
+                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+            });
+
+            it("should return false for missing tool_responses", () => {
+                const invalidData = {
+                    type: "tool_response",
+                    content: {},
+                };
+
+                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+            });
+
+            it("should return false for non-array tool_responses", () => {
+                const invalidData = {
+                    type: "tool_response",
+                    content: {
+                        tool_responses: "not-an-array",
+                    },
+                };
+
+                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+            });
+        });
+
+        describe("handle", () => {
+            it("should handle valid tool response with multiple responses", () => {
+                const data = {
+                    type: "tool_response",
+                    content: {
+                        uuid: "tool-response-uuid-123",
+                        content: "Tool response content",
+                        sender: "system",
+                        recipient: "user",
+                        tool_responses: [
+                            { tool_call_id: "call-1", role: "assistant", content: "Response 1" },
+                            { tool_call_id: "call-2", role: "assistant", content: "Response 2" },
+                        ],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "tool-response-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "tool_response",
+                        content: "Tool response content",
+                        sender: "system",
+                        recipient: "user",
+                        tool_responses: [
+                            { tool_call_id: "call-1", role: "assistant", content: "Response 1" },
+                            { tool_call_id: "call-2", role: "assistant", content: "Response 2" },
+                        ],
+                    },
+                });
+            });
+
+            it("should handle tool response with empty responses array", () => {
+                const data = {
+                    type: "tool_response",
+                    content: {
+                        uuid: "tool-response-uuid-123",
+                        content: "Tool response content",
+                        sender: "system",
+                        recipient: "user",
+                        tool_responses: [],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "tool-response-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "tool_response",
+                        content: "Tool response content",
+                        sender: "system",
+                        recipient: "user",
+                        tool_responses: [],
+                    },
+                });
+            });
+
+            it("should generate nanoid when uuid is missing", () => {
+                const data = {
+                    type: "tool_response",
+                    content: {
+                        content: "Tool response content",
+                        sender: "system",
+                        recipient: "user",
+                        tool_responses: [],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result?.message?.id).toBe("mock-nanoid-id");
+            });
+
+            it("should return undefined for invalid tool response", () => {
+                const data = {
+                    type: "tool_response",
+                    content: {
+                        // missing tool_responses array
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toBeUndefined();
+            });
+
+            it("should handle tool response with missing sender/recipient", () => {
+                const data = {
+                    type: "tool_response",
+                    content: {
+                        uuid: "tool-response-uuid-123",
+                        content: "Tool response content",
+                        tool_responses: [],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "tool-response-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "tool_response",
+                        content: "Tool response content",
+                        sender: undefined,
+                        recipient: undefined,
+                        tool_responses: [],
+                    },
+                });
+            });
+
+            it("should preserve tool response properties", () => {
+                const data = {
+                    type: "tool_response",
+                    content: {
+                        uuid: "tool-response-uuid-123",
+                        content: "Tool response content",
+                        sender: "system",
+                        recipient: "user",
+                        tool_responses: [
+                            {
+                                tool_call_id: "call-1",
+                                role: "assistant",
+                                content: "Complex response",
+                                additional_prop: "should-be-ignored",
+                            },
+                        ],
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result?.message?.tool_responses).toEqual([
+                    {
+                        tool_call_id: "call-1",
+                        role: "assistant",
+                        content: "Complex response",
+                    },
+                ]);
+            });
+        });
+    });
+
+    describe("ExecutedFunctionHandler", () => {
+        let handler: ExecutedFunctionHandler;
+
+        beforeEach(() => {
+            handler = new ExecutedFunctionHandler();
+        });
+
+        describe("canHandle", () => {
+            it("should return true for executed_function type", () => {
+                expect(handler.canHandle("executed_function")).toBe(true);
+            });
+
+            it("should return false for other types", () => {
+                expect(handler.canHandle("text")).toBe(false);
+                expect(handler.canHandle("tool_call")).toBe(false);
+                expect(handler.canHandle("tool_response")).toBe(false);
+            });
+        });
+
+        describe("handle", () => {
+            it("should handle valid executed function message", () => {
+                const data = {
+                    type: "executed_function",
+                    content: {
+                        uuid: "executed-function-uuid-123",
+                        func_name: "calculate_sum",
+                        sender: "system",
+                        recipient: "user",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "executed-function-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Executed function: calculate_sum",
+                            },
+                        ],
+                        sender: "system",
+                        recipient: "user",
+                    },
+                });
+            });
+
+            it("should generate nanoid when uuid is missing", () => {
+                const data = {
+                    type: "executed_function",
+                    content: {
+                        func_name: "calculate_sum",
+                        sender: "system",
+                        recipient: "user",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result?.message?.id).toBe("mock-nanoid-id");
+            });
+
+            it("should return undefined for null data", () => {
+                const result = handler.handle(null);
+                expect(result).toBeUndefined();
+            });
+
+            it("should return undefined for non-object data", () => {
+                const result = handler.handle("string");
+                expect(result).toBeUndefined();
+            });
+
+            it("should return undefined for wrong type", () => {
+                const data = {
+                    type: "other_function",
+                    content: {
+                        func_name: "calculate_sum",
+                    },
+                };
+
+                const result = handler.handle(data);
+                expect(result).toBeUndefined();
+            });
+
+            it("should handle executed function with missing sender/recipient", () => {
+                const data = {
+                    type: "executed_function",
+                    content: {
+                        uuid: "executed-function-uuid-123",
+                        func_name: "calculate_sum",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "executed-function-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Executed function: calculate_sum",
+                            },
+                        ],
+                        sender: undefined,
+                        recipient: undefined,
+                    },
+                });
+            });
+
+            it("should handle executed function with undefined func_name", () => {
+                const data = {
+                    type: "executed_function",
+                    content: {
+                        uuid: "executed-function-uuid-123",
+                        sender: "system",
+                        recipient: "user",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "executed-function-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Executed function: undefined",
+                            },
+                        ],
+                        sender: "system",
+                        recipient: "user",
+                    },
+                });
+            });
+
+            it("should handle executed function with empty func_name", () => {
+                const data = {
+                    type: "executed_function",
+                    content: {
+                        uuid: "executed-function-uuid-123",
+                        func_name: "",
+                        sender: "system",
+                        recipient: "user",
+                    },
+                };
+
+                const result = handler.handle(data);
+
+                expect(result).toEqual({
+                    message: {
+                        id: "executed-function-uuid-123",
+                        timestamp: "2024-01-01T12:00:00.000Z",
+                        type: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: "Executed function: ",
+                            },
+                        ],
+                        sender: "system",
+                        recipient: "user",
+                    },
+                });
+            });
+        });
+    });
+});

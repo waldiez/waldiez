@@ -31,12 +31,12 @@ export class ErrorHandler implements MessageHandler {
     // Input should be a valid string [type=string_type, input_value={'content': '```json\\n{\"n...one, 'tool_calls': None},
     //  input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/string_type"}}
     static isValidError(data: any): boolean {
-        return (
+        return Boolean(
             data &&
-            typeof data === "object" &&
-            data.type === "error" &&
-            ((data.content && typeof data.content === "object") ||
-                (data.error && typeof data.error === "object"))
+                typeof data === "object" &&
+                data.type === "error" &&
+                ((data.content && typeof data.content === "object") ||
+                    (data.error && (typeof data.error === "object" || typeof data.error === "string"))),
         );
     }
 
@@ -44,13 +44,13 @@ export class ErrorHandler implements MessageHandler {
         if (!ErrorHandler.isValidError(data)) {
             return undefined;
         }
-        const errorContent = data.content?.error || data.error;
+        const errorContent = data.content?.error || data.error?.error || data.error;
         if (typeof errorContent !== "string") {
             return undefined;
         }
         const text = `Error: ${errorContent}`;
         const message: WaldiezChatMessage = {
-            id: data.content.uuid ?? nanoid(),
+            id: data.content?.uuid ?? nanoid(),
             timestamp: new Date().toISOString(),
             type: "system",
             content: [
@@ -59,8 +59,8 @@ export class ErrorHandler implements MessageHandler {
                     text,
                 },
             ],
-            sender: data.content.sender,
-            recipient: data.content.recipient,
+            sender: data.content?.sender,
+            recipient: data.content?.recipient,
             error: errorContent, // Include error content in the message
         };
         return { message };

@@ -13,7 +13,7 @@ export {
     TerminationAndHumanReplyNoInputHandler,
     TerminationHandler,
 } from "@waldiez/utils/chat/handlers/termination";
-export { TextMessageHandler } from "@waldiez/utils/chat/handlers/text_message";
+export { TextMessageHandler } from "@waldiez/utils/chat/handlers/text";
 export { TimelineDataHandler } from "@waldiez/utils/chat/handlers/timeline";
 export {
     ExecutedFunctionHandler,
