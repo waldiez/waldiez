@@ -501,6 +501,7 @@ describe("useImageRetry (real implementation)", () => {
     });
 
     it("should reset retries when resetRetries is called", async () => {
+        // noinspection DuplicatedCode
         const { useImageRetry: realUseImageRetry } = await import("@waldiez/components/chatUI/hooks");
         const { result } = renderHook(() => realUseImageRetry());
         const img = document.createElement("img");
@@ -622,6 +623,7 @@ describe("useImageRetry (real implementation)", () => {
     });
 
     it("should remove URL from retries map on successful load", async () => {
+        // noinspection DuplicatedCode
         const { useImageRetry: realUseImageRetry } = await import("@waldiez/components/chatUI/hooks");
         const { result } = renderHook(() => realUseImageRetry());
         const img = document.createElement("img");

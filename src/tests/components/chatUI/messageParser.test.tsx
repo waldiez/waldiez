@@ -14,6 +14,7 @@ vi.mock("@waldiez/components/chatUI/imageWithRetry", () => ({
     ),
 }));
 
+// noinspection JSUnusedGlobalSymbols
 vi.mock("@waldiez/components/markdown", () => ({
     Markdown: ({ content }: any) => <div data-testid="markdown">{content}</div>,
 }));
