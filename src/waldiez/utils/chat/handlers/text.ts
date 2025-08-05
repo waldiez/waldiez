@@ -2,8 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezChatMessage } from "@waldiez/types";
-import { MessageValidator } from "@waldiez/utils/chat/base";
+import { TextMessageData, WaldiezChatMessage } from "@waldiez/types";
 import {
     MessageHandler,
     MessageProcessingContext,
@@ -27,6 +26,44 @@ export class TextMessageHandler implements MessageHandler {
     }
 
     /**
+     * Validates if the provided data is a valid text message.
+     * @param data - The data to validate.
+     * @returns True if the data is a valid text message, false otherwise.
+     */
+    static isValidTextMessage(data: any): data is TextMessageData {
+        /* c8 ignore next 9 */
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+        if (data.type !== "text") {
+            return false;
+        }
+        if (Array.isArray(data.content)) {
+            return data.content.every(isValidContentItem);
+        }
+
+        const content = data.content;
+        if (
+            !content ||
+            typeof content !== "object" ||
+            typeof content.sender !== "string" ||
+            typeof content.recipient !== "string"
+        ) {
+            return false;
+        }
+
+        const inner = content.content;
+
+        if (typeof inner === "string") {
+            return true;
+        }
+        if (Array.isArray(inner)) {
+            return inner.every(isValidContentItem);
+        }
+        return isValidContentItem(inner);
+    }
+
+    /**
      * Handles the text message.
      * Validates the message data, normalizes the content, and replaces image URLs if provided.
      * @param data - The raw message data to process.
@@ -34,7 +71,7 @@ export class TextMessageHandler implements MessageHandler {
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
-        if (!MessageValidator.isValidTextMessage(data)) {
+        if (!TextMessageHandler.isValidTextMessage(data)) {
             return undefined;
         }
 
@@ -58,4 +95,15 @@ export class TextMessageHandler implements MessageHandler {
             requestId: null,
         };
     }
+}
+
+function isValidContentItem(item: any): boolean {
+    return (
+        typeof item === "string" ||
+        (item &&
+            typeof item === "object" &&
+            typeof item.type === "string" &&
+            ((item.type === "text" && typeof item.text === "string") ||
+                (item.type === "image_url" && item.image_url && typeof item.image_url.url === "string")))
+    );
 }

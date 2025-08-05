@@ -23,6 +23,7 @@ export const mockMatchMedia = (matches: boolean = false) => {
         })),
     });
 };
+// noinspection JSUnusedGlobalSymbols
 export class ResizeObserver {
     callback: globalThis.ResizeObserverCallback;
 
