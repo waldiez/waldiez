@@ -114,7 +114,6 @@ export type WaldiezChatMessageType =
     | "tool_call"
     | "tool_response"
     | "group_chat_run_chat"
-    | "generate_code_execution_reply"
     | "termination_and_human_reply_no_input"
     | "using_auto_reply"
     | "execute_function"

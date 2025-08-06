@@ -2284,7 +2284,7 @@ export declare class WaldiezChatMessageProcessor {
  * @param text - Text message
  * @param string - Other string types
  */
-export declare type WaldiezChatMessageType = "user" | "agent" | "system" | "input_request" | "input_response" | "run_completion" | "tool_call" | "tool_response" | "group_chat_run_chat" | "generate_code_execution_reply" | "termination_and_human_reply_no_input" | "using_auto_reply" | "execute_function" | "generate_code_execution_reply" | "error" | "print" | "text" | (string & {});
+export declare type WaldiezChatMessageType = "user" | "agent" | "system" | "input_request" | "input_response" | "run_completion" | "tool_call" | "tool_response" | "group_chat_run_chat" | "termination_and_human_reply_no_input" | "using_auto_reply" | "execute_function" | "generate_code_execution_reply" | "error" | "print" | "text" | (string & {});
 
 /**
  * Waldiez Chat Summary
