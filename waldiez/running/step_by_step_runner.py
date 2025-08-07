@@ -1,11 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# flake8: noqa: C901, E501
-# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
-# pyright: reportAttributeAccessIssue=false,reportUnknownArgumentType=false
-# pylint: disable=too-many-try-statements,import-outside-toplevel,line-too-long,
-# pylint: disable=too-complex,unused-argument,duplicate-code,broad-exception-caught
+# pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
+# pyright: reportUnknownArgumentType=false, reportOptionalMemberAccess=false
+
 """Step-by-step Waldiez runner with user interaction capabilities."""
 
 import asyncio
@@ -36,6 +34,9 @@ class StepAction(Enum):
     HELP = "h"  # Show help
     STATS = "st"  # Show execution statistics
     UNKNOWN = "unknown"  # Unknown command
+
+
+_PROMPT = "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
 
 
 # pylint: disable=too-many-instance-attributes
@@ -265,7 +266,6 @@ Execution Statistics:
                 self.print(f"Unknown command: {user_input}. Type 'h' for help.")
                 return StepAction.UNKNOWN
 
-    # pylint: disable=too-many-return-statements
     def _get_user_action(self) -> StepAction:
         """Get user action for step-by-step execution.
 
@@ -278,10 +278,10 @@ Execution Statistics:
             return StepAction.CONTINUE
 
         while True:
+            # pylint: disable=too-many-try-statements
             try:
-                prompt = "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
                 user_input = (
-                    WaldiezBaseRunner.get_user_input(prompt).strip().lower()
+                    WaldiezBaseRunner.get_user_input(_PROMPT).strip().lower()
                 )
                 return self._handle_user_action(user_input)
             except (KeyboardInterrupt, EOFError):
@@ -302,9 +302,9 @@ Execution Statistics:
             return StepAction.CONTINUE
 
         while True:
+            # pylint: disable=too-many-try-statements
             try:
-                prompt = "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
-                user_input = await WaldiezBaseRunner.a_get_user_input(prompt)
+                user_input = await WaldiezBaseRunner.a_get_user_input(_PROMPT)
                 user_input = user_input.strip().lower()
                 return self._handle_user_action(user_input)
             except (KeyboardInterrupt, EOFError):
@@ -361,7 +361,7 @@ Execution Statistics:
             if action == StepAction.STATS:
                 self._show_stats()
 
-    # pylint: disable=too-many-statements,too-many-locals
+    # pylint: disable=unused-argument
     def _run(
         self,
         temp_dir: Path,
@@ -372,6 +372,7 @@ Execution Statistics:
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging."""
+        # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
 
         from waldiez.io import StructuredIOStream
@@ -381,9 +382,9 @@ Execution Statistics:
             "exception": None,
             "completed": False,
         }
-
+        # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
-            self._loaded_module = self._load_module(output_file, temp_dir)
+            loaded_module = self._load_module(output_file, temp_dir)
             if self._stop_requested.is_set():
                 self.log.info(
                     "Step-by-step execution stopped before workflow start"
@@ -405,7 +406,7 @@ Execution Statistics:
             self.print("Step-by-step debugging is enabled. Type 'h' for help.")
             self.print(self.waldiez.info.model_dump_json())
 
-            results = self._loaded_module.main(on_event=self._on_event)
+            results = loaded_module.main(on_event=self._on_event)
             results_container["results"] = results
             self.print("<Waldiez> - Workflow finished")
 
@@ -450,7 +451,7 @@ Execution Statistics:
             return False
 
         # Store event in history
-        event_info = {
+        event_info: dict[str, Any] = {
             "count": self._event_count,
             "type": getattr(event, "type", "unknown"),
             "timestamp": getattr(event, "timestamp", None),
@@ -458,6 +459,7 @@ Execution Statistics:
         }
         self._event_history.append(event_info)
 
+        # pylint: disable=too-many-try-statements
         try:
             # Show event information if we should break
             if self._should_break_on_event(event):
@@ -473,29 +475,14 @@ Execution Statistics:
                     raise StopRunningException(StopRunningException.reason)
 
             # Process the event
-            if hasattr(event, "type"):
-                if event.type == "input_request":
-                    prompt = getattr(
-                        event, "prompt", getattr(event.content, "prompt", "> ")
-                    )
-                    password = getattr(
-                        event,
-                        "password",
-                        getattr(event.content, "password", False),
-                    )
-                    user_input = WaldiezBaseRunner.get_user_input(
-                        prompt, password=password
-                    )
-                    event.content.respond(user_input)
-                else:
-                    self._send(event)
-
+            WaldiezBaseRunner.process_event(event)
             self._processed_events += 1
 
         except Exception as e:
             if not isinstance(e, StopRunningException):
                 raise RuntimeError(
-                    f"Error processing event {event}: {e}\n{traceback.format_exc()}"
+                    f"Error processing event {event}: "
+                    f"{e}\n{traceback.format_exc()}"
                 ) from e
             raise StopRunningException(StopRunningException.reason) from e
 
@@ -507,6 +494,7 @@ Execution Statistics:
 
         return not self._execution_complete_event.is_set()
 
+    # pylint: disable=too-complex
     async def _a_run(
         self,
         temp_dir: Path,
@@ -516,22 +504,22 @@ Execution Statistics:
         skip_timeline: bool = False,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
-        """Run the Waldiez workflow with step-by-step debugging asynchronously."""
+        """Run the Waldiez workflow with step-by-step debugging (async)."""
 
         async def _execute_workflow() -> list[dict[str, Any]]:
             """Execute the workflow in an async context."""
-            from autogen.io import (  # type: ignore[import-untyped,unused-ignore]
-                IOStream,
-            )
+            # pylint: disable=import-outside-toplevel
+            from autogen.io import IOStream  # pyright: ignore
 
             from waldiez.io import StructuredIOStream
 
             results: list[dict[str, Any]]
+            # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
-                self._loaded_module = self._load_module(output_file, temp_dir)
+                loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():
                     self.log.info(
-                        "Async step-by-step execution stopped before workflow start"
+                        "step-by-step execution stopped before workflow start"
                     )
                     return []
 
@@ -552,9 +540,7 @@ Execution Statistics:
                 )
                 self.print(self.waldiez.info.model_dump_json())
 
-                results = await self._loaded_module.main(
-                    on_event=self._a_on_event
-                )
+                results = await loaded_module.main(on_event=self._a_on_event)
 
             except Exception as e:
                 if StopRunningException.reason in str(e):
@@ -571,6 +557,7 @@ Execution Statistics:
         task = asyncio.create_task(_execute_workflow())
 
         # Monitor for stop requests
+        # pylint: disable=too-many-try-statements
         try:
             while not task.done():
                 if self._stop_requested.is_set():
@@ -618,7 +605,7 @@ Execution Statistics:
             return False
 
         # Store event in history
-        event_info = {
+        event_info: dict[str, Any] = {
             "count": self._event_count,
             "type": getattr(event, "type", "unknown"),
             "timestamp": getattr(event, "timestamp", None),
@@ -626,6 +613,7 @@ Execution Statistics:
         }
         self._event_history.append(event_info)
 
+        # pylint: disable=too-many-try-statements
         try:
             # Show event information if we should break
             if self._should_break_on_event(event):
@@ -641,29 +629,14 @@ Execution Statistics:
                     raise StopRunningException(StopRunningException.reason)
 
             # Process the event
-            if hasattr(event, "type"):
-                if event.type == "input_request":
-                    prompt = getattr(
-                        event, "prompt", getattr(event.content, "prompt", "> ")
-                    )
-                    password = getattr(
-                        event,
-                        "password",
-                        getattr(event.content, "password", False),
-                    )
-                    user_input = await WaldiezBaseRunner.a_get_user_input(
-                        prompt, password=password
-                    )
-                    await event.content.respond(user_input)
-                else:
-                    self._send(event)
-
+            await WaldiezBaseRunner.a_process_event(event)
             self._processed_events += 1
 
         except Exception as e:
             if not isinstance(e, StopRunningException):
                 raise RuntimeError(
-                    f"Error processing event {event}: {e}\n{traceback.format_exc()}"
+                    f"Error processing event {event}: "
+                    "{e}\n{traceback.format_exc()}"
                 ) from e
             raise StopRunningException(StopRunningException.reason) from e
 

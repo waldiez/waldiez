@@ -1,10 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pylint: disable=too-many-instance-attributes,unused-argument
-# pylint: disable=too-many-arguments,too-many-positional-arguments
-# pylint: disable=too-many-public-methods,too-many-locals
-
+# pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
+# pyright: reportUnknownArgumentType=false
 """Base runner for Waldiez workflows."""
 
 import importlib.util
@@ -15,14 +13,7 @@ import tempfile
 import threading
 from pathlib import Path
 from types import ModuleType, TracebackType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Coroutine,
-    Type,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Coroutine, Type, Union
 
 from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
@@ -55,6 +46,7 @@ class StopRunningException(Exception):
     reason: str = "Execution stopped by user"
 
 
+# pylint: disable=too-many-public-methods
 class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     """Base runner for Waldiez.
 
@@ -363,6 +355,58 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         output_file: Path = Path(WaldiezBaseRunner._output_path)
         return output_file, uploads_root_path
 
+    @staticmethod
+    async def a_process_event(event: Union["BaseEvent", "BaseMessage"]) -> None:
+        """Process an event or message asynchronously.
+
+        Parameters
+        ----------
+        event : Union[BaseEvent, BaseMessage]
+            The event or message to process.
+        """
+        if hasattr(event, "type"):
+            if event.type == "input_request":
+                prompt = getattr(
+                    event, "prompt", getattr(event.content, "prompt", "> ")
+                )
+                password = getattr(
+                    event,
+                    "password",
+                    getattr(event.content, "password", False),
+                )
+                user_input = await WaldiezBaseRunner.a_get_user_input(
+                    prompt, password=password
+                )
+                await event.content.respond(user_input)
+            else:
+                WaldiezBaseRunner._send(event)
+
+    @staticmethod
+    def process_event(event: Union["BaseEvent", "BaseMessage"]) -> None:
+        """Process an event or message synchronously.
+
+        Parameters
+        ----------
+        event : Union[BaseEvent, BaseMessage]
+            The event or message to process.
+        """
+        if hasattr(event, "type"):
+            if event.type == "input_request":
+                prompt = getattr(
+                    event, "prompt", getattr(event.content, "prompt", "> ")
+                )
+                password = getattr(
+                    event,
+                    "password",
+                    getattr(event.content, "password", False),
+                )
+                user_input = WaldiezBaseRunner.get_user_input(
+                    prompt, password=password
+                )
+                event.content.respond(user_input)
+            else:
+                WaldiezBaseRunner._send(event)
+
     def before_run(
         self,
         output_file: Path,
@@ -446,6 +490,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         return temp_dir, output_file, uploads_root_path
 
     # noinspection PyProtocol
+    # pylint: disable=too-many-locals,unused-argument
     def run(
         self,
         output_path: str | Path | None = None,

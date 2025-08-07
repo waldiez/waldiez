@@ -1,11 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# flake8: noqa: C901, E501
-# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
-# pyright: reportAttributeAccessIssue=false,reportUnknownArgumentType=false
-# pylint: disable=too-many-try-statements,import-outside-toplevel,line-too-long,
-# pylint: disable=too-complex,unused-argument,duplicate-code,broad-exception-caught
+# pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
 """Run a waldiez flow.
 
 The flow is first converted to an autogen flow with agents, chats, and tools.
@@ -67,6 +63,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         """
         WaldiezBaseRunner._print(*args, **kwargs)
 
+    # pylint: disable=unused-argument
     def _run(
         self,
         temp_dir: Path,
@@ -77,6 +74,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow."""
+        # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
 
         from waldiez.io import StructuredIOStream
@@ -86,8 +84,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             "exception": None,
             "completed": False,
         }
+        # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
-            self._loaded_module = self._load_module(output_file, temp_dir)
+            loaded_module = self._load_module(output_file, temp_dir)
             if self._stop_requested.is_set():
                 self.log.info(
                     "Async execution stopped before AG2 workflow start"
@@ -104,7 +103,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             WaldiezBaseRunner._send = stream.send
             self.print("<Waldiez> - Starting workflow...")
             self.print(self.waldiez.info.model_dump_json())
-            results = self._loaded_module.main(
+            results = loaded_module.main(
                 on_event=self._on_event,
             )
             results_container["results"] = results
@@ -132,25 +131,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            if hasattr(event, "type"):
-                if event.type == "input_request":
-                    prompt = getattr(
-                        event,
-                        "prompt",
-                        getattr(event.content, "prompt", "> "),
-                    )
-                    password = getattr(
-                        event,
-                        "password",
-                        getattr(event.content, "password", False),
-                    )
-                    user_input = WaldiezBaseRunner.get_user_input(
-                        prompt,
-                        password=password,
-                    )
-                    event.content.respond(user_input)
-                else:
-                    self._send(event)  # pyright: ignore
+            WaldiezBaseRunner.process_event(event)
             self._processed_events += 1
         except Exception as e:
             raise RuntimeError(
@@ -174,25 +155,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            if hasattr(event, "type"):
-                if event.type == "input_request":
-                    prompt = getattr(
-                        event,
-                        "prompt",
-                        getattr(event.content, "prompt", "> "),
-                    )
-                    password = getattr(
-                        event,
-                        "password",
-                        getattr(event.content, "password", False),
-                    )
-                    user_input = await WaldiezBaseRunner.a_get_user_input(
-                        prompt,
-                        password=password,
-                    )
-                    await event.content.respond(user_input)
-                else:
-                    self._send(event)  # pyright: ignore
+            await WaldiezBaseRunner.a_process_event(event)
             self._processed_events += 1
         except Exception as e:
             raise RuntimeError(
@@ -204,6 +167,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             return False
         return not self._execution_complete_event.is_set()
 
+    # pylint: disable=too-complex
     async def _a_run(
         self,
         temp_dir: Path,
@@ -219,13 +183,15 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         async def _execute_workflow() -> list[dict[str, Any]]:
             # fmt: on
             """Execute the workflow in an async context."""
+            # pylint: disable=import-outside-toplevel
             from autogen.io import IOStream  # pyright: ignore
 
             from waldiez.io import StructuredIOStream
 
             results: list[dict[str, Any]]
+            # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
-                self._loaded_module = self._load_module(output_file, temp_dir)
+                loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():
                     self.log.info(
                         "Async execution stopped before AG2 workflow start"
@@ -242,7 +208,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 WaldiezBaseRunner._send = stream.send
                 self.print("<Waldiez> - Starting workflow...")
                 self.print(self.waldiez.info.model_dump_json())
-                results = await self._loaded_module.main(
+                results = await loaded_module.main(  # pyright: ignore
                     on_event=self._a_on_event
                 )
             except SystemExit:
@@ -250,7 +216,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 return []
             except Exception as e:
                 self.print(
-                    f"<Waldiez> - Error loading workflow: {e}\n{traceback.format_exc()}"
+                    "<Waldiez> - Error loading workflow: "
+                    f"{e}\n{traceback.format_exc()}"
                 )
                 raise RuntimeError(
                     f"Error loading workflow: {e}\n{traceback.format_exc()}"
@@ -261,6 +228,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         task = asyncio.create_task(_execute_workflow())
 
         # Monitor for stop requests
+        # pylint: disable=too-many-try-statements
         try:
             while not task.done():
                 if self._stop_requested.is_set():
