@@ -400,6 +400,7 @@ class WaldiezLogger:
     ) -> tuple[bool, Any]:
         """Attempt .format() formatting, returning (success, result)."""
         try:
+            # noinspection StrFormat
             return True, msg_str.format(*args, **kwargs)
         except Exception as e:
             return False, e

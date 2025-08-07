@@ -9,8 +9,51 @@ import subprocess
 import sys
 from typing import Callable
 
+from waldiez.models import Waldiez
+
 from .environment import in_virtualenv, is_root
 from .utils import strip_ansi
+
+
+class RequirementsMixin:
+    """Mixin class to handle requirements installation."""
+
+    _waldiez: Waldiez
+    _called_install_requirements: bool
+
+    def gather_requirements(self) -> set[str]:
+        """Gather extra requirements to install before running the flow.
+
+        Returns
+        -------
+        set[str]
+            A set of requirements that are not already installed and do not
+            include 'waldiez' in their name.
+        """
+        extra_requirements = {
+            req
+            for req in self._waldiez.requirements
+            if req not in sys.modules and "waldiez" not in req
+        }
+        if "python-dotenv" not in extra_requirements:
+            extra_requirements.add("python-dotenv")
+        return extra_requirements
+
+    def install_requirements(self) -> None:
+        """Install the requirements for the flow."""
+        if not self._called_install_requirements:
+            self._called_install_requirements = True
+            extra_requirements = self.gather_requirements()
+            if extra_requirements:
+                install_requirements(extra_requirements)
+
+    async def a_install_requirements(self) -> None:
+        """Install the requirements for the flow asynchronously."""
+        if not self._called_install_requirements:
+            self._called_install_requirements = True
+            extra_requirements = self.gather_requirements()
+            if extra_requirements:
+                await a_install_requirements(extra_requirements)
 
 
 # noinspection PyUnresolvedReferences
@@ -114,35 +157,3 @@ async def a_install_requirements(
                 os.environ["PIP_BREAK_SYSTEM_PACKAGES"] = break_system_packages
             else:
                 del os.environ["PIP_BREAK_SYSTEM_PACKAGES"]
-
-
-def install_waldiez(
-    upgrade: bool = True,
-    printer: Callable[..., None] = print,
-) -> None:
-    """Install Waldiez.
-
-    Parameters
-    ----------
-    upgrade : bool, optional
-        Whether to upgrade Waldiez, by default True.
-    printer : Callable[..., None]
-        The printer function to use, defaults to print.
-    """
-    install_requirements({"waldiez"}, upgrade, printer)
-
-
-async def a_install_waldiez(
-    upgrade: bool = True,
-    printer: Callable[..., None] = print,
-) -> None:
-    """Install Waldiez asynchronously.
-
-    Parameters
-    ----------
-    upgrade : bool, optional
-        Whether to upgrade Waldiez, by default True.
-    printer : Callable[..., None]
-        The printer function to use, defaults to print.
-    """
-    await a_install_requirements({"waldiez"}, upgrade, printer)

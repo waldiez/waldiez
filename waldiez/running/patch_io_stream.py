@@ -103,7 +103,7 @@ def get_printer() -> Callable[..., None]:  # noqa: C901
         # Fallback to standard print if autogen is not available
         printer = print
 
-    # noinspection PyBroadException
+    # noinspection PyBroadException,TryExceptPass
     def safe_printer(*args: Any, **kwargs: Any) -> None:  # noqa: C901
         """Safe printer that handles Unicode encoding errors.
 

@@ -15,20 +15,17 @@ variables specified in the waldiez file are set.
 """
 
 import asyncio
-import getpass
 import importlib.util
-import sys
 import threading
 import traceback
 from pathlib import Path
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Callable, Coroutine, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.run_results import WaldiezRunResults
 
 from .base_runner import WaldiezBaseRunner
-from .utils import chdir
 
 if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore
@@ -79,25 +76,19 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._loaded_module = module
         return module
 
-    @staticmethod
-    def standard_input(prompt: str, *, password: bool = False) -> str:
-        """Fallback / common input function for the workflow.
+    # pylint: disable=no-self-use
+    # noinspection PyMethodMayBeStatic
+    def print(self, *args: Any, **kwargs: Any) -> None:
+        """Print.
 
         Parameters
         ----------
-        prompt : str
-            The prompt to display to the user.
-        password : bool, optional
-            If True, use getpass to hide input (default is False).
-
-        Returns
-        -------
-        str
-            The user input as a string.
+        *args : Any
+            Positional arguments to print.
+        **kwargs : Any
+            Keyword arguments to print.
         """
-        if password:
-            return getpass.getpass(prompt)
-        return input(prompt)
+        WaldiezBaseRunner._print(*args, **kwargs)
 
     def _run(
         self,
@@ -113,10 +104,6 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
         from waldiez.io import StructuredIOStream
 
-        self._print: Callable[..., None] = print
-        self._input: (
-            Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
-        ) = WaldiezStandardRunner.standard_input
         results_container: WaldiezRunResults = {
             "results": [],
             "exception": None,
@@ -135,22 +122,22 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 )
             else:
                 stream = IOStream.get_default()
-            self._print = stream.print
-            self._input = stream.input
-            self._send = stream.send
-            self._print("<Waldiez> - Starting workflow...")
-            self._print(self.waldiez.info.model_dump_json())
+            WaldiezBaseRunner._print = stream.print
+            WaldiezBaseRunner._input = stream.input
+            WaldiezBaseRunner._send = stream.send
+            self.print("<Waldiez> - Starting workflow...")
+            self.print(self.waldiez.info.model_dump_json())
             results = self._loaded_module.main(
                 on_event=self._on_event,
             )
             results_container["results"] = results
-            self._print("<Waldiez> - Workflow finished")
+            self.print("<Waldiez> - Workflow finished")
         except SystemExit:
-            self._print("<Waldiez> - Workflow stopped by user")
+            self.print("<Waldiez> - Workflow stopped by user")
         except Exception as e:  # pylint: disable=broad-exception-caught
             results_container["exception"] = e
             traceback.print_exc()
-            self._print(f"<Waldiez> - Workflow execution failed: {e}")
+            self.print(f"<Waldiez> - Workflow execution failed: {e}")
         finally:
             results_container["completed"] = True
         return results_container["results"]
@@ -179,7 +166,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                         "password",
                         getattr(event.content, "password", False),
                     )
-                    user_input = self._input(
+                    user_input = WaldiezBaseRunner.get_user_input(
                         prompt,
                         password=password,
                     )
@@ -195,79 +182,6 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             self._signal_completion()
             WaldiezBaseRunner._running = False
         return not self._stop_requested.is_set()
-
-    def _start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Start the workflow in a non-blocking way."""
-        if self._execution_thread and self._execution_thread.is_alive():
-            raise RuntimeError("Non-blocking execution already in progress")
-
-        # Reset completion state
-        self._reset_completion_state()
-
-        # Create thread with proper integration
-        self._execution_thread = threading.Thread(
-            target=self._threaded_run,
-            args=(temp_dir, output_file, uploads_root, skip_mmd, skip_timeline),
-            name=f"WaldiezStandardRunner-{self.waldiez.name}",
-            daemon=False,  # Not daemon so we can properly join
-        )
-        self._execution_thread.start()
-
-    def _threaded_run(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-    ) -> None:
-        """Run in a separate thread with proper lifecycle."""
-        try:
-            # Change to temp directory and manage sys.path
-            with chdir(to=temp_dir):
-                sys.path.insert(0, str(temp_dir))
-                try:
-                    results = self._run(
-                        temp_dir=temp_dir,
-                        output_file=output_file,
-                        uploads_root=uploads_root,
-                        skip_mmd=skip_mmd,
-                        skip_timeline=skip_timeline,
-                    )
-
-                    # Store results
-                    self._last_results = results
-
-                    # Call after_run hooks
-                    self.after_run(
-                        results=results,
-                        output_file=output_file,
-                        uploads_root=uploads_root,
-                        temp_dir=temp_dir,
-                        skip_mmd=skip_mmd,
-                        skip_timeline=skip_timeline,
-                    )
-
-                finally:
-                    # Clean up sys.path
-                    if sys.path and sys.path[0] == str(temp_dir):
-                        sys.path.pop(0)
-
-        except Exception as e:
-            self._last_exception = e
-            self.log.error("Threaded execution failed: %s", e)
-
-        finally:
-            # Signal completion and mark as not running
-            self._signal_completion()
-            WaldiezBaseRunner._running = False
 
     async def _a_on_event(
         self,
@@ -293,12 +207,10 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                         "password",
                         getattr(event.content, "password", False),
                     )
-                    user_input = self._input(
+                    user_input = await WaldiezBaseRunner.a_get_user_input(
                         prompt,
                         password=password,
                     )
-                    if asyncio.iscoroutine(user_input):
-                        user_input = await user_input
                     await event.content.respond(user_input)
                 else:
                     self._send(event)  # pyright: ignore
@@ -328,7 +240,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
             from waldiez.io import StructuredIOStream
 
-            results: list[dict[str, Any]] = []
+            results: list[dict[str, Any]]
             try:
                 self._loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():
@@ -342,19 +254,19 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     )
                 else:
                     stream = IOStream.get_default()
-                self._print = stream.print
-                self._input = stream.input
-                self._send = stream.send
-                self._print("<Waldiez> - Starting workflow...")
-                self._print(self.waldiez.info.model_dump_json())
+                WaldiezBaseRunner._print = stream.print
+                WaldiezBaseRunner._input = stream.input
+                WaldiezBaseRunner._send = stream.send
+                self.print("<Waldiez> - Starting workflow...")
+                self.print(self.waldiez.info.model_dump_json())
                 results = await self._loaded_module.main(
                     on_event=self._a_on_event
                 )
             except SystemExit:
-                self._print("<Waldiez> - Workflow stopped by user")
+                self.print("<Waldiez> - Workflow stopped by user")
                 return []
             except Exception as e:
-                self._print(
+                self.print(
                     f"<Waldiez> - Error loading workflow: {e}\n{traceback.format_exc()}"
                 )
                 raise RuntimeError(
@@ -379,56 +291,6 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         except asyncio.CancelledError:
             self.log.info("Async execution cancelled")
             return []
-
-    async def _a_start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-    ) -> None:
-        """Start the Waldiez workflow asynchronously."""
-
-        async def run_in_background() -> None:
-            """Run the Waldiez workflow in a background thread."""
-            try:
-                results = await self._a_run(
-                    temp_dir,
-                    output_file,
-                    uploads_root,
-                    skip_mmd=skip_mmd,
-                    skip_timeline=skip_timeline,
-                )
-                if results:
-                    self._print(f"<Waldiez> - Workflow completed: {results}")
-            except Exception as e:
-                self._print(
-                    f"<Waldiez> - Error during workflow: {e}\n{traceback.format_exc()}"
-                )
-
-        asyncio.create_task(run_in_background())
-
-    def _stop(self) -> None:
-        """Stop the Waldiez workflow."""
-        self.log.info("Stopping workflow execution...")
-        self._stop_requested.set()
-
-        # Wait for graceful shutdown
-        if self._execution_thread and self._execution_thread.is_alive():
-            self._execution_thread.join(timeout=5.0)
-
-            if self._execution_thread and self._execution_thread.is_alive():
-                self.log.warning("Workflow thread did not stop gracefully")
-
-    async def _a_stop(self) -> None:
-        """Stop the Waldiez workflow asynchronously."""
-        self.log.info("Stopping workflow execution (async)...")
-        self._stop_requested.set()
-
-        # For async, we rely on the task cancellation in _a_run
-        # Let's give it a moment to respond
-        await asyncio.sleep(0.5)
 
     def get_execution_stats(self) -> dict[str, Any]:
         """Get execution statistics for standard runner.

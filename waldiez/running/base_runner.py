@@ -7,6 +7,7 @@
 
 """Base runner for Waldiez workflows."""
 
+import inspect
 import shutil
 import sys
 import tempfile
@@ -20,10 +21,12 @@ from typing import (
     Coroutine,
     Optional,
     Type,
+    Union,
 )
 
 from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
+from asyncer import syncify
 from typing_extensions import Self
 
 from waldiez.exporter import WaldiezExporter
@@ -32,21 +35,21 @@ from waldiez.models import Waldiez
 
 from .environment import refresh_environment, reset_env_vars, set_env_vars
 from .post_run import after_run
-from .pre_run import (
-    a_install_requirements,
-    install_requirements,
-)
+from .pre_run import RequirementsMixin
 from .protocol import WaldiezRunnerProtocol
 from .utils import (
     a_chdir,
     chdir,
+    input_async,
+    input_sync,
 )
 
 if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore[import-untyped]
+    from autogen.messages import BaseMessage  # type: ignore[import-untyped]
 
 
-class WaldiezBaseRunner(WaldiezRunnerProtocol):
+class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     """Base runner for Waldiez.
 
     Initialization parameters:
@@ -76,6 +79,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     _dot_env_path: str | Path | None
     _skip_patch_io: bool
     _running: bool
+    _is_async: bool
+    _input: Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
+    _print: Callable[..., None]
+    _send: Callable[[Union["BaseEvent", "BaseMessage"]], None]
 
     def __init__(
         self,
@@ -94,19 +101,19 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         WaldiezBaseRunner._uploads_root = uploads_root
         WaldiezBaseRunner._skip_patch_io = skip_patch_io
         WaldiezBaseRunner._dot_env_path = dot_env
+        WaldiezBaseRunner._input = input
+        WaldiezBaseRunner._print = print
+        WaldiezBaseRunner._send = print
+        WaldiezBaseRunner._is_async = waldiez.is_async
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
         self._logger = get_logger()
-        self._print: Callable[..., None] = print
-        self._send: Callable[["BaseEvent"], None] = self._print
-        self._input: (
-            Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
-        ) = input
         self._last_results: list[dict[str, Any]] = []
         self._last_exception: Exception | None = None
         self._execution_complete_event = threading.Event()
         self._execution_thread: Optional[threading.Thread] = None
+        self._running_lock = threading.Lock()
 
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
@@ -116,7 +123,78 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         bool
             True if the workflow is running, False otherwise.
         """
-        return WaldiezBaseRunner._running
+        with self._running_lock:
+            return WaldiezBaseRunner._running
+
+    @staticmethod
+    def get_input_function() -> (
+        Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
+    ):
+        """Get the input function for user interaction.
+
+        Returns
+        -------
+        Callable[[str, bool], str]
+            A function that takes a prompt and a password flag,
+            returning user input.
+        """
+        if hasattr(WaldiezBaseRunner, "_input") and callable(
+            WaldiezBaseRunner._input
+        ):
+            return WaldiezBaseRunner._input
+        if WaldiezBaseRunner._is_async:
+            return input_async
+        return input_sync
+
+    @staticmethod
+    async def a_get_user_input(prompt: str, *, password: bool = False) -> str:
+        """Get user input with an optional password prompt.
+
+        Parameters
+        ----------
+        prompt : str
+            The prompt to display to the user.
+        password : bool, optional
+            If True, the input will be hidden (default is False).
+
+        Returns
+        -------
+        str
+            The user input.
+        """
+        input_function = WaldiezBaseRunner.get_input_function()
+        result = input_function(prompt, password=password)
+        if inspect.isawaitable(result):
+            return await result
+        return result
+
+    @staticmethod
+    def get_user_input(
+        prompt: str,
+        *,
+        password: bool = False,
+    ) -> str:
+        """Get user input with an optional password prompt.
+
+        Parameters
+        ----------
+        prompt : str
+            The prompt to display to the user.
+        password : bool, optional
+            If True, the input will be hidden (default is False).
+
+        Returns
+        -------
+        str
+            The user input.
+        """
+        input_function = WaldiezBaseRunner.get_input_function()
+        if inspect.iscoroutinefunction(input_function):
+            return syncify(input_function, raise_sync_error=False)(
+                prompt,
+                password=password,
+            )
+        return input_function(prompt, password=password)  # type: ignore
 
     def wait_for_completion(self, timeout: Optional[float] = None) -> bool:
         """Wait for non-blocking execution to complete.
@@ -250,44 +328,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             "The _a_run method must be implemented in the subclass."
         )
 
-    def _start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Start running the Waldiez flow in a non-blocking way."""
-        raise NotImplementedError(
-            "The _start method must be implemented in the subclass."
-        )
-
-    async def _a_start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Start running the Waldiez flow in a non-blocking way asynchronously.
-
-        Parameters
-        ----------
-        temp_dir : Path
-            The path to the temporary directory created for the run.
-        output_file : Path
-            The path to the output file.
-        uploads_root : Path | None
-            The root path for uploads, if any.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        """
-        raise NotImplementedError(
-            "The _a_start method must be implemented in the subclass."
-        )
-
     def _after_run(
         self,
         results: list[dict[str, Any]],
@@ -306,7 +346,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         after_run(
             temp_dir=temp_dir,
             output_file=output_file,
-            flow_name=self.waldiez.name,
+            flow_name=self._waldiez.name,
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
@@ -332,21 +372,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             skip_timeline=skip_timeline,
         )
 
-    def _stop(self) -> None:
-        """Actions to perform when stopping the flow."""
-        raise NotImplementedError(
-            "The _stop method must be implemented in the subclass."
-        )
-
-    async def _a_stop(self) -> None:
-        """Asynchronously perform actions when stopping the flow."""
-        raise NotImplementedError(
-            "The _a_stop method must be implemented in the subclass."
-        )
-
-    # ===================================================================
-    # HELPER METHODS
-    # ===================================================================
     @staticmethod
     def _prepare_paths(
         output_path: str | Path | None = None,
@@ -365,44 +390,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             WaldiezBaseRunner._output_path = Path.cwd() / "waldiez_flow.py"
         output_file: Path = Path(WaldiezBaseRunner._output_path)
         return output_file, uploads_root_path
-
-    def gather_requirements(self) -> set[str]:
-        """Gather extra requirements to install before running the flow.
-
-        Returns
-        -------
-        set[str]
-            A set of requirements that are not already installed and do not
-            include 'waldiez' in their name.
-        """
-        extra_requirements = {
-            req
-            for req in self.waldiez.requirements
-            if req not in sys.modules and "waldiez" not in req
-        }
-        if "python-dotenv" not in extra_requirements:
-            extra_requirements.add("python-dotenv")
-        return extra_requirements
-
-    def install_requirements(self) -> None:
-        """Install the requirements for the flow."""
-        if not self._called_install_requirements:
-            self._called_install_requirements = True
-            extra_requirements = self.gather_requirements()
-            if extra_requirements:
-                install_requirements(extra_requirements)
-
-    async def a_install_requirements(self) -> None:
-        """Install the requirements for the flow asynchronously."""
-        if not self._called_install_requirements:
-            self._called_install_requirements = True
-            extra_requirements = self.gather_requirements()
-            if extra_requirements:
-                await a_install_requirements(extra_requirements)
-
-    # ===================================================================
-    # PUBLIC PROTOCOL IMPLEMENTATION
-    # ===================================================================
 
     def before_run(
         self,
@@ -452,6 +439,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             uploads_root=uploads_root,
         )
 
+    # noinspection PyProtocol
     def run(
         self,
         output_path: str | Path | None = None,
@@ -462,7 +450,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
-        """Run the Waldiez flow in blocking mode.
+        """Run the Waldiez flow.
 
         Parameters
         ----------
@@ -471,10 +459,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         uploads_root : str | Path | None
             The runtime uploads root, by default None.
         structured_io : bool
-            Whether to use structured IO instead of the default 'input/print',
-            by default False.
+            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
-            Whether to skip generating the mermaid diagram, by default False.
+            Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
         dot_env : str | Path | None
@@ -485,12 +472,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         Returns
         -------
         list[dict[str, Any]]
-            The result of the run.
+            The results of the run.
 
         Raises
         ------
         RuntimeError
-            If the runner is already running.
+            If the runner is already running
+            or an error occurs during the run.
         """
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
@@ -500,7 +488,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
-        if self.waldiez.is_async:
+        if self.is_async:
             with start_blocking_portal(backend="asyncio") as portal:
                 return portal.call(
                     self.a_run,
@@ -520,8 +508,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         self.install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: list[dict[str, Any]] = []
-        old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
+        results: list[dict[str, Any]]
+        old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
         try:
             with chdir(to=temp_dir):
                 sys.path.insert(0, str(temp_dir))
@@ -549,6 +537,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         return results
 
     # noinspection DuplicatedCode
+    # noinspection PyProtocol
     async def a_run(
         self,
         output_path: str | Path | None = None,
@@ -566,28 +555,28 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         output_path : str | Path | None
             The output path, by default None.
         uploads_root : str | Path | None
-            The runtime uploads root, by default None.
+            The runtime uploads root.
         structured_io : bool
-            Whether to use structured IO instead of the default 'input/print',
-            by default False.
+            Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
-            Whether to skip generating the mermaid diagram, by default False.
+            Whether to skip generating the mermaid diagram.
         skip_timeline : bool
-            Whether to skip generating the timeline JSON, by default False.
+            Whether to skip generating the timeline JSON.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
-            Additional keyword arguments for the run method.
+            Additional keyword arguments for the a_run method.
 
         Returns
         -------
         list[dict[str, Any]]
-            The result of the run.
+            The results of the run.
 
         Raises
         ------
         RuntimeError
-            If the runner is already running.
+            If the runner is already running, the workflow is not async
+            or an error occurs during the run.
         """
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
@@ -608,8 +597,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         await self.a_install_requirements()
         refresh_environment()
         WaldiezBaseRunner._running = True
-        results: list[dict[str, Any]] = []
-        old_env_vars = set_env_vars(self.waldiez.get_flow_env_vars())
+        results: list[dict[str, Any]]
+        old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
                 sys.path.insert(0, str(temp_dir))
@@ -634,129 +623,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
         return results
-
-    def start(
-        self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
-        structured_io: bool | None = None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-        dot_env: str | Path | None = None,
-        **kwargs: Any,
-    ) -> None:
-        """Start running the Waldiez flow in a non-blocking way.
-
-        Parameters
-        ----------
-        output_path : str | Path | None
-            The output path.
-        uploads_root : str | Path | None
-            The runtime uploads root.
-        structured_io : bool | None
-            Whether to use structured IO instead of the default 'input/print'.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram, by default False.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON, by default False.
-        dot_env : str | Path | None
-            The path to the .env file, if any.
-        **kwargs : Any
-            Additional keyword arguments for the start method.
-
-        Raises
-        ------
-        RuntimeError
-            If the runner is already running.
-        """
-        if dot_env is not None:
-            resolved = Path(dot_env).resolve()
-            if resolved.is_file():
-                WaldiezBaseRunner._dot_env_path = resolved
-        if structured_io is not None:
-            WaldiezBaseRunner._structured_io = structured_io
-        if self.is_running():
-            raise RuntimeError("Workflow already running")
-        output_file, uploads_root_path = self._prepare_paths(
-            output_path=output_path,
-            uploads_root=uploads_root,
-        )
-        temp_dir = self.before_run(
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-        )
-        self.install_requirements()
-        refresh_environment()
-        WaldiezBaseRunner._running = True
-        self._start(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    # noinspection DuplicatedCode
-    async def a_start(
-        self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
-        structured_io: bool | None = None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-        dot_env: str | Path | None = None,
-        **kwargs: Any,
-    ) -> None:
-        """Asynchronously start running the Waldiez flow in a non-blocking way.
-
-        Parameters
-        ----------
-        output_path : str | Path | None
-            The output path.
-        uploads_root : str | Path | None
-            The runtime uploads root.
-        structured_io : bool | None = None
-            Whether to use structured IO instead of the default 'input/print'.
-        skip_mmd : bool = False
-            Whether to skip generating the mermaid diagram, by default False.
-        skip_timeline : bool = False
-            Whether to skip generating the timeline JSON, by default False.
-        dot_env : str | Path | None = None
-            The path to the .env file, if any.
-        **kwargs : Any
-            Additional keyword arguments for the start method.
-
-        Raises
-        ------
-        RuntimeError
-            If the runner is already running.
-        """
-        if dot_env is not None:
-            resolved = Path(dot_env).resolve()
-            if resolved.is_file():
-                WaldiezBaseRunner._dot_env_path = resolved
-        if structured_io is not None:
-            WaldiezBaseRunner._structured_io = structured_io
-        if self.is_running():
-            raise RuntimeError("Workflow already running")
-        output_file, uploads_root_path = self._prepare_paths(
-            output_path=output_path,
-            uploads_root=uploads_root,
-        )
-        temp_dir = await self._a_before_run(
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-        )
-        await self.a_install_requirements()
-        refresh_environment()
-        WaldiezBaseRunner._running = True
-        await self._a_start(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
 
     def after_run(
         self,
@@ -828,28 +694,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
             skip_timeline=skip_timeline,
         )
 
-    def stop(self) -> None:
-        """Stop the runner if it is running."""
-        if not self.is_running():
-            return
-        try:
-            self._stop()
-        finally:
-            WaldiezBaseRunner._running = False
-
-    async def a_stop(self) -> None:
-        """Asynchronously stop the runner if it is running."""
-        if not self.is_running():
-            return
-        try:
-            await self._a_stop()
-        finally:
-            WaldiezBaseRunner._running = False
-
-    # ===================================================================
-    # PROPERTIES AND CONTEXT MANAGERS
-    # ===================================================================
-
     @property
     def waldiez(self) -> Waldiez:
         """Get the Waldiez instance."""
@@ -858,7 +702,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     @property
     def is_async(self) -> bool:
         """Check if the workflow is async."""
-        return self.waldiez.is_async
+        return self._waldiez.is_async
 
     @property
     def running(self) -> bool:
@@ -968,7 +812,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     ) -> None:
         """Exit the context manager."""
         if self.is_running():
-            self.stop()
+            self._stop_requested.set()
+            self._signal_completion()
 
     async def __aexit__(
         self,
@@ -978,4 +823,5 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol):
     ) -> None:
         """Exit the context manager asynchronously."""
         if self.is_running():
-            await self.a_stop()
+            self._stop_requested.set()
+            self._signal_completion()

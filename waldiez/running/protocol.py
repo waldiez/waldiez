@@ -51,98 +51,24 @@ class WaldiezRunnerProtocol(Protocol):
             The path to the temporary directory created for the run.
         """
 
-    def start(
-        self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
-        structured_io: bool | None = None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-        dot_env: str | Path | None = None,
-        **kwargs: Any,
-    ) -> None:
-        """Start running the Waldiez flow in a non-blocking way.
-
-        To allow "stoping" it later.
-
-        Parameters
-        ----------
-        output_path : str | Path | None
-            The output path.
-        uploads_root : str | Path | None
-            The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-        dot_env : str | Path | None
-            The path to the .env file, if any.
-        **kwargs : Any
-            Additional keyword arguments for the start method.
-
-        Raises
-        ------
-        RuntimeError
-            If the runner is already running.
-        """
-
-    async def a_start(
-        self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
-        structured_io: bool | None = None,
-        skip_mmd: bool = False,
-        skip_timeline: bool = False,
-        dot_env: str | Path | None = None,
-        **kwargs: Any,
-    ) -> None:
-        """Asynchronously start running the Waldiez flow in a non-blocking way.
-
-        To allow "stoping" it later.
-
-        Parameters
-        ----------
-        output_path :  str | Path | None
-            The output path.
-        uploads_root : str | Path | None
-            The runtime uploads root.
-        structured_io : bool
-            Whether to use structured IO instead of the default 'input/print'.
-        skip_mmd : bool
-            Whether to skip generating the mermaid diagram.
-        skip_timeline : bool
-            Whether to skip generating the timeline JSON.
-        dot_env : str | Path | None
-            The path to the .env file, if any.
-        **kwargs : Any
-            Additional keyword arguments for the start method.
-
-        Raises
-        ------
-        RuntimeError
-            If the runner is already running.
-        """
-
     def run(
         self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
+        output_path: str | Path | None = None,
+        uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
-        """Run the Waldiez flow in a blocking way.
+        """Run the Waldiez flow.
 
         Parameters
         ----------
         output_path : str | Path | None
             The output path, by default None.
         uploads_root : str | Path | None
-            The runtime uploads root.
+            The runtime uploads root, by default None.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
         skip_mmd : bool
@@ -157,20 +83,26 @@ class WaldiezRunnerProtocol(Protocol):
         Returns
         -------
         list[dict[str, Any]]
-            The result of the run.
+            The results of the run.
+
+        Raises
+        ------
+        RuntimeError
+            If the runner is already running
+            or an error occurs during the run.
         """
 
     async def a_run(
         self,
-        output_path: str | Path | None,
-        uploads_root: str | Path | None,
+        output_path: str | Path | None = None,
+        uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
-        """Run the Waldiez flow.
+        """Run the Waldiez flow asynchronously.
 
         Parameters
         ----------
@@ -192,7 +124,13 @@ class WaldiezRunnerProtocol(Protocol):
         Returns
         -------
         list[dict[str, Any]]
-            The result of the run.
+            The results of the run.
+
+        Raises
+        ------
+        RuntimeError
+            If the runner is already running, the workflow is not async
+            or an error occurs during the run.
         """
 
     def after_run(
@@ -256,22 +194,4 @@ class WaldiezRunnerProtocol(Protocol):
         -------
         bool
             True if the runner is running, False otherwise.
-        """
-
-    def stop(self) -> None:
-        """Stop the runner if it is running.
-
-        Raises
-        ------
-        RuntimeError
-            If the runner is not running.
-        """
-
-    async def a_stop(self) -> None:
-        """Asynchronously stop the runner if it is running.
-
-        Raises
-        ------
-        RuntimeError
-            If the runner is not running.
         """

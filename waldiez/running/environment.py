@@ -63,6 +63,7 @@ def refresh_environment() -> None:
 
 
 # pylint: disable=too-complex,too-many-try-statements,unused-import
+# noinspection TryExceptPass
 def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
     """Reload the autogen package.
 

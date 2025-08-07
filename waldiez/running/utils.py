@@ -12,6 +12,7 @@ import sys
 from asyncio.subprocess import Process
 from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass
+from getpass import getpass
 from pathlib import Path
 from typing import AsyncIterator, Iterator, Union
 
@@ -134,3 +135,43 @@ async def create_async_subprocess(setup: ProcessSetup) -> Process:
         # stdin=asyncio.subprocess.PIPE,
         env={**os.environ},
     )
+
+
+async def input_async(prompt: str, *, password: bool = False) -> str:
+    """Asynchronous input function.
+
+    Parameters
+    ----------
+    prompt : str
+        The prompt to display to the user.
+    password : bool, optional
+        Whether to hide input (password mode), by default False.
+
+    Returns
+    -------
+    str
+        The user input.
+    """
+    if password:
+        return await asyncio.to_thread(getpass, prompt)
+    return await asyncio.to_thread(input, prompt)
+
+
+def input_sync(prompt: str, *, password: bool = False) -> str:
+    """Input function (synchronous).
+
+    Parameters
+    ----------
+    prompt : str
+        The prompt to display to the user.
+    password : bool, optional
+        Whether to hide input (password mode), by default False.
+
+    Returns
+    -------
+    str
+        The user input.
+    """
+    if password:
+        return getpass(prompt)
+    return input(prompt)

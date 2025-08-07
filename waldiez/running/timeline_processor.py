@@ -64,7 +64,7 @@ DEFAULT_AGENT_COLOR = "#E5E7EB"
 LOG = WaldiezLogger()
 
 
-# noinspection PyMethodMayBeStatic
+# noinspection PyMethodMayBeStatic,PyTypeHints
 class TimelineProcessor:
     """Class to process timeline data from CSV files."""
 

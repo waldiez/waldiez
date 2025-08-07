@@ -5,12 +5,16 @@
 # pylint: disable=too-many-positional-arguments
 """Run a waldiez flow.
 
-The flow is first converted to an autogen flow with agents, chats, and tools.
-We then chown to temporary directory and:
-    either import and call the flow's `main()` (if not isolated),
-    or run the flow in a subprocess (if isolated).
-Before running the flow, any additional environment
-variables specified in the waldiez file are set.
+The flow is first converted to an ag2 flow with agents, chats, and tools.
+We then chown to temporary directory,
+    import and call the flow's `main(on_event)` method.
+The `on_event` method is called with the event emitter,
+    which emits events during the flow execution.
+The flow is run in a temporary directory,
+    and the results are saved to the output file's directory.
+The uploads root directory is used to store any uploaded files
+during the flow execution.
+
 """
 
 from pathlib import Path
@@ -176,26 +180,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             **kwargs,
         )
 
-    def _start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        """Start the workflow in a non-blocking way."""
-        self._runner._start(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    def _stop(self) -> None:
-        self._runner._stop()
-
     async def _a_run(
         self,
         temp_dir: Path,
@@ -215,25 +199,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             dot_env=dot_env,
             **kwargs,
         )
-
-    async def _a_start(
-        self,
-        temp_dir: Path,
-        output_file: Path,
-        uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-    ) -> None:
-        return await self._runner._a_start(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
-
-    async def _a_stop(self) -> None:
-        return await self._runner._a_stop()
 
     @classmethod
     def load(
