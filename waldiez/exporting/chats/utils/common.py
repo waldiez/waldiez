@@ -73,7 +73,7 @@ def get_event_handler_string(
     content = (
         f"{tab}if on_event:\n"
         f"{tab}    if not isinstance(results, list):\n"
-        f"{tab}        results = [results]\n"
+        f"{tab}        results = [results]  # pylint: disable=redefined-variable-type\n"
         f"{tab}    for index, result in enumerate(results):\n"
     )
     if is_async:
@@ -82,7 +82,7 @@ def get_event_handler_string(
             f"{tab}            try:\n"
             f"{tab}                should_continue = await on_event(event)\n"
             f"{tab}            except Exception as e:\n"
-            f"{tab}                raise RuntimeError(\n"
+            f"{tab}                raise SystemExit(\n"
             f"{tab}                    'Error in event handler: ' + str(e)\n"
             f"{tab}                ) from e\n"
         )
@@ -92,7 +92,7 @@ def get_event_handler_string(
             f"{tab}            try:\n"
             f"{tab}                should_continue = on_event(event)\n"
             f"{tab}            except Exception as e:\n"
-            f"{tab}                raise RuntimeError(\n"
+            f"{tab}                raise SystemExit(\n"
             f"{tab}                    'Error in event handler: ' + str(e)\n"
             f"{tab}                ) from e\n"
         )
@@ -106,7 +106,7 @@ def get_event_handler_string(
     content += (
         f"{tab}else:\n"
         f"{tab}    if not isinstance(results, list):\n"
-        f"{tab}        results = [results]\n"
+        f"{tab}        results = [results]  # pylint: disable=redefined-variable-type\n"
         f"{tab}    for index, result in enumerate(results):\n"
     )
     if is_async:

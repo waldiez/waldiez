@@ -7,19 +7,19 @@
 
 """Base runner for Waldiez workflows."""
 
+import importlib.util
 import inspect
 import shutil
 import sys
 import tempfile
 import threading
 from pathlib import Path
-from types import TracebackType
+from types import ModuleType, TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
     Coroutine,
-    Optional,
     Type,
     Union,
 )
@@ -49,6 +49,12 @@ if TYPE_CHECKING:
     from autogen.messages import BaseMessage  # type: ignore[import-untyped]
 
 
+class StopRunningException(Exception):
+    """Exception to stop the running process."""
+
+    reason: str = "Execution stopped by user"
+
+
 class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     """Base runner for Waldiez.
 
@@ -61,16 +67,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         - dot_env: Path to a .env file for environment variables.
 
     Methods to override:
+        - prepare: Prepare the environment and paths for running the flow.
         - _before_run: Actions to perform before running the flow.
         - _a_before_run: Async actions to perform before running the flow.
         - _run: Actual implementation of the run logic.
         - _a_run: Async implementation of the run logic.
         - _after_run: Actions to perform after running the flow.
         - _a_after_run: Async actions to perform after running the flow.
-        - _start: Implementation of non-blocking start logic.
-        - _a_start: Async implementation of non-blocking start logic.
-        - _stop: Actions to perform when stopping the flow.
-        - _a_stop: Async actions to perform when stopping the flow.
     """
 
     _structured_io: bool
@@ -112,8 +115,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         self._last_results: list[dict[str, Any]] = []
         self._last_exception: Exception | None = None
         self._execution_complete_event = threading.Event()
-        self._execution_thread: Optional[threading.Thread] = None
         self._running_lock = threading.Lock()
+        self._loaded_module: ModuleType | None = None
 
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
@@ -196,55 +199,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             )
         return input_function(prompt, password=password)  # type: ignore
 
-    def wait_for_completion(self, timeout: Optional[float] = None) -> bool:
-        """Wait for non-blocking execution to complete.
-
-        This is a base implementation that subclasses can override if needed.
-
-        Parameters
-        ----------
-        timeout: float | None
-            The maximum time to wait for completion, in seconds.
-            If None, wait indefinitely.
-
-        Returns
-        -------
-        bool
-            True if the workflow completed successfully, False if it timed out.
-        """
-        # Default implementation - subclasses can override
-        if not self.is_running():
-            return True
-
-        if self._execution_thread and self._execution_thread.is_alive():
-            self._execution_thread.join(timeout)
-            return not self._execution_thread.is_alive()
-
-        return self._execution_complete_event.wait(timeout or 0)
-
-    def get_execution_stats(self) -> dict[str, Any]:
-        """Get basic execution statistics.
-
-        Returns
-        -------
-        dict[str, Any]
-            A dictionary containing execution statistics.
-        - is_running: Whether the runner is currently running.
-        - has_thread: Whether there is an execution thread.
-        - thread_alive: Whether the execution thread is alive.
-        - has_error: Whether there was an error during execution.
-        """
-        return {
-            "is_running": self.is_running(),
-            "has_thread": self._execution_thread is not None,
-            "thread_alive": (
-                self._execution_thread.is_alive()
-                if self._execution_thread
-                else False
-            ),
-            "has_error": self._last_exception is not None,
-        }
-
     # Helper for subclasses
     def _signal_completion(self) -> None:
         """Signal that execution has completed."""
@@ -253,6 +207,24 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     def _reset_completion_state(self) -> None:
         """Reset completion state for new execution."""
         self._execution_complete_event.clear()
+
+    def _load_module(self, output_file: Path, temp_dir: Path) -> ModuleType:
+        """Load the module from the waldiez file."""
+        file_name = output_file.name
+        module_name = file_name.replace(".py", "")
+        spec = importlib.util.spec_from_file_location(
+            module_name, temp_dir / file_name
+        )
+        if not spec or not spec.loader:
+            raise ImportError("Could not import the flow")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        if not hasattr(module, "main"):
+            raise ImportError(
+                "The waldiez file does not contain a main() function"
+            )
+        self._loaded_module = module
+        return module
 
     def _before_run(
         self,
@@ -439,6 +411,40 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             uploads_root=uploads_root,
         )
 
+    def prepare(
+        self,
+        output_path: str | Path | None,
+        uploads_root: str | Path | None,
+    ) -> tuple[Path, Path, Path | None]:
+        """Prepare the paths and environment for running the flow.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            The output path for the flow, by default None.
+        uploads_root : str | Path | None
+            The root path for uploads, by default None.
+
+        Returns
+        -------
+        tuple[Path, Path, Path | None]
+            A tuple containing:
+            - The path to the output file.
+            - The path to the temporary directory created for the run.
+            - The root path for uploads, if specified, otherwise None.
+        """
+        output_file, uploads_root_path = self._prepare_paths(
+            output_path=output_path,
+            uploads_root=uploads_root,
+        )
+        temp_dir = self.before_run(
+            output_file=output_file,
+            uploads_root=uploads_root_path,
+        )
+        self.install_requirements()
+        refresh_environment()
+        return temp_dir, output_file, uploads_root_path
+
     # noinspection PyProtocol
     def run(
         self,
@@ -477,8 +483,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         Raises
         ------
         RuntimeError
-            If the runner is already running
+            If the runner is already running, the workflow is not async,
             or an error occurs during the run.
+        StopRunningException
+            If the run is stopped by the user.
         """
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
@@ -497,16 +505,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     structured_io,
                     skip_mmd,
                 )
-        output_file, uploads_root_path = self._prepare_paths(
+        temp_dir, output_file, uploads_root_path = self.prepare(
             output_path=output_path,
             uploads_root=uploads_root,
         )
-        temp_dir = self.before_run(
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-        )
-        self.install_requirements()
-        refresh_environment()
         WaldiezBaseRunner._running = True
         results: list[dict[str, Any]]
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
@@ -520,6 +522,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     skip_mmd=skip_mmd,
                     skip_timeline=skip_timeline,
                 )
+        except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
+            raise StopRunningException(StopRunningException.reason) from exc
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
@@ -577,6 +581,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         RuntimeError
             If the runner is already running, the workflow is not async
             or an error occurs during the run.
+        StopRunningException
+            If the run is stopped by the user.
         """
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
@@ -609,6 +615,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     skip_mmd=skip_mmd,
                     skip_timeline=skip_timeline,
                 )
+        except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
+            raise StopRunningException(StopRunningException.reason) from exc
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)

@@ -15,11 +15,8 @@ variables specified in the waldiez file are set.
 """
 
 import asyncio
-import importlib.util
-import threading
 import traceback
 from pathlib import Path
-from types import ModuleType
 from typing import TYPE_CHECKING, Any, Union
 
 from waldiez.models.waldiez import Waldiez
@@ -53,28 +50,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             dot_env=dot_env,
             **kwargs,
         )
-        self._execution_thread: threading.Thread | None = None
-        self._loaded_module: ModuleType | None = None
         self._event_count = 0
         self._processed_events = 0
-
-    def _load_module(self, output_file: Path, temp_dir: Path) -> ModuleType:
-        """Load the module from the waldiez file."""
-        file_name = output_file.name
-        module_name = file_name.replace(".py", "")
-        spec = importlib.util.spec_from_file_location(
-            module_name, temp_dir / file_name
-        )
-        if not spec or not spec.loader:
-            raise ImportError("Could not import the flow")
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        if not hasattr(module, "main"):
-            raise ImportError(
-                "The waldiez file does not contain a main() function"
-            )
-        self._loaded_module = module
-        return module
 
     # pylint: disable=no-self-use
     # noinspection PyMethodMayBeStatic
@@ -138,6 +115,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             results_container["exception"] = e
             traceback.print_exc()
             self.print(f"<Waldiez> - Workflow execution failed: {e}")
+
         finally:
             results_container["completed"] = True
         return results_container["results"]
@@ -178,10 +156,11 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             raise RuntimeError(
                 f"Error processing event {event}: {e}\n{traceback.format_exc()}"
             ) from e
-        if event.type == "run_completion":
+        if hasattr(event, "type") and event.type == "run_completion":
             self._signal_completion()
-            WaldiezBaseRunner._running = False
-        return not self._stop_requested.is_set()
+        if self._stop_requested.is_set():
+            return False
+        return not self._execution_complete_event.is_set()
 
     async def _a_on_event(
         self,
@@ -219,7 +198,11 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             raise RuntimeError(
                 f"Error processing event {event}: {e}\n{traceback.format_exc()}"
             ) from e
-        return not self._stop_requested.is_set()
+        if hasattr(event, "type") and event.type == "run_completion":
+            self._signal_completion()
+        if self._stop_requested.is_set():
+            return False
+        return not self._execution_complete_event.is_set()
 
     async def _a_run(
         self,
@@ -291,25 +274,3 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         except asyncio.CancelledError:
             self.log.info("Async execution cancelled")
             return []
-
-    def get_execution_stats(self) -> dict[str, Any]:
-        """Get execution statistics for standard runner.
-
-        Returns
-        -------
-        dict[str, Any]
-            A dictionary containing execution statistics such as total events,
-            processed events, whether a module was loaded, and event processing rate.
-        """
-        base_stats = super().get_execution_stats()
-        return {
-            **base_stats,
-            "total_events": self._event_count,
-            "processed_events": self._processed_events,
-            "has_loaded_module": self._loaded_module is not None,
-            "event_processing_rate": (
-                self._processed_events / self._event_count
-                if self._event_count > 0
-                else 0
-            ),
-        }

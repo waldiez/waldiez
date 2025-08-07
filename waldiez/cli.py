@@ -7,8 +7,9 @@
 
 import json
 import os
+import sys
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import anyio
 import typer
@@ -19,6 +20,9 @@ from .cli_extras import add_cli_extras
 from .logger import get_logger
 from .models import Waldiez
 from .utils import get_waldiez_version
+
+if TYPE_CHECKING:
+    from waldiez.running import WaldiezBaseRunner
 
 load_dotenv()
 LOG = get_logger()
@@ -113,15 +117,33 @@ def run(
         readable=True,
         resolve_path=True,
     ),
+    step: bool = typer.Option(  # noqa: B008
+        False,
+        "--step",
+        "-s",
+        help=(
+            "Run the flow in step-by-step mode. "
+            "This will pause execution after each step, allowing for debugging."
+        ),
+        is_eager=True,
+        rich_help_panel="Debug",
+    ),
 ) -> None:
     """Run a Waldiez flow."""
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
     os.environ["NEP50_DISABLE_WARNING"] = "1"
     output_path = _get_output_path(output, force)
-    from waldiez.runner import WaldiezRunner
+    from waldiez.runner import create_runner
 
     try:
-        runner = WaldiezRunner.load(file)
+        runner = create_runner(
+            Waldiez.load(file),
+            mode="debug" if step else "standard",
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured,
+            dot_env=env_file,
+        )
     except FileNotFoundError as error:
         typer.echo(f"File not found: {file}")
         raise typer.Exit(code=1) from error
@@ -131,25 +153,7 @@ def run(
     except ValueError as error:
         typer.echo(f"Invalid .waldiez file: {error}")
         raise typer.Exit(code=1) from error
-    if runner.is_async:
-        anyio.run(
-            runner.a_run,
-            output_path,
-            uploads_root,
-            structured,  # structured_io
-            False,  # skip_mmd
-            False,  # skip_timeline
-            env_file,
-        )
-    else:
-        runner.run(
-            output_path=output_path,
-            uploads_root=uploads_root,
-            structured_io=structured,
-            skip_mmd=False,
-            skip_timeline=False,
-            dot_env=env_file,
-        )
+    _do_run(runner, output_path, uploads_root, structured, env_file)
 
 
 @app.command()
@@ -250,6 +254,58 @@ def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
             raise typer.Exit(code=1)
         output.unlink()
     return output
+
+
+def _do_run(
+    runner: "WaldiezBaseRunner",  # noqa: F821
+    output_path: Path | None,
+    uploads_root: Path | None,
+    structured: bool,
+    env_file: Path | None,
+) -> None:
+    _error: Exception | None = None
+    _stopped: bool = False
+    from waldiez.running import StopRunningException
+
+    try:
+        if runner.waldiez.is_async:
+            anyio.run(
+                runner.a_run,
+                output_path,
+                uploads_root,
+                structured,  # structured_io
+                False,  # skip_mmd
+                False,  # skip_timeline
+                env_file,
+            )
+            # os._exit(0 if _error is None else 1)
+        else:
+            runner.run(
+                output_path=output_path,
+                uploads_root=uploads_root,
+                structured_io=structured,
+                skip_mmd=False,
+                skip_timeline=False,
+                dot_env=env_file,
+            )
+    except Exception as error:
+        _error = (
+            error if StopRunningException.reason not in str(error) else None
+        )
+        _stopped = StopRunningException.reason in str(error)
+        _error = error if not _stopped else None
+        if _error:
+            LOG.error("Execution failed: %s", error)
+        else:
+            LOG.warning(StopRunningException.reason)
+        raise typer.Exit(code=1 if error else 0) from error
+    finally:
+        if _stopped:
+            os._exit(0)
+        elif _error:
+            os._exit(1)
+        else:
+            sys.exit(0)
 
 
 add_cli_extras(app)

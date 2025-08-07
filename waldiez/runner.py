@@ -26,13 +26,13 @@ from .models.waldiez import Waldiez
 from .running import (
     WaldiezBaseRunner,
     WaldiezStandardRunner,
+    WaldiezStepByStepRunner,
 )
 
 
 def create_runner(
     waldiez: Waldiez,
-    # mode: Literal["standard", "debug"] = "standard",
-    mode: Literal["standard"] = "standard",
+    mode: Literal["standard", "debug"] = "standard",
     output_path: str | Path | None = None,
     uploads_root: str | Path | None = None,
     structured_io: bool = False,
@@ -45,7 +45,7 @@ def create_runner(
     ----------
     waldiez : Waldiez
         The waldiez flow to run.
-    mode : str, optional
+    mode : Literal["standard", "debug"], optional
         Runner mode: "standard", "debug", by default "standard"
     output_path : str | Path | None, optional
         Output path for results, by default None
@@ -70,7 +70,7 @@ def create_runner(
     """
     runners: dict[str, type[WaldiezBaseRunner]] = {
         "standard": WaldiezStandardRunner,
-        # "debug": WaldiezDebugRunner,
+        "debug": WaldiezStepByStepRunner,
     }
 
     if mode not in runners:
@@ -98,8 +98,7 @@ class WaldiezRunner(WaldiezBaseRunner):
     def __init__(
         self,
         waldiez: Waldiez,
-        # mode: Literal["standard", "debug"] = "standard",
-        mode: Literal["standard"] = "standard",
+        mode: Literal["standard", "debug"] = "standard",
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool = False,

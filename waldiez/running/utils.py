@@ -153,8 +153,14 @@ async def input_async(prompt: str, *, password: bool = False) -> str:
         The user input.
     """
     if password:
-        return await asyncio.to_thread(getpass, prompt)
-    return await asyncio.to_thread(input, prompt)
+        try:
+            return await asyncio.to_thread(getpass, prompt)
+        except EOFError:
+            return ""
+    try:
+        return await asyncio.to_thread(input, prompt)
+    except EOFError:
+        return ""
 
 
 def input_sync(prompt: str, *, password: bool = False) -> str:
@@ -173,5 +179,11 @@ def input_sync(prompt: str, *, password: bool = False) -> str:
         The user input.
     """
     if password:
-        return getpass(prompt)
-    return input(prompt)
+        try:
+            return getpass(prompt)
+        except EOFError:
+            return ""
+    try:
+        return input(prompt)
+    except EOFError:
+        return ""
