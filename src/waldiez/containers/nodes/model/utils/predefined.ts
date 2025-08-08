@@ -22,6 +22,18 @@ export const modelLinks: Record<WaldiezModelAPIType, string> = {
 // https://platform.openai.com/docs/models
 const predefinedOpenAIModels = [
     {
+        label: "GPT-5",
+        value: "gpt-5",
+    },
+    {
+        label: "GPT-5 Mini",
+        value: "gpt-5-mini",
+    },
+    {
+        label: "GPT-5 Nano",
+        value: "gpt-5-nano",
+    },
+    {
         label: "GPT-4.1",
         value: "gpt-4.1",
     },
@@ -61,6 +73,10 @@ const predefinedOpenAIModels = [
 
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
 const predefinedAnthropicModels = [
+    {
+        label: "Claude 4.1 Opus",
+        value: "claude-opus-4-1-20250805",
+    },
     {
         label: "Claude 4 Sonnet",
         value: "claude-sonnet-4-20250514",
