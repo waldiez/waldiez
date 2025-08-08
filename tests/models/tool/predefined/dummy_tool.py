@@ -48,5 +48,10 @@ class DummyTool(PredefinedTool):
         """Validate the provided secrets."""
         return []
 
-    def get_content(self, secrets: dict[str, str]) -> str:  # noqa: D102
+    def get_content(
+        self,
+        secrets: dict[str, str],
+        runtime_kwargs: dict[str, Any] | None = None,
+    ) -> str:
+        """Get the content for the tool."""
         return "Dummy content based on secrets."

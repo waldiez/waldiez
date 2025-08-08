@@ -84,6 +84,7 @@ class TavilySearchToolImpl(PredefinedTool):
     def get_content(
         self,
         secrets: dict[str, str],
+        runtime_kwargs: dict[str, Any] | None = None,
     ) -> str:
         """Get content for the tool.
 
@@ -91,6 +92,8 @@ class TavilySearchToolImpl(PredefinedTool):
         ----------
         secrets : dict[str, str]
             Dictionary of secrets/environment variables.
+        runtime_kwargs : dict[str, Any] | None, optional
+            Runtime keyword arguments to customize the content generation.
 
         Returns
         -------

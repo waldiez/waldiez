@@ -215,8 +215,13 @@ class WaldiezTool(WaldiezBase):
         """Get the secrets (environment variables) of the tool."""
         return self.data.secrets or {}
 
-    def get_content(self) -> str:
+    def get_content(self, runtime_kwargs: dict[str, Any] | None = None) -> str:
         """Get the content of the tool.
+
+        Parameters
+        ----------
+        runtime_kwargs : dict[str, Any] | None, optional
+            Runtime keyword arguments to customize the content generation.
 
         Returns
         -------
@@ -224,14 +229,24 @@ class WaldiezTool(WaldiezBase):
             The content of the tool.
         """
         if self.is_predefined:
-            return self._generate_predefined_content()
+            return self._generate_predefined_content(
+                runtime_kwargs=runtime_kwargs
+            )
         if self.is_shared or self.is_interop:
             return self.data.content
         # if custom, only the function content
         return get_function(self.data.content, self.name)
 
-    def _generate_predefined_content(self) -> str:
+    def _generate_predefined_content(
+        self,
+        runtime_kwargs: dict[str, Any] | None = None,
+    ) -> str:
         """Generate the content for a predefined tool.
+
+        Parameters
+        ----------
+        runtime_kwargs : dict[str, Any] | None, optional
+            Runtime keyword arguments to customize the content generation.
 
         Returns
         -------
@@ -241,7 +256,10 @@ class WaldiezTool(WaldiezBase):
         config = get_predefined_tool_config(self.name)
         if not config:
             return ""
-        return config.get_content(self.data.secrets)
+        return config.get_content(
+            self.data.secrets,
+            runtime_kwargs=runtime_kwargs,
+        )
 
     def _validate_interop_tool(self) -> None:
         """Validate the interoperability tool.

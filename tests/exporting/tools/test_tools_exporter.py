@@ -115,6 +115,7 @@ def tool3():
         agent_names=agent_names,
         tools=[tool1, tool2, tool3],
         tool_names=tool_names,
+        is_async=False,
         output_dir=None,
     )
     main_content = tools_exporter.get_main_content()
@@ -184,6 +185,7 @@ def tool3():
         agent_names=agent_names,
         tools=[],
         tool_names=tool_names,
+        is_async=False,
         output_dir=str(output_dir),
     )
     shutil.rmtree(output_dir)
@@ -286,6 +288,7 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         agent_names=agent_names,
         tools=[tool1, tool2],
         tool_names=tool_names,
+        is_async=False,
         output_dir=str(tmp_path / "test_export_interop_tool"),
     )
     expected_environment_variables = [

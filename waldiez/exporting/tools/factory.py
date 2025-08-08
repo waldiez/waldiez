@@ -16,6 +16,7 @@ def create_tools_exporter(
     agent_names: dict[str, str],
     tools: list[WaldiezTool],
     tool_names: dict[str, str],
+    is_async: bool,
     output_dir: str | Path | None = None,
     context: ExporterContext | None = None,
 ) -> ToolsExporter:
@@ -33,6 +34,8 @@ def create_tools_exporter(
         The tools to export.
     tool_names : dict[str, str]
         Mapping of tool IDs to names.
+    is_async : bool
+        Whether the flow is asynchronous.
     output_dir : str | Path | None, optional
         Output directory for generated files, by default None
     context : ExporterContext | None, optional
@@ -52,5 +55,6 @@ def create_tools_exporter(
         tools=tools,
         tool_names=tool_names,
         output_dir=output_dir,
+        is_async=is_async,
         context=context,
     )

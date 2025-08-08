@@ -33,6 +33,7 @@ class ToolProcessor:
         flow_name: str,
         tools: list[WaldiezTool],
         tool_names: dict[str, str],
+        is_async: bool,
         output_dir: Path | None = None,
     ):
         """Initialize the tool processor.
@@ -52,6 +53,7 @@ class ToolProcessor:
         self.tools = tools
         self.tool_names = tool_names
         self.output_dir = output_dir
+        self.is_async = is_async
 
     def process(self) -> ToolProcessingResult:
         """Process all tools and return consolidated result.
@@ -94,7 +96,9 @@ class ToolProcessor:
             The result to add processed content to.
         """
         # Get tool content
-        tool_content = tool.get_content()
+        tool_content = tool.get_content(
+            runtime_kwargs={"is_async": self.is_async}
+        )
         if tool_content:  # pragma: no branch
             # Add interop conversion if needed
             if tool.is_interop:

@@ -249,6 +249,7 @@ class ExportOrchestrator:
                 agent_names=self.agent_names,
                 tools=self.tools,
                 tool_names=self.tool_names,
+                is_async=self.waldiez.is_async,
                 output_dir=self.config.output_directory,
                 context=self.context,
             )

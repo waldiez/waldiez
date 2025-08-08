@@ -32,6 +32,7 @@ class ToolsExporter(Exporter[ToolExtras]):
         agent_names: dict[str, str],
         tools: list[WaldiezTool],
         tool_names: dict[str, str],
+        is_async: bool,
         output_dir: str | Path | None = None,
         context: ExporterContext | None = None,
         **kwargs: Any,
@@ -50,6 +51,8 @@ class ToolsExporter(Exporter[ToolExtras]):
             The tools to export.
         tool_names : dict[str, str]
             Mapping of tool IDs to names.
+        is_async : bool
+            Whether the flow is asynchronous.
         output_dir : str | Path | None
             Output directory for generated files, by default None
         context : ExporterContext | None
@@ -64,6 +67,7 @@ class ToolsExporter(Exporter[ToolExtras]):
         self.agent_names = agent_names
         self.tools = tools
         self.tool_names = tool_names
+        self.is_async = is_async
         self.output_dir = Path(output_dir) if output_dir else None
 
         # Initialize extras with processed tool content
@@ -83,6 +87,7 @@ class ToolsExporter(Exporter[ToolExtras]):
             flow_name=self.flow_name,
             tools=self.tools,
             tool_names=self.tool_names,
+            is_async=self.is_async,
             output_dir=self.output_dir,
         )
 

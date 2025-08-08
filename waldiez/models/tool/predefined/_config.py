@@ -3,6 +3,7 @@
 """Predefined tool configuration for Waldiez."""
 
 from dataclasses import dataclass
+from typing import Any
 
 from .protocol import PredefinedTool
 
@@ -52,6 +53,7 @@ class PredefinedToolConfig:
     def get_content(
         self,
         secrets: dict[str, str],
+        runtime_kwargs: dict[str, Any] | None = None,
     ) -> str:
         """Get the content of the tool.
 
@@ -59,10 +61,12 @@ class PredefinedToolConfig:
         ----------
         secrets : dict[str, str]
             Dictionary of secrets/environment variables.
+        runtime_kwargs : dict[str, Any] | None, optional
+            Runtime keyword arguments to customize the content generation.
 
         Returns
         -------
         str
             Content of the tool.
         """
-        return self.implementation.get_content(secrets)
+        return self.implementation.get_content(secrets, runtime_kwargs)
