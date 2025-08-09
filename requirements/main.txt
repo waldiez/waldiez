@@ -15,5 +15,5 @@ pillow
 pip>=25.1.1
 platformdirs==4.3.8
 pydantic>=2.10.2,<3
-rpds-py==0.26.0
+rpds-py==0.27.0
 typer>=0.9.0,<1
