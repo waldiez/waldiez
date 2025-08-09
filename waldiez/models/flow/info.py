@@ -53,7 +53,7 @@ class WaldiezFlowInfo(WaldiezBase):
             description="List of chat participants with their info",
             default_factory=list[WaldiezAgentInfo],
         ),
-    ]
+    ] = []
 
     @classmethod
     def create(

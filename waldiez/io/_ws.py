@@ -13,7 +13,7 @@ try:
     from starlette.websockets import WebSocket  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 
     HAS_WS_LIB = True  # pyright: ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 try:

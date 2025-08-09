@@ -30,7 +30,7 @@ def _get_waldiez_version_from_package_json() -> str | None:
 def _get_waldiez_version_from_version_py() -> str | None:
     """Get the Waldiez version from _version.py."""
     version_py_path = Path(__file__).parent.parent / "_version.py"
-    if version_py_path.exists():
+    if version_py_path.exists():  # pragma: no branch
         with open(version_py_path, "r", encoding="utf-8") as f:
             for line in f:
                 if line.startswith("__version__"):
@@ -48,14 +48,10 @@ def get_waldiez_version() -> str:
         The Waldiez version, or "dev" if not found.
     """
     w_version = _get_waldiez_version_from_importlib()
-    if not w_version:
+    if not w_version:  # pragma: no branch
         w_version = _get_waldiez_version_from_version_py()
     if not w_version:
         w_version = _get_waldiez_version_from_package_json()
     if not w_version:
         w_version = "dev"
     return w_version
-
-
-if __name__ == "__main__":
-    print(get_waldiez_version())

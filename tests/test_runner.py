@@ -12,7 +12,7 @@ from autogen.io import IOStream  # type: ignore
 
 from waldiez.models import Waldiez, WaldiezFlow
 from waldiez.runner import WaldiezRunner
-from waldiez.running.patch_io_stream import get_printer
+from waldiez.running.utils import get_printer
 
 
 # noinspection PyMethodMayBeStatic,PyUnusedLocal

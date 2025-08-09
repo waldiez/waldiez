@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=unused-import,unused-argument,protected-access
 # pylint: disable=too-many-public-methods,too-few-public-methods
-# pylint: disable=missing-param-doc,missing-return-doc,no-self-use
+# pylint: disable=missing-param-doc,missing-return-doc,no-self-use,
+# pylint: disable=missing-raises-doc
 """Test waldiez.io.utils.*."""
 
 import json
@@ -15,7 +16,9 @@ import pytest
 from waldiez.io.utils import (
     detect_media_type,
     get_image,
+    get_message_dump,
     is_json_dumped,
+    try_parse_maybe_serialized,
 )
 
 
@@ -355,3 +358,93 @@ class TestGetImage:
 
         assert is_json_dumped(valid_json)
         assert not is_json_dumped(invalid_json)
+
+
+class DummyMessage:
+    """Dummy message class for testing."""
+
+    def __init__(
+        self,
+        dump: dict[str, Any] | None = None,
+        raise_first: bool = False,
+        raise_second: bool = False,
+    ) -> None:
+        """Initialize the dummy message."""
+        self._dump = dump
+        self._raise_first = raise_first
+        self._raise_second = raise_second
+
+    def model_dump(self, **kwargs: Any) -> dict[str, Any] | None:
+        """Dump the model's data."""
+        if self._raise_first:
+            self._raise_first = False
+            raise RuntimeError("First dump error")
+        if self._raise_second:
+            raise RuntimeError("Second dump error")
+        return self._dump
+
+
+class TestTryParseMaybeSerialized:
+    """Test try_parse_maybe_serialized function."""
+
+    def test_try_parse_maybe_serialized_valid_json(self) -> None:
+        """Test try_parse_maybe_serialized with valid JSON inputs."""
+        # JSON list with single string => returns string
+        assert try_parse_maybe_serialized('["hello"]') == "hello"
+        # JSON dict
+        assert try_parse_maybe_serialized('{"a":1}') == {"a": 1}
+        # JSON string => returns string (parsed as string)
+        assert try_parse_maybe_serialized('"hello"') == "hello"
+
+    def test_try_parse_maybe_serialized_valid_python_literal(self) -> None:
+        """Test try_parse_maybe_serialized with valid Python literal inputs."""
+        # Python list with single string => returns string
+        assert try_parse_maybe_serialized("['hello']") == "hello"
+        # Python dict
+        assert try_parse_maybe_serialized("{'a': 1}") == {"a": 1}
+        # Python string literal
+        assert try_parse_maybe_serialized("'hello'") == "hello"
+
+    def test_try_parse_maybe_serialized_invalid(self) -> None:
+        """Test try_parse_maybe_serialized with invalid inputs."""
+        # Non-JSON, non-Python string returns itself
+        s = "not a json or python literal"
+        assert try_parse_maybe_serialized(s) == s
+
+
+class TestGetMessageDump:
+    """Test get_message_dump function."""
+
+    def test_get_message_dump_normal(self) -> None:
+        """Test get_message_dump with a normal message."""
+        msg = DummyMessage(dump={"key": "value"})
+        result = get_message_dump(msg)  # pyright: ignore
+        assert result == {"key": "value"}
+
+    def test_get_message_dump_no_model_dump(self) -> None:
+        """Test get_message_dump with a message that has no such method."""
+
+        class NoDump:
+            """No model_dump method."""
+
+        msg = NoDump()
+        result = get_message_dump(msg)  # pyright: ignore
+        assert "error" in result
+        assert result["type"] == "NoDump"
+
+    def test_get_message_dump_first_exception(self) -> None:
+        """Test get_message_dump with a msg that raises on the first call."""
+        # Raise on first call, succeed on second
+        msg = DummyMessage(dump={"ok": True}, raise_first=True)
+        result = get_message_dump(msg)  # pyright: ignore
+        assert result == {"ok": True}
+
+    def test_get_message_dump_both_exceptions(self) -> None:
+        """Test get_message_dump with a message that raises on both calls."""
+        msg = DummyMessage(raise_first=True, raise_second=True)
+        result = get_message_dump(msg)  # pyright: ignore
+        assert "error" in result
+        assert (
+            "RuntimeError" not in result["error"]
+        )  # error string from second exception
+        assert result["type"] == "DummyMessage"

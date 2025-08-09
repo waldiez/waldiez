@@ -3,12 +3,12 @@
 # flake8: noqa: E501
 """Waldiez Model Data."""
 
-from typing import Optional
+from typing import Any, Optional
 
-from pydantic import Field
-from typing_extensions import Annotated, Literal
+from pydantic import Field, model_validator
+from typing_extensions import Annotated, Literal, Self
 
-from ..common import WaldiezBase
+from ..common import WaldiezBase, update_dict
 from ._aws import WaldiezModelAWS
 from ._price import WaldiezModelPrice
 
@@ -131,7 +131,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ] = None
     extras: Annotated[
-        dict[str, str],
+        dict[str, Any],
         Field(
             alias="extras",
             default_factory=dict,
@@ -154,3 +154,16 @@ class WaldiezModelData(WaldiezBase):
             default=None, title="Price", description="The price of the model"
         ),
     ] = None
+
+    @model_validator(mode="after")
+    def validate_model_data(self) -> Self:
+        """Validate model data.
+
+        Returns
+        -------
+        WaldiezModelData
+            The validated model data.
+        """
+        if self.extras:
+            self.extras = update_dict(self.extras)
+        return self

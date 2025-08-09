@@ -25,6 +25,7 @@ from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
 
 from .environment import refresh_environment, reset_env_vars, set_env_vars
+from .exceptions import StopRunningException
 from .post_run import after_run
 from .pre_run import RequirementsMixin
 from .protocol import WaldiezRunnerProtocol
@@ -33,17 +34,12 @@ from .utils import (
     chdir,
     input_async,
     input_sync,
+    is_async_callable,
 )
 
 if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore[import-untyped]
     from autogen.messages import BaseMessage  # type: ignore[import-untyped]
-
-
-class StopRunningException(Exception):
-    """Exception to stop the running process."""
-
-    reason: str = "Execution stopped by user"
 
 
 # pylint: disable=too-many-public-methods
@@ -158,10 +154,20 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             The user input.
         """
         input_function = WaldiezBaseRunner.get_input_function()
-        result = input_function(prompt, password=password)
-        if inspect.isawaitable(result):
-            return await result
-        return result
+        if is_async_callable(input_function):
+            try:
+                result = await input_function(  # type: ignore
+                    prompt,
+                    password=password,
+                )
+            except TypeError:
+                result = await input_function(prompt)  # type: ignore
+        else:
+            try:
+                result = input_function(prompt, password=password)
+            except TypeError:
+                result = input_function(prompt)
+        return result  # pyright: ignore
 
     @staticmethod
     def get_user_input(
@@ -185,11 +191,19 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         """
         input_function = WaldiezBaseRunner.get_input_function()
         if inspect.iscoroutinefunction(input_function):
-            return syncify(input_function, raise_sync_error=False)(
-                prompt,
-                password=password,
-            )
-        return input_function(prompt, password=password)  # type: ignore
+            try:
+                return syncify(input_function, raise_sync_error=False)(
+                    prompt,
+                    password=password,
+                )
+            except TypeError:
+                return syncify(input_function, raise_sync_error=False)(
+                    prompt,
+                )
+        try:
+            return input_function(prompt, password=password)  # type: ignore
+        except TypeError:
+            return input_function(prompt)  # type: ignore
 
     # Helper for subclasses
     def _signal_completion(self) -> None:

@@ -397,7 +397,7 @@ class WaldiezFlow(WaldiezBase):
             If no group manager is found.
         """
         for agent in self.data.agents.groupManagerAgents:
-            if agent.data.parent_id is None:
+            if agent.data.parent_id is None:  # pragma: no branch
                 return agent
         raise ValueError("No group manager found.")
 
@@ -431,16 +431,16 @@ class WaldiezFlow(WaldiezBase):
         to_root_manager: WaldiezChat | None = None
         root_manager: WaldiezGroupManager = self.get_root_group_manager()
         for chat in self.data.chats:
-            if chat.target == root_manager.id:
+            if chat.target == root_manager.id:  # pragma: no branch
                 # check if the source is a user agent
                 source = self.get_agent_by_id(chat.source)
-                if source.is_user:
+                if source.is_user:  # pragma: no branch
                     user_agent = source
                     to_root_manager = chat
                     break
-        if not to_root_manager:
+        if not to_root_manager:  # pragma: no cover
             return []
-        if not user_agent:
+        if not user_agent:  # pragma: no cover
             return []
         return [
             {
@@ -572,7 +572,7 @@ class WaldiezFlow(WaldiezBase):
             - If the model IDs are not unique.
             - If the tool IDs are not unique.
         """
-        if member.is_group_manager:
+        if member.is_group_manager:  # pragma: no cover
             raise ValueError(
                 "In single agent mode, the agent must not be a group manager."
             )

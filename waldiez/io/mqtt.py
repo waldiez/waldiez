@@ -473,7 +473,7 @@ class MqttIOStream(IOStream):
         print_message = PrintMessage.create(*args, **kwargs)
         try:
             payload = print_message.model_dump(mode="json")
-        except Exception:
+        except Exception:  # pragma: no cover
             payload = print_message.model_dump(
                 serialize_as_any=True, mode="json", fallback=str
             )

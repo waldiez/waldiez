@@ -173,7 +173,7 @@ def test_process_events(sample_events_csv: StringIO) -> None:
     sample_events_csv : StringIO
         Sample CSV file.
     """
-    df_events = pd.read_csv(sample_events_csv)
+    df_events = pd.read_csv(sample_events_csv)  # pyright: ignore
 
     result = process_events(df_events)
 

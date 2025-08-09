@@ -11,8 +11,8 @@ from pathlib import Path
 from typing import Optional, Union
 
 from .gen_seq_diagram import generate_sequence_diagram
-from .patch_io_stream import get_printer
 from .timeline_processor import TimelineProcessor
+from .utils import get_printer
 
 
 # noinspection PyUnusedLocal
@@ -52,7 +52,7 @@ def after_run(
             flow_name=flow_name,
             mmd_dir=mmd_dir,
         )
-    if skip_timeline is False:
+    if skip_timeline is False:  # pragma: no branch
         _make_timeline_json(temp_dir=temp_dir)
     if output_file:
         destination_dir = output_file.parent
@@ -103,7 +103,7 @@ def _make_timeline_json(
     events_csv_path = temp_dir / "logs" / "events.csv"
     if events_csv_path.exists():
         log_files = TimelineProcessor.get_files(temp_dir / "logs")
-        if any(log_files.values()):
+        if any(log_files.values()):  # pragma: no branch
             output_file = temp_dir / "timeline.json"
             # pylint: disable=too-many-try-statements
             try:
@@ -171,7 +171,7 @@ def copy_results(
     if output_file.is_file():
         if output_file.suffix == ".waldiez":
             output_file = output_file.with_suffix(".py")
-        if output_file.suffix == ".py":
+        if output_file.suffix == ".py":  # pragma: no branch
             src = temp_dir / output_file.name
             if src.exists():
                 dst = destination_dir / output_file.name

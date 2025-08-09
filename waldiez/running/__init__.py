@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Running related functions."""
 
-from .base_runner import StopRunningException, WaldiezBaseRunner
+from .base_runner import WaldiezBaseRunner
+from .exceptions import StopRunningException
 from .standard_runner import WaldiezStandardRunner
 from .step_by_step_runner import WaldiezStepByStepRunner
 

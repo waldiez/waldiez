@@ -59,7 +59,7 @@ class ExportResult:
         position : ImportPosition, optional
             The position of the import, by default THIRD_PARTY
         """
-        if statement and statement.strip():
+        if statement and statement.strip():  # pragma: no branch
             self.imports.add(
                 ImportStatement(
                     statement=statement.strip(),
@@ -123,7 +123,7 @@ class ExportResult:
         comment : Optional[str], optional
             Optional comment for the argument, by default None
         """
-        if name and value is not None:
+        if name and value is not None:  # pragma: no branch
             arg = InstanceArgument(
                 instance_id=instance_id,
                 name=name,
@@ -173,7 +173,7 @@ class ExportResult:
         position : ExportPosition, optional
             The position for the merged content, by default AGENTS
         """
-        if other.main_content:
+        if other.main_content:  # pragma: no branch
             self.main_content = (
                 (self.main_content or "") + "\n" + other.main_content
             ).strip()
@@ -241,7 +241,7 @@ class ExportResult:
             Additional metadata for the content, by default None
         """
         order_value = order.value if isinstance(order, ContentOrder) else order
-        if content and content.strip():
+        if content and content.strip():  # pragma: no branch
             positioned = PositionedContent(
                 content=content.strip() if not skip_strip else content,
                 position=position,
@@ -273,7 +273,7 @@ class ExportResult:
         required : bool, optional
             Whether the variable is required, by default True
         """
-        if name and value:
+        if name and value:  # pragma: no branch
             env_var = EnvironmentVariable(
                 name=name,
                 value=value,

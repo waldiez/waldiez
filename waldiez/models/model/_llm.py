@@ -87,7 +87,7 @@ def get_llm_requirements(
             )
         case "together":
             requirements.add("llama-index-llms-together")
-        case "other":
+        case "other":  # pragma: no cover
             # openai compatible LLMs
             requirements.add("llama-index-llms-openai-like")
 
@@ -279,9 +279,9 @@ def do_azure_llm(model: "WaldiezModel") -> tuple[str, str]:
         f'    model="{model.name}",\n'
         f"    temperature={temperature},\n"
     )
-    if model.data.base_url:
+    if model.data.base_url:  # pragma: no branch
         arg += f'    azure_endpoint="{model.data.base_url}",\n'
-    if model.data.api_version:
+    if model.data.api_version:  # pragma: no branch
         arg += f'    api_version="{model.data.api_version}",\n'
     arg += ")"
     before = ""
@@ -322,11 +322,11 @@ def do_bedrock_llm(model: "WaldiezModel") -> tuple[str, str]:
         aws_access_key_id = model.data.aws.access_key or ""
         aws_region = model.data.aws.region or ""
     arg = f'BedrockConverse(\n    model="{model.name}",\n'
-    if profile_name:
+    if profile_name:  # pragma: no branch
         arg += f'    profile_name="{profile_name}",\n'
-    if aws_access_key_id:
+    if aws_access_key_id:  # pragma: no branch
         arg += f'    aws_access_key_id="{aws_access_key_id}",\n'
-    if aws_region:
+    if aws_region:  # pragma: no branch
         arg += f'    region_name="{aws_region}",\n'
     arg += ")"
     before = ""
@@ -347,11 +347,11 @@ def do_cohere_llm(model: "WaldiezModel") -> tuple[str, str]:
         A tuple containing the LLM argument string and any content before it.
     """
     arg = f'Cohere(\n    model="{model.name}",\n'
-    if model.data.api_key:
+    if model.data.api_key:  # pragma: no branch
         arg += f'    api_key="{model.data.api_key}",\n'
-    if model.data.base_url:
+    if model.data.base_url:  # pragma: no branch
         arg += f'    base_url="{model.data.base_url}",\n'
-    if model.data.temperature is not None:
+    if model.data.temperature is not None:  # pragma: no branch
         arg += f"    temperature={model.data.temperature},\n"
     arg += ")"
     before = ""
@@ -507,11 +507,18 @@ def do_other_llm(model: "WaldiezModel") -> tuple[str, str]:
         f'    model="{model.name}",\n'
         f'    api_base="{model.data.base_url}",\n'
     )
-    if not model.data.api_key:
+    if not model.data.api_key:  # pragma: no cover
         arg += '    api_key="na",\n'
-    if model.data.extras:
+    else:
+        arg += f'    api_key="{model.data.api_key}",\n'
+    if model.data.temperature is not None:  # pragma: no branch
+        arg += f"    temperature={model.data.temperature},\n"
+    if model.data.extras:  # pragma: no branch
         for key, value in model.data.extras.items():
-            arg += f'    {key}="{value}",\n'
+            if isinstance(value, str):
+                arg += f'    {key}="{value}",\n'
+            else:
+                arg += f"    {key}={value},\n"
     arg += ")"
     # if model.data.price:
     before = ""

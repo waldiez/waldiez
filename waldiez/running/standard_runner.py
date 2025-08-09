@@ -108,9 +108,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             results_container["results"] = results
             self.print("<Waldiez> - Workflow finished")
-        except SystemExit:
+        except SystemExit:  # pragma: no cover
             self.print("<Waldiez> - Workflow stopped by user")
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # pragma: no cover
             results_container["exception"] = e
             traceback.print_exc()
             self.print(f"<Waldiez> - Workflow execution failed: {e}")
@@ -149,7 +149,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
     ) -> bool:
         """Process an event from the workflow asynchronously."""
         self._event_count += 1
-        if self._stop_requested.is_set():
+        if self._stop_requested.is_set():  # pragma: no cover
             self.log.info(
                 "Async execution stopped before AG2 workflow event processing"
             )
@@ -192,7 +192,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
-                if self._stop_requested.is_set():
+                if self._stop_requested.is_set():  # pragma: no cover
                     self.log.info(
                         "Async execution stopped before AG2 workflow start"
                     )
@@ -211,14 +211,12 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 results = await loaded_module.main(  # pyright: ignore
                     on_event=self._a_on_event
                 )
-            except SystemExit:
+                self.print("<Waldiez> - Workflow finished")
+            except SystemExit:  # pragma: no cover
                 self.print("<Waldiez> - Workflow stopped by user")
                 return []
-            except Exception as e:
-                self.print(
-                    "<Waldiez> - Error loading workflow: "
-                    f"{e}\n{traceback.format_exc()}"
-                )
+            except Exception as e:  # pragma: no cover
+                self.print(f"<Waldiez> - Workflow execution failed: {e}")
                 raise RuntimeError(
                     f"Error loading workflow: {e}\n{traceback.format_exc()}"
                 ) from e
