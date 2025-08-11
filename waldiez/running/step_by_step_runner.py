@@ -72,6 +72,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
         self._break_on_events = break_on_events or []
         self._event_history: list[dict[str, Any]] = []
         self._current_event: Union["BaseEvent", "BaseMessage", None] = None
+        self._known_participants = self.waldiez.info.participants
+        self._last_sender: str | None = None
+        self._last_recipient: str | None = None
 
     @property
     def auto_continue(self) -> bool:
@@ -132,6 +135,10 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
             mode="json", exclude_none=True, fallback=str
         )
         event_info["count"] = self._event_count
+        self._last_sender = getattr(event, "sender", self._last_sender)
+        self._last_recipient = getattr(event, "recipient", self._last_recipient)
+        event_info["sender"] = self._last_sender
+        event_info["recipient"] = self._last_recipient
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
     def emit(self, message: WaldiezDebugMessage) -> None:
