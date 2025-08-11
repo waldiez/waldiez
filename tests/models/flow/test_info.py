@@ -14,6 +14,7 @@ from waldiez.models.flow.info import WaldiezAgentInfo, WaldiezFlowInfo
 def test_waldiez_agent_info_attributes() -> None:
     """Test WaldiezAgentInfo attributes."""
     agent_info = WaldiezAgentInfo(
+        id="agent007",
         name="Agent007",
         human_input_mode="ALWAYS",
         agent_type="user",

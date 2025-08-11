@@ -18,6 +18,8 @@ class WaldiezAgentInfo(WaldiezBase):
 
     Attributes
     ----------
+    id : str
+        The ID of the agent.
     name : str
         The name of the agent.
     human_input_mode : WaldiezAgentHumanInputMode
@@ -27,6 +29,7 @@ class WaldiezAgentInfo(WaldiezBase):
         The type of the agent (e.g., "user", "assistant").
     """
 
+    id: Annotated[str, Field(description="ID of the agent")]
     name: Annotated[str, Field(description="Name of the agent")]
     human_input_mode: Annotated[
         WaldiezAgentHumanInputMode,
@@ -77,6 +80,7 @@ class WaldiezFlowInfo(WaldiezBase):
         for agent in agents:
             participants.append(
                 WaldiezAgentInfo(
+                    id=agent.id,
                     name=agent_names.get(agent.id, agent.name),
                     human_input_mode=agent.data.human_input_mode,
                     agent_type=agent.agent_type,
