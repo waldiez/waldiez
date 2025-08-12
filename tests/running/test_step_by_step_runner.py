@@ -452,9 +452,7 @@ def test_run_handles_generic_exception(
     results = runner._run(tmp_path, tmp_path / "out.py", None, False, False)
     captured = capsys.readouterr()
     assert results == []
-    assert (
-        "<Waldiez> - Workflow execution failed: generic error" in captured.out
-    )
+    assert "Workflow execution failed: generic error" in captured.out
 
 
 @pytest.mark.asyncio
@@ -501,10 +499,7 @@ async def test_async_run_handles_generic_exception(
     )  # nosemgrep # nosec
     captured = capsys.readouterr()
     assert results == []
-    assert (
-        "<Waldiez> - Async workflow execution failed: generic async error"
-        in captured.out
-    )
+    assert "Workflow execution failed: generic async error" in captured.out
 
 
 def test_should_break_on_event_no_type_attribute(

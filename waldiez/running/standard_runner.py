@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
+# pylint: disable=duplicate-code
 """Run a waldiez flow.
 
 The flow is first converted to an autogen flow with agents, chats, and tools.
@@ -23,6 +24,14 @@ from .base_runner import WaldiezBaseRunner
 if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore
     from autogen.messages import BaseMessage  # type: ignore
+
+
+MESSAGES = {
+    "workflow_starting": "<Waldiez> - Starting workflow...",
+    "workflow_finished": "<Waldiez> - Workflow finished",
+    "workflow_stopped": "<Waldiez> - Workflow stopped by user",
+    "workflow_failed": "<Waldiez> - Workflow execution failed: {error}",
+}
 
 
 class WaldiezStandardRunner(WaldiezBaseRunner):
@@ -88,9 +97,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         try:
             loaded_module = self._load_module(output_file, temp_dir)
             if self._stop_requested.is_set():
-                self.log.info(
-                    "Async execution stopped before AG2 workflow start"
-                )
+                self.log.info("Execution stopped before AG2 workflow start")
                 return []
             if self.structured_io:
                 stream = StructuredIOStream(
@@ -101,19 +108,19 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             WaldiezBaseRunner._print = stream.print
             WaldiezBaseRunner._input = stream.input
             WaldiezBaseRunner._send = stream.send
-            self.print("<Waldiez> - Starting workflow...")
+            self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
             results = loaded_module.main(
                 on_event=self._on_event,
             )
             results_container["results"] = results
-            self.print("<Waldiez> - Workflow finished")
+            self.print(MESSAGES["workflow_finished"])
         except SystemExit:  # pragma: no cover
-            self.print("<Waldiez> - Workflow stopped by user")
+            self.print(MESSAGES["workflow_stopped"])
         except Exception as e:  # pragma: no cover
             results_container["exception"] = e
             traceback.print_exc()
-            self.print(f"<Waldiez> - Workflow execution failed: {e}")
+            self.print(MESSAGES["workflow_failed"].format(error=e))
 
         finally:
             results_container["completed"] = True
@@ -127,7 +134,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._event_count += 1
         if self._stop_requested.is_set():
             self.log.info(
-                "Async execution stopped before AG2 workflow event processing"
+                "Execution stopped before AG2 workflow event processing"
             )
             return False
         try:
@@ -151,7 +158,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._event_count += 1
         if self._stop_requested.is_set():  # pragma: no cover
             self.log.info(
-                "Async execution stopped before AG2 workflow event processing"
+                "Execution stopped before AG2 workflow event processing"
             )
             return False
         try:
@@ -194,7 +201,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():  # pragma: no cover
                     self.log.info(
-                        "Async execution stopped before AG2 workflow start"
+                        "Execution stopped before AG2 workflow start"
                     )
                     return []
                 if self.structured_io:
@@ -206,17 +213,17 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 WaldiezBaseRunner._print = stream.print
                 WaldiezBaseRunner._input = stream.input
                 WaldiezBaseRunner._send = stream.send
-                self.print("<Waldiez> - Starting workflow...")
+                self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
                 results = await loaded_module.main(  # pyright: ignore
                     on_event=self._a_on_event
                 )
-                self.print("<Waldiez> - Workflow finished")
+                self.print(MESSAGES["workflow_finished"])
             except SystemExit:  # pragma: no cover
-                self.print("<Waldiez> - Workflow stopped by user")
+                self.print(MESSAGES["workflow_stopped"])
                 return []
             except Exception as e:  # pragma: no cover
-                self.print(f"<Waldiez> - Workflow execution failed: {e}")
+                self.print(MESSAGES["workflow_failed"].format(error=e))
                 raise RuntimeError(
                     f"Error loading workflow: {e}\n{traceback.format_exc()}"
                 ) from e
@@ -231,12 +238,12 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             while not task.done():
                 if self._stop_requested.is_set():
                     task.cancel()
-                    self.log.info("Async execution stopped by user")
+                    self.log.info("Execution stopped by user")
                     break
                 await asyncio.sleep(0.1)
             # Return the task result when completed
             return await task
 
         except asyncio.CancelledError:
-            self.log.info("Async execution cancelled")
+            self.log.info("Execution cancelled")
             return []

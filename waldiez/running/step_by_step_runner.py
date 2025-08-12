@@ -3,6 +3,7 @@
 
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
 # pyright: reportUnknownArgumentType=false, reportOptionalMemberAccess=false
+# pylint: disable=duplicate-code
 
 """Step-by-step Waldiez runner with user interaction capabilities."""
 
@@ -39,6 +40,14 @@ if TYPE_CHECKING:
 DEBUG_INPUT_PROMPT = (
     "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
 )
+MESSAGES = {
+    "workflow_starting": "<Waldiez step-by-step> - Starting workflow...",
+    "workflow_finished": "<Waldiez step-by-step> - Workflow finished",
+    "workflow_stopped": "<Waldiez step-by-step> - Workflow stopped by user",
+    "workflow_failed": (
+        "<Waldiez step-by-step> - Workflow execution failed: {error}"
+    ),
+}
 
 
 # pylint: disable=too-many-instance-attributes
@@ -441,20 +450,19 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
             WaldiezBaseRunner._input = stream.input
             WaldiezBaseRunner._send = stream.send
 
-            self.print("<Waldiez> - Starting workflow...")
-            self.print("Step-by-step debugging is enabled. Type 'h' for help.")
+            self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
 
             results = loaded_module.main(on_event=self._on_event)
             results_container["results"] = results
-            self.print("<Waldiez> - Workflow finished")
+            self.print(MESSAGES["workflow_finished"])
 
         except Exception as e:
             if StopRunningException.reason in str(e):
                 raise StopRunningException(StopRunningException.reason) from e
             results_container["exception"] = e
             traceback.print_exc()
-            self.print(f"<Waldiez> - Workflow execution failed: {e}")
+            self.print(MESSAGES["workflow_failed"].format(error=e))
         finally:
             results_container["completed"] = True
 
@@ -568,20 +576,18 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
                 WaldiezBaseRunner._input = stream.input
                 WaldiezBaseRunner._send = stream.send
 
-                self.print("<Waldiez> - Starting async workflow...")
-                self.print(
-                    "Step-by-step debugging is enabled. Type 'h' for help."
-                )
+                self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
 
                 results = await loaded_module.main(on_event=self._a_on_event)
+                self.print(MESSAGES["workflow_finished"])
 
             except Exception as e:
                 if StopRunningException.reason in str(e):
                     raise StopRunningException(
                         StopRunningException.reason
                     ) from e
-                self.print(f"<Waldiez> - Async workflow execution failed: {e}")
+                self.print(MESSAGES["workflow_failed"].format(error=e))
                 traceback.print_exc()
                 return []
 
@@ -596,15 +602,13 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
             while not task.done():
                 if self._stop_requested.is_set():
                     task.cancel()
-                    self.log.info(
-                        "Async step-by-step execution stopped by user"
-                    )
+                    self.log.info("Step-by-step execution stopped by user")
                     break
                 await asyncio.sleep(0.1)
             return await task
 
         except asyncio.CancelledError:
-            self.log.info("Async step-by-step execution cancelled")
+            self.log.info("Step-by-step execution cancelled")
             return []
 
     async def _a_on_event(
