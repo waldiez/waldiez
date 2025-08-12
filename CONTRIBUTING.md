@@ -24,14 +24,14 @@ The Python backend is a package managed primarily using [Hatch](https://hatch.py
     ```
 
 2. Create the dev environment:
-    
+
     ```shell
     hatch env create
     hatch shell
     ```
 
 3. All optional dependencies are managed via extras (`dev`, `test`, `docs`, etc.), and available via:
-    
+
     ```shell
     hatch run pip list
     ```
@@ -47,14 +47,14 @@ The Python backend is a package managed primarily using [Hatch](https://hatch.py
     ```
 
 2. Create and activate an environment:
-    
+
     ```shell
     uv venv --python 3.12
     source .venv/bin/activate   # Windows: .venv\\Scripts\\activate
     ```
 
 3. Install extras:
-    
+
     ```shell
     uv pip install '.[dev,test,docs]'
     ```
@@ -66,14 +66,14 @@ The Python backend is a package managed primarily using [Hatch](https://hatch.py
 This project also supports traditional requirements-based setup:
 
 1. Create a virtualenv:
-    
+
     ```shell
     python -m venv .venv
     source .venv/bin/activate   # Windows: .venv\\Scripts\\activate
     ```
 
 2. Install dependencies:
-    
+
     ```shell
     pip install -r requirements/all.txt
     # or (to manually select what you need):

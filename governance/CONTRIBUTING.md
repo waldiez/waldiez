@@ -8,7 +8,7 @@ Each project may have its own specific guidelines for contributing. Please refer
 
 ## Code of Conduct
 
-We expect all contributors to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). Please read it carefully and ensure that your contributions align with our community values.
+We expect all contributors to adhere to our [Code of Conduct](https://github.com/waldiez/waldiez/blob/main/CODE_OF_CONDUCT.md). Please read it carefully and ensure that your contributions align with our community values.
 
 ## Reporting Issues
 
@@ -37,16 +37,16 @@ If you would like to contribute code changes, please follow these steps:
 
 ## Contributor License Agreement (CLA)
 
-By submitting code changes, you agree to the terms of our [Contributor License Agreement (CLA)](CLA.md). Please read the CLA carefully before submitting your changes. If you have any questions or concerns about the CLA, please contact us, and we will be happy to assist you.
+By submitting code changes, you agree to the terms of our [Contributor License Agreement (CLA)](https://github.com/waldiez/waldiez/blob/main/governance/CLA.md). Please read the CLA carefully before submitting your changes. If you have any questions or concerns about the CLA, please contact us, and we will be happy to assist you.
 
 ## Developer Certificate of Origin (DCO)
 
-By contributing to a project owned by Waldiez, you agree to the Developer Certificate of Origin ([DCO](DCO.md)). This document was created by the Linux Kernel community and is a simple statement that you, as a contributor, have the legal right to make the contribution.
+By contributing to a project owned by Waldiez, you agree to the Developer Certificate of Origin ([DCO](https://github.com/waldiez/waldiez/blob/main/governance/DCO.md)). This document was created by the Linux Kernel community and is a simple statement that you, as a contributor, have the legal right to make the contribution.
 
 ## Security Policy
 
-If you discover a security vulnerability in any of our projects, please report it to us immediately. Do not disclose the vulnerability publicly until we have had a chance to address it. For more information, please refer to our [Security Policy](SECURITY.md).
+If you discover a security vulnerability in any of our projects, please report it to us immediately. Do not disclose the vulnerability publicly until we have had a chance to address it. For more information, please refer to our [Security Policy](https://github.com/waldiez/waldiez/blob/main/SECURITY.md).
 
 ## License
 
-By contributing to Waldiez projects, you agree to the terms of our [License](LICENSE). Please read the license carefully before submitting your contributions. If you have any questions or concerns about the license, please contact us, and we will be happy to assist you.
+By contributing to Waldiez projects, you agree to the terms of our [License](https://github.com/waldiez/waldiez/blob/main/LICENSE). Please read the license carefully before submitting your contributions. If you have any questions or concerns about the license, please contact us, and we will be happy to assist you.
