@@ -239,9 +239,7 @@ class AsyncWebsocketsIOStream(IOStream):
         await self.websocket.send_message(prompt_dump)
         response = await self.websocket.receive_message(timeout=timeout)
 
-        # Handle empty response from timeout
         if not response:  # pragma: no cover
-            LOG.warning("Input request timed out after %s seconds", timeout)
             return ""
 
         if self.verbose:
