@@ -289,7 +289,6 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
                 return WaldiezDebugStepAction.RUN
             case "q":
                 self._stop_requested.set()
-                self._signal_completion()
                 return WaldiezDebugStepAction.QUIT
             case "i":
                 return WaldiezDebugStepAction.INFO
@@ -335,7 +334,6 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
                 return self._parse_user_action(user_input, input_id=input_id)
             except (KeyboardInterrupt, EOFError):
                 self._stop_requested.set()
-                self._signal_completion()
                 return WaldiezDebugStepAction.QUIT
 
     # pylint: disable=too-many-return-statements
@@ -434,7 +432,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
         try:
             loaded_module = self._load_module(output_file, temp_dir)
             if self._stop_requested.is_set():  # pragma: no cover
-                self.log.info(
+                self.log.debug(
                     "Step-by-step execution stopped before workflow start"
                 )
                 return []
@@ -492,7 +490,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
         self._current_event = event
 
         if self._stop_requested.is_set():
-            self.log.info(
+            self.log.debug(
                 "Step-by-step execution stopped before event processing"
             )
             return False
@@ -527,14 +525,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
                     f"{e}\n{traceback.format_exc()}"
                 ) from e
             raise StopRunningException(StopRunningException.reason) from e
-
-        if hasattr(event, "type") and event.type == "run_completion":
-            self._signal_completion()
-
-        if self._stop_requested.is_set():  # pragma: no cover
-            return False
-
-        return not self._execution_complete_event.is_set()
+        return not self._stop_requested.is_set()
 
     # pylint: disable=too-complex
     async def _a_run(
@@ -560,7 +551,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():  # pragma: no cover
-                    self.log.info(
+                    self.log.debug(
                         "step-by-step execution stopped before workflow start"
                     )
                     return []
@@ -602,13 +593,13 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
             while not task.done():
                 if self._stop_requested.is_set():
                     task.cancel()
-                    self.log.info("Step-by-step execution stopped by user")
+                    self.log.debug("Step-by-step execution stopped by user")
                     break
                 await asyncio.sleep(0.1)
             return await task
 
         except asyncio.CancelledError:
-            self.log.info("Step-by-step execution cancelled")
+            self.log.debug("Step-by-step execution cancelled")
             return []
 
     async def _a_on_event(
@@ -637,7 +628,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
         self._current_event = event
 
         if self._stop_requested.is_set():
-            self.log.info(
+            self.log.debug(
                 "Async step-by-step execution stopped before event processing"
             )
             return False
@@ -674,13 +665,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner):
                     f"{e}\n{traceback.format_exc()}"
                 ) from e
             raise StopRunningException(StopRunningException.reason) from e
-
-        if hasattr(event, "type") and event.type == "run_completion":
-            self._signal_completion()
-
-        if self._stop_requested.is_set():  # pragma: no cover
-            return False
-        return not self._execution_complete_event.is_set()
+        return not self._stop_requested.is_set()
 
     def get_execution_stats(self) -> dict[str, Any]:
         """Get execution statistics for step-by-step runner.

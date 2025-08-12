@@ -319,7 +319,7 @@ def test_context_manager_stop_requested(
     runner._running = True
     with runner:
         pass
-    assert not runner._stop_requested.is_set()
+    assert not runner.is_stop_requested()
 
     runner._running = True
     with pytest.raises(StopRunningException):
@@ -383,3 +383,49 @@ async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
     WaldiezBaseRunner._input = async_input
     val = await WaldiezBaseRunner.a_get_user_input("Prompt")
     assert val == "async_input"
+
+
+def test_stop_method_sets_flags() -> None:
+    """Test if stop() method sets the correct flags."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=False),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Initially, stop should not be requested
+    assert not runner.is_stop_requested()
+    assert not runner._stop_requested.is_set()
+
+    # Call stop
+    runner.stop()
+
+    # Now flags should be set
+    assert runner.is_stop_requested()
+    assert runner._stop_requested.is_set()
+
+
+def test_stop_method_with_running_workflow() -> None:
+    """Test stop() method behavior when workflow is running."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=False),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Simulate a running workflow
+    WaldiezBaseRunner._running = True
+    assert runner.is_running()
+
+    # Call stop
+    runner.stop()
+
+    # Stop flags should be set even when running
+    assert runner.is_stop_requested()
+    assert runner._stop_requested.is_set()
+
+    # Clean up
+    WaldiezBaseRunner._running = False
+    assert not runner.is_running()

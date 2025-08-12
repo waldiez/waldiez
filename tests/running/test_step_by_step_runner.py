@@ -38,7 +38,6 @@ def runner_fixture() -> WaldiezStepByStepRunner:
     waldiez.info = WaldiezFlowInfo(participants=[])
     runner = WaldiezStepByStepRunner(waldiez=waldiez)
     runner._stop_requested.clear()
-    runner._execution_complete_event.clear()
     return runner
 
 
@@ -307,11 +306,9 @@ def test_get_user_action_handles_keyboard_interrupt(
         f"{BASE_RUNNER}.get_user_input",
         side_effect=KeyboardInterrupt,
     ):
-        with patch.object(runner, "_signal_completion") as mock_signal:
-            action = runner._get_user_action()
-            assert runner._stop_requested.is_set()
-            mock_signal.assert_called_once()
-            assert action == WaldiezDebugStepAction.QUIT
+        action = runner._get_user_action()
+        assert runner._stop_requested.is_set()
+        assert action == WaldiezDebugStepAction.QUIT
 
 
 def test_get_user_action_handles_eof_error(
@@ -322,11 +319,9 @@ def test_get_user_action_handles_eof_error(
         f"{BASE_RUNNER}.get_user_input",
         side_effect=EOFError,
     ):
-        with patch.object(runner, "_signal_completion") as mock_signal:
-            action = runner._get_user_action()
-            assert runner._stop_requested.is_set()
-            mock_signal.assert_called_once()
-            assert action == WaldiezDebugStepAction.QUIT
+        action = runner._get_user_action()
+        assert runner._stop_requested.is_set()
+        assert action == WaldiezDebugStepAction.QUIT
 
 
 @pytest.mark.asyncio
@@ -674,34 +669,6 @@ async def test_async_on_event_returns_false_if_stop_requested(
     assert result is False
 
 
-def test_on_event_signals_completion_on_run_completion(
-    runner: WaldiezStepByStepRunner,
-    run_completion_event: RunCompletionEvent,
-) -> None:
-    """Test that _on_event signals completion on run_completion."""
-    runner._signal_completion = MagicMock()  # type: ignore[method-assign]
-    runner.set_auto_continue(True)
-
-    # Call _on_event with the event
-    runner._on_event(run_completion_event)
-
-    runner._signal_completion.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_async_on_event_signals_completion_on_run_completion(
-    runner: WaldiezStepByStepRunner,
-    run_completion_event: RunCompletionEvent,
-) -> None:
-    """Test that async _a_on_event signals completion on run_completion."""
-    runner._signal_completion = MagicMock()  # type: ignore[method-assign]
-    runner.set_auto_continue(True)
-
-    await runner._a_on_event(run_completion_event)
-
-    runner._signal_completion.assert_called_once()
-
-
 def test_parse_user_action_cases(runner: WaldiezStepByStepRunner) -> None:
     """Test _parse_user_action method."""
     # "s" returns STEP
@@ -718,13 +685,11 @@ def test_parse_user_action_cases(runner: WaldiezStepByStepRunner) -> None:
     assert result == WaldiezDebugStepAction.RUN
     assert runner._step_mode is False
 
-    # "q" sets stop requested and calls _signal_completion, returns QUIT
+    # "q" sets stop requested, returns QUIT
     runner._stop_requested.clear()
-    runner._signal_completion = MagicMock()  # type: ignore[method-assign]
     result = runner._parse_user_action("q", "id")
     assert result == WaldiezDebugStepAction.QUIT
     assert runner._stop_requested.is_set()
-    runner._signal_completion.assert_called_once()
 
     # "i" returns INFO
     assert runner._parse_user_action("i", "id") == WaldiezDebugStepAction.INFO

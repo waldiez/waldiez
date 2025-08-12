@@ -97,7 +97,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         try:
             loaded_module = self._load_module(output_file, temp_dir)
             if self._stop_requested.is_set():
-                self.log.info("Execution stopped before AG2 workflow start")
+                self.log.debug(
+                    "Execution stopped before AG2 workflow start (sync)"
+                )
                 return []
             if self.structured_io:
                 stream = StructuredIOStream(
@@ -116,8 +118,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             results_container["results"] = results
             self.print(MESSAGES["workflow_finished"])
         except SystemExit:  # pragma: no cover
+            self.log.debug("Execution stopped by user (sync)")
             self.print(MESSAGES["workflow_stopped"])
-        except Exception as e:  # pragma: no cover
+        except BaseException as e:  # pragma: no cover
             results_container["exception"] = e
             traceback.print_exc()
             self.print(MESSAGES["workflow_failed"].format(error=e))
@@ -133,22 +136,24 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         """Process an event from the workflow."""
         self._event_count += 1
         if self._stop_requested.is_set():
-            self.log.info(
-                "Execution stopped before AG2 workflow event processing"
+            self.log.debug(
+                "Execution stopped before AG2 workflow event processing (sync)"
             )
             return False
         try:
             WaldiezBaseRunner.process_event(event)
             self._processed_events += 1
+        except SystemExit:  # pragma: no cover
+            self.log.debug("Execution stopped by user (sync)")
+            return False
         except Exception as e:
+            if self._stop_requested.is_set():
+                self.log.debug("Exception during stop, returning False")
+                return False
             raise RuntimeError(
                 f"Error processing event {event}: {e}\n{traceback.format_exc()}"
             ) from e
-        if hasattr(event, "type") and event.type == "run_completion":
-            self._signal_completion()
-        if self._stop_requested.is_set():
-            return False
-        return not self._execution_complete_event.is_set()
+        return not self._stop_requested.is_set()
 
     async def _a_on_event(
         self,
@@ -157,22 +162,24 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         """Process an event from the workflow asynchronously."""
         self._event_count += 1
         if self._stop_requested.is_set():  # pragma: no cover
-            self.log.info(
-                "Execution stopped before AG2 workflow event processing"
+            self.log.debug(
+                "Execution stopped before AG2 workflow event processing (async)"
             )
             return False
         try:
             await WaldiezBaseRunner.a_process_event(event)
             self._processed_events += 1
+        except SystemExit:  # pragma: no cover
+            self.log.debug("Execution stopped by user (async)")
+            return False
         except Exception as e:
+            if self._stop_requested.is_set():
+                self.log.debug("Exception during stop, returning False")
+                return False
             raise RuntimeError(
                 f"Error processing event {event}: {e}\n{traceback.format_exc()}"
             ) from e
-        if hasattr(event, "type") and event.type == "run_completion":
-            self._signal_completion()
-        if self._stop_requested.is_set():
-            return False
-        return not self._execution_complete_event.is_set()
+        return not self._stop_requested.is_set()
 
     # pylint: disable=too-complex
     async def _a_run(
@@ -200,8 +207,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():  # pragma: no cover
-                    self.log.info(
-                        "Execution stopped before AG2 workflow start"
+                    self.log.debug(
+                        "Execution stopped before AG2 "
+                        "workflow event processing (async)"
                     )
                     return []
                 if self.structured_io:
@@ -220,6 +228,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 )
                 self.print(MESSAGES["workflow_finished"])
             except SystemExit:  # pragma: no cover
+                self.log.debug("Execution stopped by user (async)")
                 self.print(MESSAGES["workflow_stopped"])
                 return []
             except Exception as e:  # pragma: no cover
@@ -238,12 +247,12 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             while not task.done():
                 if self._stop_requested.is_set():
                     task.cancel()
-                    self.log.info("Execution stopped by user")
+                    self.log.debug("Execution stopped by user (async)")
                     break
                 await asyncio.sleep(0.1)
             # Return the task result when completed
             return await task
 
         except asyncio.CancelledError:
-            self.log.info("Execution cancelled")
+            self.log.debug("Execution cancelled (async)")
             return []

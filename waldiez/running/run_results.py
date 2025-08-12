@@ -10,5 +10,5 @@ class WaldiezRunResults(TypedDict):
     """Results of the Waldiez run."""
 
     results: list[dict[str, Any]]
-    exception: Exception | None
+    exception: BaseException | None
     completed: bool

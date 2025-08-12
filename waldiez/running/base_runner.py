@@ -85,7 +85,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         dot_env: str | Path | None = None,
     ) -> None:
         """Initialize the Waldiez manager."""
-        self._waldiez = waldiez
         WaldiezBaseRunner._running = False
         WaldiezBaseRunner._structured_io = structured_io
         WaldiezBaseRunner._output_path = output_path
@@ -96,13 +95,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         WaldiezBaseRunner._print = print
         WaldiezBaseRunner._send = print
         WaldiezBaseRunner._is_async = waldiez.is_async
+        self._waldiez = waldiez
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
         self._logger = get_logger()
         self._last_results: list[dict[str, Any]] = []
         self._last_exception: Exception | None = None
-        self._execution_complete_event = threading.Event()
         self._running_lock = threading.Lock()
         self._loaded_module: ModuleType | None = None
 
@@ -206,13 +205,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             return input_function(prompt)  # type: ignore
 
     # Helper for subclasses
-    def _signal_completion(self) -> None:
-        """Signal that execution has completed."""
-        self._execution_complete_event.set()
+    # def _signal_completion(self) -> None:
+    #     """Signal that execution has completed."""
+    #     self._execution_complete_event.set()
 
-    def _reset_completion_state(self) -> None:
-        """Reset completion state for new execution."""
-        self._execution_complete_event.clear()
+    # def _reset_completion_state(self) -> None:
+    #     """Reset completion state for new execution."""
+    #     self._execution_complete_event.clear()
 
     def _load_module(self, output_file: Path, temp_dir: Path) -> ModuleType:
         """Load the module from the waldiez file."""
@@ -321,14 +320,18 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
 
         # Reset stop flag for next run
         self._stop_requested.clear()
-        after_run(
-            temp_dir=temp_dir,
-            output_file=output_file,
-            flow_name=self._waldiez.name,
-            uploads_root=uploads_root,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
+        # pylint: disable=broad-exception-caught
+        try:
+            after_run(
+                temp_dir=temp_dir,
+                output_file=output_file,
+                flow_name=self._waldiez.name,
+                uploads_root=uploads_root,
+                skip_mmd=skip_mmd,
+                skip_timeline=skip_timeline,
+            )
+        except BaseException as exc:  # pragma: no cover
+            self.log.warning("Error occurred during after_run: %s", exc)
         self.log.info("Cleanup completed")
 
     async def _a_after_run(
@@ -583,6 +586,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
             raise StopRunningException(StopRunningException.reason) from exc
+        except BaseException as exc:  # pylint: disable=broad-exception-caught
+            self.log.error("Error occurred while running workflow: %s", exc)
+            results = [{"error": str(exc)}]
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
@@ -676,6 +682,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
             raise StopRunningException(StopRunningException.reason) from exc
+        except BaseException as exc:  # pylint: disable=broad-exception-caught
+            results = [{"error": str(exc)}]
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
@@ -863,6 +871,27 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             dot_env=dot_env,
         )
 
+    def stop(self) -> None:
+        """Stop the workflow execution.
+
+        This method sets the stop flag that will be checked by the event
+        handlers and other parts of the workflow execution to gracefully
+        terminate the workflow execution.
+        Note: Stopping will occur at the "next" AutoGen event, not immediately.
+        """
+        self.log.info("Stop requested - setting stop flag")
+        self._stop_requested.set()
+
+    def is_stop_requested(self) -> bool:
+        """Check if a stop has been requested.
+
+        Returns
+        -------
+        bool
+            True if stop has been requested, False otherwise.
+        """
+        return self._stop_requested.is_set()
+
     def __enter__(self) -> Self:
         """Enter the context manager."""
         return self
@@ -880,7 +909,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         """Exit the context manager."""
         if self.is_running():
             self._stop_requested.set()
-            self._signal_completion()
 
     async def __aexit__(
         self,
@@ -891,4 +919,3 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         """Exit the context manager asynchronously."""
         if self.is_running():
             self._stop_requested.set()
-            self._signal_completion()

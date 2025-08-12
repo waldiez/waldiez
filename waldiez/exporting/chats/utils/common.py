@@ -81,7 +81,8 @@ def get_event_handler_string(
             f"{tab}        async for event in result.events:\n"
             f"{tab}            try:\n"
             f"{tab}                should_continue = await on_event(event)\n"
-            f"{tab}            except Exception as e:\n"
+            f"{tab}            except BaseException as e:\n"
+            f"{tab}                print(f'Error in event handler: {{e}}')\n"
             f"{tab}                raise SystemExit(\n"
             f"{tab}                    'Error in event handler: ' + str(e)\n"
             f"{tab}                ) from e\n"
@@ -91,16 +92,17 @@ def get_event_handler_string(
             f"{tab}        for event in result.events:\n"
             f"{tab}            try:\n"
             f"{tab}                should_continue = on_event(event)\n"
-            f"{tab}            except Exception as e:\n"
+            f"{tab}            except BaseException as e:\n"
+            f"{tab}                print(f'Error in event handler: {{e}}')\n"
             f"{tab}                raise SystemExit(\n"
             f"{tab}                    'Error in event handler: ' + str(e)\n"
             f"{tab}                ) from e\n"
         )
     content += (
-        f"{tab}            if event.type == 'run_completion':\n"
-        f"{tab}                should_continue = False\n"
-        f"{tab}            if not should_continue:\n"
+        f'{tab}            if event.type == "run_completion":\n'
         f"{tab}                break\n"
+        f"{tab}            if not should_continue:\n"
+        f"{tab}                raise SystemExit('Event handler stopped processing')\n"
     )
     content += get_result_dicts_string(tab, is_async)
     content += (
