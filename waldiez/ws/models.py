@@ -587,12 +587,14 @@ ServerMessage = Annotated[
 class _ServerMessageWrapper(BaseModel):
     """Wrapper for server messages to handle discriminators."""
 
+    # noinspection PyTypeHints
     message: ServerMessage
 
 
 class _ClientMessageWrapper(BaseModel):
     """Wrapper for client messages to handle discriminators."""
 
+    # noinspection PyTypeHints
     message: ClientMessage
 
 
@@ -608,6 +610,7 @@ WaldiezWsMessage = Annotated[
 # ========================================
 
 
+# noinspection PyTypeHints,DuplicatedCode
 def parse_client_message(data: str | dict[str, Any]) -> ClientMessage:
     """Parse client message from JSON string or dict.
 
@@ -637,6 +640,7 @@ def parse_client_message(data: str | dict[str, Any]) -> ClientMessage:
         raise ValueError(f"Invalid client message: {e}") from e
 
 
+# noinspection PyTypeHints,DuplicatedCode
 def parse_server_message(data: str | dict[str, Any]) -> ServerMessage:
     """Parse server message from JSON string or dict.
 
@@ -834,6 +838,7 @@ class SessionState(BaseModel):
         }
 
 
+# noinspection TryExceptPass,PyBroadException
 class WorkflowSession:
     """Enhanced session wrapper with runtime management capabilities."""
 

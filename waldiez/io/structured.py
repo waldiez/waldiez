@@ -205,6 +205,7 @@ class StructuredIOStream(IOStream):
         }
         print(json.dumps(timeout_payload), flush=True, file=sys.stderr)
 
+    # noinspection PyMethodMayBeStatic
     def _send_error_message(self, request_id: str, error_message: str) -> None:
         error_payload = {
             "id": gen_id(),

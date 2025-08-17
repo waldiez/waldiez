@@ -34,6 +34,7 @@ MESSAGES = {
 }
 
 
+# noinspection StrFormat
 class WaldiezStandardRunner(WaldiezBaseRunner):
     """Run a waldiez flow in a standard way."""
 
@@ -101,6 +102,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     "Execution stopped before AG2 workflow start (sync)"
                 )
                 return []
+            # noinspection DuplicatedCode
             if self.structured_io:
                 stream = StructuredIOStream(
                     uploads_root=uploads_root, is_async=False
@@ -232,7 +234,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 self.print(MESSAGES["workflow_stopped"])
                 return []
             except Exception as e:  # pragma: no cover
-                self.print(MESSAGES["workflow_failed"].format(error=e))
+                self.print(MESSAGES["workflow_failed"].format(error=str(e)))
                 raise RuntimeError(
                     f"Error loading workflow: {e}\n{traceback.format_exc()}"
                 ) from e

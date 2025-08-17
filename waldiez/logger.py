@@ -222,6 +222,7 @@ class WaldiezLogger(logging.Logger):
         """
         level_str = self._get_level_name(level)
         if self._should_log(level_str):
+            # noinspection PyArgumentList
             formatted_message_content = self._format_args(msg, *args, **kwargs)
             formatted_message = self._format_message(
                 formatted_message_content, level_str

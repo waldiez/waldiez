@@ -415,6 +415,7 @@ class ClientManager:
                 session_id, WorkflowStatus.RUNNING
             )
             # Run in thread to avoid blocking loop
+            # noinspection PyTypeChecker
             await asyncio.to_thread(runner.run, mode=runner.mode)
             # If the runner emitted a completion dict,
             #  _handle_runner_output will forward it.
@@ -630,10 +631,8 @@ class ClientManager:
 
         Parameters
         ----------
-        session_id : str
-            The ID of the session.
-        runner : WaldiezSubprocessRunner
-            The runner instance to execute.
+        data : dict[str, Any[
+            The output dict from the runner.
 
         Interpret dicts from BaseSubprocessRunner.create_* and parse_output().
         We support:
@@ -719,21 +718,20 @@ class ClientManager:
                 )
             )
 
+    # pylint: disable=line-too-long
     async def _handle_runner_debug(
         self, session_id: str, msg_type: str, data: dict[str, Any]
     ) -> None:
         """Handle a debug message from the runner."""
-        kind: Literal["stats", "help", "error", "info"] = (
-            msg_type.replace("debug_", "", 1) or "info"  # type: ignore
-        )
+        # noinspection PyTypeChecker
+        kind = msg_type.replace("debug_", "", 1) or "info"
+        debug_type = (
+            kind if kind in {"stats", "help", "error", "info"} else "info"
+        )  # noqa: E501
         await self.send_message(
             StepDebugNotification(
                 session_id=session_id,
-                debug_type=(
-                    kind
-                    if kind in {"stats", "help", "error", "info"}
-                    else "info"
-                ),
+                debug_type=debug_type,  # type: ignore
                 data={
                     k: v
                     for k, v in data.items()
@@ -779,7 +777,9 @@ class ClientManager:
             else "output"
         )
         content = data.get("content", "")
+        # noinspection PyUnreachableCode
         if not isinstance(content, str):
+            # noinspection PyBroadException
             try:
                 content = json.dumps(content, default=str)
             except Exception:  # pragma: no cover
@@ -825,6 +825,7 @@ class ClientManager:
                     and payload[0] in ("{", "[")
                     and payload[-1] in ("}", "]")
                 ):
+                    # noinspection TryExceptPass,PyBroadException
                     try:
                         json.loads(payload)
                     except Exception:

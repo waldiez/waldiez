@@ -69,7 +69,9 @@ class SessionStats(BaseModel):
             mode_count = self.sessions_by_mode.get(mode_key, 0)
             self.sessions_by_mode[mode_key] = mode_count + 1
             status_key = state.status.value
+            # noinspection PyTypeChecker
             status_count = self.sessions_by_status.get(status_key, 0)
+            # noinspection PyTypeChecker
             self.sessions_by_status[status_key] = status_count + 1
             if state.is_completed:
                 total_duration += state.duration

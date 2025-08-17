@@ -150,9 +150,10 @@ class HealthChecker:
             status = "unhealthy"
 
         # Get memory usage (optional)
-        memory_usage = None
+        memory_usage: float | None = None
         try:
             # pylint: disable=import-outside-toplevel
+            # noinspection PyUnusedImports
             import psutil
 
             process = psutil.Process()
@@ -182,6 +183,7 @@ class HealthChecker:
         return self.last_health
 
 
+# noinspection PyBroadException
 class ConnectionManager:
     """Manages WebSocket connections and provides utilities."""
 

@@ -7,6 +7,8 @@
 
 import asyncio
 import logging
+
+# noinspection PyProtectedMember
 from asyncio.subprocess import Process as AsyncProcess
 from pathlib import Path
 from typing import Any, Callable, Coroutine, Literal, Optional

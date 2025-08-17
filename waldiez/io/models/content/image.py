@@ -61,6 +61,7 @@ class ImageUrlMediaContent(BaseModel):
     type: Literal["image_url"] = "image_url"
     image_url: ImageContent
 
+    # noinspection DuplicatedCode
     def to_string(
         self,
         uploads_root: Path | None,

@@ -262,6 +262,7 @@ class ErrorHandler:
         self.logger = logger or logging.getLogger(__name__)
         self.error_counts: dict[str, int] = {}
 
+    # noinspection PyUnusedLocal
     def handle_error(
         self,
         error: Exception,

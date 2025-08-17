@@ -11,11 +11,12 @@ import subprocess
 import threading
 import time
 from pathlib import Path
-from typing import Any, Callable, Literal, Optional
+from typing import Any, Callable, Literal
 
 from .__base__ import BaseSubprocessRunner
 
 
+# noinspection PyUnusedLocal
 class SyncSubprocessRunner(BaseSubprocessRunner):
     """Sync subprocess runner for Waldiez workflows using threading."""
 
@@ -52,9 +53,10 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
             input_timeout=input_timeout,
             **kwargs,
         )
+        self.waiting_for_input = False
         self.on_output = on_output
         self.on_input_request = on_input_request
-        self.process: Optional[subprocess.Popen[Any]] = None
+        self.process: subprocess.Popen[Any] | None = None
         self.input_queue: queue.Queue[str] = queue.Queue()
         self.output_queue: queue.Queue[dict[str, Any]] = queue.Queue()
         self._stop_event = threading.Event()
@@ -348,6 +350,7 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                         f"Thread {thread.name} did not stop gracefully"
                     )
 
+    # noinspection TryExceptPass,PyBroadException
     def _cleanup_process(self) -> None:
         """Cleanup process resources."""
         if self.process:
@@ -414,24 +417,24 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
         """
         return self.process is not None and self.process.poll() is None
 
-    def get_exit_code(self) -> Optional[int]:
+    def get_exit_code(self) -> int | None:
         """Get the exit code of the subprocess.
 
         Returns
         -------
-        Optional[int]
+        int | None
             Exit code if process has finished, None if still running
         """
         if self.process is None:
             return None
         return self.process.poll()
 
-    def wait_for_completion(self, timeout: Optional[float] = None) -> int:
+    def wait_for_completion(self, timeout: float | None = None) -> int:
         """Wait for subprocess to complete.
 
         Parameters
         ----------
-        timeout : Optional[float]
+        timeout : float | None
             Maximum time to wait in seconds. None means wait indefinitely.
 
         Returns

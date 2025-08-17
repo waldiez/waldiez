@@ -158,6 +158,7 @@ WaldiezDebugMessage = Annotated[
 class WaldiezDebugMessageWrapper(BaseModel):
     """Wrapper for debug messages."""
 
+    # noinspection PyTypeHints
     message: WaldiezDebugMessage
 
 

@@ -111,8 +111,6 @@ class WaldiezWsServer:
         ----------
         websocket : websockets.WebSocketServerProtocol
             WebSocket connection
-        path : str
-            WebSocket path
         """
         client_id = str(uuid.uuid4())
 
@@ -156,6 +154,7 @@ class WaldiezWsServer:
                     if isinstance(raw_message, bytes):
                         message_str = raw_message.decode("utf-8")
                     else:
+                        # noinspection PyUnreachableCode
                         message_str = (
                             raw_message
                             if isinstance(raw_message, str)
@@ -416,6 +415,7 @@ async def run_server(
     # Register signal handlers
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGTERM, signal.SIGINT):
+        # noinspection PyTypeChecker
         loop.add_signal_handler(sig, signal_handler)
 
     # Set up auto-reload if requested
@@ -452,7 +452,7 @@ async def run_server(
             file_watcher.start()
             logger.info(
                 "Auto-reload enabled for directories: %s",
-                {str(dir) for dir in watch_dirs},
+                {str(dir_) for dir_ in watch_dirs},
             )
 
         except ImportError as e:

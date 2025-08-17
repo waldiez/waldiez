@@ -13,6 +13,7 @@ from .models import ExecutionMode, SessionState, WorkflowSession, WorkflowStatus
 from .session_stats import SessionStats
 
 
+# noinspection TryExceptPass,PyBroadException
 class SessionManager:
     """Manage workflow sessions across WebSocket clients."""
 

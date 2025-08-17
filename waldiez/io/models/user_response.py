@@ -209,6 +209,7 @@ class UserResponse(StructuredBase):
         # we have probably returned sth till here
         if isinstance(self.data, str):  # pyright: ignore # pragma: no cover
             return self.data
+        # noinspection PyUnreachableCode
         return (  # pragma: no cover
             json.dumps(self.data)
             if hasattr(self.data, "__dict__")

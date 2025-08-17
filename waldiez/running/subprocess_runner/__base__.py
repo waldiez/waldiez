@@ -145,6 +145,7 @@ class BaseSubprocessRunner:
             stream=stream, content=line
         )  # pragma: no cover
 
+    # noinspection PyMethodMayBeStatic
     def decode_subprocess_line(self, line: Any) -> str:
         """Safely decode subprocess output line.
 
@@ -190,6 +191,7 @@ class BaseSubprocessRunner:
         else:
             self.logger.error(f"Subprocess failed (exit code: {exit_code})")
 
+    # noinspection PyMethodMayBeStatic
     def create_input_response(
         self,
         response_type: str,

@@ -205,6 +205,7 @@ class ReloadHandler(FileSystemEventHandler):
             logger.info("Restarting with: %s", " ".join(args))
 
             # Use os.execv to replace current process
+            # noinspection SpawnShellInjection
             os.execv(python_path, args)  # nosemgrep # nosec
 
         except Exception as e:

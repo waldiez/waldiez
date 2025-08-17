@@ -22,6 +22,7 @@ from .models import Waldiez
 from .utils import get_waldiez_version
 
 if TYPE_CHECKING:
+    # noinspection PyUnusedImports
     from waldiez.running import WaldiezBaseRunner
 
 load_dotenv()

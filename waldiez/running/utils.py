@@ -299,6 +299,7 @@ def to_sys_stderr(msg: str) -> None:
         The message to write to stderr.
     """
     # pylint: disable=broad-exception-caught
+    # noinspection TryExceptPass,PyBroadException
     try:
         if hasattr(sys.stderr, "buffer"):
             sys.stderr.buffer.write(msg.encode("utf-8", errors="replace"))
@@ -343,6 +344,7 @@ def get_what_to_print(*args: Any, **kwargs: Any) -> tuple[str, bool]:
 
     # Handle flush parameter
     flush = kwargs.get("flush", False)
+    # noinspection PyUnreachableCode
     if not isinstance(flush, bool):  # pragma: no cover
         flush = False
 

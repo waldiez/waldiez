@@ -55,6 +55,7 @@ MESSAGES = {
 
 
 # pylint: disable=too-many-instance-attributes
+# noinspection DuplicatedCode,StrFormat
 class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     """Step-by-step runner with user interaction and debugging capabilities."""
 
@@ -157,6 +158,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         event_info["recipient"] = self._last_recipient
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
+    # noinspection PyTypeHints
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message.
 
@@ -449,6 +451,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 )
                 return []
 
+            # noinspection DuplicatedCode
             if self.structured_io:
                 stream = StructuredIOStream(
                     uploads_root=uploads_root, is_async=False
@@ -472,7 +475,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 raise StopRunningException(StopRunningException.reason) from e
             results_container["exception"] = e
             traceback.print_exc()
-            self.print(MESSAGES["workflow_failed"].format(error=e))
+            # noinspection StrFormat
+            self.print(MESSAGES["workflow_failed"].format(error=str(e)))
         finally:
             results_container["completed"] = True
 
@@ -592,7 +596,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(
                         StopRunningException.reason
                     ) from e
-                self.print(MESSAGES["workflow_failed"].format(error=e))
+                self.print(MESSAGES["workflow_failed"].format(error=str(e)))
                 traceback.print_exc()
                 return []
 

@@ -102,6 +102,7 @@ class WebSocketsAdapter:
             )
             if isinstance(response, bytes):
                 return response.decode("utf-8")
+            # noinspection PyUnreachableCode
             return response if isinstance(response, str) else str(response)
         except asyncio.TimeoutError:
             return ""

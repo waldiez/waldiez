@@ -170,7 +170,7 @@ def try_parse_maybe_serialized(value: str) -> Any:
     """
     for parser in (json.loads, ast.literal_eval):
         # pylint: disable=broad-exception-caught, too-many-try-statements
-        # noinspection PyBroadException
+        # noinspection PyBroadException,TryExceptPass
         try:
             parsed: dict[str, Any] | list[Any] | str = parser(value)
             # Normalize: if it's a single-item list of a string
