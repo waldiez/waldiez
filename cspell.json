@@ -18,7 +18,6 @@
         "arrowclosed",
         "ASGI",
         "asgiref",
-        "asyncer",
         "asyncio",
         "autobuild",
         "autoflake",
