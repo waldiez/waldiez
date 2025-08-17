@@ -4,13 +4,16 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 
+type MessageHandler = (event: MessageEvent) => void;
+
 export const useWebsocket = (props: {
     wsUrl: string;
     onError?: (error: any) => void;
-    onWsMessage: (event: MessageEvent) => void;
+    onWsMessage?: MessageHandler;
+    autoPingMs?: number; // optional
 }) => {
-    const { wsUrl, onWsMessage, onError } = props;
-    // Track the WebSocket reference
+    const { wsUrl, onWsMessage, onError, autoPingMs } = props;
+
     const wsRef = useRef<WebSocket | undefined>(undefined);
     // Track the reconnect timeout
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -18,9 +21,7 @@ export const useWebsocket = (props: {
     const reconnectAttemptsRef = useRef(0);
     // Track if the component is mounted
     const mountedRef = useRef(true);
-    // Track if the effect has executed at least once
-    const effectExecutedRef = useRef(false);
-    // Track URL changes
+    const effectRanRef = useRef(false);
     const prevUrlRef = useRef(wsUrl);
     // StrictMode detection flag
     const strictModeReconnectRef = useRef(false);
@@ -28,206 +29,159 @@ export const useWebsocket = (props: {
     const [connected, setConnected] = useState(false);
     const maxReconnectAttempts = 5;
 
-    const getReconnectDelay = () => {
-        return Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
-    };
+    const handlerRef = useRef<MessageHandler | undefined>(onWsMessage);
+    const setMessageHandler = useCallback((fn?: MessageHandler) => {
+        handlerRef.current = fn;
+    }, []);
+    useEffect(() => {
+        handlerRef.current = onWsMessage;
+    }, [onWsMessage]);
 
-    const handleMessage = useCallback(
-        (event: MessageEvent) => {
-            if (mountedRef.current && onWsMessage) {
-                onWsMessage(event);
-            }
-        },
-        [onWsMessage],
-    );
+    const getReconnectDelay = () => Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
 
-    // Close any existing connection
     const closeExistingConnection = useCallback(() => {
         if (wsRef.current) {
-            console.log("Closing existing WebSocket connection");
             try {
-                // Only close if it's not already closing/closed
                 if (
                     wsRef.current.readyState !== WebSocket.CLOSING &&
                     wsRef.current.readyState !== WebSocket.CLOSED
                 ) {
                     wsRef.current.close();
                 }
-            } catch (err) {
-                console.error("Error closing WebSocket:", err);
-            }
+            } catch {}
             wsRef.current = undefined;
         }
-
         if (reconnectTimeoutRef.current) {
             clearTimeout(reconnectTimeoutRef.current);
             reconnectTimeoutRef.current = null;
         }
     }, []);
 
-    // WebSocket connection
     const connectWebSocket = useCallback(() => {
-        // Don't connect if component is unmounting
         if (!mountedRef.current) {
-            // console.log("Not connecting because component is unmounted");
             return;
         }
 
-        // In StrictMode, wait longer on the second mount to avoid the double-mount cycle
         if (strictModeReconnectRef.current) {
-            // console.log("Delaying connection due to potential StrictMode remount");
-            const strictModeTimer = setTimeout(() => {
+            const t = setTimeout(() => {
                 if (mountedRef.current) {
                     strictModeReconnectRef.current = false;
                     actuallyConnect();
                 }
-            }, 500); // Longer delay for StrictMode
-
-            return () => clearTimeout(strictModeTimer);
+            }, 500);
+            return () => clearTimeout(t);
         }
 
         actuallyConnect();
 
         function actuallyConnect() {
-            // First, close any existing connection
             closeExistingConnection();
-
             try {
-                // console.log("Creating new WebSocket connection to:", wsUrl);
                 const ws = new WebSocket(wsUrl);
 
-                // const logReadyState = () => {
-                //     const states = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
-                //     console.log(`WebSocket readyState: ${states[ws.readyState]} (${ws.readyState})`);
-                // };
-
-                // logReadyState();
-
                 ws.onopen = () => {
-                    // console.log("WebSocket connection established");
-                    // logReadyState();
-                    if (mountedRef.current) {
-                        setConnected(true);
-                        reconnectAttemptsRef.current = 0;
+                    if (!mountedRef.current) {
+                        return;
+                    }
+                    setConnected(true);
+                    reconnectAttemptsRef.current = 0;
+                };
+
+                ws.onclose = evt => {
+                    if (!mountedRef.current) {
+                        return;
+                    }
+                    setConnected(false);
+
+                    if (
+                        wsRef.current === ws &&
+                        evt.code !== 1000 &&
+                        reconnectAttemptsRef.current < maxReconnectAttempts
+                    ) {
+                        const delay = getReconnectDelay();
+                        reconnectAttemptsRef.current += 1;
+                        reconnectTimeoutRef.current = setTimeout(() => {
+                            if (mountedRef.current) {
+                                actuallyConnect();
+                            }
+                        }, delay);
                     }
                 };
 
-                ws.onclose = (event: CloseEvent) => {
-                    // console.log(`WebSocket connection closed with code: ${event.code}`);
-                    // logReadyState();
-
-                    if (mountedRef.current) {
-                        setConnected(false);
-
-                        // Only reconnect if this connection is still the current one
-                        if (
-                            wsRef.current === ws &&
-                            event.code !== 1000 &&
-                            reconnectAttemptsRef.current < maxReconnectAttempts
-                        ) {
-                            const delay = getReconnectDelay();
-                            // console.log(
-                            //     `Attempting to reconnect in ${delay}ms (attempt ${reconnectAttemptsRef.current + 1}/${maxReconnectAttempts})`,
-                            // );
-
-                            reconnectAttemptsRef.current += 1;
-                            reconnectTimeoutRef.current = setTimeout(() => {
-                                if (mountedRef.current) {
-                                    actuallyConnect();
-                                }
-                            }, delay);
-                        }
+                ws.onerror = err => {
+                    if (!mountedRef.current) {
+                        return;
                     }
+                    onError?.(err);
                 };
 
-                ws.onerror = error => {
-                    // console.error("WebSocket error:", error);
-                    // logReadyState();
-                    if (mountedRef.current) {
-                        onError?.(error);
-                        // console.error("Failed to connect to the WebSocket server");
-                    }
+                ws.onmessage = event => {
+                    handlerRef.current?.(event);
                 };
 
-                ws.onmessage = handleMessage;
                 wsRef.current = ws;
             } catch (err) {
-                if (mountedRef.current) {
-                    onError?.(err);
-                    // console.error(
-                    //     `Failed to initialize WebSocket: ${err instanceof Error ? err.message : String(err)}`,
-                    // );
-                }
+                onError?.(err);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wsUrl]);
 
-    const sendMessage = useCallback((data: unknown) => {
-        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-            try {
-                wsRef.current.send(typeof data === "string" ? data : JSON.stringify(data));
-                return true;
-            } catch (err) {
-                onError?.(err);
-                // console.error("Error sending message:", err);
-                return false;
-            }
+    const sendRaw = useCallback((data: string) => {
+        if (wsRef.current?.readyState === WebSocket.OPEN) {
+            wsRef.current.send(data);
+            return true;
         }
         return false;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // SINGLE COMBINED EFFECT to handle both mounting and URL changes
-    useEffect(() => {
-        // console.log("WebSocket hook effect running, url:", wsUrl);
+    const sendJson = useCallback(
+        (data: unknown) => {
+            try {
+                return sendRaw(typeof data === "string" ? data : JSON.stringify(data));
+            } catch (err) {
+                onError?.(err);
+                return false;
+            }
+        },
+        [sendRaw, onError],
+    );
 
-        // Set mounted flag
+    // optional auto-ping to keep connections fresh
+    useEffect(() => {
+        if (!autoPingMs) {
+            return;
+        }
+        const id = setInterval(() => {
+            sendJson({ type: "ping", echo_data: { t: Date.now() } });
+        }, autoPingMs);
+        return () => clearInterval(id);
+    }, [autoPingMs, sendJson]);
+
+    useEffect(() => {
         mountedRef.current = true;
 
-        // Track if the URL has changed
-        const isUrlChange = effectExecutedRef.current && wsUrl !== prevUrlRef.current;
+        const isUrlChange = effectRanRef.current && wsUrl !== prevUrlRef.current;
         prevUrlRef.current = wsUrl;
+        effectRanRef.current = true;
 
-        // Update our effect executed flag
-        effectExecutedRef.current = true;
-
-        // Set a delay for the initial connection
-        // Use a longer delay for URL changes to avoid race conditions
         const delay = isUrlChange ? 300 : strictModeReconnectRef.current ? 500 : 200;
-
-        // console.log(`${isUrlChange ? "URL changed" : "Initial mount"}, connecting after ${delay}ms delay`);
-
-        const connectionTimer = setTimeout(() => {
+        const timer = setTimeout(() => {
             if (mountedRef.current) {
                 connectWebSocket();
             }
         }, delay);
 
-        // Cleanup function
         return () => {
-            // console.log("WebSocket hook effect cleanup");
-
-            // Clear our timer
-            clearTimeout(connectionTimer);
-
-            // If this is strict mode unmounting, set the reconnect flag
-            // but don't close the connection yet
-            if (!effectExecutedRef.current) {
-                // console.log("First-time cleanup, likely StrictMode - setting reconnect flag");
+            clearTimeout(timer);
+            if (!effectRanRef.current) {
                 strictModeReconnectRef.current = true;
             } else {
-                // This is a real unmount or effect re-execution
-                // console.log("Real cleanup, closing WebSocket connection");
                 mountedRef.current = false;
                 closeExistingConnection();
             }
         };
     }, [wsUrl, connectWebSocket, closeExistingConnection]);
 
-    return {
-        wsRef,
-        sendMessage,
-        connected,
-    };
+    return { wsRef, sendJson, connected, setMessageHandler };
 };

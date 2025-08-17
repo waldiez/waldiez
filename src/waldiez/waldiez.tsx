@@ -29,8 +29,6 @@ import { WaldiezThemeProvider, isInitiallyDark, setIsDarkMode } from "@waldiez/t
 import { WaldiezProps } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
-const READY_FOR_HUB = true;
-
 /**
  * Waldiez component
  * @param props - The props of the component
@@ -100,11 +98,11 @@ export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezP
     const flowId: string = props.flowId ?? `wf-${getId()}`;
     const skipImport = typeof props.skipImport === "boolean" ? props.skipImport : false;
     const skipExport = typeof props.skipExport === "boolean" ? props.skipExport : false;
-    const skipHub = typeof props.skipHub === "boolean" ? props.skipHub : !READY_FOR_HUB;
+    const skipHub = typeof props.skipHub === "boolean" ? props.skipHub : false;
     const nodes = props.nodes ?? [];
     const edges = props.edges ?? [];
     const readOnly = props.readOnly ?? false;
-    const { monacoVsPath, chat } = props;
+    const { monacoVsPath, chat, stepByStep } = props;
     useEffect(() => {
         checkInitialBodyThemeClass();
         checkInitialBodySidebarClass();
@@ -138,6 +136,7 @@ export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezP
                                         skipExport={skipExport}
                                         skipHub={skipHub}
                                         chat={chat}
+                                        stepByStep={stepByStep}
                                     />
                                 </WaldiezProvider>
                             </SidebarProvider>
@@ -176,7 +175,13 @@ const checkInitialBodySidebarClass = () => {
         if (sidebarQuery.matches) {
             document.body.classList.add("waldiez-sidebar-collapsed");
         } else {
-            document.body.classList.add("waldiez-sidebar-expanded");
+            // if small screen, prefer collapsed
+            const smallScreenQuery = window.matchMedia("(max-width: 768px)");
+            if (smallScreenQuery.matches) {
+                document.body.classList.add("waldiez-sidebar-collapsed");
+            } else {
+                document.body.classList.add("waldiez-sidebar-expanded");
+            }
         }
     }
 };

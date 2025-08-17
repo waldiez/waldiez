@@ -3478,6 +3478,7 @@ export declare type WaldiezNodeType = "agent" | "model" | "tool";
  * @param viewport - The viewport of the flow
  * @param monacoVsPath - The path to the monaco vs code editor
  * @param chat - The chat configuration
+ * @param stepByStep - The step-by-step configuration
  * @param readOnly - Whether the flow is read only or not
  * @param skipImport - Whether to skip import or not
  * @param skipExport - Whether to skip export or not
@@ -3496,6 +3497,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
     viewport?: Viewport;
     monacoVsPath?: string;
     chat?: WaldiezChatConfig;
+    stepByStep?: any;
     readOnly?: boolean;
     skipImport?: boolean;
     skipExport?: boolean;
@@ -3503,6 +3505,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
     onUpload?: (files: File[]) => Promise<string[]>;
     onChange?: (flow: string) => void;
     onRun?: (flow: string) => void;
+    onStepRun?: (flow: string) => void;
     onConvert?: (flow: string, to: "py" | "ipynb") => void;
     onSave?: (flow: string) => void;
 };
@@ -3528,6 +3531,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
  * @param rfInstance - The react flow instance
  * @param viewport - The viewport of the flow
  * @param onRun - The handler for running the flow (send to backend)
+ * @param onStepRun - The handler for step run events (send to backend)
  * @param onConvert - The handler for converting the flow (send to backend)
  * @param onUpload - The handler for file uploads (send to backend)
  * @param onChange - The handler for changes in the flow (send to backend)
@@ -3681,6 +3685,7 @@ export declare type WaldiezStore = ReturnType<typeof createWaldiezStore>;
  * @param rfInstance - The react flow instance
  * @param viewport - The viewport of the flow
  * @param onRun - The handler for running the flow (send to backend)
+ * @param onStepRun - The handler for step run events (send to backend)
  * @param onConvert - The handler for converting the flow (send to backend)
  * @param onUpload - The handler for file uploads (send to backend)
  * @param onChange - The handler for changes in the flow (send to backend)
@@ -3706,6 +3711,7 @@ export declare type WaldiezStoreProps = {
     viewport?: Viewport;
     previousViewport?: Viewport;
     onRun?: ((flow: string) => void) | null;
+    onStepRun?: ((flow: string) => void) | null;
     onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
     onUpload?: ((files: File[]) => Promise<string[]>) | null;
     onChange?: ((content: string) => void) | null;

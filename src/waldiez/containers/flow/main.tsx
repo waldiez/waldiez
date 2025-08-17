@@ -18,6 +18,7 @@ import { WaldiezChatConfig, WaldiezNodeType } from "@waldiez/types";
 type WaldiezFlowViewProps = {
     flowId: string;
     chat?: WaldiezChatConfig;
+    stepByStep?: any; // not yet
     skipImport?: boolean;
     skipExport?: boolean;
     skipHub?: boolean;
@@ -65,6 +66,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         exportFlow,
         onExport,
         onRun,
+        onStepRun,
         onFlowInit,
         onNodesChange,
         onEdgesChange,
@@ -239,6 +241,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                             selectedNodeType={selectedNodeType.current}
                             onAddNode={onAddNode}
                             onRun={onRun}
+                            onStepRun={onStepRun}
                             onConvertToPy={convertToPy}
                             onConvertToIpynb={convertToIpynb}
                             onOpenImportModal={onOpenImportModal}
@@ -249,6 +252,8 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                     </ReactFlow>
                 </div>
             </div>
+
+            {/* <div className="step-by-step"></div> */}
 
             {/* Modals */}
             <ChatModal flowId={flowId} chat={chat} isDarkMode={isDark} />

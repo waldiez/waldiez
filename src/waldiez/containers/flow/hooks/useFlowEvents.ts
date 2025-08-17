@@ -23,6 +23,7 @@ export const useFlowEvents = (flowId: string) => {
 
     // Get action handlers from store
     const runner = useWaldiez(s => s.onRun);
+    const stepRunner = useWaldiez(s => s.onStepRun);
     const onConvert = useWaldiez(s => s.onConvert);
     const setRfInstance = useWaldiez(s => s.setRfInstance);
     const handleNodesChange = useWaldiez(s => s.onNodesChange);
@@ -217,6 +218,19 @@ export const useFlowEvents = (flowId: string) => {
     }, [isReadOnly, runner, canRun, onFlowChanged, flowId]);
 
     /**
+     * Run the flow step-by-step
+     */
+    const onStepRun = useCallback(() => {
+        if (isReadOnly || typeof stepRunner !== "function") {
+            return;
+        }
+        const flow = onFlowChanged();
+        if (flow) {
+            stepRunner(JSON.stringify(flow));
+        }
+    }, [isReadOnly, stepRunner, onFlowChanged]);
+
+    /**
      * Export the flow
      */
     const onExport = useCallback(
@@ -256,6 +270,7 @@ export const useFlowEvents = (flowId: string) => {
             exportFlow,
             onExport,
             onRun,
+            onStepRun,
             onFlowInit,
             onNodesChange,
             onEdgesChange,
@@ -268,6 +283,7 @@ export const useFlowEvents = (flowId: string) => {
             exportFlow,
             onExport,
             onRun,
+            onStepRun,
             onFlowInit,
             onNodesChange,
             onEdgesChange,

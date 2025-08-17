@@ -60,6 +60,10 @@ const devHandlers = {
         console.info("[DEV] Running flow:", flowString.substring(0, 100) + "...");
     },
 
+    onStepRun: (flowString: string) => {
+        console.info("[DEV] Running step in flow:", flowString.substring(0, 100) + "...");
+    },
+
     // Handle conversion requests (to Python or Jupyter)
     onConvert: (_flowString: string, to: "py" | "ipynb") => {
         console.info("[DEV] Converting flow to", to);
@@ -124,6 +128,7 @@ const defaultWaldiezProps: Partial<WaldiezProps> = {
               onChange: undefined,
               onSave: undefined,
               onRun: undefined,
+              onStepRun: undefined,
               onConvert: undefined,
               onUpload: undefined,
           }

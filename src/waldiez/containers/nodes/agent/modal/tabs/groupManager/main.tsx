@@ -47,7 +47,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
         onMaxRetriesForSelectingChange,
         onSpeakerSelectionMethodChange,
         onDescriptionChange,
-        onSystemMessageChange,
+        // onSystemMessageChange,
         onAfterWorkChange,
         onMoveMemberUp,
         onMoveMemberDown,
@@ -192,7 +192,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                     />
 
                     {/* System Message */}
-                    <label htmlFor={`agent-system-message-input-${id}`}>System Message:</label>
+                    {/* <label htmlFor={`agent-system-message-input-${id}`}>System Message:</label>
                     <TextareaInput
                         id={`agent-system-message-input-${id}`}
                         title="System message"
@@ -201,7 +201,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                         onChange={onSystemMessageChange}
                         data-testid={`agent-system-message-input-${id}`}
                         aria-label="Manager system message"
-                    />
+                    /> */}
 
                     {/* Configuration Checkboxes */}
                     <InfoCheckbox

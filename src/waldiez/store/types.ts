@@ -38,6 +38,7 @@ export { createWaldiezStore };
  * @param rfInstance - The react flow instance
  * @param viewport - The viewport of the flow
  * @param onRun - The handler for running the flow (send to backend)
+ * @param onStepRun - The handler for step run events (send to backend)
  * @param onConvert - The handler for converting the flow (send to backend)
  * @param onUpload - The handler for file uploads (send to backend)
  * @param onChange - The handler for changes in the flow (send to backend)
@@ -62,7 +63,8 @@ export type WaldiezStoreProps = {
     rfInstance?: ReactFlowInstance;
     viewport?: Viewport;
     previousViewport?: Viewport; // used to store the previous viewport when switching node types
-    onRun?: ((flow: string) => void) | null; // handler for running the flow (send to backend
+    onRun?: ((flow: string) => void) | null; // handler for running the flow (send to backend)
+    onStepRun?: ((flow: string) => void) | null; // handler for step run events (send to backend)
     onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null; // handler for converting the flow (send to backend)
     onUpload?: ((files: File[]) => Promise<string[]>) | null; // handler for file uploads (send to backend)
     onChange?: ((content: string) => void) | null; // handler for changes in the flow (send to backend)
@@ -236,6 +238,7 @@ export type WaldiezStore = ReturnType<typeof createWaldiezStore>;
  * @param rfInstance - The react flow instance
  * @param viewport - The viewport of the flow
  * @param onRun - The handler for running the flow (send to backend)
+ * @param onStepRun - The handler for step run events (send to backend)
  * @param onConvert - The handler for converting the flow (send to backend)
  * @param onUpload - The handler for file uploads (send to backend)
  * @param onChange - The handler for changes in the flow (send to backend)

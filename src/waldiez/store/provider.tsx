@@ -30,6 +30,7 @@ import { WaldiezProviderProps, WaldiezStore } from "@waldiez/store/types";
  * @param props.onChange - Callback for change events.
  * @param props.onSave - Callback for save events.
  * @param props.onRun - Callback for run events.
+ * @param props.onStepRun - Callback for step run events.
  * @param props.onConvert - Callback for convert events.
  * @param props.rfInstance - The React Flow instance.
  * @param props.isAsync - Whether the flow is asynchronous.
@@ -53,6 +54,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const onChange = props.onChange ?? null;
     const onSave = props.onSave ?? null;
     const onRun = props.onRun ?? null;
+    const onStepRun = props.onStepRun ?? null;
     const onConvert = props.onConvert ?? null;
     const rfInstance = props.rfInstance;
     const isAsync = props.isAsync ?? false;
@@ -77,6 +79,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
             onChange,
             onSave,
             onRun,
+            onStepRun,
             onConvert,
         });
         return storeRef.current;

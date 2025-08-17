@@ -45,6 +45,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
         onChange = null,
         onSave = null,
         onRun = null,
+        onStepRun = null,
         onConvert = null,
     } = props;
     const storageId = props.storageId ?? flowId;
@@ -71,6 +72,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 onChange,
                 onSave,
                 onRun,
+                onStepRun,
                 onConvert,
                 ...WaldiezAgentStore.create(get, set),
                 ...WaldiezModelStore.create(get, set),

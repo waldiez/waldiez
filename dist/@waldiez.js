@@ -6703,7 +6703,7 @@ function usePresence(present) {
       const ownerWindow = node.ownerDocument.defaultView ?? window;
       const handleAnimationEnd = (event) => {
         const currentAnimationName = getAnimationName(stylesRef.current);
-        const isCurrentAnimation = currentAnimationName.includes(event.animationName);
+        const isCurrentAnimation = currentAnimationName.includes(CSS.escape(event.animationName));
         if (event.target === node && isCurrentAnimation) {
           send("ANIMATION_END");
           if (!prevPresentRef.current) {
@@ -13737,6 +13737,7 @@ const createWaldiezStore = (props) => {
     onChange = null,
     onSave = null,
     onRun = null,
+    onStepRun = null,
     onConvert = null
   } = props;
   const storageId = props.storageId ?? flowId;
@@ -13763,6 +13764,7 @@ const createWaldiezStore = (props) => {
         onChange,
         onSave,
         onRun,
+        onStepRun,
         onConvert,
         ...WaldiezAgentStore.create(get, set),
         ...WaldiezModelStore.create(get, set),
@@ -13824,6 +13826,7 @@ function WaldiezProvider({ children, ...props }) {
   const onChange = props.onChange ?? null;
   const onSave = props.onSave ?? null;
   const onRun = props.onRun ?? null;
+  const onStepRun = props.onStepRun ?? null;
   const onConvert = props.onConvert ?? null;
   const rfInstance = props.rfInstance;
   const isAsync = props.isAsync ?? false;
@@ -13847,6 +13850,7 @@ function WaldiezProvider({ children, ...props }) {
       onChange,
       onSave,
       onRun,
+      onStepRun,
       onConvert
     });
     return storeRef.current;
@@ -14136,6 +14140,7 @@ const useFlowEvents = (flowId) => {
   const skipExport = useWaldiez((s) => s.skipExport);
   const isReadOnly = readOnly === true;
   const runner = useWaldiez((s) => s.onRun);
+  const stepRunner = useWaldiez((s) => s.onStepRun);
   const onConvert = useWaldiez((s) => s.onConvert);
   const setRfInstance = useWaldiez((s) => s.setRfInstance);
   const handleNodesChange = useWaldiez((s) => s.onNodesChange);
@@ -14273,6 +14278,15 @@ const useFlowEvents = (flowId) => {
       }
     }
   }, [isReadOnly, runner, canRun, onFlowChanged, flowId]);
+  const onStepRun = useCallback(() => {
+    if (isReadOnly || typeof stepRunner !== "function") {
+      return;
+    }
+    const flow = onFlowChanged();
+    if (flow) {
+      stepRunner(JSON.stringify(flow));
+    }
+  }, [isReadOnly, stepRunner, onFlowChanged]);
   const onExport = useCallback(
     async (_e) => {
       if (isReadOnly) {
@@ -14302,6 +14316,7 @@ const useFlowEvents = (flowId) => {
       exportFlow: exportFlow2,
       onExport,
       onRun,
+      onStepRun,
       onFlowInit,
       onNodesChange,
       onEdgesChange,
@@ -14314,6 +14329,7 @@ const useFlowEvents = (flowId) => {
       exportFlow2,
       onExport,
       onRun,
+      onStepRun,
       onFlowInit,
       onNodesChange,
       onEdgesChange,
@@ -15865,6 +15881,12 @@ const ImportFlowModal = (props) => {
 function SiJupyter(props) {
   return GenIcon({ "attr": { "role": "img", "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "d": "M7.157 22.201A1.784 1.799 0 0 1 5.374 24a1.784 1.799 0 0 1-1.784-1.799 1.784 1.799 0 0 1 1.784-1.799 1.784 1.799 0 0 1 1.783 1.799zM20.582 1.427a1.415 1.427 0 0 1-1.415 1.428 1.415 1.427 0 0 1-1.416-1.428A1.415 1.427 0 0 1 19.167 0a1.415 1.427 0 0 1 1.415 1.427zM4.992 3.336A1.047 1.056 0 0 1 3.946 4.39a1.047 1.056 0 0 1-1.047-1.055A1.047 1.056 0 0 1 3.946 2.28a1.047 1.056 0 0 1 1.046 1.056zm7.336 1.517c3.769 0 7.06 1.38 8.768 3.424a9.363 9.363 0 0 0-3.393-4.547 9.238 9.238 0 0 0-5.377-1.728A9.238 9.238 0 0 0 6.95 3.73a9.363 9.363 0 0 0-3.394 4.547c1.713-2.04 5.004-3.424 8.772-3.424zm.001 13.295c-3.768 0-7.06-1.381-8.768-3.425a9.363 9.363 0 0 0 3.394 4.547A9.238 9.238 0 0 0 12.33 21a9.238 9.238 0 0 0 5.377-1.729 9.363 9.363 0 0 0 3.393-4.547c-1.712 2.044-5.003 3.425-8.772 3.425Z" }, "child": [] }] })(props);
 }
+function VscDebugAlt(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "currentColor" }, "child": [{ "tag": "path", "attr": { "d": "M10.94 13.5l-1.32 1.32a3.73 3.73 0 0 0-7.24 0L1.06 13.5 0 14.56l1.72 1.72-.22.22V18H0v1.5h1.5v.08c.077.489.214.966.41 1.42L0 22.94 1.06 24l1.65-1.65A4.308 4.308 0 0 0 6 24a4.31 4.31 0 0 0 3.29-1.65L10.94 24 12 22.94 10.09 21c.198-.464.336-.951.41-1.45v-.1H12V18h-1.5v-1.5l-.22-.22L12 14.56l-1.06-1.06zM6 13.5a2.25 2.25 0 0 1 2.25 2.25h-4.5A2.25 2.25 0 0 1 6 13.5zm3 6a3.33 3.33 0 0 1-3 3 3.33 3.33 0 0 1-3-3v-2.25h6v2.25zm14.76-9.9v1.26L13.5 17.37V15.6l8.5-5.37L9 2v9.46a5.07 5.07 0 0 0-1.5-.72V.63L8.64 0l15.12 9.6z" }, "child": [] }] })(props);
+}
+function VscSettings(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 16 16", "fill": "currentColor" }, "child": [{ "tag": "path", "attr": { "d": "M6 9.5C6.93191 9.5 7.71496 10.1374 7.93699 11H13.5C13.7761 11 14 11.2239 14 11.5C14 11.7455 13.8231 11.9496 13.5899 11.9919L13.5 12L7.93673 12.001C7.71435 12.8631 6.93155 13.5 6 13.5C5.06845 13.5 4.28565 12.8631 4.06327 12.001L2.5 12C2.22386 12 2 11.7761 2 11.5C2 11.2545 2.17688 11.0504 2.41012 11.0081L2.5 11H4.06301C4.28504 10.1374 5.06809 9.5 6 9.5ZM6 10.5C5.44772 10.5 5 10.9477 5 11.5C5 12.0523 5.44772 12.5 6 12.5C6.55228 12.5 7 12.0523 7 11.5C7 10.9477 6.55228 10.5 6 10.5ZM10 2.5C10.9319 2.5 11.715 3.13738 11.937 3.99998L13.5 4C13.7761 4 14 4.22386 14 4.5C14 4.74546 13.8231 4.94961 13.5899 4.99194L13.5 5L11.9367 5.00102C11.7144 5.86312 10.9316 6.5 10 6.5C9.06845 6.5 8.28565 5.86312 8.06327 5.00102L2.5 5C2.22386 5 2 4.77614 2 4.5C2 4.25454 2.17688 4.05039 2.41012 4.00806L2.5 4L8.06301 3.99998C8.28504 3.13738 9.06809 2.5 10 2.5ZM10 3.5C9.44772 3.5 9 3.94772 9 4.5C9 5.05228 9.44772 5.5 10 5.5C10.5523 5.5 11 5.05228 11 4.5C11 3.94772 10.5523 3.5 10 3.5Z" }, "child": [] }] })(props);
+}
 const WaldiezFlowPanels = (props) => {
   const {
     flowId,
@@ -15873,6 +15895,7 @@ const WaldiezFlowPanels = (props) => {
     selectedNodeType,
     onAddNode,
     onRun,
+    onStepRun,
     onConvertToPy,
     onConvertToIpynb,
     onOpenImportModal,
@@ -15880,12 +15903,14 @@ const WaldiezFlowPanels = (props) => {
   } = props;
   const readOnly = useWaldiez((s) => s.isReadOnly);
   const runner = useWaldiez((s) => s.onRun);
+  const stepRunner = useWaldiez((s) => s.onStepRun);
   const onConvert = useWaldiez((s) => s.onConvert);
   const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
   const includeImportButton = isReadOnly ? false : typeof skipImport === "boolean" ? !skipImport : true;
   const includeExportButton = isReadOnly ? false : typeof skipExport === "boolean" ? !skipExport : true;
   const includeRunButton = isReadOnly === false && typeof runner === "function";
   const includeConvertIcons = isReadOnly === false && typeof onConvert === "function";
+  const includeStepByStepRun = isReadOnly === false && typeof stepRunner === "function";
   const { isDark, toggleTheme } = useWaldiezTheme();
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsx(Panel, { position: "top-left", children: /* @__PURE__ */ jsxs(
@@ -15904,7 +15929,18 @@ const WaldiezFlowPanels = (props) => {
       }
     ) }),
     /* @__PURE__ */ jsx(Panel, { position: "top-right", children: /* @__PURE__ */ jsxs("div", { className: "editor-nav-actions", children: [
-      (includeRunButton || includeConvertIcons) && /* @__PURE__ */ jsxs(Fragment, { children: [
+      (includeRunButton || includeConvertIcons || includeStepByStepRun) && /* @__PURE__ */ jsxs(Fragment, { children: [
+        includeStepByStepRun && /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            className: "editor-nav-action",
+            onClick: onStepRun,
+            title: "Run step-by-step",
+            "data-testid": `step-by-step-${flowId}`,
+            children: /* @__PURE__ */ jsx(VscDebugAlt, {})
+          }
+        ),
         includeRunButton && /* @__PURE__ */ jsx(
           "button",
           {
@@ -15993,9 +16029,6 @@ const WaldiezFlowPanels = (props) => {
     ] }) })
   ] });
 };
-function VscSettings(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 16 16", "fill": "currentColor" }, "child": [{ "tag": "path", "attr": { "d": "M6 9.5C6.93191 9.5 7.71496 10.1374 7.93699 11H13.5C13.7761 11 14 11.2239 14 11.5C14 11.7455 13.8231 11.9496 13.5899 11.9919L13.5 12L7.93673 12.001C7.71435 12.8631 6.93155 13.5 6 13.5C5.06845 13.5 4.28565 12.8631 4.06327 12.001L2.5 12C2.22386 12 2 11.7761 2 11.5C2 11.2545 2.17688 11.0504 2.41012 11.0081L2.5 11H4.06301C4.28504 10.1374 5.06809 9.5 6 9.5ZM6 10.5C5.44772 10.5 5 10.9477 5 11.5C5 12.0523 5.44772 12.5 6 12.5C6.55228 12.5 7 12.0523 7 11.5C7 10.9477 6.55228 10.5 6 10.5ZM10 2.5C10.9319 2.5 11.715 3.13738 11.937 3.99998L13.5 4C13.7761 4 14 4.22386 14 4.5C14 4.74546 13.8231 4.94961 13.5899 4.99194L13.5 5L11.9367 5.00102C11.7144 5.86312 10.9316 6.5 10 6.5C9.06845 6.5 8.28565 5.86312 8.06327 5.00102L2.5 5C2.22386 5 2 4.77614 2 4.5C2 4.25454 2.17688 4.05039 2.41012 4.00806L2.5 4L8.06301 3.99998C8.28504 3.13738 9.06809 2.5 10 2.5ZM10 3.5C9.44772 3.5 9 3.94772 9 4.5C9 5.05228 9.44772 5.5 10 5.5C10.5523 5.5 11 5.05228 11 4.5C11 3.94772 10.5523 3.5 10 3.5Z" }, "child": [] }] })(props);
-}
 const EdgeLabel = ({ edge, transform }) => {
   if (!edge) {
     return null;
@@ -18724,7 +18757,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
     onMaxRetriesForSelectingChange,
     onSpeakerSelectionMethodChange,
     onDescriptionChange,
-    onSystemMessageChange,
+    // onSystemMessageChange,
     onAfterWorkChange,
     onMoveMemberUp,
     onMoveMemberDown
@@ -18844,19 +18877,6 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           onChange: onDescriptionChange,
           "data-testid": `agent-description-input-${id}`,
           "aria-label": "Manager description"
-        }
-      ),
-      /* @__PURE__ */ jsx("label", { htmlFor: `agent-system-message-input-${id}`, children: "System Message:" }),
-      /* @__PURE__ */ jsx(
-        TextareaInput,
-        {
-          id: `agent-system-message-input-${id}`,
-          title: "System message",
-          rows: 2,
-          value: data.systemMessage ?? "",
-          onChange: onSystemMessageChange,
-          "data-testid": `agent-system-message-input-${id}`,
-          "aria-label": "Manager system message"
         }
       ),
       /* @__PURE__ */ jsx(
@@ -26899,6 +26919,7 @@ const WaldiezFlowView = memo((props) => {
     exportFlow: exportFlow2,
     onExport,
     onRun,
+    onStepRun,
     onFlowInit,
     onNodesChange,
     onEdgesChange,
@@ -27031,6 +27052,7 @@ const WaldiezFlowView = memo((props) => {
                     selectedNodeType: selectedNodeType.current,
                     onAddNode,
                     onRun,
+                    onStepRun,
                     onConvertToPy: convertToPy,
                     onConvertToIpynb: convertToIpynb,
                     onOpenImportModal,
@@ -27077,7 +27099,7 @@ const Waldiez = (props) => {
   const nodes = props.nodes ?? [];
   const edges = props.edges ?? [];
   const readOnly = props.readOnly ?? false;
-  const { monacoVsPath, chat } = props;
+  const { monacoVsPath, chat, stepByStep } = props;
   useEffect(() => {
     checkInitialBodyThemeClass();
     checkInitialBodySidebarClass();
@@ -27105,7 +27127,8 @@ const Waldiez = (props) => {
           skipImport,
           skipExport,
           skipHub,
-          chat
+          chat,
+          stepByStep
         }
       )
     }
@@ -27126,7 +27149,12 @@ const checkInitialBodySidebarClass = () => {
     if (sidebarQuery.matches) {
       document.body.classList.add("waldiez-sidebar-collapsed");
     } else {
-      document.body.classList.add("waldiez-sidebar-expanded");
+      const smallScreenQuery = window.matchMedia("(max-width: 768px)");
+      if (smallScreenQuery.matches) {
+        document.body.classList.add("waldiez-sidebar-collapsed");
+      } else {
+        document.body.classList.add("waldiez-sidebar-expanded");
+      }
     }
   }
 };

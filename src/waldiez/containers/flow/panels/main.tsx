@@ -9,6 +9,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { FaCirclePlay, FaFileImport, FaGithub, FaMoon, FaPython, FaSun } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
 import { SiJupyter } from "react-icons/si";
+import { VscDebugAlt } from "react-icons/vsc";
 
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
@@ -22,11 +23,13 @@ type WaldiezFlowPanelsProps = {
     selectedNodeType: WaldiezNodeType;
     onAddNode: () => void;
     onRun: () => void;
+    onStepRun: () => void;
     onConvertToPy: () => void;
     onConvertToIpynb: () => void;
     onOpenImportModal: () => void;
     onExport: (e: React.MouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
 };
+// eslint-disable-next-line complexity
 export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: WaldiezFlowPanelsProps) => {
     const {
         flowId,
@@ -35,6 +38,7 @@ export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: Waldi
         selectedNodeType,
         onAddNode,
         onRun,
+        onStepRun,
         onConvertToPy,
         onConvertToIpynb,
         onOpenImportModal,
@@ -42,12 +46,14 @@ export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: Waldi
     } = props;
     const readOnly = useWaldiez(s => s.isReadOnly);
     const runner = useWaldiez(s => s.onRun);
+    const stepRunner = useWaldiez(s => s.onStepRun);
     const onConvert = useWaldiez(s => s.onConvert);
     const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
     const includeImportButton = isReadOnly ? false : typeof skipImport === "boolean" ? !skipImport : true;
     const includeExportButton = isReadOnly ? false : typeof skipExport === "boolean" ? !skipExport : true;
     const includeRunButton = isReadOnly === false && typeof runner === "function";
     const includeConvertIcons = isReadOnly === false && typeof onConvert === "function";
+    const includeStepByStepRun = isReadOnly === false && typeof stepRunner === "function";
     const { isDark, toggleTheme } = useWaldiezTheme();
     return (
         <>
@@ -67,8 +73,19 @@ export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: Waldi
             )}
             <Panel position="top-right">
                 <div className="editor-nav-actions">
-                    {(includeRunButton || includeConvertIcons) && (
+                    {(includeRunButton || includeConvertIcons || includeStepByStepRun) && (
                         <>
+                            {includeStepByStepRun && (
+                                <button
+                                    type="button"
+                                    className="editor-nav-action"
+                                    onClick={onStepRun}
+                                    title="Run step-by-step"
+                                    data-testid={`step-by-step-${flowId}`}
+                                >
+                                    <VscDebugAlt />
+                                </button>
+                            )}
                             {includeRunButton && (
                                 <button
                                     type="button"

@@ -59,11 +59,15 @@
   padding: 4px;
 }
 
-.tool-node .description {
+.tool-node .description,
+.tool-content .description {
+  /* white-space: nowrap !important; */
   overflow: hidden !important;
   display: -webkit-box !important;
-  -webkit-line-clamp: 1 !important;
-  line-clamp: 1 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  text-overflow: ellipsis !important;
 }
 
 .tool-node .date-info {

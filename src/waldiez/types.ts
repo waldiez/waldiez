@@ -66,6 +66,7 @@ export type WaldiezFlowProps = ReactFlowJsonObject & {
  * @param viewport - The viewport of the flow
  * @param monacoVsPath - The path to the monaco vs code editor
  * @param chat - The chat configuration
+ * @param stepByStep - The step-by-step configuration
  * @param readOnly - Whether the flow is read only or not
  * @param skipImport - Whether to skip import or not
  * @param skipExport - Whether to skip export or not
@@ -84,6 +85,7 @@ export type WaldiezProps = WaldiezFlowProps & {
     viewport?: Viewport;
     monacoVsPath?: string;
     chat?: WaldiezChatConfig;
+    stepByStep?: any; // not yet
     readOnly?: boolean;
     skipImport?: boolean;
     skipExport?: boolean;
@@ -91,6 +93,7 @@ export type WaldiezProps = WaldiezFlowProps & {
     onUpload?: (files: File[]) => Promise<string[]>;
     onChange?: (flow: string) => void;
     onRun?: (flow: string) => void;
+    onStepRun?: (flow: string) => void;
     onConvert?: (flow: string, to: "py" | "ipynb") => void;
     onSave?: (flow: string) => void;
 };
