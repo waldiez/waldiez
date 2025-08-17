@@ -161,14 +161,6 @@ runner = WaldiezRunner.load(Path(flow_path))
 runner.run(output_path=output_path)
 ```
 
-### Tools
-
-- [ag2 (formerly AutoGen)](https://github.com/ag2ai/ag2)
-- [juptytext](https://github.com/mwouts/jupytext)
-- [pydantic](https://github.com/pydantic/pydantic)
-- [typer](https://github.com/fastapi/typer)
-- [asyncer](https://github.com/fastapi/asyncer)
-
 ## Known Conflicts
 
 - **autogen-agentchat**: This package conflicts with `ag2`. Ensure that `autogen-agentchat` is uninstalled before installing `waldiez`. If you have already installed `autogen-agentchat`, you can uninstall it with the following command:
