@@ -5,11 +5,13 @@
 from .base_runner import WaldiezBaseRunner
 from .exceptions import StopRunningException
 from .standard_runner import WaldiezStandardRunner
-from .step_by_step_runner import WaldiezStepByStepRunner
+from .step_by_step import WaldiezStepByStepRunner
+from .subprocess_runner import WaldiezSubprocessRunner
 
 __all__ = [
     "StopRunningException",
     "WaldiezBaseRunner",
     "WaldiezStandardRunner",
     "WaldiezStepByStepRunner",
+    "WaldiezSubprocessRunner",
 ]

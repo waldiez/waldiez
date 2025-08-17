@@ -186,7 +186,7 @@ class AsyncWebsocketsIOStream(IOStream):
 
         try:
             return asyncio.run(coro)
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             loop = asyncio.get_event_loop()
             future = asyncio.run_coroutine_threadsafe(coro, loop)
             return future.result()

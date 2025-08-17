@@ -15,6 +15,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from waldiez.models.flow.flow import WaldiezFlow
+from waldiez.models.waldiez import Waldiez
 from waldiez.running.base_runner import WaldiezBaseRunner
 from waldiez.running.exceptions import StopRunningException
 
@@ -367,10 +369,6 @@ def test_get_user_input_sync_and_async(monkeypatch: pytest.MonkeyPatch) -> None:
     val = WaldiezBaseRunner.get_user_input("Prompt")
     assert val == "async_input"
 
-    # Test a_get_user_input
-    # val = pytest.r(asyncio.run(WaldiezBaseRunner.a_get_user_input("Prompt")))
-    # We can only really test this if inside an async context or event loop
-
 
 @pytest.mark.asyncio
 async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -429,3 +427,161 @@ def test_stop_method_with_running_workflow() -> None:
     # Clean up
     WaldiezBaseRunner._running = False
     assert not runner.is_running()
+
+
+def test_context_manager_enter_exit() -> None:
+    """Test context manager __enter__ and __exit__ methods."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=False),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Test __enter__ returns self
+    with runner as context_runner:
+        assert context_runner is runner
+
+
+def test_context_manager_exit_when_running() -> None:
+    """Test __exit__ sets stop flag when runner is running."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=False),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Set runner to running state
+    WaldiezBaseRunner._running = True
+
+    # Use context manager - __exit__ should set stop flag
+    with runner:
+        assert not runner.is_stop_requested()  # Initially not set
+
+    # After exiting context, stop should be requested since runner was running
+    assert runner.is_stop_requested()
+
+    # Clean up
+    WaldiezBaseRunner._running = False
+
+
+def test_context_manager_exit_when_not_running() -> None:
+    """Test __exit__ doesn't set stop flag when runner is not running."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=False),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Ensure runner is not running
+    WaldiezBaseRunner._running = False
+
+    # Use context manager
+    with runner:
+        assert not runner.is_stop_requested()
+
+    # After exiting context, stop should still not be requested
+    assert not runner.is_stop_requested()
+
+
+@pytest.mark.asyncio
+async def test_async_context_manager_aenter_aexit() -> None:
+    """Test async context manager __aenter__ and __aexit__ methods."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=True),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Test __aenter__ returns self
+    async with runner as context_runner:
+        assert context_runner is runner
+
+
+@pytest.mark.asyncio
+async def test_async_context_manager_aexit_when_running() -> None:
+    """Test __aexit__ sets stop flag when runner is running."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=True),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Set runner to running state
+    WaldiezBaseRunner._running = True
+
+    # Use async context manager - __aexit__ should set stop flag
+    async with runner:
+        assert not runner.is_stop_requested()  # Initially not set
+
+    # After exiting context, stop should be requested since runner was running
+    assert runner.is_stop_requested()
+
+    # Clean up
+    WaldiezBaseRunner._running = False
+
+
+@pytest.mark.asyncio
+async def test_async_context_manager_aexit_when_not_running() -> None:
+    """Test __aexit__ doesn't set stop flag when runner is not running."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=True),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+
+    # Ensure runner is not running
+    WaldiezBaseRunner._running = False
+
+    # Use async context manager
+    async with runner:
+        assert not runner.is_stop_requested()
+
+    # After exiting context, stop should still not be requested
+    assert not runner.is_stop_requested()
+
+
+def test_base_runner_properties() -> None:
+    """Test base runner properties."""
+    runner = DummyRunner(
+        waldiez=MagicMock(is_async=False),
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+    assert runner.waldiez is not None
+    assert runner.output_path is None
+    assert runner.uploads_root is None
+    assert not runner.running
+    assert not runner.structured_io
+    assert not runner.skip_patch_io
+
+
+def test_base_runner_load(tmp_path: Path, waldiez_flow: WaldiezFlow) -> None:
+    """Test base runner load."""
+    waldiez = Waldiez.from_dict(data=waldiez_flow.model_dump(by_alias=True))
+    dump_path = tmp_path / "test_runner_load.waldiez"
+    with open(dump_path, "w", encoding="utf-8") as f:
+        f.write(waldiez.model_dump_json(by_alias=True, indent=2))
+    runner = WaldiezBaseRunner.load(
+        waldiez_file=dump_path,
+        name="TestRunner",
+        description="A test runner",
+        tags=["test"],
+        requirements=["waldiez"],
+        output_path=None,
+        uploads_root=None,
+        structured_io=False,
+    )
+    assert runner is not None
+    assert runner.waldiez is not None
+    assert runner.output_path is None
+    assert runner.uploads_root is None
+    assert not runner.running
+    assert not runner.structured_io
+    assert not runner.skip_patch_io

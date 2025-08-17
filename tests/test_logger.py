@@ -165,9 +165,9 @@ class TestLogMethods:
         """Test logging with an unknown level."""
         logger = WaldiezLogger(level="info")
         with capture_log_output() as echo:
-            logger.log("unknown", level="nolevel")
+            logger.do_log("unknown", level="nolevel")
             echo.assert_called_once()
-            assert "[NOLEVEL]" in echo.call_args[0][0]
+            assert "[INFO]" in echo.call_args[0][0]
 
     def test_exception_logging(self) -> None:
         """Test logging an exception with traceback."""

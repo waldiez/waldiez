@@ -14,7 +14,9 @@ from pathlib import Path
 from typing import Any, Callable
 from unittest.mock import MagicMock, patch
 
+import pytest
 from autogen.events import BaseEvent  # type: ignore
+from autogen.events.agent_events import TextEvent  # type: ignore
 
 from waldiez.io import StructuredIOStream
 
@@ -521,3 +523,33 @@ class TestStructuredIOStream:
 
         result = stream._format_multimedia_response(nested_wrapped)
         assert result == "Deeply nested"
+
+    def test_send_text_event(
+        self,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Test that send() uses syncify for async on_send."""
+        event = TextEvent(
+            content="Hello, world!",
+            sender="test_sender",
+            recipient="test_recipient",
+        )
+        stream = StructuredIOStream()
+        stream.send(event)  # pyright: ignore
+        captured = capsys.readouterr()
+        assert "Hello, world!" in captured.out
+
+    def test_send_text_event_with_dict_content(
+        self,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Test sending a text event with dictionary content."""
+        event = TextEvent(
+            content=[{"content": "Hello, world!"}],
+            sender="test_sender",
+            recipient="test_recipient",
+        )
+        stream = StructuredIOStream()
+        stream.send(event)  # pyright: ignore
+        captured = capsys.readouterr()
+        assert "Hello, world!" in captured.out

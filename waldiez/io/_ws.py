@@ -5,6 +5,7 @@
 """WebSocket IOStream implementation for AsyncIO."""
 
 import asyncio
+import logging
 from typing import Any, Protocol
 
 HAS_WS_LIB = False
@@ -68,6 +69,7 @@ class WebSocketsAdapter:
             The websockets library connection.
         """
         self.websocket = websocket
+        self.log = logging.getLogger(__name__)
 
     async def send_message(self, message: str) -> None:
         """Send a message using websockets library.
@@ -103,8 +105,10 @@ class WebSocketsAdapter:
             return response if isinstance(response, str) else str(response)
         except asyncio.TimeoutError:
             return ""
-        except BaseException:  # pylint: disable=broad-exception-caught
-            # Handle other exceptions that may occur during receive
+        except BaseException as exc:  # pylint: disable=broad-exception-caught
+            self.log.error(
+                "WebsocketsAdapter: Error receiving message: %s", exc
+            )  # pragma: no cover
             return ""
 
 
@@ -120,6 +124,7 @@ class StarletteAdapter:
             The Starlette/FastAPI WebSocket connection.
         """
         self.websocket = websocket
+        self.log = logging.getLogger(__name__)
 
     async def send_message(self, message: str) -> None:
         """Send a message using Starlette WebSocket.
@@ -151,8 +156,10 @@ class StarletteAdapter:
             )
         except asyncio.TimeoutError:
             return ""
-        except BaseException:  # pylint: disable=broad-exception-caught
-            # Handle other exceptions that may occur during receive
+        except BaseException as exc:  # pylint: disable=broad-exception-caught
+            self.log.error(
+                "StarletteAdapter: Error receiving message: %s", exc
+            )  # pragma: no cover
             return ""
 
 

@@ -104,7 +104,7 @@ class StructuredIOStream(IOStream):
         """
         request_id = uuid4().hex
         prompt = prompt or ">"
-        if not prompt or prompt in [">", "> "]:
+        if not prompt or prompt in [">", "> "]:  # pragma: no cover
             # if the prompt is just ">" or "> ",
             # let's use a more descriptive one
             prompt = "Enter your message to start the conversation: "
@@ -116,22 +116,6 @@ class StructuredIOStream(IOStream):
             uploads_root=self.uploads_root,
             base_name=request_id,
         )
-        # let's keep an eye here:
-        # https://github.com/ag2ai/ag2/blob/main/autogen/agentchat/conversable_agent.py#L2973
-        # reply = await iostream.input(prompt) ???? (await???)
-        if self.is_async:
-            # let's make a coroutine to just return the user response
-            async def async_input() -> str:
-                """Asynchronous input method.
-
-                Returns
-                -------
-                str
-                    The line read from the input stream.
-                """
-                return user_response
-
-            return async_input()  # type: ignore
         return user_response
 
     # noinspection PyMethodMayBeStatic
@@ -205,6 +189,11 @@ class StructuredIOStream(IOStream):
         except queue.Empty:
             self._send_timeout_message(request_id)
             return ""
+        except BaseException as e:
+            self._send_error_message(request_id, str(e))
+            return ""
+        finally:
+            input_thread.join(timeout=1)
 
     def _send_timeout_message(self, request_id: str) -> None:
         timeout_payload = {
@@ -215,6 +204,16 @@ class StructuredIOStream(IOStream):
             "data": f"No input received after {self.timeout} seconds.",
         }
         print(json.dumps(timeout_payload), flush=True, file=sys.stderr)
+
+    def _send_error_message(self, request_id: str, error_message: str) -> None:
+        error_payload = {
+            "id": gen_id(),
+            "type": "error",
+            "request_id": request_id,
+            "timestamp": now(),
+            "data": error_message,
+        }
+        print(json.dumps(error_payload), flush=True, file=sys.stderr)
 
     def _handle_user_input(
         self, user_input_raw: str, request_id: str

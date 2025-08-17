@@ -17,7 +17,6 @@ from typing import TYPE_CHECKING, Any, Callable, Coroutine, Type, Union
 
 from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
-from asyncer import syncify
 from typing_extensions import Self
 
 from waldiez.exporter import WaldiezExporter
@@ -35,6 +34,7 @@ from .utils import (
     input_async,
     input_sync,
     is_async_callable,
+    syncify,
 )
 
 if TYPE_CHECKING:
@@ -54,9 +54,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         - skip_patch_io: Whether to skip patching I/O functions.
         - dot_env: Path to a .env file for environment variables.
 
-    Methods to override:
+    Methods to possibly override:
         - prepare: Prepare the environment and paths for running the flow.
         - _before_run: Actions to perform before running the flow.
+        - a_prepare: Async version of the prepare method.
         - _a_before_run: Async actions to perform before running the flow.
         - _run: Actual implementation of the run logic.
         - _a_run: Async implementation of the run logic.
@@ -83,6 +84,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         structured_io: bool,
         skip_patch_io: bool = False,
         dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> None:
         """Initialize the Waldiez manager."""
         WaldiezBaseRunner._running = False
@@ -99,11 +101,15 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
-        self._logger = get_logger()
         self._last_results: list[dict[str, Any]] = []
         self._last_exception: Exception | None = None
         self._running_lock = threading.Lock()
         self._loaded_module: ModuleType | None = None
+        logger = kwargs.get("logger")
+        if isinstance(logger, WaldiezLogger):
+            self._logger = logger
+        else:
+            self._logger = get_logger()
 
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
@@ -191,27 +197,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         input_function = WaldiezBaseRunner.get_input_function()
         if inspect.iscoroutinefunction(input_function):
             try:
-                return syncify(input_function, raise_sync_error=False)(
-                    prompt,
-                    password=password,
-                )
+                return syncify(input_function)(prompt, password=password)
             except TypeError:
-                return syncify(input_function, raise_sync_error=False)(
-                    prompt,
-                )
+                return syncify(input_function)(prompt)
         try:
-            return input_function(prompt, password=password)  # type: ignore
+            return str(input_function(prompt, password=password))
         except TypeError:
-            return input_function(prompt)  # type: ignore
-
-    # Helper for subclasses
-    # def _signal_completion(self) -> None:
-    #     """Signal that execution has completed."""
-    #     self._execution_complete_event.set()
-
-    # def _reset_completion_state(self) -> None:
-    #     """Reset completion state for new execution."""
-    #     self._execution_complete_event.clear()
+            return str(input_function(prompt))
 
     def _load_module(self, output_file: Path, temp_dir: Path) -> ModuleType:
         """Load the module from the waldiez file."""
@@ -381,7 +373,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         event : Union[BaseEvent, BaseMessage]
             The event or message to process.
         """
-        if hasattr(event, "type"):
+        if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
                 prompt = getattr(
                     event, "prompt", getattr(event.content, "prompt", "> ")
@@ -407,7 +399,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         event : Union[BaseEvent, BaseMessage]
             The event or message to process.
         """
-        if hasattr(event, "type"):
+        if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
                 prompt = getattr(
                     event, "prompt", getattr(event.content, "prompt", "> ")
@@ -605,6 +597,37 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             sys.path.pop(0)
         return results
 
+    async def a_prepare(
+        self,
+        output_path: str | Path | None,
+        uploads_root: str | Path | None,
+    ) -> tuple[Path, Path, Path | None]:
+        """Prepare the paths for the async run.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            The output path, by default None.
+        uploads_root : str | Path | None
+            The uploads root path, by default None.
+
+        Returns
+        -------
+        tuple[Path, Path, Path | None]
+            The temporary directory, output file, and uploads root path.
+        """
+        output_file, uploads_root_path = self._prepare_paths(
+            output_path=output_path,
+            uploads_root=uploads_root,
+        )
+        temp_dir = await self._a_before_run(
+            output_file=output_file,
+            uploads_root=uploads_root_path,
+        )
+        await self.a_install_requirements()
+        refresh_environment()
+        return temp_dir, output_file, uploads_root_path
+
     # noinspection DuplicatedCode
     # noinspection PyProtocol
     async def a_run(
@@ -657,16 +680,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             WaldiezBaseRunner._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
-        output_file, uploads_root_path = self._prepare_paths(
+        temp_dir, output_file, uploads_root_path = await self.a_prepare(
             output_path=output_path,
             uploads_root=uploads_root,
         )
-        temp_dir = await self._a_before_run(
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-        )
-        await self.a_install_requirements()
-        refresh_environment()
         WaldiezBaseRunner._running = True
         results: list[dict[str, Any]]
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())

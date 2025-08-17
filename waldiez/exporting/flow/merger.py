@@ -167,7 +167,7 @@ class ContentMerger:
             # Log conflicts but continue
             for conflict in conflicts:
                 self.context.get_logger().warning(
-                    f"Import conflict: {conflict}"
+                    "Import conflict: %s", conflict
                 )
 
         return set(grouped.values())
@@ -309,7 +309,7 @@ class ContentMerger:
             # Log conflicts but continue (non-fatal)
             for conflict in conflicts:
                 self.context.get_logger().warning(
-                    f"Environment variable conflict: {conflict}"
+                    "Environment variable conflict: %s", conflict
                 )
 
         return list(env_vars.values())

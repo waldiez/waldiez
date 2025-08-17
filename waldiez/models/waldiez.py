@@ -40,6 +40,18 @@ class Waldiez:
     flow: WaldiezFlow
 
     @classmethod
+    def default(cls) -> "Waldiez":
+        """Create a default Waldiez instance.
+
+        Returns
+        -------
+        Waldiez
+            The default Waldiez instance.
+        """
+        flow = WaldiezFlow.default()
+        return cls(flow=flow)
+
+    @classmethod
     def from_dict(
         cls,
         data: dict[str, Any],

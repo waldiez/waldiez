@@ -9,7 +9,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 import anyio
 import typer
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from waldiez.running import WaldiezBaseRunner
 
 load_dotenv()
-LOG = get_logger()
+LOG = get_logger(level="debug")
 
 app = typer.Typer(
     name="waldiez",
@@ -59,7 +59,13 @@ def show_version(
         raise typer.Exit()
 
 
-@app.command()
+@app.command(
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "allow_extra_args": True,
+        "ignore_unknown_options": True,
+    },
+)
 def run(
     file: Annotated[
         Path,
@@ -128,6 +134,16 @@ def run(
         is_eager=True,
         rich_help_panel="Debug",
     ),
+    subprocess: bool = typer.Option(
+        False,
+        "--subprocess",
+        "-p",
+        help=(
+            "Run the flow using the subprocess runner. "
+            "This will execute the flow in a separate process."
+        ),
+        is_eager=True,
+    ),
 ) -> None:
     """Run a Waldiez flow."""
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
@@ -135,14 +151,23 @@ def run(
     output_path = _get_output_path(output, force)
     from waldiez.runner import create_runner
 
+    run_mode: Literal["standard", "debug", "subprocess"] = "standard"
+    if subprocess:
+        run_mode = "subprocess"
+    elif step:
+        run_mode = "debug"
+    subprocess_mode = "run"
+    if run_mode == "subprocess":
+        subprocess_mode = "debug" if step else "run"
     try:
         runner = create_runner(
             Waldiez.load(file),
-            mode="debug" if step else "standard",
+            mode=run_mode,
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured,
             dot_env=env_file,
+            subprocess_mode=subprocess_mode,
         )
     except FileNotFoundError as error:
         typer.echo(f"File not found: {file}")
@@ -299,6 +324,10 @@ def _do_run(
         else:
             LOG.warning(StopRunningException.reason)
         raise typer.Exit(code=1 if error else 0) from error
+    except KeyboardInterrupt:
+        LOG.warning("Execution interrupted.")
+        _stopped = True
+        typer.echo("Execution stopped by user.")
     finally:
         if _stopped:
             os._exit(0)

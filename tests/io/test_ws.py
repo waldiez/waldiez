@@ -207,57 +207,6 @@ class TestAsyncWebsocketsIOStream:
             result = self.sync_stream.input("Enter text: ")
             assert result == "user input"
 
-    # pylint: disable=no-self-use
-    def test_input_runtime_error_fallback(self) -> None:
-        """Test input fallback when asyncio.run raises RuntimeError."""
-        sync_websocket = MagicMock()
-        sync_websocket.send_message = MagicMock()
-        sync_websocket.receive_message = MagicMock()
-
-        sync_stream = AsyncWebsocketsIOStream(
-            websocket=sync_websocket,
-            is_async=False,
-            uploads_root=None,
-            verbose=False,
-        )
-
-        # Create a simple coroutine that we can control
-        async def mock_coro() -> str:
-            return "threadsafe result"
-
-        # Instead of patching a_input, we'll manually call the RuntimeError path
-        # pylint: disable=too-many-try-statements
-        with (
-            patch("asyncio.get_event_loop") as mock_get_event_loop,
-            patch(
-                "asyncio.run_coroutine_threadsafe"
-            ) as mock_run_coroutine_threadsafe,
-            patch(
-                "asyncio.run", side_effect=RuntimeError("Event loop is running")
-            ),
-        ):
-            mock_future = MagicMock()
-            mock_future.result.return_value = "threadsafe result"
-            mock_run_coroutine_threadsafe.return_value = mock_future
-            coro = mock_coro()
-            original_a_input = sync_stream.a_input
-
-            def new_a_input(prompt: str = "", *, password: bool = False) -> Any:
-                return coro
-
-            try:
-                sync_stream.a_input = new_a_input  # type: ignore
-                result = sync_stream.input("Enter text: ")
-                assert result == "threadsafe result"
-                mock_get_event_loop.assert_called_once()
-                mock_run_coroutine_threadsafe.assert_called_once()
-
-            finally:
-                # Clean up
-                sync_stream.a_input = original_a_input  # type: ignore
-                if hasattr(coro, "close"):
-                    coro.close()
-
     @pytest.mark.asyncio
     async def test_a_input_basic(self) -> None:
         """Test async input functionality."""

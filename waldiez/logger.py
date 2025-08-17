@@ -4,6 +4,7 @@
 """Waldiez logger."""
 
 import inspect
+import logging
 import os
 import re
 import string
@@ -11,7 +12,8 @@ import threading
 import traceback
 from datetime import datetime
 from enum import IntEnum
-from typing import Any, Callable, Optional
+from types import TracebackType
+from typing import Any, Callable, Mapping, Optional
 
 import click
 
@@ -21,13 +23,13 @@ class LogLevel(IntEnum):
 
     DEBUG = 10
     INFO = 20
-    SUCCESS = 30
-    WARNING = 40
-    ERROR = 50
-    CRITICAL = 60
+    SUCCESS = 21
+    WARNING = 30
+    ERROR = 40
+    CRITICAL = 50
 
 
-class WaldiezLogger:
+class WaldiezLogger(logging.Logger):
     """A colorful logger implementation using Click.
 
     Supports both .format() and %-style formatting:
@@ -51,9 +53,29 @@ class WaldiezLogger:
         "critical",
         "exception",
     }
+    _level_map: dict[str, LogLevel] = {
+        "DEBUG": LogLevel.DEBUG,
+        "INFO": LogLevel.INFO,
+        "SUCCESS": LogLevel.SUCCESS,
+        "WARNING": LogLevel.WARNING,
+        "ERROR": LogLevel.ERROR,
+        "CRITICAL": LogLevel.CRITICAL,
+    }
+    # Map levels to click styling functions
+    _style_map: dict[str, Callable[[str], str]] = {
+        "DEBUG": lambda msg: click.style(msg, dim=True),
+        "INFO": lambda msg: click.style(msg, fg="blue"),
+        "SUCCESS": lambda msg: click.style(msg, fg="green"),
+        "WARNING": lambda msg: click.style(msg, fg="yellow"),
+        "ERROR": lambda msg: click.style(msg, fg="red"),
+        "CRITICAL": lambda msg: click.style(msg, fg="red", bold=True),
+        "EXCEPTION": lambda msg: click.style(msg, fg="red", bold=True),
+    }
 
     def __new__(cls, *args: Any, **kwargs: Any) -> "WaldiezLogger":
         """Ensure only one instance of the logger is created."""
+        for level_name, level_value in LogLevel.__members__.items():
+            logging.addLevelName(level_value, level_name)
         if cls._instance is None:
             with cls._lock:
                 # Double-check locking pattern
@@ -75,6 +97,9 @@ class WaldiezLogger:
         timestamp_format : str, optional
             Timestamp format string, by default "%Y-%m-%d %H:%M:%S"
         """
+        super().__init__(self.__class__.__name__)
+        for level_name, level_value in LogLevel.__members__.items():
+            logging.addLevelName(level_value, level_name)
         if getattr(self, "_initialized", False) is True:
             if level != self.get_level():
                 self.set_level(level)
@@ -84,29 +109,16 @@ class WaldiezLogger:
             ):
                 self._instance.set_timestamp_format(timestamp_format)
             return
+        self._initialized = True
         self._level = level.upper()
         self._timestamp_format = timestamp_format
-
-        self._level_map: dict[str, LogLevel] = {
-            "DEBUG": LogLevel.DEBUG,
-            "INFO": LogLevel.INFO,
-            "SUCCESS": LogLevel.SUCCESS,
-            "WARNING": LogLevel.WARNING,
-            "ERROR": LogLevel.ERROR,
-            "CRITICAL": LogLevel.CRITICAL,
-        }
-
-        # Map levels to click styling functions
-        self._style_map: dict[str, Callable[[str], str]] = {
-            "DEBUG": lambda msg: click.style(msg, dim=True),
-            "INFO": lambda msg: click.style(msg, fg="blue"),
-            "SUCCESS": lambda msg: click.style(msg, fg="green"),
-            "WARNING": lambda msg: click.style(msg, fg="yellow"),
-            "ERROR": lambda msg: click.style(msg, fg="red"),
-            "CRITICAL": lambda msg: click.style(msg, fg="red", bold=True),
-            "EXCEPTION": lambda msg: click.style(msg, fg="red", bold=True),
-        }
-        self._initialized = True
+        if self.get_level() != level:
+            self.set_level(level)
+        if (
+            self._instance
+            and self._instance.get_timestamp_format() != timestamp_format
+        ):
+            self._instance.set_timestamp_format(timestamp_format)
 
     @classmethod
     def get_instance(
@@ -130,129 +142,206 @@ class WaldiezLogger:
         """
         return cls(level, timestamp_format)
 
+    def _get_level_name(self, level: int) -> str:
+        """Get the string name of the logging level.
+
+        Parameters
+        ----------
+        level : int
+            The logging level.
+
+        Returns
+        -------
+        str
+            The string name of the logging level.
+        """
+        for name, lvl in self._level_map.items():
+            if lvl == level:
+                return name
+        return self.get_level()
+
+    def _get_level_number(self, level: str) -> int:
+        """Get the numeric value of the logging level.
+
+        Parameters
+        ----------
+        level : str
+            The logging level.
+
+        Returns
+        -------
+        int
+            The numeric value of the logging level.
+        """
+        return self._level_map.get(level.upper(), LogLevel.INFO)
+
+    # pylint: disable=unused-argument
     def log(
-        self, message: Any, *args: Any, level: str = "info", **kwargs: Any
+        self,
+        level: int,
+        msg: object,
+        *args: object,
+        exc_info: (
+            bool
+            | tuple[type[BaseException], BaseException, TracebackType | None]
+            | tuple[None, None, None]
+            | BaseException
+            | None
+        ) = None,
+        stack_info: bool = False,
+        stacklevel: int = 1,
+        extra: Mapping[str, object] | None = None,
+        **kwargs: object,
     ) -> None:
         """Log a message with the specified level.
 
         Parameters
         ----------
-        message : Any
+        level : int
+            The logging level to use (e.g., logging.DEBUG, logging.INFO, etc.).
+        msg : object
             The message to log or message template for formatting.
-        level : str, optional
-            The logging level to use (e.g., "debug", "info", "success",
-            "warning", "error", "critical"). Defaults to "info".
-        *args : Any
-            Arguments to format into the message using % formatting.
-        **kwargs : Any
+        *args : object
+            Arguments to format into the message.
+        exc_info :
+            bool |
+            tuple[type[BaseException], BaseException, TracebackType | None] |
+            tuple[None, None, None] |
+            BaseException |
+            None
+            Exception information to include in the log.
+        stack_info : bool
+            Whether to include stack information in the log.
+        stacklevel : int
+            The stack level to use for the log.
+        extra : Mapping[str, object] | None
+            Extra context information to include in the log.
+        **kwargs : object
             Additional keyword arguments for formatting.
+
         """
-        if self._should_log(level):
-            formatted_message_content = self._format_args(
-                message, *args, **kwargs
-            )
+        level_str = self._get_level_name(level)
+        if self._should_log(level_str):
+            formatted_message_content = self._format_args(msg, *args, **kwargs)
             formatted_message = self._format_message(
-                formatted_message_content, level
+                formatted_message_content, level_str
             )
             click.echo(formatted_message)
 
-    def debug(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def do_log(self, msg: Any, *args: Any, level: str, **kwargs: Any) -> None:
+        """Log a message with the specified level.
+
+        Parameters
+        ----------
+        msg : Any
+            The message to log or message template for formatting.
+        *args : Any
+            Arguments to format into the message.
+        level : str
+            The logging level.
+        **kwargs : Any
+            Additional keyword arguments for formatting.
+        """
+        level_int = self._get_level_number(level)
+        self.log(level_int, msg, *args, **kwargs)
+
+    def debug(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a debug message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The debug message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        self.log(message, *args, level="debug", **kwargs)
+        self.do_log(msg, *args, level="debug", **kwargs)
 
-    def info(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def info(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log an informational message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The informational message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        self.log(message, *args, level="info", **kwargs)
+        self.do_log(msg, *args, level="info", **kwargs)
 
-    def success(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def success(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a success message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The success message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        self.log(message, *args, level="success", **kwargs)
+        self.do_log(msg, *args, level="success", **kwargs)
 
-    def warning(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def warning(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a warning message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The warning message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        self.log(message, *args, level="warning", **kwargs)
+        self.do_log(msg, *args, level="warning", **kwargs)
 
-    def error(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def error(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log an error message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The error message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        self.log(message, *args, level="error", **kwargs)
+        self.do_log(msg, *args, level="error", **kwargs)
 
-    def critical(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def critical(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a critical error message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The critical error message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        self.log(message, *args, level="critical", **kwargs)
+        self.do_log(msg, *args, level="critical", **kwargs)
 
-    def exception(self, message: Any, *args: Any, **kwargs: Any) -> None:
+    def exception(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log an exception message.
 
         Parameters
         ----------
-        message : Any
+        msg : Any
             The exception message to log or message template.
         *args : Any
             Arguments to format into the message.
         **kwargs : Any
             Additional keyword arguments for formatting.
         """
-        formatted_message_content = self._format_args(message, *args, **kwargs)
+        formatted_message_content = self._format_args(msg, *args, **kwargs)
         formatted_message = self._format_message(
             formatted_message_content, "exception"
         )
@@ -260,6 +349,21 @@ class WaldiezLogger:
         tb = traceback.format_exc()
         if tb and "NoneType: None" not in tb:  # pragma: no branch
             click.echo(click.style(tb, fg="red", dim=True))
+
+    def setLevel(self, level: int | str) -> None:
+        """
+        Set the logging level.
+
+        Parameters
+        ----------
+        level : int | str
+            The logging level to set
+            (e.g., "debug", "info", "warning", "error", "critical").
+        """
+        level_str = (
+            level if isinstance(level, str) else self._get_level_name(level)
+        )
+        self.set_level(level_str)
 
     def set_level(self, level: str) -> None:
         """Set the logging level.
@@ -278,6 +382,7 @@ class WaldiezLogger:
         level_upper = level.upper()
         if level_upper in self._level_map:
             self._level = level_upper
+            super().setLevel(self._level_map[level_upper].value)
         else:
             raise ValueError(
                 f"Invalid log level: {level}. "
@@ -370,7 +475,8 @@ class WaldiezLogger:
     def _format_caller_display(filename: str, line_number: int) -> str:
         """Format the caller information for display."""
         basename = os.path.realpath(filename)
-        return f"{basename}:{line_number}"
+        relative_to_cwd = os.path.relpath(basename, start=os.getcwd())
+        return f"{relative_to_cwd}:{line_number}"
 
     def _get_timestamp(self) -> str:
         """Get the current timestamp in a human-readable format."""

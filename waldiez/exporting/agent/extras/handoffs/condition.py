@@ -151,8 +151,10 @@ class ConditionProcessor:
         """Process an expression context condition handoff."""
         expression = self.serializer(condition.expression)
         condition_string = (
-            f"ExpressionContextCondition(expression={expression})"
+            "ExpressionContextCondition("
+            f"expression=ContextExpression({expression}))"
         )
         self.result.content += condition_string
         extra_import = f"{self.IMPORT_PREFIX}ExpressionContextCondition"
         self.result.extra_imports.add(extra_import)
+        self.result.extra_imports.add(f"{self.IMPORT_PREFIX}ContextExpression")

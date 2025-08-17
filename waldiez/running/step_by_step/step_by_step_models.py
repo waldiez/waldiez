@@ -18,7 +18,27 @@ class WaldiezDebugStepAction(Enum):
     INFO = "i"  # Show detailed event information
     HELP = "h"  # Show help
     STATS = "st"  # Show execution statistics
+    ADD_BREAKPOINT = "ab"  # Add a breakpoint
+    REMOVE_BREAKPOINT = "rb"  # Remove a breakpoint
+    LIST_BREAKPOINTS = "lb"  # List all breakpoints
+    CLEAR_BREAKPOINTS = "cb"  # Clear all breakpoints
     UNKNOWN = "unknown"  # Unknown command
+
+
+VALID_CONTROL_COMMANDS = {
+    "",  # continue/step (allow empty input)
+    "c",  # continue
+    "r",  # run
+    "s",  # step
+    "h",  # help
+    "q",  # quit
+    "i",  # info
+    "st",  # stats
+    "ab",  # add_breakpoint
+    "rb",  # remove_breakpoint
+    "lb",  # list_breakpoints
+    "cb",  # clear_breakpoints
+}
 
 
 class WaldiezDebugHelpCommand(BaseModel):
@@ -49,15 +69,15 @@ class WaldiezDebugInputRequest(BaseModel):
 
     type: Literal["debug_input_request"] = "debug_input_request"
     prompt: str
-    input_id: str
+    request_id: str
 
 
 class WaldiezDebugInputResponse(BaseModel):
     """Debug input response message."""
 
     type: Literal["debug_input_response"] = "debug_input_response"
-    input_id: str
-    response: str
+    request_id: str
+    data: str
 
 
 class WaldiezDebugEventInfo(BaseModel):
@@ -88,6 +108,35 @@ class WaldiezDebugError(BaseModel):
     error: str
 
 
+class WaldiezDebugBreakpointsList(BaseModel):
+    """Debug breakpoints message."""
+
+    type: Literal["debug_breakpoints_list"] = "debug_breakpoints_list"
+    breakpoints: list[str]  # Event types
+    # Optional: Could extend to include agent+event combinations
+
+
+class WaldiezDebugBreakpointAdded(BaseModel):
+    """Debug breakpoint added message."""
+
+    type: Literal["debug_breakpoint_added"] = "debug_breakpoint_added"
+    breakpoint: str
+
+
+class WaldiezDebugBreakpointRemoved(BaseModel):
+    """Debug breakpoint removed message."""
+
+    type: Literal["debug_breakpoint_removed"] = "debug_breakpoint_removed"
+    breakpoint: str
+
+
+class WaldiezDebugBreakpointCleared(BaseModel):
+    """Debug breakpoint cleared message."""
+
+    type: Literal["debug_breakpoint_cleared"] = "debug_breakpoint_cleared"
+    message: str
+
+
 WaldiezDebugMessage = Annotated[
     Union[
         WaldiezDebugPrint,
@@ -97,6 +146,10 @@ WaldiezDebugMessage = Annotated[
         WaldiezDebugStats,
         WaldiezDebugHelp,
         WaldiezDebugError,
+        WaldiezDebugBreakpointsList,
+        WaldiezDebugBreakpointAdded,
+        WaldiezDebugBreakpointRemoved,
+        WaldiezDebugBreakpointCleared,
     ],
     Field(discriminator="type"),
 ]
@@ -133,6 +186,22 @@ HELP_MESSAGE = WaldiezDebugHelp(
                 ),
                 WaldiezDebugHelpCommand(
                     cmds=["stats", "st"], desc="Show execution statistics."
+                ),
+                WaldiezDebugHelpCommand(
+                    cmds=["add_breakpoint", "ab"],
+                    desc="Add breakpoint for event type.",
+                ),
+                WaldiezDebugHelpCommand(
+                    cmds=["remove_breakpoint", "rb"],
+                    desc="Remove breakpoint for event type.",
+                ),
+                WaldiezDebugHelpCommand(
+                    cmds=["list_breakpoints", "lb"],
+                    desc="List all breakpoints.",
+                ),
+                WaldiezDebugHelpCommand(
+                    cmds=["clear_breakpoints", "cb"],
+                    desc="Clear all breakpoints.",
                 ),
             ],
         ),

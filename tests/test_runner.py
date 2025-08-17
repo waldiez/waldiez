@@ -186,3 +186,30 @@ def test_get_printer(capsys: pytest.CaptureFixture[str]) -> None:
     with IOStream.set_default(BadIOStream()):
         printer1 = get_printer()
         printer1(invalid_str)
+
+
+def test_runner_load(
+    waldiez_flow: WaldiezFlow,
+    tmp_path: Path,
+) -> None:
+    """Test WaldiezRunner.load.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Pytest fixture to create temporary directory.
+    waldiez_flow : WaldiezFlow
+        A WaldiezFlow instance.
+    """
+    # Test loading a valid flow
+    waldiez = Waldiez.from_dict(data=waldiez_flow.model_dump(by_alias=True))
+    dump_path = tmp_path / "test_runner_load.waldiez"
+    with open(dump_path, "w", encoding="utf-8") as f:
+        f.write(waldiez.model_dump_json(by_alias=True, indent=2))
+    runner = WaldiezRunner.load(dump_path)
+    assert runner is not None
+    if dump_path.exists():
+        try:
+            dump_path.unlink()
+        except (OSError, PermissionError):
+            pass

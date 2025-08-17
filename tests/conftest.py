@@ -167,6 +167,8 @@ def get_runnable_flow() -> WaldiezFlow:
 def _cleanup_files() -> None:
     """Cleanup files created during tests."""
     extra_files = [
+        "test_flow",
+        "test_flow.waldiez",
         "flow_name.mmd",
         "captain_agent_llm_config.json",
         "captain_agent_agent_lib.json",
@@ -176,7 +178,7 @@ def _cleanup_files() -> None:
         if file_path.exists():
             try:
                 file_path.unlink()
-            except OSError:
+            except (OSError, PermissionError):
                 print(
                     f"Failed to remove {file_path}."
                     "It might be in use or read-only."

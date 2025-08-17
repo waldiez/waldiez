@@ -90,7 +90,6 @@ from .extras.tool_extras import (
 from .protocols import (
     ContentGenerator,
     ExportContributor,
-    ExportingLogger,
     PathResolver,
     Serializer,
     Validator,
@@ -128,7 +127,6 @@ __all__ = [
     "ConfigurableExporter",
     # Protocols
     "ContentGenerator",
-    "ExportingLogger",
     "ExportContributor",
     "Validator",
     "Serializer",

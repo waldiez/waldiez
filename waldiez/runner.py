@@ -27,12 +27,13 @@ from .running import (
     WaldiezBaseRunner,
     WaldiezStandardRunner,
     WaldiezStepByStepRunner,
+    WaldiezSubprocessRunner,
 )
 
 
 def create_runner(
     waldiez: Waldiez,
-    mode: Literal["standard", "debug"] = "standard",
+    mode: Literal["standard", "debug", "subprocess"] = "standard",
     output_path: str | Path | None = None,
     uploads_root: str | Path | None = None,
     structured_io: bool = False,
@@ -71,21 +72,36 @@ def create_runner(
     runners: dict[str, type[WaldiezBaseRunner]] = {
         "standard": WaldiezStandardRunner,
         "debug": WaldiezStepByStepRunner,
+        "subprocess": WaldiezSubprocessRunner,
     }
 
-    if mode not in runners:
+    if mode not in runners:  # pragma: no cover
         available = ", ".join(runners.keys())
         raise ValueError(
             f"Unknown runner mode '{mode}'. Available: {available}"
         )
 
     runner_class = runners[mode]
+    if mode == "subprocess":
+        subprocess_mode = kwargs.pop("subprocess_mode", "run")
+        if subprocess_mode not in ["run", "debug"]:
+            subprocess_mode = "run"
+        return runner_class(
+            waldiez=waldiez,
+            output_path=output_path,
+            uploads_root=uploads_root,
+            structured_io=structured_io,
+            dot_env=dot_env,
+            mode=subprocess_mode,
+            **kwargs,
+        )
     return runner_class(
         waldiez=waldiez,
         output_path=output_path,
         uploads_root=uploads_root,
         structured_io=structured_io,
         dot_env=dot_env,
+        mode=mode,
         **kwargs,
     )
 
@@ -134,7 +150,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             **kwargs,
         )
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Get the string representation of the runner.
 
         Returns
@@ -159,7 +175,9 @@ class WaldiezRunner(WaldiezBaseRunner):
         """
         if hasattr(self._runner, name):
             return getattr(self._runner, name)
-        raise AttributeError(f"{type(self).__name__} has no attribute '{name}'")
+        raise AttributeError(
+            f"{type(self).__name__} has no attribute '{name}'"
+        )  # pragma: no cover
 
     def _run(
         self,
@@ -263,5 +281,6 @@ class WaldiezRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             structured_io=structured_io,
             dot_env=dot_env,
+            waldiez_file=waldiez_file,
             **kwargs,
         )

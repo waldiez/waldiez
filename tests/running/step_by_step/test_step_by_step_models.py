@@ -10,7 +10,7 @@
 import pytest
 from pydantic import ValidationError
 
-from waldiez.running.step_by_step_models import (
+from waldiez.running.step_by_step.step_by_step_models import (
     HELP_MESSAGE,
     WaldiezDebugError,
     WaldiezDebugEventInfo,
@@ -66,14 +66,14 @@ def test_debug_print_model() -> None:
 
 def test_debug_input_request_and_response() -> None:
     """Test debug input request and response."""
-    req = WaldiezDebugInputRequest(prompt="Enter input:", input_id="1234")
+    req = WaldiezDebugInputRequest(prompt="Enter input:", request_id="1234")
     assert req.type == "debug_input_request"
     assert req.prompt == "Enter input:"
-    assert req.input_id == "1234"
+    assert req.request_id == "1234"
 
-    resp = WaldiezDebugInputResponse(input_id="1234", response="c")
+    resp = WaldiezDebugInputResponse(request_id="1234", data="c")
     assert resp.type == "debug_input_response"
-    assert resp.response == "c"
+    assert resp.data == "c"
 
 
 def test_debug_event_info() -> None:
@@ -115,12 +115,12 @@ def test_waldiez_debug_message_union() -> None:
     d_req = {
         "type": "debug_input_request",
         "prompt": "input?",
-        "input_id": "id1",
+        "request_id": "id1",
     }
     d_resp = {
         "type": "debug_input_response",
-        "input_id": "id1",
-        "response": "c",
+        "request_id": "id1",
+        "data": "c",
     }
     d_error = {"type": "debug_error", "error": "fail"}
 

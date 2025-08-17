@@ -6,11 +6,11 @@ import threading
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from waldiez.logger import WaldiezLogger
+from waldiez.logger import WaldiezLogger, get_logger
 
 from .extras.path_resolver import DefaultPathResolver
 from .extras.serializer import DefaultSerializer
-from .protocols import ExportingLogger, PathResolver, Serializer, Validator
+from .protocols import PathResolver, Serializer, Validator
 from .types import ExportConfig
 
 
@@ -22,7 +22,7 @@ class ExporterContext:
     path_resolver: PathResolver | None = None
     validator: Validator | None = None
     config: ExportConfig | None = None
-    logger: ExportingLogger | None = None
+    logger: WaldiezLogger | None = None
 
     def get_serializer(self) -> Serializer:
         """Get serializer or raise if not set.
@@ -112,15 +112,15 @@ class ExporterContext:
         """
         self.config = config
 
-    def get_logger(self) -> ExportingLogger:
+    def get_logger(self) -> WaldiezLogger:
         """Get logger or create a default one.
 
         Returns
         -------
-        ExportingLogger
+        WaldiezLogger
             The logger instance.
         """
-        return self.logger or WaldiezLogger()
+        return self.logger or get_logger()
 
 
 # pylint: disable=too-few-public-methods
@@ -168,7 +168,7 @@ class DefaultExporterContext(ExporterContext):
         serializer: Serializer | None = None,
         validator: Validator | None = None,
         path_resolver: PathResolver | None = None,
-        logger: ExportingLogger | None = None,
+        logger: WaldiezLogger | None = None,
         config: ExportConfig | None = None,
     ) -> None:
         if hasattr(self, "_initialized"):
@@ -176,7 +176,7 @@ class DefaultExporterContext(ExporterContext):
         super().__init__(
             serializer=serializer or DefaultSerializer(),
             path_resolver=path_resolver or DefaultPathResolver(),
-            logger=logger or WaldiezLogger(),
+            logger=logger or get_logger(),
             validator=validator,
             config=config,
         )
@@ -185,7 +185,7 @@ class DefaultExporterContext(ExporterContext):
 
 def get_default_exporter_context(
     config: ExportConfig | None = None,
-    logger: ExportingLogger | None = None,
+    logger: WaldiezLogger | None = None,
 ) -> ExporterContext:
     """Get the default exporter context.
 
@@ -204,7 +204,7 @@ def get_default_exporter_context(
     return DefaultExporterContext(
         serializer=DefaultSerializer(),
         path_resolver=DefaultPathResolver(),
-        logger=logger or WaldiezLogger(),
+        logger=logger or get_logger(),
         config=config,
     )
 
@@ -214,7 +214,7 @@ def create_exporter_context(
     validator: Validator | None = None,
     path_resolver: PathResolver | None = None,
     config: ExportConfig | None = None,
-    logger: ExportingLogger | None = None,
+    logger: WaldiezLogger | None = None,
 ) -> ExporterContext:
     """Create an exporter context with the given components.
 
@@ -228,7 +228,7 @@ def create_exporter_context(
         The validator component, by default None
     config : ExportConfig | None, optional
         The export configuration, by default None
-    logger : ExportingLogger | None, optional
+    logger : WaldiezLogger | None, optional
         The logger instance, by default None
 
     Returns
@@ -240,6 +240,6 @@ def create_exporter_context(
         serializer=serializer or DefaultSerializer(),
         path_resolver=path_resolver or DefaultPathResolver(),
         validator=validator,
-        logger=logger or WaldiezLogger(),
+        logger=logger or get_logger(),
         config=config,
     )
