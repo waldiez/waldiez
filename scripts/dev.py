@@ -13,6 +13,10 @@ from types import FrameType
 from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
+DOT_LOCAL = ROOT_DIR / ".local"
+
+WORKSPACE_DIR = DOT_LOCAL / "workspace"
+WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def run_dev_servers(py_port: int | None) -> None:
@@ -26,9 +30,17 @@ def run_dev_servers(py_port: int | None) -> None:
     processes: list[tuple[str, subprocess.Popen[Any]]] = []
     try:
         # Start Python dev server
-        python_cmd = [sys.executable, "scripts/dev_server.py", "--reload"]
+        python_cmd = [
+            sys.executable,
+            "-m",
+            "waldiez.ws",
+            "--workspace",
+            str(WORKSPACE_DIR),
+            "--auto-reload",
+            "--verbose",
+        ]
         if py_port:
-            python_cmd.append(f"--port={py_port}")
+            python_cmd.extend(["--port", str(py_port)])
 
         print("Starting Python dev server...")
         python_process = subprocess.Popen(
