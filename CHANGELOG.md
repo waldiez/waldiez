@@ -5,6 +5,21 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## Unreleased
+
+- Update ag2 dependency to 0.9.8.post1
+- Update jupyter dependencies to 4.4.6
+- Allow lists and dicts in group context variables
+- Fix missing ContextExpression when exporting
+- Remove system message from group manager
+- Fix long tool description display
+- Use different icon for shared and custom tools
+- Added waldiez.ws for websocket server used in development
+- Added step-py-step-runner for step-by-step, debug execution
+- Added subprocess runner for running flows in separate processes
+- Other minor bug fixes
+- Other Dependency updates
+
 ## v0.5.9
 
 - Added support for custom .env files in the runner
