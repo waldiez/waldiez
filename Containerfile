@@ -61,7 +61,7 @@ RUN apt update && \
     libjpeg-dev \
     libgif-dev \
     librsvg2-dev \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-xlib-2.0-0 \
     libnspr4 \
     libnss3 \
     libx11-xcb1 \
@@ -81,7 +81,6 @@ RUN apt update && \
     npm install -g corepack && \
     corepack enable && \
     yarn set version stable && \
-    npx playwright install-deps && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/cache/apt/archives/*
