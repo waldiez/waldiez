@@ -82,9 +82,9 @@ def get_event_handler_string(
             f"{tab}            try:\n"
             f"{tab}                should_continue = await on_event(event)\n"
             f"{tab}            except BaseException as e:\n"
-            f"{tab}                print(f'Error in event handler: {{e}}')\n"
+            f'{tab}                print(f"Error in event handler: {{e}}")\n'
             f"{tab}                raise SystemExit(\n"
-            f"{tab}                    'Error in event handler: ' + str(e)\n"
+            f'{tab}                    "Error in event handler: " + str(e)\n'
             f"{tab}                ) from e\n"
         )
     else:
@@ -93,16 +93,16 @@ def get_event_handler_string(
             f"{tab}            try:\n"
             f"{tab}                should_continue = on_event(event)\n"
             f"{tab}            except BaseException as e:\n"
-            f"{tab}                print(f'Error in event handler: {{e}}')\n"
+            f'{tab}                print(f"Error in event handler: {{e}}")\n'
             f"{tab}                raise SystemExit(\n"
-            f"{tab}                    'Error in event handler: ' + str(e)\n"
+            f'{tab}                    "Error in event handler: " + str(e)\n'
             f"{tab}                ) from e\n"
         )
     content += (
         f'{tab}            if event.type == "run_completion":\n'
         f"{tab}                break\n"
         f"{tab}            if not should_continue:\n"
-        f"{tab}                raise SystemExit('Event handler stopped processing')\n"
+        f'{tab}                raise SystemExit("Event handler stopped processing")\n'
     )
     content += get_result_dicts_string(tab, is_async)
     content += (
@@ -137,22 +137,22 @@ def get_result_dicts_string(tab: str, is_async: bool) -> str:
     """
     space = f"{tab}        "
     flow_content = f"{space}result_dict = {{\n"
-    flow_content += f"{space}    'index': index,\n"
+    flow_content += f'{space}    "index": index,\n'
     if is_async:
-        flow_content += f"{space}    'messages': await result.messages,\n"
-        flow_content += f"{space}    'summary': await result.summary,\n"
-        flow_content += f"{space}    'cost': (await result.cost).model_dump(mode='json', fallback=str) if await result.cost else None,\n"
-        flow_content += f"{space}    'context_variables': (await result.context_variables).model_dump(mode='json', fallback=str) if await result.context_variables else None,\n"
+        flow_content += f'{space}    "messages": await result.messages,\n'
+        flow_content += f'{space}    "summary": await result.summary,\n'
+        flow_content += f'{space}    "cost": (await result.cost).model_dump(mode="json", fallback=str) if await result.cost else None,\n'
+        flow_content += f'{space}    "context_variables": (await result.context_variables).model_dump(mode="json", fallback=str) if await result.context_variables else None,\n'
         flow_content += (
-            f"{space}    'last_speaker': await result.last_speaker,\n"
+            f'{space}    "last_speaker": await result.last_speaker,\n'
         )
     else:
-        flow_content += f"{space}    'messages': result.messages,\n"
-        flow_content += f"{space}    'summary': result.summary,\n"
-        flow_content += f"{space}    'cost': result.cost.model_dump(mode='json', fallback=str) if result.cost else None,\n"
-        flow_content += f"{space}    'context_variables': result.context_variables.model_dump(mode='json', fallback=str) if result.context_variables else None,\n"
-        flow_content += f"{space}    'last_speaker': result.last_speaker,\n"
-    flow_content += f"{space}    'uuid': str(result.uuid),\n"
+        flow_content += f'{space}    "messages": result.messages,\n'
+        flow_content += f'{space}    "summary": result.summary,\n'
+        flow_content += f'{space}    "cost": result.cost.model_dump(mode="json", fallback=str) if result.cost else None,\n'
+        flow_content += f'{space}    "context_variables": result.context_variables.model_dump(mode="json", fallback=str) if result.context_variables else None,\n'
+        flow_content += f'{space}    "last_speaker": result.last_speaker,\n'
+    flow_content += f'{space}    "uuid": str(result.uuid),\n'
     flow_content += f"{space}}}\n"
     flow_content += f"{space}result_dicts.append(result_dict)\n"
     return flow_content
