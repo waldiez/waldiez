@@ -113,7 +113,7 @@ def get_sync_sqlite_out() -> str:
         cursor = conn.execute(query)
         rows = cursor.fetchall()
         column_names = [description[0] for description in cursor.description]
-        data = [dict(zip(column_names, row)) for row in rows]
+        data = [dict(zip(column_names, row, strict=True)) for row in rows]
         conn.close()
         with open(csv_file, "w", newline="", encoding="utf-8") as file:
             csv_writer = csv.DictWriter(file, fieldnames=column_names)
@@ -148,7 +148,8 @@ def get_sync_sqlite_out() -> str:
     content += "    rows = cursor.fetchall()\n"
     content += "    column_names = [description[0] for description "
     content += "in cursor.description]\n"
-    content += "    data = [dict(zip(column_names, row)) for row in rows]\n"
+    # pylint: disable=line-too-long
+    content += "    data = [dict(zip(column_names, row, strict=True)) for row in rows]\n"
     content += "    conn.close()\n"
     content += (
         '    with open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
@@ -200,7 +201,7 @@ def get_async_sqlite_out() -> str:
             return
         rows = await cursor.fetchall()
         column_names = [description[0] for description in cursor.description]
-        data = [dict(zip(column_names, row)) for row in rows]
+        data = [dict(zip(column_names, row, strict=True)) for row in rows]
         await cursor.close()
         await conn.close()
         async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:
@@ -235,7 +236,7 @@ def get_async_sqlite_out() -> str:
     content += "    rows = await cursor.fetchall()\n"
     content += "    column_names = [description[0] for description "
     content += "in cursor.description]\n"
-    content += "    data = [dict(zip(column_names, row)) for row in rows]\n"
+    content += "    data = [dict(zip(column_names, row, strict=True)) for row in rows]\n"
     content += "    await cursor.close()\n"
     content += "    await conn.close()\n"
     content += '    async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
