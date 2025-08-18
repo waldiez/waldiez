@@ -2,7 +2,12 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common fixtures for tests."""
 
+import logging
 import os
+import shutil
+import time
+from contextlib import contextmanager
+from datetime import datetime
 from pathlib import Path
 from typing import Generator
 
@@ -30,6 +35,152 @@ from waldiez.models import (
 )
 
 ROOT_DIR = Path(__file__).parent.parent
+ENV_LOCK_FILE = ROOT_DIR / ".env.operations"
+
+logger = logging.getLogger(__name__)
+
+
+class EnvLockError(Exception):
+    """Exception raised when environment file operations fail."""
+
+
+@contextmanager
+def file_lock(
+    lock_path: Path, timeout: float = 30.0
+) -> Generator[None, None, None]:
+    """
+    Run a block of code with a file lock.
+
+    Parameters
+    ----------
+    lock_path : Path
+        The path to the lock file.
+    timeout : float, optional
+        Maximum time to wait for the lock in seconds (default: 30.0).
+
+    Yields
+    ------
+    None
+        Nothing
+
+    Raises
+    ------
+    EnvLockError
+        If the lock cannot be acquired within the timeout period.
+    """
+    lock_path = lock_path.with_suffix(lock_path.suffix + ".lock")
+    start_time = time.time()
+    fd: int | None = None
+
+    # Acquire lock with timeout
+    while True:
+        try:
+            fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_RDWR)
+            break
+        except FileExistsError as exc:
+            if time.time() - start_time > timeout:
+                raise EnvLockError(
+                    f"Could not acquire lock {lock_path} within {timeout}s"
+                ) from exc
+            time.sleep(0.02)
+
+    try:
+        yield
+    finally:
+        # Clean up the lock
+        if fd is not None:  # pyright: ignore
+            try:
+                os.close(fd)
+            except (OSError, FileNotFoundError, PermissionError) as e:
+                logger.warning("Error closing lock file descriptor: %s", e)
+
+        try:
+            lock_path.unlink()
+        except (OSError, FileNotFoundError, PermissionError) as e:
+            logger.warning("Error removing lock file %s: %s", lock_path, e)
+
+
+def _cleanup_temp_file(temp_file: Path) -> None:
+    """Safely remove a temporary file."""
+    try:
+        if temp_file.exists():
+            temp_file.unlink()
+    except BaseException as e:  # pylint: disable=broad-exception-caught
+        logger.warning("Could not clean up temporary file %s: %s", temp_file, e)
+
+
+def _backup_dot_env_if_any(*, overwrite: bool = False) -> bool:
+    """Create or refresh .env.bak atomically if .env exists."""
+    env_file = ROOT_DIR / ".env"
+    bak_file = ROOT_DIR / ".env.bak"
+    tmp_file = ROOT_DIR / ".env.bak.tmp"
+
+    with file_lock(ENV_LOCK_FILE):
+        # Early returns for cases where no backup is needed
+        if not env_file.exists():
+            return False
+
+        if bak_file.exists() and not overwrite:
+            return False
+
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            shutil.copy2(env_file, tmp_file)
+            os.replace(tmp_file, bak_file)  # Atomic operation
+            return True
+
+        except BaseException as e:
+            logger.error("Failed to backup .env file: %s", e)
+            _cleanup_temp_file(tmp_file)
+            raise
+
+
+def _restore_dot_env_if_any() -> bool:
+    """Atomically restore .env from .env.bak if backup exists."""
+    env_file = ROOT_DIR / ".env"
+    bak_file = ROOT_DIR / ".env.bak"
+
+    if not bak_file.exists():
+        return False
+
+    # Create timestamped backup of current .env if it exists
+    prev_file = None
+    if env_file.exists():
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        prev_file = ROOT_DIR / f".env.prev-{timestamp}"
+
+    with file_lock(ENV_LOCK_FILE):
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            # Step 1: Move current .env aside if it exists
+            if env_file.exists() and prev_file:
+                env_file.rename(prev_file)
+
+            # Step 2: Atomically restore from backup
+            os.replace(bak_file, env_file)
+
+            return True
+
+        except BaseException as e:
+            logger.error("Failed to restore .env file: %s", e)
+
+            # Attempt rollback if we moved the original
+            if prev_file and prev_file.exists() and not env_file.exists():
+                try:
+                    os.replace(prev_file, env_file)
+                except BaseException as rollback_error:
+                    msg = (
+                        f"CRITICAL: Rollback failed after restore error. "
+                        f"Original .env is at {prev_file}. "
+                        f"Rollback error: {rollback_error}"
+                    )
+                    logger.critical(msg)
+            raise
+
+        finally:
+            # Clean up the previous version file
+            if prev_file and prev_file.exists():
+                _cleanup_temp_file(prev_file)
 
 
 def get_runnable_flow() -> WaldiezFlow:
@@ -218,33 +369,6 @@ def _restore_env_vars() -> None:
         pass
 
 
-def _backup_dot_env_if_any() -> None:
-    """Backup .env file if it exists."""
-    env_file = ROOT_DIR / ".env"
-    # pylint: disable=too-many-try-statements
-    try:
-        if env_file.exists():
-            backup_file = ROOT_DIR / ".env.bak"
-            if not backup_file.exists():
-                env_file.rename(backup_file)
-    except (OSError, PermissionError, FileNotFoundError):
-        pass
-
-
-def _restore_dot_env_if_any() -> None:
-    """Restore .env from backup if it exists."""
-    env_file = ROOT_DIR / ".env"
-    backup_file = ROOT_DIR / ".env.bak"
-    # pylint: disable=too-many-try-statements
-    try:
-        if backup_file.exists():
-            if env_file.exists():
-                env_file.unlink()
-            backup_file.rename(env_file)
-    except (OSError, PermissionError, FileNotFoundError):
-        pass
-
-
 @pytest.fixture(scope="session", autouse=True)
 def before_and_after_tests() -> Generator[None, None, None]:
     """Fixture to run before and after all tests.
@@ -254,11 +378,12 @@ def before_and_after_tests() -> Generator[None, None, None]:
     None
         Nothing.
     """
-    # Code to run before all tests
+    # before all tests
     _cleanup_files()
     _reset_env_vars()
     _backup_dot_env_if_any()
     yield
+    # after all tests
     _cleanup_files()
     _restore_dot_env_if_any()
     _restore_env_vars()
