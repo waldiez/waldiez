@@ -178,7 +178,7 @@ def update_dict(original: dict[str, Any]) -> dict[str, Any]:
     Examples
     --------
     >>> data = {"count": "42", "active": "true", "tags": "['a', 'b']"}
-    >>> convert_string_values(data)
+    >>> update_dict(data)
     {"count": 42, "active": True, "tags": ['a', 'b']}
     """
     converted_dict: dict[str, Any] = {}
