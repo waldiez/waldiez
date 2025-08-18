@@ -120,8 +120,8 @@ def main_doc_string() -> str:
 
     Raises
     ------
-    RuntimeError
-        If the chat session fails.
+    SystemExit
+        If the user interrupts the chat session.
     """'''
 
 
