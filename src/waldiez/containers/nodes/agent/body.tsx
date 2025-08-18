@@ -260,7 +260,9 @@ const useAgentContentView = (id: string, data: WaldiezNodeAgentData) => {
                                     className="agent-tool-preview"
                                     data-testid="agent-tool-preview"
                                 >
-                                    <div className="agent-tool-img">{getToolIcon(tool.data.label)}</div>
+                                    <div className="agent-tool-img">
+                                        {getToolIcon(tool.data.label, tool.data.toolType)}
+                                    </div>
                                     <div
                                         className="font-small agent-tool-name"
                                         data-testid={`agent-${id}-linked-tool-${index}`}

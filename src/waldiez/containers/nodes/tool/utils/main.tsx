@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import React from "react";
-import { FaCode } from "react-icons/fa6";
+import { FaCode, FaRegFileCode } from "react-icons/fa6";
 
 import { TOOL_ICONS } from "@waldiez/theme/icons";
 
@@ -154,8 +154,19 @@ export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: React.ReactNode | un
     custom: undefined,
 };
 
-export const getToolIcon = (toolType: string, size: number = ICON_SIZE): React.JSX.Element => {
-    switch (toolType) {
+export const getToolIcon = (
+    toolLabel: string,
+    toolType: string,
+    size: number = ICON_SIZE,
+): React.JSX.Element => {
+    const defaultIcon = <FaCode aria-hidden="true" size={size} style={{ width: size, height: size }} />;
+    if (toolType === "custom") {
+        return defaultIcon;
+    }
+    if (toolType === "shared") {
+        return <FaRegFileCode aria-hidden="true" size={size} style={{ width: size, height: size }} />;
+    }
+    switch (toolLabel) {
         case "wikipedia_search":
             return (
                 <img
@@ -222,7 +233,7 @@ export const TOOL_TYPE_OPTIONS: { value: string; label: string; icon?: React.JSX
     {
         value: "shared",
         label: "Shared Code",
-        icon: <FaCode size={18} style={{ marginLeft: 2, width: 16, height: 16 }} />,
+        icon: <FaRegFileCode size={18} style={{ marginLeft: 2, width: 16, height: 16 }} />,
     },
     {
         value: "wikipedia_search",

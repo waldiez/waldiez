@@ -22,7 +22,7 @@ import { temporal } from "zundo";
 import { createStore } from "zustand";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -17673,8 +17673,15 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
   shared: void 0,
   custom: void 0
 };
-const getToolIcon = (toolType, size = ICON_SIZE) => {
-  switch (toolType) {
+const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
+  const defaultIcon = /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size, style: { width: size, height: size } });
+  if (toolType === "custom") {
+    return defaultIcon;
+  }
+  if (toolType === "shared") {
+    return /* @__PURE__ */ jsx(FaRegFileCode, { "aria-hidden": "true", size, style: { width: size, height: size } });
+  }
+  switch (toolLabel) {
     case "wikipedia_search":
       return /* @__PURE__ */ jsx(
         "img",
@@ -17747,7 +17754,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "shared",
     label: "Shared Code",
-    icon: /* @__PURE__ */ jsx(FaCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
+    icon: /* @__PURE__ */ jsx(FaRegFileCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
   },
   {
     value: "wikipedia_search",
@@ -17967,7 +17974,7 @@ const useAgentContentView = (id, data) => {
               className: "agent-tool-preview",
               "data-testid": "agent-tool-preview",
               children: [
-                /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label) }),
+                /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label, tool.data.toolType) }),
                 /* @__PURE__ */ jsx(
                   "div",
                   {
@@ -25214,7 +25221,7 @@ const useWaldiezNodeTool = (id, data) => {
   const [toolData, setToolData] = useState(data);
   const [isDirty, setIsDirty] = useState(false);
   const updatedAt = useMemo(() => getDateString(data.updatedAt), [data.updatedAt]);
-  const logo = useMemo(() => getToolIcon(data.label, 18), [data.label]);
+  const logo = useMemo(() => getToolIcon(data.label, data.toolType, 18), [data.label, data.toolType]);
   useEffect(() => {
     setToolData(data);
     setIsDirty(false);
