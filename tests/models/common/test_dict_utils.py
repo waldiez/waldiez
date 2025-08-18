@@ -33,6 +33,12 @@ from waldiez.models.common.dict_utils import update_dict
             {"a": 1, "b": True},
             {"a": 1, "b": True},
         ),  # non-string values unchanged
+        # Collection types
+        ({"a": "[]"}, {"a": []}),
+        ({"a": "{}"}, {"a": {}}),
+        ({"a": "()"}, {"a": ()}),
+        ({"a": "[1, 2, 3]"}, {"a": [1, 2, 3]}),
+        ({"a": "{'key': 'value'}"}, {"a": {"key": "value"}}),
     ],
 )
 def test_update_dict_conversion(
