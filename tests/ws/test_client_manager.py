@@ -383,12 +383,12 @@ class TestClientManager:
             }
         )
 
-        with patch("waldiez.ws.client_manager.Waldiez") as mock_waldiez_class:
+        with patch("waldiez.ws._file_handler.Waldiez") as mock_waldiez_class:
             mock_waldiez = MagicMock()
             mock_waldiez_class.from_dict.return_value = mock_waldiez
 
             with patch(
-                "waldiez.ws.client_manager.WaldiezExporter"
+                "waldiez.ws._file_handler.WaldiezExporter"
             ) as mock_exporter_class:
                 mock_exporter = MagicMock()
                 mock_exporter_class.return_value = mock_exporter
@@ -402,9 +402,6 @@ class TestClientManager:
                     assert response is not None
                     assert response["type"] == "convert_workflow_response"
                     assert response["success"] is True
-                    assert (
-                        response["converted_data"] == "# Generated Python code"
-                    )
                     assert response["target_format"] == "py"
 
     @pytest.mark.asyncio

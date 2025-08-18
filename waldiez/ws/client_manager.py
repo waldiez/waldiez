@@ -17,10 +17,10 @@ from typing import Any, Callable, Literal
 
 import websockets
 
-from waldiez.exporter import WaldiezExporter
 from waldiez.models import Waldiez
 from waldiez.running.subprocess_runner.runner import WaldiezSubprocessRunner
 
+from ._file_handler import FileRequestHandler
 from .errors import (
     ErrorHandler,
     MessageParsingError,
@@ -30,12 +30,9 @@ from .errors import (
     UnsupportedActionError,
 )
 from .models import (
-    # BreakpointNotification,
     BreakpointRequest,
     BreakpointResponse,
-    # ConnectionNotification,
     ConvertWorkflowRequest,
-    ConvertWorkflowResponse,
     ExecutionMode,
     GetStatusRequest,
     PingRequest,
@@ -43,7 +40,6 @@ from .models import (
     RunWorkflowRequest,
     RunWorkflowResponse,
     SaveFlowRequest,
-    SaveFlowResponse,
     StatusResponse,
     StepControlRequest,
     StepControlResponse,
@@ -51,12 +47,10 @@ from .models import (
     StepRunWorkflowRequest,
     StepRunWorkflowResponse,
     SubprocessCompletionNotification,
-    # SubprocessInputRequestNotification,
     SubprocessOutputNotification,
     UserInputRequestNotification,
     UserInputResponse,
     WorkflowCompletionNotification,
-    # WorkflowOutputNotification,
     WorkflowStatus,
     WorkflowStatusNotification,
     create_error_response,
@@ -163,6 +157,85 @@ class ClientManager:
         """Mark as inactive (server will close the socket elsewhere)."""
         self.is_active = False
 
+    async def cleanup(self) -> None:
+        """Clean up resources when client disconnects."""
+        for session_id, runner in self._runners.items():
+            try:
+                runner.stop()
+                await self.session_manager.remove_session(session_id)
+            except Exception as e:
+                self.logger.warning(
+                    "Error cleaning up session %s: %s ", session_id, e
+                )
+
+        self._runners.clear()
+        self._pending_input.clear()
+        self._last_prompt.clear()
+        self.close_connection()
+
+    # ---------------------------------------------------------------------
+    # Runner -> Client bridges
+    # ---------------------------------------------------------------------
+
+    def _mk_on_output(
+        self, session_id: str
+    ) -> Callable[[dict[str, Any]], None]:
+        """Runner output callback (called from runner threads)."""
+
+        def _cb(data: dict[str, Any]) -> None:
+            loop = self._ensure_loop()
+            if loop is None:
+                # No running loop available; best we can do is log and drop.
+                self.logger.debug(
+                    "No running loop to post runner output; dropping."
+                )
+                return
+            data = {**data, "session_id": session_id}
+            asyncio.run_coroutine_threadsafe(
+                self._handle_runner_output(data), loop
+            )
+
+        return _cb
+
+    # pylint: disable=no-self-use
+    def _mk_on_input_request(self, session_id: str) -> Callable[[str], None]:
+        """Runner input-request callback (fallback if prompt-only)."""
+
+        def _cb(prompt: str) -> None:
+            loop = self._ensure_loop()
+            if loop is None:
+                # No running loop available; best we can do is log and drop.
+                self.logger.debug(
+                    "No running loop to post runner output; dropping."
+                )
+                return
+
+            request_id = f"req_{time.monotonic_ns()}"
+            self._pending_input[session_id] = request_id
+            self._last_prompt[session_id] = prompt or "> "
+
+            async def notify() -> None:
+                try:
+                    await self.session_manager.update_session_status(
+                        session_id, WorkflowStatus.INPUT_WAITING
+                    )
+                    await self.send_message(
+                        UserInputRequestNotification(
+                            session_id=session_id,
+                            request_id=request_id,
+                            prompt=prompt or "> ",
+                            password=False,
+                            timeout=120.0,
+                        )
+                    )
+                except Exception as e:  # pragma: no cover
+                    self.logger.warning("Failed to notify input request: %s", e)
+
+            # hand off to the loop from runner thread
+            asyncio.run_coroutine_threadsafe(notify(), loop)
+
+        return _cb
+
     # ---------------------------------------------------------------------
     # Outbound (server -> client)
     # ---------------------------------------------------------------------
@@ -209,58 +282,20 @@ class ClientManager:
             ).model_dump(mode="json")
 
         if isinstance(msg, SaveFlowRequest):
-            try:
-                filename = msg.filename or f"waldiez_{self.client_id}.waldiez"
-                p = Path(filename).resolve()
-                p = p.relative_to(self.workspace_dir).resolve()
-                if p.exists() and not msg.force_overwrite:
-                    return SaveFlowResponse.fail(
-                        error=f"File exists: {p}", file_path=str(p)
-                    ).model_dump(mode="json")
-                p.parent.mkdir(parents=True, exist_ok=True)
-                p.write_text(msg.flow_data, encoding="utf-8")
-                return SaveFlowResponse.ok(
-                    file_path=str(p.relative_to(self.workspace_dir))
-                ).model_dump(mode="json")
-            except Exception as e:
-                return SaveFlowResponse.fail(error=str(e)).model_dump(
-                    mode="json"
-                )
+            return FileRequestHandler.handle_save_flow_request(
+                msg=msg,
+                workspace_dir=self.workspace_dir,
+                client_id=self.client_id,
+                logger=self.logger,
+            )
 
         if isinstance(msg, ConvertWorkflowRequest):
-            try:
-                waldiez_data = Waldiez.from_dict(json.loads(msg.flow_data))
-            except Exception as e:
-                return ConvertWorkflowResponse.fail(
-                    error=f"Invalid flow_data: {e}",
-                    target_format=msg.target_format,
-                ).model_dump(mode="json")
-
-            try:
-                output_path_str = str(
-                    Path(msg.output_path)
-                    if msg.output_path
-                    else Path(f"waldiez_{self.client_id}.{msg.target_format}")
-                )
-                if not output_path_str.endswith(f".{msg.target_format}"):
-                    output_path_str += f".{msg.target_format}"
-                output_path = Path(output_path_str).resolve()
-                exporter = WaldiezExporter(waldiez_data)
-                exporter.export(
-                    path=output_path,
-                    force=True,
-                    structured_io=True,
-                )
-                converted_data = output_path.read_text(encoding="utf-8")
-                return ConvertWorkflowResponse.ok(
-                    converted_data=converted_data,
-                    target_format=msg.target_format,
-                    output_path=msg.output_path,
-                ).model_dump(mode="json")
-            except Exception as e:
-                return ConvertWorkflowResponse.fail(
-                    error=str(e), target_format=msg.target_format
-                ).model_dump(mode="json")
+            return FileRequestHandler.handle_convert_workflow_request(
+                msg=msg,
+                client_id=self.client_id,
+                workspace_dir=self.workspace_dir,
+                logger=self.logger,
+            )
 
         # Start workflow (STANDARD)
         if isinstance(msg, RunWorkflowRequest):
@@ -290,10 +325,6 @@ class ClientManager:
         return self._error_to_response(
             UnsupportedActionError(getattr(msg, "type", "unknown"))
         )
-
-    # ---------------------------------------------------------------------
-    # Start / Run / Debug
-    # ---------------------------------------------------------------------
 
     async def _handle_run_workflow(
         self, msg: RunWorkflowRequest
@@ -432,10 +463,6 @@ class ClientManager:
                 )
             )
 
-    # ---------------------------------------------------------------------
-    # Controls / Input / Stop
-    # ---------------------------------------------------------------------
-
     async def _handle_step_control(
         self, msg: StepControlRequest
     ) -> dict[str, Any]:
@@ -449,6 +476,7 @@ class ClientManager:
             ).model_dump(mode="json")
 
         code = {
+            "": "c",
             "continue": "c",
             "step": "s",
             "run": "r",
@@ -489,8 +517,7 @@ class ClientManager:
             "remove": "rb",
         }[msg.action]
 
-        # NOTE: current CLI supports ab/rb on *current event*.
-        # If we later add `ab <event>`, send f"{cmd} {msg.event_type}"
+        # NOTE: If we later add `ab <event>`, send f"{cmd} {msg.event_type}"
         runner.provide_user_input(cmd)
         return BreakpointResponse.ok(
             action=msg.action, session_id=msg.session_id
@@ -547,84 +574,6 @@ class ClientManager:
         except Exception as e:
             # Shape it as a standard error response
             return self._error_to_response(e)
-
-    # ---------------------------------------------------------------------
-    # Runner -> Client bridges
-    # ---------------------------------------------------------------------
-
-    def _mk_on_output(
-        self, session_id: str
-    ) -> Callable[[dict[str, Any]], None]:
-        """Runner output callback (called from runner threads)."""
-
-        def _cb(data: dict[str, Any]) -> None:
-            loop = self._ensure_loop()
-            if loop is None:
-                # No running loop available; best we can do is log and drop.
-                self.logger.debug(
-                    "No running loop to post runner output; dropping."
-                )
-                return
-            data = {**data, "session_id": session_id}
-            asyncio.run_coroutine_threadsafe(
-                self._handle_runner_output(data), loop
-            )
-
-        return _cb
-
-    # pylint: disable=no-self-use
-    def _mk_on_input_request(self, session_id: str) -> Callable[[str], None]:
-        """Runner input-request callback (fallback if prompt-only)."""
-
-        def _cb(prompt: str) -> None:
-            loop = self._ensure_loop()
-            if loop is None:
-                # No running loop available; best we can do is log and drop.
-                self.logger.debug(
-                    "No running loop to post runner output; dropping."
-                )
-                return
-
-            request_id = f"req_{time.monotonic_ns()}"
-            self._pending_input[session_id] = request_id
-            self._last_prompt[session_id] = prompt or "> "
-
-            async def notify() -> None:
-                try:
-                    await self.session_manager.update_session_status(
-                        session_id, WorkflowStatus.INPUT_WAITING
-                    )
-                    await self.send_message(
-                        UserInputRequestNotification(
-                            session_id=session_id,
-                            request_id=request_id,
-                            prompt=prompt or "> ",
-                            password=False,
-                            timeout=120.0,
-                        )
-                    )
-                except Exception as e:  # pragma: no cover
-                    self.logger.warning("Failed to notify input request: %s", e)
-
-            # hand off to the loop from runner thread
-            asyncio.run_coroutine_threadsafe(notify(), loop)
-
-        return _cb
-
-    async def cleanup(self) -> None:
-        """Clean up resources when client disconnects."""
-        for session_id, runner in self._runners.items():
-            try:
-                runner.stop()
-                await self.session_manager.remove_session(session_id)
-            except Exception as e:
-                self.logger.warning(
-                    "Error cleaning up session %s: %s ", session_id, e
-                )
-
-        self._runners.clear()
-        self._pending_input.clear()
-        self._last_prompt.clear()
 
     async def _handle_runner_output(self, data: dict[str, Any]) -> None:
         """Handle output from the runner.
@@ -805,7 +754,7 @@ class ClientManager:
         content: str,
     ) -> str:
         # let's try to avoid messages like (including the prompt):
-        # \"content\": \"Prompt: {\\\"type\\\": \\\"text\\\",...\\}\"
+        # \"content\": \"Prompt msg: {\\\"type\\\": \\\"text\\\",...\\}\"
         last = self._last_prompt.get(session_id)
         if last:
             s_last = last.strip()

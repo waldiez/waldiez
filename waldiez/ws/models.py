@@ -292,7 +292,6 @@ class ConvertWorkflowResponse(BaseResponse):
     """Response to convert workflow request."""
 
     type: Literal["convert_workflow_response"] = "convert_workflow_response"
-    converted_data: str | None = None
     target_format: str
     output_path: str | None = None
     error: str | None = None
