@@ -2,12 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Common fixtures for tests."""
 
-import logging
 import os
 import shutil
-import time
-from contextlib import contextmanager
-from datetime import datetime
 from pathlib import Path
 from typing import Generator
 
@@ -34,153 +30,7 @@ from waldiez.models import (
     WaldiezUserProxyData,
 )
 
-ROOT_DIR = Path(__file__).parent.parent
-ENV_LOCK_FILE = ROOT_DIR / ".env.operations"
-
-logger = logging.getLogger(__name__)
-
-
-class EnvLockError(Exception):
-    """Exception raised when environment file operations fail."""
-
-
-@contextmanager
-def file_lock(
-    lock_path: Path, timeout: float = 30.0
-) -> Generator[None, None, None]:
-    """
-    Run a block of code with a file lock.
-
-    Parameters
-    ----------
-    lock_path : Path
-        The path to the lock file.
-    timeout : float, optional
-        Maximum time to wait for the lock in seconds (default: 30.0).
-
-    Yields
-    ------
-    None
-        Nothing
-
-    Raises
-    ------
-    EnvLockError
-        If the lock cannot be acquired within the timeout period.
-    """
-    lock_path = lock_path.with_suffix(lock_path.suffix + ".lock")
-    start_time = time.time()
-    fd: int | None = None
-
-    # Acquire lock with timeout
-    while True:
-        try:
-            fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_RDWR)
-            break
-        except FileExistsError as exc:
-            if time.time() - start_time > timeout:
-                raise EnvLockError(
-                    f"Could not acquire lock {lock_path} within {timeout}s"
-                ) from exc
-            time.sleep(0.02)
-
-    try:
-        yield
-    finally:
-        # Clean up the lock
-        if fd is not None:  # pyright: ignore
-            try:
-                os.close(fd)
-            except (OSError, FileNotFoundError, PermissionError) as e:
-                logger.warning("Error closing lock file descriptor: %s", e)
-
-        try:
-            lock_path.unlink()
-        except (OSError, FileNotFoundError, PermissionError) as e:
-            logger.warning("Error removing lock file %s: %s", lock_path, e)
-
-
-def _cleanup_temp_file(temp_file: Path) -> None:
-    """Safely remove a temporary file."""
-    try:
-        if temp_file.exists():
-            temp_file.unlink()
-    except BaseException as e:  # pylint: disable=broad-exception-caught
-        logger.warning("Could not clean up temporary file %s: %s", temp_file, e)
-
-
-def _backup_dot_env_if_any(*, overwrite: bool = False) -> bool:
-    """Create or refresh .env.bak atomically if .env exists."""
-    env_file = ROOT_DIR / ".env"
-    bak_file = ROOT_DIR / ".env.bak"
-    tmp_file = ROOT_DIR / ".env.bak.tmp"
-
-    with file_lock(ENV_LOCK_FILE):
-        # Early returns for cases where no backup is needed
-        if not env_file.exists():
-            return False
-
-        if bak_file.exists() and not overwrite:
-            return False
-
-        # pylint: disable=too-many-try-statements,broad-exception-caught
-        try:
-            shutil.copy2(env_file, tmp_file)
-            os.replace(tmp_file, bak_file)  # Atomic operation
-            return True
-
-        except BaseException as e:
-            logger.error("Failed to backup .env file: %s", e)
-            _cleanup_temp_file(tmp_file)
-            raise
-
-
-def _restore_dot_env_if_any() -> bool:
-    """Atomically restore .env from .env.bak if backup exists."""
-    env_file = ROOT_DIR / ".env"
-    bak_file = ROOT_DIR / ".env.bak"
-
-    if not bak_file.exists():
-        return False
-
-    # Create timestamped backup of current .env if it exists
-    prev_file = None
-    if env_file.exists():
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        prev_file = ROOT_DIR / f".env.prev-{timestamp}"
-
-    with file_lock(ENV_LOCK_FILE):
-        # pylint: disable=too-many-try-statements,broad-exception-caught
-        try:
-            # Step 1: Move current .env aside if it exists
-            if env_file.exists() and prev_file:
-                env_file.rename(prev_file)
-
-            # Step 2: Atomically restore from backup
-            os.replace(bak_file, env_file)
-
-            return True
-
-        except BaseException as e:
-            logger.error("Failed to restore .env file: %s", e)
-
-            # Attempt rollback if we moved the original
-            if prev_file and prev_file.exists() and not env_file.exists():
-                try:
-                    os.replace(prev_file, env_file)
-                except BaseException as rollback_error:
-                    msg = (
-                        f"CRITICAL: Rollback failed after restore error. "
-                        f"Original .env is at {prev_file}. "
-                        f"Rollback error: {rollback_error}"
-                    )
-                    logger.critical(msg)
-            raise
-
-        finally:
-            # Clean up the previous version file
-            if prev_file and prev_file.exists():
-                _cleanup_temp_file(prev_file)
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def get_runnable_flow() -> WaldiezFlow:
@@ -315,80 +165,6 @@ def get_runnable_flow() -> WaldiezFlow:
     return flow
 
 
-def _cleanup_files() -> None:
-    """Cleanup files created during tests."""
-    extra_files = [
-        "test_flow",
-        "test_flow.waldiez",
-        "flow_name.mmd",
-        "captain_agent_llm_config.json",
-        "captain_agent_agent_lib.json",
-    ]
-    for file in extra_files:
-        file_path = ROOT_DIR / file
-        if file_path.exists():
-            try:
-                file_path.unlink()
-            except (OSError, PermissionError):
-                print(
-                    f"Failed to remove {file_path}."
-                    "It might be in use or read-only."
-                )
-
-
-def _reset_env_vars() -> None:
-    """Reset environment variables."""
-    dot_env_file = ROOT_DIR / ".env"
-    # pylint: disable=too-many-try-statements
-    try:
-        if dot_env_file.exists():
-            with open(dot_env_file, "r", encoding="utf-8") as file:
-                for line in file:
-                    if not line.startswith("#") and "=" in line:
-                        key, _ = line.strip().split("=", 1)
-                        if key in os.environ:
-                            del os.environ[key]
-    except (OSError, PermissionError, FileNotFoundError):
-        pass
-
-    os.environ.pop("OPENAI_API_KEY", None)
-
-
-def _restore_env_vars() -> None:
-    """Restore environment variables from .env file."""
-    dot_env_file = ROOT_DIR / ".env"
-    # pylint: disable=too-many-try-statements
-    try:
-        if dot_env_file.exists():
-            with open(dot_env_file, "r", encoding="utf-8") as file:
-                for line in file:
-                    if not line.startswith("#") and "=" in line:
-                        key, value = line.strip().split("=", 1)
-                        os.environ[key] = value
-    except (OSError, PermissionError, FileNotFoundError):
-        pass
-
-
-@pytest.fixture(scope="session", autouse=True)
-def before_and_after_tests() -> Generator[None, None, None]:
-    """Fixture to run before and after all tests.
-
-    Yields
-    ------
-    None
-        Nothing.
-    """
-    # before all tests
-    _cleanup_files()
-    _reset_env_vars()
-    _backup_dot_env_if_any()
-    yield
-    # after all tests
-    _cleanup_files()
-    _restore_dot_env_if_any()
-    _restore_env_vars()
-
-
 @pytest.fixture(scope="function")
 def waldiez_flow() -> WaldiezFlow:
     """Get a valid, runnable WaldiezFlow instance.
@@ -478,3 +254,146 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
     dumped["data"]["agents"]["userProxyAgents"] = [user_proxy]
     dumped["data"]["chats"][0]["data"]["maxTurns"] = 1
     return flow
+
+
+def _cleanup_files() -> None:
+    """Cleanup files created during tests."""
+    extra_files = [
+        "test_flow",
+        "test_flow.waldiez",
+        "flow_name.mmd",
+        "captain_agent_llm_config.json",
+        "captain_agent_agent_lib.json",
+    ]
+    for file in extra_files:
+        file_path = PROJECT_ROOT / file
+        if file_path.exists():
+            try:
+                file_path.unlink()
+            except (OSError, PermissionError):
+                print(
+                    f"Failed to remove {file_path}."
+                    "It might be in use or read-only."
+                )
+
+
+def _reset_env_vars() -> None:
+    """Reset environment variables."""
+    dot_env_file = PROJECT_ROOT / ".env"
+    # pylint: disable=too-many-try-statements
+    try:
+        if dot_env_file.exists():
+            with open(dot_env_file, "r", encoding="utf-8") as file:
+                for line in file:
+                    if not line.startswith("#") and "=" in line:
+                        key, _ = line.strip().split("=", 1)
+                        if key in os.environ:
+                            del os.environ[key]
+    except (OSError, PermissionError, FileNotFoundError):
+        pass
+
+    os.environ.pop("OPENAI_API_KEY", None)
+
+
+def _restore_env_vars() -> None:
+    """Restore environment variables from .env file."""
+    dot_env_file = PROJECT_ROOT / ".env"
+    # pylint: disable=too-many-try-statements
+    try:
+        if dot_env_file.exists():
+            with open(dot_env_file, "r", encoding="utf-8") as file:
+                for line in file:
+                    if not line.startswith("#") and "=" in line:
+                        key, value = line.strip().split("=", 1)
+                        os.environ[key] = value
+    except (OSError, PermissionError, FileNotFoundError):
+        pass
+
+
+def _get_work_dir(worker_id: str) -> Path:
+    """Get the working directory for a given worker ID.
+
+    Parameters
+    ----------
+    worker_id : str
+        The ID of the worker process.
+
+    Returns
+    -------
+    Path
+        The working directory path.
+    """
+    if worker_id == "master":
+        # Single process or master - work in project root
+        return PROJECT_ROOT
+    # else:
+    # xdist worker - create isolated directory
+    work_dir = PROJECT_ROOT / f"test_worker_{worker_id}"
+    work_dir.mkdir(exist_ok=True)
+    return work_dir
+
+
+def _get_backup_file(worker_id: str) -> Path:
+    """Get the backup file path for a given worker ID."""
+    work_dir = _get_work_dir(worker_id)
+    return work_dir / ".env.test_backup"
+
+
+def _env_file_backup(worker_id: str) -> bool:
+    """Backup .env before tests, restore after tests."""
+    # SETUP: Backup existing .env if it exists
+    work_dir = _get_work_dir(worker_id)
+    backup_file = _get_backup_file(worker_id)
+    env_file = work_dir / ".env"
+    if env_file.exists():
+        shutil.copy2(env_file, backup_file)
+        backed_up = True
+    else:
+        backed_up = False
+    return backed_up
+
+
+def _env_file_restore(worker_id: str, backed_up: bool) -> None:
+    """Restore .env from backup after tests."""
+    # TEARDOWN: Restore or clean up
+    # Determine working directory
+    work_dir = _get_work_dir(worker_id)
+    backup_file = _get_backup_file(worker_id)
+    env_file = work_dir / ".env"
+    if backed_up and backup_file.exists():
+        # Restore original .env
+        shutil.copy2(backup_file, env_file)
+        backup_file.unlink()
+    elif not backed_up and env_file.exists():
+        # No original .env existed, remove any test-created one
+        env_file.unlink()
+
+    # Clean up worker directory if we created it
+    if worker_id != "master" and work_dir.exists():
+        # Remove the worker directory and its contents
+        shutil.rmtree(work_dir, ignore_errors=True)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def before_and_after_tests(worker_id: str) -> Generator[None, None, None]:
+    """Fixture to run before and after all tests.
+
+    Parameters
+    ----------
+    worker_id : str
+        The ID of the worker process.
+
+    Yields
+    ------
+    None
+        Nothing.
+    """
+    # before all tests
+    backed_up = _env_file_backup(worker_id)
+    _cleanup_files()
+    _reset_env_vars()
+    yield
+    # after all tests
+    _env_file_restore(worker_id, backed_up=backed_up)
+    _cleanup_files()
+    _restore_env_vars()
