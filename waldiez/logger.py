@@ -18,6 +18,8 @@ from typing import Any, Callable, Mapping, Optional
 
 import click
 
+HERE = Path(__file__).parent
+
 
 class LogLevel(IntEnum):
     """Log level enumeration for comparison."""
@@ -480,7 +482,10 @@ class WaldiezLogger(logging.Logger):
         try:
             relative = full_path.relative_to(Path.cwd())
         except ValueError:  # pragma: no cover
-            relative = full_path
+            try:
+                relative = full_path.relative_to(HERE.parent)
+            except ValueError:  # pragma: no cover
+                relative = full_path
         return f"{relative}:{line_number}"
 
     def _get_timestamp(self) -> str:
