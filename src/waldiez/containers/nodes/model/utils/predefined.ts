@@ -186,6 +186,14 @@ const predefinedCohereModels = [
 // https://docs.nvidia.com/nim/large-language-models/latest/models.html
 const predefinedNIMModels = [
     {
+        label: "GPT-OSS-20B",
+        value: "openai/gpt-oss-20b",
+    },
+    {
+        label: "GPT-OSS-120B",
+        value: "openai/gpt-oss-120b",
+    },
+    {
         label: "Meta Llama 3 8B Instruct",
         value: "meta/llama3-8b-instruct",
     },

@@ -220,11 +220,11 @@ describe("AfterWork", () => {
         expect(screen.getByText("Revert to the user agent")).toBeInTheDocument();
         expect(screen.getByText("Ask the user")).toBeInTheDocument();
         expect(screen.getByText("Terminate the flow")).toBeInTheDocument();
+        expect(screen.queryByText("Do Nothing")).toBeInTheDocument();
 
         // Should not include excluded options
         expect(screen.queryByText("Group Chat")).not.toBeInTheDocument();
         expect(screen.queryByText("Trigger a nested chat")).not.toBeInTheDocument();
-        expect(screen.queryByText("Do Nothing")).not.toBeInTheDocument();
     });
 
     it("should display limited transition target options for group chat context", async () => {
@@ -244,6 +244,7 @@ describe("AfterWork", () => {
         expect(screen.queryByText("Pass the floor to another agent")).not.toBeInTheDocument();
         expect(screen.queryByText("Choose a random agent")).not.toBeInTheDocument();
         expect(screen.queryByText("Return to the group chat manager")).not.toBeInTheDocument();
+        expect(screen.queryByText("Do Nothing")).not.toBeInTheDocument();
     });
 
     it("should handle TerminateTarget selection", async () => {

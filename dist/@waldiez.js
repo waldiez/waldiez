@@ -7198,12 +7198,13 @@ const Select = forwardRef(
     );
   }
 );
-const targetTypesToExclude = ["GroupChatTarget", "NestedChatTarget", "StayTarget"];
+const targetTypesToExclude = ["GroupChatTarget", "NestedChatTarget"];
 const targetTypesToExcludeForGroupChat = [
   ...targetTypesToExclude,
   "AgentTarget",
   "RandomAgentTarget",
-  "GroupManagerTarget"
+  "GroupManagerTarget",
+  "StayTarget"
 ];
 const targetsToLabelsMapping = {
   AgentTarget: "Pass the floor to another agent",
@@ -7296,6 +7297,7 @@ const AfterWork = memo(
           case "RevertToUserTarget":
           case "AskUserTarget":
           case "GroupManagerTarget":
+          case "StayTarget":
             onChange({ targetType, value: [] });
             break;
           case "RandomAgentTarget":
@@ -23645,6 +23647,14 @@ const predefinedCohereModels = [
   }
 ];
 const predefinedNIMModels = [
+  {
+    label: "GPT-OSS-20B",
+    value: "openai/gpt-oss-20b"
+  },
+  {
+    label: "GPT-OSS-120B",
+    value: "openai/gpt-oss-120b"
+  },
   {
     label: "Meta Llama 3 8B Instruct",
     value: "meta/llama3-8b-instruct"

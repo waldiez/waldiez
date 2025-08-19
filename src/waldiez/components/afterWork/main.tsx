@@ -22,7 +22,7 @@ type AfterWorkProps = {
 /**
  * Target types to exclude from the dropdown based on context
  */
-const targetTypesToExclude: TransitionTargetType[] = ["GroupChatTarget", "NestedChatTarget", "StayTarget"];
+const targetTypesToExclude: TransitionTargetType[] = ["GroupChatTarget", "NestedChatTarget"];
 /**
  * Target types to exclude when in group chat context
  */
@@ -31,6 +31,7 @@ const targetTypesToExcludeForGroupChat: TransitionTargetType[] = [
     "AgentTarget",
     "RandomAgentTarget",
     "GroupManagerTarget",
+    "StayTarget",
 ];
 /**
  * Mapping of transition target types to human-readable labels
@@ -158,6 +159,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                     case "RevertToUserTarget":
                     case "AskUserTarget":
                     case "GroupManagerTarget":
+                    case "StayTarget":
                         onChange({ targetType: targetType, value: [] });
                         break;
                     case "RandomAgentTarget":
