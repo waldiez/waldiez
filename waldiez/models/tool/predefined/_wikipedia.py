@@ -43,7 +43,7 @@ class WikipediaSearchToolImpl(PredefinedTool):
     @property
     def requirements(self) -> list[str]:
         """Python requirements for the tool."""
-        return ["ag2[wikipedia, openai]"]
+        return ["ag2[wikipedia]"]
 
     @property
     def tags(self) -> list[str]:

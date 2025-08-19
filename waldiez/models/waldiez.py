@@ -285,7 +285,7 @@ class Waldiez:
             self.flow.requirements,
         )
         requirements = set(requirements_list)
-        requirements.add(f"ag2[openai]=={autogen_version}")
+        requirements.add(f"ag2=={autogen_version}")
         if self.has_rag_agents:  # pragma: no branch
             rag_extras = get_retrievechat_extra_requirements(list(self.agents))
             requirements.update(rag_extras)

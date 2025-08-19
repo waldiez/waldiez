@@ -34,7 +34,7 @@ class TavilySearchToolImpl(PredefinedTool):
     @property
     def requirements(self) -> list[str]:
         """Python requirements for the tool."""
-        return ["ag2[tavily, openai]"]
+        return ["ag2[tavily]"]
 
     @property
     def tags(self) -> list[str]:

@@ -39,7 +39,7 @@ class GoogleSearchToolImpl(PredefinedTool):
     @property
     def requirements(self) -> list[str]:
         """Python requirements for the tool."""
-        return ["ag2[google-search,gemini,openai]"]
+        return ["ag2[google-search,gemini]"]
 
     @property
     def tags(self) -> list[str]:
