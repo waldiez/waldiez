@@ -67,14 +67,14 @@ def test_get_models_extra_requirements() -> None:
             },
         ),
         WaldiezModel(
-            id="wm-78",
+            id="wm-8",
             name="model",
             description="model",
             data={  # type: ignore
-                "api_type": "cohere",
+                "api_type": "bedrock",
                 "aws": {
                     "region": "<region>",
-                    "access_key": "<access_key>",
+                    "access_key": "<access_key>",  # nosemgrep # nosec
                     "secret_key": "<secret_key>",  # nosemgrep # nosec
                     "session_token": "<session_token>",  # nosemgrep # nosec
                     "profile_name": "<profile_name>",
