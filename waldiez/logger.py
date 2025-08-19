@@ -12,6 +12,7 @@ import threading
 import traceback
 from datetime import datetime
 from enum import IntEnum
+from pathlib import Path
 from types import TracebackType
 from typing import Any, Callable, Mapping, Optional
 
@@ -475,9 +476,12 @@ class WaldiezLogger(logging.Logger):
     @staticmethod
     def _format_caller_display(filename: str, line_number: int) -> str:
         """Format the caller information for display."""
-        basename = os.path.realpath(filename)
-        relative_to_cwd = os.path.relpath(basename, start=os.getcwd())
-        return f"{relative_to_cwd}:{line_number}"
+        full_path = Path(filename).resolve()
+        try:
+            relative = full_path.relative_to(Path.cwd())
+        except ValueError:  # pragma: no cover
+            relative = full_path
+        return f"{relative}:{line_number}"
 
     def _get_timestamp(self) -> str:
         """Get the current timestamp in a human-readable format."""
