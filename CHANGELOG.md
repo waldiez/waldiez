@@ -9,6 +9,8 @@ The contents of each release will be used in
 
 - Update ag2 dependency to 0.9.8.post1
 - Update jupyter dependencies to 4.4.6
+- Added GPT-5, GPT-5 Mini, GPT-5 Nano options for predefined models
+- Added GPT-OSS-20B, GPT-OSS-120B NIM model options for predefined models
 - Allow lists and dicts in group context variables
 - Fix missing ContextExpression when exporting
 - Remove system message from group manager
