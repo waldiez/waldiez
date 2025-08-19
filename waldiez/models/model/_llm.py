@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 def get_llm_requirements(
     model: "WaldiezModel",
-    ag2_version: str,
+    ag2_version: str,  # pylint: disable=unused-argument
 ) -> set[str]:
     """Get the LLM requirements for the model.
 
@@ -52,7 +52,10 @@ def get_llm_requirements(
     requirements: set[str] = {
         "llama-index",
         "llama-index-core",
-        f"ag2[rag]=={ag2_version}",
+        # f"ag2[rag]=={ag2_version}",
+        "llama-index-embeddings-huggingface",
+        "llama-index-llms-langchain",
+        "llama-index-vector-stores-chroma",
     }
     match model.data.api_type:
         case "openai":

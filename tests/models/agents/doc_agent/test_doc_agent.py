@@ -148,7 +148,10 @@ def test_waldiez_doc_agent_get_llm_requirements_no_models() -> None:
         "llama-index",
         "llama-index-core",
         "llama-index-llms-openai",
-        "ag2[rag]==0.1.0",
+        "llama-index-embeddings-huggingface",
+        "llama-index-vector-stores-chroma",
+        "llama-index-llms-langchain",
+        # "ag2[rag]==0.1.0",
     }
     assert requirements == expected
 
@@ -185,7 +188,10 @@ def test_waldiez_doc_agent_get_llm_requirements_with_models() -> None:
         "llama-index",
         "llama-index-core",
         "llama-index-llms-openai",
-        "ag2[rag]==0.1.0",
+        "llama-index-embeddings-huggingface",
+        "llama-index-vector-stores-chroma",
+        "llama-index-llms-langchain",
+        # "ag2[rag]==0.1.0",
     }
     assert requirements == expected
 
@@ -208,7 +214,15 @@ def test_waldiez_doc_agent_get_llm_requirements_with_nonexistent_model() -> (
         ag2_version="0.1.0",
     )
     # Then
-    expected = {"llama-index", "llama-index-core", "ag2[rag]==0.1.0"}
+    # expected = {"llama-index", "llama-index-core", "ag2[rag]==0.1.0"}
+    expected = {
+        "llama-index",
+        "llama-index-core",
+        "llama-index-embeddings-huggingface",
+        "llama-index-vector-stores-chroma",
+        "llama-index-llms-langchain",
+        # "ag2[rag]==0.1.0",
+    }
     assert requirements == expected
 
 

@@ -114,7 +114,10 @@ class WaldiezDocAgent(WaldiezAgent):
         requirements = {
             "llama-index",
             "llama-index-core",
-            f"ag2[rag]=={ag2_version}",
+            # f"ag2[rag]=={ag2_version}",
+            "llama-index-embeddings-huggingface",
+            "llama-index-llms-langchain",
+            "llama-index-vector-stores-chroma",
         }
         if not self.data.model_ids:
             requirements.add("llama-index-llms-openai")
