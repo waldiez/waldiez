@@ -66,6 +66,21 @@ def test_get_models_extra_requirements() -> None:
                 "api_type": "cohere",
             },
         ),
+        WaldiezModel(
+            id="wm-78",
+            name="model",
+            description="model",
+            data={  # type: ignore
+                "api_type": "cohere",
+                "aws": {
+                    "region": "<region>",
+                    "access_key": "<access_key>",
+                    "secret_key": "<secret_key>",  # nosemgrep # nosec
+                    "session_token": "<session_token>",  # nosemgrep # nosec
+                    "profile_name": "<profile_name>",
+                },
+            },
+        ),
     ]
     autogen_version = get_autogen_version()
     expected_packages = [
@@ -76,7 +91,7 @@ def test_get_models_extra_requirements() -> None:
         f"ag2[groq]=={autogen_version}",
         f"ag2[anthropic]=={autogen_version}",
         f"ag2[cohere]=={autogen_version}",
-        # f"ag2[bedrock]=={autogen_version}",
+        f"ag2[bedrock]=={autogen_version}",
     ]
     model_requirements = get_models_extra_requirements(
         models=models_list, autogen_version=autogen_version
