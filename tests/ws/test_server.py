@@ -181,7 +181,7 @@ class TestWaldiezWsServer:
         # Start first server
         server1 = WaldiezWsServer(host=self.host, port=self.port)
         start_task1 = asyncio.create_task(server1.start())
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
 
         try:
             # Start second server on same port

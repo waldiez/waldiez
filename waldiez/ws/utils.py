@@ -367,7 +367,7 @@ def is_port_available(port: int) -> bool:
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             sock.bind(("", port))
             return True
-    except OSError:
+    except BaseException:  # pylint: disable=broad-exception-caught
         return False
 
 
