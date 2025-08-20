@@ -5,22 +5,22 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## Unreleased
+## v0.5.10
 
-- Update ag2 dependency to 0.9.9
-- Update jupyter dependencies to 4.4.6
+- Updated ag2 dependency to 0.9.9
+- Updated jupyter dependencies to 4.4.6
 - Added GPT-5, GPT-5 Mini, GPT-5 Nano options for predefined models
 - Added GPT-OSS-20B, GPT-OSS-120B NIM model options for predefined models
 - Allow lists and dicts in group context variables
-- Fix missing ContextExpression when exporting
+- Fixed missing ContextExpression when exporting
 - Remove system message from group manager
-- Fix long tool description display
+- Fixed long tool description display
 - Use different icon for shared and custom tools
 - Added waldiez.ws for websocket server used in development
-- Added step-py-step-runner for step-by-step, debug execution
+- Python only: Added step-py-step-runner for debug execution
 - Added subprocess runner for running flows in separate processes
-- Other minor bug fixes
-- Other Dependency updates
+- Other bug fixes
+- Other dependency updates
 
 ## v0.5.9
 
