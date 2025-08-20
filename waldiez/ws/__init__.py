@@ -3,7 +3,11 @@
 # pylint: disable=duplicate-code
 """Waldiez WebSocket server module."""
 
-# from .client import ClientManager
+import typer
+from typer.models import CommandInfo
+
+from .cli import serve
+from .client_manager import ClientManager
 from .errors import (
     ErrorCode,
     ErrorHandler,
@@ -15,8 +19,7 @@ from .errors import (
     WaldiezServerError,
 )
 from .server import WaldiezWsServer, run_server
-
-# from .session import SessionManager
+from .session_manager import SessionManager
 from .utils import (
     ConnectionManager,
     HealthChecker,
@@ -26,9 +29,28 @@ from .utils import (
     test_server_connection,
 )
 
+
+def add_ws_app(app: typer.Typer) -> None:
+    """Add WebSocket server commands to the CLI.
+
+    Parameters
+    ----------
+    app : typer.Typer
+        The Typer application instance.
+    """
+    app.registered_commands.append(
+        CommandInfo(
+            name="ws",
+            help="Start the Waldiez WebSocket server.",
+            callback=serve,
+        )
+    )
+
+
 __all__ = [
     "WaldiezWsServer",
     "run_server",
+    "ClientManager",
     "ConnectionManager",
     "HealthChecker",
     "ServerHealth",
@@ -39,8 +61,10 @@ __all__ = [
     "MessageHandlingError",
     "UnsupportedActionError",
     "ServerOverloadError",
+    "SessionManager",
     "OperationTimeoutError",
     "WaldiezServerError",
     "get_available_port",
     "is_port_available",
+    "add_ws_app",
 ]

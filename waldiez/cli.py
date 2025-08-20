@@ -20,6 +20,7 @@ from .cli_extras import add_cli_extras
 from .logger import get_logger
 from .models import Waldiez
 from .utils import get_waldiez_version
+from .ws import add_ws_app
 
 if TYPE_CHECKING:
     # noinspection PyUnusedImports
@@ -339,6 +340,7 @@ def _do_run(
 
 
 add_cli_extras(app)
+add_ws_app(app)
 
 if __name__ == "__main__":
     app()
