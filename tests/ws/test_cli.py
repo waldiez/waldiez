@@ -6,6 +6,7 @@
 """Tests for CLI functionality."""
 
 import logging
+import re
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -13,6 +14,23 @@ import pytest
 from typer.testing import CliRunner
 
 from waldiez.ws.cli import app, setup_logging
+
+
+def escape_ansi(text: str) -> str:
+    """Remove ANSI escape sequences from a string.
+
+    Parameters
+    ----------
+    text : str
+        The text to process.
+
+    Returns
+    -------
+    str
+        The text without ANSI escape sequences.
+    """
+    ansi_escape = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
+    return ansi_escape.sub("", text)
 
 
 class TestSetupLogging:
@@ -29,7 +47,7 @@ class TestSetupLogging:
             logger = logging.getLogger("test")
             logger.info("Test message")
 
-            assert "Test message" in caplog.text
+            assert "Test message" in escape_ansi(caplog.text)
 
     def test_setup_logging_verbose(
         self, caplog: pytest.LogCaptureFixture
@@ -42,7 +60,7 @@ class TestSetupLogging:
             logger = logging.getLogger("test")
             logger.debug("Debug message")
 
-            assert "Debug message" in caplog.text
+            assert "Debug message" in escape_ansi(caplog.text)
 
     def test_setup_logging_websockets_level(self) -> None:
         """Test that websockets logger level is set to WARNING."""
@@ -65,10 +83,11 @@ class TestCLICommands:
         result = self.runner.invoke(app, ["serve", "--help"])
 
         assert result.exit_code == 0
-        assert "Start Waldiez WebSocket server" in result.output
-        assert "--host" in result.output
-        assert "--port" in result.output
-        assert "--max-clients" in result.output
+        result_output = escape_ansi(result.output)
+        assert "Start Waldiez WebSocket server" in result_output
+        assert "--host" in result_output
+        assert "--port" in result_output
+        assert "--max-clients" in result_output
 
     async def test_serve_command_default_parameters(self) -> None:
         """Test serve command with default parameters."""
