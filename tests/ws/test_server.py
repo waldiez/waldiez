@@ -181,13 +181,13 @@ class TestWaldiezWsServer:
         # Start first server
         server1 = WaldiezWsServer(host=self.host, port=self.port)
         start_task1 = asyncio.create_task(server1.start())
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
 
         try:
             # Start second server on same port
             server2 = WaldiezWsServer(host=self.host, port=self.port)
             start_task2 = asyncio.create_task(server2.start())
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.5)
 
             # Second server should pick different port
             assert server2.port != self.port

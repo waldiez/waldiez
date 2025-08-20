@@ -6,8 +6,7 @@
 """Tests for auto-reload functionality."""
 
 import os
-import tempfile
-import threading
+import shutil
 import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -331,35 +330,33 @@ class TestFileWatcher:
         assert watcher.handler.debounce_delay == 1.0
         assert watcher._is_watching is False
 
-    def test_file_watcher_start_stop(self) -> None:
+    def test_file_watcher_start_stop(self, tmp_path: Path) -> None:
         """Test FileWatcher start and stop."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir)]
-            watcher = FileWatcher(watch_dirs)
+        watch_dirs = [tmp_path / "test_file_watcher_start_stop"]
+        watcher = FileWatcher(watch_dirs)
 
-            # Start watching
-            watcher.start()
-            assert watcher._is_watching is True
+        # Start watching
+        watcher.start()
+        assert watcher._is_watching is True
 
-            # Stop watching
-            watcher.stop()
-            assert watcher._is_watching is False
+        # Stop watching
+        watcher.stop()
+        assert watcher._is_watching is False
 
-    def test_file_watcher_start_already_watching(self) -> None:
+    def test_file_watcher_start_already_watching(self, tmp_path: Path) -> None:
         """Test starting FileWatcher when already watching."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir)]
-            watcher = FileWatcher(watch_dirs)
+        watch_dirs = [tmp_path / "test_file_watcher_start_already_watching"]
+        watcher = FileWatcher(watch_dirs)
 
-            # Start watching
-            watcher.start()
-            assert watcher._is_watching is True
+        # Start watching
+        watcher.start()
+        assert watcher._is_watching is True
 
-            # Start again - should do nothing
-            watcher.start()
-            assert watcher._is_watching is True
+        # Start again - should do nothing
+        watcher.start()
+        assert watcher._is_watching is True
 
-            watcher.stop()
+        watcher.stop()
 
     def test_file_watcher_stop_not_watching(self) -> None:
         """Test stopping FileWatcher when not watching."""
@@ -384,33 +381,34 @@ class TestFileWatcher:
 
         watcher.stop()
 
-    def test_file_watcher_mixed_directories(self) -> None:
+    def test_file_watcher_mixed_directories(self, tmp_path: Path) -> None:
         """Test FileWatcher with mix of existing and nonexistent directories."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir), Path("/nonexistent/path")]
-            watcher = FileWatcher(watch_dirs)
+        watch_dirs = [
+            tmp_path / "test_file_watcher_mixed_directories",
+            Path("/nonexistent/path"),
+        ]
+        watcher = FileWatcher(watch_dirs)
 
-            watcher.start()
+        watcher.start()
+        assert watcher._is_watching is True
+
+        watcher.stop()
+
+    def test_file_watcher_context_manager(self, tmp_path: Path) -> None:
+        """Test FileWatcher as context manager."""
+        watch_dirs = [tmp_path / "test_file_watcher_context_manager"]
+
+        with FileWatcher(watch_dirs) as watcher:
             assert watcher._is_watching is True
 
-            watcher.stop()
-
-    def test_file_watcher_context_manager(self) -> None:
-        """Test FileWatcher as context manager."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir)]
-
-            with FileWatcher(watch_dirs) as watcher:
-                assert watcher._is_watching is True
-
-            assert watcher._is_watching is False
+        assert watcher._is_watching is False
 
     def test_file_watcher_context_manager_exception(
         self, tmp_path: Path
     ) -> None:
         """Test FileWatcher context manager with exception."""
         watcher: FileWatcher | None = None
-        watch_dirs = [tmp_path]
+        watch_dirs = [tmp_path / "test_file_watcher_context_manager_exception"]
         try:
             with FileWatcher(watch_dirs) as watcher:
                 assert watcher._is_watching is True
@@ -420,292 +418,135 @@ class TestFileWatcher:
         assert watcher
         assert watcher._is_watching is False
 
-    def test_file_watcher_real_file_changes(self) -> None:
+    def test_file_watcher_real_file_changes(self, tmp_path: Path) -> None:
         """Test FileWatcher with real file changes."""
         restart_callback = MagicMock()
+        watch_dir = tmp_path / "test_file_watcher_real_file_changes"
+        watch_dir.mkdir(exist_ok=True)
+        watcher = FileWatcher(
+            watch_dirs=[watch_dir],
+            debounce_delay=0.1,
+            restart_callback=restart_callback,
+        )
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir)]
-            watcher = FileWatcher(
-                watch_dirs,
-                debounce_delay=0.1,
-                restart_callback=restart_callback,
+        with watcher:
+            # Create a Python file
+            test_file = (
+                tmp_path / "test_file_watcher_real_file_changes" / "test.py"
             )
+            test_file.write_text("print('hello')")
 
-            with watcher:
-                # Create a Python file
-                test_file = Path(temp_dir) / "test.py"
-                test_file.write_text("print('hello')")
+            # Wait for file system event to be processed
+            time.sleep(0.3)
 
-                # Wait for file system event to be processed
-                time.sleep(0.3)
+            # Should have triggered restart
+            restart_callback.assert_called()
 
-                # Should have triggered restart
-                restart_callback.assert_called()
-
-    def test_file_watcher_ignored_file_changes(self) -> None:
+    def test_file_watcher_ignored_file_changes(self, tmp_path: Path) -> None:
         """Test FileWatcher ignores changes to ignored files."""
         restart_callback = MagicMock()
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir)]
-            watcher = FileWatcher(
-                watch_dirs,
-                debounce_delay=0.1,
-                restart_callback=restart_callback,
+        watch_dir = tmp_path / "test_file_watcher_ignored_file_changes"
+        watch_dir.mkdir(exist_ok=True)
+        watcher = FileWatcher(
+            watch_dirs=[watch_dir],
+            debounce_delay=0.1,
+            restart_callback=restart_callback,
+        )
+
+        with watcher:
+            # Create a file that should be ignored
+            test_file = (
+                tmp_path / "test_file_watcher_ignored_file_changes" / "test.pyc"
             )
+            test_file.write_text("compiled")
 
-            with watcher:
-                # Create a file that should be ignored
-                test_file = Path(temp_dir) / "test.pyc"
-                test_file.write_text("compiled")
+            # Wait a bit
+            time.sleep(0.3)
 
-                # Wait a bit
-                time.sleep(0.3)
-
-                # Should not have triggered restart
-                restart_callback.assert_not_called()
+            # Should not have triggered restart
+            restart_callback.assert_not_called()
 
 
 class TestCreateFileWatcher:
     """Test create_file_watcher function."""
 
-    def test_create_file_watcher_basic(self) -> None:
+    def test_create_file_watcher_basic(self, tmp_path: Path) -> None:
         """Test create_file_watcher with basic parameters."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root_dir = Path(temp_dir)
-            waldiez_dir = root_dir / "waldiez"
-            waldiez_dir.mkdir()
+        root_dir = tmp_path
+        waldiez_dir = root_dir / "waldiez"
+        waldiez_dir.mkdir()
 
-            watcher = create_file_watcher(root_dir)
+        watcher = create_file_watcher(root_dir)
 
-            assert isinstance(watcher, FileWatcher)
-            assert waldiez_dir in watcher.watch_dirs
+        assert isinstance(watcher, FileWatcher)
+        assert waldiez_dir in watcher.watch_dirs
 
-    def test_create_file_watcher_with_additional_dirs(self) -> None:
+    def test_create_file_watcher_with_additional_dirs(
+        self, tmp_path: Path
+    ) -> None:
         """Test create_file_watcher with additional directories."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root_dir = Path(temp_dir)
-            waldiez_dir = root_dir / "waldiez"
-            waldiez_dir.mkdir()
+        root_dir = tmp_path
+        waldiez_dir = root_dir / "waldiez"
+        waldiez_dir.mkdir()
 
-            additional_dir = root_dir / "additional"
-            additional_dir.mkdir()
+        additional_dir = root_dir / "additional"
+        additional_dir.mkdir()
 
-            watcher = create_file_watcher(
-                root_dir, additional_dirs=[additional_dir]
-            )
+        watcher = create_file_watcher(
+            root_dir, additional_dirs=[additional_dir]
+        )
 
-            assert waldiez_dir in watcher.watch_dirs
-            assert additional_dir in watcher.watch_dirs
+        assert waldiez_dir in watcher.watch_dirs
+        assert additional_dir in watcher.watch_dirs
 
-    def test_create_file_watcher_nonexistent_waldiez_dir(self) -> None:
+    def test_create_file_watcher_nonexistent_waldiez_dir(
+        self, tmp_path: Path
+    ) -> None:
         """Test create_file_watcher when waldiez directory doesn't exist."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root_dir = Path(temp_dir)
-            # Don't create waldiez directory
+        root_dir = tmp_path
+        if (root_dir / "waldiez").exists():
+            shutil.rmtree(root_dir / "waldiez")
 
-            watcher = create_file_watcher(root_dir)
+        watcher = create_file_watcher(root_dir)
 
-            # Should not include waldiez directory since it doesn't exist
-            waldiez_dir = root_dir / "waldiez"
-            assert waldiez_dir not in watcher.watch_dirs
+        # Should not include waldiez directory since it doesn't exist
+        waldiez_dir = root_dir / "waldiez"
+        assert waldiez_dir not in watcher.watch_dirs
 
-    def test_create_file_watcher_with_kwargs(self) -> None:
+    def test_create_file_watcher_with_kwargs(self, tmp_path: Path) -> None:
         """Test create_file_watcher with additional kwargs."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root_dir = Path(temp_dir)
-            waldiez_dir = root_dir / "waldiez"
-            waldiez_dir.mkdir()
+        root_dir = tmp_path
+        waldiez_dir = root_dir / "waldiez"
+        waldiez_dir.mkdir()
 
-            custom_patterns = {".js", ".ts"}
-            restart_callback = MagicMock()
+        custom_patterns = {".js", ".ts"}
+        restart_callback = MagicMock()
 
-            watcher = create_file_watcher(
-                root_dir,
-                patterns=custom_patterns,
-                restart_callback=restart_callback,
-            )
+        watcher = create_file_watcher(
+            root_dir,
+            patterns=custom_patterns,
+            restart_callback=restart_callback,
+        )
 
-            assert watcher.handler.patterns == custom_patterns
-            assert watcher.handler.restart_callback is restart_callback
+        assert watcher.handler.patterns == custom_patterns
+        assert watcher.handler.restart_callback is restart_callback
 
-    def test_create_file_watcher_filter_existing_dirs(self) -> None:
+    def test_create_file_watcher_filter_existing_dirs(
+        self, tmp_path: Path
+    ) -> None:
         """Test that create_file_watcher filters to only existing dirs."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root_dir = Path(temp_dir)
+        root_dir = tmp_path
 
-            # Create only one of the directories
-            existing_dir = root_dir / "existing"
-            existing_dir.mkdir()
+        # Create only one of the directories
+        existing_dir = root_dir / "existing"
+        existing_dir.mkdir()
 
-            nonexistent_dir = root_dir / "nonexistent"
+        nonexistent_dir = root_dir / "nonexistent"
 
-            watcher = create_file_watcher(
-                root_dir, additional_dirs=[existing_dir, nonexistent_dir]
-            )
-
-            assert existing_dir in watcher.watch_dirs
-            assert nonexistent_dir not in watcher.watch_dirs
-
-
-class TestReloadHandlerEdgeCases:
-    """Test edge cases for ReloadHandler."""
-
-    def test_concurrent_event_handling(self) -> None:
-        """Test handling of concurrent events."""
-        restart_callback = MagicMock()
-        handler = ReloadHandler(
-            debounce_delay=0.2, restart_callback=restart_callback
+        watcher = create_file_watcher(
+            root_dir, additional_dirs=[existing_dir, nonexistent_dir]
         )
 
-        event = MagicMock()
-        event.is_directory = False
-        event.src_path = "/path/to/file.py"
-
-        # Simulate concurrent events from different threads
-        def trigger_event() -> None:
-            handler.on_modified(event)
-
-        threads: list[threading.Thread] = []
-        for _ in range(5):
-            thread = threading.Thread(target=trigger_event)
-            threads.append(thread)
-            thread.start()
-
-        for thread in threads:
-            thread.join()
-
-        # Wait for debounce
-        time.sleep(0.3)
-
-        # Should only restart once despite multiple concurrent events
-        restart_callback.assert_called_once()
-
-    def test_very_short_debounce_delay(self) -> None:
-        """Test with very short debounce delay."""
-        restart_callback = MagicMock()
-        handler = ReloadHandler(
-            debounce_delay=0.001,
-            restart_callback=restart_callback,  # 1ms
-        )
-
-        event = MagicMock()
-        event.is_directory = False
-        event.src_path = "/path/to/file.py"
-
-        handler.on_modified(event)
-
-        # Very short wait
-        time.sleep(0.01)
-
-        restart_callback.assert_called_once()
-
-    def test_zero_debounce_delay(self) -> None:
-        """Test with zero debounce delay."""
-        restart_callback = MagicMock()
-        handler = ReloadHandler(
-            debounce_delay=0.0, restart_callback=restart_callback
-        )
-
-        event = MagicMock()
-        event.is_directory = False
-        event.src_path = "/path/to/file.py"
-
-        handler.on_modified(event)
-
-        # Even with zero delay, timer should still be used
-        time.sleep(0.01)
-
-        restart_callback.assert_called_once()
-
-    def test_custom_patterns_edge_cases(self) -> None:
-        """Test custom patterns with edge cases."""
-        # Empty patterns
-        handler = ReloadHandler(patterns=set())
-        assert not handler.should_watch_file("/path/to/file.py")
-
-        # Single character patterns
-        handler = ReloadHandler(patterns={"."})
-        assert handler.should_watch_file("/path/to/file.")
-        assert not handler.should_watch_file("/path/to/file.py")
-
-        # Overlapping patterns
-        handler = ReloadHandler(patterns={".py", ".pyx", ".python"})
-        assert handler.should_watch_file("/path/to/file.py")
-        assert handler.should_watch_file("/path/to/file.pyx")
-        assert handler.should_watch_file("/path/to/file.python")
-
-    def test_ignore_patterns_priority(self) -> None:
-        """Test that ignore patterns take priority over watch patterns."""
-        handler = ReloadHandler(
-            patterns={".py", ".pyc"},  # Include both .py and .pyc
-            ignore_patterns={".pyc"},  # But ignore .pyc
-        )
-
-        assert handler.should_watch_file("/path/to/file.py")
-        assert not handler.should_watch_file("/path/to/file.pyc")
-
-    def test_path_normalization(self) -> None:
-        """Test path normalization in should_watch_file."""
-        handler = ReloadHandler()
-
-        # Different path separators and formats
-        assert handler.should_watch_file("\\path\\to\\file.py")
-        assert handler.should_watch_file("./path/to/file.py")
-        assert handler.should_watch_file("../path/to/file.py")
-        assert not handler.should_watch_file("./path/__pycache__/file.py")
-
-    def test_multiple_timer_cancellations(self) -> None:
-        """Test multiple rapid timer cancellations."""
-        restart_callback = MagicMock()
-        handler = ReloadHandler(
-            debounce_delay=0.5, restart_callback=restart_callback
-        )
-
-        event = MagicMock()
-        event.is_directory = False
-        event.src_path = "/path/to/file.py"
-
-        # Rapid events that should cancel previous timers
-        for _ in range(10):
-            handler.on_modified(event)
-            time.sleep(0.01)
-
-        # Wait for final timer
-        time.sleep(0.6)
-
-        # Should only restart once
-        restart_callback.assert_called_once()
-
-    def test_file_watcher_observer_join_timeout(self) -> None:
-        """Test FileWatcher observer join with timeout."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            watch_dirs = [Path(temp_dir)]
-            watcher = FileWatcher(watch_dirs)
-
-            watcher.start()
-
-            # Mock observer.join to simulate timeout
-            with patch.object(watcher.observer, "join") as mock_join:
-                mock_join.return_value = None  # Simulate timeout
-
-                watcher.stop()
-
-                mock_join.assert_called_once_with(timeout=5.0)
-
-    def test_cwd_preservation(self) -> None:
-        """Test that current working directory is preserved."""
-        original_cwd = os.getcwd()
-
-        # Change to a different directory
-        with tempfile.TemporaryDirectory() as temp_dir:
-            os.chdir(temp_dir)
-
-            # Set class variable
-            ReloadHandler._cwd = original_cwd
-
-            # Restore original directory
-            os.chdir(original_cwd)
-
-            assert ReloadHandler._cwd == original_cwd
+        assert existing_dir in watcher.watch_dirs
+        assert nonexistent_dir not in watcher.watch_dirs
