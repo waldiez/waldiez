@@ -135,9 +135,9 @@ class CaptainAgentProcessor:
         ) as f:
             json.dump(llm_config_list, f, ensure_ascii=False, indent=4)
         llm_config = llm_config_list[0]
-        if "temperature" not in llm_config:
+        if "temperature" not in llm_config and "top_p" not in llm_config:
             llm_config["temperature"] = 1
-        if "top_p" not in llm_config:
+        if "top_p" not in llm_config and "temperature" not in llm_config:
             llm_config["top_p"] = 0.95
         if "max_tokens" not in llm_config:
             llm_config["max_tokens"] = 2048
@@ -177,9 +177,15 @@ class CaptainAgentProcessor:
         if not config_list:
             default_model = self._get_default_model(uuid.uuid4().hex)
             default_llm_config = default_model.get_llm_config(skip_price=True)
-            if "temperature" not in default_llm_config:
+            if (
+                "temperature" not in default_llm_config
+                and "top_p" not in default_llm_config
+            ):
                 default_llm_config["temperature"] = temperature
-            if "top_p" not in default_llm_config:
+            if (
+                "top_p" not in default_llm_config
+                and "temperature" not in default_llm_config
+            ):
                 default_llm_config["top_p"] = top_p
             if "max_tokens" not in default_llm_config:
                 default_llm_config["max_tokens"] = max_tokens
@@ -220,15 +226,20 @@ class CaptainAgentProcessor:
             code_execution_config["timeout"] = (
                 self.agent.data.code_execution_config.timeout or 300
             )
-        return {
+        to_return: dict[str, Any] = {
             "default_llm_config": {
-                "temperature": llm_config["temperature"],
-                "top_p": llm_config["top_p"],
                 "max_tokens": llm_config["max_tokens"],
             },
             "code_execution_config": code_execution_config,
             "coding": coding,
         }
+        if llm_config.get("temperature") is not None:
+            to_return["default_llm_config"]["temperature"] = llm_config[
+                "temperature"
+            ]
+        elif llm_config.get("top_p") is not None:
+            to_return["default_llm_config"]["top_p"] = llm_config["top_p"]
+        return to_return
 
     def _get_waldiez_model(self, model_id: str) -> WaldiezModel:
         """Get the Waldiez model by its ID.

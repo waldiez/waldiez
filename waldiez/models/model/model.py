@@ -213,7 +213,7 @@ class WaldiezModel(WaldiezBase):
         optionals: list[tuple[str, type]] = [
             ("base_url", str),
             ("max_tokens", int),
-            # ("temperature", float),
+            ("temperature", float),
             ("top_p", float),
             ("api_version", str),
             ("default_headers", dict),
@@ -229,6 +229,9 @@ class WaldiezModel(WaldiezBase):
             value = getattr(self, attr)
             if value:
                 _llm_config[attr] = value
+        if "top_p" in _llm_config and "temperature" in _llm_config:
+            # only keep one
+            _llm_config.pop("top_p", None)
         if self.data.api_type == "bedrock":
             _llm_config.pop("base_url", None)
             return set_bedrock_aws_config(_llm_config, self.data.aws)

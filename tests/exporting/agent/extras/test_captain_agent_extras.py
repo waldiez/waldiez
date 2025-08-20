@@ -61,9 +61,8 @@ def test_export_captain_agent(tmp_path: Path) -> None:
         "        },\n"
         '        "autobuild_build_config": {\n'
         '            "default_llm_config": {\n'
-        '                "temperature": 1,\n'
-        '                "top_p": 0.95,\n'
-        '                "max_tokens": 2048\n'
+        '                "max_tokens": 2048,\n'
+        '                "temperature": 1.0\n'
         "            },\n"
         '            "code_execution_config": {\n'
         '                "timeout": 300,\n'
@@ -139,9 +138,8 @@ def test_export_captain_agent(tmp_path: Path) -> None:
         "        },\n"
         '        "autobuild_build_config": {\n'
         '            "default_llm_config": {\n'
-        '                "temperature": 1,\n'
-        '                "top_p": 0.95,\n'
-        '                "max_tokens": 2048\n'
+        '                "max_tokens": 2048,\n'
+        '                "temperature": 1.0\n'
         "            },\n"
         '            "code_execution_config": {\n'
         '                "timeout": 300,\n'

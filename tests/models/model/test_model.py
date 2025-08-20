@@ -77,7 +77,7 @@ def test_valid_waldiez_model() -> None:
         "model": name,
         "base_url": "https://example.com",
         "max_tokens": 100,
-        "top_p": 0.2,
+        "temperature": 0.1,
         "api_version": "v1",
         "api_type": "openai",
         "api_key": "api_key",
