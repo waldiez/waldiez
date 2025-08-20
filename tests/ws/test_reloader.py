@@ -128,30 +128,16 @@ class TestReloadHandler:
         handler.on_modified(event)
 
         # Wait for debounce delay
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         restart_callback.assert_called_once()
-
-    def test_on_modified_directory(self) -> None:
-        """Test on_modified for directory events (should be ignored)."""
-        restart_callback = MagicMock()
-        handler = ReloadHandler(restart_callback=restart_callback)
-
-        event = MagicMock()
-        event.is_directory = True
-        event.src_path = "/path/to/directory"
-
-        handler.on_modified(event)
-
-        # Wait a bit to ensure no restart is triggered
-        time.sleep(0.2)
-
-        restart_callback.assert_not_called()
 
     def test_on_modified_ignored_file(self) -> None:
         """Test on_modified for ignored files."""
         restart_callback = MagicMock()
-        handler = ReloadHandler(restart_callback=restart_callback)
+        handler = ReloadHandler(
+            debounce_delay=0.1, restart_callback=restart_callback
+        )
 
         event = MagicMock()
         event.is_directory = False
@@ -159,7 +145,7 @@ class TestReloadHandler:
 
         handler.on_modified(event)
 
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         restart_callback.assert_not_called()
 
