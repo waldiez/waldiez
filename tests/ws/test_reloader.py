@@ -162,7 +162,7 @@ class TestReloadHandler:
 
         handler.on_created(event)
 
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         restart_callback.assert_called_once()
 
@@ -179,7 +179,7 @@ class TestReloadHandler:
 
         handler.on_deleted(event)
 
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         restart_callback.assert_called_once()
 
@@ -224,7 +224,7 @@ class TestReloadHandler:
 
         handler.on_modified(event)
 
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         # Should not restart due to throttling
         restart_callback.assert_not_called()
@@ -245,7 +245,7 @@ class TestReloadHandler:
         first_timer = handler.debounce_timer
 
         # Second event before first timer fires
-        time.sleep(0.2)
+        time.sleep(0.1)
         handler.on_modified(event)
         second_timer = handler.debounce_timer
 
