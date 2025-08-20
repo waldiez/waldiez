@@ -7,7 +7,7 @@ The contents of each release will be used in
 
 ## Unreleased
 
-- Update ag2 dependency to 0.9.8.post1
+- Update ag2 dependency to 0.9.9
 - Update jupyter dependencies to 4.4.6
 - Added GPT-5, GPT-5 Mini, GPT-5 Nano options for predefined models
 - Added GPT-OSS-20B, GPT-OSS-120B NIM model options for predefined models

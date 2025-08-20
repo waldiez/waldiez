@@ -55,7 +55,7 @@ def test_waldiez(tmp_path: Path) -> None:
     assert waldiez3.has_rag_agents
     assert waldiez3.is_single_agent_mode is False
     tool = next(waldiez3.tools)
-    assert f"ag2=={ag2_version}" in waldiez3.requirements
+    assert f"ag2[openai]=={ag2_version}" in waldiez3.requirements
     assert "chromadb>=0.5.23" in waldiez3.requirements
     assert "TOOL_KEY" in tool.secrets
     assert "TOOL_KEY" == waldiez3.get_flow_env_vars()[0][0]

@@ -1,6 +1,6 @@
 -r main.txt
-ag2[redis]==0.9.8.post1
-ag2[websockets]==0.9.8.post1
+ag2[redis]==0.9.9
+ag2[websockets]==0.9.9
 autoflake==2.3.1
 bandit==1.8.6
 black[jupyter]==25.1.0
@@ -9,7 +9,7 @@ fakeredis==2.31.0
 fastjsonschema>=2.21.2
 flake8==7.3.0
 hatchling==1.27.0
-jsonschema==4.25.0
+jsonschema==4.25.1
 jupyter_server==2.16.0
 jupyterlab==4.4.6
 mypy-extensions>=1.1.0
