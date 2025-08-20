@@ -145,7 +145,7 @@ class TestReloadHandler:
         handler.on_modified(event)
 
         # Wait a bit to ensure no restart is triggered
-        time.sleep(0.1)
+        time.sleep(0.2)
 
         restart_callback.assert_not_called()
 
@@ -160,7 +160,7 @@ class TestReloadHandler:
 
         handler.on_modified(event)
 
-        time.sleep(0.1)
+        time.sleep(0.2)
 
         restart_callback.assert_not_called()
 
@@ -217,7 +217,7 @@ class TestReloadHandler:
         handler.on_modified(event)
 
         # Wait for debounce delay
-        time.sleep(0.3)
+        time.sleep(0.5)
 
         # Should only restart once
         restart_callback.assert_called_once()
@@ -260,14 +260,14 @@ class TestReloadHandler:
         first_timer = handler.debounce_timer
 
         # Second event before first timer fires
-        time.sleep(0.1)
+        time.sleep(0.2)
         handler.on_modified(event)
         second_timer = handler.debounce_timer
 
         # First timer should be different from second
         assert first_timer is not second_timer
 
-        time.sleep(0.4)
+        time.sleep(0.5)
 
         # Should only restart once
         restart_callback.assert_called_once()
