@@ -134,7 +134,7 @@ class TestWaldiezWsServer:
 
         # Start server in background task
         start_task = asyncio.create_task(server.start())
-        await asyncio.sleep(0.1)  # Give server time to start
+        await asyncio.sleep(0.5)  # Give server time to start
 
         try:
             assert server.is_running
