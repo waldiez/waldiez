@@ -151,6 +151,10 @@ def test_waldiez_doc_agent_get_llm_requirements_no_models() -> None:
         "llama-index-embeddings-huggingface",
         "llama-index-vector-stores-chroma",
         "llama-index-llms-langchain",
+        "chromadb>=0.5,<2",
+        "docling>=2.15.1,<3",
+        "selenium>=4.28.1,<5",
+        "webdriver-manager==4.0.2",
         # "ag2[rag]==0.1.0",
     }
     assert requirements == expected
@@ -191,6 +195,10 @@ def test_waldiez_doc_agent_get_llm_requirements_with_models() -> None:
         "llama-index-embeddings-huggingface",
         "llama-index-vector-stores-chroma",
         "llama-index-llms-langchain",
+        "chromadb>=0.5,<2",
+        "docling>=2.15.1,<3",
+        "selenium>=4.28.1,<5",
+        "webdriver-manager==4.0.2",
         # "ag2[rag]==0.1.0",
     }
     assert requirements == expected
@@ -221,6 +229,10 @@ def test_waldiez_doc_agent_get_llm_requirements_with_nonexistent_model() -> (
         "llama-index-embeddings-huggingface",
         "llama-index-vector-stores-chroma",
         "llama-index-llms-langchain",
+        "chromadb>=0.5,<2",
+        "docling>=2.15.1,<3",
+        "selenium>=4.28.1,<5",
+        "webdriver-manager==4.0.2",
         # "ag2[rag]==0.1.0",
     }
     assert requirements == expected

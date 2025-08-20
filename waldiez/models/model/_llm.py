@@ -50,9 +50,13 @@ def get_llm_requirements(
         The set of LLM requirements for the model.
     """
     requirements: set[str] = {
+        # f"ag2[rag]=={ag2_version}",
+        "chromadb>=0.5,<2",
+        "docling>=2.15.1,<3",
+        "selenium>=4.28.1,<5",
+        "webdriver-manager==4.0.2",
         "llama-index",
         "llama-index-core",
-        # f"ag2[rag]=={ag2_version}",
         "llama-index-embeddings-huggingface",
         "llama-index-llms-langchain",
         "llama-index-vector-stores-chroma",

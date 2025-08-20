@@ -29,160 +29,52 @@ from waldiez.models.model._llm import (
     get_llm_requirements,
 )
 
+BASE_REQUIREMENTS: set[str] = {
+    # "ag2[rag]==0.1.0",
+    "chromadb>=0.5,<2",
+    "docling>=2.15.1,<3",
+    "selenium>=4.28.1,<5",
+    "webdriver-manager==4.0.2",
+    "llama-index",
+    "llama-index-core",
+    "llama-index-embeddings-huggingface",
+    "llama-index-vector-stores-chroma",
+    "llama-index-llms-langchain",
+}
+
+API_SPECIFIC_REQUIREMENTS: dict[str, set[str]] = {
+    "openai": {"llama-index-llms-openai"} | BASE_REQUIREMENTS,
+    "anthropic": {"llama-index-llms-anthropic"} | BASE_REQUIREMENTS,
+    "azure": {"llama-index-llms-azure-openai"} | BASE_REQUIREMENTS,
+    "nim": {
+        "llama-index-llms-nvidia",
+        "llama-index-readers-file",
+        "llama-index-embeddings-nvidia",
+        "llama-index-postprocessor-nvidia-rerank",
+    }
+    | BASE_REQUIREMENTS,
+    "bedrock": {"llama-index-llms-bedrock-converse"} | BASE_REQUIREMENTS,
+    "deepseek": {"llama-index-llms-deepseek"} | BASE_REQUIREMENTS,
+    "cohere": {
+        "llama-index-llms-cohere",
+        "llama-index-llms-openai",
+    }
+    | BASE_REQUIREMENTS,
+    "google": {
+        "llama-index-llms-google-genai",
+        "llama-index-llms-gemini",
+    }
+    | BASE_REQUIREMENTS,
+    "groq": {"llama-index-llms-groq"} | BASE_REQUIREMENTS,
+    "mistral": {"llama-index-llms-mistralai"} | BASE_REQUIREMENTS,
+    "together": {"llama-index-llms-together"} | BASE_REQUIREMENTS,
+    "other": {"llama-index-llms-openai-like"} | BASE_REQUIREMENTS,
+}
+
 
 @pytest.mark.parametrize(
     "api_type, expected_requirements",
-    [
-        (
-            "openai",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-llms-openai",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-            },
-        ),
-        (
-            "anthropic",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-llms-anthropic",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-            },
-        ),
-        (
-            "azure",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-llms-azure-openai",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-            },
-        ),
-        (
-            "nim",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-nvidia",
-                "llama-index-readers-file",
-                "llama-index-embeddings-nvidia",
-                "llama-index-postprocessor-nvidia-rerank",
-            },
-        ),
-        (
-            "bedrock",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-bedrock-converse",
-            },
-        ),
-        (
-            "deepseek",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-deepseek",
-            },
-        ),
-        (
-            "cohere",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-cohere",
-                "llama-index-llms-openai",
-            },
-        ),
-        (
-            "google",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-google-genai",
-                "llama-index-llms-gemini",
-            },
-        ),
-        (
-            "groq",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-groq",
-            },
-        ),
-        (
-            "mistral",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-mistralai",
-            },
-        ),
-        (
-            "together",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-together",
-            },
-        ),
-        (
-            "other",
-            {
-                # "ag2[rag]==0.1.0",
-                "llama-index",
-                "llama-index-core",
-                "llama-index-embeddings-huggingface",
-                "llama-index-vector-stores-chroma",
-                "llama-index-llms-langchain",
-                "llama-index-llms-openai-like",
-            },
-        ),
-    ],
+    list(API_SPECIFIC_REQUIREMENTS.items()),
 )
 def test_get_llm_requirements(
     api_type: WaldiezModelAPIType, expected_requirements: set[str]
