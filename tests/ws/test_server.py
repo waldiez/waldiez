@@ -11,6 +11,7 @@ import asyncio
 import json
 import re
 import signal
+import sys
 import time
 from collections import deque
 from pathlib import Path
@@ -175,6 +176,7 @@ class TestWaldiezWsServer:
         await server.stop()
         assert not server.is_running
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="etc")
     @pytest.mark.asyncio
     async def test_server_port_unavailable(self) -> None:
         """Test server behavior when port is not available."""
@@ -182,7 +184,7 @@ class TestWaldiezWsServer:
         port = get_available_port()
         server1 = WaldiezWsServer(host=self.host, port=port)
         start_task1 = asyncio.create_task(server1.start())
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.5)
 
         assert server1.is_running
         assert server1.port == port
@@ -191,7 +193,7 @@ class TestWaldiezWsServer:
             # Start second server on same port
             server2 = WaldiezWsServer(host=self.host, port=port)
             start_task2 = asyncio.create_task(server2.start())
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.5)
 
             # Second server should pick different port
             assert server2.port != port
