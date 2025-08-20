@@ -110,10 +110,10 @@ class TestReloadHandler:
     def test_get_src_path_path_object(self) -> None:
         """Test get_src_path with Path object."""
         event = MagicMock()
-        event.src_path = Path("/path/to/file.py")
+        event.src_path = Path("path/to/file.py")
 
         result = ReloadHandler.get_src_path(event)
-        assert result == "/path/to/file.py"
+        assert result == os.path.join("path", "to", "file.py")
 
     def test_on_modified_file(self) -> None:
         """Test on_modified for file events."""
