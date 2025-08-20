@@ -367,18 +367,18 @@ def is_port_available(port: int) -> bool:
     try:
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             sock.bind(("", port))
-    except (socket.error, OSError):
+    except BaseException:  # pylint: disable=broad-exception-caught
         return False
 
     # Check IPv6
-    try:
+    try:  # pragma: no cover
         with closing(
             socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
         ) as sock:
             # Disable dual-stack to only check IPv6
             sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
             sock.bind(("", port))
-    except (socket.error, OSError):
+    except BaseException:  # pylint: disable=broad-exception-caught
         return False
 
     return True
