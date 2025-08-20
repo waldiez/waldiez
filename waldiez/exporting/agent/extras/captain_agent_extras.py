@@ -104,7 +104,7 @@ class CaptainAgentProcessor:
         result.set_nested_config(nested_config)
         serialized_nested_config = self.serializer.serialize(nested_config)
         result.add_arg(f"nested_config={serialized_nested_config}", tabs=1)
-        result.append_after_agent(
+        result.append_before_agent(
             self._patch_default_nested_config(),
         )
         return result
