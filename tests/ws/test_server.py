@@ -179,18 +179,22 @@ class TestWaldiezWsServer:
     async def test_server_port_unavailable(self) -> None:
         """Test server behavior when port is not available."""
         # Start first server
-        server1 = WaldiezWsServer(host=self.host, port=self.port)
+        port = get_available_port()
+        server1 = WaldiezWsServer(host=self.host, port=port)
         start_task1 = asyncio.create_task(server1.start())
         await asyncio.sleep(1)
 
+        assert server1.is_running
+        assert server1.port == port
+
         try:
             # Start second server on same port
-            server2 = WaldiezWsServer(host=self.host, port=self.port)
+            server2 = WaldiezWsServer(host=self.host, port=port)
             start_task2 = asyncio.create_task(server2.start())
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
 
             # Second server should pick different port
-            assert server2.port != self.port
+            assert server2.port != port
             assert server2.is_running
 
             server2.shutdown()
