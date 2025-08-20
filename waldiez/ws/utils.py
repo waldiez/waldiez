@@ -363,12 +363,25 @@ def is_port_available(port: int) -> bool:
     bool
         True if port is available
     """
+    # Check IPv4
     try:
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             sock.bind(("", port))
-            return True
-    except BaseException:  # pylint: disable=broad-exception-caught
+    except (socket.error, OSError):
         return False
+
+    # Check IPv6
+    try:
+        with closing(
+            socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        ) as sock:
+            # Disable dual-stack to only check IPv6
+            sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+            sock.bind(("", port))
+    except (socket.error, OSError):
+        return False
+
+    return True
 
 
 def get_available_port() -> int:
