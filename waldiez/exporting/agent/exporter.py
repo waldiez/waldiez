@@ -300,6 +300,9 @@ class AgentExporter(Exporter[StandardExtras]):
         if captain_result.before_agent:
             extras.append_before_agent(captain_result.before_agent)
 
+        if captain_result.after_agent:
+            extras.append_after_agent(captain_result.after_agent)
+
         return extras
 
     def create_reasoning_extras(self) -> StandardExtras:

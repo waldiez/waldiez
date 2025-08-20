@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods,no-self-use
+# pylint: disable=line-too-long
+# flake8: noqa: E501
 """Captain agent configuration processor."""
 
 import json
@@ -102,7 +104,31 @@ class CaptainAgentProcessor:
         result.set_nested_config(nested_config)
         serialized_nested_config = self.serializer.serialize(nested_config)
         result.add_arg(f"nested_config={serialized_nested_config}", tabs=1)
+        result.append_after_agent(
+            self._patch_default_nested_config(),
+        )
         return result
+
+    @staticmethod
+    def _patch_default_nested_config() -> str:
+        """Patch the default nested configuration.
+
+        Returns
+        -------
+        str
+            The patched nested configuration.
+        """
+        content = """
+# try to avoid having both temperature and top_p in the config
+try:
+    _CAPTAIN_AGENT_DEFAULT_CONFIG = CaptainAgent.DEFAULT_NESTED_CONFIG
+    _CAPTAIN_AGENT_DEFAULT_CONFIG.get("autobuild_build_config", {}).get("default_llm_config", {}).pop("top_p", None)
+    CaptainAgent.DEFAULT_NESTED_CONFIG = _CAPTAIN_AGENT_DEFAULT_CONFIG
+except Exception as e:
+    print(f"Error occurred while patching default nested config: {e}")
+"""
+
+        return content
 
     def _generate_nested_config(
         self,
