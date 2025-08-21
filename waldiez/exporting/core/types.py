@@ -314,6 +314,7 @@ class ExportConfig:
         if for_notebook:
             output_extension = "ipynb"
         cache_seed = kwargs.pop("cache_seed", None)
+        # noinspection PyUnreachableCode
         if cache_seed is not None and not isinstance(cache_seed, int):
             cache_seed = None
         return cls(

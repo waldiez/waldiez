@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
-# pylint: disable=duplicate-code
+# pylint: disable=duplicate-code,too-few-public-methods
 """Run a waldiez flow.
 
 The flow is first converted to an autogen flow with agents, chats, and tools.
@@ -214,6 +214,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                         "workflow event processing (async)"
                     )
                     return []
+                # noinspection DuplicatedCode
                 if self.structured_io:
                     stream = StructuredIOStream(
                         uploads_root=uploads_root, is_async=True

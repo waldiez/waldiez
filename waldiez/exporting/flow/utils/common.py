@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=line-too-long
 # flake8: noqa: E501
-"""Common utils for the final generatio."""
+"""Common utils for the final flow generation."""
 
 from waldiez.models import Waldiez
 

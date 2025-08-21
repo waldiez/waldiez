@@ -123,11 +123,13 @@ def _extract_imports_from_ast(code_string: str) -> tuple[list[str], list[str]]:
 
     for node in ast.walk(tree):
         if isinstance(node, (ast.Import, ast.ImportFrom)):
+            # noinspection PyTypeChecker
             full_import_statement = ast.get_source_segment(code_string, node)
             if not full_import_statement:  # pragma: no cover
                 continue
             full_import_statement = full_import_statement.strip()
 
+            # noinspection PyTypeChecker
             module_name = _extract_module_name(node)
             if not module_name:  # pragma: no cover
                 continue

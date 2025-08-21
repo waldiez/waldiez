@@ -361,6 +361,7 @@ async def test_server_connection(
     return result
 
 
+# noinspection PyBroadException
 def is_port_available(port: int) -> bool:
     """Check if the port is available.
 

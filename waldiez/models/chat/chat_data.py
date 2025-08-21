@@ -55,8 +55,6 @@ class WaldiezChatData(WaldiezBase):
         The maximum number of turns for the chat, by default None (no limit).
     silent : bool, optional
         Whether to run the chat silently, by default False (not silent).
-    summary_args : Optional[dict[str, Any]]
-        The summary args to use in autogen.
     real_source : Optional[str]
         The real source of the chat (overrides the source).
     real_target : Optional[str]

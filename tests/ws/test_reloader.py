@@ -16,6 +16,7 @@ import pytest
 
 SKIP_TEST = False
 try:
+    # noinspection PyUnusedImports
     from waldiez.ws.reloader import (
         FileWatcher,
         ReloadHandler,
@@ -288,6 +289,7 @@ class TestReloadHandler:
             ["/usr/bin/python", "script.py", "--arg", "value"],
         )
 
+    # noinspection PyUnusedLocal
     @patch("os.execv", side_effect=Exception("Restart failed"))
     @patch("os._exit")
     def test_default_restart_failure(

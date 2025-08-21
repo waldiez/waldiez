@@ -125,6 +125,7 @@ class ExecutionGenerator:
         flow_content += "    result_dicts: list[dict[str, Any]] = []\n"
         space = "    "
         if cache_seed is not None:
+            # noinspection SqlDialectInspection
             flow_content += (
                 f"    with Cache.disk(cache_seed={cache_seed}"
                 ") as cache:  # pyright: ignore\n"

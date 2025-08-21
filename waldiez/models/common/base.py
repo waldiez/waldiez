@@ -58,6 +58,7 @@ class WaldiezBase(BaseModel):
             mode = "json"
         if by_alias is None:  # pragma: no branch
             by_alias = True
+        # noinspection PyUnreachableCode
         if not isinstance(by_alias, bool):
             by_alias = True
         return super().model_dump(by_alias=by_alias, mode=mode, **kwargs)
@@ -92,6 +93,7 @@ class WaldiezBase(BaseModel):
         by_alias = kwargs.pop("by_alias", None)
         if by_alias is None:
             by_alias = True
+        # noinspection PyUnreachableCode
         if not isinstance(by_alias, bool):
             by_alias = True
         return super().model_dump_json(by_alias=by_alias, **kwargs)

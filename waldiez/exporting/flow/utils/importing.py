@@ -208,6 +208,7 @@ def get_the_imports_string(
         final_string += "\n"
 
     if is_async:
+        # noinspection PyUnresolvedReferences
         builtin_imports.insert(0, "import asyncio")
         final_string += (
             "\nimport aiofiles"

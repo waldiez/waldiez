@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from .model import WaldiezModel
 
 
+# noinspection PyUnusedLocal
 def get_llm_requirements(
     model: "WaldiezModel",
     ag2_version: str,  # pylint: disable=unused-argument
@@ -154,6 +155,7 @@ def get_llm_imports(model: "WaldiezModel") -> set[str]:
         case "other":
             return {"from llama_index.llms.openai_like import OpenAILike"}
         case _:  # pragma: no cover
+            # noinspection PyUnreachableCode
             raise ValueError(f"Unsupported API type: {model.data.api_type}")
 
 
@@ -201,6 +203,7 @@ def get_llm_arg(model: "WaldiezModel") -> tuple[str, str]:
         case "other":
             return do_other_llm(model)
         case _:  # pragma: no cover
+            # noinspection PyUnreachableCode
             raise ValueError(f"Unsupported API type: {model.data.api_type}")
 
 

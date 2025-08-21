@@ -343,6 +343,7 @@ class WaldiezTransitionAvailability(WaldiezBase):
     value: str = ""
 
 
+# noinspection PyTypeHints
 class WaldiezLLMBasedTransition(WaldiezBase):
     """Condition wrapper for LLM conditions."""
 
@@ -351,6 +352,7 @@ class WaldiezLLMBasedTransition(WaldiezBase):
     available: WaldiezTransitionAvailability
 
 
+# noinspection PyTypeHints
 class WaldiezContextBasedTransition(WaldiezBase):
     """Condition wrapper for context conditions."""
 

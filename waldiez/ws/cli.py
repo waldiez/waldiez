@@ -27,6 +27,7 @@ try:
     HAS_WEBSOCKETS = True  # pyright: ignore
 except ImportError:
     # pylint: disable=missing-param-doc,missing-raises-doc
+    # noinspection PyUnusedLocal
     async def run_server(*args: Any, **kwargs: Any) -> None:  # type: ignore
         """No WebSocket server available."""
         raise NotImplementedError("WebSocket server is not available.")

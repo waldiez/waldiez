@@ -13,11 +13,13 @@ from typing import Any
 try:
     import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped] # noqa
 except ImportError:  # pragma: no cover
+    # noinspection PyProtectedMember
     from waldiez.ws._mock import (  # type: ignore[no-redef,unused-ignore]
         websockets,
     )
 
 
+# noinspection PyBroadException,Assert
 class WaldiezTestClient:
     """Enhanced test client for WebSocket server testing."""
 
@@ -292,6 +294,7 @@ async def run_basic_tests(host: str = "localhost", port: int = 8765) -> bool:
     """
     client = WaldiezTestClient(host, port)
 
+    # noinspection PyBroadException
     try:
         if not await client.connect():
             return False
@@ -334,6 +337,7 @@ async def run_performance_test(
     """
     client = WaldiezTestClient(host, port)
 
+    # noinspection PyBroadException
     try:
         if not await client.connect():
             return {"success": False}

@@ -26,6 +26,7 @@ class BreakpointsMixin:
         """Initialize breakpoints storage."""
         self._breakpoints: set[str] = set()
 
+    # noinspection PyTypeHints
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message. Implemented by the class using this mixin.
 

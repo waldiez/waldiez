@@ -31,6 +31,7 @@ try:
     HAS_WATCHDOG = True  # pyright: ignore
 except ImportError:
     # pylint: disable=unused-argument,missing-param-doc,missing-return-doc
+    # noinspection PyUnusedLocal
     def create_file_watcher(*args: Any, **kwargs: Any) -> Any:  # type: ignore
         """No file watcher available."""
 
@@ -48,6 +49,9 @@ except ImportError:
     from ._mock import (  # type: ignore[no-redef, unused-ignore, unused-import, import-not-found, import-untyped]
         websockets,
     )
+
+    ConnectionClosed = websockets.ConnectionClosed  # type: ignore[no-redef,unused-ignore,unused-import,import-not-found,import-untyped,misc]
+    WebSocketException = websockets.WebSocketException  # type: ignore[no-redef,unused-ignore,unused-import,import-not-found,import-untyped,misc]
 
 
 logger = logging.getLogger(__name__)
@@ -80,7 +84,7 @@ class WaldiezWsServer:
             Path to the workspace directory
         max_clients : int
             Maximum number of concurrent clients (default: 1)
-        allowed_origins : list[str] | None
+        allowed_origins : Sequence[re.Pattern[str]] | None
             List of allowed origins for CORS (default: None)
         ping_interval : float | None
             Ping interval in seconds
@@ -176,6 +180,7 @@ class WaldiezWsServer:
             )
 
             # Message handling loop
+            # noinspection PyTypeChecker
             async for raw_message in websocket:  # pyright: ignore
                 try:
                     # Parse message
@@ -267,6 +272,7 @@ class WaldiezWsServer:
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             # Create server
+            # noinspection PyTypeChecker
             self.server = await websockets.serve(
                 self._handle_client,
                 self.host,

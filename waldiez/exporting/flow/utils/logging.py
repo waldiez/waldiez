@@ -82,47 +82,13 @@ def get_start_logging(is_async: bool, for_notebook: bool) -> str:
 '''
 
 
-# pylint: disable=differing-param-doc,differing-type-doc
-# noinspection PyUnresolvedReferences
 def get_sync_sqlite_out() -> str:
-    r"""Get the sqlite to csv and json conversion code string.
+    """Get the sqlite to csv and json conversion code string.
 
     Returns
     -------
     str
         The sqlite to csv and json conversion code string.
-
-    Example
-    -------
-    ```python
-    >>> get_sqlite_outputs()
-    def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
-        \"\"\"Convert a sqlite table to csv and json files.
-
-    Parameters
-    ----------
-        dbname : str
-            The sqlite database name.
-        table : str
-            The table name.
-        csv_file : str
-            The csv file name.
-        \"\"\"
-        conn = sqlite3.connect(dbname)
-        query = f"SELECT * FROM {table}"  # nosec
-        cursor = conn.execute(query)
-        rows = cursor.fetchall()
-        column_names = [description[0] for description in cursor.description]
-        data = [dict(zip(column_names, row, strict=True)) for row in rows]
-        conn.close()
-        with open(csv_file, "w", newline="", encoding="utf-8") as file:
-            csv_writer = csv.DictWriter(file, fieldnames=column_names)
-            csv_writer.writeheader()
-            csv_writer.writerows(data)
-        json_file = csv_file.replace(".csv", ".json")
-        with open(json_file, "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
-    ```
     """
     content = "\n\n"
     content += (
@@ -166,52 +132,14 @@ def get_sync_sqlite_out() -> str:
     return content
 
 
-# pylint: disable=differing-param-doc,differing-type-doc,line-too-long
-# noinspection PyUnresolvedReferences
+# pylint: disable=line-too-long
 def get_async_sqlite_out() -> str:
-    r"""Get the sqlite to csv and json conversion code string.
+    """Get the sqlite to csv and json conversion code string.
 
     Returns
     -------
     str
         The sqlite to csv and json conversion code string.
-
-    Example
-    -------
-    ```python
-    >>> get_sqlite_outputs()
-    async def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
-        \"\"\"Convert a sqlite table to csv and json files.
-
-    Parameters
-    ----------
-        dbname : str
-            The sqlite database name.
-        table : str
-            The table name.
-        csv_file : str
-            The csv file name.
-        \"\"\"
-        conn = await aiosqlite.connect(dbname)
-        query = f"SELECT * FROM {table}"  # nosec
-        try:
-            cursor = await conn.execute(query)
-        except BaseException:  # pylint: disable=broad-exception-caught
-            await conn.close()
-            return
-        rows = await cursor.fetchall()
-        column_names = [description[0] for description in cursor.description]
-        data = [dict(zip(column_names, row, strict=True)) for row in rows]
-        await cursor.close()
-        await conn.close()
-        async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:
-            csv_writer = csv.DictWriter(file, fieldnames=column_names)
-            csv_writer.writeheader()
-            csv_writer.writerows(data)
-        json_file = csv_file.replace(".csv", ".json")
-        async with aiofiles.open(json_file, "w", encoding="utf-8") as file:
-            await file.write(json.dumps(data, indent=4, ensure_ascii=False)
-    ```
     """
     # fmt: off
     content = "\n\n"

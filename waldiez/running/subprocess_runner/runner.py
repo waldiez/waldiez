@@ -18,6 +18,7 @@ from ._sync_runner import SyncSubprocessRunner
 # in self._run and self._a_run
 
 
+# noinspection PyUnusedLocal
 class WaldiezSubprocessRunner(WaldiezBaseRunner):
     """Waldiez runner that uses subprocess execution via standalone runners."""
 
@@ -89,6 +90,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         mode = kwargs.get("mode", "run")
         if mode not in ["run", "debug"]:
             raise ValueError(f"Invalid mode: {mode}")
+        # noinspection PyTypeChecker
         self.mode: Literal["run", "debug"] = mode
         waldiez_file = kwargs.get("waldiez_file")
         self._waldiez_file = self._ensure_waldiez_file(waldiez_file)
@@ -101,6 +103,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             return waldiez_file.resolve()
         file_name = self.waldiez.name
         # sanitize file name
+        # noinspection RegExpRedundantEscape
         file_name = re.sub(r"[^a-zA-Z0-9_\-\.]", "_", file_name)[:30]
         file_name = f"{file_name}.waldiez"
         with open(file_name, "w", encoding="utf-8") as f:

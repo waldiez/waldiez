@@ -11,6 +11,7 @@ from ._config import PredefinedToolConfig
 from .protocol import PredefinedTool
 
 
+# noinspection PyBroadException,TryExceptPass
 class SendEmailToolImpl(PredefinedTool):
     """Predefined tool for sending emails."""
 
@@ -139,6 +140,7 @@ class SendEmailToolImpl(PredefinedTool):
             A list of validation error messages, if any.
         """
         updated = dict(self._kwargs)
+        # noinspection DuplicatedCode
         for key, value in kwargs.items():
             if key in self.kwarg_types:
                 typ = self.kwarg_types[key]
@@ -161,6 +163,7 @@ class SendEmailToolImpl(PredefinedTool):
     ) -> dict[str, Any]:
         """Get effective keyword arguments."""
         effective = dict(self._kwargs)
+        # noinspection DuplicatedCode
         if runtime_kwargs:
             # cast only known keys, same rules as validate_kwargs
             for k, v in runtime_kwargs.items():

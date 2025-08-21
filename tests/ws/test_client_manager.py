@@ -71,6 +71,7 @@ class MockSubprocessRunner:
         self.is_stopped = False
         self.input_queue: list[str] = []
 
+    # noinspection PyUnusedLocal
     def run(self, mode: str | None = None) -> None:
         """Mock run method."""
         if self.is_stopped:

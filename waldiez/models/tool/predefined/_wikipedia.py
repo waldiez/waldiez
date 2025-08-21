@@ -91,7 +91,7 @@ class WikipediaSearchToolImpl(PredefinedTool):
             if key in kwargs:
                 type_of = self.kwargs_types.get(key, str)
                 # pylint: disable=broad-exception-caught
-                # noinspection PyBroadException
+                # noinspection PyBroadException,TryExceptPass
                 try:
                     casted = type_of(value)
                     if key in self.kwargs:

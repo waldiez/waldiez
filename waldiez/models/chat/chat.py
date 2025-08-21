@@ -194,6 +194,7 @@ class WaldiezChat(WaldiezBase):
         WaldiezHandoff
             The handoff representation of the chat.
         """
+        # noinspection PyTypeHints
         target: WaldiezTransitionTarget = WaldiezAgentTarget(
             target_type="AgentTarget",
             value=[self.target],

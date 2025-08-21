@@ -86,7 +86,7 @@ class SearxNGSearchToolImpl(PredefinedTool):
             if key in kwargs:  # pragma: no branch
                 type_of = self.kwarg_types.get(key, str)
                 # pylint: disable=broad-exception-caught
-                # noinspection PyBroadException
+                # noinspection PyBroadException,TryExceptPass
                 try:
                     casted = type_of(value)
                     if key in self.kwargs:  # pragma: no branch

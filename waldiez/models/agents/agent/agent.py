@@ -21,10 +21,11 @@ from .code_execution import WaldiezAgentCodeExecutionConfig
 from .nested_chat import WaldiezAgentNestedChat, WaldiezAgentNestedChatMessage
 
 if TYPE_CHECKING:
+    # noinspection PyUnusedImports
     from ...chat import WaldiezChat
 
 
-# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences,PyNestedDecorators
 class WaldiezAgent(WaldiezBase):
     """Waldiez Agent to be inherited by all other agents.
 

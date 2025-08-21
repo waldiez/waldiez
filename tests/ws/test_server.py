@@ -27,6 +27,7 @@ import pytest
 try:
     import websockets  # type: ignore[unused-ignore,unused-import,import-not-found,import-untyped]
 except ImportError:  # pragma: no cover
+    # noinspection PyProtectedMember
     from waldiez.ws._mock import (  # type: ignore[no-redef,unused-ignore]
         websockets,
     )
@@ -53,6 +54,7 @@ class FakeWebSocket:
         self.request_headers = self.request.headers
         self._closed = False
 
+    # noinspection PyUnusedLocal,PyMethodMayBeStatic
     async def send(self, data: Any) -> None:
         """Send a message."""
         await asyncio.sleep(0.1)
@@ -702,6 +704,7 @@ class TestServerIntegration:
 
             # Test connection using websockets client
             uri = f"ws://localhost:{port}"
+            # noinspection PyBroadException
             try:
                 async with websockets.connect(uri) as websocket:
                     # Send ping message

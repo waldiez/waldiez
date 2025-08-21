@@ -10,7 +10,7 @@ from typing import Any, Optional
 from ..protocols import Serializer
 
 
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods,no-self-use
 class DefaultSerializer(Serializer):
     """Default serializer for Waldiez items."""
 
@@ -37,7 +37,7 @@ class DefaultSerializer(Serializer):
 def serialize_item(
     item: Any,
     tabs: int = 1,
-    _visited: Optional[set[int]] = None,
+    visited: Optional[set[int]] = None,
 ) -> str:
     """Convert an item to a formatted string with given indentation.
 
@@ -47,6 +47,8 @@ def serialize_item(
         The item to convert.
     tabs : int, optional
         The number of tabs, by default 1.
+    visited : set[int], optional
+        A set of visited IDs, by default None
 
     Returns
     -------
@@ -81,8 +83,8 @@ def serialize_item(
     }
     ```
     """
-    if _visited is None:
-        _visited = set()
+    if visited is None:
+        visited = set()
 
     if callable(item):
         return item.__name__
@@ -92,37 +94,37 @@ def serialize_item(
         return _format_primitive(item)
 
     # Handle circular references in containers
-    if isinstance(item, (dict, list, tuple, set)) and id(item) in _visited:
+    if isinstance(item, (dict, list, tuple, set)) and id(item) in visited:
         return '"<circular reference>"'
 
     next_indent = " " * 4 * (tabs + 1)
-    _visited.add(id(item))
+    visited.add(id(item))
 
     if isinstance(item, dict):
         items: list[str] = []
         for key, value in item.items():
             key_str = f'{next_indent}"{key}"'
-            value_str = serialize_item(value, tabs + 1, _visited)
+            value_str = serialize_item(value, tabs + 1, visited)
             items.append(f"{key_str}: {value_str}")
         return _format_container(items, "{", "}", tabs)
 
     if isinstance(item, list):
         items = [
-            f"{next_indent}{serialize_item(sub_item, tabs + 1, _visited)}"
+            f"{next_indent}{serialize_item(sub_item, tabs + 1, visited)}"
             for sub_item in item
         ]
         return _format_container(items, "[", "]", tabs)
 
     if isinstance(item, tuple):
         items = [
-            f"{next_indent}{serialize_item(sub_item, tabs + 1, _visited)}"
+            f"{next_indent}{serialize_item(sub_item, tabs + 1, visited)}"
             for sub_item in item
         ]
         return _format_container(items, "(", ")", tabs)
 
     if isinstance(item, set):
         items = [
-            f"{next_indent}{serialize_item(sub_item, tabs + 1, _visited)}"
+            f"{next_indent}{serialize_item(sub_item, tabs + 1, visited)}"
             for sub_item in item
         ]
         return _format_container(items, "{", "}", tabs)
