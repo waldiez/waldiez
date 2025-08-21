@@ -706,7 +706,9 @@ class TestServerIntegration:
             uri = f"ws://localhost:{port}"
             # noinspection PyBroadException
             try:
-                async with websockets.connect(uri) as websocket:
+                async with websockets.connect(
+                    uri,
+                ) as websocket:  # pyright: ignore
                     # Send ping message
                     ping_msg = json.dumps(
                         {"type": "ping", "echo_data": {"test": "integration"}}
@@ -790,7 +792,9 @@ class TestServerIntegration:
 
         try:
             uri = f"ws://localhost:{port}"
-            async with websockets.connect(uri) as websocket:
+            async with websockets.connect(
+                uri,
+            ) as websocket:  # pyright: ignore
                 # Send invalid message
                 await websocket.send("invalid json")
 
