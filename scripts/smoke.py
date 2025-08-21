@@ -43,39 +43,28 @@ REPO_URL = f"https://raw.githubusercontent.com/{REPO}/refs/heads/{BRANCH}"
 
 EXAMPLES_CWD = ROOT_DIR / "examples"  # submodule path
 
-EXAMPLES = [
-    "01 - Standup Comedians/Standup Comedians 1.waldiez",
-    "01 - Standup Comedians/Standup Comedians 2.waldiez",
-    "01 - Standup Comedians/Standup Comedians 3.waldiez",
-    "02 - On-boarding/On-boarding.waldiez",
-    "02 - On-boarding/On-boarding Async.waldiez",
-    "03 - Reflection/Reflection.waldiez",
-    "04 - Tools/Tool Use.waldiez",
-    "05 - Coding/Coding.waldiez",
-    "06 - Planning/Planning 1.waldiez",
-    "06 - Planning/Planning 2.waldiez",
-    "07 - Group chat with RAG (deprecated)/RAG.waldiez",
-    "08 - ReAct using Tavily/ReAct.waldiez",
-    "09 - AutoDefence/AutoDefense Flow.waldiez",
-    "10 - Travel Planning/Travel Planning.waldiez",
-    "11 - Swarm/Swarm.waldiez",
-    "12 - Reasoning/Chain-of-Thought Reasoning with DFS.waldiez",
-    "13 - Captain/1 - Simple.waldiez",
-    "13 - Captain/2 - With agent lib.waldiez",
-    "13 - Captain/3 - With agent lib and tool lib.waldiez",
-    "14 - HR Work Remotely/HR_remote.waldiez",
-    "15 - Innovation Ideas/innovator.waldiez",
-    "16 - Weather Travel Tips/travelWeather_single.waldiez",
-    "16 - Weather Travel Tips/travelWeather_roundRobin.waldiez",
-    "16 - Weather Travel Tips/travelWeather_handoffs.waldiez",
-    "17 - Predefined Tools/google_search.waldiez",
-    "17 - Predefined Tools/tavily_search.waldiez",
-    "17 - Predefined Tools/wiki_search.waldiez",
-    "17 - Predefined Tools/youtube_search.waldiez",
-    "18 - Doc Agent/RAG with Doc Agent.waldiez",
-]
+# let's get them dynamically: parse subfolders,
+# skip the folder "dev" if it exists
 
 
+def _get_examples() -> list[str]:
+    """Get the list of example files."""
+    examples: list[str] = []
+    for root, dirs, files in os.walk(EXAMPLES_CWD):
+        # Skip the "dev" folder
+        if "dev" in dirs:
+            dirs.remove("dev")
+        for filename in files:
+            if filename.endswith(".waldiez"):
+                examples.append(
+                    os.path.relpath(os.path.join(root, filename), EXAMPLES_CWD)
+                )
+    # sort by filename (01 - ...)
+    examples.sort(key=lambda folder: int(folder.split("-")[0]))
+    return examples
+
+
+EXAMPLES = _get_examples()
 LOG = WaldiezLogger()
 
 
