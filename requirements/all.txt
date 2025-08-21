@@ -1,6 +1,7 @@
 -r redis.txt
 -r websockets.txt
 -r mqtt.txt
+-r reload.txt
 -r ag2_extras.txt
 -r dev.txt
 -r docs.txt

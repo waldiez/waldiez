@@ -11,3 +11,5 @@ pytest-sugar==1.1.0
 pytest-timeout==2.4.0
 pytest-xdist==3.8.0
 pytest==8.4.1
+watchdog>=5.0.0
+websockets>=14.0,<16

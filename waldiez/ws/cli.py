@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,unused-import
 """CLI interface for Waldiez WebSocket server."""
 
 import asyncio
@@ -12,7 +12,25 @@ from typing import Annotated, Any, Optional, Set
 
 import typer
 
-from .server import run_server
+HAS_WATCHDOG = False
+try:
+    from .reloader import FileWatcher  # pyright: ignore # noqa: F401
+except ImportError:
+    HAS_WATCHDOG = False  # pyright: ignore
+
+HAS_WEBSOCKETS = False
+try:
+    from .server import run_server
+
+    HAS_WEBSOCKETS = True  # pyright: ignore
+except ImportError:
+    HAS_WEBSOCKETS = False  # pyright: ignore
+
+    # pylint: disable=missing-param-doc,missing-raises-doc
+    async def run_server(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        """No WebSocket server available."""
+        raise NotImplementedError("WebSocket server is not available.")
+
 
 DEFAULT_WORKSPACE_DIR = Path.cwd()
 
@@ -176,7 +194,12 @@ def serve(
         "ping_timeout": ping_timeout,
         "max_size": max_size,
     }
-
+    if not HAS_WATCHDOG and auto_reload:
+        typer.echo(
+            "Auto-reload requires the 'watchdog' package. "
+            "Please install it with: pip install watchdog"
+        )
+        auto_reload = False
     logger.info("Starting Waldiez WebSocket server...")
     logger.info("Configuration:")
     logger.info("  Host: %s", host)

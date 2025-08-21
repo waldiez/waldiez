@@ -108,7 +108,7 @@ class TestClientManager:
 
         # Create client manager
         self.client_manager = ClientManager(
-            websocket=self.mock_websocket,  # type: ignore
+            websocket=self.mock_websocket,  # type: ignore[arg-type,unused-ignore] # noqa
             client_id=self.client_id,
             session_manager=self.session_manager,
         )
@@ -132,7 +132,7 @@ class TestClientManager:
             ValueError, match="WebSocket request is not available"
         ):
             ClientManager(
-                websocket=mock_websocket,  # type: ignore
+                websocket=mock_websocket,  # type: ignore[arg-type,unused-ignore] # noqa
                 client_id=self.client_id,
                 session_manager=self.session_manager,
             )

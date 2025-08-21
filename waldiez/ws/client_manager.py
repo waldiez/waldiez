@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=too-many-try-statements,broad-exception-caught
-# pylint: disable=too-complex,too-many-return-statements
+# pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
+# pylint: disable=too-complex,too-many-return-statements,import-error
 # pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false
 # pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
-# pyright: reportAssignmentType=false
+# pyright: reportAssignmentType=false,reportUnknownParameterType=false
 # flake8: noqa: C901
 """WebSocket client manager: bridges WS <-> subprocess runner."""
 
@@ -15,7 +15,11 @@ import time
 from pathlib import Path
 from typing import Any, Callable, Literal
 
-import websockets
+try:
+    import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped] # noqa
+except ImportError:  # pragma: no cover
+    from ._mock import websockets  # type: ignore[no-redef,unused-ignore]
+
 
 from waldiez.models import Waldiez
 from waldiez.running.subprocess_runner.runner import WaldiezSubprocessRunner
@@ -67,7 +71,7 @@ class ClientManager:
 
     def __init__(
         self,
-        websocket: websockets.ServerConnection,
+        websocket: websockets.ServerConnection,  # pyright: ignore
         client_id: str,
         session_manager: SessionManager,
         workspace_dir: Path = CWD,
@@ -141,7 +145,10 @@ class ClientManager:
                 data = json.loads(json.dumps(payload, default=str))
             await self.websocket.send(json.dumps(data))
             return True
-        except (websockets.ConnectionClosed, ConnectionResetError) as e:
+        except (
+            websockets.ConnectionClosed,
+            ConnectionResetError,
+        ) as e:  # pyright: ignore
             self.logger.info("Client %s disconnected: %s", self.client_id, e)
             await self.cleanup()
             return False

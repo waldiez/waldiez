@@ -2,6 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # flake8: noqa: E501
 # pylint: disable=line-too-long
+# pyright: reportUnknownMemberType=false,reportUnknownParameterType=false
+# pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
 """WebSocket IOStream implementation for AsyncIO."""
 
 import asyncio

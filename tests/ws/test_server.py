@@ -2,9 +2,12 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=missing-param-doc,missing-return-doc
 # pylint: disable=no-self-use,unused-argument,too-many-try-statements
-# pylint: disable=broad-exception-caught,protected-access,
+# pylint: disable=broad-exception-caught,protected-access,line-too-long
 # pylint: disable=attribute-defined-outside-init,missing-raises-doc
 # pyright: reportPrivateUsage=false,reportUnknownMemberType=false
+# pyright: reportUnknownParameterType=false,reportUnknownArgumentType=false
+# pyright: reportAttributeAccessIssue=false,reportUnknownVariableType=false
+# flake8: noqa: E501
 """Tests for WebSocket server functionality."""
 
 import asyncio
@@ -20,9 +23,15 @@ from typing import Any, AsyncIterator, Iterable
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-import websockets
 
-from waldiez.ws.server import WaldiezWsServer, run_server
+try:
+    import websockets  # type: ignore[unused-ignore,unused-import,import-not-found,import-untyped]
+except ImportError:  # pragma: no cover
+    from waldiez.ws._mock import (  # type: ignore[no-redef,unused-ignore]
+        websockets,
+    )
+
+from waldiez.ws.server import HAS_WATCHDOG, WaldiezWsServer, run_server
 from waldiez.ws.utils import get_available_port
 
 
@@ -223,7 +232,7 @@ class TestWaldiezWsServer:
 
             # First client should connect
             handle_task1 = asyncio.create_task(
-                server._handle_client(mock_websocket1)  # type: ignore
+                server._handle_client(mock_websocket1)  # type: ignore[arg-type,unused-ignore] # noqa
             )
             await asyncio.sleep(0.1)
 
@@ -231,7 +240,7 @@ class TestWaldiezWsServer:
 
             # Second client should be rejected
             handle_task2 = asyncio.create_task(
-                server._handle_client(mock_websocket2)  # type: ignore
+                server._handle_client(mock_websocket2)  # type: ignore[arg-type,unused-ignore] # noqa
             )
             await asyncio.sleep(0.1)
 
@@ -282,7 +291,7 @@ class TestWaldiezWsServer:
                 return_value=mock_client_manager,
             ):
                 handle_task = asyncio.create_task(
-                    server._handle_client(mock_websocket)  # type: ignore
+                    server._handle_client(mock_websocket)  # type: ignore[arg-type,unused-ignore] # noqa
                 )
                 await asyncio.sleep(0.1)
 
@@ -326,7 +335,7 @@ class TestWaldiezWsServer:
                 return_value=mock_client_manager,
             ):
                 handle_task = asyncio.create_task(
-                    server._handle_client(mock_websocket)  # type: ignore
+                    server._handle_client(mock_websocket)  # type: ignore[arg-type,unused-ignore] # noqa
                 )
                 await asyncio.sleep(0.1)
 
@@ -342,48 +351,6 @@ class TestWaldiezWsServer:
         finally:
             server.shutdown()
             await asyncio.wait_for(start_task, timeout=2.0)
-
-    #     @pytest.mark.asyncio
-    #     async def test_websocket_exception_handling(self) -> None:
-    #         """Test handling of WebSocket exceptions."""
-    #         server = WaldiezWsServer(host=self.host, port=self.port)
-
-    #         start_task = asyncio.create_task(server.start())
-    #         await asyncio.sleep(0.1)
-
-    #         try:
-    #             mock_websocket = AsyncMock()
-    #             mock_websocket.remote_address = ("127.0.0.1", 12345)
-    #             mock_websocket.request = None
-    #             mock_websocket.__aiter__ = AsyncMock(
-    #                 side_effect=WebSocketException("Connection error")
-    #             )
-
-    #             mock_client_manager = MagicMock()
-    #             mock_client_manager.close_connection = MagicMock()
-    #             mock_client_manager.is_active = True
-
-    #             with patch(
-    #                 "waldiez.ws.server.ClientManager",
-    #                 return_value=mock_client_manager,
-    #             ):
-    #                 handle_task = asyncio.create_task(
-    #                     server._handle_client(mock_websocket)
-    #                 )
-    #                 await asyncio.sleep(0.1)
-
-    #                 # Error should be handled gracefully
-    #                 mock_client_manager.close_connection.assert_called_once()
-
-    #                 handle_task.cancel()
-    #                 try:
-    #                     await handle_task
-    #                 except asyncio.CancelledError:
-    #                     pass
-
-    #         finally:
-    #             server.shutdown()
-    #             await asyncio.wait_for(start_task, timeout=2.0)
 
     def test_get_stats(self) -> None:
         """Test getting server statistics."""
@@ -566,8 +533,9 @@ class TestRunServer:
                         pass
 
                     # Verify file watcher was created and started
-                    mock_watcher.assert_called_once()
-                    mock_watcher_instance.start.assert_called_once()
+                    if HAS_WATCHDOG:
+                        mock_watcher.assert_called_once()
+                        mock_watcher_instance.start.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_run_server_with_watch_dirs(self) -> None:
@@ -606,8 +574,11 @@ class TestRunServer:
                         pass
 
                     # Verify file watcher was called with custom dirs
-                    call_args = mock_watcher.call_args
-                    assert call_args[1]["additional_dirs"] == list(watch_dirs)
+                    if HAS_WATCHDOG:
+                        call_args = mock_watcher.call_args
+                        assert call_args[1]["additional_dirs"] == list(
+                            watch_dirs
+                        )
 
     @pytest.mark.asyncio
     async def test_run_server_signal_handling(self) -> None:

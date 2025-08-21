@@ -1,5 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=line-too-long
+# pyright: reportUnknownVariableType=false,reportConstantRedefinition=false
+# pyright: reportUntypedBaseClass=false,reportUnknownMemberType=false
+# pyright: reportUnknownParameterType=false,reportUnknownArgumentType=false
+# flake8: noqa: E501
 """Auto-reload functionality for development."""
 
 import logging
@@ -11,8 +16,22 @@ from pathlib import Path
 from types import TracebackType
 from typing import Any, Callable
 
-from watchdog.events import FileSystemEvent, FileSystemEventHandler
-from watchdog.observers import Observer
+HAS_WATCHDOG = False
+try:
+    from watchdog.events import (  # type: ignore[unused-ignore,unused-import,import-not-found,import-untyped]
+        FileSystemEvent,
+        FileSystemEventHandler,
+    )
+    from watchdog.observers import (  # type: ignore[unused-ignore,unused-import,import-not-found,import-untyped]
+        Observer,
+    )
+
+    HAS_WATCHDOG = True
+except ImportError as exc:
+    raise ImportError(
+        "The 'watchdog' package is required for auto-reload functionality. "
+        "Please install it using 'pip install watchdog'."
+    ) from exc
 
 logger = logging.getLogger(__name__)
 

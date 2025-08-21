@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=missing-param-doc,missing-return-doc
 # pylint: disable=no-self-use,protected-access,unused-argument
-# pyright: reportPrivateUsage=false
+# pyright: reportPrivateUsage=false,reportPossiblyUnboundVariable=false
+# pyright: reportConstantRedefinition=false,reportUnknownMemberType=false
 """Tests for auto-reload functionality."""
 
 import os
@@ -13,9 +14,18 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from waldiez.ws.reloader import FileWatcher, ReloadHandler, create_file_watcher
+SKIP_TEST = False
+try:
+    from waldiez.ws.reloader import (
+        FileWatcher,
+        ReloadHandler,
+        create_file_watcher,
+    )
+except ImportError:
+    SKIP_TEST = True
 
 
+@pytest.mark.skipif(SKIP_TEST, reason="Watchdog not available")
 class TestReloadHandler:
     """Test ReloadHandler functionality."""
 
@@ -299,6 +309,7 @@ class TestReloadHandler:
         restart_callback.assert_called_once()
 
 
+@pytest.mark.skipif(SKIP_TEST, reason="Watchdog not available")
 class TestFileWatcher:
     """Test FileWatcher functionality."""
 
@@ -454,6 +465,7 @@ class TestFileWatcher:
             restart_callback.assert_not_called()
 
 
+@pytest.mark.skipif(SKIP_TEST, reason="Watchdog not available")
 class TestCreateFileWatcher:
     """Test create_file_watcher function."""
 

@@ -1,5 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pyright: reportMissingImports=false,reportUnknownVariableType=false
+# pyright: reportPossiblyUnboundVariable=false,reportUnknownMemberType=false
+# pyright: reportUnknownParameterType=false,reportUnknownArgumentType=false
+# pyright: reportAttributeAccessIssue=false
+# pylint: disable=import-error,line-too-long
+# flake8: noqa: E501
 """WebSocket server implementation for Waldiez."""
 
 import asyncio
@@ -12,15 +18,37 @@ import uuid
 from pathlib import Path
 from typing import Any, Sequence
 
-import websockets
-from websockets.exceptions import ConnectionClosed, WebSocketException
-
 from .client_manager import ClientManager
 from .errors import ErrorHandler, MessageParsingError, ServerOverloadError
 from .models import ConnectionNotification
-from .reloader import create_file_watcher
 from .session_manager import SessionManager
 from .utils import get_available_port, is_port_available
+
+HAS_WATCHDOG = False
+try:
+    from .reloader import create_file_watcher
+
+    HAS_WATCHDOG = True  # pyright: ignore
+except ImportError:
+    # pylint: disable=unused-argument,missing-param-doc,missing-return-doc
+    def create_file_watcher(*args: Any, **kwargs: Any) -> Any:  # type: ignore
+        """No file watcher available."""
+
+
+HAS_WEBSOCKETS = False
+try:
+    import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]
+    from websockets.exceptions import (  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]
+        ConnectionClosed,
+        WebSocketException,
+    )
+
+    HAS_WEBSOCKETS = True  # pyright: ignore
+except ImportError:
+    from ._mock import (  # type: ignore[no-redef, unused-ignore, unused-import, import-not-found, import-untyped]
+        websockets,
+    )
+
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +176,7 @@ class WaldiezWsServer:
             )
 
             # Message handling loop
-            async for raw_message in websocket:
+            async for raw_message in websocket:  # pyright: ignore
                 try:
                     # Parse message
                     if isinstance(raw_message, bytes):
@@ -420,7 +448,7 @@ async def run_server(
 
     # Set up auto-reload if requested
     file_watcher = None
-    if auto_reload:
+    if auto_reload and HAS_WATCHDOG:
         # pylint: disable=import-outside-toplevel,too-many-try-statements
         try:
             # Determine watch directories

@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pylint: disable=import-error,line-too-long
+# pyright: reportUnknownMemberType=false,reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false,reportAttributeAccessIssue=false
+# flake8: noqa: E501
 """Utilities for WebSocket server management."""
 
 import asyncio
@@ -11,7 +15,11 @@ from contextlib import closing
 from dataclasses import asdict, dataclass
 from typing import TYPE_CHECKING, Any
 
-import websockets
+try:
+    import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped] # noqa
+except ImportError:  # pragma: no cover
+    from ._mock import websockets  # type: ignore[no-redef,unused-ignore]
+
 
 if TYPE_CHECKING:
     from .server import WaldiezWsServer
@@ -329,7 +337,10 @@ async def test_server_connection(
     try:
         uri = f"ws://{host}:{port}"
 
-        async with websockets.connect(uri, ping_interval=None) as websocket:
+        async with websockets.connect(
+            uri,
+            ping_interval=None,
+        ) as websocket:
             # Send ping message
             ping_msg = {"action": "ping"}
             await websocket.send(json.dumps(ping_msg))

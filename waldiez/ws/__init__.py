@@ -18,7 +18,7 @@ from .errors import (
     UnsupportedActionError,
     WaldiezServerError,
 )
-from .server import WaldiezWsServer, run_server
+from .server import HAS_WEBSOCKETS, WaldiezWsServer, run_server
 from .session_manager import SessionManager
 from .utils import (
     ConnectionManager,
@@ -38,13 +38,14 @@ def add_ws_app(app: typer.Typer) -> None:
     app : typer.Typer
         The Typer application instance.
     """
-    app.registered_commands.append(
-        CommandInfo(
-            name="ws",
-            help="Start the Waldiez WebSocket server.",
-            callback=serve,
+    if HAS_WEBSOCKETS:
+        app.registered_commands.append(
+            CommandInfo(
+                name="ws",
+                help="Start the Waldiez WebSocket server.",
+                callback=serve,
+            )
         )
-    )
 
 
 __all__ = [

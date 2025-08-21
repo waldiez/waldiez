@@ -1,13 +1,21 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=too-many-try-statements,broad-exception-caught
+# pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
+# pyright: reportPrivateUsage=false,reportUnknownMemberType=false
+# pyright: reportUnknownParameterType=false,reportUnknownArgumentType=false
+# pyright: reportAttributeAccessIssue=false,reportUnknownVariableType=false
 """Enhanced test client for Waldiez WebSocket server testing."""
 
 import json
 import time
 from typing import Any
 
-import websockets
+try:
+    import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped] # noqa
+except ImportError:  # pragma: no cover
+    from waldiez.ws._mock import (  # type: ignore[no-redef,unused-ignore]
+        websockets,
+    )
 
 
 class WaldiezTestClient:
