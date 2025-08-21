@@ -15,8 +15,10 @@ import typer
 HAS_WATCHDOG = False
 try:
     from .reloader import FileWatcher  # pyright: ignore # noqa: F401
+
+    HAS_WATCHDOG = True  # pyright: ignore
 except ImportError:
-    HAS_WATCHDOG = False  # pyright: ignore
+    pass
 
 HAS_WEBSOCKETS = False
 try:
@@ -24,8 +26,6 @@ try:
 
     HAS_WEBSOCKETS = True  # pyright: ignore
 except ImportError:
-    HAS_WEBSOCKETS = False  # pyright: ignore
-
     # pylint: disable=missing-param-doc,missing-raises-doc
     async def run_server(*args: Any, **kwargs: Any) -> None:  # type: ignore
         """No WebSocket server available."""
