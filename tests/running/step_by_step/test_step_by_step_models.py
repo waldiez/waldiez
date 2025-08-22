@@ -96,7 +96,7 @@ def test_debug_help_message() -> None:
     """Test debug help message."""
     help_msg = HELP_MESSAGE
     assert isinstance(help_msg, WaldiezDebugHelp)
-    assert any(group.title == "Commands" for group in help_msg.help)
+    assert any(group.title == "Basic Commands" for group in help_msg.help)
     assert any(group.title == "Tips" for group in help_msg.help)
 
 

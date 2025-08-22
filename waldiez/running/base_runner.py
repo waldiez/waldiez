@@ -909,6 +909,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         """
         return self._stop_requested.is_set()
 
+    def set_stop_requested(self) -> None:
+        """Set the stop requested flag."""
+        self._stop_requested.set()
+
     def __enter__(self) -> Self:
         """Enter the context manager."""
         return self

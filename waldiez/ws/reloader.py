@@ -34,6 +34,8 @@ except ImportError as exc:
     ) from exc
 
 logger = logging.getLogger(__name__)
+fsevents_logger = logging.getLogger("fsevents")
+fsevents_logger.setLevel(logging.WARNING)  # Reduce noise from fsevents
 
 
 class ReloadHandler(FileSystemEventHandler):

@@ -100,28 +100,30 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
     const getLabelValue = useCallback(() => {
         // Show upper limit label when value is at max or null
         if ((value === max || value === null) && (setNullOnUpper || onUpperLabel !== null)) {
-            return onUpperLabel ?? "No limit";
+            return <span className="margin-left-5">{onUpperLabel ?? "No limit"}</span>;
         }
         // Show lower limit label when value is at min or null
         else if ((value === min || value === null) && (setNullOnLower || onLowerLabel !== null)) {
-            return onLowerLabel ?? "Not set";
+            return <span className="margin-left-5">{onLowerLabel ?? "Not set"}</span>;
         }
         // Show input field
         else {
             return (
-                <input
-                    id={`id-for-${name}`}
-                    name={name}
-                    placeholder={`${currentValue}`}
-                    inputMode="decimal"
-                    type="number"
-                    min={min}
-                    max={max}
-                    step={step}
-                    value={currentValue}
-                    onChange={handleInputChange}
-                    data-testid={dataTestId}
-                />
+                <span className="margin-left-5 margin-bottom-5">
+                    <input
+                        id={`id-for-${name}`}
+                        name={name}
+                        placeholder={`${currentValue}`}
+                        inputMode="decimal"
+                        type="number"
+                        min={min}
+                        max={max}
+                        step={step}
+                        value={currentValue}
+                        onChange={handleInputChange}
+                        data-testid={dataTestId}
+                    />
+                </span>
             );
         }
     }, [
@@ -141,20 +143,12 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
 
     // Render label with or without info tooltip
     const renderLabel = useMemo(() => {
-        const labelValue = getLabelValue();
-
         if (labelInfo) {
             return (
                 <div className="number-input-info-label-wrapper">
-                    <InfoLabel
-                        label={
-                            <div className="number-input-info-label-inner">
-                                {label}&nbsp;&nbsp;{labelValue}
-                            </div>
-                        }
-                        info={labelInfo}
-                        htmlFor={`id-for-${name}`}
-                    />
+                    <InfoLabel htmlFor={`id-for-${name}`} label={label} info={labelInfo}>
+                        {getLabelValue()}
+                    </InfoLabel>
                 </div>
             );
         }
@@ -162,7 +156,7 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
         return (
             <div className="number-input-label-wrapper">
                 <label htmlFor={`id-for-${name}`}>
-                    {label} {labelValue}
+                    {label} {getLabelValue()}
                 </label>
             </div>
         );

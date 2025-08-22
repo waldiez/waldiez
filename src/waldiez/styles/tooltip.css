@@ -2,26 +2,26 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.tooltip-container .tooltip {
-  display: none;
+
+.tooltip-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: help !important;
+  padding: 0 !important;
+  border: none !important;
+  color: var(--info-blue) !important;
+  transition: color 0.2s ease !important;
 }
 
-.tooltip-container:hover .tooltip {
-  display: inline-block;
-  padding: 10px 15px;
-  border-radius: 5px;
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  transform: translate(-4px, -50%);
-  width: max-content;
-}
-
-.tooltip-container:hover .tooltip::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  transform: translateY(-50%);
-  border: 5px solid transparent;
+.tooltip-content {
+  z-index: 9999;
+  font-size: small !important;
+  background-color: var(--info-tooltip-bg) !important;
+  color: var(--info-tooltip-text) !important;
+  border-radius: 4px !important;
+  padding: 0.5rem 0.75rem !important;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%) !important;
+  max-width: min(75vw, 320px) !important;
+  white-space: normal !important;
 }

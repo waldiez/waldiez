@@ -15,6 +15,12 @@
   --group-manager-agent-alt-color: #b76c2a;
   --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
   --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+  --info-blue: #007bff;
+  --info-blue-hover: #0056b3;
+  --slider-fill: #3b82f6;
+  --slider-fill-hover: #2563eb;
+  --slider-track: color-mix(in srgb, var(--text-color) 12%, var(--background-color));
+  --slider-thumb-border: color-mix(in srgb, var(--text-color) 40%, var(--background-color));
 
   font-family:
     ui-sans-serif,
@@ -50,6 +56,13 @@ body.waldiez-dark {
   --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 30%), 0 1px 2px 0 rgb(0 0 0 / 20%);
   --background-color: #141414;
   --text-color: #f8f8f8;
+  --dropzone-border: #555;
+  --dropzone-bg: #222;
+  --dropzone-hover: #333;
+  --code-editor-border: #333;
+  --info-tooltip-text: #cce5ff;
+  --info-tooltip-bg: #1e2a3a;
+  --info-tooltip-border: #374151;
 }
 
 body.waldiez-light {
@@ -69,6 +82,11 @@ body.waldiez-light {
   --card-radius: 8px;
   --background-color: #fefefe;
   --text-color: #141414;
+  --dropzone-border: #ccc;
+  --dropzone-bg: #fff;
+  --info-tooltip-text: #004085;
+  --info-tooltip-bg: #cce5ff;
+  --info-tooltip-border: #b8daff;
 }
 
 .flow-wrapper {

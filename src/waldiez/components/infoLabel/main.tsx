@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import * as Tooltip from "@radix-ui/react-tooltip";
+
 import React from "react";
 import { FaInfoCircle } from "react-icons/fa";
 
@@ -9,25 +11,41 @@ type InfoLabelProps = {
     htmlFor: string;
     label: string | React.JSX.Element | (() => React.JSX.Element | string);
     info: string | React.JSX.Element | (() => React.JSX.Element | string);
+    children?: React.ReactNode;
 };
-export const InfoLabel: React.FC<InfoLabelProps> = (props: InfoLabelProps) => {
-    const { htmlFor, label, info } = props;
-    // we show the info on hover (css), to show on `icon click`, use state.
-    // const [showDescription, setShowDescription] = useState(false);
+
+export const InfoLabel: React.FC<InfoLabelProps> = ({ htmlFor, label, info, children }) => {
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;
+
     return (
-        <div className="info-label">
-            <label htmlFor={htmlFor}>{labelElement}</label>
-            <FaInfoCircle className="info-icon" />
-            <div
-                // className={`info-description ${
-                //     showDescription ? 'info-description show' : ''
-                // }`}
-                className="info-description"
-            >
-                {infoElement}
+        <div className="flex flex-row gap-1">
+            <div className="flex items-center gap-2">
+                <label htmlFor={htmlFor} className="text-sm info-label">
+                    {labelElement}
+                </label>
+
+                <Tooltip.Provider delayDuration={100}>
+                    <Tooltip.Root>
+                        <Tooltip.Trigger asChild>
+                            <button
+                                type="button"
+                                aria-label="More info"
+                                className="tooltip-button inline-flex items-center justify-center cursor-help"
+                            >
+                                <FaInfoCircle />
+                            </button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Portal>
+                            <Tooltip.Content side="top" align="center" className="tooltip-content">
+                                {infoElement}
+                                <Tooltip.Arrow className="fill-[var(--background-color)]" />
+                            </Tooltip.Content>
+                        </Tooltip.Portal>
+                    </Tooltip.Root>
+                </Tooltip.Provider>
             </div>
+            {children && <div>{children}</div>}
         </div>
     );
 };

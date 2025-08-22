@@ -9,6 +9,7 @@
 """Test waldiez.running.step_by_step_runner.*."""
 
 import threading
+from collections import deque
 from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -23,6 +24,7 @@ from waldiez.models.flow.info import WaldiezFlowInfo
 from waldiez.running.exceptions import StopRunningException
 from waldiez.running.step_by_step.step_by_step_models import (
     HELP_MESSAGE,
+    WaldiezBreakpoint,
     WaldiezDebugStats,
     WaldiezDebugStepAction,
 )
@@ -122,18 +124,21 @@ def test_should_break_on_event_basic(
     runner: WaldiezStepByStepRunner, text_event: TextEvent
 ) -> None:
     """Test basic event breaking behavior."""
-    runner._step_mode = True
-    runner._breakpoints = set()
-    assert runner.should_break_on_event(text_event) is True
+    runner.step_mode = True
+    runner.clear_breakpoints()
+    assert runner.should_break_on_event(text_event, runner.step_mode) is True
 
-    runner._breakpoints = {"text"}
-    assert runner.should_break_on_event(text_event) is True
+    runner.clear_breakpoints()
+    runner.add_breakpoint("text")
+    assert runner.should_break_on_event(text_event, runner.step_mode) is True
 
-    runner._breakpoints = {"other_event"}
-    assert runner.should_break_on_event(text_event) is False
+    # step mode: always break on any event
+    runner.set_breakpoints(["other_event"])
+    assert runner.should_break_on_event(text_event, runner.step_mode) is True
 
-    runner._step_mode = False
-    assert runner.should_break_on_event(text_event) is False
+    runner.step_mode = False
+    runner.set_breakpoints(["other_event"])
+    assert runner.should_break_on_event(text_event, runner.step_mode) is False
 
 
 def test_on_event_breaks_and_continues(
@@ -193,23 +198,26 @@ async def test_async_on_event_continues_and_stops(
 
 def test_enable_disable_flags(runner: WaldiezStepByStepRunner) -> None:
     """Test enabling and disabling flags."""
-    runner.enable_auto_continue(True)
-    assert runner._auto_continue is True
+    runner.auto_continue = True
+    assert runner._config.auto_continue is True
 
-    runner.enable_auto_continue(False)
-    assert runner._auto_continue is False
+    runner.auto_continue = False
+    assert runner._config.auto_continue is False
 
-    runner.enable_step_mode(True)
+    runner.step_mode = True
     assert runner._step_mode is True
 
-    runner.enable_step_mode(False)
+    runner.step_mode = False
     assert runner._step_mode is False
 
 
 def test_set_breakpoints(runner: WaldiezStepByStepRunner) -> None:
     """Test setting breakpoints."""
     runner.set_breakpoints(["a", "b"])
-    assert runner._breakpoints == {"a", "b"}
+    assert runner._breakpoints == {
+        WaldiezBreakpoint.from_string("a"),
+        WaldiezBreakpoint.from_string("b"),
+    }
 
 
 def test_get_user_response_invalid_json_emits_error(
@@ -253,7 +261,7 @@ def test_get_event_history_returns_copy(
 ) -> None:
     """Test that get_event_history returns a copy of the event history."""
     # Initially empty
-    history = runner.get_event_history()
+    history = runner.event_history
     assert isinstance(history, list)
     assert history == []
 
@@ -262,7 +270,7 @@ def test_get_event_history_returns_copy(
     runner._event_history.append(sample_event)  # pyright: ignore
 
     # Call get_event_history and check contents
-    history = runner.get_event_history()
+    history = runner.event_history
     assert history == [sample_event]
 
     # Mutate returned list and check internal list not affected
@@ -279,25 +287,29 @@ def test_get_execution_stats_returns_correct_data(
     runner._event_count = 10
     runner._processed_events = 5
     runner._step_mode = True
-    runner._auto_continue = False
-    runner._breakpoints = {"event1", "event2"}
-    runner._event_history = [{"type": "event1"}, {"type": "event2"}]
+    runner._config.auto_continue = False
+    runner.set_breakpoints(["event1", "event2"])
+    runner._event_history = deque([{"type": "event1"}, {"type": "event2"}])
 
-    stats = runner.get_execution_stats()
+    stats = runner.execution_stats
 
     assert stats["total_events"] == 10
     assert stats["processed_events"] == 5
     assert stats["step_mode"] is True
     assert stats["auto_continue"] is False
-    assert "event1" in stats["breakpoints"]
-    assert "event2" in stats["breakpoints"]
+    assert "event:event1" in {
+        bp["string_repr"] for bp in stats["breakpoints"]["breakpoints"]
+    }
+    assert "event:event2" in {
+        bp["string_repr"] for bp in stats["breakpoints"]["breakpoints"]
+    }
     assert stats["event_history_count"] == 2
     assert stats["event_processing_rate"] == 0.5  # 5 / 10
 
     # Edge case: no events processed
     runner._event_count = 0
     runner._processed_events = 0
-    stats = runner.get_execution_stats()
+    stats = runner.execution_stats
     assert stats["event_processing_rate"] == 0
 
 
@@ -500,24 +512,6 @@ async def test_async_run_handles_generic_exception(
     assert "Workflow execution failed: generic async error" in captured.out
 
 
-def test_should_break_on_event_no_type_attribute(
-    runner: WaldiezStepByStepRunner,
-) -> None:
-    """should_break_on_event should handle event without 'type' attribute."""
-
-    class DummyEvent:
-        """A dummy event class for testing."""
-
-    event = DummyEvent()
-    runner._step_mode = True
-    runner._breakpoints = set()
-    assert runner.should_break_on_event(event) is True
-    runner._breakpoints = {"unknown"}
-    assert runner.should_break_on_event(event) is True
-    runner._breakpoints = {"something_else"}
-    assert runner.should_break_on_event(event) is False
-
-
 def test_get_user_response_invalid_json_not_allowed(
     runner: WaldiezStepByStepRunner,
 ) -> None:
@@ -536,7 +530,9 @@ def test_get_user_response_stale_request_id(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Valid JSON with stale request ID emits error."""
-    valid_but_stale_json = '{"type": "debug_input_response", "request_id":"different-id","data":"c"}'
+    valid_but_stale_json = (
+        '{"type":"debug_input_response","request_id":"different-id","data":"c"}'
+    )
     request_id = "some-id"  # different from in JSON
     with patch.object(runner, "emit") as mock_emit:
         response, valid = runner._get_user_response(
@@ -568,12 +564,12 @@ def test_auto_continue_getter_setter(runner: WaldiezStepByStepRunner) -> None:
 
     # Set new value
     runner.auto_continue = True
-    assert runner._auto_continue is True
+    assert runner._config.auto_continue is True
     assert runner.auto_continue is True
 
     # Set back
     runner.auto_continue = False
-    assert runner._auto_continue is False
+    assert runner._config.auto_continue is False
     assert runner.auto_continue is False
 
 
@@ -590,14 +586,16 @@ def test_set_auto_continue_updates_flag_and_logs(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test set_auto_continue updates _auto_continue and logs the change."""
-    with patch.object(runner.log, "info") as mock_log_info:
-        runner.set_auto_continue(True)
-        assert runner._auto_continue is True
-        mock_log_info.assert_called_with("Auto-continue mode set to: %s", True)
+    with patch.object(runner.log, "debug") as mock_log_debug:
+        runner.auto_continue = True
+        assert runner._config.auto_continue is True
+        mock_log_debug.assert_called_with("Auto-continue mode set to: %s", True)
 
-        runner.set_auto_continue(False)
-        assert runner._auto_continue is False
-        mock_log_info.assert_called_with("Auto-continue mode set to: %s", False)
+        runner.auto_continue = False
+        assert runner._config.auto_continue is False
+        mock_log_debug.assert_called_with(
+            "Auto-continue mode set to: %s", False
+        )
 
 
 def test_show_stats_emits_correct_stats(
@@ -608,12 +606,12 @@ def test_show_stats_emits_correct_stats(
     runner._processed_events = 5
     runner._event_count = 10
     runner._step_mode = True
-    runner._auto_continue = False
-    runner._breakpoints = {"eventA", "eventB"}
-    runner._event_history = [{"type": "eventA"}, {"type": "eventB"}]
+    runner._config.auto_continue = False
+    runner.set_breakpoints(["eventA", "eventB"])
+    runner._event_history = deque([{"type": "eventA"}, {"type": "eventB"}])
 
     with patch.object(runner, "emit") as mock_emit:
-        runner._show_stats()
+        runner.show_stats()
 
         # Assert emit was called once
         mock_emit.assert_called_once()
@@ -624,13 +622,17 @@ def test_show_stats_emits_correct_stats(
         stats = emitted_msg.stats
 
         # Check stats values
-        assert stats["events_processed"] == 5
-        assert stats["total_events"] == 10
-        assert stats["step_mode"] is True
-        assert stats["auto_continue"] is False
-        assert "eventA" in stats["breakpoints"]
-        assert "eventB" in stats["breakpoints"]
-        assert stats["event_history_count"] == 2
+        assert stats["execution"]["events_processed"] == 5
+        assert stats["execution"]["total_events"] == 10
+        assert stats["mode"]["step_mode"] is True
+        assert stats["mode"]["auto_continue"] is False
+        assert "event:eventA" in {
+            bp["string_repr"] for bp in stats["breakpoints"]["breakpoints"]
+        }
+        assert "event:eventB" in {
+            bp["string_repr"] for bp in stats["breakpoints"]["breakpoints"]
+        }
+        assert stats["history"]["event_history_count"] == 2
 
 
 def test_show_stats_with_empty_breakpoints(
@@ -640,18 +642,18 @@ def test_show_stats_with_empty_breakpoints(
     runner._processed_events = 3
     runner._event_count = 7
     runner._step_mode = False
-    runner._auto_continue = True
+    runner._config.auto_continue = True
     runner._breakpoints = set()
-    runner._event_history = [{}]
+    runner._event_history = deque([{}])
 
     with patch.object(runner, "emit") as mock_emit:
-        runner._show_stats()
+        runner.show_stats()
 
         emitted_msg = mock_emit.call_args[0][0]
         assert isinstance(emitted_msg, WaldiezDebugStats)
         stats = emitted_msg.stats
 
-        assert not stats["breakpoints"]
+        assert not stats["breakpoints"]["breakpoints"]
 
 
 def test_on_event_returns_false_if_stop_requested(
@@ -678,10 +680,8 @@ def test_parse_user_action_cases(runner: WaldiezStepByStepRunner) -> None:
     # "s" returns STEP
     assert runner._parse_user_action("s", "id") == WaldiezDebugStepAction.STEP
 
-    # "" (no message) means CONTINUE
-    assert (
-        runner._parse_user_action("", "id") == WaldiezDebugStepAction.CONTINUE
-    )
+    # "" (no message) means STEP
+    assert runner._parse_user_action("", "id") == WaldiezDebugStepAction.STEP
 
     # "r" disables step mode and returns RUN
     runner._step_mode = True
@@ -704,10 +704,10 @@ def test_parse_user_action_cases(runner: WaldiezStepByStepRunner) -> None:
     runner.emit.assert_called_once_with(HELP_MESSAGE)
     assert result == WaldiezDebugStepAction.HELP
 
-    # "st" calls _show_stats and returns STATS
-    runner._show_stats = MagicMock()  # type: ignore[method-assign]
+    # "st" calls show_stats and returns STATS
+    runner.show_stats = MagicMock()  # type: ignore[method-assign]
     result = runner._parse_user_action("st", "id")
-    runner._show_stats.assert_called_once()
+    runner.show_stats.assert_called_once()
     assert result == WaldiezDebugStepAction.STATS
 
     # unknown command emits error and returns UNKNOWN
@@ -720,7 +720,7 @@ def test_parse_user_action_cases(runner: WaldiezStepByStepRunner) -> None:
     # structured unknown command emits error and returns UNKNOWN
     runner.emit.reset_mock()
     result = runner._parse_user_action(
-        '{"type": "debug_input_response", "request_id": "id", "response": "foobar"}',
+        '{"type":"debug_input_response","request_id":"id","response":"foobar"}',
         "id",
     )
     assert result == WaldiezDebugStepAction.UNKNOWN
@@ -766,29 +766,36 @@ def test_list_breakpoints_emits_correct_message(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test list_breakpoints method."""
-    runner._breakpoints = {"event1", "event2"}
+    runner._breakpoints = {
+        WaldiezBreakpoint.from_string("event1"),
+        WaldiezBreakpoint.from_string("event2"),
+    }
     runner.emit = MagicMock()  # type: ignore[method-assign]
     runner.list_breakpoints()
     runner.emit.assert_called_once()
-    assert "event1" in runner.emit.call_args[0][0].breakpoints
-    assert "event2" in runner.emit.call_args[0][0].breakpoints
+    assert "event:event1" in {
+        str(bp) for bp in runner.emit.call_args[0][0].breakpoints
+    }
+    assert "event:event2" in {
+        str(bp) for bp in runner.emit.call_args[0][0].breakpoints
+    }
 
 
 def test_add_breakpoint_updates_breakpoints(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test add_breakpoint method."""
-    runner._breakpoints = {"event1"}
+    runner._breakpoints = {WaldiezBreakpoint.from_string("event1")}
     runner.emit = MagicMock()  # type: ignore[method-assign]
     runner.add_breakpoint("event2")
-    assert "event2" in runner._breakpoints
+    assert "event:event2" in {str(bp) for bp in runner._breakpoints}
 
 
 def test_add_breakpoint_emits_correct_message(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test add_breakpoint method."""
-    runner._breakpoints = {"event1"}
+    runner._breakpoints = {WaldiezBreakpoint.from_string("event1")}
     runner.emit = MagicMock()  # type: ignore[method-assign]
     runner.add_breakpoint("event2")
     runner.emit.assert_called_once()
@@ -799,7 +806,10 @@ def test_remove_breakpoint_updates_breakpoints(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test remove_breakpoint method."""
-    runner._breakpoints = {"event1", "event2"}
+    runner._breakpoints = {
+        WaldiezBreakpoint.from_string("event1"),
+        WaldiezBreakpoint.from_string("event2"),
+    }
     runner.remove_breakpoint("event1")
     assert "event1" not in runner._breakpoints
 
@@ -808,18 +818,24 @@ def test_remove_breakpoint_emits_correct_message(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test remove_breakpoint method."""
-    runner._breakpoints = {"event1", "event2"}
+    runner._breakpoints = {
+        WaldiezBreakpoint.from_string("event1"),
+        WaldiezBreakpoint.from_string("event2"),
+    }
     runner.emit = MagicMock()  # type: ignore[method-assign]
     runner.remove_breakpoint("event1")
     runner.emit.assert_called_once()
-    assert "event1" in runner.emit.call_args[0][0].breakpoint
+    assert "event1" in str(runner.emit.call_args[0][0].breakpoint)
 
 
 def test_clear_breakpoints_updates_breakpoints(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test clear_breakpoints method."""
-    runner._breakpoints = {"event1", "event2"}
+    runner._breakpoints = {
+        WaldiezBreakpoint.from_string("event1"),
+        WaldiezBreakpoint.from_string("event2"),
+    }
     runner.clear_breakpoints()
     assert not runner._breakpoints
 
@@ -828,7 +844,10 @@ def test_clear_breakpoints_emits_correct_message(
     runner: WaldiezStepByStepRunner,
 ) -> None:
     """Test clear_breakpoints method."""
-    runner._breakpoints = {"event1", "event2"}
+    runner._breakpoints = {
+        WaldiezBreakpoint.from_string("event1"),
+        WaldiezBreakpoint.from_string("event2"),
+    }
     runner.emit = MagicMock()  # type: ignore[method-assign]
     runner.clear_breakpoints()
     runner.emit.assert_called_once()

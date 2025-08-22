@@ -147,12 +147,6 @@ describe("AfterWork", () => {
         expect(checkbox).toBeInTheDocument();
     });
 
-    it("should display info text", () => {
-        setup();
-        const infoText = screen.getByText(/Check this to handle conversation continuation/);
-        expect(infoText).toBeInTheDocument();
-    });
-
     it("should start with checkbox unchecked when target is null", () => {
         setup(null);
         const checkbox = screen.getByRole("checkbox");

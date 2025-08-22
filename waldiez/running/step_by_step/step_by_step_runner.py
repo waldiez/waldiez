@@ -13,20 +13,23 @@ import asyncio
 import threading
 import traceback
 import uuid
+from collections import deque
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Iterable, Union
 
 from pydantic import ValidationError
 
 from waldiez.models.waldiez import Waldiez
+from waldiez.running.step_by_step.command_handler import CommandHandler
+from waldiez.running.step_by_step.events_processor import EventProcessor
 
 from ..base_runner import WaldiezBaseRunner
 from ..exceptions import StopRunningException
 from ..run_results import WaldiezRunResults
 from .breakpoints_mixin import BreakpointsMixin
 from .step_by_step_models import (
-    HELP_MESSAGE,
     VALID_CONTROL_COMMANDS,
+    WaldiezDebugConfig,
     WaldiezDebugError,
     WaldiezDebugEventInfo,
     WaldiezDebugInputRequest,
@@ -57,7 +60,7 @@ MESSAGES = {
 # pylint: disable=too-many-instance-attributes
 # noinspection DuplicatedCode,StrFormat
 class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
-    """Step-by-step runner with user interaction and debugging capabilities."""
+    """Refactored step-by-step runner with improved architecture."""
 
     def __init__(
         self,
@@ -68,6 +71,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         dot_env: str | Path | None = None,
         auto_continue: bool = False,
         breakpoints: Iterable[str] | None = None,
+        config: WaldiezDebugConfig | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize the step-by-step runner."""
@@ -80,23 +84,42 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             **kwargs,
         )
         BreakpointsMixin.__init__(self)
+
+        # Configuration
+        self._config = config or WaldiezDebugConfig()
+        self._config.auto_continue = auto_continue
+
+        # Core state
         self._event_count = 0
         self._processed_events = 0
-        self._step_mode = True
-        self._auto_continue = auto_continue
-        # Initialize breakpoints from the mixin and set initial breakpoints
-        if breakpoints:
-            self.set_breakpoints(breakpoints)
-        self._event_history: list[dict[str, Any]] = []
+        self._step_mode = self._config.step_mode
+
+        # Use deque for efficient FIFO operations on event history
+        self._event_history: deque[dict[str, Any]] = deque(
+            maxlen=self._config.max_event_history
+        )
         self._current_event: Union["BaseEvent", "BaseMessage", None] = None
+
+        # Participant tracking
         self._known_participants = self.waldiez.info.participants
         self._last_sender: str | None = None
         self._last_recipient: str | None = None
 
+        # Initialize breakpoints
+        if breakpoints:
+            _, errors = self.import_breakpoints(list(breakpoints))
+            if errors:
+                for error in errors:
+                    self.log.warning("Breakpoint import error: %s", error)
+
+        # Command handling
+        self._command_handler = CommandHandler(self)
+        self._event_processor = EventProcessor(self)
+
     @property
     def auto_continue(self) -> bool:
         """Get whether auto-continue is enabled."""
-        return self._auto_continue
+        return self._config.auto_continue
 
     @auto_continue.setter
     def auto_continue(self, value: bool) -> None:
@@ -107,29 +130,89 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         value : bool
             Whether to enable auto-continue.
         """
-        self._auto_continue = value
+        self._config.auto_continue = value
+        self.log.debug("Auto-continue mode set to: %s", value)
+
+    @property
+    def step_mode(self) -> bool:
+        """Get the step mode.
+
+        Returns
+        -------
+        bool
+            Whether the step mode is enabled.
+        """
+        return self._step_mode
+
+    @step_mode.setter
+    def step_mode(self, value: bool) -> None:
+        """Set the step mode.
+
+        Parameters
+        ----------
+        value : bool
+            Whether to enable step mode.
+        """
+        self._step_mode = value
+        self.log.debug("Step mode set to: %s", value)
+
+    @property
+    def last_sender(self) -> str | None:
+        """Get the last sender.
+
+        Returns
+        -------
+        str | None
+            The last sender, if available.
+        """
+        return self._last_sender
+
+    @last_sender.setter
+    def last_sender(self, value: str | None) -> None:
+        """Set the last sender.
+
+        Parameters
+        ----------
+        value : str | None
+            The last sender to set.
+        """
+        self._last_sender = value
+
+    @property
+    def last_recipient(self) -> str | None:
+        """Get the last recipient.
+
+        Returns
+        -------
+        str | None
+            The last recipient, if available.
+        """
+        return self._last_recipient
+
+    @last_recipient.setter
+    def last_recipient(self, value: str | None) -> None:
+        """Set the last recipient.
+
+        Parameters
+        ----------
+        value : str | None
+            The last recipient to set.
+        """
+        self._last_recipient = value
 
     @property
     def stop_requested(self) -> threading.Event:
         """Get the stop requested event."""
         return self._stop_requested
 
-    def set_auto_continue(self, auto_continue: bool) -> None:
-        """Set whether to automatically continue without user input.
-
-        Parameters
-        ----------
-        auto_continue : bool
-            Whether to automatically continue execution
-            without waiting for user input.
-        """
-        self._auto_continue = auto_continue
-        self.log.info("Auto-continue mode set to: %s", auto_continue)
+    @property
+    def max_event_history(self) -> int:
+        """Get the maximum event history size."""
+        return self._config.max_event_history
 
     # pylint: disable=no-self-use
-    # noinspection PyMethodMayBeStatic
     def print(self, *args: Any, **kwargs: Any) -> None:
-        """Print.
+        """Print method.
 
         Parameters
         ----------
@@ -140,83 +223,209 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         """
         WaldiezBaseRunner._print(*args, **kwargs)
 
+    def add_to_history(self, event_info: dict[str, Any]) -> None:
+        """Add an event to the history.
+
+        Parameters
+        ----------
+        event_info : dict[str, Any]
+            The event information to add to the history.
+        """
+        self._event_history.append(event_info)
+
+    def pop_event(self) -> None:
+        """Pop event from the history."""
+        if self._event_history:
+            self._event_history.popleft()
+
     def emit_event(self, event: Union["BaseEvent", "BaseMessage"]) -> None:
         """Emit an event.
 
         Parameters
         ----------
-        event : Union[BaseEvent, BaseMessage]
+        event : Union["BaseEvent", "BaseMessage"]
             The event to emit.
         """
         event_info = event.model_dump(
             mode="json", exclude_none=True, fallback=str
         )
         event_info["count"] = self._event_count
-        self._last_sender = getattr(event, "sender", self._last_sender)
-        self._last_recipient = getattr(event, "recipient", self._last_recipient)
-        event_info["sender"] = self._last_sender
-        event_info["recipient"] = self._last_recipient
+        event_info["sender"] = getattr(event, "sender", self._last_sender)
+        event_info["recipient"] = getattr(
+            event, "recipient", self._last_recipient
+        )
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
-    # noinspection PyTypeHints
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message.
 
         Parameters
         ----------
         message : WaldiezDebugMessage
-            The debug message to emit.
+            The message to emit.
         """
         message_dump = message.model_dump(
             mode="json", exclude_none=True, fallback=str
         )
         self.print(message_dump)
 
-    def _show_event_info(self) -> None:
+    @property
+    def current_event(self) -> Union["BaseEvent", "BaseMessage", None]:
+        """Get the current event.
+
+        Returns
+        -------
+        Union["BaseEvent", "BaseMessage", None]
+            The current event, if available.
+        """
+        return self._current_event
+
+    @current_event.setter
+    def current_event(
+        self, value: Union["BaseEvent", "BaseMessage", None]
+    ) -> None:
+        """Set the current event.
+
+        Parameters
+        ----------
+        value : Union["BaseEvent", "BaseMessage", None]
+            The event to set as the current event.
+        """
+        self._current_event = value
+
+    @property
+    def event_count(self) -> int:
+        """Get the current event count.
+
+        Returns
+        -------
+        int
+            The current event count.
+        """
+        return self._event_count
+
+    def event_plus_one(self) -> None:
+        """Increment the current event count."""
+        self._event_count += 1
+
+    def show_event_info(self) -> None:
+        """Show detailed information about the current event."""
         if not self._current_event:
+            self.emit(WaldiezDebugError(error="No current event to display"))
             return
+
         event_info = self._current_event.model_dump(
             mode="json", exclude_none=True, fallback=str
         )
+        # Add additional context
+        event_info["_meta"] = {
+            "event_number": self._event_count,
+            "processed_events": self._processed_events,
+            "step_mode": self._step_mode,
+            "has_breakpoints": len(self._breakpoints) > 0,
+        }
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
-    def _show_stats(self) -> None:
-        stats_dict: dict[str, Any] = {
-            "events_processed": self._processed_events,
-            "total_events": self._event_count,
-            "step_mode": self._step_mode,
-            "auto_continue": self._auto_continue,
-            "breakpoints": sorted(self.get_breakpoints()),
-            "event_history_count": len(self._event_history),
+    def show_stats(self) -> None:
+        """Show comprehensive execution statistics."""
+        base_stats: dict[str, Any] = {
+            "execution": {
+                "events_processed": self._processed_events,
+                "total_events": self._event_count,
+                "processing_rate": (
+                    f"{(self._processed_events / self._event_count * 100):.1f}%"
+                    if self._event_count > 0
+                    else "0%"
+                ),
+            },
+            "mode": {
+                "step_mode": self._step_mode,
+                "auto_continue": self._config.auto_continue,
+            },
+            "history": {
+                "event_history_count": len(self._event_history),
+                "max_history_size": self._config.max_event_history,
+                "memory_usage": f"{len(self._event_history) * 200}B (est.)",
+            },
+            "participants": {
+                "last_sender": self._last_sender,
+                "last_recipient": self._last_recipient,
+                "known_participants": len(self._known_participants),
+            },
         }
+
+        # Merge with breakpoint stats
+        breakpoint_stats = self.get_breakpoint_stats()
+        stats_dict: dict[str, Any] = {
+            **base_stats,
+            "breakpoints": breakpoint_stats,
+        }
+
         self.emit(WaldiezDebugStats(stats=stats_dict))
+
+    @property
+    def execution_stats(self) -> dict[str, Any]:
+        """Get comprehensive execution statistics.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing execution statistics.
+        """
+        base_stats: dict[str, Any] = {
+            "total_events": self._event_count,
+            "processed_events": self._processed_events,
+            "event_processing_rate": (
+                self._processed_events / self._event_count
+                if self._event_count > 0
+                else 0
+            ),
+            "step_mode": self._step_mode,
+            "auto_continue": self._config.auto_continue,
+            "event_history_count": len(self._event_history),
+            "last_sender": self._last_sender,
+            "last_recipient": self._last_recipient,
+            "known_participants": [
+                p.model_dump() for p in self._known_participants
+            ],
+            "config": self._config.model_dump(),
+        }
+
+        return {**base_stats, "breakpoints": self.get_breakpoint_stats()}
+
+    @property
+    def event_history(self) -> list[dict[str, Any]]:
+        """Get the history of processed events.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            A list of dictionaries containing event history.
+        """
+        return list(self._event_history)
+
+    def reset_session(self) -> None:
+        """Reset the debugging session state."""
+        self._event_count = 0
+        self._processed_events = 0
+        self._event_history.clear()
+        self._current_event = None
+        self._last_sender = None
+        self._last_recipient = None
+        self.reset_stats()
+        self.log.info("Debug session reset")
 
     def _get_user_response(
         self, user_response: str, request_id: str
     ) -> tuple[str | None, bool]:
-        """Get user response for step-by-step execution.
-
-        Parameters
-        ----------
-        user_response : str
-            The user's response.
-        request_id : str
-            The ID of the input request.
-
-        Returns
-        -------
-        tuple[str | None, bool]
-            The user's response or None if invalid,
-            and a boolean indicating validity.
-        """
+        """Get and validate user response."""
         try:
             response = WaldiezDebugInputResponse.model_validate_json(
                 user_response
             )
         except ValidationError as exc:
+            # Handle raw CLI input
             got = user_response.strip().lower()
-            # in cli mode, let's see if got raw response
-            # instead of a structured one
             if got in VALID_CONTROL_COMMANDS:
                 return got, True
             self.emit(WaldiezDebugError(error=f"Invalid input: {exc}"))
@@ -225,110 +434,34 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         if response.request_id != request_id:
             self.emit(
                 WaldiezDebugError(
-                    error=(
-                        "Stale input received: "
-                        f"{response.request_id} != {request_id}"
-                    )
+                    error=f"Stale input received: {response.request_id} != {request_id}"
                 )
             )
             return None, False
+
         return response.data, True
 
-    # pylint: disable=too-many-return-statements
-    def _parse_user_action(  # noqa: C901
+    def _parse_user_action(
         self, user_response: str, request_id: str
     ) -> WaldiezDebugStepAction:
-        """Parse user action for step-by-step execution.
-
-        Parameters
-        ----------
-        user_response : str
-            The user's response.
-        request_id : str
-            The ID of the input request.
-
-        Returns
-        -------
-        WaldiezDebugStepAction
-            The action chosen by the user.
-        """
+        """Parse user action using the command handler."""
         self.log.debug("Parsing user action... '%s'", user_response)
+
         user_input, is_valid = self._get_user_response(
             user_response, request_id=request_id
         )
         if not is_valid:
             return WaldiezDebugStepAction.UNKNOWN
-        if not user_input:
-            return WaldiezDebugStepAction.CONTINUE
-        match user_input:
-            case "c":
-                self._step_mode = True
-                return WaldiezDebugStepAction.CONTINUE
-            case "s":
-                self._step_mode = True
-                return WaldiezDebugStepAction.STEP
-            case "r":
-                self._step_mode = False
-                return WaldiezDebugStepAction.RUN
-            case "q":
-                self._stop_requested.set()
-                return WaldiezDebugStepAction.QUIT
-            case "i":
-                self._show_event_info()
-                return WaldiezDebugStepAction.INFO
-            case "h":
-                self.emit(HELP_MESSAGE)
-                return WaldiezDebugStepAction.HELP
-            case "st":
-                self._show_stats()
-                return WaldiezDebugStepAction.STATS
-            case "ab":
-                if self._current_event and hasattr(self._current_event, "type"):
-                    self.add_breakpoint(self._current_event.type)
-                else:
-                    self.emit(
-                        WaldiezDebugError(
-                            error="No current event to add breakpoint for"
-                        )
-                    )
-                return WaldiezDebugStepAction.ADD_BREAKPOINT
-            case "rb":
-                if self._current_event and hasattr(self._current_event, "type"):
-                    self.remove_breakpoint(self._current_event.type)
-                else:
-                    self.emit(
-                        WaldiezDebugError(
-                            error="No current event to remove breakpoint for"
-                        )
-                    )
-                return WaldiezDebugStepAction.REMOVE_BREAKPOINT
-            case "lb":
-                self.list_breakpoints()
-                return WaldiezDebugStepAction.LIST_BREAKPOINTS
-            case "cb":
-                self.clear_breakpoints()
-                return WaldiezDebugStepAction.CLEAR_BREAKPOINTS
-            case _:
-                self.emit(
-                    WaldiezDebugError(
-                        error=f"Unknown command: {user_input}, use 'h' for help"
-                    )
-                )
-                return WaldiezDebugStepAction.UNKNOWN
+
+        return self._command_handler.handle_command(user_input or "")
 
     def _get_user_action(self) -> WaldiezDebugStepAction:
-        """Get user action for step-by-step execution.
-
-        Returns
-        -------
-        WaldiezDebugStepAction
-            The action chosen by the user.
-        """
-        if self._auto_continue:
+        """Get user action with timeout support."""
+        if self._config.auto_continue:
+            self.step_mode = True
             return WaldiezDebugStepAction.CONTINUE
 
         while True:
-            # pylint: disable=too-many-try-statements
             request_id = str(uuid.uuid4())
             try:
                 self.emit(
@@ -336,60 +469,49 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                         prompt=DEBUG_INPUT_PROMPT, request_id=request_id
                     )
                 )
-                user_input = (
-                    WaldiezBaseRunner.get_user_input(DEBUG_INPUT_PROMPT)
-                    .strip()
-                    .lower()
-                )
+
+                user_input = WaldiezBaseRunner.get_user_input(
+                    DEBUG_INPUT_PROMPT
+                ).strip()
                 return self._parse_user_action(
                     user_input, request_id=request_id
                 )
+
             except (KeyboardInterrupt, EOFError):
                 self._stop_requested.set()
                 return WaldiezDebugStepAction.QUIT
 
-    # pylint: disable=too-many-return-statements
     async def _a_get_user_action(self) -> WaldiezDebugStepAction:
-        """Get user action for step-by-step execution asynchronously.
-
-        Returns
-        -------
-        WaldiezDebugStepAction
-            The action chosen by the user.
-        """
-        if self._auto_continue:
+        """Get user action asynchronously."""
+        if self._config.auto_continue:
+            self.step_mode = True
             return WaldiezDebugStepAction.CONTINUE
 
         while True:
-            # pylint: disable=too-many-try-statements
             request_id = str(uuid.uuid4())
+            # pylint: disable=too-many-try-statements
             try:
                 self.emit(
                     WaldiezDebugInputRequest(
                         prompt=DEBUG_INPUT_PROMPT, request_id=request_id
                     )
                 )
+
                 user_input = await WaldiezBaseRunner.a_get_user_input(
                     DEBUG_INPUT_PROMPT
                 )
-                user_input = user_input.strip().lower()
+                user_input = user_input.strip()
                 return self._parse_user_action(
                     user_input, request_id=request_id
                 )
+
             except (KeyboardInterrupt, EOFError):
                 return WaldiezDebugStepAction.QUIT
 
     def _handle_step_interaction(self) -> bool:
-        """Handle step-by-step user interaction.
-
-        Returns
-        -------
-        bool
-            True to continue execution, False to stop.
-        """
-        while True:  # pragma: no branch
+        """Handle step-by-step user interaction."""
+        while True:
             action = self._get_user_action()
-
             if action in (
                 WaldiezDebugStepAction.CONTINUE,
                 WaldiezDebugStepAction.STEP,
@@ -397,20 +519,14 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return True
             if action == WaldiezDebugStepAction.RUN:
                 return True
-            if action == WaldiezDebugStepAction.QUIT:  # pragma: no branch
+            if action == WaldiezDebugStepAction.QUIT:
                 return False
+            # For other actions (info, help, etc.), continue the loop
 
     async def _a_handle_step_interaction(self) -> bool:
-        """Handle step-by-step user interaction asynchronously.
-
-        Returns
-        -------
-        bool
-            True to continue execution, False to stop.
-        """
-        while True:  # pragma: no branch
+        """Handle step-by-step user interaction asynchronously."""
+        while True:
             action = await self._a_get_user_action()
-
             if action in (
                 WaldiezDebugStepAction.CONTINUE,
                 WaldiezDebugStepAction.STEP,
@@ -418,10 +534,10 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return True
             if action == WaldiezDebugStepAction.RUN:
                 return True
-            if action == WaldiezDebugStepAction.QUIT:  # pragma: no branch
+            if action == WaldiezDebugStepAction.QUIT:
                 return False
+            # For other actions (info, help, etc.), continue the loop
 
-    # pylint: disable=unused-argument
     def _run(
         self,
         temp_dir: Path,
@@ -445,13 +561,13 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             loaded_module = self._load_module(output_file, temp_dir)
-            if self._stop_requested.is_set():  # pragma: no cover
+            if self._stop_requested.is_set():
                 self.log.debug(
                     "Step-by-step execution stopped before workflow start"
                 )
                 return []
 
-            # noinspection DuplicatedCode
+            # Setup I/O
             if self.structured_io:
                 stream = StructuredIOStream(
                     uploads_root=uploads_root, is_async=False
@@ -475,7 +591,6 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 raise StopRunningException(StopRunningException.reason) from e
             results_container["exception"] = e
             traceback.print_exc()
-            # noinspection StrFormat
             self.print(MESSAGES["workflow_failed"].format(error=str(e)))
         finally:
             results_container["completed"] = True
@@ -483,47 +598,20 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         return results_container["results"]
 
     def _on_event(self, event: Union["BaseEvent", "BaseMessage"]) -> bool:
-        """Process an event with step-by-step debugging.
-
-        Parameters
-        ----------
-        event : Union[BaseEvent, BaseMessage]
-            The event to process.
-
-        Returns
-        -------
-        bool
-            True to continue, False to stop.
-
-        Raises
-        ------
-        RuntimeError
-            If an error occurs while processing the event.
-        StopRunningException
-            If execution is stopped by user request.
-        """
-        self._event_count += 1
-        self._current_event = event
-
-        if self._stop_requested.is_set():
-            self.log.debug(
-                "Step-by-step execution stopped before event processing"
-            )
-            return False
-
-        # Store event in history
-        event_info = event.model_dump(
-            mode="json", exclude_none=True, fallback=str
-        )
-        event_info["count"] = self._event_count
-        self._event_history.append(event_info)
-
-        # pylint: disable=too-many-try-statements
+        """Process an event with step-by-step debugging."""
+        # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
-            # Show event information if we should break
-            if self.should_break_on_event(
-                event, self._step_mode
-            ):  # pragma: no branch
+            # Use the event processor for core logic
+            result = self._event_processor.process_event_core(event)
+
+            if result["action"] == "stop":
+                self.log.debug(
+                    "Step-by-step execution stopped before event processing"
+                )
+                return False
+
+            # Handle breakpoint logic
+            if result["should_break"]:
                 self.emit_event(event)
                 if not self._handle_step_interaction():
                     self._stop_requested.set()
@@ -532,17 +620,17 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                         return True
                     raise StopRunningException(StopRunningException.reason)
 
-            # Process the event
+            # Process the actual event
             WaldiezBaseRunner.process_event(event)
             self._processed_events += 1
 
         except Exception as e:
             if not isinstance(e, StopRunningException):
                 raise RuntimeError(
-                    f"Error processing event {event}: "
-                    f"{e}\n{traceback.format_exc()}"
+                    f"Error processing event {event}: {e}\n{traceback.format_exc()}"
                 ) from e
             raise StopRunningException(StopRunningException.reason) from e
+
         return not self._stop_requested.is_set()
 
     # pylint: disable=too-complex
@@ -558,19 +646,17 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         """Run the Waldiez workflow with step-by-step debugging (async)."""
 
         async def _execute_workflow() -> list[dict[str, Any]]:
-            """Execute the workflow in an async context."""
             # pylint: disable=import-outside-toplevel
             from autogen.io import IOStream  # pyright: ignore
 
             from waldiez.io import StructuredIOStream
 
-            results: list[dict[str, Any]]
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
-                if self._stop_requested.is_set():  # pragma: no cover
+                if self._stop_requested.is_set():
                     self.log.debug(
-                        "step-by-step execution stopped before workflow start"
+                        "Step-by-step execution stopped before workflow start"
                     )
                     return []
 
@@ -590,6 +676,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
 
                 results = await loaded_module.main(on_event=self._a_on_event)
                 self.print(MESSAGES["workflow_finished"])
+                return results
 
             except Exception as e:
                 if StopRunningException.reason in str(e):
@@ -600,13 +687,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 traceback.print_exc()
                 return []
 
-            return results
-
-        # Create cancellable task
+        # Create and monitor cancellable task
         task = asyncio.create_task(_execute_workflow())
-
-        # Monitor for stop requests
-        # pylint: disable=too-many-try-statements
+        # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             while not task.done():
                 if self._stop_requested.is_set():
@@ -615,7 +698,6 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     break
                 await asyncio.sleep(0.1)
             return await task
-
         except asyncio.CancelledError:
             self.log.debug("Step-by-step execution cancelled")
             return []
@@ -623,50 +705,21 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     async def _a_on_event(
         self, event: Union["BaseEvent", "BaseMessage"]
     ) -> bool:
-        """Process an event with step-by-step debugging asynchronously.
-
-        Parameters
-        ----------
-        event : Union[BaseEvent, BaseMessage]
-            The event to process.
-
-        Returns
-        -------
-        bool
-            True to continue, False to stop.
-
-        Raises
-        ------
-        RuntimeError
-            If an error occurs while processing the event.
-        StopRunningException
-            If execution is stopped by user request.
-        """
-        self._event_count += 1
-        self._current_event = event
-
-        if self._stop_requested.is_set():
-            self.log.debug(
-                "Async step-by-step execution stopped before event processing"
-            )
-            return False
-
-        # Store event in history
-        event_info = event.model_dump(
-            mode="json", exclude_none=True, fallback=str
-        )
-        event_info["count"] = self._event_count
-        self._event_history.append(event_info)
-
-        # pylint: disable=too-many-try-statements
+        """Process an event with step-by-step debugging asynchronously."""
+        # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
-            # Show event information if we should break
-            if self.should_break_on_event(
-                event, self._step_mode
-            ):  # pragma: no branch
-                self.emit_event(event)
+            # Use the event processor for core logic
+            result = self._event_processor.process_event_core(event)
 
-                # Handle step interaction
+            if result["action"] == "stop":
+                self.log.debug(
+                    "Async step-by-step execution stopped before event processing"
+                )
+                return False
+
+            # Handle breakpoint logic
+            if result["should_break"]:
+                self.emit_event(event)
                 if not await self._a_handle_step_interaction():
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
@@ -674,72 +727,15 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                         return True
                     raise StopRunningException(StopRunningException.reason)
 
-            # Process the event
+            # Process the actual event
             await WaldiezBaseRunner.a_process_event(event)
             self._processed_events += 1
 
         except Exception as e:
             if not isinstance(e, StopRunningException):
                 raise RuntimeError(
-                    f"Error processing event {event}: "
-                    f"{e}\n{traceback.format_exc()}"
+                    f"Error processing event {event}: {e}\n{traceback.format_exc()}"
                 ) from e
             raise StopRunningException(StopRunningException.reason) from e
+
         return not self._stop_requested.is_set()
-
-    def get_execution_stats(self) -> dict[str, Any]:
-        """Get execution statistics for step-by-step runner.
-
-        Returns
-        -------
-        dict[str, Any]
-            A dictionary containing execution statistics.
-        """
-        return {
-            "total_events": self._event_count,
-            "processed_events": self._processed_events,
-            "event_processing_rate": (
-                self._processed_events / self._event_count
-                if self._event_count > 0
-                else 0
-            ),
-            "step_mode": self._step_mode,
-            "auto_continue": self._auto_continue,
-            "breakpoints": sorted(self.get_breakpoints()),
-            "event_history_count": len(self._event_history),
-            "last_sender": self._last_sender,
-            "last_recipient": self._last_recipient,
-            "known_participants": [
-                p.model_dump() for p in self._known_participants
-            ],
-        }
-
-    def get_event_history(self) -> list[dict[str, Any]]:
-        """Get the history of processed events.
-
-        Returns
-        -------
-        list[dict[str, Any]]
-            List of event information dictionaries.
-        """
-        return self._event_history.copy()
-
-    def enable_auto_continue(self, enabled: bool = True) -> None:
-        """Enable or disable auto-continue mode.
-
-        Parameters
-        ----------
-        enabled : bool, optional
-            Whether to enable auto-continue, by default True.
-        """
-        self._auto_continue = enabled
-
-    def enable_step_mode(self, enabled: bool = True) -> None:
-        """Enable or disable step mode.
-
-        Parameters
-        ----------
-        enabled : bool, optional
-            Whether to enable step mode, by default True.
-        """
-        self._step_mode = enabled
