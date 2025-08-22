@@ -38,8 +38,13 @@ from .utils import (
 )
 
 if TYPE_CHECKING:
-    from autogen.events import BaseEvent  # type: ignore[import-untyped]
-    from autogen.messages import BaseMessage  # type: ignore[import-untyped]
+    # pylint: disable=line-too-long
+    from autogen.events import (  # type: ignore[import-untyped,import-not-found,unused-ignore]  # noqa: E501
+        BaseEvent,
+    )
+    from autogen.messages import (  # type: ignore[import-untyped,import-not-found,unused-ignore] # noqa: E501
+        BaseMessage,
+    )
 
 
 # pylint: disable=too-many-public-methods
