@@ -25,11 +25,13 @@ fs.ensureDirSync(recordingsDir);
 
 const viewport = { width: 1280, height: 720 };
 // coverage thresholds, let's try to keep them high
+const LOWER_THRESHOLD = 80;
+
 const thresholds = {
-    statements: 80,
-    branches: 80,
-    functions: 80,
-    lines: 80,
+    statements: LOWER_THRESHOLD,
+    branches: LOWER_THRESHOLD,
+    functions: LOWER_THRESHOLD,
+    lines: LOWER_THRESHOLD,
 };
 
 // noinspection DuplicatedCode
