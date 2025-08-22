@@ -481,17 +481,20 @@ class ClientManager:
                 result="",
                 session_id=msg.session_id,
             ).model_dump(mode="json")
-
-        code = {
-            "": "c",
-            "continue": "c",
-            "step": "s",
-            "run": "r",
-            "quit": "q",
-            "info": "i",
-            "help": "h",
-            "stats": "st",
-        }.get(msg.action)
+        code: str | None = None
+        if msg.action in {"", "c", "s", "r", "q", "i", "h", "st"}:
+            code = msg.action if msg.action else "c"
+        else:
+            code = {
+                "": "c",
+                "continue": "c",
+                "step": "s",
+                "run": "r",
+                "quit": "q",
+                "info": "i",
+                "help": "h",
+                "stats": "st",
+            }.get(msg.action)
 
         if not code:
             return StepControlResponse.fail(

@@ -154,7 +154,24 @@ class StepControlRequest(BaseRequest):
     """Request to control step-by-step execution."""
 
     type: Literal["step_control"] = "step_control"
-    action: Literal["continue", "step", "run", "quit", "info", "help", "stats"]
+    action: Literal[
+        "continue",
+        "step",
+        "run",
+        "quit",
+        "info",
+        "help",
+        "stats",
+        "",
+        "c",
+        "s",
+        "r",
+        "q",
+        "i",
+        "h",
+        "?",
+        "st",
+    ]
     session_id: str
 
 
