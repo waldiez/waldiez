@@ -14,7 +14,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
 import MonacoEditor, { loader } from "@monaco-editor/react";
 import { motion } from "framer-motion";
-import { createPortal } from "react-dom";
+import * as ReactDOM from "react-dom";
+import ReactDOM__default, { createPortal } from "react-dom";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import diff from "microdiff";
@@ -354,7 +355,7 @@ class MessageUtils {
     return [content];
   }
   static generateSpeakerSelectionMarkdown(agents) {
-    const agentList = agents.map((agent, index) => `- [${index + 1}] ${agent}`).join("\n");
+    const agentList = agents.map((agent, index2) => `- [${index2 + 1}] ${agent}`).join("\n");
     return [
       MESSAGE_CONSTANTS.SYSTEM_MESSAGES.SPEAKER_SELECTION_HEADER,
       "",
@@ -1083,8 +1084,8 @@ const isAppleDevice = () => {
   if ("userAgentData" in navigator && typeof navigator.userAgentData === "object") {
     const userAgentData = navigator.userAgentData;
     if (userAgentData && "platform" in userAgentData && typeof userAgentData.platform === "string") {
-      const platform = userAgentData.platform.toLowerCase();
-      return platform.includes("mac") || platform.includes("ios");
+      const platform2 = userAgentData.platform.toLowerCase();
+      return platform2.includes("mac") || platform2.includes("ios");
     }
   }
   const ua = navigator.userAgent;
@@ -4461,7 +4462,7 @@ const chatMapper = {
    * @param index - The index of the chat in the graph.
    * @returns An object containing the imported chat and its edge.
    */
-  importChat: (json, edges, nodes, index) => {
+  importChat: (json, edges, nodes, index2) => {
     if (!json || typeof json !== "object") {
       throw new Error("Invalid edge data");
     }
@@ -4475,7 +4476,7 @@ const chatMapper = {
     const { edge, sourceNode, targetNode } = result;
     const id = jsonObject.id;
     const type = getChatTypeFromJSON(edge);
-    const data = getChatData(jsonObject.data, index);
+    const data = getChatData(jsonObject.data, index2);
     const rest = getChatRest({ ...jsonObject, ...edge });
     const updatedEdge = updateEdge(edge, data, jsonObject, sourceNode, targetNode, rest);
     Object.entries(updatedEdge).forEach(([key, value]) => {
@@ -4492,7 +4493,7 @@ const chatMapper = {
    * @param index - The index of the chat in the graph.
    * @returns An object containing the exported chat data.
    */
-  exportChat: (edge, index) => {
+  exportChat: (edge, index2) => {
     const edgeData = edge.data;
     const edgeType = edge.type || getChatTypeFromJSON(edge);
     const data = { ...edgeData };
@@ -4502,7 +4503,7 @@ const chatMapper = {
       name: getChatName(data),
       order: getChatOrder(data),
       description: getChatDescription(data),
-      position: getChatPosition(data, index),
+      position: getChatPosition(data, index2),
       clearHistory: getChatClearHistory(data),
       maxTurns: getChatMaxTurns(data),
       message: messageMapper.exportMessage(data.message),
@@ -4589,7 +4590,7 @@ const getChatTypeFromJSON = (json) => {
   }
   return defaultType;
 };
-const getChatData = (json, index) => {
+const getChatData = (json, index2) => {
   if (!json || typeof json !== "object") {
     throw new Error("Invalid chat data");
   }
@@ -4599,7 +4600,7 @@ const getChatData = (json, index) => {
   const targetType = getChatTargetType(json);
   const clearHistory = getChatClearHistory(json);
   const maxTurns = getChatMaxTurns(json);
-  const position = getChatPosition(json, index);
+  const position = getChatPosition(json, index2);
   const order = getChatOrder(json);
   const message = messageMapper.importMessage(json);
   const summary = summaryMapper.importSummary(json);
@@ -4716,8 +4717,8 @@ const ensureAgentNestedChatData = (agent, nodes, edges) => {
     ];
   }
 };
-const exportChat = (edge, edges, index) => {
-  const chat = chatMapper.exportChat(edge, index);
+const exportChat = (edge, edges, index2) => {
+  const chat = chatMapper.exportChat(edge, index2);
   const chatEdge = edges.find((e) => e.id === edge.id);
   if (chatEdge) {
     Object.keys(chatEdge).forEach((key) => {
@@ -5742,13 +5743,13 @@ const getChats = (json, nodes, edges) => {
   }
   const chats = [];
   const updatedEdges = [];
-  json.chats.forEach((chatJson, index) => {
+  json.chats.forEach((chatJson, index2) => {
     try {
-      const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index);
+      const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index2);
       chats.push(chat);
       updatedEdges.push(edge);
     } catch (error) {
-      console.error(`Error importing chat at index ${index}:`, error);
+      console.error(`Error importing chat at index ${index2}:`, error);
     }
   });
   return { chats, edges: updatedEdges };
@@ -5918,7 +5919,7 @@ const getFlowDataToExport = (flow, hideSecrets, skipLinks) => {
     },
     models: modelNodes.map((modelNode) => exportModel(modelNode, nodes, hideSecrets)),
     tools: toolNodes.map((toolNode) => exportTool(toolNode, nodes, hideSecrets)),
-    chats: edges.map((edge, index) => exportChat(edge, edges, index)),
+    chats: edges.map((edge, index2) => exportChat(edge, edges, index2)),
     isAsync: flow.isAsync,
     cacheSeed: flow.cacheSeed,
     viewport: flow.viewport,
@@ -6428,6 +6429,14 @@ const reArrangeNodes = (nodes, flowId, nodeType, rfInstance) => {
   });
   return newNodes;
 };
+function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
+  return function handleEvent(event) {
+    originalEventHandler?.(event);
+    if (checkForDefaultPrevented === false || !event.defaultPrevented) {
+      return ourEventHandler?.(event);
+    }
+  };
+}
 function setRef(ref, value) {
   if (typeof ref === "function") {
     return ref(value);
@@ -6466,23 +6475,23 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = React.createContext(defaultContext);
-    const index = defaultContexts.length;
+    const index2 = defaultContexts.length;
     defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
+    const Provider2 = (props) => {
       const { scope, children, ...context } = props;
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const Context = scope?.[scopeName]?.[index2] || BaseContext;
       const value = React.useMemo(() => context, Object.values(context));
       return /* @__PURE__ */ jsx(Context.Provider, { value, children });
     };
-    Provider.displayName = rootComponentName + "Provider";
+    Provider2.displayName = rootComponentName + "Provider";
     function useContext2(consumerName, scope) {
-      const Context = scope?.[scopeName]?.[index] || BaseContext;
+      const Context = scope?.[scopeName]?.[index2] || BaseContext;
       const context = React.useContext(Context);
       if (context) return context;
       if (defaultContext !== void 0) return defaultContext;
       throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
     }
-    return [Provider, useContext2];
+    return [Provider2, useContext2];
   }
   const createScope = () => {
     const scopeContexts = defaultContexts.map((defaultContext) => {
@@ -6519,92 +6528,2260 @@ function composeContextScopes(...scopes) {
   createScope.scopeName = baseScope.scopeName;
   return createScope;
 }
-function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
-  return function handleEvent(event) {
-    originalEventHandler?.(event);
-    if (checkForDefaultPrevented === false || !event.defaultPrevented) {
-      return ourEventHandler?.(event);
+// @__NO_SIDE_EFFECTS__
+function createSlot(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
+  const Slot2 = React.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = React.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (React.Children.count(newElement) > 1) return React.Children.only(null);
+          return React.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: React.isValidElement(newElement) ? React.cloneElement(newElement, void 0, newChildren) : null });
     }
+    return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+// @__NO_SIDE_EFFECTS__
+function createSlotClone(ownerName) {
+  const SlotClone = React.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (React.isValidElement(children)) {
+      const childrenRef = getElementRef$1(children);
+      const props2 = mergeProps(slotProps, children.props);
+      if (children.type !== React.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return React.cloneElement(children, props2);
+    }
+    return React.Children.count(children) > 1 ? React.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsx(Fragment, { children });
   };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
+  return Slottable2;
+}
+function isSlottable(child) {
+  return React.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
+}
+function mergeProps(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$1(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+var NODES = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive = NODES.reduce((primitive, node) => {
+  const Slot = /* @__PURE__ */ createSlot(`Primitive.${node}`);
+  const Node2 = React.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node2.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node2 };
+}, {});
+function dispatchDiscreteCustomEvent(target, event) {
+  if (target) ReactDOM.flushSync(() => target.dispatchEvent(event));
+}
+function useCallbackRef(callback) {
+  const callbackRef = React.useRef(callback);
+  React.useEffect(() => {
+    callbackRef.current = callback;
+  });
+  return React.useMemo(() => (...args) => callbackRef.current?.(...args), []);
+}
+function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis?.document) {
+  const onEscapeKeyDown = useCallbackRef(onEscapeKeyDownProp);
+  React.useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onEscapeKeyDown(event);
+      }
+    };
+    ownerDocument.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => ownerDocument.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [onEscapeKeyDown, ownerDocument]);
+}
+var DISMISSABLE_LAYER_NAME = "DismissableLayer";
+var CONTEXT_UPDATE = "dismissableLayer.update";
+var POINTER_DOWN_OUTSIDE = "dismissableLayer.pointerDownOutside";
+var FOCUS_OUTSIDE = "dismissableLayer.focusOutside";
+var originalBodyPointerEvents;
+var DismissableLayerContext = React.createContext({
+  layers: /* @__PURE__ */ new Set(),
+  layersWithOutsidePointerEventsDisabled: /* @__PURE__ */ new Set(),
+  branches: /* @__PURE__ */ new Set()
+});
+var DismissableLayer = React.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      disableOutsidePointerEvents = false,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      onFocusOutside,
+      onInteractOutside,
+      onDismiss,
+      ...layerProps
+    } = props;
+    const context = React.useContext(DismissableLayerContext);
+    const [node, setNode] = React.useState(null);
+    const ownerDocument = node?.ownerDocument ?? globalThis?.document;
+    const [, force] = React.useState({});
+    const composedRefs = useComposedRefs(forwardedRef, (node2) => setNode(node2));
+    const layers = Array.from(context.layers);
+    const [highestLayerWithOutsidePointerEventsDisabled] = [...context.layersWithOutsidePointerEventsDisabled].slice(-1);
+    const highestLayerWithOutsidePointerEventsDisabledIndex = layers.indexOf(highestLayerWithOutsidePointerEventsDisabled);
+    const index2 = node ? layers.indexOf(node) : -1;
+    const isBodyPointerEventsDisabled = context.layersWithOutsidePointerEventsDisabled.size > 0;
+    const isPointerEventsEnabled = index2 >= highestLayerWithOutsidePointerEventsDisabledIndex;
+    const pointerDownOutside = usePointerDownOutside((event) => {
+      const target = event.target;
+      const isPointerDownOnBranch = [...context.branches].some((branch) => branch.contains(target));
+      if (!isPointerEventsEnabled || isPointerDownOnBranch) return;
+      onPointerDownOutside?.(event);
+      onInteractOutside?.(event);
+      if (!event.defaultPrevented) onDismiss?.();
+    }, ownerDocument);
+    const focusOutside = useFocusOutside((event) => {
+      const target = event.target;
+      const isFocusInBranch = [...context.branches].some((branch) => branch.contains(target));
+      if (isFocusInBranch) return;
+      onFocusOutside?.(event);
+      onInteractOutside?.(event);
+      if (!event.defaultPrevented) onDismiss?.();
+    }, ownerDocument);
+    useEscapeKeydown((event) => {
+      const isHighestLayer = index2 === context.layers.size - 1;
+      if (!isHighestLayer) return;
+      onEscapeKeyDown?.(event);
+      if (!event.defaultPrevented && onDismiss) {
+        event.preventDefault();
+        onDismiss();
+      }
+    }, ownerDocument);
+    React.useEffect(() => {
+      if (!node) return;
+      if (disableOutsidePointerEvents) {
+        if (context.layersWithOutsidePointerEventsDisabled.size === 0) {
+          originalBodyPointerEvents = ownerDocument.body.style.pointerEvents;
+          ownerDocument.body.style.pointerEvents = "none";
+        }
+        context.layersWithOutsidePointerEventsDisabled.add(node);
+      }
+      context.layers.add(node);
+      dispatchUpdate();
+      return () => {
+        if (disableOutsidePointerEvents && context.layersWithOutsidePointerEventsDisabled.size === 1) {
+          ownerDocument.body.style.pointerEvents = originalBodyPointerEvents;
+        }
+      };
+    }, [node, ownerDocument, disableOutsidePointerEvents, context]);
+    React.useEffect(() => {
+      return () => {
+        if (!node) return;
+        context.layers.delete(node);
+        context.layersWithOutsidePointerEventsDisabled.delete(node);
+        dispatchUpdate();
+      };
+    }, [node, context]);
+    React.useEffect(() => {
+      const handleUpdate = () => force({});
+      document.addEventListener(CONTEXT_UPDATE, handleUpdate);
+      return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
+    }, []);
+    return /* @__PURE__ */ jsx(
+      Primitive.div,
+      {
+        ...layerProps,
+        ref: composedRefs,
+        style: {
+          pointerEvents: isBodyPointerEventsDisabled ? isPointerEventsEnabled ? "auto" : "none" : void 0,
+          ...props.style
+        },
+        onFocusCapture: composeEventHandlers(props.onFocusCapture, focusOutside.onFocusCapture),
+        onBlurCapture: composeEventHandlers(props.onBlurCapture, focusOutside.onBlurCapture),
+        onPointerDownCapture: composeEventHandlers(
+          props.onPointerDownCapture,
+          pointerDownOutside.onPointerDownCapture
+        )
+      }
+    );
+  }
+);
+DismissableLayer.displayName = DISMISSABLE_LAYER_NAME;
+var BRANCH_NAME = "DismissableLayerBranch";
+var DismissableLayerBranch = React.forwardRef((props, forwardedRef) => {
+  const context = React.useContext(DismissableLayerContext);
+  const ref = React.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  React.useEffect(() => {
+    const node = ref.current;
+    if (node) {
+      context.branches.add(node);
+      return () => {
+        context.branches.delete(node);
+      };
+    }
+  }, [context.branches]);
+  return /* @__PURE__ */ jsx(Primitive.div, { ...props, ref: composedRefs });
+});
+DismissableLayerBranch.displayName = BRANCH_NAME;
+function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
+  const handlePointerDownOutside = useCallbackRef(onPointerDownOutside);
+  const isPointerInsideReactTreeRef = React.useRef(false);
+  const handleClickRef = React.useRef(() => {
+  });
+  React.useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (event.target && !isPointerInsideReactTreeRef.current) {
+        let handleAndDispatchPointerDownOutsideEvent2 = function() {
+          handleAndDispatchCustomEvent(
+            POINTER_DOWN_OUTSIDE,
+            handlePointerDownOutside,
+            eventDetail,
+            { discrete: true }
+          );
+        };
+        const eventDetail = { originalEvent: event };
+        if (event.pointerType === "touch") {
+          ownerDocument.removeEventListener("click", handleClickRef.current);
+          handleClickRef.current = handleAndDispatchPointerDownOutsideEvent2;
+          ownerDocument.addEventListener("click", handleClickRef.current, { once: true });
+        } else {
+          handleAndDispatchPointerDownOutsideEvent2();
+        }
+      } else {
+        ownerDocument.removeEventListener("click", handleClickRef.current);
+      }
+      isPointerInsideReactTreeRef.current = false;
+    };
+    const timerId = window.setTimeout(() => {
+      ownerDocument.addEventListener("pointerdown", handlePointerDown);
+    }, 0);
+    return () => {
+      window.clearTimeout(timerId);
+      ownerDocument.removeEventListener("pointerdown", handlePointerDown);
+      ownerDocument.removeEventListener("click", handleClickRef.current);
+    };
+  }, [ownerDocument, handlePointerDownOutside]);
+  return {
+    // ensures we check React component tree (not just DOM tree)
+    onPointerDownCapture: () => isPointerInsideReactTreeRef.current = true
+  };
+}
+function useFocusOutside(onFocusOutside, ownerDocument = globalThis?.document) {
+  const handleFocusOutside = useCallbackRef(onFocusOutside);
+  const isFocusInsideReactTreeRef = React.useRef(false);
+  React.useEffect(() => {
+    const handleFocus = (event) => {
+      if (event.target && !isFocusInsideReactTreeRef.current) {
+        const eventDetail = { originalEvent: event };
+        handleAndDispatchCustomEvent(FOCUS_OUTSIDE, handleFocusOutside, eventDetail, {
+          discrete: false
+        });
+      }
+    };
+    ownerDocument.addEventListener("focusin", handleFocus);
+    return () => ownerDocument.removeEventListener("focusin", handleFocus);
+  }, [ownerDocument, handleFocusOutside]);
+  return {
+    onFocusCapture: () => isFocusInsideReactTreeRef.current = true,
+    onBlurCapture: () => isFocusInsideReactTreeRef.current = false
+  };
+}
+function dispatchUpdate() {
+  const event = new CustomEvent(CONTEXT_UPDATE);
+  document.dispatchEvent(event);
+}
+function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
+  const target = detail.originalEvent.target;
+  const event = new CustomEvent(name, { bubbles: false, cancelable: true, detail });
+  if (handler) target.addEventListener(name, handler, { once: true });
+  if (discrete) {
+    dispatchDiscreteCustomEvent(target, event);
+  } else {
+    target.dispatchEvent(event);
+  }
 }
 var useLayoutEffect2 = globalThis?.document ? React.useLayoutEffect : () => {
 };
-var useInsertionEffect = React[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
-function useControllableState({
-  prop,
-  defaultProp,
-  onChange = () => {
-  },
-  caller
-}) {
-  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
-    defaultProp,
-    onChange
-  });
-  const isControlled = prop !== void 0;
-  const value = isControlled ? prop : uncontrolledProp;
-  {
-    const isControlledRef = React.useRef(prop !== void 0);
-    React.useEffect(() => {
-      const wasControlled = isControlledRef.current;
-      if (wasControlled !== isControlled) {
-        const from = wasControlled ? "controlled" : "uncontrolled";
-        const to = isControlled ? "controlled" : "uncontrolled";
-        console.warn(
-          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
-        );
-      }
-      isControlledRef.current = isControlled;
-    }, [isControlled, caller]);
+var useReactId = React[" useId ".trim().toString()] || (() => void 0);
+var count = 0;
+function useId(deterministicId) {
+  const [id, setId] = React.useState(useReactId());
+  useLayoutEffect2(() => {
+    setId((reactId) => reactId ?? String(count++));
+  }, [deterministicId]);
+  return id ? `radix-${id}` : "";
+}
+const sides = ["top", "right", "bottom", "left"];
+const min = Math.min;
+const max = Math.max;
+const round = Math.round;
+const floor = Math.floor;
+const createCoords = (v) => ({
+  x: v,
+  y: v
+});
+const oppositeSideMap = {
+  left: "right",
+  right: "left",
+  bottom: "top",
+  top: "bottom"
+};
+const oppositeAlignmentMap = {
+  start: "end",
+  end: "start"
+};
+function clamp$1(start, value, end) {
+  return max(start, min(value, end));
+}
+function evaluate(value, param) {
+  return typeof value === "function" ? value(param) : value;
+}
+function getSide(placement) {
+  return placement.split("-")[0];
+}
+function getAlignment(placement) {
+  return placement.split("-")[1];
+}
+function getOppositeAxis(axis) {
+  return axis === "x" ? "y" : "x";
+}
+function getAxisLength(axis) {
+  return axis === "y" ? "height" : "width";
+}
+const yAxisSides = /* @__PURE__ */ new Set(["top", "bottom"]);
+function getSideAxis(placement) {
+  return yAxisSides.has(getSide(placement)) ? "y" : "x";
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
   }
-  const setValue = React.useCallback(
-    (nextValue) => {
-      if (isControlled) {
-        const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
-        if (value2 !== prop) {
-          onChangeRef.current?.(value2);
-        }
-      } else {
-        setUncontrolledProp(nextValue);
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === "x" ? alignment === (rtl ? "end" : "start") ? "right" : "left" : alignment === "start" ? "bottom" : "top";
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.replace(/start|end/g, (alignment) => oppositeAlignmentMap[alignment]);
+}
+const lrPlacement = ["left", "right"];
+const rlPlacement = ["right", "left"];
+const tbPlacement = ["top", "bottom"];
+const btPlacement = ["bottom", "top"];
+function getSideList(side, isStart, rtl) {
+  switch (side) {
+    case "top":
+    case "bottom":
+      if (rtl) return isStart ? rlPlacement : lrPlacement;
+      return isStart ? lrPlacement : rlPlacement;
+    case "left":
+    case "right":
+      return isStart ? tbPlacement : btPlacement;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === "start", rtl);
+  if (alignment) {
+    list = list.map((side) => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  return placement.replace(/left|right|bottom|top/g, (side) => oppositeSideMap[side]);
+}
+function expandPaddingObject(padding) {
+  return {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    ...padding
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== "number" ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  const {
+    x,
+    y,
+    width,
+    height
+  } = rect;
+  return {
+    width,
+    height,
+    top: y,
+    left: x,
+    right: x + width,
+    bottom: y + height,
+    x,
+    y
+  };
+}
+function computeCoordsFromPlacement(_ref, placement, rtl) {
+  let {
+    reference,
+    floating
+  } = _ref;
+  const sideAxis = getSideAxis(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const alignLength = getAxisLength(alignmentAxis);
+  const side = getSide(placement);
+  const isVertical = sideAxis === "y";
+  const commonX = reference.x + reference.width / 2 - floating.width / 2;
+  const commonY = reference.y + reference.height / 2 - floating.height / 2;
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
+  let coords;
+  switch (side) {
+    case "top":
+      coords = {
+        x: commonX,
+        y: reference.y - floating.height
+      };
+      break;
+    case "bottom":
+      coords = {
+        x: commonX,
+        y: reference.y + reference.height
+      };
+      break;
+    case "right":
+      coords = {
+        x: reference.x + reference.width,
+        y: commonY
+      };
+      break;
+    case "left":
+      coords = {
+        x: reference.x - floating.width,
+        y: commonY
+      };
+      break;
+    default:
+      coords = {
+        x: reference.x,
+        y: reference.y
+      };
+  }
+  switch (getAlignment(placement)) {
+    case "start":
+      coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
+      break;
+    case "end":
+      coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
+      break;
+  }
+  return coords;
+}
+const computePosition$1 = async (reference, floating, config) => {
+  const {
+    placement = "bottom",
+    strategy = "absolute",
+    middleware = [],
+    platform: platform2
+  } = config;
+  const validMiddleware = middleware.filter(Boolean);
+  const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(floating));
+  let rects = await platform2.getElementRects({
+    reference,
+    floating,
+    strategy
+  });
+  let {
+    x,
+    y
+  } = computeCoordsFromPlacement(rects, placement, rtl);
+  let statefulPlacement = placement;
+  let middlewareData = {};
+  let resetCount = 0;
+  for (let i = 0; i < validMiddleware.length; i++) {
+    const {
+      name,
+      fn
+    } = validMiddleware[i];
+    const {
+      x: nextX,
+      y: nextY,
+      data,
+      reset
+    } = await fn({
+      x,
+      y,
+      initialPlacement: placement,
+      placement: statefulPlacement,
+      strategy,
+      middlewareData,
+      rects,
+      platform: platform2,
+      elements: {
+        reference,
+        floating
       }
-    },
-    [isControlled, prop, setUncontrolledProp, onChangeRef]
+    });
+    x = nextX != null ? nextX : x;
+    y = nextY != null ? nextY : y;
+    middlewareData = {
+      ...middlewareData,
+      [name]: {
+        ...middlewareData[name],
+        ...data
+      }
+    };
+    if (reset && resetCount <= 50) {
+      resetCount++;
+      if (typeof reset === "object") {
+        if (reset.placement) {
+          statefulPlacement = reset.placement;
+        }
+        if (reset.rects) {
+          rects = reset.rects === true ? await platform2.getElementRects({
+            reference,
+            floating,
+            strategy
+          }) : reset.rects;
+        }
+        ({
+          x,
+          y
+        } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+      }
+      i = -1;
+    }
+  }
+  return {
+    x,
+    y,
+    placement: statefulPlacement,
+    strategy,
+    middlewareData
+  };
+};
+async function detectOverflow(state, options) {
+  var _await$platform$isEle;
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    x,
+    y,
+    platform: platform2,
+    rects,
+    elements,
+    strategy
+  } = state;
+  const {
+    boundary = "clippingAncestors",
+    rootBoundary = "viewport",
+    elementContext = "floating",
+    altBoundary = false,
+    padding = 0
+  } = evaluate(options, state);
+  const paddingObject = getPaddingObject(padding);
+  const altContext = elementContext === "floating" ? "reference" : "floating";
+  const element = elements[altBoundary ? altContext : elementContext];
+  const clippingClientRect = rectToClientRect(await platform2.getClippingRect({
+    element: ((_await$platform$isEle = await (platform2.isElement == null ? void 0 : platform2.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || await (platform2.getDocumentElement == null ? void 0 : platform2.getDocumentElement(elements.floating)),
+    boundary,
+    rootBoundary,
+    strategy
+  }));
+  const rect = elementContext === "floating" ? {
+    x,
+    y,
+    width: rects.floating.width,
+    height: rects.floating.height
+  } : rects.reference;
+  const offsetParent = await (platform2.getOffsetParent == null ? void 0 : platform2.getOffsetParent(elements.floating));
+  const offsetScale = await (platform2.isElement == null ? void 0 : platform2.isElement(offsetParent)) ? await (platform2.getScale == null ? void 0 : platform2.getScale(offsetParent)) || {
+    x: 1,
+    y: 1
+  } : {
+    x: 1,
+    y: 1
+  };
+  const elementClientRect = rectToClientRect(platform2.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform2.convertOffsetParentRelativeRectToViewportRelativeRect({
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  }) : rect);
+  return {
+    top: (clippingClientRect.top - elementClientRect.top + paddingObject.top) / offsetScale.y,
+    bottom: (elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom) / offsetScale.y,
+    left: (clippingClientRect.left - elementClientRect.left + paddingObject.left) / offsetScale.x,
+    right: (elementClientRect.right - clippingClientRect.right + paddingObject.right) / offsetScale.x
+  };
+}
+const arrow$3 = (options) => ({
+  name: "arrow",
+  options,
+  async fn(state) {
+    const {
+      x,
+      y,
+      placement,
+      rects,
+      platform: platform2,
+      elements,
+      middlewareData
+    } = state;
+    const {
+      element,
+      padding = 0
+    } = evaluate(options, state) || {};
+    if (element == null) {
+      return {};
+    }
+    const paddingObject = getPaddingObject(padding);
+    const coords = {
+      x,
+      y
+    };
+    const axis = getAlignmentAxis(placement);
+    const length = getAxisLength(axis);
+    const arrowDimensions = await platform2.getDimensions(element);
+    const isYAxis = axis === "y";
+    const minProp = isYAxis ? "top" : "left";
+    const maxProp = isYAxis ? "bottom" : "right";
+    const clientProp = isYAxis ? "clientHeight" : "clientWidth";
+    const endDiff = rects.reference[length] + rects.reference[axis] - coords[axis] - rects.floating[length];
+    const startDiff = coords[axis] - rects.reference[axis];
+    const arrowOffsetParent = await (platform2.getOffsetParent == null ? void 0 : platform2.getOffsetParent(element));
+    let clientSize = arrowOffsetParent ? arrowOffsetParent[clientProp] : 0;
+    if (!clientSize || !await (platform2.isElement == null ? void 0 : platform2.isElement(arrowOffsetParent))) {
+      clientSize = elements.floating[clientProp] || rects.floating[length];
+    }
+    const centerToReference = endDiff / 2 - startDiff / 2;
+    const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
+    const minPadding = min(paddingObject[minProp], largestPossiblePadding);
+    const maxPadding = min(paddingObject[maxProp], largestPossiblePadding);
+    const min$1 = minPadding;
+    const max2 = clientSize - arrowDimensions[length] - maxPadding;
+    const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
+    const offset2 = clamp$1(min$1, center, max2);
+    const shouldAddOffset = !middlewareData.arrow && getAlignment(placement) != null && center !== offset2 && rects.reference[length] / 2 - (center < min$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    const alignmentOffset = shouldAddOffset ? center < min$1 ? center - min$1 : center - max2 : 0;
+    return {
+      [axis]: coords[axis] + alignmentOffset,
+      data: {
+        [axis]: offset2,
+        centerOffset: center - offset2 - alignmentOffset,
+        ...shouldAddOffset && {
+          alignmentOffset
+        }
+      },
+      reset: shouldAddOffset
+    };
+  }
+});
+const flip$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "flip",
+    options,
+    async fn(state) {
+      var _middlewareData$arrow, _middlewareData$flip;
+      const {
+        placement,
+        middlewareData,
+        rects,
+        initialPlacement,
+        platform: platform2,
+        elements
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true,
+        fallbackPlacements: specifiedFallbackPlacements,
+        fallbackStrategy = "bestFit",
+        fallbackAxisSideDirection = "none",
+        flipAlignment = true,
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      const side = getSide(placement);
+      const initialSideAxis = getSideAxis(initialPlacement);
+      const isBasePlacement = getSide(initialPlacement) === initialPlacement;
+      const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [getOppositePlacement(initialPlacement)] : getExpandedPlacements(initialPlacement));
+      const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== "none";
+      if (!specifiedFallbackPlacements && hasFallbackAxisSideDirection) {
+        fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+      }
+      const placements = [initialPlacement, ...fallbackPlacements];
+      const overflow = await detectOverflow(state, detectOverflowOptions);
+      const overflows = [];
+      let overflowsData = ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
+      if (checkMainAxis) {
+        overflows.push(overflow[side]);
+      }
+      if (checkCrossAxis) {
+        const sides2 = getAlignmentSides(placement, rects, rtl);
+        overflows.push(overflow[sides2[0]], overflow[sides2[1]]);
+      }
+      overflowsData = [...overflowsData, {
+        placement,
+        overflows
+      }];
+      if (!overflows.every((side2) => side2 <= 0)) {
+        var _middlewareData$flip2, _overflowsData$filter;
+        const nextIndex = (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
+        const nextPlacement = placements[nextIndex];
+        if (nextPlacement) {
+          const ignoreCrossAxisOverflow = checkCrossAxis === "alignment" ? initialSideAxis !== getSideAxis(nextPlacement) : false;
+          if (!ignoreCrossAxisOverflow || // We leave the current main axis only if every placement on that axis
+          // overflows the main axis.
+          overflowsData.every((d) => getSideAxis(d.placement) === initialSideAxis ? d.overflows[0] > 0 : true)) {
+            return {
+              data: {
+                index: nextIndex,
+                overflows: overflowsData
+              },
+              reset: {
+                placement: nextPlacement
+              }
+            };
+          }
+        }
+        let resetPlacement = (_overflowsData$filter = overflowsData.filter((d) => d.overflows[0] <= 0).sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+        if (!resetPlacement) {
+          switch (fallbackStrategy) {
+            case "bestFit": {
+              var _overflowsData$filter2;
+              const placement2 = (_overflowsData$filter2 = overflowsData.filter((d) => {
+                if (hasFallbackAxisSideDirection) {
+                  const currentSideAxis = getSideAxis(d.placement);
+                  return currentSideAxis === initialSideAxis || // Create a bias to the `y` side axis due to horizontal
+                  // reading directions favoring greater width.
+                  currentSideAxis === "y";
+                }
+                return true;
+              }).map((d) => [d.placement, d.overflows.filter((overflow2) => overflow2 > 0).reduce((acc, overflow2) => acc + overflow2, 0)]).sort((a, b) => a[1] - b[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
+              if (placement2) {
+                resetPlacement = placement2;
+              }
+              break;
+            }
+            case "initialPlacement":
+              resetPlacement = initialPlacement;
+              break;
+          }
+        }
+        if (placement !== resetPlacement) {
+          return {
+            reset: {
+              placement: resetPlacement
+            }
+          };
+        }
+      }
+      return {};
+    }
+  };
+};
+function getSideOffsets(overflow, rect) {
+  return {
+    top: overflow.top - rect.height,
+    right: overflow.right - rect.width,
+    bottom: overflow.bottom - rect.height,
+    left: overflow.left - rect.width
+  };
+}
+function isAnySideFullyClipped(overflow) {
+  return sides.some((side) => overflow[side] >= 0);
+}
+const hide$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "hide",
+    options,
+    async fn(state) {
+      const {
+        rects
+      } = state;
+      const {
+        strategy = "referenceHidden",
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      switch (strategy) {
+        case "referenceHidden": {
+          const overflow = await detectOverflow(state, {
+            ...detectOverflowOptions,
+            elementContext: "reference"
+          });
+          const offsets = getSideOffsets(overflow, rects.reference);
+          return {
+            data: {
+              referenceHiddenOffsets: offsets,
+              referenceHidden: isAnySideFullyClipped(offsets)
+            }
+          };
+        }
+        case "escaped": {
+          const overflow = await detectOverflow(state, {
+            ...detectOverflowOptions,
+            altBoundary: true
+          });
+          const offsets = getSideOffsets(overflow, rects.floating);
+          return {
+            data: {
+              escapedOffsets: offsets,
+              escaped: isAnySideFullyClipped(offsets)
+            }
+          };
+        }
+        default: {
+          return {};
+        }
+      }
+    }
+  };
+};
+const originSides = /* @__PURE__ */ new Set(["left", "top"]);
+async function convertValueToCoords(state, options) {
+  const {
+    placement,
+    platform: platform2,
+    elements
+  } = state;
+  const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+  const side = getSide(placement);
+  const alignment = getAlignment(placement);
+  const isVertical = getSideAxis(placement) === "y";
+  const mainAxisMulti = originSides.has(side) ? -1 : 1;
+  const crossAxisMulti = rtl && isVertical ? -1 : 1;
+  const rawValue = evaluate(options, state);
+  let {
+    mainAxis,
+    crossAxis,
+    alignmentAxis
+  } = typeof rawValue === "number" ? {
+    mainAxis: rawValue,
+    crossAxis: 0,
+    alignmentAxis: null
+  } : {
+    mainAxis: rawValue.mainAxis || 0,
+    crossAxis: rawValue.crossAxis || 0,
+    alignmentAxis: rawValue.alignmentAxis
+  };
+  if (alignment && typeof alignmentAxis === "number") {
+    crossAxis = alignment === "end" ? alignmentAxis * -1 : alignmentAxis;
+  }
+  return isVertical ? {
+    x: crossAxis * crossAxisMulti,
+    y: mainAxis * mainAxisMulti
+  } : {
+    x: mainAxis * mainAxisMulti,
+    y: crossAxis * crossAxisMulti
+  };
+}
+const offset$2 = function(options) {
+  if (options === void 0) {
+    options = 0;
+  }
+  return {
+    name: "offset",
+    options,
+    async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
+      const {
+        x,
+        y,
+        placement,
+        middlewareData
+      } = state;
+      const diffCoords = await convertValueToCoords(state, options);
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      return {
+        x: x + diffCoords.x,
+        y: y + diffCoords.y,
+        data: {
+          ...diffCoords,
+          placement
+        }
+      };
+    }
+  };
+};
+const shift$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "shift",
+    options,
+    async fn(state) {
+      const {
+        x,
+        y,
+        placement
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = false,
+        limiter = {
+          fn: (_ref) => {
+            let {
+              x: x2,
+              y: y2
+            } = _ref;
+            return {
+              x: x2,
+              y: y2
+            };
+          }
+        },
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const overflow = await detectOverflow(state, detectOverflowOptions);
+      const crossAxis = getSideAxis(getSide(placement));
+      const mainAxis = getOppositeAxis(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      if (checkMainAxis) {
+        const minSide = mainAxis === "y" ? "top" : "left";
+        const maxSide = mainAxis === "y" ? "bottom" : "right";
+        const min2 = mainAxisCoord + overflow[minSide];
+        const max2 = mainAxisCoord - overflow[maxSide];
+        mainAxisCoord = clamp$1(min2, mainAxisCoord, max2);
+      }
+      if (checkCrossAxis) {
+        const minSide = crossAxis === "y" ? "top" : "left";
+        const maxSide = crossAxis === "y" ? "bottom" : "right";
+        const min2 = crossAxisCoord + overflow[minSide];
+        const max2 = crossAxisCoord - overflow[maxSide];
+        crossAxisCoord = clamp$1(min2, crossAxisCoord, max2);
+      }
+      const limitedCoords = limiter.fn({
+        ...state,
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      });
+      return {
+        ...limitedCoords,
+        data: {
+          x: limitedCoords.x - x,
+          y: limitedCoords.y - y,
+          enabled: {
+            [mainAxis]: checkMainAxis,
+            [crossAxis]: checkCrossAxis
+          }
+        }
+      };
+    }
+  };
+};
+const limitShift$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    options,
+    fn(state) {
+      const {
+        x,
+        y,
+        placement,
+        rects,
+        middlewareData
+      } = state;
+      const {
+        offset: offset2 = 0,
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true
+      } = evaluate(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const crossAxis = getSideAxis(placement);
+      const mainAxis = getOppositeAxis(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const rawOffset = evaluate(offset2, state);
+      const computedOffset = typeof rawOffset === "number" ? {
+        mainAxis: rawOffset,
+        crossAxis: 0
+      } : {
+        mainAxis: 0,
+        crossAxis: 0,
+        ...rawOffset
+      };
+      if (checkMainAxis) {
+        const len = mainAxis === "y" ? "height" : "width";
+        const limitMin = rects.reference[mainAxis] - rects.floating[len] + computedOffset.mainAxis;
+        const limitMax = rects.reference[mainAxis] + rects.reference[len] - computedOffset.mainAxis;
+        if (mainAxisCoord < limitMin) {
+          mainAxisCoord = limitMin;
+        } else if (mainAxisCoord > limitMax) {
+          mainAxisCoord = limitMax;
+        }
+      }
+      if (checkCrossAxis) {
+        var _middlewareData$offse, _middlewareData$offse2;
+        const len = mainAxis === "y" ? "width" : "height";
+        const isOriginSide = originSides.has(getSide(placement));
+        const limitMin = rects.reference[crossAxis] - rects.floating[len] + (isOriginSide ? ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse[crossAxis]) || 0 : 0) + (isOriginSide ? 0 : computedOffset.crossAxis);
+        const limitMax = rects.reference[crossAxis] + rects.reference[len] + (isOriginSide ? 0 : ((_middlewareData$offse2 = middlewareData.offset) == null ? void 0 : _middlewareData$offse2[crossAxis]) || 0) - (isOriginSide ? computedOffset.crossAxis : 0);
+        if (crossAxisCoord < limitMin) {
+          crossAxisCoord = limitMin;
+        } else if (crossAxisCoord > limitMax) {
+          crossAxisCoord = limitMax;
+        }
+      }
+      return {
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      };
+    }
+  };
+};
+const size$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "size",
+    options,
+    async fn(state) {
+      var _state$middlewareData, _state$middlewareData2;
+      const {
+        placement,
+        rects,
+        platform: platform2,
+        elements
+      } = state;
+      const {
+        apply = () => {
+        },
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      const overflow = await detectOverflow(state, detectOverflowOptions);
+      const side = getSide(placement);
+      const alignment = getAlignment(placement);
+      const isYAxis = getSideAxis(placement) === "y";
+      const {
+        width,
+        height
+      } = rects.floating;
+      let heightSide;
+      let widthSide;
+      if (side === "top" || side === "bottom") {
+        heightSide = side;
+        widthSide = alignment === (await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating)) ? "start" : "end") ? "left" : "right";
+      } else {
+        widthSide = side;
+        heightSide = alignment === "end" ? "top" : "bottom";
+      }
+      const maximumClippingHeight = height - overflow.top - overflow.bottom;
+      const maximumClippingWidth = width - overflow.left - overflow.right;
+      const overflowAvailableHeight = min(height - overflow[heightSide], maximumClippingHeight);
+      const overflowAvailableWidth = min(width - overflow[widthSide], maximumClippingWidth);
+      const noShift = !state.middlewareData.shift;
+      let availableHeight = overflowAvailableHeight;
+      let availableWidth = overflowAvailableWidth;
+      if ((_state$middlewareData = state.middlewareData.shift) != null && _state$middlewareData.enabled.x) {
+        availableWidth = maximumClippingWidth;
+      }
+      if ((_state$middlewareData2 = state.middlewareData.shift) != null && _state$middlewareData2.enabled.y) {
+        availableHeight = maximumClippingHeight;
+      }
+      if (noShift && !alignment) {
+        const xMin = max(overflow.left, 0);
+        const xMax = max(overflow.right, 0);
+        const yMin = max(overflow.top, 0);
+        const yMax = max(overflow.bottom, 0);
+        if (isYAxis) {
+          availableWidth = width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : max(overflow.left, overflow.right));
+        } else {
+          availableHeight = height - 2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : max(overflow.top, overflow.bottom));
+        }
+      }
+      await apply({
+        ...state,
+        availableWidth,
+        availableHeight
+      });
+      const nextDimensions = await platform2.getDimensions(elements.floating);
+      if (width !== nextDimensions.width || height !== nextDimensions.height) {
+        return {
+          reset: {
+            rects: true
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+function hasWindow() {
+  return typeof window !== "undefined";
+}
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || "").toLowerCase();
+  }
+  return "#document";
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  if (!hasWindow() || typeof ShadowRoot === "undefined") {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+const invalidOverflowDisplayValues = /* @__PURE__ */ new Set(["inline", "contents"]);
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX,
+    overflowY,
+    display
+  } = getComputedStyle$1(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && !invalidOverflowDisplayValues.has(display);
+}
+const tableElements = /* @__PURE__ */ new Set(["table", "td", "th"]);
+function isTableElement(element) {
+  return tableElements.has(getNodeName(element));
+}
+const topLayerSelectors = [":popover-open", ":modal"];
+function isTopLayer(element) {
+  return topLayerSelectors.some((selector) => {
+    try {
+      return element.matches(selector);
+    } catch (_e) {
+      return false;
+    }
+  });
+}
+const transformProperties = ["transform", "translate", "scale", "rotate", "perspective"];
+const willChangeValues = ["transform", "translate", "scale", "rotate", "perspective", "filter"];
+const containValues = ["paint", "layout", "strict", "content"];
+function isContainingBlock(elementOrCss) {
+  const webkit = isWebKit();
+  const css = isElement(elementOrCss) ? getComputedStyle$1(elementOrCss) : elementOrCss;
+  return transformProperties.some((value) => css[value] ? css[value] !== "none" : false) || (css.containerType ? css.containerType !== "normal" : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== "none" : false) || !webkit && (css.filter ? css.filter !== "none" : false) || willChangeValues.some((value) => (css.willChange || "").includes(value)) || containValues.some((value) => (css.contain || "").includes(value));
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else if (isTopLayer(currentNode)) {
+      return null;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  return null;
+}
+function isWebKit() {
+  if (typeof CSS === "undefined" || !CSS.supports) return false;
+  return CSS.supports("-webkit-backdrop-filter", "none");
+}
+const lastTraversableNodeNames = /* @__PURE__ */ new Set(["html", "body", "#document"]);
+function isLastTraversableNode(node) {
+  return lastTraversableNodeNames.has(getNodeName(node));
+}
+function getComputedStyle$1(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.scrollX,
+    scrollTop: element.scrollY
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === "html") {
+    return node;
+  }
+  const result = (
+    // Step into the shadow DOM of the parent of a slotted node.
+    node.assignedSlot || // DOM Element detected.
+    node.parentNode || // ShadowRoot detected.
+    isShadowRoot(node) && node.host || // Fallback.
+    getDocumentElement(node)
   );
-  return [value, setValue];
+  return isShadowRoot(result) ? result.host : result;
 }
-function useUncontrolledState({
-  defaultProp,
-  onChange
-}) {
-  const [value, setValue] = React.useState(defaultProp);
-  const prevValueRef = React.useRef(value);
-  const onChangeRef = React.useRef(onChange);
-  useInsertionEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
-  React.useEffect(() => {
-    if (prevValueRef.current !== value) {
-      onChangeRef.current?.(value);
-      prevValueRef.current = value;
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return node.ownerDocument ? node.ownerDocument.body : node.body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    const frameElement = getFrameElement(win);
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], frameElement && traverseIframes ? getOverflowAncestors(frameElement) : []);
+  }
+  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+}
+function getFrameElement(win) {
+  return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
+}
+function getCssDimensions(element) {
+  const css = getComputedStyle$1(element);
+  let width = parseFloat(css.width) || 0;
+  let height = parseFloat(css.height) || 0;
+  const hasOffset = isHTMLElement(element);
+  const offsetWidth = hasOffset ? element.offsetWidth : width;
+  const offsetHeight = hasOffset ? element.offsetHeight : height;
+  const shouldFallback = round(width) !== offsetWidth || round(height) !== offsetHeight;
+  if (shouldFallback) {
+    width = offsetWidth;
+    height = offsetHeight;
+  }
+  return {
+    width,
+    height,
+    $: shouldFallback
+  };
+}
+function unwrapElement(element) {
+  return !isElement(element) ? element.contextElement : element;
+}
+function getScale(element) {
+  const domElement = unwrapElement(element);
+  if (!isHTMLElement(domElement)) {
+    return createCoords(1);
+  }
+  const rect = domElement.getBoundingClientRect();
+  const {
+    width,
+    height,
+    $
+  } = getCssDimensions(domElement);
+  let x = ($ ? round(rect.width) : rect.width) / width;
+  let y = ($ ? round(rect.height) : rect.height) / height;
+  if (!x || !Number.isFinite(x)) {
+    x = 1;
+  }
+  if (!y || !Number.isFinite(y)) {
+    y = 1;
+  }
+  return {
+    x,
+    y
+  };
+}
+const noOffsets = /* @__PURE__ */ createCoords(0);
+function getVisualOffsets(element) {
+  const win = getWindow(element);
+  if (!isWebKit() || !win.visualViewport) {
+    return noOffsets;
+  }
+  return {
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
+  };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== getWindow(element)) {
+    return false;
+  }
+  return isFixed;
+}
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+  if (isFixedStrategy === void 0) {
+    isFixedStrategy = false;
+  }
+  const clientRect = element.getBoundingClientRect();
+  const domElement = unwrapElement(element);
+  let scale = createCoords(1);
+  if (includeScale) {
+    if (offsetParent) {
+      if (isElement(offsetParent)) {
+        scale = getScale(offsetParent);
+      }
+    } else {
+      scale = getScale(element);
     }
-  }, [value, prevValueRef]);
-  return [value, setValue, onChangeRef];
-}
-function isFunction$1(value) {
-  return typeof value === "function";
-}
-function usePrevious(value) {
-  const ref = React.useRef({ value, previous: value });
-  return React.useMemo(() => {
-    if (ref.current.value !== value) {
-      ref.current.previous = ref.current.value;
-      ref.current.value = value;
+  }
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
+  let x = (clientRect.left + visualOffsets.x) / scale.x;
+  let y = (clientRect.top + visualOffsets.y) / scale.y;
+  let width = clientRect.width / scale.x;
+  let height = clientRect.height / scale.y;
+  if (domElement) {
+    const win = getWindow(domElement);
+    const offsetWin = offsetParent && isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
+    let currentWin = win;
+    let currentIFrame = getFrameElement(currentWin);
+    while (currentIFrame && offsetParent && offsetWin !== currentWin) {
+      const iframeScale = getScale(currentIFrame);
+      const iframeRect = currentIFrame.getBoundingClientRect();
+      const css = getComputedStyle$1(currentIFrame);
+      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
+      const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
+      x *= iframeScale.x;
+      y *= iframeScale.y;
+      width *= iframeScale.x;
+      height *= iframeScale.y;
+      x += left;
+      y += top;
+      currentWin = getWindow(currentIFrame);
+      currentIFrame = getFrameElement(currentWin);
     }
-    return ref.current.previous;
-  }, [value]);
+  }
+  return rectToClientRect({
+    width,
+    height,
+    x,
+    y
+  });
 }
+function getWindowScrollBarX(element, rect) {
+  const leftScroll = getNodeScroll(element).scrollLeft;
+  if (!rect) {
+    return getBoundingClientRect(getDocumentElement(element)).left + leftScroll;
+  }
+  return rect.left + leftScroll;
+}
+function getHTMLOffset(documentElement, scroll) {
+  const htmlRect = documentElement.getBoundingClientRect();
+  const x = htmlRect.left + scroll.scrollLeft - getWindowScrollBarX(documentElement, htmlRect);
+  const y = htmlRect.top + scroll.scrollTop;
+  return {
+    x,
+    y
+  };
+}
+function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
+  let {
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  } = _ref;
+  const isFixed = strategy === "fixed";
+  const documentElement = getDocumentElement(offsetParent);
+  const topLayer = elements ? isTopLayer(elements.floating) : false;
+  if (offsetParent === documentElement || topLayer && isFixed) {
+    return rect;
+  }
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  let scale = createCoords(1);
+  const offsets = createCoords(0);
+  const isOffsetParentAnElement = isHTMLElement(offsetParent);
+  if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
+      scroll = getNodeScroll(offsetParent);
+    }
+    if (isHTMLElement(offsetParent)) {
+      const offsetRect = getBoundingClientRect(offsetParent);
+      scale = getScale(offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
+  return {
+    width: rect.width * scale.x,
+    height: rect.height * scale.y,
+    x: rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
+    y: rect.y * scale.y - scroll.scrollTop * scale.y + offsets.y + htmlOffset.y
+  };
+}
+function getClientRects(element) {
+  return Array.from(element.getClientRects());
+}
+function getDocumentRect(element) {
+  const html = getDocumentElement(element);
+  const scroll = getNodeScroll(element);
+  const body = element.ownerDocument.body;
+  const width = max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  let x = -scroll.scrollLeft + getWindowScrollBarX(element);
+  const y = -scroll.scrollTop;
+  if (getComputedStyle$1(body).direction === "rtl") {
+    x += max(html.clientWidth, body.clientWidth) - width;
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+const SCROLLBAR_MAX = 25;
+function getViewportRect(element, strategy) {
+  const win = getWindow(element);
+  const html = getDocumentElement(element);
+  const visualViewport = win.visualViewport;
+  let width = html.clientWidth;
+  let height = html.clientHeight;
+  let x = 0;
+  let y = 0;
+  if (visualViewport) {
+    width = visualViewport.width;
+    height = visualViewport.height;
+    const visualViewportBased = isWebKit();
+    if (!visualViewportBased || visualViewportBased && strategy === "fixed") {
+      x = visualViewport.offsetLeft;
+      y = visualViewport.offsetTop;
+    }
+  }
+  const windowScrollbarX = getWindowScrollBarX(html);
+  if (windowScrollbarX <= 0) {
+    const doc = html.ownerDocument;
+    const body = doc.body;
+    const bodyStyles = getComputedStyle(body);
+    const bodyMarginInline = doc.compatMode === "CSS1Compat" ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
+    const clippingStableScrollbarWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
+    if (clippingStableScrollbarWidth <= SCROLLBAR_MAX) {
+      width -= clippingStableScrollbarWidth;
+    }
+  } else if (windowScrollbarX <= SCROLLBAR_MAX) {
+    width += windowScrollbarX;
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+const absoluteOrFixed = /* @__PURE__ */ new Set(["absolute", "fixed"]);
+function getInnerBoundingClientRect(element, strategy) {
+  const clientRect = getBoundingClientRect(element, true, strategy === "fixed");
+  const top = clientRect.top + element.clientTop;
+  const left = clientRect.left + element.clientLeft;
+  const scale = isHTMLElement(element) ? getScale(element) : createCoords(1);
+  const width = element.clientWidth * scale.x;
+  const height = element.clientHeight * scale.y;
+  const x = left * scale.x;
+  const y = top * scale.y;
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) {
+  let rect;
+  if (clippingAncestor === "viewport") {
+    rect = getViewportRect(element, strategy);
+  } else if (clippingAncestor === "document") {
+    rect = getDocumentRect(getDocumentElement(element));
+  } else if (isElement(clippingAncestor)) {
+    rect = getInnerBoundingClientRect(clippingAncestor, strategy);
+  } else {
+    const visualOffsets = getVisualOffsets(element);
+    rect = {
+      x: clippingAncestor.x - visualOffsets.x,
+      y: clippingAncestor.y - visualOffsets.y,
+      width: clippingAncestor.width,
+      height: clippingAncestor.height
+    };
+  }
+  return rectToClientRect(rect);
+}
+function hasFixedPositionAncestor(element, stopNode) {
+  const parentNode = getParentNode(element);
+  if (parentNode === stopNode || !isElement(parentNode) || isLastTraversableNode(parentNode)) {
+    return false;
+  }
+  return getComputedStyle$1(parentNode).position === "fixed" || hasFixedPositionAncestor(parentNode, stopNode);
+}
+function getClippingElementAncestors(element, cache) {
+  const cachedResult = cache.get(element);
+  if (cachedResult) {
+    return cachedResult;
+  }
+  let result = getOverflowAncestors(element, [], false).filter((el) => isElement(el) && getNodeName(el) !== "body");
+  let currentContainingBlockComputedStyle = null;
+  const elementIsFixed = getComputedStyle$1(element).position === "fixed";
+  let currentNode = elementIsFixed ? getParentNode(element) : element;
+  while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    const computedStyle = getComputedStyle$1(currentNode);
+    const currentNodeIsContaining = isContainingBlock(currentNode);
+    if (!currentNodeIsContaining && computedStyle.position === "fixed") {
+      currentContainingBlockComputedStyle = null;
+    }
+    const shouldDropCurrentNode = elementIsFixed ? !currentNodeIsContaining && !currentContainingBlockComputedStyle : !currentNodeIsContaining && computedStyle.position === "static" && !!currentContainingBlockComputedStyle && absoluteOrFixed.has(currentContainingBlockComputedStyle.position) || isOverflowElement(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode);
+    if (shouldDropCurrentNode) {
+      result = result.filter((ancestor) => ancestor !== currentNode);
+    } else {
+      currentContainingBlockComputedStyle = computedStyle;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  cache.set(element, result);
+  return result;
+}
+function getClippingRect(_ref) {
+  let {
+    element,
+    boundary,
+    rootBoundary,
+    strategy
+  } = _ref;
+  const elementClippingAncestors = boundary === "clippingAncestors" ? isTopLayer(element) ? [] : getClippingElementAncestors(element, this._c) : [].concat(boundary);
+  const clippingAncestors = [...elementClippingAncestors, rootBoundary];
+  const firstClippingAncestor = clippingAncestors[0];
+  const clippingRect = clippingAncestors.reduce((accRect, clippingAncestor) => {
+    const rect = getClientRectFromClippingAncestor(element, clippingAncestor, strategy);
+    accRect.top = max(rect.top, accRect.top);
+    accRect.right = min(rect.right, accRect.right);
+    accRect.bottom = min(rect.bottom, accRect.bottom);
+    accRect.left = max(rect.left, accRect.left);
+    return accRect;
+  }, getClientRectFromClippingAncestor(element, firstClippingAncestor, strategy));
+  return {
+    width: clippingRect.right - clippingRect.left,
+    height: clippingRect.bottom - clippingRect.top,
+    x: clippingRect.left,
+    y: clippingRect.top
+  };
+}
+function getDimensions(element) {
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
+}
+function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
+  const isOffsetParentAnElement = isHTMLElement(offsetParent);
+  const documentElement = getDocumentElement(offsetParent);
+  const isFixed = strategy === "fixed";
+  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  const offsets = createCoords(0);
+  function setLeftRTLScrollbarOffset() {
+    offsets.x = getWindowScrollBarX(documentElement);
+  }
+  if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
+      scroll = getNodeScroll(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    } else if (documentElement) {
+      setLeftRTLScrollbarOffset();
+    }
+  }
+  if (isFixed && !isOffsetParentAnElement && documentElement) {
+    setLeftRTLScrollbarOffset();
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
+  const x = rect.left + scroll.scrollLeft - offsets.x - htmlOffset.x;
+  const y = rect.top + scroll.scrollTop - offsets.y - htmlOffset.y;
+  return {
+    x,
+    y,
+    width: rect.width,
+    height: rect.height
+  };
+}
+function isStaticPositioned(element) {
+  return getComputedStyle$1(element).position === "static";
+}
+function getTrueOffsetParent(element, polyfill) {
+  if (!isHTMLElement(element) || getComputedStyle$1(element).position === "fixed") {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  let rawOffsetParent = element.offsetParent;
+  if (getDocumentElement(element) === rawOffsetParent) {
+    rawOffsetParent = rawOffsetParent.ownerDocument.body;
+  }
+  return rawOffsetParent;
+}
+function getOffsetParent(element, polyfill) {
+  const win = getWindow(element);
+  if (isTopLayer(element)) {
+    return win;
+  }
+  if (!isHTMLElement(element)) {
+    let svgOffsetParent = getParentNode(element);
+    while (svgOffsetParent && !isLastTraversableNode(svgOffsetParent)) {
+      if (isElement(svgOffsetParent) && !isStaticPositioned(svgOffsetParent)) {
+        return svgOffsetParent;
+      }
+      svgOffsetParent = getParentNode(svgOffsetParent);
+    }
+    return win;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && isTableElement(offsetParent) && isStaticPositioned(offsetParent)) {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && isLastTraversableNode(offsetParent) && isStaticPositioned(offsetParent) && !isContainingBlock(offsetParent)) {
+    return win;
+  }
+  return offsetParent || getContainingBlock(element) || win;
+}
+const getElementRects = async function(data) {
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  const floatingDimensions = await getDimensionsFn(data.floating);
+  return {
+    reference: getRectRelativeToOffsetParent(data.reference, await getOffsetParentFn(data.floating), data.strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      width: floatingDimensions.width,
+      height: floatingDimensions.height
+    }
+  };
+};
+function isRTL(element) {
+  return getComputedStyle$1(element).direction === "rtl";
+}
+const platform = {
+  convertOffsetParentRelativeRectToViewportRelativeRect,
+  getDocumentElement,
+  getClippingRect,
+  getOffsetParent,
+  getElementRects,
+  getClientRects,
+  getDimensions,
+  getScale,
+  isElement,
+  isRTL
+};
+function rectsAreEqual(a, b) {
+  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+}
+function observeMove(element, onMove) {
+  let io = null;
+  let timeoutId;
+  const root = getDocumentElement(element);
+  function cleanup() {
+    var _io;
+    clearTimeout(timeoutId);
+    (_io = io) == null || _io.disconnect();
+    io = null;
+  }
+  function refresh(skip, threshold) {
+    if (skip === void 0) {
+      skip = false;
+    }
+    if (threshold === void 0) {
+      threshold = 1;
+    }
+    cleanup();
+    const elementRectForRootMargin = element.getBoundingClientRect();
+    const {
+      left,
+      top,
+      width,
+      height
+    } = elementRectForRootMargin;
+    if (!skip) {
+      onMove();
+    }
+    if (!width || !height) {
+      return;
+    }
+    const insetTop = floor(top);
+    const insetRight = floor(root.clientWidth - (left + width));
+    const insetBottom = floor(root.clientHeight - (top + height));
+    const insetLeft = floor(left);
+    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
+    const options = {
+      rootMargin,
+      threshold: max(0, min(1, threshold)) || 1
+    };
+    let isFirstUpdate = true;
+    function handleObserve(entries) {
+      const ratio = entries[0].intersectionRatio;
+      if (ratio !== threshold) {
+        if (!isFirstUpdate) {
+          return refresh();
+        }
+        if (!ratio) {
+          timeoutId = setTimeout(() => {
+            refresh(false, 1e-7);
+          }, 1e3);
+        } else {
+          refresh(false, ratio);
+        }
+      }
+      if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+        refresh();
+      }
+      isFirstUpdate = false;
+    }
+    try {
+      io = new IntersectionObserver(handleObserve, {
+        ...options,
+        // Handle <iframe>s
+        root: root.ownerDocument
+      });
+    } catch (_e) {
+      io = new IntersectionObserver(handleObserve, options);
+    }
+    io.observe(element);
+  }
+  refresh(true);
+  return cleanup;
+}
+function autoUpdate(reference, floating, update, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    ancestorScroll = true,
+    ancestorResize = true,
+    elementResize = typeof ResizeObserver === "function",
+    layoutShift = typeof IntersectionObserver === "function",
+    animationFrame = false
+  } = options;
+  const referenceEl = unwrapElement(reference);
+  const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
+  ancestors.forEach((ancestor) => {
+    ancestorScroll && ancestor.addEventListener("scroll", update, {
+      passive: true
+    });
+    ancestorResize && ancestor.addEventListener("resize", update);
+  });
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
+  let reobserveFrame = -1;
+  let resizeObserver = null;
+  if (elementResize) {
+    resizeObserver = new ResizeObserver((_ref) => {
+      let [firstEntry] = _ref;
+      if (firstEntry && firstEntry.target === referenceEl && resizeObserver) {
+        resizeObserver.unobserve(floating);
+        cancelAnimationFrame(reobserveFrame);
+        reobserveFrame = requestAnimationFrame(() => {
+          var _resizeObserver;
+          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
+        });
+      }
+      update();
+    });
+    if (referenceEl && !animationFrame) {
+      resizeObserver.observe(referenceEl);
+    }
+    resizeObserver.observe(floating);
+  }
+  let frameId;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  if (animationFrame) {
+    frameLoop();
+  }
+  function frameLoop() {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+      update();
+    }
+    prevRefRect = nextRefRect;
+    frameId = requestAnimationFrame(frameLoop);
+  }
+  update();
+  return () => {
+    var _resizeObserver2;
+    ancestors.forEach((ancestor) => {
+      ancestorScroll && ancestor.removeEventListener("scroll", update);
+      ancestorResize && ancestor.removeEventListener("resize", update);
+    });
+    cleanupIo == null || cleanupIo();
+    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
+    resizeObserver = null;
+    if (animationFrame) {
+      cancelAnimationFrame(frameId);
+    }
+  };
+}
+const offset$1 = offset$2;
+const shift$1 = shift$2;
+const flip$1 = flip$2;
+const size$1 = size$2;
+const hide$1 = hide$2;
+const arrow$2 = arrow$3;
+const limitShift$1 = limitShift$2;
+const computePosition = (reference, floating, options) => {
+  const cache = /* @__PURE__ */ new Map();
+  const mergedOptions = {
+    platform,
+    ...options
+  };
+  const platformWithCache = {
+    ...mergedOptions.platform,
+    _c: cache
+  };
+  return computePosition$1(reference, floating, {
+    ...mergedOptions,
+    platform: platformWithCache
+  });
+};
+var isClient = typeof document !== "undefined";
+var noop = function noop2() {
+};
+var index = isClient ? useLayoutEffect : noop;
+function deepEqual(a, b) {
+  if (a === b) {
+    return true;
+  }
+  if (typeof a !== typeof b) {
+    return false;
+  }
+  if (typeof a === "function" && a.toString() === b.toString()) {
+    return true;
+  }
+  let length;
+  let i;
+  let keys;
+  if (a && b && typeof a === "object") {
+    if (Array.isArray(a)) {
+      length = a.length;
+      if (length !== b.length) return false;
+      for (i = length; i-- !== 0; ) {
+        if (!deepEqual(a[i], b[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    keys = Object.keys(a);
+    length = keys.length;
+    if (length !== Object.keys(b).length) {
+      return false;
+    }
+    for (i = length; i-- !== 0; ) {
+      if (!{}.hasOwnProperty.call(b, keys[i])) {
+        return false;
+      }
+    }
+    for (i = length; i-- !== 0; ) {
+      const key = keys[i];
+      if (key === "_owner" && a.$$typeof) {
+        continue;
+      }
+      if (!deepEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return a !== a && b !== b;
+}
+function getDPR(element) {
+  if (typeof window === "undefined") {
+    return 1;
+  }
+  const win = element.ownerDocument.defaultView || window;
+  return win.devicePixelRatio || 1;
+}
+function roundByDPR(element, value) {
+  const dpr = getDPR(element);
+  return Math.round(value * dpr) / dpr;
+}
+function useLatestRef(value) {
+  const ref = React.useRef(value);
+  index(() => {
+    ref.current = value;
+  });
+  return ref;
+}
+function useFloating(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    placement = "bottom",
+    strategy = "absolute",
+    middleware = [],
+    platform: platform2,
+    elements: {
+      reference: externalReference,
+      floating: externalFloating
+    } = {},
+    transform = true,
+    whileElementsMounted,
+    open
+  } = options;
+  const [data, setData] = React.useState({
+    x: 0,
+    y: 0,
+    strategy,
+    placement,
+    middlewareData: {},
+    isPositioned: false
+  });
+  const [latestMiddleware, setLatestMiddleware] = React.useState(middleware);
+  if (!deepEqual(latestMiddleware, middleware)) {
+    setLatestMiddleware(middleware);
+  }
+  const [_reference, _setReference] = React.useState(null);
+  const [_floating, _setFloating] = React.useState(null);
+  const setReference = React.useCallback((node) => {
+    if (node !== referenceRef.current) {
+      referenceRef.current = node;
+      _setReference(node);
+    }
+  }, []);
+  const setFloating = React.useCallback((node) => {
+    if (node !== floatingRef.current) {
+      floatingRef.current = node;
+      _setFloating(node);
+    }
+  }, []);
+  const referenceEl = externalReference || _reference;
+  const floatingEl = externalFloating || _floating;
+  const referenceRef = React.useRef(null);
+  const floatingRef = React.useRef(null);
+  const dataRef = React.useRef(data);
+  const hasWhileElementsMounted = whileElementsMounted != null;
+  const whileElementsMountedRef = useLatestRef(whileElementsMounted);
+  const platformRef = useLatestRef(platform2);
+  const openRef = useLatestRef(open);
+  const update = React.useCallback(() => {
+    if (!referenceRef.current || !floatingRef.current) {
+      return;
+    }
+    const config = {
+      placement,
+      strategy,
+      middleware: latestMiddleware
+    };
+    if (platformRef.current) {
+      config.platform = platformRef.current;
+    }
+    computePosition(referenceRef.current, floatingRef.current, config).then((data2) => {
+      const fullData = {
+        ...data2,
+        // The floating element's position may be recomputed while it's closed
+        // but still mounted (such as when transitioning out). To ensure
+        // `isPositioned` will be `false` initially on the next open, avoid
+        // setting it to `true` when `open === false` (must be specified).
+        isPositioned: openRef.current !== false
+      };
+      if (isMountedRef.current && !deepEqual(dataRef.current, fullData)) {
+        dataRef.current = fullData;
+        ReactDOM.flushSync(() => {
+          setData(fullData);
+        });
+      }
+    });
+  }, [latestMiddleware, placement, strategy, platformRef, openRef]);
+  index(() => {
+    if (open === false && dataRef.current.isPositioned) {
+      dataRef.current.isPositioned = false;
+      setData((data2) => ({
+        ...data2,
+        isPositioned: false
+      }));
+    }
+  }, [open]);
+  const isMountedRef = React.useRef(false);
+  index(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+  index(() => {
+    if (referenceEl) referenceRef.current = referenceEl;
+    if (floatingEl) floatingRef.current = floatingEl;
+    if (referenceEl && floatingEl) {
+      if (whileElementsMountedRef.current) {
+        return whileElementsMountedRef.current(referenceEl, floatingEl, update);
+      }
+      update();
+    }
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
+  const refs = React.useMemo(() => ({
+    reference: referenceRef,
+    floating: floatingRef,
+    setReference,
+    setFloating
+  }), [setReference, setFloating]);
+  const elements = React.useMemo(() => ({
+    reference: referenceEl,
+    floating: floatingEl
+  }), [referenceEl, floatingEl]);
+  const floatingStyles = React.useMemo(() => {
+    const initialStyles = {
+      position: strategy,
+      left: 0,
+      top: 0
+    };
+    if (!elements.floating) {
+      return initialStyles;
+    }
+    const x = roundByDPR(elements.floating, data.x);
+    const y = roundByDPR(elements.floating, data.y);
+    if (transform) {
+      return {
+        ...initialStyles,
+        transform: "translate(" + x + "px, " + y + "px)",
+        ...getDPR(elements.floating) >= 1.5 && {
+          willChange: "transform"
+        }
+      };
+    }
+    return {
+      position: strategy,
+      left: x,
+      top: y
+    };
+  }, [strategy, transform, elements.floating, data.x, data.y]);
+  return React.useMemo(() => ({
+    ...data,
+    update,
+    refs,
+    elements,
+    floatingStyles
+  }), [data, update, refs, elements, floatingStyles]);
+}
+const arrow$1 = (options) => {
+  function isRef(value) {
+    return {}.hasOwnProperty.call(value, "current");
+  }
+  return {
+    name: "arrow",
+    options,
+    fn(state) {
+      const {
+        element,
+        padding
+      } = typeof options === "function" ? options(state) : options;
+      if (element && isRef(element)) {
+        if (element.current != null) {
+          return arrow$2({
+            element: element.current,
+            padding
+          }).fn(state);
+        }
+        return {};
+      }
+      if (element) {
+        return arrow$2({
+          element,
+          padding
+        }).fn(state);
+      }
+      return {};
+    }
+  };
+};
+const offset = (options, deps) => ({
+  ...offset$1(options),
+  options: [options, deps]
+});
+const shift = (options, deps) => ({
+  ...shift$1(options),
+  options: [options, deps]
+});
+const limitShift = (options, deps) => ({
+  ...limitShift$1(options),
+  options: [options, deps]
+});
+const flip = (options, deps) => ({
+  ...flip$1(options),
+  options: [options, deps]
+});
+const size = (options, deps) => ({
+  ...size$1(options),
+  options: [options, deps]
+});
+const hide = (options, deps) => ({
+  ...hide$1(options),
+  options: [options, deps]
+});
+const arrow = (options, deps) => ({
+  ...arrow$1(options),
+  options: [options, deps]
+});
+var NAME$1 = "Arrow";
+var Arrow$1 = React.forwardRef((props, forwardedRef) => {
+  const { children, width = 10, height = 5, ...arrowProps } = props;
+  return /* @__PURE__ */ jsx(
+    Primitive.svg,
+    {
+      ...arrowProps,
+      ref: forwardedRef,
+      width,
+      height,
+      viewBox: "0 0 30 10",
+      preserveAspectRatio: "none",
+      children: props.asChild ? children : /* @__PURE__ */ jsx("polygon", { points: "0,0 30,0 15,10" })
+    }
+  );
+});
+Arrow$1.displayName = NAME$1;
+var Root$2 = Arrow$1;
 function useSize(element) {
-  const [size, setSize] = React.useState(void 0);
+  const [size2, setSize] = React.useState(void 0);
   useLayoutEffect2(() => {
     if (element) {
       setSize({ width: element.offsetWidth, height: element.offsetHeight });
@@ -6635,8 +8812,286 @@ function useSize(element) {
       setSize(void 0);
     }
   }, [element]);
-  return size;
+  return size2;
 }
+var POPPER_NAME = "Popper";
+var [createPopperContext, createPopperScope] = createContextScope(POPPER_NAME);
+var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
+var Popper = (props) => {
+  const { __scopePopper, children } = props;
+  const [anchor, setAnchor] = React.useState(null);
+  return /* @__PURE__ */ jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
+};
+Popper.displayName = POPPER_NAME;
+var ANCHOR_NAME = "PopperAnchor";
+var PopperAnchor = React.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopePopper, virtualRef, ...anchorProps } = props;
+    const context = usePopperContext(ANCHOR_NAME, __scopePopper);
+    const ref = React.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref);
+    const anchorRef = React.useRef(null);
+    React.useEffect(() => {
+      const previousAnchor = anchorRef.current;
+      anchorRef.current = virtualRef?.current || ref.current;
+      if (previousAnchor !== anchorRef.current) {
+        context.onAnchorChange(anchorRef.current);
+      }
+    });
+    return virtualRef ? null : /* @__PURE__ */ jsx(Primitive.div, { ...anchorProps, ref: composedRefs });
+  }
+);
+PopperAnchor.displayName = ANCHOR_NAME;
+var CONTENT_NAME$1 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$1);
+var PopperContent = React.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopePopper,
+      side = "bottom",
+      sideOffset = 0,
+      align = "center",
+      alignOffset = 0,
+      arrowPadding = 0,
+      avoidCollisions = true,
+      collisionBoundary = [],
+      collisionPadding: collisionPaddingProp = 0,
+      sticky = "partial",
+      hideWhenDetached = false,
+      updatePositionStrategy = "optimized",
+      onPlaced,
+      ...contentProps
+    } = props;
+    const context = usePopperContext(CONTENT_NAME$1, __scopePopper);
+    const [content, setContent] = React.useState(null);
+    const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
+    const [arrow$12, setArrow] = React.useState(null);
+    const arrowSize = useSize(arrow$12);
+    const arrowWidth = arrowSize?.width ?? 0;
+    const arrowHeight = arrowSize?.height ?? 0;
+    const desiredPlacement = side + (align !== "center" ? "-" + align : "");
+    const collisionPadding = typeof collisionPaddingProp === "number" ? collisionPaddingProp : { top: 0, right: 0, bottom: 0, left: 0, ...collisionPaddingProp };
+    const boundary = Array.isArray(collisionBoundary) ? collisionBoundary : [collisionBoundary];
+    const hasExplicitBoundaries = boundary.length > 0;
+    const detectOverflowOptions = {
+      padding: collisionPadding,
+      boundary: boundary.filter(isNotNull),
+      // with `strategy: 'fixed'`, this is the only way to get it to respect boundaries
+      altBoundary: hasExplicitBoundaries
+    };
+    const { refs, floatingStyles, placement, isPositioned, middlewareData } = useFloating({
+      // default to `fixed` strategy so users don't have to pick and we also avoid focus scroll issues
+      strategy: "fixed",
+      placement: desiredPlacement,
+      whileElementsMounted: (...args) => {
+        const cleanup = autoUpdate(...args, {
+          animationFrame: updatePositionStrategy === "always"
+        });
+        return cleanup;
+      },
+      elements: {
+        reference: context.anchor
+      },
+      middleware: [
+        offset({ mainAxis: sideOffset + arrowHeight, alignmentAxis: alignOffset }),
+        avoidCollisions && shift({
+          mainAxis: true,
+          crossAxis: false,
+          limiter: sticky === "partial" ? limitShift() : void 0,
+          ...detectOverflowOptions
+        }),
+        avoidCollisions && flip({ ...detectOverflowOptions }),
+        size({
+          ...detectOverflowOptions,
+          apply: ({ elements, rects, availableWidth, availableHeight }) => {
+            const { width: anchorWidth, height: anchorHeight } = rects.reference;
+            const contentStyle = elements.floating.style;
+            contentStyle.setProperty("--radix-popper-available-width", `${availableWidth}px`);
+            contentStyle.setProperty("--radix-popper-available-height", `${availableHeight}px`);
+            contentStyle.setProperty("--radix-popper-anchor-width", `${anchorWidth}px`);
+            contentStyle.setProperty("--radix-popper-anchor-height", `${anchorHeight}px`);
+          }
+        }),
+        arrow$12 && arrow({ element: arrow$12, padding: arrowPadding }),
+        transformOrigin({ arrowWidth, arrowHeight }),
+        hideWhenDetached && hide({ strategy: "referenceHidden", ...detectOverflowOptions })
+      ]
+    });
+    const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
+    const handlePlaced = useCallbackRef(onPlaced);
+    useLayoutEffect2(() => {
+      if (isPositioned) {
+        handlePlaced?.();
+      }
+    }, [isPositioned, handlePlaced]);
+    const arrowX = middlewareData.arrow?.x;
+    const arrowY = middlewareData.arrow?.y;
+    const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
+    const [contentZIndex, setContentZIndex] = React.useState();
+    useLayoutEffect2(() => {
+      if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
+    }, [content]);
+    return /* @__PURE__ */ jsx(
+      "div",
+      {
+        ref: refs.setFloating,
+        "data-radix-popper-content-wrapper": "",
+        style: {
+          ...floatingStyles,
+          transform: isPositioned ? floatingStyles.transform : "translate(0, -200%)",
+          // keep off the page when measuring
+          minWidth: "max-content",
+          zIndex: contentZIndex,
+          ["--radix-popper-transform-origin"]: [
+            middlewareData.transformOrigin?.x,
+            middlewareData.transformOrigin?.y
+          ].join(" "),
+          // hide the content if using the hide middleware and should be hidden
+          // set visibility to hidden and disable pointer events so the UI behaves
+          // as if the PopperContent isn't there at all
+          ...middlewareData.hide?.referenceHidden && {
+            visibility: "hidden",
+            pointerEvents: "none"
+          }
+        },
+        dir: props.dir,
+        children: /* @__PURE__ */ jsx(
+          PopperContentProvider,
+          {
+            scope: __scopePopper,
+            placedSide,
+            onArrowChange: setArrow,
+            arrowX,
+            arrowY,
+            shouldHideArrow: cannotCenterArrow,
+            children: /* @__PURE__ */ jsx(
+              Primitive.div,
+              {
+                "data-side": placedSide,
+                "data-align": placedAlign,
+                ...contentProps,
+                ref: composedRefs,
+                style: {
+                  ...contentProps.style,
+                  // if the PopperContent hasn't been placed yet (not all measurements done)
+                  // we prevent animations so that users's animation don't kick in too early referring wrong sides
+                  animation: !isPositioned ? "none" : void 0
+                }
+              }
+            )
+          }
+        )
+      }
+    );
+  }
+);
+PopperContent.displayName = CONTENT_NAME$1;
+var ARROW_NAME$1 = "PopperArrow";
+var OPPOSITE_SIDE = {
+  top: "bottom",
+  right: "left",
+  bottom: "top",
+  left: "right"
+};
+var PopperArrow = React.forwardRef(function PopperArrow2(props, forwardedRef) {
+  const { __scopePopper, ...arrowProps } = props;
+  const contentContext = useContentContext(ARROW_NAME$1, __scopePopper);
+  const baseSide = OPPOSITE_SIDE[contentContext.placedSide];
+  return (
+    // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
+    // doesn't report size as we'd expect on SVG elements.
+    // it reports their bounding box which is effectively the largest path inside the SVG.
+    /* @__PURE__ */ jsx(
+      "span",
+      {
+        ref: contentContext.onArrowChange,
+        style: {
+          position: "absolute",
+          left: contentContext.arrowX,
+          top: contentContext.arrowY,
+          [baseSide]: 0,
+          transformOrigin: {
+            top: "",
+            right: "0 0",
+            bottom: "center 0",
+            left: "100% 0"
+          }[contentContext.placedSide],
+          transform: {
+            top: "translateY(100%)",
+            right: "translateY(50%) rotate(90deg) translateX(-50%)",
+            bottom: `rotate(180deg)`,
+            left: "translateY(50%) rotate(-90deg) translateX(50%)"
+          }[contentContext.placedSide],
+          visibility: contentContext.shouldHideArrow ? "hidden" : void 0
+        },
+        children: /* @__PURE__ */ jsx(
+          Root$2,
+          {
+            ...arrowProps,
+            ref: forwardedRef,
+            style: {
+              ...arrowProps.style,
+              // ensures the element can be measured correctly (mostly for if SVG)
+              display: "block"
+            }
+          }
+        )
+      }
+    )
+  );
+});
+PopperArrow.displayName = ARROW_NAME$1;
+function isNotNull(value) {
+  return value !== null;
+}
+var transformOrigin = (options) => ({
+  name: "transformOrigin",
+  options,
+  fn(data) {
+    const { placement, rects, middlewareData } = data;
+    const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
+    const isArrowHidden = cannotCenterArrow;
+    const arrowWidth = isArrowHidden ? 0 : options.arrowWidth;
+    const arrowHeight = isArrowHidden ? 0 : options.arrowHeight;
+    const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
+    const noArrowAlign = { start: "0%", center: "50%", end: "100%" }[placedAlign];
+    const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2;
+    const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2;
+    let x = "";
+    let y = "";
+    if (placedSide === "bottom") {
+      x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+      y = `${-arrowHeight}px`;
+    } else if (placedSide === "top") {
+      x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+      y = `${rects.floating.height + arrowHeight}px`;
+    } else if (placedSide === "right") {
+      x = `${-arrowHeight}px`;
+      y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+    } else if (placedSide === "left") {
+      x = `${rects.floating.width + arrowHeight}px`;
+      y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+    }
+    return { data: { x, y } };
+  }
+});
+function getSideAndAlignFromPlacement(placement) {
+  const [side, align = "center"] = placement.split("-");
+  return [side, align];
+}
+var Root2 = Popper;
+var Anchor = PopperAnchor;
+var Content = PopperContent;
+var Arrow = PopperArrow;
+var PORTAL_NAME$1 = "Portal";
+var Portal$1 = React.forwardRef((props, forwardedRef) => {
+  const { container: containerProp, ...portalProps } = props;
+  const [mounted, setMounted] = React.useState(false);
+  useLayoutEffect2(() => setMounted(true), []);
+  const container = containerProp || mounted && globalThis?.document?.body;
+  return container ? ReactDOM__default.createPortal(/* @__PURE__ */ jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
+});
+Portal$1.displayName = PORTAL_NAME$1;
 function useStateMachine(initialState2, machine) {
   return React.useReducer((state, event) => {
     const nextState = machine[state][event];
@@ -6647,7 +9102,7 @@ var Presence = (props) => {
   const { present, children } = props;
   const presence = usePresence(present);
   const child = typeof children === "function" ? children({ present: presence.isPresent }) : React.Children.only(children);
-  const ref = useComposedRefs(presence.ref, getElementRef$1(child));
+  const ref = useComposedRefs(presence.ref, getElementRef(child));
   const forceMount = typeof children === "function";
   return forceMount || presence.isPresent ? React.cloneElement(child, { ref }) : null;
 };
@@ -6746,88 +9201,6 @@ function usePresence(present) {
 function getAnimationName(styles) {
   return styles?.animationName || "none";
 }
-function getElementRef$1(element) {
-  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
-  const Slot2 = React.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = React.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (React.Children.count(newElement) > 1) return React.Children.only(null);
-          return React.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: React.isValidElement(newElement) ? React.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone(ownerName) {
-  const SlotClone = React.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (React.isValidElement(children)) {
-      const childrenRef = getElementRef(children);
-      const props2 = mergeProps(slotProps, children.props);
-      if (children.type !== React.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return React.cloneElement(children, props2);
-    }
-    return React.Children.count(children) > 1 ? React.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
-function isSlottable(child) {
-  return React.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
-}
-function mergeProps(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
 function getElementRef(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
@@ -6841,38 +9214,582 @@ function getElementRef(element) {
   }
   return element.props.ref || element.ref;
 }
-var NODES = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive = NODES.reduce((primitive, node) => {
-  const Slot = /* @__PURE__ */ createSlot(`Primitive.${node}`);
-  const Node = React.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+var useInsertionEffect = React[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+function useControllableState({
+  prop,
+  defaultProp,
+  onChange = () => {
+  },
+  caller
+}) {
+  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
+    defaultProp,
+    onChange
   });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
+  const isControlled = prop !== void 0;
+  const value = isControlled ? prop : uncontrolledProp;
+  {
+    const isControlledRef = React.useRef(prop !== void 0);
+    React.useEffect(() => {
+      const wasControlled = isControlledRef.current;
+      if (wasControlled !== isControlled) {
+        const from = wasControlled ? "controlled" : "uncontrolled";
+        const to = isControlled ? "controlled" : "uncontrolled";
+        console.warn(
+          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+        );
+      }
+      isControlledRef.current = isControlled;
+    }, [isControlled, caller]);
+  }
+  const setValue = React.useCallback(
+    (nextValue) => {
+      if (isControlled) {
+        const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
+        if (value2 !== prop) {
+          onChangeRef.current?.(value2);
+        }
+      } else {
+        setUncontrolledProp(nextValue);
+      }
+    },
+    [isControlled, prop, setUncontrolledProp, onChangeRef]
+  );
+  return [value, setValue];
+}
+function useUncontrolledState({
+  defaultProp,
+  onChange
+}) {
+  const [value, setValue] = React.useState(defaultProp);
+  const prevValueRef = React.useRef(value);
+  const onChangeRef = React.useRef(onChange);
+  useInsertionEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+  React.useEffect(() => {
+    if (prevValueRef.current !== value) {
+      onChangeRef.current?.(value);
+      prevValueRef.current = value;
+    }
+  }, [value, prevValueRef]);
+  return [value, setValue, onChangeRef];
+}
+function isFunction$1(value) {
+  return typeof value === "function";
+}
+var VISUALLY_HIDDEN_STYLES = Object.freeze({
+  // See: https://github.com/twbs/bootstrap/blob/main/scss/mixins/_visually-hidden.scss
+  position: "absolute",
+  border: 0,
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  wordWrap: "normal"
+});
+var NAME = "VisuallyHidden";
+var VisuallyHidden = React.forwardRef(
+  (props, forwardedRef) => {
+    return /* @__PURE__ */ jsx(
+      Primitive.span,
+      {
+        ...props,
+        ref: forwardedRef,
+        style: { ...VISUALLY_HIDDEN_STYLES, ...props.style }
+      }
+    );
+  }
+);
+VisuallyHidden.displayName = NAME;
+var Root$1 = VisuallyHidden;
+var [createTooltipContext, createTooltipScope] = createContextScope("Tooltip", [
+  createPopperScope
+]);
+var usePopperScope = createPopperScope();
+var PROVIDER_NAME = "TooltipProvider";
+var DEFAULT_DELAY_DURATION = 700;
+var TOOLTIP_OPEN = "tooltip.open";
+var [TooltipProviderContextProvider, useTooltipProviderContext] = createTooltipContext(PROVIDER_NAME);
+var TooltipProvider = (props) => {
+  const {
+    __scopeTooltip,
+    delayDuration = DEFAULT_DELAY_DURATION,
+    skipDelayDuration = 300,
+    disableHoverableContent = false,
+    children
+  } = props;
+  const isOpenDelayedRef = React.useRef(true);
+  const isPointerInTransitRef = React.useRef(false);
+  const skipDelayTimerRef = React.useRef(0);
+  React.useEffect(() => {
+    const skipDelayTimer = skipDelayTimerRef.current;
+    return () => window.clearTimeout(skipDelayTimer);
+  }, []);
+  return /* @__PURE__ */ jsx(
+    TooltipProviderContextProvider,
+    {
+      scope: __scopeTooltip,
+      isOpenDelayedRef,
+      delayDuration,
+      onOpen: React.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        isOpenDelayedRef.current = false;
+      }, []),
+      onClose: React.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        skipDelayTimerRef.current = window.setTimeout(
+          () => isOpenDelayedRef.current = true,
+          skipDelayDuration
+        );
+      }, [skipDelayDuration]),
+      isPointerInTransitRef,
+      onPointerInTransitChange: React.useCallback((inTransit) => {
+        isPointerInTransitRef.current = inTransit;
+      }, []),
+      disableHoverableContent,
+      children
+    }
+  );
+};
+TooltipProvider.displayName = PROVIDER_NAME;
+var TOOLTIP_NAME = "Tooltip";
+var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_NAME);
+var Tooltip = (props) => {
+  const {
+    __scopeTooltip,
+    children,
+    open: openProp,
+    defaultOpen,
+    onOpenChange,
+    disableHoverableContent: disableHoverableContentProp,
+    delayDuration: delayDurationProp
+  } = props;
+  const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
+  const popperScope = usePopperScope(__scopeTooltip);
+  const [trigger, setTrigger] = React.useState(null);
+  const contentId = useId();
+  const openTimerRef = React.useRef(0);
+  const disableHoverableContent = disableHoverableContentProp ?? providerContext.disableHoverableContent;
+  const delayDuration = delayDurationProp ?? providerContext.delayDuration;
+  const wasOpenDelayedRef = React.useRef(false);
+  const [open, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen ?? false,
+    onChange: (open2) => {
+      if (open2) {
+        providerContext.onOpen();
+        document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
+      } else {
+        providerContext.onClose();
+      }
+      onOpenChange?.(open2);
+    },
+    caller: TOOLTIP_NAME
+  });
+  const stateAttribute = React.useMemo(() => {
+    return open ? wasOpenDelayedRef.current ? "delayed-open" : "instant-open" : "closed";
+  }, [open]);
+  const handleOpen = React.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    wasOpenDelayedRef.current = false;
+    setOpen(true);
+  }, [setOpen]);
+  const handleClose = React.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    setOpen(false);
+  }, [setOpen]);
+  const handleDelayedOpen = React.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = window.setTimeout(() => {
+      wasOpenDelayedRef.current = true;
+      setOpen(true);
+      openTimerRef.current = 0;
+    }, delayDuration);
+  }, [delayDuration, setOpen]);
+  React.useEffect(() => {
+    return () => {
+      if (openTimerRef.current) {
+        window.clearTimeout(openTimerRef.current);
+        openTimerRef.current = 0;
+      }
+    };
+  }, []);
+  return /* @__PURE__ */ jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsx(
+    TooltipContextProvider,
+    {
+      scope: __scopeTooltip,
+      contentId,
+      open,
+      stateAttribute,
+      trigger,
+      onTriggerChange: setTrigger,
+      onTriggerEnter: React.useCallback(() => {
+        if (providerContext.isOpenDelayedRef.current) handleDelayedOpen();
+        else handleOpen();
+      }, [providerContext.isOpenDelayedRef, handleDelayedOpen, handleOpen]),
+      onTriggerLeave: React.useCallback(() => {
+        if (disableHoverableContent) {
+          handleClose();
+        } else {
+          window.clearTimeout(openTimerRef.current);
+          openTimerRef.current = 0;
+        }
+      }, [handleClose, disableHoverableContent]),
+      onOpen: handleOpen,
+      onClose: handleClose,
+      disableHoverableContent,
+      children
+    }
+  ) });
+};
+Tooltip.displayName = TOOLTIP_NAME;
+var TRIGGER_NAME$1 = "TooltipTrigger";
+var TooltipTrigger = React.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...triggerProps } = props;
+    const context = useTooltipContext(TRIGGER_NAME$1, __scopeTooltip);
+    const providerContext = useTooltipProviderContext(TRIGGER_NAME$1, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const ref = React.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
+    const isPointerDownRef = React.useRef(false);
+    const hasPointerMoveOpenedRef = React.useRef(false);
+    const handlePointerUp = React.useCallback(() => isPointerDownRef.current = false, []);
+    React.useEffect(() => {
+      return () => document.removeEventListener("pointerup", handlePointerUp);
+    }, [handlePointerUp]);
+    return /* @__PURE__ */ jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsx(
+      Primitive.button,
+      {
+        "aria-describedby": context.open ? context.contentId : void 0,
+        "data-state": context.stateAttribute,
+        ...triggerProps,
+        ref: composedRefs,
+        onPointerMove: composeEventHandlers(props.onPointerMove, (event) => {
+          if (event.pointerType === "touch") return;
+          if (!hasPointerMoveOpenedRef.current && !providerContext.isPointerInTransitRef.current) {
+            context.onTriggerEnter();
+            hasPointerMoveOpenedRef.current = true;
+          }
+        }),
+        onPointerLeave: composeEventHandlers(props.onPointerLeave, () => {
+          context.onTriggerLeave();
+          hasPointerMoveOpenedRef.current = false;
+        }),
+        onPointerDown: composeEventHandlers(props.onPointerDown, () => {
+          if (context.open) {
+            context.onClose();
+          }
+          isPointerDownRef.current = true;
+          document.addEventListener("pointerup", handlePointerUp, { once: true });
+        }),
+        onFocus: composeEventHandlers(props.onFocus, () => {
+          if (!isPointerDownRef.current) context.onOpen();
+        }),
+        onBlur: composeEventHandlers(props.onBlur, context.onClose),
+        onClick: composeEventHandlers(props.onClick, context.onClose)
+      }
+    ) });
+  }
+);
+TooltipTrigger.displayName = TRIGGER_NAME$1;
+var PORTAL_NAME = "TooltipPortal";
+var [PortalProvider, usePortalContext] = createTooltipContext(PORTAL_NAME, {
+  forceMount: void 0
+});
+var TooltipPortal = (props) => {
+  const { __scopeTooltip, forceMount, children, container } = props;
+  const context = useTooltipContext(PORTAL_NAME, __scopeTooltip);
+  return /* @__PURE__ */ jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsx(Portal$1, { asChild: true, container, children }) }) });
+};
+TooltipPortal.displayName = PORTAL_NAME;
+var CONTENT_NAME = "TooltipContent";
+var TooltipContent = React.forwardRef(
+  (props, forwardedRef) => {
+    const portalContext = usePortalContext(CONTENT_NAME, props.__scopeTooltip);
+    const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
+    const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
+    return /* @__PURE__ */ jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+  }
+);
+var TooltipContentHoverable = React.forwardRef((props, forwardedRef) => {
+  const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
+  const providerContext = useTooltipProviderContext(CONTENT_NAME, props.__scopeTooltip);
+  const ref = React.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  const [pointerGraceArea, setPointerGraceArea] = React.useState(null);
+  const { trigger, onClose } = context;
+  const content = ref.current;
+  const { onPointerInTransitChange } = providerContext;
+  const handleRemoveGraceArea = React.useCallback(() => {
+    setPointerGraceArea(null);
+    onPointerInTransitChange(false);
+  }, [onPointerInTransitChange]);
+  const handleCreateGraceArea = React.useCallback(
+    (event, hoverTarget) => {
+      const currentTarget = event.currentTarget;
+      const exitPoint = { x: event.clientX, y: event.clientY };
+      const exitSide = getExitSideFromRect(exitPoint, currentTarget.getBoundingClientRect());
+      const paddedExitPoints = getPaddedExitPoints(exitPoint, exitSide);
+      const hoverTargetPoints = getPointsFromRect(hoverTarget.getBoundingClientRect());
+      const graceArea = getHull([...paddedExitPoints, ...hoverTargetPoints]);
+      setPointerGraceArea(graceArea);
+      onPointerInTransitChange(true);
+    },
+    [onPointerInTransitChange]
+  );
+  React.useEffect(() => {
+    return () => handleRemoveGraceArea();
+  }, [handleRemoveGraceArea]);
+  React.useEffect(() => {
+    if (trigger && content) {
+      const handleTriggerLeave = (event) => handleCreateGraceArea(event, content);
+      const handleContentLeave = (event) => handleCreateGraceArea(event, trigger);
+      trigger.addEventListener("pointerleave", handleTriggerLeave);
+      content.addEventListener("pointerleave", handleContentLeave);
+      return () => {
+        trigger.removeEventListener("pointerleave", handleTriggerLeave);
+        content.removeEventListener("pointerleave", handleContentLeave);
+      };
+    }
+  }, [trigger, content, handleCreateGraceArea, handleRemoveGraceArea]);
+  React.useEffect(() => {
+    if (pointerGraceArea) {
+      const handleTrackPointerGrace = (event) => {
+        const target = event.target;
+        const pointerPosition = { x: event.clientX, y: event.clientY };
+        const hasEnteredTarget = trigger?.contains(target) || content?.contains(target);
+        const isPointerOutsideGraceArea = !isPointInPolygon(pointerPosition, pointerGraceArea);
+        if (hasEnteredTarget) {
+          handleRemoveGraceArea();
+        } else if (isPointerOutsideGraceArea) {
+          handleRemoveGraceArea();
+          onClose();
+        }
+      };
+      document.addEventListener("pointermove", handleTrackPointerGrace);
+      return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
+    }
+  }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
+  return /* @__PURE__ */ jsx(TooltipContentImpl, { ...props, ref: composedRefs });
+});
+var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
+var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
+var TooltipContentImpl = React.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeTooltip,
+      children,
+      "aria-label": ariaLabel,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      ...contentProps
+    } = props;
+    const context = useTooltipContext(CONTENT_NAME, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const { onClose } = context;
+    React.useEffect(() => {
+      document.addEventListener(TOOLTIP_OPEN, onClose);
+      return () => document.removeEventListener(TOOLTIP_OPEN, onClose);
+    }, [onClose]);
+    React.useEffect(() => {
+      if (context.trigger) {
+        const handleScroll = (event) => {
+          const target = event.target;
+          if (target?.contains(context.trigger)) onClose();
+        };
+        window.addEventListener("scroll", handleScroll, { capture: true });
+        return () => window.removeEventListener("scroll", handleScroll, { capture: true });
+      }
+    }, [context.trigger, onClose]);
+    return /* @__PURE__ */ jsx(
+      DismissableLayer,
+      {
+        asChild: true,
+        disableOutsidePointerEvents: false,
+        onEscapeKeyDown,
+        onPointerDownOutside,
+        onFocusOutside: (event) => event.preventDefault(),
+        onDismiss: onClose,
+        children: /* @__PURE__ */ jsxs(
+          Content,
+          {
+            "data-state": context.stateAttribute,
+            ...popperScope,
+            ...contentProps,
+            ref: forwardedRef,
+            style: {
+              ...contentProps.style,
+              // re-namespace exposed content custom properties
+              ...{
+                "--radix-tooltip-content-transform-origin": "var(--radix-popper-transform-origin)",
+                "--radix-tooltip-content-available-width": "var(--radix-popper-available-width)",
+                "--radix-tooltip-content-available-height": "var(--radix-popper-available-height)",
+                "--radix-tooltip-trigger-width": "var(--radix-popper-anchor-width)",
+                "--radix-tooltip-trigger-height": "var(--radix-popper-anchor-height)"
+              }
+            },
+            children: [
+              /* @__PURE__ */ jsx(Slottable, { children }),
+              /* @__PURE__ */ jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsx(Root$1, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
+            ]
+          }
+        )
+      }
+    );
+  }
+);
+TooltipContent.displayName = CONTENT_NAME;
+var ARROW_NAME = "TooltipArrow";
+var TooltipArrow = React.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...arrowProps } = props;
+    const popperScope = usePopperScope(__scopeTooltip);
+    const visuallyHiddenContentContext = useVisuallyHiddenContentContext(
+      ARROW_NAME,
+      __scopeTooltip
+    );
+    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+  }
+);
+TooltipArrow.displayName = ARROW_NAME;
+function getExitSideFromRect(point, rect) {
+  const top = Math.abs(rect.top - point.y);
+  const bottom = Math.abs(rect.bottom - point.y);
+  const right = Math.abs(rect.right - point.x);
+  const left = Math.abs(rect.left - point.x);
+  switch (Math.min(top, bottom, right, left)) {
+    case left:
+      return "left";
+    case right:
+      return "right";
+    case top:
+      return "top";
+    case bottom:
+      return "bottom";
+    default:
+      throw new Error("unreachable");
+  }
+}
+function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
+  const paddedExitPoints = [];
+  switch (exitSide) {
+    case "top":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y + padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "bottom":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y - padding }
+      );
+      break;
+    case "left":
+      paddedExitPoints.push(
+        { x: exitPoint.x + padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "right":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x - padding, y: exitPoint.y + padding }
+      );
+      break;
+  }
+  return paddedExitPoints;
+}
+function getPointsFromRect(rect) {
+  const { top, right, bottom, left } = rect;
+  return [
+    { x: left, y: top },
+    { x: right, y: top },
+    { x: right, y: bottom },
+    { x: left, y: bottom }
+  ];
+}
+function isPointInPolygon(point, polygon) {
+  const { x, y } = point;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const ii = polygon[i];
+    const jj = polygon[j];
+    const xi = ii.x;
+    const yi = ii.y;
+    const xj = jj.x;
+    const yj = jj.y;
+    const intersect = yi > y !== yj > y && x < (xj - xi) * (y - yi) / (yj - yi) + xi;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function getHull(points) {
+  const newPoints = points.slice();
+  newPoints.sort((a, b) => {
+    if (a.x < b.x) return -1;
+    else if (a.x > b.x) return 1;
+    else if (a.y < b.y) return -1;
+    else if (a.y > b.y) return 1;
+    else return 0;
+  });
+  return getHullPresorted(newPoints);
+}
+function getHullPresorted(points) {
+  if (points.length <= 1) return points.slice();
+  const upperHull = [];
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    while (upperHull.length >= 2) {
+      const q = upperHull[upperHull.length - 1];
+      const r = upperHull[upperHull.length - 2];
+      if ((q.x - r.x) * (p.y - r.y) >= (q.y - r.y) * (p.x - r.x)) upperHull.pop();
+      else break;
+    }
+    upperHull.push(p);
+  }
+  upperHull.pop();
+  const lowerHull = [];
+  for (let i = points.length - 1; i >= 0; i--) {
+    const p = points[i];
+    while (lowerHull.length >= 2) {
+      const q = lowerHull[lowerHull.length - 1];
+      const r = lowerHull[lowerHull.length - 2];
+      if ((q.x - r.x) * (p.y - r.y) >= (q.y - r.y) * (p.x - r.x)) lowerHull.pop();
+      else break;
+    }
+    lowerHull.push(p);
+  }
+  lowerHull.pop();
+  if (upperHull.length === 1 && lowerHull.length === 1 && upperHull[0].x === lowerHull[0].x && upperHull[0].y === lowerHull[0].y) {
+    return upperHull;
+  } else {
+    return upperHull.concat(lowerHull);
+  }
+}
+var Provider = TooltipProvider;
+var Root3 = Tooltip;
+var Trigger = TooltipTrigger;
+var Portal = TooltipPortal;
+var Content2 = TooltipContent;
+var Arrow2 = TooltipArrow;
+function usePrevious(value) {
+  const ref = React.useRef({ value, previous: value });
+  return React.useMemo(() => {
+    if (ref.current.value !== value) {
+      ref.current.previous = ref.current.value;
+      ref.current.value = value;
+    }
+    return ref.current.previous;
+  }, [value]);
+}
 var CHECKBOX_NAME = "Checkbox";
 var [createCheckboxContext, createCheckboxScope] = createContextScope(CHECKBOX_NAME);
 var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
@@ -7162,10 +10079,31 @@ const InfoCheckbox = memo((props) => {
   const infoElement = typeof info === "function" ? info() : info;
   return /* @__PURE__ */ jsx("div", { className: "info-checkbox-container", children: /* @__PURE__ */ jsxs("div", { className: "info-checkbox-wrapper", children: [
     /* @__PURE__ */ jsx(CheckboxInput, { id, label: labelElement, isChecked: checked, onCheckedChange: onChange }),
-    /* @__PURE__ */ jsxs("div", { className: "info-label margin-left--10", children: [
-      /* @__PURE__ */ jsx(FaInfoCircle, { className: "info-checkbox-icon" }),
-      /* @__PURE__ */ jsx("div", { className: "info-description", children: infoElement })
-    ] })
+    /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
+      /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          "aria-label": "More info",
+          className: "tooltip-button inline-flex items-center justify-center cursor-help",
+          children: /* @__PURE__ */ jsx(FaInfoCircle, {})
+        }
+      ) }),
+      /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(
+        Content2,
+        {
+          side: "top",
+          align: "center",
+          sideOffset: 6,
+          collisionPadding: 8,
+          className: "tooltip-content",
+          children: [
+            infoElement,
+            /* @__PURE__ */ jsx(Arrow2, { className: "fill-[var(--info-tooltip-bg)]" })
+          ]
+        }
+      ) })
+    ] }) })
   ] }) });
 });
 InfoCheckbox.displayName = "InfoCheckbox";
@@ -7798,8 +10736,8 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
     },
     [userParticipants]
   );
-  const getMessageKey = useCallback((msg, index) => {
-    return `msg-${index}-${msg.id}-${msg.timestamp}`;
+  const getMessageKey = useCallback((msg, index2) => {
+    return `msg-${index2}-${msg.id}-${msg.timestamp}`;
   }, []);
   useEffect(() => {
     const shouldScroll = messages.length > prevMessageCountRef.current;
@@ -7823,7 +10761,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
     setTimeout(scrollToBottom, 300);
   }, [messages.length]);
   return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index) => {
+    /* @__PURE__ */ jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index2) => {
       const processedMsg = processMessage(msg);
       if (!processedMsg.node) {
         return null;
@@ -7858,7 +10796,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
             /* @__PURE__ */ jsx("div", { className: "message-content", children: processedMsg.node })
           ]
         },
-        getMessageKey(msg, index)
+        getMessageKey(msg, index2)
       );
     }) }),
     /* @__PURE__ */ jsx(ImageModal, { isOpen: Boolean(previewImage), imageUrl: previewImage, onClose: closeImagePreview })
@@ -7904,16 +10842,16 @@ const useDict = (props) => {
   useEffect(() => {
     setStateItems(Object.entries(items));
   }, [items]);
-  const onKeyChange = useCallback((index, event) => {
+  const onKeyChange = useCallback((index2, event) => {
     const newKey = event.target.value;
     setStateItems(
-      (prevItems) => prevItems.map(([key, value], idx) => idx === index ? [newKey, value] : [key, value])
+      (prevItems) => prevItems.map(([key, value], idx) => idx === index2 ? [newKey, value] : [key, value])
     );
   }, []);
-  const onValueChange = useCallback((index, event) => {
+  const onValueChange = useCallback((index2, event) => {
     const newValue = event.target.value;
     setStateItems(
-      (prevItems) => prevItems.map(([key, value], idx) => idx === index ? [key, newValue] : [key, value])
+      (prevItems) => prevItems.map(([key, value], idx) => idx === index2 ? [key, newValue] : [key, value])
     );
   }, []);
   const onVisibilityChange = useCallback((key) => {
@@ -7956,11 +10894,11 @@ const useDict = (props) => {
     onUpdate(itemsToSend);
   }, [stateItems, onUpdate]);
   const isDirty = useCallback(
-    (index) => {
-      if (index >= stateItems.length || !stateItems[index]) {
+    (index2) => {
+      if (index2 >= stateItems.length || !stateItems[index2]) {
         return true;
       }
-      const [key, value] = stateItems[index];
+      const [key, value] = stateItems[index2];
       if (!(key in items)) {
         return true;
       }
@@ -7983,20 +10921,29 @@ const useDict = (props) => {
     isDirty
   };
 };
-const InfoLabel = (props) => {
-  const { htmlFor, label, info } = props;
+const InfoLabel = ({ htmlFor, label, info, children }) => {
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsxs("div", { className: "info-label", children: [
-    /* @__PURE__ */ jsx("label", { htmlFor, children: labelElement }),
-    /* @__PURE__ */ jsx(FaInfoCircle, { className: "info-icon" }),
-    /* @__PURE__ */ jsx(
-      "div",
-      {
-        className: "info-description",
-        children: infoElement
-      }
-    )
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-row gap-1", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
+      /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
+        /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            "aria-label": "More info",
+            className: "tooltip-button inline-flex items-center justify-center cursor-help",
+            children: /* @__PURE__ */ jsx(FaInfoCircle, {})
+          }
+        ) }),
+        /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(Content2, { side: "top", align: "center", className: "tooltip-content", children: [
+          infoElement,
+          /* @__PURE__ */ jsx(Arrow2, { className: "fill-[var(--background-color)]" })
+        ] }) })
+      ] }) })
+    ] }),
+    children && /* @__PURE__ */ jsx("div", { children })
   ] });
 };
 InfoLabel.displayName = "InfoLabel";
@@ -8017,29 +10964,29 @@ const Dict = (props) => {
   } = useDict(props);
   return /* @__PURE__ */ jsxs("div", { className: "dict-entries-view", children: [
     viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { htmlFor: `dict-entry-${itemsType}`, label: viewLabel, info: viewLabelInfo }) : /* @__PURE__ */ jsx("label", { className: "margin-bottom-5", children: viewLabel }),
-    /* @__PURE__ */ jsx("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index) => /* @__PURE__ */ jsxs("div", { className: "dict-entry", children: [
+    /* @__PURE__ */ jsx("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => /* @__PURE__ */ jsxs("div", { className: "dict-entry", children: [
       /* @__PURE__ */ jsx(
         "input",
         {
           type: "text",
           defaultValue: key,
-          onChange: onKeyChange.bind(null, index),
-          "data-testid": `key-input-${itemsType}-${index}`,
+          onChange: onKeyChange.bind(null, index2),
+          "data-testid": `key-input-${itemsType}-${index2}`,
           placeholder: "Key"
         },
-        `${key}-${value}-${index}`
+        `${key}-${value}-${index2}`
       ),
       /* @__PURE__ */ jsx(
         "input",
         {
           type: areValuesSecret ? visible[key] ? "text" : "password" : "text",
           defaultValue: String(value),
-          onChange: onValueChange.bind(null, index),
-          "data-testid": `value-input-${itemsType}-${index}`,
-          id: `dict-value-input-${itemsType}-${index}`,
+          onChange: onValueChange.bind(null, index2),
+          "data-testid": `value-input-${itemsType}-${index2}`,
+          id: `dict-value-input-${itemsType}-${index2}`,
           placeholder: "Value"
         },
-        `${value}-${index}-${key}`
+        `${value}-${index2}-${key}`
       ),
       areValuesSecret && /* @__PURE__ */ jsx(
         "button",
@@ -8048,8 +10995,8 @@ const Dict = (props) => {
           className: "toggle-visibility-btn",
           onClick: onVisibilityChange.bind(null, key),
           title: "Toggle visibility",
-          id: `visibility-${itemsType}-${index}`,
-          "data-testid": `visibility-${itemsType}-${index}`,
+          id: `visibility-${itemsType}-${index2}`,
+          "data-testid": `visibility-${itemsType}-${index2}`,
           children: visible[key] ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
         }
       ),
@@ -8060,18 +11007,18 @@ const Dict = (props) => {
           onClick: onDeleteEntry.bind(null, key),
           title: "Delete",
           className: "trash-button",
-          id: `delete-dict-item-${itemsType}-${index}`,
-          "data-testid": `delete-dict-item-${itemsType}-${index}`,
+          id: `delete-dict-item-${itemsType}-${index2}`,
+          "data-testid": `delete-dict-item-${itemsType}-${index2}`,
           children: /* @__PURE__ */ jsx(FaTrash, {})
         }
       ),
-      isDirty(index) && /* @__PURE__ */ jsx(
+      isDirty(index2) && /* @__PURE__ */ jsx(
         "button",
         {
           onClick: onSaveEntry,
           title: "Save",
-          id: `save-dict-item-${itemsType}-${index}`,
-          "data-testid": `save-dict-item-${itemsType}-${index}`,
+          id: `save-dict-item-${itemsType}-${index2}`,
+          "data-testid": `save-dict-item-${itemsType}-${index2}`,
           type: "button",
           className: "save-button",
           children: /* @__PURE__ */ jsx(FaSave, {})
@@ -8848,11 +11795,11 @@ const useHandoffNames = (agents, allEdges, nestedChats) => {
     [agents]
   );
   const getNestedChatDisplayName = useCallback(
-    (index = 0) => {
-      if (nestedChats.length === 0 || index >= nestedChats.length || nestedChats[index]?.messages.length === 0) {
+    (index2 = 0) => {
+      if (nestedChats.length === 0 || index2 >= nestedChats.length || nestedChats[index2]?.messages.length === 0) {
         return "Nested Chat";
       }
-      const nestedChat = nestedChats[index];
+      const nestedChat = nestedChats[index2];
       const targets = nestedChat?.messages.map((msg) => {
         const edge = allEdges.find((e) => e.id === msg.id);
         return edge ? getAgentName2(edge.target) : "";
@@ -8906,7 +11853,7 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
     const processedEdges = /* @__PURE__ */ new Set();
     const nestedChatId = "nested-chat";
     const hasNestedChat = nestedChats.length > 0 && nestedChats.some((chat) => chat.messages.length > 0);
-    data.handoffs.forEach((id2, index) => {
+    data.handoffs.forEach((id2, index2) => {
       if (id2 === nestedChatId) {
         if (hasNestedChat) {
           const newTarget = {
@@ -8917,7 +11864,7 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
             id: nestedChatId,
             ...newTarget,
             value: [getTransitionTargetName(newTarget)],
-            order: index
+            order: index2
           });
         }
       } else {
@@ -8932,7 +11879,7 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
             id: edge.id,
             ...newTarget,
             value: [getTransitionTargetName(newTarget)],
-            order: index
+            order: index2
           });
         }
       }
@@ -8966,14 +11913,14 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
     return orderedTargets.sort((a, b) => a.order - b.order);
   }, [data.handoffs, groupEdges, nestedChats, getTransitionTargetName]);
   const onMoveTransitionTargetUp = useCallback(
-    (index) => {
-      if (index <= 0 || !orderedTransitionTargets[index - 1] || !orderedTransitionTargets[index]) {
+    (index2) => {
+      if (index2 <= 0 || !orderedTransitionTargets[index2 - 1] || !orderedTransitionTargets[index2]) {
         return;
       }
       const newOrderedTargets = [...orderedTransitionTargets];
-      [newOrderedTargets[index], newOrderedTargets[index - 1]] = [
-        newOrderedTargets[index - 1],
-        newOrderedTargets[index]
+      [newOrderedTargets[index2], newOrderedTargets[index2 - 1]] = [
+        newOrderedTargets[index2 - 1],
+        newOrderedTargets[index2]
       ];
       const newHandoffs = newOrderedTargets.map((target) => target.id);
       onDataChange({ handoffs: newHandoffs });
@@ -8981,14 +11928,14 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
     [orderedTransitionTargets, onDataChange]
   );
   const onMoveTransitionTargetDown = useCallback(
-    (index) => {
-      if (index >= orderedTransitionTargets.length - 1) {
+    (index2) => {
+      if (index2 >= orderedTransitionTargets.length - 1) {
         return;
       }
       const newOrderedTargets = [...orderedTransitionTargets];
-      [newOrderedTargets[index], newOrderedTargets[index + 1]] = [
-        newOrderedTargets[index + 1],
-        newOrderedTargets[index]
+      [newOrderedTargets[index2], newOrderedTargets[index2 + 1]] = [
+        newOrderedTargets[index2 + 1],
+        newOrderedTargets[index2]
       ];
       const newHandoffs = newOrderedTargets.map((target) => target.id);
       onDataChange({ handoffs: newHandoffs });
@@ -9022,33 +11969,33 @@ const Handoffs = memo((props) => {
           /* @__PURE__ */ jsx("em", { children: /* @__PURE__ */ jsx("b", { children: "default" }) }),
           "), you can use the up and down arrows to reorder handoffs. The ordering will then determine the sequence in which handoffs are processed."
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: orderedTransitionTargets.map((item, index) => /* @__PURE__ */ jsxs(
+        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: orderedTransitionTargets.map((item, index2) => /* @__PURE__ */ jsxs(
           "div",
           {
             className: "ordered-item",
-            "data-testid": `handoff-item-${index}`,
+            "data-testid": `handoff-item-${index2}`,
             children: [
               /* @__PURE__ */ jsxs("div", { className: "reorder-buttons", children: [
-                index > 0 && /* @__PURE__ */ jsx(
+                index2 > 0 && /* @__PURE__ */ jsx(
                   "button",
                   {
                     type: "button",
                     title: "Move up",
                     className: "reorder-btn up-btn",
-                    "data-testid": `move-handoff-up-button-${index}`,
-                    onClick: () => onMoveTransitionTargetUp(index),
+                    "data-testid": `move-handoff-up-button-${index2}`,
+                    onClick: () => onMoveTransitionTargetUp(index2),
                     "aria-label": "Move up",
                     children: "↑"
                   }
                 ),
-                index < orderedTransitionTargets.length - 1 && /* @__PURE__ */ jsx(
+                index2 < orderedTransitionTargets.length - 1 && /* @__PURE__ */ jsx(
                   "button",
                   {
                     type: "button",
                     title: "Move down",
                     className: "reorder-btn down-btn",
-                    "data-testid": `move-handoff-down-button-${index}`,
-                    onClick: () => onMoveTransitionTargetDown(index),
+                    "data-testid": `move-handoff-down-button-${index2}`,
+                    onClick: () => onMoveTransitionTargetDown(index2),
                     "aria-label": "Move down",
                     children: "↓"
                   }
@@ -9056,7 +12003,7 @@ const Handoffs = memo((props) => {
               ] }),
               " ",
               /* @__PURE__ */ jsxs("div", { className: "ordered-item-content", children: [
-                /* @__PURE__ */ jsx("div", { className: "order-badge", children: index + 1 }),
+                /* @__PURE__ */ jsx("div", { className: "order-badge", children: index2 + 1 }),
                 /* @__PURE__ */ jsx("div", { className: "handoff-type", children: item.targetType === "AgentTarget" ? "Agent Connection" : item.targetType === "NestedChatTarget" ? "Nested Chat" : item.targetType }),
                 /* @__PURE__ */ jsxs("div", { className: "handoff-target", children: [
                   /* @__PURE__ */ jsx("span", { className: "target-label", children: "Target:" }),
@@ -9066,7 +12013,7 @@ const Handoffs = memo((props) => {
               ] })
             ]
           },
-          `handoff-${index}`
+          `handoff-${index2}`
         )) })
       ] }),
       data.afterWork && /* @__PURE__ */ jsxs("div", { className: "handoffs-section", children: [
@@ -9403,7 +12350,7 @@ const useModal = (props) => {
     y: "20px"
   });
   const [dragging, setDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [offset2, setOffset] = useState({ x: 0, y: 0 });
   const [preMinimizeHeight, setPreMinimizeHeight] = useState("");
   const [preMinimizePosition, setPreMinimizePosition] = useState(null);
   const cannotClose = preventCloseIfUnsavedChanges && hasUnsavedChanges;
@@ -9538,8 +12485,8 @@ const useModal = (props) => {
       if (!dragging || !modalRef.current) {
         return;
       }
-      const newX = e.clientX - offset.x;
-      const newY = e.clientY - offset.y;
+      const newX = e.clientX - offset2.x;
+      const newY = e.clientY - offset2.y;
       const modalRect = modalRef.current.getBoundingClientRect();
       const maxX = window.innerWidth - modalRect.width;
       const maxY = window.innerHeight - modalRect.height;
@@ -9548,7 +12495,7 @@ const useModal = (props) => {
         y: `${Math.max(0, Math.min(newY, maxY))}px`
       });
     },
-    [dragging, offset, modalRef]
+    [dragging, offset2, modalRef]
   );
   const handleMouseUp = useCallback(() => {
     setDragging(false);
@@ -9815,8 +12762,8 @@ const Modal = forwardRef((props, ref) => {
   return createPortal(modalContent, portalContainer);
 });
 Modal.displayName = "Modal";
-function clamp(value, [min, max]) {
-  return Math.min(max, Math.max(min, value));
+function clamp(value, [min2, max2]) {
+  return Math.min(max2, Math.max(min2, value));
 }
 var DirectionContext = React.createContext(void 0);
 function useDirection(localDir) {
@@ -9824,10 +12771,10 @@ function useDirection(localDir) {
   return localDir || globalDir || "ltr";
 }
 function createCollection(name) {
-  const PROVIDER_NAME = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME);
+  const PROVIDER_NAME2 = name + "CollectionProvider";
+  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME2);
   const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
-    PROVIDER_NAME,
+    PROVIDER_NAME2,
     { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
   );
   const CollectionProvider = (props) => {
@@ -9836,7 +12783,7 @@ function createCollection(name) {
     const itemMap = React__default.useRef(/* @__PURE__ */ new Map()).current;
     return /* @__PURE__ */ jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
   };
-  CollectionProvider.displayName = PROVIDER_NAME;
+  CollectionProvider.displayName = PROVIDER_NAME2;
   const COLLECTION_SLOT_NAME = name + "CollectionSlot";
   const CollectionSlotImpl = /* @__PURE__ */ createSlot(COLLECTION_SLOT_NAME);
   const CollectionSlot = React__default.forwardRef(
@@ -9903,13 +12850,13 @@ var Slider = React.forwardRef(
   (props, forwardedRef) => {
     const {
       name,
-      min = 0,
-      max = 100,
+      min: min2 = 0,
+      max: max2 = 100,
       step = 1,
       orientation = "horizontal",
       disabled = false,
       minStepsBetweenThumbs = 0,
-      defaultValue = [min],
+      defaultValue = [min2],
       value,
       onValueChange = () => {
       },
@@ -9948,8 +12895,8 @@ var Slider = React.forwardRef(
     }
     function updateValues(value2, atIndex, { commit } = { commit: false }) {
       const decimalCount = getDecimalCount(step);
-      const snapToStep = roundValue(Math.round((value2 - min) / step) * step + min, decimalCount);
-      const nextValue = clamp(snapToStep, [min, max]);
+      const snapToStep = roundValue(Math.round((value2 - min2) / step) * step + min2, decimalCount);
+      const nextValue = clamp(snapToStep, [min2, max2]);
       setValues((prevValues = []) => {
         const nextValues = getNextSortedValues(prevValues, nextValue, atIndex);
         if (hasMinStepsBetweenValues(nextValues, minStepsBetweenThumbs * step)) {
@@ -9968,8 +12915,8 @@ var Slider = React.forwardRef(
         scope: props.__scopeSlider,
         name,
         disabled,
-        min,
-        max,
+        min: min2,
+        max: max2,
         valueIndexToChangeRef,
         thumbs: thumbRefs.current,
         values,
@@ -9985,14 +12932,14 @@ var Slider = React.forwardRef(
             onPointerDown: composeEventHandlers(sliderProps.onPointerDown, () => {
               if (!disabled) valuesBeforeSlideStartRef.current = values;
             }),
-            min,
-            max,
+            min: min2,
+            max: max2,
             inverted,
             onSlideStart: disabled ? void 0 : handleSlideStart,
             onSlideMove: disabled ? void 0 : handleSlideMove,
             onSlideEnd: disabled ? void 0 : handleSlideEnd,
-            onHomeKeyDown: () => !disabled && updateValues(min, 0, { commit: true }),
-            onEndKeyDown: () => !disabled && updateValues(max, values.length - 1, { commit: true }),
+            onHomeKeyDown: () => !disabled && updateValues(min2, 0, { commit: true }),
+            onEndKeyDown: () => !disabled && updateValues(max2, values.length - 1, { commit: true }),
             onStepKeyDown: ({ event, direction: stepDirection }) => {
               if (!disabled) {
                 const isPageKey = PAGE_KEYS.includes(event.key);
@@ -10020,8 +12967,8 @@ var [SliderOrientationProvider, useSliderOrientationContext] = createSliderConte
 var SliderHorizontal = React.forwardRef(
   (props, forwardedRef) => {
     const {
-      min,
-      max,
+      min: min2,
+      max: max2,
       dir,
       inverted,
       onSlideStart,
@@ -10039,7 +12986,7 @@ var SliderHorizontal = React.forwardRef(
     function getValueFromPointer(pointerPosition) {
       const rect = rectRef.current || slider.getBoundingClientRect();
       const input = [0, rect.width];
-      const output = isSlidingFromLeft ? [min, max] : [max, min];
+      const output = isSlidingFromLeft ? [min2, max2] : [max2, min2];
       const value = linearScale(input, output);
       rectRef.current = rect;
       return value(pointerPosition - rect.left);
@@ -10089,8 +13036,8 @@ var SliderHorizontal = React.forwardRef(
 var SliderVertical = React.forwardRef(
   (props, forwardedRef) => {
     const {
-      min,
-      max,
+      min: min2,
+      max: max2,
       inverted,
       onSlideStart,
       onSlideMove,
@@ -10105,7 +13052,7 @@ var SliderVertical = React.forwardRef(
     function getValueFromPointer(pointerPosition) {
       const rect = rectRef.current || sliderRef.current.getBoundingClientRect();
       const input = [0, rect.height];
-      const output = isSlidingFromBottom ? [max, min] : [min, max];
+      const output = isSlidingFromBottom ? [max2, min2] : [min2, max2];
       const value = linearScale(input, output);
       rectRef.current = rect;
       return value(pointerPosition - rect.top);
@@ -10260,26 +13207,26 @@ var SliderThumb = React.forwardRef(
     const getItems = useCollection(props.__scopeSlider);
     const [thumb, setThumb] = React.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, (node) => setThumb(node));
-    const index = React.useMemo(
+    const index2 = React.useMemo(
       () => thumb ? getItems().findIndex((item) => item.ref.current === thumb) : -1,
       [getItems, thumb]
     );
-    return /* @__PURE__ */ jsx(SliderThumbImpl, { ...props, ref: composedRefs, index });
+    return /* @__PURE__ */ jsx(SliderThumbImpl, { ...props, ref: composedRefs, index: index2 });
   }
 );
 var SliderThumbImpl = React.forwardRef(
   (props, forwardedRef) => {
-    const { __scopeSlider, index, name, ...thumbProps } = props;
+    const { __scopeSlider, index: index2, name, ...thumbProps } = props;
     const context = useSliderContext(THUMB_NAME, __scopeSlider);
     const orientation = useSliderOrientationContext(THUMB_NAME, __scopeSlider);
     const [thumb, setThumb] = React.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, (node) => setThumb(node));
     const isFormControl = thumb ? context.form || !!thumb.closest("form") : true;
-    const size = useSize(thumb);
-    const value = context.values[index];
+    const size2 = useSize(thumb);
+    const value = context.values[index2];
     const percent = value === void 0 ? 0 : convertValueToPercentage(value, context.min, context.max);
-    const label = getLabel(index, context.values.length);
-    const orientationSize = size?.[orientation.size];
+    const label = getLabel(index2, context.values.length);
+    const orientationSize = size2?.[orientation.size];
     const thumbInBoundsOffset = orientationSize ? getThumbInBoundsOffset(orientationSize, percent, orientation.direction) : 0;
     React.useEffect(() => {
       if (thumb) {
@@ -10314,7 +13261,7 @@ var SliderThumbImpl = React.forwardRef(
               ref: composedRefs,
               style: value === void 0 ? { display: "none" } : props.style,
               onFocus: composeEventHandlers(props.onFocus, () => {
-                context.valueIndexToChangeRef.current = index;
+                context.valueIndexToChangeRef.current = index2;
               })
             }
           ) }),
@@ -10325,7 +13272,7 @@ var SliderThumbImpl = React.forwardRef(
               form: context.form,
               value
             },
-            index
+            index2
           )
         ]
       }
@@ -10368,17 +13315,17 @@ function getNextSortedValues(prevValues = [], nextValue, atIndex) {
   nextValues[atIndex] = nextValue;
   return nextValues.sort((a, b) => a - b);
 }
-function convertValueToPercentage(value, min, max) {
-  const maxSteps = max - min;
+function convertValueToPercentage(value, min2, max2) {
+  const maxSteps = max2 - min2;
   const percentPerStep = 100 / maxSteps;
-  const percentage = percentPerStep * (value - min);
+  const percentage = percentPerStep * (value - min2);
   return clamp(percentage, [0, 100]);
 }
-function getLabel(index, totalValues) {
+function getLabel(index2, totalValues) {
   if (totalValues > 2) {
-    return `Value ${index + 1} of ${totalValues}`;
+    return `Value ${index2 + 1} of ${totalValues}`;
   } else if (totalValues === 2) {
-    return ["Minimum", "Maximum"][index];
+    return ["Minimum", "Maximum"][index2];
   } else {
     return void 0;
   }
@@ -10392,11 +13339,11 @@ function getClosestValueIndex(values, nextValue) {
 function getThumbInBoundsOffset(width, left, direction) {
   const halfWidth = width / 2;
   const halfPercent = 50;
-  const offset = linearScale([0, halfPercent], [0, halfWidth]);
-  return (halfWidth - offset(left) * direction) * direction;
+  const offset2 = linearScale([0, halfPercent], [0, halfWidth]);
+  return (halfWidth - offset2(left) * direction) * direction;
 }
 function getStepsBetweenValues(values) {
-  return values.slice(0, -1).map((value, index) => values[index + 1] - value);
+  return values.slice(0, -1).map((value, index2) => values[index2 + 1] - value);
 }
 function hasMinStepsBetweenValues(values, minStepsBetweenValues) {
   if (minStepsBetweenValues > 0) {
@@ -10436,16 +13383,16 @@ const NumberInput = memo((props) => {
     setNullOnUpper = false,
     setNullOnLower = false,
     labelInfo = null,
-    min = 0,
-    max = 100,
+    min: min2 = 0,
+    max: max2 = 100,
     step = 1,
     forceInt = false,
     disabled = false,
     dataTestId
   } = props;
   const onNullValue = useMemo(
-    () => onNull ?? setNullOnLower ? min : setNullOnUpper ? max : min,
-    [onNull, setNullOnLower, setNullOnUpper, min, max]
+    () => onNull ?? setNullOnLower ? min2 : setNullOnUpper ? max2 : min2,
+    [onNull, setNullOnLower, setNullOnUpper, min2, max2]
   );
   const currentValue = useMemo(() => value !== null ? value : onNullValue, [value, onNullValue]);
   const handleSliderChange = useCallback(
@@ -10454,15 +13401,15 @@ const NumberInput = memo((props) => {
       if (typeof newValue !== "number") {
         return;
       }
-      if (newValue === max && setNullOnUpper) {
+      if (newValue === max2 && setNullOnUpper) {
         onChange(null);
-      } else if (newValue === min && setNullOnLower) {
+      } else if (newValue === min2 && setNullOnLower) {
         onChange(null);
       } else {
         onChange(forceInt ? Math.round(newValue) : newValue);
       }
     },
-    [onChange, max, min, setNullOnUpper, setNullOnLower, forceInt]
+    [onChange, max2, min2, setNullOnUpper, setNullOnLower, forceInt]
   );
   const handleInputChange = useCallback(
     (e) => {
@@ -10477,12 +13424,12 @@ const NumberInput = memo((props) => {
     [forceInt, handleSliderChange]
   );
   const getLabelValue = useCallback(() => {
-    if ((value === max || value === null) && (setNullOnUpper || onUpperLabel !== null)) {
-      return onUpperLabel ?? "No limit";
-    } else if ((value === min || value === null) && (setNullOnLower || onLowerLabel !== null)) {
-      return onLowerLabel ?? "Not set";
+    if ((value === max2 || value === null) && (setNullOnUpper || onUpperLabel !== null)) {
+      return /* @__PURE__ */ jsx("span", { className: "margin-left-5", children: onUpperLabel ?? "No limit" });
+    } else if ((value === min2 || value === null) && (setNullOnLower || onLowerLabel !== null)) {
+      return /* @__PURE__ */ jsx("span", { className: "margin-left-5", children: onLowerLabel ?? "Not set" });
     } else {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsx("span", { className: "margin-left-5 margin-bottom-5", children: /* @__PURE__ */ jsx(
         "input",
         {
           id: `id-for-${name}`,
@@ -10490,20 +13437,20 @@ const NumberInput = memo((props) => {
           placeholder: `${currentValue}`,
           inputMode: "decimal",
           type: "number",
-          min,
-          max,
+          min: min2,
+          max: max2,
           step,
           value: currentValue,
           onChange: handleInputChange,
           "data-testid": dataTestId
         }
-      );
+      ) });
     }
   }, [
     name,
     value,
-    min,
-    max,
+    min2,
+    max2,
     currentValue,
     step,
     onUpperLabel,
@@ -10514,25 +13461,13 @@ const NumberInput = memo((props) => {
     dataTestId
   ]);
   const renderLabel = useMemo(() => {
-    const labelValue = getLabelValue();
     if (labelInfo) {
-      return /* @__PURE__ */ jsx("div", { className: "number-input-info-label-wrapper", children: /* @__PURE__ */ jsx(
-        InfoLabel,
-        {
-          label: /* @__PURE__ */ jsxs("div", { className: "number-input-info-label-inner", children: [
-            label,
-            "  ",
-            labelValue
-          ] }),
-          info: labelInfo,
-          htmlFor: `id-for-${name}`
-        }
-      ) });
+      return /* @__PURE__ */ jsx("div", { className: "number-input-info-label-wrapper", children: /* @__PURE__ */ jsx(InfoLabel, { htmlFor: `id-for-${name}`, label, info: labelInfo, children: getLabelValue() }) });
     }
     return /* @__PURE__ */ jsx("div", { className: "number-input-label-wrapper", children: /* @__PURE__ */ jsxs("label", { htmlFor: `id-for-${name}`, children: [
       label,
       " ",
-      labelValue
+      getLabelValue()
     ] }) });
   }, [name, label, getLabelValue, labelInfo]);
   return /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -10542,9 +13477,9 @@ const NumberInput = memo((props) => {
       {
         className: "slider-root",
         value: [currentValue],
-        max,
+        max: max2,
         step,
-        min,
+        min: min2,
         onValueChange: handleSliderChange,
         disabled,
         children: [
@@ -10581,9 +13516,9 @@ const useStringList = (props) => {
       if (!onItemChange) {
         return;
       }
-      const index = parseInt(event.currentTarget.getAttribute("data-index") || "0");
+      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
       const newValue = event.target.value;
-      const originalValue = items[index];
+      const originalValue = items[index2];
       if (originalValue !== void 0 && originalValue !== null) {
         onItemChange(originalValue, newValue);
       }
@@ -10619,7 +13554,7 @@ const StringList = memo((props) => {
     [viewLabel]
   );
   const renderItems = useMemo(
-    () => items.map((item, index) => {
+    () => items.map((item, index2) => {
       return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
         /* @__PURE__ */ jsx(
           "input",
@@ -10627,10 +13562,10 @@ const StringList = memo((props) => {
             placeholder,
             type: "text",
             value: item,
-            "data-index": index,
-            id: `list-entry-item-${itemsType}-${index}`,
+            "data-index": index2,
+            id: `list-entry-item-${itemsType}-${index2}`,
             onChange: onEntryChange,
-            "data-testid": `list-entry-item-${itemsType}-${index}`
+            "data-testid": `list-entry-item-${itemsType}-${index2}`
           }
         ),
         /* @__PURE__ */ jsx(
@@ -10641,13 +13576,13 @@ const StringList = memo((props) => {
             value: item,
             title: "Delete",
             className: "trash-button",
-            id: `delete-list-entry-${itemsType}-${index}`,
+            id: `delete-list-entry-${itemsType}-${index2}`,
             "aria-label": `Delete item: ${item}`,
-            "data-testid": `delete-list-entry-${itemsType}-${index}`,
+            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
             children: /* @__PURE__ */ jsx(FaTrash, {})
           }
         )
-      ] }, `${itemsType}-${index}`);
+      ] }, `${itemsType}-${index2}`);
     }),
     [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
   );
@@ -10708,9 +13643,9 @@ const TabItems = memo((props) => {
     setActiveTab(activeTabIndex);
   }, [activeTabIndex]);
   const handleTabClick = useCallback(
-    (index) => {
-      setActiveTab(index);
-      onTabChange?.(index);
+    (index2) => {
+      setActiveTab(index2);
+      onTabChange?.(index2);
     },
     [onTabChange]
   );
@@ -10721,8 +13656,8 @@ const TabItems = memo((props) => {
     [children]
   );
   const tabButtons = useMemo(
-    () => tabs.map((tab, index) => {
-      const isActive = activeTab === index;
+    () => tabs.map((tab, index2) => {
+      const isActive = activeTab === index2;
       const className = isActive ? "tab-btn--active" : "";
       const tabId = tab.props.id;
       return /* @__PURE__ */ jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx(
@@ -10732,12 +13667,12 @@ const TabItems = memo((props) => {
           "data-testid": `tab-id-${tabId}`,
           id: `tab-id-${tabId}`,
           "aria-controls": `panel-${tabId}`,
-          onClick: () => handleTabClick(index),
+          onClick: () => handleTabClick(index2),
           className: `tab-btn ${className}`,
           tabIndex: isActive ? 0 : -1,
           children: tab.props.label
         }
-      ) }, `tab-li-${tabId}-${index}`);
+      ) }, `tab-li-${tabId}-${index2}`);
     }),
     [tabs, activeTab, handleTabClick]
   );
@@ -10856,10 +13791,10 @@ function IconBase(props) {
   var elem = (conf) => {
     var {
       attr,
-      size,
+      size: size2,
       title
     } = props, svgProps = _objectWithoutProperties(props, _excluded);
-    var computedSize = size || conf.size || "1em";
+    var computedSize = size2 || conf.size || "1em";
     var className;
     if (conf.className) className = conf.className;
     if (props.className) className = (className ? className + " " : "") + props.className;
@@ -11565,8 +14500,8 @@ const Wizard = memo((props) => {
     }
   }, [currentStep, steps.length, onForward]);
   const renderedSteps = useMemo(
-    () => steps.map((step, index) => {
-      const isActive = currentStep === index;
+    () => steps.map((step, index2) => {
+      const isActive = currentStep === index2;
       const className = isActive ? "wizard-step--active" : "";
       return /* @__PURE__ */ jsx(
         "div",
@@ -11578,7 +14513,7 @@ const Wizard = memo((props) => {
           "aria-controls": `wizard-step-${step.props.id}`,
           children: step
         },
-        `wizard-step-${index}`
+        `wizard-step-${index2}`
       );
     }),
     [steps, currentStep]
@@ -11764,10 +14699,10 @@ const getNewChatsOfType = (allEdges, type) => {
     }
     edgesOfTypeBySource[edge.source]?.push(edge);
   });
-  return edgesOfType.map((edge, index) => {
+  return edgesOfType.map((edge, index2) => {
     return {
       ...edge,
-      data: { ...edge.data, position: index + 1 }
+      data: { ...edge.data, position: index2 + 1 }
     };
   });
 };
@@ -12464,10 +15399,10 @@ class WaldiezEdgeStore {
     const newEdges = this.get().edges.filter((edge) => edge.id !== id);
     this.set({
       nodes,
-      edges: newEdges.map((edge, index) => {
+      edges: newEdges.map((edge, index2) => {
         return {
           ...edge,
-          data: { ...edge.data, position: index + 1 }
+          data: { ...edge.data, position: index2 + 1 }
         };
       }),
       updatedAt: (/* @__PURE__ */ new Date()).toISOString()
@@ -14089,8 +17024,8 @@ const useKeys = (flowId, onSave) => {
       return;
     }
     const target = event.target;
-    const isNode = target instanceof Element && target.classList.contains("react-flow__node");
-    if (isNode) {
+    const isNode2 = target instanceof Element && target.classList.contains("react-flow__node");
+    if (isNode2) {
       deleteNode(target);
     } else {
       const isEdge = target instanceof Element && (target.classList.contains("react-flow__edge") || target.classList.contains("edge-data-view"));
@@ -16277,26 +19212,26 @@ const getGroupChatType = (sourceAgent, targetAgent) => {
   }
   return "nested";
 };
-const getGroupChatIcon = (groupChatType, size) => {
+const getGroupChatIcon = (groupChatType, size2) => {
   switch (groupChatType) {
     case "handoff":
-      return /* @__PURE__ */ jsx(GiShakingHands, { size });
+      return /* @__PURE__ */ jsx(GiShakingHands, { size: size2 });
     case "nested":
-      return /* @__PURE__ */ jsx(GiNestEggs, { size });
+      return /* @__PURE__ */ jsx(GiNestEggs, { size: size2 });
     default:
-      return /* @__PURE__ */ jsx(MdMessage, { size });
+      return /* @__PURE__ */ jsx(MdMessage, { size: size2 });
   }
 };
 const getEdgeIcon = (type, groupChatType, edgeColor) => {
-  const size = 18;
+  const size2 = 18;
   if (type === "group") {
-    return getGroupChatIcon(groupChatType, size);
+    return getGroupChatIcon(groupChatType, size2);
   }
   switch (type) {
     case "chat":
-      return /* @__PURE__ */ jsx(MdMessage, { color: edgeColor, size });
+      return /* @__PURE__ */ jsx(MdMessage, { color: edgeColor, size: size2 });
     case "nested":
-      return /* @__PURE__ */ jsx(GiNestEggs, { color: edgeColor, size });
+      return /* @__PURE__ */ jsx(GiNestEggs, { color: edgeColor, size: size2 });
     default:
       return null;
   }
@@ -17675,13 +20610,13 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
   shared: void 0,
   custom: void 0
 };
-const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
-  const defaultIcon = /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size, style: { width: size, height: size } });
+const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
+  const defaultIcon = /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   if (toolType === "custom") {
     return defaultIcon;
   }
   if (toolType === "shared") {
-    return /* @__PURE__ */ jsx(FaRegFileCode, { "aria-hidden": "true", size, style: { width: size, height: size } });
+    return /* @__PURE__ */ jsx(FaRegFileCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   }
   switch (toolLabel) {
     case "wikipedia_search":
@@ -17690,7 +20625,7 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.wikipedia_search,
           alt: "Wikipedia Search Icon",
-          style: { width: size, height: size }
+          style: { width: size2, height: size2 }
         }
       );
     case "youtube_search":
@@ -17699,7 +20634,7 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.youtube_search,
           alt: "YouTube Search Icon",
-          style: { width: size, height: size }
+          style: { width: size2, height: size2 }
         }
       );
     case "google_search":
@@ -17708,7 +20643,7 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.google_search,
           alt: "Google Search Icon",
-          style: { width: size, height: size }
+          style: { width: size2, height: size2 }
         }
       );
     case "tavily_search":
@@ -17717,7 +20652,7 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.tavily_search,
           alt: "Tavily Search Icon",
-          style: { width: size, height: size }
+          style: { width: size2, height: size2 }
         }
       );
     case "duckduckgo_search":
@@ -17726,7 +20661,7 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.duckduckgo_search,
           alt: "DuckDuckGo Search Icon",
-          style: { width: size, height: size }
+          style: { width: size2, height: size2 }
         }
       );
     case "perplexity_search":
@@ -17735,7 +20670,7 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.perplexity_search,
           alt: "Perplexity Search Icon",
-          style: { width: size, height: size },
+          style: { width: size2, height: size2 },
           className: "perplexity-icon"
         }
       );
@@ -17745,11 +20680,11 @@ const getToolIcon = (toolLabel, toolType, size = ICON_SIZE) => {
         {
           src: TOOL_ICONS.searxng_search,
           alt: "SearxNG Search Icon",
-          style: { width: size, height: size }
+          style: { width: size2, height: size2 }
         }
       );
     default:
-      return /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size, style: { width: size, height: size } });
+      return /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   }
 };
 const TOOL_TYPE_OPTIONS = [
@@ -17943,13 +20878,13 @@ const useAgentContentView = (id, data) => {
     return /* @__PURE__ */ jsxs("div", { ref: contentRef, className: "agent-content", children: [
       /* @__PURE__ */ jsx("div", { className: "agent-label", "data-testid": `agent-${id}-label`, children: data.label }),
       showModels && /* @__PURE__ */ jsxs("div", { className: "agent-models-preview", children: [
-        agentModelNames.slice(0, modelsToShow).map((name, index) => /* @__PURE__ */ jsxs("div", { className: "agent-model-preview", "data-testid": "agent-model-preview", children: [
-          /* @__PURE__ */ jsx("div", { className: `agent-model-img ${agentWaldiezModelAPITypes[index]}`, children: /* @__PURE__ */ jsx("img", { src: agentModelLogos[index], title: name, alt: name }) }),
+        agentModelNames.slice(0, modelsToShow).map((name, index2) => /* @__PURE__ */ jsxs("div", { className: "agent-model-preview", "data-testid": "agent-model-preview", children: [
+          /* @__PURE__ */ jsx("div", { className: `agent-model-img ${agentWaldiezModelAPITypes[index2]}`, children: /* @__PURE__ */ jsx("img", { src: agentModelLogos[index2], title: name, alt: name }) }),
           /* @__PURE__ */ jsx(
             "div",
             {
               className: "font-small agent-model-name",
-              "data-testid": `agent-${id}-linked-model-${index}`,
+              "data-testid": `agent-${id}-linked-model-${index2}`,
               children: name
             }
           )
@@ -17965,7 +20900,7 @@ const useAgentContentView = (id, data) => {
       ] }),
       !hasModels && data.agentType !== "user_proxy" && /* @__PURE__ */ jsx("div", { className: "agent-models-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-model-name", children: "No models" }) }),
       showTools && /* @__PURE__ */ jsxs("div", { className: "agent-tools-preview", children: [
-        data.tools.slice(0, toolsToShow).map((linkedTool, index) => {
+        data.tools.slice(0, toolsToShow).map((linkedTool, index2) => {
           const tool = tools.find((tool2) => tool2.id === linkedTool.id);
           if (!tool) {
             return null;
@@ -17981,7 +20916,7 @@ const useAgentContentView = (id, data) => {
                   "div",
                   {
                     className: "font-small agent-tool-name",
-                    "data-testid": `agent-${id}-linked-tool-${index}`,
+                    "data-testid": `agent-${id}-linked-tool-${index2}`,
                     children: tool.data.label
                   }
                 )
@@ -18317,12 +21252,12 @@ const useWaldiezNodeAgentModal = (id, isOpen, data, onClose) => {
           const docsPath = ragData.retrieveConfig.docsPath;
           const newDocsPath = [...docsPath];
           for (let i = 0; i < filesToUpload.length; i++) {
-            const index = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
-            if (index > -1) {
+            const index2 = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
+            if (index2 > -1) {
               if (typeof filePaths[i] === "string") {
-                newDocsPath[index] = filePaths[i];
+                newDocsPath[index2] = filePaths[i];
               } else {
-                newDocsPath.splice(index, 1);
+                newDocsPath.splice(index2, 1);
               }
             }
           }
@@ -18971,16 +21906,16 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
       ),
       data.speakers?.selectionMethod === "round_robin" && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
         /* @__PURE__ */ jsx("div", { className: "info", children: "The order in which the speakers will be selected in round robin mode. If not provided, the order will be automatically determined based on the agents in the group." }),
-        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index) => {
+        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index2) => {
           const isInitialAgent = data.initialAgentId === speaker;
-          const canMoveUp = index > 0 && !(data.initialAgentId && index === 1);
-          const canMoveDown = index < speakersOrder.length - 1 && !isInitialAgent;
+          const canMoveUp = index2 > 0 && !(data.initialAgentId && index2 === 1);
+          const canMoveDown = index2 < speakersOrder.length - 1 && !isInitialAgent;
           const hasButtons = canMoveUp || canMoveDown;
           return /* @__PURE__ */ jsxs(
             "div",
             {
               className: `ordered-item ${hasButtons ? "has-buttons" : "no-buttons"}`,
-              "data-testid": `group-speaker-${index}`,
+              "data-testid": `group-speaker-${index2}`,
               children: [
                 /* @__PURE__ */ jsxs("div", { className: "reorder-buttons", children: [
                   canMoveUp && /* @__PURE__ */ jsx(
@@ -19801,9 +22736,9 @@ const getPlatform = () => {
   }
 };
 const getHelpInstructions = () => {
-  const platform = getPlatform();
-  const isMac = platform.includes("mac");
-  const isWindows = platform.includes("win");
+  const platform2 = getPlatform();
+  const isMac = platform2.includes("mac");
+  const isWindows = platform2.includes("win");
   if (isMac) {
     return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
       /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Mac:" }),
@@ -20096,25 +23031,25 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     [agentConnections.targets.edges, agentConnections.targets.nodes]
   );
   const onMoveNestedChatMessageUp = useCallback(
-    (index) => {
+    (index2) => {
       const newNestedChats = [...nestedChats];
-      if (newNestedChats[0] && Array.isArray(newNestedChats[0].messages) && newNestedChats[0].messages[index] !== void 0 && newNestedChats[0].messages[index - 1] !== void 0) {
-        const temp = newNestedChats[0].messages[index];
-        newNestedChats[0].messages[index] = newNestedChats[0].messages[index - 1];
-        newNestedChats[0].messages[index - 1] = temp;
+      if (newNestedChats[0] && Array.isArray(newNestedChats[0].messages) && newNestedChats[0].messages[index2] !== void 0 && newNestedChats[0].messages[index2 - 1] !== void 0) {
+        const temp = newNestedChats[0].messages[index2];
+        newNestedChats[0].messages[index2] = newNestedChats[0].messages[index2 - 1];
+        newNestedChats[0].messages[index2 - 1] = temp;
         onDataChange({ nestedChats: newNestedChats });
       }
     },
     [nestedChats, onDataChange]
   );
   const onMoveNestedChatMessageDown = useCallback(
-    (index) => {
+    (index2) => {
       const newNestedChats = [...nestedChats];
       const messages = newNestedChats[0].messages;
-      if (messages[index + 1] !== void 0) {
-        const temp = messages[index];
-        messages[index] = messages[index + 1];
-        messages[index + 1] = temp;
+      if (messages[index2 + 1] !== void 0) {
+        const temp = messages[index2];
+        messages[index2] = messages[index2 + 1];
+        messages[index2 + 1] = temp;
         onDataChange({
           nestedChats: structuredClone(newNestedChats)
         });
@@ -20139,33 +23074,33 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     [nestedChats, onDataChange]
   );
   return /* @__PURE__ */ jsx("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index) => /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxs(
       "div",
       {
         className: "flex margin-bottom-10 queue-item",
-        "data-testid": `nested-chat-queue-item-${index}`,
+        "data-testid": `nested-chat-queue-item-${index2}`,
         children: [
           /* @__PURE__ */ jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
-            index > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsx(
+            index2 > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
                 title: "Move up",
                 className: "reorder-btn up-btn",
-                "data-testid": `move-nested-recipient-up-button-${index}`,
-                onClick: () => onMoveNestedChatMessageUp(index),
+                "data-testid": `move-nested-recipient-up-button-${index2}`,
+                onClick: () => onMoveNestedChatMessageUp(index2),
                 "aria-label": `Move ${getRecipientName(message.id)} up`,
                 children: "↑"
               }
             ),
-            index < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsx(
+            index2 < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsx(
               "button",
               {
                 title: "Move down",
                 type: "button",
                 className: "reorder-btn down-btn",
-                "data-testid": `move-nested-recipient-down-button-${index}`,
-                onClick: () => onMoveNestedChatMessageDown(index),
+                "data-testid": `move-nested-recipient-down-button-${index2}`,
+                onClick: () => onMoveNestedChatMessageDown(index2),
                 "aria-label": `Move ${getRecipientName(message.id)} down`,
                 children: "↓"
               }
@@ -20174,7 +23109,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
           /* @__PURE__ */ jsx("div", { className: "agent-nested-recipient-name", children: getRecipientName(message.id) })
         ]
       },
-      `agent-${id}-nestedChat-recipient-${index}`
+      `agent-${id}-nestedChat-recipient-${index2}`
     )) }) }),
     /* @__PURE__ */ jsx(TabItem, { label: "Condition", id: `wf-${flowId}-wa-${id}-nested-chat-condition`, children: /* @__PURE__ */ jsx(
       HandoffCondition,
@@ -20252,11 +23187,11 @@ const useWaldiezAgentNestedChats = (props) => {
     [allEdges]
   );
   const getMessageLabel = useCallback(
-    (index) => {
-      if (index < 0 || index >= chat.messages.length) {
+    (index2) => {
+      if (index2 < 0 || index2 >= chat.messages.length) {
         return "Invalid message";
       }
-      return getEdgeLabel(chat.messages[index].id);
+      return getEdgeLabel(chat.messages[index2].id);
     },
     [chat.messages, getEdgeLabel]
   );
@@ -20287,10 +23222,10 @@ const useWaldiezAgentNestedChats = (props) => {
     });
   }, [selectedRecipient, chat, onDataChange]);
   const onRemoveRecipient = useCallback(
-    (index) => {
+    (index2) => {
       const newChat = {
         ...chat,
-        messages: chat.messages.filter((_, i) => i !== index)
+        messages: chat.messages.filter((_, i) => i !== index2)
       };
       onDataChange({
         nestedChats: [newChat]
@@ -20299,14 +23234,14 @@ const useWaldiezAgentNestedChats = (props) => {
     [chat, onDataChange]
   );
   const onNestedChatRecipientMovedUp = useCallback(
-    (index) => {
-      if (index <= 0 || index >= chat.messages.length) {
+    (index2) => {
+      if (index2 <= 0 || index2 >= chat.messages.length) {
         return;
       }
       const recipients = [...chat.messages];
-      const temp = recipients[index];
-      recipients[index] = recipients[index - 1];
-      recipients[index - 1] = temp;
+      const temp = recipients[index2];
+      recipients[index2] = recipients[index2 - 1];
+      recipients[index2 - 1] = temp;
       const newChat = {
         ...chat,
         messages: recipients
@@ -20318,15 +23253,15 @@ const useWaldiezAgentNestedChats = (props) => {
     [chat, onDataChange]
   );
   const onNestedChatRecipientMovedDown = useCallback(
-    (index) => {
-      if (index < 0 || index >= chat.messages.length - 1) {
+    (index2) => {
+      if (index2 < 0 || index2 >= chat.messages.length - 1) {
         return;
       }
       const recipients = [...chat.messages];
-      if (recipients[index] !== void 0 && recipients[index + 1] !== void 0) {
-        const temp = recipients[index];
-        recipients[index] = recipients[index + 1];
-        recipients[index + 1] = temp;
+      if (recipients[index2] !== void 0 && recipients[index2 + 1] !== void 0) {
+        const temp = recipients[index2];
+        recipients[index2] = recipients[index2 + 1];
+        recipients[index2 + 1] = temp;
       }
       const newChat = {
         ...chat,
@@ -20468,11 +23403,11 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
         }
       ) })
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "nested-chats-registered-messages", children: hasNoMessages ? /* @__PURE__ */ jsx("div", { className: "nested-chat-registered-message", children: "No messages to include" }) : /* @__PURE__ */ jsx("div", { className: "flex-1 messages-list", children: chat.messages.map((target, index) => /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsx("div", { className: "nested-chats-registered-messages", children: hasNoMessages ? /* @__PURE__ */ jsx("div", { className: "nested-chat-registered-message", children: "No messages to include" }) : /* @__PURE__ */ jsx("div", { className: "flex-1 messages-list", children: chat.messages.map((target, index2) => /* @__PURE__ */ jsx(
       MessageListItem,
       {
         target,
-        index,
+        index: index2,
         messageCount: chat.messages.length,
         getMessageLabel,
         onMoveUp: onNestedChatRecipientMovedUp,
@@ -20480,14 +23415,14 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
         onRemove: onRemoveRecipient,
         id
       },
-      `${target.id}-${index}`
+      `${target.id}-${index2}`
     )) }) })
   ] });
 });
 const MessageListItem = memo(
   ({
     target,
-    index,
+    index: index2,
     messageCount,
     getMessageLabel,
     onMoveUp,
@@ -20495,16 +23430,16 @@ const MessageListItem = memo(
     onRemove,
     id
   }) => {
-    const canMoveUp = messageCount > 1 && index !== 0;
-    const canMoveDown = messageCount > 1 && index !== messageCount - 1;
+    const canMoveUp = messageCount > 1 && index2 !== 0;
+    const canMoveDown = messageCount > 1 && index2 !== messageCount - 1;
     return /* @__PURE__ */ jsxs(
       "div",
       {
         className: "nested-chat-registered-message",
-        "data-testid": `nested-chat-message-${id}-${index}`,
+        "data-testid": `nested-chat-message-${id}-${index2}`,
         children: [
           /* @__PURE__ */ jsxs("span", { className: "message-label", children: [
-            getMessageLabel(index),
+            getMessageLabel(index2),
             target.isReply && /* @__PURE__ */ jsx("span", { className: "reply-indicator", children: " (Reply)" })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "nested-chat-message-actions", children: [
@@ -20513,9 +23448,9 @@ const MessageListItem = memo(
               {
                 type: "button",
                 title: "Move up",
-                onClick: () => onMoveUp(index),
-                "data-testid": `nested-chat-reorder-up-${index}`,
-                "aria-label": `Move message ${index + 1} up`,
+                onClick: () => onMoveUp(index2),
+                "data-testid": `nested-chat-reorder-up-${index2}`,
+                "aria-label": `Move message ${index2 + 1} up`,
                 children: "↑"
               }
             ) }),
@@ -20524,9 +23459,9 @@ const MessageListItem = memo(
               {
                 type: "button",
                 title: "Move down",
-                onClick: () => onMoveDown(index),
-                "data-testid": `nested-chat-reorder-down-${index}`,
-                "aria-label": `Move message ${index + 1} down`,
+                onClick: () => onMoveDown(index2),
+                "data-testid": `nested-chat-reorder-down-${index2}`,
+                "aria-label": `Move message ${index2 + 1} down`,
                 children: "↓"
               }
             ) }),
@@ -20535,9 +23470,9 @@ const MessageListItem = memo(
               {
                 type: "button",
                 title: "Remove",
-                onClick: () => onRemove(index),
-                "data-testid": `remove-nested-chat-recipient-${index}`,
-                "aria-label": `Remove message ${index + 1}`,
+                onClick: () => onRemove(index2),
+                "data-testid": `remove-nested-chat-recipient-${index2}`,
+                "aria-label": `Remove message ${index2 + 1}`,
                 children: "Remove"
               }
             ) })
@@ -21978,8 +24913,8 @@ const useWaldiezAgentTools = (props) => {
     }
   }, [selectedTool, selectedExecutor, data.tools, onDataChange]);
   const onRemoveTool = useCallback(
-    (index) => {
-      const newTools = data.tools.filter((_, i) => i !== index);
+    (index2) => {
+      const newTools = data.tools.filter((_, i) => i !== index2);
       onDataChange({ tools: newTools });
     },
     [data.tools, onDataChange]
@@ -22074,7 +25009,7 @@ const WaldiezAgentTools = memo((props) => {
     ] }),
     data.tools.length > 0 && /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
       /* @__PURE__ */ jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
-      data.tools.map((tool, index) => /* @__PURE__ */ jsx(
+      data.tools.map((tool, index2) => /* @__PURE__ */ jsx(
         "div",
         {
           className: "agent-panel-current-tool",
@@ -22082,20 +25017,20 @@ const WaldiezAgentTools = memo((props) => {
             /* @__PURE__ */ jsxs("div", { className: "tool-item", children: [
               "Tool:",
               " ",
-              /* @__PURE__ */ jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index}`, children: getToolName(tool) })
+              /* @__PURE__ */ jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index2}`, children: getToolName(tool) })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "agent-item", children: [
               "Executor:",
               " ",
-              /* @__PURE__ */ jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index}`, children: getAgentName2(tool) })
+              /* @__PURE__ */ jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index2}`, children: getAgentName2(tool) })
             ] }),
             /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
                 title: "Remove tool",
-                onClick: () => onRemoveTool(index),
-                "data-testid": `remove-agent-tool-${id}-${index}`,
+                onClick: () => onRemoveTool(index2),
+                "data-testid": `remove-agent-tool-${id}-${index2}`,
                 "aria-label": `Remove ${getToolName(tool)}`,
                 children: "Remove"
               }
@@ -24377,10 +27312,10 @@ const useModelModalAdvancedTab = (props) => {
   const onUpdateTag = useCallback(
     (oldTag, newTag) => {
       const { tags } = data;
-      const index = tags.indexOf(oldTag);
-      if (index >= 0) {
+      const index2 = tags.indexOf(oldTag);
+      if (index2 >= 0) {
         const updatedTags = [...tags];
-        updatedTags[index] = newTag;
+        updatedTags[index2] = newTag;
         onDataChange({ tags: updatedTags });
       }
     },
@@ -24389,9 +27324,9 @@ const useModelModalAdvancedTab = (props) => {
   const onDeleteTag = useCallback(
     (tag) => {
       const currentTags = [...data.tags];
-      const index = currentTags.indexOf(tag);
-      if (index >= 0) {
-        currentTags.splice(index, 1);
+      const index2 = currentTags.indexOf(tag);
+      if (index2 >= 0) {
+        currentTags.splice(index2, 1);
         onDataChange({ tags: currentTags });
       }
     },
@@ -25665,32 +28600,32 @@ const WaldiezToolBasicTab = memo((props) => {
       )
     ] }),
     data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index2) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         name: kwarg.label,
         label: `${kwarg.label}:`,
-        dataTestId: `env-var-input-${index}-${kwarg.key}`,
+        dataTestId: `env-var-input-${index2}-${kwarg.key}`,
         value: (data.kwargs ? data.kwargs[kwarg.key] : "") || "",
         onChange: onPredefinedToolArgChange.bind(null, kwarg.key),
         className: "margin-top-10",
         isPassword: false,
         placeholder: `Enter the ${kwarg.label}`
       }
-    ) }, index)) }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+    ) }, index2)) }),
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index2) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         name: envVar.label,
         label: `${envVar.label}:`,
-        dataTestId: `env-var-input-${index}-${envVar.key}`,
+        dataTestId: `env-var-input-${index2}-${envVar.key}`,
         value: data.secrets[envVar.key] || "",
         onChange: onPredefinedToolEnvChange.bind(null, envVar.key),
         className: "margin-top-10",
         placeholder: `Enter the ${envVar.label}`,
         isPassword: true
       }
-    ) }, index)) })
+    ) }, index2)) })
   ] });
 });
 WaldiezToolBasicTab.displayName = "WaldiezToolBasicTab";
@@ -26052,9 +28987,9 @@ const useEditFlowModal = (props) => {
   const onSubmit = () => {
     updateFlowInfo(flowData);
     if (!flowData.isAsync) {
-      const edgeOrders = sortedEdgesState.map((edge, index) => ({
+      const edgeOrders = sortedEdgesState.map((edge, index2) => ({
         id: edge.id,
-        order: index
+        order: index2
       })).concat(
         remainingEdgesState.map((edge) => ({
           id: edge.id,
@@ -26148,31 +29083,31 @@ const useEditFlowModal = (props) => {
       setIsDirty(true);
     }
   };
-  const onMoveEdgeUp = (index) => {
-    if (index > 0 && sortedEdgesState[index] !== void 0 && sortedEdgesState[index - 1] !== void 0 && sortedEdgesState.find((e) => e.id === sortedEdgesState[index]?.id)) {
-      const previousEdge = sortedEdgesState[index - 1];
-      const currentEdge = sortedEdgesState[index];
+  const onMoveEdgeUp = (index2) => {
+    if (index2 > 0 && sortedEdgesState[index2] !== void 0 && sortedEdgesState[index2 - 1] !== void 0 && sortedEdgesState.find((e) => e.id === sortedEdgesState[index2]?.id)) {
+      const previousEdge = sortedEdgesState[index2 - 1];
+      const currentEdge = sortedEdgesState[index2];
       const newSortedEdges = sortedEdgesState.slice();
-      newSortedEdges[index - 1] = currentEdge;
-      newSortedEdges[index] = previousEdge;
+      newSortedEdges[index2 - 1] = currentEdge;
+      newSortedEdges[index2] = previousEdge;
       setSortedEdgesState(setSyncPrerequisites(newSortedEdges));
       setIsDirty(true);
     }
   };
   const setSyncPrerequisites = (newSortedEdges) => {
-    return newSortedEdges.map((edge, index) => {
-      if (index === 0) {
+    return newSortedEdges.map((edge, index2) => {
+      if (index2 === 0) {
         return {
           ...edge,
           data: { ...edge.data, order: 0, prerequisites: [] }
         };
       }
-      const previousEdge = newSortedEdges[index - 1];
+      const previousEdge = newSortedEdges[index2 - 1];
       return {
         ...edge,
         data: {
           ...edge.data,
-          order: index,
+          order: index2,
           prerequisites: [previousEdge?.id]
         }
       };
@@ -26191,18 +29126,18 @@ const useEditFlowModal = (props) => {
     setSortedEdgesState(newSortedEdges);
     setIsDirty(true);
   };
-  const onMoveEdgeDown = (index) => {
-    if (sortedEdgesState.find((e) => e.id === sortedEdgesState[index]?.id)) {
-      const nextEdge = sortedEdgesState[index + 1];
+  const onMoveEdgeDown = (index2) => {
+    if (sortedEdgesState.find((e) => e.id === sortedEdgesState[index2]?.id)) {
+      const nextEdge = sortedEdgesState[index2 + 1];
       const nextOrder = nextEdge?.data?.order;
-      const currentEdge = sortedEdgesState[index];
+      const currentEdge = sortedEdgesState[index2];
       const currentOrder = currentEdge?.data?.order;
       const newSortedEdges = sortedEdgesState.slice();
-      newSortedEdges[index + 1] = {
+      newSortedEdges[index2 + 1] = {
         ...currentEdge,
         data: { ...currentEdge?.data, order: nextOrder }
       };
-      newSortedEdges[index] = {
+      newSortedEdges[index2] = {
         ...nextEdge,
         data: { ...nextEdge?.data, order: currentOrder }
       };
@@ -26249,7 +29184,7 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
   };
   return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites-wrapper", children: [
     /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their prerequisites (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
-    sortedEdges.map((edge, index) => {
+    sortedEdges.map((edge, index2) => {
       return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites", children: [
         /* @__PURE__ */ jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsx("span", { children: edge.data?.label }) }),
         sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisite-actions", children: [
@@ -26280,7 +29215,7 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
               type: "button",
               title: "Remove",
               className: "flow-order-item-action",
-              "data-testid": `remove-edge-button-${index}`,
+              "data-testid": `remove-edge-button-${index2}`,
               onClick: onRemoveEdge.bind(null, edge),
               children: "Remove"
             }
@@ -26335,29 +29270,29 @@ const HandleSyncChatOrder = (props) => {
   } = props;
   return /* @__PURE__ */ jsxs("div", { className: "flow-chat-order-wrapper", children: [
     /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their order (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
-    sortedEdges.map((edge, index) => {
+    sortedEdges.map((edge, index2) => {
       return /* @__PURE__ */ jsxs("div", { className: "flow-order-item-wrapper", children: [
         /* @__PURE__ */ jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsx("span", { className: "flow-order-item-entry", children: edge.data?.label }) }),
         sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-order-item-actions", children: [
-          index > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsx(
+          index2 > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
               title: "Move up",
               className: "flow-order-item-action",
-              "data-testid": `move-edge-up-button-${index}`,
-              onClick: onMoveEdgeUp.bind(null, index),
+              "data-testid": `move-edge-up-button-${index2}`,
+              onClick: onMoveEdgeUp.bind(null, index2),
               children: "↑"
             }
           ),
-          index < sortedEdges.length - 1 && /* @__PURE__ */ jsx(
+          index2 < sortedEdges.length - 1 && /* @__PURE__ */ jsx(
             "button",
             {
               title: "Move down",
               type: "button",
               className: "flow-order-item-action",
-              "data-testid": `move-edge-down-button-${index}`,
-              onClick: onMoveEdgeDown.bind(null, index),
+              "data-testid": `move-edge-down-button-${index2}`,
+              onClick: onMoveEdgeDown.bind(null, index2),
               children: "↓"
             }
           ),
@@ -26367,7 +29302,7 @@ const HandleSyncChatOrder = (props) => {
               type: "button",
               title: "Remove",
               className: "flow-order-item-action",
-              "data-testid": `remove-edge-button-${index}`,
+              "data-testid": `remove-edge-button-${index2}`,
               onClick: onRemoveEdge.bind(null, edge),
               children: "Remove"
             }
@@ -26527,7 +29462,7 @@ const EditFlowModalModalTabOther = (props) => {
             "data-testid": `edit-flow-${flowId}-modal-cache-seed-toggle`
           }
         ),
-        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "cache-seed-view flex", children: [
+        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex", children: [
           /* @__PURE__ */ jsx("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
           /* @__PURE__ */ jsx(
             "input",
