@@ -4,6 +4,7 @@
 """Breakpoints management mixin for step-by-step debugging."""
 
 import logging
+from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Callable, Iterable, Union
 
 from .step_by_step_models import (
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
     from autogen.messages import BaseMessage  # type: ignore
 
 
-def handle_breakpoint_errors(func: Callable[..., Any]) -> Callable[..., Any]:
+def handle_breakpoint_errors(func: Callable[..., bool]) -> Callable[..., bool]:
     """Handle breakpoint-related errors.
 
     Parameters
@@ -35,7 +36,7 @@ def handle_breakpoint_errors(func: Callable[..., Any]) -> Callable[..., Any]:
         The decorated function.
     """
 
-    def _wrapper(self: "BreakpointsMixin", *args: Any, **kwargs: Any) -> Any:
+    def _wrapper(self: "BreakpointsMixin", *args: Any, **kwargs: Any) -> bool:
         try:
             return func(self, *args, **kwargs)
         except ValueError as e:
@@ -57,11 +58,8 @@ class BreakpointsMixin:
     """Mixin class for managing breakpoints in step-by-step debugging."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Initialize breakpoints storage with performance optimizations."""
+        """Initialize breakpoints storage."""
         self._breakpoints: set[WaldiezBreakpoint] = set()
-        # Cache for performance optimization
-        self._breakpoint_cache_version = 0
-        self._last_event_cache: dict[str, bool] = {}
 
         # Statistics for monitoring
         self._breakpoint_stats = {
@@ -69,6 +67,11 @@ class BreakpointsMixin:
             "cache_hits": 0,
             "cache_misses": 0,
         }
+
+        # Create the cached function with proper binding
+        self._check_breakpoint_match_cached = lru_cache(maxsize=1000)(
+            self._check_breakpoint_match_impl
+        )
 
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message. Implemented by the class using this mixin.
@@ -82,17 +85,53 @@ class BreakpointsMixin:
 
     def _invalidate_cache(self) -> None:
         """Invalidate the event matching cache when breakpoints change."""
-        self._breakpoint_cache_version += 1
-        self._last_event_cache.clear()
+        self._check_breakpoint_match_cached.cache_clear()
 
-    def _generate_event_key(self, event: dict[str, Any]) -> str:
-        """Generate a cache key for an event."""
-        # Create a deterministic key from relevant event fields
-        event_type = event.get("type", "unknown")
-        sender = event.get("sender", "")
-        recipient = event.get("recipient", "")
-        cache_version = self._breakpoint_cache_version
-        return f"{event_type}:{sender}:{recipient}:{cache_version}"
+    def _get_breakpoints_signature(self) -> frozenset[str]:
+        """Get a hashable signature of current breakpoints."""
+        return frozenset(str(bp) for bp in self._breakpoints)
+
+    def _check_breakpoint_match_impl(
+        self,
+        event_type: str,
+        sender: str,
+        recipient: str,
+        breakpoints_sig: frozenset[str],
+    ) -> bool:
+        """Check if the event matches any breakpoints.
+
+        Parameters
+        ----------
+        event_type : str
+            The event type to check.
+        sender : str
+            The event sender.
+        recipient : str
+            The event recipient.
+        breakpoints_sig : frozenset[str]
+            Signature of current breakpoints for cache invalidation.
+
+        Returns
+        -------
+        bool
+            True if any breakpoint matches, False otherwise.
+        """
+        event_dict = {
+            "type": event_type,
+            "sender": sender,
+            "recipient": recipient,
+        }
+
+        # Reconstruct breakpoints from signature for cache safety
+        try:
+            breakpoints = {
+                WaldiezBreakpoint.from_string(bp_str)
+                for bp_str in breakpoints_sig
+            }
+            return any(bp.matches(event_dict) for bp in breakpoints)
+        except ValueError:
+            # Fallback to current breakpoints if signature is malformed
+            return any(bp.matches(event_dict) for bp in self._breakpoints)
 
     @handle_breakpoint_errors
     def add_breakpoint(self, spec: str) -> bool:
@@ -282,7 +321,7 @@ class BreakpointsMixin:
     def should_break_on_event(
         self, event: Union["BaseEvent", "BaseMessage"], step_mode: bool = True
     ) -> bool:
-        """Determine if we should break on this event with caching optimization.
+        """Determine if we should break on this event.
 
         Parameters
         ----------
@@ -312,38 +351,34 @@ class BreakpointsMixin:
         if step_mode and not self._breakpoints:
             return True
 
-        # Check if this event type has a breakpoint using caching
+        # Check if this event matches any breakpoint using caching
         if hasattr(event, "model_dump"):
-            # pylint: disable=too-many-try-statements
+            # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 event_dict = event.model_dump(
                     mode="python", exclude_none=True, fallback=str
                 )
 
-                # Use caching for performance
-                event_key = self._generate_event_key(event_dict)
+                # Extract event details for cache key
+                event_type_key = event_dict.get("type", "unknown")
+                sender = event_dict.get("sender", "")
+                recipient = event_dict.get("recipient", "")
 
-                if event_key in self._last_event_cache:
+                # Get current breakpoints signature for cache invalidation
+                breakpoints_sig = self._get_breakpoints_signature()
+
+                # Check cached result
+                try:
+                    matches_breakpoint = self._check_breakpoint_match_cached(
+                        event_type_key, sender, recipient, breakpoints_sig
+                    )
                     self._breakpoint_stats["cache_hits"] += 1
-                    cached_result = self._last_event_cache[event_key]
-                    # If cached result says break, or we're in step mode, break
-                    return cached_result or step_mode
-
-                self._breakpoint_stats["cache_misses"] += 1
-
-                # Check if any breakpoint matches
-                matches_breakpoint = any(
-                    bp.matches(event_dict) for bp in self._breakpoints
-                )
-
-                # Cache the result
-                self._last_event_cache[event_key] = matches_breakpoint
-
-                # Limit cache size to prevent memory issues
-                if len(self._last_event_cache) > 1000:
-                    # Remove oldest entries (simplified LRU)
-                    items = list(self._last_event_cache.items())
-                    self._last_event_cache = dict(items[-500:])
+                except Exception:
+                    # Fallback to non-cached check
+                    matches_breakpoint = any(
+                        bp.matches(event_dict) for bp in self._breakpoints
+                    )
+                    self._breakpoint_stats["cache_misses"] += 1
 
                 self._breakpoint_stats["total_matches"] += 1
 
@@ -352,8 +387,8 @@ class BreakpointsMixin:
                     return True
 
             except Exception as e:  # pylint: disable=broad-exception-caught
-                # If there's an error in event processing, log it, don't break
                 logging.warning("Error processing event for breakpoints: %s", e)
+                self._breakpoint_stats["cache_misses"] += 1
 
         # No specific breakpoints matched:
         # - If step_mode, break on every event (single-step behavior)
@@ -390,21 +425,28 @@ class BreakpointsMixin:
             else 0
         )
 
+        # Get cache info from lru_cache
+        cache_info = self._check_breakpoint_match_cached.cache_info()
+
         return {
             "total_breakpoints": len(self._breakpoints),
             "breakpoints": breakpoints,
             "has_breakpoints": len(self._breakpoints) > 0,
             "cache_stats": {
                 "cache_hit_rate": f"{cache_hit_rate:.2%}",
-                "cache_size": len(self._last_event_cache),
+                "cache_size": cache_info.currsize,
+                "cache_maxsize": cache_info.maxsize,
                 "total_matches": self._breakpoint_stats["total_matches"],
-                "cache_hits": self._breakpoint_stats["cache_hits"],
-                "cache_misses": self._breakpoint_stats["cache_misses"],
+                "cache_hits": cache_info.hits,
+                "cache_misses": cache_info.misses,
             },
             "performance": {
-                "cache_version": self._breakpoint_cache_version,
-                "memory_usage_estimate": len(self._last_event_cache)
-                * 100,  # rough bytes estimate
+                "lru_cache_info": {
+                    "hits": cache_info.hits,
+                    "misses": cache_info.misses,
+                    "maxsize": cache_info.maxsize,
+                    "currsize": cache_info.currsize,
+                }
             },
         }
 
@@ -415,15 +457,11 @@ class BreakpointsMixin:
             "cache_hits": 0,
             "cache_misses": 0,
         }
-        self._last_event_cache.clear()
-        self._breakpoint_cache_version += 1
+        self._invalidate_cache()
 
     def optimize_cache(self) -> None:
-        """Manually optimize the cache by clearing old entries."""
-        if len(self._last_event_cache) > 500:
-            # Keep only the most recent 250 entries
-            items = list(self._last_event_cache.items())
-            self._last_event_cache = dict(items[-250:])
+        """Manually optimize the cache by clearing it."""
+        self._invalidate_cache()
 
     def export_breakpoints(self) -> list[str]:
         """Export breakpoints as a list of strings for persistence.

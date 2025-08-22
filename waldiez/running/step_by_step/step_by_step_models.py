@@ -91,7 +91,7 @@ class WaldiezBreakpoint(BaseModel):
         # Basic validation - event types should be alphanumeric with underscores
         if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
             raise ValueError(
-                "Event type must start with a letter and contain only "
+                "Invalid breakpoint format. Event type must start with a letter and contain only "
                 "letters, numbers, and underscores"
             )
         return v
