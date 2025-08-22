@@ -23,7 +23,7 @@ from waldiez.running.step_by_step.step_by_step_models import (
 )
 
 
-class TestBreakpointsMixin(BreakpointsMixin):
+class DummyBreakpointsMixin(BreakpointsMixin):
     """Test class for BreakpointsMixin."""
 
     def __init__(self) -> None:
@@ -37,14 +37,14 @@ class TestBreakpointsMixin(BreakpointsMixin):
 
 
 @pytest.fixture(name="mixin")
-def mixin_fixture() -> TestBreakpointsMixin:
-    """Fixture for TestBreakpointsMixin."""
-    return TestBreakpointsMixin()
+def mixin_fixture() -> DummyBreakpointsMixin:
+    """Fixture for DummyBreakpointsMixin."""
+    return DummyBreakpointsMixin()
 
 
 def test_handle_breakpoint_errors_decorator() -> None:
     """Test the handle_breakpoint_errors decorator."""
-    mixin = TestBreakpointsMixin()
+    mixin = DummyBreakpointsMixin()
 
     @handle_breakpoint_errors
     def test_function(self: BreakpointsMixin, value: str) -> bool:
@@ -81,7 +81,7 @@ def test_handle_breakpoint_errors_decorator() -> None:
         mock_log.assert_called_once_with("Error in %s", "test_function")
 
 
-def test_add_breakpoint_success(mixin: TestBreakpointsMixin) -> None:
+def test_add_breakpoint_success(mixin: DummyBreakpointsMixin) -> None:
     """Test successful breakpoint addition."""
     assert mixin.add_breakpoint("event:message")
     assert len(mixin._breakpoints) == 1
@@ -90,7 +90,7 @@ def test_add_breakpoint_success(mixin: TestBreakpointsMixin) -> None:
     assert mixin.emitted_messages[0].breakpoint == "event:message"
 
 
-def test_add_breakpoint_invalid_spec(mixin: TestBreakpointsMixin) -> None:
+def test_add_breakpoint_invalid_spec(mixin: DummyBreakpointsMixin) -> None:
     """Test adding breakpoint with invalid specification."""
     assert not mixin.add_breakpoint("")
     assert not mixin.add_breakpoint(None)
@@ -99,7 +99,7 @@ def test_add_breakpoint_invalid_spec(mixin: TestBreakpointsMixin) -> None:
     assert isinstance(mixin.emitted_messages[-1], WaldiezDebugError)
 
 
-def test_add_breakpoint_already_exists(mixin: TestBreakpointsMixin) -> None:
+def test_add_breakpoint_already_exists(mixin: DummyBreakpointsMixin) -> None:
     """Test adding duplicate breakpoint."""
     assert mixin.add_breakpoint("event:message")
     mixin.emitted_messages.clear()
@@ -110,7 +110,7 @@ def test_add_breakpoint_already_exists(mixin: TestBreakpointsMixin) -> None:
     assert "already exists" in mixin.emitted_messages[0].error
 
 
-def test_remove_breakpoint_success(mixin: TestBreakpointsMixin) -> None:
+def test_remove_breakpoint_success(mixin: DummyBreakpointsMixin) -> None:
     """Test successful breakpoint removal."""
     mixin.add_breakpoint("event:message")
     mixin.emitted_messages.clear()
@@ -121,14 +121,14 @@ def test_remove_breakpoint_success(mixin: TestBreakpointsMixin) -> None:
     assert mixin.emitted_messages[0].breakpoint == "event:message"
 
 
-def test_remove_breakpoint_not_exists(mixin: TestBreakpointsMixin) -> None:
+def test_remove_breakpoint_not_exists(mixin: DummyBreakpointsMixin) -> None:
     """Test removing non-existent breakpoint."""
     assert not mixin.remove_breakpoint("event:nonexistent")
     assert len(mixin.emitted_messages) == 1
     assert "does not exist" in mixin.emitted_messages[0].error
 
 
-def test_remove_breakpoint_object(mixin: TestBreakpointsMixin) -> None:
+def test_remove_breakpoint_object(mixin: DummyBreakpointsMixin) -> None:
     """Test removing breakpoint using WaldiezBreakpoint object."""
     bp = WaldiezBreakpoint.from_string("event:message")
     mixin._breakpoints.add(bp)
@@ -137,7 +137,7 @@ def test_remove_breakpoint_object(mixin: TestBreakpointsMixin) -> None:
     assert len(mixin._breakpoints) == 0
 
 
-def test_remove_breakpoint_invalid_spec(mixin: TestBreakpointsMixin) -> None:
+def test_remove_breakpoint_invalid_spec(mixin: DummyBreakpointsMixin) -> None:
     """Test removing breakpoint with invalid specification."""
     assert not mixin.remove_breakpoint("")
     assert not mixin.remove_breakpoint(None)
@@ -145,7 +145,7 @@ def test_remove_breakpoint_invalid_spec(mixin: TestBreakpointsMixin) -> None:
     assert isinstance(mixin.emitted_messages[-1], WaldiezDebugError)
 
 
-def test_list_breakpoints(mixin: TestBreakpointsMixin) -> None:
+def test_list_breakpoints(mixin: DummyBreakpointsMixin) -> None:
     """Test listing breakpoints."""
     mixin.add_breakpoint("event:message")
     mixin.add_breakpoint("agent:user")
@@ -157,7 +157,7 @@ def test_list_breakpoints(mixin: TestBreakpointsMixin) -> None:
 
 
 def test_clear_breakpoints_with_breakpoints(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test clearing breakpoints when some exist."""
     mixin.add_breakpoint("event:message")
@@ -170,7 +170,7 @@ def test_clear_breakpoints_with_breakpoints(
     assert "Cleared 2 breakpoint(s)" in mixin.emitted_messages[0].message
 
 
-def test_clear_breakpoints_empty(mixin: TestBreakpointsMixin) -> None:
+def test_clear_breakpoints_empty(mixin: DummyBreakpointsMixin) -> None:
     """Test clearing breakpoints when none exist."""
     mixin.clear_breakpoints()
     assert len(mixin._breakpoints) == 0
@@ -178,7 +178,7 @@ def test_clear_breakpoints_empty(mixin: TestBreakpointsMixin) -> None:
     assert "No breakpoints to clear" in mixin.emitted_messages[0].message
 
 
-def test_set_breakpoints_success(mixin: TestBreakpointsMixin) -> None:
+def test_set_breakpoints_success(mixin: DummyBreakpointsMixin) -> None:
     """Test setting breakpoints successfully."""
     specs = ["event:message", "agent:user"]
     assert mixin.set_breakpoints(specs)
@@ -187,7 +187,7 @@ def test_set_breakpoints_success(mixin: TestBreakpointsMixin) -> None:
     assert any(bp.agent_name == "user" for bp in mixin._breakpoints)
 
 
-def test_set_breakpoints_with_objects(mixin: TestBreakpointsMixin) -> None:
+def test_set_breakpoints_with_objects(mixin: DummyBreakpointsMixin) -> None:
     """Test setting breakpoints with WaldiezBreakpoint objects."""
     bp1 = WaldiezBreakpoint.from_string("event:message")
     bp2 = WaldiezBreakpoint.from_string("agent:user")
@@ -196,7 +196,7 @@ def test_set_breakpoints_with_objects(mixin: TestBreakpointsMixin) -> None:
     assert len(mixin._breakpoints) == 2
 
 
-def test_set_breakpoints_with_errors(mixin: TestBreakpointsMixin) -> None:
+def test_set_breakpoints_with_errors(mixin: DummyBreakpointsMixin) -> None:
     """Test setting breakpoints with some invalid specs."""
     specs = ["event:message", "invalid:format:spec"]
     assert not mixin.set_breakpoints(specs)
@@ -206,7 +206,7 @@ def test_set_breakpoints_with_errors(mixin: TestBreakpointsMixin) -> None:
     )
 
 
-def test_get_breakpoints(mixin: TestBreakpointsMixin) -> None:
+def test_get_breakpoints(mixin: DummyBreakpointsMixin) -> None:
     """Test getting breakpoints."""
     mixin.add_breakpoint("event:message")
     breakpoints = mixin.get_breakpoints()
@@ -218,7 +218,7 @@ def test_get_breakpoints(mixin: TestBreakpointsMixin) -> None:
     assert len(mixin._breakpoints) == 1
 
 
-def test_has_breakpoint_string(mixin: TestBreakpointsMixin) -> None:
+def test_has_breakpoint_string(mixin: DummyBreakpointsMixin) -> None:
     """Test checking if breakpoint exists using string."""
     mixin.add_breakpoint("event:message")
 
@@ -227,7 +227,7 @@ def test_has_breakpoint_string(mixin: TestBreakpointsMixin) -> None:
     assert not mixin.has_breakpoint("invalid:format:spec")
 
 
-def test_has_breakpoint_object(mixin: TestBreakpointsMixin) -> None:
+def test_has_breakpoint_object(mixin: DummyBreakpointsMixin) -> None:
     """Test checking if breakpoint exists using WaldiezBreakpoint object."""
     bp = WaldiezBreakpoint.from_string("event:message")
     mixin._breakpoints.add(bp)
@@ -239,7 +239,7 @@ def test_has_breakpoint_object(mixin: TestBreakpointsMixin) -> None:
 
 
 def test_should_break_on_event_input_request(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test should_break_on_event with input_request event."""
     event = MagicMock()
@@ -250,7 +250,7 @@ def test_should_break_on_event_input_request(
 
 
 def test_should_break_on_event_no_breakpoints_no_step_mode(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test should_break_on_event with no breakpoints and no step mode."""
     event = MagicMock()
@@ -261,7 +261,7 @@ def test_should_break_on_event_no_breakpoints_no_step_mode(
 
 
 def test_should_break_on_event_step_mode_no_breakpoints(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test should_break_on_event with step mode but no breakpoints."""
     event = MagicMock()
@@ -272,7 +272,7 @@ def test_should_break_on_event_step_mode_no_breakpoints(
 
 
 def test_should_break_on_event_matching_breakpoint(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test should_break_on_event with matching breakpoint."""
     mixin.add_breakpoint("event:message")
@@ -285,7 +285,7 @@ def test_should_break_on_event_matching_breakpoint(
 
 
 def test_should_break_on_event_non_matching_breakpoint(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test should_break_on_event with non-matching breakpoint."""
     mixin.add_breakpoint("event:other")
@@ -300,7 +300,7 @@ def test_should_break_on_event_non_matching_breakpoint(
     assert not mixin.should_break_on_event(event, step_mode=False)
 
 
-def test_should_break_on_event_caching(mixin: TestBreakpointsMixin) -> None:
+def test_should_break_on_event_caching(mixin: DummyBreakpointsMixin) -> None:
     """Test should_break_on_event caching mechanism."""
     mixin.add_breakpoint("event:message")
 
@@ -320,7 +320,7 @@ def test_should_break_on_event_caching(mixin: TestBreakpointsMixin) -> None:
 
 
 def test_should_break_on_event_exception_handling(
-    mixin: TestBreakpointsMixin,
+    mixin: DummyBreakpointsMixin,
 ) -> None:
     """Test should_break_on_event handles exceptions gracefully."""
     event = MagicMock()
@@ -331,7 +331,7 @@ def test_should_break_on_event_exception_handling(
     assert result is True  # Falls back to step_mode
 
 
-def test_get_breakpoint_stats(mixin: TestBreakpointsMixin) -> None:
+def test_get_breakpoint_stats(mixin: DummyBreakpointsMixin) -> None:
     """Test get_breakpoint_stats method."""
     mixin.add_breakpoint("event:message")
     mixin.add_breakpoint("agent:user")
@@ -351,7 +351,7 @@ def test_get_breakpoint_stats(mixin: TestBreakpointsMixin) -> None:
     assert "performance" in stats
 
 
-def test_export_breakpoints(mixin: TestBreakpointsMixin) -> None:
+def test_export_breakpoints(mixin: DummyBreakpointsMixin) -> None:
     """Test export_breakpoints method."""
     mixin.add_breakpoint("event:message")
     mixin.add_breakpoint("agent:user")
@@ -364,7 +364,7 @@ def test_export_breakpoints(mixin: TestBreakpointsMixin) -> None:
     assert all(isinstance(bp, str) for bp in exported)
 
 
-def test_import_breakpoints_success(mixin: TestBreakpointsMixin) -> None:
+def test_import_breakpoints_success(mixin: DummyBreakpointsMixin) -> None:
     """Test import_breakpoints with successful imports."""
     specs = ["event:message", "agent:user"]
 
@@ -375,7 +375,7 @@ def test_import_breakpoints_success(mixin: TestBreakpointsMixin) -> None:
     assert len(mixin._breakpoints) == 2
 
 
-def test_import_breakpoints_with_errors(mixin: TestBreakpointsMixin) -> None:
+def test_import_breakpoints_with_errors(mixin: DummyBreakpointsMixin) -> None:
     """Test import_breakpoints with some errors."""
     specs = ["event:message", "invalid:format:spec", "agent:user"]
 
@@ -386,7 +386,7 @@ def test_import_breakpoints_with_errors(mixin: TestBreakpointsMixin) -> None:
     assert "invalid:format:spec" in errors[0]
 
 
-def test_import_breakpoints_duplicates(mixin: TestBreakpointsMixin) -> None:
+def test_import_breakpoints_duplicates(mixin: DummyBreakpointsMixin) -> None:
     """Test import_breakpoints with duplicate breakpoints."""
     mixin.add_breakpoint("event:message")
     specs = ["event:message", "agent:user"]
@@ -398,7 +398,7 @@ def test_import_breakpoints_duplicates(mixin: TestBreakpointsMixin) -> None:
     assert "already exists" in errors[0]
 
 
-def test_agent_breakpoint_matching(mixin: TestBreakpointsMixin) -> None:
+def test_agent_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
     """Test agent breakpoint matching for both sender and recipient."""
     mixin.add_breakpoint("agent:user")
 
@@ -425,7 +425,7 @@ def test_agent_breakpoint_matching(mixin: TestBreakpointsMixin) -> None:
     assert mixin.should_break_on_event(event2, step_mode=False)
 
 
-def test_agent_event_breakpoint_matching(mixin: TestBreakpointsMixin) -> None:
+def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
     """Test agent-specific event breakpoint matching."""
     mixin.add_breakpoint("user:message")
 
