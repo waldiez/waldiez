@@ -157,10 +157,7 @@ export type WaldiezChatMessageProcessingResult = {
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
     runCompletion?: RunCompletionResults;
-    participants?: {
-        users: string[];
-        all: string[];
-    };
+    participants?: Array<{ name: string; id: string; user: boolean }>;
 };
 
 /**

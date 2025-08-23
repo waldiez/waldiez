@@ -91,7 +91,7 @@ describe("WaldiezChatMessageProcessor", () => {
         it("should extract participants from print message", () => {
             const participantsData = {
                 participants: [
-                    { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
+                    { id: "u", name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
                     { name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
                 ],
             };
@@ -107,10 +107,18 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                participants: {
-                    all: ["user_proxy", "assistant_1"],
-                    users: ["user_proxy"],
-                },
+                participants: [
+                    {
+                        id: "u",
+                        name: "user_proxy",
+                        user: true,
+                    },
+                    {
+                        id: "assistant_1",
+                        name: "assistant_1",
+                        user: false,
+                    },
+                ],
             });
         });
 
@@ -118,7 +126,7 @@ describe("WaldiezChatMessageProcessor", () => {
             const participantsData = {
                 participants: [
                     { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
-                    { name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
+                    { id: "a", name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
                 ],
             };
 
@@ -133,10 +141,18 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                participants: {
-                    all: ["user_proxy", "assistant_1"],
-                    users: ["user_proxy"],
-                },
+                participants: [
+                    {
+                        id: "user_proxy",
+                        name: "user_proxy",
+                        user: true,
+                    },
+                    {
+                        id: "a",
+                        name: "assistant_1",
+                        user: false,
+                    },
+                ],
             });
         });
 
@@ -145,7 +161,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 participants: [
                     { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
                     { name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
-                    { name: "assistant_2", humanInputMode: "NEVER", agentType: "assistant" },
+                    { id: "a2", name: "assistant_2", humanInputMode: "NEVER", agentType: "assistant" },
                     { name: "assistant_3", humanInputMode: "NEVER", agentType: "assistant" },
                 ],
             };
@@ -158,10 +174,28 @@ describe("WaldiezChatMessageProcessor", () => {
             const result = WaldiezChatMessageProcessor.process(message);
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                participants: {
-                    all: ["user_proxy", "assistant_1", "assistant_2", "assistant_3"],
-                    users: ["user_proxy"],
-                },
+                participants: [
+                    {
+                        id: "user_proxy",
+                        name: "user_proxy",
+                        user: true,
+                    },
+                    {
+                        id: "assistant_1",
+                        name: "assistant_1",
+                        user: false,
+                    },
+                    {
+                        id: "a2",
+                        name: "assistant_2",
+                        user: false,
+                    },
+                    {
+                        id: "assistant_3",
+                        name: "assistant_3",
+                        user: false,
+                    },
+                ],
             });
         });
 
@@ -185,10 +219,23 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                participants: {
-                    all: ["user_proxy", "user_proxy2", "assistant_1"],
-                    users: ["user_proxy", "user_proxy2"],
-                },
+                participants: [
+                    {
+                        id: "user_proxy",
+                        name: "user_proxy",
+                        user: true,
+                    },
+                    {
+                        id: "user_proxy2",
+                        name: "user_proxy2",
+                        user: true,
+                    },
+                    {
+                        id: "assistant_1",
+                        name: "assistant_1",
+                        user: false,
+                    },
+                ],
             });
         });
 
@@ -211,10 +258,18 @@ describe("WaldiezChatMessageProcessor", () => {
 
             expect(result).toEqual({
                 isWorkflowEnd: false,
-                participants: {
-                    all: ["user_proxy", "assistant_1"],
-                    users: ["user_proxy"],
-                },
+                participants: [
+                    {
+                        id: "user_proxy",
+                        name: "user_proxy",
+                        user: true,
+                    },
+                    {
+                        id: "assistant_1",
+                        name: "assistant_1",
+                        user: false,
+                    },
+                ],
             });
         });
 

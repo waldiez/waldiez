@@ -181,17 +181,16 @@ export class PrintMessageHandler implements MessageHandler {
                         return undefined;
                     }
                 }
-                const allParticipants = parsedData.participants.map((p: any) => p.name).filter(Boolean);
-                const userParticipants = parsedData.participants
-                    .filter((p: any) => p.humanInputMode?.toUpperCase() === "ALWAYS")
-                    .map((p: any) => p.name)
+                const allParticipants = parsedData.participants
+                    .map((p: any) => ({
+                        name: p.name,
+                        id: p.id || p.name,
+                        user: p.humanInputMode?.toUpperCase() === "ALWAYS",
+                    }))
                     .filter(Boolean);
                 return {
                     isWorkflowEnd: false,
-                    participants: {
-                        all: allParticipants,
-                        users: userParticipants,
-                    },
+                    participants: allParticipants,
                 };
             }
         } catch (error) {
