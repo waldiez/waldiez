@@ -665,7 +665,7 @@ class PrintMessageHandler {
         const allParticipants = parsedData.participants.map((p) => ({
           name: p.name,
           id: p.id || p.name,
-          user: p.humanInputMode?.toUpperCase() === "ALWAYS"
+          isUser: p.humanInputMode?.toUpperCase() === "ALWAYS"
         })).filter(Boolean);
         return {
           isWorkflowEnd: false,
@@ -13391,6 +13391,7 @@ function controlToResponse(control) {
 const StepByStepView = ({ stepByStep }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [responseText, setResponseText] = useState("");
+  const canClose = typeof stepByStep?.handlers?.close === "function" && stepByStep?.eventHistory.length > 0;
   const onInputChange = useCallback((e) => {
     setResponseText(e.target.value);
   }, []);
@@ -13430,28 +13431,45 @@ const StepByStepView = ({ stepByStep }) => {
   const reducedHistory = stepByStep?.eventHistory.map((entry) => ({
     data: entry.data || entry.message || entry.content || entry
   })).map((entry) => entry.data);
-  if (!stepByStep?.active) {
+  if (!stepByStep?.active && !canClose) {
     return null;
   }
   return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", children: [
     /* @__PURE__ */ jsxs("div", { className: "header", children: [
       /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
         /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
-        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" })
+        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
+        !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
+        stepByStep?.active && /* @__PURE__ */ jsxs("div", { className: "badge", children: [
+          " ",
+          String(stepByStep?.currentEvent?.type) || "Running"
+        ] })
       ] }),
-      /* @__PURE__ */ jsx("div", { className: "header-right", children: /* @__PURE__ */ jsx(
-        "button",
-        {
-          title: isExpanded ? "Collapse" : "Expand",
-          type: "button",
-          onClick: () => setIsExpanded(!isExpanded),
-          className: "header-toggle",
-          children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
-        }
-      ) })
+      /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            title: isExpanded ? "Collapse" : "Expand",
+            type: "button",
+            onClick: () => setIsExpanded(!isExpanded),
+            className: "header-toggle",
+            children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
+          }
+        ),
+        !stepByStep?.active && canClose && /* @__PURE__ */ jsx(
+          "button",
+          {
+            title: "Close",
+            type: "button",
+            onClick: stepByStep?.handlers?.close,
+            className: "header-toggle",
+            children: /* @__PURE__ */ jsx(FaX, { size: 14 })
+          }
+        )
+      ] })
     ] }),
     isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
-      stepByStep.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
         /* @__PURE__ */ jsxs("button", { className: "btn btn-primary", onClick: () => onControl("continue"), children: [
           /* @__PURE__ */ jsx(FaStepForward, {}),
           " ",
@@ -13468,7 +13486,7 @@ const StepByStepView = ({ stepByStep }) => {
           /* @__PURE__ */ jsx("span", { children: "Quit" })
         ] })
       ] }),
-      stepByStep.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
         /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
         /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
         /* @__PURE__ */ jsxs("div", { className: "input-row", children: [

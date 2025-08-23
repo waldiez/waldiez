@@ -4,7 +4,7 @@
  */
 import React, { useCallback, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
-import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop } from "react-icons/fa6";
+import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-icons/fa6";
 
 import { nanoid } from "nanoid";
 
@@ -19,9 +19,11 @@ type StepByStepViewProps = {
 /**
  * Main step-by-step debug view component
  */
+// eslint-disable-next-line complexity
 export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) => {
     const [isExpanded, setIsExpanded] = useState(true);
     const [responseText, setResponseText] = useState("");
+    const canClose = typeof stepByStep?.handlers?.close === "function" && stepByStep?.eventHistory.length > 0;
     const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setResponseText(e.target.value);
     }, []);
@@ -77,7 +79,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
             data: entry.data || entry.message || entry.content || entry,
         }))
         .map(entry => entry.data);
-    if (!stepByStep?.active) {
+    if (!stepByStep?.active && !canClose) {
         return null;
     }
     return (
@@ -87,6 +89,10 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                 <div className="header-left">
                     <FaBug className="icon-bug" size={18} />
                     <div className="title">Step-by-step Panel</div>
+                    {!stepByStep?.active && <div className="badge">Finished</div>}
+                    {stepByStep?.active && (
+                        <div className="badge"> {String(stepByStep?.currentEvent?.type) || "Running"}</div>
+                    )}
                 </div>
                 <div className="header-right">
                     <button
@@ -97,13 +103,24 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     >
                         {isExpanded ? <FaChevronDown size={14} /> : <FaChevronUp size={14} />}
                     </button>
+
+                    {!stepByStep?.active && canClose && (
+                        <button
+                            title="Close"
+                            type="button"
+                            onClick={stepByStep?.handlers?.close}
+                            className="header-toggle"
+                        >
+                            <FaX size={14} />
+                        </button>
+                    )}
                 </div>
             </div>
             {/* Content */}
             {isExpanded && (
                 <div className="content">
                     {/* Controls (if pending action) */}
-                    {stepByStep.pendingControlInput && (
+                    {stepByStep?.pendingControlInput && (
                         <div className="controls">
                             <button className="btn btn-primary" onClick={() => onControl("continue")}>
                                 <FaStepForward /> <span>Continue</span>
@@ -118,7 +135,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     )}
 
                     {/* Pending input */}
-                    {stepByStep.activeRequest && (
+                    {stepByStep?.activeRequest && (
                         <div className="card card--pending">
                             <div className="card-title">Waiting for input</div>
                             <div className="codeblock">{stepByStep.activeRequest.prompt}</div>

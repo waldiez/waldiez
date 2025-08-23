@@ -2,7 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezChatMessage, WaldiezChatUserInput, WaldiezTimelineData } from "@waldiez/types";
+import { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
+import {
+    ChatParticipant,
+    WaldiezChatMessage,
+    WaldiezChatUserInput,
+    WaldiezTimelineData,
+} from "@waldiez/types";
 
 type ExecMode = "standard" | "step_by_step";
 
@@ -110,13 +116,13 @@ export type ServerMessage =
 export type WaldiezWrapperState = {
     timeline?: WaldiezTimelineData;
     messages: WaldiezChatMessage[];
-    participants: Array<{ name: string; id: string; user: boolean }>;
+    participants: ChatParticipant[];
     isRunning: boolean;
     isDebugging: boolean;
     connected: boolean;
     error: string | null;
     inputPrompt?: { prompt: string; request_id: string; password?: boolean };
-    stepByStepState: any; // WaldiezStepByStep from wrapper
+    stepByStepState: WaldiezStepByStep;
 };
 
 export type WaldiezWrapperActions = {

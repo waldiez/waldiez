@@ -129,6 +129,12 @@ export type CodeExecutionReplyData = BaseMessageData & {
     };
 };
 
+/**
+ * Run completion results.
+ * @param summary - A summary of the run completion.
+ * @param history - The history of messages exchanged during the run.
+ * @param cost - The cost associated with the run.
+ */
 export type RunCompletionResults = {
     summary: string;
     history: {
@@ -140,14 +146,24 @@ export type RunCompletionResults = {
 };
 
 /**
+ * Chat participant data.
+ * @param id - The unique identifier for the participant.
+ * @param name - The name of the participant.
+ * @param isUser - Indicates if the participant is a user.
+ */
+export type ChatParticipant = {
+    id: string;
+    name: string;
+    isUser: boolean;
+};
+
+/**
  * Waldiez chat message type.
  * This is the main type used to represent a chat message in Waldiez.
  * It includes the ID, timestamp, type, content, sender, recipient, and request ID.
  * @param message - The processed chat message if available.
  * @param request_id - An optional request ID associated with the message.
  * @param participants - Optional. An object containing participants' data.
- * @param participants.users - An array of user IDs participating in the chat.
- * @param participants.all - An array of all participants in the chat.
  * @param isWorkflowEnd - Optional. If true, indicates that the workflow has ended.
  * @see {@link WaldiezChatMessage}
  */
@@ -157,7 +173,7 @@ export type WaldiezChatMessageProcessingResult = {
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
     runCompletion?: RunCompletionResults;
-    participants?: Array<{ name: string; id: string; user: boolean }>;
+    participants?: ChatParticipant[];
 };
 
 /**

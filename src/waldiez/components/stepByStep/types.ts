@@ -231,6 +231,10 @@ export type WaldiezStepHandlers = {
      * Send a user input response (e.g., for `debug_input_request`).
      */
     respond: (response: WaldiezChatUserInput) => void | Promise<void>;
+    /**
+     * Close the step-by-step session.
+     */
+    close?: () => void | Promise<void>;
 };
 
 /**

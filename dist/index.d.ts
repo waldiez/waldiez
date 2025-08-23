@@ -32,6 +32,18 @@ export declare type BaseMessageData = {
 };
 
 /**
+ * Chat participant data.
+ * @param id - The unique identifier for the participant.
+ * @param name - The name of the participant.
+ * @param isUser - Indicates if the participant is a user.
+ */
+export declare type ChatParticipant = {
+    id: string;
+    name: string;
+    isUser: boolean;
+};
+
+/**
  * Code execution reply data.
  * @param type - The type of the message: "generate_code_execution_reply"
  * @param content - The content of the code execution reply message.
@@ -751,6 +763,12 @@ export declare type reasonConfigAnswerApproach = "pool" | "best";
  */
 export declare type reasonConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
 
+/**
+ * Run completion results.
+ * @param summary - A summary of the run completion.
+ * @param history - The history of messages exchanged during the run.
+ * @param cost - The cost associated with the run.
+ */
 export declare type RunCompletionResults = {
     summary: string;
     history: {
@@ -2223,8 +2241,6 @@ declare type WaldiezChatMessageCommon = {
  * @param message - The processed chat message if available.
  * @param request_id - An optional request ID associated with the message.
  * @param participants - Optional. An object containing participants' data.
- * @param participants.users - An array of user IDs participating in the chat.
- * @param participants.all - An array of all participants in the chat.
  * @param isWorkflowEnd - Optional. If true, indicates that the workflow has ended.
  * @see {@link WaldiezChatMessage}
  */
@@ -2234,11 +2250,7 @@ export declare type WaldiezChatMessageProcessingResult = {
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
     runCompletion?: RunCompletionResults;
-    participants?: Array<{
-        name: string;
-        id: string;
-        user: boolean;
-    }>;
+    participants?: ChatParticipant[];
 };
 
 export declare class WaldiezChatMessageProcessor {

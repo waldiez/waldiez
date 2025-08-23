@@ -185,7 +185,7 @@ export class PrintMessageHandler implements MessageHandler {
                     .map((p: any) => ({
                         name: p.name,
                         id: p.id || p.name,
-                        user: p.humanInputMode?.toUpperCase() === "ALWAYS",
+                        isUser: p.humanInputMode?.toUpperCase() === "ALWAYS",
                     }))
                     .filter(Boolean);
                 return {

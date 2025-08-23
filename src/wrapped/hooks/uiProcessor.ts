@@ -8,7 +8,7 @@ import { useCallback } from "react";
 import { nanoid } from "nanoid";
 
 import { WaldiezStepByStep, WaldiezTimelineData, showSnackbar } from "@waldiez/components";
-import { WaldiezChatMessage } from "@waldiez/types";
+import { ChatParticipant, WaldiezChatMessage } from "@waldiez/types";
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
 import { StepByStepUtils, WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep";
 
@@ -40,7 +40,7 @@ export function useUIMessageProcessor({
     isDebugging: boolean;
     setTimeline: (timeline?: WaldiezTimelineData) => void;
     setMessages: React.Dispatch<React.SetStateAction<WaldiezChatMessage[]>>;
-    setParticipants: React.Dispatch<React.SetStateAction<{ name: string; id: string; user: boolean }[]>>;
+    setParticipants: React.Dispatch<React.SetStateAction<ChatParticipant[]>>;
     setInputPrompt: (prompt?: { prompt: string; request_id: string; password?: boolean }) => void;
     setError: (error: string | null) => void;
     getPendingInputId: () => string | undefined;

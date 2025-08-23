@@ -10,7 +10,7 @@ import {
     WaldiezStepByStep,
     WaldiezTimelineData,
 } from "@waldiez/components";
-import { WaldiezChatMessage } from "@waldiez/types";
+import { ChatParticipant, WaldiezChatMessage } from "@waldiez/types";
 
 import { useMessageHandler } from "./messageHandler";
 import { useWebSocketSender } from "./sender";
@@ -30,7 +30,7 @@ export const useWaldiezWrapper = ({
     // Workflow state
     const [isRunning, setIsRunning] = useState(false);
     const [isDebugging, setIsDebugging] = useState(false);
-    const [participants, setParticipants] = useState<{ name: string; id: string; user: boolean }[]>([]);
+    const [participants, setParticipants] = useState<ChatParticipant[]>([]);
     const [timeline, setTimeline] = useState<WaldiezTimelineData | undefined>(undefined);
     const [messages, setMessages] = useState<WaldiezChatMessage[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -106,6 +106,18 @@ export const useWaldiezWrapper = ({
         handlers: {
             sendControl: () => {}, // Will be updated by main.tsx
             respond: () => {}, // Will be updated by main.tsx
+            close: () => {
+                setStepByStepState(prev => ({
+                    ...prev,
+                    active: false,
+                    stepMode: false,
+                    autoContinue: false,
+                    breakpoints: [],
+                    eventHistory: [],
+                    pendingControlInput: null,
+                    activeRequest: null,
+                }));
+            },
         },
     }));
 
@@ -115,6 +127,7 @@ export const useWaldiezWrapper = ({
             ...stepByStepState,
             active: isDebugging,
             handlers: {
+                ...stepByStepState.handlers,
                 sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => {
                     sendDebugControl(input);
                     setStepByStepState(prev => ({

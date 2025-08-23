@@ -29,7 +29,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
         { run, stepRun, stop, save, upload, convert, userInput, reset },
     ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId, onError });
     const userParticipants = participants
-        .filter(p => p.user)
+        .filter(p => p.isUser)
         .map(p => p.name)
         .filter(Boolean);
 

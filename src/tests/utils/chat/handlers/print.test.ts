@@ -111,12 +111,12 @@ describe("WaldiezChatMessageProcessor", () => {
                     {
                         id: "u",
                         name: "user_proxy",
-                        user: true,
+                        isUser: true,
                     },
                     {
                         id: "assistant_1",
                         name: "assistant_1",
-                        user: false,
+                        isUser: false,
                     },
                 ],
             });
@@ -145,12 +145,12 @@ describe("WaldiezChatMessageProcessor", () => {
                     {
                         id: "user_proxy",
                         name: "user_proxy",
-                        user: true,
+                        isUser: true,
                     },
                     {
                         id: "a",
                         name: "assistant_1",
-                        user: false,
+                        isUser: false,
                     },
                 ],
             });
@@ -178,22 +178,22 @@ describe("WaldiezChatMessageProcessor", () => {
                     {
                         id: "user_proxy",
                         name: "user_proxy",
-                        user: true,
+                        isUser: true,
                     },
                     {
                         id: "assistant_1",
                         name: "assistant_1",
-                        user: false,
+                        isUser: false,
                     },
                     {
                         id: "a2",
                         name: "assistant_2",
-                        user: false,
+                        isUser: false,
                     },
                     {
                         id: "assistant_3",
                         name: "assistant_3",
-                        user: false,
+                        isUser: false,
                     },
                 ],
             });
@@ -223,17 +223,17 @@ describe("WaldiezChatMessageProcessor", () => {
                     {
                         id: "user_proxy",
                         name: "user_proxy",
-                        user: true,
+                        isUser: true,
                     },
                     {
                         id: "user_proxy2",
                         name: "user_proxy2",
-                        user: true,
+                        isUser: true,
                     },
                     {
                         id: "assistant_1",
                         name: "assistant_1",
-                        user: false,
+                        isUser: false,
                     },
                 ],
             });
@@ -262,12 +262,12 @@ describe("WaldiezChatMessageProcessor", () => {
                     {
                         id: "user_proxy",
                         name: "user_proxy",
-                        user: true,
+                        isUser: true,
                     },
                     {
                         id: "assistant_1",
                         name: "assistant_1",
-                        user: false,
+                        isUser: false,
                     },
                 ],
             });
