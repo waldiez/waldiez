@@ -356,8 +356,8 @@ class TestGetImage:
         valid_json = json.dumps({"key": "value"})
         invalid_json = "{invalid: json"
 
-        assert is_json_dumped(valid_json)
-        assert not is_json_dumped(invalid_json)
+        assert is_json_dumped(valid_json)[0]
+        assert not is_json_dumped(invalid_json)[0]
 
 
 class DummyMessage:

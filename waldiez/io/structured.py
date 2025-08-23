@@ -64,11 +64,10 @@ class StructuredIOStream(IOStream):
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
         message = sep.join(map(str, args))
-        is_dumped = is_json_dumped(message)
-        if is_dumped and end.endswith("\n"):
+        is_dumped, message = is_json_dumped(message)
+        if is_dumped:
             # If the message is already JSON-dumped,
             # let's try not to double dump it
-            message = json.loads(message)
             payload: dict[str, Any] = {
                 "type": "print",
                 "id": uuid4().hex,

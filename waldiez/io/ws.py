@@ -118,8 +118,8 @@ class AsyncWebsocketsIOStream(IOStream):
         end = kwargs.get("end", "\n")
         msg = sep.join(str(arg) for arg in args)
 
-        is_dumped = is_json_dumped(msg)
-        if is_dumped and end.endswith("\n"):  # pragma: no cover
+        is_dumped, msg = is_json_dumped(msg)
+        if is_dumped:  # pragma: no cover
             msg = json.loads(msg)
         else:
             msg = f"{msg}{end}"

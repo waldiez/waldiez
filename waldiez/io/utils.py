@@ -131,26 +131,27 @@ def get_image(
     return image_data
 
 
-def is_json_dumped(value: str) -> bool:
-    """Check if a string is JSON-dumped.
+def is_json_dumped(value: Any) -> tuple[bool, Any]:
+    """Check if a value is JSON-dumped.
 
     Parameters
     ----------
-    value : str
-        The string to check.
+    value : Any
+        The value to check.
 
     Returns
     -------
     bool
-        True if the string is JSON-dumped, False otherwise.
+        True if the value is JSON-dumped, False otherwise.
     """
+    if not isinstance(value, str):
+        return False, value
+    to_check = value.strip()
     try:
-        parsed = json.loads(value)
-        # If we can parse it as JSON and it's not a string,
-        # we consider it JSON-dumped
-        return not isinstance(parsed, str)
+        parsed = json.loads(to_check)
+        return True, parsed
     except json.JSONDecodeError:
-        return False
+        return False, value
 
 
 def try_parse_maybe_serialized(value: str) -> Any:
