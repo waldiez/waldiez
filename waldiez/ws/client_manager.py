@@ -390,8 +390,6 @@ class ClientManager:
             ExecutionMode.STEP_BY_STEP,
             session_id=session_id,
         )
-
-        # Persist desired flags (optional)
         sess = await self.session_manager.get_session(session_id)
         if sess:
             sess.state.metadata.update(
@@ -606,6 +604,7 @@ class ClientManager:
           - anything else
             -> fallback stdout SubprocessOutputNotification
         """
+        # self.logger.debug("Handling runner output: %s", data)
         try:
             msg_type = str(data.get("type", "")).lower()
             session_id_raw = data.get("session_id")
@@ -616,7 +615,9 @@ class ClientManager:
             )
 
             if msg_type in ("input_request", "debug_input_request"):
-                await self._handle_runner_input_request(session_id, data)
+                await self._handle_runner_input_request(
+                    session_id, data, is_debug=msg_type == "debug_input_request"
+                )
                 return
 
             if msg_type.startswith("debug_"):
@@ -659,6 +660,7 @@ class ClientManager:
         self,
         session_id: str,
         data: dict[str, Any],
+        is_debug: bool,
     ) -> None:
         """Handle an input request from the runner."""
         request_id = str(data.get("request_id", ""))
@@ -677,7 +679,7 @@ class ClientManager:
                 timeout=float(data.get("timeout", 120.0)),
             )
             msg_dump = notification.model_dump(mode="json", fallback=str)
-            if data.get("type", "") == "debug_input_request":
+            if is_debug:
                 msg_dump["type"] = "debug_input_request"
             await self.send_message(msg_dump)
 
