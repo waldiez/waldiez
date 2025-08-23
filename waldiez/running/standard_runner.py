@@ -59,9 +59,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._event_count = 0
         self._processed_events = 0
 
-    # pylint: disable=no-self-use
-    # noinspection PyMethodMayBeStatic
-    def print(self, *args: Any, **kwargs: Any) -> None:
+    @staticmethod
+    def print(*args: Any, **kwargs: Any) -> None:
         """Print.
 
         Parameters
@@ -71,7 +70,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         **kwargs : Any
             Keyword arguments to print.
         """
-        WaldiezBaseRunner._print(*args, **kwargs)
+        WaldiezBaseRunner.print(*args, **kwargs)
 
     # pylint: disable=unused-argument
     def _run(

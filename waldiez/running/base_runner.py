@@ -7,6 +7,7 @@
 
 import importlib.util
 import inspect
+import json
 import shutil
 import sys
 import tempfile
@@ -56,7 +57,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         - output_path: Path to save the output file.
         - uploads_root: Root directory for uploads.
         - structured_io: Whether to use structured I/O.
-        - skip_patch_io: Whether to skip patching I/O functions.
         - dot_env: Path to a .env file for environment variables.
 
     Methods to possibly override:
@@ -74,7 +74,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     _output_path: str | Path | None
     _uploads_root: str | Path | None
     _dot_env_path: str | Path | None
-    _skip_patch_io: bool
     _running: bool
     _is_async: bool
     _input: Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
@@ -87,7 +86,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         output_path: str | Path | None,
         uploads_root: str | Path | None,
         structured_io: bool,
-        skip_patch_io: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> None:
@@ -96,7 +94,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         WaldiezBaseRunner._structured_io = structured_io
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
-        WaldiezBaseRunner._skip_patch_io = skip_patch_io
         WaldiezBaseRunner._dot_env_path = dot_env
         WaldiezBaseRunner._input = input
         WaldiezBaseRunner._print = print
@@ -115,6 +112,23 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             self._logger = logger
         else:
             self._logger = get_logger()
+
+    @staticmethod
+    def print(*args: Any, **kwargs: Any) -> None:
+        """Print a message to the console.
+
+        Parameters
+        ----------
+        *args : Any
+            Positional arguments to print.
+        **kwargs : Any
+            Keyword arguments to print.
+        """
+        if len(args) == 1 and isinstance(args[0], dict):
+            arg = json.dumps(args[0], default=str, ensure_ascii=False)
+            WaldiezBaseRunner._print(arg, **kwargs)
+        else:
+            WaldiezBaseRunner._print(*args, **kwargs)
 
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
@@ -830,11 +844,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     def uploads_root(self) -> str | Path | None:
         """Get the uploads root path for the runner."""
         return WaldiezBaseRunner._uploads_root
-
-    @property
-    def skip_patch_io(self) -> bool:
-        """Check if the runner is skipping patching IO."""
-        return WaldiezBaseRunner._skip_patch_io
 
     @classmethod
     def load(

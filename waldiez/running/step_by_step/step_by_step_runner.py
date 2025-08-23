@@ -210,8 +210,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         """Get the maximum event history size."""
         return self._config.max_event_history
 
-    # pylint: disable=no-self-use
-    def print(self, *args: Any, **kwargs: Any) -> None:
+    @staticmethod
+    def print(*args: Any, **kwargs: Any) -> None:
         """Print method.
 
         Parameters
@@ -221,7 +221,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs : Any
             Keyword arguments to print.
         """
-        WaldiezBaseRunner._print(*args, **kwargs)
+        WaldiezBaseRunner.print(*args, **kwargs)
 
     def add_to_history(self, event_info: dict[str, Any]) -> None:
         """Add an event to the history.

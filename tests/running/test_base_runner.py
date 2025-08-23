@@ -559,7 +559,6 @@ def test_base_runner_properties() -> None:
     assert runner.uploads_root is None
     assert not runner.running
     assert not runner.structured_io
-    assert not runner.skip_patch_io
 
 
 def test_base_runner_load(tmp_path: Path, waldiez_flow: WaldiezFlow) -> None:
@@ -584,4 +583,3 @@ def test_base_runner_load(tmp_path: Path, waldiez_flow: WaldiezFlow) -> None:
     assert runner.uploads_root is None
     assert not runner.running
     assert not runner.structured_io
-    assert not runner.skip_patch_io

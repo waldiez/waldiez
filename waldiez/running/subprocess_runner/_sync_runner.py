@@ -317,7 +317,7 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                 self.process.stdin.write(response)
                 self.process.stdin.flush()
 
-            self.logger.debug(f"Sent input response: {user_input}")
+            self.logger.debug(f"Sent {response_type}: {user_input}")
 
         except queue.Empty:
             self.logger.warning("Input request timed out")

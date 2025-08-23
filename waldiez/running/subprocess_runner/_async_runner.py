@@ -311,7 +311,7 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
                 self.process.stdin.write(response.encode())
                 await self.process.stdin.drain()
 
-            self.logger.debug(f"Sent input response: {user_input}")
+            self.logger.debug(f"Sent {response_type}: {user_input}")
 
         except asyncio.TimeoutError:
             self.logger.warning("Input request timed out")

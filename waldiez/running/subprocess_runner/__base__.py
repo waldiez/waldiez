@@ -195,7 +195,7 @@ class BaseSubprocessRunner:
     def create_input_response(
         self,
         response_type: str,
-        user_input: str,
+        user_input: Any,
         request_id: str | None = None,
     ) -> str:
         """Create input response for subprocess.
@@ -204,7 +204,7 @@ class BaseSubprocessRunner:
         ----------
         response_type : str
             Type of the response
-        user_input : str
+        user_input : Any
             User's input response
         request_id : str | None
             Request ID from the input request
@@ -214,15 +214,12 @@ class BaseSubprocessRunner:
         str
             JSON-formatted response
         """
-        response = {
-            "type": response_type,
-            "data": user_input,
-        }
+        response: dict[str, Any] = {"type": response_type, "data": user_input}
 
         if request_id:
             response["request_id"] = request_id
 
-        return json.dumps(response) + "\n"
+        return json.dumps(response, default=str, ensure_ascii=False) + "\n"
 
     def create_output_message(
         self, content: str, stream: str = "stdout", msg_type: str = "output"
