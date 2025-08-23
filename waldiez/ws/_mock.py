@@ -13,6 +13,9 @@ from typing import Any  # pragma: no cover
 class websockets:  # pragma: no cover
     # noinspection PyMethodMayBeStatic
     class ClientConnection:
+        async def __aenter__(self) -> "websockets.ClientConnection":
+            return self
+
         async def send(self, data: Any) -> None:
             pass
 

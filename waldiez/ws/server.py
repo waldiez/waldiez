@@ -67,6 +67,7 @@ class WaldiezWsServer:
         self,
         host: str = "localhost",
         port: int = 8765,
+        auto_reload: bool = False,
         workspace_dir: Path = CWD,
         max_clients: int = 1,
         allowed_origins: Sequence[re.Pattern[str]] | None = None,
@@ -80,6 +81,8 @@ class WaldiezWsServer:
             Server host address
         port : int
             Server port
+        auto_reload : bool
+            Enable automatic reloading of the server on code changes
         workspace_dir : Path
             Path to the workspace directory
         max_clients : int
@@ -101,6 +104,7 @@ class WaldiezWsServer:
         """
         self.host = host
         self.port = port
+        self.auto_reload = auto_reload and HAS_WATCHDOG
         self.workspace_dir = workspace_dir
         self.max_clients = max_clients
         self.allowed_origins = allowed_origins
@@ -263,7 +267,7 @@ class WaldiezWsServer:
 
         await self.session_manager.start()
         # Check port availability
-        if not is_port_available(self.port):
+        if not self.auto_reload and not is_port_available(self.port):
             logger.warning("Port %d is not available", self.port)
             self.port = get_available_port()
             logger.info("Using port %d", self.port)
@@ -435,6 +439,7 @@ async def run_server(
     server = WaldiezWsServer(
         host=host,
         port=port,
+        auto_reload=auto_reload,
         workspace_dir=workspace_dir,
         **server_kwargs,
     )

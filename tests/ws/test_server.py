@@ -499,6 +499,7 @@ class TestRunServer:
                 mock_server_class.assert_called_once_with(
                     host="localhost",
                     port=8765,
+                    auto_reload=False,
                     workspace_dir=Path.cwd(),
                 )
                 mock_server.start.assert_called_once()
@@ -680,6 +681,7 @@ class TestRunServer:
                 mock_server_class.assert_called_once_with(
                     host="0.0.0.0",
                     port=9000,
+                    auto_reload=False,
                     max_clients=10,
                     ping_interval=30.0,
                     workspace_dir=Path.cwd(),

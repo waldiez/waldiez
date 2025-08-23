@@ -656,7 +656,9 @@ class ClientManager:
             )
 
     async def _handle_runner_input_request(
-        self, session_id: str, data: dict[str, Any]
+        self,
+        session_id: str,
+        data: dict[str, Any],
     ) -> None:
         """Handle an input request from the runner."""
         request_id = str(data.get("request_id", ""))
@@ -667,15 +669,17 @@ class ClientManager:
             await self.session_manager.update_session_status(
                 session_id, WorkflowStatus.INPUT_WAITING
             )
-            await self.send_message(
-                UserInputRequestNotification(
-                    session_id=session_id,
-                    request_id=request_id,
-                    prompt=prompt,
-                    password=bool(data.get("password", False)),
-                    timeout=float(data.get("timeout", 120.0)),
-                )
+            notification = UserInputRequestNotification(
+                session_id=session_id,
+                request_id=request_id,
+                prompt=prompt,
+                password=bool(data.get("password", False)),
+                timeout=float(data.get("timeout", 120.0)),
             )
+            msg_dump = notification.model_dump(mode="json", fallback=str)
+            if data.get("type", "") == "debug_input_request":
+                msg_dump["type"] = "debug_input_request"
+            await self.send_message(msg_dump)
 
     # pylint: disable=line-too-long
     async def _handle_runner_debug(
