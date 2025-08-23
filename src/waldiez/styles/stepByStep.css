@@ -1,0 +1,352 @@
+.waldiez-step-by-step-view {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 35vw;
+  min-width: 320px;
+  max-width: 720px;
+  max-height: 520px;
+  background: var(--card-background);
+  color: var(--card-text);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius, 8px);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  z-index: 1000000;
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (width <= 600px) {
+  .waldiez-step-by-step-view {
+    width: 100%;
+    max-height: 100%;
+  }
+}
+
+@media screen and (height <= 600px) {
+  .waldiez-step-by-step-view {
+    max-height: 100%;
+  }
+}
+
+/* Header */
+.waldiez-step-by-step-view .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--card-background) 92%, var(--text-color) 8%);
+}
+
+.waldiez-step-by-step-view .header-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.waldiez-step-by-step-view .title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.waldiez-step-by-step-view .icon-bug {
+  color: #ea580c;
+}
+
+.waldiez-step-by-step-view .header-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.waldiez-step-by-step-view .header-toggle {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--card-text);
+  border: none !important;
+}
+
+.waldiez-step-by-step-view .badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--card-text);
+  background: color-mix(in srgb, var(--card-background) 84%, var(--text-color) 16%);
+  border: 1px solid var(--card-border);
+}
+
+/* Content */
+.waldiez-step-by-step-view .content {
+  padding: 12px;
+  overflow-y: auto;
+  display: grid;
+  gap: 16px;
+}
+
+/* Controls */
+.waldiez-step-by-step-view .controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Buttons (use your theme vars; pick two accent hues from your palette) */
+.waldiez-step-by-step-view .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--card-background) 90%, var(--text-color) 10%);
+  color: var(--card-text);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    transform 60ms ease;
+}
+
+.waldiez-step-by-step-view .btn:hover {
+  background: color-mix(in srgb, var(--card-background) 84%, var(--text-color) 16%);
+}
+
+.waldiez-step-by-step-view .btn:active {
+  transform: translateY(0);
+}
+
+.waldiez-step-by-step-view .btn:focus-visible,
+.waldiez-step-by-step-view .header-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--text-color) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.waldiez-step-by-step-view .btn-primary {
+  background: var(--captain-agent-color);
+  color: #fff;
+  border-color: color-mix(in srgb, var(--captain-agent-color) 70%, black);
+}
+
+.waldiez-step-by-step-view .btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.waldiez-step-by-step-view .btn-secondary {
+  background: color-mix(in srgb, var(--card-background) 88%, var(--text-color) 12%);
+}
+
+.waldiez-step-by-step-view .btn-outline {
+  background: transparent;
+  border-color: var(--card-border);
+}
+
+.waldiez-step-by-step-view .btn-danger {
+  background: var(--rag-user-proxy-agent-color);
+  color: #fff;
+  border-color: color-mix(in srgb, var(--rag-user-proxy-agent-color) 65%, black);
+}
+
+/* Cards / pending input */
+.waldiez-step-by-step-view .card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius, 8px);
+  padding: 10px;
+  background: var(--card-background);
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.waldiez-step-by-step-view .card--pending {
+  border-color: color-mix(in srgb, var(--captain-agent-color) 35%, var(--card-border));
+}
+
+.waldiez-step-by-step-view .card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Input row */
+.waldiez-step-by-step-view .input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.waldiez-step-by-step-view .input {
+  flex: 1;
+  min-width: 120px;
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card-background) 92%, var(--text-color) 8%);
+  color: var(--card-text);
+}
+
+.waldiez-step-by-step-view .input::placeholder {
+  color: var(--card-text-muted);
+}
+
+.waldiez-step-by-step-view .input:focus {
+  outline: 2px solid color-mix(in srgb, var(--captain-agent-color) 45%, transparent);
+  outline-offset: 0;
+}
+
+/* Stats */
+.waldiez-step-by-step-view .stats-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (width >= 780px) {
+  .waldiez-step-by-step-view .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.waldiez-step-by-step-view .stat {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius, 8px);
+  padding: 10px;
+  background: var(--card-background);
+}
+
+.waldiez-step-by-step-view .stat-title {
+  font-size: 12px;
+  color: var(--card-text-muted);
+}
+
+.waldiez-step-by-step-view .stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.waldiez-step-by-step-view .json {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius, 8px);
+
+  /* background: color-mix(in srgb, var(--card-background) 99%, var(--text-color) 18%); */
+  max-height: 230px;
+  overflow: auto;
+  padding: 10px;
+}
+
+.waldiez-step-by-step-view .pre {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  margin: 0;
+}
+
+.waldiez-step-by-step-view .codeblock {
+  background: color-mix(in srgb, var(--card-background) 90%, var(--text-color) 10%);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.waldiez-step-by-step-view .list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.waldiez-step-by-step-view .list-item {
+  border-top: 1px solid var(--card-border);
+  padding: 10px;
+}
+
+.waldiez-step-by-step-view .list-item:first-child {
+  border-top: 0;
+}
+
+.waldiez-step-by-step-view .summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.waldiez-step-by-step-view .empty {
+  padding: 10px;
+  font-size: 13px;
+  color: var(--card-text-muted);
+}
+
+/* Help */
+.waldiez-step-by-step-view .help {
+  display: grid;
+  gap: 10px;
+}
+
+.waldiez-step-by-step-view .help-group {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius, 8px);
+  padding: 10px;
+}
+
+.waldiez-step-by-step-view .help-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.waldiez-step-by-step-view .help-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.waldiez-step-by-step-view .help-list li {
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.waldiez-step-by-step-view .kbd {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--card-background) 82%, var(--text-color) 18%);
+  border: 1px solid var(--card-border);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  font-size: 12px;
+}
+
+.waldiez-step-by-step-view .alert {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius, 8px);
+  padding: 10px;
+
+  /* background: color-mix(in srgb, var(--card-background) 90%, var(--text-color) 10%); */
+}
+
+/* .waldiez-step-by-step-view .alert-danger {
+} */
+
+.waldiez-step-by-step-view .alert-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.waldiez-step-by-step-view .alert-desc {
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}

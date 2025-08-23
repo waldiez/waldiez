@@ -21,6 +21,7 @@ export { Modal } from "@waldiez/components/modal";
 export { NumberInput } from "@waldiez/components/numberInput";
 export * from "@waldiez/components/select";
 export * from "@waldiez/components/snackbar";
+export { StepByStepView } from "@waldiez/components/stepByStep";
 export { StringList } from "@waldiez/components/stringList";
 export { TabItem, TabItems } from "@waldiez/components/tabs";
 export { TextareaInput } from "@waldiez/components/textareaInput";

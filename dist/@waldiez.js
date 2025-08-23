@@ -16,18 +16,18 @@ import MonacoEditor, { loader } from "@monaco-editor/react";
 import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
+import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
+import ReactSelect from "react-select";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import { ResponsiveContainer } from "recharts";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import diff from "microdiff";
 import { temporal } from "zundo";
 import { createStore } from "zustand";
-import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
-import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
-import rehypeHighlight from "rehype-highlight";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
-import { ResponsiveContainer } from "recharts";
 import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
@@ -662,14 +662,14 @@ class PrintMessageHandler {
             return void 0;
           }
         }
-        const allParticipants = parsedData.participants.map((p) => p.name).filter(Boolean);
-        const userParticipants = parsedData.participants.filter((p) => p.humanInputMode?.toUpperCase() === "ALWAYS").map((p) => p.name).filter(Boolean);
+        const allParticipants = parsedData.participants.map((p) => ({
+          name: p.name,
+          id: p.id || p.name,
+          user: p.humanInputMode?.toUpperCase() === "ALWAYS"
+        })).filter(Boolean);
         return {
           isWorkflowEnd: false,
-          participants: {
-            all: allParticipants,
-            users: userParticipants
-          }
+          participants: allParticipants
         };
       }
     } catch (error) {
@@ -6290,144 +6290,6 @@ const SnackbarProvider = ({ children }) => {
       ([flowId, snackbar]) => snackbar ? /* @__PURE__ */ jsx(Snackbar, { ...snackbar, onClose: () => handleClose(flowId) }, snackbar.id) : null
     )
   ] });
-};
-const WaldiezContext = createContext(null);
-function useWaldiez(selector) {
-  const store = useContext(WaldiezContext);
-  if (!store) {
-    throw new Error("Missing WaldiezContext.Provider in the tree");
-  }
-  return useStoreWithEqualityFn(store, selector, shallow);
-}
-const useWaldiezHistory = (selector) => {
-  const store = useContext(WaldiezContext);
-  if (!store) {
-    throw new Error("Missing WaldiezContext.Provider in the tree");
-  }
-  return useStoreWithEqualityFn(store.temporal, selector, shallow);
-};
-const getAgentNode = (agentType, position, parentId) => {
-  const newAgent = WaldiezAgent.create(agentType);
-  const agentNode = agentMapper.asNode(newAgent, position);
-  agentNode.data.parentId = parentId;
-  if (agentType === "rag_user_proxy") {
-    const agentExtras = new WaldiezAgentRagUserData();
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  } else if (agentType === "reasoning") {
-    const agentExtras = new WaldiezAgentReasoningData();
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  } else if (agentType === "captain") {
-    const agentExtras = new WaldiezAgentCaptainData();
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  } else if (agentType === "group_manager") {
-    const agentExtras = new WaldiezAgentGroupManagerData();
-    agentExtras.groupName = "Group";
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  }
-  if (parentId) {
-    agentNode.parentId = parentId;
-    agentNode.extent = "parent";
-  }
-  return agentNode;
-};
-const getAgentConnections = (nodes, edges, nodeId, options) => {
-  if (!options) {
-    options = {
-      sourcesOnly: false,
-      targetsOnly: false
-    };
-  }
-  const sourceConnectedNodes = [];
-  const sourceConnectionEdges = [];
-  const targetConnectedNodes = [];
-  const targetConnectionEdges = [];
-  for (const edge of edges) {
-    const { sourceNode, targetNode } = getAgentEdgeConnections(nodeId, edge, nodes, options);
-    if (sourceNode) {
-      sourceConnectedNodes.push(sourceNode);
-      sourceConnectionEdges.push(edge);
-    }
-    if (targetNode) {
-      targetConnectedNodes.push(targetNode);
-      targetConnectionEdges.push(edge);
-    }
-  }
-  return {
-    sources: {
-      nodes: sourceConnectedNodes,
-      edges: sourceConnectionEdges
-    },
-    targets: {
-      nodes: targetConnectedNodes,
-      edges: targetConnectionEdges
-    }
-  };
-};
-const getAgentEdgeConnections = (nodeId, edge, nodes, options) => {
-  let targetNode;
-  let sourceNode;
-  if (edge.target === nodeId && !options.targetsOnly) {
-    sourceNode = nodes.find((node) => node.id === edge.source);
-  }
-  if (edge.source === nodeId && !options.sourcesOnly) {
-    targetNode = nodes.find((node) => node.id === edge.target);
-  }
-  return { sourceNode, targetNode };
-};
-const calculateNewNodePosition = (rfInstance, flowWrapper, currentNodesCount, entriesDistance) => {
-  const zoom = rfInstance?.getZoom() ?? 1;
-  const flowWrapperRect = flowWrapper.getBoundingClientRect();
-  const canvasWidth = flowWrapperRect.width / zoom;
-  const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
-  const x = currentNodesCount % maxNodesPerRow * entriesDistance.x;
-  let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance.y;
-  if (y === 0) {
-    y += 10;
-  } else {
-    y -= 5;
-  }
-  return { x, y };
-};
-const getNewNodePosition = (currentNodesCount, flowId, rfInstance, entriesDistance = { x: 200, y: 140 }) => {
-  const flowRoot = getFlowRoot(flowId);
-  if (!flowRoot) {
-    return { x: 0, y: 0 };
-  }
-  const flowWrapper = flowRoot.querySelector(".react-flow-wrapper");
-  if (!flowWrapper) {
-    return { x: 0, y: 0 };
-  }
-  return calculateNewNodePosition(
-    rfInstance,
-    flowWrapper,
-    currentNodesCount,
-    entriesDistance
-  );
-};
-const setViewPortTopLeft = (rfInstance) => {
-  if (rfInstance) {
-    const zoom = rfInstance.getZoom();
-    rfInstance.setViewport({
-      zoom,
-      x: 20,
-      y: 40
-    }).then(() => {
-    });
-  }
-};
-const reArrangeNodes = (nodes, flowId, nodeType, rfInstance) => {
-  let nodesAdded = 0;
-  const newNodes = [];
-  nodes.forEach((node) => {
-    if (node.type === nodeType) {
-      const position = getNewNodePosition(nodesAdded, flowId, rfInstance);
-      newNodes.push({ ...node, position });
-      nodesAdded++;
-    } else {
-      newNodes.push(node);
-    }
-  });
-  return newNodes;
 };
 function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
   return function handleEvent(event) {
@@ -13491,6 +13353,156 @@ const NumberInput = memo((props) => {
   ] });
 });
 NumberInput.displayName = "NumberInput";
+function controlToResponse(control) {
+  if (typeof control === "string") {
+    return control;
+  }
+  switch (control.kind) {
+    case "continue":
+      return "c";
+    case "step":
+      return "s";
+    case "run":
+      return "r";
+    case "quit":
+      return "q";
+    case "info":
+      return "i";
+    case "help":
+      return "h";
+    case "stats":
+      return "st";
+    case "add_breakpoint":
+      return "ab";
+    case "remove_breakpoint":
+      return "rb";
+    case "list_breakpoints":
+      return "lb";
+    case "clear_breakpoints":
+      return "cb";
+    case "raw":
+      return control.value;
+    default: {
+      const _never = control;
+      return String(_never);
+    }
+  }
+}
+const StepByStepView = ({ stepByStep }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [responseText, setResponseText] = useState("");
+  const onInputChange = useCallback((e) => {
+    setResponseText(e.target.value);
+  }, []);
+  const onInputKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        stepByStep?.handlers.respond({
+          id: nanoid(),
+          timestamp: Date.now(),
+          data: responseText,
+          request_id: stepByStep?.activeRequest?.request_id,
+          type: "input_response"
+        });
+      }
+    },
+    [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
+  );
+  const onRespond = useCallback(() => {
+    stepByStep?.handlers.respond({
+      id: nanoid(),
+      timestamp: Date.now(),
+      data: responseText,
+      request_id: stepByStep?.activeRequest?.request_id,
+      type: "input_response"
+    });
+  }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
+  const onControl = useCallback(
+    (action) => {
+      const response = controlToResponse({ kind: action });
+      stepByStep?.handlers.sendControl({
+        data: response,
+        request_id: stepByStep?.activeRequest?.request_id || "<unknown>"
+      });
+    },
+    [stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
+  );
+  const reducedHistory = stepByStep?.eventHistory.map((entry) => ({
+    data: entry.data || entry.message || entry.content || entry
+  })).map((entry) => entry.data);
+  if (!stepByStep?.active) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", children: [
+    /* @__PURE__ */ jsxs("div", { className: "header", children: [
+      /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
+        /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
+        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" })
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "header-right", children: /* @__PURE__ */ jsx(
+        "button",
+        {
+          title: isExpanded ? "Collapse" : "Expand",
+          type: "button",
+          onClick: () => setIsExpanded(!isExpanded),
+          className: "header-toggle",
+          children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
+        }
+      ) })
+    ] }),
+    isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
+      stepByStep.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+        /* @__PURE__ */ jsxs("button", { className: "btn btn-primary", onClick: () => onControl("continue"), children: [
+          /* @__PURE__ */ jsx(FaStepForward, {}),
+          " ",
+          /* @__PURE__ */ jsx("span", { children: "Continue" })
+        ] }),
+        /* @__PURE__ */ jsxs("button", { className: "btn btn-secondary", onClick: () => onControl("run"), children: [
+          /* @__PURE__ */ jsx(FaPlay, {}),
+          " ",
+          /* @__PURE__ */ jsx("span", { children: "Run" })
+        ] }),
+        /* @__PURE__ */ jsxs("button", { className: "btn btn-danger", onClick: () => onControl("quit"), children: [
+          /* @__PURE__ */ jsx(FaStop, {}),
+          " ",
+          /* @__PURE__ */ jsx("span", { children: "Quit" })
+        ] })
+      ] }),
+      stepByStep.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+        /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
+        /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              className: "input",
+              placeholder: "Type your response… (Enter to send)",
+              value: responseText,
+              type: stepByStep.activeRequest.password === true ? "password" : "text",
+              onChange: onInputChange,
+              onKeyDown: onInputKeyDown
+            }
+          ),
+          /* @__PURE__ */ jsx("button", { className: "btn btn-primary", onClick: onRespond, children: "Send" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
+        /* @__PURE__ */ jsx(SectionTitle, { children: "Messages" }),
+        /* @__PURE__ */ jsx(JsonArea, { value: reducedHistory, placeholder: "No messages yet" })
+      ] })
+    ] })
+  ] });
+};
+function safeStringify(v) {
+  try {
+    return JSON.stringify(v, null, 2);
+  } catch {
+    return String(v);
+  }
+}
+const JsonArea = ({ value, placeholder = "" }) => /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: value ? safeStringify(value) : placeholder }) });
+const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title", children });
+StepByStepView.displayName = "WaldiezStepByStepView";
 const useStringList = (props) => {
   const [newEntry, setNewEntry] = useState("");
   const { items, onItemAdded, onItemChange, onItemDeleted } = props;
@@ -14552,6 +14564,144 @@ const Wizard = memo((props) => {
 });
 WizardStep.displayName = "WizardStep";
 Wizard.displayName = "Wizard";
+const WaldiezContext = createContext(null);
+function useWaldiez(selector) {
+  const store = useContext(WaldiezContext);
+  if (!store) {
+    throw new Error("Missing WaldiezContext.Provider in the tree");
+  }
+  return useStoreWithEqualityFn(store, selector, shallow);
+}
+const useWaldiezHistory = (selector) => {
+  const store = useContext(WaldiezContext);
+  if (!store) {
+    throw new Error("Missing WaldiezContext.Provider in the tree");
+  }
+  return useStoreWithEqualityFn(store.temporal, selector, shallow);
+};
+const getAgentNode = (agentType, position, parentId) => {
+  const newAgent = WaldiezAgent.create(agentType);
+  const agentNode = agentMapper.asNode(newAgent, position);
+  agentNode.data.parentId = parentId;
+  if (agentType === "rag_user_proxy") {
+    const agentExtras = new WaldiezAgentRagUserData();
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  } else if (agentType === "reasoning") {
+    const agentExtras = new WaldiezAgentReasoningData();
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  } else if (agentType === "captain") {
+    const agentExtras = new WaldiezAgentCaptainData();
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  } else if (agentType === "group_manager") {
+    const agentExtras = new WaldiezAgentGroupManagerData();
+    agentExtras.groupName = "Group";
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  }
+  if (parentId) {
+    agentNode.parentId = parentId;
+    agentNode.extent = "parent";
+  }
+  return agentNode;
+};
+const getAgentConnections = (nodes, edges, nodeId, options) => {
+  if (!options) {
+    options = {
+      sourcesOnly: false,
+      targetsOnly: false
+    };
+  }
+  const sourceConnectedNodes = [];
+  const sourceConnectionEdges = [];
+  const targetConnectedNodes = [];
+  const targetConnectionEdges = [];
+  for (const edge of edges) {
+    const { sourceNode, targetNode } = getAgentEdgeConnections(nodeId, edge, nodes, options);
+    if (sourceNode) {
+      sourceConnectedNodes.push(sourceNode);
+      sourceConnectionEdges.push(edge);
+    }
+    if (targetNode) {
+      targetConnectedNodes.push(targetNode);
+      targetConnectionEdges.push(edge);
+    }
+  }
+  return {
+    sources: {
+      nodes: sourceConnectedNodes,
+      edges: sourceConnectionEdges
+    },
+    targets: {
+      nodes: targetConnectedNodes,
+      edges: targetConnectionEdges
+    }
+  };
+};
+const getAgentEdgeConnections = (nodeId, edge, nodes, options) => {
+  let targetNode;
+  let sourceNode;
+  if (edge.target === nodeId && !options.targetsOnly) {
+    sourceNode = nodes.find((node) => node.id === edge.source);
+  }
+  if (edge.source === nodeId && !options.sourcesOnly) {
+    targetNode = nodes.find((node) => node.id === edge.target);
+  }
+  return { sourceNode, targetNode };
+};
+const calculateNewNodePosition = (rfInstance, flowWrapper, currentNodesCount, entriesDistance) => {
+  const zoom = rfInstance?.getZoom() ?? 1;
+  const flowWrapperRect = flowWrapper.getBoundingClientRect();
+  const canvasWidth = flowWrapperRect.width / zoom;
+  const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
+  const x = currentNodesCount % maxNodesPerRow * entriesDistance.x;
+  let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance.y;
+  if (y === 0) {
+    y += 10;
+  } else {
+    y -= 5;
+  }
+  return { x, y };
+};
+const getNewNodePosition = (currentNodesCount, flowId, rfInstance, entriesDistance = { x: 200, y: 140 }) => {
+  const flowRoot = getFlowRoot(flowId);
+  if (!flowRoot) {
+    return { x: 0, y: 0 };
+  }
+  const flowWrapper = flowRoot.querySelector(".react-flow-wrapper");
+  if (!flowWrapper) {
+    return { x: 0, y: 0 };
+  }
+  return calculateNewNodePosition(
+    rfInstance,
+    flowWrapper,
+    currentNodesCount,
+    entriesDistance
+  );
+};
+const setViewPortTopLeft = (rfInstance) => {
+  if (rfInstance) {
+    const zoom = rfInstance.getZoom();
+    rfInstance.setViewport({
+      zoom,
+      x: 20,
+      y: 40
+    }).then(() => {
+    });
+  }
+};
+const reArrangeNodes = (nodes, flowId, nodeType, rfInstance) => {
+  let nodesAdded = 0;
+  const newNodes = [];
+  nodes.forEach((node) => {
+    if (node.type === nodeType) {
+      const position = getNewNodePosition(nodesAdded, flowId, rfInstance);
+      newNodes.push({ ...node, position });
+      nodesAdded++;
+    } else {
+      newNodes.push(node);
+    }
+  });
+  return newNodes;
+};
 const edgeCommonStyle = (edgeType, color) => ({
   markerEnd: edgeType !== "nested" ? {
     type: MarkerType.ArrowClosed,
@@ -17408,7 +17558,7 @@ const ChatModal = memo((props) => {
       className: "chat-modal-action clickable",
       onClick: chat.handlers.onInterrupt,
       title: "Interrupt",
-      children: /* @__PURE__ */ jsx(FaStop, { size: 18 })
+      children: /* @__PURE__ */ jsx(FaStop$1, { size: 18 })
     }
   ) : chat?.timeline ? /* @__PURE__ */ jsx(
     "div",
@@ -29844,7 +29994,7 @@ const SideBar = (props) => {
   );
 };
 const WaldiezFlowView = memo((props) => {
-  const { flowId, skipExport, skipImport, skipHub, chat } = props;
+  const { flowId, skipExport, skipImport, skipHub, chat, stepByStep } = props;
   const rfParent = useRef(null);
   const selectedNodeType = useRef("agent");
   const [_selectedNodeTypeToggle, setSelectedNodeTypeToggle] = useState(false);
@@ -30017,6 +30167,7 @@ const WaldiezFlowView = memo((props) => {
             }
           ) })
         ] }),
+        /* @__PURE__ */ jsx(StepByStepView, { flowId, stepByStep }),
         /* @__PURE__ */ jsx(ChatModal, { flowId, chat, isDarkMode: isDark }),
         isImportModalOpen && /* @__PURE__ */ jsx(
           ImportFlowModal,

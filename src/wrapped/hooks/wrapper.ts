@@ -2,42 +2,36 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines-per-function */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { nanoid } from "nanoid";
-
-import { WaldiezChatUserInput, WaldiezTimelineData, showSnackbar } from "@waldiez/components";
-import { WaldiezChatMessage } from "@waldiez/types";
-import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-
-import { useWebSocketActions } from "./actions";
 import {
-    ServerMessage,
-    SubprocessOutputMsg,
-    WaldiezWrapperActions,
-    WaldiezWrapperState,
-    isConvertWorkflowResponse,
-    isErrorResponse,
-    isSaveFlowResponse,
-    isSubprocessOutput,
-} from "./types";
+    WaldiezChatUserInput,
+    WaldiezDebugInputResponse,
+    WaldiezStepByStep,
+    WaldiezTimelineData,
+} from "@waldiez/components";
+import { WaldiezChatMessage } from "@waldiez/types";
+
+import { useMessageHandler } from "./messageHandler";
+import { useWebSocketSender } from "./sender";
+import { WaldiezWrapperActions, WaldiezWrapperState } from "./types";
+import { useUIMessageProcessor } from "./uiProcessor";
 import { useWebsocket } from "./ws";
 
 export const useWaldiezWrapper = ({
     flowId,
     wsUrl = "ws://localhost:8765",
+    onError = undefined,
 }: {
     flowId: string;
     wsUrl: string;
+    onError?: (error: any) => void;
 }): [WaldiezWrapperState, WaldiezWrapperActions] => {
-    const inputRequestId = useRef<string | undefined>(undefined);
-    const expectingUserInput = useRef<boolean>(false);
-
-    const [userParticipants, setUserParticipants] = useState<string[]>([]);
-    const [timeline, setTimeline] = useState<WaldiezTimelineData | undefined>(undefined);
+    // Workflow state
     const [isRunning, setIsRunning] = useState(false);
     const [isDebugging, setIsDebugging] = useState(false);
+    const [participants, setParticipants] = useState<{ name: string; id: string; user: boolean }[]>([]);
+    const [timeline, setTimeline] = useState<WaldiezTimelineData | undefined>(undefined);
     const [messages, setMessages] = useState<WaldiezChatMessage[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [inputPrompt, setInputPrompt] = useState<
@@ -49,212 +43,118 @@ export const useWaldiezWrapper = ({
         | undefined
     >(undefined);
 
-    const serverBaseUrl = window.location.protocol + "//" + window.location.host;
-
     const { sendJson, connected, setMessageHandler } = useWebsocket({
         wsUrl,
-        onError: e => console.error("WS error", e),
+        onError: e => console.error("WebSocket error:", e),
         autoPingMs: 25000,
     });
 
+    // Message handler - manages sessions and triggers state changes
+    const { handleMessage, getSessionId, getPendingInputId, clearPendingInput } = useMessageHandler({
+        onRunStart: () => {
+            setIsRunning(true);
+            setIsDebugging(false);
+        },
+        onDebugStart: () => {
+            setIsRunning(false);
+            setIsDebugging(true);
+        },
+        onWorkflowComplete: () => {
+            setIsRunning(false);
+            setIsDebugging(false);
+            setInputPrompt(undefined);
+        },
+        onInputRequest: _requestId => {
+            // Input prompt will be set by UI processor
+        },
+        onError: errorMsg => {
+            setError(errorMsg);
+            setIsRunning(false);
+            setIsDebugging(false);
+            setInputPrompt(undefined);
+            onError?.(errorMsg);
+        },
+    });
+
+    // WebSocket sender - pure actions
     const {
-        isRunning: actionsRunning,
-        isDebugging: actionsDebugging,
-        handleIncoming, // message pump (parsed server frames)
         runWorkflow,
         stepRunWorkflow,
-        // stepControl,
-        // breakpointControl,
+        sendDebugControl,
+        sendDebugUserInput,
         sendUserInput,
         stopWorkflow,
         saveFlow,
         convertWorkflow,
         uploadFiles,
-        // getStatus,
-
-        // ping,
-    } = useWebSocketActions({
+    } = useWebSocketSender({
         sendJson,
-        onMsg: m => {
-            if (m.type === "workflow_completion" || m.type === "subprocess_completion") {
-                setIsRunning(false);
-                setIsDebugging(false);
-            }
-        },
-        onSession: () => {},
-        setPrompt: p => {
-            if (!p) {
-                inputRequestId.current = undefined;
-                setInputPrompt(undefined);
-                return;
-            }
-            inputRequestId.current = p.requestId;
-            expectingUserInput.current = true;
-            setInputPrompt({
-                prompt: p.prompt ?? "Enter your input:",
-                request_id: p.requestId,
-                password: p.password ?? false,
-            });
-        },
+        getSessionId,
+        getPendingInputId,
+        clearPendingInput,
     });
 
-    // keep local flags in sync (optional)
-    useEffect(() => {
-        if (isRunning !== actionsRunning) {
-            setIsRunning(actionsRunning);
-        }
-        if (isDebugging !== actionsDebugging) {
-            setIsDebugging(actionsDebugging);
-        }
-    }, [actionsRunning, actionsDebugging]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    const handleGenericMessage = useCallback(
-        // eslint-disable-next-line max-statements
-        (data: ServerMessage) => {
-            // For image previews
-            const imageUrl = inputRequestId.current
-                ? `${serverBaseUrl}/uploads/${inputRequestId.current}.png`
-                : undefined;
-
-            const result = WaldiezChatMessageProcessor.process(
-                JSON.stringify(data),
-                inputRequestId.current,
-                imageUrl,
-            );
-
-            if (result?.timeline) {
-                setTimeline(result.timeline);
-                return;
-            }
-            if (result?.message) {
-                const newMessage = result.message as WaldiezChatMessage;
-                if (!isDebugging) {
-                    setMessages(prev => [...prev, newMessage]);
-                }
-            }
-            if (result?.participants?.users) {
-                setUserParticipants(result.participants.users);
-            }
-
-            // handle embedded input requests detected by the processor
-            if (result?.message?.type === "input_request") {
-                if (!isDebugging) {
-                    const requestId = result.requestId || result.message.request_id;
-                    const prompt = result.message.prompt || "Enter your message:";
-                    const password = result.message.password || false;
-                    if (requestId) {
-                        inputRequestId.current = requestId;
-                    }
-                    expectingUserInput.current = true;
-                    setInputPrompt({
-                        prompt,
-                        request_id: inputRequestId.current || "<unknown>",
-                        password,
-                    });
-                }
-            }
+    // Step-by-step state - simplified to avoid infinite loops
+    const [stepByStepState, setStepByStepState] = useState<WaldiezStepByStep>(() => ({
+        active: false,
+        stepMode: false,
+        autoContinue: false,
+        breakpoints: [],
+        eventHistory: [],
+        pendingControlInput: null,
+        activeRequest: null,
+        handlers: {
+            sendControl: () => {}, // Will be updated by main.tsx
+            respond: () => {}, // Will be updated by main.tsx
         },
-        [isDebugging, serverBaseUrl],
+    }));
+
+    // Create the current step-by-step state with live handlers and debugging status
+    const currentStepByStepState = useMemo(
+        () => ({
+            ...stepByStepState,
+            active: isDebugging,
+            handlers: {
+                sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => {
+                    sendDebugControl(input);
+                    setStepByStepState(prev => ({
+                        ...prev,
+                        pendingControlInput: null,
+                        activeRequest: null,
+                    }));
+                },
+                respond: (response: WaldiezChatUserInput) => {
+                    sendDebugUserInput(response);
+                    setStepByStepState(prev => ({
+                        ...prev,
+                        activeRequest: null,
+                        pendingControlInput: null,
+                    }));
+                },
+            },
+        }),
+        [stepByStepState, isDebugging, sendDebugControl, sendDebugUserInput],
     );
 
-    const handleSaveResult = useCallback(
-        (data: { success: boolean; error?: string; file_path?: string }) => {
-            if (data.success === false) {
-                showSnackbar({
-                    message: "Error saving file",
-                    details: data.error || null,
-                    level: "error",
-                    flowId,
-                    withCloseButton: true,
-                    duration: 5000,
-                });
-            } else {
-                showSnackbar({
-                    message: "File saved successfully",
-                    details: data.file_path || null,
-                    level: "success",
-                    flowId,
-                    withCloseButton: true,
-                    duration: 3000,
-                });
-            }
-        },
-        [flowId],
-    );
+    // UI message processor - handles UI-specific message processing
+    const { processUIMessage } = useUIMessageProcessor({
+        flowId,
+        isRunning,
+        isDebugging,
+        setTimeline,
+        setMessages,
+        setParticipants,
+        setInputPrompt,
+        setError,
+        getPendingInputId,
+        stepByStepState,
+        setStepByStepState,
+    });
 
-    const handleConvertResult = useCallback(
-        (data: { success: boolean; error?: string; converted_data?: string; output_path?: string }) => {
-            if (data.success === false) {
-                showSnackbar({
-                    message: "Error converting file",
-                    details: data.error || null,
-                    level: "error",
-                    flowId,
-                    withCloseButton: true,
-                    duration: 3000,
-                });
-            } else {
-                showSnackbar({
-                    message: "File converted successfully",
-                    details: data.output_path || null,
-                    level: "success",
-                    flowId,
-                    withCloseButton: true,
-                    duration: 3000,
-                });
-            }
-        },
-        [flowId],
-    );
-
-    const handleFlowError = useCallback(
-        (data: { error?: string; details?: any }) => {
-            const msg =
-                data.error ||
-                (typeof data.details === "string" ? data.details : JSON.stringify(data.details || {}));
-            if (msg) {
-                setError(msg);
-                showSnackbar({
-                    message: "Error",
-                    details: msg,
-                    level: "error",
-                    flowId,
-                    withCloseButton: true,
-                    duration: 3000,
-                });
-
-                const errorMessage: WaldiezChatMessage = {
-                    id: nanoid(),
-                    timestamp: new Date().toISOString(),
-                    type: "error",
-                    content: [{ type: "text", text: msg }],
-                };
-                setMessages(prev => [...prev, errorMessage]);
-                setIsRunning(false);
-                setInputPrompt(undefined);
-            }
-        },
-        [flowId],
-    );
-
-    const handleSubprocessOutput = useCallback(
-        (data: SubprocessOutputMsg) => {
-            try {
-                const parsedContent = JSON.parse(data.content);
-                handleGenericMessage(parsedContent);
-            } catch {
-                // handleGenericMessage(JSON.parse(data.content));
-            }
-        },
-        [handleGenericMessage],
-    );
-
+    // Main WebSocket message handler
     const onWsMessage = useCallback(
         (event: MessageEvent) => {
-            // First let the new actions pump parse/manage session/input
-            handleIncoming(event);
-
-            let data: ServerMessage | undefined;
+            let data;
             try {
                 data = JSON.parse(event.data);
             } catch {
@@ -263,71 +163,38 @@ export const useWaldiezWrapper = ({
             if (!data || typeof data !== "object" || !("type" in data)) {
                 return;
             }
-            switch (data.type) {
-                case "save_flow_response":
-                    if (isSaveFlowResponse(data)) {
-                        handleSaveResult(data);
-                    }
-                    // handleSaveResult(data);
-                    break;
 
-                case "convert_workflow_response":
-                    if (isConvertWorkflowResponse(data)) {
-                        handleConvertResult(data);
-                    }
-                    break;
+            // Process message for session/state management
+            handleMessage(data);
 
-                case "error":
-                    setIsRunning(false);
-                    setInputPrompt(undefined);
-                    if (isErrorResponse(data)) {
-                        handleFlowError({ error: data.error, details: data.details });
-                    } else {
-                        handleFlowError({ error: "Unknown error shape", details: data });
-                    }
-                    break;
-
-                case "workflow_completion":
-                case "subprocess_completion":
-                    setIsRunning(false);
-                    setIsDebugging(false);
-                    setInputPrompt(undefined);
-                    break;
-                case "subprocess_output":
-                    if (isSubprocessOutput(data)) {
-                        handleSubprocessOutput(data);
-                    }
-                    break;
-                default:
-                    handleGenericMessage(data);
-                    break;
-            }
+            // Process message for UI updates
+            processUIMessage(data);
         },
-        [
-            handleIncoming,
-            handleSaveResult,
-            handleConvertResult,
-            handleFlowError,
-            handleGenericMessage,
-            handleSubprocessOutput,
-        ],
+        [handleMessage, processUIMessage],
     );
 
-    // register message handler with the socket
+    // Register message handler
     useEffect(() => {
         setMessageHandler(onWsMessage);
     }, [onWsMessage, setMessageHandler]);
 
-    // reset
+    // Reset function
     const reset = useCallback(() => {
         setMessages([]);
-        setUserParticipants([]);
+        setParticipants([]);
         setInputPrompt(undefined);
-        inputRequestId.current = undefined;
-        expectingUserInput.current = false;
-    }, []);
+        setError(null);
+        clearPendingInput();
+        // Reset step-by-step state
+        setStepByStepState(prev => ({
+            ...prev,
+            eventHistory: [],
+            pendingControlInput: null,
+            activeRequest: null,
+        }));
+    }, [clearPendingInput]);
 
-    // public actions (compat names)
+    // Public API
     const handleRun = useCallback(
         (flow: string) => {
             reset();
@@ -344,31 +211,6 @@ export const useWaldiezWrapper = ({
         [reset, stepRunWorkflow],
     );
 
-    const handleStop = useCallback(() => {
-        stopWorkflow();
-    }, [stopWorkflow]);
-
-    const handleSave = useCallback(
-        (flow: string, filename?: string, forceOverwrite = false) => {
-            saveFlow(flow, filename, forceOverwrite);
-        },
-        [saveFlow],
-    );
-
-    const handleUpload = useCallback(
-        async (files: File[]) => {
-            return uploadFiles(files);
-        },
-        [uploadFiles],
-    );
-
-    const handleConvert = useCallback(
-        (flow: string, to: "py" | "ipynb", outputPath?: string | null) => {
-            convertWorkflow(flow, to, outputPath);
-        },
-        [convertWorkflow],
-    );
-
     const handleUserInput = useCallback(
         (input: WaldiezChatUserInput) => {
             sendUserInput(input);
@@ -380,21 +222,22 @@ export const useWaldiezWrapper = ({
         {
             timeline,
             messages,
-            userParticipants,
+            participants,
             isRunning,
             isDebugging,
             connected,
             error,
             inputPrompt,
+            stepByStepState: currentStepByStepState,
         },
         {
-            handleRun,
-            handleStepRun,
-            handleStop,
-            handleSave,
-            handleUpload,
-            handleConvert,
-            handleUserInput,
+            run: handleRun,
+            stepRun: handleStepRun,
+            stop: stopWorkflow,
+            save: saveFlow,
+            upload: uploadFiles,
+            convert: convertWorkflow,
+            userInput: handleUserInput,
             sendMessage: sendJson,
             reset,
         },

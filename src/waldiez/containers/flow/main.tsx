@@ -6,6 +6,7 @@ import { Background, BackgroundVariant, Controls, ReactFlow, Viewport } from "@x
 
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { StepByStepView } from "@waldiez/components";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";
@@ -28,7 +29,7 @@ type WaldiezFlowViewProps = {
  * Main flow view component for the Waldiez application
  */
 export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowViewProps) => {
-    const { flowId, skipExport, skipImport, skipHub, chat } = props;
+    const { flowId, skipExport, skipImport, skipHub, chat, stepByStep } = props;
 
     // Refs
     const rfParent = useRef<HTMLDivElement | null>(null);
@@ -253,7 +254,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                 </div>
             </div>
 
-            {/* <div className="step-by-step"></div> */}
+            <StepByStepView flowId={flowId} stepByStep={stepByStep} />
 
             {/* Modals */}
             <ChatModal flowId={flowId} chat={chat} isDarkMode={isDark} />

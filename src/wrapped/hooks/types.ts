@@ -4,16 +4,51 @@
  */
 import { WaldiezChatMessage, WaldiezChatUserInput, WaldiezTimelineData } from "@waldiez/types";
 
+type ExecMode = "standard" | "step_by_step";
+
 export type ServerMessage =
-    | { type: "save_flow_response"; success: boolean; error?: string; file_path?: string }
+    | { type: "run_workflow_response"; success: boolean; session_id: string; error?: string }
+    | {
+          type: "step_run_workflow_response";
+          success: boolean;
+          session_id: string;
+          auto_continue: boolean;
+          breakpoints: string[];
+          error?: string;
+      }
+    | {
+          type: "stop_workflow_response";
+          success: boolean;
+          session_id: string;
+          error?: string;
+          forced?: boolean;
+      }
     | {
           type: "convert_workflow_response";
           success: boolean;
-          error?: string;
           converted_data?: string;
+          target_format: "py" | "ipynb";
           output_path?: string;
+          error?: string;
       }
-    | { type: "error"; success: false; error?: string; error_type?: string; details?: any }
+    | { type: "save_flow_response"; success: boolean; file_path?: string; error?: string }
+    | {
+          type: "upload_file_response";
+          success: boolean;
+          file_path?: string;
+          file_size?: number;
+          error?: string;
+      }
+    | {
+          type: "status_response";
+          success: boolean;
+          server_status: any;
+          workflow_status?: string | null;
+          session_id?: string | null;
+      }
+    | { type: "pong"; success: boolean; echo_data: any; server_time: number }
+    | { type: "error"; success: false; error_code: number; error_type: string; error: string; details?: any }
+    // notifications
     | {
           type: "input_request";
           session_id: string;
@@ -22,13 +57,29 @@ export type ServerMessage =
           password?: boolean;
           timeout?: number;
       }
-    | { type: "subprocess_output"; session_id: string; stream: "stdout" | "stderr"; content: string }
+    | {
+          type: "workflow_status";
+          session_id: string;
+          status: string;
+          execution_mode: ExecMode;
+          details?: string;
+      }
     | {
           type: "workflow_completion";
           session_id: string;
           success: boolean;
           exit_code?: number;
+          results?: any[];
+          execution_time?: number;
           error?: string;
+      }
+    | {
+          type: "subprocess_output";
+          session_id: string;
+          stream: "stdout" | "stderr";
+          content: string;
+          subprocess_type?: "output" | "error" | "debug";
+          context?: any;
       }
     | {
           type: "subprocess_completion";
@@ -36,28 +87,46 @@ export type ServerMessage =
           success: boolean;
           exit_code: number;
           message: string;
+          context?: any;
+      }
+    | { type: "step_debug"; session_id: string; debug_type: "stats" | "help" | "error" | "info"; data: any }
+    | {
+          type: "breakpoint_notification";
+          session_id: string;
+          action: "added" | "removed" | "cleared" | "list";
+          event_type?: string | null;
+          breakpoints?: string[];
+          message?: string;
+      }
+    | {
+          type: "connection";
+          status: "connected" | "disconnected" | "error";
+          client_id: string;
+          server_time: number;
+          message?: string;
       }
     | { type: string; [k: string]: any }; // catch-all for chat processor
 
 export type WaldiezWrapperState = {
     timeline?: WaldiezTimelineData;
     messages: WaldiezChatMessage[];
-    userParticipants: string[];
+    participants: Array<{ name: string; id: string; user: boolean }>;
     isRunning: boolean;
     isDebugging: boolean;
     connected: boolean;
     error: string | null;
     inputPrompt?: { prompt: string; request_id: string; password?: boolean };
+    stepByStepState: any; // WaldiezStepByStep from wrapper
 };
 
 export type WaldiezWrapperActions = {
-    handleRun: (flowJson: string) => void;
-    handleStepRun: (flowJson: string, opts?: { auto_continue?: boolean; breakpoints?: string[] }) => void;
-    handleStop: () => void;
-    handleSave: (flowJson: string, filename?: string, forceOverwrite?: boolean) => void;
-    handleUpload: (files: File[]) => Promise<string[]>;
-    handleConvert: (flowJson: string, to: "py" | "ipynb", outputPath?: string | null) => void;
-    handleUserInput: (input: WaldiezChatUserInput) => void;
+    run: (flowJson: string) => void;
+    stepRun: (flowJson: string, opts?: { auto_continue?: boolean; breakpoints?: string[] }) => void;
+    stop: () => void;
+    save: (flowJson: string, filename?: string, forceOverwrite?: boolean) => void;
+    upload: (files: File[]) => Promise<string[]>;
+    convert: (flowJson: string, to: "py" | "ipynb", outputPath?: string | null) => void;
+    userInput: (input: WaldiezChatUserInput) => void;
     sendMessage: (raw: unknown) => boolean; // raw passthrough if you need it
     reset: () => void;
 };

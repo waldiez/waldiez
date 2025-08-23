@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import Waldiez from "@waldiez";
+import Waldiez, { showSnackbar } from "@waldiez";
 
-import React from "react";
+import React, { useCallback } from "react";
 
 import { WaldiezProps } from "@waldiez/types";
 
@@ -21,29 +21,26 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
     waldiezProps,
     wsUrl = "ws://localhost:8765",
 }) => {
-    // Use the custom hook to get state and actions
+    const onError = useCallback((error: any) => {
+        showSnackbar({ message: "Workflow Error", details: error, level: "error", withCloseButton: true });
+    }, []);
     const [
-        { messages, userParticipants, isRunning, isDebugging, inputPrompt, timeline },
-        {
-            handleRun,
-            handleStop,
-            handleStepRun,
-            handleSave,
-            handleUpload,
-            handleConvert,
-            handleUserInput,
-            reset,
-        },
-    ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId });
+        { messages, participants, isRunning, isDebugging, inputPrompt, timeline, stepByStepState },
+        { run, stepRun, stop, save, upload, convert, userInput, reset },
+    ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId, onError });
+    const userParticipants = participants
+        .filter(p => p.user)
+        .map(p => p.name)
+        .filter(Boolean);
 
     // Assemble props for the Waldiez component
     const completeProps: WaldiezProps = {
         ...waldiezProps,
-        onRun: handleRun,
-        onStepRun: handleStepRun,
-        onSave: handleSave,
-        onUpload: handleUpload,
-        onConvert: handleConvert,
+        onRun: run,
+        onStepRun: stepRun,
+        onSave: save,
+        onUpload: upload,
+        onConvert: convert,
         chat: isDebugging
             ? undefined
             : {
@@ -53,12 +50,12 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
                   activeRequest: inputPrompt,
                   timeline,
                   handlers: {
-                      onUserInput: handleUserInput,
-                      onInterrupt: handleStop,
+                      onUserInput: userInput,
+                      onInterrupt: stop,
                       onClose: reset,
                   },
               },
-        stepByStep: isDebugging ? {} : undefined,
+        stepByStep: stepByStepState,
     };
 
     return (
