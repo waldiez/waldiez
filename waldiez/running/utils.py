@@ -97,6 +97,70 @@ async def a_chdir(to: Union[str, Path]) -> AsyncIterator[None]:
         os.chdir(old_cwd)
 
 
+def get_python_executable() -> str:
+    """Get the appropriate Python executable path.
+
+    For bundled applications, this might be different from sys.executable.
+
+    Returns
+    -------
+    str
+        Path to the Python executable to use for pip operations.
+    """
+    # Check if we're in a bundled application (e.g., PyInstaller)
+    if getattr(sys, "frozen", False):  # pragma: no cover
+        # We're in a bundled app
+        if hasattr(sys, "_MEIPASS"):
+            sys_meipass = getattr(
+                sys, "_MEIPASS", str(Path.home() / ".waldiez" / "bin")
+            )
+            bundled = Path(sys_meipass) / "python"
+            if bundled.exists():
+                return str(bundled)
+    return sys.executable
+
+
+def ensure_pip() -> None:  # pragma: no cover
+    """Make sure `python -m pip` works (bootstrap via ensurepip if needed)."""
+    # pylint: disable=import-outside-toplevel
+    # pylint: disable=unused-import,broad-exception-caught
+    try:
+        import pip  # noqa: F401  # pyright: ignore
+
+        return
+    except Exception:
+        pass
+    try:
+        import ensurepip
+
+        ensurepip.bootstrap(upgrade=True)
+    except Exception:
+        # If bootstrap fails, we'll still attempt `-m pip` and surface errors.
+        pass
+
+
+def get_pip_install_location() -> str | None:
+    """Determine the best location to install packages.
+
+    Returns
+    -------
+    Optional[str]
+        The installation target directory, or None for default.
+    """
+    if getattr(sys, "frozen", False):  # pragma: no cover
+        # For bundled apps, try to install to a user-writable location
+        if hasattr(sys, "_MEIPASS"):
+            app_data = Path.home() / ".waldiez" / "site-packages"
+            app_data.mkdir(parents=True, exist_ok=True)
+            # Add to sys.path if not already there
+            app_data_str = str(app_data)
+            if app_data_str not in sys.path:
+                # after stdlib
+                sys.path.insert(1, app_data_str)
+            return app_data_str
+    return None
+
+
 def strip_ansi(text: str) -> str:
     """Remove ANSI escape sequences from text.
 
@@ -128,7 +192,7 @@ def create_sync_subprocess(setup: ProcessSetup) -> subprocess.Popen[bytes]:
         The created subprocess.
     """
     return subprocess.Popen(
-        [sys.executable, "-u", str(setup.file_path)],
+        [get_python_executable(), "-u", str(setup.file_path)],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         stdin=subprocess.PIPE,
@@ -153,7 +217,7 @@ async def create_async_subprocess(setup: ProcessSetup) -> Process:
         The created asynchronous subprocess.
     """
     return await asyncio.create_subprocess_exec(
-        sys.executable,
+        get_python_executable(),
         "-u",
         str(setup.file_path),
         # stdout=asyncio.subprocess.PIPE,
