@@ -6,7 +6,7 @@ import { Background, BackgroundVariant, Controls, ReactFlow, Viewport } from "@x
 
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { StepByStepView } from "@waldiez/components";
+import { StepByStepView, WaldiezStepByStep } from "@waldiez/components";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";
@@ -19,7 +19,7 @@ import { WaldiezChatConfig, WaldiezNodeType } from "@waldiez/types";
 type WaldiezFlowViewProps = {
     flowId: string;
     chat?: WaldiezChatConfig;
-    stepByStep?: any; // not yet
+    stepByStep?: WaldiezStepByStep;
     skipImport?: boolean;
     skipExport?: boolean;
     skipHub?: boolean;

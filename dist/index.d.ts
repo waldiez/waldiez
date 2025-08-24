@@ -44,6 +44,25 @@ export declare type ChatParticipant = {
 };
 
 /**
+ * Chat UI component props
+ * @param messages - Array of chat messages
+ * @param userParticipants - Set of user participants
+ * @param activeRequest - Active request information (if any)
+ * @param error - Error information (if any)
+ * @param handlers - Chat-specific handlers
+ * @param mediaConfig - Media handling configuration
+ */
+export declare type ChatUIProps = {
+    messages: WaldiezChatMessage[];
+    userParticipants: string[];
+    isDarkMode: boolean;
+    handlers?: WaldiezChatHandlers;
+    activeRequest?: WaldiezActiveRequest;
+    error?: WaldiezChatError;
+    mediaConfig?: WaldiezMediaConfig;
+};
+
+/**
  * Code execution reply data.
  * @param type - The type of the message: "generate_code_execution_reply"
  * @param content - The content of the code execution reply message.
@@ -77,6 +96,11 @@ export declare type ConditionCategory = "llm" | "context";
  * @param expression_context - Expression context condition
  */
 export declare type ConditionType = "string_llm" | "context_str_llm" | "string_context" | "expression_context";
+
+/**
+ * Maps a UI-level control to the wire-level `response` string.
+ */
+export declare function controlToResponse(control: WaldiezDebugControl | string): string;
 
 /**
  * createWaldiezStore
@@ -798,6 +822,29 @@ export declare const showSnackbar: (props: {
     duration?: number;
     withCloseButton?: boolean;
 }) => void;
+
+export declare type ShowSnackbarProps = {
+    flowId?: string;
+    message: string;
+    level?: SnackbarLevel;
+    details?: SnackbarDetails;
+    duration?: number;
+    withCloseButton?: boolean;
+};
+
+export declare type SnackbarContextType = {
+    enqueueSnackbar: (props: ShowSnackbarProps) => void;
+};
+
+export declare type SnackbarDetails = string | Error | object | null;
+
+export declare type SnackbarItem = ShowSnackbarProps & {
+    id: string;
+};
+
+export declare type SnackbarLevel = "info" | "warning" | "error" | "success";
+
+export declare type SnackbarQueue = SnackbarItem[];
 
 /**
  * Speaker selection data.
@@ -2258,7 +2305,7 @@ export declare type WaldiezChatMessage = WaldiezChatMessageCommon & {
  * @param request_id - ID of the request associated with the message (optional)
  * @param metadata - Additional metadata associated with the message (optional)
  */
-declare type WaldiezChatMessageCommon = {
+export declare type WaldiezChatMessageCommon = {
     id: string;
     timestamp: string | number;
     type: WaldiezChatMessageType;
@@ -3692,7 +3739,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
     viewport?: Viewport;
     monacoVsPath?: string;
     chat?: WaldiezChatConfig;
-    stepByStep?: any;
+    stepByStep?: WaldiezStepByStep;
     readOnly?: boolean;
     skipImport?: boolean;
     skipExport?: boolean;

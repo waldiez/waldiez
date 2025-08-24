@@ -7,44 +7,7 @@ import "@waldiez/polyfills/promiseWithResolvers";
 import { WaldiezFlow, WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
 import { Waldiez } from "@waldiez/waldiez";
 
-export type {
-    WaldiezActiveRequest,
-    WaldiezBreakpoint,
-    WaldiezBreakpointType,
-    WaldiezChatConfig,
-    WaldiezChatContent,
-    WaldiezChatError,
-    WaldiezChatHandlers,
-    WaldiezChatMessage,
-    WaldiezChatMessageType,
-    WaldiezChatUserInput,
-    WaldiezDebugBreakpointAdded,
-    WaldiezDebugBreakpointCleared,
-    WaldiezDebugBreakpointRemoved,
-    WaldiezDebugBreakpointsList,
-    WaldiezDebugControl,
-    WaldiezDebugError,
-    WaldiezDebugEventInfo,
-    WaldiezDebugHelp,
-    WaldiezDebugHelpCommand,
-    WaldiezDebugHelpCommandGroup,
-    WaldiezDebugInputRequest,
-    WaldiezDebugInputResponse,
-    WaldiezDebugMessage,
-    WaldiezDebugPrint,
-    WaldiezDebugResponseCode,
-    WaldiezDebugStats,
-    WaldiezMediaConfig,
-    WaldiezMediaContent,
-    WaldiezMediaType,
-    WaldiezStepByStep,
-    WaldiezStepHandlers,
-    WaldiezStreamEvent,
-    WaldiezTimelineAgentInfo,
-    WaldiezTimelineCostPoint,
-    WaldiezTimelineData,
-    WaldiezTimelineItem,
-} from "@waldiez/components/types";
+export type * from "@waldiez/components/types";
 export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
 export type * from "@waldiez/utils/chat/types";

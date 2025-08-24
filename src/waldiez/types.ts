@@ -4,30 +4,13 @@
  */
 import { Edge, Node, ReactFlowJsonObject, Viewport } from "@xyflow/react";
 
-import { WaldiezChatConfig } from "@waldiez/components/types";
+import { WaldiezChatConfig, WaldiezStepByStep } from "@waldiez/components/types";
 
-export type {
-    WaldiezActiveRequest,
-    WaldiezChatConfig,
-    WaldiezChatContent,
-    WaldiezChatError,
-    WaldiezChatHandlers,
-    WaldiezChatMessage,
-    WaldiezChatMessageCommon,
-    WaldiezChatMessageType,
-    WaldiezChatUserInput,
-    WaldiezMediaConfig,
-    WaldiezMediaContent,
-    WaldiezMediaType,
-    WaldiezStreamEvent,
-    WaldiezTimelineAgentInfo,
-    WaldiezTimelineCostPoint,
-    WaldiezTimelineData,
-    WaldiezTimelineItem,
-} from "@waldiez/components/types";
+export type * from "@waldiez/components/types";
 export type * from "@waldiez/models";
 export type * from "@waldiez/store";
 export type * from "@waldiez/utils/chat/types";
+export type * from "@waldiez/utils/stepByStep/types";
 
 /**
  * WaldiezFlowProps
@@ -85,7 +68,7 @@ export type WaldiezProps = WaldiezFlowProps & {
     viewport?: Viewport;
     monacoVsPath?: string;
     chat?: WaldiezChatConfig;
-    stepByStep?: any; // not yet
+    stepByStep?: WaldiezStepByStep;
     readOnly?: boolean;
     skipImport?: boolean;
     skipExport?: boolean;
