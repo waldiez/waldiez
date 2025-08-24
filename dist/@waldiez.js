@@ -1337,6 +1337,7 @@ const StepByStepView = ({ stepByStep }) => {
           request_id: stepByStep?.activeRequest?.request_id,
           type: "input_response"
         });
+        setResponseText("");
       }
     },
     [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
@@ -1349,6 +1350,7 @@ const StepByStepView = ({ stepByStep }) => {
       request_id: stepByStep?.activeRequest?.request_id,
       type: "input_response"
     });
+    setResponseText("");
   }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
   const onControl = useCallback(
     (action) => {
@@ -1372,7 +1374,7 @@ const StepByStepView = ({ stepByStep }) => {
         /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
         /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
         !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        stepByStep?.active && /* @__PURE__ */ jsxs("div", { className: "badge", children: [
+        stepByStep?.active && stepByStep?.currentEvent && /* @__PURE__ */ jsxs("div", { className: "badge", children: [
           " ",
           String(stepByStep?.currentEvent?.type) || "Running"
         ] })

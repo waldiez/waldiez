@@ -37,6 +37,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     request_id: stepByStep?.activeRequest?.request_id,
                     type: "input_response",
                 });
+                setResponseText("");
             }
         },
         [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id],
@@ -49,6 +50,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
             request_id: stepByStep?.activeRequest?.request_id,
             type: "input_response",
         });
+        setResponseText("");
     }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
     const onControl = useCallback(
         (
@@ -90,7 +92,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     <FaBug className="icon-bug" size={18} />
                     <div className="title">Step-by-step Panel</div>
                     {!stepByStep?.active && <div className="badge">Finished</div>}
-                    {stepByStep?.active && (
+                    {stepByStep?.active && stepByStep?.currentEvent && (
                         <div className="badge"> {String(stepByStep?.currentEvent?.type) || "Running"}</div>
                     )}
                 </div>

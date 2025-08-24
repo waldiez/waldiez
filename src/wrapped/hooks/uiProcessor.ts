@@ -240,7 +240,7 @@ export function useUIMessageProcessor({
                         }));
                     }
                     if (result?.controlAction) {
-                        console.debug("Executing control action", result.controlAction);
+                        console.debug("Control action:", result.controlAction);
                         // if (result.controlAction.type === "debug_input_request_received") {
                         //     // Handle debug input request
                         // }
