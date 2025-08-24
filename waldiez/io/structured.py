@@ -63,13 +63,16 @@ class StructuredIOStream(IOStream):
         """
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
+        payload_type = kwargs.get("type", "print")
         message = sep.join(map(str, args))
         is_dumped, message = is_json_dumped(message)
+        if len(args) == 1 and isinstance(args[0], dict):
+            payload_type = args[0].get("type", payload_type)  # pyright: ignore
+            message = args[0]  # pyright: ignore
         if is_dumped:
             # If the message is already JSON-dumped,
             # let's try not to double dump it
             payload: dict[str, Any] = {
-                "type": "print",
                 "id": uuid4().hex,
                 "timestamp": now(),
                 "data": message,
@@ -82,7 +85,6 @@ class StructuredIOStream(IOStream):
                 data=message,
             ).model_dump(mode="json")
         flush = kwargs.get("flush", True)
-        payload_type = kwargs.get("type", "print")
         payload["type"] = payload_type
         print(json.dumps(payload, default=str), flush=flush)
 
