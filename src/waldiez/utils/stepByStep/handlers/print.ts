@@ -16,14 +16,14 @@ import {
  */
 export class DebugPrintHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
-        return type === "debug_print";
+        return type === "debug_print" || type === "print";
     }
 
     handle(
         data: WaldiezDebugMessage,
         _context: WaldiezStepByStepProcessingContext,
     ): WaldiezStepByStepProcessingResult {
-        if (data.type !== "debug_print" || typeof data.content !== "string") {
+        if ((data.type !== "debug_print" && data.type !== "print") || typeof data.content !== "string") {
             return {
                 error: {
                     message: "Invalid debug_print structure",

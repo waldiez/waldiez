@@ -55,7 +55,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
                       onClose: reset,
                   },
               },
-        stepByStep: stepByStepState,
+        stepByStep: isRunning ? undefined : stepByStepState,
     };
 
     return (

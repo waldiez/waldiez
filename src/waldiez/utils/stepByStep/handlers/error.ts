@@ -15,7 +15,7 @@ import {
  */
 export class DebugErrorHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
-        return type === "debug_error";
+        return type === "debug_error" || type === "error";
     }
 
     handle(

@@ -222,36 +222,6 @@ describe("WaldiezStepByStepProcessor", () => {
         });
     });
 
-    describe("getSupportedMessageTypes", () => {
-        it("should return all supported message types", () => {
-            const types = WaldiezStepByStepProcessor.getSupportedMessageTypes();
-
-            expect(types).toContain("debug_print");
-            expect(types).toContain("debug_input_request");
-            expect(types).toContain("debug_event_info");
-            expect(types).toContain("debug_stats");
-            expect(types).toContain("debug_help");
-            expect(types).toContain("debug_error");
-            expect(types).toContain("debug_breakpoints_list");
-            expect(types).toContain("debug_breakpoint_added");
-            expect(types).toContain("debug_breakpoint_removed");
-            expect(types).toContain("debug_breakpoint_cleared");
-        });
-    });
-
-    describe("isSupported", () => {
-        it("should return true for supported message types", () => {
-            expect(WaldiezStepByStepProcessor.isSupported("debug_print")).toBe(true);
-            expect(WaldiezStepByStepProcessor.isSupported("debug_input_request")).toBe(true);
-            expect(WaldiezStepByStepProcessor.isSupported("debug_error")).toBe(true);
-        });
-
-        it("should return false for unsupported message types", () => {
-            expect(WaldiezStepByStepProcessor.isSupported("unknown_type")).toBe(false);
-            expect(WaldiezStepByStepProcessor.isSupported("debug_unknown")).toBe(false);
-        });
-    });
-
     describe("canProcess", () => {
         it("should return true for step-by-step messages", () => {
             const message = { type: "debug_print", content: "test" };

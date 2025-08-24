@@ -93,7 +93,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     <div className="title">Step-by-step Panel</div>
                     {!stepByStep?.active && <div className="badge">Finished</div>}
                     {stepByStep?.active && stepByStep?.currentEvent && (
-                        <div className="badge"> {String(stepByStep?.currentEvent?.type) || "Running"}</div>
+                        <div className="badge">{(stepByStep?.currentEvent?.type as string) || "Running"}</div>
                     )}
                 </div>
                 <div className="header-right">
@@ -124,13 +124,25 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     {/* Controls (if pending action) */}
                     {stepByStep?.pendingControlInput && (
                         <div className="controls">
-                            <button className="btn btn-primary" onClick={() => onControl("continue")}>
+                            <button
+                                className="btn btn-primary"
+                                type="button"
+                                onClick={() => onControl("continue")}
+                            >
                                 <FaStepForward /> <span>Continue</span>
                             </button>
-                            <button className="btn btn-secondary" onClick={() => onControl("run")}>
+                            <button
+                                className="btn btn-secondary"
+                                type="button"
+                                onClick={() => onControl("run")}
+                            >
                                 <FaPlay /> <span>Run</span>
                             </button>
-                            <button className="btn btn-danger" onClick={() => onControl("quit")}>
+                            <button
+                                className="btn btn-danger"
+                                type="button"
+                                onClick={() => onControl("quit")}
+                            >
                                 <FaStop /> <span>Quit</span>
                             </button>
                         </div>
@@ -150,7 +162,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                                     onChange={onInputChange}
                                     onKeyDown={onInputKeyDown}
                                 />
-                                <button className="btn btn-primary" onClick={onRespond}>
+                                <button className="btn btn-primary" type="button" onClick={onRespond}>
                                     Send
                                 </button>
                             </div>
@@ -174,11 +186,17 @@ function safeStringify(v: unknown) {
         return String(v);
     }
 }
-const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, placeholder = "" }) => (
-    <div className="json">
-        <pre className="pre">{value ? safeStringify(value) : placeholder}</pre>
-    </div>
-);
+const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, placeholder = "" }) => {
+    let safeValue = value ? safeStringify(value) : placeholder;
+    if (Array.isArray(value) && value.length === 0) {
+        safeValue = placeholder;
+    }
+    return (
+        <div className="json">
+            <pre className="pre">{safeValue}</pre>
+        </div>
+    );
+};
 const SectionTitle: React.FC<React.PropsWithChildren> = ({ children }) => (
     <div className="section-title">{children}</div>
 );

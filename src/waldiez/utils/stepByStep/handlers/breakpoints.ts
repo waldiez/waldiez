@@ -29,6 +29,10 @@ export class DebugBreakpointsHandler implements WaldiezStepByStepHandler {
             "debug_breakpoint_added",
             "debug_breakpoint_removed",
             "debug_breakpoint_cleared",
+            "breakpoints_list",
+            "breakpoint_added",
+            "breakpoint_removed",
+            "breakpoint_cleared",
         ].includes(type);
     }
 

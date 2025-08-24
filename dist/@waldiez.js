@@ -1273,21 +1273,30 @@ const WORKFLOW_STEP_MARKERS = [...WORKFLOW_STEP_START_MARKERS, ...WORKFLOW_STEP_
 const isDebugInputRequest = (m) => Boolean(
   m && m.type === "debug_input_request" && typeof m.request_id === "string" && typeof m.prompt === "string"
 );
-const isDebugEventInfo = (m) => Boolean(m && m.type === "debug_event_info" && m.event && typeof m.event === "object");
-const isDebugStats = (m) => Boolean(m && m.type === "debug_stats" && m.stats && typeof m.stats === "object");
-const isDebugHelp = (m) => Boolean(m && m.type === "debug_help" && Array.isArray(m.help));
-const isDebugError = (m) => Boolean(m && m.type === "debug_error" && typeof m.error === "string");
-const isDebugBreakpointsList = (m) => Boolean(m && m.type === "debug_breakpoints_list" && Array.isArray(m.breakpoints));
+const isDebugEventInfo = (m) => Boolean(
+  m && (m.type === "debug_event_info" || m.type === "event_info") && m.event && typeof m.event === "object"
+);
+const isDebugStats = (m) => Boolean(m && (m.type === "debug_stats" || m.type === "stats") && m.stats && typeof m.stats === "object");
+const isDebugHelp = (m) => Boolean(m && (m.type === "debug_help" || m.type === "help") && Array.isArray(m.help));
+const isDebugError = (m) => Boolean(m && (m.type === "debug_error" || m.type === "error") && typeof m.error === "string");
+const isDebugBreakpointsList = (m) => Boolean(
+  m && (m.type === "debug_breakpoints_list" || m.type === "breakpoints_list") && Array.isArray(m.breakpoints)
+);
 const isDebugBreakpointAdded = (m) => Boolean(
-  m && m.type === "debug_breakpoint_added" && m.breakpoint && (typeof m.breakpoint === "object" || typeof m.breakpoint === "string")
+  m && (m.type === "debug_breakpoint_added" || m.type === "breakpoint_added") && m.breakpoint && (typeof m.breakpoint === "object" || typeof m.breakpoint === "string")
 );
 const isDebugBreakpointRemoved = (m) => Boolean(
-  m && m.type === "debug_breakpoint_removed" && m.breakpoint && (typeof m.breakpoint === "object" || typeof m.breakpoint === "string")
+  m && (m.type === "debug_breakpoint_removed" || m.type === "breakpoint_removed") && m.breakpoint && (typeof m.breakpoint === "object" || typeof m.breakpoint === "string")
 );
-const isDebugBreakpointCleared = (m) => Boolean(m && m.type === "debug_breakpoint_cleared" && typeof m.message === "string");
+const isDebugBreakpointCleared = (m) => Boolean(
+  m && (m.type === "debug_breakpoint_cleared" || m.type === "breakpoint_cleared") && typeof m.message === "string"
+);
 function controlToResponse(control) {
   if (typeof control === "string") {
     return control;
+  }
+  if (typeof control !== "object" || control === null || !("kind" in control) || typeof control.kind !== "string") {
+    return String(control);
   }
   switch (control.kind) {
     case "continue":
@@ -1374,10 +1383,7 @@ const StepByStepView = ({ stepByStep }) => {
         /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
         /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
         !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        stepByStep?.active && stepByStep?.currentEvent && /* @__PURE__ */ jsxs("div", { className: "badge", children: [
-          " ",
-          String(stepByStep?.currentEvent?.type) || "Running"
-        ] })
+        stepByStep?.active && stepByStep?.currentEvent && /* @__PURE__ */ jsx("div", { className: "badge", children: stepByStep?.currentEvent?.type || "Running" })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
         /* @__PURE__ */ jsx(
@@ -1404,21 +1410,45 @@ const StepByStepView = ({ stepByStep }) => {
     ] }),
     isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
       stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-        /* @__PURE__ */ jsxs("button", { className: "btn btn-primary", onClick: () => onControl("continue"), children: [
-          /* @__PURE__ */ jsx(FaStepForward, {}),
-          " ",
-          /* @__PURE__ */ jsx("span", { children: "Continue" })
-        ] }),
-        /* @__PURE__ */ jsxs("button", { className: "btn btn-secondary", onClick: () => onControl("run"), children: [
-          /* @__PURE__ */ jsx(FaPlay, {}),
-          " ",
-          /* @__PURE__ */ jsx("span", { children: "Run" })
-        ] }),
-        /* @__PURE__ */ jsxs("button", { className: "btn btn-danger", onClick: () => onControl("quit"), children: [
-          /* @__PURE__ */ jsx(FaStop, {}),
-          " ",
-          /* @__PURE__ */ jsx("span", { children: "Quit" })
-        ] })
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-primary",
+            type: "button",
+            onClick: () => onControl("continue"),
+            children: [
+              /* @__PURE__ */ jsx(FaStepForward, {}),
+              " ",
+              /* @__PURE__ */ jsx("span", { children: "Continue" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-secondary",
+            type: "button",
+            onClick: () => onControl("run"),
+            children: [
+              /* @__PURE__ */ jsx(FaPlay, {}),
+              " ",
+              /* @__PURE__ */ jsx("span", { children: "Run" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-danger",
+            type: "button",
+            onClick: () => onControl("quit"),
+            children: [
+              /* @__PURE__ */ jsx(FaStop, {}),
+              " ",
+              /* @__PURE__ */ jsx("span", { children: "Quit" })
+            ]
+          }
+        )
       ] }),
       stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
         /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
@@ -1435,7 +1465,7 @@ const StepByStepView = ({ stepByStep }) => {
               onKeyDown: onInputKeyDown
             }
           ),
-          /* @__PURE__ */ jsx("button", { className: "btn btn-primary", onClick: onRespond, children: "Send" })
+          /* @__PURE__ */ jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
@@ -1452,7 +1482,13 @@ function safeStringify(v) {
     return String(v);
   }
 }
-const JsonArea = ({ value, placeholder = "" }) => /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: value ? safeStringify(value) : placeholder }) });
+const JsonArea = ({ value, placeholder = "" }) => {
+  let safeValue = value ? safeStringify(value) : placeholder;
+  if (Array.isArray(value) && value.length === 0) {
+    safeValue = placeholder;
+  }
+  return /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: safeValue }) });
+};
 const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title", children });
 StepByStepView.displayName = "WaldiezStepByStepView";
 class DebugBreakpointsHandler {
@@ -1461,7 +1497,11 @@ class DebugBreakpointsHandler {
       "debug_breakpoints_list",
       "debug_breakpoint_added",
       "debug_breakpoint_removed",
-      "debug_breakpoint_cleared"
+      "debug_breakpoint_cleared",
+      "breakpoints_list",
+      "breakpoint_added",
+      "breakpoint_removed",
+      "breakpoint_cleared"
     ].includes(type);
   }
   handle(data, context) {
@@ -1523,7 +1563,7 @@ class DebugBreakpointsHandler {
 }
 class DebugErrorHandler {
   canHandle(type) {
-    return type === "debug_error";
+    return type === "debug_error" || type === "error";
   }
   handle(data, _context) {
     if (!isDebugError(data)) {
@@ -1549,7 +1589,7 @@ class DebugErrorHandler {
 }
 class DebugEventInfoHandler {
   canHandle(type) {
-    return type === "debug_event_info";
+    return type === "debug_event_info" || type === "event_info";
   }
   handle(data, context) {
     if (!isDebugEventInfo(data)) {
@@ -1576,7 +1616,7 @@ class DebugEventInfoHandler {
 }
 class DebugHelpHandler {
   canHandle(type) {
-    return type === "debug_help";
+    return type === "debug_help" || type === "help";
   }
   handle(data, _context) {
     if (!isDebugHelp(data)) {
@@ -1597,7 +1637,7 @@ class DebugHelpHandler {
 }
 class DebugInputRequestHandler {
   canHandle(type) {
-    return type === "debug_input_request";
+    return type === "debug_input_request" || type === "input_request";
   }
   handle(data, _context) {
     if (!isDebugInputRequest(data)) {
@@ -1626,10 +1666,10 @@ class DebugInputRequestHandler {
 }
 class DebugPrintHandler {
   canHandle(type) {
-    return type === "debug_print";
+    return type === "debug_print" || type === "print";
   }
   handle(data, _context) {
-    if (data.type !== "debug_print" || typeof data.content !== "string") {
+    if (data.type !== "debug_print" && data.type !== "print" || typeof data.content !== "string") {
       return {
         error: {
           message: "Invalid debug_print structure",
@@ -1673,7 +1713,7 @@ class DebugPrintHandler {
 }
 class DebugStatsHandler {
   canHandle(type) {
-    return type === "debug_stats";
+    return type === "debug_stats" || type === "stats";
   }
   handle(data, _context) {
     if (!isDebugStats(data)) {
@@ -1914,31 +1954,6 @@ class WaldiezStepByStepProcessor {
    */
   static findHandler(type) {
     return WaldiezStepByStepProcessor.handlers.find((handler) => handler.canHandle(type));
-  }
-  /**
-   * Get all supported message types
-   */
-  static getSupportedMessageTypes() {
-    return [
-      "debug_print",
-      "debug_input_request",
-      "debug_input_response",
-      // Not handled (outgoing only)
-      "debug_event_info",
-      "debug_stats",
-      "debug_help",
-      "debug_error",
-      "debug_breakpoints_list",
-      "debug_breakpoint_added",
-      "debug_breakpoint_removed",
-      "debug_breakpoint_cleared"
-    ];
-  }
-  /**
-   * Check if a message type is supported for processing
-   */
-  static isSupported(messageType) {
-    return WaldiezStepByStepProcessor.getSupportedMessageTypes().includes(messageType);
   }
   /**
    * Check if the content can be processed by the step-by-step processor

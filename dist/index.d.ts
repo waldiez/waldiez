@@ -2460,22 +2460,22 @@ export declare type WaldiezContextStrLLMCondition = {
 };
 
 export declare type WaldiezDebugBreakpointAdded = {
-    type: "debug_breakpoint_added";
+    type: "debug_breakpoint_added" | "breakpoint_added";
     breakpoint: string | WaldiezBreakpoint;
 };
 
 export declare type WaldiezDebugBreakpointCleared = {
-    type: "debug_breakpoint_cleared";
+    type: "debug_breakpoint_cleared" | "breakpoint_cleared";
     message: string;
 };
 
 export declare type WaldiezDebugBreakpointRemoved = {
-    type: "debug_breakpoint_removed";
+    type: "debug_breakpoint_removed" | "breakpoint_removed";
     breakpoint: string | WaldiezBreakpoint;
 };
 
 export declare type WaldiezDebugBreakpointsList = {
-    type: "debug_breakpoints_list";
+    type: "debug_breakpoints_list" | "breakpoints_list";
     breakpoints: Array<string | WaldiezBreakpoint>;
 };
 
@@ -2513,7 +2513,7 @@ export declare type WaldiezDebugControl = {
  * `debug_error` message (backend - client)
  */
 export declare type WaldiezDebugError = {
-    type: "debug_error";
+    type: "debug_error" | "error";
     error: string;
 };
 
@@ -2522,7 +2522,7 @@ export declare type WaldiezDebugError = {
  * Contains the raw event payload emitted by the runner.
  */
 export declare type WaldiezDebugEventInfo = {
-    type: "debug_event_info";
+    type: "debug_event_info" | "event_info";
     event: Record<string, unknown>;
 };
 
@@ -2530,7 +2530,7 @@ export declare type WaldiezDebugEventInfo = {
  * `debug_help` message (backend - client)
  */
 export declare type WaldiezDebugHelp = {
-    type: "debug_help";
+    type: "debug_help" | "help";
     help: WaldiezDebugHelpCommandGroup[];
 };
 
@@ -2556,7 +2556,7 @@ export declare type WaldiezDebugHelpCommandGroup = {
  * `debug_input_request` message (sent by backend when waiting for a command/input)
  */
 export declare type WaldiezDebugInputRequest = {
-    type: "debug_input_request";
+    type: "debug_input_request" | "input_request";
     prompt: string;
     request_id: string;
 };
@@ -2566,7 +2566,7 @@ export declare type WaldiezDebugInputRequest = {
  * structured form over raw strings so the backend can validate `request_id`.
  */
 export declare type WaldiezDebugInputResponse = {
-    type: "debug_input_response";
+    type: "debug_input_response" | "input_response";
     request_id: string;
     data: WaldiezDebugResponseCode | string;
 };
@@ -2581,7 +2581,7 @@ export declare type WaldiezDebugMessage = WaldiezDebugPrint | WaldiezDebugInputR
  * `debug_print` message
  */
 export declare type WaldiezDebugPrint = {
-    type: "debug_print";
+    type: "debug_print" | "print";
     content: string;
 };
 
@@ -2594,7 +2594,7 @@ export declare type WaldiezDebugResponseCode = "" | "c" | "s" | "r" | "q" | "i" 
  * `debug_stats` message (backend - client)
  */
 export declare type WaldiezDebugStats = {
-    type: "debug_stats";
+    type: "debug_stats" | "stats";
     stats: {
         events_processed: number;
         total_events: number;
@@ -4045,14 +4045,6 @@ export declare class WaldiezStepByStepProcessor {
      * Find a handler that can process the given message type
      */
     private static findHandler;
-    /**
-     * Get all supported message types
-     */
-    static getSupportedMessageTypes(): string[];
-    /**
-     * Check if a message type is supported for processing
-     */
-    static isSupported(messageType: string): boolean;
     /**
      * Check if the content can be processed by the step-by-step processor
      */

@@ -48,7 +48,7 @@ export type WaldiezDebugHelpCommandGroup = {
  * `debug_print` message
  */
 export type WaldiezDebugPrint = {
-    type: "debug_print";
+    type: "debug_print" | "print";
     content: string;
 };
 
@@ -56,7 +56,7 @@ export type WaldiezDebugPrint = {
  * `debug_input_request` message (sent by backend when waiting for a command/input)
  */
 export type WaldiezDebugInputRequest = {
-    type: "debug_input_request";
+    type: "debug_input_request" | "input_request";
     prompt: string; // e.g. "[Step] (c)ontinue, (r)un, ..."
     request_id: string; // opaque id; replies must echo this
 };
@@ -66,28 +66,28 @@ export type WaldiezDebugInputRequest = {
  * structured form over raw strings so the backend can validate `request_id`.
  */
 export type WaldiezDebugInputResponse = {
-    type: "debug_input_response";
+    type: "debug_input_response" | "input_response";
     request_id: string;
     data: WaldiezDebugResponseCode | string; // allow future prompts
 };
 
 export type WaldiezDebugBreakpointsList = {
-    type: "debug_breakpoints_list";
+    type: "debug_breakpoints_list" | "breakpoints_list";
     breakpoints: Array<string | WaldiezBreakpoint>;
 };
 
 export type WaldiezDebugBreakpointAdded = {
-    type: "debug_breakpoint_added";
+    type: "debug_breakpoint_added" | "breakpoint_added";
     breakpoint: string | WaldiezBreakpoint;
 };
 
 export type WaldiezDebugBreakpointRemoved = {
-    type: "debug_breakpoint_removed";
+    type: "debug_breakpoint_removed" | "breakpoint_removed";
     breakpoint: string | WaldiezBreakpoint;
 };
 
 export type WaldiezDebugBreakpointCleared = {
-    type: "debug_breakpoint_cleared";
+    type: "debug_breakpoint_cleared" | "breakpoint_cleared";
     message: string;
 };
 
@@ -96,7 +96,7 @@ export type WaldiezDebugBreakpointCleared = {
  * Contains the raw event payload emitted by the runner.
  */
 export type WaldiezDebugEventInfo = {
-    type: "debug_event_info";
+    type: "debug_event_info" | "event_info";
     event: Record<string, unknown>; // opaque; consumer can pretty-print
 };
 
@@ -104,7 +104,7 @@ export type WaldiezDebugEventInfo = {
  * `debug_stats` message (backend - client)
  */
 export type WaldiezDebugStats = {
-    type: "debug_stats";
+    type: "debug_stats" | "stats";
     stats: {
         events_processed: number;
         total_events: number;
@@ -121,7 +121,7 @@ export type WaldiezDebugStats = {
  * `debug_help` message (backend - client)
  */
 export type WaldiezDebugHelp = {
-    type: "debug_help";
+    type: "debug_help" | "help";
     help: WaldiezDebugHelpCommandGroup[];
 };
 
@@ -129,7 +129,7 @@ export type WaldiezDebugHelp = {
  * `debug_error` message (backend - client)
  */
 export type WaldiezDebugError = {
-    type: "debug_error";
+    type: "debug_error" | "error";
     error: string;
 };
 
@@ -173,6 +173,14 @@ export type WaldiezDebugControl =
 export function controlToResponse(control: WaldiezDebugControl | string): string {
     if (typeof control === "string") {
         return control;
+    }
+    if (
+        typeof control !== "object" ||
+        control === null ||
+        !("kind" in control) ||
+        typeof control.kind !== "string"
+    ) {
+        return String(control);
     }
     switch (control.kind) {
         case "continue":

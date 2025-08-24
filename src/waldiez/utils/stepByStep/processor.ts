@@ -128,6 +128,7 @@ export class WaldiezStepByStepProcessor {
      */
     // eslint-disable-next-line max-statements
     private static parseMessage(message: string): WaldiezDebugMessage | null {
+        /* c8 ignore next 3 */
         if (!message || typeof message !== "string") {
             return null;
         }
@@ -164,6 +165,7 @@ export class WaldiezStepByStepProcessor {
             }
 
             return null;
+            /* c8 ignore next 3 */
         } catch {
             return null;
         }
@@ -187,32 +189,6 @@ export class WaldiezStepByStepProcessor {
      */
     private static findHandler(type: string): WaldiezStepByStepHandler | undefined {
         return WaldiezStepByStepProcessor.handlers.find(handler => handler.canHandle(type));
-    }
-
-    /**
-     * Get all supported message types
-     */
-    static getSupportedMessageTypes(): string[] {
-        return [
-            "debug_print",
-            "debug_input_request",
-            "debug_input_response", // Not handled (outgoing only)
-            "debug_event_info",
-            "debug_stats",
-            "debug_help",
-            "debug_error",
-            "debug_breakpoints_list",
-            "debug_breakpoint_added",
-            "debug_breakpoint_removed",
-            "debug_breakpoint_cleared",
-        ];
-    }
-
-    /**
-     * Check if a message type is supported for processing
-     */
-    static isSupported(messageType: string): boolean {
-        return WaldiezStepByStepProcessor.getSupportedMessageTypes().includes(messageType);
     }
 
     /**
