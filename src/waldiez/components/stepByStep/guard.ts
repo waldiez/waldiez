@@ -18,7 +18,7 @@ import {
 export const isDebugInputRequest = (m: WaldiezDebugMessage): m is WaldiezDebugInputRequest =>
     Boolean(
         m &&
-            m.type === "debug_input_request" &&
+            (m.type === "debug_input_request" || m.type === "input_request") &&
             typeof m.request_id === "string" &&
             typeof m.prompt === "string",
     );
