@@ -69,6 +69,7 @@ class StructuredIOStream(IOStream):
         if len(args) == 1 and isinstance(args[0], dict):
             payload_type = args[0].get("type", payload_type)  # pyright: ignore
             message = args[0]  # pyright: ignore
+            is_dumped = True
         if is_dumped:
             # If the message is already JSON-dumped,
             # let's try not to double dump it
