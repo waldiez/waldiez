@@ -219,6 +219,10 @@ export function useUIMessageProcessor({
                         flowId,
                         currentState: stepByStepState,
                     });
+                    if (result?.error && isRunning) {
+                        processGenericMessage(parsedContent);
+                        return;
+                    }
 
                     if (result?.stateUpdate || result?.debugMessage) {
                         const newState = result?.stateUpdate ?? stepByStepState;
@@ -265,7 +269,7 @@ export function useUIMessageProcessor({
                 // console.error("Error processing subprocess output:", reason);
             }
         },
-        [flowId, stepByStepState, setStepByStepState, processGenericMessage],
+        [flowId, stepByStepState, isRunning, processGenericMessage, setStepByStepState],
     );
 
     const processUIMessage = useCallback(

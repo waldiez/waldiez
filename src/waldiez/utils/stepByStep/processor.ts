@@ -175,13 +175,7 @@ export class WaldiezStepByStepProcessor {
      * Check if the parsed data is a valid debug message
      */
     private static isValidDebugMessage(data: any): data is WaldiezDebugMessage {
-        return !!(
-            data &&
-            typeof data === "object" &&
-            data.type &&
-            typeof data.type === "string" &&
-            data.type.startsWith("debug_")
-        );
+        return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
     }
 
     /**

@@ -233,12 +233,6 @@ describe("WaldiezStepByStepUtils", () => {
             expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "debug_error" })).toBe(true);
         });
 
-        it("should return false for non-debug message types", () => {
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "message" })).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "error" })).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "print" })).toBe(false);
-        });
-
         it("should return false for invalid content", () => {
             expect(WaldiezStepByStepUtils.isStepByStepMessage(null)).toBe(false);
             expect(WaldiezStepByStepUtils.isStepByStepMessage(undefined)).toBe(false);
@@ -256,7 +250,7 @@ describe("WaldiezStepByStepUtils", () => {
     describe("canProcess", () => {
         it("should delegate to isStepByStepMessage", () => {
             expect(WaldiezStepByStepUtils.canProcess({ type: "debug_print" })).toBe(true);
-            expect(WaldiezStepByStepUtils.canProcess({ type: "message" })).toBe(false);
+            expect(WaldiezStepByStepUtils.canProcess({ type: "message" })).toBe(true);
             expect(WaldiezStepByStepUtils.canProcess(null)).toBe(false);
         });
     });

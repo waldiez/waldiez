@@ -222,19 +222,6 @@ describe("WaldiezStepByStepProcessor", () => {
         });
     });
 
-    describe("canProcess", () => {
-        it("should return true for step-by-step messages", () => {
-            const message = { type: "debug_print", content: "test" };
-            expect(WaldiezStepByStepProcessor.canProcess(message)).toBe(true);
-        });
-
-        it("should return false for non-step-by-step messages", () => {
-            expect(WaldiezStepByStepProcessor.canProcess({ type: "regular_message" })).toBe(false);
-            expect(WaldiezStepByStepProcessor.canProcess("string")).toBe(false);
-            expect(WaldiezStepByStepProcessor.canProcess(null)).toBe(false);
-        });
-    });
-
     describe("validateMessage", () => {
         it("should validate debug_print messages", () => {
             const message = { type: "debug_print", content: "test" };
@@ -248,12 +235,6 @@ describe("WaldiezStepByStepProcessor", () => {
                 prompt: "Enter command:",
             };
             expect(WaldiezStepByStepProcessor.validateMessage(message)).toBe(true);
-        });
-
-        it("should reject invalid messages", () => {
-            expect(WaldiezStepByStepProcessor.validateMessage({ type: "invalid" })).toBe(false);
-            expect(WaldiezStepByStepProcessor.validateMessage({ content: "no type" })).toBe(false);
-            expect(WaldiezStepByStepProcessor.validateMessage(null)).toBe(false);
         });
     });
 

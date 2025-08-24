@@ -73,7 +73,7 @@ export class WaldiezStepByStepUtils {
         }
 
         // Check if it's a debug message type
-        if (typeof content.type === "string" && content.type.startsWith("debug_")) {
+        if (typeof content.type === "string") {
             return true;
         }
 

@@ -1795,7 +1795,7 @@ class WaldiezStepByStepUtils {
     if (!content || typeof content !== "object") {
       return false;
     }
-    if (typeof content.type === "string" && content.type.startsWith("debug_")) {
+    if (typeof content.type === "string") {
       return true;
     }
     return false;
@@ -1947,7 +1947,7 @@ class WaldiezStepByStepProcessor {
    * Check if the parsed data is a valid debug message
    */
   static isValidDebugMessage(data) {
-    return !!(data && typeof data === "object" && data.type && typeof data.type === "string" && data.type.startsWith("debug_"));
+    return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
   }
   /**
    * Find a handler that can process the given message type

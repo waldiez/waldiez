@@ -354,7 +354,7 @@ describe("WaldiezStepByStepProcessor", () => {
                 const result = WaldiezStepByStepProcessor.process(messageObject as any);
 
                 expect(result?.error).toBeDefined();
-                expect(result?.error?.message).toBe("Failed to parse debug message as JSON");
+                expect(result?.error?.message).toBe("No handler found for message type: regular_message");
             });
         });
     });
@@ -362,7 +362,8 @@ describe("WaldiezStepByStepProcessor", () => {
     describe("canProcess", () => {
         it("should delegate to WaldiezStepByStepUtils.isStepByStepMessage", () => {
             expect(WaldiezStepByStepProcessor.canProcess({ type: "debug_print" })).toBe(true);
-            expect(WaldiezStepByStepProcessor.canProcess({ type: "regular_message" })).toBe(false);
+            expect(WaldiezStepByStepProcessor.canProcess({ type: "print" })).toBe(true);
+            expect(WaldiezStepByStepProcessor.canProcess({ type: "regular_message" })).toBe(true);
             expect(WaldiezStepByStepProcessor.canProcess(null)).toBe(false);
         });
     });
@@ -568,17 +569,6 @@ describe("WaldiezStepByStepProcessor", () => {
             expect(WaldiezStepByStepProcessor.parseSubprocessContent(undefined)).toBeNull();
             expect(WaldiezStepByStepProcessor.parseSubprocessContent("")).toBeNull();
             expect(WaldiezStepByStepProcessor.parseSubprocessContent("invalid json")).toBeNull();
-        });
-
-        it("should return null for non-debug content", () => {
-            const content = JSON.stringify({
-                type: "regular_message",
-                content: "Not a debug message",
-            });
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toBeNull();
         });
 
         it("should handle malformed Python dict", () => {

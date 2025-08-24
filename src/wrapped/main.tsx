@@ -44,7 +44,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
         chat: isDebugging
             ? undefined
             : {
-                  showUI: isRunning,
+                  showUI: isRunning && timeline !== undefined,
                   messages,
                   userParticipants,
                   activeRequest: inputPrompt,
@@ -55,7 +55,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
                       onClose: reset,
                   },
               },
-        stepByStep: isRunning ? undefined : stepByStepState,
+        stepByStep: isRunning ? undefined : !isDebugging ? undefined : stepByStepState,
     };
 
     return (
