@@ -5,18 +5,6 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type {
-    WaldiezDebugBreakpointAdded,
-    WaldiezDebugBreakpointCleared,
-    WaldiezDebugBreakpointRemoved,
-    WaldiezDebugBreakpointsList,
-    WaldiezDebugError,
-    WaldiezDebugEventInfo,
-    WaldiezDebugHelp,
-    WaldiezDebugInputRequest,
-    WaldiezDebugPrint,
-    WaldiezDebugStats,
-} from "@waldiez/components";
 import { WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep/processor";
 import type { WaldiezStepByStepProcessingContext } from "@waldiez/utils/stepByStep/types";
 
@@ -368,162 +356,6 @@ describe("WaldiezStepByStepProcessor", () => {
         });
     });
 
-    describe("validateMessage", () => {
-        it("should validate debug_print messages", () => {
-            const validMessage: WaldiezDebugPrint = {
-                type: "debug_print",
-                content: "Hello world",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_print",
-                content: 123, // Should be string
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should validate debug_input_request messages", () => {
-            const validMessage: WaldiezDebugInputRequest = {
-                type: "debug_input_request",
-                request_id: "req-123",
-                prompt: "Enter command:",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_input_request",
-                request_id: "req-123",
-                // Missing prompt
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should validate debug_event_info messages", () => {
-            const validMessage: WaldiezDebugEventInfo = {
-                type: "debug_event_info",
-                event: { type: "message", sender: "user" },
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_event_info",
-                event: "not an object",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should validate debug_stats messages", () => {
-            const validMessage: WaldiezDebugStats = {
-                type: "debug_stats",
-                stats: {
-                    events_processed: 10,
-                    total_events: 20,
-                    step_mode: true,
-                    auto_continue: false,
-                    breakpoints: [],
-                    event_history_count: 5,
-                },
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_stats",
-                stats: "not an object",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should validate debug_help messages", () => {
-            const validMessage: WaldiezDebugHelp = {
-                type: "debug_help",
-                help: [
-                    {
-                        title: "Basic Commands",
-                        commands: [{ cmds: ["continue", "c"], desc: "Continue execution" }],
-                    },
-                ],
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_help",
-                help: "not an array",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should validate debug_error messages", () => {
-            const validMessage: WaldiezDebugError = {
-                type: "debug_error",
-                error: "Something went wrong",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_error",
-                error: 123, // Should be string
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should validate breakpoint messages", () => {
-            const validListMessage: WaldiezDebugBreakpointsList = {
-                type: "debug_breakpoints_list",
-                breakpoints: ["message", "tool_call"],
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validListMessage)).toBe(true);
-
-            const validAddedMessage: WaldiezDebugBreakpointAdded = {
-                type: "debug_breakpoint_added",
-                breakpoint: "message",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validAddedMessage)).toBe(true);
-
-            const validRemovedMessage: WaldiezDebugBreakpointRemoved = {
-                type: "debug_breakpoint_removed",
-                breakpoint: { type: "event", event_type: "message" },
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validRemovedMessage)).toBe(true);
-
-            const validClearedMessage: WaldiezDebugBreakpointCleared = {
-                type: "debug_breakpoint_cleared",
-                message: "All breakpoints cleared",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(validClearedMessage)).toBe(true);
-
-            const invalidMessage = {
-                type: "debug_breakpoints_list",
-                breakpoints: "not an array",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(invalidMessage)).toBe(false);
-        });
-
-        it("should return false for unknown message types", () => {
-            const unknownMessage = {
-                type: "debug_unknown",
-                data: "some data",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(unknownMessage)).toBe(false);
-        });
-
-        it("should return false for non-debug messages", () => {
-            const regularMessage = {
-                type: "regular_message",
-                content: "Not a debug message",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(regularMessage)).toBe(false);
-        });
-
-        it("should return false for invalid input", () => {
-            expect(WaldiezStepByStepProcessor.validateMessage(null)).toBe(false);
-            expect(WaldiezStepByStepProcessor.validateMessage(undefined)).toBe(false);
-            expect(WaldiezStepByStepProcessor.validateMessage("string")).toBe(false);
-            expect(WaldiezStepByStepProcessor.validateMessage(123)).toBe(false);
-            expect(WaldiezStepByStepProcessor.validateMessage({})).toBe(false);
-        });
-    });
-
     describe("parseSubprocessContent", () => {
         it("should parse valid JSON content", () => {
             const content = JSON.stringify({
@@ -573,14 +405,6 @@ describe("WaldiezStepByStepProcessor", () => {
 
         it("should handle malformed Python dict", () => {
             const content = "{'type': 'debug_print', 'content':}";
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toBeNull();
-        });
-
-        it("should only parse messages with debug_ type", () => {
-            const content = "{'type': 'print', 'content': 'Regular print'}";
 
             const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
 

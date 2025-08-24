@@ -4,18 +4,7 @@
  */
 import stripAnsi from "strip-ansi";
 
-import {
-    WaldiezDebugMessage,
-    isDebugBreakpointAdded,
-    isDebugBreakpointCleared,
-    isDebugBreakpointRemoved,
-    isDebugBreakpointsList,
-    isDebugError,
-    isDebugEventInfo,
-    isDebugHelp,
-    isDebugInputRequest,
-    isDebugStats,
-} from "@waldiez/components/stepByStep";
+import { WaldiezDebugMessage } from "@waldiez/components/stepByStep";
 import {
     DebugBreakpointsHandler,
     DebugErrorHandler,
@@ -135,20 +124,10 @@ export class WaldiezStepByStepProcessor {
 
         try {
             // Clean the message
-            const cleanMessage = stripAnsi(message.replace(/\n/g, "")).trim();
-
-            // Try direct JSON parsing first
-            try {
-                const parsed = JSON.parse(cleanMessage);
-                if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-                    return parsed as WaldiezDebugMessage;
-                }
-            } catch {
-                // Continue to Python dict parsing
-            }
+            const cleanMessage = stripAnsi(message.replace("\n", "")).trim();
 
             // Handle Python dict string format: {'type': 'debug_...', ...}
-            if (cleanMessage.includes("'type':") && cleanMessage.includes("debug_")) {
+            if (cleanMessage.includes("'type':")) {
                 const jsonContent = cleanMessage
                     .replace(/'/g, '"') // Replace single quotes with double quotes
                     .replace(/True/g, "true")
@@ -162,6 +141,15 @@ export class WaldiezStepByStepProcessor {
                 } catch {
                     // Ignore parse errors
                 }
+            }
+            // Try direct JSON parsing
+            try {
+                const parsed = JSON.parse(cleanMessage);
+                if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
+                    return parsed as WaldiezDebugMessage;
+                }
+            } catch {
+                // Continue to Python dict parsing
             }
 
             return null;
@@ -191,41 +179,6 @@ export class WaldiezStepByStepProcessor {
     static canProcess(content: any): boolean {
         return WaldiezStepByStepUtils.isStepByStepMessage(content);
     }
-
-    /**
-     * Validate a debug message structure against TypeScript types
-     */
-    static validateMessage(data: any): data is WaldiezDebugMessage {
-        if (!WaldiezStepByStepProcessor.isValidDebugMessage(data)) {
-            return false;
-        }
-
-        // Use the existing type guards for validation
-        switch (data.type) {
-            case "debug_print":
-                return typeof data.content === "string";
-            case "debug_input_request":
-                return isDebugInputRequest(data);
-            case "debug_event_info":
-                return isDebugEventInfo(data);
-            case "debug_stats":
-                return isDebugStats(data);
-            case "debug_help":
-                return isDebugHelp(data);
-            case "debug_error":
-                return isDebugError(data);
-            case "debug_breakpoints_list":
-                return isDebugBreakpointsList(data);
-            case "debug_breakpoint_added":
-                return isDebugBreakpointAdded(data);
-            case "debug_breakpoint_removed":
-                return isDebugBreakpointRemoved(data);
-            case "debug_breakpoint_cleared":
-                return isDebugBreakpointCleared(data);
-            default:
-                return false;
-        }
-    }
     /**
      * Parse subprocess_output content specifically for step-by-step messages
      */
@@ -242,7 +195,7 @@ export class WaldiezStepByStepProcessor {
             }
         } catch {
             // Handle Python dict string format
-            if (content.includes("'type':") && content.includes("debug_")) {
+            if (content.includes("'type':")) {
                 const jsonContent = content
                     .replace(/'/g, '"')
                     .replace(/True/g, "true")

@@ -1271,7 +1271,7 @@ const WORKFLOW_STEP_END_MARKERS = [
 ];
 const WORKFLOW_STEP_MARKERS = [...WORKFLOW_STEP_START_MARKERS, ...WORKFLOW_STEP_END_MARKERS];
 const isDebugInputRequest = (m) => Boolean(
-  m && m.type === "debug_input_request" && typeof m.request_id === "string" && typeof m.prompt === "string"
+  m && (m.type === "debug_input_request" || m.type === "input_request") && typeof m.request_id === "string" && typeof m.prompt === "string"
 );
 const isDebugEventInfo = (m) => Boolean(
   m && (m.type === "debug_event_info" || m.type === "event_info") && m.event && typeof m.event === "object"
@@ -1669,7 +1669,7 @@ class DebugPrintHandler {
     return type === "debug_print" || type === "print";
   }
   handle(data, _context) {
-    if (data.type !== "debug_print" && data.type !== "print" || typeof data.content !== "string") {
+    if (data.type !== "debug_print" && data.type !== "print") {
       return {
         error: {
           message: "Invalid debug_print structure",
@@ -1677,7 +1677,20 @@ class DebugPrintHandler {
         }
       };
     }
-    const content = data.content;
+    let content = data.content;
+    const printData = data;
+    if (typeof printData.content !== "string") {
+      if (typeof printData.data === "string") {
+        content = printData.data;
+      } else {
+        return {
+          error: {
+            message: "Invalid debug_print structure",
+            originalData: data
+          }
+        };
+      }
+    }
     const isWorkflowEnd = this.isWorkflowEndMessage(content);
     const result = {
       debugMessage: data,
@@ -1696,6 +1709,9 @@ class DebugPrintHandler {
     return result;
   }
   isWorkflowEndMessage(content) {
+    if (!content) {
+      return false;
+    }
     return WORKFLOW_STEP_END_MARKERS.some((marker) => content.includes(marker));
   }
   extractEndReason(content) {
@@ -1920,15 +1936,8 @@ class WaldiezStepByStepProcessor {
       return null;
     }
     try {
-      const cleanMessage = stripAnsi(message.replace(/\n/g, "")).trim();
-      try {
-        const parsed = JSON.parse(cleanMessage);
-        if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-          return parsed;
-        }
-      } catch {
-      }
-      if (cleanMessage.includes("'type':") && cleanMessage.includes("debug_")) {
+      const cleanMessage = stripAnsi(message.replace("\n", "")).trim();
+      if (cleanMessage.includes("'type':")) {
         const jsonContent = cleanMessage.replace(/'/g, '"').replace(/True/g, "true").replace(/False/g, "false").replace(/None/g, "null");
         try {
           const parsed = JSON.parse(jsonContent);
@@ -1937,6 +1946,13 @@ class WaldiezStepByStepProcessor {
           }
         } catch {
         }
+      }
+      try {
+        const parsed = JSON.parse(cleanMessage);
+        if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
+          return parsed;
+        }
+      } catch {
       }
       return null;
     } catch {
@@ -1962,38 +1978,6 @@ class WaldiezStepByStepProcessor {
     return WaldiezStepByStepUtils.isStepByStepMessage(content);
   }
   /**
-   * Validate a debug message structure against TypeScript types
-   */
-  static validateMessage(data) {
-    if (!WaldiezStepByStepProcessor.isValidDebugMessage(data)) {
-      return false;
-    }
-    switch (data.type) {
-      case "debug_print":
-        return typeof data.content === "string";
-      case "debug_input_request":
-        return isDebugInputRequest(data);
-      case "debug_event_info":
-        return isDebugEventInfo(data);
-      case "debug_stats":
-        return isDebugStats(data);
-      case "debug_help":
-        return isDebugHelp(data);
-      case "debug_error":
-        return isDebugError(data);
-      case "debug_breakpoints_list":
-        return isDebugBreakpointsList(data);
-      case "debug_breakpoint_added":
-        return isDebugBreakpointAdded(data);
-      case "debug_breakpoint_removed":
-        return isDebugBreakpointRemoved(data);
-      case "debug_breakpoint_cleared":
-        return isDebugBreakpointCleared(data);
-      default:
-        return false;
-    }
-  }
-  /**
    * Parse subprocess_output content specifically for step-by-step messages
    */
   static parseSubprocessContent(content) {
@@ -2006,7 +1990,7 @@ class WaldiezStepByStepProcessor {
         return parsed;
       }
     } catch {
-      if (content.includes("'type':") && content.includes("debug_")) {
+      if (content.includes("'type':")) {
         const jsonContent = content.replace(/'/g, '"').replace(/True/g, "true").replace(/False/g, "false").replace(/None/g, "null");
         try {
           const parsed = JSON.parse(jsonContent);

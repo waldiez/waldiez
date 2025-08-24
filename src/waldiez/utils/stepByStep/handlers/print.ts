@@ -23,7 +23,7 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
         data: WaldiezDebugMessage,
         _context: WaldiezStepByStepProcessingContext,
     ): WaldiezStepByStepProcessingResult {
-        if ((data.type !== "debug_print" && data.type !== "print") || typeof data.content !== "string") {
+        if (data.type !== "debug_print" && data.type !== "print") {
             return {
                 error: {
                     message: "Invalid debug_print structure",
@@ -31,9 +31,21 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
                 },
             };
         }
-
+        let content = data.content;
+        const printData = data as any;
+        if (typeof printData.content !== "string") {
+            if (typeof printData.data === "string") {
+                content = printData.data;
+            } else {
+                return {
+                    error: {
+                        message: "Invalid debug_print structure",
+                        originalData: data,
+                    },
+                };
+            }
+        }
         // Check for workflow end markers
-        const content = data.content;
         const isWorkflowEnd = this.isWorkflowEndMessage(content);
 
         const result: WaldiezStepByStepProcessingResult = {
@@ -57,6 +69,9 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
     }
 
     private isWorkflowEndMessage(content: string): boolean {
+        if (!content) {
+            return false;
+        }
         return WORKFLOW_STEP_END_MARKERS.some(marker => content.includes(marker));
     }
 

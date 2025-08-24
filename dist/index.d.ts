@@ -4050,10 +4050,6 @@ export declare class WaldiezStepByStepProcessor {
      */
     static canProcess(content: any): boolean;
     /**
-     * Validate a debug message structure against TypeScript types
-     */
-    static validateMessage(data: any): data is WaldiezDebugMessage;
-    /**
      * Parse subprocess_output content specifically for step-by-step messages
      */
     static parseSubprocessContent(content: string): WaldiezDebugMessage | null;

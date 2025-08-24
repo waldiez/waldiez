@@ -222,22 +222,6 @@ describe("WaldiezStepByStepProcessor", () => {
         });
     });
 
-    describe("validateMessage", () => {
-        it("should validate debug_print messages", () => {
-            const message = { type: "debug_print", content: "test" };
-            expect(WaldiezStepByStepProcessor.validateMessage(message)).toBe(true);
-        });
-
-        it("should validate debug_input_request messages", () => {
-            const message = {
-                type: "debug_input_request",
-                request_id: "req-1",
-                prompt: "Enter command:",
-            };
-            expect(WaldiezStepByStepProcessor.validateMessage(message)).toBe(true);
-        });
-    });
-
     describe("error handling", () => {
         it("should handle handler exceptions gracefully", () => {
             // Create a message that might cause handler to throw
