@@ -4,21 +4,24 @@
  */
 import { WaldiezDebugMessage, isDebugStats } from "@waldiez/components/stepByStep";
 import {
-    StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 /**
  * Handles debug_stats messages
  * These contain execution statistics from the runner
  */
-export class DebugStatsHandler implements StepByStepHandler {
+export class DebugStatsHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
         return type === "debug_stats";
     }
 
-    handle(data: WaldiezDebugMessage, _context: StepByStepProcessingContext): StepByStepProcessingResult {
+    handle(
+        data: WaldiezDebugMessage,
+        _context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult {
         if (!isDebugStats(data)) {
             return {
                 error: {

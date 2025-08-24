@@ -1962,6 +1962,41 @@ declare class WaldiezAgentUserProxyData extends WaldiezAgentData {
 }
 
 /**
+ * Breakpoint definition.
+ */
+export declare type WaldiezBreakpoint = {
+    type: WaldiezBreakpointType;
+    event_type?: string;
+    agent_name?: string;
+    description?: string;
+};
+
+export declare type WaldiezBreakpointType = "event" | "agent" | "agent_event" | "all";
+
+export declare class WaldiezBreakpointUtils {
+    /**
+     * Parse breakpoint from string format
+     */
+    static fromString(breakpointStr: string): WaldiezBreakpoint;
+    /**
+     * Convert breakpoint to string representation
+     */
+    static toString(breakpoint: WaldiezBreakpoint): string;
+    /**
+     * Check if breakpoint matches an event
+     */
+    static matches(breakpoint: WaldiezBreakpoint, event: Record<string, unknown>): boolean;
+    /**
+     * Normalize breakpoint input (string or object) to WaldiezBreakpoint
+     */
+    static normalize(input: string | WaldiezBreakpoint): WaldiezBreakpoint;
+    /**
+     * Get display name for breakpoint
+     */
+    static getDisplayName(breakpoint: WaldiezBreakpoint): string;
+}
+
+/**
  * WaldiezCaptainAgentLibEntry
  * Represents an entry in the agent library for the captain agent.
  * @param name - The name of the agent.
@@ -2375,6 +2410,153 @@ export declare type WaldiezContextStrLLMCondition = {
     conditionType: "context_str_llm";
     context_str: string;
     data?: Record<string, any>;
+};
+
+export declare type WaldiezDebugBreakpointAdded = {
+    type: "debug_breakpoint_added";
+    breakpoint: string | WaldiezBreakpoint;
+};
+
+export declare type WaldiezDebugBreakpointCleared = {
+    type: "debug_breakpoint_cleared";
+    message: string;
+};
+
+export declare type WaldiezDebugBreakpointRemoved = {
+    type: "debug_breakpoint_removed";
+    breakpoint: string | WaldiezBreakpoint;
+};
+
+export declare type WaldiezDebugBreakpointsList = {
+    type: "debug_breakpoints_list";
+    breakpoints: Array<string | WaldiezBreakpoint>;
+};
+
+/**
+ * Outgoing control commands from UI to the runner.
+ */
+export declare type WaldiezDebugControl = {
+    kind: "continue";
+} | {
+    kind: "step";
+} | {
+    kind: "run";
+} | {
+    kind: "quit";
+} | {
+    kind: "info";
+} | {
+    kind: "help";
+} | {
+    kind: "stats";
+} | {
+    kind: "add_breakpoint";
+} | {
+    kind: "remove_breakpoint";
+} | {
+    kind: "list_breakpoints";
+} | {
+    kind: "clear_breakpoints";
+} | {
+    kind: "raw";
+    value: string;
+};
+
+/**
+ * `debug_error` message (backend - client)
+ */
+export declare type WaldiezDebugError = {
+    type: "debug_error";
+    error: string;
+};
+
+/**
+ * `debug_event_info` message (backend - client)
+ * Contains the raw event payload emitted by the runner.
+ */
+export declare type WaldiezDebugEventInfo = {
+    type: "debug_event_info";
+    event: Record<string, unknown>;
+};
+
+/**
+ * `debug_help` message (backend - client)
+ */
+export declare type WaldiezDebugHelp = {
+    type: "debug_help";
+    help: WaldiezDebugHelpCommandGroup[];
+};
+
+/**
+ * Help command info (match Python `WaldiezDebugHelpCommand`).
+ */
+export declare type WaldiezDebugHelpCommand = {
+    /** List of command aliases, e.g., ["continue","c"] */
+    cmds?: string[];
+    /** Description */
+    desc: string;
+};
+
+/**
+ * Grouped help commands (match Python `WaldiezDebugHelpCommandGroup`).
+ */
+export declare type WaldiezDebugHelpCommandGroup = {
+    title: string;
+    commands: WaldiezDebugHelpCommand[];
+};
+
+/**
+ * `debug_input_request` message (sent by backend when waiting for a command/input)
+ */
+export declare type WaldiezDebugInputRequest = {
+    type: "debug_input_request";
+    prompt: string;
+    request_id: string;
+};
+
+/**
+ * `debug_input_response` message (client - backend). Prefer sending this
+ * structured form over raw strings so the backend can validate `request_id`.
+ */
+export declare type WaldiezDebugInputResponse = {
+    type: "debug_input_response";
+    request_id: string;
+    data: WaldiezDebugResponseCode | string;
+};
+
+/**
+ * Discriminated union of all step-by-step debug messages.
+ * (Matches Python `WaldiezDebugMessage` union, discriminator `type`).
+ */
+export declare type WaldiezDebugMessage = WaldiezDebugPrint | WaldiezDebugInputRequest | WaldiezDebugInputResponse | WaldiezDebugBreakpointsList | WaldiezDebugBreakpointAdded | WaldiezDebugBreakpointRemoved | WaldiezDebugBreakpointCleared | WaldiezDebugEventInfo | WaldiezDebugStats | WaldiezDebugHelp | WaldiezDebugError;
+
+/**
+ * `debug_print` message
+ */
+export declare type WaldiezDebugPrint = {
+    type: "debug_print";
+    content: string;
+};
+
+/**
+ * Explicit response codes allowed by the backend for step control.
+ */
+export declare type WaldiezDebugResponseCode = "" | "c" | "s" | "r" | "q" | "i" | "h" | "st" | "ab" | "rb" | "lb" | "cb";
+
+/**
+ * `debug_stats` message (backend - client)
+ */
+export declare type WaldiezDebugStats = {
+    type: "debug_stats";
+    stats: {
+        events_processed: number;
+        total_events: number;
+        step_mode: boolean;
+        auto_continue: boolean;
+        breakpoints: string[];
+        event_history_count: number;
+        [k: string]: unknown;
+    };
 };
 
 /**
@@ -3673,6 +3855,238 @@ export declare type WaldiezReasoningAgentReasonConfig = {
 export declare type WaldiezState = WaldiezStoreProps & IWaldiezToolStore & IWaldiezEdgeStore & IWaldiezModelStore & IWaldiezAgentStore & IWaldiezNodeStore & IWaldiezFlowStore;
 
 /**
+ * UI state slice for step-by-step mode.
+ * @param stepMode - Whether step mode is enabled
+ * @param autoContinue - Whether auto continue is enabled
+ * @param breakpoints - The list of event types to break on
+ * @param stats - Last stats snapshot (from `debug_stats`)
+ * @param eventHistory - Raw event history accumulated client-side (optional, for UI display)
+ * @param currentEvent - The most recent `debug_event_info` payload
+ * @param help - Debug help content (from `debug_help`)
+ * @param lastError - Last error (from `debug_error`)
+ * @param pendingControlInput - Pending input (if backend is waiting). Mirrors `debug_input_request`.
+ * @param handlers - Step-by-step specific handlers for UI actions
+ */
+export declare type WaldiezStepByStep = {
+    /** If true, step-by-step mode is active (a flow is running) */
+    active: boolean;
+    /** If true, runner will pause at breakpoints */
+    stepMode: boolean;
+    /** If true, backend auto-continues without user input */
+    autoContinue: boolean;
+    /** Event types to break on (empty means break on all) */
+    breakpoints: Array<string | WaldiezBreakpoint>;
+    /**
+     * Last stats snapshot (from `debug_stats`).
+     */
+    stats?: WaldiezDebugStats["stats"];
+    /** Raw event history accumulated client-side */
+    eventHistory: Array<Record<string, unknown>>;
+    /** The most recent `debug_event_info` payload */
+    currentEvent?: Record<string, unknown>;
+    /** Debug help content (from `debug_help`) */
+    help?: WaldiezDebugHelp["help"];
+    /** Last error (from `debug_error`) */
+    lastError?: string;
+    /**
+     * Pending control action input. For replying to messages
+     * of type `debug_input_request`.
+     * Separate from the normal chat's `activeRequest` to decouple UIs.
+     */
+    pendingControlInput: {
+        request_id: string;
+        prompt: string;
+    } | null;
+    /**
+     * Active user's input request. For replying to messages
+     * of type `input_request` (Not for control messages)
+     */
+    activeRequest: WaldiezActiveRequest | null;
+    /** Handlers for step-specific actions */
+    handlers: WaldiezStepHandlers;
+};
+
+/**
+ * Control actions that the UI should perform in response to debug messages
+ */
+export declare type WaldiezStepByStepControlAction = {
+    type: "debug_input_request_received";
+    requestId: string;
+    prompt: string;
+} | {
+    type: "show_notification";
+    message: string;
+    severity: "info" | "warning" | "error" | "success";
+} | {
+    type: "update_breakpoints";
+    breakpoints: Array<string | WaldiezBreakpoint>;
+} | {
+    type: "workflow_ended";
+    reason?: string;
+} | {
+    type: "scroll_to_latest";
+};
+
+/**
+ * Handler interface for processing specific debug message types
+ */
+export declare type WaldiezStepByStepHandler = {
+    /**
+     * Check if this handler can process the given message type
+     */
+    canHandle(type: string): boolean;
+    /**
+     * Process the debug message data
+     */
+    handle(data: WaldiezDebugMessage, context: WaldiezStepByStepProcessingContext): WaldiezStepByStepProcessingResult | undefined;
+};
+
+/**
+ * Processing context passed to handlers
+ */
+export declare type WaldiezStepByStepProcessingContext = {
+    /** Optional request ID for correlation */
+    requestId?: string;
+    /** Flow ID being debugged */
+    flowId?: string;
+    /** Message timestamp */
+    timestamp?: string;
+    /** Current UI state (for handlers that need context) */
+    currentState?: Partial<WaldiezStepByStep>;
+};
+
+/**
+ * Result of processing a debug message
+ */
+export declare type WaldiezStepByStepProcessingResult = {
+    /** The parsed debug message (if valid) */
+    debugMessage?: WaldiezDebugMessage;
+    /** Partial state updates to apply to WaldiezStepByStep */
+    stateUpdate?: Partial<WaldiezStepByStep>;
+    /** Control action for the UI to perform */
+    controlAction?: WaldiezStepByStepControlAction;
+    /** Whether this indicates workflow end */
+    isWorkflowEnd?: boolean;
+    /** Error information if processing failed */
+    error?: {
+        message: string;
+        code?: string;
+        originalData?: any;
+    };
+};
+
+export declare class WaldiezStepByStepProcessor {
+    private static _handlers;
+    private static get handlers();
+    /**
+     * Process a raw debug message and return the result
+     * @param rawMessage - The raw message string to process (JSON from Python backend)
+     * @param context - Processing context with request ID, flow ID, etc.
+     */
+    static process(rawMessage: string | undefined | null, context?: WaldiezStepByStepProcessingContext): WaldiezStepByStepProcessingResult | undefined;
+    private static earlyError;
+    /**
+     * Parse a raw message into a debug message
+     * Handles both JSON strings and Python dict format from step-by-step runner
+     */
+    private static parseMessage;
+    /**
+     * Check if the parsed data is a valid debug message
+     */
+    private static isValidDebugMessage;
+    /**
+     * Find a handler that can process the given message type
+     */
+    private static findHandler;
+    /**
+     * Get all supported message types
+     */
+    static getSupportedMessageTypes(): string[];
+    /**
+     * Check if a message type is supported for processing
+     */
+    static isSupported(messageType: string): boolean;
+    /**
+     * Check if the content can be processed by the step-by-step processor
+     */
+    static canProcess(content: any): boolean;
+    /**
+     * Validate a debug message structure against TypeScript types
+     */
+    static validateMessage(data: any): data is WaldiezDebugMessage;
+    /**
+     * Parse subprocess_output content specifically for step-by-step messages
+     */
+    static parseSubprocessContent(content: string): WaldiezDebugMessage | null;
+}
+
+export declare class WaldiezStepByStepUtils {
+    /**
+     * Extract participants (sender/recipient) from an event
+     */
+    static extractEventParticipants(event: Record<string, unknown>): {
+        sender?: string;
+        recipient?: string;
+    };
+    /**
+     * Format event content for display (truncate if too long)
+     */
+    static formatEventContent(event: Record<string, unknown>, maxLength?: number): string;
+    /**
+     * Check if an event is a workflow input request (different from debug control request)
+     */
+    static isWorkflowInputRequest(event: Record<string, unknown>): boolean;
+    /**
+     * Extract workflow end reason from debug_print content
+     */
+    static extractWorkflowEndReason(content: string): "completed" | "user_stopped" | "error" | "unknown";
+    /**
+     * Check if the workflow has started
+     */
+    static isWorkflowStart(content: string): boolean;
+    /**
+     * Check if a message is a step-by-step debug message
+     * Works with both parsed content and raw messages
+     */
+    static isStepByStepMessage(content: any): boolean;
+    /**
+     * Quick check if content can be processed by step-by-step processor
+     * Use this in your handleGenericMessage to route to step-by-step processor
+     */
+    static canProcess(content: any): boolean;
+    /**
+     * Extract event type from nested content structure
+     */
+    static extractEventType(event: Record<string, unknown>): string;
+    /**
+     * Create a response for debug control commands
+     */
+    static createControlResponse(requestId: string, command: string): {
+        type: "debug_input_response";
+        request_id: string;
+        data: string;
+    };
+}
+
+/**
+ * Step-by-step specific handlers for the UI layer.
+ * These are distinct from the chat handlers to keep concerns separated.
+ * @param sendControl - Send a control command to the backend.
+ */
+export declare type WaldiezStepHandlers = {
+    /** Send a control command (e.g., Continue/Run/Step/Quit/Info/Help/Stats...). */
+    sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => void | Promise<void>;
+    /**
+     * Send a user input response (e.g., for `debug_input_request`).
+     */
+    respond: (response: WaldiezChatUserInput) => void | Promise<void>;
+    /**
+     * Close the step-by-step session.
+     */
+    close?: () => void | Promise<void>;
+};
+
+/**
  * typeOfGetState
  * @see {@link WaldiezState}
  */
@@ -4006,5 +4420,17 @@ export declare type WaldiezVectorDbConfig = {
         [key: string]: unknown;
     } | null;
 };
+
+export declare const WORKFLOW_CHAT_END_MARKERS: readonly ["<Waldiez> - Workflow finished", "<Waldiez> - Workflow stopped by user", "<Waldiez> - Workflow execution failed:", "<Waldiez> - Done running the flow."];
+
+export declare const WORKFLOW_STEP_END_MARKERS: readonly ["<Waldiez step-by-step> - Workflow finished", "<Waldiez step-by-step> - Workflow stopped by user", "<Waldiez step-by-step> - Workflow execution failed:"];
+
+export declare const WORKFLOW_STEP_MARKERS: readonly ["<Waldiez step-by-step> - Starting workflow...", "<Waldiez step-by-step> - Workflow finished", "<Waldiez step-by-step> - Workflow stopped by user", "<Waldiez step-by-step> - Workflow execution failed:"];
+
+/**
+ * Workflow markers that indicate the workflow has started or finished
+ * These match the MESSAGES constant in the Python runner
+ */
+export declare const WORKFLOW_STEP_START_MARKERS: readonly ["<Waldiez step-by-step> - Starting workflow..."];
 
 export { }

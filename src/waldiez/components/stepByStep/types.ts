@@ -298,14 +298,3 @@ export type WaldiezStepByStep = {
     /** Handlers for step-specific actions */
     handlers: WaldiezStepHandlers;
 };
-/**
- * Helper to build a structured input response easily.
- */
-export const makeInputResponse = (
-    request_id: string,
-    data: WaldiezDebugResponseCode | string,
-): WaldiezDebugInputResponse => ({
-    type: "debug_input_response",
-    request_id,
-    data,
-});

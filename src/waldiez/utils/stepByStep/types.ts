@@ -7,7 +7,7 @@ import type { WaldiezBreakpoint, WaldiezDebugMessage, WaldiezStepByStep } from "
 /**
  * Control actions that the UI should perform in response to debug messages
  */
-export type StepByStepControlAction =
+export type WaldiezStepByStepControlAction =
     | { type: "debug_input_request_received"; requestId: string; prompt: string }
     | { type: "show_notification"; message: string; severity: "info" | "warning" | "error" | "success" }
     | { type: "update_breakpoints"; breakpoints: Array<string | WaldiezBreakpoint> }
@@ -17,7 +17,7 @@ export type StepByStepControlAction =
 /**
  * Processing context passed to handlers
  */
-export type StepByStepProcessingContext = {
+export type WaldiezStepByStepProcessingContext = {
     /** Optional request ID for correlation */
     requestId?: string;
     /** Flow ID being debugged */
@@ -31,13 +31,13 @@ export type StepByStepProcessingContext = {
 /**
  * Result of processing a debug message
  */
-export type StepByStepProcessingResult = {
+export type WaldiezStepByStepProcessingResult = {
     /** The parsed debug message (if valid) */
     debugMessage?: WaldiezDebugMessage;
     /** Partial state updates to apply to WaldiezStepByStep */
     stateUpdate?: Partial<WaldiezStepByStep>;
     /** Control action for the UI to perform */
-    controlAction?: StepByStepControlAction;
+    controlAction?: WaldiezStepByStepControlAction;
     /** Whether this indicates workflow end */
     isWorkflowEnd?: boolean;
     /** Error information if processing failed */
@@ -51,7 +51,7 @@ export type StepByStepProcessingResult = {
 /**
  * Handler interface for processing specific debug message types
  */
-export type StepByStepHandler = {
+export type WaldiezStepByStepHandler = {
     /**
      * Check if this handler can process the given message type
      */
@@ -62,6 +62,6 @@ export type StepByStepHandler = {
      */
     handle(
         data: WaldiezDebugMessage,
-        context: StepByStepProcessingContext,
-    ): StepByStepProcessingResult | undefined;
+        context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult | undefined;
 };

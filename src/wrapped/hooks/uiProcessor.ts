@@ -10,12 +10,13 @@ import { nanoid } from "nanoid";
 import { WaldiezStepByStep, WaldiezTimelineData, showSnackbar } from "@waldiez/components";
 import { ChatParticipant, WaldiezChatMessage } from "@waldiez/types";
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import { StepByStepUtils, WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep";
+import { WaldiezStepByStepProcessor, WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep";
 
 import {
     ServerMessage,
     SubprocessOutputMsg,
     isConvertWorkflowResponse,
+    isDebugPrint,
     isErrorResponse,
     isSaveFlowResponse,
     isSubprocessOutput,
@@ -195,23 +196,6 @@ export function useUIMessageProcessor({
         [flowId, isDebugging, isRunning, setError, setMessages, setStepByStepState],
     );
 
-    const isDebugPrint = useCallback((content: any): content is { type: "print"; data: any } => {
-        if (typeof content === "string") {
-            try {
-                return isDebugPrint(JSON.parse(content));
-            } catch {
-                return false;
-            }
-        }
-        return (
-            content.type === "print" &&
-            "data" in content &&
-            typeof content.data === "object" &&
-            "type" in content.data &&
-            typeof content.data.type === "string"
-        );
-    }, []);
-
     const processSubprocessOutput = useCallback(
         (data: SubprocessOutputMsg) => {
             // console.debug("Subprocess output received:", data.content);
@@ -230,7 +214,7 @@ export function useUIMessageProcessor({
                     data.content = JSON.stringify(parsedContent);
                 }
                 // Check if it's a step-by-step debug message
-                if (StepByStepUtils.canProcess(parsedContent)) {
+                if (WaldiezStepByStepUtils.canProcess(parsedContent)) {
                     const result = WaldiezStepByStepProcessor.process(data.content, {
                         flowId,
                         currentState: stepByStepState,
@@ -281,7 +265,7 @@ export function useUIMessageProcessor({
                 // console.error("Error processing subprocess output:", reason);
             }
         },
-        [isDebugPrint, flowId, stepByStepState, setStepByStepState, processGenericMessage],
+        [flowId, stepByStepState, setStepByStepState, processGenericMessage],
     );
 
     const processUIMessage = useCallback(

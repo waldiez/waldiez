@@ -4,7 +4,7 @@
  */
 import { WaldiezBreakpoint } from "@waldiez/components";
 
-export class BreakpointUtils {
+export class WaldiezBreakpointUtils {
     /**
      * Parse breakpoint from string format
      */

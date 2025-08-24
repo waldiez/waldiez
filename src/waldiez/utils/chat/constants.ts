@@ -2,15 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+export const WORKFLOW_CHAT_END_MARKERS = [
+    "<Waldiez> - Workflow finished",
+    "<Waldiez> - Workflow stopped by user",
+    "<Waldiez> - Workflow execution failed:",
+    "<Waldiez> - Done running the flow.",
+] as const;
 export const MESSAGE_CONSTANTS = {
     DEFAULT_PROMPT: "Enter your message to start the conversation:",
     GENERIC_PROMPTS: [">", "> "] as string[],
-    WORKFLOW_END_MARKERS: [
-        "<Waldiez> - Workflow finished",
-        "<Waldiez> - Workflow stopped by user",
-        "<Waldiez> - Workflow execution failed:",
-        "<Waldiez> - Done running the flow.",
-    ],
+    WORKFLOW_END_MARKERS: WORKFLOW_CHAT_END_MARKERS,
     PARTICIPANTS_KEY: "participants",
     SYSTEM_MESSAGES: {
         GROUP_CHAT_RUN: "Group chat run",

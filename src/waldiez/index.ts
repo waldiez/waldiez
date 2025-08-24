@@ -9,6 +9,8 @@ import { Waldiez } from "@waldiez/waldiez";
 
 export type {
     WaldiezActiveRequest,
+    WaldiezBreakpoint,
+    WaldiezBreakpointType,
     WaldiezChatConfig,
     WaldiezChatContent,
     WaldiezChatError,
@@ -16,9 +18,27 @@ export type {
     WaldiezChatMessage,
     WaldiezChatMessageType,
     WaldiezChatUserInput,
+    WaldiezDebugBreakpointAdded,
+    WaldiezDebugBreakpointCleared,
+    WaldiezDebugBreakpointRemoved,
+    WaldiezDebugBreakpointsList,
+    WaldiezDebugControl,
+    WaldiezDebugError,
+    WaldiezDebugEventInfo,
+    WaldiezDebugHelp,
+    WaldiezDebugHelpCommand,
+    WaldiezDebugHelpCommandGroup,
+    WaldiezDebugInputRequest,
+    WaldiezDebugInputResponse,
+    WaldiezDebugMessage,
+    WaldiezDebugPrint,
+    WaldiezDebugResponseCode,
+    WaldiezDebugStats,
     WaldiezMediaConfig,
     WaldiezMediaContent,
     WaldiezMediaType,
+    WaldiezStepByStep,
+    WaldiezStepHandlers,
     WaldiezStreamEvent,
     WaldiezTimelineAgentInfo,
     WaldiezTimelineCostPoint,
@@ -28,9 +48,20 @@ export type {
 export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
 export type * from "@waldiez/utils/chat/types";
+export type * from "@waldiez/utils/stepByStep/types";
 
 export { showSnackbar } from "@waldiez/components/snackbar";
-export { WaldiezChatMessageProcessor } from "@waldiez/utils";
+export {
+    WaldiezBreakpointUtils,
+    WaldiezChatMessageProcessor,
+    WaldiezStepByStepProcessor,
+    WaldiezStepByStepUtils,
+    WORKFLOW_CHAT_END_MARKERS,
+    WORKFLOW_STEP_END_MARKERS,
+    WORKFLOW_STEP_MARKERS,
+    WORKFLOW_STEP_START_MARKERS,
+    type WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils";
 
 export { Waldiez };
 export type { WaldiezFlow, WaldiezFlowProps, WaldiezProps };

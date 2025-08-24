@@ -4,21 +4,24 @@
  */
 import { WaldiezDebugMessage, isDebugHelp } from "@waldiez/components/stepByStep";
 import {
-    StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 /**
  * Handles debug_help messages
  * These contain help information for debug commands
  */
-export class DebugHelpHandler implements StepByStepHandler {
+export class DebugHelpHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
         return type === "debug_help";
     }
 
-    handle(data: WaldiezDebugMessage, _context: StepByStepProcessingContext): StepByStepProcessingResult {
+    handle(
+        data: WaldiezDebugMessage,
+        _context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult {
         if (!isDebugHelp(data)) {
             return {
                 error: {

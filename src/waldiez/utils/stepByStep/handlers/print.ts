@@ -5,21 +5,24 @@
 import { WaldiezDebugMessage } from "@waldiez/components/stepByStep";
 import { WORKFLOW_STEP_END_MARKERS } from "@waldiez/utils/stepByStep/constants";
 import {
-    StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 /**
  * Handles debug_print messages
  * These contain general debug output and may indicate workflow end
  */
-export class DebugPrintHandler implements StepByStepHandler {
+export class DebugPrintHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
         return type === "debug_print";
     }
 
-    handle(data: WaldiezDebugMessage, _context: StepByStepProcessingContext): StepByStepProcessingResult {
+    handle(
+        data: WaldiezDebugMessage,
+        _context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult {
         if (data.type !== "debug_print" || typeof data.content !== "string") {
             return {
                 error: {
@@ -33,7 +36,7 @@ export class DebugPrintHandler implements StepByStepHandler {
         const content = data.content;
         const isWorkflowEnd = this.isWorkflowEndMessage(content);
 
-        const result: StepByStepProcessingResult = {
+        const result: WaldiezStepByStepProcessingResult = {
             debugMessage: data,
             isWorkflowEnd,
         };

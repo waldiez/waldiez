@@ -25,16 +25,16 @@ import {
     DebugPrintHandler,
     DebugStatsHandler,
 } from "@waldiez/utils/stepByStep/handlers";
-import { StepByStepUtils } from "@waldiez/utils/stepByStep/stepByStepUtils";
+import { WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep/stepByStepUtils";
 import {
-    type StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    type WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 export class WaldiezStepByStepProcessor {
-    private static _handlers: StepByStepHandler[] | null = null;
-    private static get handlers(): StepByStepHandler[] {
+    private static _handlers: WaldiezStepByStepHandler[] | null = null;
+    private static get handlers(): WaldiezStepByStepHandler[] {
         if (!this._handlers) {
             this._handlers = [
                 new DebugInputRequestHandler(),
@@ -56,8 +56,8 @@ export class WaldiezStepByStepProcessor {
      */
     static process(
         rawMessage: string | undefined | null,
-        context: StepByStepProcessingContext = {},
-    ): StepByStepProcessingResult | undefined {
+        context: WaldiezStepByStepProcessingContext = {},
+    ): WaldiezStepByStepProcessingResult | undefined {
         if (!rawMessage) {
             return undefined;
         }
@@ -102,7 +102,7 @@ export class WaldiezStepByStepProcessor {
         }
     }
 
-    private static earlyError(rawMessage: string | undefined | null): StepByStepProcessingResult {
+    private static earlyError(rawMessage: string | undefined | null): WaldiezStepByStepProcessingResult {
         try {
             const parsed = JSON.parse(rawMessage || "");
             const messageType = parsed.type;
@@ -185,7 +185,7 @@ export class WaldiezStepByStepProcessor {
     /**
      * Find a handler that can process the given message type
      */
-    private static findHandler(type: string): StepByStepHandler | undefined {
+    private static findHandler(type: string): WaldiezStepByStepHandler | undefined {
         return WaldiezStepByStepProcessor.handlers.find(handler => handler.canHandle(type));
     }
 
@@ -219,7 +219,7 @@ export class WaldiezStepByStepProcessor {
      * Check if the content can be processed by the step-by-step processor
      */
     static canProcess(content: any): boolean {
-        return StepByStepUtils.isStepByStepMessage(content);
+        return WaldiezStepByStepUtils.isStepByStepMessage(content);
     }
 
     /**

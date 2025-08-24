@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-export class StepByStepUtils {
+export class WaldiezStepByStepUtils {
     /**
      * Extract participants (sender/recipient) from an event
      */

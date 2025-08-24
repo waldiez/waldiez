@@ -6,9 +6,11 @@
 import stripAnsi from "strip-ansi";
 import { nanoid } from "nanoid";
 import JSZip from "jszip";
-import { jsx, jsxs, Fragment } from "react/jsx-runtime";
+import { jsxs, jsx, Fragment } from "react/jsx-runtime";
 import * as React from "react";
-import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
+import React__default, { useState, useCallback, createContext, useContext, useLayoutEffect, useRef, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
+import { FaStepForward, FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
+import { FaBug, FaChevronDown, FaChevronUp, FaX, FaPlay, FaStop, FaRegUser, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
@@ -16,9 +18,7 @@ import MonacoEditor, { loader } from "@monaco-editor/react";
 import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
-import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
@@ -97,6 +97,25 @@ class WaldiezAgentData {
     this.handoffs = props.handoffs || [];
   }
 }
+const WORKFLOW_CHAT_END_MARKERS = [
+  "<Waldiez> - Workflow finished",
+  "<Waldiez> - Workflow stopped by user",
+  "<Waldiez> - Workflow execution failed:",
+  "<Waldiez> - Done running the flow."
+];
+const MESSAGE_CONSTANTS = {
+  DEFAULT_PROMPT: "Enter your message to start the conversation:",
+  GENERIC_PROMPTS: [">", "> "],
+  WORKFLOW_END_MARKERS: WORKFLOW_CHAT_END_MARKERS,
+  PARTICIPANTS_KEY: "participants",
+  SYSTEM_MESSAGES: {
+    GROUP_CHAT_RUN: "Group chat run",
+    CODE_EXECUTION_REPLY: "Generate code execution reply",
+    SPEAKER_SELECTION_HEADER: "## Select a speaker",
+    SPEAKER_SELECTION_PROMPT: "Please select a speaker from the following list:",
+    SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
+  }
+};
 class RunCompletionHandler {
   canHandle(type) {
     return type === "run_completion";
@@ -108,24 +127,6 @@ class RunCompletionHandler {
     return { isWorkflowEnd: true, runCompletion: data.content };
   }
 }
-const MESSAGE_CONSTANTS = {
-  DEFAULT_PROMPT: "Enter your message to start the conversation:",
-  GENERIC_PROMPTS: [">", "> "],
-  WORKFLOW_END_MARKERS: [
-    "<Waldiez> - Workflow finished",
-    "<Waldiez> - Workflow stopped by user",
-    "<Waldiez> - Workflow execution failed:",
-    "<Waldiez> - Done running the flow."
-  ],
-  PARTICIPANTS_KEY: "participants",
-  SYSTEM_MESSAGES: {
-    GROUP_CHAT_RUN: "Group chat run",
-    CODE_EXECUTION_REPLY: "Generate code execution reply",
-    SPEAKER_SELECTION_HEADER: "## Select a speaker",
-    SPEAKER_SELECTION_PROMPT: "Please select a speaker from the following list:",
-    SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
-  }
-};
 class CodeExecutionReplyHandler {
   /**
    * Determines if this handler can process the given message type.
@@ -1179,6 +1180,829 @@ const getFlowRoot = (flowId, fallbackToBody = false) => {
   }
   return rootDiv;
 };
+class WaldiezBreakpointUtils {
+  /**
+   * Parse breakpoint from string format
+   */
+  static fromString(breakpointStr) {
+    if (breakpointStr === "all") {
+      return { type: "all" };
+    }
+    if (breakpointStr.startsWith("event:")) {
+      const event_type = breakpointStr.slice(6);
+      return { type: "event", event_type };
+    }
+    if (breakpointStr.startsWith("agent:")) {
+      const agent_name = breakpointStr.slice(6);
+      return { type: "agent", agent_name };
+    }
+    if (breakpointStr.includes(":") && !breakpointStr.startsWith("event:") && !breakpointStr.startsWith("agent:")) {
+      const [agent_name, event_type] = breakpointStr.split(":", 2);
+      return {
+        type: "agent_event",
+        agent_name,
+        event_type
+      };
+    }
+    return { type: "event", event_type: breakpointStr };
+  }
+  /**
+   * Convert breakpoint to string representation
+   */
+  static toString(breakpoint) {
+    switch (breakpoint.type) {
+      case "event":
+        return `event:${breakpoint.event_type}`;
+      case "agent":
+        return `agent:${breakpoint.agent_name}`;
+      case "agent_event":
+        return `${breakpoint.agent_name}:${breakpoint.event_type}`;
+      case "all":
+      default:
+        return "all";
+    }
+  }
+  /**
+   * Check if breakpoint matches an event
+   */
+  static matches(breakpoint, event) {
+    switch (breakpoint.type) {
+      case "all":
+        return true;
+      case "event":
+        return event.type === breakpoint.event_type;
+      case "agent":
+        return event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name;
+      case "agent_event":
+        return event.type === breakpoint.event_type && (event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name);
+      default:
+        return false;
+    }
+  }
+  /**
+   * Normalize breakpoint input (string or object) to WaldiezBreakpoint
+   */
+  static normalize(input) {
+    return typeof input === "string" ? this.fromString(input) : input;
+  }
+  /**
+   * Get display name for breakpoint
+   */
+  static getDisplayName(breakpoint) {
+    switch (breakpoint.type) {
+      case "event":
+        return `Event: ${breakpoint.event_type}`;
+      case "agent":
+        return `Agent: ${breakpoint.agent_name}`;
+      case "agent_event":
+        return `${breakpoint.agent_name} → ${breakpoint.event_type}`;
+      case "all":
+        return "All Events";
+      default:
+        return "Unknown";
+    }
+  }
+}
+const WORKFLOW_STEP_START_MARKERS = ["<Waldiez step-by-step> - Starting workflow..."];
+const WORKFLOW_STEP_END_MARKERS = [
+  "<Waldiez step-by-step> - Workflow finished",
+  "<Waldiez step-by-step> - Workflow stopped by user",
+  "<Waldiez step-by-step> - Workflow execution failed:"
+];
+const WORKFLOW_STEP_MARKERS = [...WORKFLOW_STEP_START_MARKERS, ...WORKFLOW_STEP_END_MARKERS];
+const isDebugInputRequest = (m) => Boolean(
+  m && m.type === "debug_input_request" && typeof m.request_id === "string" && typeof m.prompt === "string"
+);
+const isDebugEventInfo = (m) => Boolean(m && m.type === "debug_event_info" && m.event && typeof m.event === "object");
+const isDebugStats = (m) => Boolean(m && m.type === "debug_stats" && m.stats && typeof m.stats === "object");
+const isDebugHelp = (m) => Boolean(m && m.type === "debug_help" && Array.isArray(m.help));
+const isDebugError = (m) => Boolean(m && m.type === "debug_error" && typeof m.error === "string");
+const isDebugBreakpointsList = (m) => Boolean(m && m.type === "debug_breakpoints_list" && Array.isArray(m.breakpoints));
+const isDebugBreakpointAdded = (m) => Boolean(
+  m && m.type === "debug_breakpoint_added" && m.breakpoint && (typeof m.breakpoint === "object" || typeof m.breakpoint === "string")
+);
+const isDebugBreakpointRemoved = (m) => Boolean(
+  m && m.type === "debug_breakpoint_removed" && m.breakpoint && (typeof m.breakpoint === "object" || typeof m.breakpoint === "string")
+);
+const isDebugBreakpointCleared = (m) => Boolean(m && m.type === "debug_breakpoint_cleared" && typeof m.message === "string");
+function controlToResponse(control) {
+  if (typeof control === "string") {
+    return control;
+  }
+  switch (control.kind) {
+    case "continue":
+      return "c";
+    case "step":
+      return "s";
+    case "run":
+      return "r";
+    case "quit":
+      return "q";
+    case "info":
+      return "i";
+    case "help":
+      return "h";
+    case "stats":
+      return "st";
+    case "add_breakpoint":
+      return "ab";
+    case "remove_breakpoint":
+      return "rb";
+    case "list_breakpoints":
+      return "lb";
+    case "clear_breakpoints":
+      return "cb";
+    case "raw":
+      return control.value;
+    default: {
+      const _never = control;
+      return String(_never);
+    }
+  }
+}
+const StepByStepView = ({ stepByStep }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [responseText, setResponseText] = useState("");
+  const canClose = typeof stepByStep?.handlers?.close === "function" && stepByStep?.eventHistory.length > 0;
+  const onInputChange = useCallback((e) => {
+    setResponseText(e.target.value);
+  }, []);
+  const onInputKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        stepByStep?.handlers.respond({
+          id: nanoid(),
+          timestamp: Date.now(),
+          data: responseText,
+          request_id: stepByStep?.activeRequest?.request_id,
+          type: "input_response"
+        });
+      }
+    },
+    [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
+  );
+  const onRespond = useCallback(() => {
+    stepByStep?.handlers.respond({
+      id: nanoid(),
+      timestamp: Date.now(),
+      data: responseText,
+      request_id: stepByStep?.activeRequest?.request_id,
+      type: "input_response"
+    });
+  }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
+  const onControl = useCallback(
+    (action) => {
+      const response = controlToResponse({ kind: action });
+      stepByStep?.handlers.sendControl({
+        data: response,
+        request_id: stepByStep?.activeRequest?.request_id || "<unknown>"
+      });
+    },
+    [stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
+  );
+  const reducedHistory = stepByStep?.eventHistory.map((entry) => ({
+    data: entry.data || entry.message || entry.content || entry
+  })).map((entry) => entry.data);
+  if (!stepByStep?.active && !canClose) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", children: [
+    /* @__PURE__ */ jsxs("div", { className: "header", children: [
+      /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
+        /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
+        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
+        !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
+        stepByStep?.active && /* @__PURE__ */ jsxs("div", { className: "badge", children: [
+          " ",
+          String(stepByStep?.currentEvent?.type) || "Running"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            title: isExpanded ? "Collapse" : "Expand",
+            type: "button",
+            onClick: () => setIsExpanded(!isExpanded),
+            className: "header-toggle",
+            children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
+          }
+        ),
+        !stepByStep?.active && canClose && /* @__PURE__ */ jsx(
+          "button",
+          {
+            title: "Close",
+            type: "button",
+            onClick: stepByStep?.handlers?.close,
+            className: "header-toggle",
+            children: /* @__PURE__ */ jsx(FaX, { size: 14 })
+          }
+        )
+      ] })
+    ] }),
+    isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
+      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+        /* @__PURE__ */ jsxs("button", { className: "btn btn-primary", onClick: () => onControl("continue"), children: [
+          /* @__PURE__ */ jsx(FaStepForward, {}),
+          " ",
+          /* @__PURE__ */ jsx("span", { children: "Continue" })
+        ] }),
+        /* @__PURE__ */ jsxs("button", { className: "btn btn-secondary", onClick: () => onControl("run"), children: [
+          /* @__PURE__ */ jsx(FaPlay, {}),
+          " ",
+          /* @__PURE__ */ jsx("span", { children: "Run" })
+        ] }),
+        /* @__PURE__ */ jsxs("button", { className: "btn btn-danger", onClick: () => onControl("quit"), children: [
+          /* @__PURE__ */ jsx(FaStop, {}),
+          " ",
+          /* @__PURE__ */ jsx("span", { children: "Quit" })
+        ] })
+      ] }),
+      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+        /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
+        /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              className: "input",
+              placeholder: "Type your response… (Enter to send)",
+              value: responseText,
+              type: stepByStep.activeRequest.password === true ? "password" : "text",
+              onChange: onInputChange,
+              onKeyDown: onInputKeyDown
+            }
+          ),
+          /* @__PURE__ */ jsx("button", { className: "btn btn-primary", onClick: onRespond, children: "Send" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
+        /* @__PURE__ */ jsx(SectionTitle, { children: "Messages" }),
+        /* @__PURE__ */ jsx(JsonArea, { value: reducedHistory, placeholder: "No messages yet" })
+      ] })
+    ] })
+  ] });
+};
+function safeStringify(v) {
+  try {
+    return JSON.stringify(v, null, 2);
+  } catch {
+    return String(v);
+  }
+}
+const JsonArea = ({ value, placeholder = "" }) => /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: value ? safeStringify(value) : placeholder }) });
+const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title", children });
+StepByStepView.displayName = "WaldiezStepByStepView";
+class DebugBreakpointsHandler {
+  canHandle(type) {
+    return [
+      "debug_breakpoints_list",
+      "debug_breakpoint_added",
+      "debug_breakpoint_removed",
+      "debug_breakpoint_cleared"
+    ].includes(type);
+  }
+  handle(data, context) {
+    const result = {
+      debugMessage: data
+    };
+    if (isDebugBreakpointsList(data)) {
+      result.stateUpdate = {
+        breakpoints: data.breakpoints || /* c8 ignore next */
+        []
+      };
+      result.controlAction = {
+        type: "update_breakpoints",
+        breakpoints: data.breakpoints || []
+      };
+    } else if (isDebugBreakpointAdded(data)) {
+      const currentBreakpoints = context.currentState?.breakpoints || [];
+      const newBreakpoints = [...currentBreakpoints, data.breakpoint];
+      result.stateUpdate = {
+        breakpoints: newBreakpoints
+      };
+      result.controlAction = {
+        type: "show_notification",
+        message: `Breakpoint added: ${data.breakpoint}`,
+        severity: "success"
+      };
+    } else if (isDebugBreakpointRemoved(data)) {
+      const filteredBreakpoints = (context.currentState?.breakpoints || []).filter(
+        (bp) => bp !== data.breakpoint
+      );
+      result.stateUpdate = {
+        breakpoints: filteredBreakpoints
+      };
+      result.controlAction = {
+        type: "show_notification",
+        message: `Breakpoint removed: ${data.breakpoint}`,
+        severity: "info"
+      };
+    } else if (isDebugBreakpointCleared(data)) {
+      result.stateUpdate = {
+        breakpoints: []
+      };
+      result.controlAction = {
+        type: "show_notification",
+        message: data.message || /* c8 ignore next */
+        "All breakpoints cleared",
+        severity: "info"
+      };
+    } else {
+      return {
+        error: {
+          message: `Unknown breakpoint message type: ${data.type}`,
+          originalData: data
+        }
+      };
+    }
+    return result;
+  }
+}
+class DebugErrorHandler {
+  canHandle(type) {
+    return type === "debug_error";
+  }
+  handle(data, _context) {
+    if (!isDebugError(data)) {
+      return {
+        error: {
+          message: "Invalid debug_error structure",
+          originalData: data
+        }
+      };
+    }
+    return {
+      debugMessage: data,
+      stateUpdate: {
+        lastError: data.error
+      },
+      controlAction: {
+        type: "show_notification",
+        message: data.error,
+        severity: "error"
+      }
+    };
+  }
+}
+class DebugEventInfoHandler {
+  canHandle(type) {
+    return type === "debug_event_info";
+  }
+  handle(data, context) {
+    if (!isDebugEventInfo(data)) {
+      return {
+        error: {
+          message: "Invalid debug_event_info structure",
+          originalData: data
+        }
+      };
+    }
+    const event = data.event;
+    const currentHistory = context.currentState?.eventHistory || [];
+    return {
+      debugMessage: data,
+      stateUpdate: {
+        currentEvent: event,
+        eventHistory: [...currentHistory, event]
+      },
+      controlAction: {
+        type: "scroll_to_latest"
+      }
+    };
+  }
+}
+class DebugHelpHandler {
+  canHandle(type) {
+    return type === "debug_help";
+  }
+  handle(data, _context) {
+    if (!isDebugHelp(data)) {
+      return {
+        error: {
+          message: "Invalid debug_help structure",
+          originalData: data
+        }
+      };
+    }
+    return {
+      debugMessage: data,
+      stateUpdate: {
+        help: data.help
+      }
+    };
+  }
+}
+class DebugInputRequestHandler {
+  canHandle(type) {
+    return type === "debug_input_request";
+  }
+  handle(data, _context) {
+    if (!isDebugInputRequest(data)) {
+      return {
+        error: {
+          message: "Invalid debug_input_request structure",
+          originalData: data
+        }
+      };
+    }
+    return {
+      debugMessage: data,
+      stateUpdate: {
+        pendingControlInput: {
+          request_id: data.request_id,
+          prompt: data.prompt
+        }
+      },
+      controlAction: {
+        type: "debug_input_request_received",
+        requestId: data.request_id,
+        prompt: data.prompt
+      }
+    };
+  }
+}
+class DebugPrintHandler {
+  canHandle(type) {
+    return type === "debug_print";
+  }
+  handle(data, _context) {
+    if (data.type !== "debug_print" || typeof data.content !== "string") {
+      return {
+        error: {
+          message: "Invalid debug_print structure",
+          originalData: data
+        }
+      };
+    }
+    const content = data.content;
+    const isWorkflowEnd = this.isWorkflowEndMessage(content);
+    const result = {
+      debugMessage: data,
+      isWorkflowEnd
+    };
+    if (isWorkflowEnd) {
+      result.controlAction = {
+        type: "workflow_ended",
+        reason: this.extractEndReason(content)
+      };
+      result.stateUpdate = {
+        pendingControlInput: null,
+        activeRequest: null
+      };
+    }
+    return result;
+  }
+  isWorkflowEndMessage(content) {
+    return WORKFLOW_STEP_END_MARKERS.some((marker) => content.includes(marker));
+  }
+  extractEndReason(content) {
+    if (content.includes("Workflow finished")) {
+      return "completed";
+    }
+    if (content.includes("stopped by user")) {
+      return "user_stopped";
+    }
+    if (content.includes("execution failed")) {
+      return "error";
+    }
+    return void 0;
+  }
+}
+class DebugStatsHandler {
+  canHandle(type) {
+    return type === "debug_stats";
+  }
+  handle(data, _context) {
+    if (!isDebugStats(data)) {
+      return {
+        error: {
+          message: "Invalid debug_stats structure",
+          originalData: data
+        }
+      };
+    }
+    return {
+      debugMessage: data,
+      stateUpdate: {
+        stats: data.stats,
+        stepMode: data.stats.step_mode,
+        autoContinue: data.stats.auto_continue,
+        breakpoints: data.stats.breakpoints || []
+      }
+    };
+  }
+}
+class WaldiezStepByStepUtils {
+  /**
+   * Extract participants (sender/recipient) from an event
+   */
+  static extractEventParticipants(event) {
+    return {
+      sender: typeof event.sender === "string" ? event.sender : void 0,
+      recipient: typeof event.recipient === "string" ? event.recipient : void 0
+    };
+  }
+  /**
+   * Format event content for display (truncate if too long)
+   */
+  static formatEventContent(event, maxLength = 100) {
+    const content = event.content;
+    if (typeof content === "string") {
+      return content.length > maxLength ? `${content.substring(0, maxLength)}...` : content;
+    }
+    if (content && typeof content === "object") {
+      const jsonStr = JSON.stringify(content);
+      return jsonStr.length > maxLength ? `${jsonStr.substring(0, maxLength)}...` : jsonStr;
+    }
+    return "";
+  }
+  /**
+   * Check if an event is a workflow input request (different from debug control request)
+   */
+  static isWorkflowInputRequest(event) {
+    return event.type === "input_request";
+  }
+  /**
+   * Extract workflow end reason from debug_print content
+   */
+  static extractWorkflowEndReason(content) {
+    const contentLower = content.toLowerCase();
+    if (contentLower.includes("workflow finished")) {
+      return "completed";
+    }
+    if (contentLower.includes("stopped by user")) {
+      return "user_stopped";
+    }
+    if (contentLower.includes("execution failed")) {
+      return "error";
+    }
+    return "unknown";
+  }
+  /**
+   * Check if the workflow has started
+   */
+  static isWorkflowStart(content) {
+    return content.includes("<Waldiez step-by-step> - Starting workflow...");
+  }
+  /**
+   * Check if a message is a step-by-step debug message
+   * Works with both parsed content and raw messages
+   */
+  static isStepByStepMessage(content) {
+    if (!content || typeof content !== "object") {
+      return false;
+    }
+    if (typeof content.type === "string" && content.type.startsWith("debug_")) {
+      return true;
+    }
+    return false;
+  }
+  /**
+   * Quick check if content can be processed by step-by-step processor
+   * Use this in your handleGenericMessage to route to step-by-step processor
+   */
+  static canProcess(content) {
+    return this.isStepByStepMessage(content);
+  }
+  /**
+   * Extract event type from nested content structure
+   */
+  static extractEventType(event) {
+    if (typeof event.type === "string") {
+      return event.type;
+    }
+    if (event.content && typeof event.content === "object") {
+      const content = event.content;
+      if (typeof content.type === "string") {
+        return content.type;
+      }
+    }
+    return "unknown";
+  }
+  /**
+   * Create a response for debug control commands
+   */
+  static createControlResponse(requestId, command) {
+    return {
+      type: "debug_input_response",
+      request_id: requestId,
+      data: command
+    };
+  }
+}
+class WaldiezStepByStepProcessor {
+  static _handlers = null;
+  static get handlers() {
+    if (!this._handlers) {
+      this._handlers = [
+        new DebugInputRequestHandler(),
+        new DebugEventInfoHandler(),
+        new DebugStatsHandler(),
+        new DebugErrorHandler(),
+        new DebugHelpHandler(),
+        new DebugBreakpointsHandler(),
+        new DebugPrintHandler()
+      ];
+    }
+    return this._handlers;
+  }
+  /**
+   * Process a raw debug message and return the result
+   * @param rawMessage - The raw message string to process (JSON from Python backend)
+   * @param context - Processing context with request ID, flow ID, etc.
+   */
+  static process(rawMessage, context = {}) {
+    if (!rawMessage) {
+      return void 0;
+    }
+    let data = null;
+    if (typeof rawMessage === "string") {
+      data = WaldiezStepByStepProcessor.parseMessage(rawMessage);
+    } else if (typeof rawMessage === "object") {
+      if (WaldiezStepByStepProcessor.isValidDebugMessage(rawMessage)) {
+        data = rawMessage;
+      }
+    }
+    if (!data) {
+      return WaldiezStepByStepProcessor.earlyError(rawMessage);
+    }
+    const handler = WaldiezStepByStepProcessor.findHandler(data.type);
+    if (!handler) {
+      return {
+        error: {
+          message: `No handler found for message type: ${data.type}`,
+          code: "UNKNOWN_MESSAGE_TYPE",
+          originalData: data
+        }
+      };
+    }
+    try {
+      return handler.handle(data, context);
+    } catch (error) {
+      return {
+        error: {
+          message: `Handler error: ${error instanceof Error ? error.message : String(error)}`,
+          code: "HANDLER_ERROR",
+          originalData: data
+        }
+      };
+    }
+  }
+  static earlyError(rawMessage) {
+    try {
+      const parsed = JSON.parse(rawMessage || "");
+      const messageType = parsed.type;
+      return {
+        error: {
+          message: `No handler found for message type: ${messageType}`,
+          originalData: rawMessage
+        }
+      };
+    } catch {
+      return {
+        error: {
+          message: "Failed to parse debug message as JSON",
+          originalData: rawMessage
+        }
+      };
+    }
+  }
+  /**
+   * Parse a raw message into a debug message
+   * Handles both JSON strings and Python dict format from step-by-step runner
+   */
+  // eslint-disable-next-line max-statements
+  static parseMessage(message) {
+    if (!message || typeof message !== "string") {
+      return null;
+    }
+    try {
+      const cleanMessage = stripAnsi(message.replace(/\n/g, "")).trim();
+      try {
+        const parsed = JSON.parse(cleanMessage);
+        if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
+          return parsed;
+        }
+      } catch {
+      }
+      if (cleanMessage.includes("'type':") && cleanMessage.includes("debug_")) {
+        const jsonContent = cleanMessage.replace(/'/g, '"').replace(/True/g, "true").replace(/False/g, "false").replace(/None/g, "null");
+        try {
+          const parsed = JSON.parse(jsonContent);
+          if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
+            return parsed;
+          }
+        } catch {
+        }
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * Check if the parsed data is a valid debug message
+   */
+  static isValidDebugMessage(data) {
+    return !!(data && typeof data === "object" && data.type && typeof data.type === "string" && data.type.startsWith("debug_"));
+  }
+  /**
+   * Find a handler that can process the given message type
+   */
+  static findHandler(type) {
+    return WaldiezStepByStepProcessor.handlers.find((handler) => handler.canHandle(type));
+  }
+  /**
+   * Get all supported message types
+   */
+  static getSupportedMessageTypes() {
+    return [
+      "debug_print",
+      "debug_input_request",
+      "debug_input_response",
+      // Not handled (outgoing only)
+      "debug_event_info",
+      "debug_stats",
+      "debug_help",
+      "debug_error",
+      "debug_breakpoints_list",
+      "debug_breakpoint_added",
+      "debug_breakpoint_removed",
+      "debug_breakpoint_cleared"
+    ];
+  }
+  /**
+   * Check if a message type is supported for processing
+   */
+  static isSupported(messageType) {
+    return WaldiezStepByStepProcessor.getSupportedMessageTypes().includes(messageType);
+  }
+  /**
+   * Check if the content can be processed by the step-by-step processor
+   */
+  static canProcess(content) {
+    return WaldiezStepByStepUtils.isStepByStepMessage(content);
+  }
+  /**
+   * Validate a debug message structure against TypeScript types
+   */
+  static validateMessage(data) {
+    if (!WaldiezStepByStepProcessor.isValidDebugMessage(data)) {
+      return false;
+    }
+    switch (data.type) {
+      case "debug_print":
+        return typeof data.content === "string";
+      case "debug_input_request":
+        return isDebugInputRequest(data);
+      case "debug_event_info":
+        return isDebugEventInfo(data);
+      case "debug_stats":
+        return isDebugStats(data);
+      case "debug_help":
+        return isDebugHelp(data);
+      case "debug_error":
+        return isDebugError(data);
+      case "debug_breakpoints_list":
+        return isDebugBreakpointsList(data);
+      case "debug_breakpoint_added":
+        return isDebugBreakpointAdded(data);
+      case "debug_breakpoint_removed":
+        return isDebugBreakpointRemoved(data);
+      case "debug_breakpoint_cleared":
+        return isDebugBreakpointCleared(data);
+      default:
+        return false;
+    }
+  }
+  /**
+   * Parse subprocess_output content specifically for step-by-step messages
+   */
+  static parseSubprocessContent(content) {
+    if (!content || typeof content !== "string") {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(content);
+      if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
+        return parsed;
+      }
+    } catch {
+      if (content.includes("'type':") && content.includes("debug_")) {
+        const jsonContent = content.replace(/'/g, '"').replace(/True/g, "true").replace(/False/g, "false").replace(/None/g, "null");
+        try {
+          const parsed = JSON.parse(jsonContent);
+          if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
+            return parsed;
+          }
+        } catch {
+        }
+      }
+    }
+    return null;
+  }
+}
 const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
@@ -13353,174 +14177,6 @@ const NumberInput = memo((props) => {
   ] });
 });
 NumberInput.displayName = "NumberInput";
-function controlToResponse(control) {
-  if (typeof control === "string") {
-    return control;
-  }
-  switch (control.kind) {
-    case "continue":
-      return "c";
-    case "step":
-      return "s";
-    case "run":
-      return "r";
-    case "quit":
-      return "q";
-    case "info":
-      return "i";
-    case "help":
-      return "h";
-    case "stats":
-      return "st";
-    case "add_breakpoint":
-      return "ab";
-    case "remove_breakpoint":
-      return "rb";
-    case "list_breakpoints":
-      return "lb";
-    case "clear_breakpoints":
-      return "cb";
-    case "raw":
-      return control.value;
-    default: {
-      const _never = control;
-      return String(_never);
-    }
-  }
-}
-const StepByStepView = ({ stepByStep }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [responseText, setResponseText] = useState("");
-  const canClose = typeof stepByStep?.handlers?.close === "function" && stepByStep?.eventHistory.length > 0;
-  const onInputChange = useCallback((e) => {
-    setResponseText(e.target.value);
-  }, []);
-  const onInputKeyDown = useCallback(
-    (e) => {
-      if (e.key === "Enter") {
-        stepByStep?.handlers.respond({
-          id: nanoid(),
-          timestamp: Date.now(),
-          data: responseText,
-          request_id: stepByStep?.activeRequest?.request_id,
-          type: "input_response"
-        });
-      }
-    },
-    [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
-  );
-  const onRespond = useCallback(() => {
-    stepByStep?.handlers.respond({
-      id: nanoid(),
-      timestamp: Date.now(),
-      data: responseText,
-      request_id: stepByStep?.activeRequest?.request_id,
-      type: "input_response"
-    });
-  }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
-  const onControl = useCallback(
-    (action) => {
-      const response = controlToResponse({ kind: action });
-      stepByStep?.handlers.sendControl({
-        data: response,
-        request_id: stepByStep?.activeRequest?.request_id || "<unknown>"
-      });
-    },
-    [stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
-  );
-  const reducedHistory = stepByStep?.eventHistory.map((entry) => ({
-    data: entry.data || entry.message || entry.content || entry
-  })).map((entry) => entry.data);
-  if (!stepByStep?.active && !canClose) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", children: [
-    /* @__PURE__ */ jsxs("div", { className: "header", children: [
-      /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
-        /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
-        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
-        !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        stepByStep?.active && /* @__PURE__ */ jsxs("div", { className: "badge", children: [
-          " ",
-          String(stepByStep?.currentEvent?.type) || "Running"
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
-        /* @__PURE__ */ jsx(
-          "button",
-          {
-            title: isExpanded ? "Collapse" : "Expand",
-            type: "button",
-            onClick: () => setIsExpanded(!isExpanded),
-            className: "header-toggle",
-            children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
-          }
-        ),
-        !stepByStep?.active && canClose && /* @__PURE__ */ jsx(
-          "button",
-          {
-            title: "Close",
-            type: "button",
-            onClick: stepByStep?.handlers?.close,
-            className: "header-toggle",
-            children: /* @__PURE__ */ jsx(FaX, { size: 14 })
-          }
-        )
-      ] })
-    ] }),
-    isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
-      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-        /* @__PURE__ */ jsxs("button", { className: "btn btn-primary", onClick: () => onControl("continue"), children: [
-          /* @__PURE__ */ jsx(FaStepForward, {}),
-          " ",
-          /* @__PURE__ */ jsx("span", { children: "Continue" })
-        ] }),
-        /* @__PURE__ */ jsxs("button", { className: "btn btn-secondary", onClick: () => onControl("run"), children: [
-          /* @__PURE__ */ jsx(FaPlay, {}),
-          " ",
-          /* @__PURE__ */ jsx("span", { children: "Run" })
-        ] }),
-        /* @__PURE__ */ jsxs("button", { className: "btn btn-danger", onClick: () => onControl("quit"), children: [
-          /* @__PURE__ */ jsx(FaStop, {}),
-          " ",
-          /* @__PURE__ */ jsx("span", { children: "Quit" })
-        ] })
-      ] }),
-      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
-        /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
-        /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              className: "input",
-              placeholder: "Type your response… (Enter to send)",
-              value: responseText,
-              type: stepByStep.activeRequest.password === true ? "password" : "text",
-              onChange: onInputChange,
-              onKeyDown: onInputKeyDown
-            }
-          ),
-          /* @__PURE__ */ jsx("button", { className: "btn btn-primary", onClick: onRespond, children: "Send" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
-        /* @__PURE__ */ jsx(SectionTitle, { children: "Messages" }),
-        /* @__PURE__ */ jsx(JsonArea, { value: reducedHistory, placeholder: "No messages yet" })
-      ] })
-    ] })
-  ] });
-};
-function safeStringify(v) {
-  try {
-    return JSON.stringify(v, null, 2);
-  } catch {
-    return String(v);
-  }
-}
-const JsonArea = ({ value, placeholder = "" }) => /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: value ? safeStringify(value) : placeholder }) });
-const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title", children });
-StepByStepView.displayName = "WaldiezStepByStepView";
 const useStringList = (props) => {
   const [newEntry, setNewEntry] = useState("");
   const { items, onItemAdded, onItemChange, onItemDeleted } = props;
@@ -30288,8 +30944,15 @@ const exportFlow = (data, hideSecrets = true, skipLinks = true) => {
   return flowMapper.exportFlow(flowMapper.toReactFlow(flow), hideSecrets, skipLinks);
 };
 export {
+  WORKFLOW_CHAT_END_MARKERS,
+  WORKFLOW_STEP_END_MARKERS,
+  WORKFLOW_STEP_MARKERS,
+  WORKFLOW_STEP_START_MARKERS,
   Waldiez,
+  WaldiezBreakpointUtils,
   WaldiezChatMessageProcessor,
+  WaldiezStepByStepProcessor,
+  WaldiezStepByStepUtils,
   Waldiez as default,
   exportFlow,
   importFlow,

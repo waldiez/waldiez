@@ -10,9 +10,9 @@ import {
     isDebugBreakpointsList,
 } from "@waldiez/components/stepByStep";
 import {
-    StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 /**
@@ -22,7 +22,7 @@ import {
  * - debug_breakpoint_removed
  * - debug_breakpoint_cleared
  */
-export class DebugBreakpointsHandler implements StepByStepHandler {
+export class DebugBreakpointsHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
         return [
             "debug_breakpoints_list",
@@ -32,8 +32,11 @@ export class DebugBreakpointsHandler implements StepByStepHandler {
         ].includes(type);
     }
 
-    handle(data: WaldiezDebugMessage, context: StepByStepProcessingContext): StepByStepProcessingResult {
-        const result: StepByStepProcessingResult = {
+    handle(
+        data: WaldiezDebugMessage,
+        context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult {
+        const result: WaldiezStepByStepProcessingResult = {
             debugMessage: data,
         };
 

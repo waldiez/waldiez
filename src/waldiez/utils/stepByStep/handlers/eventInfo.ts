@@ -4,21 +4,24 @@
  */
 import { WaldiezDebugMessage, isDebugEventInfo } from "@waldiez/components/stepByStep";
 import {
-    StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 /**
  * Handles debug_event_info messages
  * These contain the current event being processed by the workflow
  */
-export class DebugEventInfoHandler implements StepByStepHandler {
+export class DebugEventInfoHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
         return type === "debug_event_info";
     }
 
-    handle(data: WaldiezDebugMessage, context: StepByStepProcessingContext): StepByStepProcessingResult {
+    handle(
+        data: WaldiezDebugMessage,
+        context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult {
         if (!isDebugEventInfo(data)) {
             return {
                 error: {

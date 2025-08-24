@@ -4,9 +4,9 @@
  */
 import { WaldiezDebugMessage, isDebugInputRequest } from "@waldiez/components/stepByStep";
 import {
-    StepByStepHandler,
-    StepByStepProcessingContext,
-    StepByStepProcessingResult,
+    WaldiezStepByStepHandler,
+    WaldiezStepByStepProcessingContext,
+    WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
 
 /**
@@ -15,12 +15,15 @@ import {
  * NOTE: These are always followed by an input_request (Python input(prompt=...), or similar)
  * The coordination between these two messages should be handled outside the processor
  */
-export class DebugInputRequestHandler implements StepByStepHandler {
+export class DebugInputRequestHandler implements WaldiezStepByStepHandler {
     canHandle(type: string): boolean {
         return type === "debug_input_request";
     }
 
-    handle(data: WaldiezDebugMessage, _context: StepByStepProcessingContext): StepByStepProcessingResult {
+    handle(
+        data: WaldiezDebugMessage,
+        _context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult {
         if (!isDebugInputRequest(data)) {
             return {
                 error: {
