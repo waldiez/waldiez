@@ -159,7 +159,7 @@ def test_printing_using_structured_io(runner: WaldiezStandardRunner) -> None:
             first_call = mock_print.call_args_list[0]
             parsed = json.loads(first_call[0][0])
             assert parsed["type"] == "print"
-            assert parsed["data"] == "<Waldiez> - Starting workflow...\n"
+            assert parsed["data"] == "<Waldiez> - Starting workflow..."
 
 
 @pytest.mark.asyncio
@@ -185,4 +185,4 @@ async def test_async_printing_using_structured_io(
             first_call = mock_print.call_args_list[0]
             parsed = json.loads(first_call[0][0])
             assert parsed["type"] == "print"
-            assert parsed["data"] == "<Waldiez> - Starting workflow...\n"
+            assert parsed["data"] == "<Waldiez> - Starting workflow..."

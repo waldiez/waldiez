@@ -67,7 +67,7 @@ class TestStructuredIOStream:
         assert payload["type"] == "print"
         assert isinstance(payload["id"], str)
         assert isinstance(payload["timestamp"], str)
-        assert payload["data"] == "Hello, world!\n"
+        assert payload["data"] == "Hello, world!"
         assert kwargs == {"flush": True}
 
         # Test with multiple arguments and custom sep/end
@@ -75,9 +75,9 @@ class TestStructuredIOStream:
         self.stream.print("Hello", "world", sep="-", end="!", flush=False)
 
         args, kwargs = mock_print.call_args
-        payload = json.loads(args[0])
+        payload = json.loads(args[0][:-1])
 
-        assert payload["data"] == "Hello-world!"
+        assert payload["data"] == "Hello-world"
         assert kwargs == {"flush": False}
 
     @patch("builtins.print")

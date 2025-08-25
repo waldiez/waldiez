@@ -63,13 +63,15 @@ class StructuredIOStream(IOStream):
         """
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
+        flush = kwargs.get("flush", True)
         payload_type = kwargs.get("type", "print")
         message = sep.join(map(str, args))
-        is_dumped, message = is_json_dumped(message)
         if len(args) == 1 and isinstance(args[0], dict):
-            payload_type = args[0].get("type", payload_type)  # pyright: ignore
             message = args[0]  # pyright: ignore
+            payload_type = message.get("type", payload_type)  # pyright: ignore
             is_dumped = True
+        else:
+            is_dumped, message = is_json_dumped(message)
         if is_dumped:
             # If the message is already JSON-dumped,
             # let's try not to double dump it
@@ -79,15 +81,11 @@ class StructuredIOStream(IOStream):
                 "data": message,
             }
         else:
-            message += end
-            payload = PrintMessage(
-                id=uuid4().hex,
-                timestamp=now(),
-                data=message,
-            ).model_dump(mode="json")
-        flush = kwargs.get("flush", True)
+            print_message = PrintMessage(data=message)  # pyright: ignore
+            payload = print_message.model_dump(mode="json", fallback=str)
         payload["type"] = payload_type
-        print(json.dumps(payload, default=str), flush=flush)
+        dumped = json.dumps(payload, default=str, ensure_ascii=False) + end
+        print(dumped, flush=flush)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
         """Structured input from stdin.

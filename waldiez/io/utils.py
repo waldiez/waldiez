@@ -144,9 +144,7 @@ def is_json_dumped(value: Any) -> tuple[bool, Any]:
     bool
         True if the value is JSON-dumped, False otherwise.
     """
-    if not isinstance(value, str):
-        return False, value
-    to_check = value.strip()
+    to_check = value.strip() if isinstance(value, str) else value
     try:
         parsed = json.loads(to_check)
         return True, parsed
