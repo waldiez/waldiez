@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { WaldiezDebugMessage, isDebugInputRequest } from "@waldiez/components/stepByStep";
+import { DEBUG_INPUT_PROMPT } from "@waldiez/utils/stepByStep/constants";
 import {
     WaldiezStepByStepHandler,
     WaldiezStepByStepProcessingContext,
@@ -32,19 +33,29 @@ export class DebugInputRequestHandler implements WaldiezStepByStepHandler {
                 },
             };
         }
-
+        if (data.prompt.trim() === DEBUG_INPUT_PROMPT || data.type === "debug_input_request") {
+            return {
+                debugMessage: data,
+                stateUpdate: {
+                    pendingControlInput: {
+                        request_id: data.request_id,
+                        prompt: data.prompt,
+                    },
+                },
+                controlAction: {
+                    type: "debug_input_request_received",
+                    requestId: data.request_id,
+                    prompt: data.prompt,
+                },
+            };
+        }
         return {
             debugMessage: data,
             stateUpdate: {
-                pendingControlInput: {
+                activeRequest: {
                     request_id: data.request_id,
                     prompt: data.prompt,
                 },
-            },
-            controlAction: {
-                type: "debug_input_request_received",
-                requestId: data.request_id,
-                prompt: data.prompt,
             },
         };
     }

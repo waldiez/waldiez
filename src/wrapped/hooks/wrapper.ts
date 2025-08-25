@@ -60,12 +60,9 @@ export const useWaldiezWrapper = ({
             setIsDebugging(true);
         },
         onWorkflowComplete: () => {
-            setIsRunning(false);
-            setIsDebugging(false);
+            // setIsRunning(false);
+            // setIsDebugging(false);
             setInputPrompt(undefined);
-        },
-        onInputRequest: _requestId => {
-            // Input prompt will be set by UI processor
         },
         onError: errorMsg => {
             setError(errorMsg);

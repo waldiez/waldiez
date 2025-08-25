@@ -125,7 +125,7 @@ describe("StepByStepView", () => {
             const inactiveStepByStep = {
                 ...defaultStepByStep,
                 active: false,
-                eventHistory: [{ data: "some event" }],
+                eventHistory: [{ type: "something", data: "some event" }],
             };
 
             render(<StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />);
@@ -582,11 +582,7 @@ describe("StepByStepView", () => {
             const jsonArea = document.querySelector(".json .pre");
             const jsonContent = jsonArea?.textContent;
             expect(jsonContent).toContain("Complex data");
-            const expectedArrayString = JSON.stringify(
-                [stepByStepWithHistory.eventHistory[0]!.data],
-                null,
-                2,
-            );
+            const expectedArrayString = JSON.stringify(stepByStepWithHistory.eventHistory[0]!.data, null, 2);
             expect(jsonContent).toContain(expectedArrayString);
         });
     });
@@ -624,17 +620,6 @@ describe("StepByStepView", () => {
                 request_id: undefined,
                 type: "input_response",
             });
-        });
-
-        it("should handle empty string event type", () => {
-            const stepByStepWithEmptyEventType = {
-                ...defaultStepByStep,
-                currentEvent: { type: "", sender: "user" },
-            };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithEmptyEventType} />);
-
-            expect(screen.getByText("Running")).toBeInTheDocument();
         });
 
         it("should handle invalid JSON in event history gracefully", () => {

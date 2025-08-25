@@ -8,7 +8,7 @@ import { nanoid } from "nanoid";
 import JSZip from "jszip";
 import { jsxs, jsx, Fragment } from "react/jsx-runtime";
 import * as React from "react";
-import React__default, { useState, useCallback, createContext, useContext, useLayoutEffect, useRef, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
+import React__default, { useState, useCallback, useMemo, createContext, useContext, useLayoutEffect, useRef, useEffect, memo, forwardRef, useImperativeHandle } from "react";
 import { FaStepForward, FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import { FaBug, FaChevronDown, FaChevronUp, FaX, FaPlay, FaStop, FaRegUser, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
@@ -1264,6 +1264,7 @@ class WaldiezBreakpointUtils {
   }
 }
 const WORKFLOW_STEP_START_MARKERS = ["<Waldiez step-by-step> - Starting workflow..."];
+const DEBUG_INPUT_PROMPT = "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats:";
 const WORKFLOW_STEP_END_MARKERS = [
   "<Waldiez step-by-step> - Workflow finished",
   "<Waldiez step-by-step> - Workflow stopped by user",
@@ -1371,9 +1372,42 @@ const StepByStepView = ({ stepByStep }) => {
     },
     [stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
   );
-  const reducedHistory = stepByStep?.eventHistory.map((entry) => ({
-    data: entry.data || entry.message || entry.content || entry
-  })).map((entry) => entry.data);
+  const reducedHistory = useMemo(() => {
+    if (!stepByStep?.eventHistory) {
+      return [];
+    }
+    return stepByStep?.eventHistory.filter((entry) => !["debug", "print", "raw"].includes(String(entry.type))).map((entry) => ({
+      data: entry.event || entry.data || entry.message || entry.content || entry
+    })).map((entry) => {
+      if (Array.isArray(entry.data) && entry.data.length === 1) {
+        return entry.data[0];
+      }
+      return entry.data;
+    });
+  }, [stepByStep?.eventHistory]);
+  const getBadgeText = (stepByStep2, history) => {
+    if (!stepByStep2 || !stepByStep2.currentEvent) {
+      return null;
+    }
+    if (!stepByStep2.active && history && history.length > 0) {
+      return "Finished";
+    }
+    if (typeof stepByStep2.currentEvent?.type === "string") {
+      return stepByStep2.currentEvent.type;
+    }
+    if (typeof stepByStep2.currentEvent === "object" && stepByStep2.currentEvent !== null) {
+      return "Running";
+    }
+    if (!history || history.length === 0) {
+      return null;
+    }
+    const topEvent = history[0];
+    if (typeof topEvent.event?.type === "string") {
+      return topEvent.event.type;
+    }
+    return topEvent.type || "Running";
+  };
+  const badgeText = getBadgeText(stepByStep, reducedHistory);
   if (!stepByStep?.active && !canClose) {
     return null;
   }
@@ -1383,7 +1417,7 @@ const StepByStepView = ({ stepByStep }) => {
         /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
         /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
         !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        stepByStep?.active && stepByStep?.currentEvent && /* @__PURE__ */ jsx("div", { className: "badge", children: stepByStep?.currentEvent?.type || "Running" })
+        stepByStep?.active && badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
         /* @__PURE__ */ jsx(
@@ -1483,13 +1517,29 @@ function safeStringify(v) {
   }
 }
 const JsonArea = ({ value, placeholder = "" }) => {
-  let safeValue = value ? safeStringify(value) : placeholder;
-  if (Array.isArray(value) && value.length === 0) {
+  let safeValue = placeholder;
+  if (Array.isArray(value)) {
+    const entries = [];
+    for (let i = 0; i < value.length; i += 1) {
+      const entry = value[i];
+      if (entry.event) {
+        entries.push(safeStringify(entry.event));
+      } else if (entry.content) {
+        entries.push(safeStringify(entry.content));
+      } else {
+        entries.push(safeStringify(entry));
+      }
+    }
+    safeValue = entries.join("\n");
+  } else {
+    safeValue = safeStringify(value);
+  }
+  if (!safeValue || safeValue === "undefined" || safeValue === "null" || safeValue.trim() === "" || safeValue === "[]" || safeValue === "{}") {
     safeValue = placeholder;
   }
   return /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: safeValue }) });
 };
-const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title", children });
+const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title margin-bottom-5", children });
 StepByStepView.displayName = "WaldiezStepByStepView";
 class DebugBreakpointsHandler {
   canHandle(type) {
@@ -1648,18 +1698,29 @@ class DebugInputRequestHandler {
         }
       };
     }
+    if (data.prompt.trim() === DEBUG_INPUT_PROMPT || data.type === "debug_input_request") {
+      return {
+        debugMessage: data,
+        stateUpdate: {
+          pendingControlInput: {
+            request_id: data.request_id,
+            prompt: data.prompt
+          }
+        },
+        controlAction: {
+          type: "debug_input_request_received",
+          requestId: data.request_id,
+          prompt: data.prompt
+        }
+      };
+    }
     return {
       debugMessage: data,
       stateUpdate: {
-        pendingControlInput: {
+        activeRequest: {
           request_id: data.request_id,
           prompt: data.prompt
         }
-      },
-      controlAction: {
-        type: "debug_input_request_received",
-        requestId: data.request_id,
-        prompt: data.prompt
       }
     };
   }

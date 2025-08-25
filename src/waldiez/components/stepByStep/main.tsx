@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
 import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-icons/fa6";
 
@@ -76,11 +76,46 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
         [stepByStep?.handlers, stepByStep?.activeRequest?.request_id],
     );
     // let's try to reduce the envt history's data (keep only .data or .content, or .message if available)
-    const reducedHistory = stepByStep?.eventHistory
-        .map(entry => ({
-            data: entry.data || entry.message || entry.content || entry,
-        }))
-        .map(entry => entry.data);
+    const reducedHistory = useMemo(() => {
+        if (!stepByStep?.eventHistory) {
+            return [];
+        }
+        return stepByStep?.eventHistory
+            .filter(entry => !["debug", "print", "raw"].includes(String(entry.type)))
+            .map(entry => ({
+                data: entry.event || entry.data || entry.message || entry.content || entry,
+            }))
+            .map(entry => {
+                if (Array.isArray(entry.data) && entry.data.length === 1) {
+                    return entry.data[0];
+                }
+                return entry.data;
+            }) as any[];
+    }, [stepByStep?.eventHistory]);
+
+    const getBadgeText = (stepByStep?: WaldiezStepByStep | null, history?: any[]) => {
+        if (!stepByStep || !stepByStep.currentEvent) {
+            return null;
+        }
+        if (!stepByStep.active && history && history.length > 0) {
+            return "Finished";
+        }
+        if (typeof stepByStep.currentEvent?.type === "string") {
+            return stepByStep.currentEvent.type;
+        }
+        if (typeof stepByStep.currentEvent === "object" && stepByStep.currentEvent !== null) {
+            return "Running";
+        }
+        if (!history || history.length === 0) {
+            return null;
+        }
+        const topEvent = history[0];
+        if (typeof topEvent.event?.type === "string") {
+            return topEvent.event.type;
+        }
+        return topEvent.type || "Running";
+    };
+    const badgeText = getBadgeText(stepByStep, reducedHistory);
     if (!stepByStep?.active && !canClose) {
         return null;
     }
@@ -92,8 +127,8 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                     <FaBug className="icon-bug" size={18} />
                     <div className="title">Step-by-step Panel</div>
                     {!stepByStep?.active && <div className="badge">Finished</div>}
-                    {stepByStep?.active && stepByStep?.currentEvent && (
-                        <div className="badge">{(stepByStep?.currentEvent?.type as string) || "Running"}</div>
+                    {stepByStep?.active && badgeText && (
+                        <div className={`badge ${badgeText}`}>{badgeText}</div>
                     )}
                 </div>
                 <div className="header-right">
@@ -187,8 +222,31 @@ function safeStringify(v: unknown) {
     }
 }
 const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, placeholder = "" }) => {
-    let safeValue = value ? safeStringify(value) : placeholder;
-    if (Array.isArray(value) && value.length === 0) {
+    let safeValue = placeholder;
+    if (Array.isArray(value)) {
+        const entries = [];
+        for (let i = 0; i < value.length; i += 1) {
+            const entry = value[i];
+            if (entry.event) {
+                entries.push(safeStringify(entry.event));
+            } else if (entry.content) {
+                entries.push(safeStringify(entry.content));
+            } else {
+                entries.push(safeStringify(entry));
+            }
+        }
+        safeValue = entries.join("\n");
+    } else {
+        safeValue = safeStringify(value);
+    }
+    if (
+        !safeValue ||
+        safeValue === "undefined" ||
+        safeValue === "null" ||
+        safeValue.trim() === "" ||
+        safeValue === "[]" ||
+        safeValue === "{}"
+    ) {
         safeValue = placeholder;
     }
     return (
@@ -198,7 +256,7 @@ const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, 
     );
 };
 const SectionTitle: React.FC<React.PropsWithChildren> = ({ children }) => (
-    <div className="section-title">{children}</div>
+    <div className="section-title margin-bottom-5">{children}</div>
 );
 
 StepByStepView.displayName = "WaldiezStepByStepView";

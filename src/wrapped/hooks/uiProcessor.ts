@@ -10,13 +10,16 @@ import { nanoid } from "nanoid";
 import { WaldiezStepByStep, WaldiezTimelineData, showSnackbar } from "@waldiez/components";
 import { ChatParticipant, WaldiezChatMessage } from "@waldiez/types";
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import { WaldiezStepByStepProcessor, WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep";
+import {
+    DEBUG_INPUT_PROMPT,
+    WaldiezStepByStepProcessor,
+    WaldiezStepByStepUtils,
+} from "@waldiez/utils/stepByStep";
 
 import {
     ServerMessage,
     SubprocessOutputMsg,
     isConvertWorkflowResponse,
-    isDebugPrint,
     isErrorResponse,
     isSaveFlowResponse,
     isSubprocessOutput,
@@ -54,7 +57,11 @@ export function useUIMessageProcessor({
         (newMessage: WaldiezChatMessage) => {
             if (isRunning && !isDebugging) {
                 setMessages(prev => [...prev, newMessage]);
-            } else if (isDebugging && newMessage.type !== "debug_input_request") {
+            } else if (
+                isDebugging &&
+                newMessage.type !== "debug_input_request" &&
+                newMessage.type !== "input_request"
+            ) {
                 setStepByStepState(prev => ({
                     ...prev,
                     eventHistory: [newMessage, ...prev.eventHistory],
@@ -207,19 +214,13 @@ export function useUIMessageProcessor({
                 } catch {
                     // If parsing fails, keep the original content
                 }
-                // console.debug("Parsed subprocess output:", parsedContent);
-                if (isDebugPrint(parsedContent)) {
-                    // console.debug("Debug print detected:", parsedContent);
-                    parsedContent = parsedContent.data;
-                    data.content = JSON.stringify(parsedContent);
-                }
                 // Check if it's a step-by-step debug message
                 if (WaldiezStepByStepUtils.canProcess(parsedContent)) {
                     const result = WaldiezStepByStepProcessor.process(data.content, {
                         flowId,
                         currentState: stepByStepState,
                     });
-                    if (result?.error && isRunning) {
+                    if (result?.error) {
                         processGenericMessage(parsedContent);
                         return;
                     }
@@ -227,7 +228,9 @@ export function useUIMessageProcessor({
                     if (result?.stateUpdate || result?.debugMessage) {
                         const newState = result?.stateUpdate ?? stepByStepState;
                         const eventHistory =
-                            result?.debugMessage && result.debugMessage.type !== "debug_input_request"
+                            result?.debugMessage &&
+                            result.debugMessage.type !== "debug_input_request" &&
+                            result.debugMessage.type !== "input_request"
                                 ? [
                                       {
                                           id: nanoid(),
@@ -245,9 +248,6 @@ export function useUIMessageProcessor({
                     }
                     if (result?.controlAction) {
                         console.debug("Control action:", result.controlAction);
-                        // if (result.controlAction.type === "debug_input_request_received") {
-                        //     // Handle debug input request
-                        // }
                     }
                 } else {
                     // Handle as regular chat message
@@ -269,7 +269,7 @@ export function useUIMessageProcessor({
                 // console.error("Error processing subprocess output:", reason);
             }
         },
-        [flowId, stepByStepState, isRunning, processGenericMessage, setStepByStepState],
+        [flowId, stepByStepState, processGenericMessage, setStepByStepState],
     );
 
     const processUIMessage = useCallback(
@@ -285,17 +285,29 @@ export function useUIMessageProcessor({
                                 password: data.password ?? false,
                             });
                         } else {
-                            // Update step-by-step state for input requests during debugging
-                            if (isDebugging && !stepByStepState.pendingControlInput) {
-                                setStepByStepState(prev => ({
-                                    ...prev,
-                                    activeRequest: {
-                                        request_id: data.request_id || getPendingInputId(),
-                                        session_id: data.session_id || "<unknown>",
-                                        prompt: data.prompt ?? "Enter your input:",
-                                        password: data.password ?? false,
-                                    },
-                                }));
+                            if (isDebugging && !isRunning) {
+                                // eslint-disable-next-line max-depth
+                                if (data.prompt.trim() === DEBUG_INPUT_PROMPT) {
+                                    setStepByStepState(prev => ({
+                                        ...prev,
+                                        activeRequest: null,
+                                        pendingControlInput: {
+                                            prompt: data.prompt ?? DEBUG_INPUT_PROMPT,
+                                            request_id: data.request_id || getPendingInputId(),
+                                        },
+                                    }));
+                                } else {
+                                    setStepByStepState(prev => ({
+                                        ...prev,
+                                        activeRequest: {
+                                            request_id: data.request_id || getPendingInputId(),
+                                            session_id: data.session_id || "<unknown>",
+                                            prompt: data.prompt ?? "Enter your input:",
+                                            password: data.password ?? false,
+                                        },
+                                        pendingControlInput: null,
+                                    }));
+                                }
                             }
                         }
                     }
@@ -360,7 +372,6 @@ export function useUIMessageProcessor({
             isDebugging,
             setInputPrompt,
             getPendingInputId,
-            stepByStepState.pendingControlInput,
             setStepByStepState,
             processSaveResult,
             processConvertResult,

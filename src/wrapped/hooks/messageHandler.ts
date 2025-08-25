@@ -16,7 +16,7 @@ export type MessageHandlerCallbacks = {
 };
 
 export function useMessageHandler(callbacks: MessageHandlerCallbacks = {}) {
-    const { onSessionUpdate, onRunStart, onDebugStart, onWorkflowComplete, onInputRequest, onError } =
+    const { onSessionUpdate, onRunStart, onDebugStart, onWorkflowComplete, onError, onInputRequest } =
         callbacks;
 
     const sessionIdRef = useRef<string | undefined>(undefined);
@@ -73,7 +73,7 @@ export function useMessageHandler(callbacks: MessageHandlerCallbacks = {}) {
                     break;
             }
         },
-        [onSessionUpdate, onRunStart, onDebugStart, onWorkflowComplete, onInputRequest, onError],
+        [onSessionUpdate, onWorkflowComplete, onRunStart, onError, onDebugStart, onInputRequest],
     );
 
     const getSessionId = useCallback(() => sessionIdRef.current, []);
