@@ -162,7 +162,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         return input_sync
 
     @staticmethod
-    async def a_get_user_input(prompt: str, *, password: bool = False) -> str:
+    async def a_get_user_input(
+        prompt: str, *, password: bool = False, **kwargs: Any
+    ) -> str:
         """Get user input with an optional password prompt.
 
         Parameters
@@ -171,6 +173,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             The prompt to display to the user.
         password : bool, optional
             If True, the input will be hidden (default is False).
+        **kwargs : Any
+            Additional keyword arguments to pass to the input function.
 
         Returns
         -------
@@ -183,12 +187,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                 result = await input_function(  # type: ignore
                     prompt,
                     password=password,
+                    **kwargs,
                 )
             except TypeError:
                 result = await input_function(prompt)  # type: ignore
         else:
             try:
-                result = input_function(prompt, password=password)
+                result = input_function(prompt, password=password, **kwargs)
             except TypeError:
                 result = input_function(prompt)
         return result  # pyright: ignore
@@ -198,6 +203,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         prompt: str,
         *,
         password: bool = False,
+        **kwargs: Any,
     ) -> str:
         """Get user input with an optional password prompt.
 
@@ -207,6 +213,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             The prompt to display to the user.
         password : bool, optional
             If True, the input will be hidden (default is False).
+        **kwargs : Any
+            Additional keyword arguments to pass to the input function.
 
         Returns
         -------
@@ -216,11 +224,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         input_function = WaldiezBaseRunner.get_input_function()
         if inspect.iscoroutinefunction(input_function):
             try:
-                return syncify(input_function)(prompt, password=password)
+                return syncify(input_function)(
+                    prompt, password=password, **kwargs
+                )
             except TypeError:
                 return syncify(input_function)(prompt)
         try:
-            return str(input_function(prompt, password=password))
+            return str(input_function(prompt, password=password, **kwargs))
         except TypeError:
             return str(input_function(prompt))
 

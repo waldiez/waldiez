@@ -345,7 +345,7 @@ class TestStructuredIOStream:
         args, kwargs = mock_print.call_args
         payload = json.loads(args[0])
         assert payload["type"] == "print"
-        assert payload["data"] == {"key": "value"}
+        assert payload["key"] == "value"
         assert kwargs == {"flush": True}
 
     def test_handle_user_input_json_error(self) -> None:

@@ -30,7 +30,7 @@ from .models import (
     VideoMediaContent,
 )
 from .structured import StructuredIOStream
-from .utils import MediaType, MessageType
+from .utils import DEBUG_INPUT_PROMPT, START_CHAT_PROMPT, MediaType, MessageType
 
 try:
     from .redis import RedisIOStream  # type: ignore[no-redef,unused-ignore]
@@ -125,4 +125,6 @@ __all__ = [
     "AudioContent",
     "VideoMediaContent",
     "VideoContent",
+    "DEBUG_INPUT_PROMPT",
+    "START_CHAT_PROMPT",
 ]

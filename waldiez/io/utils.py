@@ -14,9 +14,16 @@ from autogen.agentchat.contrib.img_utils import get_pil_image  # type: ignore
 from autogen.events import BaseEvent  # type: ignore
 from autogen.messages import BaseMessage  # type: ignore
 
+DEBUG_INPUT_PROMPT = (
+    "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
+)
+START_CHAT_PROMPT = "Enter your message to start the conversation: "
+
 MessageType = Literal[
     "input_request",
     "input_response",
+    "debug_input_request",
+    "debug_input_response",
     "print",
     "input",
 ]

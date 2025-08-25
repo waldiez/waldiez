@@ -12,13 +12,13 @@
 import asyncio
 import threading
 import traceback
-import uuid
 from collections import deque
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Iterable, Union
 
 from pydantic import ValidationError
 
+from waldiez.io.utils import DEBUG_INPUT_PROMPT, gen_id
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.step_by_step.command_handler import CommandHandler
 from waldiez.running.step_by_step.events_processor import EventProcessor
@@ -44,9 +44,6 @@ if TYPE_CHECKING:
     from autogen.messages import BaseMessage  # type: ignore
 
 
-DEBUG_INPUT_PROMPT = (
-    "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
-)
 MESSAGES = {
     "workflow_starting": "<Waldiez step-by-step> - Starting workflow...",
     "workflow_finished": "<Waldiez step-by-step> - Workflow finished",
@@ -416,7 +413,10 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         self.log.info("Debug session reset")
 
     def _get_user_response(
-        self, user_response: str, request_id: str
+        self,
+        user_response: str,
+        request_id: str,
+        skip_id_check: bool = False,
     ) -> tuple[str | None, bool]:
         """Get and validate user response."""
         try:
@@ -431,7 +431,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             self.emit(WaldiezDebugError(error=f"Invalid input: {exc}"))
             return None, False
 
-        if response.request_id != request_id:
+        if not skip_id_check and response.request_id != request_id:
             self.emit(
                 WaldiezDebugError(
                     error=f"Stale input received: {response.request_id} != {request_id}"
@@ -448,7 +448,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         self.log.debug("Parsing user action... '%s'", user_response)
 
         user_input, is_valid = self._get_user_response(
-            user_response, request_id=request_id
+            user_response,
+            request_id=request_id,
+            skip_id_check=True,
         )
         if not is_valid:
             return WaldiezDebugStepAction.UNKNOWN
@@ -462,14 +464,17 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             return WaldiezDebugStepAction.CONTINUE
 
         while True:
-            request_id = str(uuid.uuid4())
+            request_id = gen_id()
             try:
-                self.emit(
-                    WaldiezDebugInputRequest(
-                        prompt=DEBUG_INPUT_PROMPT, request_id=request_id
+                if self.structured_io is False:
+                    self.emit(
+                        WaldiezDebugInputRequest(
+                            prompt=DEBUG_INPUT_PROMPT, request_id=request_id
+                        )
                     )
-                )
-
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                self.log.warning("Failed to emit input request: %s", e)
+            try:
                 user_input = WaldiezBaseRunner.get_user_input(
                     DEBUG_INPUT_PROMPT
                 ).strip()
@@ -488,7 +493,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             return WaldiezDebugStepAction.CONTINUE
 
         while True:
-            request_id = str(uuid.uuid4())
+            request_id = gen_id()
             # pylint: disable=too-many-try-statements
             try:
                 self.emit(

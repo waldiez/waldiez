@@ -10,7 +10,6 @@ import threading
 from getpass import getpass
 from pathlib import Path
 from typing import Any
-from uuid import uuid4
 
 from autogen.events import BaseEvent  # type: ignore
 from autogen.io import IOStream  # type: ignore
@@ -23,6 +22,9 @@ from .models import (
     UserResponse,
 )
 from .utils import (
+    DEBUG_INPUT_PROMPT,
+    START_CHAT_PROMPT,
+    MessageType,
     gen_id,
     get_image,
     get_message_dump,
@@ -76,16 +78,30 @@ class StructuredIOStream(IOStream):
             # If the message is already JSON-dumped,
             # let's try not to double dump it
             payload: dict[str, Any] = {
-                "id": uuid4().hex,
+                "id": gen_id(),
                 "timestamp": now(),
-                "data": message,
+                # "data": message,
             }
+            if isinstance(message, dict):
+                payload.update(message)  # pyright: ignore
+            else:
+                payload["data"] = message
+            if "type" not in payload:
+                payload["type"] = payload_type
         else:
             print_message = PrintMessage(data=message)  # pyright: ignore
             payload = print_message.model_dump(mode="json", fallback=str)
-        payload["type"] = payload_type
+            payload["type"] = payload_type
         dumped = json.dumps(payload, default=str, ensure_ascii=False) + end
-        print(dumped, flush=flush)
+        if kwargs.get("file") and kwargs["file"] in [
+            sys.stderr,
+            sys.__stderr__,
+            sys.stdout,
+            sys.__stdout__,
+        ]:
+            print(dumped, file=kwargs["file"], flush=flush)
+        else:
+            print(dumped, flush=flush)
 
     def input(self, prompt: str = "", *, password: bool = False) -> str:
         """Structured input from stdin.
@@ -102,14 +118,21 @@ class StructuredIOStream(IOStream):
         str
             The line read from the input stream.
         """
-        request_id = uuid4().hex
+        request_id = gen_id()
         prompt = prompt or ">"
         if not prompt or prompt in [">", "> "]:  # pragma: no cover
             # if the prompt is just ">" or "> ",
             # let's use a more descriptive one
-            prompt = "Enter your message to start the conversation: "
-
-        self._send_input_request(prompt, request_id, password)
+            prompt = START_CHAT_PROMPT
+        input_type = "chat"
+        if prompt.strip() == DEBUG_INPUT_PROMPT.strip():
+            input_type = "debug"
+        self._send_input_request(
+            prompt,
+            request_id,
+            password,
+            input_type=input_type,
+        )
         user_input_raw = self._read_user_input(prompt, password, request_id)
         response = self._handle_user_input(user_input_raw, request_id)
         user_response = response.to_string(
@@ -152,14 +175,21 @@ class StructuredIOStream(IOStream):
         self,
         prompt: str,
         request_id: str,
-        password: bool,
+        password: bool = False,
+        input_type: str = "chat",
     ) -> None:
+        if input_type not in ("chat", "debug"):
+            input_type = "chat"
+        request_type = (
+            "debug_input_request" if input_type == "debug" else "input_request"
+        )
         payload = UserInputRequest(
+            type=request_type,  # type: ignore
             request_id=request_id,
             prompt=prompt,
             password=password,
         ).model_dump(mode="json")
-        print(json.dumps(payload), flush=True)
+        print(json.dumps(payload, default=str), flush=True)
 
     def _read_user_input(
         self,
@@ -294,7 +324,9 @@ class StructuredIOStream(IOStream):
         UserResponse
             The structured user response.
         """
-        # Load the user input
+        response_type = user_input.get("type", "input_response")
+        if response_type not in ("input_response", "debug_input_response"):
+            response_type = "input_response"
         if user_input.get("request_id") == request_id:
             # We have a valid response to our request
             data = user_input.get("data")
@@ -302,6 +334,7 @@ class StructuredIOStream(IOStream):
                 # let's check if text|image keys are sent (outside data)
                 if "image" in user_input or "text" in user_input:
                     return UserResponse(
+                        type=response_type,
                         request_id=request_id,
                         data=self._format_multimedia_response(
                             request_id=request_id, data=user_input
@@ -311,10 +344,12 @@ class StructuredIOStream(IOStream):
                 return self._handle_list_response(
                     data,  # pyright: ignore
                     request_id=request_id,
+                    response_type=response_type,
                 )
             if not data or not isinstance(data, (str, dict)):
                 # No / invalid data provided in the response
                 return UserResponse(
+                    type=response_type,
                     request_id=request_id,
                     data="",
                 )
@@ -324,6 +359,7 @@ class StructuredIOStream(IOStream):
                 data = self._load_user_input(data)
             if isinstance(data, dict):
                 return UserResponse(
+                    type=response_type,
                     data=self._format_multimedia_response(
                         request_id=request_id,
                         data=data,  # pyright: ignore
@@ -333,11 +369,14 @@ class StructuredIOStream(IOStream):
             # For other types (numbers, bools ,...),
             #  let's just convert to string
             return UserResponse(
-                data=str(data), request_id=request_id
+                type=response_type,
+                data=str(data),
+                request_id=request_id,
             )  # pragma: no cover
         # This response doesn't match our request_id, log and return empty
         self._log_mismatched_response(request_id, user_input)
         return UserResponse(
+            type=response_type,
             request_id=request_id,
             data="",
         )
@@ -347,10 +386,12 @@ class StructuredIOStream(IOStream):
         self,
         data: list[dict[str, Any]],
         request_id: str,
+        response_type: MessageType,
     ) -> UserResponse:
         if len(data) == 0:  # pyright: ignore
             # Empty list, return empty response
             return UserResponse(
+                type=response_type,
                 request_id=request_id,
                 data="",
             )
@@ -367,10 +408,12 @@ class StructuredIOStream(IOStream):
         if not input_data:  # pragma: no cover
             # No valid data in the list, return empty response
             return UserResponse(
+                type=response_type,
                 request_id=request_id,
                 data="",
             )
         return UserResponse(
+            type=response_type,
             request_id=request_id,
             data=input_data,
         )
@@ -387,9 +430,16 @@ class StructuredIOStream(IOStream):
             The response received
         """
         # Create a log message
+        got_id: str | None = None
+        if isinstance(response, dict):
+            got_id = response.get("request_id")  # pyright: ignore
+        response_str = str(response)  # pyright: ignore
+        message = response_str[:100] + (
+            "..." if len(response_str) > 100 else ""
+        )
         log_payload: dict[str, Any] = {
             "type": "warning",
-            "id": uuid4().hex,
+            "id": gen_id(),
             "timestamp": now(),
             "data": {
                 "message": (
@@ -398,8 +448,8 @@ class StructuredIOStream(IOStream):
                 ),
                 "details": {
                     "expected_id": expected_id,
-                    "received": str(response)[:100]
-                    + ("..." if len(str(response)) > 100 else ""),
+                    "received_id": got_id,
+                    "message": message,
                 },
             },
         }

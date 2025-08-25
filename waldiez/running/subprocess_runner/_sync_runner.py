@@ -175,7 +175,6 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                     # Use readline with timeout simulation
                     if self.process.stdout.readable():  # pragma: no branch
                         line = self.process.stdout.readline()
-
                         if not line:  # pragma: no cover
                             time.sleep(0.1)
                             continue
@@ -209,7 +208,7 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                     # Use readline with timeout simulation
                     if self.process.stderr.readable():  # pragma: no branch
                         line = self.process.stderr.readline()
-
+                        self.logger.debug("Stderr line: %s", line)
                         if not line:
                             time.sleep(0.1)
                             continue
@@ -272,9 +271,11 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
         line : str
             Decoded line from stdout
         """
-        # Try to parse as structured JSON first
+        self.logger.debug(f"Stdout line: {line}")
         parsed_data = self.parse_output(line, stream="stdout")
         if not parsed_data:
+            self.logger.debug("Non-structured output, forwarding as is")
+            self.output_queue.put({"type": "print", "data": line}, timeout=1.0)
             return
         if parsed_data.get("type") in ("input_request", "debug_input_request"):
             prompt = parsed_data.get("prompt", "> ")
