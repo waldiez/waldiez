@@ -120,6 +120,7 @@ def get_python_executable() -> str:
     return sys.executable
 
 
+# noinspection TryExceptPass,PyBroadException
 def ensure_pip() -> None:  # pragma: no cover
     """Make sure `python -m pip` works (bootstrap via ensurepip if needed)."""
     # pylint: disable=import-outside-toplevel

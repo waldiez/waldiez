@@ -59,12 +59,14 @@ label.hidden {
   align-items: baseline !important;
 }
 
+/* noinspection CssInvalidPropertyValue */
 .fill-available-width {
   width: -moz-available;
   width: -webkit-fill-available;
   width: stretch;
 }
 
+/* noinspection CssInvalidPropertyValue */
 .fill-available-height {
   height: -moz-available;
   height: -webkit-fill-available;

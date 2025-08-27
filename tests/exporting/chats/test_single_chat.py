@@ -20,6 +20,7 @@ from waldiez.models import (
 from waldiez.models.chat.chat_message import RAG_METHOD_WITH_CARRYOVER_BODY
 
 
+# noinspection PyArgumentList
 def test_single_chat() -> None:
     """Test ChatsExporter with a single chat."""
     agent1_name = "agent1"
@@ -129,7 +130,7 @@ def callable_message(sender, recipient, context):
     )
 
 
-# noinspection PyTypeChecker
+# noinspection PyTypeChecker,PyArgumentList
 def test_empty_chat() -> None:
     """Test ChatsExporter with an empty chat."""
     agent1_name = "agent1"
@@ -177,6 +178,7 @@ def test_empty_chat() -> None:
             available=WaldiezTransitionAvailability(),
         ),
     )
+    # noinspection DuplicatedCode
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
     exporter = ChatsExporter(
@@ -215,6 +217,7 @@ def test_empty_chat() -> None:
     )
 
 
+# noinspection PyArgumentList
 def test_chat_with_rag_and_carryover() -> None:
     """Test ChatsExporter with a chat with rag message generator."""
     agent1_name = "agent1"
@@ -326,7 +329,7 @@ def test_chat_with_rag_and_carryover() -> None:
     assert generated == expected
 
 
-# noinspection PyTypeChecker
+# noinspection PyTypeChecker,PyArgumentList
 def test_chat_with_rag_no_carryover() -> None:
     """Test ChatsExporter with a chat with rag message generator."""
     agent1_name = "agent1"
@@ -376,6 +379,7 @@ def test_chat_with_rag_no_carryover() -> None:
             available=WaldiezTransitionAvailability(),
         ),
     )
+    # noinspection DuplicatedCode
     agent_names = {"wa-1": agent1_name, "wa-2": agent2_name}
     chat_names = {"wc-1": chat_name}
     exporter = ChatsExporter(

@@ -9,6 +9,7 @@ from waldiez.models.agents.rag_user_proxy.rag_user_proxy import (
 
 def test_waldiez_rag_user() -> None:
     """Test WaldiezRagUserProxy."""
+    # noinspection PyArgumentList
     rag_user = WaldiezRagUserProxy(id="wa-1", name="rag_user")
     assert rag_user.agent_type == "rag_user_proxy"
     assert rag_user.data.human_input_mode == "ALWAYS"

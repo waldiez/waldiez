@@ -10,7 +10,6 @@
   height: 100%;
   max-height: var(--app-height);
   transition: width 0.3s ease;
-  overflow-y: auto;
   overflow-y: hidden;
 }
 
@@ -60,16 +59,13 @@ body.waldiez-dark .flow-main .sidebar {
 
 .flow-main .sidebar.sidebar.collapsed .sidebar-header {
   justify-content: center;
-  padding: 10px;
-  padding-bottom: 0;
+  padding: 10px 10px 0;
 }
 
 .flow-main .sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 0;
-  margin-bottom: 2px;
-  margin-left: 4px;
+  margin: 0 0 2px 4px;
 }
 
 .flow-main .sidebar ul li {

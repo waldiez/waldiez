@@ -215,9 +215,7 @@ describe("WaldiezStepByStepProcessor", () => {
         it("should return null for invalid content", () => {
             expect(WaldiezStepByStepProcessor.parseSubprocessContent("")).toBeNull();
             expect(WaldiezStepByStepProcessor.parseSubprocessContent("invalid")).toBeNull();
-            // @ts-expect-error expecting not null
             expect(WaldiezStepByStepProcessor.parseSubprocessContent(null)).toBeNull();
-            // @ts-expect-error expecting not undefined
             expect(WaldiezStepByStepProcessor.parseSubprocessContent(undefined)).toBeNull();
         });
     });

@@ -32,21 +32,16 @@ export const getEdgeLabelTransform = (
         // Add some distance along the edge direction
         const edgeDx = targetX - sourceX;
         const edgeDy = targetY - sourceY;
-        const edgeLength = Math.sqrt(edgeDx * edgeDx + edgeDy * edgeDy);
-
-        if (edgeLength > 0) {
-            const edgeUx = edgeDx / edgeLength;
-            const edgeUy = edgeDy / edgeLength;
-
-            // Move a bit towards the target from the source
-            const finalX = offsetFromCenterX + edgeUx * distance;
-            const finalY = offsetFromCenterY + edgeUy * distance;
-
-            // Add perpendicular offset
-            const perpX = finalX + -edgeUy * perpOffset;
-            const perpY = finalY + edgeUx * perpOffset;
-
-            return `translate(-50%, -50%) translate(${perpX}px, ${perpY}px)`;
+        const transform = _getCommonTransform(
+            edgeDx,
+            edgeDy,
+            offsetFromCenterX,
+            offsetFromCenterY,
+            distance,
+            perpOffset,
+        );
+        if (transform) {
+            return transform;
         }
 
         return `translate(-50%, -50%) translate(${offsetFromCenterX}px, ${offsetFromCenterY}px)`;
@@ -58,24 +53,44 @@ export const getEdgeLabelTransform = (
         // Add some distance along the edge direction
         const edgeDx = sourceX - targetX;
         const edgeDy = sourceY - targetY;
-        const edgeLength = Math.sqrt(edgeDx * edgeDx + edgeDy * edgeDy);
-
-        if (edgeLength > 0) {
-            const edgeUx = edgeDx / edgeLength;
-            const edgeUy = edgeDy / edgeLength;
-
-            // Move a bit towards the source from the target
-            const finalX = offsetFromCenterX + edgeUx * distance;
-            const finalY = offsetFromCenterY + edgeUy * distance;
-
-            // Add perpendicular offset
-            const perpX = finalX + -edgeUy * perpOffset;
-            const perpY = finalY + edgeUx * perpOffset;
-
-            return `translate(-50%, -50%) translate(${perpX}px, ${perpY}px)`;
+        const transform = _getCommonTransform(
+            edgeDx,
+            edgeDy,
+            offsetFromCenterX,
+            offsetFromCenterY,
+            distance,
+            perpOffset,
+        );
+        if (transform) {
+            return transform;
         }
 
         return `translate(-50%, -50%) translate(${offsetFromCenterX}px, ${offsetFromCenterY}px)`;
+    }
+};
+
+const _getCommonTransform = (
+    edgeDx: number,
+    edgeDy: number,
+    offsetFromCenterX: number,
+    offsetFromCenterY: number,
+    distance: number,
+    perpOffset: number,
+) => {
+    const edgeLength = Math.sqrt(edgeDx * edgeDx + edgeDy * edgeDy);
+    if (edgeLength > 0) {
+        const edgeUx = edgeDx / edgeLength;
+        const edgeUy = edgeDy / edgeLength;
+
+        // Move a bit towards the source from the target
+        const finalX = offsetFromCenterX + edgeUx * distance;
+        const finalY = offsetFromCenterY + edgeUy * distance;
+
+        // Add perpendicular offset
+        const perpX = finalX + -edgeUy * perpOffset;
+        const perpY = finalY + edgeUx * perpOffset;
+
+        return `translate(-50%, -50%) translate(${perpX}px, ${perpY}px)`;
     }
 };
 

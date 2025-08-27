@@ -9,6 +9,7 @@ from waldiez.models.agents.rag_user_proxy.rag_user_proxy_data import (
 
 def test_waldiez_rag_user_data() -> None:
     """Test WaldiezRagUserProxyData."""
+    # noinspection PyArgumentList
     rag_user_data = WaldiezRagUserProxyData()
     assert rag_user_data.retrieve_config
     # assert defaults

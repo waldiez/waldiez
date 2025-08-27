@@ -479,7 +479,7 @@ class ClientManager:
                 result="",
                 session_id=msg.session_id,
             ).model_dump(mode="json")
-        code: str | None = None
+        code: str | None
         if msg.action in {"", "c", "s", "r", "q", "i", "h", "st"}:
             code = msg.action if msg.action else "c"
         else:

@@ -97,11 +97,9 @@ RUN ARCH=$(uname -m) && \
     LATEST_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" | \
     jq -r '.channels.Stable.version') && \
     echo "Installing Chrome and ChromeDriver version: $LATEST_VERSION for $CHROME_ARCH" && \
-    # Install Chrome
     curl -Lo /tmp/chrome.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_VERSION}/${CHROME_ARCH}/chrome-linux64.zip" && \
     unzip /tmp/chrome.zip -d /opt && \
     ln -sf /opt/chrome-linux64/chrome /usr/bin/google-chrome && \
-    # Install ChromeDriver
     curl -Lo /tmp/chromedriver.zip "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${LATEST_VERSION}/${CHROME_ARCH}/chromedriver-linux64.zip" && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin && \
     mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
@@ -117,7 +115,6 @@ RUN ARCH=$(uname -m) && \
     else \
     echo "Unsupported architecture: $ARCH" && exit 1; \
     fi && \
-    # Add Mozilla's signing key the modern way
     curl -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg | \
     gpg --dearmor -o /etc/apt/trusted.gpg.d/mozilla.gpg && \
     echo "deb https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list && \
@@ -125,7 +122,6 @@ RUN ARCH=$(uname -m) && \
     apt-get install -y firefox && \
     FIREFOX_VERSION=$(firefox --version | grep -oP '\d+\.\d+') && \
     echo "Firefox version: $FIREFOX_VERSION" && \
-    # Get latest GeckoDriver (it's generally backward compatible)
     GECKO_VERSION=""; \
     for i in 1 2 3; do \
     GECKO_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.tag_name'); \

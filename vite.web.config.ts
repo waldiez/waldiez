@@ -72,9 +72,11 @@ const getPublicDir = (_command: "build" | "serve"): string => {
 
 /* additional config for building a static site (and not a library) */
 // https://vitejs.dev/config/
+// noinspection JSUnusedGlobalSymbols
 export default defineConfig(({ command }) => {
     const base = getBaseUrl(command);
     const publicDir = getPublicDir(command);
+    // noinspection DuplicatedCode
     return {
         publicDir,
         base,

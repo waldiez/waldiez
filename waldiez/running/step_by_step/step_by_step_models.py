@@ -61,10 +61,13 @@ class WaldiezBreakpoint(BaseModel):
     agent_name: str | None = None  # Required for AGENT and AGENT_EVENT
     description: str | None = None  # Human-readable description
 
+    # noinspection PyNestedDecorators,PyUnusedLocal
     @field_validator("event_type")
     @classmethod
     def validate_event_type(
-        cls, v: str | None, info: ValidationInfo
+        cls,
+        v: str | None,
+        info: ValidationInfo,
     ) -> str | None:
         """Validate event type format.
 
@@ -96,10 +99,13 @@ class WaldiezBreakpoint(BaseModel):
             )
         return v
 
+    # noinspection PyNestedDecorators,PyUnusedLocal
     @field_validator("agent_name")
     @classmethod
     def validate_agent_name(
-        cls, v: str | None, info: ValidationInfo
+        cls,
+        v: str | None,
+        info: ValidationInfo,
     ) -> str | None:
         """Validate agent name format.
 
@@ -275,6 +281,7 @@ class WaldiezBreakpoint(BaseModel):
                 or event.get("recipient") == self.agent_name
             )
 
+        # noinspection PyUnreachableCode
         return False
 
 

@@ -15,6 +15,7 @@ from waldiez.models.agents.reasoning.reasoning_agent_reason_config import (
 
 def test_waldiez_reasoning_agent() -> None:
     """Test WaldiezReasoningAgent."""
+    # noinspection PyArgumentList
     reasoning_agent = WaldiezReasoningAgent(
         id="wa-1",
         name="reasoning_agent",

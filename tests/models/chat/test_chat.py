@@ -10,6 +10,7 @@ from waldiez.models.chat.chat_data import WaldiezChatData
 from waldiez.models.chat.chat_nested import WaldiezChatNested
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat() -> None:
     """Test WaldiezChat."""
     # Given
@@ -104,6 +105,7 @@ def test_waldiez_chat() -> None:
     assert chat.data.real_target == "wa-4"
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_with_rag_user() -> None:
     """Test WaldiezChat with RAG user as a source."""
     agent = WaldiezRagUserProxy(
@@ -146,6 +148,7 @@ def test_waldiez_chat_with_rag_user() -> None:
     assert chat_args["n_results"] == 5
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_get_message_function() -> None:
     """Test get_message_function."""
     # Given
@@ -223,6 +226,7 @@ def test_waldiez_chat_get_message_function() -> None:
     assert message_function_tuple[1] == "callable_message"
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_get_nested_chat_message_function() -> None:
     """Test get_nested_chat_message_function."""
     message1: dict[str, Any] = {
@@ -303,6 +307,7 @@ def test_waldiez_chat_get_nested_chat_message_function() -> None:
     assert nested_chat_message_function[1] == "nested_chat_message"
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_get_nested_chat_reply_function() -> None:
     """Test get_nested_chat_message_function."""
     message1: dict[str, Any] = {

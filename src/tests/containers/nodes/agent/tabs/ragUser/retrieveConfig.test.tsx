@@ -94,6 +94,7 @@ describe("Rag User tab Retrieve Config", () => {
         // submitAgentChanges();
     });
     it("should change a docs path", async () => {
+        // noinspection DuplicatedCode
         await goToRetrieveConfigTab();
         const docsPathInput = screen.getByTestId("new-list-entry-rag-doc-item") as HTMLInputElement;
         expect(docsPathInput).toBeInTheDocument();

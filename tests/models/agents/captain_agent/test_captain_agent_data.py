@@ -12,6 +12,7 @@ from waldiez.models.agents.captain.captain_agent_lib_entry import (
 from .example_agent_lib import EXAMPLE_AGENT_LIB
 
 
+# noinspection PyArgumentList
 def test_waldiez_captain_agent_data() -> None:
     """Test `WaldiezCaptainAgentData`."""
     data = WaldiezCaptainAgentData(

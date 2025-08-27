@@ -41,6 +41,7 @@ describe("Nested Chats tab messages", () => {
     });
     it("should add a new message", async () => {
         goToNestedChatsTab(true);
+        // noinspection DuplicatedCode
         const selectRecipient = screen.getByLabelText("Recipient");
         expect(selectRecipient).toBeInTheDocument();
         selectEvent.openMenu(selectRecipient);

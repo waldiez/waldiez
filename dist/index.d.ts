@@ -4030,7 +4030,7 @@ export declare class WaldiezStepByStepProcessor {
      * @param rawMessage - The raw message string to process (JSON from Python backend)
      * @param context - Processing context with request ID, flow ID, etc.
      */
-    static process(rawMessage: string | undefined | null, context?: WaldiezStepByStepProcessingContext): WaldiezStepByStepProcessingResult | undefined;
+    static process(rawMessage: any, context?: WaldiezStepByStepProcessingContext): WaldiezStepByStepProcessingResult | undefined;
     private static earlyError;
     /**
      * Parse a raw message into a debug message
@@ -4052,7 +4052,7 @@ export declare class WaldiezStepByStepProcessor {
     /**
      * Parse subprocess_output content specifically for step-by-step messages
      */
-    static parseSubprocessContent(content: string): WaldiezDebugMessage | null;
+    static parseSubprocessContent(content: any): WaldiezDebugMessage | null;
 }
 
 export declare class WaldiezStepByStepUtils {

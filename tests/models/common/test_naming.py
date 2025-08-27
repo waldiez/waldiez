@@ -21,6 +21,7 @@ from waldiez.models.common.naming import (
 )
 
 
+# noinspection DuplicatedCode
 def create_mock_agent(agent_id: str, name: str) -> WaldiezAgent:
     """Create a mock agent for testing."""
     agent = Mock(spec=WaldiezAgent)
@@ -37,6 +38,7 @@ def create_mock_model(model_id: str, name: str) -> WaldiezModel:
     return model
 
 
+# noinspection DuplicatedCode
 def create_mock_tool(tool_id: str, name: str) -> WaldiezTool:
     """Create a mock tool for testing."""
     tool = Mock(spec=WaldiezTool)

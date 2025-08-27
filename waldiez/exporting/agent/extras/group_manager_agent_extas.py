@@ -445,6 +445,7 @@ class GroupManagerProcessor:
 
         return self._get_transition_target(self.agent.data.after_work)
 
+    # noinspection PyTypeHints
     def _get_transition_target(
         self, target: WaldiezTransitionTarget
     ) -> tuple[str, str]:

@@ -93,6 +93,7 @@ def test_waldiez_agent() -> None:
         _ = agent.handoffs
 
 
+# noinspection DuplicatedCode,PyArgumentList
 def test_agent_ag2_class() -> None:
     """Test WaldiezAgent.ag2_class."""
     user_proxy = WaldiezUserProxy(  # pyright: ignore
@@ -147,6 +148,7 @@ def test_agent_ag2_class() -> None:
     assert group_manager.ag2_class == "GroupChatManager"
 
 
+# noinspection DuplicatedCode,PyArgumentList
 def test_agent_ag2_imports() -> None:
     """Test WaldiezAgent.ag2_imports."""
     user_proxy = WaldiezUserProxy(  # pyright: ignore

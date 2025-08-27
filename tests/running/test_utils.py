@@ -143,7 +143,7 @@ def test_create_sync_subprocess(tmp_path: Path) -> None:
     )
     proc = utils.create_sync_subprocess(setup)
     assert isinstance(proc, subprocess.Popen)
-    proc_args: list[Any] = []
+    proc_args: list[Any]
     if not isinstance(proc.args, list):
         proc_args = [proc.args]
     else:
@@ -268,6 +268,7 @@ def test_safe_printer_multiple_failures(
     """Test safe printer with multiple failures."""
 
     # Setup printer that always raises UnicodeEncodeError
+    # noinspection PyUnusedLocal
     def always_fail(*args: Any, **kwargs: Any) -> None:
         """Fail always with UnicodeEncodeError."""
         raise UnicodeEncodeError(
@@ -304,6 +305,7 @@ def test_safe_printer_handles_unexpected_exception(
     """Test safe printer handles unexpected exception."""
 
     # Setup printer that raises generic exception
+    # noinspection PyUnusedLocal
     def raise_exc(*args: Any, **kwargs: Any) -> None:
         """Raise generic exception."""
         raise RuntimeError("fail")
@@ -321,6 +323,7 @@ def test_safe_printer_handles_unexpected_exception(
         monkeypatch.setattr(sys, "stderr", std_err)
         printer("trigger error")
 
+        # noinspection PyUnreachableCode
         assert any(
             "Unexpected error" in (m if isinstance(m, str) else str(m))
             for m in std_err.data.decode("utf-8", errors="replace").splitlines()

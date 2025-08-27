@@ -15,6 +15,7 @@ from waldiez.models.tool import (
 )
 
 
+# noinspection PyArgumentList
 def test_waldiez_tool() -> None:
     """Test WaldiezTool."""
     # Given
@@ -39,6 +40,7 @@ def test_waldiez_tool() -> None:
     assert not tool.requirements
 
 
+# noinspection PyArgumentList
 def test_invalid_tool() -> None:
     """Test invalid WaldiezTool."""
     with pytest.raises(ValueError):

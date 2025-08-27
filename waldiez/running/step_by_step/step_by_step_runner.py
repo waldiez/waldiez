@@ -240,7 +240,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
 
         Parameters
         ----------
-        event : Union["BaseEvent", "BaseMessage"]
+        event : BaseEvent | BaseMessage
             The event to emit.
         """
         event_info = event.model_dump(
@@ -253,6 +253,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         )
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
+    # noinspection PyTypeHints
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message.
 
@@ -466,7 +467,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         while True:
             request_id = gen_id()
             try:
-                if self.structured_io is False:
+                if not self.structured_io:
                     self.emit(
                         WaldiezDebugInputRequest(
                             prompt=DEBUG_INPUT_PROMPT, request_id=request_id

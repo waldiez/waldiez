@@ -20,6 +20,7 @@ def test_waldiez_agent_nested_chat_message() -> None:
 
 def test_waldiez_agent_nested_chat() -> None:
     """Test WaldiezAgentNestedChat."""
+    # noinspection PyArgumentList
     nested_chat = WaldiezAgentNestedChat(
         triggered_by=["wa-1"],
         messages=[WaldiezAgentNestedChatMessage(id="wc-2", is_reply=True)],

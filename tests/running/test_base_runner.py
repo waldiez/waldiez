@@ -184,6 +184,7 @@ def test_process_event_input_request(monkeypatch: pytest.MonkeyPatch) -> None:
 
     responded: str | None = None
 
+    # noinspection PyMethodMayBeStatic
     class DummyContent:
         """Dummy content class."""
 
@@ -246,12 +247,14 @@ async def test_a_process_event_input_request(
         structured_io=False,
     )
 
+    # noinspection PyUnusedLocal
     async def fake_input(prompt: str, *, password: bool = False) -> str:
         """Fake input function."""
         return "user_input"
 
     responded: str | None = None
 
+    # noinspection PyMethodMayBeStatic
     class DummyContent:
         """Dummy content class."""
 
@@ -339,6 +342,7 @@ def test_get_input_function_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
     # Override _input with a custom function
+    # noinspection PyUnusedLocal
     def fake_input(prompt: str, *, password: bool = False) -> str:
         """Fake input function."""
         return "custom input"
@@ -360,6 +364,7 @@ def test_get_user_input_sync_and_async(monkeypatch: pytest.MonkeyPatch) -> None:
     val = WaldiezBaseRunner.get_user_input("Prompt")
     assert val == "sync_input"
 
+    # noinspection PyUnusedLocal
     async def async_input(prompt: str, *, password: bool = False) -> str:
         """Fake async input function."""
         return "async_input"
@@ -374,6 +379,7 @@ def test_get_user_input_sync_and_async(monkeypatch: pytest.MonkeyPatch) -> None:
 async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test if a_get_user_input works as expected."""
 
+    # noinspection PyUnusedLocal
     async def async_input(prompt: str, *, password: bool = False) -> str:
         """Fake async input function."""
         return "async_input"

@@ -23,5 +23,5 @@
         },
         "types": ["vitest/globals", "@vitest/browser/providers/playwright", "@testing-library/jest-dom"]
     },
-    "include": ["src", "ui-tests"]
+    "include": ["src", "ui-tests", "__mocks__"]
 }

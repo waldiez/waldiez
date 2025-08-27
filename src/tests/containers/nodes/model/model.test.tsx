@@ -162,6 +162,7 @@ describe("WaldiezModelNode with branches", () => {
         renderModel({
             price: { promptPricePer1k: null, completionTokenPricePer1k: 0.1 },
         });
+        // noinspection DuplicatedCode
         const modalButton = screen.getByTestId(`open-model-node-modal-${modelId}`);
         fireEvent.click(modalButton);
         const modalElement = screen.getByTestId(`model-modal-${modelId}`);
@@ -174,6 +175,7 @@ describe("WaldiezModelNode with branches", () => {
         renderModel({
             price: { promptPricePer1k: 0.05, completionTokenPricePer1k: null },
         });
+        // noinspection DuplicatedCode
         const modalButton = screen.getByTestId(`open-model-node-modal-${modelId}`);
         fireEvent.click(modalButton);
         const modalElement = screen.getByTestId(`model-modal-${modelId}`);

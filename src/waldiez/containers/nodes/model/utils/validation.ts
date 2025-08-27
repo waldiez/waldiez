@@ -9,6 +9,7 @@ import { awsSignatureUtils } from "@waldiez/utils/awsSignature";
  * Validation message enum for model validation
  */
 export enum ValidationMessage {
+    // noinspection JSUnusedGlobalSymbols
     ValidationSuccess = "Model validated successfully",
     MissingBaseUrl = "Missing base URL",
     MissingApiKey = "Missing API key",

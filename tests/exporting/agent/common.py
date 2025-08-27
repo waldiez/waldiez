@@ -20,6 +20,7 @@ from waldiez.models import (
 )
 
 
+# noinspection PyArgumentList
 def create_agent(
     counter: int,
     agent_type: WaldiezAgentType,

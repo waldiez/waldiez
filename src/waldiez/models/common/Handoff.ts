@@ -173,6 +173,7 @@ export type WaldiezContextBasedTransition = {
     available: WaldiezHandoffAvailability;
 };
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Waldiez handoff condition
  * A condition that can be evaluated by an LLM or against context variables.
@@ -236,6 +237,7 @@ export const ValidTransitionTargetTypes: TransitionTargetType[] = [
     "TerminateTarget",
 ];
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Possible Condition categories.
  * Split the condition types into 2 main categories:

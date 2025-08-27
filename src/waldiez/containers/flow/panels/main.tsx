@@ -51,9 +51,9 @@ export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: Waldi
     const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
     const includeImportButton = isReadOnly ? false : typeof skipImport === "boolean" ? !skipImport : true;
     const includeExportButton = isReadOnly ? false : typeof skipExport === "boolean" ? !skipExport : true;
-    const includeRunButton = isReadOnly === false && typeof runner === "function";
-    const includeConvertIcons = isReadOnly === false && typeof onConvert === "function";
-    const includeStepByStepRun = isReadOnly === false && typeof stepRunner === "function";
+    const includeRunButton = !isReadOnly && typeof runner === "function";
+    const includeConvertIcons = !isReadOnly && typeof onConvert === "function";
+    const includeStepByStepRun = !isReadOnly && typeof stepRunner === "function";
     const { isDark, toggleTheme } = useWaldiezTheme();
     return (
         <>

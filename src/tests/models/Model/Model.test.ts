@@ -82,6 +82,7 @@ describe("WaldiezModel", () => {
         expect(model.requirements).toEqual(["requirement"]);
         expect(model.createdAt).toBe(createdAt);
         expect(model.updatedAt).toBe(updatedAt);
+        // noinspection DuplicatedCode
         expect(model.data.baseUrl).toBe("http://localhost");
         expect(model.data.apiKey).toBe("key");
         expect(model.data.apiType).toBe("openai");

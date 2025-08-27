@@ -4,6 +4,8 @@
  */
 import { Edge, Node } from "@xyflow/react";
 
+import type { CSSProperties } from "react";
+
 import {
     ValidChatTypes,
     WaldiezChat,
@@ -171,7 +173,7 @@ export const chatMapper = {
             realTarget: chat.data.realTarget,
             silent: chat.data.silent,
         };
-        const style: React.CSSProperties = chat.rest?.style || {};
+        const style: CSSProperties = chat.rest?.style || {};
         style.strokeWidth = 1;
         return {
             id: chat.id,

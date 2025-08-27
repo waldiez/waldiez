@@ -9,6 +9,7 @@ from waldiez.models.agents.group_manager.group_manager import (
 )
 
 
+# noinspection PyArgumentList
 def test_waldiez_group_manager() -> None:
     """Test WaldiezGroupManager."""
     group_manager = WaldiezGroupManager(
@@ -24,6 +25,7 @@ def test_waldiez_group_manager() -> None:
     group_manager.validate_transitions(agent_ids=["wa-1"])
 
 
+# noinspection PyArgumentList
 def test_waldiez_group_manager_transitions() -> None:
     """Test WaldiezGroupManager transitions."""
     group_manager1 = WaldiezGroupManager(
@@ -105,6 +107,7 @@ def test_waldiez_group_manager_transitions() -> None:
         group_manager4.validate_transitions(agent_ids=["wa-2", "wa-3"])
 
 
+# noinspection PyArgumentList
 def test_waldiez_group_manager_speakers_order() -> None:
     """Test WaldiezGroupManager speakers order."""
     group_manager = WaldiezGroupManager(

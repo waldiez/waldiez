@@ -24,6 +24,7 @@ def test_waldiez_agent_info_attributes() -> None:
     assert agent_info.agent_type == "user"
 
 
+# noinspection PyArgumentList
 def test_waldiez_agent_info_validation_error() -> None:
     """Test WaldiezAgentInfo validation error."""
     # Missing required fields should raise ValidationError

@@ -123,6 +123,7 @@ def test_send(fake_redis: fakeredis.FakeRedis) -> None:
         type: str = "text"
         text: str
 
+    # noinspection PyArgumentList
     message = Message(
         uuid=uuid.uuid4(),
         text="Hello, World!",
@@ -404,6 +405,7 @@ def test_send_message_without_type(fake_redis: fakeredis.FakeRedis) -> None:
 
         content: str
 
+    # noinspection PyArgumentList
     message = MessageWithoutType(uuid=uuid.uuid4(), content="test content")
 
     # Remove type if it exists in model_dump

@@ -18,6 +18,7 @@ from waldiez.models import (
 
 
 # pylint: disable=too-many-locals
+# noinspection PyArgumentList
 def test_sequential_chat() -> None:
     """Test ChatsExporter with a sequential chat."""
     agent1_name = "agent1"

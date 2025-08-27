@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable max-statements */
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 
 import { nanoid } from "nanoid";
 
@@ -121,7 +121,7 @@ export function useUIMessageProcessor({
 
     const processSaveResult = useCallback(
         (data: { success: boolean; error?: string; file_path?: string }) => {
-            if (data.success === false) {
+            if (!data.success) {
                 showSnackbar({
                     message: "Error saving file",
                     details: data.error || null,
@@ -146,7 +146,7 @@ export function useUIMessageProcessor({
 
     const processConvertResult = useCallback(
         (data: { success: boolean; error?: string; converted_data?: string; output_path?: string }) => {
-            if (data.success === false) {
+            if (!data.success) {
                 showSnackbar({
                     message: "Error converting file",
                     details: data.error || null,

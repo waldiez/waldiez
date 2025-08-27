@@ -46,6 +46,7 @@ def test_handle_breakpoint_errors_decorator() -> None:
     """Test the handle_breakpoint_errors decorator."""
     mixin = DummyBreakpointsMixin()
 
+    # noinspection PyUnusedLocal
     @handle_breakpoint_errors
     def test_function(self: BreakpointsMixin, value: str) -> bool:
         """Test function that raises ValueError."""

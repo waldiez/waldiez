@@ -15,6 +15,7 @@ import {
     WaldiezDebugStats,
 } from "@waldiez/components/stepByStep/types";
 
+// noinspection SuspiciousTypeOfGuard
 export const isDebugInputRequest = (m: WaldiezDebugMessage): m is WaldiezDebugInputRequest =>
     Boolean(
         m &&
@@ -37,6 +38,7 @@ export const isDebugStats = (m: WaldiezDebugMessage): m is WaldiezDebugStats =>
 export const isDebugHelp = (m: WaldiezDebugMessage): m is WaldiezDebugHelp =>
     Boolean(m && (m.type === "debug_help" || m.type === "help") && Array.isArray(m.help));
 
+// noinspection SuspiciousTypeOfGuard
 export const isDebugError = (m: WaldiezDebugMessage): m is WaldiezDebugError =>
     Boolean(m && (m.type === "debug_error" || m.type === "error") && typeof m.error === "string");
 
@@ -47,6 +49,7 @@ export const isDebugBreakpointsList = (m: WaldiezDebugMessage): m is WaldiezDebu
             Array.isArray(m.breakpoints),
     );
 
+// noinspection SuspiciousTypeOfGuard
 export const isDebugBreakpointAdded = (m: WaldiezDebugMessage): m is WaldiezDebugBreakpointAdded =>
     Boolean(
         m &&
@@ -55,6 +58,7 @@ export const isDebugBreakpointAdded = (m: WaldiezDebugMessage): m is WaldiezDebu
             (typeof m.breakpoint === "object" || typeof m.breakpoint === "string"),
     );
 
+// noinspection SuspiciousTypeOfGuard
 export const isDebugBreakpointRemoved = (m: WaldiezDebugMessage): m is WaldiezDebugBreakpointRemoved =>
     Boolean(
         m &&
@@ -63,6 +67,7 @@ export const isDebugBreakpointRemoved = (m: WaldiezDebugMessage): m is WaldiezDe
             (typeof m.breakpoint === "object" || typeof m.breakpoint === "string"),
     );
 
+// noinspection SuspiciousTypeOfGuard
 export const isDebugBreakpointCleared = (m: WaldiezDebugMessage): m is WaldiezDebugBreakpointCleared =>
     Boolean(
         m &&

@@ -356,8 +356,10 @@ class TestGetImage:
         valid_json = json.dumps({"key": "value"})
         invalid_json = "{invalid: json"
 
-        assert is_json_dumped(valid_json)[0]
-        assert not is_json_dumped(invalid_json)[0]
+        dumped, _ = is_json_dumped(valid_json)
+        assert dumped
+        dumped, _ = is_json_dumped(invalid_json)
+        assert not dumped
 
 
 class DummyMessage:
@@ -374,6 +376,7 @@ class DummyMessage:
         self._raise_first = raise_first
         self._raise_second = raise_second
 
+    # noinspection PyUnusedLocal
     def model_dump(self, **kwargs: Any) -> dict[str, Any] | None:
         """Dump the model's data."""
         if self._raise_first:
@@ -412,6 +415,7 @@ class TestTryParseMaybeSerialized:
         assert try_parse_maybe_serialized(s) == s
 
 
+# noinspection PyTypeChecker
 class TestGetMessageDump:
     """Test get_message_dump function."""
 

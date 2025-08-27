@@ -174,9 +174,8 @@ body.waldiez-dark .flow-order-item-actions {
 
 /* Action buttons */
 body.waldiez-dark .flow-order-item-action {
-  background: none;
   border: none;
-  background-color: #222;
+  background: #222 none;
   color: #a0a0a0;
   cursor: pointer;
   font-size: 0.9rem;
@@ -394,9 +393,8 @@ body.waldiez-dark .flow-chat-remove {
 
 /* Remove button */
 body.waldiez-dark .flow-chat-remove .flow-order-item-action {
-  background: none;
   border: none;
-  background-color: #222;
+  background: #222 none;
   color: #a0a0a0;
   cursor: pointer;
   font-size: 0.9rem;

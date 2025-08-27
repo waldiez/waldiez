@@ -324,9 +324,12 @@ class StructuredIOStream(IOStream):
         UserResponse
             The structured user response.
         """
-        response_type = user_input.get("type", "input_response")
-        if response_type not in ("input_response", "debug_input_response"):
+        response_type: MessageType
+        _response_type = user_input.get("type", "input_response")
+        if _response_type not in ("input_response", "debug_input_response"):
             response_type = "input_response"
+        else:
+            response_type = _response_type
         if user_input.get("request_id") == request_id:
             # We have a valid response to our request
             data = user_input.get("data")

@@ -5,6 +5,7 @@
 from waldiez.models.agents.user_proxy.user_proxy import WaldiezUserProxy
 
 
+# noinspection PyArgumentList
 def test_waldiez_user_proxy() -> None:
     """Test WaldiezUserProxy."""
     user_proxy = WaldiezUserProxy(id="wa-1", name="user")

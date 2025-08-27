@@ -23,6 +23,7 @@ from waldiez.models.common.handoff import (
 )
 
 
+# noinspection PyArgumentList
 class TestWaldiezAgentTarget:
     """Test WaldiezAgentTarget class."""
 
@@ -131,6 +132,7 @@ class TestWaldiezSimpleTarget:
             WaldiezSimpleTarget(target_type="InvalidTarget")  # type: ignore
 
 
+# noinspection PyArgumentList
 class TestWaldiezGroupOrNestedTarget:
     """Test WaldiezGroupOrNestedTarget class."""
 
@@ -171,6 +173,7 @@ class TestWaldiezGroupOrNestedTarget:
             )
 
 
+# noinspection PyArgumentList
 class TestWaldiezStringLLMCondition:
     """Test WaldiezStringLLMCondition class."""
 
@@ -202,6 +205,7 @@ class TestWaldiezStringLLMCondition:
             )
 
 
+# noinspection PyArgumentList
 class TestWaldiezContextStrLLMCondition:
     """Test WaldiezContextStrLLMCondition class."""
 
@@ -226,6 +230,7 @@ class TestWaldiezContextStrLLMCondition:
         assert condition.is_not_empty()
 
 
+# noinspection PyArgumentList
 class TestWaldiezStringContextCondition:
     """Test WaldiezStringContextCondition class."""
 

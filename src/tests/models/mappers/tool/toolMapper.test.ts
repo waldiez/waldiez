@@ -149,8 +149,8 @@ describe("toolMapper", () => {
         });
         const toolNode = toolMapper.asNode(tool);
         expect(toolNode).toBeTruthy();
-        expect(toolNode.id).toBe("1");
         expect(toolNode.data.label).toBe("tool_name");
+        expect(toolNode.id).toBe("1");
         expect(toolNode.data.content).toBe(toolData.content);
         expect(toolNode.data.description).toBe("tool_description");
         expect(toolNode.data.secrets).toEqual(toolData.secrets);

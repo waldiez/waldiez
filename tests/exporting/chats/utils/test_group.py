@@ -15,6 +15,7 @@ from waldiez.exporting.chats.utils.group import export_group_chats
 from waldiez.models import WaldiezGroupManager, WaldiezGroupManagerData
 
 
+# noinspection PyArgumentList
 def create_test_manager(
     manager_id: str = "manager1", max_round: int = 10
 ) -> WaldiezGroupManager:

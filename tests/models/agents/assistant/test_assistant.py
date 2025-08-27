@@ -7,6 +7,7 @@ from waldiez.models.agents.assistant.assistant import WaldiezAssistant
 
 def test_waldiez_assistant() -> None:
     """Test WaldiezAssistant."""
+    # noinspection PyArgumentList
     assistant = WaldiezAssistant(id="wa-1", name="assistant")
     assert assistant.data.human_input_mode == "NEVER"
     assert assistant.agent_type == "assistant"

@@ -1395,7 +1395,7 @@ const StepByStepView = ({ stepByStep }) => {
     if (typeof stepByStep2.currentEvent?.type === "string") {
       return stepByStep2.currentEvent.type;
     }
-    if (typeof stepByStep2.currentEvent === "object" && stepByStep2.currentEvent !== null) {
+    if (typeof stepByStep2.currentEvent === "object") {
       return "Running";
     }
     if (!history || history.length === 0) {
@@ -1517,7 +1517,7 @@ function safeStringify(v) {
   }
 }
 const JsonArea = ({ value, placeholder = "" }) => {
-  let safeValue = placeholder;
+  let safeValue;
   if (Array.isArray(value)) {
     const entries = [];
     for (let i = 0; i < value.length; i += 1) {
@@ -1872,10 +1872,7 @@ class WaldiezStepByStepUtils {
     if (!content || typeof content !== "object") {
       return false;
     }
-    if (typeof content.type === "string") {
-      return true;
-    }
-    return false;
+    return typeof content.type === "string";
   }
   /**
    * Quick check if content can be processed by step-by-step processor
@@ -2103,8 +2100,8 @@ class WaldiezAgent {
     this.rest = props.rest;
   }
   static create(agentType) {
-    let name = "";
-    let description = "";
+    let name;
+    let description;
     if (agentType === "group_manager") {
       name = "Manager";
       description = "The group manager agent";
@@ -3626,7 +3623,7 @@ const ValidAgentTypes$1 = [
   "doc_agent"
 ];
 const getAgentId = (data, agentId) => {
-  let id = `wa-${getId()}`;
+  let id;
   if (!agentId || typeof agentId !== "string") {
     id = getIdFromJSON(data);
   } else {
@@ -5168,8 +5165,7 @@ const updateEdge = (edge, chatData, json, sourceNode, targetNode, rest) => {
   chatData.order = chatType === "nested" ? -1 : chatData.order;
   setEdgeSourceHandle(edge, rest);
   setEdgeTargetHandle(edge, rest);
-  const updated = { ...edge, ...rest };
-  return updated;
+  return { ...edge, ...rest };
 };
 const updateChatCommonStyle = (edge, edgeType, color) => {
   if (edge.type === "hidden") {
@@ -5187,10 +5183,7 @@ const updateChatCommonStyle = (edge, edgeType, color) => {
   };
 };
 const isChatAnimated = (chatType, _sourceNode, _targetNode) => {
-  if (chatType === "nested") {
-    return true;
-  }
-  return false;
+  return chatType === "nested";
 };
 const setEdgeSourceHandle = (edge, rest) => {
   let sourceHandle = null;
@@ -5271,10 +5264,8 @@ const validateChatData = (json) => {
     throw new Error("Invalid edge data");
   }
   const isValid = "id" in json && typeof json.id === "string" && "data" in json && typeof json.data === "object" && json.data !== null;
-  const source = getChatSource(json);
-  json.source = source;
-  const target = getChatTarget(json);
-  json.target = target;
+  json.source = getChatSource(json);
+  json.target = getChatTarget(json);
   if (!isValid) {
     throw new Error(findOoutWhyItIsInvalid(json));
   }
@@ -17148,7 +17139,7 @@ class WaldiezNodeStore {
    */
   storePreviousViewport = () => {
     const rfInstance = this.get().rfInstance;
-    let previousViewport = void 0;
+    let previousViewport;
     if (rfInstance) {
       previousViewport = {
         x: rfInstance.getViewport().x,
@@ -19731,9 +19722,9 @@ const WaldiezFlowPanels = (props) => {
   const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
   const includeImportButton = isReadOnly ? false : typeof skipImport === "boolean" ? !skipImport : true;
   const includeExportButton = isReadOnly ? false : typeof skipExport === "boolean" ? !skipExport : true;
-  const includeRunButton = isReadOnly === false && typeof runner === "function";
-  const includeConvertIcons = isReadOnly === false && typeof onConvert === "function";
-  const includeStepByStepRun = isReadOnly === false && typeof stepRunner === "function";
+  const includeRunButton = !isReadOnly && typeof runner === "function";
+  const includeConvertIcons = !isReadOnly && typeof onConvert === "function";
+  const includeStepByStepRun = !isReadOnly && typeof stepRunner === "function";
   const { isDark, toggleTheme } = useWaldiezTheme();
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsx(Panel, { position: "top-left", children: /* @__PURE__ */ jsxs(

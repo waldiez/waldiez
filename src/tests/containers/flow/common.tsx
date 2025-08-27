@@ -20,6 +20,7 @@ export const onChange = vi.fn();
 export const onConvert = vi.fn();
 export const onSave = vi.fn();
 
+// noinspection JSUnusedGlobalSymbols
 export const assistantDataTransfer = {
     setData: vi.fn(),
     getData: (key: string) => {
@@ -29,6 +30,7 @@ export const assistantDataTransfer = {
         return "assistant";
     },
 };
+// noinspection JSUnusedGlobalSymbols
 export const userDataTransfer = {
     setData: vi.fn(),
     getData: (key: string) => {
@@ -38,7 +40,7 @@ export const userDataTransfer = {
         return "user_proxy";
     },
 };
-
+// noinspection JSUnusedGlobalSymbols
 export const reasoningDataTransfer = {
     setData: vi.fn(),
     getData: (key: string) => {
@@ -48,7 +50,7 @@ export const reasoningDataTransfer = {
         return "reasoning";
     },
 };
-
+// noinspection JSUnusedGlobalSymbols
 export const captainDataTransfer = {
     setData: vi.fn(),
     getData: (key: string) => {

@@ -58,8 +58,8 @@ export class WaldiezAgent {
     }
 
     static create(agentType: WaldiezAgentType): WaldiezAgent {
-        let name = "";
-        let description = "";
+        let name: string;
+        let description: string;
         if (agentType === "group_manager") {
             name = "Manager";
             description = "The group manager agent";

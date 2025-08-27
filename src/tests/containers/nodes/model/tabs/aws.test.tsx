@@ -179,6 +179,7 @@ describe("WaldiezNodeModel Modal AWS Tab", () => {
             },
         };
 
+        // noinspection DuplicatedCode
         renderAWSTab(awsData);
 
         const accessKeyInput = screen.getByLabelText("AWS Access Key:");
@@ -199,6 +200,7 @@ describe("WaldiezNodeModel Modal AWS Tab", () => {
             aws: undefined,
         };
 
+        // noinspection DuplicatedCode
         renderAWSTab(awsData);
 
         const accessKeyInput = screen.getByLabelText("AWS Access Key:");

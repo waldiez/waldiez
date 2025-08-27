@@ -42,6 +42,7 @@ describe("modelMapper", () => {
         expect(model.requirements).toEqual(["requirement1"]);
         expect(model.createdAt).toBe(modelJson.createdAt);
         expect(model.updatedAt).toBe(modelJson.updatedAt);
+        // noinspection DuplicatedCode
         expect(model.data.baseUrl).toBe("http://localhost");
         expect(model.data.apiKey).toBe("key");
         expect(model.data.apiType).toBe("openai");

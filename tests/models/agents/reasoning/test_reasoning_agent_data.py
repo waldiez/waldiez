@@ -7,12 +7,10 @@ from waldiez.models.agents.reasoning.reasoning_agent_data import (
 )
 
 
+# noinspection PyArgumentList
 def test_waldiez_reasoning_agent_data_beam_search() -> None:
     """Test WaldiezReasoningAgentData."""
     reasoning_agent_data = WaldiezReasoningAgentData(
-        max_depth=3,
-        beam_size=3,
-        answer_approach="pool",
         verbose=True,
         reason_config={  # type: ignore
             "method": "beam_search",
@@ -42,12 +40,10 @@ def test_waldiez_reasoning_agent_data_beam_search() -> None:
     }
 
 
+# noinspection PyArgumentList
 def test_waldiez_reasoning_agent_data_mcts() -> None:
     """Test WaldiezReasoningAgentData."""
     reasoning_agent_data = WaldiezReasoningAgentData(
-        max_depth=3,
-        beam_size=3,
-        answer_approach="pool",
         verbose=True,
         reason_config={  # type: ignore
             "method": "mcts",
@@ -74,10 +70,8 @@ def test_waldiez_reasoning_agent_data_mcts() -> None:
 
 def test_waldiez_reasoning_agent_data_lats() -> None:
     """Test WaldiezReasoningAgentData."""
+    # noinspection PyArgumentList
     reasoning_agent_data = WaldiezReasoningAgentData(
-        max_depth=3,
-        beam_size=3,
-        answer_approach="pool",
         verbose=True,
         reason_config={  # type: ignore
             "method": "lats",

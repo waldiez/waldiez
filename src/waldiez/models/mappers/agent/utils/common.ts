@@ -24,7 +24,6 @@ import {
     getTagsFromJSON,
     getUpdatedAtFromJSON,
 } from "@waldiez/models/mappers/common";
-import { getId } from "@waldiez/utils";
 
 const ValidAgentTypes: WaldiezNodeAgentType[] = [
     "user_proxy",
@@ -46,7 +45,7 @@ const ValidAgentTypes: WaldiezNodeAgentType[] = [
  * @returns A string representing the agent ID.
  */
 export const getAgentId = (data: any, agentId?: string) => {
-    let id = `wa-${getId()}`;
+    let id: string;
     // noinspection SuspiciousTypeOfGuard
     if (!agentId || typeof agentId !== "string") {
         id = getIdFromJSON(data);
@@ -110,8 +109,7 @@ export const getAgentName = (data: Record<string, unknown>, agentType: WaldiezNo
 /**
  * Retrieves the agent description from the provided JSON object.
  * If the description is not specified, it falls back to a default description based on the agent type.
- * @param data - The JSON object containing the agent data.
- * @param fallbackDescription - The fallback description to use if none is provided in the data.
+ * @param agentType - The type of the agent.
  * @returns The agent description as a string.
  */
 export const getFallbackDescription = (agentType: WaldiezNodeAgentType) => {
@@ -256,6 +254,7 @@ export const getModelIds = (data: Record<string, unknown>): string[] => {
     const modelIds: string[] = [];
     if ("modelIds" in data && Array.isArray(data.modelIds)) {
         for (const modelId of data.modelIds) {
+            // noinspection SuspiciousTypeOfGuard
             if (typeof modelId === "string") {
                 modelIds.push(modelId);
             }

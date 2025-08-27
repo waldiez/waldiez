@@ -7,6 +7,7 @@ import pytest
 from waldiez.models.tool import WaldiezToolData
 
 
+# noinspection PyArgumentList
 def test_waldiez_tool_data() -> None:
     """Test WaldiezToolData."""
     # Given

@@ -4,7 +4,7 @@
  */
 import * as Checkbox from "@radix-ui/react-checkbox";
 
-import { memo } from "react";
+import React, { memo } from "react";
 
 export const CheckboxInput: React.FC<{
     id: string;

@@ -41,6 +41,7 @@ class FakeSMTPBase:
         """Identify the client to the SMTP server."""
         self.ehlo_called = True
 
+    # noinspection PyUnusedLocal
     def starttls(self, context: Any = None) -> None:
         """Start TLS encryption."""
         self.starttls_called = True
@@ -90,7 +91,9 @@ def _exec_generated(
     code = tool.get_content(secrets)
     ns: dict[str, Any] = {}
     # pylint: disable=exec-used
+    # noinspection BuiltinExec
     exec("\n".join(tool.tool_imports), ns, ns)  # noqa: S102 # nosemgrep # nosec
+    # noinspection BuiltinExec
     exec(code, ns, ns)  # noqa: S102 # nosemgrep # nosec
     sync_fn = ns["_send_email_sync"]
     async_fn = ns["_send_email_async"]

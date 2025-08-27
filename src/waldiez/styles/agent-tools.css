@@ -87,7 +87,7 @@
   color: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
   margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .agent-panel-current-tool {

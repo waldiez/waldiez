@@ -37,6 +37,7 @@ describe("Reasoning tab", () => {
         submitAgentChanges();
     });
     it("should allow changing the reasoning method", async () => {
+        // noinspection DuplicatedCode
         renderAgent("reasoning", {
             openModal: true,
         });
@@ -145,6 +146,7 @@ describe("Reasoning tab", () => {
         submitAgentChanges();
     });
     it("should allow changing the number of simulations", async () => {
+        // noinspection DuplicatedCode
         renderAgent("reasoning", {
             openModal: true,
         });

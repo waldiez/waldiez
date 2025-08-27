@@ -47,4 +47,5 @@ class TerminationProcessor:
                 termination_arg=function_name,
                 before_content="\n\n" + content + "\n",
             )
+        # noinspection PyUnreachableCode
         return TerminationConfig()

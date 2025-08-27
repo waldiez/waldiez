@@ -182,20 +182,3 @@ export function isErrorResponse(m: ServerMessage): m is ErrorResponseMsg {
 export function isSubprocessOutput(m: ServerMessage): m is SubprocessOutputMsg {
     return m?.type === "subprocess_output" && typeof (m as any).content === "string";
 }
-
-export function isDebugPrint(content: any): content is { type: "print"; data: any } {
-    if (typeof content === "string") {
-        try {
-            return isDebugPrint(JSON.parse(content));
-        } catch {
-            return false;
-        }
-    }
-    return (
-        content.type === "print" &&
-        "data" in content &&
-        typeof content.data === "object" &&
-        "type" in content.data &&
-        typeof content.data.type === "string"
-    );
-}

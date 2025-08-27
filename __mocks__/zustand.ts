@@ -26,6 +26,7 @@ const createUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator<T>) 
 };
 
 // when creating a store, we get its initial state, create a reset function and add it in the set
+// noinspection JSUnusedGlobalSymbols
 export const create = (<T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
     // to support curried version of create
     return typeof stateCreator === "function" ? createUncurried(stateCreator) : createUncurried;
@@ -41,6 +42,7 @@ const createStoreUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator
 };
 
 // when creating a store, we get its initial state, create a reset function and add it in the set
+// noinspection JSUnusedGlobalSymbols
 export const createStore = (<T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
     // to support curried version of createStore
     return typeof stateCreator === "function" ? createStoreUncurried(stateCreator) : createStoreUncurried;

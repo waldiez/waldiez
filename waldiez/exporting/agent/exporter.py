@@ -73,17 +73,17 @@ class AgentExporter(Exporter[StandardExtras]):
             Whether the flow is async, by default False
         for_notebook : bool, optional
             Whether exporting for notebook, by default False
-        cache_seed : Optional[int], optional
+        cache_seed : int, optional
             Cache seed if any, by default None
-        initial_chats : Optional[list[WaldiezAgentConnection]], optional
+        initial_chats : list[WaldiezAgentConnection], optional
             Initial chats for group managers, by default None
-        group_chat_members : Optional[list[WaldiezAgent]], optional
+        group_chat_members : list[WaldiezAgent], optional
             Group chat members if group manager, by default None
-        arguments_resolver : Optional[Callable], optional
+        arguments_resolver : Callable, optional
             Function to resolve additional arguments, by default None
-        output_dir : Optional[Union[str, Path]], optional
+        output_dir : str | Path, optional
             Output directory for generated files, by default None
-        context : Optional[ExporterContext], optional
+        context : ExporterContext, optional
             Exporter context with dependencies, by default None
         **kwargs : Any
             Additional keyword arguments.

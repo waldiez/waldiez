@@ -10,6 +10,7 @@ from waldiez.exporting.models.factory import create_models_exporter
 from waldiez.models import DEFAULT_BASE_URLS, WaldiezAgent, WaldiezModel
 
 
+# noinspection PyArgumentList
 # pylint: disable=too-many-locals,too-many-statements
 def test_models_exporter(tmp_path: Path) -> None:
     """Test ModelsExporter.

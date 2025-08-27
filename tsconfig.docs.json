@@ -6,5 +6,5 @@
         "strict": true,
         "types": []
     },
-    "exclude": ["src/tests", "ui-tests"]
+    "exclude": ["src/tests", "ui-tests", "__mocks__"]
 }

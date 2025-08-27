@@ -15,6 +15,7 @@ from waldiez.models.agents.doc_agent.rag_query_engine import (
 from waldiez.models.model import WaldiezModel, WaldiezModelData
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_creation() -> None:
     """Test WaldiezDocAgent creation."""
     # Given/When
@@ -27,6 +28,7 @@ def test_waldiez_doc_agent_creation() -> None:
     assert isinstance(doc_agent.data, WaldiezDocAgentData)
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_with_data(tmp_path: Path) -> None:
     """Test WaldiezDocAgent with custom data."""
     # Given
@@ -51,6 +53,7 @@ def test_waldiez_doc_agent_with_data(tmp_path: Path) -> None:
     )
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_reset_collection_property() -> None:
     """Test WaldiezDocAgent reset_collection property."""
     # Given
@@ -67,6 +70,7 @@ def test_waldiez_doc_agent_reset_collection_property() -> None:
     assert doc_agent.reset_collection is False
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_collection_name() -> None:
     """Test WaldiezDocAgent get_collection_name method."""
     # Given
@@ -88,6 +92,7 @@ def test_waldiez_doc_agent_get_collection_name() -> None:
     assert collection_name == "custom_collection"
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_query_engine() -> None:
     """Test WaldiezDocAgent get_query_engine method."""
     # Given
@@ -103,6 +108,7 @@ def test_waldiez_doc_agent_get_query_engine() -> None:
     assert query_engine.citation_chunk_size == 512
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_db_path() -> None:
     """Test WaldiezDocAgent get_db_path method."""
     # Given
@@ -117,6 +123,7 @@ def test_waldiez_doc_agent_get_db_path() -> None:
     assert "chroma" in db_path.lower()
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_parsed_docs_path() -> None:
     """Test WaldiezDocAgent get_parsed_docs_path method."""
     # Given
@@ -131,6 +138,7 @@ def test_waldiez_doc_agent_get_parsed_docs_path() -> None:
     assert "parsed_docs" in parsed_docs_path
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_llm_requirements_no_models() -> None:
     """Test WaldiezDocAgent get_llm_requirements with no models."""
     # Given
@@ -160,6 +168,7 @@ def test_waldiez_doc_agent_get_llm_requirements_no_models() -> None:
     assert requirements == expected
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_llm_requirements_with_models() -> None:
     """Test WaldiezDocAgent get_llm_requirements with models."""
     # Given
@@ -204,6 +213,7 @@ def test_waldiez_doc_agent_get_llm_requirements_with_models() -> None:
     assert requirements == expected
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_get_llm_requirements_with_nonexistent_model() -> (
     None
 ):
@@ -238,6 +248,7 @@ def test_waldiez_doc_agent_get_llm_requirements_with_nonexistent_model() -> (
     assert requirements == expected
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_serialization(tmp_path: Path) -> None:
     """Test WaldiezDocAgent serialization."""
     # Given

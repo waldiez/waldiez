@@ -36,6 +36,7 @@ class TargetResult:
     extra_imports: Set[str] = field(default_factory=set)  # pyright: ignore
 
 
+# noinspection PyTypeHints
 class TransitionTargetProcessor:
     """Processor for transition targets."""
 

@@ -103,7 +103,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
         if (typeof stepByStep.currentEvent?.type === "string") {
             return stepByStep.currentEvent.type;
         }
-        if (typeof stepByStep.currentEvent === "object" && stepByStep.currentEvent !== null) {
+        if (typeof stepByStep.currentEvent === "object") {
             return "Running";
         }
         if (!history || history.length === 0) {
@@ -222,7 +222,7 @@ function safeStringify(v: unknown) {
     }
 }
 const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, placeholder = "" }) => {
-    let safeValue = placeholder;
+    let safeValue: string;
     if (Array.isArray(value)) {
         const entries = [];
         for (let i = 0; i < value.length; i += 1) {

@@ -15,6 +15,8 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
+# noinspection PyProtectedMember
 from autogen.events.agent_events import (  # type: ignore
     RunCompletionEvent,
     TextEvent,
@@ -41,6 +43,7 @@ def runner_fixture() -> WaldiezStepByStepRunner:
     waldiez = MagicMock()
     waldiez.info = WaldiezFlowInfo(participants=[])
     runner = WaldiezStepByStepRunner(waldiez=waldiez)
+    # noinspection PyProtectedMember
     runner._stop_requested.clear()
     return runner
 
@@ -76,6 +79,7 @@ def test_parse_user_action_known_and_unknown(
     assert action == WaldiezDebugStepAction.UNKNOWN
 
 
+# noinspection PyUnusedLocal
 @patch(f"{BASE_RUNNER}.get_user_input", return_value="c")
 def test_handle_step_interaction_continue(
     mock_input: Any, runner: WaldiezStepByStepRunner
@@ -85,6 +89,7 @@ def test_handle_step_interaction_continue(
     assert result is True
 
 
+# noinspection PyUnusedLocal
 @patch(
     f"{BASE_RUNNER}.get_user_input",
     side_effect=KeyboardInterrupt,
@@ -429,6 +434,7 @@ def test_run_handles_stop_running_exception(
 ) -> None:
     """_run should raise StopRunningException if caught during execution."""
 
+    # noinspection PyUnusedLocal
     def raise_stop(*args: Any, **kwargs: Any) -> None:
         """Raise a StopRunningException."""
         raise StopRunningException(StopRunningException.reason)
@@ -450,6 +456,7 @@ def test_run_handles_generic_exception(
 ) -> None:
     """_run should catch generic exceptions and print error message."""
 
+    # noinspection PyUnusedLocal
     def raise_exc(*args: Any, **kwargs: Any) -> None:
         """Raise a generic exception."""
         raise ValueError("generic error")
@@ -473,6 +480,7 @@ async def test_async_run_handles_stop_running_exception(
 ) -> None:
     """_a_run should raise StopRunningException if caught during execution."""
 
+    # noinspection PyUnusedLocal
     async def raise_stop(*args: Any, **kwargs: Any) -> None:
         """Raise a StopRunningException."""
         raise StopRunningException(StopRunningException.reason)
@@ -495,6 +503,7 @@ async def test_async_run_handles_generic_exception(
 ) -> None:
     """_a_run should catch generic exceptions and print error message."""
 
+    # noinspection PyUnusedLocal
     async def raise_exc(*args: Any, **kwargs: Any) -> None:
         """Raise a generic exception."""
         raise ValueError("generic async error")

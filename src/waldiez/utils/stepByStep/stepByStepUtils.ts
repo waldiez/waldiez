@@ -73,11 +73,7 @@ export class WaldiezStepByStepUtils {
         }
 
         // Check if it's a debug message type
-        if (typeof content.type === "string") {
-            return true;
-        }
-
-        return false;
+        return typeof content.type === "string";
     }
 
     /**

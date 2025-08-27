@@ -44,7 +44,7 @@ export class WaldiezStepByStepProcessor {
      * @param context - Processing context with request ID, flow ID, etc.
      */
     static process(
-        rawMessage: string | undefined | null,
+        rawMessage: any,
         context: WaldiezStepByStepProcessingContext = {},
     ): WaldiezStepByStepProcessingResult | undefined {
         if (!rawMessage) {
@@ -116,7 +116,7 @@ export class WaldiezStepByStepProcessor {
      * Handles both JSON strings and Python dict format from step-by-step runner
      */
     // eslint-disable-next-line max-statements
-    private static parseMessage(message: string): WaldiezDebugMessage | null {
+    private static parseMessage(message: any): WaldiezDebugMessage | null {
         /* c8 ignore next 3 */
         if (!message || typeof message !== "string") {
             return null;
@@ -182,7 +182,7 @@ export class WaldiezStepByStepProcessor {
     /**
      * Parse subprocess_output content specifically for step-by-step messages
      */
-    static parseSubprocessContent(content: string): WaldiezDebugMessage | null {
+    static parseSubprocessContent(content: any): WaldiezDebugMessage | null {
         if (!content || typeof content !== "string") {
             return null;
         }

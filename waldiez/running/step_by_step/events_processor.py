@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from autogen.events.base_event import BaseEvent  # type: ignore
     from autogen.messages.base_message import BaseMessage  # type: ignore
 
+    # noinspection PyUnusedImports
     from .step_by_step_runner import WaldiezStepByStepRunner
 
 
@@ -26,7 +27,7 @@ class EventProcessor:
 
         Parameters
         ----------
-        event : Union["BaseEvent", "BaseMessage"]
+        event : BaseEvent | BaseMessage
             The event to process.
 
         Returns

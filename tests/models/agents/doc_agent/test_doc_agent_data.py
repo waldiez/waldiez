@@ -13,6 +13,7 @@ from waldiez.models.agents.doc_agent.rag_query_engine import (
 )
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_creation() -> None:
     """Test WaldiezDocAgentData creation with defaults."""
     # Given/When
@@ -25,6 +26,7 @@ def test_waldiez_doc_agent_data_creation() -> None:
     assert data.query_engine is None
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_with_values(tmp_path: Path) -> None:
     """Test WaldiezDocAgentData creation with values."""
     # Given
@@ -53,6 +55,7 @@ def test_waldiez_doc_agent_data_with_values(tmp_path: Path) -> None:
     assert data.query_engine == query_engine
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_query_engine() -> None:
     """Test WaldiezDocAgentData get_query_engine method."""
     # Given
@@ -72,6 +75,7 @@ def test_waldiez_doc_agent_data_get_query_engine() -> None:
     assert query_engine2 is query_engine  # Should return same instance
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_query_engine_with_existing() -> None:
     """Test WaldiezDocAgentData get_query_engine with existing query engine."""
     # Given
@@ -88,6 +92,7 @@ def test_waldiez_doc_agent_data_get_query_engine_with_existing() -> None:
     assert query_engine is existing_query_engine
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_db_path() -> None:
     """Test WaldiezDocAgentData get_db_path method."""
     # Given
@@ -102,6 +107,7 @@ def test_waldiez_doc_agent_data_get_db_path() -> None:
     assert "chroma" in db_path.lower()
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_collection_name() -> None:
     """Test WaldiezDocAgentData get_collection_name method."""
     # Given
@@ -123,6 +129,7 @@ def test_waldiez_doc_agent_data_get_collection_name() -> None:
     assert collection_name == "custom_collection"
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_parsed_docs_path_default() -> None:
     """Test WaldiezDocAgentData get_parsed_docs_path with default path."""
     # Given
@@ -138,6 +145,7 @@ def test_waldiez_doc_agent_data_get_parsed_docs_path_default() -> None:
     assert data.parsed_docs_path == parsed_docs_path  # Should be cached
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_parsed_docs_path_custom(
     tmp_path: Path,
 ) -> None:
@@ -155,6 +163,7 @@ def test_waldiez_doc_agent_data_get_parsed_docs_path_custom(
     assert Path(custom_path).is_dir()
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_parsed_docs_path_relative(
     tmp_path: Path,
 ) -> None:
@@ -173,6 +182,7 @@ def test_waldiez_doc_agent_data_get_parsed_docs_path_relative(
     assert data.parsed_docs_path == str(parsed_docs_path)
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_get_parsed_docs_path_creates_directory(
     tmp_path: Path,
 ) -> None:
@@ -190,6 +200,7 @@ def test_waldiez_doc_agent_data_get_parsed_docs_path_creates_directory(
     assert Path(nonexistent_path).is_dir()
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_serialization(tmp_path: Path) -> None:
     """Test WaldiezDocAgentData serialization."""
     # Given
@@ -254,6 +265,7 @@ def test_waldiez_doc_agent_data_deserialization(tmp_path: Path) -> None:
     assert doc_agent_data.query_engine.citation_chunk_size == 1024
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_partial_serialization() -> None:
     """Test WaldiezDocAgentData partial serialization."""
     # Given
@@ -272,6 +284,7 @@ def test_waldiez_doc_agent_data_partial_serialization() -> None:
     assert serialized["queryEngine"] is None
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_exclude_none_serialization() -> None:
     """Test WaldiezDocAgentData serialization with exclude_none."""
     # Given
@@ -290,6 +303,7 @@ def test_waldiez_doc_agent_data_exclude_none_serialization() -> None:
     assert "queryEngine" not in serialized
 
 
+# noinspection PyArgumentList
 def test_waldiez_doc_agent_data_inheritance() -> None:
     """Test WaldiezDocAgentData inherits from WaldiezAgentData."""
     # Given

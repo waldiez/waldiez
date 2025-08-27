@@ -146,6 +146,7 @@ class HandoffProcessor:
         reg_string += ")"
         return reg_string
 
+    # noinspection PyTypeHints
     def _process_after_work(
         self, after_work: WaldiezTransitionTarget
     ) -> TargetResult:

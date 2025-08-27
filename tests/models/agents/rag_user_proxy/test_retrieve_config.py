@@ -62,6 +62,7 @@ def test_waldiez_rag_user_retrieve_config() -> None:
     assert retrieve_config.token_count_function_string is None
 
 
+# noinspection PyArgumentList
 def test_waldiez_rag_user_retrieve_config_custom_embedding() -> None:
     """Test WaldiezRagUserProxyRetrieveConfig with custom embedding."""
     embedding_function = """
@@ -90,6 +91,7 @@ def custom_embedding_function():
         )
 
 
+# noinspection PyArgumentList
 def test_waldiez_rag_user_retrieve_config_custom_token_count() -> None:
     """Test WaldiezRagUserProxyRetrieveConfig with custom token count."""
     token_count_function = """
@@ -121,6 +123,7 @@ def custom_token_count_function(text, model):
         )
 
 
+# noinspection PyArgumentList
 # pylint: disable=line-too-long
 def test_waldiez_rag_user_retrieve_config_custom_text_split() -> None:
     """Test WaldiezRagUserProxyRetrieveConfig with custom text split."""
@@ -150,6 +153,7 @@ def custom_text_split_function(text, max_tokens, chunk_mode, must_break_at_empty
         )
 
 
+# noinspection PyArgumentList
 def test_not_resolved_path() -> None:
     """Test not resolved path."""
     with pytest.raises(ValueError):
@@ -160,6 +164,7 @@ def test_not_resolved_path() -> None:
         )
 
 
+# noinspection PyArgumentList
 def test_with_file_as_doc_path(tmp_path: Path) -> None:
     """Test with file as doc path (resolved).
 
@@ -179,6 +184,7 @@ def test_with_file_as_doc_path(tmp_path: Path) -> None:
     docs_file.unlink()
 
 
+# noinspection PyArgumentList
 def test_with_folder_as_doc_path(tmp_path: Path) -> None:
     """Test with folder as doc path.
 
@@ -209,6 +215,7 @@ def test_with_folder_as_doc_path(tmp_path: Path) -> None:
     shutil.rmtree(docs_dir, ignore_errors=True)
 
 
+# noinspection PyArgumentList
 def test_get_custom_embedding_function() -> None:
     """Test get_custom_embedding_function."""
     config = WaldiezRagUserProxyRetrieveConfig(
@@ -232,6 +239,7 @@ def test_get_custom_embedding_function() -> None:
     assert custom_embedding_function[1] == "pre_custom_embedding_function"
 
 
+# noinspection PyArgumentList
 def test_get_custom_token_count_function() -> None:
     """Test get_custom_token_count_function."""
     config = WaldiezRagUserProxyRetrieveConfig(
@@ -262,6 +270,7 @@ def test_get_custom_token_count_function() -> None:
     assert custom_token_count_function[1] == "pre_custom_token_count_function"
 
 
+# noinspection PyArgumentList
 def test_get_custom_text_split_function() -> None:
     """Test get_custom_text_split_function."""
     config = WaldiezRagUserProxyRetrieveConfig(
@@ -293,6 +302,7 @@ def test_get_custom_text_split_function() -> None:
     assert custom_text_split_function[1] == "pre_custom_text_split_function"
 
 
+# noinspection PyArgumentList
 def test_validate_docs_path() -> None:
     """Test validate_docs_path."""
     this_file = Path(__file__)

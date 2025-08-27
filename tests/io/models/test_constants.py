@@ -246,6 +246,7 @@ class TestContentMapping:
 
         # File content
         file_cls = CONTENT_MAPPING["file"]["cls"]
+        # noinspection PyArgumentList
         file_instance = file_cls(
             type="file",  # type: ignore
             file={"name": "test.txt"},  # type: ignore

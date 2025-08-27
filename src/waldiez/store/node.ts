@@ -77,7 +77,7 @@ export class WaldiezNodeStore implements IWaldiezNodeStore {
      */
     storePreviousViewport = () => {
         const rfInstance = this.get().rfInstance;
-        let previousViewport: Viewport | undefined = undefined;
+        let previousViewport: Viewport | undefined;
         if (rfInstance) {
             previousViewport = {
                 x: rfInstance.getViewport().x,
@@ -107,6 +107,7 @@ export class WaldiezNodeStore implements IWaldiezNodeStore {
             });
             const rfInstance = this.get().rfInstance;
             if (rfInstance) {
+                // noinspection JSIgnoredPromiseFromCall
                 rfInstance.setViewport(previousViewport);
             }
         }

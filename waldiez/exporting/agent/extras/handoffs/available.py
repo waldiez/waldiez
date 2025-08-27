@@ -69,6 +69,7 @@ class TransitionAvailableProcessor:
             )
             result.extra_imports.add(f"{import_prefix}ContextExpression")
             return result
+        # noinspection PyUnreachableCode
         raise ValueError(
             f"Unsupported transition availability type: {available.type}"
         )

@@ -155,7 +155,9 @@ describe("awsSignatureUtils", () => {
 
             expect(key1).not.toEqual(key2);
             // Type 'Uint8Array<ArrayBuffer>' is not assignable to type 'ArrayLike<string>'.
+            // noinspection SuspiciousTypeOfGuard
             expect(key1 instanceof Uint8Array).toBe(true);
+            // noinspection SuspiciousTypeOfGuard
             expect(key2 instanceof Uint8Array).toBe(true);
             expect(Array.from(key1 as Uint8Array)).not.toEqual(Array.from(key2 as Uint8Array));
         });

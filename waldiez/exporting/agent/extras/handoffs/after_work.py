@@ -49,6 +49,7 @@ class AfterWorkProcessor:
         self.all_chats = all_chats
         self.serializer = serializer
 
+    # noinspection PyTypeHints
     def process(self, after_work: WaldiezTransitionTarget) -> AfterWorkResult:
         """Process after-work configuration.
 

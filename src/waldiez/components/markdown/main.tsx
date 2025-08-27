@@ -125,6 +125,7 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
     // CSS class to handle dark/light mode
     const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
 
+    // noinspection JSUnusedGlobalSymbols
     return (
         <div className={`markdown-renderer ${themeClass}`}>
             <ReactMarkdown

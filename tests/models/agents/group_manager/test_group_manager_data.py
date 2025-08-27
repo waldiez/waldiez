@@ -7,6 +7,7 @@ from waldiez.models.agents.group_manager.group_manager_data import (
 )
 
 
+# noinspection PyArgumentList
 def test_waldiez_group_manager_data() -> None:
     """Test WaldiezGroupManagerData."""
     group_manager_data = WaldiezGroupManagerData(initial_agent_id="agent_1")

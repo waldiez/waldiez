@@ -21,6 +21,7 @@ from waldiez.models import (
 
 
 # pylint: disable=too-many-locals
+# noinspection PyArgumentList
 def test_single_chat_with_nested() -> None:
     """Test ChatsExporter with a single chat."""
     agent1_name = "agent1"

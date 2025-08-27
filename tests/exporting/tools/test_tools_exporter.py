@@ -12,6 +12,7 @@ from waldiez.models import WaldiezAgent, WaldiezTool
 
 # flake8: noqa: E501
 # pylint: disable=too-many-locals,unused-argument,line-too-long,inconsistent-quotes
+# noinspection PyArgumentList
 def test_tools_exporter(tmp_path: Path) -> None:
     """Test ToolsExporter.
 
@@ -179,7 +180,7 @@ def tool3():
     # and one with with factory and no tools
     agent1.data.tools = []
     agent2.data.tools = []
-    tools_exporter = create_tools_exporter(
+    create_tools_exporter(
         flow_name=flow_name,
         agents=[agent1, agent2],
         agent_names=agent_names,
@@ -191,6 +192,7 @@ def tool3():
     shutil.rmtree(output_dir)
 
 
+# noinspection PyArgumentList
 def test_export_interop_tool(tmp_path: Path) -> None:
     """Test export_interop_tool.
 

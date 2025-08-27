@@ -109,6 +109,7 @@ def test_waldiez_chat_data() -> None:
     assert model_dump["summary"]["method"] == "reflectionWithLlm"
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_data_message() -> None:
     """Test WaldiezChatData message."""
     # Given
@@ -234,6 +235,7 @@ def test_waldiez_chat_data_message() -> None:
     assert chat_data.message.use_carryover is False
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_summary() -> None:
     """Test WaldiezChatData summary."""
     # Given
@@ -300,6 +302,7 @@ def test_waldiez_chat_summary() -> None:
     assert model_dump["summary"]["method"] == "reflection_with_llm"
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_get_chat_args() -> None:
     """Test get_chat_args."""
     chat_data = WaldiezChatData(
@@ -332,6 +335,7 @@ def test_waldiez_chat_get_chat_args() -> None:
     assert chat_args["not_a_solution"] is None
 
 
+# noinspection PyArgumentList
 def test_waldiez_chat_invalid_message_method() -> None:
     """Test invalid message method."""
     with pytest.raises(ValueError):

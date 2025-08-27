@@ -15,6 +15,8 @@ from waldiez.models.model import (
     WaldiezModelAWS,
     WaldiezModelData,
 )
+
+# noinspection PyProtectedMember
 from waldiez.models.model._llm import (
     do_cohere_llm,
     do_deepseek_llm,

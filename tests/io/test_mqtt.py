@@ -126,6 +126,7 @@ def test_send(mock_mqtt: Mock) -> None:
         type: str = "text"
         text: str
 
+    # noinspection PyArgumentList
     message = Message(
         uuid=uuid.uuid4(),
         text="Hello, World!",
@@ -553,6 +554,7 @@ def test_send_with_model_dump_exception(mock_mqtt: Mock) -> None:
             """Override model_dump to raise an exception."""
             raise ValueError("Serialization failed")
 
+    # noinspection PyArgumentList
     message = FaultyMessage(uuid=uuid.uuid4())
     stream.send(message)
 

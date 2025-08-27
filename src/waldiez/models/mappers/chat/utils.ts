@@ -170,8 +170,7 @@ export const updateEdge = (
     chatData.order = chatType === "nested" ? -1 : chatData.order;
     setEdgeSourceHandle(edge, rest);
     setEdgeTargetHandle(edge, rest);
-    const updated = { ...edge, ...rest };
-    return updated;
+    return { ...edge, ...rest };
 };
 
 const updateChatCommonStyle = (edge: WaldiezEdge, edgeType: WaldiezEdgeType, color: string) => {
@@ -194,10 +193,7 @@ const updateChatCommonStyle = (edge: WaldiezEdge, edgeType: WaldiezEdgeType, col
 };
 
 const isChatAnimated = (chatType: WaldiezEdgeType, _sourceNode: Node, _targetNode: Node) => {
-    if (chatType === "nested") {
-        return true;
-    }
-    return false;
+    return chatType === "nested";
 };
 
 const setEdgeSourceHandle = (edge: WaldiezEdge, rest: { [key: string]: any }) => {
@@ -308,10 +304,8 @@ const validateChatData = (json: { [key: string]: any }) => {
         "data" in json &&
         typeof json.data === "object" &&
         json.data !== null;
-    const source = getChatSource(json);
-    json.source = source;
-    const target = getChatTarget(json);
-    json.target = target;
+    json.source = getChatSource(json);
+    json.target = getChatTarget(json);
     if (!isValid) {
         throw new Error(findOoutWhyItIsInvalid(json));
     }

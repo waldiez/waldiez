@@ -14,6 +14,7 @@ from waldiez.models.model import WaldiezModel
 from waldiez.models.tool import WaldiezTool
 
 
+# noinspection PyArgumentList
 def test_waldiez_agents() -> None:
     """Test WaldiezAgents."""
     model = WaldiezModel(

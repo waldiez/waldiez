@@ -73,6 +73,7 @@ class BreakpointsMixin:
             self._check_breakpoint_match_impl
         )
 
+    # noinspection PyTypeHints
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message. Implemented by the class using this mixin.
 
@@ -123,13 +124,14 @@ class BreakpointsMixin:
         }
 
         # Reconstruct breakpoints from signature for cache safety
+        # noinspection PyBroadException
         try:
             breakpoints = {
                 WaldiezBreakpoint.from_string(bp_str)
                 for bp_str in breakpoints_sig
             }
             return any(bp.matches(event_dict) for bp in breakpoints)
-        except ValueError:
+        except Exception:  # pylint: disable=broad-exception-caught
             # Fallback to current breakpoints if signature is malformed
             return any(bp.matches(event_dict) for bp in self._breakpoints)
 
@@ -368,6 +370,7 @@ class BreakpointsMixin:
                 breakpoints_sig = self._get_breakpoints_signature()
 
                 # Check cached result
+                # noinspection PyBroadException
                 try:
                     matches_breakpoint = self._check_breakpoint_match_cached(
                         event_type_key, sender, recipient, breakpoints_sig

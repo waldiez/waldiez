@@ -6,6 +6,7 @@ from waldiez.models.common import get_autogen_version
 from waldiez.models.model import WaldiezModel, get_models_extra_requirements
 
 
+# noinspection PyArgumentList
 def test_get_models_extra_requirements() -> None:
     """Test get_models_extra_requirements."""
     models_list = [

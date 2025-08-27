@@ -72,7 +72,7 @@ const getPublicDir = (command: "build" | "serve"): string | false => {
 };
 // https://vitejs.dev/config/
 /// <reference types="vitest/config" /
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,DuplicatedCode
 export default defineConfig(({ command }) => ({
     publicDir: getPublicDir(command),
     server: {

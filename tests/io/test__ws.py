@@ -13,6 +13,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+# noinspection PyProtectedMember
 from waldiez.io._ws import (
     StarletteAdapter,
     WebSocketsAdapter,
@@ -87,6 +88,7 @@ def test_create_websocket_adapter_returns_starlette_adapter() -> None:
     """Test creating a WebSocket adapter for Starlette/FastAPI."""
 
     # pylint: disable=too-few-public-methods,no-self-use
+    # noinspection PyMethodMayBeStatic
     class DummyStarletteWS:
         """Dummy class for Starlette/FastAPI WebSocket."""
 
@@ -106,6 +108,7 @@ def test_create_websocket_adapter_returns_websockets_adapter() -> None:
     """Test creating a WebSocket adapter for websockets."""
 
     # pylint: disable=too-few-public-methods,no-self-use
+    # noinspection PyMethodMayBeStatic
     class DummyWebsocketsWS:
         """Dummy class for websockets.WebSocket."""
 

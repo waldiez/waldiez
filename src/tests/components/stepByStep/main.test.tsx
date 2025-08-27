@@ -15,10 +15,12 @@ vi.mock("nanoid", () => ({
 }));
 
 // Mock React Icons
+// noinspection JSUnusedGlobalSymbols
 vi.mock("react-icons/fa", () => ({
     FaStepForward: () => <div data-testid="icon-step-forward" />,
 }));
 
+// noinspection JSUnusedGlobalSymbols
 vi.mock("react-icons/fa6", () => ({
     FaBug: () => <div data-testid="icon-bug" />,
     FaChevronDown: () => <div data-testid="icon-chevron-down" />,

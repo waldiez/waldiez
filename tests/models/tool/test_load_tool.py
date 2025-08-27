@@ -11,6 +11,7 @@ import pytest
 from waldiez.models.tool import WaldiezTool
 
 
+# noinspection DuplicatedCode
 def test_load_tool_from_file(tmp_path: Path) -> None:
     """Test loading a tool from a file.
 
@@ -57,6 +58,7 @@ def test_load_tool_from_file(tmp_path: Path) -> None:
     tool_file.unlink()
 
 
+# noinspection DuplicatedCode
 def test_load_tool_from_dict() -> None:
     """Test loading a tool from a dictionary."""
     tool_content = '''def custom_tool() -> str:

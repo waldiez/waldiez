@@ -198,6 +198,7 @@ def test_waldiez_api_key() -> None:
         os.environ.pop("GROQ_API_KEY", None)
 
 
+# noinspection PyArgumentList
 def test_waldiez_invalid_model() -> None:
     """Test invalid WaldiezModel."""
     with pytest.raises(ValueError):
