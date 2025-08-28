@@ -57,20 +57,22 @@ export class WaldiezChatMessageProcessor {
 
     /**
      * Process a raw message and return the result
-     * @param rawMessage - The raw message string to process
+     * @param rawMessage - The raw message to process
      * @param requestId - Optional request ID for the message
      * @param imageUrl - Optional image URL associated with the message
      */
     static process(
-        rawMessage: string | undefined | null,
+        rawMessage: any,
         requestId?: string | null,
         imageUrl?: string,
     ): WaldiezChatMessageProcessingResult | undefined {
         if (!rawMessage) {
             return undefined;
         }
-        const message = stripAnsi(rawMessage.replace("\n", "")).trim();
-
+        let message = rawMessage;
+        if (typeof rawMessage === "string") {
+            message = stripAnsi(rawMessage.replace("\n", "")).trim();
+        }
         const data = WaldiezChatMessageProcessor.parseMessage(message);
         if (!data) {
             return WaldiezChatMessageProcessor.findHandler("print", data)?.handle(message, {
@@ -78,7 +80,6 @@ export class WaldiezChatMessageProcessor {
                 imageUrl,
             });
         }
-
         const handler = WaldiezChatMessageProcessor.findHandler(data.type, data);
         if (!handler) {
             return undefined;
@@ -93,7 +94,10 @@ export class WaldiezChatMessageProcessor {
      * @param message - The raw message string to parse
      * @returns BaseMessageData | null
      */
-    private static parseMessage(message: string): BaseMessageData | null {
+    private static parseMessage(message: any): BaseMessageData | null {
+        if (typeof message === "object") {
+            return message;
+        }
         try {
             return JSON.parse(message);
         } catch {
@@ -112,9 +116,20 @@ export class WaldiezChatMessageProcessor {
             if (TimelineDataHandler.isTimelineMessage(data)) {
                 return WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
             }
+            if (data && data.participants && ParticipantsHandler.isValidParticipantsData(data)) {
+                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
+            }
+            if (
+                data &&
+                data.data &&
+                data.data.participants &&
+                ParticipantsHandler.isValidParticipantsData(data.data)
+            ) {
+                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
+            }
         }
         if (data && data.participants) {
-            if (ParticipantsHandler.isValidParticipantsData(data.participants)) {
+            if (ParticipantsHandler.isValidParticipantsData(data)) {
                 return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
             }
         }

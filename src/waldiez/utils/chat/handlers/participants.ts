@@ -89,13 +89,13 @@ export class ParticipantsHandler implements MessageHandler {
         return undefined;
     }
 
-    handle(
-        data: ParticipantsData,
-        _context: MessageProcessingContext,
-    ): WaldiezChatMessageProcessingResult | undefined {
+    handle(data: any, _context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
         if (!ParticipantsHandler.isValidParticipantsData(data)) {
+            if (data.data && ParticipantsHandler.isValidParticipantsData(data.data)) {
+                return ParticipantsHandler.extractParticipants(data.data);
+            }
             return undefined;
         }
-        return ParticipantsHandler.extractParticipants(data.participants);
+        return ParticipantsHandler.extractParticipants(data);
     }
 }

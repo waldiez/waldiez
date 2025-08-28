@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable max-lines-per-function */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
@@ -28,6 +29,13 @@ describe("WaldiezChatMessageProcessor", () => {
             expect(WaldiezChatMessageProcessor.process(null)).toBeUndefined();
             expect(WaldiezChatMessageProcessor.process(undefined)).toBeUndefined();
             expect(WaldiezChatMessageProcessor.process("")).toBeUndefined();
+        });
+
+        it("should allow passing already parsed messages", () => {
+            const parsedMessage = { type: "input_request", request_id: "test", prompt: "Enter your input:" };
+            const result = WaldiezChatMessageProcessor.process(parsedMessage);
+            expect(result).toBeDefined();
+            expect(result?.message?.id).toBe("test");
         });
 
         it("should return undefined for non-JSON messages", () => {
@@ -191,6 +199,57 @@ describe("WaldiezChatMessageProcessor", () => {
                     agents: ["user"],
                 },
             });
+        });
+    });
+
+    describe("participants handling", () => {
+        it("should handle participants data directly", () => {
+            const participantsData = {
+                participants: [
+                    { id: "user", name: "User" },
+                    { id: "assistant", name: "Assistant", humanInputMode: "NEVER" },
+                ],
+            };
+            const message = JSON.stringify(participantsData);
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toEqual({
+                participants: [
+                    { id: "user", name: "User", isUser: false },
+                    { id: "assistant", name: "Assistant", isUser: false },
+                ],
+                isWorkflowEnd: false,
+            });
+        });
+        it("should handle participants data if using print type", () => {
+            const participantsData = {
+                type: "print",
+                data: {
+                    participants: [
+                        { id: "user", name: "User", humanInputMode: "ALWAYS" },
+                        { id: "assistant", name: "Assistant" },
+                    ],
+                },
+            };
+            const message = JSON.stringify(participantsData);
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toEqual({
+                participants: [
+                    { id: "user", name: "User", isUser: true },
+                    { id: "assistant", name: "Assistant", isUser: false },
+                ],
+                isWorkflowEnd: false,
+            });
+        });
+        it("should return undefined if invalid participants are passed", () => {
+            const invalidData = {
+                participants: [
+                    { id: "assistant", name: "Assistant", humanInputMode: "ALWAYS" },
+                    { id: "other", humanInputMode: "NEVER" }, // missing name
+                ],
+            };
+            const message = JSON.stringify(invalidData);
+            const result = WaldiezChatMessageProcessor.process(message);
+            expect(result).toBeUndefined();
         });
     });
 

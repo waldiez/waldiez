@@ -34,6 +34,7 @@ export class TimelineDataHandler implements MessageHandler {
 
     // eslint-disable-next-line complexity
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
+        /* c8 ignore next 3 */
         if (!data || typeof data !== "object") {
             return undefined;
         }

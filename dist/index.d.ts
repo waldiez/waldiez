@@ -2328,11 +2328,11 @@ export declare class WaldiezChatMessageProcessor {
     private static get handlers();
     /**
      * Process a raw message and return the result
-     * @param rawMessage - The raw message string to process
+     * @param rawMessage - The raw message to process
      * @param requestId - Optional request ID for the message
      * @param imageUrl - Optional image URL associated with the message
      */
-    static process(rawMessage: string | undefined | null, requestId?: string | null, imageUrl?: string): WaldiezChatMessageProcessingResult | undefined;
+    static process(rawMessage: any, requestId?: string | null, imageUrl?: string): WaldiezChatMessageProcessingResult | undefined;
     /**
      * Parses a raw message string into a BaseMessageData object.
      * Returns null if the message cannot be parsed.
