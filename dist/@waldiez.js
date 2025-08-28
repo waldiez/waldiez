@@ -11439,7 +11439,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
   const chatContainer = useRef(null);
   const { resetRetries } = useImageRetry();
   const prevMessageCountRef = useRef(0);
-  const participantNames = userParticipants.map((p) => typeof p === "string" ? p : p.name);
+  const participantNames = userParticipants.map((p) => typeof p === "string" ? p : p.isUser ? p.name : void 0).filter((e) => typeof e === "string");
   const openImagePreview = useCallback((url) => setPreviewImage(url), []);
   const closeImagePreview = useCallback(() => setPreviewImage(null), []);
   useEffect(() => {
