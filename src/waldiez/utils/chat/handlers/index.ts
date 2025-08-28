@@ -8,6 +8,7 @@ export { CodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_exe
 export { ErrorHandler } from "@waldiez/utils/chat/handlers/error";
 export { GroupChatRunHandler, SpeakerSelectionHandler } from "@waldiez/utils/chat/handlers/group";
 export { InputRequestHandler, UsingAutoReplyHandler } from "@waldiez/utils/chat/handlers/input_request";
+export { ParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
 export { PrintMessageHandler } from "@waldiez/utils/chat/handlers/print";
 export {
     TerminationAndHumanReplyNoInputHandler,

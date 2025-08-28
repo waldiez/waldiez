@@ -540,6 +540,70 @@ class UsingAutoReplyHandler {
     return { message };
   }
 }
+class ParticipantsHandler {
+  canHandle(type) {
+    return type === "participants";
+  }
+  /**
+   * Validates if the provided data is a valid participants data.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid participants data, false otherwise.
+   */
+  static isValidParticipantsData(data) {
+    if (data && typeof data === "object" && Array.isArray(data.participants) && data.participants.length > 0 && data.participants.every((p) => p && typeof p.name === "string")) {
+      return true;
+    }
+    if (data && typeof data === "string") {
+      try {
+        const parsedData = JSON.parse(data);
+        return ParticipantsHandler.isValidParticipantsData(parsedData);
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+  /**
+   * Extracts participants from the data content.
+   * If valid participants data is found, it returns a WaldiezChatMessageProcessingResult with participants.
+   * If the data is a string, it attempts to parse it as JSON.
+   * @param dataContent - The content from which to extract participants.
+   * @returns A WaldiezChatMessageProcessingResult with participants or undefined if not found or invalid.
+   */
+  static extractParticipants(dataContent) {
+    try {
+      const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
+      if (ParticipantsHandler.isValidParticipantsData(parsedData)) {
+        if (typeof parsedData === "string") {
+          try {
+            const innerDumped = JSON.parse(parsedData);
+            return this.extractParticipants(innerDumped);
+          } catch (_) {
+            return void 0;
+          }
+        }
+        const allParticipants = parsedData.participants.map((p) => ({
+          name: p.name,
+          id: p.id || p.name,
+          isUser: p.humanInputMode?.toUpperCase() === "ALWAYS"
+        })).filter(Boolean);
+        return {
+          isWorkflowEnd: false,
+          participants: allParticipants
+        };
+      }
+    } catch (error) {
+      console.error("Failed to parse participants data:", error);
+    }
+    return void 0;
+  }
+  handle(data, _context) {
+    if (!ParticipantsHandler.isValidParticipantsData(data)) {
+      return void 0;
+    }
+    return ParticipantsHandler.extractParticipants(data.participants);
+  }
+}
 class PrintMessageHandler {
   /**
    * Determines if this handler can process the given message type.
@@ -590,36 +654,6 @@ class PrintMessageHandler {
     );
   }
   /**
-   * Validates if the provided data is a valid participants data.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid participants data, false otherwise.
-   */
-  static isValidParticipantsData(data) {
-    if (data && typeof data === "object" && Array.isArray(data.participants) && data.participants.length > 0 && data.participants.every((p) => p && typeof p.name === "string")) {
-      return true;
-    }
-    if (data && typeof data === "string") {
-      try {
-        const parsedData = JSON.parse(data);
-        return PrintMessageHandler.isValidParticipantsData(parsedData);
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  }
-  /**
-   * Validates if the provided data is a valid timeline message.
-   * @param data - The data to validate.
-   * @returns True if the data is a valid timeline message, false otherwise.
-   */
-  static isTimelineMessage(data) {
-    return Boolean(
-      data.type === "timeline" || /* c8 ignore next 9 */
-      data.type === "print" && "data" in data && data.data && typeof data.data === "object" && "type" in data.data && data.data.type === "timeline" && "content" in data.data && data.data.content && typeof data.data.content === "object"
-    );
-  }
-  /**
    * Handles the print message.
    * Validates the message data, checks for workflow end markers, and extracts participants if present.
    * @param data - The raw message data to process.
@@ -637,44 +671,10 @@ class PrintMessageHandler {
     }
     const dataContent = data.content.data;
     if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
-      return this.extractParticipants(dataContent);
+      return ParticipantsHandler.extractParticipants(dataContent);
     }
     if (typeof dataContent === "object" && dataContent !== null) {
-      return this.extractParticipants(dataContent);
-    }
-    return void 0;
-  }
-  /**
-   * Extracts participants from the data content.
-   * If valid participants data is found, it returns a WaldiezChatMessageProcessingResult with participants.
-   * If the data is a string, it attempts to parse it as JSON.
-   * @param dataContent - The content from which to extract participants.
-   * @returns A WaldiezChatMessageProcessingResult with participants or undefined if not found or invalid.
-   */
-  extractParticipants(dataContent) {
-    try {
-      const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
-      if (PrintMessageHandler.isValidParticipantsData(parsedData)) {
-        if (typeof parsedData === "string") {
-          try {
-            const innerDumped = JSON.parse(parsedData);
-            return this.extractParticipants(innerDumped);
-          } catch (_) {
-            return void 0;
-          }
-        }
-        const allParticipants = parsedData.participants.map((p) => ({
-          name: p.name,
-          id: p.id || p.name,
-          isUser: p.humanInputMode?.toUpperCase() === "ALWAYS"
-        })).filter(Boolean);
-        return {
-          isWorkflowEnd: false,
-          participants: allParticipants
-        };
-      }
-    } catch (error) {
-      console.error("Failed to parse participants data:", error);
+      return ParticipantsHandler.extractParticipants(dataContent);
     }
     return void 0;
   }
@@ -821,8 +821,26 @@ class TimelineDataHandler {
   canHandle(type) {
     return type === "timeline";
   }
+  /**
+   * Validates if the provided data is a valid timeline message.
+   * @param data - The data to validate.
+   * @returns True if the data is a valid timeline message, false otherwise.
+   */
+  static isTimelineMessage(data) {
+    return Boolean(
+      data && data.type === "timeline" || /* c8 ignore next 9 */
+      data && data.type === "print" && "data" in data && data.data && typeof data.data === "object" && "type" in data.data && data.data.type === "timeline" && "content" in data.data && data.data.content && typeof data.data.content === "object"
+    );
+  }
+  // eslint-disable-next-line complexity
   handle(data) {
-    if (!data || typeof data !== "object" || !data.content || typeof data.content !== "object") {
+    if (!data || typeof data !== "object") {
+      return void 0;
+    }
+    if (data.type === "print" && data.data && data.data.type === "timeline") {
+      return this.handle(data.data);
+    }
+    if (!data.content || typeof data.content !== "object") {
       return void 0;
     }
     const timeline = Array.isArray(data.content.timeline) ? data.content.timeline : [];
@@ -949,23 +967,30 @@ class ExecutedFunctionHandler {
   }
 }
 class WaldiezChatMessageProcessor {
-  static handlers = [
-    new InputRequestHandler(),
-    new PrintMessageHandler(),
-    new TextMessageHandler(),
-    new TerminationHandler(),
-    new GroupChatRunHandler(),
-    new SpeakerSelectionHandler(),
-    new CodeExecutionReplyHandler(),
-    new ToolCallHandler(),
-    new TerminationAndHumanReplyNoInputHandler(),
-    new UsingAutoReplyHandler(),
-    new TimelineDataHandler(),
-    new RunCompletionHandler(),
-    new ToolResponseHandler(),
-    new ExecutedFunctionHandler(),
-    new ErrorHandler()
-  ];
+  static _handlers = null;
+  static get handlers() {
+    if (!this._handlers) {
+      this._handlers = [
+        new InputRequestHandler(),
+        new ParticipantsHandler(),
+        new PrintMessageHandler(),
+        new TextMessageHandler(),
+        new TerminationHandler(),
+        new GroupChatRunHandler(),
+        new SpeakerSelectionHandler(),
+        new CodeExecutionReplyHandler(),
+        new ToolCallHandler(),
+        new TerminationAndHumanReplyNoInputHandler(),
+        new UsingAutoReplyHandler(),
+        new TimelineDataHandler(),
+        new RunCompletionHandler(),
+        new ToolResponseHandler(),
+        new ExecutedFunctionHandler(),
+        new ErrorHandler()
+      ];
+    }
+    return this._handlers;
+  }
   /**
    * Process a raw message and return the result
    * @param rawMessage - The raw message string to process
@@ -977,20 +1002,14 @@ class WaldiezChatMessageProcessor {
       return void 0;
     }
     const message = stripAnsi(rawMessage.replace("\n", "")).trim();
-    let data = WaldiezChatMessageProcessor.parseMessage(message);
+    const data = WaldiezChatMessageProcessor.parseMessage(message);
     if (!data) {
-      return WaldiezChatMessageProcessor.findHandler("print")?.handle(message, {
+      return WaldiezChatMessageProcessor.findHandler("print", data)?.handle(message, {
         requestId,
         imageUrl
       });
     }
-    let handler = WaldiezChatMessageProcessor.findHandler(data.type);
-    if (data.type === "print") {
-      if (PrintMessageHandler.isTimelineMessage(data)) {
-        data = data?.data;
-        handler = WaldiezChatMessageProcessor.handlers.find((h) => h instanceof TimelineDataHandler);
-      }
-    }
+    const handler = WaldiezChatMessageProcessor.findHandler(data.type, data);
     if (!handler) {
       return void 0;
     }
@@ -1015,8 +1034,19 @@ class WaldiezChatMessageProcessor {
    * @param type - The type of the message to find a handler for
    * @returns MessageHandler | undefined
    */
-  static findHandler(type) {
-    return this.handlers.find((handler) => handler.canHandle(type));
+  static findHandler(type, data) {
+    const handler = this.handlers.find((handler2) => handler2.canHandle(type));
+    if (data && data.type === "print" || type === "print") {
+      if (TimelineDataHandler.isTimelineMessage(data)) {
+        return WaldiezChatMessageProcessor.handlers.find((h) => h instanceof TimelineDataHandler);
+      }
+    }
+    if (data && data.participants) {
+      if (ParticipantsHandler.isValidParticipantsData(data.participants)) {
+        return WaldiezChatMessageProcessor.handlers.find((h) => h instanceof ParticipantsHandler);
+      }
+    }
+    return handler;
   }
 }
 const getCrypto = () => {

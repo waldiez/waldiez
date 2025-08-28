@@ -2324,7 +2324,8 @@ export declare type WaldiezChatMessageProcessingResult = {
 };
 
 export declare class WaldiezChatMessageProcessor {
-    private static readonly handlers;
+    private static _handlers;
+    private static get handlers();
     /**
      * Process a raw message and return the result
      * @param rawMessage - The raw message string to process

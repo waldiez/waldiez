@@ -10,6 +10,7 @@ import {
     ExecutedFunctionHandler,
     GroupChatRunHandler,
     InputRequestHandler,
+    ParticipantsHandler,
     PrintMessageHandler,
     RunCompletionHandler,
     SpeakerSelectionHandler,
@@ -29,23 +30,30 @@ import {
 } from "@waldiez/utils/chat/types";
 
 export class WaldiezChatMessageProcessor {
-    private static readonly handlers: MessageHandler[] = [
-        new InputRequestHandler(),
-        new PrintMessageHandler(),
-        new TextMessageHandler(),
-        new TerminationHandler(),
-        new GroupChatRunHandler(),
-        new SpeakerSelectionHandler(),
-        new CodeExecutionReplyHandler(),
-        new ToolCallHandler(),
-        new TerminationAndHumanReplyNoInputHandler(),
-        new UsingAutoReplyHandler(),
-        new TimelineDataHandler(),
-        new RunCompletionHandler(),
-        new ToolResponseHandler(),
-        new ExecutedFunctionHandler(),
-        new ErrorHandler(),
-    ];
+    private static _handlers: MessageHandler[] | null = null;
+    private static get handlers(): MessageHandler[] {
+        if (!this._handlers) {
+            this._handlers = [
+                new InputRequestHandler(),
+                new ParticipantsHandler(),
+                new PrintMessageHandler(),
+                new TextMessageHandler(),
+                new TerminationHandler(),
+                new GroupChatRunHandler(),
+                new SpeakerSelectionHandler(),
+                new CodeExecutionReplyHandler(),
+                new ToolCallHandler(),
+                new TerminationAndHumanReplyNoInputHandler(),
+                new UsingAutoReplyHandler(),
+                new TimelineDataHandler(),
+                new RunCompletionHandler(),
+                new ToolResponseHandler(),
+                new ExecutedFunctionHandler(),
+                new ErrorHandler(),
+            ];
+        }
+        return this._handlers;
+    }
 
     /**
      * Process a raw message and return the result
@@ -63,21 +71,15 @@ export class WaldiezChatMessageProcessor {
         }
         const message = stripAnsi(rawMessage.replace("\n", "")).trim();
 
-        let data = WaldiezChatMessageProcessor.parseMessage(message);
+        const data = WaldiezChatMessageProcessor.parseMessage(message);
         if (!data) {
-            return WaldiezChatMessageProcessor.findHandler("print")?.handle(message, {
+            return WaldiezChatMessageProcessor.findHandler("print", data)?.handle(message, {
                 requestId,
                 imageUrl,
             });
         }
 
-        let handler = WaldiezChatMessageProcessor.findHandler(data.type);
-        if (data.type === "print") {
-            if (PrintMessageHandler.isTimelineMessage(data)) {
-                data = (data as any)?.data as any;
-                handler = WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
-            }
-        }
+        const handler = WaldiezChatMessageProcessor.findHandler(data.type, data);
         if (!handler) {
             return undefined;
         }
@@ -104,7 +106,18 @@ export class WaldiezChatMessageProcessor {
      * @param type - The type of the message to find a handler for
      * @returns MessageHandler | undefined
      */
-    private static findHandler(type: string): MessageHandler | undefined {
-        return this.handlers.find(handler => handler.canHandle(type));
+    private static findHandler(type: string, data: any): MessageHandler | undefined {
+        const handler = this.handlers.find(handler => handler.canHandle(type));
+        if ((data && data.type === "print") || type === "print") {
+            if (TimelineDataHandler.isTimelineMessage(data)) {
+                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
+            }
+        }
+        if (data && data.participants) {
+            if (ParticipantsHandler.isValidParticipantsData(data.participants)) {
+                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
+            }
+        }
+        return handler;
     }
 }
