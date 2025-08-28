@@ -32,18 +32,6 @@ export declare type BaseMessageData = {
 };
 
 /**
- * Chat participant data.
- * @param id - The unique identifier for the participant.
- * @param name - The name of the participant.
- * @param isUser - Indicates if the participant is a user.
- */
-export declare type ChatParticipant = {
-    id: string;
-    name: string;
-    isUser: boolean;
-};
-
-/**
  * Chat UI component props
  * @param messages - Array of chat messages
  * @param userParticipants - Set of user participants
@@ -54,7 +42,7 @@ export declare type ChatParticipant = {
  */
 export declare type ChatUIProps = {
     messages: WaldiezChatMessage[];
-    userParticipants: string[];
+    userParticipants: string[] | WaldiezChatParticipant[];
     isDarkMode: boolean;
     handlers?: WaldiezChatHandlers;
     activeRequest?: WaldiezActiveRequest;
@@ -2106,7 +2094,7 @@ declare class WaldiezChat {
 export declare type WaldiezChatConfig = {
     showUI: boolean;
     messages: WaldiezChatMessage[];
-    userParticipants: string[];
+    userParticipants: string[] | WaldiezChatParticipant[];
     activeRequest?: WaldiezActiveRequest;
     error?: WaldiezChatError;
     handlers?: WaldiezChatHandlers;
@@ -2332,7 +2320,7 @@ export declare type WaldiezChatMessageProcessingResult = {
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
     runCompletion?: RunCompletionResults;
-    participants?: ChatParticipant[];
+    participants?: WaldiezChatParticipant[];
 };
 
 export declare class WaldiezChatMessageProcessor {
@@ -2380,6 +2368,18 @@ export declare class WaldiezChatMessageProcessor {
  * @param string - Other string types
  */
 export declare type WaldiezChatMessageType = "user" | "agent" | "system" | "input_request" | "input_response" | "run_completion" | "tool_call" | "tool_response" | "group_chat_run_chat" | "termination_and_human_reply_no_input" | "using_auto_reply" | "execute_function" | "generate_code_execution_reply" | "error" | "print" | "text" | (string & {});
+
+/**
+ * Chat participant data.
+ * @param id - The unique identifier for the participant.
+ * @param name - The name of the participant.
+ * @param isUser - Indicates if the participant is a user.
+ */
+export declare type WaldiezChatParticipant = {
+    id: string;
+    name: string;
+    isUser: boolean;
+};
 
 /**
  * Waldiez Chat Summary
@@ -3922,7 +3922,7 @@ export declare type WaldiezStepByStep = {
     /** If true, backend auto-continues without user input */
     autoContinue: boolean;
     /** Event types to break on (empty means break on all) */
-    breakpoints: Array<string | WaldiezBreakpoint>;
+    breakpoints: (string | WaldiezBreakpoint)[];
     /**
      * Last stats snapshot (from `debug_stats`).
      */
@@ -3935,6 +3935,8 @@ export declare type WaldiezStepByStep = {
     help?: WaldiezDebugHelp["help"];
     /** Last error (from `debug_error`) */
     lastError?: string;
+    /** List of participants in the chat */
+    participants?: WaldiezChatParticipant[];
     /**
      * Pending control action input. For replying to messages
      * of type `debug_input_request`.

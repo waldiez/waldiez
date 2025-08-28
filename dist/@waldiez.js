@@ -11439,6 +11439,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
   const chatContainer = useRef(null);
   const { resetRetries } = useImageRetry();
   const prevMessageCountRef = useRef(0);
+  const participantNames = userParticipants.map((p) => typeof p === "string" ? p : p.name);
   const openImagePreview = useCallback((url) => setPreviewImage(url), []);
   const closeImagePreview = useCallback(() => setPreviewImage(null), []);
   useEffect(() => {
@@ -11462,7 +11463,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
       if (["system", "termination"].includes(msg.type)) {
         return "system-message";
       }
-      if (msg.sender && userParticipants.includes(msg.sender)) {
+      if (msg.sender && participantNames.includes(msg.sender)) {
         return "user-message";
       }
       if (msg.type === "error") {
@@ -11473,7 +11474,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
       }
       return "assistant-message";
     },
-    [userParticipants]
+    [participantNames]
   );
   const getMessageKey = useCallback((msg, index2) => {
     return `msg-${index2}-${msg.id}-${msg.timestamp}`;

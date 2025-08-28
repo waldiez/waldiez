@@ -4,8 +4,8 @@
  */
 import { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
 import {
-    ChatParticipant,
     WaldiezChatMessage,
+    WaldiezChatParticipant,
     WaldiezChatUserInput,
     WaldiezTimelineData,
 } from "@waldiez/types";
@@ -116,7 +116,7 @@ export type ServerMessage =
 export type WaldiezWrapperState = {
     timeline?: WaldiezTimelineData;
     messages: WaldiezChatMessage[];
-    participants: ChatParticipant[];
+    participants: WaldiezChatParticipant[];
     isRunning: boolean;
     isDebugging: boolean;
     connected: boolean;

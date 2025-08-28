@@ -27,6 +27,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
 
     // Track previous message count to detect new messages
     const prevMessageCountRef = useRef<number>(0);
+    const participantNames = userParticipants.map(p => (typeof p === "string" ? p : p.name));
 
     const openImagePreview = useCallback((url: string) => setPreviewImage(url), []);
     const closeImagePreview = useCallback(() => setPreviewImage(null), []);
@@ -57,7 +58,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
             if (["system", "termination"].includes(msg.type)) {
                 return "system-message";
             }
-            if (msg.sender && userParticipants.includes(msg.sender)) {
+            if (msg.sender && participantNames.includes(msg.sender)) {
                 return "user-message";
             }
             if (msg.type === "error") {
@@ -68,7 +69,7 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
             }
             return "assistant-message"; // generic class for non-user senders
         },
-        [userParticipants],
+        [participantNames],
     );
 
     // Create a message key builder to help with rendering

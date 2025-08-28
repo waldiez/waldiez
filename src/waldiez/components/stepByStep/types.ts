@@ -7,7 +7,11 @@
  * These mirror the Python models in `step_by_step_models.py` and the
  * messages emitted by `WaldiezStepByStepRunner`.
  */
-import type { WaldiezActiveRequest, WaldiezChatUserInput } from "@waldiez/components/chatUI/types";
+import type {
+    WaldiezActiveRequest,
+    WaldiezChatParticipant,
+    WaldiezChatUserInput,
+} from "@waldiez/components/chatUI/types";
 
 /**
  * Explicit response codes allowed by the backend for step control.
@@ -268,7 +272,7 @@ export type WaldiezStepByStep = {
     autoContinue: boolean;
 
     /** Event types to break on (empty means break on all) */
-    breakpoints: Array<string | WaldiezBreakpoint>;
+    breakpoints: (string | WaldiezBreakpoint)[];
 
     /**
      * Last stats snapshot (from `debug_stats`).
@@ -286,6 +290,9 @@ export type WaldiezStepByStep = {
 
     /** Last error (from `debug_error`) */
     lastError?: string;
+
+    /** List of participants in the chat */
+    participants?: WaldiezChatParticipant[];
 
     /**
      * Pending control action input. For replying to messages

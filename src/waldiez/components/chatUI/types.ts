@@ -259,6 +259,18 @@ export type WaldiezActiveRequest = {
 };
 
 /**
+ * Chat participant data.
+ * @param id - The unique identifier for the participant.
+ * @param name - The name of the participant.
+ * @param isUser - Indicates if the participant is a user.
+ */
+export type WaldiezChatParticipant = {
+    id: string;
+    name: string;
+    isUser: boolean;
+};
+
+/**
  * Chat configuration type
  * @param showUI - Whether to display the chat UI
  * @param messages - Array of chat messages
@@ -274,7 +286,7 @@ export type WaldiezChatConfig = {
 
     // Chat content
     messages: WaldiezChatMessage[];
-    userParticipants: string[];
+    userParticipants: string[] | WaldiezChatParticipant[];
 
     // Current input request (if any)
     activeRequest?: WaldiezActiveRequest;
@@ -303,7 +315,7 @@ export type WaldiezChatConfig = {
  */
 export type ChatUIProps = {
     messages: WaldiezChatMessage[];
-    userParticipants: string[];
+    userParticipants: string[] | WaldiezChatParticipant[];
     isDarkMode: boolean;
     handlers?: WaldiezChatHandlers;
     activeRequest?: WaldiezActiveRequest;

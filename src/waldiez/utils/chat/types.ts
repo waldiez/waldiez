@@ -3,7 +3,12 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import { WaldiezChatMessage, WaldiezMediaContent, WaldiezTimelineData } from "@waldiez/types";
+import {
+    WaldiezChatMessage,
+    WaldiezChatParticipant,
+    WaldiezMediaContent,
+    WaldiezTimelineData,
+} from "@waldiez/types";
 
 /**
  * Base message data structure
@@ -146,18 +151,6 @@ export type RunCompletionResults = {
 };
 
 /**
- * Chat participant data.
- * @param id - The unique identifier for the participant.
- * @param name - The name of the participant.
- * @param isUser - Indicates if the participant is a user.
- */
-export type ChatParticipant = {
-    id: string;
-    name: string;
-    isUser: boolean;
-};
-
-/**
  * Waldiez chat message type.
  * This is the main type used to represent a chat message in Waldiez.
  * It includes the ID, timestamp, type, content, sender, recipient, and request ID.
@@ -173,7 +166,7 @@ export type WaldiezChatMessageProcessingResult = {
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
     runCompletion?: RunCompletionResults;
-    participants?: ChatParticipant[];
+    participants?: WaldiezChatParticipant[];
 };
 
 /**

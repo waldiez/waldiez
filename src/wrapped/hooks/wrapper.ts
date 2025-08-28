@@ -10,7 +10,7 @@ import {
     WaldiezStepByStep,
     WaldiezTimelineData,
 } from "@waldiez/components";
-import { ChatParticipant, WaldiezChatMessage } from "@waldiez/types";
+import { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
 
 import { useMessageHandler } from "./messageHandler";
 import { useWebSocketSender } from "./sender";
@@ -30,7 +30,7 @@ export const useWaldiezWrapper = ({
     // Workflow state
     const [isRunning, setIsRunning] = useState(false);
     const [isDebugging, setIsDebugging] = useState(false);
-    const [participants, setParticipants] = useState<ChatParticipant[]>([]);
+    const [participants, setParticipants] = useState<WaldiezChatParticipant[]>([]);
     const [timeline, setTimeline] = useState<WaldiezTimelineData | undefined>(undefined);
     const [messages, setMessages] = useState<WaldiezChatMessage[]>([]);
     const [error, setError] = useState<string | null>(null);
