@@ -27,7 +27,9 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
 
     // Track previous message count to detect new messages
     const prevMessageCountRef = useRef<number>(0);
-    const participantNames = userParticipants.map(p => (typeof p === "string" ? p : p.name));
+    const participantNames = userParticipants
+        .map(p => (typeof p === "string" ? p : p.isUser ? p.name : undefined))
+        .filter(e => typeof e === "string");
 
     const openImagePreview = useCallback((url: string) => setPreviewImage(url), []);
     const closeImagePreview = useCallback(() => setPreviewImage(null), []);
