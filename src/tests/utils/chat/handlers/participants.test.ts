@@ -88,6 +88,34 @@ describe("ParticipantsHandler", () => {
             ],
         });
     });
+    it("should extract participants from print data", () => {
+        const participantsData = {
+            participants: [
+                { name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
+                { id: "a", name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
+            ],
+        };
+        const message = JSON.stringify({
+            type: "print",
+            data: participantsData,
+        });
+        const result = WaldiezChatMessageProcessor.process(message);
+        expect(result).toEqual({
+            isWorkflowEnd: false,
+            participants: [
+                {
+                    id: "user_proxy",
+                    name: "user_proxy",
+                    isUser: true,
+                },
+                {
+                    id: "a",
+                    name: "assistant_1",
+                    isUser: false,
+                },
+            ],
+        });
+    });
     it("should extract direct participants from message", () => {
         const message = {
             participants: [

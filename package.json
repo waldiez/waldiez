@@ -146,7 +146,7 @@
         "@types/jest": "^30.0.0",
         "@types/jest-image-snapshot": "^6.4.0",
         "@types/react": "^19.1.12",
-        "@types/react-dom": "^19.1.8",
+        "@types/react-dom": "^19.1.9",
         "@types/tar-stream": "^3.1.4",
         "@types/ws": "^8.18.1",
         "@typescript-eslint/eslint-plugin": "^8.41.0",
