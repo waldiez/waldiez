@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { typeOfGet, typeOfSet } from "@waldiez/store/types";
+import type { typeOfGet, typeOfSet } from "@waldiez/store/types";
 import { reArrangeNodes } from "@waldiez/store/utils/common";
 
 /**

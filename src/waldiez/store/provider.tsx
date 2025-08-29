@@ -6,7 +6,7 @@ import { useMemo, useRef } from "react";
 
 import { WaldiezContext } from "@waldiez/store/context";
 import { createWaldiezStore } from "@waldiez/store/creator";
-import { WaldiezProviderProps, WaldiezStore } from "@waldiez/store/types";
+import type { WaldiezProviderProps, WaldiezStore } from "@waldiez/store/types";
 
 /* eslint-disable tsdoc/syntax */
 /**

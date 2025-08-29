@@ -2,15 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { NodeProps } from "@xyflow/react";
+import { type NodeProps } from "@xyflow/react";
 
 import { FaCopy, FaGear, FaTrashCan } from "react-icons/fa6";
 
 import { useWaldiezNodeTool } from "@waldiez/containers/nodes/tool/hooks";
 import { WaldiezNodeToolModal } from "@waldiez/containers/nodes/tool/modal";
-import { WaldiezNodeTool } from "@waldiez/models";
+import { type WaldiezNodeTool } from "@waldiez/models";
 
-export const WaldiezNodeToolView = (props: NodeProps<WaldiezNodeTool>) => {
+export const WaldiezNodeToolView: React.FC<NodeProps<WaldiezNodeTool>> = props => {
     const { id } = props;
     const {
         flowId,

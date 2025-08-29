@@ -2,8 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { SingleValue } from "@waldiez/components";
-import { WaldiezEdgeData, WaldiezEdgeType } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezEdgeData, WaldiezEdgeType } from "@waldiez/models";
 
 export type WaldiezEdgeBasicTabProps = {
     edgeId: string;

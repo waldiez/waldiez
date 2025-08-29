@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezRagUserRetrieveConfig, defaultRetrieveConfig } from "@waldiez/models/Agent/RagUser";
+import { type WaldiezRagUserRetrieveConfig, defaultRetrieveConfig } from "@waldiez/models/Agent/RagUser";
 
 /**
  * getRetrieveConfig

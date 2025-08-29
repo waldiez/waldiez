@@ -2,9 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
-import { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
+import type { WaldiezAgentCommonData } from "@waldiez/models/Agent/Common";
+
+export type { WaldiezAgentAssistant } from "@waldiez/models/Agent/Assistant/Assistant";
+export type { WaldiezAgentAssistantData } from "@waldiez/models/Agent/Assistant/AssistantData";
 
 /**
  * WaldiezNodeAgentAssistantData

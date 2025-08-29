@@ -4,8 +4,8 @@
  */
 import React, { useCallback } from "react";
 
-import { MessageInputProps } from "@waldiez/components/messageInput/types";
-import { WaldiezMessage } from "@waldiez/models";
+import type { MessageInputProps } from "@waldiez/components/messageInput/types";
+import type { WaldiezMessage } from "@waldiez/models/types";
 
 /**
  * Custom hook for handling message input functionality

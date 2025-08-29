@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 
 import { defaultRetrieveConfig } from "@waldiez/models";
-import { getRetrieveConfig } from "@waldiez/models/mappers/agent/utils";
+import { getRetrieveConfig } from "@waldiez/models/mappers/agent/utils/retrieveConfig";
 
 const retrieveJson = {
     task: "code",

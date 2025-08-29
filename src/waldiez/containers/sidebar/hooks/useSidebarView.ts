@@ -4,7 +4,7 @@
  */
 import React, { useCallback, useMemo, useState } from "react";
 
-import { SidebarViewProps } from "@waldiez/containers/sidebar/types";
+import { type SidebarViewProps } from "@waldiez/containers/sidebar/types";
 import { useWaldiez } from "@waldiez/store";
 
 /**

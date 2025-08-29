@@ -6,9 +6,9 @@
 import stripAnsi from "strip-ansi";
 import { nanoid } from "nanoid";
 import JSZip from "jszip";
-import { jsxs, jsx, Fragment } from "react/jsx-runtime";
 import * as React from "react";
 import React__default, { useState, useCallback, useMemo, createContext, useContext, useLayoutEffect, useRef, useEffect, memo, forwardRef, useImperativeHandle } from "react";
+import { jsxs, jsx, Fragment } from "react/jsx-runtime";
 import { FaStepForward, FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import { FaBug, FaChevronDown, FaChevronUp, FaX, FaPlay, FaStop, FaRegUser, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
@@ -1375,88 +1375,94 @@ function controlToResponse(control) {
     }
   }
 }
-const StepByStepView = ({ stepByStep }) => {
+const StepByStepView = ({ flowId, stepByStep }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [responseText, setResponseText] = useState("");
-  const canClose = typeof stepByStep?.handlers?.close === "function" && stepByStep?.eventHistory.length > 0;
+  const requestId = stepByStep?.activeRequest?.request_id ?? null;
+  const canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
   const onInputChange = useCallback((e) => {
     setResponseText(e.target.value);
   }, []);
-  const onInputKeyDown = useCallback(
-    (e) => {
-      if (e.key === "Enter") {
-        stepByStep?.handlers.respond({
-          id: nanoid(),
-          timestamp: Date.now(),
-          data: responseText,
-          request_id: stepByStep?.activeRequest?.request_id,
-          type: "input_response"
-        });
-        setResponseText("");
-      }
-    },
-    [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
-  );
   const onRespond = useCallback(() => {
-    stepByStep?.handlers.respond({
+    if (!requestId || !responseText.trim()) {
+      return;
+    }
+    stepByStep?.handlers?.respond?.({
       id: nanoid(),
       timestamp: Date.now(),
       data: responseText,
-      request_id: stepByStep?.activeRequest?.request_id,
+      request_id: requestId,
       type: "input_response"
     });
     setResponseText("");
-  }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
+  }, [requestId, responseText, stepByStep?.handlers]);
+  const onInputKeyDown = useCallback(
+    (e) => {
+      if (e.key !== "Enter") {
+        return;
+      }
+      if (e.nativeEvent?.isComposing) {
+        return;
+      }
+      if (!requestId || !responseText.trim()) {
+        return;
+      }
+      stepByStep?.handlers?.respond?.({
+        id: nanoid(),
+        timestamp: Date.now(),
+        data: responseText,
+        request_id: requestId,
+        type: "input_response"
+      });
+      setResponseText("");
+    },
+    [requestId, responseText, stepByStep?.handlers]
+  );
   const onControl = useCallback(
     (action) => {
-      const response = controlToResponse({ kind: action });
-      stepByStep?.handlers.sendControl({
-        data: response,
-        request_id: stepByStep?.activeRequest?.request_id || "<unknown>"
+      if (!stepByStep?.handlers?.sendControl) {
+        return;
+      }
+      const rid = requestId ?? "<unknown>";
+      stepByStep.handlers.sendControl({
+        data: controlToResponse({ kind: action }),
+        request_id: rid
       });
     },
-    [stepByStep?.handlers, stepByStep?.activeRequest?.request_id]
+    [requestId, stepByStep?.handlers]
   );
   const reducedHistory = useMemo(() => {
-    if (!stepByStep?.eventHistory) {
-      return [];
-    }
-    return stepByStep?.eventHistory.filter((entry) => !["debug", "print", "raw"].includes(String(entry.type))).map((entry) => ({
-      data: entry.event || entry.data || entry.message || entry.content || entry
-    })).map((entry) => {
-      if (Array.isArray(entry.data) && entry.data.length === 1) {
-        return entry.data[0];
-      }
-      return entry.data;
+    const raw = stepByStep?.eventHistory ?? [];
+    const max2 = 200;
+    const start = Math.max(0, raw.length - max2);
+    return raw.slice(start).filter((e) => !["debug", "print", "raw"].includes(String(e?.type))).map((e) => {
+      const x = e;
+      const data = x.event ?? x.data ?? x.message ?? x.content ?? x;
+      return Array.isArray(data) && data.length === 1 ? data[0] : data;
     });
   }, [stepByStep?.eventHistory]);
-  const getBadgeText = (stepByStep2, history) => {
-    if (!stepByStep2 || !stepByStep2.currentEvent) {
+  const badgeText = useMemo(() => {
+    if (!stepByStep) {
       return null;
     }
-    if (!stepByStep2.active && history && history.length > 0) {
-      return "Finished";
+    const curType = stepByStep.currentEvent?.type;
+    if (typeof curType === "string") {
+      return curType;
     }
-    if (typeof stepByStep2.currentEvent?.type === "string") {
-      return stepByStep2.currentEvent.type;
+    const last = stepByStep.eventHistory?.[stepByStep.eventHistory.length - 1];
+    const lastType = last?.type ?? last?.event?.type;
+    if (typeof lastType === "string") {
+      return lastType;
     }
-    if (typeof stepByStep2.currentEvent === "object") {
-      return "Running";
+    if (!stepByStep.active) {
+      return stepByStep.eventHistory?.length ? "Finished" : null;
     }
-    if (!history || history.length === 0) {
-      return null;
-    }
-    const topEvent = history[0];
-    if (typeof topEvent.event?.type === "string") {
-      return topEvent.event.type;
-    }
-    return topEvent.type || "Running";
-  };
-  const badgeText = getBadgeText(stepByStep, reducedHistory);
+    return "Running";
+  }, [stepByStep]);
   if (!stepByStep?.active && !canClose) {
     return null;
   }
-  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
     /* @__PURE__ */ jsxs("div", { className: "header", children: [
       /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
         /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
@@ -1472,6 +1478,7 @@ const StepByStepView = ({ stepByStep }) => {
             type: "button",
             onClick: () => setIsExpanded(!isExpanded),
             className: "header-toggle",
+            "aria-label": isExpanded ? "Collapse panel" : "Expand panel",
             children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
           }
         ),
@@ -1482,6 +1489,7 @@ const StepByStepView = ({ stepByStep }) => {
             type: "button",
             onClick: stepByStep?.handlers?.close,
             className: "header-toggle",
+            "aria-label": "Close panel",
             children: /* @__PURE__ */ jsx(FaX, { size: 14 })
           }
         )
@@ -1495,6 +1503,7 @@ const StepByStepView = ({ stepByStep }) => {
             className: "btn btn-primary",
             type: "button",
             onClick: () => onControl("continue"),
+            disabled: !stepByStep?.pendingControlInput,
             children: [
               /* @__PURE__ */ jsx(FaStepForward, {}),
               " ",
@@ -1508,6 +1517,7 @@ const StepByStepView = ({ stepByStep }) => {
             className: "btn btn-secondary",
             type: "button",
             onClick: () => onControl("run"),
+            disabled: !stepByStep?.pendingControlInput,
             children: [
               /* @__PURE__ */ jsx(FaPlay, {}),
               " ",
@@ -1521,6 +1531,7 @@ const StepByStepView = ({ stepByStep }) => {
             className: "btn btn-danger",
             type: "button",
             onClick: () => onControl("quit"),
+            disabled: !stepByStep?.pendingControlInput,
             children: [
               /* @__PURE__ */ jsx(FaStop, {}),
               " ",
@@ -1537,14 +1548,23 @@ const StepByStepView = ({ stepByStep }) => {
             "input",
             {
               className: "input",
-              placeholder: "Type your response… (Enter to send)",
+              placeholder: "Type your response... (Enter to send)",
               value: responseText,
               type: stepByStep.activeRequest.password === true ? "password" : "text",
               onChange: onInputChange,
               onKeyDown: onInputKeyDown
             }
           ),
-          /* @__PURE__ */ jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              className: "btn btn-primary",
+              type: "button",
+              onClick: onRespond,
+              disabled: !requestId || !responseText.trim(),
+              children: "Send"
+            }
+          )
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
@@ -1562,26 +1582,19 @@ function safeStringify(v) {
   }
 }
 const JsonArea = ({ value, placeholder = "" }) => {
-  let safeValue;
-  if (Array.isArray(value)) {
-    const entries = [];
-    for (let i = 0; i < value.length; i += 1) {
-      const entry = value[i];
-      if (entry.event) {
-        entries.push(safeStringify(entry.event));
-      } else if (entry.content) {
-        entries.push(safeStringify(entry.content));
-      } else {
-        entries.push(safeStringify(entry));
+  const safeValue = useMemo(() => {
+    if (Array.isArray(value)) {
+      const parts = [];
+      for (let i = 0; i < value.length; i += 1) {
+        const entry = value[i];
+        parts.push(safeStringify(entry?.event ?? entry?.content ?? entry));
       }
+      const joined = parts.join("\n");
+      return !joined.trim() ? placeholder : joined;
     }
-    safeValue = entries.join("\n");
-  } else {
-    safeValue = safeStringify(value);
-  }
-  if (!safeValue || safeValue === "undefined" || safeValue === "null" || safeValue.trim() === "" || safeValue === "[]" || safeValue === "{}") {
-    safeValue = placeholder;
-  }
+    const s = safeStringify(value);
+    return !s || ["undefined", "null", "[]", "{}"].includes(s) || s.trim() === "" ? placeholder : s;
+  }, [value, placeholder]);
   return /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: safeValue }) });
 };
 const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title margin-bottom-5", children });
@@ -1857,101 +1870,6 @@ class DebugStatsHandler {
     };
   }
 }
-class WaldiezStepByStepUtils {
-  /**
-   * Extract participants (sender/recipient) from an event
-   */
-  static extractEventParticipants(event) {
-    return {
-      sender: typeof event.sender === "string" ? event.sender : void 0,
-      recipient: typeof event.recipient === "string" ? event.recipient : void 0
-    };
-  }
-  /**
-   * Format event content for display (truncate if too long)
-   */
-  static formatEventContent(event, maxLength = 100) {
-    const content = event.content;
-    if (typeof content === "string") {
-      return content.length > maxLength ? `${content.substring(0, maxLength)}...` : content;
-    }
-    if (content && typeof content === "object") {
-      const jsonStr = JSON.stringify(content);
-      return jsonStr.length > maxLength ? `${jsonStr.substring(0, maxLength)}...` : jsonStr;
-    }
-    return "";
-  }
-  /**
-   * Check if an event is a workflow input request (different from debug control request)
-   */
-  static isWorkflowInputRequest(event) {
-    return event.type === "input_request";
-  }
-  /**
-   * Extract workflow end reason from debug_print content
-   */
-  static extractWorkflowEndReason(content) {
-    const contentLower = content.toLowerCase();
-    if (contentLower.includes("workflow finished")) {
-      return "completed";
-    }
-    if (contentLower.includes("stopped by user")) {
-      return "user_stopped";
-    }
-    if (contentLower.includes("execution failed")) {
-      return "error";
-    }
-    return "unknown";
-  }
-  /**
-   * Check if the workflow has started
-   */
-  static isWorkflowStart(content) {
-    return content.includes("<Waldiez step-by-step> - Starting workflow...");
-  }
-  /**
-   * Check if a message is a step-by-step debug message
-   * Works with both parsed content and raw messages
-   */
-  static isStepByStepMessage(content) {
-    if (!content || typeof content !== "object") {
-      return false;
-    }
-    return typeof content.type === "string";
-  }
-  /**
-   * Quick check if content can be processed by step-by-step processor
-   * Use this in your handleGenericMessage to route to step-by-step processor
-   */
-  static canProcess(content) {
-    return this.isStepByStepMessage(content);
-  }
-  /**
-   * Extract event type from nested content structure
-   */
-  static extractEventType(event) {
-    if (typeof event.type === "string") {
-      return event.type;
-    }
-    if (event.content && typeof event.content === "object") {
-      const content = event.content;
-      if (typeof content.type === "string") {
-        return content.type;
-      }
-    }
-    return "unknown";
-  }
-  /**
-   * Create a response for debug control commands
-   */
-  static createControlResponse(requestId, command) {
-    return {
-      type: "debug_input_response",
-      request_id: requestId,
-      data: command
-    };
-  }
-}
 class WaldiezStepByStepProcessor {
   static _handlers = null;
   static get handlers() {
@@ -2075,12 +1993,6 @@ class WaldiezStepByStepProcessor {
     return WaldiezStepByStepProcessor.handlers.find((handler) => handler.canHandle(type));
   }
   /**
-   * Check if the content can be processed by the step-by-step processor
-   */
-  static canProcess(content) {
-    return WaldiezStepByStepUtils.isStepByStepMessage(content);
-  }
-  /**
    * Parse subprocess_output content specifically for step-by-step messages
    */
   static parseSubprocessContent(content) {
@@ -2105,6 +2017,122 @@ class WaldiezStepByStepProcessor {
       }
     }
     return null;
+  }
+}
+class WaldiezStepByStepUtils {
+  /**
+   * Extract participants (sender/recipient) from an event
+   */
+  // eslint-disable-next-line complexity, max-statements
+  static extractEventParticipants(event) {
+    let sender;
+    let recipient;
+    let eventType;
+    if (typeof event.sender === "string") {
+      sender = event.sender;
+    }
+    if (typeof event.recipient === "string") {
+      recipient = event.recipient;
+    }
+    if (typeof event.type === "string") {
+      eventType = event.type;
+    }
+    if (event.event && typeof event.event === "object") {
+      const nestedEvent = event.event;
+      if (typeof nestedEvent.sender === "string") {
+        sender = nestedEvent.sender;
+      }
+      if (typeof nestedEvent.recipient === "string") {
+        recipient = nestedEvent.recipient;
+      }
+      if (typeof nestedEvent.type === "string") {
+        eventType = nestedEvent.type;
+      }
+    }
+    if (event.data && typeof event.data === "object") {
+      const dataEvent = event.data;
+      if (typeof dataEvent.sender === "string") {
+        sender = dataEvent.sender;
+      }
+      if (typeof dataEvent.recipient === "string") {
+        recipient = dataEvent.recipient;
+      }
+      if (typeof dataEvent.type === "string") {
+        eventType = eventType || dataEvent.type;
+      }
+    }
+    if (event.content && typeof event.content === "object") {
+      const contentEvent = event.content;
+      if (typeof contentEvent.sender === "string") {
+        sender = contentEvent.sender;
+      }
+      if (typeof contentEvent.recipient === "string") {
+        recipient = contentEvent.recipient;
+      }
+      if (typeof contentEvent.type === "string") {
+        eventType = eventType || contentEvent.type;
+      }
+    }
+    if (event.message && typeof event.message === "object") {
+      const messageEvent = event.message;
+      if (typeof messageEvent.sender === "string") {
+        sender = messageEvent.sender;
+      }
+      if (typeof messageEvent.recipient === "string") {
+        recipient = messageEvent.recipient;
+      }
+    }
+    return {
+      sender: typeof sender === "string" ? sender : void 0,
+      recipient: typeof recipient === "string" ? recipient : void 0,
+      eventType: typeof eventType === "string" ? eventType : void 0
+    };
+  }
+  /**
+   * Format event content for display (truncate if too long)
+   */
+  static formatEventContent(event, maxLength = 100) {
+    const content = event.content;
+    if (typeof content === "string") {
+      return content.length > maxLength ? `${content.substring(0, maxLength)}...` : content;
+    }
+    if (content && typeof content === "object") {
+      const jsonStr = JSON.stringify(content);
+      return jsonStr.length > maxLength ? `${jsonStr.substring(0, maxLength)}...` : jsonStr;
+    }
+    return "";
+  }
+  /**
+   * Check if an event is a workflow input request (different from debug control request)
+   */
+  static isWorkflowInputRequest(event) {
+    return event.type === "input_request";
+  }
+  /**
+   * Extract workflow end reason from debug_print content
+   */
+  static extractWorkflowEndReason(content) {
+    const contentLower = content.toLowerCase();
+    if (contentLower.includes("workflow finished")) {
+      return "completed";
+    }
+    if (contentLower.includes("stopped by user")) {
+      return "user_stopped";
+    }
+    if (contentLower.includes("execution failed")) {
+      return "error";
+    }
+    return "unknown";
+  }
+  /**
+   * Create a response for debug control commands
+   */
+  static createControlResponse(requestId, command) {
+    return {
+      type: "debug_input_response",
+      request_id: requestId,
+      data: command
+    };
   }
 }
 const capitalize = (str) => {
@@ -2263,16 +2291,23 @@ const addGroupManagerProps = (agentData) => {
     transitionsType: "allowed"
   };
 };
-class WaldiezAgentAssistant extends WaldiezAgent {
-  data;
-  agentType = "assistant";
-  constructor(props) {
-    super(props);
-    this.agentType = "assistant";
-    this.data = props.data;
-    this.rest = props.rest || {};
-  }
-}
+const ValidTransitionTargetTypes = [
+  "AgentTarget",
+  "RandomAgentTarget",
+  "GroupChatTarget",
+  "NestedChatTarget",
+  "AskUserTarget",
+  "GroupManagerTarget",
+  "RevertToUserTarget",
+  "StayTarget",
+  "TerminateTarget"
+];
+const ValidConditionTypes = [
+  "string_llm",
+  "context_str_llm",
+  "string_context",
+  "expression_context"
+];
 class WaldiezAgentAssistantData extends WaldiezAgentData {
   isMultimodal;
   constructor(props = {
@@ -2314,13 +2349,13 @@ class WaldiezAgentAssistantData extends WaldiezAgentData {
     this.isMultimodal = props.isMultimodal;
   }
 }
-class WaldiezAgentCaptain extends WaldiezAgent {
+class WaldiezAgentAssistant extends WaldiezAgent {
   data;
-  agentType = "captain";
+  agentType = "assistant";
   constructor(props) {
     super(props);
+    this.agentType = "assistant";
     this.data = props.data;
-    this.agentType = "captain";
     this.rest = props.rest || {};
   }
 }
@@ -2374,13 +2409,13 @@ class WaldiezAgentCaptainData extends WaldiezAgentData {
     this.maxTurns = props.maxTurns;
   }
 }
-class WaldiezAgentDocAgent extends WaldiezAgent {
+class WaldiezAgentCaptain extends WaldiezAgent {
   data;
-  agentType = "doc_agent";
+  agentType = "captain";
   constructor(props) {
     super(props);
-    this.agentType = "doc_agent";
     this.data = props.data;
+    this.agentType = "captain";
     this.rest = props.rest || {};
   }
 }
@@ -2434,12 +2469,12 @@ class WaldiezAgentDocAgentData extends WaldiezAgentData {
     this.queryEngine = props.queryEngine ?? null;
   }
 }
-class WaldiezAgentGroupManager extends WaldiezAgent {
+class WaldiezAgentDocAgent extends WaldiezAgent {
   data;
-  agentType = "group_manager";
+  agentType = "doc_agent";
   constructor(props) {
     super(props);
-    this.agentType = "group_manager";
+    this.agentType = "doc_agent";
     this.data = props.data;
     this.rest = props.rest || {};
   }
@@ -2513,13 +2548,13 @@ class WaldiezAgentGroupManagerData extends WaldiezAgentData {
     this.initialAgentId = props.initialAgentId;
   }
 }
-class WaldiezAgentRagUser extends WaldiezAgent {
+class WaldiezAgentGroupManager extends WaldiezAgent {
   data;
-  agentType = "rag_user_proxy";
+  agentType = "group_manager";
   constructor(props) {
     super(props);
+    this.agentType = "group_manager";
     this.data = props.data;
-    this.agentType = "rag_user_proxy";
     this.rest = props.rest || {};
   }
 }
@@ -2601,16 +2636,16 @@ class WaldiezAgentRagUserData extends WaldiezAgentData {
     this.retrieveConfig = props.retrieveConfig;
   }
 }
-let WaldiezAgentReasoning$1 = class WaldiezAgentReasoning extends WaldiezAgent {
+class WaldiezAgentRagUser extends WaldiezAgent {
   data;
-  agentType = "reasoning";
+  agentType = "rag_user_proxy";
   constructor(props) {
     super(props);
     this.data = props.data;
-    this.agentType = "reasoning";
+    this.agentType = "rag_user_proxy";
     this.rest = props.rest || {};
   }
-};
+}
 const defaultReasonConfig = {
   method: "beam_search",
   maxDepth: 3,
@@ -2665,6 +2700,16 @@ class WaldiezAgentReasoningData extends WaldiezAgentData {
     this.reasonConfig = props.reasonConfig;
   }
 }
+let WaldiezAgentReasoning$1 = class WaldiezAgentReasoning extends WaldiezAgent {
+  data;
+  agentType = "reasoning";
+  constructor(props) {
+    super(props);
+    this.data = props.data;
+    this.agentType = "reasoning";
+    this.rest = props.rest || {};
+  }
+};
 class WaldiezAgentUserProxy extends WaldiezAgent {
   data;
   agentType = "user_proxy";
@@ -2684,565 +2729,6 @@ const ValidAgentTypes$2 = [
   "group_manager",
   "doc_agent"
 ];
-class WaldiezChatData {
-  sourceType;
-  targetType;
-  name;
-  description;
-  position;
-  order;
-  clearHistory;
-  message;
-  maxTurns;
-  summary;
-  nestedChat;
-  prerequisites = [];
-  realSource = null;
-  realTarget = null;
-  available = {
-    type: "none",
-    value: ""
-  };
-  condition = {
-    conditionType: "string_llm",
-    prompt: ""
-  };
-  afterWork = null;
-  silent = false;
-  constructor(props = {
-    sourceType: "user_proxy",
-    targetType: "assistant",
-    name: "Chat",
-    description: "New connection",
-    clearHistory: true,
-    maxTurns: null,
-    summary: {
-      method: "lastMsg",
-      prompt: "",
-      args: {}
-    },
-    position: 1,
-    order: -1,
-    message: {
-      type: "none",
-      useCarryover: false,
-      content: null,
-      context: {}
-    },
-    nestedChat: {
-      message: null,
-      reply: null
-    },
-    prerequisites: [],
-    condition: {
-      conditionType: "string_llm",
-      prompt: ""
-    },
-    available: {
-      type: "none",
-      value: ""
-    },
-    afterWork: null,
-    realSource: null,
-    realTarget: null,
-    silent: false
-  }) {
-    const {
-      sourceType,
-      targetType,
-      name,
-      description,
-      clearHistory,
-      maxTurns,
-      summary,
-      message,
-      position,
-      order,
-      nestedChat,
-      prerequisites,
-      condition,
-      available,
-      afterWork,
-      realSource,
-      realTarget,
-      silent
-    } = props;
-    this.sourceType = sourceType;
-    this.targetType = targetType;
-    this.name = name;
-    this.description = description;
-    this.clearHistory = clearHistory;
-    this.maxTurns = maxTurns;
-    this.summary = summary;
-    this.message = message;
-    this.position = position;
-    this.order = order;
-    this.nestedChat = nestedChat;
-    this.prerequisites = prerequisites;
-    this.condition = condition;
-    this.available = available;
-    this.afterWork = afterWork;
-    this.realSource = realSource;
-    this.realTarget = realTarget;
-    this.silent = silent;
-  }
-}
-class WaldiezChat {
-  id;
-  type = "chat";
-  source;
-  target;
-  data;
-  rest;
-  constructor(props) {
-    this.id = props.id;
-    this.source = props.source;
-    this.target = props.target;
-    this.type = props.type;
-    this.data = props.data;
-    this.rest = props.rest || {};
-  }
-  /**
-   * Creates a new WaldiezChat instance with default values.
-   * @returns A new instance of WaldiezChat.
-   */
-  static create(props) {
-    const data = new WaldiezChatData();
-    return new WaldiezChat({
-      id: `wc-${getId()}`,
-      source: props.source,
-      target: props.target,
-      type: props.type,
-      data
-    });
-  }
-}
-const ValidChatTypes$1 = ["chat", "nested", "group", "hidden"];
-const ValidTransitionTargetTypes = [
-  "AgentTarget",
-  "RandomAgentTarget",
-  "GroupChatTarget",
-  "NestedChatTarget",
-  "AskUserTarget",
-  "GroupManagerTarget",
-  "RevertToUserTarget",
-  "StayTarget",
-  "TerminateTarget"
-];
-const ValidConditionTypes = [
-  "string_llm",
-  "context_str_llm",
-  "string_context",
-  "expression_context"
-];
-class WaldiezFlow {
-  type = "flow";
-  version = "0.5.10";
-  id;
-  name;
-  description;
-  tags;
-  requirements;
-  data;
-  storageId;
-  createdAt;
-  updatedAt;
-  rest = {};
-  constructor(props) {
-    this.id = props.id;
-    this.name = props.name;
-    this.description = props.description;
-    this.tags = props.tags;
-    this.requirements = props.requirements;
-    this.data = props.data;
-    this.storageId = props.storageId;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
-    this.rest = props.rest || {};
-  }
-}
-const getFlowId = () => {
-  return `wf-${(/* @__PURE__ */ new Date()).getTime()}${nanoid()}`;
-};
-const aFlowId = getFlowId();
-const emptyFlow = {
-  type: "flow",
-  version: "0.5.10",
-  id: aFlowId,
-  storageId: aFlowId,
-  name: "Waldiez Flow",
-  description: "A waldiez flow",
-  tags: [],
-  requirements: [],
-  data: {
-    agents: {
-      userProxyAgents: [],
-      assistantAgents: [],
-      ragUserProxyAgents: [],
-      reasoningAgents: [],
-      captainAgents: [],
-      groupManagerAgents: [],
-      docAgents: []
-    },
-    models: [],
-    tools: [],
-    chats: [],
-    isAsync: false,
-    cacheSeed: 42,
-    silent: false,
-    nodes: [],
-    edges: [],
-    viewport: { zoom: 1, x: 0, y: 0 }
-  },
-  createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-  updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-  rest: {}
-};
-class WaldiezFlowData {
-  nodes;
-  edges;
-  viewport;
-  agents;
-  models;
-  tools;
-  chats;
-  isAsync = false;
-  cacheSeed = 42;
-  silent = false;
-  constructor(props = {
-    nodes: [],
-    edges: [],
-    viewport: {
-      x: 0,
-      y: 0,
-      zoom: 1
-    },
-    agents: {
-      userProxyAgents: [],
-      assistantAgents: [],
-      ragUserProxyAgents: [],
-      reasoningAgents: [],
-      captainAgents: [],
-      groupManagerAgents: [],
-      docAgents: []
-    },
-    models: [],
-    tools: [],
-    chats: [],
-    isAsync: false,
-    cacheSeed: 42,
-    silent: false
-  }) {
-    this.nodes = props.nodes;
-    this.edges = props.edges;
-    this.viewport = props.viewport;
-    this.agents = props.agents;
-    this.models = props.models;
-    this.tools = props.tools;
-    this.chats = props.chats;
-    this.isAsync = props.isAsync;
-    this.cacheSeed = props.cacheSeed;
-    this.silent = props.silent;
-  }
-}
-class WaldiezModelData {
-  baseUrl;
-  apiKey;
-  apiType;
-  apiVersion;
-  temperature;
-  topP;
-  maxTokens;
-  aws;
-  extras;
-  defaultHeaders;
-  price;
-  constructor(props = {
-    baseUrl: null,
-    apiKey: null,
-    apiType: "openai",
-    apiVersion: null,
-    temperature: null,
-    topP: null,
-    maxTokens: null,
-    aws: {
-      accessKey: null,
-      profileName: null,
-      region: null,
-      secretKey: null,
-      sessionToken: null
-    },
-    extras: {},
-    defaultHeaders: {},
-    price: {
-      promptPricePer1k: null,
-      completionTokenPricePer1k: null
-    }
-  }) {
-    const {
-      baseUrl,
-      apiKey,
-      apiType,
-      apiVersion,
-      temperature,
-      topP,
-      maxTokens,
-      aws,
-      extras,
-      defaultHeaders,
-      price
-    } = props;
-    this.baseUrl = baseUrl;
-    this.apiKey = apiKey;
-    this.apiType = apiType;
-    this.apiVersion = apiVersion;
-    this.temperature = temperature;
-    this.topP = topP;
-    this.maxTokens = maxTokens;
-    this.aws = aws || null;
-    this.extras = extras;
-    this.defaultHeaders = defaultHeaders;
-    this.price = price;
-  }
-}
-class WaldiezModel {
-  type = "model";
-  id;
-  name;
-  description;
-  tags;
-  requirements;
-  createdAt;
-  updatedAt;
-  data;
-  rest = {};
-  constructor(props) {
-    this.id = props.id;
-    this.name = props.name;
-    this.description = props.description;
-    this.tags = props.tags;
-    this.requirements = props.requirements;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
-    this.data = props.data;
-    this.rest = props.rest;
-  }
-  /**
-   * Creates a new WaldiezModel instance with default values.
-   * @returns A new instance of WaldiezModel.
-   */
-  static create() {
-    return new WaldiezModel({
-      id: `wm-${getId()}`,
-      name: "Model",
-      description: "A new model",
-      tags: [],
-      requirements: [],
-      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      data: new WaldiezModelData()
-    });
-  }
-}
-const PREDEFINED_TOOL_TYPES = [
-  "wikipedia_search",
-  "youtube_search",
-  "google_search",
-  "tavily_search",
-  "duckduckgo_search",
-  "perplexity_search",
-  "searxng_search"
-];
-const DEFAULT_PREDEFINED_TOOL_DESCRIPTION = {
-  wikipedia_search: "Search Wikipedia for a given query.",
-  youtube_search: "Search YouTube for a given query.",
-  google_search: "Search Google for a given query.",
-  tavily_search: "Search Tavily for a given query.",
-  duckduckgo_search: "Search DuckDuckGo for a given query.",
-  perplexity_search: "Search Perplexity AI for a given query.",
-  searxng_search: "Search SearxNG for a given query.",
-  shared: "Shared code available to all agents.",
-  custom: "A custom tool that you define."
-};
-const DEFAULT_PREDEFINED_TOOL_NAME = {
-  wikipedia_search: "Wikipedia Search",
-  youtube_search: "YouTube Search",
-  google_search: "Google Search",
-  tavily_search: "Tavily Search",
-  duckduckgo_search: "DuckDuckGo Search",
-  perplexity_search: "Perplexity AI Search",
-  searxng_search: "SearxNG Search",
-  shared: "waldiez_shared",
-  custom: "new_tool"
-};
-const PREDEFINED_TOOL_REQUIRED_ENVS = {
-  wikipedia_search: [],
-  youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
-  google_search: [
-    { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" },
-    { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" }
-  ],
-  tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
-  duckduckgo_search: [],
-  perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
-  searxng_search: []
-};
-const PREDEFINED_TOOL_REQUIRED_KWARGS = {
-  wikipedia_search: [],
-  youtube_search: [],
-  google_search: [],
-  tavily_search: [],
-  duckduckgo_search: [],
-  perplexity_search: [],
-  searxng_search: []
-};
-class WaldiezToolData {
-  content;
-  toolType;
-  secrets;
-  kwargs = {};
-  constructor(props = {
-    content: DEFAULT_SHARED_TOOL_CONTENT,
-    toolType: "shared",
-    secrets: {},
-    kwargs: {}
-  }) {
-    const { content, toolType, secrets, kwargs } = props;
-    this.toolType = toolType;
-    this.content = content;
-    this.secrets = secrets;
-    this.kwargs = kwargs || {};
-  }
-}
-const DEFAULT_CUSTOM_TOOL_CONTENT = `
-"""Replace this with your code.
-
-make sure a function with the same name
-as the tool is defined in the code.
-"""
-
-# Example:
-# tool name: 'new_tool'
-#
-# def new_tool() -> str:
-#     """Tool entry point."""
-#     return "Hello, world!"
-#
-# Add your code below
-
-def new_tool() -> None:
-    """Tool entry point."""
-    ...
-`;
-const DEFAULT_SHARED_TOOL_CONTENT = `
-"""Replace this with your code.
-
-Add any code here that will be placed at the top of the whole flow.
-"""
-
-# Example:
-# global variable
-# DATABASE = {
-#     "users": [
-#         {"id": 1, "name": "Alice"},
-#         {"id": 2, "name": "Bob"},
-#     ],
-#     "posts": [
-#         {"id": 1, "title": "Hello, world!", "author_id": 1},
-#         {"id": 2, "title": "Another post", "author_id": 2},
-#     ],
-# }
-#
-# Add your code below
-
-`;
-const DEFAULT_LANGCHAIN_TOOL_CONTENT = `
-"""Replace this with your code.
-
-You can define any of the tools available in the langchain_community package.
-You can explore the available tools in the LangChain Community Tools folder:
-https://github.com/langchain-ai/langchain/tree/master/libs/community/langchain_community/tools
-
-Make sure you have a variable named with the same name as the tool
-"""
-
-# Example:
-# # tool name: 'wiki_tool'
-#
-# from langchain_community.tools import WikipediaQueryRun
-# from langchain_community.utilities import WikipediaAPIWrapper
-#
-# api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)
-# wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
-#
-# Add your code below
-
-`;
-const DEFAULT_CREWAI_TOOL_CONTENT = `
-"""Replace this with your code.
-
-You can define any of the tools available in the crewai_tools package.
-You can explore the full list of available tools in the CrewAI Tools repository:
-https://github.com/crewAIInc/crewAI-tools/tree/main
-
-Make sure you have a variable named with the same name as the tool.
-"""
-
-# Example:
-# # tool name: 'scrape_tool'
-#
-# from crewai_tools import ScrapeWebsiteTool
-# scrape_tool = ScrapeWebsiteTool()
-#
-# Add your code below
-
-`;
-const DEFAULT_TOOL_CONTENT_MAP = {
-  shared: DEFAULT_SHARED_TOOL_CONTENT,
-  custom: DEFAULT_CUSTOM_TOOL_CONTENT,
-  langchain: DEFAULT_LANGCHAIN_TOOL_CONTENT,
-  crewai: DEFAULT_CREWAI_TOOL_CONTENT,
-  predefined: ""
-};
-class WaldiezTool {
-  type = "tool";
-  id;
-  name;
-  description;
-  tags;
-  requirements;
-  createdAt;
-  updatedAt;
-  data;
-  rest = {};
-  constructor(props) {
-    this.id = props.id;
-    this.name = props.name;
-    this.description = props.description;
-    this.tags = props.tags;
-    this.requirements = props.requirements;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
-    this.data = props.data;
-    this.rest = props.rest;
-  }
-  /**
-   * Creates a new WaldiezTool instance with default values.
-   * @returns A new instance of WaldiezTool.
-   */
-  static create() {
-    return new WaldiezTool({
-      id: `wt-${getId()}`,
-      name: "waldiez_shared",
-      description: "Shared code available to all agents.",
-      tags: [],
-      requirements: [],
-      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      data: new WaldiezToolData()
-    });
-  }
-}
 const getAgent = (agentType, id, name, description, tags, requirements, createdAt, updatedAt, data, rest) => {
   if (agentType === "user_proxy") {
     return new WaldiezAgentUserProxy({
@@ -4917,6 +4403,140 @@ const updateDocAgent = (agentData, data) => {
   agentData.queryEngine = getQueryEngine(data);
   agentData.parsedDocsPath = getParsedDocsPath(data);
 };
+class WaldiezChatData {
+  sourceType;
+  targetType;
+  name;
+  description;
+  position;
+  order;
+  clearHistory;
+  message;
+  maxTurns;
+  summary;
+  nestedChat;
+  prerequisites = [];
+  realSource = null;
+  realTarget = null;
+  available = {
+    type: "none",
+    value: ""
+  };
+  condition = {
+    conditionType: "string_llm",
+    prompt: ""
+  };
+  afterWork = null;
+  silent = false;
+  constructor(props = {
+    sourceType: "user_proxy",
+    targetType: "assistant",
+    name: "Chat",
+    description: "New connection",
+    clearHistory: true,
+    maxTurns: null,
+    summary: {
+      method: "lastMsg",
+      prompt: "",
+      args: {}
+    },
+    position: 1,
+    order: -1,
+    message: {
+      type: "none",
+      useCarryover: false,
+      content: null,
+      context: {}
+    },
+    nestedChat: {
+      message: null,
+      reply: null
+    },
+    prerequisites: [],
+    condition: {
+      conditionType: "string_llm",
+      prompt: ""
+    },
+    available: {
+      type: "none",
+      value: ""
+    },
+    afterWork: null,
+    realSource: null,
+    realTarget: null,
+    silent: false
+  }) {
+    const {
+      sourceType,
+      targetType,
+      name,
+      description,
+      clearHistory,
+      maxTurns,
+      summary,
+      message,
+      position,
+      order,
+      nestedChat,
+      prerequisites,
+      condition,
+      available,
+      afterWork,
+      realSource,
+      realTarget,
+      silent
+    } = props;
+    this.sourceType = sourceType;
+    this.targetType = targetType;
+    this.name = name;
+    this.description = description;
+    this.clearHistory = clearHistory;
+    this.maxTurns = maxTurns;
+    this.summary = summary;
+    this.message = message;
+    this.position = position;
+    this.order = order;
+    this.nestedChat = nestedChat;
+    this.prerequisites = prerequisites;
+    this.condition = condition;
+    this.available = available;
+    this.afterWork = afterWork;
+    this.realSource = realSource;
+    this.realTarget = realTarget;
+    this.silent = silent;
+  }
+}
+class WaldiezChat {
+  id;
+  type = "chat";
+  source;
+  target;
+  data;
+  rest;
+  constructor(props) {
+    this.id = props.id;
+    this.source = props.source;
+    this.target = props.target;
+    this.type = props.type;
+    this.data = props.data;
+    this.rest = props.rest || {};
+  }
+  /**
+   * Creates a new WaldiezChat instance with default values.
+   * @returns A new instance of WaldiezChat.
+   */
+  static create(props) {
+    const data = new WaldiezChatData();
+    return new WaldiezChat({
+      id: `wc-${getId()}`,
+      source: props.source,
+      target: props.target,
+      type: props.type,
+      data
+    });
+  }
+}
+const ValidChatTypes$1 = ["chat", "nested", "group", "hidden"];
 const ValidChatMessageTypes = ["string", "method", "rag_message_generator", "none"];
 const messageMapper = {
   /**
@@ -5554,6 +5174,414 @@ const getChatData = (json, index2) => {
     afterWork,
     silent
   });
+};
+class WaldiezModelData {
+  baseUrl;
+  apiKey;
+  apiType;
+  apiVersion;
+  temperature;
+  topP;
+  maxTokens;
+  aws;
+  extras;
+  defaultHeaders;
+  price;
+  constructor(props = {
+    baseUrl: null,
+    apiKey: null,
+    apiType: "openai",
+    apiVersion: null,
+    temperature: null,
+    topP: null,
+    maxTokens: null,
+    aws: {
+      accessKey: null,
+      profileName: null,
+      region: null,
+      secretKey: null,
+      sessionToken: null
+    },
+    extras: {},
+    defaultHeaders: {},
+    price: {
+      promptPricePer1k: null,
+      completionTokenPricePer1k: null
+    }
+  }) {
+    const {
+      baseUrl,
+      apiKey,
+      apiType,
+      apiVersion,
+      temperature,
+      topP,
+      maxTokens,
+      aws,
+      extras,
+      defaultHeaders,
+      price
+    } = props;
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+    this.apiType = apiType;
+    this.apiVersion = apiVersion;
+    this.temperature = temperature;
+    this.topP = topP;
+    this.maxTokens = maxTokens;
+    this.aws = aws || null;
+    this.extras = extras;
+    this.defaultHeaders = defaultHeaders;
+    this.price = price;
+  }
+}
+class WaldiezModel {
+  type = "model";
+  id;
+  name;
+  description;
+  tags;
+  requirements;
+  createdAt;
+  updatedAt;
+  data;
+  rest = {};
+  constructor(props) {
+    this.id = props.id;
+    this.name = props.name;
+    this.description = props.description;
+    this.tags = props.tags;
+    this.requirements = props.requirements;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.data = props.data;
+    this.rest = props.rest;
+  }
+  /**
+   * Creates a new WaldiezModel instance with default values.
+   * @returns A new instance of WaldiezModel.
+   */
+  static create() {
+    return new WaldiezModel({
+      id: `wm-${getId()}`,
+      name: "Model",
+      description: "A new model",
+      tags: [],
+      requirements: [],
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      data: new WaldiezModelData()
+    });
+  }
+}
+const PREDEFINED_TOOL_TYPES = [
+  "wikipedia_search",
+  "youtube_search",
+  "google_search",
+  "tavily_search",
+  "duckduckgo_search",
+  "perplexity_search",
+  "searxng_search"
+];
+const DEFAULT_PREDEFINED_TOOL_DESCRIPTION = {
+  wikipedia_search: "Search Wikipedia for a given query.",
+  youtube_search: "Search YouTube for a given query.",
+  google_search: "Search Google for a given query.",
+  tavily_search: "Search Tavily for a given query.",
+  duckduckgo_search: "Search DuckDuckGo for a given query.",
+  perplexity_search: "Search Perplexity AI for a given query.",
+  searxng_search: "Search SearxNG for a given query.",
+  shared: "Shared code available to all agents.",
+  custom: "A custom tool that you define."
+};
+const DEFAULT_PREDEFINED_TOOL_NAME = {
+  wikipedia_search: "Wikipedia Search",
+  youtube_search: "YouTube Search",
+  google_search: "Google Search",
+  tavily_search: "Tavily Search",
+  duckduckgo_search: "DuckDuckGo Search",
+  perplexity_search: "Perplexity AI Search",
+  searxng_search: "SearxNG Search",
+  shared: "waldiez_shared",
+  custom: "new_tool"
+};
+const PREDEFINED_TOOL_REQUIRED_ENVS = {
+  wikipedia_search: [],
+  youtube_search: [{ label: "YouTube API Key", key: "YOUTUBE_API_KEY" }],
+  google_search: [
+    { label: "Google Search API Key", key: "GOOGLE_SEARCH_API_KEY" },
+    { label: "Google Search Engine ID", key: "GOOGLE_SEARCH_ENGINE_ID" }
+  ],
+  tavily_search: [{ label: "Tavily API Key", key: "TAVILY_API_KEY" }],
+  duckduckgo_search: [],
+  perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
+  searxng_search: []
+};
+const PREDEFINED_TOOL_REQUIRED_KWARGS = {
+  wikipedia_search: [],
+  youtube_search: [],
+  google_search: [],
+  tavily_search: [],
+  duckduckgo_search: [],
+  perplexity_search: [],
+  searxng_search: []
+};
+class WaldiezToolData {
+  content;
+  toolType;
+  secrets;
+  kwargs = {};
+  constructor(props = {
+    content: DEFAULT_SHARED_TOOL_CONTENT,
+    toolType: "shared",
+    secrets: {},
+    kwargs: {}
+  }) {
+    const { content, toolType, secrets, kwargs } = props;
+    this.toolType = toolType;
+    this.content = content;
+    this.secrets = secrets;
+    this.kwargs = kwargs || {};
+  }
+}
+const DEFAULT_CUSTOM_TOOL_CONTENT = `
+"""Replace this with your code.
+
+make sure a function with the same name
+as the tool is defined in the code.
+"""
+
+# Example:
+# tool name: 'new_tool'
+#
+# def new_tool() -> str:
+#     """Tool entry point."""
+#     return "Hello, world!"
+#
+# Add your code below
+
+def new_tool() -> None:
+    """Tool entry point."""
+    ...
+`;
+const DEFAULT_SHARED_TOOL_CONTENT = `
+"""Replace this with your code.
+
+Add any code here that will be placed at the top of the whole flow.
+"""
+
+# Example:
+# global variable
+# DATABASE = {
+#     "users": [
+#         {"id": 1, "name": "Alice"},
+#         {"id": 2, "name": "Bob"},
+#     ],
+#     "posts": [
+#         {"id": 1, "title": "Hello, world!", "author_id": 1},
+#         {"id": 2, "title": "Another post", "author_id": 2},
+#     ],
+# }
+#
+# Add your code below
+
+`;
+const DEFAULT_LANGCHAIN_TOOL_CONTENT = `
+"""Replace this with your code.
+
+You can define any of the tools available in the langchain_community package.
+You can explore the available tools in the LangChain Community Tools folder:
+https://github.com/langchain-ai/langchain/tree/master/libs/community/langchain_community/tools
+
+Make sure you have a variable named with the same name as the tool
+"""
+
+# Example:
+# # tool name: 'wiki_tool'
+#
+# from langchain_community.tools import WikipediaQueryRun
+# from langchain_community.utilities import WikipediaAPIWrapper
+#
+# api_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=1000)
+# wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
+#
+# Add your code below
+
+`;
+const DEFAULT_CREWAI_TOOL_CONTENT = `
+"""Replace this with your code.
+
+You can define any of the tools available in the crewai_tools package.
+You can explore the full list of available tools in the CrewAI Tools repository:
+https://github.com/crewAIInc/crewAI-tools/tree/main
+
+Make sure you have a variable named with the same name as the tool.
+"""
+
+# Example:
+# # tool name: 'scrape_tool'
+#
+# from crewai_tools import ScrapeWebsiteTool
+# scrape_tool = ScrapeWebsiteTool()
+#
+# Add your code below
+
+`;
+const DEFAULT_TOOL_CONTENT_MAP = {
+  shared: DEFAULT_SHARED_TOOL_CONTENT,
+  custom: DEFAULT_CUSTOM_TOOL_CONTENT,
+  langchain: DEFAULT_LANGCHAIN_TOOL_CONTENT,
+  crewai: DEFAULT_CREWAI_TOOL_CONTENT,
+  predefined: ""
+};
+class WaldiezTool {
+  type = "tool";
+  id;
+  name;
+  description;
+  tags;
+  requirements;
+  createdAt;
+  updatedAt;
+  data;
+  rest = {};
+  constructor(props) {
+    this.id = props.id;
+    this.name = props.name;
+    this.description = props.description;
+    this.tags = props.tags;
+    this.requirements = props.requirements;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.data = props.data;
+    this.rest = props.rest;
+  }
+  /**
+   * Creates a new WaldiezTool instance with default values.
+   * @returns A new instance of WaldiezTool.
+   */
+  static create() {
+    return new WaldiezTool({
+      id: `wt-${getId()}`,
+      name: "waldiez_shared",
+      description: "Shared code available to all agents.",
+      tags: [],
+      requirements: [],
+      createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      data: new WaldiezToolData()
+    });
+  }
+}
+class WaldiezFlowData {
+  nodes;
+  edges;
+  viewport;
+  agents;
+  models;
+  tools;
+  chats;
+  isAsync = false;
+  cacheSeed = 42;
+  silent = false;
+  constructor(props = {
+    nodes: [],
+    edges: [],
+    viewport: {
+      x: 0,
+      y: 0,
+      zoom: 1
+    },
+    agents: {
+      userProxyAgents: [],
+      assistantAgents: [],
+      ragUserProxyAgents: [],
+      reasoningAgents: [],
+      captainAgents: [],
+      groupManagerAgents: [],
+      docAgents: []
+    },
+    models: [],
+    tools: [],
+    chats: [],
+    isAsync: false,
+    cacheSeed: 42,
+    silent: false
+  }) {
+    this.nodes = props.nodes;
+    this.edges = props.edges;
+    this.viewport = props.viewport;
+    this.agents = props.agents;
+    this.models = props.models;
+    this.tools = props.tools;
+    this.chats = props.chats;
+    this.isAsync = props.isAsync;
+    this.cacheSeed = props.cacheSeed;
+    this.silent = props.silent;
+  }
+}
+class WaldiezFlow {
+  type = "flow";
+  version = "0.5.10";
+  id;
+  name;
+  description;
+  tags;
+  requirements;
+  data;
+  storageId;
+  createdAt;
+  updatedAt;
+  rest = {};
+  constructor(props) {
+    this.id = props.id;
+    this.name = props.name;
+    this.description = props.description;
+    this.tags = props.tags;
+    this.requirements = props.requirements;
+    this.data = props.data;
+    this.storageId = props.storageId;
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.rest = props.rest || {};
+  }
+}
+const getFlowId = () => {
+  return `wf-${(/* @__PURE__ */ new Date()).getTime()}${nanoid()}`;
+};
+const aFlowId = getFlowId();
+const emptyFlow = {
+  type: "flow",
+  version: "0.5.10",
+  id: aFlowId,
+  storageId: aFlowId,
+  name: "Waldiez Flow",
+  description: "A waldiez flow",
+  tags: [],
+  requirements: [],
+  data: {
+    agents: {
+      userProxyAgents: [],
+      assistantAgents: [],
+      ragUserProxyAgents: [],
+      reasoningAgents: [],
+      captainAgents: [],
+      groupManagerAgents: [],
+      docAgents: []
+    },
+    models: [],
+    tools: [],
+    chats: [],
+    isAsync: false,
+    cacheSeed: 42,
+    silent: false,
+    nodes: [],
+    edges: [],
+    viewport: { zoom: 1, x: 0, y: 0 }
+  },
+  createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+  updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+  rest: {}
 };
 const getAgentNodes = (nodes) => {
   const agentNodes = nodes.filter((node) => node.type === "agent");
@@ -6218,6 +6246,54 @@ const exportTool = (tool, nodes, hideSecrets) => {
   }
   return waldiezTool;
 };
+const getEdges = (json) => {
+  if (!("edges" in json) || !Array.isArray(json.edges)) {
+    return [];
+  }
+  const edges = [];
+  json.edges.forEach((edgeJson) => {
+    if (!("id" in edgeJson) || typeof edgeJson.id !== "string") {
+      return;
+    }
+    if (!("type" in edgeJson) || typeof edgeJson.type !== "string" || !ValidChatTypes$1.includes(edgeJson.type)) {
+      return;
+    }
+    if (!("source" in edgeJson) || typeof edgeJson.source !== "string") {
+      return;
+    }
+    if (!("target" in edgeJson) || typeof edgeJson.target !== "string") {
+      return;
+    }
+    const rest = getRestFromJSON(edgeJson, ["id", "type", "source", "target", "data", "hidden"]);
+    edges.push({
+      id: edgeJson.id,
+      type: edgeJson.type,
+      source: edgeJson.source,
+      target: edgeJson.target,
+      hidden: edgeJson.type === "hidden",
+      data: {},
+      ...rest
+    });
+  });
+  return edges;
+};
+const getChats = (json, nodes, edges) => {
+  if (!("chats" in json) || !Array.isArray(json.chats)) {
+    return { chats: [], edges };
+  }
+  const chats = [];
+  const updatedEdges = [];
+  json.chats.forEach((chatJson, index2) => {
+    try {
+      const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index2);
+      chats.push(chat);
+      updatedEdges.push(edge);
+    } catch (error) {
+      console.error(`Error importing chat at index ${index2}:`, error);
+    }
+  });
+  return { chats, edges: updatedEdges };
+};
 const importFlowMeta = (json) => {
   const id = getIdFromJSON(json);
   const name = getNameFromJSON(json, "Waldiez Flow");
@@ -6627,54 +6703,6 @@ const getTools = (json, nodes) => {
     }
   });
   return tools;
-};
-const getEdges = (json) => {
-  if (!("edges" in json) || !Array.isArray(json.edges)) {
-    return [];
-  }
-  const edges = [];
-  json.edges.forEach((edgeJson) => {
-    if (!("id" in edgeJson) || typeof edgeJson.id !== "string") {
-      return;
-    }
-    if (!("type" in edgeJson) || typeof edgeJson.type !== "string" || !ValidChatTypes$1.includes(edgeJson.type)) {
-      return;
-    }
-    if (!("source" in edgeJson) || typeof edgeJson.source !== "string") {
-      return;
-    }
-    if (!("target" in edgeJson) || typeof edgeJson.target !== "string") {
-      return;
-    }
-    const rest = getRestFromJSON(edgeJson, ["id", "type", "source", "target", "data", "hidden"]);
-    edges.push({
-      id: edgeJson.id,
-      type: edgeJson.type,
-      source: edgeJson.source,
-      target: edgeJson.target,
-      hidden: edgeJson.type === "hidden",
-      data: {},
-      ...rest
-    });
-  });
-  return edges;
-};
-const getChats = (json, nodes, edges) => {
-  if (!("chats" in json) || !Array.isArray(json.chats)) {
-    return { chats: [], edges };
-  }
-  const chats = [];
-  const updatedEdges = [];
-  json.chats.forEach((chatJson, index2) => {
-    try {
-      const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index2);
-      chats.push(chat);
-      updatedEdges.push(edge);
-    } catch (error) {
-      console.error(`Error importing chat at index ${index2}:`, error);
-    }
-  });
-  return { chats, edges: updatedEdges };
 };
 const flowMapper = {
   /**
@@ -15338,9 +15366,10 @@ const Wizard = memo((props) => {
 WizardStep.displayName = "WizardStep";
 Wizard.displayName = "Wizard";
 const WaldiezContext = createContext(null);
-function useWaldiez(selector) {
+function useWaldiez(selector, equalityFn) {
   const store = useContext(WaldiezContext);
   if (!store) {
+    console.error("DEBUG: Missing WaldiezContext.Provider in the tree");
     throw new Error("Missing WaldiezContext.Provider in the tree");
   }
   return useStoreWithEqualityFn(store, selector, shallow);
@@ -16251,6 +16280,42 @@ class WaldiezAgentStore {
       updatedAt: (/* @__PURE__ */ new Date()).toISOString()
     });
     resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+}
+class WaldiezChatParticipantsStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Factory method to create a new instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   * @returns A new instance of WaldiezEdgeStore.
+   */
+  static create(get, set) {
+    return new WaldiezChatParticipantsStore(get, set);
+  }
+  setActiveParticipants = (sender, recipient) => {
+    const { activeSenderId, activeRecipientId } = this.get();
+    if (activeSenderId === sender && activeRecipientId === recipient) {
+      return;
+    }
+    this.set({ activeSenderId: sender, activeRecipientId: recipient });
+  };
+  resetActiveParticipants = () => {
+    const { activeSenderId, activeRecipientId } = this.get();
+    if (activeSenderId === null && activeRecipientId === null) {
+      return;
+    }
+    this.set({ activeSenderId: null, activeRecipientId: null });
   };
 }
 class WaldiezEdgeStore {
@@ -17626,6 +17691,9 @@ const createWaldiezStore = (props) => {
         onRun,
         onStepRun,
         onConvert,
+        activeSenderId: null,
+        activeRecipientId: null,
+        ...WaldiezChatParticipantsStore.create(get, set),
         ...WaldiezAgentStore.create(get, set),
         ...WaldiezModelStore.create(get, set),
         ...WaldiezToolStore.create(get, set),
@@ -21943,6 +22011,10 @@ const useWaldiezNodeAgent = (id) => {
   const deleteAgent = useWaldiez((s) => s.deleteAgent);
   const cloneAgent = useWaldiez((s) => s.cloneAgent);
   const onFlowChanged = useWaldiez((s) => s.onFlowChanged);
+  const { isSender, isRecipient } = useWaldiez((s) => ({
+    isSender: s.activeSenderId === id,
+    isRecipient: s.activeRecipientId === id && s.activeRecipientId !== s.activeSenderId
+  }));
   const flowId = useWaldiez((s) => s.flowId);
   const readOnly = useWaldiez((s) => s.isReadOnly);
   const isReadOnly = useMemo(() => readOnly === true, [readOnly]);
@@ -22022,6 +22094,8 @@ const useWaldiezNodeAgent = (id) => {
     isModalOpen,
     isReadOnly,
     isDragging,
+    isSender,
+    isRecipient,
     onDelete,
     onClone,
     onOpenNodeModal,
@@ -27136,6 +27210,8 @@ const WaldiezNodeAgentView = (props) => {
     isEdgeModalOpen,
     isModalOpen,
     isDragging,
+    isSender,
+    isRecipient,
     onDragOver,
     onDragLeave,
     onDrop,
@@ -27160,8 +27236,14 @@ const WaldiezNodeAgentView = (props) => {
         classes += " dragging";
       }
     }
+    if (isSender) {
+      classes += " active-sender";
+    }
+    if (isRecipient) {
+      classes += " active-recipient";
+    }
     return classes;
-  }, [isModalOpen, data.parentId, agentType, isDragging]);
+  }, [isModalOpen, data.parentId, agentType, isSender, isRecipient, isDragging]);
   const handleClassNameBase = useMemo(
     () => data.parentId ? "group-member " : agentType === "group_manager" ? "group-manager " : "",
     [data.parentId, agentType]
@@ -29722,38 +29804,6 @@ const nodeTypes = {
   model: WaldiezNodeModelView,
   tool: WaldiezNodeToolView
 };
-const SidebarProvider = ({ children, collapsed }) => {
-  const initiallyCollapsed = typeof collapsed === "boolean" ? collapsed : getIsSidebarCollapsedFromBody();
-  const [isCollapsed, setIsCollapsed] = useState(initiallyCollapsed);
-  useEffect(() => {
-    setSidebarCollapsedToBody(isCollapsed);
-  }, [isCollapsed]);
-  const toggleSidebar = () => {
-    setIsCollapsed((prev) => !prev);
-  };
-  return /* @__PURE__ */ jsx(SidebarContext.Provider, { value: { isCollapsed, toggleSidebar }, children });
-};
-const setSidebarCollapsedToBody = (isCollapsed) => {
-  if (isCollapsed) {
-    document.body.classList.add("waldiez-sidebar-collapsed");
-    document.body.classList.remove("waldiez-sidebar-expanded");
-  } else {
-    document.body.classList.add("waldiez-sidebar-expanded");
-    document.body.classList.remove("waldiez-sidebar-collapsed");
-  }
-};
-const getIsSidebarCollapsedFromBody = () => {
-  if (document.body.classList.contains("waldiez-sidebar-collapsed")) {
-    return true;
-  }
-  if (document.body.classList.contains("waldiez-sidebar-expanded")) {
-    return false;
-  }
-  return window.innerWidth < 768;
-};
-function LuBrain(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" }, "child": [] }, { "tag": "path", "attr": { "d": "M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" }, "child": [] }, { "tag": "path", "attr": { "d": "M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" }, "child": [] }, { "tag": "path", "attr": { "d": "M17.599 6.5a3 3 0 0 0 .399-1.375" }, "child": [] }, { "tag": "path", "attr": { "d": "M6.003 5.125A3 3 0 0 0 6.401 6.5" }, "child": [] }, { "tag": "path", "attr": { "d": "M3.477 10.896a4 4 0 0 1 .585-.396" }, "child": [] }, { "tag": "path", "attr": { "d": "M19.938 10.5a4 4 0 0 1 .585.396" }, "child": [] }, { "tag": "path", "attr": { "d": "M6 18a4 4 0 0 1-1.967-.516" }, "child": [] }, { "tag": "path", "attr": { "d": "M19.967 17.484A4 4 0 0 1 18 18" }, "child": [] }] })(props);
-}
 const useSidebarView = (props) => {
   const { selectedNodeType, onSelectNodeType } = props;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -29875,6 +29925,38 @@ const useSidebar = () => {
   }
   return context;
 };
+const SidebarProvider = ({ children, collapsed }) => {
+  const initiallyCollapsed = typeof collapsed === "boolean" ? collapsed : getIsSidebarCollapsedFromBody();
+  const [isCollapsed, setIsCollapsed] = useState(initiallyCollapsed);
+  useEffect(() => {
+    setSidebarCollapsedToBody(isCollapsed);
+  }, [isCollapsed]);
+  const toggleSidebar = () => {
+    setIsCollapsed((prev) => !prev);
+  };
+  return /* @__PURE__ */ jsx(SidebarContext.Provider, { value: { isCollapsed, toggleSidebar }, children });
+};
+const setSidebarCollapsedToBody = (isCollapsed) => {
+  if (isCollapsed) {
+    document.body.classList.add("waldiez-sidebar-collapsed");
+    document.body.classList.remove("waldiez-sidebar-expanded");
+  } else {
+    document.body.classList.add("waldiez-sidebar-expanded");
+    document.body.classList.remove("waldiez-sidebar-collapsed");
+  }
+};
+const getIsSidebarCollapsedFromBody = () => {
+  if (document.body.classList.contains("waldiez-sidebar-collapsed")) {
+    return true;
+  }
+  if (document.body.classList.contains("waldiez-sidebar-expanded")) {
+    return false;
+  }
+  return window.innerWidth < 768;
+};
+function LuBrain(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" }, "child": [] }, { "tag": "path", "attr": { "d": "M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" }, "child": [] }, { "tag": "path", "attr": { "d": "M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" }, "child": [] }, { "tag": "path", "attr": { "d": "M17.599 6.5a3 3 0 0 0 .399-1.375" }, "child": [] }, { "tag": "path", "attr": { "d": "M6.003 5.125A3 3 0 0 0 6.401 6.5" }, "child": [] }, { "tag": "path", "attr": { "d": "M3.477 10.896a4 4 0 0 1 .585-.396" }, "child": [] }, { "tag": "path", "attr": { "d": "M19.938 10.5a4 4 0 0 1 .585.396" }, "child": [] }, { "tag": "path", "attr": { "d": "M6 18a4 4 0 0 1-1.967-.516" }, "child": [] }, { "tag": "path", "attr": { "d": "M19.967 17.484A4 4 0 0 1 18 18" }, "child": [] }] })(props);
+}
 const useEditFlowModal = (props) => {
   const { isOpen, onClose } = props;
   const getFlowInfo = useWaldiez((s) => s.getFlowInfo);

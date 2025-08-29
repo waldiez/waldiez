@@ -5,13 +5,9 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { InfoCheckbox } from "@waldiez/components/infoCheckBox";
-import { MultiValue, Select, SingleValue } from "@waldiez/components/select";
-import {
-    TransitionTargetType,
-    ValidTransitionTargetTypes,
-    WaldiezNodeAgent,
-    WaldiezTransitionTarget,
-} from "@waldiez/models";
+import { type MultiValue, Select, type SingleValue } from "@waldiez/components/select";
+import { ValidTransitionTargetTypes } from "@waldiez/models";
+import type { TransitionTargetType, WaldiezNodeAgent, WaldiezTransitionTarget } from "@waldiez/models/types";
 
 type AfterWorkProps = {
     target: WaldiezTransitionTarget | null;

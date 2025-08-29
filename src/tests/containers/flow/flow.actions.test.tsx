@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { act, fireEvent, screen } from "@testing-library/react";
-import userEvent, { UserEvent } from "@testing-library/user-event";
+import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { describe, it } from "vitest";
 
 import { onConvert, onSave, renderFlow } from "./common";

@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
 import { useCallback, useEffect, useMemo } from "react";
 
-import { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
-import { ThingsToImport } from "@waldiez/types";
+import type { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
+import type { ThingsToImport } from "@waldiez/types";
 
 /**
  * Custom hook for managing tool nodes selection in flow import

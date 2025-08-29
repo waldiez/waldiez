@@ -7,7 +7,7 @@
  */
 import React, { useCallback } from "react";
 
-import { DropZoneProps } from "@waldiez/components/dropZone/types";
+import type { DropZoneProps } from "@waldiez/components/dropZone/types";
 import { showSnackbar } from "@waldiez/components/snackbar";
 
 /**

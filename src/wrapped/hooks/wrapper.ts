@@ -4,17 +4,17 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import {
+import type {
     WaldiezChatUserInput,
     WaldiezDebugInputResponse,
     WaldiezStepByStep,
     WaldiezTimelineData,
 } from "@waldiez/components";
-import { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
+import type { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
 
 import { useMessageHandler } from "./messageHandler";
 import { useWebSocketSender } from "./sender";
-import { WaldiezWrapperActions, WaldiezWrapperState } from "./types";
+import type { WaldiezWrapperActions, WaldiezWrapperState } from "./types";
 import { useUIMessageProcessor } from "./uiProcessor";
 import { useWebsocket } from "./ws";
 

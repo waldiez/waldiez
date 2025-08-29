@@ -5,7 +5,7 @@
 import React, { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { SnackbarItem } from "@waldiez/components/snackbar/types";
+import type { SnackbarItem } from "@waldiez/components/snackbar/types";
 
 export const Snackbar: React.FC<SnackbarItem & { onClose: () => void }> = ({
     flowId,

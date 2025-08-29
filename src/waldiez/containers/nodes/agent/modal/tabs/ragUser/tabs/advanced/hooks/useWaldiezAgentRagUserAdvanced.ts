@@ -4,7 +4,7 @@
  */
 import React, { useCallback } from "react";
 
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
 /**
  * Custom hook for managing advanced RAG settings

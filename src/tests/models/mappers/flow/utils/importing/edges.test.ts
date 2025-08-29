@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { getEdges } from "@waldiez/models/mappers/flow/utils";
+import { getEdges } from "@waldiez/models/mappers/flow/utils/importing/edges";
 
 describe("getEdges", () => {
     it("should return the correct edges", () => {

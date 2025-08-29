@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezModelAPIType } from "@waldiez/models";
+import { type WaldiezModelAPIType } from "@waldiez/models";
 
 export const modelLinks: Record<WaldiezModelAPIType, string> = {
     openai: "https://platform.openai.com/docs/models",

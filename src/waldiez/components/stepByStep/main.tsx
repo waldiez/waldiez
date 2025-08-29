@@ -2,56 +2,70 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable complexity */
 import React, { useCallback, useMemo, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
 import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-icons/fa6";
 
 import { nanoid } from "nanoid";
 
-import { WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
-
-type StepByStepViewProps = {
-    flowId: string;
-    stepByStep?: WaldiezStepByStep | null;
-    className?: string;
-};
+import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
 
 /**
  * Main step-by-step debug view component
  */
-// eslint-disable-next-line complexity
-export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) => {
+export const StepByStepView: React.FC<{
+    flowId: string;
+    stepByStep?: WaldiezStepByStep | null;
+    className?: string;
+}> = ({ flowId, stepByStep }) => {
     const [isExpanded, setIsExpanded] = useState(true);
     const [responseText, setResponseText] = useState("");
-    const canClose = typeof stepByStep?.handlers?.close === "function" && stepByStep?.eventHistory.length > 0;
+
+    const requestId = stepByStep?.activeRequest?.request_id ?? null;
+    const canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+
     const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setResponseText(e.target.value);
     }, []);
-    const onInputKeyDown = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Enter") {
-                stepByStep?.handlers.respond({
-                    id: nanoid(),
-                    timestamp: Date.now(),
-                    data: responseText,
-                    request_id: stepByStep?.activeRequest?.request_id,
-                    type: "input_response",
-                });
-                setResponseText("");
-            }
-        },
-        [responseText, stepByStep?.handlers, stepByStep?.activeRequest?.request_id],
-    );
+
     const onRespond = useCallback(() => {
-        stepByStep?.handlers.respond({
+        if (!requestId || !responseText.trim()) {
+            return;
+        }
+        stepByStep?.handlers?.respond?.({
             id: nanoid(),
             timestamp: Date.now(),
             data: responseText,
-            request_id: stepByStep?.activeRequest?.request_id,
+            request_id: requestId,
             type: "input_response",
         });
         setResponseText("");
-    }, [responseText, stepByStep?.activeRequest?.request_id, stepByStep?.handlers]);
+    }, [requestId, responseText, stepByStep?.handlers]);
+
+    const onInputKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key !== "Enter") {
+                return;
+            }
+            if (e.nativeEvent?.isComposing) {
+                return;
+            }
+            if (!requestId || !responseText.trim()) {
+                return;
+            }
+            stepByStep?.handlers?.respond?.({
+                id: nanoid(),
+                timestamp: Date.now(),
+                data: responseText,
+                request_id: requestId,
+                type: "input_response",
+            });
+            setResponseText("");
+        },
+        [requestId, responseText, stepByStep?.handlers],
+    );
+
     const onControl = useCallback(
         (
             action:
@@ -67,60 +81,60 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                 | "list_breakpoints"
                 | "clear_breakpoints",
         ) => {
-            const response = controlToResponse({ kind: action });
-            stepByStep?.handlers.sendControl({
-                data: response,
-                request_id: stepByStep?.activeRequest?.request_id || "<unknown>",
+            if (!stepByStep?.handlers?.sendControl) {
+                return;
+            }
+            const rid = requestId ?? "<unknown>";
+            stepByStep.handlers.sendControl({
+                data: controlToResponse({ kind: action }),
+                request_id: rid,
             });
         },
-        [stepByStep?.handlers, stepByStep?.activeRequest?.request_id],
+        [requestId, stepByStep?.handlers],
     );
-    // let's try to reduce the envt history's data (keep only .data or .content, or .message if available)
+
+    // compact, filtered history (capped for perf)
     const reducedHistory = useMemo(() => {
-        if (!stepByStep?.eventHistory) {
-            return [];
-        }
-        return stepByStep?.eventHistory
-            .filter(entry => !["debug", "print", "raw"].includes(String(entry.type)))
-            .map(entry => ({
-                data: entry.event || entry.data || entry.message || entry.content || entry,
-            }))
-            .map(entry => {
-                if (Array.isArray(entry.data) && entry.data.length === 1) {
-                    return entry.data[0];
-                }
-                return entry.data;
-            }) as any[];
+        const raw = stepByStep?.eventHistory ?? [];
+        const max = 200;
+        const start = Math.max(0, raw.length - max);
+        return raw
+            .slice(start)
+            .filter(e => !["debug", "print", "raw"].includes(String((e as any)?.type)))
+            .map(e => {
+                const x: any = e;
+                const data = x.event ?? x.data ?? x.message ?? x.content ?? x;
+                return Array.isArray(data) && data.length === 1 ? data[0] : data;
+            });
     }, [stepByStep?.eventHistory]);
 
-    const getBadgeText = (stepByStep?: WaldiezStepByStep | null, history?: any[]) => {
-        if (!stepByStep || !stepByStep.currentEvent) {
+    const badgeText = useMemo(() => {
+        if (!stepByStep) {
             return null;
         }
-        if (!stepByStep.active && history && history.length > 0) {
-            return "Finished";
+        const curType = stepByStep.currentEvent?.type;
+        if (typeof curType === "string") {
+            return curType;
         }
-        if (typeof stepByStep.currentEvent?.type === "string") {
-            return stepByStep.currentEvent.type;
+
+        const last = stepByStep.eventHistory?.[stepByStep.eventHistory.length - 1] as any;
+        const lastType = last?.type ?? last?.event?.type;
+        if (typeof lastType === "string") {
+            return lastType;
         }
-        if (typeof stepByStep.currentEvent === "object") {
-            return "Running";
+
+        if (!stepByStep.active) {
+            return stepByStep.eventHistory?.length ? "Finished" : null;
         }
-        if (!history || history.length === 0) {
-            return null;
-        }
-        const topEvent = history[0];
-        if (typeof topEvent.event?.type === "string") {
-            return topEvent.event.type;
-        }
-        return topEvent.type || "Running";
-    };
-    const badgeText = getBadgeText(stepByStep, reducedHistory);
+        return "Running";
+    }, [stepByStep]);
+
     if (!stepByStep?.active && !canClose) {
         return null;
     }
+
     return (
-        <div className="waldiez-step-by-step-view">
+        <div className="waldiez-step-by-step-view" data-testid={`step-by-step-${flowId}`}>
             {/* Header */}
             <div className="header">
                 <div className="header-left">
@@ -137,6 +151,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                         type="button"
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="header-toggle"
+                        aria-label={isExpanded ? "Collapse panel" : "Expand panel"}
                     >
                         {isExpanded ? <FaChevronDown size={14} /> : <FaChevronUp size={14} />}
                     </button>
@@ -147,12 +162,14 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                             type="button"
                             onClick={stepByStep?.handlers?.close}
                             className="header-toggle"
+                            aria-label="Close panel"
                         >
                             <FaX size={14} />
                         </button>
                     )}
                 </div>
             </div>
+
             {/* Content */}
             {isExpanded && (
                 <div className="content">
@@ -163,6 +180,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                                 className="btn btn-primary"
                                 type="button"
                                 onClick={() => onControl("continue")}
+                                disabled={!stepByStep?.pendingControlInput}
                             >
                                 <FaStepForward /> <span>Continue</span>
                             </button>
@@ -170,6 +188,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                                 className="btn btn-secondary"
                                 type="button"
                                 onClick={() => onControl("run")}
+                                disabled={!stepByStep?.pendingControlInput}
                             >
                                 <FaPlay /> <span>Run</span>
                             </button>
@@ -177,6 +196,7 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                                 className="btn btn-danger"
                                 type="button"
                                 onClick={() => onControl("quit")}
+                                disabled={!stepByStep?.pendingControlInput}
                             >
                                 <FaStop /> <span>Quit</span>
                             </button>
@@ -191,18 +211,24 @@ export const StepByStepView: React.FC<StepByStepViewProps> = ({ stepByStep }) =>
                             <div className="input-row">
                                 <input
                                     className="input"
-                                    placeholder="Type your response… (Enter to send)"
+                                    placeholder="Type your response... (Enter to send)"
                                     value={responseText}
                                     type={stepByStep.activeRequest.password === true ? "password" : "text"}
                                     onChange={onInputChange}
                                     onKeyDown={onInputKeyDown}
                                 />
-                                <button className="btn btn-primary" type="button" onClick={onRespond}>
+                                <button
+                                    className="btn btn-primary"
+                                    type="button"
+                                    onClick={onRespond}
+                                    disabled={!requestId || !responseText.trim()}
+                                >
                                     Send
                                 </button>
                             </div>
                         </div>
                     )}
+
                     {/* Event history / raw logs */}
                     <div className="event-history">
                         <SectionTitle>Messages</SectionTitle>
@@ -221,40 +247,29 @@ function safeStringify(v: unknown) {
         return String(v);
     }
 }
+
 const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, placeholder = "" }) => {
-    let safeValue: string;
-    if (Array.isArray(value)) {
-        const entries = [];
-        for (let i = 0; i < value.length; i += 1) {
-            const entry = value[i];
-            if (entry.event) {
-                entries.push(safeStringify(entry.event));
-            } else if (entry.content) {
-                entries.push(safeStringify(entry.content));
-            } else {
-                entries.push(safeStringify(entry));
+    const safeValue = useMemo(() => {
+        if (Array.isArray(value)) {
+            const parts: string[] = [];
+            for (let i = 0; i < value.length; i += 1) {
+                const entry: any = value[i];
+                parts.push(safeStringify(entry?.event ?? entry?.content ?? entry));
             }
+            const joined = parts.join("\n");
+            return !joined.trim() ? placeholder : joined;
         }
-        safeValue = entries.join("\n");
-    } else {
-        safeValue = safeStringify(value);
-    }
-    if (
-        !safeValue ||
-        safeValue === "undefined" ||
-        safeValue === "null" ||
-        safeValue.trim() === "" ||
-        safeValue === "[]" ||
-        safeValue === "{}"
-    ) {
-        safeValue = placeholder;
-    }
+        const s = safeStringify(value);
+        return !s || ["undefined", "null", "[]", "{}"].includes(s) || s.trim() === "" ? placeholder : s;
+    }, [value, placeholder]);
+
     return (
         <div className="json">
             <pre className="pre">{safeValue}</pre>
         </div>
     );
 };
+
 const SectionTitle: React.FC<React.PropsWithChildren> = ({ children }) => (
     <div className="section-title margin-bottom-5">{children}</div>
 );

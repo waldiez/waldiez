@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { AfterWork, Handoffs, Select, TabItem, TabItems, UpdateState } from "@waldiez/components";
 import { useWaldiezAgentGroupMember } from "@waldiez/containers/nodes/agent/modal/tabs/groupMember/hooks";
-import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
+import type { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/types";
 
 type WaldiezAgentGroupProps = {
     id: string;

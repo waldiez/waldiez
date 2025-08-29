@@ -5,7 +5,7 @@
 import { useContext } from "react";
 
 import { SnackbarContext } from "@waldiez/components/snackbar/context";
-import { SnackbarContextType } from "@waldiez/components/snackbar/types";
+import type { SnackbarContextType } from "@waldiez/components/snackbar/types";
 
 export const useSnackbar = (): SnackbarContextType => {
     const ctx = useContext(SnackbarContext);

@@ -347,15 +347,6 @@ describe("WaldiezStepByStepProcessor", () => {
         });
     });
 
-    describe("canProcess", () => {
-        it("should delegate to WaldiezStepByStepUtils.isStepByStepMessage", () => {
-            expect(WaldiezStepByStepProcessor.canProcess({ type: "debug_print" })).toBe(true);
-            expect(WaldiezStepByStepProcessor.canProcess({ type: "print" })).toBe(true);
-            expect(WaldiezStepByStepProcessor.canProcess({ type: "regular_message" })).toBe(true);
-            expect(WaldiezStepByStepProcessor.canProcess(null)).toBe(false);
-        });
-    });
-
     describe("parseSubprocessContent", () => {
         it("should parse valid JSON content", () => {
             const content = JSON.stringify({

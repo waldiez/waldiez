@@ -4,10 +4,10 @@
  */
 // noinspection DuplicatedCode
 import { fireEvent, render, screen } from "@testing-library/react";
-import { WaldiezModelAPIType } from "@waldiez";
 import { describe, expect, it } from "vitest";
 
 import { WaldiezNodeModelView } from "@waldiez/containers/nodes";
+import type { WaldiezModelAPIType } from "@waldiez/models/types";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
 

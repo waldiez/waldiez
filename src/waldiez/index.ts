@@ -4,7 +4,7 @@
  */
 import { flowMapper } from "@waldiez/models/mappers";
 import "@waldiez/polyfills/promiseWithResolvers";
-import { WaldiezFlow, WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
+import type { WaldiezFlow, WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
 import { Waldiez } from "@waldiez/waldiez";
 
 export type * from "@waldiez/components/types";

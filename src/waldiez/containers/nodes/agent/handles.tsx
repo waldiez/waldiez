@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Handle, OnConnect, Position } from "@xyflow/react";
+import { Handle, type OnConnect, Position } from "@xyflow/react";
 
 import { useMemo } from "react";
 
-import { WaldiezNodeAgentType } from "@waldiez/types";
+import { type WaldiezNodeAgentType } from "@waldiez/types";
 
 // noinspection JSUnusedGlobalSymbols
 /**

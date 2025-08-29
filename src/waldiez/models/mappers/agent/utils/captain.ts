@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezCaptainAgentLibEntry } from "@waldiez/models/Agent/Captain/types";
+import { type WaldiezCaptainAgentLibEntry } from "@waldiez/models/Agent/Captain/types";
 
 /**
  * Utility functions to extract captain agent library entries and configurations from a JSON object.

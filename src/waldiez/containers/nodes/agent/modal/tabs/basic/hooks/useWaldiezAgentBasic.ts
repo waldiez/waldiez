@@ -4,8 +4,8 @@
  */
 import React, { useCallback } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezAgentHumanInputMode, WaldiezNodeAgentData } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezAgentHumanInputMode, WaldiezNodeAgentData } from "@waldiez/models/types";
 
 /**
  * Custom hook for managing Waldiez Agent Basic settings

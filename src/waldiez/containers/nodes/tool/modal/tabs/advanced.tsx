@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { Dict, StringList } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
-import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
+import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 
 export const WaldiezToolAdvancedTab = memo((props: WaldiezNodeToolModalProps) => {
     const { data } = props;

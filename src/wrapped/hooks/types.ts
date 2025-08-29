@@ -2,8 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
-import {
+import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
+import type {
     WaldiezChatMessage,
     WaldiezChatParticipant,
     WaldiezChatUserInput,

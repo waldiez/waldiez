@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import { Select } from "@waldiez/components";
 import { useWaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools/hooks";
-import { WaldiezAgentToolsProps } from "@waldiez/containers/nodes/agent/modal/tabs/tools/types";
+import { type WaldiezAgentToolsProps } from "@waldiez/containers/nodes/agent/modal/tabs/tools/types";
 
 /**
  * Component for managing tools associated with an agent

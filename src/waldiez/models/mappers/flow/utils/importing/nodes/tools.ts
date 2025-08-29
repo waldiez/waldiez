@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
-import { WaldiezTool } from "@waldiez/models";
+import { WaldiezTool } from "@waldiez/models/Tool";
 import { getIdFromJSON } from "@waldiez/models/mappers/common";
-import { toolMapper } from "@waldiez/models/mappers/tool";
+import { toolMapper } from "@waldiez/models/mappers/tool/toolMapper";
 
 export const getTools = (json: Record<string, unknown>, nodes: Node[]) => {
     const tools: WaldiezTool[] = [];

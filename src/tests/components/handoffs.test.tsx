@@ -7,7 +7,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Handoffs } from "@waldiez/components/handoffs";
-import { WaldiezAgentNestedChat, WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models";
+import type {
+    WaldiezAgentNestedChat,
+    WaldiezEdge,
+    WaldiezNodeAgent,
+    WaldiezNodeAgentData,
+} from "@waldiez/models/types";
 
 const mockAgent: WaldiezNodeAgent = {
     id: "agent-1",

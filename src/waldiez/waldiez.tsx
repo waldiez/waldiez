@@ -26,7 +26,7 @@ import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import "@waldiez/styles/index.css";
 import { WaldiezThemeProvider, isInitiallyDark, setIsDarkMode } from "@waldiez/theme";
-import { WaldiezProps } from "@waldiez/types";
+import type { WaldiezProps } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
 /**

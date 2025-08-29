@@ -3,10 +3,16 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable max-statements */
-import { Edge, MarkerType, Node } from "@xyflow/react";
+import { type Edge, MarkerType, type Node } from "@xyflow/react";
 
-import { ValidAgentTypes, ValidChatTypes, WaldiezNodeAgentType } from "@waldiez/models";
-import { WaldiezChatData, WaldiezEdge, WaldiezEdgeType, WaldiezNestedChat } from "@waldiez/models/Chat";
+import { ValidAgentTypes, type WaldiezNodeAgentType } from "@waldiez/models/Agent";
+import {
+    ValidChatTypes,
+    WaldiezChatData,
+    type WaldiezEdge,
+    type WaldiezEdgeType,
+    type WaldiezNestedChat,
+} from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { AGENT_COLORS } from "@waldiez/theme";
 

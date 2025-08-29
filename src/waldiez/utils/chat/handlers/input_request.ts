@@ -4,8 +4,8 @@
  */
 import { nanoid } from "nanoid";
 
-import { InputRequestData, WaldiezChatMessage } from "@waldiez/types";
-import {
+import type { InputRequestData, WaldiezChatMessage } from "@waldiez/types";
+import type {
     MessageHandler,
     MessageProcessingContext,
     WaldiezChatMessageProcessingResult,

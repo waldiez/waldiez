@@ -4,8 +4,8 @@
  */
 import { useCallback } from "react";
 
-import { WaldiezChatUserInput } from "@waldiez/components/chatUI/types";
-import { WaldiezDebugInputResponse } from "@waldiez/components/stepByStep/types";
+import type { WaldiezChatUserInput } from "@waldiez/components/chatUI/types";
+import type { WaldiezDebugInputResponse } from "@waldiez/components/stepByStep/types";
 
 export function useWebSocketSender(opts: {
     sendJson: (msg: unknown) => boolean;

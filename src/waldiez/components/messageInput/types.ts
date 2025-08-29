@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezMessage, WaldiezMessageType } from "@waldiez/models";
+import type { WaldiezMessage, WaldiezMessageType } from "@waldiez/models/types";
 
 /**
  * Props for the MessageInput component

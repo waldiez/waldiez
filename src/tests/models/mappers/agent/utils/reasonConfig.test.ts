@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 
 import { defaultReasonConfig } from "@waldiez/models/Agent/Reasoning";
-import { getReasonConfig, getVerbose } from "@waldiez/models/mappers/agent/utils";
+import { getReasonConfig, getVerbose } from "@waldiez/models/mappers/agent/utils/reasonConfig";
 
 describe("getReasonConfig", () => {
     it("should return default reason config", () => {

@@ -4,10 +4,10 @@
  */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Select, SingleValue } from "@waldiez/components/select";
+import { Select, type SingleValue } from "@waldiez/components/select";
 import { TextInput } from "@waldiez/components/textInput";
 import { TextareaInput } from "@waldiez/components/textareaInput";
-import { ConditionType, WaldiezHandoffCondition } from "@waldiez/types";
+import type { ConditionType, WaldiezHandoffCondition } from "@waldiez/types";
 
 const conditionTypeMapping: Record<ConditionType, string> = {
     string_llm: "Static LLM prompt",

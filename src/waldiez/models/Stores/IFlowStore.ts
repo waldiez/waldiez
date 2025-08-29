@@ -3,9 +3,9 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import { ReactFlowInstance, Viewport } from "@xyflow/react";
+import type { ReactFlowInstance, Viewport } from "@xyflow/react";
 
-import {
+import type {
     ImportedFlow,
     ThingsToImport,
     WaldiezEdge,

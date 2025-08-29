@@ -4,8 +4,8 @@
  */
 import { useCallback, useMemo } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezNodeAgentData } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezNodeAgentData } from "@waldiez/models/types";
 import { useWaldiezTheme } from "@waldiez/theme";
 
 /**

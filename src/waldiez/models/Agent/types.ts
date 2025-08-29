@@ -2,23 +2,41 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezNodeAgentAssistant, WaldiezNodeAgentAssistantData } from "@waldiez/models/Agent/Assistant";
-import { WaldiezNodeAgentCaptain, WaldiezNodeAgentCaptainData } from "@waldiez/models/Agent/Captain";
-import { WaldiezNodeAgentDocAgent, WaldiezNodeAgentDocAgentData } from "@waldiez/models/Agent/DocAgent";
-import {
+import type {
+    WaldiezNodeAgentAssistant,
+    WaldiezNodeAgentAssistantData,
+} from "@waldiez/models/Agent/Assistant";
+import type { WaldiezNodeAgentCaptain, WaldiezNodeAgentCaptainData } from "@waldiez/models/Agent/Captain";
+import type { WaldiezNodeAgentDocAgent, WaldiezNodeAgentDocAgentData } from "@waldiez/models/Agent/DocAgent";
+import type {
     WaldiezNodeAgentGroupManager,
     WaldiezNodeAgentGroupManagerData,
 } from "@waldiez/models/Agent/GroupManager";
-import { WaldiezNodeAgentRagUser, WaldiezNodeAgentRagUserData } from "@waldiez/models/Agent/RagUser";
-import { WaldiezNodeAgentReasoning, WaldiezNodeAgentReasoningData } from "@waldiez/models/Agent/Reasoning";
-import { WaldiezNodeAgentUserProxy, WaldiezNodeAgentUserProxyData } from "@waldiez/models/Agent/UserProxy";
+import type { WaldiezNodeAgentRagUser, WaldiezNodeAgentRagUserData } from "@waldiez/models/Agent/RagUser";
+import type {
+    WaldiezNodeAgentReasoning,
+    WaldiezNodeAgentReasoningData,
+} from "@waldiez/models/Agent/Reasoning";
+import type {
+    WaldiezNodeAgentUserProxy,
+    WaldiezNodeAgentUserProxyData,
+} from "@waldiez/models/Agent/UserProxy";
 
 export type * from "@waldiez/models/Agent/Assistant/types";
 export type * from "@waldiez/models/Agent/Captain/types";
 export type * from "@waldiez/models/Agent/Common/types";
 export type * from "@waldiez/models/Agent/DocAgent/types";
+export type { defaultGroupChatSpeakers, WaldiezAgentGroupManager } from "@waldiez/models/Agent/GroupManager";
 export type * from "@waldiez/models/Agent/GroupManager/types";
+export type {
+    defaultRetrieveConfig,
+    WaldiezAgentRagUserData,
+} from "@waldiez/models/Agent/RagUser/RagUserData";
 export type * from "@waldiez/models/Agent/RagUser/types";
+export type {
+    defaultReasonConfig,
+    WaldiezAgentReasoningData,
+} from "@waldiez/models/Agent/Reasoning/ReasoningAgentData";
 export type * from "@waldiez/models/Agent/Reasoning/types";
 export type * from "@waldiez/models/Agent/UserProxy/types";
 

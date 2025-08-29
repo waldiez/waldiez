@@ -4,8 +4,8 @@
  */
 import { nanoid } from "nanoid";
 
-import { TerminationMessageData, WaldiezChatMessage } from "@waldiez/types";
-import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type { TerminationMessageData, WaldiezChatMessage } from "@waldiez/types";
+import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
 /**
  * Termination handler processes termination messages.

@@ -4,8 +4,8 @@
  */
 import { CheckboxInput } from "@waldiez/components";
 import { useFlowModels } from "@waldiez/containers/flow/modals/importFlowModal/steps/preview/hooks";
-import { FlowDataPreviewProps } from "@waldiez/containers/flow/modals/importFlowModal/steps/types";
-import { WaldiezNodeModel } from "@waldiez/models";
+import type { FlowDataPreviewProps } from "@waldiez/containers/flow/modals/importFlowModal/steps/types";
+import type { WaldiezNodeModel } from "@waldiez/models";
 
 export const FlowModels = (props: FlowDataPreviewProps) => {
     const { state } = props;

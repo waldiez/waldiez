@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge } from "@xyflow/react";
+import type { Edge } from "@xyflow/react";
 
-import { WaldiezChatLlmSummaryMethod, WaldiezMessageType } from "@waldiez/models";
+import type { WaldiezChatLlmSummaryMethod, WaldiezMessageType } from "@waldiez/models/types";
 
 import { createdAt, edgesCount, updatedAt } from "./common";
 

@@ -6,7 +6,7 @@ import Waldiez, { showSnackbar } from "@waldiez";
 
 import React, { useCallback } from "react";
 
-import { WaldiezProps } from "@waldiez/types";
+import type { WaldiezProps } from "@waldiez/types";
 
 import { useWaldiezWrapper } from "./hooks";
 

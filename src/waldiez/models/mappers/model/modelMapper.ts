@@ -4,11 +4,11 @@
  */
 import {
     WaldiezModel,
-    WaldiezModelAPIType,
-    WaldiezModelAWS,
+    type WaldiezModelAPIType,
+    type WaldiezModelAWS,
     WaldiezModelData,
-    WaldiezModelPrice,
-    WaldiezNodeModel,
+    type WaldiezModelPrice,
+    type WaldiezNodeModel,
 } from "@waldiez/models/Model";
 import {
     getCreatedAtFromJSON,

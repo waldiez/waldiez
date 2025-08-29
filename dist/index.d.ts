@@ -111,6 +111,35 @@ export declare const createWaldiezStore: (props: WaldiezStoreProps) => Omit<Stor
 };
 
 /**
+ * Default configuration for group chat speakers.
+ * @see {@link GroupChatSpeakerSelectionMethodOption}
+ * @see {@link GroupChatSpeakerSelectionMode}
+ * @see {@link GroupChatSpeakerTransitionsType}
+ */
+export declare const defaultGroupChatSpeakers: {
+    selectionMethod: GroupChatSpeakerSelectionMethodOption;
+    selectionCustomMethod: string;
+    maxRetriesForSelecting: null;
+    selectionMode: GroupChatSpeakerSelectionMode;
+    allowRepeat: boolean;
+    allowedOrDisallowedTransitions: {};
+    transitionsType: GroupChatSpeakerTransitionsType;
+    order: never[];
+};
+
+/**
+ * Default configuration for Waldiez Reasoning Agent.
+ * @see {@link WaldiezReasoningAgentReasonConfig}
+ */
+export declare const defaultReasonConfig: WaldiezReasoningAgentReasonConfig;
+
+/**
+ * Default configuration for Waldiez Rag User Retrieve.
+ * @see {@link WaldiezRagUserRetrieveConfig}
+ */
+export declare const defaultRetrieveConfig: WaldiezRagUserRetrieveConfig;
+
+/**
  * Creates a new WaldiezFlow instance with default values.
  * @returns A new instance of WaldiezFlow.
  */
@@ -326,6 +355,11 @@ export declare interface IWaldiezAgentStore {
      * @param position - The position of the agent in the group.
      */
     setAgentGroup: (agentId: string, groupId: string, position?: XYPosition) => void;
+}
+
+export declare interface IWaldiezChatParticipantsStore {
+    setActiveParticipants: (sender: string | null, recipient: string | null) => void;
+    resetActiveParticipants: () => void;
 }
 
 export declare interface IWaldiezEdgeStore {
@@ -1113,7 +1147,7 @@ export declare class WaldiezAgent {
  * @param rest - Any other data
  * @see {@link WaldiezAgent}
  */
-declare class WaldiezAgentAssistant extends WaldiezAgent {
+export declare class WaldiezAgentAssistant extends WaldiezAgent {
     data: WaldiezAgentAssistantData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1158,7 +1192,7 @@ declare class WaldiezAgentAssistant extends WaldiezAgent {
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezAgentAssistantData extends WaldiezAgentData {
+export declare class WaldiezAgentAssistantData extends WaldiezAgentData {
     isMultimodal: boolean;
     constructor(props?: {
         humanInputMode: WaldiezAgentHumanInputMode;
@@ -1193,7 +1227,7 @@ declare class WaldiezAgentAssistantData extends WaldiezAgentData {
  * @param data - The data of the agent. See {@link WaldiezAgentCaptainData}
  * @param rest - Any other data
  */
-declare class WaldiezAgentCaptain extends WaldiezAgent {
+export declare class WaldiezAgentCaptain extends WaldiezAgent {
     data: WaldiezAgentCaptainData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1240,7 +1274,7 @@ declare class WaldiezAgentCaptain extends WaldiezAgent {
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezAgentCaptainData extends WaldiezAgentData {
+export declare class WaldiezAgentCaptainData extends WaldiezAgentData {
     agentLib: WaldiezCaptainAgentLibEntry[];
     toolLib: "default" | null;
     maxRound: number;
@@ -1440,7 +1474,7 @@ export declare class WaldiezAgentData {
  * @param rest - Any other data
  * @see {@link WaldiezAgent}
  */
-declare class WaldiezAgentDocAgent extends WaldiezAgent {
+export declare class WaldiezAgentDocAgent extends WaldiezAgent {
     data: WaldiezAgentDocAgentData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1489,7 +1523,7 @@ declare class WaldiezAgentDocAgent extends WaldiezAgent {
  * @see {@link WaldiezTransitionTarget}
  * @see {@link RAGQueryEngine}
  */
-declare class WaldiezAgentDocAgentData extends WaldiezAgentData {
+export declare class WaldiezAgentDocAgentData extends WaldiezAgentData {
     collectionName: string | null;
     resetCollection: boolean;
     parsedDocsPath: string | null;
@@ -1531,7 +1565,7 @@ declare class WaldiezAgentDocAgentData extends WaldiezAgentData {
  * @param rest - Any other data
  * @see {@link WaldiezAgent}
  */
-declare class WaldiezAgentGroupManager extends WaldiezAgent {
+export declare class WaldiezAgentGroupManager extends WaldiezAgent {
     data: WaldiezAgentGroupManagerData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1583,7 +1617,7 @@ declare class WaldiezAgentGroupManager extends WaldiezAgent {
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezAgentGroupManagerData extends WaldiezAgentData {
+export declare class WaldiezAgentGroupManagerData extends WaldiezAgentData {
     maxRound: number;
     adminName: string | null;
     speakers: WaldiezAgentGroupManagerSpeakers;
@@ -1630,7 +1664,7 @@ declare class WaldiezAgentGroupManagerData extends WaldiezAgentData {
  * @see {@link GroupChatSpeakerTransitionsType}
  * @see {@link defaultGroupChatSpeakers}
  */
-declare class WaldiezAgentGroupManagerSpeakers {
+export declare class WaldiezAgentGroupManagerSpeakers {
     selectionMethod: GroupChatSpeakerSelectionMethodOption;
     selectionCustomMethod: string;
     maxRetriesForSelecting: number | null;
@@ -1707,7 +1741,7 @@ export declare type WaldiezAgentNestedChat = {
  * @param rest - Any other data
  * @see {@link WaldiezAgentRagUserData}
  */
-declare class WaldiezAgentRagUser extends WaldiezAgent {
+export declare class WaldiezAgentRagUser extends WaldiezAgent {
     data: WaldiezAgentRagUserData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1754,7 +1788,7 @@ declare class WaldiezAgentRagUser extends WaldiezAgent {
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezAgentRagUserData extends WaldiezAgentData {
+export declare class WaldiezAgentRagUserData extends WaldiezAgentData {
     retrieveConfig: WaldiezRagUserRetrieveConfig;
     constructor(props?: {
         humanInputMode: WaldiezAgentHumanInputMode;
@@ -1789,7 +1823,7 @@ declare class WaldiezAgentRagUserData extends WaldiezAgentData {
  * @param data - The data of the agent. See {@link WaldiezAgentReasoningData}
  * @param rest - Any other data
  */
-declare class WaldiezAgentReasoning extends WaldiezAgent {
+export declare class WaldiezAgentReasoning extends WaldiezAgent {
     data: WaldiezAgentReasoningData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1837,7 +1871,7 @@ declare class WaldiezAgentReasoning extends WaldiezAgent {
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezAgentReasoningData extends WaldiezAgentData {
+export declare class WaldiezAgentReasoningData extends WaldiezAgentData {
     verbose: boolean;
     reasonConfig: WaldiezReasoningAgentReasonConfig;
     constructor(props?: {
@@ -1932,7 +1966,7 @@ export declare type WaldiezAgentUpdateSystemMessageType = "string" | "callable";
  * @param updatedAt - The update date of the agent
  * @param data - The data of the agent. See {@link WaldiezAgentUserProxyData}
  */
-declare class WaldiezAgentUserProxy extends WaldiezAgent {
+export declare class WaldiezAgentUserProxy extends WaldiezAgent {
     data: WaldiezAgentUserProxyData;
     agentType: WaldiezNodeAgentType;
     constructor(props: {
@@ -1977,7 +2011,7 @@ declare class WaldiezAgentUserProxy extends WaldiezAgent {
  * @see {@link WaldiezAgentUpdateSystemMessage}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezAgentUserProxyData extends WaldiezAgentData {
+export declare class WaldiezAgentUserProxyData extends WaldiezAgentData {
     constructor(props?: {
         humanInputMode: WaldiezAgentHumanInputMode;
         systemMessage: string | null;
@@ -2051,7 +2085,7 @@ export declare type WaldiezCaptainAgentLibEntry = {
  * @param rest - Any additional properties
  * @see {@link WaldiezChatData}
  */
-declare class WaldiezChat {
+export declare class WaldiezChat {
     id: string;
     type: WaldiezEdgeType;
     source: string;
@@ -2137,7 +2171,7 @@ export declare type WaldiezChatContent = WaldiezMediaContent | WaldiezMediaConte
  * @see {@link WaldiezHandoffAvailability}
  * @see {@link WaldiezTransitionTarget}
  */
-declare class WaldiezChatData {
+export declare class WaldiezChatData {
     sourceType: WaldiezAgentType;
     targetType: WaldiezAgentType;
     name: string;
@@ -2380,6 +2414,11 @@ export declare type WaldiezChatParticipant = {
     id: string;
     name: string;
     isUser: boolean;
+};
+
+export declare type WaldiezChatParticipantsState = {
+    activeSenderId: string | null;
+    activeRecipientId: string | null;
 };
 
 /**
@@ -3899,8 +3938,9 @@ export declare type WaldiezReasoningAgentReasonConfig = {
  * @see {@link IWaldiezAgentStore}
  * @see {@link IWaldiezNodeStore}
  * @see {@link IWaldiezFlowStore}
+ * @see {@link IWaldiezChatParticipantsStore}
  */
-export declare type WaldiezState = WaldiezStoreProps & IWaldiezToolStore & IWaldiezEdgeStore & IWaldiezModelStore & IWaldiezAgentStore & IWaldiezNodeStore & IWaldiezFlowStore;
+export declare type WaldiezState = WaldiezStoreProps & IWaldiezToolStore & IWaldiezEdgeStore & IWaldiezModelStore & IWaldiezAgentStore & IWaldiezNodeStore & IWaldiezFlowStore & WaldiezChatParticipantsState & IWaldiezChatParticipantsStore;
 
 /**
  * UI state slice for step-by-step mode.
@@ -4049,10 +4089,6 @@ export declare class WaldiezStepByStepProcessor {
      */
     private static findHandler;
     /**
-     * Check if the content can be processed by the step-by-step processor
-     */
-    static canProcess(content: any): boolean;
-    /**
      * Parse subprocess_output content specifically for step-by-step messages
      */
     static parseSubprocessContent(content: any): WaldiezDebugMessage | null;
@@ -4065,6 +4101,7 @@ export declare class WaldiezStepByStepUtils {
     static extractEventParticipants(event: Record<string, unknown>): {
         sender?: string;
         recipient?: string;
+        eventType?: string;
     };
     /**
      * Format event content for display (truncate if too long)
@@ -4078,24 +4115,6 @@ export declare class WaldiezStepByStepUtils {
      * Extract workflow end reason from debug_print content
      */
     static extractWorkflowEndReason(content: string): "completed" | "user_stopped" | "error" | "unknown";
-    /**
-     * Check if the workflow has started
-     */
-    static isWorkflowStart(content: string): boolean;
-    /**
-     * Check if a message is a step-by-step debug message
-     * Works with both parsed content and raw messages
-     */
-    static isStepByStepMessage(content: any): boolean;
-    /**
-     * Quick check if content can be processed by step-by-step processor
-     * Use this in your handleGenericMessage to route to step-by-step processor
-     */
-    static canProcess(content: any): boolean;
-    /**
-     * Extract event type from nested content structure
-     */
-    static extractEventType(event: Record<string, unknown>): string;
     /**
      * Create a response for debug control commands
      */

@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { InfoCheckbox, InfoLabel, Select } from "@waldiez/components";
 import { useWaldiezAgentRagUserVectorDb } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/vectorDb/hooks";
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
 /**
  * Vector DB options for the dropdown

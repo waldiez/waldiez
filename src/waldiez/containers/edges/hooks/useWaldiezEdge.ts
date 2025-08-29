@@ -2,17 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { EdgeProps, getSimpleBezierPath } from "@xyflow/react";
+import { type EdgeProps, getSimpleBezierPath } from "@xyflow/react";
 
 import React, { useCallback, useMemo } from "react";
 
-import {
-    ValidAgentTypes,
+import { ValidAgentTypes } from "@waldiez/models";
+import type {
     WaldiezEdge,
     WaldiezEdgeType,
     WaldiezNodeAgent,
     WaldiezNodeAgentType,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 import { AGENT_COLORS_ALT } from "@waldiez/theme";
 

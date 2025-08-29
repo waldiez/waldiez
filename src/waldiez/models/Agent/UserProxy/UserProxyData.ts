@@ -2,16 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
+import { WaldiezAgentData } from "@waldiez/models/Agent/Common";
+import type {
     WaldiezAgentCodeExecutionConfig,
-    WaldiezAgentData,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
     WaldiezAgentUpdateSystemMessage,
-} from "@waldiez/models/Agent/Common";
-import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
+} from "@waldiez/models/Agent/Common/types";
+import { type WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez User Proxy Agent Data.

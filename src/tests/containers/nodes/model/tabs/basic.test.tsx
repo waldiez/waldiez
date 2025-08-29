@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
 import selectEvent from "react-select-event";
 
 import { WaldiezNodeModelView } from "@waldiez/containers/nodes";
-import { WaldiezModelAPIType } from "@waldiez/models";
+import type { WaldiezModelAPIType } from "@waldiez/models/types";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
 

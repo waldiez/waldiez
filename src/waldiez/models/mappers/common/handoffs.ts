@@ -5,9 +5,9 @@
 import {
     ValidConditionTypes,
     ValidTransitionTargetTypes,
-    WaldiezHandoffAvailability,
-    WaldiezHandoffCondition,
-    WaldiezTransitionTarget,
+    type WaldiezHandoffAvailability,
+    type WaldiezHandoffCondition,
+    type WaldiezTransitionTarget,
 } from "@waldiez/models/common";
 
 /**

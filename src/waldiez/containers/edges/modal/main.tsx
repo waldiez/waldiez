@@ -20,8 +20,8 @@ import {
     DEFAULT_NESTED_CHAT_MESSAGE_METHOD_CONTENT,
     WaldiezEdgeNestedTab,
 } from "@waldiez/containers/edges/modal/tabs/nested";
-import { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
-import {
+import type { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
+import type {
     WaldiezGroupChatType,
     WaldiezHandoffAvailability,
     WaldiezHandoffCondition,

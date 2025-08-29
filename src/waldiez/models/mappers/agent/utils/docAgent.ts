@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { RAGQueryEngine } from "@waldiez/models/Agent";
+import { type RAGQueryEngine } from "@waldiez/models/Agent";
 
 /**
  * Retrieves the collection name from the agent data.

@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { MultiValue, Select } from "@waldiez/components";
+import { type MultiValue, Select } from "@waldiez/components";
 
 type WaldiezAgentNestedChatsTriggersProps = {
     id: string;

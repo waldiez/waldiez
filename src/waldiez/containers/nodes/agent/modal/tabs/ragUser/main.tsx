@@ -15,7 +15,7 @@ import {
     WaldiezAgentRagUserTextSplit,
     WaldiezAgentRagUserVectorDb,
 } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs";
-import { WaldiezAgentRagUserTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/types";
+import type { WaldiezAgentRagUserTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/types";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 
 /**

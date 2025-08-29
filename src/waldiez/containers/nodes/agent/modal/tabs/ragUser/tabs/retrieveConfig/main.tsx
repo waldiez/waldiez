@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { DropZone, InfoLabel, Select, StringList } from "@waldiez/components";
 import { useWaldiezAgentRagUserRetrieveConfig } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/retrieveConfig/hooks";
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
 /**
  * RAG task options for the dropdown

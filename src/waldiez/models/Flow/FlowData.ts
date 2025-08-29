@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, Node, Viewport } from "@xyflow/react";
+import type { Edge, Node, Viewport } from "@xyflow/react";
 
 import {
     WaldiezAgentAssistant,

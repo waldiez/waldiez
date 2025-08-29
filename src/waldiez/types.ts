@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, Node, ReactFlowJsonObject, Viewport } from "@xyflow/react";
+import type { Edge, Node, ReactFlowJsonObject, Viewport } from "@xyflow/react";
 
-import { WaldiezChatConfig, WaldiezStepByStep } from "@waldiez/components/types";
+import type { WaldiezChatConfig, WaldiezStepByStep } from "@waldiez/components/types";
 
 export type * from "@waldiez/components/types";
-export type * from "@waldiez/models";
-export type * from "@waldiez/store";
+export type * from "@waldiez/models/types";
+export type * from "@waldiez/store/types";
 export type * from "@waldiez/utils/chat/types";
 export type * from "@waldiez/utils/stepByStep/types";
 

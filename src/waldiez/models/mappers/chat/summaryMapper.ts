@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezChatLlmSummaryMethod, WaldiezChatSummary } from "@waldiez/models/Chat";
+import type { WaldiezChatLlmSummaryMethod, WaldiezChatSummary } from "@waldiez/models/Chat";
 
 /**
  * summaryMapper

@@ -4,7 +4,7 @@
  */
 import React, { useCallback, useEffect, useState } from "react";
 
-import { DictProps } from "@waldiez/components/dict/types";
+import type { DictProps } from "@waldiez/components/dict/types";
 
 /**
  * Custom hook for managing dictionary-like key-value pairs

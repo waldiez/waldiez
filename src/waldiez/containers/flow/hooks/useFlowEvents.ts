@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyflow/react";
+import type { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyflow/react";
 
 import React, { useCallback, useMemo } from "react";
 
 import { showSnackbar } from "@waldiez/components";
-import { WaldiezEdge } from "@waldiez/models";
+import type { WaldiezEdge } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { exportItem, getFlowRoot } from "@waldiez/utils";
 

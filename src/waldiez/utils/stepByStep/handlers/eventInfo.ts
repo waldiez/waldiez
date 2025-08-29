@@ -2,8 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezDebugMessage, isDebugEventInfo } from "@waldiez/components/stepByStep";
-import {
+import { type WaldiezDebugMessage, isDebugEventInfo } from "@waldiez/components/stepByStep";
+import type {
     WaldiezStepByStepHandler,
     WaldiezStepByStepProcessingContext,
     WaldiezStepByStepProcessingResult,

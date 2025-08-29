@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { XYPosition } from "@xyflow/react";
+import type { XYPosition } from "@xyflow/react";
 
-import {
+import type {
     WaldiezAgentConnections,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,

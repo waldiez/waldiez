@@ -6,10 +6,10 @@ import {
     DEFAULT_SHARED_TOOL_CONTENT,
     PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
-    WaldiezNodeTool,
+    type WaldiezNodeTool,
     WaldiezTool,
     WaldiezToolData,
-    WaldiezToolType,
+    type WaldiezToolType,
 } from "@waldiez/models/Tool";
 import {
     getCreatedAtFromJSON,

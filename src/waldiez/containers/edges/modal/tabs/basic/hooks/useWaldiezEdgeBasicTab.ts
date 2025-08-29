@@ -4,9 +4,9 @@
  */
 import React, { useCallback, useMemo } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
-import { WaldiezChatLlmSummaryMethod, WaldiezEdgeType } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
+import type { WaldiezChatLlmSummaryMethod, WaldiezEdgeType } from "@waldiez/models/types";
 
 // Constants moved outside of the component for better performance
 const SUMMARY_ROLE_OPTIONS = [

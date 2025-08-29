@@ -22,7 +22,7 @@ import {
     ToolResponseHandler,
     UsingAutoReplyHandler,
 } from "@waldiez/utils/chat/handlers";
-import {
+import type {
     BaseMessageData,
     MessageHandler,
     MessageProcessingContext,

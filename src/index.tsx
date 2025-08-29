@@ -2,10 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Waldiez, WaldiezProps, importFlow } from "@waldiez";
+import { Waldiez, type WaldiezProps, importFlow } from "@waldiez";
 
-// Import the development wrapper component
-import { Edge, Node } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 
 import React from "react";
 import ReactDOM from "react-dom/client";

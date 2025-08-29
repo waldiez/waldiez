@@ -6,7 +6,7 @@ import React from "react";
 
 import { CheckboxInput, InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic/hooks";
-import { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
+import { type WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
 
 export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: WaldiezEdgeBasicTabProps) => {
     const { data, edgeId, onTypeChange, skipDescription = false } = props;

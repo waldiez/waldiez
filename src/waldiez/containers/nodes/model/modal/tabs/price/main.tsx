@@ -6,7 +6,7 @@ import React, { memo, useMemo } from "react";
 
 import { InfoLabel } from "@waldiez/components";
 import { useModelModalPriceTab } from "@waldiez/containers/nodes/model/modal/tabs/price/hooks";
-import { WaldiezNodeModelModalPriceTabProps } from "@waldiez/containers/nodes/model/modal/tabs/price/types";
+import { type WaldiezNodeModelModalPriceTabProps } from "@waldiez/containers/nodes/model/modal/tabs/price/types";
 
 /**
  * Component for managing model pricing in the model modal

@@ -4,8 +4,8 @@
  */
 import { memo, useMemo } from "react";
 
-import { CheckboxInput, Select, SingleValue } from "@waldiez/components";
-import { WaldiezAgentNestedChat } from "@waldiez/models";
+import { CheckboxInput, Select, type SingleValue } from "@waldiez/components";
+import { type WaldiezAgentNestedChat } from "@waldiez/models/types";
 
 type WaldiezAgentNestedChatsMessagesProps = {
     id: string;

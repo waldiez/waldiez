@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import { type Node } from "@xyflow/react";
 
 import {
-    WaldiezAgentCodeExecutionConfig,
-    WaldiezAgentLinkedTool,
-    WaldiezAgentNestedChat,
-    WaldiezAgentTerminationMessageCheck,
+    type WaldiezAgentCodeExecutionConfig,
+    type WaldiezAgentLinkedTool,
+    type WaldiezAgentNestedChat,
+    type WaldiezAgentTerminationMessageCheck,
     defaultReasonConfig,
     defaultRetrieveConfig,
 } from "@waldiez/models";

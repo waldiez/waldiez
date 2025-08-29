@@ -2,8 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezTimelineData } from "@waldiez/types";
-import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type { WaldiezTimelineData } from "@waldiez/types";
+import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
 export class TimelineDataHandler implements MessageHandler {
     canHandle(type: string): boolean {

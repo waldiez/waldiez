@@ -3,13 +3,13 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import {
-    WaldiezDebugMessage,
+    type WaldiezDebugMessage,
     isDebugBreakpointAdded,
     isDebugBreakpointCleared,
     isDebugBreakpointRemoved,
     isDebugBreakpointsList,
 } from "@waldiez/components/stepByStep";
-import {
+import type {
     WaldiezStepByStepHandler,
     WaldiezStepByStepProcessingContext,
     WaldiezStepByStepProcessingResult,

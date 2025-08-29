@@ -4,7 +4,7 @@
  */
 import React, { useCallback, useState } from "react";
 
-import { StringListProps } from "@waldiez/components/stringList/types";
+import type { StringListProps } from "@waldiez/components/stringList/types";
 
 /**
  * Custom hook for managing string list functionality

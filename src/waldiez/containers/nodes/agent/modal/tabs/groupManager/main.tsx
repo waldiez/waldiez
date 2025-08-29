@@ -17,9 +17,9 @@ import {
     TextareaInput,
 } from "@waldiez/components";
 import { useGroupManagerTabs } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/hooks";
-import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
+import type { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
 import { WaldiezAgentModels } from "@waldiez/containers/nodes/agent/modal/tabs/models";
-import { GroupChatSpeakerSelectionMethodOption } from "@waldiez/models";
+import type { GroupChatSpeakerSelectionMethodOption } from "@waldiez/models/types";
 
 /**
  * Component for managing group chat settings and configuration

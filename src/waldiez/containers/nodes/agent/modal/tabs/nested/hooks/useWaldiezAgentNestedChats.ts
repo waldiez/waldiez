@@ -4,9 +4,9 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { MultiValue, SingleValue } from "@waldiez/components";
-import { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nested/types";
-import { WaldiezAgentNestedChat, WaldiezEdge } from "@waldiez/models";
+import type { MultiValue, SingleValue } from "@waldiez/components";
+import type { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nested/types";
+import type { WaldiezAgentNestedChat, WaldiezEdge } from "@waldiez/models/types";
 
 /**
  * Custom hook for managing Waldiez Agent Nested Chats functionality

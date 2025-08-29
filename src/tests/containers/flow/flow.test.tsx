@@ -6,7 +6,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 import { ReactFlowProvider } from "@xyflow/react";
 
 import { HotkeysProvider } from "react-hotkeys-hook";

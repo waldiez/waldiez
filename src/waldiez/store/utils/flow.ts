@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, Node } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 
-import { ImportedFlow, ThingsToImport, WaldiezNodeType } from "@waldiez/types";
+import type { ImportedFlow, ThingsToImport, WaldiezNodeType } from "@waldiez/types";
 
 /**
  * Merges the current and new tags into a single array of unique tags.

@@ -4,7 +4,7 @@
  */
 import React from "react";
 
-import { WaldiezNodeToolData } from "@waldiez/models";
+import { type WaldiezNodeToolData } from "@waldiez/models";
 
 export type WaldiezNodeToolModalProps = {
     toolId: string;

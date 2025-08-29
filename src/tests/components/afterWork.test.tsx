@@ -9,7 +9,7 @@ import { describe, expect, it, vi } from "vitest";
 import selectEvent from "react-select-event";
 
 import { AfterWork } from "@waldiez/components/afterWork";
-import { WaldiezNodeAgent, WaldiezTransitionTarget } from "@waldiez/models";
+import type { WaldiezNodeAgent, WaldiezTransitionTarget } from "@waldiez/models/types";
 
 const mockAgent1: WaldiezNodeAgent = {
     id: "agent-1",

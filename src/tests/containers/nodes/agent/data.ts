@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
 import {
     DEFAULT_CUSTOM_TOOL_CONTENT,
@@ -13,9 +13,9 @@ import {
     WaldiezAgentRagUser,
     WaldiezAgentUserProxy,
     WaldiezChatData,
-    WaldiezEdge,
+    type WaldiezEdge,
     WaldiezModelData,
-    WaldiezNodeAgentType,
+    type WaldiezNodeAgentType,
     WaldiezToolData,
     agentMapper,
     modelMapper,

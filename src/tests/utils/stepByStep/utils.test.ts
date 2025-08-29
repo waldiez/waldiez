@@ -20,6 +20,7 @@ describe("WaldiezStepByStepUtils", () => {
             expect(result).toEqual({
                 sender: "user",
                 recipient: "assistant",
+                eventType: "message",
             });
         });
 
@@ -31,6 +32,7 @@ describe("WaldiezStepByStepUtils", () => {
             expect(result).toEqual({
                 sender: undefined,
                 recipient: undefined,
+                eventType: "message",
             });
         });
 
@@ -46,6 +48,7 @@ describe("WaldiezStepByStepUtils", () => {
             expect(result).toEqual({
                 sender: undefined,
                 recipient: undefined,
+                eventType: "message",
             });
         });
 
@@ -61,6 +64,7 @@ describe("WaldiezStepByStepUtils", () => {
             expect(result).toEqual({
                 sender: "",
                 recipient: "",
+                eventType: "message",
             });
         });
     });
@@ -199,119 +203,6 @@ describe("WaldiezStepByStepUtils", () => {
 
         it("should handle empty/null content", () => {
             expect(WaldiezStepByStepUtils.extractWorkflowEndReason("")).toBe("unknown");
-        });
-    });
-
-    describe("isWorkflowStart", () => {
-        it("should detect workflow start message", () => {
-            const content = "<Waldiez step-by-step> - Starting workflow...";
-
-            const result = WaldiezStepByStepUtils.isWorkflowStart(content);
-
-            expect(result).toBe(true);
-        });
-
-        it("should return false for other messages", () => {
-            expect(WaldiezStepByStepUtils.isWorkflowStart("Regular message")).toBe(false);
-            expect(WaldiezStepByStepUtils.isWorkflowStart("Workflow finished")).toBe(false);
-            expect(WaldiezStepByStepUtils.isWorkflowStart("")).toBe(false);
-        });
-
-        it("should handle partial matches", () => {
-            const content = "Debug: <Waldiez step-by-step> - Starting workflow... with extra text";
-
-            const result = WaldiezStepByStepUtils.isWorkflowStart(content);
-
-            expect(result).toBe(true);
-        });
-    });
-
-    describe("isStepByStepMessage", () => {
-        it("should return true for debug message types", () => {
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "debug_print" })).toBe(true);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "debug_input_request" })).toBe(true);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: "debug_error" })).toBe(true);
-        });
-
-        it("should return false for invalid content", () => {
-            expect(WaldiezStepByStepUtils.isStepByStepMessage(null)).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage(undefined)).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage("string")).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage(123)).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({})).toBe(false);
-        });
-
-        it("should handle non-string type property", () => {
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: 123 })).toBe(false);
-            expect(WaldiezStepByStepUtils.isStepByStepMessage({ type: null })).toBe(false);
-        });
-    });
-
-    describe("canProcess", () => {
-        it("should delegate to isStepByStepMessage", () => {
-            expect(WaldiezStepByStepUtils.canProcess({ type: "debug_print" })).toBe(true);
-            expect(WaldiezStepByStepUtils.canProcess({ type: "message" })).toBe(true);
-            expect(WaldiezStepByStepUtils.canProcess(null)).toBe(false);
-        });
-    });
-
-    describe("extractEventType", () => {
-        it("should extract direct type property", () => {
-            const event = { type: "message", content: "hello" };
-
-            const result = WaldiezStepByStepUtils.extractEventType(event);
-
-            expect(result).toBe("message");
-        });
-
-        it("should extract type from nested content", () => {
-            const event = {
-                content: {
-                    type: "tool_call",
-                    data: "some data",
-                },
-            };
-
-            const result = WaldiezStepByStepUtils.extractEventType(event);
-
-            expect(result).toBe("tool_call");
-        });
-
-        it("should prefer direct type over nested type", () => {
-            const event = {
-                type: "message",
-                content: {
-                    type: "tool_call",
-                },
-            };
-
-            const result = WaldiezStepByStepUtils.extractEventType(event);
-
-            expect(result).toBe("message");
-        });
-
-        it("should return unknown for missing type", () => {
-            expect(WaldiezStepByStepUtils.extractEventType({})).toBe("unknown");
-            expect(WaldiezStepByStepUtils.extractEventType({ content: {} })).toBe("unknown");
-            expect(WaldiezStepByStepUtils.extractEventType({ content: "string" })).toBe("unknown");
-        });
-
-        it("should handle non-string types", () => {
-            expect(WaldiezStepByStepUtils.extractEventType({ type: 123 })).toBe("unknown");
-            expect(WaldiezStepByStepUtils.extractEventType({ type: null })).toBe("unknown");
-            expect(WaldiezStepByStepUtils.extractEventType({ type: true })).toBe("unknown");
-        });
-
-        it("should handle nested non-string types", () => {
-            const event = {
-                content: {
-                    type: 123,
-                },
-            };
-
-            const result = WaldiezStepByStepUtils.extractEventType(event);
-
-            expect(result).toBe("unknown");
         });
     });
 

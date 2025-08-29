@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
 import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 import { ImageModal } from "@waldiez/components/chatUI/imageModal";
-import { ChatUIProps, WaldiezChatMessage } from "@waldiez/components/chatUI/types";
+import type { ChatUIProps, WaldiezChatMessage } from "@waldiez/components/chatUI/types";
 import { parseMessageContent } from "@waldiez/components/chatUI/utils";
 import { WALDIEZ_ICON } from "@waldiez/theme";
 

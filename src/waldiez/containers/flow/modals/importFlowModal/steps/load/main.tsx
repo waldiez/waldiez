@@ -6,7 +6,7 @@ import { FaXmark } from "react-icons/fa6";
 
 import { Collapsible, DropZone } from "@waldiez/components";
 import { useLoadFlowStep } from "@waldiez/containers/flow/modals/importFlowModal/steps/load/hooks";
-import { LoadFlowStepProps } from "@waldiez/containers/flow/modals/importFlowModal/steps/types";
+import type { LoadFlowStepProps } from "@waldiez/containers/flow/modals/importFlowModal/steps/types";
 
 export const LoadFlowStep = (props: LoadFlowStepProps) => {
     const { flowId, state } = props;

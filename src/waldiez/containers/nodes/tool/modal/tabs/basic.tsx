@@ -4,9 +4,9 @@
  */
 import React, { memo, useCallback, useMemo } from "react";
 
-import { Editor, Select, SingleValue, TextInput, TextareaInput } from "@waldiez/components";
+import { Editor, Select, type SingleValue, TextInput, TextareaInput } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
-import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
+import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import { PREDEFINED_TOOL_INSTRUCTIONS, TOOL_TYPE_OPTIONS } from "@waldiez/containers/nodes/tool/utils";
 import {
     DEFAULT_PREDEFINED_TOOL_DESCRIPTION,
@@ -14,7 +14,7 @@ import {
     PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
     PREDEFINED_TOOL_TYPES,
-    WaldiezToolType,
+    type WaldiezToolType,
 } from "@waldiez/models";
 
 /**

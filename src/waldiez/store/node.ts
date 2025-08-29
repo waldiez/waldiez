@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node, NodeChange, Viewport, applyNodeChanges } from "@xyflow/react";
+import { type Node, type NodeChange, type Viewport, applyNodeChanges } from "@xyflow/react";
 
 import { setViewPortTopLeft } from "@waldiez/store/utils";
-import { IWaldiezNodeStore, WaldiezNodeType, typeOfGet, typeOfSet } from "@waldiez/types";
+import type { IWaldiezNodeStore, WaldiezNodeType, typeOfGet, typeOfSet } from "@waldiez/types";
 import { getFlowRoot } from "@waldiez/utils";
 
 /**

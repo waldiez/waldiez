@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { WaldiezAgentData } from "@waldiez/models/Agent/Common/AgentData";
-import { WaldiezAgentType, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common/types";
+import type { WaldiezAgentType, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common/types";
 import { capitalize, getId } from "@waldiez/utils";
 
 // noinspection DuplicatedCode

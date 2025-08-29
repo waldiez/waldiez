@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, EdgeChange, applyEdgeChanges } from "@xyflow/react";
+import { type Edge, type EdgeChange, applyEdgeChanges } from "@xyflow/react";
 
-import {
+import type {
     IWaldiezEdgeStore,
     WaldiezEdge,
     WaldiezEdgeType,
@@ -22,7 +22,7 @@ import {
     shouldReconnect,
 } from "@waldiez/store/utils";
 import { AGENT_COLORS } from "@waldiez/theme";
-import { typeOfGet, typeOfSet } from "@waldiez/types";
+import type { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getFlowRoot } from "@waldiez/utils";
 
 type Connection = {

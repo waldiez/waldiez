@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { Editor, Select, StringList } from "@waldiez/components";
 import { useWaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination/hooks";
-import { WaldiezNodeAgentData } from "@waldiez/types";
+import type { WaldiezNodeAgentData } from "@waldiez/models/types";
 
 type WaldiezAgentTerminationProps = {
     id: string;

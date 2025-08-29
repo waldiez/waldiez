@@ -8,7 +8,7 @@ import {
     DEFAULT_SHARED_TOOL_CONTENT,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
     PREDEFINED_TOOL_TYPES,
-    WaldiezNodeTool,
+    type WaldiezNodeTool,
     WaldiezTool,
     WaldiezToolData,
 } from "@waldiez/models";

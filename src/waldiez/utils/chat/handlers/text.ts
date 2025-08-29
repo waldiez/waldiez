@@ -2,8 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { TextMessageData, WaldiezChatMessage } from "@waldiez/types";
-import {
+import type { TextMessageData, WaldiezChatMessage } from "@waldiez/types";
+import type {
     MessageHandler,
     MessageProcessingContext,
     WaldiezChatMessageProcessingResult,

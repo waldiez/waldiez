@@ -9,7 +9,7 @@ import {
     getIsAsync,
     getStorageId,
     importFlowMeta,
-} from "@waldiez/models/mappers/flow/utils";
+} from "@waldiez/models/mappers/flow/utils/importing/meta";
 
 describe("importFlowMeta", () => {
     it("should return the correct flow meta", () => {

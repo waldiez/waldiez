@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
-import {
+import type {
     WaldiezNodeAgent,
     WaldiezNodeAgentAssistant,
     WaldiezNodeAgentCaptain,
@@ -12,7 +12,7 @@ import {
     WaldiezNodeAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers/agent";
-import { WaldiezEdge } from "@waldiez/types";
+import type { WaldiezEdge } from "@waldiez/types";
 
 export const getAgentNodes = (nodes: Node[]) => {
     const agentNodes = nodes.filter(node => node.type === "agent") as WaldiezNodeAgent[];

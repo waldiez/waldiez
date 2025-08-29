@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { type KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
 import { FaStop } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
 import { MdTimeline } from "react-icons/md";
 
 import { ChatUI, Modal, TimelineModal } from "@waldiez/components";
-import { ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/types";
+import { type ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/types";
 
 /**
  * Modal component for collecting user input with optional image upload

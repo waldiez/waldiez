@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
-import { WaldiezNodeModel } from "@waldiez/models";
+import type { WaldiezNodeModel } from "@waldiez/models";
 import { modelMapper } from "@waldiez/models/mappers/model";
 
 export const exportModel = (model: WaldiezNodeModel, nodes: Node[], hideSecrets: boolean) => {

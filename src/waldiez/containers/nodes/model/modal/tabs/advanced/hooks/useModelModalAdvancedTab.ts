@@ -4,7 +4,7 @@
  */
 import { useCallback } from "react";
 
-import { WaldiezNodeModelModalAdvancedTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
+import type { WaldiezNodeModelModalAdvancedTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
 
 /**
  * Custom hook for handling model modal advanced tab functionality

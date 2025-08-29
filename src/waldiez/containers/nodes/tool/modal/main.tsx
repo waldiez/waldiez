@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, TabItem, TabItems } from "@waldiez/components";
 import { getImportExportView } from "@waldiez/containers/nodes/common";
 import { WaldiezToolAdvancedTab, WaldiezToolBasicTab } from "@waldiez/containers/nodes/tool/modal/tabs";
-import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
+import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 
 export const WaldiezNodeToolModal: React.FC<WaldiezNodeToolModalProps> = props => {
     const {

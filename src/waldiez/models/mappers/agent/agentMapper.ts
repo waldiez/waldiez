@@ -11,42 +11,47 @@ import {
     WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
-    WaldiezNodeAgent,
-    WaldiezNodeAgentGroupManager,
-    WaldiezNodeAgentRagUser,
-    WaldiezNodeAgentType,
+    type WaldiezNodeAgent,
+    type WaldiezNodeAgentGroupManager,
+    type WaldiezNodeAgentRagUser,
+    type WaldiezNodeAgentType,
 } from "@waldiez/models/Agent";
+import { getAgent } from "@waldiez/models/mappers/agent/utils/agent";
 import {
-    getAdminName,
-    getAgent,
-    getAgentId,
-    getAgentMeta,
-    getAgentType,
     getCaptainAgentLib,
     getCaptainMaxRound,
     getCaptainMaxTurns,
     getCaptainToolLib,
-    getCollectionName,
+} from "@waldiez/models/mappers/agent/utils/captain";
+import {
+    getAgentId,
+    getAgentMeta,
+    getAgentType,
     getCommonAgentData,
+    getIsMultimodal,
+} from "@waldiez/models/mappers/agent/utils/common";
+import {
+    getCollectionName,
+    getParsedDocsPath,
+    getQueryEngine,
+    getResetCollection,
+} from "@waldiez/models/mappers/agent/utils/docAgent";
+import {
+    getAdminName,
     getEnableClearHistory,
     getGroupChatMaxRound,
     getGroupName,
     getInitialAgentId,
-    getIsMultimodal,
-    getParsedDocsPath,
-    getQueryEngine,
-    getReasonConfig,
-    getResetCollection,
-    getRetrieveConfig,
     getSendIntroductions,
     getSpeakers,
-    getVerbose,
-} from "@waldiez/models/mappers/agent/utils";
+} from "@waldiez/models/mappers/agent/utils/group";
+import { getReasonConfig, getVerbose } from "@waldiez/models/mappers/agent/utils/reasonConfig";
+import { getRetrieveConfig } from "@waldiez/models/mappers/agent/utils/retrieveConfig";
 import {
     ensureOneNestedChatExists,
     getNodePositionFromJSON,
     getRestFromJSON,
-} from "@waldiez/models/mappers/common";
+} from "@waldiez/models/mappers/common/common";
 import { INITIAL_AGENT_SIZE } from "@waldiez/theme";
 
 /**

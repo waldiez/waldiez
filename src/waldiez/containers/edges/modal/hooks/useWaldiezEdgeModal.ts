@@ -5,9 +5,9 @@
 import { useCallback, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
-import { WaldiezEdge, WaldiezEdgeData, WaldiezEdgeType } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
+import type { WaldiezEdge, WaldiezEdgeData, WaldiezEdgeType } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
 

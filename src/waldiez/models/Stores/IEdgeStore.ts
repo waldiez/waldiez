@@ -2,17 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Connection, Edge, EdgeChange } from "@xyflow/react";
+import type { Connection, Edge, EdgeChange } from "@xyflow/react";
 
 import React from "react";
 
-import {
+import type {
     WaldiezEdge,
     WaldiezEdgeData,
     WaldiezEdgeType,
     WaldiezNodeAgent,
     WaldiezNodeAgentType,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 
 /* eslint-disable tsdoc/syntax */
 

@@ -7,7 +7,7 @@ import { act, fireEvent, render, renderHook, screen } from "@testing-library/rea
 import { describe, expect, it, vi } from "vitest";
 
 import { ChatUI } from "@waldiez/components/chatUI";
-import { WaldiezChatMessage } from "@waldiez/components/chatUI/types";
+import { type WaldiezChatMessage } from "@waldiez/components/chatUI/types";
 
 // Mock the dependencies with inline functions
 vi.mock("@waldiez/components/chatUI/utils", () => ({

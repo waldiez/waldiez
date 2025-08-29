@@ -7,7 +7,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { ReactFlow, ReactFlowProvider, applyEdgeChanges } from "@xyflow/react";
 
 import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
-import { WaldiezEdgeType } from "@waldiez/models";
+import type { WaldiezEdgeType } from "@waldiez/models/types";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
 

@@ -4,7 +4,7 @@
  */
 import { render } from "@testing-library/react";
 
-import { Node, ReactFlowProvider } from "@xyflow/react";
+import { type Node, ReactFlowProvider } from "@xyflow/react";
 
 import { useState } from "react";
 import { HotkeysProvider } from "react-hotkeys-hook";
@@ -13,7 +13,7 @@ import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
-import { WaldiezChatMessage, WaldiezChatUserInput } from "@waldiez/types";
+import type { WaldiezChatMessage, WaldiezChatUserInput } from "@waldiez/types";
 
 import { agentNodes, createdAt, edges, flowId, nodes, updatedAt, userInput } from "../data";
 

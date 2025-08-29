@@ -4,8 +4,8 @@
  */
 import React, { useCallback } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
 /**
  * Custom hook for managing text splitting configuration for RAG

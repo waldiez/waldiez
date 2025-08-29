@@ -4,8 +4,8 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { WaldiezEdge } from "@waldiez/models";
 import { chatMapper } from "@waldiez/models/mappers";
+import type { WaldiezEdge } from "@waldiez/models/types";
 
 describe("chatMapper.exportChat", () => {
     it("should export an edge", () => {

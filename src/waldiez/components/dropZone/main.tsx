@@ -6,7 +6,7 @@ import React from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 
 import { useDropZone } from "@waldiez/components/dropZone/hooks";
-import { DropZoneProps } from "@waldiez/components/dropZone/types";
+import type { DropZoneProps } from "@waldiez/components/dropZone/types";
 
 export const DropZone: React.FC<DropZoneProps> = (props: DropZoneProps) => {
     const { flowId, multiple = false } = props;

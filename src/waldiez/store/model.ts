@@ -2,18 +2,18 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node, ReactFlowInstance } from "@xyflow/react";
+import type { Node, ReactFlowInstance } from "@xyflow/react";
 
-import {
-    IWaldiezModelStore,
-    WaldiezModel,
-    WaldiezNodeAgent,
-    WaldiezNodeModel,
-    WaldiezNodeModelData,
-} from "@waldiez/models";
+import { WaldiezModel } from "@waldiez/models";
 import { modelMapper } from "@waldiez/models/mappers";
+import {
+    type IWaldiezModelStore,
+    type WaldiezNodeAgent,
+    type WaldiezNodeModel,
+    type WaldiezNodeModelData,
+} from "@waldiez/models/types";
 import { getNewNodePosition, reArrangeModels, setViewPortTopLeft } from "@waldiez/store/utils";
-import { typeOfGet, typeOfSet } from "@waldiez/types";
+import type { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils/ids";
 
 /**

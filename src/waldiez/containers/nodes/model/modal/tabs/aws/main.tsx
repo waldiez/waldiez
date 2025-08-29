@@ -5,7 +5,7 @@
 import React, { memo, useCallback } from "react";
 
 import { TextInput } from "@waldiez/components";
-import { WaldiezNodeModelData } from "@waldiez/models";
+import type { WaldiezNodeModelData } from "@waldiez/models/types";
 
 export const WaldiezNodeModelModalAWSTab: React.FC<{
     data: WaldiezNodeModelData;

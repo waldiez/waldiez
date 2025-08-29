@@ -4,8 +4,8 @@
  */
 import React, { memo, useCallback, useMemo } from "react";
 
-import { MultiValue, Select, SingleValue } from "@waldiez/components";
-import { WaldiezNodeAgentData, WaldiezNodeModel } from "@waldiez/types";
+import { type MultiValue, Select, type SingleValue } from "@waldiez/components";
+import { type WaldiezNodeAgentData, type WaldiezNodeModel } from "@waldiez/types";
 
 type WaldiezAgentModelProps = {
     id: string;

@@ -5,7 +5,7 @@
 import React, { memo, useCallback } from "react";
 
 import { InfoCheckbox, TextInput } from "@waldiez/components";
-import { WaldiezNodeAgentData, WaldiezNodeAgentDocAgentData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentDocAgentData } from "@waldiez/models/types";
 
 type WaldiezDocAgentTabProps = {
     id: string;

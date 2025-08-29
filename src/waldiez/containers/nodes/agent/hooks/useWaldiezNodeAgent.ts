@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Connection } from "@xyflow/react";
+import type { Connection } from "@xyflow/react";
 
 import React, { useCallback, useMemo, useState } from "react";
 
-import { WaldiezEdge } from "@waldiez/models";
+import type { WaldiezEdge } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 
 /**
@@ -21,6 +21,10 @@ export const useWaldiezNodeAgent = (id: string) => {
     const deleteAgent = useWaldiez(s => s.deleteAgent);
     const cloneAgent = useWaldiez(s => s.cloneAgent);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
+    const { isSender, isRecipient } = useWaldiez(s => ({
+        isSender: s.activeSenderId === id,
+        isRecipient: s.activeRecipientId === id && s.activeRecipientId !== s.activeSenderId,
+    }));
     const flowId = useWaldiez(s => s.flowId);
     const readOnly = useWaldiez(s => s.isReadOnly);
 
@@ -152,6 +156,8 @@ export const useWaldiezNodeAgent = (id: string) => {
         isModalOpen,
         isReadOnly,
         isDragging,
+        isSender,
+        isRecipient,
         onDelete,
         onClone,
         onOpenNodeModal,

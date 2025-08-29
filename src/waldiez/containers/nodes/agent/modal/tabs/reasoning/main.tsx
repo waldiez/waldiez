@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import { InfoCheckbox, NumberInput, Select } from "@waldiez/components";
 import { useWaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/hooks";
-import { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
+import type { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
 
 /**
  * Component for configuring reasoning agent settings

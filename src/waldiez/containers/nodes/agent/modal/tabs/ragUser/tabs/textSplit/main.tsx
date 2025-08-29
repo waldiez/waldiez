@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { InfoCheckbox, InfoLabel, Select } from "@waldiez/components";
 import { useWaldiezAgentRagUserTextSplit } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/textSplit/hooks";
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
 
 /**
  * Chunk mode options for the dropdown

@@ -4,9 +4,9 @@
  */
 import { nanoid } from "nanoid";
 
-import { CodeExecutionReplyData, WaldiezChatMessage } from "@waldiez/types";
+import type { CodeExecutionReplyData, WaldiezChatMessage } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
 /**
  * Code execution reply handler processes code execution reply messages.

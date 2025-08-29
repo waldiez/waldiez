@@ -4,8 +4,8 @@
  */
 import { useCallback, useMemo } from "react";
 
-import { WaldiezEdgeNestedTabProps } from "@waldiez/containers/edges/modal/tabs/nested/types";
-import { WaldiezMessage, WaldiezMessageType } from "@waldiez/models";
+import type { WaldiezEdgeNestedTabProps } from "@waldiez/containers/edges/modal/tabs/nested/types";
+import { WaldiezMessage, type WaldiezMessageType } from "@waldiez/models";
 
 /**
  * Custom hook for managing the nested chat tab of the edge modal

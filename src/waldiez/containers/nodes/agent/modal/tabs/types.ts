@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezNodeAgentData } from "@waldiez/models";
+import type { WaldiezNodeAgentData } from "@waldiez/models";
 
 export type WaldiezNodeAgentModalTabsProps = {
     id: string;

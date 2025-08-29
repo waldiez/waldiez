@@ -5,7 +5,7 @@
 import { memo, useCallback, useEffect, useMemo } from "react";
 
 import { HandoffAvailability, HandoffCondition, TabItem, TabItems } from "@waldiez/components";
-import {
+import type {
     WaldiezAgentConnections,
     WaldiezAgentNestedChat,
     WaldiezEdge,

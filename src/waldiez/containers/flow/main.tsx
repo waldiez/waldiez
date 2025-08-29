@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Background, BackgroundVariant, Controls, ReactFlow, Viewport } from "@xyflow/react";
+import { Background, BackgroundVariant, Controls, ReactFlow, type Viewport } from "@xyflow/react";
 
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { StepByStepView, WaldiezStepByStep } from "@waldiez/components";
+import { StepByStepView, type WaldiezStepByStep } from "@waldiez/components";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";
@@ -14,7 +14,7 @@ import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar } from "@waldiez/containers/sidebar";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import { WaldiezChatConfig, WaldiezNodeType } from "@waldiez/types";
+import type { WaldiezChatConfig, WaldiezNodeType } from "@waldiez/types";
 
 type WaldiezFlowViewProps = {
     flowId: string;

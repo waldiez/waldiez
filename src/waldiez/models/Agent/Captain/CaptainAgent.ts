@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { WaldiezAgentCaptainData } from "@waldiez/models/Agent/Captain/CaptainAgentData";
-import { WaldiezAgent, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
+import { WaldiezAgent, type WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
 
 /**
  * WaldiezAgentCaptain

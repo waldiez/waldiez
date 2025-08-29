@@ -6,7 +6,7 @@ import React from "react";
 import { FaEye, FaEyeSlash, FaPlus, FaSave, FaTrash } from "react-icons/fa";
 
 import { useDict } from "@waldiez/components/dict/hooks";
-import { DictProps } from "@waldiez/components/dict/types";
+import type { DictProps } from "@waldiez/components/dict/types";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
 export const Dict: React.FC<DictProps> = (props: DictProps) => {

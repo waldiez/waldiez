@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelPrice } from "@waldiez/models/Model/types";
+import type { WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelPrice } from "@waldiez/models/Model/types";
 
 /**
  * ModelData

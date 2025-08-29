@@ -5,8 +5,9 @@
 import React from "react";
 import { FaX } from "react-icons/fa6";
 
-import { Modal, Timeline } from "@waldiez/components";
-import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
+import { Modal } from "@waldiez/components/modal";
+import { Timeline } from "@waldiez/components/timeline/main";
+import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
 export const TimelineModal: React.FC<{
     flowId: string;

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezBreakpoint } from "@waldiez/components";
+import type { WaldiezBreakpoint } from "@waldiez/components";
 
 export class WaldiezBreakpointUtils {
     /**

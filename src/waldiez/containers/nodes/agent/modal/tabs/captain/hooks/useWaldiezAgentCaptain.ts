@@ -4,8 +4,8 @@
  */
 import { useCallback, useEffect, useState } from "react";
 
-import { WaldiezAgentCaptainTabProps } from "@waldiez/containers/nodes/agent/modal/tabs/captain/types";
-import { WaldiezCaptainAgentLibEntry } from "@waldiez/models/Agent/Captain";
+import type { WaldiezAgentCaptainTabProps } from "@waldiez/containers/nodes/agent/modal/tabs/captain/types";
+import type { WaldiezCaptainAgentLibEntry } from "@waldiez/models/Agent/Captain";
 
 /**
  * Custom hook for managing Waldiez Captain Agent functionality

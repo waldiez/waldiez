@@ -4,9 +4,9 @@
  */
 import { useCallback, useMemo } from "react";
 
-import { SingleValue } from "@waldiez/components/select";
-import { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
-import { reasonConfigMethod } from "@waldiez/types";
+import type { SingleValue } from "@waldiez/components/select";
+import type { WaldiezAgentReasoningProps } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning/types";
+import type { reasonConfigMethod } from "@waldiez/types";
 
 export const useWaldiezAgentReasoning = (props: WaldiezAgentReasoningProps) => {
     // Props

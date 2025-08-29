@@ -2,15 +2,18 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge } from "@xyflow/react";
+import type { Edge } from "@xyflow/react";
 
-import { WaldiezAgentType } from "@waldiez/models/Agent/types";
-import { WaldiezMessage } from "@waldiez/models/Chat/Message";
-import {
+import type { WaldiezAgentType } from "@waldiez/models/Agent/types";
+import type { WaldiezMessage } from "@waldiez/models/Chat/Message";
+import type {
     WaldiezHandoffAvailability,
     WaldiezHandoffCondition,
     WaldiezTransitionTarget,
 } from "@waldiez/models/common/Handoff";
+
+export type { WaldiezChat } from "@waldiez/models/Chat/Chat";
+export type { WaldiezChatData } from "@waldiez/models/Chat/ChatData";
 
 export type { WaldiezMessage };
 

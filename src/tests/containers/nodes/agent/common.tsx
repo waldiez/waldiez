@@ -4,13 +4,13 @@
  */
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
-import { Edge, Node, ReactFlowProvider } from "@xyflow/react";
+import { type Edge, type Node, ReactFlowProvider } from "@xyflow/react";
 
 import { HotkeysProvider } from "react-hotkeys-hook";
 
 import { WaldiezNodeAgentView } from "@waldiez/containers/nodes/agent";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
-import { WaldiezNodeAgentType } from "@waldiez/models";
+import type { WaldiezNodeAgentType } from "@waldiez/models/types";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
 

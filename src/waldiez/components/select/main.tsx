@@ -3,8 +3,9 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 // react-select with common styles
-import React, { JSX, forwardRef } from "react";
-import ReactSelect, { GroupBase, MultiValue, Props, SelectInstance, SingleValue } from "react-select";
+import React, { type JSX, forwardRef } from "react";
+import type { GroupBase, MultiValue, Props, SelectInstance, SingleValue } from "react-select";
+import ReactSelect from "react-select";
 
 export type { GroupBase, MultiValue, SingleValue };
 

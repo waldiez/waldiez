@@ -4,8 +4,8 @@
  */
 import { useCallback, useEffect, useMemo } from "react";
 
-import { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
-import { ThingsToImport } from "@waldiez/types";
+import type { ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
+import type { ThingsToImport } from "@waldiez/types";
 
 /**
  * Custom hook for managing flow info selection in flow import

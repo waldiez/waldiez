@@ -6,7 +6,7 @@ import React from "react";
 
 import { MessageInput } from "@waldiez/components";
 import { useWaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/message/hooks";
-import { WaldiezEdgeMessageTabProps } from "@waldiez/containers/edges/modal/tabs/message/types";
+import { type WaldiezEdgeMessageTabProps } from "@waldiez/containers/edges/modal/tabs/message/types";
 
 export const WaldiezEdgeMessageTab: React.FC<WaldiezEdgeMessageTabProps> = props => {
     const { edgeId, data, darkMode, skipRagOption, skipCarryoverOption, skipContextVarsOption } = props;

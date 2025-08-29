@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezNodeModel, WaldiezNodeModelData } from "@waldiez/models";
+import type { WaldiezNodeModel, WaldiezNodeModelData } from "@waldiez/models";
 
 export interface IWaldiezModelStore {
     /**

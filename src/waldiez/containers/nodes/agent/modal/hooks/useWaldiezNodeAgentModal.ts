@@ -2,17 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
 import React, { useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 
-import {
+import { defaultRetrieveConfig } from "@waldiez/models";
+import type {
     WaldiezNodeAgentData,
     WaldiezNodeAgentRagUserData,
     WaldiezNodeAgentType,
-    defaultRetrieveConfig,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
 import { exportItem, importItem } from "@waldiez/utils";

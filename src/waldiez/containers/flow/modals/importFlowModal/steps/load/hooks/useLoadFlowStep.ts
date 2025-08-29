@@ -5,9 +5,9 @@
 import React, { useCallback } from "react";
 
 import { showSnackbar } from "@waldiez/components";
-import { ImportFlowState, SearchResult } from "@waldiez/containers/flow/modals/importFlowModal/types";
+import type { ImportFlowState, SearchResult } from "@waldiez/containers/flow/modals/importFlowModal/types";
 import { flowMapper } from "@waldiez/models/mappers";
-import { ImportedFlow, ThingsToImport } from "@waldiez/types";
+import type { ImportedFlow, ThingsToImport } from "@waldiez/types";
 
 const API_SEARCH_URL = `${__HUB_API_URL__}/api/search/`;
 const TIMEOUT_MS = 30000;

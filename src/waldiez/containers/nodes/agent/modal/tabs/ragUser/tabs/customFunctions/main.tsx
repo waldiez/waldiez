@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { CheckboxInput, Collapsible, Editor } from "@waldiez/components";
 import { useWaldiezAgentRagUserCustomFunctions } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/customFunctions/hooks";
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
 /**
  * Default template for custom embedding function

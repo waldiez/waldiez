@@ -5,7 +5,7 @@
 import { memo } from "react";
 
 import { useHandoffs } from "@waldiez/components/handoffs/hooks";
-import { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models";
+import type { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models/types";
 
 type HandoffProps = {
     id: string;

@@ -7,7 +7,7 @@ import { memo } from "react";
 import { useWaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested/hooks";
 import { WaldiezAgentNestedChatsMessages } from "@waldiez/containers/nodes/agent/modal/tabs/nested/messages";
 import { WaldiezAgentNestedChatsTriggers } from "@waldiez/containers/nodes/agent/modal/tabs/nested/triggers";
-import { WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nested/types";
+import { type WaldiezAgentNestedChatsProps } from "@waldiez/containers/nodes/agent/modal/tabs/nested/types";
 
 /**
  * Component for configuring nested chat settings

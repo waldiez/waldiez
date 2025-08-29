@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezAgentTerminationMessageCheck } from "@waldiez/models/Agent/Common";
+import { type WaldiezAgentTerminationMessageCheck } from "@waldiez/models/Agent/Common";
 
 /**
  * getTermination

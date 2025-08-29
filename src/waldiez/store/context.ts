@@ -9,7 +9,7 @@ import { createContext, useContext } from "react";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 
-import { WaldiezState, WaldiezStore } from "@waldiez/store/types";
+import type { WaldiezState, WaldiezStore } from "@waldiez/store/types";
 
 export const WaldiezContext = createContext<WaldiezStore | null>(null);
 
@@ -19,12 +19,13 @@ export const WaldiezContext = createContext<WaldiezStore | null>(null);
  * @param selector - A function to select a part of the state from the Waldiez store.
  * @returns The selected state from the Waldiez store.
  */
-export function useWaldiez<T>(selector: (state: WaldiezState) => T): T {
+export function useWaldiez<T>(selector: (state: WaldiezState) => T, equalityFn?: (a: T, b: T) => boolean): T {
     const store = useContext(WaldiezContext);
     if (!store) {
+        console.error("DEBUG: Missing WaldiezContext.Provider in the tree");
         throw new Error("Missing WaldiezContext.Provider in the tree");
     }
-    return useStoreWithEqualityFn(store, selector, shallow);
+    return useStoreWithEqualityFn(store, selector, equalityFn ?? shallow);
 }
 /**
  * A custom hook to access the Waldiez history store.

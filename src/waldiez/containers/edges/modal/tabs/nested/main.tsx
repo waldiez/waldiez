@@ -4,7 +4,7 @@
  */
 import { MessageInput, TabItem, TabItems } from "@waldiez/components";
 import { useWaldiezEdgeNestedTab } from "@waldiez/containers/edges/modal/tabs/nested/hooks";
-import { WaldiezEdgeNestedTabProps } from "@waldiez/containers/edges/modal/tabs/nested/types";
+import type { WaldiezEdgeNestedTabProps } from "@waldiez/containers/edges/modal/tabs/nested/types";
 
 export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
     const { flowId, edgeId, darkMode, data } = props;

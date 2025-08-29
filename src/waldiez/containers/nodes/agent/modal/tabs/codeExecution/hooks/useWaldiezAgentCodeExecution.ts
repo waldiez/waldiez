@@ -4,8 +4,8 @@
  */
 import React, { useCallback, useMemo } from "react";
 
-import { MultiValue } from "@waldiez/components";
-import { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
+import type { MultiValue } from "@waldiez/components";
+import type { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models/types";
 
 /**
  * Custom hook for managing Waldiez Agent Code Execution functionality

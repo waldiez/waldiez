@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { getNodes } from "@waldiez/models/mappers/flow/utils";
+import { getNodes } from "@waldiez/models/mappers/flow/utils/importing/nodes/nodes";
 
 describe("getNodes", () => {
     it("should return the correct nodes", () => {

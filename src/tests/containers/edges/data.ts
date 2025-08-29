@@ -4,7 +4,7 @@
  */
 import { Position } from "@xyflow/react";
 
-import { WaldiezChatLlmSummaryMethod, WaldiezMessageType } from "@waldiez/models";
+import type { WaldiezChatLlmSummaryMethod, WaldiezMessageType } from "@waldiez/models/types";
 
 export const createdAt = new Date().toISOString();
 export const updatedAt = new Date().toISOString();

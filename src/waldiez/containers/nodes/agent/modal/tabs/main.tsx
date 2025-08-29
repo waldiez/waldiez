@@ -19,9 +19,9 @@ import { WaldiezAgentRagUserTabs } from "@waldiez/containers/nodes/agent/modal/t
 import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
-import { WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
+import { type WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
 import { WaldiezAgentUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/user";
-import {
+import type {
     WaldiezEdge,
     WaldiezNodeAgent,
     WaldiezNodeAgentCaptainData,
@@ -31,7 +31,7 @@ import {
     WaldiezNodeAgentReasoningData,
     WaldiezNodeModel,
     WaldiezNodeTool,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 
 /**

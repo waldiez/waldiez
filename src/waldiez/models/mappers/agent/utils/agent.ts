@@ -3,10 +3,12 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import {
+    WaldiezAgent,
     WaldiezAgentAssistant,
     WaldiezAgentAssistantData,
     WaldiezAgentCaptain,
     WaldiezAgentCaptainData,
+    WaldiezAgentData,
     WaldiezAgentDocAgent,
     WaldiezAgentDocAgentData,
     WaldiezAgentGroupManager,
@@ -17,8 +19,8 @@ import {
     WaldiezAgentReasoningData,
     WaldiezAgentUserProxy,
     WaldiezAgentUserProxyData,
-} from "@waldiez/models";
-import { WaldiezAgent, WaldiezAgentData, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
+    type WaldiezNodeAgentType,
+} from "@waldiez/models/Agent";
 
 /**
  * Creates a Waldiez agent based on the provided agent type and data.

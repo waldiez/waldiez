@@ -2,19 +2,20 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Connection, Edge, MarkerType, Node } from "@xyflow/react";
+import type { Connection, Edge, Node } from "@xyflow/react";
+import { MarkerType } from "@xyflow/react";
 
 import { showSnackbar } from "@waldiez/components";
 import {
     WaldiezChat,
     WaldiezChatData,
-    WaldiezEdge,
-    WaldiezEdgeType,
-    WaldiezNodeAgentType,
+    type WaldiezEdge,
+    type WaldiezEdgeType,
+    type WaldiezNodeAgentType,
     chatMapper,
 } from "@waldiez/models";
 import { AGENT_COLORS } from "@waldiez/theme";
-import { WaldiezNodeAgent, WaldiezNodeAgentData, typeOfGet, typeOfSet } from "@waldiez/types";
+import type { WaldiezNodeAgent, WaldiezNodeAgentData, typeOfGet, typeOfSet } from "@waldiez/types";
 import { getFriendlyString, getId } from "@waldiez/utils";
 
 /**

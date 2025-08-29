@@ -4,7 +4,7 @@
  */
 import { useCallback } from "react";
 
-import {
+import type {
     WaldiezAgentNestedChat,
     WaldiezEdge,
     WaldiezNodeAgent,

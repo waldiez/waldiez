@@ -4,7 +4,12 @@
  */
 import { useMemo } from "react";
 
-import { WaldiezAgentNestedChat, WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models";
+import type {
+    WaldiezAgentNestedChat,
+    WaldiezEdge,
+    WaldiezNodeAgent,
+    WaldiezNodeAgentData,
+} from "@waldiez/models/types";
 
 /**
  * Hook to manage relationships between agents

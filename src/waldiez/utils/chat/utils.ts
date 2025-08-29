@@ -4,9 +4,9 @@
  */
 import { nanoid } from "nanoid";
 
-import { WaldiezChatContent, WaldiezMediaContent } from "@waldiez/types";
+import type { WaldiezChatContent, WaldiezMediaContent } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import { BaseMessageData } from "@waldiez/utils/chat/types";
+import type { BaseMessageData } from "@waldiez/utils/chat/types";
 
 // Utility functions
 export class MessageUtils {

@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { WaldiezAgentAssistantData } from "@waldiez/models/Agent/Assistant/AssistantData";
-import { WaldiezAgent, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
+import { WaldiezAgent, type WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
 
 /**
  * Waldiez Agent Assistant.

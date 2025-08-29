@@ -5,9 +5,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
-import { Select, SingleValue } from "@waldiez/components/select";
+import { Select, type SingleValue } from "@waldiez/components/select";
 import { TextareaInput } from "@waldiez/components/textareaInput";
-import { WaldiezHandoffAvailability } from "@waldiez/types";
+import { type WaldiezHandoffAvailability } from "@waldiez/types";
 
 const availabilityTypeOptions = [
     { value: "string", label: "Check a variable" },

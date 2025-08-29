@@ -4,9 +4,9 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { MultiValue } from "@waldiez/components";
-import { WaldiezAgentToolsProps } from "@waldiez/containers/nodes/agent/modal/tabs/tools/types";
-import { WaldiezAgentLinkedTool, WaldiezNodeAgent, WaldiezNodeTool } from "@waldiez/models";
+import type { MultiValue } from "@waldiez/components";
+import type { WaldiezAgentToolsProps } from "@waldiez/containers/nodes/agent/modal/tabs/tools/types";
+import type { WaldiezAgentLinkedTool, WaldiezNodeAgent, WaldiezNodeTool } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
 /**

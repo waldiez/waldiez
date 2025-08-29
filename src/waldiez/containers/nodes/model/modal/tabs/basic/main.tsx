@@ -8,10 +8,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Collapsible, InfoLabel, Select } from "@waldiez/components";
 import { useModelModalBasicTab } from "@waldiez/containers/nodes/model/modal/tabs/basic/hooks";
 import { ModelSelector } from "@waldiez/containers/nodes/model/modal/tabs/basic/selectModel";
-import { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/basic/types";
+import { type WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/basic/types";
 import { modelLinks } from "@waldiez/containers/nodes/model/utils";
 import { LOGOS } from "@waldiez/theme/icons";
-import { WaldiezModelAPIType } from "@waldiez/types";
+import { type WaldiezModelAPIType } from "@waldiez/types";
 import { capitalize } from "@waldiez/utils";
 
 /**

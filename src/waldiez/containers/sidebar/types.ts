@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezNodeType } from "@waldiez/types";
+import type { WaldiezNodeType } from "@waldiez/types";
 
 export type SidebarViewProps = {
     isReadonly: boolean;

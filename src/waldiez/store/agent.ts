@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { XYPosition } from "@xyflow/react";
+import type { XYPosition } from "@xyflow/react";
 
-import {
+import type {
     IWaldiezAgentStore,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,
@@ -13,7 +13,7 @@ import {
 import { agentMapper } from "@waldiez/models/mappers";
 import { getAgentConnections, getAgentNode, resetEdgeOrdersAndPositions } from "@waldiez/store/utils";
 import { INITIAL_AGENT_SIZE } from "@waldiez/theme";
-import { typeOfGet, typeOfSet } from "@waldiez/types";
+import type { typeOfGet, typeOfSet } from "@waldiez/types";
 import { getId } from "@waldiez/utils";
 
 /**

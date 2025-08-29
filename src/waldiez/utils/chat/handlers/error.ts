@@ -4,8 +4,8 @@
  */
 import { nanoid } from "nanoid";
 
-import { WaldiezChatMessage } from "@waldiez/types";
-import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type { WaldiezChatMessage } from "@waldiez/types";
+import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
 /**
  * Error handler processes error messages.

@@ -4,14 +4,14 @@
  */
 import React, { useCallback, useMemo } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
-import {
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
+import type {
     GroupChatSpeakerSelectionMethodOption,
     WaldiezAgentGroupManagerSpeakers,
     WaldiezNodeAgent,
     WaldiezTransitionTarget,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 
 /**

@@ -4,7 +4,7 @@
  */
 import { useCallback, useRef } from "react";
 
-import { ServerMessage } from "./types";
+import type { ServerMessage } from "./types";
 
 export type MessageHandlerCallbacks = {
     onSessionUpdate?: (sessionId: string) => void;

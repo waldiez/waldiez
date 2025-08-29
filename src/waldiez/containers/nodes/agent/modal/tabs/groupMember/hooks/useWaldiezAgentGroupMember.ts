@@ -4,8 +4,8 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezTransitionTarget } from "@waldiez/models";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezTransitionTarget } from "@waldiez/models/types";
 
 /**
  * Custom hook for managing Waldiez Agent Group membership

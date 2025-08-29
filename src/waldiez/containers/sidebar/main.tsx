@@ -9,7 +9,7 @@ import { LuBrain } from "react-icons/lu";
 
 import { useSidebar, useSidebarView } from "@waldiez/containers/sidebar/hooks";
 import { EditFlowModal } from "@waldiez/containers/sidebar/modals";
-import { SidebarViewProps } from "@waldiez/containers/sidebar/types";
+import { type SidebarViewProps } from "@waldiez/containers/sidebar/types";
 import { AGENT_ICONS } from "@waldiez/theme";
 
 export const SideBar = (props: SidebarViewProps) => {

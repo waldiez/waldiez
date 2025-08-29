@@ -5,7 +5,7 @@
 import React from "react";
 
 import { CheckboxInput, StringList } from "@waldiez/components";
-import { EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/other/types";
+import { type EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/other/types";
 
 export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProps) => {
     const { flowId, data, onDataChange } = props;

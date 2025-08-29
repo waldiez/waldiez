@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node, XYPosition, useReactFlow } from "@xyflow/react";
+import { type Node, type XYPosition, useReactFlow } from "@xyflow/react";
 
 import React, { useCallback, useMemo } from "react";
 
-import { ValidAgentTypes, WaldiezNodeAgentType } from "@waldiez/models";
+import { ValidAgentTypes, type WaldiezNodeAgentType } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 
 /**

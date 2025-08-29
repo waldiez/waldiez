@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { _registerSnackbarEnqueue, _unregisterSnackbarEnqueue } from "@waldiez/components/snackbar/compat";
 import { SnackbarContext } from "@waldiez/components/snackbar/context";
 import { Snackbar } from "@waldiez/components/snackbar/snackbar";
-import { ShowSnackbarProps, SnackbarItem, SnackbarQueue } from "@waldiez/components/snackbar/types";
+import type { ShowSnackbarProps, SnackbarItem, SnackbarQueue } from "@waldiez/components/snackbar/types";
 
 export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Queues per flowId

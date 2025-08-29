@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { WaldiezModel, WaldiezModelData, WaldiezNodeModel } from "@waldiez/models";
+import { WaldiezModel, WaldiezModelData, type WaldiezNodeModel } from "@waldiez/models";
 import { modelMapper } from "@waldiez/models/mappers";
 
 describe("modelMapper", () => {

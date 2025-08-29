@@ -9,10 +9,10 @@ import { Editor } from "@waldiez/components/editor";
 import { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useMessageInput } from "@waldiez/components/messageInput/hooks";
-import { MessageInputProps } from "@waldiez/components/messageInput/types";
+import type { MessageInputProps } from "@waldiez/components/messageInput/types";
 import { Select } from "@waldiez/components/select";
 import { TextareaInput } from "@waldiez/components/textareaInput";
-import { WaldiezMessage, WaldiezMessageType } from "@waldiez/models";
+import { WaldiezMessage, type WaldiezMessageType } from "@waldiez/models";
 
 /* eslint-disable tsdoc/syntax */
 /**

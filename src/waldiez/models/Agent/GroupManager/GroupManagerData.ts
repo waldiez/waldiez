@@ -2,17 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
+import { WaldiezAgentData } from "@waldiez/models/Agent/Common";
+import type {
     WaldiezAgentCodeExecutionConfig,
-    WaldiezAgentData,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
     WaldiezAgentNestedChat,
     WaldiezAgentTerminationMessageCheck,
     WaldiezAgentUpdateSystemMessage,
-} from "@waldiez/models/Agent/Common";
+} from "@waldiez/models/Agent/Common/types";
 import { WaldiezAgentGroupManagerSpeakers } from "@waldiez/models/Agent/GroupManager/GroupSpeakers";
-import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
+import { type WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez Group Manager Agent Data.

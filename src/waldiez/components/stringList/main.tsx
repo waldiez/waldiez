@@ -7,7 +7,7 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useStringList } from "@waldiez/components/stringList/hooks";
-import { StringListProps } from "@waldiez/components/stringList/types";
+import type { StringListProps } from "@waldiez/components/stringList/types";
 
 /**
  * Component for displaying and managing a list of string values

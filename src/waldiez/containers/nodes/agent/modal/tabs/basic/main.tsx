@@ -6,7 +6,7 @@ import { memo, useMemo } from "react";
 
 import { InfoCheckbox, InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezAgentBasic } from "@waldiez/containers/nodes/agent/modal/tabs/basic/hooks";
-import {
+import type {
     WaldiezAgentHumanInputMode,
     WaldiezNodeAgentAssistantData,
     WaldiezNodeAgentData,

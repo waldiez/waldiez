@@ -4,7 +4,7 @@
  */
 import React from "react";
 
-import { WaldiezEdge } from "@waldiez/models";
+import type { WaldiezEdge } from "@waldiez/models/types";
 
 export const EdgePosition = ({
     edge,

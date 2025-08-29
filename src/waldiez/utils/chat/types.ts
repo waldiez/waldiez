@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import {
+import type {
     WaldiezChatMessage,
     WaldiezChatParticipant,
     WaldiezMediaContent,

@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { getAgents } from "@waldiez/models/mappers/flow/utils";
+import { getAgents } from "@waldiez/models/mappers/flow/utils/importing/nodes/agents";
 
 describe("getAgents", () => {
     it("should not import agents if agents is not an object", () => {

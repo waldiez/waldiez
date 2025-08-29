@@ -9,12 +9,13 @@ import { temporal } from "zundo";
 import { createStore } from "zustand";
 
 import { WaldiezAgentStore } from "@waldiez/store/agent";
+import { WaldiezChatParticipantsStore } from "@waldiez/store/chatParticipants";
 import { WaldiezEdgeStore } from "@waldiez/store/edge";
 import { WaldiezFlowStore } from "@waldiez/store/flow";
 import { WaldiezModelStore } from "@waldiez/store/model";
 import { WaldiezNodeStore } from "@waldiez/store/node";
 import { WaldiezToolStore } from "@waldiez/store/tool";
-import { WaldiezState, WaldiezStoreProps } from "@waldiez/store/types";
+import type { WaldiezState, WaldiezStoreProps } from "@waldiez/store/types";
 import { getId } from "@waldiez/utils";
 
 /**
@@ -74,6 +75,9 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 onRun,
                 onStepRun,
                 onConvert,
+                activeSenderId: null,
+                activeRecipientId: null,
+                ...WaldiezChatParticipantsStore.create(get, set),
                 ...WaldiezAgentStore.create(get, set),
                 ...WaldiezModelStore.create(get, set),
                 ...WaldiezToolStore.create(get, set),

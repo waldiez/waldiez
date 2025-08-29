@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, Node } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 
-import { ValidChatTypes, WaldiezChat } from "@waldiez/models";
-import { chatMapper } from "@waldiez/models/mappers/chat";
+import { ValidChatTypes, WaldiezChat } from "@waldiez/models/Chat";
+import { chatMapper } from "@waldiez/models/mappers/chat/chatMapper";
 import { getRestFromJSON } from "@waldiez/models/mappers/common";
 
 export const getEdges = (json: Record<string, unknown>) => {

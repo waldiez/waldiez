@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { ReactFlowInstance } from "@xyflow/react";
+import type { ReactFlowInstance } from "@xyflow/react";
 
 import { flowMapper } from "@waldiez/models";
 import {
@@ -14,7 +14,7 @@ import {
     resetEdgePrerequisites,
     setViewPortTopLeft,
 } from "@waldiez/store/utils";
-import {
+import type {
     IWaldiezFlowStore,
     ImportedFlow,
     ThingsToImport,

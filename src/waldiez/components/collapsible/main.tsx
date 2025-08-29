@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { ReactNode, memo, useCallback, useEffect, useState } from "react";
+import { type ReactNode, memo, useCallback, useEffect, useState } from "react";
 
 type CollapsibleProps = {
     title: string;

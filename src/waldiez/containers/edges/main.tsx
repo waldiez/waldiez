@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { BaseEdge, EdgeLabelRenderer, EdgeProps } from "@xyflow/react";
+import { BaseEdge, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
 
 import React, { memo, useCallback, useMemo, useState } from "react";
 import { FaTrash } from "react-icons/fa";
@@ -14,9 +14,14 @@ import { VscSettings } from "react-icons/vsc";
 import { EdgeLabel } from "@waldiez/containers/edges/edgeLabel";
 import { EdgePosition } from "@waldiez/containers/edges/edgePosition";
 import { useWaldiezEdge } from "@waldiez/containers/edges/hooks";
-import { WaldiezEdgeProps } from "@waldiez/containers/edges/types";
+import type { WaldiezEdgeProps } from "@waldiez/containers/edges/types";
 import { getEdgeLabelTransformNodeOffset } from "@waldiez/containers/edges/utils";
-import { WaldiezEdge, WaldiezEdgeType, WaldiezGroupChatType, WaldiezNodeAgent } from "@waldiez/models";
+import type {
+    WaldiezEdge,
+    WaldiezEdgeType,
+    WaldiezGroupChatType,
+    WaldiezNodeAgent,
+} from "@waldiez/models/types";
 
 /**
  * Chat edge component

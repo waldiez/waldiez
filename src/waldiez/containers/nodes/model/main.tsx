@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { NodeProps } from "@xyflow/react";
+import type { NodeProps } from "@xyflow/react";
 
 import { FaCopy, FaGear, FaTrashCan } from "react-icons/fa6";
 import { TbSettingsCheck } from "react-icons/tb";
@@ -10,9 +10,9 @@ import { TbSettingsCheck } from "react-icons/tb";
 import { getImportExportView } from "@waldiez/containers/nodes/common";
 import { useWaldiezNodeModel } from "@waldiez/containers/nodes/model/hooks";
 import { WaldiezNodeModelModal } from "@waldiez/containers/nodes/model/modal";
-import { WaldiezNodeModel } from "@waldiez/models";
+import type { WaldiezNodeModel } from "@waldiez/models";
 
-export const WaldiezNodeModelView = ({ id, data }: NodeProps<WaldiezNodeModel>) => {
+export const WaldiezNodeModelView: React.FC<NodeProps<WaldiezNodeModel>> = ({ id, data }) => {
     const {
         flowId,
         isOpen,

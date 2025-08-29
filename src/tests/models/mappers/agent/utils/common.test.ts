@@ -19,7 +19,7 @@ import {
     getParentId,
     getSystemMessage,
     getTools,
-} from "@waldiez/models/mappers/agent/utils";
+} from "@waldiez/models/mappers/agent/utils/common";
 
 describe("getAgentId", () => {
     it("should return a new id", () => {

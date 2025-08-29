@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, Node } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 
 import type { CSSProperties } from "react";
 
@@ -10,9 +10,9 @@ import {
     ValidChatTypes,
     WaldiezChat,
     WaldiezChatData,
-    WaldiezEdge,
-    WaldiezEdgeData,
-    WaldiezEdgeType,
+    type WaldiezEdge,
+    type WaldiezEdgeData,
+    type WaldiezEdgeType,
 } from "@waldiez/models/Chat";
 import { messageMapper } from "@waldiez/models/mappers/chat/messageMapper";
 import { summaryMapper } from "@waldiez/models/mappers/chat/summaryMapper";

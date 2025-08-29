@@ -4,7 +4,7 @@
  */
 import { useState } from "react";
 
-import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
+import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
 export const TimelineChart = ({
     data,

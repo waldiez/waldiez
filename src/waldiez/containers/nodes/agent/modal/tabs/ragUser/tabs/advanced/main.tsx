@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import { InfoCheckbox, InfoLabel, TextareaInput } from "@waldiez/components";
 import { useWaldiezAgentRagUserAdvanced } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/advanced/hooks";
-import { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
 type WaldiezAgentRagUserAdvancedProps = {
     id: string;

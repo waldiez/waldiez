@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezAgent, WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
+import { WaldiezAgent, type WaldiezNodeAgentType } from "@waldiez/models/Agent/Common";
 import { WaldiezAgentRagUserData } from "@waldiez/models/Agent/RagUser/RagUserData";
 
 /**

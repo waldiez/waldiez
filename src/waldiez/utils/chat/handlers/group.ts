@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { GroupChatRunData, SpeakerSelectionData, WaldiezChatMessage } from "@waldiez/types";
+import type { GroupChatRunData, SpeakerSelectionData, WaldiezChatMessage } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 import { MessageUtils } from "@waldiez/utils/chat/utils";
 
 /**

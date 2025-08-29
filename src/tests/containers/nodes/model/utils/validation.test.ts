@@ -5,7 +5,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { ValidationMessage, validateModel } from "@waldiez/containers/nodes/model/utils";
-import { WaldiezNodeModelData } from "@waldiez/models";
+import type { WaldiezNodeModelData } from "@waldiez/models/types";
 
 describe("validateModel", () => {
     const mockFetch = vi.fn();

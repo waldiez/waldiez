@@ -5,7 +5,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import { getToolIcon } from "@waldiez/containers/nodes/tool/utils";
-import { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models";
+import type { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
 

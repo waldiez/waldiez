@@ -11,11 +11,11 @@ import {
     WaldiezNodeGroupManagerTabs,
 } from "@waldiez/containers/nodes/agent/modal/tabs";
 import { getImportExportView } from "@waldiez/containers/nodes/common";
-import {
+import type {
     WaldiezAgentGroupManagerData,
     WaldiezNodeAgentData,
     WaldiezNodeAgentGroupManagerData,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 
 type WaldiezNodeAgentModalProps = {
     id: string;

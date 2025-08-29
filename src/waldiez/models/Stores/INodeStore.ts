@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node, NodeChange } from "@xyflow/react";
+import type { Node, NodeChange } from "@xyflow/react";
 
-import { WaldiezNodeType } from "@waldiez/types";
+import type { WaldiezNodeType } from "@waldiez/types";
 
 export interface IWaldiezNodeStore {
     /**

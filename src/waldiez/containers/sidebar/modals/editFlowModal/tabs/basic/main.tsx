@@ -7,7 +7,7 @@ import React from "react";
 import { CheckboxInput, TextareaInput } from "@waldiez/components";
 import { HandleASyncChatOrderAndPrerequisites } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/asyncChat";
 import { HandleSyncChatOrder } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/syncChat";
-import { EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/types";
+import { type EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/types";
 
 export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProps) => {
     const { flowId, data, sortedEdges, remainingEdges, onDataChange } = props;

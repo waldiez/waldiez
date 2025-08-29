@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
-import { WaldiezAgentType } from "@waldiez/models";
+import type { WaldiezAgentType } from "@waldiez/models/Agent/types";
 import { getIdFromJSON, getRestFromJSON } from "@waldiez/models/mappers/common";
 
 const ValidChatTypes = ["model", "tool", "agent"];

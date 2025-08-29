@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { KeyboardEvent } from "react";
+import type { KeyboardEvent } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { useWaldiez, useWaldiezHistory } from "@waldiez/store";

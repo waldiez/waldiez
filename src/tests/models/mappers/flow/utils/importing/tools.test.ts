@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 
 import { WaldiezToolData } from "@waldiez/models";
-import { getTools } from "@waldiez/models/mappers/flow/utils";
+import { getTools } from "@waldiez/models/mappers/flow/utils/importing/nodes/tools";
 
 describe("getTools", () => {
     it("should return the correct tools", () => {

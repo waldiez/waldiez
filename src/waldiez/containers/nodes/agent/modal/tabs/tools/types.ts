@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models";
+import type { WaldiezNodeAgent, WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models/types";
 
 export type WaldiezAgentToolsProps = {
     id: string;

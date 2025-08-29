@@ -8,12 +8,12 @@ import { NumberInput, TabItem, TabItems, TextInput, TextareaInput } from "@waldi
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
 import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
-import {
+import type {
     WaldiezAgentConnections,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,
     WaldiezNodeTool,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 
 export const WaldiezAgentUserTabs: React.FC<{
     id: string;

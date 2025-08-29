@@ -5,12 +5,12 @@
 import { useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 
-import { SingleValue } from "@waldiez/components";
-import {
+import type { SingleValue } from "@waldiez/components";
+import type {
     EditFlowModalData,
     EditFlowModalProps,
 } from "@waldiez/containers/sidebar/modals/editFlowModal/types";
-import { WaldiezEdge } from "@waldiez/models";
+import type { WaldiezEdge } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 
 export const useEditFlowModal = (props: EditFlowModalProps) => {

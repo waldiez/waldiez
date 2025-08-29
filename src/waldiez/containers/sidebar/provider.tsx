@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { type ReactNode, useEffect, useState } from "react";
 
-import { SidebarContext } from "@waldiez/containers/sidebar";
+import { SidebarContext } from "@waldiez/containers/sidebar/hooks";
 
 export const SidebarProvider: React.FC<{
     children: ReactNode;

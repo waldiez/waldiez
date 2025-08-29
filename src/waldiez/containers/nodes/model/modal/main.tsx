@@ -11,7 +11,7 @@ import {
     WaldiezNodeModelModalBasicTab,
     WaldiezNodeModelModalPriceTab,
 } from "@waldiez/containers/nodes/model/modal/tabs";
-import { WaldiezNodeModelModalProps } from "@waldiez/containers/nodes/model/modal/types";
+import type { WaldiezNodeModelModalProps } from "@waldiez/containers/nodes/model/modal/types";
 
 export const WaldiezNodeModelModal: React.FC<WaldiezNodeModelModalProps> = (
     props: WaldiezNodeModelModalProps,

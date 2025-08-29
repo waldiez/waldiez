@@ -1,0 +1,201 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+
+/* stylelint-disable no-duplicate-selectors */
+
+.agent-node.active-sender {
+  border: 2px solid #28a745 !important;
+  box-shadow: 0 0 12px rgb(40 167 69 / 60%) !important;
+  animation: pulse-sender 1.5s ease-in-out infinite;
+}
+
+.agent-node.active-sender::before {
+  content: "SENDING";
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #28a745;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+/* Active recipient agent highlighting */
+.agent-node.active-recipient {
+  border: 2px solid #007bff !important;
+  box-shadow: 0 0 12px rgb(0 123 255 / 60%) !important;
+  animation: pulse-recipient 1.5s ease-in-out infinite;
+}
+
+.agent-node.active-recipient::before {
+  content: "RECEIVING";
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #007bff;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+/* Pulse animations */
+@keyframes pulse-sender {
+  0% {
+    box-shadow: 0 0 12px rgb(40 167 69 / 60%);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgb(40 167 69 / 90%);
+  }
+
+  100% {
+    box-shadow: 0 0 12px rgb(40 167 69 / 60%);
+  }
+}
+
+@keyframes pulse-recipient {
+  0% {
+    box-shadow: 0 0 12px rgb(0 123 255 / 60%);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgb(0 123 255 / 90%);
+  }
+
+  100% {
+    box-shadow: 0 0 12px rgb(0 123 255 / 60%);
+  }
+}
+
+/* Handle both active states simultaneously */
+.agent-node.active-sender.active-recipient {
+  border: 2px solid #ffc107 !important;
+  box-shadow: 0 0 12px rgb(255 193 7 / 60%) !important;
+  animation: pulse-both 1.5s ease-in-out infinite;
+}
+
+.agent-node.active-sender.active-recipient::before {
+  content: "ACTIVE";
+  background: #ffc107;
+  color: #212529;
+}
+
+@keyframes pulse-both {
+  0% {
+    box-shadow: 0 0 12px rgb(255 193 7 / 60%);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgb(255 193 7 / 90%);
+  }
+
+  100% {
+    box-shadow: 0 0 12px rgb(255 193 7 / 60%);
+  }
+}
+
+/* Dark theme adjustments */
+body.waldiez-dark .agent-node.active-sender {
+  border-color: #20c997 !important;
+  box-shadow: 0 0 12px rgb(32 201 151 / 60%) !important;
+}
+
+body.waldiez-dark .agent-node.active-sender::before {
+  background: #20c997;
+}
+
+body.waldiez-dark .agent-node.active-recipient {
+  border-color: #17a2b8 !important;
+  box-shadow: 0 0 12px rgb(23 162 184 / 60%) !important;
+}
+
+body.waldiez-dark .agent-node.active-recipient::before {
+  background: #17a2b8;
+}
+
+body.waldiez-dark .agent-node.active-sender.active-recipient {
+  border-color: #ffc107 !important;
+}
+
+body.waldiez-dark .agent-node.active-sender.active-recipient::before {
+  background: #ffc107;
+  color: #212529;
+}
+
+/* Dark theme animations */
+body.waldiez-dark .agent-node.active-sender {
+  animation: pulse-sender-dark 1.5s ease-in-out infinite;
+}
+
+body.waldiez-dark .agent-node.active-recipient {
+  animation: pulse-recipient-dark 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-sender-dark {
+  0% {
+    box-shadow: 0 0 12px rgb(32 201 151 / 60%);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgb(32 201 151 / 90%);
+  }
+
+  100% {
+    box-shadow: 0 0 12px rgb(32 201 151 / 60%);
+  }
+}
+
+@keyframes pulse-recipient-dark {
+  0% {
+    box-shadow: 0 0 12px rgb(23, 162, 184 / 60%);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgb(23, 162, 184 / 90%);
+  }
+
+  100% {
+    box-shadow: 0 0 12px rgb(23, 162, 184 / 60%);
+  }
+}
+
+/* Responsive adjustments for small nodes */
+@container (max-width: 130px) {
+  .agent-node.active-sender::before,
+  .agent-node.active-recipient::before {
+    font-size: 8px;
+    padding: 1px 3px;
+    top: -20px;
+  }
+
+  .agent-node.active-sender::before {
+    content: "SEND";
+  }
+
+  .agent-node.active-recipient::before {
+    content: "RECV";
+  }
+
+  .agent-node.active-sender.active-recipient::before {
+    content: "ACTIVE";
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-node.active-sender,
+  .agent-node.active-recipient {
+    animation: none;
+  }
+}

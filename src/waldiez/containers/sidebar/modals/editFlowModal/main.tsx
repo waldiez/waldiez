@@ -8,7 +8,7 @@ import {
     EditFlowModalModalTabBasic,
     EditFlowModalModalTabOther,
 } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs";
-import { EditFlowModalProps } from "@waldiez/containers/sidebar/modals/editFlowModal/types";
+import { type EditFlowModalProps } from "@waldiez/containers/sidebar/modals/editFlowModal/types";
 
 export const EditFlowModal = (props: EditFlowModalProps) => {
     const { flowId } = props;

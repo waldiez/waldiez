@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
+import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
 /**
  * Supported media types

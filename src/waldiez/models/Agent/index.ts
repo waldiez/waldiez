@@ -9,7 +9,7 @@ export * from "@waldiez/models/Agent/DocAgent";
 export * from "@waldiez/models/Agent/GroupManager";
 export * from "@waldiez/models/Agent/RagUser";
 export * from "@waldiez/models/Agent/Reasoning";
-export type * from "@waldiez/models/Agent/types";
+export type { WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models/Agent/types";
 export * from "@waldiez/models/Agent/UserProxy";
 export const ValidAgentTypes = [
     "user_proxy",

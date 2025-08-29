@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { WaldiezChatData } from "@waldiez/models/Chat/ChatData";
-import { WaldiezEdgeType } from "@waldiez/models/Chat/types";
+import { type WaldiezEdgeType } from "@waldiez/models/Chat/types";
 import { getId } from "@waldiez/utils";
 
 /**

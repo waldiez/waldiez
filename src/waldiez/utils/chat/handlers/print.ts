@@ -4,7 +4,7 @@
  */
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
 import { ParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
-import {
+import type {
     MessageHandler,
     PrintMessageData,
     WaldiezChatMessageProcessingResult,

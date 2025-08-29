@@ -4,9 +4,9 @@
  */
 import React, { memo, useMemo } from "react";
 
-import { GroupBase, Select, SingleValue } from "@waldiez/components";
+import { type GroupBase, Select, type SingleValue } from "@waldiez/components";
 import { predefinedModels } from "@waldiez/containers/nodes/model/utils";
-import { WaldiezModelAPIType } from "@waldiez/models";
+import { type WaldiezModelAPIType } from "@waldiez/models";
 import { LOGOS } from "@waldiez/theme";
 
 /**

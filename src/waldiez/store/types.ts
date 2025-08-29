@@ -2,13 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Edge, Node, ReactFlowInstance, Viewport } from "@xyflow/react";
+import type { Edge, Node, ReactFlowInstance, Viewport } from "@xyflow/react";
 
 import React from "react";
 
 import { createWaldiezStore } from "@waldiez/store/creator";
-import {
+import type {
     IWaldiezAgentStore,
+    IWaldiezChatParticipantsStore,
     IWaldiezEdgeStore,
     IWaldiezFlowStore,
     IWaldiezModelStore,
@@ -149,6 +150,11 @@ export type ThingsToImport = {
     edges: Edge[];
 };
 
+export type WaldiezChatParticipantsState = {
+    activeSenderId: string | null;
+    activeRecipientId: string | null;
+};
+
 /**
  * WaldiezState
  * @param flowId - The ID of the flow
@@ -181,6 +187,7 @@ export type ThingsToImport = {
  * @see {@link IWaldiezAgentStore}
  * @see {@link IWaldiezNodeStore}
  * @see {@link IWaldiezFlowStore}
+ * @see {@link IWaldiezChatParticipantsStore}
  */
 export type WaldiezState = WaldiezStoreProps &
     IWaldiezToolStore &
@@ -188,7 +195,9 @@ export type WaldiezState = WaldiezStoreProps &
     IWaldiezModelStore &
     IWaldiezAgentStore &
     IWaldiezNodeStore &
-    IWaldiezFlowStore;
+    IWaldiezFlowStore &
+    WaldiezChatParticipantsState &
+    IWaldiezChatParticipantsStore;
 
 /**
  * typeOfSet

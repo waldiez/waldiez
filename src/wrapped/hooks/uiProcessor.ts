@@ -7,18 +7,15 @@ import React, { useCallback } from "react";
 
 import { nanoid } from "nanoid";
 
-import { WaldiezStepByStep, WaldiezTimelineData, showSnackbar } from "@waldiez/components";
-import { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
+import type { WaldiezStepByStep, WaldiezTimelineData } from "@waldiez/components";
+import { showSnackbar } from "@waldiez/components/snackbar";
+import type { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import {
-    DEBUG_INPUT_PROMPT,
-    WaldiezStepByStepProcessor,
-    WaldiezStepByStepUtils,
-} from "@waldiez/utils/stepByStep";
+import { DEBUG_INPUT_PROMPT, WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep";
 
 import {
-    ServerMessage,
-    SubprocessOutputMsg,
+    type ServerMessage,
+    type SubprocessOutputMsg,
     isConvertWorkflowResponse,
     isErrorResponse,
     isSaveFlowResponse,
@@ -214,8 +211,7 @@ export function useUIMessageProcessor({
                 } catch {
                     // If parsing fails, keep the original content
                 }
-                // Check if it's a step-by-step debug message
-                if (WaldiezStepByStepUtils.canProcess(parsedContent)) {
+                if (typeof parsedContent === "object" && parsedContent !== null && "type" in parsedContent) {
                     const result = WaldiezStepByStepProcessor.process(data.content, {
                         flowId,
                         currentState: stepByStepState,

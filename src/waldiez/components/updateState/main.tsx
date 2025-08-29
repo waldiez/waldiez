@@ -6,9 +6,9 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
 import { Editor } from "@waldiez/components/editor";
-import { Select, SingleValue } from "@waldiez/components/select";
+import { Select, type SingleValue } from "@waldiez/components/select";
 import { TextareaInput } from "@waldiez/components/textareaInput";
-import { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models";
+import type { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models/types";
 
 type UpdateStateProps = {
     data: WaldiezNodeAgentData;

@@ -3,38 +3,32 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable max-statements */
-import { Edge, Node } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 
+import type { WaldiezChat, WaldiezEdge } from "@waldiez/models/Chat";
+import { WaldiezFlow, WaldiezFlowData, emptyFlow } from "@waldiez/models/Flow";
+import type { WaldiezNodeModel } from "@waldiez/models/Model";
+import type { WaldiezNodeTool } from "@waldiez/models/Tool";
+import { agentMapper } from "@waldiez/models/mappers/agent/agentMapper";
+import { chatMapper } from "@waldiez/models/mappers/chat/chatMapper";
+import { exportAgent, getAgentNodes } from "@waldiez/models/mappers/flow/utils/exporting/agents";
+import { exportChat } from "@waldiez/models/mappers/flow/utils/exporting/chats";
+import { exportModel } from "@waldiez/models/mappers/flow/utils/exporting/models";
+import { exportTool } from "@waldiez/models/mappers/flow/utils/exporting/tools";
+import { getChats, getEdges } from "@waldiez/models/mappers/flow/utils/importing/edges";
 import {
-    WaldiezEdge,
-    WaldiezFlow,
-    WaldiezFlowData,
-    WaldiezNodeModel,
-    WaldiezNodeTool,
-    emptyFlow,
-} from "@waldiez/models";
-import { agentMapper } from "@waldiez/models/mappers/agent";
-import { chatMapper } from "@waldiez/models/mappers/chat";
-import {
-    exportAgent,
-    exportChat,
-    exportModel,
-    exportTool,
-    getAgentNodes,
-    getAgents,
     getCacheSeed,
-    getChats,
-    getEdges,
     getFlowViewport,
     getIsAsync,
-    getModels,
-    getNodes,
-    getTools,
     importFlowMeta,
-} from "@waldiez/models/mappers/flow/utils";
-import { modelMapper } from "@waldiez/models/mappers/model";
-import { toolMapper } from "@waldiez/models/mappers/tool";
-import { WaldiezChat, WaldiezFlowProps } from "@waldiez/types";
+} from "@waldiez/models/mappers/flow/utils/importing/meta";
+import { getAgents } from "@waldiez/models/mappers/flow/utils/importing/nodes/agents";
+import { getModels } from "@waldiez/models/mappers/flow/utils/importing/nodes/models";
+import { getNodes } from "@waldiez/models/mappers/flow/utils/importing/nodes/nodes";
+import { getTools } from "@waldiez/models/mappers/flow/utils/importing/nodes/tools";
+import { modelMapper } from "@waldiez/models/mappers/model/modelMapper";
+import { toolMapper } from "@waldiez/models/mappers/tool/toolMapper";
+import { type WaldiezFlowProps } from "@waldiez/types";
 
 /**
  * Mapper for WaldiezFlow, providing methods to import and export flows,

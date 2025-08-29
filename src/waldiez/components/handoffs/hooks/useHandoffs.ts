@@ -6,12 +6,12 @@ import { useCallback, useMemo } from "react";
 
 import { useAgentRelationships } from "@waldiez/components/handoffs/hooks/useAgentRelationships";
 import { useHandoffNames } from "@waldiez/components/handoffs/hooks/useHandoffNames";
-import {
+import type {
     WaldiezEdge,
     WaldiezNodeAgent,
     WaldiezNodeAgentData,
     WaldiezTransitionTarget,
-} from "@waldiez/models";
+} from "@waldiez/models/types";
 
 type WaldiezOrderedHandoffTransitionTarget = WaldiezTransitionTarget & {
     id: string; // Ensure id is a string

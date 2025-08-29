@@ -4,13 +4,13 @@
  */
 import React, { useCallback } from "react";
 
-import { WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
+import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import {
     DEFAULT_PREDEFINED_TOOL_DESCRIPTION,
     DEFAULT_PREDEFINED_TOOL_NAME,
     DEFAULT_TOOL_CONTENT_MAP,
     PREDEFINED_TOOL_TYPES,
-    WaldiezToolType,
+    type WaldiezToolType,
 } from "@waldiez/models";
 
 /**

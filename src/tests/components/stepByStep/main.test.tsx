@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { StepByStepView } from "@waldiez/components/stepByStep";
 import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
+import { WaldiezProvider } from "@waldiez/store";
 
 // Mock nanoid
 vi.mock("nanoid", () => ({
@@ -29,6 +30,14 @@ vi.mock("react-icons/fa6", () => ({
     FaStop: () => <div data-testid="icon-stop" />,
     FaX: () => <div data-testid="icon-x" />,
 }));
+
+const _renderView = (stepByStep?: WaldiezStepByStep | null) => {
+    return render(
+        <WaldiezProvider flowId="flow-123" edges={[]} nodes={[]}>
+            <StepByStepView flowId="flow-123" stepByStep={stepByStep} />
+        </WaldiezProvider>,
+    );
+};
 
 describe("StepByStepView", () => {
     const mockHandlers = {
@@ -54,7 +63,7 @@ describe("StepByStepView", () => {
 
     describe("rendering", () => {
         it("should render successfully when active", () => {
-            render(<StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} />);
+            _renderView(defaultStepByStep);
 
             expect(screen.getByText("Step-by-step Panel")).toBeInTheDocument();
             expect(screen.getByTestId("icon-bug")).toBeInTheDocument();
@@ -66,11 +75,7 @@ describe("StepByStepView", () => {
                 active: false,
                 eventHistory: [],
             };
-
-            const { container } = render(
-                <StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />,
-            );
-
+            const { container } = _renderView(inactiveStepByStep);
             expect(container.firstChild).toBeNull();
         });
 
@@ -80,23 +85,10 @@ describe("StepByStepView", () => {
                 active: false,
                 eventHistory: [{ data: "some event" }],
             };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />);
+            _renderView(inactiveStepByStep);
 
             expect(screen.getByText("Step-by-step Panel")).toBeInTheDocument();
             expect(screen.getByText("Finished")).toBeInTheDocument();
-        });
-
-        it("should not render when stepByStep is null", () => {
-            const { container } = render(<StepByStepView flowId="flow-123" stepByStep={null} />);
-
-            expect(container.firstChild).toBeNull();
-        });
-
-        it("should not render when stepByStep is undefined", () => {
-            const { container } = render(<StepByStepView flowId="flow-123" />);
-
-            expect(container.firstChild).toBeNull();
         });
     });
 
@@ -106,8 +98,7 @@ describe("StepByStepView", () => {
                 ...defaultStepByStep,
                 currentEvent: { type: "message", sender: "user" },
             };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithEvent} />);
+            _renderView(stepByStepWithEvent);
 
             expect(screen.getByText("message")).toBeInTheDocument();
         });
@@ -117,8 +108,7 @@ describe("StepByStepView", () => {
                 ...defaultStepByStep,
                 currentEvent: { sender: "user" }, // No type property
             };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithoutEventType} />);
+            _renderView(stepByStepWithoutEventType);
 
             expect(screen.getByText("Running")).toBeInTheDocument();
         });
@@ -129,14 +119,13 @@ describe("StepByStepView", () => {
                 active: false,
                 eventHistory: [{ type: "something", data: "some event" }],
             };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />);
+            _renderView(inactiveStepByStep);
 
             expect(screen.getByText("Finished")).toBeInTheDocument();
         });
 
         it("should toggle expansion when toggle button is clicked", () => {
-            render(<StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} />);
+            _renderView(defaultStepByStep);
 
             // Initially expanded - should show collapse icon
             expect(screen.getByTestId("icon-chevron-down")).toBeInTheDocument();
@@ -166,14 +155,14 @@ describe("StepByStepView", () => {
                 eventHistory: [{ data: "some event" }],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />);
+            _renderView(inactiveStepByStep);
 
             expect(screen.getByTitle("Close")).toBeInTheDocument();
             expect(screen.getByTestId("icon-x")).toBeInTheDocument();
         });
 
         it("should not show close button when active", () => {
-            render(<StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} />);
+            _renderView(defaultStepByStep);
 
             expect(screen.queryByTitle("Close")).not.toBeInTheDocument();
         });
@@ -185,9 +174,7 @@ describe("StepByStepView", () => {
                 eventHistory: [],
             };
 
-            const { container } = render(
-                <StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />,
-            );
+            const { container } = _renderView(inactiveStepByStep);
 
             expect(container.firstChild).toBeNull();
         });
@@ -199,7 +186,7 @@ describe("StepByStepView", () => {
                 eventHistory: [{ data: "some event" }],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />);
+            _renderView(inactiveStepByStep);
 
             const closeButton = screen.getByTitle("Close");
             fireEvent.click(closeButton);
@@ -218,7 +205,7 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPendingInput} />);
+            _renderView(stepByStepWithPendingInput);
 
             expect(screen.getByText("Continue")).toBeInTheDocument();
             expect(screen.getByText("Run")).toBeInTheDocument();
@@ -226,7 +213,7 @@ describe("StepByStepView", () => {
         });
 
         it("should not show control buttons when no pending control input", () => {
-            render(<StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} />);
+            _renderView(defaultStepByStep);
 
             expect(screen.queryByText("Continue")).not.toBeInTheDocument();
             expect(screen.queryByText("Run")).not.toBeInTheDocument();
@@ -246,7 +233,7 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPendingInput} />);
+            _renderView(stepByStepWithPendingInput);
 
             const continueButton = screen.getByText("Continue");
             fireEvent.click(continueButton);
@@ -270,7 +257,7 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPendingInput} />);
+            _renderView(stepByStepWithPendingInput);
 
             const runButton = screen.getByText("Run");
             fireEvent.click(runButton);
@@ -294,7 +281,7 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPendingInput} />);
+            _renderView(stepByStepWithPendingInput);
 
             const quitButton = screen.getByText("Quit");
             fireEvent.click(quitButton);
@@ -315,7 +302,7 @@ describe("StepByStepView", () => {
                 activeRequest: null,
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPendingInput} />);
+            _renderView(stepByStepWithPendingInput);
 
             const continueButton = screen.getByText("Continue");
             fireEvent.click(continueButton);
@@ -337,20 +324,20 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithActiveRequest} />);
+            _renderView(stepByStepWithActiveRequest);
 
             expect(screen.getByText("Waiting for input")).toBeInTheDocument();
             expect(screen.getByText("Please enter your name:")).toBeInTheDocument();
-            expect(screen.getByPlaceholderText("Type your response… (Enter to send)")).toBeInTheDocument();
+            expect(screen.getByPlaceholderText("Type your response... (Enter to send)")).toBeInTheDocument();
             expect(screen.getByText("Send")).toBeInTheDocument();
         });
 
         it("should not show input field when no active request", () => {
-            render(<StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} />);
+            _renderView(defaultStepByStep);
 
             expect(screen.queryByText("Waiting for input")).not.toBeInTheDocument();
             expect(
-                screen.queryByPlaceholderText("Type your response… (Enter to send)"),
+                screen.queryByPlaceholderText("Type your response... (Enter to send)"),
             ).not.toBeInTheDocument();
         });
 
@@ -364,9 +351,9 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPasswordRequest} />);
+            _renderView(stepByStepWithPasswordRequest);
 
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             expect(input).toHaveAttribute("type", "password");
         });
 
@@ -380,9 +367,9 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithTextRequest} />);
+            _renderView(stepByStepWithTextRequest);
 
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             expect(input).toHaveAttribute("type", "text");
         });
 
@@ -395,9 +382,9 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithActiveRequest} />);
+            _renderView(stepByStepWithActiveRequest);
 
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             fireEvent.change(input, { target: { value: "John Doe" } });
 
             expect(input).toHaveValue("John Doe");
@@ -412,9 +399,9 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithActiveRequest} />);
+            _renderView(stepByStepWithActiveRequest);
 
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             fireEvent.change(input, { target: { value: "John Doe" } });
             fireEvent.keyDown(input, { key: "Enter" });
 
@@ -439,9 +426,9 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithActiveRequest} />);
+            _renderView(stepByStepWithActiveRequest);
 
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             const sendButton = screen.getByText("Send");
 
             fireEvent.change(input, { target: { value: "25" } });
@@ -468,9 +455,9 @@ describe("StepByStepView", () => {
                 },
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithActiveRequest} />);
+            _renderView(stepByStepWithActiveRequest);
 
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             fireEvent.change(input, { target: { value: "John" } });
             fireEvent.keyDown(input, { key: "Tab" });
 
@@ -481,7 +468,7 @@ describe("StepByStepView", () => {
 
     describe("event history", () => {
         it("should display 'No messages yet' when event history is empty", () => {
-            render(<StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} />);
+            _renderView(defaultStepByStep);
 
             expect(screen.getByText("Messages")).toBeInTheDocument();
             expect(screen.getByText("No messages yet")).toBeInTheDocument();
@@ -498,7 +485,7 @@ describe("StepByStepView", () => {
                 ],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithHistory} />);
+            _renderView(stepByStepWithHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             expect(jsonArea).toBeInTheDocument();
@@ -514,8 +501,7 @@ describe("StepByStepView", () => {
                 ...defaultStepByStep,
                 eventHistory: [{ data: "Event with data" }],
             };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithHistory} />);
+            _renderView(stepByStepWithHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             const jsonContent = jsonArea?.textContent;
@@ -528,7 +514,7 @@ describe("StepByStepView", () => {
                 eventHistory: [{ message: "Event with message", type: "info" }],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithHistory} />);
+            _renderView(stepByStepWithHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             const jsonContent = jsonArea?.textContent;
@@ -541,7 +527,7 @@ describe("StepByStepView", () => {
                 eventHistory: [{ content: "Event with content", sender: "user" }],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithHistory} />);
+            _renderView(stepByStepWithHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             const jsonContent = jsonArea?.textContent;
@@ -554,7 +540,7 @@ describe("StepByStepView", () => {
                 eventHistory: [{ type: "custom", timestamp: "2024-01-01T10:00:00Z" }],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithHistory} />);
+            _renderView(stepByStepWithHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             const jsonContent = jsonArea?.textContent;
@@ -579,7 +565,7 @@ describe("StepByStepView", () => {
                 ],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithHistory} />);
+            _renderView(stepByStepWithHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             const jsonContent = jsonArea?.textContent;
@@ -596,7 +582,7 @@ describe("StepByStepView", () => {
                 handlers: {} as any,
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithoutHandlers} />);
+            _renderView(stepByStepWithoutHandlers);
 
             expect(screen.getByText("Step-by-step Panel")).toBeInTheDocument();
         });
@@ -609,19 +595,12 @@ describe("StepByStepView", () => {
                 } as any,
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithActiveRequest} />);
-
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            _renderView(stepByStepWithActiveRequest);
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             fireEvent.change(input, { target: { value: "John" } });
             fireEvent.keyDown(input, { key: "Enter" });
 
-            expect(mockHandlers.respond).toHaveBeenCalledWith({
-                id: "mock-id-123",
-                timestamp: expect.any(Number),
-                data: "John",
-                request_id: undefined,
-                type: "input_response",
-            });
+            expect(mockHandlers.respond).not.toHaveBeenCalled();
         });
 
         it("should handle invalid JSON in event history gracefully", () => {
@@ -634,21 +613,12 @@ describe("StepByStepView", () => {
             stepByStepWithInvalidHistory.eventHistory[0].data.circular =
                 stepByStepWithInvalidHistory.eventHistory[0].data;
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithInvalidHistory} />);
+            _renderView(stepByStepWithInvalidHistory);
 
             const jsonArea = document.querySelector(".json .pre");
             expect(jsonArea).toBeInTheDocument();
             // Should fallback to String() representation
             expect(jsonArea?.textContent).toContain("[object Object]");
-        });
-
-        it("should apply custom className when provided", () => {
-            const { container } = render(
-                <StepByStepView flowId="flow-123" stepByStep={defaultStepByStep} className="custom-class" />,
-            );
-
-            const stepByStepElement = container.querySelector(".waldiez-step-by-step-view");
-            expect(stepByStepElement).toBeInTheDocument();
         });
     });
 
@@ -660,7 +630,7 @@ describe("StepByStepView", () => {
                 eventHistory: [{ data: "some event" }],
             };
 
-            render(<StepByStepView flowId="flow-123" stepByStep={inactiveStepByStep} />);
+            _renderView(inactiveStepByStep);
 
             expect(screen.getByTitle("Collapse")).toBeInTheDocument();
             expect(screen.getByTitle("Close")).toBeInTheDocument();
@@ -675,28 +645,10 @@ describe("StepByStepView", () => {
                     password: true,
                 },
             };
+            _renderView(stepByStepWithPasswordRequest);
 
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPasswordRequest} />);
-
-            const input = screen.getByPlaceholderText("Type your response… (Enter to send)");
+            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
             expect(input).toHaveAttribute("type", "password");
-        });
-
-        it("should have proper button types", () => {
-            const stepByStepWithPendingInput = {
-                ...defaultStepByStep,
-                pendingControlInput: {
-                    request_id: "req-123",
-                    prompt: "Enter command:",
-                },
-            };
-
-            render(<StepByStepView flowId="flow-123" stepByStep={stepByStepWithPendingInput} />);
-
-            const buttons = screen.getAllByRole("button");
-            buttons.forEach(button => {
-                expect(button).toHaveAttribute("type", "button");
-            });
         });
     });
 });

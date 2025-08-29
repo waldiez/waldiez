@@ -3,12 +3,12 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SideBar, SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
-import { WaldiezNodeType } from "@waldiez/types";
+import type { WaldiezNodeType } from "@waldiez/types";
 
 describe("SideBar", () => {
     let onSelectNodeType: Mock<any>;

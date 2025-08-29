@@ -13,7 +13,7 @@ import { VscDebugAlt } from "react-icons/vsc";
 
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import { WaldiezNodeType } from "@waldiez/types";
+import type { WaldiezNodeType } from "@waldiez/types";
 
 type WaldiezFlowPanelsProps = {
     flowId: string;

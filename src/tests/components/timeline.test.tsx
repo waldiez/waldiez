@@ -6,7 +6,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Timeline, TimelineModal } from "@waldiez/components/timeline";
-import { WaldiezTimelineData } from "@waldiez/components/timeline/types";
+import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
 // Mock the theme hook
 vi.mock("@waldiez/theme", async importOriginal => {

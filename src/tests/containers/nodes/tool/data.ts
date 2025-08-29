@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezToolType } from "@waldiez/types";
+import type { WaldiezToolType } from "@waldiez/types";
 
 export const createdAt = new Date().toISOString();
 export const updatedAt = new Date().toISOString();

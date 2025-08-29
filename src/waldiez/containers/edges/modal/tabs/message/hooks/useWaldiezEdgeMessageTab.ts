@@ -4,8 +4,8 @@
  */
 import { useCallback } from "react";
 
-import { WaldiezEdgeMessageTabProps } from "@waldiez/containers/edges/modal/tabs/message/types";
-import { WaldiezMessage, WaldiezMessageType } from "@waldiez/models";
+import type { WaldiezEdgeMessageTabProps } from "@waldiez/containers/edges/modal/tabs/message/types";
+import { WaldiezMessage, type WaldiezMessageType } from "@waldiez/models";
 
 /**
  * Custom hook for managing the message tab of the edge modal

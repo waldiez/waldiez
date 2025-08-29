@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Node } from "@xyflow/react";
+import type { Node } from "@xyflow/react";
 
 import {
     WaldiezAgent,
@@ -12,10 +12,10 @@ import {
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
-    WaldiezAgentType,
+    type WaldiezAgentType,
     WaldiezAgentUserProxy,
-} from "@waldiez/models";
-import { agentMapper } from "@waldiez/models/mappers/agent";
+} from "@waldiez/models/Agent";
+import { agentMapper } from "@waldiez/models/mappers/agent/agentMapper";
 import { getIdFromJSON } from "@waldiez/models/mappers/common";
 import { toCamelCase } from "@waldiez/utils";
 

@@ -6,7 +6,7 @@ import React, { memo } from "react";
 
 import { Dict, NumberInput, StringList } from "@waldiez/components";
 import { useModelModalAdvancedTab } from "@waldiez/containers/nodes/model/modal/tabs/advanced/hooks";
-import { WaldiezNodeModelModalAdvancedTabProps } from "@waldiez/containers/nodes/model/modal/tabs/advanced/types";
+import { type WaldiezNodeModelModalAdvancedTabProps } from "@waldiez/containers/nodes/model/modal/tabs/advanced/types";
 
 export const WaldiezNodeModelModalAdvancedTab: React.FC<WaldiezNodeModelModalAdvancedTabProps> = memo(
     (props: WaldiezNodeModelModalAdvancedTabProps) => {

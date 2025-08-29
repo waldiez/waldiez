@@ -4,7 +4,10 @@
  */
 import { useCallback, useMemo, useState } from "react";
 
-import { ImportFlowModalProps, ImportFlowState } from "@waldiez/containers/flow/modals/importFlowModal/types";
+import type {
+    ImportFlowModalProps,
+    ImportFlowState,
+} from "@waldiez/containers/flow/modals/importFlowModal/types";
 import { useWaldiez } from "@waldiez/store";
 
 // Initial state moved to the top level outside component for better performance

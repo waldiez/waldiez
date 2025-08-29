@@ -3,6 +3,7 @@
     "compilerOptions": {
         "forceConsistentCasingInFileNames": true,
         "noUncheckedIndexedAccess": true,
+        "verbatimModuleSyntax": true,
         "strict": true,
         "types": []
     },

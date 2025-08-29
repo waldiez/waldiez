@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { WaldiezAgentType } from "@waldiez/models/Agent/Common/types";
+import type { WaldiezAgentType } from "@waldiez/models/Agent/Common/types";
 import { WaldiezMessage } from "@waldiez/models/Chat/Message";
-import { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
-import {
+import type { WaldiezChatSummary, WaldiezNestedChat } from "@waldiez/models/Chat/types";
+import type {
     WaldiezHandoffAvailability,
     WaldiezHandoffCondition,
     WaldiezTransitionTarget,

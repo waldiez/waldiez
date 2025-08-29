@@ -4,7 +4,7 @@
  */
 import stripAnsi from "strip-ansi";
 
-import { WaldiezDebugMessage } from "@waldiez/components/stepByStep";
+import type { WaldiezDebugMessage } from "@waldiez/components/stepByStep";
 import {
     DebugBreakpointsHandler,
     DebugErrorHandler,
@@ -14,9 +14,8 @@ import {
     DebugPrintHandler,
     DebugStatsHandler,
 } from "@waldiez/utils/stepByStep/handlers";
-import { WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep/stepByStepUtils";
-import {
-    type WaldiezStepByStepHandler,
+import type {
+    WaldiezStepByStepHandler,
     WaldiezStepByStepProcessingContext,
     WaldiezStepByStepProcessingResult,
 } from "@waldiez/utils/stepByStep/types";
@@ -173,12 +172,6 @@ export class WaldiezStepByStepProcessor {
         return WaldiezStepByStepProcessor.handlers.find(handler => handler.canHandle(type));
     }
 
-    /**
-     * Check if the content can be processed by the step-by-step processor
-     */
-    static canProcess(content: any): boolean {
-        return WaldiezStepByStepUtils.isStepByStepMessage(content);
-    }
     /**
      * Parse subprocess_output content specifically for step-by-step messages
      */

@@ -14,7 +14,7 @@ import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
 import { createHandles } from "@waldiez/containers/nodes/agent/handles";
 import { useWaldiezNodeAgent } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal";
-import { WaldiezNodeAgentProps } from "@waldiez/containers/nodes/agent/types";
+import { type WaldiezNodeAgentProps } from "@waldiez/containers/nodes/agent/types";
 import { AGENT_COLORS, AGENT_ICONS } from "@waldiez/theme";
 
 const RESIZE_LIMITS = {
@@ -45,6 +45,8 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
         isEdgeModalOpen,
         isModalOpen,
         isDragging,
+        isSender,
+        isRecipient,
         onDragOver,
         onDragLeave,
         onDrop,
@@ -73,9 +75,15 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
                 classes += " dragging";
             }
         }
+        if (isSender) {
+            classes += " active-sender";
+        }
+        if (isRecipient) {
+            classes += " active-recipient";
+        }
 
         return classes;
-    }, [isModalOpen, data.parentId, agentType, isDragging]);
+    }, [isModalOpen, data.parentId, agentType, isSender, isRecipient, isDragging]);
 
     // Handle class name calculation
     const handleClassNameBase = useMemo(

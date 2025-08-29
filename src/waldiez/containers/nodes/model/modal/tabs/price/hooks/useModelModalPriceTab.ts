@@ -4,7 +4,7 @@
  */
 import React, { useCallback } from "react";
 
-import { WaldiezNodeModelModalPriceTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
+import type { WaldiezNodeModelModalPriceTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
 
 /**
  * Custom hook for managing price tab functionality in the model modal

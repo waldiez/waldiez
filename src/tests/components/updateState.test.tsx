@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import selectEvent from "react-select-event";
 
 import { CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT, UpdateState } from "@waldiez/components/updateState";
-import { WaldiezAgent, WaldiezNodeAgentData, agentMapper } from "@waldiez/models";
+import { WaldiezAgent, type WaldiezNodeAgentData, agentMapper } from "@waldiez/models";
 
 // Mock the components
 vi.mock("@waldiez/components", () => ({

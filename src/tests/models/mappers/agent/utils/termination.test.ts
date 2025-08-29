@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { getTermination } from "@waldiez/models/mappers/agent/utils";
+import { getTermination } from "@waldiez/models/mappers/agent/utils/termination";
 
 describe("getTermination", () => {
     it("should return the termination", () => {

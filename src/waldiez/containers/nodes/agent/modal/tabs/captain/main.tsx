@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import { Collapsible, DropZone, InfoCheckbox, NumberInput } from "@waldiez/components";
 import { useWaldiezAgentCaptain } from "@waldiez/containers/nodes/agent/modal/tabs/captain/hooks";
-import { WaldiezAgentCaptainTabProps } from "@waldiez/containers/nodes/agent/modal/tabs/captain/types";
+import type { WaldiezAgentCaptainTabProps } from "@waldiez/containers/nodes/agent/modal/tabs/captain/types";
 
 /**
  * Links to example resources

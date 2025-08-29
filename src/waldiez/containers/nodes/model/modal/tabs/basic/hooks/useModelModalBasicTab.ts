@@ -4,15 +4,15 @@
  */
 import React, { useCallback, useMemo, useRef, useState } from "react";
 
-import { SingleValue } from "@waldiez/components";
-import { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
+import type { SingleValue } from "@waldiez/components";
+import type { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
 import {
     apiKeyEnvs,
     apiTypeOptions,
     baseUrlsMapping,
     getApiTypeLabel,
 } from "@waldiez/containers/nodes/model/utils";
-import { WaldiezModelAPIType } from "@waldiez/models";
+import type { WaldiezModelAPIType } from "@waldiez/models";
 import { LOGOS } from "@waldiez/theme";
 
 /**

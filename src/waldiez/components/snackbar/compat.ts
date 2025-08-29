@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
-import { ShowSnackbarProps } from "@waldiez/components/snackbar/types";
+import type { ShowSnackbarProps } from "@waldiez/components/snackbar/types";
 
 let globalEnqueue: ((props: ShowSnackbarProps) => void) | null = null;
 

@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
 import selectEvent from "react-select-event";
 
 import { HandoffAvailability } from "@waldiez/components/handoffAvailability";
-import { WaldiezHandoffAvailability } from "@waldiez/models";
+import type { WaldiezHandoffAvailability } from "@waldiez/models/types";
 
 const setup = (dataOverrides: WaldiezHandoffAvailability, onDataChange = vi.fn()) => {
     render(<HandoffAvailability available={dataOverrides} onDataChange={onDataChange} />);

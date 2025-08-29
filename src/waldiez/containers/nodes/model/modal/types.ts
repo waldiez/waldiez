@@ -4,7 +4,7 @@
  */
 import React from "react";
 
-import { WaldiezNodeModelData } from "@waldiez/models";
+import type { WaldiezNodeModelData } from "@waldiez/models";
 
 export type WaldiezNodeModelModalProps = {
     flowId: string;

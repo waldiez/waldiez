@@ -4,6 +4,6 @@
  */
 import { createContext } from "react";
 
-import { SnackbarContextType } from "@waldiez/components/snackbar/types";
+import type { SnackbarContextType } from "@waldiez/components/snackbar/types";
 
 export const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);

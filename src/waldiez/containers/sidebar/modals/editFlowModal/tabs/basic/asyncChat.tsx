@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { MultiValue, Select } from "@waldiez/components";
-import { EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/types";
-import { WaldiezEdge } from "@waldiez/models";
+import { type MultiValue, Select } from "@waldiez/components";
+import { type EditFlowModalModalTabBasicProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/types";
+import { type WaldiezEdge } from "@waldiez/models/types";
 
 export const HandleASyncChatOrderAndPrerequisites = (props: EditFlowModalModalTabBasicProps) => {
     const {

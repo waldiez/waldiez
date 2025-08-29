@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { EdgeProps } from "@xyflow/react";
+import type { EdgeProps } from "@xyflow/react";
 
-import { WaldiezEdge, WaldiezEdgeType } from "@waldiez/models";
+import type { WaldiezEdge, WaldiezEdgeType } from "@waldiez/models";
 
 /**
  * WaldiezEdgeProps

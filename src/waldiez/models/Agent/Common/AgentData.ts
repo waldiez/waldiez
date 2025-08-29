@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import {
+import type {
     WaldiezAgentCodeExecutionConfig,
     WaldiezAgentHumanInputMode,
     WaldiezAgentLinkedTool,
@@ -10,7 +10,7 @@ import {
     WaldiezAgentTerminationMessageCheck,
     WaldiezAgentUpdateSystemMessage,
 } from "@waldiez/models/Agent/Common/types";
-import { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
+import type { WaldiezTransitionTarget } from "@waldiez/models/common/Handoff";
 
 /**
  * Waldiez Agent data

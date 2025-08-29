@@ -6,7 +6,7 @@ import { memo } from "react";
 
 import { InfoCheckbox, NumberInput, Select, TextInput } from "@waldiez/components";
 import { useWaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution/hooks";
-import { WaldiezAgentCodeExecutionProps } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution/types";
+import type { WaldiezAgentCodeExecutionProps } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution/types";
 
 // Flag to control Docker option visibility
 // Currently hidden until 'run' props changes in the main component
