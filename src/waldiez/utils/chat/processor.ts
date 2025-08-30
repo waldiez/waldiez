@@ -5,51 +5,51 @@
 import stripAnsi from "strip-ansi";
 
 import {
-    CodeExecutionReplyHandler,
-    ErrorHandler,
-    ExecutedFunctionHandler,
-    GroupChatRunHandler,
-    InputRequestHandler,
-    ParticipantsHandler,
-    PrintMessageHandler,
-    RunCompletionHandler,
-    SpeakerSelectionHandler,
-    TerminationAndHumanReplyNoInputHandler,
-    TerminationHandler,
-    TextMessageHandler,
-    TimelineDataHandler,
-    ToolCallHandler,
-    ToolResponseHandler,
-    UsingAutoReplyHandler,
+    WaldiezChatCodeExecutionReplyHandler,
+    WaldiezChatErrorHandler,
+    WaldiezChatExecutedFunctionHandler,
+    WaldiezChatGroupChatRunHandler,
+    WaldiezChatInputRequestHandler,
+    WaldiezChatParticipantsHandler,
+    WaldiezChatPrintMessageHandler,
+    WaldiezChatRunCompletionHandler,
+    WaldiezChatSpeakerSelectionHandler,
+    WaldiezChatTerminationAndHumanReplyNoInputHandler,
+    WaldiezChatTerminationHandler,
+    WaldiezChatTextMessageHandler,
+    WaldiezChatTimelineDataHandler,
+    WaldiezChatToolCallHandler,
+    WaldiezChatToolResponseHandler,
+    WaldiezChatUsingAutoReplyHandler,
 } from "@waldiez/utils/chat/handlers";
 import type {
-    BaseMessageData,
-    MessageHandler,
-    MessageProcessingContext,
+    WaldiezChatBaseMessageData,
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingContext,
     WaldiezChatMessageProcessingResult,
 } from "@waldiez/utils/chat/types";
 
 export class WaldiezChatMessageProcessor {
-    private static _handlers: MessageHandler[] | null = null;
-    private static get handlers(): MessageHandler[] {
+    private static _handlers: WaldiezChatMessageHandler[] | null = null;
+    private static get handlers(): WaldiezChatMessageHandler[] {
         if (!this._handlers) {
             this._handlers = [
-                new InputRequestHandler(),
-                new ParticipantsHandler(),
-                new PrintMessageHandler(),
-                new TextMessageHandler(),
-                new TerminationHandler(),
-                new GroupChatRunHandler(),
-                new SpeakerSelectionHandler(),
-                new CodeExecutionReplyHandler(),
-                new ToolCallHandler(),
-                new TerminationAndHumanReplyNoInputHandler(),
-                new UsingAutoReplyHandler(),
-                new TimelineDataHandler(),
-                new RunCompletionHandler(),
-                new ToolResponseHandler(),
-                new ExecutedFunctionHandler(),
-                new ErrorHandler(),
+                new WaldiezChatInputRequestHandler(),
+                new WaldiezChatParticipantsHandler(),
+                new WaldiezChatPrintMessageHandler(),
+                new WaldiezChatTextMessageHandler(),
+                new WaldiezChatTerminationHandler(),
+                new WaldiezChatGroupChatRunHandler(),
+                new WaldiezChatSpeakerSelectionHandler(),
+                new WaldiezChatCodeExecutionReplyHandler(),
+                new WaldiezChatToolCallHandler(),
+                new WaldiezChatTerminationAndHumanReplyNoInputHandler(),
+                new WaldiezChatUsingAutoReplyHandler(),
+                new WaldiezChatTimelineDataHandler(),
+                new WaldiezChatRunCompletionHandler(),
+                new WaldiezChatToolResponseHandler(),
+                new WaldiezChatExecutedFunctionHandler(),
+                new WaldiezChatErrorHandler(),
             ];
         }
         return this._handlers;
@@ -85,16 +85,16 @@ export class WaldiezChatMessageProcessor {
             return undefined;
         }
 
-        const context: MessageProcessingContext = { requestId, imageUrl };
+        const context: WaldiezChatMessageProcessingContext = { requestId, imageUrl };
         return handler.handle(data, context);
     }
     /**
      * Parses a raw message string into a BaseMessageData object.
      * Returns null if the message cannot be parsed.
      * @param message - The raw message string to parse
-     * @returns BaseMessageData | null
+     * @returns WaldiezChatBaseMessageData | null
      */
-    private static parseMessage(message: any): BaseMessageData | null {
+    private static parseMessage(message: any): WaldiezChatBaseMessageData | null {
         if (typeof message === "object") {
             return message;
         }
@@ -108,29 +108,37 @@ export class WaldiezChatMessageProcessor {
     /**
      * Finds a handler that can process the given message type.
      * @param type - The type of the message to find a handler for
-     * @returns MessageHandler | undefined
+     * @returns WaldiezChatMessageHandler | undefined
      */
-    private static findHandler(type: string, data: any): MessageHandler | undefined {
+    static findHandler(type: string, data: any): WaldiezChatMessageHandler | undefined {
         const handler = this.handlers.find(handler => handler.canHandle(type));
         if ((data && data.type === "print") || type === "print") {
-            if (TimelineDataHandler.isTimelineMessage(data)) {
-                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof TimelineDataHandler);
+            if (WaldiezChatTimelineDataHandler.isTimelineMessage(data)) {
+                return WaldiezChatMessageProcessor.handlers.find(
+                    h => h instanceof WaldiezChatTimelineDataHandler,
+                );
             }
-            if (data && data.participants && ParticipantsHandler.isValidParticipantsData(data)) {
-                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
+            if (data && data.participants && WaldiezChatParticipantsHandler.isValidParticipantsData(data)) {
+                return WaldiezChatMessageProcessor.handlers.find(
+                    h => h instanceof WaldiezChatParticipantsHandler,
+                );
             }
             if (
                 data &&
                 data.data &&
                 data.data.participants &&
-                ParticipantsHandler.isValidParticipantsData(data.data)
+                WaldiezChatParticipantsHandler.isValidParticipantsData(data.data)
             ) {
-                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
+                return WaldiezChatMessageProcessor.handlers.find(
+                    h => h instanceof WaldiezChatParticipantsHandler,
+                );
             }
         }
         if (data && data.participants) {
-            if (ParticipantsHandler.isValidParticipantsData(data)) {
-                return WaldiezChatMessageProcessor.handlers.find(h => h instanceof ParticipantsHandler);
+            if (WaldiezChatParticipantsHandler.isValidParticipantsData(data)) {
+                return WaldiezChatMessageProcessor.handlers.find(
+                    h => h instanceof WaldiezChatParticipantsHandler,
+                );
             }
         }
         return handler;

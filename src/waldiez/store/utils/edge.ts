@@ -5,18 +5,19 @@
 import type { Connection, Edge, Node } from "@xyflow/react";
 import { MarkerType } from "@xyflow/react";
 
-import { showSnackbar } from "@waldiez/components";
-import {
-    WaldiezChat,
-    WaldiezChatData,
-    type WaldiezEdge,
-    type WaldiezEdgeType,
-    type WaldiezNodeAgentType,
-    chatMapper,
-} from "@waldiez/models";
+import { showSnackbar } from "@waldiez/components/snackbar";
+import { WaldiezChat, WaldiezChatData, type WaldiezEdge, type WaldiezEdgeType } from "@waldiez/models/Chat";
+import { chatMapper } from "@waldiez/models/mappers/chat/chatMapper";
 import { AGENT_COLORS } from "@waldiez/theme";
-import type { WaldiezNodeAgent, WaldiezNodeAgentData, typeOfGet, typeOfSet } from "@waldiez/types";
-import { getFriendlyString, getId } from "@waldiez/utils";
+import type {
+    WaldiezNodeAgent,
+    WaldiezNodeAgentData,
+    WaldiezNodeAgentType,
+    typeOfGet,
+    typeOfSet,
+} from "@waldiez/types";
+import { getId } from "@waldiez/utils/ids";
+import { getFriendlyString } from "@waldiez/utils/strings";
 
 /**
  * Gets the common style for an edge based on its type and color.

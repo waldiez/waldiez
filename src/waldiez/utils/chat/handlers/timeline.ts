@@ -3,9 +3,12 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import type { WaldiezTimelineData } from "@waldiez/types";
-import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 
-export class TimelineDataHandler implements MessageHandler {
+export class WaldiezChatTimelineDataHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "timeline";
     }

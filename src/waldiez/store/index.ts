@@ -3,4 +3,5 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 export { useWaldiez, useWaldiezHistory } from "@waldiez/store/context";
+export { createWaldiezStore } from "@waldiez/store/creator";
 export { WaldiezProvider } from "@waldiez/store/provider";

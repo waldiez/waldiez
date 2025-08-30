@@ -5,7 +5,7 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { describe, expect, it } from "vitest";
 
-import type { WaldiezBreakpoint } from "@waldiez/components";
+import type { WaldiezBreakpoint } from "@waldiez/components/types";
 import { WaldiezBreakpointUtils } from "@waldiez/utils/stepByStep/breakpointUtils";
 
 describe("WaldiezBreakpointUtils", () => {

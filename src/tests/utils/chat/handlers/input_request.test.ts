@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import { InputRequestHandler } from "@waldiez/utils/chat/handlers";
+import { WaldiezChatInputRequestHandler } from "@waldiez/utils/chat/handlers";
 
 // Mock dependencies
 vi.mock("strip-ansi", () => ({
@@ -168,16 +168,16 @@ describe("WaldiezChatMessageProcessor", () => {
                 request_id: "req-123",
                 prompt: "This should not be processed.",
             };
-            const isValid = InputRequestHandler.isValidInputRequest(message);
+            const isValid = WaldiezChatInputRequestHandler.isValidInputRequest(message);
             expect(isValid).toBe(false);
             const messageWithoutRequestId = {
                 type: "input_request",
                 prompt: "This should not be processed.",
             };
-            const isValid2 = InputRequestHandler.isValidInputRequest(messageWithoutRequestId);
+            const isValid2 = WaldiezChatInputRequestHandler.isValidInputRequest(messageWithoutRequestId);
             expect(isValid2).toBe(false);
             const stringMessage = "input_request";
-            const isValid3 = InputRequestHandler.isValidInputRequest(stringMessage);
+            const isValid3 = WaldiezChatInputRequestHandler.isValidInputRequest(stringMessage);
             expect(isValid3).toBe(false);
             const messageWithoutPrompt = JSON.stringify({
                 type: "input_request",
@@ -185,7 +185,7 @@ describe("WaldiezChatMessageProcessor", () => {
             });
             const result = WaldiezChatMessageProcessor.process(messageWithoutPrompt);
             expect(result).toBeUndefined();
-            const result2 = new InputRequestHandler().handle(message, {});
+            const result2 = new WaldiezChatInputRequestHandler().handle(message, {});
             expect(result2).toBeUndefined();
         });
     });

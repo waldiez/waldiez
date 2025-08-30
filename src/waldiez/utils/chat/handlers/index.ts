@@ -3,21 +3,27 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-export { RunCompletionHandler } from "@waldiez/utils/chat/handlers/chat_completion";
-export { CodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_execution";
-export { ErrorHandler } from "@waldiez/utils/chat/handlers/error";
-export { GroupChatRunHandler, SpeakerSelectionHandler } from "@waldiez/utils/chat/handlers/group";
-export { InputRequestHandler, UsingAutoReplyHandler } from "@waldiez/utils/chat/handlers/input_request";
-export { ParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
-export { PrintMessageHandler } from "@waldiez/utils/chat/handlers/print";
+export { WaldiezChatRunCompletionHandler } from "@waldiez/utils/chat/handlers/chat_completion";
+export { WaldiezChatCodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_execution";
+export { WaldiezChatErrorHandler } from "@waldiez/utils/chat/handlers/error";
 export {
-    TerminationAndHumanReplyNoInputHandler,
-    TerminationHandler,
+    WaldiezChatGroupChatRunHandler,
+    WaldiezChatSpeakerSelectionHandler,
+} from "@waldiez/utils/chat/handlers/group";
+export {
+    WaldiezChatInputRequestHandler,
+    WaldiezChatUsingAutoReplyHandler,
+} from "@waldiez/utils/chat/handlers/input_request";
+export { WaldiezChatParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
+export { WaldiezChatPrintMessageHandler } from "@waldiez/utils/chat/handlers/print";
+export {
+    WaldiezChatTerminationAndHumanReplyNoInputHandler,
+    WaldiezChatTerminationHandler,
 } from "@waldiez/utils/chat/handlers/termination";
-export { TextMessageHandler } from "@waldiez/utils/chat/handlers/text";
-export { TimelineDataHandler } from "@waldiez/utils/chat/handlers/timeline";
+export { WaldiezChatTextMessageHandler } from "@waldiez/utils/chat/handlers/text";
+export { WaldiezChatTimelineDataHandler } from "@waldiez/utils/chat/handlers/timeline";
 export {
-    ExecutedFunctionHandler,
-    ToolCallHandler,
-    ToolResponseHandler,
+    WaldiezChatExecutedFunctionHandler,
+    WaldiezChatToolCallHandler,
+    WaldiezChatToolResponseHandler,
 } from "@waldiez/utils/chat/handlers/tools";

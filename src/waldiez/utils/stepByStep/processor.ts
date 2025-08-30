@@ -4,7 +4,12 @@
  */
 import stripAnsi from "strip-ansi";
 
-import type { WaldiezDebugMessage } from "@waldiez/components/stepByStep";
+import type { WaldiezDebugMessage } from "@waldiez/components/stepByStep/types";
+import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat/processor";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 import {
     DebugBreakpointsHandler,
     DebugErrorHandler,
@@ -63,10 +68,19 @@ export class WaldiezStepByStepProcessor {
         if (!data) {
             return WaldiezStepByStepProcessor.earlyError(rawMessage);
         }
+        return this._doProcess(data, context);
+    }
 
-        // Find appropriate handler
-        const handler = WaldiezStepByStepProcessor.findHandler(data.type);
-        if (!handler) {
+    private static _doProcess(
+        data: any,
+        context: WaldiezStepByStepProcessingContext,
+    ): WaldiezStepByStepProcessingResult | undefined {
+        let chatHandler: WaldiezChatMessageHandler | undefined;
+        const stepHandler = WaldiezStepByStepProcessor.findHandler(data.type);
+        if (!stepHandler) {
+            chatHandler = WaldiezChatMessageProcessor.findHandler(data.type, data);
+        }
+        if (!stepHandler && !chatHandler) {
             return {
                 error: {
                     message: `No handler found for message type: ${data.type}`,
@@ -75,11 +89,25 @@ export class WaldiezStepByStepProcessor {
                 },
             };
         }
-
-        // Process with handler
         try {
-            return handler.handle(data, context);
+            return stepHandler?.handle(data, context);
         } catch (error) {
+            if (chatHandler) {
+                try {
+                    const chatResult = chatHandler.handle(data, context);
+                    if (chatResult) {
+                        return WaldiezStepByStepProcessor._chatResultToStepResult(chatResult);
+                    }
+                } catch (_) {
+                    return {
+                        error: {
+                            message: `Handler error: ${error instanceof Error ? error.message : String(error)}`,
+                            code: "HANDLER_ERROR",
+                            originalData: data,
+                        },
+                    };
+                }
+            }
             return {
                 error: {
                     message: `Handler error: ${error instanceof Error ? error.message : String(error)}`,
@@ -88,6 +116,61 @@ export class WaldiezStepByStepProcessor {
                 },
             };
         }
+    }
+
+    private static _chatResultToStepResult(
+        chatResult: WaldiezChatMessageProcessingResult,
+    ): WaldiezStepByStepProcessingResult | undefined {
+        if (chatResult.participants) {
+            return {
+                debugMessage: {
+                    type: "print",
+                    content: chatResult.participants,
+                },
+                stateUpdate: {
+                    participants: chatResult.participants,
+                },
+            };
+        }
+        if (chatResult.timeline) {
+            return {
+                debugMessage: {
+                    type: "print",
+                    content: chatResult.timeline,
+                },
+                stateUpdate: {
+                    timeline: chatResult.timeline,
+                },
+            };
+        }
+        if (chatResult.isWorkflowEnd) {
+            return {
+                debugMessage: {
+                    type: "print",
+                    content: "Workflow has ended.",
+                },
+                stateUpdate: {
+                    eventHistory: [
+                        {
+                            type: "workflow_end",
+                            ...(chatResult.runCompletion || chatResult.message || {}),
+                        },
+                    ],
+                },
+            };
+        }
+        if (!chatResult.message || !chatResult.message.content) {
+            return undefined;
+        }
+        return {
+            debugMessage: {
+                type: "print",
+                content: chatResult.message,
+            },
+            stateUpdate: {
+                eventHistory: [chatResult],
+            },
+        };
     }
 
     private static earlyError(rawMessage: string | undefined | null): WaldiezStepByStepProcessingResult {
@@ -159,17 +242,17 @@ export class WaldiezStepByStepProcessor {
     }
 
     /**
+     * Find a handler that can process the given message type
+     */
+    static findHandler(type: string): WaldiezStepByStepHandler | undefined {
+        return WaldiezStepByStepProcessor.handlers.find(handler => handler.canHandle(type));
+    }
+
+    /**
      * Check if the parsed data is a valid debug message
      */
     private static isValidDebugMessage(data: any): data is WaldiezDebugMessage {
         return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
-    }
-
-    /**
-     * Find a handler that can process the given message type
-     */
-    private static findHandler(type: string): WaldiezStepByStepHandler | undefined {
-        return WaldiezStepByStepProcessor.handlers.find(handler => handler.canHandle(type));
     }
 
     /**

@@ -2,9 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 
-export class RunCompletionHandler implements MessageHandler {
+export class WaldiezChatRunCompletionHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "run_completion";
     }

@@ -4,16 +4,19 @@
  */
 import { nanoid } from "nanoid";
 
-import type { CodeExecutionReplyData, WaldiezChatMessage } from "@waldiez/types";
+import type { WaldiezChatCodeExecutionReplyData, WaldiezChatMessage } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 
 /**
  * Code execution reply handler processes code execution reply messages.
  * It validates the message structure and constructs a WaldiezChatMessage object with the code execution reply content.
  * If valid, it returns the processed message.
  */
-export class CodeExecutionReplyHandler implements MessageHandler {
+export class WaldiezChatCodeExecutionReplyHandler implements WaldiezChatMessageHandler {
     /**
      * Determines if this handler can process the given message type.
      * @param type - The type of the message to check.
@@ -28,7 +31,7 @@ export class CodeExecutionReplyHandler implements MessageHandler {
      * @param data - The data to validate.
      * @returns True if the data is a valid code execution reply message, false otherwise.
      */
-    static isValidCodeExecutionReply(data: any): data is CodeExecutionReplyData {
+    static isValidCodeExecutionReply(data: any): data is WaldiezChatCodeExecutionReplyData {
         /* c8 ignore next 9 */
         if (!data || typeof data !== "object") {
             return false;
@@ -52,7 +55,7 @@ export class CodeExecutionReplyHandler implements MessageHandler {
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!CodeExecutionReplyHandler.isValidCodeExecutionReply(data)) {
+        if (!WaldiezChatCodeExecutionReplyHandler.isValidCodeExecutionReply(data)) {
             return undefined;
         }
 

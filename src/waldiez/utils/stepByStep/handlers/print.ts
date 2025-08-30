@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import type { WaldiezDebugMessage } from "@waldiez/components/stepByStep";
+import type { WaldiezDebugMessage } from "@waldiez/components/stepByStep/types";
 import { WORKFLOW_STEP_END_MARKERS } from "@waldiez/utils/stepByStep/constants";
 import type {
     WaldiezStepByStepHandler,

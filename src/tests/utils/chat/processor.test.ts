@@ -84,7 +84,7 @@ describe("WaldiezChatMessageProcessor", () => {
             const message = "<Waldiez> - Workflow finished successfully";
             const result = WaldiezChatMessageProcessor.process(message);
 
-            expect(result).toEqual({ isWorkflowEnd: true });
+            expect(result).toEqual({ isWorkflowEnd: true, message });
 
             consoleSpy.mockRestore();
         });

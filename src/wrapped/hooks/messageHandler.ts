@@ -6,7 +6,7 @@ import { useCallback, useRef } from "react";
 
 import type { ServerMessage } from "./types";
 
-export type MessageHandlerCallbacks = {
+export type WaldiezChatMessageHandlerCallbacks = {
     onSessionUpdate?: (sessionId: string) => void;
     onRunStart?: () => void;
     onDebugStart?: () => void;
@@ -15,7 +15,7 @@ export type MessageHandlerCallbacks = {
     onError?: (error: string) => void;
 };
 
-export function useMessageHandler(callbacks: MessageHandlerCallbacks = {}) {
+export function useMessageHandler(callbacks: WaldiezChatMessageHandlerCallbacks = {}) {
     const { onSessionUpdate, onRunStart, onDebugStart, onWorkflowComplete, onError, onInputRequest } =
         callbacks;
 

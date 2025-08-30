@@ -4,13 +4,13 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { RunCompletionHandler } from "@waldiez/utils/chat/handlers/chat_completion";
+import { WaldiezChatRunCompletionHandler } from "@waldiez/utils/chat/handlers/chat_completion";
 
-describe("RunCompletionHandler", () => {
-    let handler: RunCompletionHandler;
+describe("WaldiezChatRunCompletionHandler", () => {
+    let handler: WaldiezChatRunCompletionHandler;
 
     beforeEach(() => {
-        handler = new RunCompletionHandler();
+        handler = new WaldiezChatRunCompletionHandler();
         vi.clearAllMocks();
     });
 

@@ -2,7 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import type { WaldiezBreakpoint, WaldiezDebugMessage, WaldiezStepByStep } from "@waldiez/components";
+import type {
+    WaldiezBreakpoint,
+    WaldiezDebugMessage,
+    WaldiezStepByStep,
+} from "@waldiez/components/stepByStep/types";
 
 /**
  * Control actions that the UI should perform in response to debug messages

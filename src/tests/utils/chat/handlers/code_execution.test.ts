@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import { CodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_execution";
+import { WaldiezChatCodeExecutionReplyHandler } from "@waldiez/utils/chat/handlers/code_execution";
 
 // Mock dependencies
 vi.mock("strip-ansi", () => ({
@@ -80,7 +80,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             };
 
-            expect(CodeExecutionReplyHandler.isValidCodeExecutionReply(data)).toBe(true);
+            expect(WaldiezChatCodeExecutionReplyHandler.isValidCodeExecutionReply(data)).toBe(true);
         });
 
         it("should return false for invalid code execution reply data", () => {
@@ -92,7 +92,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 },
             };
 
-            expect(CodeExecutionReplyHandler.isValidCodeExecutionReply(data)).toBe(false);
+            expect(WaldiezChatCodeExecutionReplyHandler.isValidCodeExecutionReply(data)).toBe(false);
         });
     });
 });

@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 
 import type { WaldiezChatContent, WaldiezMediaContent } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import type { BaseMessageData } from "@waldiez/utils/chat/types";
+import type { WaldiezChatBaseMessageData } from "@waldiez/utils/chat/types";
 
 // Utility functions
 export class MessageUtils {
@@ -28,11 +28,11 @@ export class MessageUtils {
             : prompt;
     }
 
-    static generateMessageId(data: BaseMessageData): string {
+    static generateMessageId(data: WaldiezChatBaseMessageData): string {
         return data.id || data.uuid || nanoid();
     }
 
-    static generateTimestamp(data: BaseMessageData): string {
+    static generateTimestamp(data: WaldiezChatBaseMessageData): string {
         return data.timestamp || new Date().toISOString();
     }
 

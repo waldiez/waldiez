@@ -5,14 +5,17 @@
 import { nanoid } from "nanoid";
 
 import type { WaldiezChatMessage } from "@waldiez/types";
-import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 
 /**
  * Tool call handler processes tool call messages.
  * It validates the message structure and extracts tool function names.
  * If valid, it constructs a WaldiezChatMessage object with the tool call content.
  */
-export class ToolCallHandler implements MessageHandler {
+export class WaldiezChatToolCallHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "tool_call";
     }
@@ -35,11 +38,11 @@ export class ToolCallHandler implements MessageHandler {
         return [];
     }
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!ToolCallHandler.isValidToolCall(data)) {
+        if (!WaldiezChatToolCallHandler.isValidToolCall(data)) {
             return undefined;
         }
         let text = "Tool call";
-        const toolCalls = ToolCallHandler.extractToolFunctionNames(data);
+        const toolCalls = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
         if (toolCalls.length > 0) {
             text += `: ${toolCalls.join(", ")}`;
         }
@@ -65,7 +68,7 @@ export class ToolCallHandler implements MessageHandler {
  * It validates the message structure and extracts tool responses.
  * If valid, it constructs a WaldiezChatMessage object with the tool response content.
  */
-export class ToolResponseHandler implements MessageHandler {
+export class WaldiezChatToolResponseHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "tool_response";
     }
@@ -83,7 +86,7 @@ export class ToolResponseHandler implements MessageHandler {
     }
 
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!ToolResponseHandler.isValidToolResponse(data)) {
+        if (!WaldiezChatToolResponseHandler.isValidToolResponse(data)) {
             return undefined;
         }
 
@@ -111,7 +114,7 @@ export class ToolResponseHandler implements MessageHandler {
  * Executed function handler processes messages indicating a function has been executed.
  * It validates the message structure and constructs a WaldiezChatMessage object with the executed function content.
  */
-export class ExecutedFunctionHandler implements MessageHandler {
+export class WaldiezChatExecutedFunctionHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "executed_function";
     }

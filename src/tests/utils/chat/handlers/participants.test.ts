@@ -5,7 +5,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import { ParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
+import { WaldiezChatParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
 
 // Mock dependencies
 vi.mock("strip-ansi", () => ({
@@ -18,7 +18,7 @@ vi.mock("nanoid", () => ({
 
 describe("ParticipantsHandler", () => {
     it("should be able to handle participants type", () => {
-        expect(new ParticipantsHandler().canHandle("participants")).toBe(true);
+        expect(new WaldiezChatParticipantsHandler().canHandle("participants")).toBe(true);
     });
 
     it("should extract participants from print message", () => {
@@ -124,7 +124,7 @@ describe("ParticipantsHandler", () => {
             ],
         };
 
-        const result = new ParticipantsHandler().handle(message, {});
+        const result = new WaldiezChatParticipantsHandler().handle(message, {});
 
         expect(result).toEqual({
             isWorkflowEnd: false,
@@ -268,7 +268,7 @@ describe("ParticipantsHandler", () => {
             ],
         });
 
-        const result = new ParticipantsHandler().handle(message, {});
+        const result = new WaldiezChatParticipantsHandler().handle(message, {});
 
         expect(result).toBeUndefined();
         expect(WaldiezChatMessageProcessor.process(message)).toBeUndefined();

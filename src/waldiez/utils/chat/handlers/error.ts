@@ -5,14 +5,17 @@
 import { nanoid } from "nanoid";
 
 import type { WaldiezChatMessage } from "@waldiez/types";
-import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 
 /**
  * Error handler processes error messages.
  * It validates the message structure and extracts error details.
  * If valid, it constructs a WaldiezChatMessage object with the error content.
  */
-export class ErrorHandler implements MessageHandler {
+export class WaldiezChatErrorHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "error";
     }
@@ -41,7 +44,7 @@ export class ErrorHandler implements MessageHandler {
     }
 
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!ErrorHandler.isValidError(data)) {
+        if (!WaldiezChatErrorHandler.isValidError(data)) {
             return undefined;
         }
         const errorContent = data.content?.error || data.error?.error || data.error;

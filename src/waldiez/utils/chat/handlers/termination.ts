@@ -4,15 +4,18 @@
  */
 import { nanoid } from "nanoid";
 
-import type { TerminationMessageData, WaldiezChatMessage } from "@waldiez/types";
-import type { MessageHandler, WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
+import type { WaldiezChatMessage, WaldiezChatTerminationMessageData } from "@waldiez/types";
+import type {
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingResult,
+} from "@waldiez/utils/chat/types";
 
 /**
  * Termination handler processes termination messages.
  * It validates the message structure and extracts the termination reason.
  * If valid, it constructs a WaldiezChatMessage object with the termination reason.
  */
-export class TerminationHandler implements MessageHandler {
+export class WaldiezChatTerminationHandler implements WaldiezChatMessageHandler {
     /**
      * Determines if this handler can process the given message type.
      * @param type - The type of the message to check.
@@ -27,7 +30,7 @@ export class TerminationHandler implements MessageHandler {
      * @param data - The data to validate.
      * @returns True if the data is a valid termination message, false otherwise.
      */
-    static isValidTerminationMessage(data: any): data is TerminationMessageData {
+    static isValidTerminationMessage(data: any): data is WaldiezChatTerminationMessageData {
         return Boolean(
             (data &&
                 typeof data === "object" &&
@@ -46,7 +49,7 @@ export class TerminationHandler implements MessageHandler {
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!TerminationHandler.isValidTerminationMessage(data)) {
+        if (!WaldiezChatTerminationHandler.isValidTerminationMessage(data)) {
             return undefined;
         }
 
@@ -74,7 +77,7 @@ export class TerminationHandler implements MessageHandler {
  * that do not require any user input.
  * It constructs a WaldiezChatMessage object with a predefined message.
  */
-export class TerminationAndHumanReplyNoInputHandler implements MessageHandler {
+export class WaldiezChatTerminationAndHumanReplyNoInputHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "termination_and_human_reply_no_input";
     }

@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
-import { TerminationHandler } from "@waldiez/utils/chat/handlers/termination";
+import { WaldiezChatTerminationHandler } from "@waldiez/utils/chat/handlers/termination";
 
 // Mock dependencies
 vi.mock("strip-ansi", () => ({
@@ -70,7 +70,7 @@ describe("WaldiezChatMessageProcessor", () => {
                     ],
                 },
             });
-            const result2 = new TerminationHandler().handle(message);
+            const result2 = new WaldiezChatTerminationHandler().handle(message);
             expect(result2).toEqual({
                 message: {
                     id: "mock-nanoid-id",

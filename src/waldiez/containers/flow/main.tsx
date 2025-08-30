@@ -6,7 +6,8 @@ import { Background, BackgroundVariant, Controls, ReactFlow, type Viewport } fro
 
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { StepByStepView, type WaldiezStepByStep } from "@waldiez/components";
+import { StepByStepView } from "@waldiez/components";
+import type { WaldiezStepByStep } from "@waldiez/components/types";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";

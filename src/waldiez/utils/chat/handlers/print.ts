@@ -3,11 +3,11 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
-import { ParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
+import { WaldiezChatParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
 import type {
-    MessageHandler,
-    PrintMessageData,
+    WaldiezChatMessageHandler,
     WaldiezChatMessageProcessingResult,
+    WaldiezChatPrintMessageData,
 } from "@waldiez/utils/chat/types";
 
 /**
@@ -15,7 +15,7 @@ import type {
  * It validates the message structure, checks for workflow end markers, and extracts participants if present.
  * If valid, it returns a WaldiezChatMessageProcessingResult with participants or indicates workflow end.
  */
-export class PrintMessageHandler implements MessageHandler {
+export class WaldiezChatPrintMessageHandler implements WaldiezChatMessageHandler {
     /**
      * Determines if this handler can process the given message type.
      * @param type - The type of the message to check.
@@ -46,7 +46,7 @@ export class PrintMessageHandler implements MessageHandler {
      * @param message - The message data to validate.
      * @returns True if the message is a valid print message, false otherwise.
      */
-    static isValidPrintMessage(message: any): message is PrintMessageData {
+    static isValidPrintMessage(message: any): message is WaldiezChatPrintMessageData {
         if (!message || typeof message !== "object") {
             return false;
         }
@@ -79,9 +79,9 @@ export class PrintMessageHandler implements MessageHandler {
      * @returns A WaldiezChatMessageProcessingResult containing participants or indicating workflow end, or undefined if invalid.
      */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!PrintMessageHandler.isValidPrintMessage(data)) {
+        if (!WaldiezChatPrintMessageHandler.isValidPrintMessage(data)) {
             if (this.isEndOfWorkflow(data)) {
-                return { isWorkflowEnd: true };
+                return { isWorkflowEnd: true, message: data };
             }
             return undefined;
         }
@@ -94,10 +94,10 @@ export class PrintMessageHandler implements MessageHandler {
 
         // Check for participants
         if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
-            return ParticipantsHandler.extractParticipants(dataContent);
+            return WaldiezChatParticipantsHandler.extractParticipants(dataContent);
         }
         if (typeof dataContent === "object" && dataContent !== null) {
-            return ParticipantsHandler.extractParticipants(dataContent);
+            return WaldiezChatParticipantsHandler.extractParticipants(dataContent);
         }
 
         return undefined;

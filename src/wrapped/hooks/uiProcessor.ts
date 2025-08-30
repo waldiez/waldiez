@@ -7,8 +7,8 @@ import React, { useCallback } from "react";
 
 import { nanoid } from "nanoid";
 
-import type { WaldiezStepByStep, WaldiezTimelineData } from "@waldiez/components";
 import { showSnackbar } from "@waldiez/components/snackbar";
+import type { WaldiezStepByStep, WaldiezTimelineData } from "@waldiez/components/types";
 import type { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
 import { DEBUG_INPUT_PROMPT, WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep";
@@ -68,6 +68,21 @@ export function useUIMessageProcessor({
         [isRunning, isDebugging, setMessages, setStepByStepState],
     );
 
+    const onParticipants = useCallback(
+        (participants: WaldiezChatParticipant[]) => {
+            if (isRunning && !isDebugging) {
+                setParticipants(participants);
+            }
+            if (isDebugging && !isRunning) {
+                setStepByStepState(prev => ({
+                    ...prev,
+                    participants: participants,
+                }));
+            }
+        },
+        [isRunning, isDebugging, setParticipants, setStepByStepState],
+    );
+
     const processGenericMessage = useCallback(
         (data: ServerMessage) => {
             const currentInputId = getPendingInputId();
@@ -87,7 +102,7 @@ export function useUIMessageProcessor({
                 onmessage(result.message);
             }
             if (result?.participants) {
-                setParticipants(result.participants);
+                onParticipants(result.participants);
             }
 
             // Handle embedded input requests detected by the processor
@@ -109,10 +124,10 @@ export function useUIMessageProcessor({
             serverBaseUrl,
             setTimeline,
             onmessage,
-            setParticipants,
             isRunning,
             isDebugging,
             setInputPrompt,
+            onParticipants,
         ],
     );
 

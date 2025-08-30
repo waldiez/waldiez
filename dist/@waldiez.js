@@ -7,10 +7,8 @@ import stripAnsi from "strip-ansi";
 import { nanoid } from "nanoid";
 import JSZip from "jszip";
 import * as React from "react";
-import React__default, { useState, useCallback, useMemo, createContext, useContext, useLayoutEffect, useRef, useEffect, memo, forwardRef, useImperativeHandle } from "react";
-import { jsxs, jsx, Fragment } from "react/jsx-runtime";
-import { FaStepForward, FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
-import { FaBug, FaChevronDown, FaChevronUp, FaX, FaPlay, FaStop, FaRegUser, FaCompress, FaExpand, FaCircleXmark, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
+import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
@@ -18,16 +16,18 @@ import MonacoEditor, { loader } from "@monaco-editor/react";
 import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
+import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
-import { ResponsiveContainer } from "recharts";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import diff from "microdiff";
 import { temporal } from "zundo";
 import { createStore } from "zustand";
+import { ResponsiveContainer } from "recharts";
 import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
@@ -116,7 +116,7 @@ const MESSAGE_CONSTANTS = {
     SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
   }
 };
-class RunCompletionHandler {
+class WaldiezChatRunCompletionHandler {
   canHandle(type) {
     return type === "run_completion";
   }
@@ -127,7 +127,7 @@ class RunCompletionHandler {
     return { isWorkflowEnd: true, runCompletion: data.content };
   }
 }
-class CodeExecutionReplyHandler {
+class WaldiezChatCodeExecutionReplyHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -162,7 +162,7 @@ class CodeExecutionReplyHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!CodeExecutionReplyHandler.isValidCodeExecutionReply(data)) {
+    if (!WaldiezChatCodeExecutionReplyHandler.isValidCodeExecutionReply(data)) {
       return void 0;
     }
     const message = {
@@ -181,7 +181,7 @@ class CodeExecutionReplyHandler {
     return { message };
   }
 }
-class ErrorHandler {
+class WaldiezChatErrorHandler {
   canHandle(type) {
     return type === "error";
   }
@@ -204,7 +204,7 @@ class ErrorHandler {
     );
   }
   handle(data) {
-    if (!ErrorHandler.isValidError(data)) {
+    if (!WaldiezChatErrorHandler.isValidError(data)) {
       return void 0;
     }
     const errorContent = data.content?.error || data.error?.error || data.error;
@@ -368,7 +368,7 @@ class MessageUtils {
     ].join("\n");
   }
 }
-class GroupChatRunHandler {
+class WaldiezChatGroupChatRunHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -394,7 +394,7 @@ class GroupChatRunHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!GroupChatRunHandler.isValidGroupChatRun(data)) {
+    if (!WaldiezChatGroupChatRunHandler.isValidGroupChatRun(data)) {
       return void 0;
     }
     const message = {
@@ -412,7 +412,7 @@ class GroupChatRunHandler {
     return { message };
   }
 }
-class SpeakerSelectionHandler {
+class WaldiezChatSpeakerSelectionHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -438,7 +438,7 @@ class SpeakerSelectionHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!SpeakerSelectionHandler.isValidSpeakerSelection(data)) {
+    if (!WaldiezChatSpeakerSelectionHandler.isValidSpeakerSelection(data)) {
       return void 0;
     }
     const message = {
@@ -455,7 +455,7 @@ class SpeakerSelectionHandler {
     return { message };
   }
 }
-class InputRequestHandler {
+class WaldiezChatInputRequestHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -489,7 +489,7 @@ class InputRequestHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data, context) {
-    if (!InputRequestHandler.isValidInputRequest(data)) {
+    if (!WaldiezChatInputRequestHandler.isValidInputRequest(data)) {
       return void 0;
     }
     const normalizedPrompt = MessageUtils.normalizePrompt(data.prompt);
@@ -513,7 +513,7 @@ class InputRequestHandler {
     };
   }
 }
-class UsingAutoReplyHandler {
+class WaldiezChatUsingAutoReplyHandler {
   canHandle(type) {
     return type === "using_auto_reply";
   }
@@ -540,7 +540,7 @@ class UsingAutoReplyHandler {
     return { message };
   }
 }
-class ParticipantsHandler {
+class WaldiezChatParticipantsHandler {
   canHandle(type) {
     return type === "participants";
   }
@@ -556,7 +556,7 @@ class ParticipantsHandler {
     if (data && typeof data === "string") {
       try {
         const parsedData = JSON.parse(data);
-        return ParticipantsHandler.isValidParticipantsData(parsedData);
+        return WaldiezChatParticipantsHandler.isValidParticipantsData(parsedData);
       } catch {
         return false;
       }
@@ -573,7 +573,7 @@ class ParticipantsHandler {
   static extractParticipants(dataContent) {
     try {
       const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
-      if (ParticipantsHandler.isValidParticipantsData(parsedData)) {
+      if (WaldiezChatParticipantsHandler.isValidParticipantsData(parsedData)) {
         if (typeof parsedData === "string") {
           try {
             const innerDumped = JSON.parse(parsedData);
@@ -598,16 +598,16 @@ class ParticipantsHandler {
     return void 0;
   }
   handle(data, _context) {
-    if (!ParticipantsHandler.isValidParticipantsData(data)) {
-      if (data.data && ParticipantsHandler.isValidParticipantsData(data.data)) {
-        return ParticipantsHandler.extractParticipants(data.data);
+    if (!WaldiezChatParticipantsHandler.isValidParticipantsData(data)) {
+      if (data.data && WaldiezChatParticipantsHandler.isValidParticipantsData(data.data)) {
+        return WaldiezChatParticipantsHandler.extractParticipants(data.data);
       }
       return void 0;
     }
-    return ParticipantsHandler.extractParticipants(data);
+    return WaldiezChatParticipantsHandler.extractParticipants(data);
   }
 }
-class PrintMessageHandler {
+class WaldiezChatPrintMessageHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -663,9 +663,9 @@ class PrintMessageHandler {
    * @returns A WaldiezChatMessageProcessingResult containing participants or indicating workflow end, or undefined if invalid.
    */
   handle(data) {
-    if (!PrintMessageHandler.isValidPrintMessage(data)) {
+    if (!WaldiezChatPrintMessageHandler.isValidPrintMessage(data)) {
       if (this.isEndOfWorkflow(data)) {
-        return { isWorkflowEnd: true };
+        return { isWorkflowEnd: true, message: data };
       }
       return void 0;
     }
@@ -674,15 +674,15 @@ class PrintMessageHandler {
     }
     const dataContent = data.content.data;
     if (typeof dataContent === "string" && dataContent.includes(MESSAGE_CONSTANTS.PARTICIPANTS_KEY)) {
-      return ParticipantsHandler.extractParticipants(dataContent);
+      return WaldiezChatParticipantsHandler.extractParticipants(dataContent);
     }
     if (typeof dataContent === "object" && dataContent !== null) {
-      return ParticipantsHandler.extractParticipants(dataContent);
+      return WaldiezChatParticipantsHandler.extractParticipants(dataContent);
     }
     return void 0;
   }
 }
-class TerminationHandler {
+class WaldiezChatTerminationHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -708,7 +708,7 @@ class TerminationHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data) {
-    if (!TerminationHandler.isValidTerminationMessage(data)) {
+    if (!WaldiezChatTerminationHandler.isValidTerminationMessage(data)) {
       return void 0;
     }
     const message = {
@@ -727,7 +727,7 @@ class TerminationHandler {
     return { message };
   }
 }
-class TerminationAndHumanReplyNoInputHandler {
+class WaldiezChatTerminationAndHumanReplyNoInputHandler {
   canHandle(type) {
     return type === "termination_and_human_reply_no_input";
   }
@@ -751,7 +751,7 @@ class TerminationAndHumanReplyNoInputHandler {
     return { message };
   }
 }
-class TextMessageHandler {
+class WaldiezChatTextMessageHandler {
   /**
    * Determines if this handler can process the given message type.
    * @param type - The type of the message to check.
@@ -796,7 +796,7 @@ class TextMessageHandler {
    * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
    */
   handle(data, context) {
-    if (!TextMessageHandler.isValidTextMessage(data)) {
+    if (!WaldiezChatTextMessageHandler.isValidTextMessage(data)) {
       return void 0;
     }
     let content = MessageUtils.normalizeContent(data.content.content, context.imageUrl);
@@ -820,7 +820,7 @@ class TextMessageHandler {
 function isValidContentItem(item) {
   return typeof item === "string" || item && typeof item === "object" && typeof item.type === "string" && (item.type === "text" && typeof item.text === "string" || item.type === "image_url" && item.image_url && typeof item.image_url.url === "string");
 }
-class TimelineDataHandler {
+class WaldiezChatTimelineDataHandler {
   canHandle(type) {
     return type === "timeline";
   }
@@ -864,7 +864,7 @@ class TimelineDataHandler {
     return { timeline: timelineData };
   }
 }
-class ToolCallHandler {
+class WaldiezChatToolCallHandler {
   canHandle(type) {
     return type === "tool_call";
   }
@@ -884,11 +884,11 @@ class ToolCallHandler {
     return [];
   }
   handle(data) {
-    if (!ToolCallHandler.isValidToolCall(data)) {
+    if (!WaldiezChatToolCallHandler.isValidToolCall(data)) {
       return void 0;
     }
     let text = "Tool call";
-    const toolCalls = ToolCallHandler.extractToolFunctionNames(data);
+    const toolCalls = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
     if (toolCalls.length > 0) {
       text += `: ${toolCalls.join(", ")}`;
     }
@@ -908,7 +908,7 @@ class ToolCallHandler {
     return { message };
   }
 }
-class ToolResponseHandler {
+class WaldiezChatToolResponseHandler {
   canHandle(type) {
     return type === "tool_response";
   }
@@ -925,7 +925,7 @@ class ToolResponseHandler {
     return Array.isArray(data.content.tool_responses);
   }
   handle(data) {
-    if (!ToolResponseHandler.isValidToolResponse(data)) {
+    if (!WaldiezChatToolResponseHandler.isValidToolResponse(data)) {
       return void 0;
     }
     const toolResponses = data.content.tool_responses.map((response) => ({
@@ -945,7 +945,7 @@ class ToolResponseHandler {
     return { message };
   }
 }
-class ExecutedFunctionHandler {
+class WaldiezChatExecutedFunctionHandler {
   canHandle(type) {
     return type === "executed_function";
   }
@@ -974,22 +974,22 @@ class WaldiezChatMessageProcessor {
   static get handlers() {
     if (!this._handlers) {
       this._handlers = [
-        new InputRequestHandler(),
-        new ParticipantsHandler(),
-        new PrintMessageHandler(),
-        new TextMessageHandler(),
-        new TerminationHandler(),
-        new GroupChatRunHandler(),
-        new SpeakerSelectionHandler(),
-        new CodeExecutionReplyHandler(),
-        new ToolCallHandler(),
-        new TerminationAndHumanReplyNoInputHandler(),
-        new UsingAutoReplyHandler(),
-        new TimelineDataHandler(),
-        new RunCompletionHandler(),
-        new ToolResponseHandler(),
-        new ExecutedFunctionHandler(),
-        new ErrorHandler()
+        new WaldiezChatInputRequestHandler(),
+        new WaldiezChatParticipantsHandler(),
+        new WaldiezChatPrintMessageHandler(),
+        new WaldiezChatTextMessageHandler(),
+        new WaldiezChatTerminationHandler(),
+        new WaldiezChatGroupChatRunHandler(),
+        new WaldiezChatSpeakerSelectionHandler(),
+        new WaldiezChatCodeExecutionReplyHandler(),
+        new WaldiezChatToolCallHandler(),
+        new WaldiezChatTerminationAndHumanReplyNoInputHandler(),
+        new WaldiezChatUsingAutoReplyHandler(),
+        new WaldiezChatTimelineDataHandler(),
+        new WaldiezChatRunCompletionHandler(),
+        new WaldiezChatToolResponseHandler(),
+        new WaldiezChatExecutedFunctionHandler(),
+        new WaldiezChatErrorHandler()
       ];
     }
     return this._handlers;
@@ -1026,7 +1026,7 @@ class WaldiezChatMessageProcessor {
    * Parses a raw message string into a BaseMessageData object.
    * Returns null if the message cannot be parsed.
    * @param message - The raw message string to parse
-   * @returns BaseMessageData | null
+   * @returns WaldiezChatBaseMessageData | null
    */
   static parseMessage(message) {
     if (typeof message === "object") {
@@ -1041,24 +1041,32 @@ class WaldiezChatMessageProcessor {
   /**
    * Finds a handler that can process the given message type.
    * @param type - The type of the message to find a handler for
-   * @returns MessageHandler | undefined
+   * @returns WaldiezChatMessageHandler | undefined
    */
   static findHandler(type, data) {
     const handler = this.handlers.find((handler2) => handler2.canHandle(type));
     if (data && data.type === "print" || type === "print") {
-      if (TimelineDataHandler.isTimelineMessage(data)) {
-        return WaldiezChatMessageProcessor.handlers.find((h) => h instanceof TimelineDataHandler);
+      if (WaldiezChatTimelineDataHandler.isTimelineMessage(data)) {
+        return WaldiezChatMessageProcessor.handlers.find(
+          (h) => h instanceof WaldiezChatTimelineDataHandler
+        );
       }
-      if (data && data.participants && ParticipantsHandler.isValidParticipantsData(data)) {
-        return WaldiezChatMessageProcessor.handlers.find((h) => h instanceof ParticipantsHandler);
+      if (data && data.participants && WaldiezChatParticipantsHandler.isValidParticipantsData(data)) {
+        return WaldiezChatMessageProcessor.handlers.find(
+          (h) => h instanceof WaldiezChatParticipantsHandler
+        );
       }
-      if (data && data.data && data.data.participants && ParticipantsHandler.isValidParticipantsData(data.data)) {
-        return WaldiezChatMessageProcessor.handlers.find((h) => h instanceof ParticipantsHandler);
+      if (data && data.data && data.data.participants && WaldiezChatParticipantsHandler.isValidParticipantsData(data.data)) {
+        return WaldiezChatMessageProcessor.handlers.find(
+          (h) => h instanceof WaldiezChatParticipantsHandler
+        );
       }
     }
     if (data && data.participants) {
-      if (ParticipantsHandler.isValidParticipantsData(data)) {
-        return WaldiezChatMessageProcessor.handlers.find((h) => h instanceof ParticipantsHandler);
+      if (WaldiezChatParticipantsHandler.isValidParticipantsData(data)) {
+        return WaldiezChatMessageProcessor.handlers.find(
+          (h) => h instanceof WaldiezChatParticipantsHandler
+        );
       }
     }
     return handler;
@@ -1375,230 +1383,6 @@ function controlToResponse(control) {
     }
   }
 }
-const StepByStepView = ({ flowId, stepByStep }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [responseText, setResponseText] = useState("");
-  const requestId = stepByStep?.activeRequest?.request_id ?? null;
-  const canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
-  const onInputChange = useCallback((e) => {
-    setResponseText(e.target.value);
-  }, []);
-  const onRespond = useCallback(() => {
-    if (!requestId || !responseText.trim()) {
-      return;
-    }
-    stepByStep?.handlers?.respond?.({
-      id: nanoid(),
-      timestamp: Date.now(),
-      data: responseText,
-      request_id: requestId,
-      type: "input_response"
-    });
-    setResponseText("");
-  }, [requestId, responseText, stepByStep?.handlers]);
-  const onInputKeyDown = useCallback(
-    (e) => {
-      if (e.key !== "Enter") {
-        return;
-      }
-      if (e.nativeEvent?.isComposing) {
-        return;
-      }
-      if (!requestId || !responseText.trim()) {
-        return;
-      }
-      stepByStep?.handlers?.respond?.({
-        id: nanoid(),
-        timestamp: Date.now(),
-        data: responseText,
-        request_id: requestId,
-        type: "input_response"
-      });
-      setResponseText("");
-    },
-    [requestId, responseText, stepByStep?.handlers]
-  );
-  const onControl = useCallback(
-    (action) => {
-      if (!stepByStep?.handlers?.sendControl) {
-        return;
-      }
-      const rid = requestId ?? "<unknown>";
-      stepByStep.handlers.sendControl({
-        data: controlToResponse({ kind: action }),
-        request_id: rid
-      });
-    },
-    [requestId, stepByStep?.handlers]
-  );
-  const reducedHistory = useMemo(() => {
-    const raw = stepByStep?.eventHistory ?? [];
-    const max2 = 200;
-    const start = Math.max(0, raw.length - max2);
-    return raw.slice(start).filter((e) => !["debug", "print", "raw"].includes(String(e?.type))).map((e) => {
-      const x = e;
-      const data = x.event ?? x.data ?? x.message ?? x.content ?? x;
-      return Array.isArray(data) && data.length === 1 ? data[0] : data;
-    });
-  }, [stepByStep?.eventHistory]);
-  const badgeText = useMemo(() => {
-    if (!stepByStep) {
-      return null;
-    }
-    const curType = stepByStep.currentEvent?.type;
-    if (typeof curType === "string") {
-      return curType;
-    }
-    const last = stepByStep.eventHistory?.[stepByStep.eventHistory.length - 1];
-    const lastType = last?.type ?? last?.event?.type;
-    if (typeof lastType === "string") {
-      return lastType;
-    }
-    if (!stepByStep.active) {
-      return stepByStep.eventHistory?.length ? "Finished" : null;
-    }
-    return "Running";
-  }, [stepByStep]);
-  if (!stepByStep?.active && !canClose) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "header", children: [
-      /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
-        /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
-        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
-        !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        stepByStep?.active && badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
-        /* @__PURE__ */ jsx(
-          "button",
-          {
-            title: isExpanded ? "Collapse" : "Expand",
-            type: "button",
-            onClick: () => setIsExpanded(!isExpanded),
-            className: "header-toggle",
-            "aria-label": isExpanded ? "Collapse panel" : "Expand panel",
-            children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
-          }
-        ),
-        !stepByStep?.active && canClose && /* @__PURE__ */ jsx(
-          "button",
-          {
-            title: "Close",
-            type: "button",
-            onClick: stepByStep?.handlers?.close,
-            className: "header-toggle",
-            "aria-label": "Close panel",
-            children: /* @__PURE__ */ jsx(FaX, { size: 14 })
-          }
-        )
-      ] })
-    ] }),
-    isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
-      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "btn btn-primary",
-            type: "button",
-            onClick: () => onControl("continue"),
-            disabled: !stepByStep?.pendingControlInput,
-            children: [
-              /* @__PURE__ */ jsx(FaStepForward, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: "Continue" })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "btn btn-secondary",
-            type: "button",
-            onClick: () => onControl("run"),
-            disabled: !stepByStep?.pendingControlInput,
-            children: [
-              /* @__PURE__ */ jsx(FaPlay, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: "Run" })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "btn btn-danger",
-            type: "button",
-            onClick: () => onControl("quit"),
-            disabled: !stepByStep?.pendingControlInput,
-            children: [
-              /* @__PURE__ */ jsx(FaStop, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: "Quit" })
-            ]
-          }
-        )
-      ] }),
-      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
-        /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
-        /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              className: "input",
-              placeholder: "Type your response... (Enter to send)",
-              value: responseText,
-              type: stepByStep.activeRequest.password === true ? "password" : "text",
-              onChange: onInputChange,
-              onKeyDown: onInputKeyDown
-            }
-          ),
-          /* @__PURE__ */ jsx(
-            "button",
-            {
-              className: "btn btn-primary",
-              type: "button",
-              onClick: onRespond,
-              disabled: !requestId || !responseText.trim(),
-              children: "Send"
-            }
-          )
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
-        /* @__PURE__ */ jsx(SectionTitle, { children: "Messages" }),
-        /* @__PURE__ */ jsx(JsonArea, { value: reducedHistory, placeholder: "No messages yet" })
-      ] })
-    ] })
-  ] });
-};
-function safeStringify(v) {
-  try {
-    return JSON.stringify(v, null, 2);
-  } catch {
-    return String(v);
-  }
-}
-const JsonArea = ({ value, placeholder = "" }) => {
-  const safeValue = useMemo(() => {
-    if (Array.isArray(value)) {
-      const parts = [];
-      for (let i = 0; i < value.length; i += 1) {
-        const entry = value[i];
-        parts.push(safeStringify(entry?.event ?? entry?.content ?? entry));
-      }
-      const joined = parts.join("\n");
-      return !joined.trim() ? placeholder : joined;
-    }
-    const s = safeStringify(value);
-    return !s || ["undefined", "null", "[]", "{}"].includes(s) || s.trim() === "" ? placeholder : s;
-  }, [value, placeholder]);
-  return /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: safeValue }) });
-};
-const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title margin-bottom-5", children });
-StepByStepView.displayName = "WaldiezStepByStepView";
 class DebugBreakpointsHandler {
   canHandle(type) {
     return [
@@ -1906,8 +1690,15 @@ class WaldiezStepByStepProcessor {
     if (!data) {
       return WaldiezStepByStepProcessor.earlyError(rawMessage);
     }
-    const handler = WaldiezStepByStepProcessor.findHandler(data.type);
-    if (!handler) {
+    return this._doProcess(data, context);
+  }
+  static _doProcess(data, context) {
+    let chatHandler;
+    const stepHandler = WaldiezStepByStepProcessor.findHandler(data.type);
+    if (!stepHandler) {
+      chatHandler = WaldiezChatMessageProcessor.findHandler(data.type, data);
+    }
+    if (!stepHandler && !chatHandler) {
       return {
         error: {
           message: `No handler found for message type: ${data.type}`,
@@ -1917,8 +1708,24 @@ class WaldiezStepByStepProcessor {
       };
     }
     try {
-      return handler.handle(data, context);
+      return stepHandler?.handle(data, context);
     } catch (error) {
+      if (chatHandler) {
+        try {
+          const chatResult = chatHandler.handle(data, context);
+          if (chatResult) {
+            return WaldiezStepByStepProcessor._chatResultToStepResult(chatResult);
+          }
+        } catch (_) {
+          return {
+            error: {
+              message: `Handler error: ${error instanceof Error ? error.message : String(error)}`,
+              code: "HANDLER_ERROR",
+              originalData: data
+            }
+          };
+        }
+      }
       return {
         error: {
           message: `Handler error: ${error instanceof Error ? error.message : String(error)}`,
@@ -1927,6 +1734,58 @@ class WaldiezStepByStepProcessor {
         }
       };
     }
+  }
+  static _chatResultToStepResult(chatResult) {
+    if (chatResult.participants) {
+      return {
+        debugMessage: {
+          type: "print",
+          content: chatResult.participants
+        },
+        stateUpdate: {
+          participants: chatResult.participants
+        }
+      };
+    }
+    if (chatResult.timeline) {
+      return {
+        debugMessage: {
+          type: "print",
+          content: chatResult.timeline
+        },
+        stateUpdate: {
+          timeline: chatResult.timeline
+        }
+      };
+    }
+    if (chatResult.isWorkflowEnd) {
+      return {
+        debugMessage: {
+          type: "print",
+          content: "Workflow has ended."
+        },
+        stateUpdate: {
+          eventHistory: [
+            {
+              type: "workflow_end",
+              ...chatResult.runCompletion || chatResult.message || {}
+            }
+          ]
+        }
+      };
+    }
+    if (!chatResult.message || !chatResult.message.content) {
+      return void 0;
+    }
+    return {
+      debugMessage: {
+        type: "print",
+        content: chatResult.message
+      },
+      stateUpdate: {
+        eventHistory: [chatResult]
+      }
+    };
   }
   static earlyError(rawMessage) {
     try {
@@ -1981,16 +1840,16 @@ class WaldiezStepByStepProcessor {
     }
   }
   /**
-   * Check if the parsed data is a valid debug message
-   */
-  static isValidDebugMessage(data) {
-    return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
-  }
-  /**
    * Find a handler that can process the given message type
    */
   static findHandler(type) {
     return WaldiezStepByStepProcessor.handlers.find((handler) => handler.canHandle(type));
+  }
+  /**
+   * Check if the parsed data is a valid debug message
+   */
+  static isValidDebugMessage(data) {
+    return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
   }
   /**
    * Parse subprocess_output content specifically for step-by-step messages
@@ -14304,1067 +14163,6 @@ const NumberInput = memo((props) => {
   ] });
 });
 NumberInput.displayName = "NumberInput";
-const useStringList = (props) => {
-  const [newEntry, setNewEntry] = useState("");
-  const { items, onItemAdded, onItemChange, onItemDeleted } = props;
-  const onAddEntry = useCallback(() => {
-    if (!onItemAdded || !newEntry.trim()) {
-      return;
-    }
-    onItemAdded(newEntry);
-    setNewEntry("");
-  }, [newEntry, onItemAdded]);
-  const onDeleteEntry = useCallback(
-    (event) => {
-      if (!onItemDeleted) {
-        return;
-      }
-      const valueToDelete = event.currentTarget.value;
-      onItemDeleted(valueToDelete);
-    },
-    [onItemDeleted]
-  );
-  const onEntryChange = useCallback(
-    (event) => {
-      if (!onItemChange) {
-        return;
-      }
-      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
-      const newValue = event.target.value;
-      const originalValue = items[index2];
-      if (originalValue !== void 0 && originalValue !== null) {
-        onItemChange(originalValue, newValue);
-      }
-    },
-    [onItemChange, items]
-  );
-  const onNewEntryChange = useCallback((event) => {
-    setNewEntry(event.target.value);
-  }, []);
-  const onNewEntryKeyDown = useCallback(
-    (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        onAddEntry();
-      }
-    },
-    [onAddEntry]
-  );
-  return {
-    newEntry,
-    onAddEntry,
-    onDeleteEntry,
-    onEntryChange,
-    onNewEntryChange,
-    onNewEntryKeyDown
-  };
-};
-const StringList = memo((props) => {
-  const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
-  const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } = useStringList(props);
-  const labelElement = useMemo(
-    () => typeof viewLabel === "function" ? viewLabel() : viewLabel,
-    [viewLabel]
-  );
-  const renderItems = useMemo(
-    () => items.map((item, index2) => {
-      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
-        /* @__PURE__ */ jsx(
-          "input",
-          {
-            placeholder,
-            type: "text",
-            value: item,
-            "data-index": index2,
-            id: `list-entry-item-${itemsType}-${index2}`,
-            onChange: onEntryChange,
-            "data-testid": `list-entry-item-${itemsType}-${index2}`
-          }
-        ),
-        /* @__PURE__ */ jsx(
-          "button",
-          {
-            type: "button",
-            onClick: onDeleteEntry,
-            value: item,
-            title: "Delete",
-            className: "trash-button",
-            id: `delete-list-entry-${itemsType}-${index2}`,
-            "aria-label": `Delete item: ${item}`,
-            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
-            children: /* @__PURE__ */ jsx(FaTrash, {})
-          }
-        )
-      ] }, `${itemsType}-${index2}`);
-    }),
-    [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
-  );
-  const isAddDisabled = !newEntry.trim();
-  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
-    items.length > 0 && /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: renderItems }),
-    /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
-      /* @__PURE__ */ jsx(
-        "input",
-        {
-          placeholder,
-          type: "text",
-          value: newEntry,
-          onChange: onNewEntryChange,
-          onKeyDown: onNewEntryKeyDown,
-          "data-testid": `new-list-entry-${itemsType}-item`,
-          "aria-label": `New ${itemsType} input`,
-          id: `new-list-entry-${itemsType}`
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          type: "button",
-          onClick: onAddEntry,
-          title: "Add",
-          disabled: isAddDisabled,
-          className: "plus-button",
-          "aria-label": "Add item",
-          id: `add-list-entry-${itemsType}-button`,
-          "data-testid": `add-list-entry-${itemsType}-button`,
-          children: /* @__PURE__ */ jsx(FaPlus, {})
-        }
-      )
-    ] }) })
-  ] });
-});
-StringList.displayName = "StringList";
-const TabItem = memo((props) => {
-  const { id, children } = props;
-  return /* @__PURE__ */ jsx(
-    "div",
-    {
-      className: "tab-panel",
-      role: "tabpanel",
-      "aria-labelledby": `tab-id-${id}`,
-      "data-testid": `panel-${id}`,
-      id: `panel-${id}`,
-      children
-    }
-  );
-});
-const TabItems = memo((props) => {
-  const { activeTabIndex = 0, children, onTabChange } = props;
-  const [activeTab, setActiveTab] = useState(activeTabIndex);
-  React__default.useEffect(() => {
-    setActiveTab(activeTabIndex);
-  }, [activeTabIndex]);
-  const handleTabClick = useCallback(
-    (index2) => {
-      setActiveTab(index2);
-      onTabChange?.(index2);
-    },
-    [onTabChange]
-  );
-  const tabs = useMemo(
-    () => React__default.Children.toArray(children).filter(
-      (child) => React__default.isValidElement(child) && child.type === TabItem
-    ),
-    [children]
-  );
-  const tabButtons = useMemo(
-    () => tabs.map((tab, index2) => {
-      const isActive = activeTab === index2;
-      const className = isActive ? "tab-btn--active" : "";
-      const tabId = tab.props.id;
-      return /* @__PURE__ */ jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx(
-        "div",
-        {
-          role: "button",
-          "data-testid": `tab-id-${tabId}`,
-          id: `tab-id-${tabId}`,
-          "aria-controls": `panel-${tabId}`,
-          onClick: () => handleTabClick(index2),
-          className: `tab-btn ${className}`,
-          tabIndex: isActive ? 0 : -1,
-          children: tab.props.label
-        }
-      ) }, `tab-li-${tabId}-${index2}`);
-    }),
-    [tabs, activeTab, handleTabClick]
-  );
-  const activeTabContent = tabs[activeTab] || null;
-  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
-    /* @__PURE__ */ jsx("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
-    activeTabContent
-  ] });
-});
-TabItem.displayName = "TabItem";
-TabItems.displayName = "TabItems";
-var DefaultContext = {
-  color: void 0,
-  size: void 0,
-  className: void 0,
-  style: void 0,
-  attr: void 0
-};
-var IconContext = React__default.createContext && /* @__PURE__ */ React__default.createContext(DefaultContext);
-var _excluded = ["attr", "size", "title"];
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-  var key, i;
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  for (var key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
-}
-function ownKeys(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
-      _defineProperty(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty(obj, key, value) {
-  key = _toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey(t) {
-  var i = _toPrimitive(t, "string");
-  return "symbol" == typeof i ? i : i + "";
-}
-function _toPrimitive(t, r) {
-  if ("object" != typeof t || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r);
-    if ("object" != typeof i) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
-function Tree2Element(tree) {
-  return tree && tree.map((node, i) => /* @__PURE__ */ React__default.createElement(node.tag, _objectSpread({
-    key: i
-  }, node.attr), Tree2Element(node.child)));
-}
-function GenIcon(data) {
-  return (props) => /* @__PURE__ */ React__default.createElement(IconBase, _extends({
-    attr: _objectSpread({}, data.attr)
-  }, props), Tree2Element(data.child));
-}
-function IconBase(props) {
-  var elem = (conf) => {
-    var {
-      attr,
-      size: size2,
-      title
-    } = props, svgProps = _objectWithoutProperties(props, _excluded);
-    var computedSize = size2 || conf.size || "1em";
-    var className;
-    if (conf.className) className = conf.className;
-    if (props.className) className = (className ? className + " " : "") + props.className;
-    return /* @__PURE__ */ React__default.createElement("svg", _extends({
-      stroke: "currentColor",
-      fill: "currentColor",
-      strokeWidth: "0"
-    }, conf.attr, attr, svgProps, {
-      className,
-      style: _objectSpread(_objectSpread({
-        color: props.color || conf.color
-      }, conf.style), props.style),
-      height: computedSize,
-      width: computedSize,
-      xmlns: "http://www.w3.org/2000/svg"
-    }), title && /* @__PURE__ */ React__default.createElement("title", null, title), props.children);
-  };
-  return IconContext !== void 0 ? /* @__PURE__ */ React__default.createElement(IconContext.Consumer, null, (conf) => elem(conf)) : elem(DefaultContext);
-}
-function FiActivity(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "polyline", "attr": { "points": "22 12 18 12 15 21 9 3 6 12 2 12" }, "child": [] }] })(props);
-}
-function FiClock(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "circle", "attr": { "cx": "12", "cy": "12", "r": "10" }, "child": [] }, { "tag": "polyline", "attr": { "points": "12 6 12 12 16 14" }, "child": [] }] })(props);
-}
-function FiDollarSign(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "line", "attr": { "x1": "12", "y1": "1", "x2": "12", "y2": "23" }, "child": [] }, { "tag": "path", "attr": { "d": "M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" }, "child": [] }] })(props);
-}
-function FiEyeOff(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" }, "child": [] }, { "tag": "line", "attr": { "x1": "1", "y1": "1", "x2": "23", "y2": "23" }, "child": [] }] })(props);
-}
-function FiEye(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" }, "child": [] }, { "tag": "circle", "attr": { "cx": "12", "cy": "12", "r": "3" }, "child": [] }] })(props);
-}
-function FiFileText(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" }, "child": [] }, { "tag": "polyline", "attr": { "points": "14 2 14 8 20 8" }, "child": [] }, { "tag": "line", "attr": { "x1": "16", "y1": "13", "x2": "8", "y2": "13" }, "child": [] }, { "tag": "line", "attr": { "x1": "16", "y1": "17", "x2": "8", "y2": "17" }, "child": [] }, { "tag": "polyline", "attr": { "points": "10 9 9 9 8 9" }, "child": [] }] })(props);
-}
-function FiPaperclip(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" }, "child": [] }] })(props);
-}
-function FiUser(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" }, "child": [] }, { "tag": "circle", "attr": { "cx": "12", "cy": "7", "r": "4" }, "child": [] }] })(props);
-}
-function FiX(props) {
-  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "line", "attr": { "x1": "18", "y1": "6", "x2": "6", "y2": "18" }, "child": [] }, { "tag": "line", "attr": { "x1": "6", "y1": "6", "x2": "18", "y2": "18" }, "child": [] }] })(props);
-}
-const TimelineChart = ({
-  data,
-  width,
-  height,
-  darkMode = false
-}) => {
-  const [hoveredItem, setHoveredItem] = useState(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const margin = { top: 40, right: 140, bottom: 60, left: 80 };
-  const chartWidth = width - margin.left - margin.right;
-  const chartHeight = height - margin.top - margin.bottom;
-  if (!data || !data.timeline || data.timeline.length === 0) {
-    return null;
-  }
-  const maxTime = data.metadata.time_range[1];
-  const maxCost = Math.max(...data.cost_timeline.map((d) => d.cumulative_cost));
-  const xScale = (value) => value / maxTime * chartWidth;
-  const yScale = (value) => chartHeight - value / maxCost * chartHeight;
-  const costLinePath = data.cost_timeline.map((d, i) => {
-    const x = xScale(d.time);
-    const y = yScale(d.cumulative_cost);
-    return `${i === 0 ? "M" : "L"} ${x} ${y}`;
-  }).join(" ");
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-  };
-  const gridColor = darkMode ? "#374151" : "#e2e8f0";
-  const axisColor = darkMode ? "#9CA3AF" : "#64748b";
-  const costLineColor = "#8B5CF6";
-  const textColor = darkMode ? "#F3F4F6" : "#333";
-  return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-    /* @__PURE__ */ jsx(
-      "svg",
-      {
-        width,
-        height,
-        onMouseMove: handleMouseMove,
-        onMouseLeave: () => setHoveredItem(null),
-        children: /* @__PURE__ */ jsxs("g", { transform: `translate(${margin.left}, ${margin.top})`, children: [
-          [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
-            /* @__PURE__ */ jsx(
-              "line",
-              {
-                x1: chartWidth * ratio,
-                y1: 0,
-                x2: chartWidth * ratio,
-                y2: chartHeight,
-                stroke: gridColor,
-                strokeDasharray: "2,2",
-                strokeWidth: 1
-              }
-            ),
-            /* @__PURE__ */ jsx(
-              "line",
-              {
-                x1: 0,
-                y1: chartHeight * ratio,
-                x2: chartWidth,
-                y2: chartHeight * ratio,
-                stroke: gridColor,
-                strokeDasharray: "2,2",
-                strokeWidth: 1
-              }
-            )
-          ] }, `grid-${ratio}`)),
-          data.timeline.map((item, i) => {
-            let itemY;
-            if (item.type === "session") {
-              const costPoint = data.cost_timeline.find(
-                (c) => c.session_id === item.y_position
-              );
-              itemY = yScale(costPoint?.cumulative_cost || 0) - 10;
-            } else {
-              const prevSessionIndex = data.timeline.slice(0, i).reverse().findIndex((t) => t.type === "session");
-              if (prevSessionIndex !== -1) {
-                const prevSession = data.timeline[i - 1 - prevSessionIndex];
-                const prevCostPoint = data.cost_timeline.find(
-                  (c) => c.session_id === prevSession?.y_position
-                );
-                itemY = yScale(prevCostPoint?.cumulative_cost || 0) - 10;
-              } else {
-                itemY = yScale(0) - 10;
-              }
-            }
-            return /* @__PURE__ */ jsxs("g", { children: [
-              /* @__PURE__ */ jsx(
-                "rect",
-                {
-                  x: xScale(item.start),
-                  y: itemY,
-                  width: xScale(item.duration),
-                  height: 20,
-                  fill: item.type === "session" ? item.color : "#D1D5DB",
-                  stroke: item.type === "session" ? item.color : "#9CA3AF",
-                  strokeWidth: 2,
-                  rx: 8,
-                  fillOpacity: 0.1,
-                  style: { cursor: "pointer" },
-                  onMouseEnter: () => setHoveredItem({ ...item, index: i })
-                }
-              ),
-              item.type === "gap" && /* @__PURE__ */ jsx(
-                "text",
-                {
-                  x: xScale(item.start + item.duration / 2),
-                  y: itemY + 14,
-                  textAnchor: "middle",
-                  dominantBaseline: "middle",
-                  fontSize: "10",
-                  fontWeight: "bold",
-                  fill: darkMode ? "#F3F4F6" : "white",
-                  pointerEvents: "none",
-                  children: item.gap_type === "human_input_waiting" ? `👤 ${item.real_duration?.toFixed(0)}s` : `${item.label.split(" ")[0]} `
-                }
-              )
-            ] }, item.id);
-          }),
-          /* @__PURE__ */ jsx("path", { d: costLinePath, fill: "none", stroke: costLineColor, strokeWidth: 2 }),
-          data.cost_timeline.map((d, i) => /* @__PURE__ */ jsx(
-            "circle",
-            {
-              cx: xScale(d.time),
-              cy: yScale(d.cumulative_cost),
-              r: 4,
-              fill: costLineColor,
-              stroke: darkMode ? "#1F2937" : "white",
-              strokeWidth: 2,
-              style: { cursor: "pointer" },
-              onMouseEnter: () => setHoveredItem({
-                type: "cost_point",
-                cost_data: d,
-                index: i
-              })
-            },
-            `dot-${i}`
-          )),
-          /* @__PURE__ */ jsxs("g", { transform: `translate(0, ${chartHeight})`, children: [
-            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: chartWidth, y2: 0, stroke: axisColor }),
-            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
-              /* @__PURE__ */ jsx(
-                "line",
-                {
-                  x1: chartWidth * ratio,
-                  y1: 0,
-                  x2: chartWidth * ratio,
-                  y2: 6,
-                  stroke: axisColor
-                }
-              ),
-              /* @__PURE__ */ jsxs(
-                "text",
-                {
-                  x: chartWidth * ratio,
-                  y: 20,
-                  textAnchor: "middle",
-                  fontSize: "12",
-                  fill: axisColor,
-                  children: [
-                    (maxTime * ratio).toFixed(1),
-                    "s"
-                  ]
-                }
-              )
-            ] }, `x-tick-${ratio}`)),
-            /* @__PURE__ */ jsx(
-              "text",
-              {
-                x: chartWidth / 2,
-                y: 45,
-                textAnchor: "middle",
-                fontSize: "14",
-                fontWeight: "500",
-                fill: textColor,
-                children: "Compressed Timeline (seconds)"
-              }
-            )
-          ] }),
-          /* @__PURE__ */ jsxs("g", { transform: `translate(${chartWidth}, 0)`, children: [
-            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: 0, y2: chartHeight, stroke: costLineColor }),
-            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
-              /* @__PURE__ */ jsx(
-                "line",
-                {
-                  x1: 0,
-                  y1: chartHeight * ratio,
-                  x2: 6,
-                  y2: chartHeight * ratio,
-                  stroke: costLineColor
-                }
-              ),
-              /* @__PURE__ */ jsxs(
-                "text",
-                {
-                  x: 20,
-                  y: chartHeight * ratio,
-                  textAnchor: "start",
-                  dominantBaseline: "middle",
-                  fontSize: "12",
-                  fill: costLineColor,
-                  children: [
-                    "$",
-                    (maxCost * (1 - ratio)).toFixed(6)
-                  ]
-                }
-              )
-            ] }, `y-tick-${ratio}`)),
-            /* @__PURE__ */ jsx(
-              "text",
-              {
-                x: 120,
-                y: chartHeight / 2,
-                textAnchor: "middle",
-                dominantBaseline: "middle",
-                fontSize: "14",
-                fontWeight: "500",
-                fill: costLineColor,
-                transform: `rotate(-90, 120, ${chartHeight / 2})`,
-                children: "Cumulative Cost ($)"
-              }
-            )
-          ] })
-        ] })
-      }
-    ),
-    hoveredItem && /* @__PURE__ */ jsx(
-      "div",
-      {
-        className: "absolute pointer-events-none",
-        style: {
-          left: mousePos.x + 10,
-          top: mousePos.y - 10,
-          transform: mousePos.x > width / 2 ? "translateX(-100%)" : void 0
-        },
-        children: /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsxs("div", { className: "card-content padding-10", children: [
-          hoveredItem.type === "session" && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.agent.replace(/_/g, " ") }),
-            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxs("div", { children: [
-                "LLM: ",
-                /* @__PURE__ */ jsx("span", { className: "font-medium", children: hoveredItem.llm_model })
-              ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Cost: $",
-                hoveredItem.cost.toFixed(6)
-              ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Duration: ",
-                hoveredItem.duration.toFixed(2),
-                "s"
-              ] }),
-              hoveredItem.tokens > 0 && /* @__PURE__ */ jsxs("div", { children: [
-                "Tokens: ",
-                hoveredItem.prompt_tokens.toLocaleString(),
-                " in +",
-                " ",
-                hoveredItem.completion_tokens.toLocaleString(),
-                " out"
-              ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Cache: ",
-                hoveredItem.is_cached ? "Cached" : "Fresh"
-              ] }),
-              hoveredItem.real_start_time && /* @__PURE__ */ jsxs("div", { children: [
-                "Started: ",
-                hoveredItem.real_start_time
-              ] })
-            ] })
-          ] }),
-          hoveredItem.type === "gap" && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.label }),
-            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Type: ",
-                hoveredItem.gap_type.replace(/_/g, " ")
-              ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Original Duration: ",
-                hoveredItem.real_duration?.toFixed(1),
-                "s"
-              ] }),
-              hoveredItem.compressed && /* @__PURE__ */ jsxs("div", { children: [
-                "Compressed to: ",
-                hoveredItem.duration.toFixed(1),
-                "s"
-              ] })
-            ] })
-          ] }),
-          hoveredItem.type === "cost_point" && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsxs("div", { className: "font-semibold text-sm", children: [
-              "Cumulative Cost: $",
-              hoveredItem.cost_data.cumulative_cost.toFixed(6)
-            ] }),
-            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Session Cost: $",
-                hoveredItem.cost_data.session_cost.toFixed(6)
-              ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
-                "Session: ",
-                hoveredItem.cost_data.session_id
-              ] })
-            ] })
-          ] })
-        ] }) })
-      }
-    )
-  ] });
-};
-const Timeline = ({ data, height = 400 }) => {
-  const { isDark } = useWaldiezTheme();
-  const chartRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  useLayoutEffect(() => {
-    if (chartRef.current) {
-      const svgElement = chartRef.current.querySelector("svg");
-      if (svgElement) {
-        const width = parseInt(svgElement.getAttribute("width") || "800");
-        const height2 = parseInt(svgElement.getAttribute("height") || "400");
-        setDimensions({ width, height: height2 });
-      }
-    }
-  }, []);
-  return /* @__PURE__ */ jsxs("div", { className: "full-width padding-10", children: [
-    /* @__PURE__ */ jsx("div", { className: "timeline-grid margin-bottom-10", children: [
-      { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
-      {
-        label: "Total Cost",
-        value: `$${data.summary.total_cost.toFixed(6)}`,
-        icon: FiDollarSign
-      },
-      { label: "Duration", value: `${data.summary.total_time.toFixed(1)}s`, icon: FiClock },
-      { label: "Agents", value: data.summary.total_agents, icon: FiUser },
-      {
-        label: "Tokens",
-        value: data.summary.total_tokens?.toLocaleString() || "N/A",
-        icon: FiFileText
-      },
-      {
-        label: "Avg Cost",
-        value: `$${data.summary.avg_cost_per_session.toFixed(6)}`,
-        icon: FiDollarSign
-      }
-    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsx("div", { className: "card-content", children: /* @__PURE__ */ jsxs("div", { className: "timeline-top", children: [
-      /* @__PURE__ */ jsx(Icon, { className: "timeline-icon" }),
-      /* @__PURE__ */ jsxs("div", { className: "timeline-top-content", children: [
-        /* @__PURE__ */ jsx("p", { className: "timeline-label", children: label }),
-        /* @__PURE__ */ jsx("p", { className: "timeline-value", children: value })
-      ] })
-    ] }) }) }, label)) }),
-    /* @__PURE__ */ jsxs("div", { className: "card", children: [
-      /* @__PURE__ */ jsxs("div", { className: "card-header", children: [
-        /* @__PURE__ */ jsx("h3", { className: "card-title", children: "Session Activity Timeline with Cumulative Cost" }),
-        /* @__PURE__ */ jsxs("p", { className: "card-description", children: [
-          "Interactive timeline showing agent sessions and cost accumulation (human input periods compressed)",
-          data.summary.compression_info.gaps_compressed > 0 && /* @__PURE__ */ jsxs("span", { className: "badge badge-secondary", style: { marginLeft: "0.5rem" }, children: [
-            data.summary.compression_info.gaps_compressed,
-            " gaps compressed,",
-            data.summary.compression_info.time_saved.toFixed(1),
-            "s saved"
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "card-content", children: [
-        /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx(
-          TimelineChart,
-          {
-            width: dimensions.width,
-            height: dimensions.height,
-            data,
-            darkMode: isDark
-          }
-        ) }) }),
-        data.agents.length > 0 && // <div className="mt-4 flex flex-wrap gap-2">
-        /* @__PURE__ */ jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxs("div", { className: "timeline-agent-item", children: [
-          /* @__PURE__ */ jsx(
-            "div",
-            {
-              className: "timeline-agent-dot",
-              style: { backgroundColor: agent.color }
-            }
-          ),
-          /* @__PURE__ */ jsx("span", { className: "timeline-agent-name", children: agent.name.replace(/_/g, " ") }),
-          /* @__PURE__ */ jsxs("span", { className: "timeline-agent-class", children: [
-            "(",
-            agent.class,
-            ")"
-          ] })
-        ] }, agent.name)) })
-      ] })
-    ] })
-  ] });
-};
-const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
-  return /* @__PURE__ */ jsxs(
-    Modal,
-    {
-      flowId,
-      id: "timeline-modal",
-      title: "Chat Timeline",
-      isOpen,
-      onClose,
-      className: "modal-fullscreen",
-      hasMaximizeBtn: false,
-      hasCloseBtn: true,
-      hasUnsavedChanges: false,
-      preventCloseIfUnsavedChanges: false,
-      noHeader: true,
-      children: [
-        /* @__PURE__ */ jsx("div", { className: "timeline-modal fullscreen open no-backdrop", children: /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsx(Timeline, { data }) }) }),
-        /* @__PURE__ */ jsx(
-          "button",
-          {
-            type: "button",
-            title: "Close preview",
-            className: "modal-close",
-            onClick: onClose,
-            "data-testid": "modal-close",
-            children: /* @__PURE__ */ jsx(FaX, { size: 12 })
-          }
-        )
-      ]
-    }
-  );
-};
-const CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT = `"""Custom update system message function."""
-
-# provide the function to define the system message before replying
-# complete the \`custom_update_system_message\` below. Do not change the name or the arguments of the function.
-# only complete the function body and the docstring and return the final message.
-# the function should accept the agent and the messages as arguments.
-# example:
-# def custom_update_system_message(
-#     agent: ConversableAgent,
-#     messages: List[Dict[str, Any]]
-# ) -> str:
-#     return "Hello, I am a custom system message"
-
-def custom_update_system_message(
-     agent: ConversableAgent,
-     messages: List[Dict[str, Any]]
-) -> str:
-    ...
-`;
-const UpdateState = (props) => {
-  const { data, onDataChange, darkMode } = props;
-  const hasUpdateConfig = useMemo(
-    () => data.updateAgentStateBeforeReply.length > 0,
-    [data.updateAgentStateBeforeReply]
-  );
-  const currentConfig = useMemo(
-    () => hasUpdateConfig ? data.updateAgentStateBeforeReply[0] : { type: "string", content: "" },
-    [hasUpdateConfig, data.updateAgentStateBeforeReply]
-  );
-  const [enabled, setEnabled] = useState(hasUpdateConfig);
-  const [selectedType, setSelectedType] = useState(
-    currentConfig?.type || "string"
-  );
-  useEffect(() => {
-    setEnabled(hasUpdateConfig);
-    if (hasUpdateConfig) {
-      setSelectedType(currentConfig?.type || "string");
-    }
-  }, [hasUpdateConfig, currentConfig?.type]);
-  const updateSystemMessageTypeOptions = useMemo(
-    () => [
-      { label: "Text", value: "string" },
-      { label: "Function", value: "callable" }
-    ],
-    []
-  );
-  const selectedOption = useMemo(
-    () => updateSystemMessageTypeOptions.find((opt) => opt.value === selectedType),
-    [updateSystemMessageTypeOptions, selectedType]
-  );
-  const onEnabledChange = useCallback(
-    (checked) => {
-      setEnabled(checked);
-      if (!checked) {
-        onDataChange({ updateAgentStateBeforeReply: [] });
-      } else {
-        const type = selectedType;
-        const content = type === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT;
-        onDataChange({
-          updateAgentStateBeforeReply: [{ type, content }]
-        });
-      }
-    },
-    [onDataChange, selectedType]
-  );
-  const onUpdateSystemMessageTypeChange = useCallback(
-    (option) => {
-      if (!option) {
-        onDataChange({
-          updateAgentStateBeforeReply: []
-        });
-        return;
-      }
-      const newType = option.value;
-      setSelectedType(newType);
-      const content = newType === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT;
-      onDataChange({
-        updateAgentStateBeforeReply: [{ type: newType, content }]
-      });
-    },
-    [onDataChange]
-  );
-  const onUpdateSystemMessageStringChange = useCallback(
-    (event) => {
-      onDataChange({
-        updateAgentStateBeforeReply: [
-          {
-            type: "string",
-            content: event.target.value
-          }
-        ]
-      });
-    },
-    [onDataChange]
-  );
-  const onUpdateSystemMessageCallableChange = useCallback(
-    (value) => {
-      onDataChange({
-        updateAgentStateBeforeReply: [
-          {
-            type: "callable",
-            content: value ?? CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT
-          }
-        ]
-      });
-    },
-    [onDataChange]
-  );
-  const stringContent = useMemo(
-    () => hasUpdateConfig && currentConfig?.type === "string" ? currentConfig.content : "",
-    [hasUpdateConfig, currentConfig]
-  );
-  const callableContent = useMemo(
-    () => hasUpdateConfig && currentConfig?.type === "callable" ? currentConfig.content : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
-    [hasUpdateConfig, currentConfig]
-  );
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
-    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
-        CheckboxInput,
-        {
-          label: "Update system message before reply",
-          isChecked: enabled,
-          onCheckedChange: onEnabledChange,
-          id: "enable-update-system-message",
-          "aria-label": "Enable update system message"
-        }
-      ),
-      enabled && /* @__PURE__ */ jsxs(Fragment, { children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-type-select-input", children: "Message update type" }),
-        /* @__PURE__ */ jsx(
-          Select,
-          {
-            options: updateSystemMessageTypeOptions,
-            value: selectedOption,
-            onChange: onUpdateSystemMessageTypeChange,
-            inputId: "update-system-message-type-select-input"
-          }
-        ),
-        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-string", children: "Message update" }),
-        selectedType === "string" ? /* @__PURE__ */ jsx(
-          TextareaInput,
-          {
-            rows: 4,
-            value: stringContent,
-            placeholder: "Enter a string template with {variable}s",
-            onChange: onUpdateSystemMessageStringChange,
-            "data-testid": "update-system-message-string",
-            id: "update-system-message-string"
-          }
-        ) : /* @__PURE__ */ jsx(
-          Editor,
-          {
-            value: callableContent,
-            onChange: onUpdateSystemMessageCallableChange,
-            darkMode,
-            "data-testid": "update-system-message-callable"
-          }
-        )
-      ] })
-    ] })
-  ] });
-};
-UpdateState.displayName = "UpdateState";
-const WizardStep = memo((props) => {
-  const { children, id } = props;
-  return /* @__PURE__ */ jsx("div", { className: "wizard-step-view", "data-testid": `wizard-step-${id}`, children });
-});
-const Wizard = memo((props) => {
-  const {
-    children,
-    activeStep = 0,
-    canGoForward = true,
-    canGoBack = true,
-    firstBackTitle = "Cancel",
-    lastNextTitle = "Finish",
-    onBack,
-    onForward
-  } = props;
-  const [currentStep, setCurrentStep] = useState(activeStep);
-  useEffect(() => {
-    setCurrentStep(activeStep);
-  }, [activeStep]);
-  const steps = useMemo(
-    () => React__default.Children.toArray(children).filter(
-      (child) => React__default.isValidElement(child) && child.type === WizardStep
-    ),
-    [children]
-  );
-  const goBackCheck = useMemo(
-    () => typeof canGoBack === "function" ? canGoBack(currentStep) : canGoBack,
-    [canGoBack, currentStep]
-  );
-  const goForwardCheck = useMemo(
-    () => typeof canGoForward === "function" ? canGoForward(currentStep) : canGoForward,
-    [canGoForward, currentStep]
-  );
-  const isBackDisabled = useMemo(
-    () => currentStep === 0 && !onBack || !goBackCheck,
-    [currentStep, onBack, goBackCheck]
-  );
-  const isForwardDisabled = useMemo(
-    () => currentStep === steps.length - 1 && !onForward || !goForwardCheck,
-    [currentStep, steps.length, onForward, goForwardCheck]
-  );
-  const backButtonText = useMemo(
-    () => currentStep === 0 ? firstBackTitle : "Back",
-    [currentStep, firstBackTitle]
-  );
-  const nextButtonText = useMemo(
-    () => currentStep === steps.length - 1 ? lastNextTitle : "Next",
-    [currentStep, steps.length, lastNextTitle]
-  );
-  const goBack = useCallback(() => {
-    if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
-    }
-    if (onBack) {
-      onBack(currentStep);
-    }
-  }, [currentStep, onBack]);
-  const goForward = useCallback(() => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep((prev) => prev + 1);
-    }
-    if (onForward) {
-      onForward(currentStep);
-    }
-  }, [currentStep, steps.length, onForward]);
-  const renderedSteps = useMemo(
-    () => steps.map((step, index2) => {
-      const isActive = currentStep === index2;
-      const className = isActive ? "wizard-step--active" : "";
-      return /* @__PURE__ */ jsx(
-        "div",
-        {
-          role: "tab",
-          className: `wizard-step ${className}`,
-          "data-testid": `step-id-${step.props.id}`,
-          "aria-selected": isActive,
-          "aria-controls": `wizard-step-${step.props.id}`,
-          children: step
-        },
-        `wizard-step-${index2}`
-      );
-    }),
-    [steps, currentStep]
-  );
-  return /* @__PURE__ */ jsxs("div", { className: "wizard", children: [
-    /* @__PURE__ */ jsx("div", { className: "wizard-steps", role: "tablist", children: renderedSteps }),
-    /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          type: "button",
-          title: backButtonText,
-          onClick: goBack,
-          "data-testid": "wizard-back-btn",
-          disabled: isBackDisabled,
-          className: "wizard-action-btn wizard-action-btn-prev",
-          "aria-label": backButtonText,
-          children: backButtonText
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          type: "button",
-          title: nextButtonText,
-          onClick: goForward,
-          disabled: isForwardDisabled,
-          "data-testid": "wizard-next-btn",
-          className: "wizard-action-btn wizard-action-btn-next primary",
-          "aria-label": nextButtonText,
-          children: nextButtonText
-        }
-      )
-    ] })
-  ] });
-});
-WizardStep.displayName = "WizardStep";
-Wizard.displayName = "Wizard";
 const WaldiezContext = createContext(null);
 function useWaldiez(selector, equalityFn) {
   const store = useContext(WaldiezContext);
@@ -17785,6 +16583,1324 @@ function WaldiezProvider({ children, ...props }) {
   }, [flowId]);
   return /* @__PURE__ */ jsx(WaldiezContext.Provider, { value: store, children });
 }
+const useAgentClassUpdates = (stepByStep) => {
+  const setActive = useWaldiez((s) => s.setActiveParticipants);
+  const resetActive = useWaldiez((s) => s.resetActiveParticipants);
+  const lastIndexRef = useRef(-1);
+  useEffect(() => {
+    if (!stepByStep?.active) {
+      resetActive();
+      lastIndexRef.current = -1;
+      return;
+    }
+    const events = stepByStep.eventHistory ?? [];
+    if (events.length === 0 || !stepByStep.participants) {
+      return;
+    }
+    const idx = events.length - 1;
+    if (idx === lastIndexRef.current) {
+      return;
+    }
+    const latest = events[0];
+    if (!latest || typeof latest !== "object") {
+      return;
+    }
+    lastIndexRef.current = idx;
+    const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latest);
+    const senderId = stepByStep.participants.find((p) => p.name === sender)?.id ?? null;
+    const recipientId = stepByStep.participants.find((p) => p.name === recipient)?.id ?? null;
+    if (senderId === null && recipientId === null) {
+      return;
+    }
+    setActive(senderId ?? null, recipientId ?? null);
+  }, [stepByStep?.active, stepByStep?.eventHistory, stepByStep?.participants, setActive, resetActive]);
+};
+const StepByStepView = ({ flowId, stepByStep }) => {
+  useAgentClassUpdates(stepByStep);
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [responseText, setResponseText] = useState("");
+  const requestId = stepByStep?.activeRequest?.request_id ?? null;
+  const canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+  const onInputChange = useCallback((e) => {
+    setResponseText(e.target.value);
+  }, []);
+  const onRespond = useCallback(() => {
+    if (!requestId || !responseText.trim()) {
+      return;
+    }
+    stepByStep?.handlers?.respond?.({
+      id: nanoid(),
+      timestamp: Date.now(),
+      data: responseText,
+      request_id: requestId,
+      type: "input_response"
+    });
+    setResponseText("");
+  }, [requestId, responseText, stepByStep?.handlers]);
+  const onInputKeyDown = useCallback(
+    (e) => {
+      if (e.key !== "Enter") {
+        return;
+      }
+      if (e.nativeEvent?.isComposing) {
+        return;
+      }
+      if (!requestId || !responseText.trim()) {
+        return;
+      }
+      stepByStep?.handlers?.respond?.({
+        id: nanoid(),
+        timestamp: Date.now(),
+        data: responseText,
+        request_id: requestId,
+        type: "input_response"
+      });
+      setResponseText("");
+    },
+    [requestId, responseText, stepByStep?.handlers]
+  );
+  const onControl = useCallback(
+    (action) => {
+      if (!stepByStep?.handlers?.sendControl) {
+        return;
+      }
+      const rid = requestId ?? "<unknown>";
+      stepByStep.handlers.sendControl({
+        data: controlToResponse({ kind: action }),
+        request_id: rid
+      });
+    },
+    [requestId, stepByStep?.handlers]
+  );
+  const reducedHistory = useMemo(() => {
+    const raw = stepByStep?.eventHistory ?? [];
+    const max2 = 500;
+    const start = Math.max(0, raw.length - max2);
+    return raw.slice(start).filter((e) => !["debug", "print", "raw"].includes(String(e?.type))).map((e) => {
+      const x = e;
+      const data = x.event ?? x.data ?? x.message ?? x.content ?? x;
+      return Array.isArray(data) && data.length === 1 ? data[0] : data;
+    });
+  }, [stepByStep?.eventHistory]);
+  const badgeText = useMemo(() => {
+    if (!stepByStep) {
+      return null;
+    }
+    const curType = stepByStep.currentEvent?.type;
+    if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
+      return curType;
+    }
+    const last = reducedHistory[0];
+    const lastType = last?.event?.type ?? last?.type;
+    if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
+      return lastType;
+    }
+    if (!stepByStep.active) {
+      return stepByStep.eventHistory?.length ? "Finished" : null;
+    }
+    return "Running";
+  }, [stepByStep, reducedHistory]);
+  if (!stepByStep?.active && !canClose) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "header", children: [
+      /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
+        /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
+        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
+        !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
+        stepByStep?.active && badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            title: isExpanded ? "Collapse" : "Expand",
+            type: "button",
+            onClick: () => setIsExpanded(!isExpanded),
+            className: "header-toggle",
+            "aria-label": isExpanded ? "Collapse panel" : "Expand panel",
+            children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
+          }
+        ),
+        !stepByStep?.active && canClose && /* @__PURE__ */ jsx(
+          "button",
+          {
+            title: "Close",
+            type: "button",
+            onClick: stepByStep?.handlers?.close,
+            className: "header-toggle",
+            "aria-label": "Close panel",
+            children: /* @__PURE__ */ jsx(FaX, { size: 14 })
+          }
+        )
+      ] })
+    ] }),
+    isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
+      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-primary",
+            type: "button",
+            onClick: () => onControl("continue"),
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx(FaStepForward, {}),
+              " ",
+              /* @__PURE__ */ jsx("span", { children: "Continue" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-secondary",
+            type: "button",
+            onClick: () => onControl("run"),
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx(FaPlay, {}),
+              " ",
+              /* @__PURE__ */ jsx("span", { children: "Run" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-danger",
+            type: "button",
+            onClick: () => onControl("quit"),
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx(FaStop, {}),
+              " ",
+              /* @__PURE__ */ jsx("span", { children: "Quit" })
+            ]
+          }
+        )
+      ] }),
+      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+        /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
+        /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              className: "input",
+              placeholder: "Type your response... (Enter to send)",
+              value: responseText,
+              type: stepByStep.activeRequest.password === true ? "password" : "text",
+              onChange: onInputChange,
+              onKeyDown: onInputKeyDown
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              className: "btn btn-primary",
+              type: "button",
+              onClick: onRespond,
+              disabled: !requestId || !responseText.trim(),
+              children: "Send"
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
+        /* @__PURE__ */ jsx(SectionTitle, { children: "Messages" }),
+        /* @__PURE__ */ jsx(JsonArea, { value: reducedHistory, placeholder: "No messages yet" })
+      ] })
+    ] })
+  ] });
+};
+function safeStringify(v) {
+  try {
+    return JSON.stringify(v, null, 2);
+  } catch {
+    return String(v);
+  }
+}
+const JsonArea = ({ value, placeholder = "" }) => {
+  const safeValue = useMemo(() => {
+    if (Array.isArray(value)) {
+      const parts = [];
+      for (let i = 0; i < value.length; i += 1) {
+        const entry = value[i];
+        parts.push(safeStringify(entry?.event ?? entry?.content ?? entry));
+      }
+      const joined = parts.join("\n");
+      return !joined.trim() ? placeholder : joined;
+    }
+    const s = safeStringify(value);
+    return !s || ["undefined", "null", "[]", "{}"].includes(s) || s.trim() === "" ? placeholder : s;
+  }, [value, placeholder]);
+  return /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: safeValue }) });
+};
+const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title margin-bottom-5", children });
+StepByStepView.displayName = "WaldiezStepByStepView";
+const useStringList = (props) => {
+  const [newEntry, setNewEntry] = useState("");
+  const { items, onItemAdded, onItemChange, onItemDeleted } = props;
+  const onAddEntry = useCallback(() => {
+    if (!onItemAdded || !newEntry.trim()) {
+      return;
+    }
+    onItemAdded(newEntry);
+    setNewEntry("");
+  }, [newEntry, onItemAdded]);
+  const onDeleteEntry = useCallback(
+    (event) => {
+      if (!onItemDeleted) {
+        return;
+      }
+      const valueToDelete = event.currentTarget.value;
+      onItemDeleted(valueToDelete);
+    },
+    [onItemDeleted]
+  );
+  const onEntryChange = useCallback(
+    (event) => {
+      if (!onItemChange) {
+        return;
+      }
+      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
+      const newValue = event.target.value;
+      const originalValue = items[index2];
+      if (originalValue !== void 0 && originalValue !== null) {
+        onItemChange(originalValue, newValue);
+      }
+    },
+    [onItemChange, items]
+  );
+  const onNewEntryChange = useCallback((event) => {
+    setNewEntry(event.target.value);
+  }, []);
+  const onNewEntryKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        onAddEntry();
+      }
+    },
+    [onAddEntry]
+  );
+  return {
+    newEntry,
+    onAddEntry,
+    onDeleteEntry,
+    onEntryChange,
+    onNewEntryChange,
+    onNewEntryKeyDown
+  };
+};
+const StringList = memo((props) => {
+  const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
+  const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } = useStringList(props);
+  const labelElement = useMemo(
+    () => typeof viewLabel === "function" ? viewLabel() : viewLabel,
+    [viewLabel]
+  );
+  const renderItems = useMemo(
+    () => items.map((item, index2) => {
+      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
+        /* @__PURE__ */ jsx(
+          "input",
+          {
+            placeholder,
+            type: "text",
+            value: item,
+            "data-index": index2,
+            id: `list-entry-item-${itemsType}-${index2}`,
+            onChange: onEntryChange,
+            "data-testid": `list-entry-item-${itemsType}-${index2}`
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            onClick: onDeleteEntry,
+            value: item,
+            title: "Delete",
+            className: "trash-button",
+            id: `delete-list-entry-${itemsType}-${index2}`,
+            "aria-label": `Delete item: ${item}`,
+            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
+            children: /* @__PURE__ */ jsx(FaTrash, {})
+          }
+        )
+      ] }, `${itemsType}-${index2}`);
+    }),
+    [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
+  );
+  const isAddDisabled = !newEntry.trim();
+  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
+    items.length > 0 && /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: renderItems }),
+    /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          placeholder,
+          type: "text",
+          value: newEntry,
+          onChange: onNewEntryChange,
+          onKeyDown: onNewEntryKeyDown,
+          "data-testid": `new-list-entry-${itemsType}-item`,
+          "aria-label": `New ${itemsType} input`,
+          id: `new-list-entry-${itemsType}`
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          onClick: onAddEntry,
+          title: "Add",
+          disabled: isAddDisabled,
+          className: "plus-button",
+          "aria-label": "Add item",
+          id: `add-list-entry-${itemsType}-button`,
+          "data-testid": `add-list-entry-${itemsType}-button`,
+          children: /* @__PURE__ */ jsx(FaPlus, {})
+        }
+      )
+    ] }) })
+  ] });
+});
+StringList.displayName = "StringList";
+const TabItem = memo((props) => {
+  const { id, children } = props;
+  return /* @__PURE__ */ jsx(
+    "div",
+    {
+      className: "tab-panel",
+      role: "tabpanel",
+      "aria-labelledby": `tab-id-${id}`,
+      "data-testid": `panel-${id}`,
+      id: `panel-${id}`,
+      children
+    }
+  );
+});
+const TabItems = memo((props) => {
+  const { activeTabIndex = 0, children, onTabChange } = props;
+  const [activeTab, setActiveTab] = useState(activeTabIndex);
+  React__default.useEffect(() => {
+    setActiveTab(activeTabIndex);
+  }, [activeTabIndex]);
+  const handleTabClick = useCallback(
+    (index2) => {
+      setActiveTab(index2);
+      onTabChange?.(index2);
+    },
+    [onTabChange]
+  );
+  const tabs = useMemo(
+    () => React__default.Children.toArray(children).filter(
+      (child) => React__default.isValidElement(child) && child.type === TabItem
+    ),
+    [children]
+  );
+  const tabButtons = useMemo(
+    () => tabs.map((tab, index2) => {
+      const isActive = activeTab === index2;
+      const className = isActive ? "tab-btn--active" : "";
+      const tabId = tab.props.id;
+      return /* @__PURE__ */ jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx(
+        "div",
+        {
+          role: "button",
+          "data-testid": `tab-id-${tabId}`,
+          id: `tab-id-${tabId}`,
+          "aria-controls": `panel-${tabId}`,
+          onClick: () => handleTabClick(index2),
+          className: `tab-btn ${className}`,
+          tabIndex: isActive ? 0 : -1,
+          children: tab.props.label
+        }
+      ) }, `tab-li-${tabId}-${index2}`);
+    }),
+    [tabs, activeTab, handleTabClick]
+  );
+  const activeTabContent = tabs[activeTab] || null;
+  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
+    /* @__PURE__ */ jsx("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
+    activeTabContent
+  ] });
+});
+TabItem.displayName = "TabItem";
+TabItems.displayName = "TabItems";
+var DefaultContext = {
+  color: void 0,
+  size: void 0,
+  className: void 0,
+  style: void 0,
+  attr: void 0
+};
+var IconContext = React__default.createContext && /* @__PURE__ */ React__default.createContext(DefaultContext);
+var _excluded = ["attr", "size", "title"];
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+function ownKeys(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
+      _defineProperty(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey(t) {
+  var i = _toPrimitive(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _toPrimitive(t, r) {
+  if ("object" != typeof t || !t) return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r);
+    if ("object" != typeof i) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r ? String : Number)(t);
+}
+function Tree2Element(tree) {
+  return tree && tree.map((node, i) => /* @__PURE__ */ React__default.createElement(node.tag, _objectSpread({
+    key: i
+  }, node.attr), Tree2Element(node.child)));
+}
+function GenIcon(data) {
+  return (props) => /* @__PURE__ */ React__default.createElement(IconBase, _extends({
+    attr: _objectSpread({}, data.attr)
+  }, props), Tree2Element(data.child));
+}
+function IconBase(props) {
+  var elem = (conf) => {
+    var {
+      attr,
+      size: size2,
+      title
+    } = props, svgProps = _objectWithoutProperties(props, _excluded);
+    var computedSize = size2 || conf.size || "1em";
+    var className;
+    if (conf.className) className = conf.className;
+    if (props.className) className = (className ? className + " " : "") + props.className;
+    return /* @__PURE__ */ React__default.createElement("svg", _extends({
+      stroke: "currentColor",
+      fill: "currentColor",
+      strokeWidth: "0"
+    }, conf.attr, attr, svgProps, {
+      className,
+      style: _objectSpread(_objectSpread({
+        color: props.color || conf.color
+      }, conf.style), props.style),
+      height: computedSize,
+      width: computedSize,
+      xmlns: "http://www.w3.org/2000/svg"
+    }), title && /* @__PURE__ */ React__default.createElement("title", null, title), props.children);
+  };
+  return IconContext !== void 0 ? /* @__PURE__ */ React__default.createElement(IconContext.Consumer, null, (conf) => elem(conf)) : elem(DefaultContext);
+}
+function FiActivity(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "polyline", "attr": { "points": "22 12 18 12 15 21 9 3 6 12 2 12" }, "child": [] }] })(props);
+}
+function FiClock(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "circle", "attr": { "cx": "12", "cy": "12", "r": "10" }, "child": [] }, { "tag": "polyline", "attr": { "points": "12 6 12 12 16 14" }, "child": [] }] })(props);
+}
+function FiDollarSign(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "line", "attr": { "x1": "12", "y1": "1", "x2": "12", "y2": "23" }, "child": [] }, { "tag": "path", "attr": { "d": "M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" }, "child": [] }] })(props);
+}
+function FiEyeOff(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" }, "child": [] }, { "tag": "line", "attr": { "x1": "1", "y1": "1", "x2": "23", "y2": "23" }, "child": [] }] })(props);
+}
+function FiEye(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" }, "child": [] }, { "tag": "circle", "attr": { "cx": "12", "cy": "12", "r": "3" }, "child": [] }] })(props);
+}
+function FiFileText(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" }, "child": [] }, { "tag": "polyline", "attr": { "points": "14 2 14 8 20 8" }, "child": [] }, { "tag": "line", "attr": { "x1": "16", "y1": "13", "x2": "8", "y2": "13" }, "child": [] }, { "tag": "line", "attr": { "x1": "16", "y1": "17", "x2": "8", "y2": "17" }, "child": [] }, { "tag": "polyline", "attr": { "points": "10 9 9 9 8 9" }, "child": [] }] })(props);
+}
+function FiPaperclip(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" }, "child": [] }] })(props);
+}
+function FiUser(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "path", "attr": { "d": "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" }, "child": [] }, { "tag": "circle", "attr": { "cx": "12", "cy": "7", "r": "4" }, "child": [] }] })(props);
+}
+function FiX(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "line", "attr": { "x1": "18", "y1": "6", "x2": "6", "y2": "18" }, "child": [] }, { "tag": "line", "attr": { "x1": "6", "y1": "6", "x2": "18", "y2": "18" }, "child": [] }] })(props);
+}
+const TimelineChart = ({
+  data,
+  width,
+  height,
+  darkMode = false
+}) => {
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const margin = { top: 40, right: 140, bottom: 60, left: 80 };
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+  if (!data || !data.timeline || data.timeline.length === 0) {
+    return null;
+  }
+  const maxTime = data.metadata.time_range[1];
+  const maxCost = Math.max(...data.cost_timeline.map((d) => d.cumulative_cost));
+  const xScale = (value) => value / maxTime * chartWidth;
+  const yScale = (value) => chartHeight - value / maxCost * chartHeight;
+  const costLinePath = data.cost_timeline.map((d, i) => {
+    const x = xScale(d.time);
+    const y = yScale(d.cumulative_cost);
+    return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+  }).join(" ");
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+  const gridColor = darkMode ? "#374151" : "#e2e8f0";
+  const axisColor = darkMode ? "#9CA3AF" : "#64748b";
+  const costLineColor = "#8B5CF6";
+  const textColor = darkMode ? "#F3F4F6" : "#333";
+  return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+    /* @__PURE__ */ jsx(
+      "svg",
+      {
+        width,
+        height,
+        onMouseMove: handleMouseMove,
+        onMouseLeave: () => setHoveredItem(null),
+        children: /* @__PURE__ */ jsxs("g", { transform: `translate(${margin.left}, ${margin.top})`, children: [
+          [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
+            /* @__PURE__ */ jsx(
+              "line",
+              {
+                x1: chartWidth * ratio,
+                y1: 0,
+                x2: chartWidth * ratio,
+                y2: chartHeight,
+                stroke: gridColor,
+                strokeDasharray: "2,2",
+                strokeWidth: 1
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "line",
+              {
+                x1: 0,
+                y1: chartHeight * ratio,
+                x2: chartWidth,
+                y2: chartHeight * ratio,
+                stroke: gridColor,
+                strokeDasharray: "2,2",
+                strokeWidth: 1
+              }
+            )
+          ] }, `grid-${ratio}`)),
+          data.timeline.map((item, i) => {
+            let itemY;
+            if (item.type === "session") {
+              const costPoint = data.cost_timeline.find(
+                (c) => c.session_id === item.y_position
+              );
+              itemY = yScale(costPoint?.cumulative_cost || 0) - 10;
+            } else {
+              const prevSessionIndex = data.timeline.slice(0, i).reverse().findIndex((t) => t.type === "session");
+              if (prevSessionIndex !== -1) {
+                const prevSession = data.timeline[i - 1 - prevSessionIndex];
+                const prevCostPoint = data.cost_timeline.find(
+                  (c) => c.session_id === prevSession?.y_position
+                );
+                itemY = yScale(prevCostPoint?.cumulative_cost || 0) - 10;
+              } else {
+                itemY = yScale(0) - 10;
+              }
+            }
+            return /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
+                "rect",
+                {
+                  x: xScale(item.start),
+                  y: itemY,
+                  width: xScale(item.duration),
+                  height: 20,
+                  fill: item.type === "session" ? item.color : "#D1D5DB",
+                  stroke: item.type === "session" ? item.color : "#9CA3AF",
+                  strokeWidth: 2,
+                  rx: 8,
+                  fillOpacity: 0.1,
+                  style: { cursor: "pointer" },
+                  onMouseEnter: () => setHoveredItem({ ...item, index: i })
+                }
+              ),
+              item.type === "gap" && /* @__PURE__ */ jsx(
+                "text",
+                {
+                  x: xScale(item.start + item.duration / 2),
+                  y: itemY + 14,
+                  textAnchor: "middle",
+                  dominantBaseline: "middle",
+                  fontSize: "10",
+                  fontWeight: "bold",
+                  fill: darkMode ? "#F3F4F6" : "white",
+                  pointerEvents: "none",
+                  children: item.gap_type === "human_input_waiting" ? `👤 ${item.real_duration?.toFixed(0)}s` : `${item.label.split(" ")[0]} `
+                }
+              )
+            ] }, item.id);
+          }),
+          /* @__PURE__ */ jsx("path", { d: costLinePath, fill: "none", stroke: costLineColor, strokeWidth: 2 }),
+          data.cost_timeline.map((d, i) => /* @__PURE__ */ jsx(
+            "circle",
+            {
+              cx: xScale(d.time),
+              cy: yScale(d.cumulative_cost),
+              r: 4,
+              fill: costLineColor,
+              stroke: darkMode ? "#1F2937" : "white",
+              strokeWidth: 2,
+              style: { cursor: "pointer" },
+              onMouseEnter: () => setHoveredItem({
+                type: "cost_point",
+                cost_data: d,
+                index: i
+              })
+            },
+            `dot-${i}`
+          )),
+          /* @__PURE__ */ jsxs("g", { transform: `translate(0, ${chartHeight})`, children: [
+            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: chartWidth, y2: 0, stroke: axisColor }),
+            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
+                "line",
+                {
+                  x1: chartWidth * ratio,
+                  y1: 0,
+                  x2: chartWidth * ratio,
+                  y2: 6,
+                  stroke: axisColor
+                }
+              ),
+              /* @__PURE__ */ jsxs(
+                "text",
+                {
+                  x: chartWidth * ratio,
+                  y: 20,
+                  textAnchor: "middle",
+                  fontSize: "12",
+                  fill: axisColor,
+                  children: [
+                    (maxTime * ratio).toFixed(1),
+                    "s"
+                  ]
+                }
+              )
+            ] }, `x-tick-${ratio}`)),
+            /* @__PURE__ */ jsx(
+              "text",
+              {
+                x: chartWidth / 2,
+                y: 45,
+                textAnchor: "middle",
+                fontSize: "14",
+                fontWeight: "500",
+                fill: textColor,
+                children: "Compressed Timeline (seconds)"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxs("g", { transform: `translate(${chartWidth}, 0)`, children: [
+            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: 0, y2: chartHeight, stroke: costLineColor }),
+            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
+                "line",
+                {
+                  x1: 0,
+                  y1: chartHeight * ratio,
+                  x2: 6,
+                  y2: chartHeight * ratio,
+                  stroke: costLineColor
+                }
+              ),
+              /* @__PURE__ */ jsxs(
+                "text",
+                {
+                  x: 20,
+                  y: chartHeight * ratio,
+                  textAnchor: "start",
+                  dominantBaseline: "middle",
+                  fontSize: "12",
+                  fill: costLineColor,
+                  children: [
+                    "$",
+                    (maxCost * (1 - ratio)).toFixed(6)
+                  ]
+                }
+              )
+            ] }, `y-tick-${ratio}`)),
+            /* @__PURE__ */ jsx(
+              "text",
+              {
+                x: 120,
+                y: chartHeight / 2,
+                textAnchor: "middle",
+                dominantBaseline: "middle",
+                fontSize: "14",
+                fontWeight: "500",
+                fill: costLineColor,
+                transform: `rotate(-90, 120, ${chartHeight / 2})`,
+                children: "Cumulative Cost ($)"
+              }
+            )
+          ] })
+        ] })
+      }
+    ),
+    hoveredItem && /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "absolute pointer-events-none",
+        style: {
+          left: mousePos.x + 10,
+          top: mousePos.y - 10,
+          transform: mousePos.x > width / 2 ? "translateX(-100%)" : void 0
+        },
+        children: /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsxs("div", { className: "card-content padding-10", children: [
+          hoveredItem.type === "session" && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.agent.replace(/_/g, " ") }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                "LLM: ",
+                /* @__PURE__ */ jsx("span", { className: "font-medium", children: hoveredItem.llm_model })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Cost: $",
+                hoveredItem.cost.toFixed(6)
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Duration: ",
+                hoveredItem.duration.toFixed(2),
+                "s"
+              ] }),
+              hoveredItem.tokens > 0 && /* @__PURE__ */ jsxs("div", { children: [
+                "Tokens: ",
+                hoveredItem.prompt_tokens.toLocaleString(),
+                " in +",
+                " ",
+                hoveredItem.completion_tokens.toLocaleString(),
+                " out"
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Cache: ",
+                hoveredItem.is_cached ? "Cached" : "Fresh"
+              ] }),
+              hoveredItem.real_start_time && /* @__PURE__ */ jsxs("div", { children: [
+                "Started: ",
+                hoveredItem.real_start_time
+              ] })
+            ] })
+          ] }),
+          hoveredItem.type === "gap" && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.label }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Type: ",
+                hoveredItem.gap_type.replace(/_/g, " ")
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Original Duration: ",
+                hoveredItem.real_duration?.toFixed(1),
+                "s"
+              ] }),
+              hoveredItem.compressed && /* @__PURE__ */ jsxs("div", { children: [
+                "Compressed to: ",
+                hoveredItem.duration.toFixed(1),
+                "s"
+              ] })
+            ] })
+          ] }),
+          hoveredItem.type === "cost_point" && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { className: "font-semibold text-sm", children: [
+              "Cumulative Cost: $",
+              hoveredItem.cost_data.cumulative_cost.toFixed(6)
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Session Cost: $",
+                hoveredItem.cost_data.session_cost.toFixed(6)
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                "Session: ",
+                hoveredItem.cost_data.session_id
+              ] })
+            ] })
+          ] })
+        ] }) })
+      }
+    )
+  ] });
+};
+const Timeline = ({ data, height = 400 }) => {
+  const { isDark } = useWaldiezTheme();
+  const chartRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  useLayoutEffect(() => {
+    if (chartRef.current) {
+      const svgElement = chartRef.current.querySelector("svg");
+      if (svgElement) {
+        const width = parseInt(svgElement.getAttribute("width") || "800");
+        const height2 = parseInt(svgElement.getAttribute("height") || "400");
+        setDimensions({ width, height: height2 });
+      }
+    }
+  }, []);
+  return /* @__PURE__ */ jsxs("div", { className: "full-width padding-10", children: [
+    /* @__PURE__ */ jsx("div", { className: "timeline-grid margin-bottom-10", children: [
+      { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
+      {
+        label: "Total Cost",
+        value: `$${data.summary.total_cost.toFixed(6)}`,
+        icon: FiDollarSign
+      },
+      { label: "Duration", value: `${data.summary.total_time.toFixed(1)}s`, icon: FiClock },
+      { label: "Agents", value: data.summary.total_agents, icon: FiUser },
+      {
+        label: "Tokens",
+        value: data.summary.total_tokens?.toLocaleString() || "N/A",
+        icon: FiFileText
+      },
+      {
+        label: "Avg Cost",
+        value: `$${data.summary.avg_cost_per_session.toFixed(6)}`,
+        icon: FiDollarSign
+      }
+    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsx("div", { className: "card-content", children: /* @__PURE__ */ jsxs("div", { className: "timeline-top", children: [
+      /* @__PURE__ */ jsx(Icon, { className: "timeline-icon" }),
+      /* @__PURE__ */ jsxs("div", { className: "timeline-top-content", children: [
+        /* @__PURE__ */ jsx("p", { className: "timeline-label", children: label }),
+        /* @__PURE__ */ jsx("p", { className: "timeline-value", children: value })
+      ] })
+    ] }) }) }, label)) }),
+    /* @__PURE__ */ jsxs("div", { className: "card", children: [
+      /* @__PURE__ */ jsxs("div", { className: "card-header", children: [
+        /* @__PURE__ */ jsx("h3", { className: "card-title", children: "Session Activity Timeline with Cumulative Cost" }),
+        /* @__PURE__ */ jsxs("p", { className: "card-description", children: [
+          "Interactive timeline showing agent sessions and cost accumulation (human input periods compressed)",
+          data.summary.compression_info.gaps_compressed > 0 && /* @__PURE__ */ jsxs("span", { className: "badge badge-secondary", style: { marginLeft: "0.5rem" }, children: [
+            data.summary.compression_info.gaps_compressed,
+            " gaps compressed,",
+            data.summary.compression_info.time_saved.toFixed(1),
+            "s saved"
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "card-content", children: [
+        /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx(
+          TimelineChart,
+          {
+            width: dimensions.width,
+            height: dimensions.height,
+            data,
+            darkMode: isDark
+          }
+        ) }) }),
+        data.agents.length > 0 && // <div className="mt-4 flex flex-wrap gap-2">
+        /* @__PURE__ */ jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxs("div", { className: "timeline-agent-item", children: [
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              className: "timeline-agent-dot",
+              style: { backgroundColor: agent.color }
+            }
+          ),
+          /* @__PURE__ */ jsx("span", { className: "timeline-agent-name", children: agent.name.replace(/_/g, " ") }),
+          /* @__PURE__ */ jsxs("span", { className: "timeline-agent-class", children: [
+            "(",
+            agent.class,
+            ")"
+          ] })
+        ] }, agent.name)) })
+      ] })
+    ] })
+  ] });
+};
+const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
+  return /* @__PURE__ */ jsxs(
+    Modal,
+    {
+      flowId,
+      id: "timeline-modal",
+      title: "Chat Timeline",
+      isOpen,
+      onClose,
+      className: "modal-fullscreen",
+      hasMaximizeBtn: false,
+      hasCloseBtn: true,
+      hasUnsavedChanges: false,
+      preventCloseIfUnsavedChanges: false,
+      noHeader: true,
+      children: [
+        /* @__PURE__ */ jsx("div", { className: "timeline-modal fullscreen open no-backdrop", children: /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsx(Timeline, { data }) }) }),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            title: "Close preview",
+            className: "modal-close",
+            onClick: onClose,
+            "data-testid": "modal-close",
+            children: /* @__PURE__ */ jsx(FaX, { size: 12 })
+          }
+        )
+      ]
+    }
+  );
+};
+const CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT = `"""Custom update system message function."""
+
+# provide the function to define the system message before replying
+# complete the \`custom_update_system_message\` below. Do not change the name or the arguments of the function.
+# only complete the function body and the docstring and return the final message.
+# the function should accept the agent and the messages as arguments.
+# example:
+# def custom_update_system_message(
+#     agent: ConversableAgent,
+#     messages: List[Dict[str, Any]]
+# ) -> str:
+#     return "Hello, I am a custom system message"
+
+def custom_update_system_message(
+     agent: ConversableAgent,
+     messages: List[Dict[str, Any]]
+) -> str:
+    ...
+`;
+const UpdateState = (props) => {
+  const { data, onDataChange, darkMode } = props;
+  const hasUpdateConfig = useMemo(
+    () => data.updateAgentStateBeforeReply.length > 0,
+    [data.updateAgentStateBeforeReply]
+  );
+  const currentConfig = useMemo(
+    () => hasUpdateConfig ? data.updateAgentStateBeforeReply[0] : { type: "string", content: "" },
+    [hasUpdateConfig, data.updateAgentStateBeforeReply]
+  );
+  const [enabled, setEnabled] = useState(hasUpdateConfig);
+  const [selectedType, setSelectedType] = useState(
+    currentConfig?.type || "string"
+  );
+  useEffect(() => {
+    setEnabled(hasUpdateConfig);
+    if (hasUpdateConfig) {
+      setSelectedType(currentConfig?.type || "string");
+    }
+  }, [hasUpdateConfig, currentConfig?.type]);
+  const updateSystemMessageTypeOptions = useMemo(
+    () => [
+      { label: "Text", value: "string" },
+      { label: "Function", value: "callable" }
+    ],
+    []
+  );
+  const selectedOption = useMemo(
+    () => updateSystemMessageTypeOptions.find((opt) => opt.value === selectedType),
+    [updateSystemMessageTypeOptions, selectedType]
+  );
+  const onEnabledChange = useCallback(
+    (checked) => {
+      setEnabled(checked);
+      if (!checked) {
+        onDataChange({ updateAgentStateBeforeReply: [] });
+      } else {
+        const type = selectedType;
+        const content = type === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT;
+        onDataChange({
+          updateAgentStateBeforeReply: [{ type, content }]
+        });
+      }
+    },
+    [onDataChange, selectedType]
+  );
+  const onUpdateSystemMessageTypeChange = useCallback(
+    (option) => {
+      if (!option) {
+        onDataChange({
+          updateAgentStateBeforeReply: []
+        });
+        return;
+      }
+      const newType = option.value;
+      setSelectedType(newType);
+      const content = newType === "string" ? "" : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT;
+      onDataChange({
+        updateAgentStateBeforeReply: [{ type: newType, content }]
+      });
+    },
+    [onDataChange]
+  );
+  const onUpdateSystemMessageStringChange = useCallback(
+    (event) => {
+      onDataChange({
+        updateAgentStateBeforeReply: [
+          {
+            type: "string",
+            content: event.target.value
+          }
+        ]
+      });
+    },
+    [onDataChange]
+  );
+  const onUpdateSystemMessageCallableChange = useCallback(
+    (value) => {
+      onDataChange({
+        updateAgentStateBeforeReply: [
+          {
+            type: "callable",
+            content: value ?? CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT
+          }
+        ]
+      });
+    },
+    [onDataChange]
+  );
+  const stringContent = useMemo(
+    () => hasUpdateConfig && currentConfig?.type === "string" ? currentConfig.content : "",
+    [hasUpdateConfig, currentConfig]
+  );
+  const callableContent = useMemo(
+    () => hasUpdateConfig && currentConfig?.type === "callable" ? currentConfig.content : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
+    [hasUpdateConfig, currentConfig]
+  );
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
+    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
+        CheckboxInput,
+        {
+          label: "Update system message before reply",
+          isChecked: enabled,
+          onCheckedChange: onEnabledChange,
+          id: "enable-update-system-message",
+          "aria-label": "Enable update system message"
+        }
+      ),
+      enabled && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-type-select-input", children: "Message update type" }),
+        /* @__PURE__ */ jsx(
+          Select,
+          {
+            options: updateSystemMessageTypeOptions,
+            value: selectedOption,
+            onChange: onUpdateSystemMessageTypeChange,
+            inputId: "update-system-message-type-select-input"
+          }
+        ),
+        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-string", children: "Message update" }),
+        selectedType === "string" ? /* @__PURE__ */ jsx(
+          TextareaInput,
+          {
+            rows: 4,
+            value: stringContent,
+            placeholder: "Enter a string template with {variable}s",
+            onChange: onUpdateSystemMessageStringChange,
+            "data-testid": "update-system-message-string",
+            id: "update-system-message-string"
+          }
+        ) : /* @__PURE__ */ jsx(
+          Editor,
+          {
+            value: callableContent,
+            onChange: onUpdateSystemMessageCallableChange,
+            darkMode,
+            "data-testid": "update-system-message-callable"
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+UpdateState.displayName = "UpdateState";
+const WizardStep = memo((props) => {
+  const { children, id } = props;
+  return /* @__PURE__ */ jsx("div", { className: "wizard-step-view", "data-testid": `wizard-step-${id}`, children });
+});
+const Wizard = memo((props) => {
+  const {
+    children,
+    activeStep = 0,
+    canGoForward = true,
+    canGoBack = true,
+    firstBackTitle = "Cancel",
+    lastNextTitle = "Finish",
+    onBack,
+    onForward
+  } = props;
+  const [currentStep, setCurrentStep] = useState(activeStep);
+  useEffect(() => {
+    setCurrentStep(activeStep);
+  }, [activeStep]);
+  const steps = useMemo(
+    () => React__default.Children.toArray(children).filter(
+      (child) => React__default.isValidElement(child) && child.type === WizardStep
+    ),
+    [children]
+  );
+  const goBackCheck = useMemo(
+    () => typeof canGoBack === "function" ? canGoBack(currentStep) : canGoBack,
+    [canGoBack, currentStep]
+  );
+  const goForwardCheck = useMemo(
+    () => typeof canGoForward === "function" ? canGoForward(currentStep) : canGoForward,
+    [canGoForward, currentStep]
+  );
+  const isBackDisabled = useMemo(
+    () => currentStep === 0 && !onBack || !goBackCheck,
+    [currentStep, onBack, goBackCheck]
+  );
+  const isForwardDisabled = useMemo(
+    () => currentStep === steps.length - 1 && !onForward || !goForwardCheck,
+    [currentStep, steps.length, onForward, goForwardCheck]
+  );
+  const backButtonText = useMemo(
+    () => currentStep === 0 ? firstBackTitle : "Back",
+    [currentStep, firstBackTitle]
+  );
+  const nextButtonText = useMemo(
+    () => currentStep === steps.length - 1 ? lastNextTitle : "Next",
+    [currentStep, steps.length, lastNextTitle]
+  );
+  const goBack = useCallback(() => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    }
+    if (onBack) {
+      onBack(currentStep);
+    }
+  }, [currentStep, onBack]);
+  const goForward = useCallback(() => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+    }
+    if (onForward) {
+      onForward(currentStep);
+    }
+  }, [currentStep, steps.length, onForward]);
+  const renderedSteps = useMemo(
+    () => steps.map((step, index2) => {
+      const isActive = currentStep === index2;
+      const className = isActive ? "wizard-step--active" : "";
+      return /* @__PURE__ */ jsx(
+        "div",
+        {
+          role: "tab",
+          className: `wizard-step ${className}`,
+          "data-testid": `step-id-${step.props.id}`,
+          "aria-selected": isActive,
+          "aria-controls": `wizard-step-${step.props.id}`,
+          children: step
+        },
+        `wizard-step-${index2}`
+      );
+    }),
+    [steps, currentStep]
+  );
+  return /* @__PURE__ */ jsxs("div", { className: "wizard", children: [
+    /* @__PURE__ */ jsx("div", { className: "wizard-steps", role: "tablist", children: renderedSteps }),
+    /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          title: backButtonText,
+          onClick: goBack,
+          "data-testid": "wizard-back-btn",
+          disabled: isBackDisabled,
+          className: "wizard-action-btn wizard-action-btn-prev",
+          "aria-label": backButtonText,
+          children: backButtonText
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "button",
+          title: nextButtonText,
+          onClick: goForward,
+          disabled: isForwardDisabled,
+          "data-testid": "wizard-next-btn",
+          className: "wizard-action-btn wizard-action-btn-next primary",
+          "aria-label": nextButtonText,
+          children: nextButtonText
+        }
+      )
+    ] })
+  ] });
+});
+WizardStep.displayName = "WizardStep";
+Wizard.displayName = "Wizard";
 const useDnD = (onNewAgent) => {
   const { screenToFlowPosition, getIntersectingNodes } = useReactFlow();
   const addAgent = useWaldiez((s) => s.addAgent);

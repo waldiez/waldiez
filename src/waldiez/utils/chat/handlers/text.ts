@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import type { TextMessageData, WaldiezChatMessage } from "@waldiez/types";
+import type { WaldiezChatMessage, WaldiezChatTextMessageData } from "@waldiez/types";
 import type {
-    MessageHandler,
-    MessageProcessingContext,
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingContext,
     WaldiezChatMessageProcessingResult,
 } from "@waldiez/utils/chat/types";
 import { MessageUtils } from "@waldiez/utils/chat/utils";
@@ -15,7 +15,7 @@ import { MessageUtils } from "@waldiez/utils/chat/utils";
  * It validates the message structure, normalizes the content, and replaces image URLs if provided.
  * If valid, it constructs a WaldiezChatMessage object with the normalized content and metadata.
  */
-export class TextMessageHandler implements MessageHandler {
+export class WaldiezChatTextMessageHandler implements WaldiezChatMessageHandler {
     /**
      * Determines if this handler can process the given message type.
      * @param type - The type of the message to check.
@@ -30,7 +30,7 @@ export class TextMessageHandler implements MessageHandler {
      * @param data - The data to validate.
      * @returns True if the data is a valid text message, false otherwise.
      */
-    static isValidTextMessage(data: any): data is TextMessageData {
+    static isValidTextMessage(data: any): data is WaldiezChatTextMessageData {
         /* c8 ignore next 9 */
         if (!data || typeof data !== "object") {
             return false;
@@ -70,8 +70,11 @@ export class TextMessageHandler implements MessageHandler {
      * @param context - The processing context containing request ID and optional image URL.
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
-    handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
-        if (!TextMessageHandler.isValidTextMessage(data)) {
+    handle(
+        data: any,
+        context: WaldiezChatMessageProcessingContext,
+    ): WaldiezChatMessageProcessingResult | undefined {
+        if (!WaldiezChatTextMessageHandler.isValidTextMessage(data)) {
             return undefined;
         }
 

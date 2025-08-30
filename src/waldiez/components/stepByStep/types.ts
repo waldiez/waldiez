@@ -12,6 +12,7 @@ import type {
     WaldiezChatParticipant,
     WaldiezChatUserInput,
 } from "@waldiez/components/chatUI/types";
+import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
 /**
  * Explicit response codes allowed by the backend for step control.
@@ -53,7 +54,7 @@ export type WaldiezDebugHelpCommandGroup = {
  */
 export type WaldiezDebugPrint = {
     type: "debug_print" | "print";
-    content: string;
+    content: any;
 };
 
 /**
@@ -293,6 +294,9 @@ export type WaldiezStepByStep = {
 
     /** List of participants in the chat */
     participants?: WaldiezChatParticipant[];
+
+    /** Timeline of events */
+    timeline?: WaldiezTimelineData;
 
     /**
      * Pending control action input. For replying to messages

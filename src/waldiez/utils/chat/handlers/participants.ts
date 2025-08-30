@@ -3,13 +3,13 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import type {
-    MessageHandler,
-    MessageProcessingContext,
-    ParticipantsData,
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingContext,
     WaldiezChatMessageProcessingResult,
+    WaldiezChatParticipantsData,
 } from "@waldiez/utils/chat/types";
 
-export class ParticipantsHandler implements MessageHandler {
+export class WaldiezChatParticipantsHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "participants";
     }
@@ -19,7 +19,7 @@ export class ParticipantsHandler implements MessageHandler {
      * @param data - The data to validate.
      * @returns True if the data is a valid participants data, false otherwise.
      */
-    static isValidParticipantsData(data: any): data is ParticipantsData {
+    static isValidParticipantsData(data: any): data is WaldiezChatParticipantsData {
         // {"id": "861880b3021a494abc79d231c65def35", "type": "print",
         // "timestamp": "2025-06-11T10:43:50.664895", "data":
         // "{\"participants\":[
@@ -40,7 +40,7 @@ export class ParticipantsHandler implements MessageHandler {
         if (data && typeof data === "string") {
             try {
                 const parsedData = JSON.parse(data);
-                return ParticipantsHandler.isValidParticipantsData(parsedData);
+                return WaldiezChatParticipantsHandler.isValidParticipantsData(parsedData);
                 /* c8 ignore next 3 */
             } catch {
                 return false;
@@ -60,7 +60,7 @@ export class ParticipantsHandler implements MessageHandler {
         try {
             const parsedData = typeof dataContent === "string" ? JSON.parse(dataContent) : dataContent;
 
-            if (ParticipantsHandler.isValidParticipantsData(parsedData)) {
+            if (WaldiezChatParticipantsHandler.isValidParticipantsData(parsedData)) {
                 if (typeof parsedData === "string") {
                     try {
                         const innerDumped = JSON.parse(parsedData);
@@ -89,13 +89,16 @@ export class ParticipantsHandler implements MessageHandler {
         return undefined;
     }
 
-    handle(data: any, _context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
-        if (!ParticipantsHandler.isValidParticipantsData(data)) {
-            if (data.data && ParticipantsHandler.isValidParticipantsData(data.data)) {
-                return ParticipantsHandler.extractParticipants(data.data);
+    handle(
+        data: any,
+        _context: WaldiezChatMessageProcessingContext,
+    ): WaldiezChatMessageProcessingResult | undefined {
+        if (!WaldiezChatParticipantsHandler.isValidParticipantsData(data)) {
+            if (data.data && WaldiezChatParticipantsHandler.isValidParticipantsData(data.data)) {
+                return WaldiezChatParticipantsHandler.extractParticipants(data.data);
             }
             return undefined;
         }
-        return ParticipantsHandler.extractParticipants(data);
+        return WaldiezChatParticipantsHandler.extractParticipants(data);
     }
 }

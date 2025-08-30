@@ -9,6 +9,7 @@ import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-ic
 
 import { nanoid } from "nanoid";
 
+import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hook";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
 
 /**
@@ -19,6 +20,7 @@ export const StepByStepView: React.FC<{
     stepByStep?: WaldiezStepByStep | null;
     className?: string;
 }> = ({ flowId, stepByStep }) => {
+    useAgentClassUpdates(stepByStep);
     const [isExpanded, setIsExpanded] = useState(true);
     const [responseText, setResponseText] = useState("");
 
@@ -93,10 +95,9 @@ export const StepByStepView: React.FC<{
         [requestId, stepByStep?.handlers],
     );
 
-    // compact, filtered history (capped for perf)
     const reducedHistory = useMemo(() => {
         const raw = stepByStep?.eventHistory ?? [];
-        const max = 200;
+        const max = 500;
         const start = Math.max(0, raw.length - max);
         return raw
             .slice(start)
@@ -113,13 +114,13 @@ export const StepByStepView: React.FC<{
             return null;
         }
         const curType = stepByStep.currentEvent?.type;
-        if (typeof curType === "string") {
+        if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
             return curType;
         }
 
-        const last = stepByStep.eventHistory?.[stepByStep.eventHistory.length - 1] as any;
-        const lastType = last?.type ?? last?.event?.type;
-        if (typeof lastType === "string") {
+        const last = reducedHistory[0] as any;
+        const lastType = last?.event?.type ?? last?.type;
+        if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
             return lastType;
         }
 
@@ -127,7 +128,7 @@ export const StepByStepView: React.FC<{
             return stepByStep.eventHistory?.length ? "Finished" : null;
         }
         return "Running";
-    }, [stepByStep]);
+    }, [stepByStep, reducedHistory]);
 
     if (!stepByStep?.active && !canClose) {
         return null;

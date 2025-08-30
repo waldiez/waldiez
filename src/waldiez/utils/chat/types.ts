@@ -18,7 +18,7 @@ import type {
  * @param id - An optional unique identifier for the message.
  * @param timestamp - An optional timestamp indicating when the message was created.
  */
-export type BaseMessageData = {
+export type WaldiezChatBaseMessageData = {
     type: string;
     id?: string;
     uuid?: string;
@@ -32,7 +32,7 @@ export type BaseMessageData = {
  * @param prompt - The prompt text that the user is expected to respond to.
  * @param password - Optional. If true, indicates that the input is a password field.
  */
-export type InputRequestData = BaseMessageData & {
+export type WaldiezChatInputRequestData = WaldiezChatBaseMessageData & {
     type: "input_request";
     request_id: string;
     prompt: string;
@@ -45,7 +45,7 @@ export type InputRequestData = BaseMessageData & {
  * @param content - The content of the print message, which can be a string or an object.
  * @param content.data - The data that was printed, which can be a string, an array, or an object.
  */
-export type PrintMessageData = BaseMessageData & {
+export type WaldiezChatPrintMessageData = WaldiezChatBaseMessageData & {
     type: "print";
     content: {
         data: string;
@@ -60,7 +60,7 @@ export type PrintMessageData = BaseMessageData & {
  * @param content.sender - The sender of the message.
  * @param content.recipient - The recipient of the message.
  */
-export type TextMessageData = BaseMessageData & {
+export type WaldiezChatTextMessageData = WaldiezChatBaseMessageData & {
     type: "text" | "tool_call";
     content: {
         content: WaldiezMediaContent;
@@ -75,7 +75,7 @@ export type TextMessageData = BaseMessageData & {
  * @param content - The content of the termination message.
  * @param content.termination_reason - The reason for the termination.
  */
-export type TerminationMessageData = BaseMessageData & {
+export type WaldiezChatTerminationMessageData = WaldiezChatBaseMessageData & {
     type: "termination";
     content?: {
         termination_reason: string;
@@ -91,7 +91,7 @@ export type TerminationMessageData = BaseMessageData & {
  * @param content.speaker - The speaker of the message.
  * @param content.silent - Optional. If true, indicates that the message is silent.
  */
-export type GroupChatRunData = BaseMessageData & {
+export type WaldiezChatGroupChatRunData = WaldiezChatBaseMessageData & {
     type: "group_chat_run_chat";
     content: {
         uuid: string;
@@ -107,7 +107,7 @@ export type GroupChatRunData = BaseMessageData & {
  * @param content.uuid - A unique identifier for the speaker selection.
  * @param content.agents - An array of agent names available for selection.
  */
-export type SpeakerSelectionData = BaseMessageData & {
+export type WaldiezChatSpeakerSelectionData = WaldiezChatBaseMessageData & {
     type: "select_speaker" | "select_speaker_invalid_input";
     content: {
         uuid: string;
@@ -124,7 +124,7 @@ export type SpeakerSelectionData = BaseMessageData & {
  * @param content.sender - The sender of the code execution reply.
  * @param content.recipient - The recipient of the code execution reply.
  */
-export type CodeExecutionReplyData = BaseMessageData & {
+export type WaldiezChatCodeExecutionReplyData = WaldiezChatBaseMessageData & {
     type: "generate_code_execution_reply";
     content: {
         uuid: string;
@@ -140,7 +140,7 @@ export type CodeExecutionReplyData = BaseMessageData & {
  * @param history - The history of messages exchanged during the run.
  * @param cost - The cost associated with the run.
  */
-export type RunCompletionResults = {
+export type WaldiezChatRunCompletionResults = {
     summary: string;
     history: {
         content: string;
@@ -165,7 +165,7 @@ export type WaldiezChatMessageProcessingResult = {
     requestId?: string | null;
     isWorkflowEnd?: boolean;
     timeline?: WaldiezTimelineData;
-    runCompletion?: RunCompletionResults;
+    runCompletion?: WaldiezChatRunCompletionResults;
     participants?: WaldiezChatParticipant[];
 };
 
@@ -176,7 +176,7 @@ export type WaldiezChatMessageProcessingResult = {
  * @param participants - An array of participant objects.
  * @param participants.name - The name of the participant.
  */
-export type ParticipantsData = {
+export type WaldiezChatParticipantsData = {
     participants: Array<{
         name: string;
         [key: string]: any;
@@ -188,9 +188,12 @@ export type ParticipantsData = {
  * Message handler interface.
  * This interface defines the methods that a message handler must implement.
  */
-export type MessageHandler = {
+export type WaldiezChatMessageHandler = {
     canHandle(type: string): boolean;
-    handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined;
+    handle(
+        data: any,
+        context: WaldiezChatMessageProcessingContext,
+    ): WaldiezChatMessageProcessingResult | undefined;
 };
 
 /**
@@ -200,7 +203,7 @@ export type MessageHandler = {
  * @param requestId - An optional request ID associated with the message.
  * @param imageUrl - An optional image URL associated with the message.
  */
-export type MessageProcessingContext = {
+export type WaldiezChatMessageProcessingContext = {
     requestId?: string | null;
     imageUrl?: string;
 };

@@ -9,7 +9,7 @@ import type {
     WaldiezDebugInputResponse,
     WaldiezStepByStep,
     WaldiezTimelineData,
-} from "@waldiez/components";
+} from "@waldiez/components/types";
 import type { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
 
 import { useMessageHandler } from "./messageHandler";
@@ -100,6 +100,7 @@ export const useWaldiezWrapper = ({
         eventHistory: [],
         pendingControlInput: null,
         activeRequest: null,
+        participants,
         handlers: {
             sendControl: () => {}, // Will be updated by main.tsx
             respond: () => {}, // Will be updated by main.tsx

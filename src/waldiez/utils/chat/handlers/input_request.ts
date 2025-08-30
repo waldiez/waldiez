@@ -4,10 +4,10 @@
  */
 import { nanoid } from "nanoid";
 
-import type { InputRequestData, WaldiezChatMessage } from "@waldiez/types";
+import type { WaldiezChatInputRequestData, WaldiezChatMessage } from "@waldiez/types";
 import type {
-    MessageHandler,
-    MessageProcessingContext,
+    WaldiezChatMessageHandler,
+    WaldiezChatMessageProcessingContext,
     WaldiezChatMessageProcessingResult,
 } from "@waldiez/utils/chat/types";
 import { MessageUtils } from "@waldiez/utils/chat/utils";
@@ -17,7 +17,7 @@ import { MessageUtils } from "@waldiez/utils/chat/utils";
  * It validates the message structure and normalizes the prompt.
  * If valid, it creates a WaldiezChatMessage object with the request ID and normalized prompt.
  */
-export class InputRequestHandler implements MessageHandler {
+export class WaldiezChatInputRequestHandler implements WaldiezChatMessageHandler {
     /**
      * Determines if this handler can process the given message type.
      * @param type - The type of the message to check.
@@ -32,7 +32,7 @@ export class InputRequestHandler implements MessageHandler {
      * @param data - The data to validate.
      * @returns True if the data is a valid input request, false otherwise.
      */
-    static isValidInputRequest(data: any): data is InputRequestData {
+    static isValidInputRequest(data: any): data is WaldiezChatInputRequestData {
         if (!data || typeof data !== "object") {
             return false;
         }
@@ -52,8 +52,11 @@ export class InputRequestHandler implements MessageHandler {
      * @param context - The processing context containing request ID and optional image URL.
      * @returns A WaldiezChatMessageProcessingResult containing the processed message or undefined if invalid.
      */
-    handle(data: any, context: MessageProcessingContext): WaldiezChatMessageProcessingResult | undefined {
-        if (!InputRequestHandler.isValidInputRequest(data)) {
+    handle(
+        data: any,
+        context: WaldiezChatMessageProcessingContext,
+    ): WaldiezChatMessageProcessingResult | undefined {
+        if (!WaldiezChatInputRequestHandler.isValidInputRequest(data)) {
             return undefined;
         }
         const normalizedPrompt = MessageUtils.normalizePrompt(data.prompt);
@@ -83,7 +86,7 @@ export class InputRequestHandler implements MessageHandler {
  * Using auto reply handler processes messages indicating the use of an auto reply.
  * It constructs a WaldiezChatMessage object with a predefined message.
  */
-export class UsingAutoReplyHandler implements MessageHandler {
+export class WaldiezChatUsingAutoReplyHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {
         return type === "using_auto_reply";
     }

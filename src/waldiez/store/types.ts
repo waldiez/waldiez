@@ -6,7 +6,6 @@ import type { Edge, Node, ReactFlowInstance, Viewport } from "@xyflow/react";
 
 import React from "react";
 
-import { createWaldiezStore } from "@waldiez/store/creator";
 import type {
     IWaldiezAgentStore,
     IWaldiezChatParticipantsStore,
@@ -15,9 +14,10 @@ import type {
     IWaldiezModelStore,
     IWaldiezNodeStore,
     IWaldiezToolStore,
-} from "@waldiez/types";
+} from "@waldiez/models/Stores";
+import type { createWaldiezStore } from "@waldiez/store/creator";
 
-export { createWaldiezStore };
+export type { createWaldiezStore };
 
 /**
  * WaldiezStoreProps

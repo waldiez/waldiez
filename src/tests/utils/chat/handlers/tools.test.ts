@@ -6,9 +6,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
-    ExecutedFunctionHandler,
-    ToolCallHandler,
-    ToolResponseHandler,
+    WaldiezChatExecutedFunctionHandler,
+    WaldiezChatToolCallHandler,
+    WaldiezChatToolResponseHandler,
 } from "@waldiez/utils/chat/handlers/tools";
 
 // Mock dependencies
@@ -25,11 +25,11 @@ describe("Tools Handlers", () => {
         vi.clearAllMocks();
     });
 
-    describe("ToolCallHandler", () => {
-        let handler: ToolCallHandler;
+    describe("WaldiezChatToolCallHandler", () => {
+        let handler: WaldiezChatToolCallHandler;
 
         beforeEach(() => {
-            handler = new ToolCallHandler();
+            handler = new WaldiezChatToolCallHandler();
         });
 
         describe("canHandle", () => {
@@ -54,18 +54,18 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                expect(ToolCallHandler.isValidToolCall(validData)).toBe(true);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(validData)).toBe(true);
             });
 
             it("should return false for null or undefined data", () => {
-                expect(ToolCallHandler.isValidToolCall(null)).toBe(false);
-                expect(ToolCallHandler.isValidToolCall(undefined)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(null)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(undefined)).toBe(false);
             });
 
             it("should return false for non-object data", () => {
-                expect(ToolCallHandler.isValidToolCall("string")).toBe(false);
-                expect(ToolCallHandler.isValidToolCall(123)).toBe(false);
-                expect(ToolCallHandler.isValidToolCall(true)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall("string")).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(123)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(true)).toBe(false);
             });
 
             it("should return false for wrong type", () => {
@@ -74,7 +74,7 @@ describe("Tools Handlers", () => {
                     content: {},
                 };
 
-                expect(ToolCallHandler.isValidToolCall(invalidData)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(invalidData)).toBe(false);
             });
 
             it("should return false for missing content", () => {
@@ -82,7 +82,7 @@ describe("Tools Handlers", () => {
                     type: "tool_call",
                 };
 
-                expect(ToolCallHandler.isValidToolCall(invalidData)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(invalidData)).toBe(false);
             });
 
             it("should return false for non-object content", () => {
@@ -91,7 +91,7 @@ describe("Tools Handlers", () => {
                     content: "string-content",
                 };
 
-                expect(ToolCallHandler.isValidToolCall(invalidData)).toBe(false);
+                expect(WaldiezChatToolCallHandler.isValidToolCall(invalidData)).toBe(false);
             });
         });
 
@@ -116,7 +116,7 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                const result = ToolCallHandler.extractToolFunctionNames(data);
+                const result = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
                 expect(result).toEqual(["get_weather", "search_database"]);
             });
 
@@ -127,7 +127,7 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                const result = ToolCallHandler.extractToolFunctionNames(data);
+                const result = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
                 expect(result).toEqual([]);
             });
 
@@ -136,7 +136,7 @@ describe("Tools Handlers", () => {
                     content: {},
                 };
 
-                const result = ToolCallHandler.extractToolFunctionNames(data);
+                const result = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
                 expect(result).toEqual([]);
             });
 
@@ -169,7 +169,7 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                const result = ToolCallHandler.extractToolFunctionNames(data);
+                const result = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
                 expect(result).toEqual(["valid_function"]);
             });
 
@@ -180,7 +180,7 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                const result = ToolCallHandler.extractToolFunctionNames(data);
+                const result = WaldiezChatToolCallHandler.extractToolFunctionNames(data);
                 expect(result).toEqual([]);
             });
         });
@@ -313,11 +313,11 @@ describe("Tools Handlers", () => {
         });
     });
 
-    describe("ToolResponseHandler", () => {
-        let handler: ToolResponseHandler;
+    describe("WaldiezChatToolResponseHandler", () => {
+        let handler: WaldiezChatToolResponseHandler;
 
         beforeEach(() => {
-            handler = new ToolResponseHandler();
+            handler = new WaldiezChatToolResponseHandler();
         });
 
         describe("canHandle", () => {
@@ -343,17 +343,17 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                expect(ToolResponseHandler.isValidToolResponse(validData)).toBe(true);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(validData)).toBe(true);
             });
 
             it("should return false for null or undefined data", () => {
-                expect(ToolResponseHandler.isValidToolResponse(null)).toBe(false);
-                expect(ToolResponseHandler.isValidToolResponse(undefined)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(null)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(undefined)).toBe(false);
             });
 
             it("should return false for non-object data", () => {
-                expect(ToolResponseHandler.isValidToolResponse("string")).toBe(false);
-                expect(ToolResponseHandler.isValidToolResponse(123)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse("string")).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(123)).toBe(false);
             });
 
             it("should return false for wrong type", () => {
@@ -364,7 +364,7 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
             });
 
             it("should return false for missing content", () => {
@@ -372,7 +372,7 @@ describe("Tools Handlers", () => {
                     type: "tool_response",
                 };
 
-                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
             });
 
             it("should return false for non-object content", () => {
@@ -381,7 +381,7 @@ describe("Tools Handlers", () => {
                     content: "string-content",
                 };
 
-                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
             });
 
             it("should return false for missing tool_responses", () => {
@@ -390,7 +390,7 @@ describe("Tools Handlers", () => {
                     content: {},
                 };
 
-                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
             });
 
             it("should return false for non-array tool_responses", () => {
@@ -401,7 +401,7 @@ describe("Tools Handlers", () => {
                     },
                 };
 
-                expect(ToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
+                expect(WaldiezChatToolResponseHandler.isValidToolResponse(invalidData)).toBe(false);
             });
         });
 
@@ -552,11 +552,11 @@ describe("Tools Handlers", () => {
         });
     });
 
-    describe("ExecutedFunctionHandler", () => {
-        let handler: ExecutedFunctionHandler;
+    describe("WaldiezChatExecutedFunctionHandler", () => {
+        let handler: WaldiezChatExecutedFunctionHandler;
 
         beforeEach(() => {
-            handler = new ExecutedFunctionHandler();
+            handler = new WaldiezChatExecutedFunctionHandler();
         });
 
         describe("canHandle", () => {

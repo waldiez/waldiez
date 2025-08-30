@@ -4,12 +4,12 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type MessageHandler = (event: MessageEvent) => void;
+type WaldiezChatMessageHandler = (event: MessageEvent) => void;
 
 export const useWebsocket = (props: {
     wsUrl: string;
     onError?: (error: any) => void;
-    onWsMessage?: MessageHandler;
+    onWsMessage?: WaldiezChatMessageHandler;
     autoPingMs?: number; // optional
 }) => {
     const { wsUrl, onWsMessage, onError, autoPingMs } = props;
@@ -29,8 +29,8 @@ export const useWebsocket = (props: {
     const [connected, setConnected] = useState(false);
     const maxReconnectAttempts = 5;
 
-    const handlerRef = useRef<MessageHandler | undefined>(onWsMessage);
-    const setMessageHandler = useCallback((fn?: MessageHandler) => {
+    const handlerRef = useRef<WaldiezChatMessageHandler | undefined>(onWsMessage);
+    const setMessageHandler = useCallback((fn?: WaldiezChatMessageHandler) => {
         handlerRef.current = fn;
     }, []);
     useEffect(() => {

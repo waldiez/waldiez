@@ -27,6 +27,5 @@ export { TabItem, TabItems } from "@waldiez/components/tabs";
 export { TextareaInput } from "@waldiez/components/textareaInput";
 export { TextInput } from "@waldiez/components/textInput";
 export { Timeline, TimelineModal } from "@waldiez/components/timeline";
-export type * from "@waldiez/components/types";
 export { UpdateState } from "@waldiez/components/updateState";
 export { Wizard, WizardStep } from "@waldiez/components/wizard";
