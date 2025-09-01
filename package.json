@@ -169,7 +169,7 @@
         "eslint-plugin-react-refresh": "^0.4.20",
         "eslint-plugin-tsdoc": "^0.4.0",
         "fs-extra": "^11.3.1",
-        "got": "^14.4.7",
+        "got": "^14.4.8",
         "gunzip-maybe": "^1.4.2",
         "hint": "^7.1.13",
         "husky": "^9.1.7",
@@ -190,7 +190,7 @@
         "terser": "^5.43.1",
         "ts-json-schema-generator": "^2.4.0",
         "tsx": "^4.20.5",
-        "typedoc": "^0.28.11",
+        "typedoc": "^0.28.12",
         "typedoc-material-theme": "^1.4.0",
         "typedoc-plugin-markdown": "^4.8.1",
         "typescript": "^5.9.2",
@@ -251,7 +251,7 @@
     "resolutions": {
         "cross-spawn": "^7.0.6",
         "ws": "^8.18.3",
-        "got": "^14.4.7",
+        "got": "^14.4.8",
         "ajv": "^8.17.1"
     },
     "packageManager": "bun@1.2.21"

@@ -102,14 +102,6 @@ export class WaldiezStepByStepUtils {
         }
         return "";
     }
-
-    /**
-     * Check if an event is a workflow input request (different from debug control request)
-     */
-    static isWorkflowInputRequest(event: Record<string, unknown>): boolean {
-        return event.type === "input_request";
-    }
-
     /**
      * Extract workflow end reason from debug_print content
      */

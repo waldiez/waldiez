@@ -194,51 +194,30 @@ export class WaldiezStepByStepProcessor {
     }
 
     /**
-     * Parse a raw message into a debug message
-     * Handles both JSON strings and Python dict format from step-by-step runner
+     * Parse a raw message
      */
-    // eslint-disable-next-line max-statements
     private static parseMessage(message: any): WaldiezDebugMessage | null {
         /* c8 ignore next 3 */
-        if (!message || typeof message !== "string") {
+        if (!message) {
             return null;
         }
-
-        try {
-            // Clean the message
-            const cleanMessage = stripAnsi(message.replace("\n", "")).trim();
-
-            // Handle Python dict string format: {'type': 'debug_...', ...}
-            if (cleanMessage.includes("'type':")) {
-                const jsonContent = cleanMessage
-                    .replace(/'/g, '"') // Replace single quotes with double quotes
-                    .replace(/True/g, "true")
-                    .replace(/False/g, "false")
-                    .replace(/None/g, "null");
-                try {
-                    const parsed = JSON.parse(jsonContent);
-                    if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-                        return parsed as WaldiezDebugMessage;
-                    }
-                } catch {
-                    // Ignore parse errors
-                }
+        if (typeof message !== "string") {
+            if (WaldiezStepByStepProcessor.isValidDebugMessage(message)) {
+                return message;
             }
-            // Try direct JSON parsing
-            try {
-                const parsed = JSON.parse(cleanMessage);
-                if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-                    return parsed as WaldiezDebugMessage;
-                }
-            } catch {
-                // Continue to Python dict parsing
-            }
-
-            return null;
-            /* c8 ignore next 3 */
-        } catch {
+        }
+        const clean = stripAnsi(message).replace(/\r?\n/g, " ").trim();
+        if (!clean) {
             return null;
         }
+        const payload = extractFirstBalanced(clean) ?? clean;
+        const asJson = safeParse(payload);
+        if (asJson && WaldiezStepByStepProcessor.isValidDebugMessage(asJson)) {
+            return asJson;
+        }
+        const converted = pyishToJson(payload);
+        const asPyJson = safeParse(converted);
+        return asPyJson && WaldiezStepByStepProcessor.isValidDebugMessage(asPyJson) ? asPyJson : null;
     }
 
     /**
@@ -254,40 +233,189 @@ export class WaldiezStepByStepProcessor {
     private static isValidDebugMessage(data: any): data is WaldiezDebugMessage {
         return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
     }
+}
+const safeParse = <T = any>(s: string): T | null => {
+    try {
+        return JSON.parse(s);
+    } catch {
+        return null;
+    }
+};
+/**
+ * Extract the first balanced \{...\} or [...] block (handles nesting).
+ * Returns null if none found.
+ */
+// eslint-disable-next-line max-statements
+const extractFirstBalanced = (s: string): string | null => {
+    const openers = new Set(["{", "["]);
+    const closers: Record<string, string> = { "{": "}", "[": "]" };
 
-    /**
-     * Parse subprocess_output content specifically for step-by-step messages
-     */
-    static parseSubprocessContent(content: any): WaldiezDebugMessage | null {
-        if (!content || typeof content !== "string") {
-            return null;
+    let start = -1;
+    const stack: string[] = [];
+    let inStr: '"' | "'" | null = null;
+    let escaped = false;
+
+    for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
+        if (ch === undefined) {
+            continue;
+        }
+        if (inStr) {
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            if (ch === "\\") {
+                escaped = true;
+                continue;
+            }
+            if (ch === inStr) {
+                inStr = null;
+            }
+            continue;
         }
 
-        try {
-            // Try direct JSON parse first
-            const parsed = JSON.parse(content);
-            if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-                return parsed as WaldiezDebugMessage;
+        if (ch === '"' || ch === "'") {
+            inStr = ch;
+            continue;
+        }
+
+        if (openers.has(ch)) {
+            stack.push(ch);
+            if (start === -1) {
+                start = i;
             }
-        } catch {
-            // Handle Python dict string format
-            if (content.includes("'type':")) {
-                const jsonContent = content
-                    .replace(/'/g, '"')
-                    .replace(/True/g, "true")
-                    .replace(/False/g, "false")
-                    .replace(/None/g, "null");
-                try {
-                    const parsed = JSON.parse(jsonContent);
-                    if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-                        return parsed as WaldiezDebugMessage;
-                    }
-                } catch {
-                    // Ignore parse errors
+            continue;
+        }
+        if (stack.length) {
+            const top = stack[stack.length - 1];
+            if (top !== undefined && ch === closers[top]) {
+                stack.pop();
+                if (!stack.length && start !== -1) {
+                    return s.slice(start, i + 1);
                 }
             }
         }
-
-        return null;
     }
-}
+    return null;
+};
+
+/**
+ * Convert a Python-like dict/list string to valid JSON.
+ * - Converts single-quoted strings → double-quoted JSON strings (with escapes)
+ * - Converts True/False/None when they appear as standalone identifiers (not in strings)
+ * - Leaves double-quoted strings as-is (aside from standard escape handling)
+ */
+// eslint-disable-next-line complexity, max-statements
+const pyishToJson = (src: string): string => {
+    let out = "";
+    let i = 0;
+    const len = src.length;
+
+    type Quote = '"' | "'" | null;
+    let inStr: Quote = null;
+    let escaped = false;
+
+    const isAlphaNum = (c: string | undefined) => /[A-Za-z0-9_]/.test(c || "");
+
+    while (i < len) {
+        const ch = src[i];
+
+        // inside a string
+        if (inStr) {
+            if (escaped) {
+                out += "\\" + ch; // keep escape (normalize minimally)
+                escaped = false;
+                i++;
+                continue;
+            }
+            if (ch === "\\") {
+                escaped = true;
+                i++;
+                continue;
+            }
+
+            // close string?
+            if (ch === inStr) {
+                if (inStr === "'") {
+                    out += '"'; // close converted JSON string
+                } else {
+                    out += '"'; // normalize double quotes to JSON quote char
+                }
+                inStr = null;
+                i++;
+                continue;
+            }
+
+            // character inside string; if we’re in a single-quoted string, we may need to escape `"`.
+            if (inStr === "'") {
+                if (ch === '"') {
+                    out += '\\"';
+                } else {
+                    out += ch;
+                }
+            } else {
+                out += ch;
+            }
+            i++;
+            continue;
+        }
+
+        // not in a string
+        if (ch === "'" || ch === '"') {
+            inStr = ch;
+            // always start JSON strings with double-quote
+            out += '"';
+            i++;
+            continue;
+        }
+
+        // identifiers: True / False / None as standalone tokens only
+        if (/[A-Za-z_]/.test(ch || "")) {
+            let j = i + 1;
+            while (j < len && isAlphaNum(src[j])) {
+                j++;
+            }
+            const token = src.slice(i, j);
+
+            // check boundaries to ensure standalone token
+            const prev = i > 0 ? src[i - 1] : "";
+            const next = j < len ? src[j] : "";
+            const prevIsWord = !!prev && isAlphaNum(prev);
+            const nextIsWord = !!next && isAlphaNum(next);
+
+            if (!prevIsWord && !nextIsWord) {
+                if (token === "True") {
+                    out += "true";
+                    i = j;
+                    continue;
+                }
+                if (token === "False") {
+                    out += "false";
+                    i = j;
+                    continue;
+                }
+                if (token === "None") {
+                    out += "null";
+                    i = j;
+                    continue;
+                }
+            }
+
+            // otherwise, pass through unchanged
+            out += token;
+            i = j;
+            continue;
+        }
+
+        // everything else passes through
+        out += ch;
+        i++;
+    }
+
+    // if we ended while still "inStr", it's malformed; return original as fallback
+    if (inStr) {
+        return src;
+    }
+    return out;
+};

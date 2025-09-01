@@ -4080,8 +4080,7 @@ export declare class WaldiezStepByStepProcessor {
     private static _chatResultToStepResult;
     private static earlyError;
     /**
-     * Parse a raw message into a debug message
-     * Handles both JSON strings and Python dict format from step-by-step runner
+     * Parse a raw message
      */
     private static parseMessage;
     /**
@@ -4092,10 +4091,6 @@ export declare class WaldiezStepByStepProcessor {
      * Check if the parsed data is a valid debug message
      */
     private static isValidDebugMessage;
-    /**
-     * Parse subprocess_output content specifically for step-by-step messages
-     */
-    static parseSubprocessContent(content: any): WaldiezDebugMessage | null;
 }
 
 export declare class WaldiezStepByStepUtils {
@@ -4111,10 +4106,6 @@ export declare class WaldiezStepByStepUtils {
      * Format event content for display (truncate if too long)
      */
     static formatEventContent(event: Record<string, unknown>, maxLength?: number): string;
-    /**
-     * Check if an event is a workflow input request (different from debug control request)
-     */
-    static isWorkflowInputRequest(event: Record<string, unknown>): boolean;
     /**
      * Extract workflow end reason from debug_print content
      */

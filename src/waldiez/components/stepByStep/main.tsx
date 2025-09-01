@@ -241,7 +241,18 @@ export const StepByStepView: React.FC<{
     );
 };
 
-function safeStringify(v: unknown) {
+function safeStringify(v: any) {
+    if (typeof v === "string") {
+        return v;
+    }
+    if (typeof v === "object" && v !== null) {
+        if (v.type === "text" && typeof v.text === "string") {
+            return v;
+        }
+        if (v.content && typeof v.content === "object") {
+            return safeStringify(v.content);
+        }
+    }
     try {
         return JSON.stringify(v, null, 2);
     } catch {

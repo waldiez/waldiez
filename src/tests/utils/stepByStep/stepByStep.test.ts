@@ -188,38 +188,6 @@ describe("WaldiezStepByStepProcessor", () => {
         });
     });
 
-    describe("parseSubprocessContent", () => {
-        it("should parse valid JSON content", () => {
-            const content = JSON.stringify({
-                type: "debug_print",
-                content: "Subprocess message",
-            });
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toBeDefined();
-            expect(result?.type).toBe("debug_print");
-            expect((result as any).content).toBe("Subprocess message");
-        });
-
-        it("should parse Python dict format", () => {
-            const content = "{'type': 'debug_print', 'content': 'Python subprocess'}";
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toBeDefined();
-            expect(result?.type).toBe("debug_print");
-            expect((result as any).content).toBe("Python subprocess");
-        });
-
-        it("should return null for invalid content", () => {
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent("")).toBeNull();
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent("invalid")).toBeNull();
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent(null)).toBeNull();
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent(undefined)).toBeNull();
-        });
-    });
-
     describe("error handling", () => {
         it("should handle handler exceptions gracefully", () => {
             // Create a message that might cause handler to throw

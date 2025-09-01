@@ -141,27 +141,6 @@ describe("WaldiezStepByStepUtils", () => {
         });
     });
 
-    describe("isWorkflowInputRequest", () => {
-        it("should return true for input_request type", () => {
-            const event = { type: "input_request" };
-
-            const result = WaldiezStepByStepUtils.isWorkflowInputRequest(event);
-
-            expect(result).toBe(true);
-        });
-
-        it("should return false for other types", () => {
-            expect(WaldiezStepByStepUtils.isWorkflowInputRequest({ type: "message" })).toBe(false);
-            expect(WaldiezStepByStepUtils.isWorkflowInputRequest({ type: "error" })).toBe(false);
-            expect(WaldiezStepByStepUtils.isWorkflowInputRequest({})).toBe(false);
-        });
-
-        it("should handle non-string type", () => {
-            expect(WaldiezStepByStepUtils.isWorkflowInputRequest({ type: 123 })).toBe(false);
-            expect(WaldiezStepByStepUtils.isWorkflowInputRequest({ type: null })).toBe(false);
-        });
-    });
-
     describe("extractWorkflowEndReason", () => {
         it("should detect completed workflow", () => {
             const content = "<Waldiez step-by-step> - Workflow finished successfully";

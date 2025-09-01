@@ -1807,37 +1807,29 @@ class WaldiezStepByStepProcessor {
     }
   }
   /**
-   * Parse a raw message into a debug message
-   * Handles both JSON strings and Python dict format from step-by-step runner
+   * Parse a raw message
    */
-  // eslint-disable-next-line max-statements
   static parseMessage(message) {
-    if (!message || typeof message !== "string") {
+    if (!message) {
       return null;
     }
-    try {
-      const cleanMessage = stripAnsi(message.replace("\n", "")).trim();
-      if (cleanMessage.includes("'type':")) {
-        const jsonContent = cleanMessage.replace(/'/g, '"').replace(/True/g, "true").replace(/False/g, "false").replace(/None/g, "null");
-        try {
-          const parsed = JSON.parse(jsonContent);
-          if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-            return parsed;
-          }
-        } catch {
-        }
+    if (typeof message !== "string") {
+      if (WaldiezStepByStepProcessor.isValidDebugMessage(message)) {
+        return message;
       }
-      try {
-        const parsed = JSON.parse(cleanMessage);
-        if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-          return parsed;
-        }
-      } catch {
-      }
-      return null;
-    } catch {
+    }
+    const clean = stripAnsi(message).replace(/\r?\n/g, " ").trim();
+    if (!clean) {
       return null;
     }
+    const payload = extractFirstBalanced(clean) ?? clean;
+    const asJson = safeParse(payload);
+    if (asJson && WaldiezStepByStepProcessor.isValidDebugMessage(asJson)) {
+      return asJson;
+    }
+    const converted = pyishToJson(payload);
+    const asPyJson = safeParse(converted);
+    return asPyJson && WaldiezStepByStepProcessor.isValidDebugMessage(asPyJson) ? asPyJson : null;
   }
   /**
    * Find a handler that can process the given message type
@@ -1851,33 +1843,151 @@ class WaldiezStepByStepProcessor {
   static isValidDebugMessage(data) {
     return !!(data && typeof data === "object" && data.type && typeof data.type === "string");
   }
-  /**
-   * Parse subprocess_output content specifically for step-by-step messages
-   */
-  static parseSubprocessContent(content) {
-    if (!content || typeof content !== "string") {
-      return null;
+}
+const safeParse = (s) => {
+  try {
+    return JSON.parse(s);
+  } catch {
+    return null;
+  }
+};
+const extractFirstBalanced = (s) => {
+  const openers = /* @__PURE__ */ new Set(["{", "["]);
+  const closers = { "{": "}", "[": "]" };
+  let start = -1;
+  const stack = [];
+  let inStr = null;
+  let escaped = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === void 0) {
+      continue;
     }
-    try {
-      const parsed = JSON.parse(content);
-      if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-        return parsed;
+    if (inStr) {
+      if (escaped) {
+        escaped = false;
+        continue;
       }
-    } catch {
-      if (content.includes("'type':")) {
-        const jsonContent = content.replace(/'/g, '"').replace(/True/g, "true").replace(/False/g, "false").replace(/None/g, "null");
-        try {
-          const parsed = JSON.parse(jsonContent);
-          if (WaldiezStepByStepProcessor.isValidDebugMessage(parsed)) {
-            return parsed;
-          }
-        } catch {
+      if (ch === "\\") {
+        escaped = true;
+        continue;
+      }
+      if (ch === inStr) {
+        inStr = null;
+      }
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inStr = ch;
+      continue;
+    }
+    if (openers.has(ch)) {
+      stack.push(ch);
+      if (start === -1) {
+        start = i;
+      }
+      continue;
+    }
+    if (stack.length) {
+      const top = stack[stack.length - 1];
+      if (top !== void 0 && ch === closers[top]) {
+        stack.pop();
+        if (!stack.length && start !== -1) {
+          return s.slice(start, i + 1);
         }
       }
     }
-    return null;
   }
-}
+  return null;
+};
+const pyishToJson = (src) => {
+  let out = "";
+  let i = 0;
+  const len = src.length;
+  let inStr = null;
+  let escaped = false;
+  const isAlphaNum = (c) => /[A-Za-z0-9_]/.test(c || "");
+  while (i < len) {
+    const ch = src[i];
+    if (inStr) {
+      if (escaped) {
+        out += "\\" + ch;
+        escaped = false;
+        i++;
+        continue;
+      }
+      if (ch === "\\") {
+        escaped = true;
+        i++;
+        continue;
+      }
+      if (ch === inStr) {
+        if (inStr === "'") {
+          out += '"';
+        } else {
+          out += '"';
+        }
+        inStr = null;
+        i++;
+        continue;
+      }
+      if (inStr === "'") {
+        if (ch === '"') {
+          out += '\\"';
+        } else {
+          out += ch;
+        }
+      } else {
+        out += ch;
+      }
+      i++;
+      continue;
+    }
+    if (ch === "'" || ch === '"') {
+      inStr = ch;
+      out += '"';
+      i++;
+      continue;
+    }
+    if (/[A-Za-z_]/.test(ch || "")) {
+      let j = i + 1;
+      while (j < len && isAlphaNum(src[j])) {
+        j++;
+      }
+      const token = src.slice(i, j);
+      const prev = i > 0 ? src[i - 1] : "";
+      const next = j < len ? src[j] : "";
+      const prevIsWord = !!prev && isAlphaNum(prev);
+      const nextIsWord = !!next && isAlphaNum(next);
+      if (!prevIsWord && !nextIsWord) {
+        if (token === "True") {
+          out += "true";
+          i = j;
+          continue;
+        }
+        if (token === "False") {
+          out += "false";
+          i = j;
+          continue;
+        }
+        if (token === "None") {
+          out += "null";
+          i = j;
+          continue;
+        }
+      }
+      out += token;
+      i = j;
+      continue;
+    }
+    out += ch;
+    i++;
+  }
+  if (inStr) {
+    return src;
+  }
+  return out;
+};
 class WaldiezStepByStepUtils {
   /**
    * Extract participants (sender/recipient) from an event
@@ -1960,12 +2070,6 @@ class WaldiezStepByStepUtils {
       return jsonStr.length > maxLength ? `${jsonStr.substring(0, maxLength)}...` : jsonStr;
     }
     return "";
-  }
-  /**
-   * Check if an event is a workflow input request (different from debug control request)
-   */
-  static isWorkflowInputRequest(event) {
-    return event.type === "input_request";
   }
   /**
    * Extract workflow end reason from debug_print content
@@ -16816,6 +16920,17 @@ const StepByStepView = ({ flowId, stepByStep }) => {
   ] });
 };
 function safeStringify(v) {
+  if (typeof v === "string") {
+    return v;
+  }
+  if (typeof v === "object" && v !== null) {
+    if (v.type === "text" && typeof v.text === "string") {
+      return v;
+    }
+    if (v.content && typeof v.content === "object") {
+      return safeStringify(v.content);
+    }
+  }
   try {
     return JSON.stringify(v, null, 2);
   } catch {

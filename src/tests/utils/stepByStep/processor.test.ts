@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines, max-lines-per-function */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep/processor";
@@ -346,61 +345,6 @@ describe("WaldiezStepByStepProcessor", () => {
             });
         });
     });
-
-    describe("parseSubprocessContent", () => {
-        it("should parse valid JSON content", () => {
-            const content = JSON.stringify({
-                type: "debug_print",
-                content: "Subprocess output",
-            });
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toEqual({
-                type: "debug_print",
-                content: "Subprocess output",
-            });
-        });
-
-        it("should parse Python dict format", () => {
-            const content = "{'type': 'debug_event_info', 'event': {'sender': 'user', 'type': 'message'}}";
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toEqual({
-                type: "debug_event_info",
-                event: { sender: "user", type: "message" },
-            });
-        });
-
-        it("should handle Python boolean and None values", () => {
-            const content =
-                "{'type': 'debug_stats', 'stats': {'step_mode': True, 'auto_continue': False, 'error': None}}";
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toEqual({
-                type: "debug_stats",
-                stats: { step_mode: true, auto_continue: false, error: null },
-            });
-        });
-
-        it("should return null for invalid content", () => {
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent(null)).toBeNull();
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent(undefined)).toBeNull();
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent("")).toBeNull();
-            expect(WaldiezStepByStepProcessor.parseSubprocessContent("invalid json")).toBeNull();
-        });
-
-        it("should handle malformed Python dict", () => {
-            const content = "{'type': 'debug_print', 'content':}";
-
-            const result = WaldiezStepByStepProcessor.parseSubprocessContent(content);
-
-            expect(result).toBeNull();
-        });
-    });
-
     describe("edge cases and error handling", () => {
         it("should handle mixed content types gracefully", () => {
             // Test with number input
