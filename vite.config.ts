@@ -253,6 +253,7 @@ export default defineConfig(({ command }) => ({
                 "**/types.ts",
                 "src/wrapped/**",
                 "src/waldiez/docs.ts",
+                "src/waldiez/schema.ts",
                 "src/index.tsx",
                 "**/tests/**",
                 "**/ui-tests/**",
