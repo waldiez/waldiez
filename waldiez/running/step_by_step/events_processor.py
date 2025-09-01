@@ -51,7 +51,18 @@ class EventProcessor:
         event_info["recipient"] = getattr(
             event, "recipient", current_last_recipient
         )
-
+        if not event_info["sender"] or not event_info["recipient"]:
+            content = event_info.get("content", {})
+            if (
+                isinstance(content, dict)
+                and "chat_info" in content
+                and isinstance(content["chat_info"], dict)
+            ):
+                content = content.get("chat_info", {})  # pyright: ignore
+            if not event_info["sender"] and "sender" in content:
+                event_info["sender"] = content["sender"]
+            if not event_info["recipient"] and "recipient" in content:
+                event_info["recipient"] = content["recipient"]
         # Update last known participants
         self.runner.last_sender = event_info["sender"]
         self.runner.last_recipient = event_info["recipient"]
