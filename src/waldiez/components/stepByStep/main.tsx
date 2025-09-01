@@ -9,6 +9,7 @@ import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-ic
 
 import { nanoid } from "nanoid";
 
+import { EventConsole } from "@waldiez/components/stepByStep/console";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hook";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
 
@@ -104,9 +105,10 @@ export const StepByStepView: React.FC<{
             .filter(e => !["debug", "print", "raw"].includes(String((e as any)?.type)))
             .map(e => {
                 const x: any = e;
-                const data = x.event ?? x.data ?? x.message ?? x.content ?? x;
+                const data = x.event ?? x.data ?? x.message ?? x;
                 return Array.isArray(data) && data.length === 1 ? data[0] : data;
-            });
+            })
+            .reverse();
     }, [stepByStep?.eventHistory]);
 
     const badgeText = useMemo(() => {
@@ -118,7 +120,7 @@ export const StepByStepView: React.FC<{
             return curType;
         }
 
-        const last = reducedHistory[0] as any;
+        const last = reducedHistory[reducedHistory.length - 1] as any;
         const lastType = last?.event?.type ?? last?.type;
         if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
             return lastType;
@@ -203,7 +205,6 @@ export const StepByStepView: React.FC<{
                             </button>
                         </div>
                     )}
-
                     {/* Pending input */}
                     {stepByStep?.activeRequest && (
                         <div className="card card--pending">
@@ -229,61 +230,16 @@ export const StepByStepView: React.FC<{
                             </div>
                         </div>
                     )}
-
                     {/* Event history / raw logs */}
-                    <div className="event-history">
-                        <SectionTitle>Messages</SectionTitle>
-                        <JsonArea value={reducedHistory} placeholder="No messages yet" />
-                    </div>
+                    {reducedHistory.length > 0 && (
+                        <div className="event-history">
+                            <EventConsole events={reducedHistory} autoScroll />
+                        </div>
+                    )}
                 </div>
             )}
         </div>
     );
 };
-
-function safeStringify(v: any) {
-    if (typeof v === "string") {
-        return v;
-    }
-    if (typeof v === "object" && v !== null) {
-        if (v.type === "text" && typeof v.text === "string") {
-            return v;
-        }
-        if (v.content && typeof v.content === "object") {
-            return safeStringify(v.content);
-        }
-    }
-    try {
-        return JSON.stringify(v, null, 2);
-    } catch {
-        return String(v);
-    }
-}
-
-const JsonArea: React.FC<{ value?: unknown; placeholder?: string }> = ({ value, placeholder = "" }) => {
-    const safeValue = useMemo(() => {
-        if (Array.isArray(value)) {
-            const parts: string[] = [];
-            for (let i = 0; i < value.length; i += 1) {
-                const entry: any = value[i];
-                parts.push(safeStringify(entry?.event ?? entry?.content ?? entry));
-            }
-            const joined = parts.join("\n");
-            return !joined.trim() ? placeholder : joined;
-        }
-        const s = safeStringify(value);
-        return !s || ["undefined", "null", "[]", "{}"].includes(s) || s.trim() === "" ? placeholder : s;
-    }, [value, placeholder]);
-
-    return (
-        <div className="json">
-            <pre className="pre">{safeValue}</pre>
-        </div>
-    );
-};
-
-const SectionTitle: React.FC<React.PropsWithChildren> = ({ children }) => (
-    <div className="section-title margin-bottom-5">{children}</div>
-);
 
 StepByStepView.displayName = "WaldiezStepByStepView";

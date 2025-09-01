@@ -140,6 +140,10 @@ label.hidden {
   white-space: nowrap;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .flex-column {
   display: flex;
   flex-direction: column;
@@ -346,6 +350,11 @@ label.hidden {
   margin-bottom: 0.25rem;
 }
 
+.space-y-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .text-xs {
   font-size: 0.75rem;
 }
@@ -401,4 +410,67 @@ label.hidden {
 
 .inline-flex {
   display: inline-flex;
+}
+
+.font-mono {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.leading-5 {
+  line-height: 1.25rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
+}
+
+.border {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.break-words {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
+.text-green-600 {
+  color: #16a34a;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+.text-pink-500 {
+  color: #ec4899;
+}
+
+.text-gray-400 {
+  color: #9ca3af;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-700 {
+  color: #374151;
 }

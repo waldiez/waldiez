@@ -129,7 +129,6 @@ describe("StepByStepView", () => {
 
             // Initially expanded - should show collapse icon
             expect(screen.getByTestId("icon-chevron-down")).toBeInTheDocument();
-            expect(screen.getByText("Messages")).toBeInTheDocument();
 
             // Click toggle button
             const toggleButton = screen.getByTitle("Collapse");
@@ -137,7 +136,6 @@ describe("StepByStepView", () => {
 
             // Should be collapsed - show expand icon and hide content
             expect(screen.getByTestId("icon-chevron-up")).toBeInTheDocument();
-            expect(screen.queryByText("Messages")).not.toBeInTheDocument();
 
             // Click again to expand
             const expandButton = screen.getByTitle("Expand");
@@ -145,7 +143,6 @@ describe("StepByStepView", () => {
 
             // Should be expanded again
             expect(screen.getByTestId("icon-chevron-down")).toBeInTheDocument();
-            expect(screen.getByText("Messages")).toBeInTheDocument();
         });
 
         it("should show close button when inactive and can close", () => {
@@ -466,115 +463,6 @@ describe("StepByStepView", () => {
         });
     });
 
-    describe("event history", () => {
-        it("should display 'No messages yet' when event history is empty", () => {
-            _renderView(defaultStepByStep);
-
-            expect(screen.getByText("Messages")).toBeInTheDocument();
-            expect(screen.getByText("No messages yet")).toBeInTheDocument();
-        });
-
-        it("should display formatted event history when available", () => {
-            const stepByStepWithHistory = {
-                ...defaultStepByStep,
-                eventHistory: [
-                    { data: "First event", timestamp: "2024-01-01T10:00:00Z" },
-                    { message: "Second event", type: "message" },
-                    { content: "Third event", sender: "user" },
-                    { nested: { data: "Fourth event" } },
-                ],
-            };
-
-            _renderView(stepByStepWithHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            expect(jsonArea).toBeInTheDocument();
-
-            const jsonContent = jsonArea?.textContent;
-            expect(jsonContent).toContain("First event");
-            expect(jsonContent).toContain("Second event");
-            expect(jsonContent).toContain("Third event");
-        });
-
-        it("should handle events with data property", () => {
-            const stepByStepWithHistory = {
-                ...defaultStepByStep,
-                eventHistory: [{ data: "Event with data" }],
-            };
-            _renderView(stepByStepWithHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            const jsonContent = jsonArea?.textContent;
-            expect(jsonContent).toContain("Event with data");
-        });
-
-        it("should handle events with message property when no data", () => {
-            const stepByStepWithHistory = {
-                ...defaultStepByStep,
-                eventHistory: [{ message: "Event with message", type: "info" }],
-            };
-
-            _renderView(stepByStepWithHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            const jsonContent = jsonArea?.textContent;
-            expect(jsonContent).toContain("Event with message");
-        });
-
-        it("should handle events with content property when no data or message", () => {
-            const stepByStepWithHistory = {
-                ...defaultStepByStep,
-                eventHistory: [{ content: "Event with content", sender: "user" }],
-            };
-
-            _renderView(stepByStepWithHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            const jsonContent = jsonArea?.textContent;
-            expect(jsonContent).toContain("Event with content");
-        });
-
-        it("should fallback to entire entry when no data, message, or content", () => {
-            const stepByStepWithHistory = {
-                ...defaultStepByStep,
-                eventHistory: [{ type: "custom", timestamp: "2024-01-01T10:00:00Z" }],
-            };
-
-            _renderView(stepByStepWithHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            const jsonContent = jsonArea?.textContent;
-            expect(jsonContent).toContain("custom");
-            expect(jsonContent).toContain("2024-01-01T10:00:00Z");
-        });
-
-        it("should handle complex nested event data", () => {
-            const stepByStepWithHistory = {
-                ...defaultStepByStep,
-                eventHistory: [
-                    {
-                        data: {
-                            nested: {
-                                deeply: {
-                                    value: "Complex data",
-                                    array: [1, 2, 3],
-                                },
-                            },
-                        },
-                    },
-                ],
-            };
-
-            _renderView(stepByStepWithHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            const jsonContent = jsonArea?.textContent;
-            expect(jsonContent).toContain("Complex data");
-            const expectedArrayString = JSON.stringify(stepByStepWithHistory.eventHistory[0]!.data, null, 2);
-            expect(jsonContent).toContain(expectedArrayString);
-        });
-    });
-
     describe("edge cases", () => {
         it("should handle missing handlers gracefully", () => {
             const stepByStepWithoutHandlers = {
@@ -601,24 +489,6 @@ describe("StepByStepView", () => {
             fireEvent.keyDown(input, { key: "Enter" });
 
             expect(mockHandlers.respond).not.toHaveBeenCalled();
-        });
-
-        it("should handle invalid JSON in event history gracefully", () => {
-            const stepByStepWithInvalidHistory: any = {
-                ...defaultStepByStep,
-                eventHistory: [{ data: { circular: {} } }],
-            };
-
-            // Create circular reference
-            stepByStepWithInvalidHistory.eventHistory[0].data.circular =
-                stepByStepWithInvalidHistory.eventHistory[0].data;
-
-            _renderView(stepByStepWithInvalidHistory);
-
-            const jsonArea = document.querySelector(".json .pre");
-            expect(jsonArea).toBeInTheDocument();
-            // Should fallback to String() representation
-            expect(jsonArea?.textContent).toContain("[object Object]");
         });
     });
 

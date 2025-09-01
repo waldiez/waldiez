@@ -14267,6 +14267,223 @@ const NumberInput = memo((props) => {
   ] });
 });
 NumberInput.displayName = "NumberInput";
+const formatArgs = (args) => {
+  try {
+    if (args === null) {
+      return "none";
+    }
+    if (typeof args === "string") {
+      return args;
+    }
+    return JSON.stringify(args);
+  } catch {
+    return String(args);
+  }
+};
+const ResumeSpinner = () => {
+  const [phase, setPhase] = useState("spin");
+  useEffect(() => {
+    const t = setTimeout(() => setPhase("done"), 2e3);
+    return () => clearTimeout(t);
+  }, []);
+  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+    /* @__PURE__ */ jsx("span", { className: "animate-spin inline-block", children: "⏳" }),
+    /* @__PURE__ */ jsx("span", { children: "Resuming a previously stored state…" })
+  ] }) : /* @__PURE__ */ jsx("div", { children: "✅ Resume complete!" });
+};
+const renderEvent = (ev) => {
+  if (!ev.type) {
+    const nested = ev;
+    if (nested.event && nested.event.type) {
+      return renderEvent(nested.event);
+    }
+  }
+  switch (ev.type) {
+    case "text": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
+          c.sender,
+          " ",
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
+          " ",
+          c.recipient
+        ] }),
+        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content })
+      ] });
+    }
+    case "post_carryover_processing": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
+          c.sender,
+          " ",
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
+          " ",
+          c.recipient
+        ] }),
+        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
+      ] });
+    }
+    case "group_chat_run_chat": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { className: "text-green-600 font-semibold", children: [
+        "Next speaker: ",
+        c.speaker
+      ] });
+    }
+    case "using_auto_reply": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
+        "human_input_mode=TERMINATE, sender=",
+        c.sender,
+        ", recipient=",
+        c.recipient
+      ] });
+    }
+    case "tool_call": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: c.sender }),
+          " ",
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
+          " ",
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: c.recipient })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
+          const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
+          return /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
+            /* @__PURE__ */ jsx("span", { children: "🔧" }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
+                "Calling: ",
+                tc.function.name
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+                "args: ",
+                args
+              ] })
+            ] })
+          ] }, i);
+        }) })
+      ] });
+    }
+    case "execute_function": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
+          "⚡ Executing: ",
+          c.func_name
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "text-sm text-gray-700", children: [
+          "→ Target: ",
+          c.recipient
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+          "→ Args: ",
+          formatArgs(c.arguments)
+        ] })
+      ] });
+    }
+    case "executed_function": {
+      const c = ev.content;
+      const ok = !!c.is_exec_success;
+      const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
+          ok ? "✅ Success" : "❌ Failed",
+          ": ",
+          c.func_name
+        ] }),
+        transferred && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Transferred to: ",
+          transferred
+        ] })
+      ] });
+    }
+    case "input_request": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "👤 Provide your input:" }),
+        c.prompt && /* @__PURE__ */ jsx("div", { className: "text-sm", children: c.prompt })
+      ] });
+    }
+    case "tool_response": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { children: "🔄 Tool Response:" }),
+        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
+        /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
+          "→ From: ",
+          c.sender,
+          " to ",
+          c.recipient
+        ] })
+      ] });
+    }
+    case "termination": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "Termination met" }),
+        c.termination_reason && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Termination_reason: ",
+          c.termination_reason
+        ] })
+      ] });
+    }
+    case "run_completion":
+      return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "🏁 Run completed" });
+    case "generate_code_execution_reply":
+      return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "💻 Code executed" });
+    case "group_chat_resume":
+      return /* @__PURE__ */ jsx(ResumeSpinner, {});
+    case "info":
+      return /* @__PURE__ */ jsx("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+    case "error":
+      if (!ev.content && ev.error) {
+        return /* @__PURE__ */ jsx("div", { className: "error", children: ev.error });
+      }
+      return /* @__PURE__ */ jsx("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+    default:
+      return /* @__PURE__ */ jsxs("div", { className: "text-amber-700", children: [
+        "⚠️ Unknown event type: ",
+        /* @__PURE__ */ jsx("span", { className: "font-mono", children: ev.type }),
+        /* @__PURE__ */ jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+          "Raw event: ",
+          JSON.stringify(ev, null, 2)
+        ] })
+      ] });
+  }
+};
+const EventConsole = ({ events, printRaw, autoScroll, className }) => {
+  const listRef = useRef(null);
+  useEffect(() => {
+    if (!autoScroll || !listRef.current) {
+      return;
+    }
+    const el = listRef.current;
+    if (typeof el.scrollTo === "function") {
+      listRef.current.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+    } else {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [events, autoScroll]);
+  return /* @__PURE__ */ jsx(
+    "div",
+    {
+      className: ["flex flex-column full-height json", className].filter(Boolean).join(" "),
+      "data-testid": "events-console",
+      children: /* @__PURE__ */ jsx("div", { ref: listRef, className: "flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: "rounded-xl padding-5", children: [
+        printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+          "Raw event: ",
+          JSON.stringify(ev, null, 2)
+        ] }),
+        renderEvent(ev)
+      ] }, ev.id ?? idx)) })
+    }
+  );
+};
 const WaldiezContext = createContext(null);
 function useWaldiez(selector, equalityFn) {
   const store = useContext(WaldiezContext);
@@ -16782,9 +16999,9 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     const start = Math.max(0, raw.length - max2);
     return raw.slice(start).filter((e) => !["debug", "print", "raw"].includes(String(e?.type))).map((e) => {
       const x = e;
-      const data = x.event ?? x.data ?? x.message ?? x.content ?? x;
+      const data = x.event ?? x.data ?? x.message ?? x;
       return Array.isArray(data) && data.length === 1 ? data[0] : data;
-    });
+    }).reverse();
   }, [stepByStep?.eventHistory]);
   const badgeText = useMemo(() => {
     if (!stepByStep) {
@@ -16794,7 +17011,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
       return curType;
     }
-    const last = reducedHistory[0];
+    const last = reducedHistory[reducedHistory.length - 1];
     const lastType = last?.event?.type ?? last?.type;
     if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
       return lastType;
@@ -16912,48 +17129,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "event-history", children: [
-        /* @__PURE__ */ jsx(SectionTitle, { children: "Messages" }),
-        /* @__PURE__ */ jsx(JsonArea, { value: reducedHistory, placeholder: "No messages yet" })
-      ] })
+      reducedHistory.length > 0 && /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) })
     ] })
   ] });
 };
-function safeStringify(v) {
-  if (typeof v === "string") {
-    return v;
-  }
-  if (typeof v === "object" && v !== null) {
-    if (v.type === "text" && typeof v.text === "string") {
-      return v;
-    }
-    if (v.content && typeof v.content === "object") {
-      return safeStringify(v.content);
-    }
-  }
-  try {
-    return JSON.stringify(v, null, 2);
-  } catch {
-    return String(v);
-  }
-}
-const JsonArea = ({ value, placeholder = "" }) => {
-  const safeValue = useMemo(() => {
-    if (Array.isArray(value)) {
-      const parts = [];
-      for (let i = 0; i < value.length; i += 1) {
-        const entry = value[i];
-        parts.push(safeStringify(entry?.event ?? entry?.content ?? entry));
-      }
-      const joined = parts.join("\n");
-      return !joined.trim() ? placeholder : joined;
-    }
-    const s = safeStringify(value);
-    return !s || ["undefined", "null", "[]", "{}"].includes(s) || s.trim() === "" ? placeholder : s;
-  }, [value, placeholder]);
-  return /* @__PURE__ */ jsx("div", { className: "json", children: /* @__PURE__ */ jsx("pre", { className: "pre", children: safeValue }) });
-};
-const SectionTitle = ({ children }) => /* @__PURE__ */ jsx("div", { className: "section-title margin-bottom-5", children });
 StepByStepView.displayName = "WaldiezStepByStepView";
 const useStringList = (props) => {
   const [newEntry, setNewEntry] = useState("");
