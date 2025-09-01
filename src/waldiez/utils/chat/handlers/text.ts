@@ -8,7 +8,7 @@ import type {
     WaldiezChatMessageProcessingContext,
     WaldiezChatMessageProcessingResult,
 } from "@waldiez/utils/chat/types";
-import { MessageUtils } from "@waldiez/utils/chat/utils";
+import { WaldiezChatMessageUtils } from "@waldiez/utils/chat/utils";
 
 /**
  * Text message handler processes text and tool call messages.
@@ -78,15 +78,15 @@ export class WaldiezChatTextMessageHandler implements WaldiezChatMessageHandler 
             return undefined;
         }
 
-        let content = MessageUtils.normalizeContent(data.content.content, context.imageUrl);
+        let content = WaldiezChatMessageUtils.normalizeContent(data.content.content, context.imageUrl);
 
         if (context.imageUrl) {
-            content = MessageUtils.replaceImageUrls(content, context.imageUrl);
+            content = WaldiezChatMessageUtils.replaceImageUrls(content, context.imageUrl);
         }
 
         const message: WaldiezChatMessage = {
-            id: MessageUtils.generateMessageId(data),
-            timestamp: MessageUtils.generateTimestamp(data),
+            id: WaldiezChatMessageUtils.generateMessageId(data),
+            timestamp: WaldiezChatMessageUtils.generateTimestamp(data),
             type: data.type,
             content,
             sender: data.content.sender,

@@ -7,7 +7,9 @@ import stripAnsi from "strip-ansi";
 import {
     WaldiezChatCodeExecutionReplyHandler,
     WaldiezChatErrorHandler,
+    WaldiezChatExecuteFunctionHandler,
     WaldiezChatExecutedFunctionHandler,
+    WaldiezChatGroupChatResumeHandler,
     WaldiezChatGroupChatRunHandler,
     WaldiezChatInputRequestHandler,
     WaldiezChatParticipantsHandler,
@@ -40,15 +42,17 @@ export class WaldiezChatMessageProcessor {
                 new WaldiezChatTextMessageHandler(),
                 new WaldiezChatTerminationHandler(),
                 new WaldiezChatGroupChatRunHandler(),
+                new WaldiezChatGroupChatResumeHandler(),
                 new WaldiezChatSpeakerSelectionHandler(),
                 new WaldiezChatCodeExecutionReplyHandler(),
                 new WaldiezChatToolCallHandler(),
                 new WaldiezChatTerminationAndHumanReplyNoInputHandler(),
                 new WaldiezChatUsingAutoReplyHandler(),
-                new WaldiezChatTimelineDataHandler(),
                 new WaldiezChatRunCompletionHandler(),
                 new WaldiezChatToolResponseHandler(),
+                new WaldiezChatExecuteFunctionHandler(),
                 new WaldiezChatExecutedFunctionHandler(),
+                new WaldiezChatTimelineDataHandler(),
                 new WaldiezChatErrorHandler(),
             ];
         }

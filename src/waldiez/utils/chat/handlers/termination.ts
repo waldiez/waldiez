@@ -56,7 +56,7 @@ export class WaldiezChatTerminationHandler implements WaldiezChatMessageHandler 
         const message: WaldiezChatMessage = {
             id: nanoid(),
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "termination",
             content: [
                 {
                     type: "text",
@@ -89,7 +89,7 @@ export class WaldiezChatTerminationAndHumanReplyNoInputHandler implements Waldie
         const message: WaldiezChatMessage = {
             id: data.content?.uuid || nanoid(),
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "termination",
             content: [
                 {
                     type: "text",

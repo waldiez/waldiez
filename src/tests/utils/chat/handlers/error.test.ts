@@ -40,7 +40,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "error-uuid-123",
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "error",
                     content: [
                         {
                             type: "text",
@@ -71,7 +71,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "mock-nanoid-id", // uuid not available in this structure
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "error",
                     content: [
                         {
                             type: "text",
@@ -116,7 +116,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "error-uuid-123",
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "error",
                     content: [
                         {
                             type: "text",
@@ -212,7 +212,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "mock-nanoid-id", // uuid not available in this structure
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "error",
                     content: [
                         {
                             type: "text",
@@ -246,7 +246,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "error-uuid-complex",
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "error",
                     content: [
                         {
                             type: "text",

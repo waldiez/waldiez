@@ -49,7 +49,7 @@ export class WaldiezChatToolCallHandler implements WaldiezChatMessageHandler {
         const message: WaldiezChatMessage = {
             id: data.content.uuid ?? nanoid(),
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "tool_call",
             content: [
                 {
                     type: "text",
@@ -104,37 +104,6 @@ export class WaldiezChatToolResponseHandler implements WaldiezChatMessageHandler
             sender: data.content.sender,
             recipient: data.content.recipient,
             tool_responses: toolResponses,
-        };
-
-        return { message };
-    }
-}
-
-/**
- * Executed function handler processes messages indicating a function has been executed.
- * It validates the message structure and constructs a WaldiezChatMessage object with the executed function content.
- */
-export class WaldiezChatExecutedFunctionHandler implements WaldiezChatMessageHandler {
-    canHandle(type: string): boolean {
-        return type === "executed_function";
-    }
-    handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        if (!data || typeof data !== "object" || data.type !== "executed_function") {
-            return undefined;
-        }
-
-        const message: WaldiezChatMessage = {
-            id: data.content.uuid ?? nanoid(),
-            timestamp: new Date().toISOString(),
-            type: "system",
-            content: [
-                {
-                    type: "text",
-                    text: `Executed function: ${data.content.func_name}`,
-                },
-            ],
-            sender: data.content.sender,
-            recipient: data.content.recipient,
         };
 
         return { message };

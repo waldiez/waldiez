@@ -202,7 +202,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "mock-nanoid-id",
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "using_auto_reply",
                     content: [
                         {
                             type: "text",

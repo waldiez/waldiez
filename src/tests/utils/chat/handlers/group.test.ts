@@ -40,7 +40,7 @@ describe("WaldiezChatMessageProcessor", () => {
                 message: {
                     id: "chat-uuid-123",
                     timestamp: "2024-01-01T12:00:00.000Z",
-                    type: "system",
+                    type: "group_chat_run_chat",
                     content: [
                         {
                             type: "text",
@@ -80,7 +80,7 @@ describe("WaldiezChatMessageProcessor", () => {
             const result = WaldiezChatMessageProcessor.process(message);
 
             expect(result?.message?.id).toBe("selection-uuid-123");
-            expect(result?.message?.type).toBe("system");
+            expect(result?.message?.type).toBe("select_speaker");
         });
 
         it("should handle select_speaker_invalid_input message", () => {
@@ -94,7 +94,7 @@ describe("WaldiezChatMessageProcessor", () => {
 
             const result = WaldiezChatMessageProcessor.process(message);
 
-            expect(result?.message?.type).toBe("system");
+            expect(result?.message?.type).toBe("select_speaker");
             expect(Array.isArray(result?.message?.content)).toBe(true);
         });
 

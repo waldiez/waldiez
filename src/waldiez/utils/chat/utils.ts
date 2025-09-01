@@ -8,8 +8,25 @@ import type { WaldiezChatContent, WaldiezMediaContent } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
 import type { WaldiezChatBaseMessageData } from "@waldiez/utils/chat/types";
 
+const SystemMessageTypes = [
+    "system",
+    "post_carryover_processing",
+    "group_chat_run_chat",
+    "using_auto_reply",
+    "tool_call",
+    "execute_function",
+    "executed_function",
+    "tool_response",
+    "termination",
+    "run_completion",
+    "generate_code_execution_reply",
+    "group_chat_resume",
+    "error",
+    "info",
+];
+
 // Utility functions
-export class MessageUtils {
+export class WaldiezChatMessageUtils {
     static isPasswordPrompt(data: any): boolean {
         if (!data.password || (typeof data.password !== "string" && typeof data.password !== "boolean")) {
             return false;
@@ -20,6 +37,16 @@ export class MessageUtils {
         }
 
         return data.password.toLowerCase() === "true";
+    }
+
+    static isSystemMessage(data: any): boolean {
+        if (!data || typeof data !== "object" || !data.type || typeof data.type !== "string") {
+            return true;
+        }
+        if ((data.type as string).startsWith("debug_")) {
+            return true;
+        }
+        return SystemMessageTypes.includes(data.type);
     }
 
     static normalizePrompt(prompt: string): string {
@@ -145,7 +172,7 @@ export class MessageUtils {
 
         if (Array.isArray(content)) {
             return content.map(item => {
-                const normalized = MessageUtils.normalizeContent(item, imageUrl);
+                const normalized = WaldiezChatMessageUtils.normalizeContent(item, imageUrl);
                 /* c8 ignore next 3 */
                 if (Array.isArray(normalized) && normalized.length === 1) {
                     return normalized[0];

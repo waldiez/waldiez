@@ -97,7 +97,7 @@ describe("EventConsole", () => {
                 { type: "using_auto_reply", content: { sender: "A", recipient: "B" } },
             ];
             render(<EventConsole events={events} />);
-            expect(screen.getByText(/human_input_mode=TERMINATE, sender=A, recipient=B/)).toBeInTheDocument();
+            expect(screen.getByText(/sender=A, recipient=B/)).toBeInTheDocument();
         });
 
         it("should render tool_call events", () => {

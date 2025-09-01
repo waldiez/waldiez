@@ -116,6 +116,33 @@ const MESSAGE_CONSTANTS = {
     SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
   }
 };
+class WaldiezChatUsingAutoReplyHandler {
+  canHandle(type) {
+    return type === "using_auto_reply";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
+      return void 0;
+    }
+    const message = {
+      /* c8 ignore next */
+      id: data.content?.uuid || nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "using_auto_reply",
+      content: [
+        {
+          type: "text",
+          text: "Using auto reply"
+        }
+      ],
+      /* c8 ignore next */
+      sender: data.content?.sender,
+      /* c8 ignore next */
+      recipient: data.content?.recipient
+    };
+    return { message };
+  }
+}
 class WaldiezChatRunCompletionHandler {
   canHandle(type) {
     return type === "run_completion";
@@ -168,7 +195,7 @@ class WaldiezChatCodeExecutionReplyHandler {
     const message = {
       id: nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "generate_code_execution_reply",
       content: [
         {
           type: "text",
@@ -215,7 +242,7 @@ class WaldiezChatErrorHandler {
     const message = {
       id: data.content?.uuid ?? nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "error",
       content: [
         {
           type: "text",
@@ -230,7 +257,76 @@ class WaldiezChatErrorHandler {
     return { message };
   }
 }
-class MessageUtils {
+class WaldiezChatExecuteFunctionHandler {
+  canHandle(type) {
+    return type === "execute_function";
+  }
+  // type ExecuteFunctionContent = { func_name: string; recipient: string; arguments?: unknown };
+  handle(data) {
+    if (!data || typeof data !== "object" || data.type !== "execute_function") {
+      return void 0;
+    }
+    const message = {
+      id: data.content.uuid ?? nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "execute_function",
+      content: [
+        {
+          type: "text",
+          text: `Execute function: ${data.content.func_name}`
+        },
+        {
+          type: "text",
+          text: `Arguments: ${data.content.arguments}`
+        }
+      ],
+      sender: data.content.sender,
+      recipient: data.content.recipient
+    };
+    return { message };
+  }
+}
+class WaldiezChatExecutedFunctionHandler {
+  canHandle(type) {
+    return type === "executed_function";
+  }
+  handle(data) {
+    if (!data || typeof data !== "object" || data.type !== "executed_function") {
+      return void 0;
+    }
+    const message = {
+      id: data.content.uuid ?? nanoid(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      type: "executed_function",
+      content: [
+        {
+          type: "text",
+          text: `Executed function: ${data.content.func_name}`
+        }
+      ],
+      sender: data.content.sender,
+      recipient: data.content.recipient
+    };
+    return { message };
+  }
+}
+const SystemMessageTypes = [
+  "system",
+  "post_carryover_processing",
+  "group_chat_run_chat",
+  "using_auto_reply",
+  "tool_call",
+  "execute_function",
+  "executed_function",
+  "tool_response",
+  "termination",
+  "run_completion",
+  "generate_code_execution_reply",
+  "group_chat_resume",
+  "error",
+  "info"
+];
+class WaldiezChatMessageUtils {
   static isPasswordPrompt(data) {
     if (!data.password || typeof data.password !== "string" && typeof data.password !== "boolean") {
       return false;
@@ -239,6 +335,15 @@ class MessageUtils {
       return data.password;
     }
     return data.password.toLowerCase() === "true";
+  }
+  static isSystemMessage(data) {
+    if (!data || typeof data !== "object" || !data.type || typeof data.type !== "string") {
+      return true;
+    }
+    if (data.type.startsWith("debug_")) {
+      return true;
+    }
+    return SystemMessageTypes.includes(data.type);
   }
   static normalizePrompt(prompt) {
     return MESSAGE_CONSTANTS.GENERIC_PROMPTS.includes(prompt) ? MESSAGE_CONSTANTS.DEFAULT_PROMPT : prompt;
@@ -333,7 +438,7 @@ class MessageUtils {
     }
     if (Array.isArray(content)) {
       return content.map((item) => {
-        const normalized = MessageUtils.normalizeContent(item, imageUrl);
+        const normalized = WaldiezChatMessageUtils.normalizeContent(item, imageUrl);
         if (Array.isArray(normalized) && normalized.length === 1) {
           return normalized[0];
         }
@@ -400,7 +505,7 @@ class WaldiezChatGroupChatRunHandler {
     const message = {
       id: data.content.uuid,
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "group_chat_run_chat",
       content: [
         {
           type: "text",
@@ -444,15 +549,32 @@ class WaldiezChatSpeakerSelectionHandler {
     const message = {
       id: data.content.uuid,
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "select_speaker",
       content: [
         {
           type: "text",
-          text: MessageUtils.generateSpeakerSelectionMarkdown(data.content.agents)
+          text: WaldiezChatMessageUtils.generateSpeakerSelectionMarkdown(data.content.agents)
         }
       ]
     };
     return { message };
+  }
+}
+class WaldiezChatGroupChatResumeHandler {
+  canHandle(type) {
+    return type === "group_chat_resume";
+  }
+  handle(data, _context) {
+    return {
+      message: {
+        type: "group_chat_resume",
+        id: data.content?.uuid ?? nanoid(),
+        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+        content: "Resume chat",
+        sender: data.content?.sender,
+        recipient: data.content?.recipient
+      }
+    };
   }
 }
 class WaldiezChatInputRequestHandler {
@@ -492,10 +614,10 @@ class WaldiezChatInputRequestHandler {
     if (!WaldiezChatInputRequestHandler.isValidInputRequest(data)) {
       return void 0;
     }
-    const normalizedPrompt = MessageUtils.normalizePrompt(data.prompt);
+    const normalizedPrompt = WaldiezChatMessageUtils.normalizePrompt(data.prompt);
     const chatMessage = {
       id: data.request_id,
-      timestamp: MessageUtils.generateTimestamp(data),
+      timestamp: WaldiezChatMessageUtils.generateTimestamp(data),
       request_id: context.requestId || data.request_id,
       type: "input_request",
       content: [
@@ -505,39 +627,12 @@ class WaldiezChatInputRequestHandler {
         }
       ],
       prompt: normalizedPrompt,
-      password: MessageUtils.isPasswordPrompt(data)
+      password: WaldiezChatMessageUtils.isPasswordPrompt(data)
     };
     return {
       message: chatMessage,
       requestId: data.request_id
     };
-  }
-}
-class WaldiezChatUsingAutoReplyHandler {
-  canHandle(type) {
-    return type === "using_auto_reply";
-  }
-  handle(data) {
-    if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
-      return void 0;
-    }
-    const message = {
-      /* c8 ignore next */
-      id: data.content?.uuid || nanoid(),
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: "Using auto reply"
-        }
-      ],
-      /* c8 ignore next */
-      sender: data.content?.sender,
-      /* c8 ignore next */
-      recipient: data.content?.recipient
-    };
-    return { message };
   }
 }
 class WaldiezChatParticipantsHandler {
@@ -714,7 +809,7 @@ class WaldiezChatTerminationHandler {
     const message = {
       id: nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "termination",
       content: [
         {
           type: "text",
@@ -738,7 +833,7 @@ class WaldiezChatTerminationAndHumanReplyNoInputHandler {
     const message = {
       id: data.content?.uuid || nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "termination",
       content: [
         {
           type: "text",
@@ -799,13 +894,13 @@ class WaldiezChatTextMessageHandler {
     if (!WaldiezChatTextMessageHandler.isValidTextMessage(data)) {
       return void 0;
     }
-    let content = MessageUtils.normalizeContent(data.content.content, context.imageUrl);
+    let content = WaldiezChatMessageUtils.normalizeContent(data.content.content, context.imageUrl);
     if (context.imageUrl) {
-      content = MessageUtils.replaceImageUrls(content, context.imageUrl);
+      content = WaldiezChatMessageUtils.replaceImageUrls(content, context.imageUrl);
     }
     const message = {
-      id: MessageUtils.generateMessageId(data),
-      timestamp: MessageUtils.generateTimestamp(data),
+      id: WaldiezChatMessageUtils.generateMessageId(data),
+      timestamp: WaldiezChatMessageUtils.generateTimestamp(data),
       type: data.type,
       content,
       sender: data.content.sender,
@@ -895,7 +990,7 @@ class WaldiezChatToolCallHandler {
     const message = {
       id: data.content.uuid ?? nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
+      type: "tool_call",
       content: [
         {
           type: "text",
@@ -945,30 +1040,6 @@ class WaldiezChatToolResponseHandler {
     return { message };
   }
 }
-class WaldiezChatExecutedFunctionHandler {
-  canHandle(type) {
-    return type === "executed_function";
-  }
-  handle(data) {
-    if (!data || typeof data !== "object" || data.type !== "executed_function") {
-      return void 0;
-    }
-    const message = {
-      id: data.content.uuid ?? nanoid(),
-      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-      type: "system",
-      content: [
-        {
-          type: "text",
-          text: `Executed function: ${data.content.func_name}`
-        }
-      ],
-      sender: data.content.sender,
-      recipient: data.content.recipient
-    };
-    return { message };
-  }
-}
 class WaldiezChatMessageProcessor {
   static _handlers = null;
   static get handlers() {
@@ -980,15 +1051,17 @@ class WaldiezChatMessageProcessor {
         new WaldiezChatTextMessageHandler(),
         new WaldiezChatTerminationHandler(),
         new WaldiezChatGroupChatRunHandler(),
+        new WaldiezChatGroupChatResumeHandler(),
         new WaldiezChatSpeakerSelectionHandler(),
         new WaldiezChatCodeExecutionReplyHandler(),
         new WaldiezChatToolCallHandler(),
         new WaldiezChatTerminationAndHumanReplyNoInputHandler(),
         new WaldiezChatUsingAutoReplyHandler(),
-        new WaldiezChatTimelineDataHandler(),
         new WaldiezChatRunCompletionHandler(),
         new WaldiezChatToolResponseHandler(),
+        new WaldiezChatExecuteFunctionHandler(),
         new WaldiezChatExecutedFunctionHandler(),
+        new WaldiezChatTimelineDataHandler(),
         new WaldiezChatErrorHandler()
       ];
     }
@@ -11496,9 +11569,6 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
   );
   const getMessageClass = useCallback(
     (msg) => {
-      if (["system", "termination"].includes(msg.type)) {
-        return "system-message";
-      }
       if (msg.sender && participantNames.includes(msg.sender)) {
         return "user-message";
       }
@@ -11507,6 +11577,9 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
       }
       if (msg.type === "input_request") {
         return "request-message";
+      }
+      if (WaldiezChatMessageUtils.isSystemMessage(msg)) {
+        return "system-message";
       }
       return "assistant-message";
     },
@@ -14291,6 +14364,11 @@ const ResumeSpinner = () => {
     /* @__PURE__ */ jsx("span", { children: "Resuming a previously stored state…" })
   ] }) : /* @__PURE__ */ jsx("div", { children: "✅ Resume complete!" });
 };
+const getPariticipants = (ev) => {
+  const sender = ev.sender || ev.content.sender;
+  const recipient = ev.recipient || ev.content.recipient;
+  return { sender, recipient };
+};
 const renderEvent = (ev) => {
   if (!ev.type) {
     const nested = ev;
@@ -14301,26 +14379,28 @@ const renderEvent = (ev) => {
   switch (ev.type) {
     case "text": {
       const c = ev.content;
+      const { sender, recipient } = getPariticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
-          c.sender,
+          sender,
           " ",
           /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
-          c.recipient
+          recipient
         ] }),
         /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content })
       ] });
     }
     case "post_carryover_processing": {
       const c = ev.content;
+      const { sender, recipient } = getPariticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
-          c.sender,
+          sender,
           " ",
           /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
-          c.recipient
+          recipient
         ] }),
         /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
       ] });
@@ -14329,27 +14409,28 @@ const renderEvent = (ev) => {
       const c = ev.content;
       return /* @__PURE__ */ jsxs("div", { className: "text-green-600 font-semibold", children: [
         "Next speaker: ",
-        c.speaker
+        ev.speaker || c.speaker
       ] });
     }
     case "using_auto_reply": {
-      const c = ev.content;
+      const { sender, recipient } = getPariticipants(ev);
       return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
-        "human_input_mode=TERMINATE, sender=",
-        c.sender,
+        "sender=",
+        sender,
         ", recipient=",
-        c.recipient
+        recipient
       ] });
     }
     case "tool_call": {
       const c = ev.content;
+      const { sender, recipient } = getPariticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
-          /* @__PURE__ */ jsx("span", { className: "font-medium", children: c.sender }),
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: sender }),
           " ",
           /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-medium", children: c.recipient })
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: recipient })
         ] }),
         /* @__PURE__ */ jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
           const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
@@ -14371,6 +14452,7 @@ const renderEvent = (ev) => {
     }
     case "execute_function": {
       const c = ev.content;
+      const { recipient } = getPariticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
           "⚡ Executing: ",
@@ -14378,16 +14460,16 @@ const renderEvent = (ev) => {
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "text-sm text-gray-700", children: [
           "→ Target: ",
-          c.recipient
+          recipient
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
           "→ Args: ",
-          formatArgs(c.arguments)
+          formatArgs(ev.arguments || c.arguments)
         ] })
       ] });
     }
     case "executed_function": {
-      const c = ev.content;
+      const c = ev.content ? ev.content : ev;
       const ok = !!c.is_exec_success;
       const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
       return /* @__PURE__ */ jsxs("div", { children: [
@@ -14402,28 +14484,30 @@ const renderEvent = (ev) => {
         ] })
       ] });
     }
-    case "input_request": {
-      const c = ev.content;
+    case "input_request":
+    case "debug_input_request": {
+      const c = ev.content ? ev.content : ev;
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "👤 Provide your input:" }),
         c.prompt && /* @__PURE__ */ jsx("div", { className: "text-sm", children: c.prompt })
       ] });
     }
     case "tool_response": {
-      const c = ev.content;
+      const c = ev.content ? ev.content : ev;
+      const { sender, recipient } = getPariticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("div", { children: "🔄 Tool Response:" }),
         /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
         /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
           "→ From: ",
-          c.sender,
+          sender,
           " to ",
-          c.recipient
+          recipient
         ] })
       ] });
     }
     case "termination": {
-      const c = ev.content;
+      const c = ev.content ? ev.content : ev;
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "Termination met" }),
         c.termination_reason && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [

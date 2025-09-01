@@ -10,6 +10,7 @@ import { ImageModal } from "@waldiez/components/chatUI/imageModal";
 import type { ChatUIProps, WaldiezChatMessage } from "@waldiez/components/chatUI/types";
 import { parseMessageContent } from "@waldiez/components/chatUI/utils";
 import { WALDIEZ_ICON } from "@waldiez/theme";
+import { WaldiezChatMessageUtils } from "@waldiez/utils/chat/utils";
 
 type ChatUIMessage = {
     id: string;
@@ -57,9 +58,6 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
     // Calculate message classes - memoized for performance
     const getMessageClass = useCallback(
         (msg: ChatUIMessage) => {
-            if (["system", "termination"].includes(msg.type)) {
-                return "system-message";
-            }
             if (msg.sender && participantNames.includes(msg.sender)) {
                 return "user-message";
             }
@@ -68,6 +66,9 @@ export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userPartic
             }
             if (msg.type === "input_request") {
                 return "request-message";
+            }
+            if (WaldiezChatMessageUtils.isSystemMessage(msg)) {
+                return "system-message";
             }
             return "assistant-message"; // generic class for non-user senders
         },

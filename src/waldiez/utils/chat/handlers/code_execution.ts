@@ -62,7 +62,7 @@ export class WaldiezChatCodeExecutionReplyHandler implements WaldiezChatMessageH
         const message: WaldiezChatMessage = {
             id: nanoid(),
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "generate_code_execution_reply",
             content: [
                 {
                     type: "text",

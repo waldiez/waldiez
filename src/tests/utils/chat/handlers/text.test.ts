@@ -135,7 +135,7 @@ describe("WaldiezChatMessageProcessor", () => {
 
             const result = WaldiezChatMessageProcessor.process(message);
 
-            expect(result?.message?.type).toBe("system");
+            expect(result?.message?.type).toBe("tool_call");
         });
 
         it("should generate fallback values for missing fields", async () => {

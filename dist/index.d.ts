@@ -2307,7 +2307,6 @@ export declare class WaldiezChatMessageProcessor {
  * @param termination_and_human_reply_no_input - Termination and human reply without input
  * @param using_auto_reply - Using auto reply message
  * @param execute_function - Execute function message
- * @param generate_code_execution_reply - Generate code execution reply message
  * @param error - Error message
  * @param print - Print message
  * @param text - Text message

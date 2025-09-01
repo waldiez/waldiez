@@ -2,9 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import { nanoid } from "nanoid";
+
 import type {
     WaldiezChatGroupChatRunData,
     WaldiezChatMessage,
+    WaldiezChatMessageProcessingContext,
     WaldiezChatSpeakerSelectionData,
 } from "@waldiez/types";
 import { MESSAGE_CONSTANTS } from "@waldiez/utils/chat/constants";
@@ -12,7 +15,7 @@ import type {
     WaldiezChatMessageHandler,
     WaldiezChatMessageProcessingResult,
 } from "@waldiez/utils/chat/types";
-import { MessageUtils } from "@waldiez/utils/chat/utils";
+import { WaldiezChatMessageUtils } from "@waldiez/utils/chat/utils";
 
 /**
  * Group chat run handler processes group chat run messages.
@@ -59,7 +62,7 @@ export class WaldiezChatGroupChatRunHandler implements WaldiezChatMessageHandler
         const message: WaldiezChatMessage = {
             id: data.content.uuid,
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "group_chat_run_chat",
             content: [
                 {
                     type: "text",
@@ -120,15 +123,40 @@ export class WaldiezChatSpeakerSelectionHandler implements WaldiezChatMessageHan
         const message: WaldiezChatMessage = {
             id: data.content.uuid,
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "select_speaker",
             content: [
                 {
                     type: "text",
-                    text: MessageUtils.generateSpeakerSelectionMarkdown(data.content.agents),
+                    text: WaldiezChatMessageUtils.generateSpeakerSelectionMarkdown(data.content.agents),
                 },
             ],
         };
 
         return { message };
+    }
+}
+/**
+ * Group chat run handler processes group chat run messages.
+ * It validates the message structure and constructs a WaldiezChatMessage object with a system message.
+ * If valid, it returns the processed message.
+ */
+export class WaldiezChatGroupChatResumeHandler implements WaldiezChatMessageHandler {
+    canHandle(type: string): boolean {
+        return type === "group_chat_resume";
+    }
+    handle(
+        data: any,
+        _context: WaldiezChatMessageProcessingContext,
+    ): WaldiezChatMessageProcessingResult | undefined {
+        return {
+            message: {
+                type: "group_chat_resume",
+                id: data.content?.uuid ?? nanoid(),
+                timestamp: new Date().toISOString(),
+                content: "Resume chat",
+                sender: data.content?.sender,
+                recipient: data.content?.recipient,
+            },
+        };
     }
 }

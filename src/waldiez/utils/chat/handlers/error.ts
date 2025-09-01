@@ -55,7 +55,7 @@ export class WaldiezChatErrorHandler implements WaldiezChatMessageHandler {
         const message: WaldiezChatMessage = {
             id: data.content?.uuid ?? nanoid(),
             timestamp: new Date().toISOString(),
-            type: "system",
+            type: "error",
             content: [
                 {
                     type: "text",

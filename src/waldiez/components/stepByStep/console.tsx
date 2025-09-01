@@ -16,6 +16,8 @@ type EventBase<TType extends string, TContent> = {
     id?: string;
     type: TType;
     content: TContent;
+    sender?: string;
+    recipient?: string;
     // Optional common fields you may have:
     timestamp?: string;
 };
@@ -105,6 +107,12 @@ const ResumeSpinner = () => {
     );
 };
 
+const getPariticipants = (ev: WaldiezEvent) => {
+    const sender = ev.sender || ev.content.sender;
+    const recipient = ev.recipient || ev.content.recipient;
+    return { sender, recipient };
+};
+
 // eslint-disable-next-line max-statements, complexity
 const renderEvent = (ev: WaldiezEvent) => {
     if (!ev.type) {
@@ -116,10 +124,11 @@ const renderEvent = (ev: WaldiezEvent) => {
     switch (ev.type) {
         case "text": {
             const c = ev.content as TextContent;
+            const { sender, recipient } = getPariticipants(ev);
             return (
                 <div>
                     <div className="text-amber-500 font-semibold">
-                        {c.sender} <span className="text-gray-400">→</span> {c.recipient}
+                        {sender} <span className="text-gray-400">→</span> {recipient}
                     </div>
                     <pre className="whitespace-pre-wrap break-words mt-1">{c.content}</pre>
                 </div>
@@ -128,10 +137,11 @@ const renderEvent = (ev: WaldiezEvent) => {
 
         case "post_carryover_processing": {
             const c = ev.content as PostCarryoverContent;
+            const { sender, recipient } = getPariticipants(ev);
             return (
                 <div>
                     <div className="text-pink-500 font-semibold">
-                        {c.sender} <span className="text-gray-400">→</span> {c.recipient}
+                        {sender} <span className="text-gray-400">→</span> {recipient}
                     </div>
                     <pre className="whitespace-pre-wrap break-words mt-1">{c.message}</pre>
                 </div>
@@ -140,26 +150,30 @@ const renderEvent = (ev: WaldiezEvent) => {
 
         case "group_chat_run_chat": {
             const c = ev.content as GroupChatRunChatContent;
-            return <div className="text-green-600 font-semibold">Next speaker: {c.speaker}</div>;
+            return (
+                <div className="text-green-600 font-semibold">
+                    Next speaker: {(ev as any).speaker || c.speaker}
+                </div>
+            );
         }
 
         case "using_auto_reply": {
-            const c = ev.content as UsingAutoReplyContent;
+            const { sender, recipient } = getPariticipants(ev);
             return (
                 <div className="text-gray-700">
-                    human_input_mode=TERMINATE, sender={c.sender}, recipient={c.recipient}
+                    sender={sender}, recipient={recipient}
                 </div>
             );
         }
 
         case "tool_call": {
             const c = ev.content as ToolCallContent;
+            const { sender, recipient } = getPariticipants(ev);
             return (
                 <div>
                     <div className="text-gray-700 mb-1">
-                        <span className="font-medium">{c.sender}</span>{" "}
-                        <span className="text-gray-400">→</span>{" "}
-                        <span className="font-medium">{c.recipient}</span>
+                        <span className="font-medium">{sender}</span> <span className="text-gray-400">→</span>{" "}
+                        <span className="font-medium">{recipient}</span>
                     </div>
                     <div className="space-y-1">
                         {c.tool_calls?.map((tc, i) => {
@@ -184,17 +198,22 @@ const renderEvent = (ev: WaldiezEvent) => {
 
         case "execute_function": {
             const c = ev.content as ExecuteFunctionContent;
+            const { recipient } = getPariticipants(ev);
             return (
                 <div>
                     <div className="font-semibold">⚡ Executing: {c.func_name}</div>
-                    <div className="text-sm text-gray-700">→ Target: {c.recipient}</div>
-                    <div className="text-xs text-gray-600 break-words">→ Args: {formatArgs(c.arguments)}</div>
+                    <div className="text-sm text-gray-700">→ Target: {recipient}</div>
+                    <div className="text-xs text-gray-600 break-words">
+                        → Args: {formatArgs((ev as any).arguments || c.arguments)}
+                    </div>
                 </div>
             );
         }
 
         case "executed_function": {
-            const c = ev.content as ExecutedFunctionContent;
+            const c = (ev as any).content
+                ? (ev.content as ExecutedFunctionContent)
+                : (ev as any as ExecutedFunctionContent);
             const ok = !!c.is_exec_success;
             const transferred =
                 typeof c.content === "object" && c.content && "agent_name" in c.content
@@ -211,8 +230,11 @@ const renderEvent = (ev: WaldiezEvent) => {
             );
         }
 
-        case "input_request": {
-            const c = ev.content as InputRequestContent;
+        case "input_request":
+        case "debug_input_request": {
+            const c = (ev as any).content
+                ? (ev.content as InputRequestContent)
+                : (ev as any as InputRequestContent);
             return (
                 <div>
                     <div className="font-semibold">👤 Provide your input:</div>
@@ -223,20 +245,25 @@ const renderEvent = (ev: WaldiezEvent) => {
         }
 
         case "tool_response": {
-            const c = ev.content as ToolResponseContent;
+            const c = (ev as any).content
+                ? (ev.content as ToolResponseContent)
+                : (ev as any as ToolResponseContent);
+            const { sender, recipient } = getPariticipants(ev);
             return (
                 <div>
                     <div>🔄 Tool Response:</div>
                     <pre className="whitespace-pre-wrap break-words">{c.content}</pre>
                     <div className="text-xs">
-                        → From: {c.sender} to {c.recipient}
+                        → From: {sender} to {recipient}
                     </div>
                 </div>
             );
         }
 
         case "termination": {
-            const c = ev.content as TerminationContent;
+            const c = (ev as any).content
+                ? (ev.content as TerminationContent)
+                : (ev as any as TerminationContent);
             return (
                 <div>
                     <div className="font-semibold">Termination met</div>
