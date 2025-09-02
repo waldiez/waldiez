@@ -14,6 +14,7 @@ import { WaldiezStepByStepUtils } from "@waldiez/utils";
 export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
     const setActive = useWaldiez(s => s.setActiveParticipants);
     const resetActive = useWaldiez(s => s.resetActiveParticipants);
+    const getGroupManager = useWaldiez(s => s.getGroupManager);
 
     const lastIndexRef = useRef(-1);
 
@@ -43,12 +44,24 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
         const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latest);
         // sender and recipient are the agent names,
         // let's get the ids from stepByStep.participants
-        const senderId = stepByStep.participants.find(p => p.name === sender)?.id ?? null;
+        let senderId = stepByStep.participants.find(p => p.name === sender)?.id ?? null;
         const recipientId = stepByStep.participants.find(p => p.name === recipient)?.id ?? null;
-        // console.debug("Extracted participant IDs for agent class update:", { senderId, recipientId });
+        if (sender === "_Group_Tool_Executor") {
+            const groupManager = getGroupManager();
+            if (groupManager) {
+                senderId = groupManager.id;
+            }
+        }
         if (senderId === null && recipientId === null) {
             return;
         }
         setActive(senderId ?? null, recipientId ?? null);
-    }, [stepByStep?.active, stepByStep?.eventHistory, stepByStep?.participants, setActive, resetActive]);
+    }, [
+        stepByStep?.active,
+        stepByStep?.eventHistory,
+        stepByStep?.participants,
+        setActive,
+        resetActive,
+        getGroupManager,
+    ]);
 };

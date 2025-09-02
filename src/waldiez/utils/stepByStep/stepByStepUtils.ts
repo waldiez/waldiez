@@ -68,6 +68,10 @@ export class WaldiezStepByStepUtils {
             if (typeof contentEvent.type === "string") {
                 eventType = eventType || contentEvent.type;
             }
+            // group_chat_run_chat: { content: { speaker : "_Group_Tool_Executor"}}
+            if (typeof contentEvent.speaker === "string") {
+                sender = contentEvent.speaker;
+            }
         }
 
         // Extract from message content if available

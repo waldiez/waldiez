@@ -290,6 +290,12 @@ export declare interface IWaldiezAgentStore {
      * @param position - The position of the agent in the group.
      */
     setAgentGroup: (agentId: string, groupId: string, position?: XYPosition) => void;
+    /**
+     * Get the first available group manager agent node
+     * @returns The first group manager found if any
+     * @see {@link WaldiezNodeAgent}
+     */
+    getGroupManager: () => WaldiezNodeAgent | undefined;
 }
 
 export declare interface IWaldiezChatParticipantsStore {

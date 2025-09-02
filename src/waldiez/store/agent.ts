@@ -379,4 +379,13 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
         });
         resetEdgeOrdersAndPositions(this.get, this.set);
     };
+    getGroupManager = () => {
+        const result = this.get()
+            .nodes.filter(node => node.type === "agent")
+            .find(agent => agent.data.agentType === "group_manager");
+        if (result) {
+            return result as WaldiezNodeAgent;
+        }
+        return undefined;
+    };
 }

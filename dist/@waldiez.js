@@ -2114,6 +2114,9 @@ class WaldiezStepByStepUtils {
       if (typeof contentEvent.type === "string") {
         eventType = eventType || contentEvent.type;
       }
+      if (typeof contentEvent.speaker === "string") {
+        sender = contentEvent.speaker;
+      }
     }
     if (event.message && typeof event.message === "object") {
       const messageEvent = event.message;
@@ -15484,6 +15487,13 @@ class WaldiezAgentStore {
     });
     resetEdgeOrdersAndPositions(this.get, this.set);
   };
+  getGroupManager = () => {
+    const result = this.get().nodes.filter((node) => node.type === "agent").find((agent) => agent.data.agentType === "group_manager");
+    if (result) {
+      return result;
+    }
+    return void 0;
+  };
 }
 class WaldiezChatParticipantsStore {
   get;
@@ -16991,6 +17001,7 @@ function WaldiezProvider({ children, ...props }) {
 const useAgentClassUpdates = (stepByStep) => {
   const setActive = useWaldiez((s) => s.setActiveParticipants);
   const resetActive = useWaldiez((s) => s.resetActiveParticipants);
+  const getGroupManager = useWaldiez((s) => s.getGroupManager);
   const lastIndexRef = useRef(-1);
   useEffect(() => {
     if (!stepByStep?.active) {
@@ -17012,13 +17023,26 @@ const useAgentClassUpdates = (stepByStep) => {
     }
     lastIndexRef.current = idx;
     const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latest);
-    const senderId = stepByStep.participants.find((p) => p.name === sender)?.id ?? null;
+    let senderId = stepByStep.participants.find((p) => p.name === sender)?.id ?? null;
     const recipientId = stepByStep.participants.find((p) => p.name === recipient)?.id ?? null;
+    if (sender === "_Group_Tool_Executor") {
+      const groupManager = getGroupManager();
+      if (groupManager) {
+        senderId = groupManager.id;
+      }
+    }
     if (senderId === null && recipientId === null) {
       return;
     }
     setActive(senderId ?? null, recipientId ?? null);
-  }, [stepByStep?.active, stepByStep?.eventHistory, stepByStep?.participants, setActive, resetActive]);
+  }, [
+    stepByStep?.active,
+    stepByStep?.eventHistory,
+    stepByStep?.participants,
+    setActive,
+    resetActive,
+    getGroupManager
+  ]);
 };
 const StepByStepView = ({ flowId, stepByStep }) => {
   useAgentClassUpdates(stepByStep);
