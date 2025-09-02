@@ -63,6 +63,15 @@ class EventProcessor:
                 event_info["sender"] = content["sender"]
             if not event_info["recipient"] and "recipient" in content:
                 event_info["recipient"] = content["recipient"]
+        if (
+            event_info.get("type") == "group_chat_run_chat"
+            and "content" in event_info
+            and isinstance(event_info["content"], dict)
+        ):
+            content = event_info.get("content", {})
+            speaker = content.get("speaker")
+            if isinstance(speaker, str) and speaker:
+                event_info["sender"] = speaker
         # Update last known participants
         self.runner.last_sender = event_info["sender"]
         self.runner.last_recipient = event_info["recipient"]
