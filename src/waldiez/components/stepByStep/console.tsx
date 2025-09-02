@@ -333,7 +333,7 @@ export const EventConsole: React.FC<EventConsoleProps> = ({ events, printRaw, au
         >
             <div ref={listRef} className="flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5">
                 {events.map((ev, idx) => (
-                    <div key={ev.id ?? idx} className="rounded-xl padding-5">
+                    <div key={ev.id ?? idx} className="entry">
                         {printRaw && (
                             <div className="text-xs text-blue-600/80 mb-2 break-words">
                                 Raw event: {JSON.stringify(ev, null, 2)}

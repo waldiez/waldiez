@@ -97,7 +97,7 @@ def _get_agent_llm_config_arg_as_dict(
 ) -> str:
     tab = " " * tab_leng * tabs if tabs > 0 else ""
     if not agent.data.model_ids:
-        return f'{tab}"llm_config": False' + "\n"
+        return f'{tab}"llm_config": False,' + "\n"
     content = f'{tab}"llm_config": autogen.LLMConfig(' + "\n"
     content += f"{tab}    config_list=["
     got_at_least_one_model = False
@@ -110,7 +110,7 @@ def _get_agent_llm_config_arg_as_dict(
             content += "\n" + f"{tab}        {model_name}_llm_config,"
             got_at_least_one_model = True
     if not got_at_least_one_model:  # pragma: no cover
-        return f'{tab}"llm_config": False' + "\n"
+        return f'{tab}"llm_config": False,' + "\n"
     content += "\n" + f"{tab}    ]," + "\n"
     content += f"{tab}    cache_seed={cache_seed}," + "\n"
     if temperature is not None:

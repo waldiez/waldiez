@@ -243,40 +243,9 @@
   padding: 10px;
 }
 
-.waldiez-step-by-step-view .pre {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 12px;
-  line-height: 1.4;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  margin: 0;
-}
-
-.waldiez-step-by-step-view .codeblock {
-  background: color-mix(in srgb, var(--card-background) 90%, var(--text-color) 10%);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 8px;
-  font-family: inherit;
-  font-size: 13px;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-}
-
-.waldiez-step-by-step-view .list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.waldiez-step-by-step-view .list-item {
+.waldiez-step-by-step-view .json .entry {
   border-top: 1px solid var(--card-border);
-  padding: 10px;
-}
-
-.waldiez-step-by-step-view .list-item:first-child {
-  border-top: 0;
+  padding: 5px;
 }
 
 .waldiez-step-by-step-view .summary {

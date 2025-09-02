@@ -14558,7 +14558,7 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
     {
       className: ["flex flex-column full-height json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
-      children: /* @__PURE__ */ jsx("div", { ref: listRef, className: "flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: "rounded-xl padding-5", children: [
+      children: /* @__PURE__ */ jsx("div", { ref: listRef, className: "flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: "entry", children: [
         printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
           "Raw event: ",
           JSON.stringify(ev, null, 2)

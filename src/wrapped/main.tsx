@@ -44,7 +44,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
         chat: isDebugging
             ? undefined
             : {
-                  showUI: isRunning && timeline !== undefined,
+                  showUI: isRunning && !timeline,
                   messages,
                   userParticipants,
                   activeRequest: inputPrompt,

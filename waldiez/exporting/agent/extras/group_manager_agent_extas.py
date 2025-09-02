@@ -252,8 +252,12 @@ class GroupManagerProcessor:
             cache_seed=self.cache_seed,
             as_dict=True,
         )
+        manager_name = self.agent_names[self.agent.id]
         pattern_lines.append(
-            f"    group_manager_args={{\n{llm_config_arg}    }},"
+            "    group_manager_args={\n"
+            f"{llm_config_arg}"
+            f'       "name": "{manager_name}",\n'
+            "    },"
         )
 
         # Add context variables if present

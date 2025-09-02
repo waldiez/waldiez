@@ -317,7 +317,7 @@ class TestDictFormat:
             agent, models, model_names, 42, as_dict=True
         )
 
-        expected = '        "llm_config": False\n'
+        expected = '        "llm_config": False,\n'
         assert result == expected
 
     def test_single_model_with_temperature(self) -> None:
