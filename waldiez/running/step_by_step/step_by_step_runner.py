@@ -608,7 +608,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             # Use the event processor for core logic
-            result = self._event_processor.process_event_core(event)
+            result = self._event_processor.process_event(event)
 
             if result["action"] == "stop":
                 self.log.debug(
@@ -715,7 +715,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             # Use the event processor for core logic
-            result = self._event_processor.process_event_core(event)
+            result = self._event_processor.process_event(event)
 
             if result["action"] == "stop":
                 self.log.debug(
