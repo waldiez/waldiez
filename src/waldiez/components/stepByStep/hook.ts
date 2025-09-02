@@ -2,11 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
+import type { WaldiezChatParticipant } from "@waldiez/components/chatUI/types";
 import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
 import { useWaldiez } from "@waldiez/store";
-import { WaldiezStepByStepUtils } from "@waldiez/utils";
+import { WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep/stepByStepUtils";
 
 /**
  * Hook to manage agent class updates based on step-by-step state
@@ -17,6 +18,28 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
     const getGroupManager = useWaldiez(s => s.getGroupManager);
 
     const lastIndexRef = useRef(-1);
+
+    const getParticipantIds = useCallback(
+        (participants: WaldiezChatParticipant[], latestEvent: Record<string, unknown>) => {
+            const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latestEvent);
+            // sender and recipient are the agent names,
+            // let's get the ids from stepByStep.participants
+            let senderId = participants.find(p => p.name === sender)?.id ?? null;
+            let recipientId = participants.find(p => p.name === recipient)?.id ?? null;
+            if (sender === "_Group_Tool_Executor" || recipient === "_Group_Tool_Executor") {
+                const groupManager = getGroupManager();
+                if (groupManager) {
+                    if (sender === "_Group_Tool_Executor") {
+                        senderId = groupManager.id;
+                    } else {
+                        recipientId = groupManager.id;
+                    }
+                }
+            }
+            return { senderId, recipientId };
+        },
+        [getGroupManager],
+    );
 
     // eslint-disable-next-line max-statements
     useEffect(() => {
@@ -40,18 +63,7 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
             return;
         }
         lastIndexRef.current = idx;
-
-        const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latest);
-        // sender and recipient are the agent names,
-        // let's get the ids from stepByStep.participants
-        let senderId = stepByStep.participants.find(p => p.name === sender)?.id ?? null;
-        const recipientId = stepByStep.participants.find(p => p.name === recipient)?.id ?? null;
-        if (sender === "_Group_Tool_Executor") {
-            const groupManager = getGroupManager();
-            if (groupManager) {
-                senderId = groupManager.id;
-            }
-        }
+        const { senderId, recipientId } = getParticipantIds(stepByStep.participants, latest);
         if (senderId === null && recipientId === null) {
             return;
         }
@@ -63,5 +75,6 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
         setActive,
         resetActive,
         getGroupManager,
+        getParticipantIds,
     ]);
 };

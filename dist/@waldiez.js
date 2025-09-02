@@ -17003,6 +17003,25 @@ const useAgentClassUpdates = (stepByStep) => {
   const resetActive = useWaldiez((s) => s.resetActiveParticipants);
   const getGroupManager = useWaldiez((s) => s.getGroupManager);
   const lastIndexRef = useRef(-1);
+  const getParticipantIds = useCallback(
+    (participants, latestEvent) => {
+      const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latestEvent);
+      let senderId = participants.find((p) => p.name === sender)?.id ?? null;
+      let recipientId = participants.find((p) => p.name === recipient)?.id ?? null;
+      if (sender === "_Group_Tool_Executor" || recipient === "_Group_Tool_Executor") {
+        const groupManager = getGroupManager();
+        if (groupManager) {
+          if (sender === "_Group_Tool_Executor") {
+            senderId = groupManager.id;
+          } else {
+            recipientId = groupManager.id;
+          }
+        }
+      }
+      return { senderId, recipientId };
+    },
+    [getGroupManager]
+  );
   useEffect(() => {
     if (!stepByStep?.active) {
       resetActive();
@@ -17022,15 +17041,7 @@ const useAgentClassUpdates = (stepByStep) => {
       return;
     }
     lastIndexRef.current = idx;
-    const { sender, recipient } = WaldiezStepByStepUtils.extractEventParticipants(latest);
-    let senderId = stepByStep.participants.find((p) => p.name === sender)?.id ?? null;
-    const recipientId = stepByStep.participants.find((p) => p.name === recipient)?.id ?? null;
-    if (sender === "_Group_Tool_Executor") {
-      const groupManager = getGroupManager();
-      if (groupManager) {
-        senderId = groupManager.id;
-      }
-    }
+    const { senderId, recipientId } = getParticipantIds(stepByStep.participants, latest);
     if (senderId === null && recipientId === null) {
       return;
     }
@@ -17041,7 +17052,8 @@ const useAgentClassUpdates = (stepByStep) => {
     stepByStep?.participants,
     setActive,
     resetActive,
-    getGroupManager
+    getGroupManager,
+    getParticipantIds
   ]);
 };
 const StepByStepView = ({ flowId, stepByStep }) => {
