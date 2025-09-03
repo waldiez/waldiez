@@ -126,11 +126,11 @@ export const StepByStepView: React.FC<{
             return lastType;
         }
 
-        if (!stepByStep.active) {
-            return stepByStep.eventHistory?.length ? "Finished" : null;
+        if (!stepByStep.active && canClose) {
+            return stepByStep.eventHistory?.length > 0 ? "Finished" : null;
         }
         return "Running";
-    }, [stepByStep, reducedHistory]);
+    }, [stepByStep, reducedHistory, canClose]);
 
     if (!stepByStep?.active && !canClose) {
         return null;

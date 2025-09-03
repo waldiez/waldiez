@@ -17136,11 +17136,11 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
       return lastType;
     }
-    if (!stepByStep.active) {
-      return stepByStep.eventHistory?.length ? "Finished" : null;
+    if (!stepByStep.active && canClose) {
+      return stepByStep.eventHistory?.length > 0 ? "Finished" : null;
     }
     return "Running";
-  }, [stepByStep, reducedHistory]);
+  }, [stepByStep, reducedHistory, canClose]);
   if (!stepByStep?.active && !canClose) {
     return null;
   }
