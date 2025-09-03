@@ -17061,7 +17061,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [responseText, setResponseText] = useState("");
   const requestId = stepByStep?.activeRequest?.request_id ?? null;
-  const canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+  let canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
   const onInputChange = useCallback((e) => {
     setResponseText(e.target.value);
   }, []);
@@ -17141,6 +17141,9 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     }
     return "Running";
   }, [stepByStep, reducedHistory, canClose]);
+  if (!canClose && typeof stepByStep?.handlers?.close === "function" && badgeText?.toLowerCase() === "error") {
+    canClose = true;
+  }
   if (!stepByStep?.active && !canClose) {
     return null;
   }
@@ -17149,8 +17152,9 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
         /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
         /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
-        !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        stepByStep?.active && badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText })
+        badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
+        !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
+        !badgeText && stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Running" })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
         /* @__PURE__ */ jsx(

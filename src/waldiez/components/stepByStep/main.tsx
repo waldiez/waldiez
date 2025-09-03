@@ -26,7 +26,7 @@ export const StepByStepView: React.FC<{
     const [responseText, setResponseText] = useState("");
 
     const requestId = stepByStep?.activeRequest?.request_id ?? null;
-    const canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+    let canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
 
     const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setResponseText(e.target.value);
@@ -131,6 +131,13 @@ export const StepByStepView: React.FC<{
         }
         return "Running";
     }, [stepByStep, reducedHistory, canClose]);
+    if (
+        !canClose &&
+        typeof stepByStep?.handlers?.close === "function" &&
+        badgeText?.toLowerCase() === "error"
+    ) {
+        canClose = true;
+    }
 
     if (!stepByStep?.active && !canClose) {
         return null;
@@ -143,10 +150,9 @@ export const StepByStepView: React.FC<{
                 <div className="header-left">
                     <FaBug className="icon-bug" size={18} />
                     <div className="title">Step-by-step Panel</div>
-                    {!stepByStep?.active && <div className="badge">Finished</div>}
-                    {stepByStep?.active && badgeText && (
-                        <div className={`badge ${badgeText}`}>{badgeText}</div>
-                    )}
+                    {badgeText && <div className={`badge ${badgeText}`}>{badgeText}</div>}
+                    {!badgeText && !stepByStep?.active && <div className="badge">Finished</div>}
+                    {!badgeText && stepByStep?.active && <div className="badge">Running</div>}
                 </div>
                 <div className="header-right">
                     <button
