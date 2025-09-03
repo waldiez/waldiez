@@ -236,8 +236,7 @@
 .waldiez-step-by-step-view .json {
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius, 8px);
-
-  /* background: color-mix(in srgb, var(--card-background) 99%, var(--text-color) 18%); */
+  overflow-wrap: anywhere;
   max-height: 230px;
   overflow: auto;
   padding: 10px;
