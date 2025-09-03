@@ -13413,7 +13413,8 @@ const Modal = forwardRef((props, ref) => {
     children,
     className = "",
     hasUnsavedChanges,
-    onSaveAndClose
+    onSaveAndClose,
+    noBackdrop
   } = props;
   const modalRef = useRef(null);
   const dragRef = useRef(null);
@@ -13521,22 +13522,7 @@ const Modal = forwardRef((props, ref) => {
     }
   };
   const modalContent = /* @__PURE__ */ jsxs("div", { id: `${flowId}-modal`, className: "modal-root", children: [
-    !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
-      "div",
-      {
-        className: "modal-backdrop",
-        style: {
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          zIndex: 999
-        }
-      }
-    ),
-    !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
+    !noBackdrop && !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
       "div",
       {
         className: "modal-backdrop",
@@ -14343,6 +14329,257 @@ const NumberInput = memo((props) => {
   ] });
 });
 NumberInput.displayName = "NumberInput";
+const toPixels = (val, axis, iw, ih) => {
+  if (val === void 0 || val === "auto") {
+    return void 0;
+  }
+  if (typeof val === "number") {
+    return val;
+  }
+  const s = String(val).trim().toLowerCase();
+  const num = parseFloat(s);
+  if (Number.isNaN(num)) {
+    return void 0;
+  }
+  if (s.endsWith("px") || /^[0-9.]+$/.test(s)) {
+    return num;
+  }
+  if (s.endsWith("vw")) {
+    return num / 100 * iw;
+  }
+  if (s.endsWith("vh")) {
+    return num / 100 * ih;
+  }
+  if (s.endsWith("%")) {
+    return num / 100 * (axis === "w" ? iw : ih);
+  }
+  return void 0;
+};
+const clampOpt = (v, min2, max2) => Math.min(max2 ?? Number.POSITIVE_INFINITY, Math.max(min2 ?? Number.NEGATIVE_INFINITY, v));
+const FloatingPanel = ({
+  title = "Panel",
+  headerClassName = "",
+  headerLeft = void 0,
+  headerRight = void 0,
+  headerStyle = {},
+  minWidth = 420,
+  maxWidth = 720,
+  maxHeight = 720,
+  minHeight = 50,
+  rightOffset = 10,
+  bottomOffset = 10,
+  initialWidthVW = 35,
+  children
+}) => {
+  const headerHeight = 40;
+  const initialSize = useMemo(() => {
+    const iw = typeof window !== "undefined" ? window.innerWidth : 1200;
+    const ih = typeof window !== "undefined" ? window.innerHeight : 800;
+    const parsedMinW = toPixels(minWidth, "w", iw, ih);
+    const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
+    const parsedMinH = toPixels(minHeight, "h", iw, ih);
+    const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
+    const defaultMinW = 320;
+    const defaultMaxW = 720;
+    const defaultMinH = 200;
+    const defaultMaxH = 720;
+    const minW = parsedMinW ?? defaultMinW;
+    const maxW = parsedMaxW ?? defaultMaxW;
+    const minH = parsedMinH ?? defaultMinH;
+    const maxH = parsedMaxH ?? defaultMaxH;
+    const w0 = Math.round(iw * initialWidthVW / 100);
+    const h0 = Math.round(ih * 0.45);
+    const w = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
+    const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
+    return { w, h };
+  }, [minWidth, maxWidth, minHeight, maxHeight, initialWidthVW]);
+  const [left, setLeft] = useState(0);
+  const [top, setTop] = useState(0);
+  const [width, setWidth] = useState(initialSize.w);
+  const [height, setHeight] = useState(initialSize.h);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const lastExpanded = useRef(null);
+  const rootRef = useRef(null);
+  const dragState = useRef(
+    null
+  );
+  const clampSize = useCallback(
+    (w, h) => {
+      const iw = window.innerWidth;
+      const ih = window.innerHeight;
+      const parsedMinW = toPixels(minWidth, "w", iw, ih);
+      const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
+      const parsedMinH = toPixels(minHeight, "h", iw, ih);
+      const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
+      const viewportMaxW = iw - rightOffset - 10;
+      const viewportMaxH = ih - bottomOffset - 10;
+      const intrinsicMinW = 120;
+      const intrinsicMinH = headerHeight + 40;
+      const effMinW = Math.max(parsedMinW ?? 0, intrinsicMinW);
+      const effMaxW = Math.min(parsedMaxW ?? Number.POSITIVE_INFINITY, viewportMaxW);
+      const effMinH = Math.max(parsedMinH ?? 0, intrinsicMinH);
+      const effMaxH = Math.min(parsedMaxH ?? Number.POSITIVE_INFINITY, viewportMaxH);
+      return {
+        w: clampOpt(w, effMinW, effMaxW),
+        h: clampOpt(h, effMinH, effMaxH)
+      };
+    },
+    [bottomOffset, rightOffset, minWidth, maxWidth, minHeight, maxHeight]
+  );
+  const clampPos = useCallback(
+    (l, t, w = width, h = height) => {
+      const iw = window.innerWidth;
+      const ih = window.innerHeight;
+      const minLeft = 10;
+      const minTop = 10;
+      const maxLeft = Math.max(minLeft, iw - w - 10);
+      const maxTop = Math.max(minTop, ih - h - 10);
+      return { l: Math.min(Math.max(l, minLeft), maxLeft), t: Math.min(Math.max(t, minTop), maxTop) };
+    },
+    [height, width]
+  );
+  useEffect(() => {
+    const iw = window.innerWidth;
+    const ih = window.innerHeight;
+    const clamped = clampSize(initialSize.w, initialSize.h);
+    const l = iw - clamped.w - rightOffset;
+    const t = ih - clamped.h - bottomOffset;
+    const { l: cl, t: ct } = clampPos(l, t, clamped.w, clamped.h);
+    setWidth(clamped.w);
+    setHeight(clamped.h);
+    setLeft(cl);
+    setTop(ct);
+  }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos]);
+  useEffect(() => {
+    const onResize = () => {
+      if (isCollapsed) {
+        return;
+      }
+      const clampedSize = clampSize(width, height);
+      const clampedPos = clampPos(left, top, clampedSize.w, clampedSize.h);
+      setWidth(clampedSize.w);
+      setHeight(clampedSize.h);
+      setLeft(clampedPos.l);
+      setTop(clampedPos.t);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [isCollapsed, left, top, width, height]);
+  const onHeaderPointerDown = (e) => {
+    if (isCollapsed) {
+      return;
+    }
+    e.target.setPointerCapture?.(e.pointerId);
+    dragState.current = { startX: e.clientX, startY: e.clientY, startLeft: left, startTop: top };
+    window.addEventListener("pointermove", onHeaderPointerMove);
+    window.addEventListener("pointerup", onHeaderPointerUp, { once: true });
+  };
+  const onHeaderPointerMove = (e) => {
+    if (!dragState.current) {
+      return;
+    }
+    const dx = e.clientX - dragState.current.startX;
+    const dy = e.clientY - dragState.current.startY;
+    const { l, t } = clampPos(dragState.current.startLeft + dx, dragState.current.startTop + dy);
+    setLeft(l);
+    setTop(t);
+  };
+  const onHeaderPointerUp = () => {
+    dragState.current = null;
+    window.removeEventListener("pointermove", onHeaderPointerMove);
+  };
+  const toggleCollapsed = () => {
+    if (!isCollapsed) {
+      lastExpanded.current = { left, top, width, height };
+      setIsCollapsed(true);
+    } else {
+      const fallback = lastExpanded.current ?? { left, top, width, height };
+      const size2 = clampSize(fallback.width, fallback.height);
+      const pos = clampPos(fallback.left, fallback.top, size2.w, size2.h);
+      setWidth(size2.w);
+      setHeight(size2.h);
+      setLeft(pos.l);
+      setTop(pos.t);
+      setIsCollapsed(false);
+    }
+  };
+  const expandedStyle = {
+    position: "fixed",
+    left,
+    top,
+    width,
+    height,
+    maxWidth,
+    maxHeight,
+    minWidth,
+    minHeight,
+    zIndex: 1e6,
+    resize: "both"
+  };
+  const collapsedStyle = {
+    position: "fixed",
+    right: rightOffset,
+    bottom: bottomOffset,
+    zIndex: 1e6,
+    minWidth: 260
+  };
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      ref: rootRef,
+      className: `floating-panel ${isCollapsed ? "is-collapsed" : "is-expanded"}`,
+      style: isCollapsed ? collapsedStyle : expandedStyle,
+      "aria-expanded": !isCollapsed,
+      children: [
+        /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: `fp-header ${headerClassName}`,
+            style: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              ...headerStyle
+            },
+            onPointerDown: onHeaderPointerDown,
+            role: "toolbar",
+            "aria-label": "Panel header",
+            children: [
+              headerLeft && /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: "fp-left",
+                  style: {
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8
+                  },
+                  children: headerLeft
+                }
+              ),
+              /* @__PURE__ */ jsx("div", { className: "fp-title", title: typeof title === "string" ? title : void 0, children: title }),
+              /* @__PURE__ */ jsxs("div", { className: "fp-right", style: { display: "flex", alignItems: "center", gap: 0 }, children: [
+                /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    title: isCollapsed ? "Expand" : "Collapse",
+                    type: "button",
+                    onClick: toggleCollapsed,
+                    className: "fp-toggle",
+                    "aria-label": isCollapsed ? "Expand panel" : "Collapse panel",
+                    children: isCollapsed ? /* @__PURE__ */ jsx(FaChevronUp, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronDown, { size: 14 })
+                  }
+                ),
+                headerRight
+              ] })
+            ]
+          }
+        ),
+        !isCollapsed && /* @__PURE__ */ jsx("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx("div", { style: { padding: 12 }, children: "Your content here…" }) })
+      ]
+    }
+  );
+};
 const formatArgs = (args) => {
   try {
     if (args === null) {
@@ -14367,7 +14604,7 @@ const ResumeSpinner = () => {
     /* @__PURE__ */ jsx("span", { children: "Resuming a previously stored state…" })
   ] }) : /* @__PURE__ */ jsx("div", { children: "✅ Resume complete!" });
 };
-const getPariticipants = (ev) => {
+const getParticipants = (ev) => {
   const sender = ev.sender || ev.content.sender;
   const recipient = ev.recipient || ev.content.recipient;
   return { sender, recipient };
@@ -14382,7 +14619,7 @@ const renderEvent = (ev) => {
   switch (ev.type) {
     case "text": {
       const c = ev.content;
-      const { sender, recipient } = getPariticipants(ev);
+      const { sender, recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
           sender,
@@ -14396,7 +14633,7 @@ const renderEvent = (ev) => {
     }
     case "post_carryover_processing": {
       const c = ev.content;
-      const { sender, recipient } = getPariticipants(ev);
+      const { sender, recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
           sender,
@@ -14416,7 +14653,7 @@ const renderEvent = (ev) => {
       ] });
     }
     case "using_auto_reply": {
-      const { sender, recipient } = getPariticipants(ev);
+      const { sender, recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
         "sender=",
         sender,
@@ -14426,7 +14663,7 @@ const renderEvent = (ev) => {
     }
     case "tool_call": {
       const c = ev.content;
-      const { sender, recipient } = getPariticipants(ev);
+      const { sender, recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
           /* @__PURE__ */ jsx("span", { className: "font-medium", children: sender }),
@@ -14455,7 +14692,7 @@ const renderEvent = (ev) => {
     }
     case "execute_function": {
       const c = ev.content;
-      const { recipient } = getPariticipants(ev);
+      const { recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
           "⚡ Executing: ",
@@ -14497,7 +14734,7 @@ const renderEvent = (ev) => {
     }
     case "tool_response": {
       const c = ev.content ? ev.content : ev;
-      const { sender, recipient } = getPariticipants(ev);
+      const { sender, recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("div", { children: "🔄 Tool Response:" }),
         /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
@@ -17058,7 +17295,6 @@ const useAgentClassUpdates = (stepByStep) => {
 };
 const StepByStepView = ({ flowId, stepByStep }) => {
   useAgentClassUpdates(stepByStep);
-  const [isExpanded, setIsExpanded] = useState(true);
   const [responseText, setResponseText] = useState("");
   const requestId = stepByStep?.activeRequest?.request_id ?? null;
   const canClose = !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
@@ -17145,115 +17381,110 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     return null;
   }
   const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
-  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "header", children: [
-      /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
-        /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
-        /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Panel" }),
-        badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
-        !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-        !badgeText && stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Running" })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "header-right", children: [
-        /* @__PURE__ */ jsx(
-          "button",
-          {
-            title: isExpanded ? "Collapse" : "Expand",
-            type: "button",
-            onClick: () => setIsExpanded(!isExpanded),
-            className: "header-toggle",
-            "aria-label": isExpanded ? "Collapse panel" : "Expand panel",
-            children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
-          }
-        ),
-        mayClose && /* @__PURE__ */ jsx(
-          "button",
-          {
-            title: "Close",
-            type: "button",
-            onClick: stepByStep?.handlers?.close,
-            className: "header-toggle",
-            "aria-label": "Close panel",
-            children: /* @__PURE__ */ jsx(FaX, { size: 14 })
-          }
-        )
-      ] })
-    ] }),
-    isExpanded && /* @__PURE__ */ jsxs("div", { className: "content", children: [
-      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "btn btn-primary",
-            type: "button",
-            onClick: () => onControl("continue"),
-            disabled: !stepByStep?.pendingControlInput,
-            children: [
-              /* @__PURE__ */ jsx(FaStepForward, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: "Continue" })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "btn btn-secondary",
-            type: "button",
-            onClick: () => onControl("run"),
-            disabled: !stepByStep?.pendingControlInput,
-            children: [
-              /* @__PURE__ */ jsx(FaPlay, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: "Run" })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            className: "btn btn-danger",
-            type: "button",
-            onClick: () => onControl("quit"),
-            disabled: !stepByStep?.pendingControlInput,
-            children: [
-              /* @__PURE__ */ jsx(FaStop, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: "Quit" })
-            ]
-          }
-        )
-      ] }),
-      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
-        /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
-        /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              className: "input",
-              placeholder: "Type your response... (Enter to send)",
-              value: responseText,
-              type: stepByStep.activeRequest.password === true ? "password" : "text",
-              onChange: onInputChange,
-              onKeyDown: onInputKeyDown
-            }
-          ),
-          /* @__PURE__ */ jsx(
+  const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
+    /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
+    /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Run" }),
+    badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
+    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
+    !badgeText && stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Running" })
+  ] });
+  const headerRight = mayClose ? /* @__PURE__ */ jsx(
+    "button",
+    {
+      title: "Close",
+      type: "button",
+      onClick: stepByStep?.handlers?.close,
+      className: "header-toggle",
+      "aria-label": "Close panel",
+      children: /* @__PURE__ */ jsx(FaX, { size: 14 })
+    }
+  ) : void 0;
+  return /* @__PURE__ */ jsx("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsx(
+    FloatingPanel,
+    {
+      title: "",
+      headerLeft,
+      headerRight,
+      maxHeight: "80vh",
+      minHeight: 100,
+      minWidth: 420,
+      maxWidth: "80vw",
+      children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
+        stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+          /* @__PURE__ */ jsxs(
             "button",
             {
               className: "btn btn-primary",
               type: "button",
-              onClick: onRespond,
-              disabled: !requestId || !responseText.trim(),
-              children: "Send"
+              onClick: () => onControl("continue"),
+              disabled: !stepByStep?.pendingControlInput,
+              children: [
+                /* @__PURE__ */ jsx(FaStepForward, {}),
+                " ",
+                /* @__PURE__ */ jsx("span", { children: "Continue" })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxs(
+            "button",
+            {
+              className: "btn btn-secondary",
+              type: "button",
+              onClick: () => onControl("run"),
+              disabled: !stepByStep?.pendingControlInput,
+              children: [
+                /* @__PURE__ */ jsx(FaPlay, {}),
+                " ",
+                /* @__PURE__ */ jsx("span", { children: "Run" })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxs(
+            "button",
+            {
+              className: "btn btn-danger",
+              type: "button",
+              onClick: () => onControl("quit"),
+              disabled: !stepByStep?.pendingControlInput,
+              children: [
+                /* @__PURE__ */ jsx(FaStop, {}),
+                " ",
+                /* @__PURE__ */ jsx("span", { children: "Quit" })
+              ]
             }
           )
-        ] })
-      ] }),
-      reducedHistory.length > 0 && /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) })
-    ] })
-  ] });
+        ] }),
+        stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+          /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
+          /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+          /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                className: "input",
+                placeholder: "Type your response... (Enter to send)",
+                value: responseText,
+                type: stepByStep.activeRequest.password === true ? "password" : "text",
+                onChange: onInputChange,
+                onKeyDown: onInputKeyDown
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                className: "btn btn-primary",
+                type: "button",
+                onClick: onRespond,
+                disabled: !requestId || !responseText.trim(),
+                children: "Send"
+              }
+            )
+          ] })
+        ] }),
+        reducedHistory.length > 0 && /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) })
+      ] })
+    }
+  ) });
 };
 StepByStepView.displayName = "WaldiezStepByStepView";
 const useStringList = (props) => {

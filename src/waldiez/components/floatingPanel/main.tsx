@@ -1,0 +1,292 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
+/* eslint-disable complexity */
+import React, { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+
+import { type CSSSize, clampOpt, toPixels } from "@waldiez/components/floatingPanel/utils";
+
+type FloatingPanelProps = {
+    title?: React.ReactNode | string;
+    headerLeft?: React.ReactNode | string;
+    headerRight?: React.ReactNode | string;
+    headerClassName?: string;
+    headerStyle?: CSSProperties;
+    minWidth?: CSSSize; // default 320
+    maxWidth?: CSSSize; // default 720
+    maxHeight?: CSSSize; // default 720
+    minHeight?: CSSSize; // default 50;
+    rightOffset?: number; // default 10
+    bottomOffset?: number; // default 10
+    initialWidthVW?: number; // default 35 (vw)
+    children?: React.ReactNode;
+};
+
+export const FloatingPanel: React.FC<FloatingPanelProps> = ({
+    title = "Panel",
+    headerClassName = "",
+    headerLeft = undefined,
+    headerRight = undefined,
+    headerStyle = {},
+    minWidth = 420,
+    maxWidth = 720,
+    maxHeight = 720,
+    minHeight = 50,
+    rightOffset = 10,
+    bottomOffset = 10,
+    initialWidthVW = 35,
+    children,
+}) => {
+    const headerHeight = 40;
+    // Derived initial width/height based on viewport
+    // eslint-disable-next-line max-statements
+    const initialSize = useMemo(() => {
+        const iw = typeof window !== "undefined" ? window.innerWidth : 1200;
+        const ih = typeof window !== "undefined" ? window.innerHeight : 800;
+
+        // Interpret props relative to viewport
+        const parsedMinW = toPixels(minWidth, "w", iw, ih); // undefined → no min
+        const parsedMaxW = toPixels(maxWidth, "w", iw, ih); // undefined → no max
+        const parsedMinH = toPixels(minHeight, "h", iw, ih);
+        const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
+
+        // Reasonable defaults if both sides are missing
+        const defaultMinW = 320;
+        const defaultMaxW = 720;
+        const defaultMinH = 200;
+        const defaultMaxH = 720;
+
+        const minW = parsedMinW ?? defaultMinW;
+        const maxW = parsedMaxW ?? defaultMaxW;
+        const minH = parsedMinH ?? defaultMinH;
+        const maxH = parsedMaxH ?? defaultMaxH;
+
+        const w0 = Math.round((iw * initialWidthVW) / 100);
+        const h0 = Math.round(ih * 0.45);
+
+        const w = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
+        const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
+        return { w, h };
+    }, [minWidth, maxWidth, minHeight, maxHeight, initialWidthVW]);
+
+    // Position and size (used only when expanded)
+    const [left, setLeft] = useState<number>(0);
+    const [top, setTop] = useState<number>(0);
+    const [width, setWidth] = useState<number>(initialSize.w);
+    const [height, setHeight] = useState<number>(initialSize.h);
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
+    // Remember last expanded size/position to restore on expand
+    const lastExpanded = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+
+    const rootRef = useRef<HTMLDivElement | null>(null);
+    const dragState = useRef<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(
+        null,
+    );
+
+    // Clamp helpers
+    const clampSize = useCallback(
+        (w: number, h: number) => {
+            const iw = window.innerWidth;
+            const ih = window.innerHeight;
+
+            const parsedMinW = toPixels(minWidth, "w", iw, ih);
+            const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
+            const parsedMinH = toPixels(minHeight, "h", iw, ih);
+            const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
+
+            // Keep inside viewport no matter what
+            const viewportMaxW = iw - rightOffset - 10;
+            const viewportMaxH = ih - bottomOffset - 10;
+
+            const intrinsicMinW = 120; // tiny safety to keep header/actions usable
+            const intrinsicMinH = headerHeight + 40;
+
+            const effMinW = Math.max(parsedMinW ?? 0, intrinsicMinW);
+            const effMaxW = Math.min(parsedMaxW ?? Number.POSITIVE_INFINITY, viewportMaxW);
+
+            const effMinH = Math.max(parsedMinH ?? 0, intrinsicMinH);
+            const effMaxH = Math.min(parsedMaxH ?? Number.POSITIVE_INFINITY, viewportMaxH);
+
+            return {
+                w: clampOpt(w, effMinW, effMaxW),
+                h: clampOpt(h, effMinH, effMaxH),
+            };
+        },
+        [bottomOffset, rightOffset, minWidth, maxWidth, minHeight, maxHeight],
+    );
+
+    const clampPos = useCallback(
+        (l: number, t: number, w = width, h = height) => {
+            const iw = window.innerWidth;
+            const ih = window.innerHeight;
+            const minLeft = 10;
+            const minTop = 10;
+            const maxLeft = Math.max(minLeft, iw - w - 10);
+            const maxTop = Math.max(minTop, ih - h - 10);
+            return { l: Math.min(Math.max(l, minLeft), maxLeft), t: Math.min(Math.max(t, minTop), maxTop) };
+        },
+        [height, width],
+    );
+
+    // Initialize at bottom-right (expanded layout uses left/top)
+    useEffect(() => {
+        const iw = window.innerWidth;
+        const ih = window.innerHeight;
+        const clamped = clampSize(initialSize.w, initialSize.h);
+        const l = iw - clamped.w - rightOffset;
+        const t = ih - clamped.h - bottomOffset;
+        const { l: cl, t: ct } = clampPos(l, t, clamped.w, clamped.h);
+        setWidth(clamped.w);
+        setHeight(clamped.h);
+        setLeft(cl);
+        setTop(ct);
+    }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos]);
+
+    // Window resize: keep panel in view
+    useEffect(() => {
+        const onResize = () => {
+            // If collapsed: nothing to track, it anchors to bottom-right via CSS
+            if (isCollapsed) {
+                return;
+            }
+            const clampedSize = clampSize(width, height);
+            const clampedPos = clampPos(left, top, clampedSize.w, clampedSize.h);
+            setWidth(clampedSize.w);
+            setHeight(clampedSize.h);
+            setLeft(clampedPos.l);
+            setTop(clampedPos.t);
+        };
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isCollapsed, left, top, width, height]);
+
+    // Drag handlers (header only)
+    const onHeaderPointerDown: React.PointerEventHandler<HTMLDivElement> = e => {
+        if (isCollapsed) {
+            return;
+        }
+        (e.target as Element).setPointerCapture?.(e.pointerId);
+        dragState.current = { startX: e.clientX, startY: e.clientY, startLeft: left, startTop: top };
+        window.addEventListener("pointermove", onHeaderPointerMove);
+        window.addEventListener("pointerup", onHeaderPointerUp, { once: true });
+    };
+
+    const onHeaderPointerMove = (e: PointerEvent) => {
+        if (!dragState.current) {
+            return;
+        }
+        const dx = e.clientX - dragState.current.startX;
+        const dy = e.clientY - dragState.current.startY;
+        const { l, t } = clampPos(dragState.current.startLeft + dx, dragState.current.startTop + dy);
+        setLeft(l);
+        setTop(t);
+    };
+
+    const onHeaderPointerUp = () => {
+        dragState.current = null;
+        window.removeEventListener("pointermove", onHeaderPointerMove);
+    };
+
+    // Collapse / Expand
+    const toggleCollapsed = () => {
+        if (!isCollapsed) {
+            // Going to collapsed: remember expanded geometry
+            lastExpanded.current = { left, top, width, height };
+            setIsCollapsed(true);
+        } else {
+            // Going to expanded: restore geometry (clamped)
+            const fallback = lastExpanded.current ?? { left, top, width, height };
+            const size = clampSize(fallback.width, fallback.height);
+            const pos = clampPos(fallback.left, fallback.top, size.w, size.h);
+            setWidth(size.w);
+            setHeight(size.h);
+            setLeft(pos.l);
+            setTop(pos.t);
+            setIsCollapsed(false);
+        }
+    };
+
+    // Styles differ when collapsed (use bottom/right anchoring)
+    const expandedStyle: React.CSSProperties = {
+        position: "fixed",
+        left,
+        top,
+        width,
+        height,
+        maxWidth,
+        maxHeight,
+        minWidth,
+        minHeight,
+        zIndex: 1000000,
+        resize: "both",
+    };
+
+    const collapsedStyle: React.CSSProperties = {
+        position: "fixed",
+        right: rightOffset,
+        bottom: bottomOffset,
+        zIndex: 1000000,
+        minWidth: 260,
+    };
+
+    return (
+        <div
+            ref={rootRef}
+            className={`floating-panel ${isCollapsed ? "is-collapsed" : "is-expanded"}`}
+            style={isCollapsed ? collapsedStyle : expandedStyle}
+            aria-expanded={!isCollapsed}
+        >
+            <div
+                className={`fp-header ${headerClassName}`}
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    ...headerStyle,
+                }}
+                onPointerDown={onHeaderPointerDown}
+                role="toolbar"
+                aria-label="Panel header"
+            >
+                {headerLeft && (
+                    <div
+                        className="fp-left"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                        }}
+                    >
+                        {headerLeft}
+                    </div>
+                )}
+                <div className="fp-title" title={typeof title === "string" ? title : undefined}>
+                    {title}
+                </div>
+                <div className="fp-right" style={{ display: "flex", alignItems: "center", gap: 0 }}>
+                    <button
+                        title={isCollapsed ? "Expand" : "Collapse"}
+                        type="button"
+                        onClick={toggleCollapsed}
+                        className="fp-toggle"
+                        aria-label={isCollapsed ? "Expand panel" : "Collapse panel"}
+                    >
+                        {isCollapsed ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
+                    </button>
+                    {headerRight}
+                </div>
+            </div>
+
+            {/* Content only renders when expanded */}
+            {!isCollapsed && (
+                <div className="fp-content">
+                    {children ?? <div style={{ padding: 12 }}>Your content here…</div>}
+                </div>
+            )}
+        </div>
+    );
+};

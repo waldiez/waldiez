@@ -65,7 +65,7 @@ describe("StepByStepView", () => {
         it("should render successfully when active", () => {
             _renderView(defaultStepByStep);
 
-            expect(screen.getByText("Step-by-step Panel")).toBeInTheDocument();
+            expect(screen.getByText("Step-by-step Run")).toBeInTheDocument();
             expect(screen.getByTestId("icon-bug")).toBeInTheDocument();
         });
 
@@ -87,7 +87,7 @@ describe("StepByStepView", () => {
             };
             _renderView(inactiveStepByStep);
 
-            expect(screen.getByText("Step-by-step Panel")).toBeInTheDocument();
+            expect(screen.getByText("Step-by-step Run")).toBeInTheDocument();
             expect(screen.getByText("Finished")).toBeInTheDocument();
         });
     });
@@ -472,7 +472,7 @@ describe("StepByStepView", () => {
 
             _renderView(stepByStepWithoutHandlers);
 
-            expect(screen.getByText("Step-by-step Panel")).toBeInTheDocument();
+            expect(screen.getByText("Step-by-step Run")).toBeInTheDocument();
         });
 
         it("should handle undefined activeRequest.request_id", () => {

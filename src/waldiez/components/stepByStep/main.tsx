@@ -5,10 +5,11 @@
 /* eslint-disable complexity */
 import React, { useCallback, useMemo, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
-import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-icons/fa6";
+import { FaBug, FaPlay, FaStop, FaX } from "react-icons/fa6";
 
 import { nanoid } from "nanoid";
 
+import { FloatingPanel } from "@waldiez/components/floatingPanel";
 import { EventConsole } from "@waldiez/components/stepByStep/console";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
@@ -22,7 +23,6 @@ export const StepByStepView: React.FC<{
     className?: string;
 }> = ({ flowId, stepByStep }) => {
     useAgentClassUpdates(stepByStep);
-    const [isExpanded, setIsExpanded] = useState(true);
     const [responseText, setResponseText] = useState("");
 
     const requestId = stepByStep?.activeRequest?.request_id ?? null;
@@ -138,45 +138,37 @@ export const StepByStepView: React.FC<{
     }
     // if the state is "error", enable close (if there is such handler)
     const mayClose = canClose || (!!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error");
-
+    const headerLeft = (
+        <div className="header">
+            <FaBug className="icon-bug" size={18} />
+            <div className="title">Step-by-step Run</div>
+            {badgeText && <div className={`badge ${badgeText}`}>{badgeText}</div>}
+            {!badgeText && !stepByStep?.active && <div className="badge">Finished</div>}
+            {!badgeText && stepByStep?.active && <div className="badge">Running</div>}
+        </div>
+    );
+    const headerRight = mayClose ? (
+        <button
+            title="Close"
+            type="button"
+            onClick={stepByStep?.handlers?.close}
+            className="header-toggle"
+            aria-label="Close panel"
+        >
+            <FaX size={14} />
+        </button>
+    ) : undefined;
     return (
         <div className="waldiez-step-by-step-view" data-testid={`step-by-step-${flowId}`}>
-            {/* Header */}
-            <div className="header">
-                <div className="header-left">
-                    <FaBug className="icon-bug" size={18} />
-                    <div className="title">Step-by-step Panel</div>
-                    {badgeText && <div className={`badge ${badgeText}`}>{badgeText}</div>}
-                    {!badgeText && !stepByStep?.active && <div className="badge">Finished</div>}
-                    {!badgeText && stepByStep?.active && <div className="badge">Running</div>}
-                </div>
-                <div className="header-right">
-                    <button
-                        title={isExpanded ? "Collapse" : "Expand"}
-                        type="button"
-                        onClick={() => setIsExpanded(!isExpanded)}
-                        className="header-toggle"
-                        aria-label={isExpanded ? "Collapse panel" : "Expand panel"}
-                    >
-                        {isExpanded ? <FaChevronDown size={14} /> : <FaChevronUp size={14} />}
-                    </button>
-
-                    {mayClose && (
-                        <button
-                            title="Close"
-                            type="button"
-                            onClick={stepByStep?.handlers?.close}
-                            className="header-toggle"
-                            aria-label="Close panel"
-                        >
-                            <FaX size={14} />
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            {/* Content */}
-            {isExpanded && (
+            <FloatingPanel
+                title={""}
+                headerLeft={headerLeft}
+                headerRight={headerRight}
+                maxHeight={"80vh"}
+                minHeight={100}
+                minWidth={420}
+                maxWidth={"80vw"}
+            >
                 <div className="content">
                     {/* Controls (if pending action) */}
                     {stepByStep?.pendingControlInput && (
@@ -239,7 +231,7 @@ export const StepByStepView: React.FC<{
                         </div>
                     )}
                 </div>
-            )}
+            </FloatingPanel>
         </div>
     );
 };

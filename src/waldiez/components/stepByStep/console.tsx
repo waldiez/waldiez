@@ -107,7 +107,7 @@ const ResumeSpinner = () => {
     );
 };
 
-const getPariticipants = (ev: WaldiezEvent) => {
+const getParticipants = (ev: WaldiezEvent) => {
     const sender = ev.sender || ev.content.sender;
     const recipient = ev.recipient || ev.content.recipient;
     return { sender, recipient };
@@ -124,7 +124,7 @@ const renderEvent = (ev: WaldiezEvent) => {
     switch (ev.type) {
         case "text": {
             const c = ev.content as TextContent;
-            const { sender, recipient } = getPariticipants(ev);
+            const { sender, recipient } = getParticipants(ev);
             return (
                 <div>
                     <div className="text-amber-500 font-semibold">
@@ -137,7 +137,7 @@ const renderEvent = (ev: WaldiezEvent) => {
 
         case "post_carryover_processing": {
             const c = ev.content as PostCarryoverContent;
-            const { sender, recipient } = getPariticipants(ev);
+            const { sender, recipient } = getParticipants(ev);
             return (
                 <div>
                     <div className="text-pink-500 font-semibold">
@@ -158,7 +158,7 @@ const renderEvent = (ev: WaldiezEvent) => {
         }
 
         case "using_auto_reply": {
-            const { sender, recipient } = getPariticipants(ev);
+            const { sender, recipient } = getParticipants(ev);
             return (
                 <div className="text-gray-700">
                     sender={sender}, recipient={recipient}
@@ -168,7 +168,7 @@ const renderEvent = (ev: WaldiezEvent) => {
 
         case "tool_call": {
             const c = ev.content as ToolCallContent;
-            const { sender, recipient } = getPariticipants(ev);
+            const { sender, recipient } = getParticipants(ev);
             return (
                 <div>
                     <div className="text-gray-700 mb-1">
@@ -198,7 +198,7 @@ const renderEvent = (ev: WaldiezEvent) => {
 
         case "execute_function": {
             const c = ev.content as ExecuteFunctionContent;
-            const { recipient } = getPariticipants(ev);
+            const { recipient } = getParticipants(ev);
             return (
                 <div>
                     <div className="font-semibold">⚡ Executing: {c.func_name}</div>
@@ -248,7 +248,7 @@ const renderEvent = (ev: WaldiezEvent) => {
             const c = (ev as any).content
                 ? (ev.content as ToolResponseContent)
                 : (ev as any as ToolResponseContent);
-            const { sender, recipient } = getPariticipants(ev);
+            const { sender, recipient } = getParticipants(ev);
             return (
                 <div>
                     <div>🔄 Tool Response:</div>

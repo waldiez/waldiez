@@ -1,0 +1,78 @@
+.floating-panel {
+  background: var(--card-background, #111);
+  color: var(--card-text, #eee);
+  border: 1px solid var(--card-border, rgb(255 255 255 / 12%));
+  border-radius: var(--card-radius, 10px);
+  box-shadow: var(--card-shadow, 0 8px 30px rgb(0 0 0 / 25%));
+  overflow: hidden;
+  user-select: none;
+}
+
+.floating-panel.is-collapsed {
+  width: auto; /* shrink to content */
+  max-width: 420px;
+}
+
+.floating-panel .fp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 10px;
+  background: var(--card-header, rgb(255 255 255 / 6%));
+  cursor: move;
+}
+
+/* Title text */
+.floating-panel .fp-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60vw;
+}
+
+/* Toggle button */
+.floating-panel .fp-toggle {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--card-text);
+  border: none !important;
+}
+
+.floating-panel .fp-toggle:hover {
+  background: rgb(255 255 255 / 14%);
+}
+
+/* Content area */
+.floating-panel .fp-content {
+  height: calc(100% - 40px); /* minus header */
+
+  /* overflow: auto; */
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-background, #111);
+}
+
+/* Resize handle (bottom-right corner only) */
+.floating-panel .fp-resize-handle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+
+  /* simple visual glyph */
+  background: linear-gradient(135deg, transparent 50%, rgb(255 255 255 / 35%) 50%) right bottom/12px 12px
+    no-repeat;
+  pointer-events: auto;
+}

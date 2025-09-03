@@ -38,6 +38,7 @@ type ModalProps = {
     hasUnsavedChanges?: boolean;
     preventCloseIfUnsavedChanges?: boolean;
     noHeader?: boolean;
+    noBackdrop?: boolean;
 };
 
 // Account for modal padding: header, borders, content padding
@@ -77,6 +78,7 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
         className = "",
         hasUnsavedChanges,
         onSaveAndClose,
+        noBackdrop,
     } = props;
 
     // Refs and local state for width management
@@ -232,23 +234,8 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
 
     const modalContent = (
         <div id={`${flowId}-modal`} className="modal-root">
-            {/* Modal backdrop */}
-            {!isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && (
-                <div
-                    className="modal-backdrop"
-                    style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        zIndex: 999,
-                    }}
-                />
-            )}
             {/* Backdrop - only show when not minimized */}
-            {!isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && (
+            {!noBackdrop && !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && (
                 <div
                     className="modal-backdrop"
                     style={{
