@@ -10,7 +10,7 @@ import { FaBug, FaChevronDown, FaChevronUp, FaPlay, FaStop, FaX } from "react-ic
 import { nanoid } from "nanoid";
 
 import { EventConsole } from "@waldiez/components/stepByStep/console";
-import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hook";
+import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
 
 /**
