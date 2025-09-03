@@ -235,22 +235,27 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         if self._event_history:
             self._event_history.popleft()
 
-    def emit_event(self, event: Union["BaseEvent", "BaseMessage"]) -> None:
+    def emit_event(
+        self, event: Union["BaseEvent", "BaseMessage", dict[str, Any]]
+    ) -> None:
         """Emit an event.
 
         Parameters
         ----------
-        event : BaseEvent | BaseMessage
+        event : BaseEvent | BaseMessage | dict[str, Any]
             The event to emit.
         """
-        event_info = event.model_dump(
-            mode="json", exclude_none=True, fallback=str
-        )
-        event_info["count"] = self._event_count
-        event_info["sender"] = getattr(event, "sender", self._last_sender)
-        event_info["recipient"] = getattr(
-            event, "recipient", self._last_recipient
-        )
+        if not isinstance(event, dict):
+            event_info = event.model_dump(
+                mode="json", exclude_none=True, fallback=str
+            )
+            event_info["count"] = self._event_count
+            event_info["sender"] = getattr(event, "sender", self._last_sender)
+            event_info["recipient"] = getattr(
+                event, "recipient", self._last_recipient
+            )
+        else:
+            event_info = event
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
     # noinspection PyTypeHints
@@ -615,10 +620,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     "Step-by-step execution stopped before event processing"
                 )
                 return False
-
+            self.emit_event(result["event_info"])
             # Handle breakpoint logic
             if result["should_break"]:
-                self.emit_event(event)
                 if not self._handle_step_interaction():
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
@@ -627,7 +631,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
 
             # Process the actual event
-            WaldiezBaseRunner.process_event(event)
+            WaldiezBaseRunner.process_event(event, skip_send=True)
             self._processed_events += 1
 
         except Exception as e:
@@ -722,10 +726,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     "Async step-by-step execution stopped before event processing"
                 )
                 return False
-
+            self.emit_event(result["event_info"])
             # Handle breakpoint logic
             if result["should_break"]:
-                self.emit_event(event)
                 if not await self._a_handle_step_interaction():
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
@@ -734,7 +737,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
 
             # Process the actual event
-            await WaldiezBaseRunner.a_process_event(event)
+            await WaldiezBaseRunner.a_process_event(event, skip_send=True)
             self._processed_events += 1
 
         except Exception as e:

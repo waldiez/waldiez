@@ -394,13 +394,18 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         return output_file, uploads_root_path
 
     @staticmethod
-    async def a_process_event(event: Union["BaseEvent", "BaseMessage"]) -> None:
+    async def a_process_event(
+        event: Union["BaseEvent", "BaseMessage"],
+        skip_send: bool = False,
+    ) -> None:
         """Process an event or message asynchronously.
 
         Parameters
         ----------
         event : Union[BaseEvent, BaseMessage]
             The event or message to process.
+        skip_send : bool
+            Skip sending the event.
         """
         if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
@@ -416,17 +421,22 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     prompt, password=password
                 )
                 await event.content.respond(user_input)
-            else:
+            elif not skip_send:
                 WaldiezBaseRunner._send(event)
 
     @staticmethod
-    def process_event(event: Union["BaseEvent", "BaseMessage"]) -> None:
+    def process_event(
+        event: Union["BaseEvent", "BaseMessage"],
+        skip_send: bool = False,
+    ) -> None:
         """Process an event or message synchronously.
 
         Parameters
         ----------
         event : Union[BaseEvent, BaseMessage]
             The event or message to process.
+        skip_send : bool
+            Skip sending the event.
         """
         if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
@@ -442,7 +452,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     prompt, password=password
                 )
                 event.content.respond(user_input)
-            else:
+            elif not skip_send:
                 WaldiezBaseRunner._send(event)
 
     def before_run(

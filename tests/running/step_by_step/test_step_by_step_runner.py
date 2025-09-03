@@ -160,7 +160,7 @@ def test_on_event_breaks_and_continues(
         with patch(f"{BASE_RUNNER}.process_event") as mock_process:
             result = runner._on_event(text_event)
             assert result is True
-            mock_process.assert_called_once_with(text_event)
+            mock_process.assert_called_once_with(text_event, skip_send=True)
 
     # Patch _handle_step_interaction to return False (stop)
     with patch.object(runner, "_handle_step_interaction", return_value=False):
@@ -187,7 +187,7 @@ async def test_async_on_event_continues_and_stops(
         ) as mock_process:
             result = await runner._a_on_event(text_event)
             assert result is True
-            mock_process.assert_called_once_with(text_event)
+            mock_process.assert_called_once_with(text_event, skip_send=True)
 
     # Patch _a_handle_step_interaction to return False (stop)
     with patch.object(
