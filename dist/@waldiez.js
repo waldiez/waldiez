@@ -17061,7 +17061,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [responseText, setResponseText] = useState("");
   const requestId = stepByStep?.activeRequest?.request_id ?? null;
-  let canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+  const canClose = !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
   const onInputChange = useCallback((e) => {
     setResponseText(e.target.value);
   }, []);
@@ -17141,12 +17141,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     }
     return "Running";
   }, [stepByStep, reducedHistory, canClose]);
-  if (!canClose && typeof stepByStep?.handlers?.close === "function" && badgeText?.toLowerCase() === "error") {
-    canClose = true;
-  }
   if (!stepByStep?.active && !canClose) {
     return null;
   }
+  const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
   return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
     /* @__PURE__ */ jsxs("div", { className: "header", children: [
       /* @__PURE__ */ jsxs("div", { className: "header-left", children: [
@@ -17168,7 +17166,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
             children: isExpanded ? /* @__PURE__ */ jsx(FaChevronDown, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronUp, { size: 14 })
           }
         ),
-        !stepByStep?.active && canClose && /* @__PURE__ */ jsx(
+        mayClose && /* @__PURE__ */ jsx(
           "button",
           {
             title: "Close",

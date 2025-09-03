@@ -26,7 +26,8 @@ export const StepByStepView: React.FC<{
     const [responseText, setResponseText] = useState("");
 
     const requestId = stepByStep?.activeRequest?.request_id ?? null;
-    let canClose = !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+    const canClose =
+        !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
 
     const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setResponseText(e.target.value);
@@ -131,17 +132,12 @@ export const StepByStepView: React.FC<{
         }
         return "Running";
     }, [stepByStep, reducedHistory, canClose]);
-    if (
-        !canClose &&
-        typeof stepByStep?.handlers?.close === "function" &&
-        badgeText?.toLowerCase() === "error"
-    ) {
-        canClose = true;
-    }
 
     if (!stepByStep?.active && !canClose) {
         return null;
     }
+    // if the state is "error", enable close (if there is such handler)
+    const mayClose = canClose || (!!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error");
 
     return (
         <div className="waldiez-step-by-step-view" data-testid={`step-by-step-${flowId}`}>
@@ -165,7 +161,7 @@ export const StepByStepView: React.FC<{
                         {isExpanded ? <FaChevronDown size={14} /> : <FaChevronUp size={14} />}
                     </button>
 
-                    {!stepByStep?.active && canClose && (
+                    {mayClose && (
                         <button
                             title="Close"
                             type="button"
