@@ -67,8 +67,14 @@ export const SideBar = (props: SidebarViewProps) => {
                         onClick={onOpenEditModal}
                         title="Edit flow"
                     >
-                        <FaEdit />
-                        {!isCollapsed && <span>Edit flow</span>}
+                        {isCollapsed ? (
+                            <FaEdit />
+                        ) : (
+                            <div className="flex-align-center">
+                                <FaEdit />
+                                <div>Edit flow</div>
+                            </div>
+                        )}
                     </li>
                     <li
                         className="clickable"
@@ -76,8 +82,14 @@ export const SideBar = (props: SidebarViewProps) => {
                         data-testid="show-models"
                         onClick={onShowModels}
                     >
-                        <LuBrain />
-                        {!isCollapsed && <span>Models</span>}
+                        {isCollapsed ? (
+                            <LuBrain />
+                        ) : (
+                            <div className="flex-align-center">
+                                <LuBrain />
+                                <div>Models</div>
+                            </div>
+                        )}
                     </li>
                     <li
                         className="clickable"
@@ -85,8 +97,14 @@ export const SideBar = (props: SidebarViewProps) => {
                         data-testid="show-tools"
                         onClick={onShowTools}
                     >
-                        <FaTools />
-                        {!isCollapsed && <span>Tools</span>}
+                        {isCollapsed ? (
+                            <FaTools />
+                        ) : (
+                            <div className="flex-align-center">
+                                <FaTools />
+                                <div>Tools</div>
+                            </div>
+                        )}
                     </li>
                     <li
                         className="clickable expandable"

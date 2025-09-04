@@ -165,7 +165,7 @@ export const StepByStepView: React.FC<{
                 headerLeft={headerLeft}
                 headerRight={headerRight}
                 maxHeight={"80vh"}
-                minHeight={100}
+                minHeight={320}
                 minWidth={420}
                 maxWidth={"80vw"}
             >
@@ -225,9 +225,13 @@ export const StepByStepView: React.FC<{
                         </div>
                     )}
                     {/* Event history / raw logs */}
-                    {reducedHistory.length > 0 && (
+                    {reducedHistory.length > 0 ? (
                         <div className="event-history">
                             <EventConsole events={reducedHistory} autoScroll />
+                        </div>
+                    ) : (
+                        <div className="event-history">
+                            <EventConsole events={[{ type: "empty", content: "No messages yet..." }]} />
                         </div>
                     )}
                 </div>

@@ -7,7 +7,7 @@ import stripAnsi from "strip-ansi";
 import { nanoid } from "nanoid";
 import JSZip from "jszip";
 import * as React from "react";
-import React__default, { createContext, useContext, useState, useLayoutEffect, useRef, useCallback, useEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
+import React__default, { createContext, useContext, useState, useEffect, useLayoutEffect, useRef, useCallback, memo, forwardRef, useMemo, useImperativeHandle } from "react";
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -4146,6 +4146,31 @@ const WaldiezThemeProvider = ({ children, initialDark }) => {
     setIsDarkMode(dark);
     setIsDark(dark);
   };
+  useEffect(() => {
+    if (typeof initialDark === "boolean") {
+      setIsDarkMode(initialDark);
+    }
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "attributes" && mutation.attributeName === "class") {
+          const bodyClassList = document.body.classList;
+          const externalIsDark = bodyClassList.contains("waldiez-dark") || bodyClassList.contains("dark-theme") || // Add other possible dark class names
+          !bodyClassList.contains("waldiez-light") && !bodyClassList.contains("light-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          setIsDark((prev) => {
+            if (prev !== externalIsDark) {
+              return externalIsDark;
+            }
+            return prev;
+          });
+        }
+      });
+    });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+    return () => observer.disconnect();
+  }, [initialDark]);
   return /* @__PURE__ */ jsx(WaldiezThemeContext.Provider, { value: { isDark, toggleTheme, setTheme }, children });
 };
 const INITIAL_AGENT_SIZE = {
@@ -14375,7 +14400,8 @@ const FloatingPanel = ({
   minHeight = 50,
   rightOffset = 10,
   bottomOffset = 10,
-  initialWidthVW = 35,
+  initialWidth = "35vw",
+  initialHeight = 100,
   children
 }) => {
   const headerHeight = 40;
@@ -14388,18 +14414,18 @@ const FloatingPanel = ({
     const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
     const defaultMinW = 320;
     const defaultMaxW = 720;
-    const defaultMinH = 200;
+    const defaultMinH = 100;
     const defaultMaxH = 720;
     const minW = parsedMinW ?? defaultMinW;
     const maxW = parsedMaxW ?? defaultMaxW;
     const minH = parsedMinH ?? defaultMinH;
     const maxH = parsedMaxH ?? defaultMaxH;
-    const w0 = Math.round(iw * initialWidthVW / 100);
-    const h0 = Math.round(ih * 0.45);
+    const w0 = toPixels(initialWidth, "w", iw, ih) ?? Math.round(iw * 35 / 100);
+    const h0 = toPixels(initialHeight, "h", iw, ih) ?? 300;
     const w = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
     const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
     return { w, h };
-  }, [minWidth, maxWidth, minHeight, maxHeight, initialWidthVW]);
+  }, [minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [width, setWidth] = useState(initialSize.w);
@@ -14511,7 +14537,7 @@ const FloatingPanel = ({
     }
   };
   const expandedStyle = {
-    position: "fixed",
+    position: "absolute",
     left,
     top,
     width,
@@ -14524,7 +14550,7 @@ const FloatingPanel = ({
     resize: "both"
   };
   const collapsedStyle = {
-    position: "fixed",
+    position: "absolute",
     right: rightOffset,
     bottom: bottomOffset,
     zIndex: 1e6,
@@ -14624,6 +14650,10 @@ const renderEvent = (ev) => {
     }
   }
   switch (ev.type) {
+    case "empty": {
+      const c = ev;
+      return /* @__PURE__ */ jsx("div", { className: "text-gray-700 font-large", children: c.content });
+    }
     case "text": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
@@ -14805,13 +14835,20 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
     {
       className: ["flex-align-center flex-column full-height json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
-      children: /* @__PURE__ */ jsx("div", { ref: listRef, className: "flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: "entry", children: [
-        printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
-          "Raw event: ",
-          JSON.stringify(ev, null, 2)
-        ] }),
-        renderEvent(ev)
-      ] }, ev.id ?? idx)) })
+      children: /* @__PURE__ */ jsx(
+        "div",
+        {
+          ref: listRef,
+          className: "flex-1 full-width overflow-auto p-3 space-y-3 text-sm font-mono leading-5",
+          children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
+            printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+              "Raw event: ",
+              JSON.stringify(ev, null, 2)
+            ] }),
+            renderEvent(ev)
+          ] }, ev.id ?? idx))
+        }
+      )
     }
   );
 };
@@ -17413,7 +17450,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       headerLeft,
       headerRight,
       maxHeight: "80vh",
-      minHeight: 100,
+      minHeight: 320,
       minWidth: 420,
       maxWidth: "80vw",
       children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
@@ -17488,7 +17525,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
             )
           ] })
         ] }),
-        reducedHistory.length > 0 && /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) })
+        reducedHistory.length > 0 ? /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
       ] })
     }
   ) });
@@ -31445,7 +31482,7 @@ const SideBar = (props) => {
         ),
         /* @__PURE__ */ jsxs("div", { className: "sidebar-content", children: [
           /* @__PURE__ */ jsxs("ul", { children: [
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsx(
               "li",
               {
                 className: "clickable",
@@ -31453,36 +31490,36 @@ const SideBar = (props) => {
                 "data-testid": `edit-flow-${flowId}-sidebar-button`,
                 onClick: onOpenEditModal,
                 title: "Edit flow",
-                children: [
+                children: isCollapsed ? /* @__PURE__ */ jsx(FaEdit, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
                   /* @__PURE__ */ jsx(FaEdit, {}),
-                  !isCollapsed && /* @__PURE__ */ jsx("span", { children: "Edit flow" })
-                ]
+                  /* @__PURE__ */ jsx("div", { children: "Edit flow" })
+                ] })
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsx(
               "li",
               {
                 className: "clickable",
                 "data-node-type": "model",
                 "data-testid": "show-models",
                 onClick: onShowModels,
-                children: [
+                children: isCollapsed ? /* @__PURE__ */ jsx(LuBrain, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
                   /* @__PURE__ */ jsx(LuBrain, {}),
-                  !isCollapsed && /* @__PURE__ */ jsx("span", { children: "Models" })
-                ]
+                  /* @__PURE__ */ jsx("div", { children: "Models" })
+                ] })
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsx(
               "li",
               {
                 className: "clickable",
                 "data-node-type": "tool",
                 "data-testid": "show-tools",
                 onClick: onShowTools,
-                children: [
+                children: isCollapsed ? /* @__PURE__ */ jsx(FaTools, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
                   /* @__PURE__ */ jsx(FaTools, {}),
-                  !isCollapsed && /* @__PURE__ */ jsx("span", { children: "Tools" })
-                ]
+                  /* @__PURE__ */ jsx("div", { children: "Tools" })
+                ] })
               }
             ),
             /* @__PURE__ */ jsxs(

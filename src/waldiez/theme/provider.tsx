@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type ReactNode, useState } from "react";
+import React, { type ReactNode, useEffect, useState } from "react";
 
 import { WaldiezThemeContext } from "@waldiez/theme/useWaldiezTheme";
 import { isInitiallyDark, setIsDarkMode } from "@waldiez/theme/utils";
@@ -44,6 +44,41 @@ export const WaldiezThemeProvider: React.FC<{
         setIsDarkMode(dark);
         setIsDark(dark);
     };
+    useEffect(() => {
+        if (typeof initialDark === "boolean") {
+            setIsDarkMode(initialDark);
+        }
+
+        // Observer to detect external theme changes
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type === "attributes" && mutation.attributeName === "class") {
+                    const bodyClassList = document.body.classList;
+                    const externalIsDark =
+                        bodyClassList.contains("waldiez-dark") ||
+                        bodyClassList.contains("dark-theme") || // Add other possible dark class names
+                        (!bodyClassList.contains("waldiez-light") &&
+                            !bodyClassList.contains("light-theme") &&
+                            window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+                    // Only update if there's a mismatch
+                    setIsDark(prev => {
+                        if (prev !== externalIsDark) {
+                            return externalIsDark;
+                        }
+                        return prev;
+                    });
+                }
+            });
+        });
+
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
+
+        return () => observer.disconnect();
+    }, [initialDark]);
     return (
         <WaldiezThemeContext.Provider value={{ isDark, toggleTheme, setTheme }}>
             {children}

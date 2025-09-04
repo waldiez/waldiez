@@ -64,6 +64,7 @@ export type WaldiezEvent =
     | EventBase<"group_chat_resume", GroupChatResumeContent>
     | EventBase<"info", InfoContent>
     | EventBase<"error", ErrorContent>
+    | EventBase<"empty", TextContent>
     | EventBase<string, any>; // fallback/unknown
 
 type EventConsoleProps = {
@@ -122,6 +123,10 @@ const renderEvent = (ev: WaldiezEvent) => {
         }
     }
     switch (ev.type) {
+        case "empty": {
+            const c = ev as TextContent;
+            return <div className="text-gray-700 font-large">{c.content}</div>;
+        }
         case "text": {
             const c = ev.content as TextContent;
             const { sender, recipient } = getParticipants(ev);
@@ -333,9 +338,12 @@ export const EventConsole: React.FC<EventConsoleProps> = ({ events, printRaw, au
                 .join(" ")}
             data-testid="events-console"
         >
-            <div ref={listRef} className="flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5">
+            <div
+                ref={listRef}
+                className="flex-1 full-width overflow-auto p-3 space-y-3 text-sm font-mono leading-5"
+            >
                 {events.map((ev, idx) => (
-                    <div key={ev.id ?? idx} className="entry">
+                    <div key={ev.id ?? idx} className={ev.type === "empty" ? "center" : "entry"}>
                         {printRaw && (
                             <div className="text-xs text-blue-600/80 mb-2 break-words">
                                 Raw event: {JSON.stringify(ev, null, 2)}

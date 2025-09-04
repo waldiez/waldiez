@@ -223,6 +223,6 @@
 }
 
 .waldiez-step-by-step-view .json .entry {
-  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
   padding: 5px;
 }

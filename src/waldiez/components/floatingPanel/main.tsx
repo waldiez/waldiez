@@ -20,7 +20,8 @@ type FloatingPanelProps = {
     minHeight?: CSSSize; // default 50;
     rightOffset?: number; // default 10
     bottomOffset?: number; // default 10
-    initialWidthVW?: number; // default 35 (vw)
+    initialWidth?: CSSSize; // default 35vw
+    initialHeight?: CSSSize; // default: 100px;
     children?: React.ReactNode;
 };
 
@@ -36,7 +37,8 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
     minHeight = 50,
     rightOffset = 10,
     bottomOffset = 10,
-    initialWidthVW = 35,
+    initialWidth = "35vw",
+    initialHeight = 100,
     children,
 }) => {
     const headerHeight = 40;
@@ -47,15 +49,15 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         const ih = typeof window !== "undefined" ? window.innerHeight : 800;
 
         // Interpret props relative to viewport
-        const parsedMinW = toPixels(minWidth, "w", iw, ih); // undefined → no min
-        const parsedMaxW = toPixels(maxWidth, "w", iw, ih); // undefined → no max
+        const parsedMinW = toPixels(minWidth, "w", iw, ih);
+        const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
         const parsedMinH = toPixels(minHeight, "h", iw, ih);
         const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
 
         // Reasonable defaults if both sides are missing
         const defaultMinW = 320;
         const defaultMaxW = 720;
-        const defaultMinH = 200;
+        const defaultMinH = 100;
         const defaultMaxH = 720;
 
         const minW = parsedMinW ?? defaultMinW;
@@ -63,13 +65,13 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         const minH = parsedMinH ?? defaultMinH;
         const maxH = parsedMaxH ?? defaultMaxH;
 
-        const w0 = Math.round((iw * initialWidthVW) / 100);
-        const h0 = Math.round(ih * 0.45);
+        const w0 = toPixels(initialWidth, "w", iw, ih) ?? Math.round((iw * 35) / 100);
+        const h0 = toPixels(initialHeight, "h", iw, ih) ?? 300;
 
         const w = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
         const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
         return { w, h };
-    }, [minWidth, maxWidth, minHeight, maxHeight, initialWidthVW]);
+    }, [minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
 
     // Position and size (used only when expanded)
     const [left, setLeft] = useState<number>(0);
@@ -212,7 +214,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
 
     // Styles differ when collapsed (use bottom/right anchoring)
     const expandedStyle: React.CSSProperties = {
-        position: "fixed",
+        position: "absolute",
         left,
         top,
         width,
@@ -226,7 +228,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
     };
 
     const collapsedStyle: React.CSSProperties = {
-        position: "fixed",
+        position: "absolute",
         right: rightOffset,
         bottom: bottomOffset,
         zIndex: 1000000,
