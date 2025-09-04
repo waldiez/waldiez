@@ -202,7 +202,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                         data-testid={`export-flow-modal-upload-checkbox-${flowId}`}
                     />
                     {alsoUpload && (
-                        <div className="flex full-width flex-column">
+                        <div className="flex-align-center full-width flex-column">
                             <div className="margin-top-10 full-width">
                                 <TextInput
                                     label={<div className="no-padding margin-bottom-5">Hub API Token:</div>}
@@ -235,7 +235,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                 <button type="reset" className="modal-action-cancel" onClick={onClose}>
                     Cancel
                 </button>
-                <div className="flex flex-row">
+                <div className="flex-align-center flex-row">
                     {alsoUpload && (
                         <button
                             type="button"

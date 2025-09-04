@@ -113,7 +113,7 @@ export const TextInput = memo<{
     return (
         <>
             {renderLabel()}
-            <div className={`text-input-container flex ${className}`}>
+            <div className={`text-input-container flex-align-center ${className}`}>
                 <input
                     className={inputClassName}
                     placeholder={placeholder}

@@ -76,7 +76,7 @@ export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
                             <div>
                                 <label htmlFor={`agent-select-group-${id}`}>Group:</label>
                                 <div className="margin-top-10" />
-                                <div className="flex space-between">
+                                <div className="flex-align-center space-between">
                                     <Select
                                         options={groupOptions}
                                         value={selectedGroupValue}
@@ -101,7 +101,7 @@ export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
                             </div>
                         ) : (
                             /* In a group: Show group info and leave button */
-                            <div className="flex space-between current-group-info">
+                            <div className="flex-align-center space-between current-group-info">
                                 <div
                                     className="agent-panel-group-label"
                                     data-testid={`group-label-agent-${id}`}

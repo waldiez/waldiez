@@ -93,7 +93,7 @@ export const Timeline: React.FC<{
                     </div>
                     {/* Agent Legend */}
                     {data.agents.length > 0 && (
-                        // <div className="mt-4 flex flex-wrap gap-2">
+                        // <div className="mt-4 flex-align-center flex-wrap gap-2">
                         <div className="timeline-agent-list">
                             {data.agents.map(agent => (
                                 <div key={agent.name} className={"timeline-agent-item"}>

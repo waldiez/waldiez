@@ -10900,29 +10900,36 @@ function getState(checked) {
 }
 const CheckboxInput = memo(({ id, label, isChecked, onCheckedChange }) => {
   const ariaLabel = typeof label === "string" ? label : "Label for checkbox";
-  return /* @__PURE__ */ jsxs("div", { className: "flex", "data-testid": `checkbox-input-container-${id}`, children: [
-    /* @__PURE__ */ jsx(
-      Checkbox,
-      {
-        className: "checkbox-root",
-        id: `checkbox-input-${id}`,
-        checked: isChecked,
-        onCheckedChange,
-        "data-testid": id,
-        "aria-label": ariaLabel,
-        children: /* @__PURE__ */ jsx(CheckboxIndicator, { className: "checkbox-indicator", children: "✓" })
-      }
-    ),
-    /* @__PURE__ */ jsx(
-      "label",
-      {
-        className: "clickable no-padding padding-10",
-        style: { width: "max-content" },
-        htmlFor: `checkbox-input-${id}`,
-        children: label
-      }
-    )
-  ] });
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: "flex-align-center margin-bottom-10 margin-top-5",
+      "data-testid": `checkbox-input-container-${id}`,
+      children: [
+        /* @__PURE__ */ jsx(
+          Checkbox,
+          {
+            className: "checkbox-root",
+            id: `checkbox-input-${id}`,
+            checked: isChecked,
+            onCheckedChange,
+            "data-testid": id,
+            "aria-label": ariaLabel,
+            children: /* @__PURE__ */ jsx(CheckboxIndicator, { className: "checkbox-indicator", children: "✓" })
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "label",
+          {
+            className: "clickable no-padding padding-10 margin-top--5",
+            style: { width: "max-content" },
+            htmlFor: `checkbox-input-${id}`,
+            children: label
+          }
+        )
+      ]
+    }
+  );
 });
 const InfoCheckbox = memo((props) => {
   const { id, label, info, checked, onChange } = props;
@@ -11141,7 +11148,7 @@ const AfterWork = memo(
           onChange: onEnabledChange
         }
       ),
-      enabled && /* @__PURE__ */ jsxs("div", { className: "flex flex-column margin-bottom-10", children: [
+      enabled && /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-column margin-bottom-10", children: [
         /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
           /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetType", children: "Action to perform after work:" }),
           /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
@@ -11776,8 +11783,8 @@ const useDict = (props) => {
 const InfoLabel = ({ htmlFor, label, info, children }) => {
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsxs("div", { className: "flex flex-row gap-1", children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row gap-1", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
       /* @__PURE__ */ jsx("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
       /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
         /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
@@ -12301,7 +12308,7 @@ const TextInput = memo((props) => {
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     renderLabel(),
-    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex ${className}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex-align-center ${className}`, children: [
       /* @__PURE__ */ jsx(
         "input",
         {
@@ -14599,7 +14606,7 @@ const ResumeSpinner = () => {
     const t = setTimeout(() => setPhase("done"), 2e3);
     return () => clearTimeout(t);
   }, []);
-  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
     /* @__PURE__ */ jsx("span", { className: "animate-spin inline-block", children: "⏳" }),
     /* @__PURE__ */ jsx("span", { children: "Resuming a previously stored state…" })
   ] }) : /* @__PURE__ */ jsx("div", { children: "✅ Resume complete!" });
@@ -14674,7 +14681,7 @@ const renderEvent = (ev) => {
         ] }),
         /* @__PURE__ */ jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
           const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
-          return /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
+          return /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-start gap-2", children: [
             /* @__PURE__ */ jsx("span", { children: "🔧" }),
             /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
@@ -14796,7 +14803,7 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
   return /* @__PURE__ */ jsx(
     "div",
     {
-      className: ["flex flex-column full-height json", className].filter(Boolean).join(" "),
+      className: ["flex-align-center flex-column full-height json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
       children: /* @__PURE__ */ jsx("div", { ref: listRef, className: "flex-1 overflow-auto p-3 space-y-3 text-sm font-mono leading-5", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: "entry", children: [
         printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
@@ -18213,7 +18220,7 @@ const Timeline = ({ data, height = 400 }) => {
             darkMode: isDark
           }
         ) }) }),
-        data.agents.length > 0 && // <div className="mt-4 flex flex-wrap gap-2">
+        data.agents.length > 0 && // <div className="mt-4 flex-align-center flex-wrap gap-2">
         /* @__PURE__ */ jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxs("div", { className: "timeline-agent-item", children: [
           /* @__PURE__ */ jsx(
             "div",
@@ -19468,7 +19475,7 @@ const ExportFlowModal = memo((props) => {
               "data-testid": `export-flow-modal-upload-checkbox-${flowId}`
             }
           ),
-          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex full-width flex-column", children: [
+          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex-align-center full-width flex-column", children: [
             /* @__PURE__ */ jsx("div", { className: "margin-top-10 full-width", children: /* @__PURE__ */ jsx(
               TextInput,
               {
@@ -19498,7 +19505,7 @@ const ExportFlowModal = memo((props) => {
         ] }) }),
         /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
           /* @__PURE__ */ jsx("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
-          /* @__PURE__ */ jsxs("div", { className: "flex flex-row", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row", children: [
             alsoUpload && /* @__PURE__ */ jsx(
               "button",
               {
@@ -19867,7 +19874,7 @@ const LoadFlowStep = (props) => {
         dataTestId: `import-flow-modal-collapsible-search-${flowId}`,
         expanded: true,
         children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
-          /* @__PURE__ */ jsxs("div", { className: "full-width flex", children: [
+          /* @__PURE__ */ jsxs("div", { className: "full-width flex-align-center", children: [
             /* @__PURE__ */ jsx(
               "input",
               {
@@ -19922,7 +19929,7 @@ const LoadFlowStep = (props) => {
     ) }) }),
     /* @__PURE__ */ jsx(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
       /* @__PURE__ */ jsx("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsx("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
-      /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex", children: [
+      /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-align-center", children: [
         /* @__PURE__ */ jsx(
           "input",
           {
@@ -24627,7 +24634,7 @@ const WaldiezAgentGroupMember = memo((props) => {
       !showGroupTabs ? /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { htmlFor: `agent-select-group-${id}`, children: "Group:" }),
         /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-        /* @__PURE__ */ jsxs("div", { className: "flex space-between", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between", children: [
           /* @__PURE__ */ jsx(
             Select,
             {
@@ -24655,7 +24662,7 @@ const WaldiezAgentGroupMember = memo((props) => {
         ] })
       ] }) : (
         /* In a group: Show group info and leave button */
-        /* @__PURE__ */ jsxs("div", { className: "flex space-between current-group-info", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between current-group-info", children: [
           /* @__PURE__ */ jsx(
             "div",
             {
@@ -24837,7 +24844,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxs(
       "div",
       {
-        className: "flex margin-bottom-10 queue-item",
+        className: "flex-align-center margin-bottom-10 queue-item",
         "data-testid": `nested-chat-queue-item-${index2}`,
         children: [
           /* @__PURE__ */ jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
@@ -29873,7 +29880,7 @@ const WaldiezNodeModelView = ({ id, data }) => {
           children: /* @__PURE__ */ jsx(FaTrashCan, {})
         }
       ),
-      /* @__PURE__ */ jsxs("div", { className: "flex", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
         /* @__PURE__ */ jsx(
           "div",
           {
@@ -31230,7 +31237,7 @@ const EditFlowModalModalTabOther = (props) => {
             "data-testid": `edit-flow-${flowId}-modal-cache-seed-toggle`
           }
         ),
-        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex", children: [
+        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex-align-center", children: [
           /* @__PURE__ */ jsx("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
           /* @__PURE__ */ jsx(
             "input",
@@ -31486,7 +31493,7 @@ const SideBar = (props) => {
                 "data-testid": "show-agents",
                 onClick: onShowAgents,
                 children: [
-                  /* @__PURE__ */ jsxs("div", { className: "flex", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
                     /* @__PURE__ */ jsx(FaRobot, {}),
                     !isCollapsed && /* @__PURE__ */ jsx("span", { children: "Agents" })
                   ] }),

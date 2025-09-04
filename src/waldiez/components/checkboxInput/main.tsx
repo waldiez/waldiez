@@ -14,7 +14,10 @@ export const CheckboxInput: React.FC<{
 }> = memo(({ id, label, isChecked, onCheckedChange }) => {
     const ariaLabel = typeof label === "string" ? label : "Label for checkbox";
     return (
-        <div className="flex" data-testid={`checkbox-input-container-${id}`}>
+        <div
+            className="flex-align-center margin-bottom-10 margin-top-5"
+            data-testid={`checkbox-input-container-${id}`}
+        >
             <Checkbox.Root
                 className="checkbox-root"
                 id={`checkbox-input-${id}`}
@@ -26,7 +29,7 @@ export const CheckboxInput: React.FC<{
                 <Checkbox.Indicator className="checkbox-indicator">✓</Checkbox.Indicator>
             </Checkbox.Root>
             <label
-                className="clickable no-padding padding-10"
+                className="clickable no-padding padding-10 margin-top--5"
                 style={{ width: "max-content" }}
                 htmlFor={`checkbox-input-${id}`}
             >

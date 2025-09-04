@@ -63,7 +63,7 @@ export const WaldiezNodeModelView: React.FC<NodeProps<WaldiezNodeModel>> = ({ id
                 >
                     <FaTrashCan />
                 </div>
-                <div className="flex">
+                <div className="flex-align-center">
                     <div
                         role="button"
                         title="Check"

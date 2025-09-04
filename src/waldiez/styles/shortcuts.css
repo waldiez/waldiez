@@ -131,7 +131,6 @@ label.hidden {
 
 .flex {
   display: flex;
-  align-items: center;
 }
 
 .truncate {

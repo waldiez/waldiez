@@ -28,7 +28,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                 expanded
             >
                 <div className="margin-top-10 margin-bottom-10 full-width flex-column">
-                    <div className="full-width flex">
+                    <div className="full-width flex-align-center">
                         <input
                             type="text"
                             className="text-input full-width margin-right-10"
@@ -92,7 +92,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                     <div className="warning margin-bottom-10">
                         <span>Warning: Importing from an untrusted source can be harmful</span>
                     </div>
-                    <div className="margin-top-10 full-width flex">
+                    <div className="margin-top-10 full-width flex-align-center">
                         <input
                             type="text"
                             className="text-input full-width margin-right-10"

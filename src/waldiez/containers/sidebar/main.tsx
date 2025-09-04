@@ -94,7 +94,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         data-testid="show-agents"
                         onClick={onShowAgents}
                     >
-                        <div className="flex">
+                        <div className="flex-align-center">
                             <FaRobot />
                             {!isCollapsed && <span>Agents</span>}
                         </div>

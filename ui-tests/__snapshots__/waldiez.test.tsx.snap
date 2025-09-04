@@ -163,7 +163,7 @@ exports[`All > should render Waldiez components 1`] = `
                   data-testid="show-agents"
                 >
                   <div
-                    class="flex"
+                    class="flex-align-center"
                   >
                     <svg
                       fill="currentColor"
@@ -711,7 +711,7 @@ exports[`All > should render Waldiez components 1`] = `
                 data-testid="show-agents"
               >
                 <div
-                  class="flex"
+                  class="flex-align-center"
                 >
                   <svg
                     fill="currentColor"

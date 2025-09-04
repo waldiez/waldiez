@@ -223,7 +223,7 @@ export const AfterWork: React.FC<AfterWorkProps> = memo(
                     onChange={onEnabledChange}
                 />
                 {enabled && (
-                    <div className="flex flex-column margin-bottom-10">
+                    <div className="flex-align-center flex-column margin-bottom-10">
                         <div className="full-width margin-bottom-10">
                             <label htmlFor="afterWorkTargetType">Action to perform after work:</label>
                             <div className="margin-top-10" />
