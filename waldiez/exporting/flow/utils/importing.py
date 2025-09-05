@@ -7,6 +7,7 @@ from typing import Optional
 from waldiez.exporting.core import ImportPosition
 
 BUILTIN_IMPORTS = [
+    "import asyncio",
     "import csv",
     "import importlib",
     "import json",
@@ -208,8 +209,6 @@ def get_the_imports_string(
         final_string += "\n"
 
     if is_async:
-        # noinspection PyUnresolvedReferences
-        builtin_imports.insert(0, "import asyncio")
         final_string += (
             "\nimport aiofiles"
             "\nimport aiosqlite"
