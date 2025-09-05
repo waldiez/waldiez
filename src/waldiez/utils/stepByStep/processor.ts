@@ -215,7 +215,7 @@ export class WaldiezStepByStepProcessor {
         if (asJson && WaldiezStepByStepProcessor.isValidDebugMessage(asJson)) {
             return asJson;
         }
-        const converted = pyishToJson(payload);
+        const converted = pyIshToJson(payload);
         const asPyJson = safeParse(converted);
         return asPyJson && WaldiezStepByStepProcessor.isValidDebugMessage(asPyJson) ? asPyJson : null;
     }
@@ -307,7 +307,7 @@ const extractFirstBalanced = (s: string): string | null => {
  * - Leaves double-quoted strings as-is (aside from standard escape handling)
  */
 // eslint-disable-next-line complexity, max-statements
-const pyishToJson = (src: string): string => {
+const pyIshToJson = (src: string): string => {
     let out = "";
     let i = 0;
     const len = src.length;

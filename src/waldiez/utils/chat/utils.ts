@@ -155,14 +155,14 @@ export class WaldiezChatMessageUtils {
                 const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
                 const matched = content.match(imgRegex);
                 if (matched && matched.length === 1) {
-                    const imgurlContent = matched[0].replace(
+                    const imgUrlContent = matched[0].replace(
                         imgRegex,
                         `<img alt="Image" src="${imageUrl}" />`,
                     );
                     return [
                         {
                             type: "image_url",
-                            image_url: { url: imgurlContent, alt: "Image" },
+                            image_url: { url: imgUrlContent, alt: "Image" },
                         },
                     ];
                 }

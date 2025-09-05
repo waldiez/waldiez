@@ -26,8 +26,8 @@ export const awsSignatureUtils = {
         // Prepare request details
         const { host, path } = this.parseUrl(url);
         const now = new Date();
-        const amzdate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
-        const datestamp = amzdate.slice(0, 8);
+        const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
+        const dateStamp = amzDate.slice(0, 8);
 
         // Empty payload hash (for GET requests)
         const payloadHash = await sha256(payload);
@@ -36,7 +36,7 @@ export const awsSignatureUtils = {
         const requestHeaders: { [key: string]: string } = {
             ...headers,
             host,
-            "x-amz-date": amzdate,
+            "x-amz-date": amzDate,
             "x-amz-content-sha256": payloadHash,
         };
 
@@ -61,11 +61,11 @@ export const awsSignatureUtils = {
 
         // Build string to sign
         const algorithm = "AWS4-HMAC-SHA256";
-        const credentialScope = `${datestamp}/${region}/${service}/aws4_request`;
-        const stringToSign = [algorithm, amzdate, credentialScope, await sha256(canonicalRequest)].join("\n");
+        const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+        const stringToSign = [algorithm, amzDate, credentialScope, await sha256(canonicalRequest)].join("\n");
 
         // Calculate signature
-        const signingKey = await this.getSignatureKey(secretKey, datestamp, region, service);
+        const signingKey = await this.getSignatureKey(secretKey, dateStamp, region, service);
         const signature = await hmacSha256(signingKey, stringToSign, "hex");
 
         // Add authorization header

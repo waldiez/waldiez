@@ -422,14 +422,14 @@ class WaldiezChatMessageUtils {
         const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
         const matched = content.match(imgRegex);
         if (matched && matched.length === 1) {
-          const imgurlContent = matched[0].replace(
+          const imgUrlContent = matched[0].replace(
             imgRegex,
             `<img alt="Image" src="${imageUrl}" />`
           );
           return [
             {
               type: "image_url",
-              image_url: { url: imgurlContent, alt: "Image" }
+              image_url: { url: imgUrlContent, alt: "Image" }
             }
           ];
         }
@@ -1900,7 +1900,7 @@ class WaldiezStepByStepProcessor {
     if (asJson && WaldiezStepByStepProcessor.isValidDebugMessage(asJson)) {
       return asJson;
     }
-    const converted = pyishToJson(payload);
+    const converted = pyIshToJson(payload);
     const asPyJson = safeParse(converted);
     return asPyJson && WaldiezStepByStepProcessor.isValidDebugMessage(asPyJson) ? asPyJson : null;
   }
@@ -1973,7 +1973,7 @@ const extractFirstBalanced = (s) => {
   }
   return null;
 };
-const pyishToJson = (src) => {
+const pyIshToJson = (src) => {
   let out = "";
   let i = 0;
   const len = src.length;
@@ -14389,6 +14389,7 @@ const toPixels = (val, axis, iw, ih) => {
 };
 const clampOpt = (v, min2, max2) => Math.min(max2 ?? Number.POSITIVE_INFINITY, Math.max(min2 ?? Number.NEGATIVE_INFINITY, v));
 const FloatingPanel = ({
+  flowId,
   title = "Panel",
   headerClassName = "",
   headerLeft = void 0,
@@ -14405,9 +14406,25 @@ const FloatingPanel = ({
   children
 }) => {
   const headerHeight = 40;
+  const getBoundaryRect = useCallback(() => {
+    const el = document.getElementById(`rf-root-${flowId}`);
+    if (el) {
+      return el.getBoundingClientRect();
+    }
+    return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+  }, [flowId]);
   const initialSize = useMemo(() => {
-    const iw = typeof window !== "undefined" ? window.innerWidth : 1200;
-    const ih = typeof window !== "undefined" ? window.innerHeight : 800;
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      const iw2 = 1200;
+      const ih2 = 800;
+      const w02 = toPixels(initialWidth, "w", iw2, ih2) ?? Math.round(iw2 * 35 / 100);
+      const h02 = toPixels(initialHeight, "h", iw2, ih2) ?? 300;
+      return { w: w02, h: h02 };
+    }
+    const container = document.getElementById(`rf-root-${flowId}`) || document.body;
+    const rect = container.getBoundingClientRect();
+    const iw = rect?.width ?? 1200;
+    const ih = rect?.height ?? 800;
     const parsedMinW = toPixels(minWidth, "w", iw, ih);
     const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
     const parsedMinH = toPixels(minHeight, "h", iw, ih);
@@ -14425,7 +14442,7 @@ const FloatingPanel = ({
     const w = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
     const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
     return { w, h };
-  }, [minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
+  }, [flowId, minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [width, setWidth] = useState(initialSize.w);
@@ -14437,9 +14454,11 @@ const FloatingPanel = ({
     null
   );
   const clampSize = useCallback(
+    // eslint-disable-next-line max-statements
     (w, h) => {
-      const iw = window.innerWidth;
-      const ih = window.innerHeight;
+      const rect = getBoundaryRect();
+      const iw = rect.width;
+      const ih = rect.height;
       const parsedMinW = toPixels(minWidth, "w", iw, ih);
       const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
       const parsedMinH = toPixels(minHeight, "h", iw, ih);
@@ -14457,23 +14476,28 @@ const FloatingPanel = ({
         h: clampOpt(h, effMinH, effMaxH)
       };
     },
-    [bottomOffset, rightOffset, minWidth, maxWidth, minHeight, maxHeight]
+    [getBoundaryRect, minWidth, maxWidth, minHeight, maxHeight, rightOffset, bottomOffset]
   );
   const clampPos = useCallback(
     (l, t, w = width, h = height) => {
-      const iw = window.innerWidth;
-      const ih = window.innerHeight;
+      const rect = getBoundaryRect();
+      const iw = rect.width;
+      const ih = rect.height;
       const minLeft = 10;
       const minTop = 10;
       const maxLeft = Math.max(minLeft, iw - w - 10);
       const maxTop = Math.max(minTop, ih - h - 10);
-      return { l: Math.min(Math.max(l, minLeft), maxLeft), t: Math.min(Math.max(t, minTop), maxTop) };
+      return {
+        l: Math.min(Math.max(l, minLeft), maxLeft),
+        t: Math.min(Math.max(t, minTop), maxTop)
+      };
     },
-    [height, width]
+    [width, height, getBoundaryRect]
   );
   useEffect(() => {
-    const iw = window.innerWidth;
-    const ih = window.innerHeight;
+    const rect = getBoundaryRect();
+    const iw = rect.width;
+    const ih = rect.height;
     const clamped = clampSize(initialSize.w, initialSize.h);
     const l = iw - clamped.w - rightOffset;
     const t = ih - clamped.h - bottomOffset;
@@ -14482,7 +14506,7 @@ const FloatingPanel = ({
     setHeight(clamped.h);
     setLeft(cl);
     setTop(ct);
-  }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos]);
+  }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos, getBoundaryRect]);
   useEffect(() => {
     const onResize = () => {
       if (isCollapsed) {
@@ -17446,6 +17470,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
   return /* @__PURE__ */ jsx("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsx(
     FloatingPanel,
     {
+      flowId,
       title: "",
       headerLeft,
       headerRight,
@@ -28509,13 +28534,13 @@ const awsSignatureUtils = {
   async signRequest(method, url, region, service, accessKey, secretKey, sessionToken, headers = {}, payload = "") {
     const { host, path } = this.parseUrl(url);
     const now = /* @__PURE__ */ new Date();
-    const amzdate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
-    const datestamp = amzdate.slice(0, 8);
+    const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
+    const dateStamp = amzDate.slice(0, 8);
     const payloadHash = await sha256(payload);
     const requestHeaders = {
       ...headers,
       host,
-      "x-amz-date": amzdate,
+      "x-amz-date": amzDate,
       "x-amz-content-sha256": payloadHash
     };
     if (sessionToken) {
@@ -28533,9 +28558,9 @@ const awsSignatureUtils = {
       payloadHash
     ].join("\n");
     const algorithm = "AWS4-HMAC-SHA256";
-    const credentialScope = `${datestamp}/${region}/${service}/aws4_request`;
-    const stringToSign = [algorithm, amzdate, credentialScope, await sha256(canonicalRequest)].join("\n");
-    const signingKey = await this.getSignatureKey(secretKey, datestamp, region, service);
+    const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+    const stringToSign = [algorithm, amzDate, credentialScope, await sha256(canonicalRequest)].join("\n");
+    const signingKey = await this.getSignatureKey(secretKey, dateStamp, region, service);
     const signature = await hmacSha256(signingKey, stringToSign, "hex");
     requestHeaders["Authorization"] = `${algorithm} Credential=${accessKey}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
     return requestHeaders;

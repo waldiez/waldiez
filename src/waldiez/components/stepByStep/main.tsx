@@ -161,6 +161,7 @@ export const StepByStepView: React.FC<{
     return (
         <div className="waldiez-step-by-step-view" data-testid={`step-by-step-${flowId}`}>
             <FloatingPanel
+                flowId={flowId}
                 title={""}
                 headerLeft={headerLeft}
                 headerRight={headerRight}

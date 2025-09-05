@@ -9,6 +9,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { type CSSSize, clampOpt, toPixels } from "@waldiez/components/floatingPanel/utils";
 
 type FloatingPanelProps = {
+    flowId: string;
     title?: React.ReactNode | string;
     headerLeft?: React.ReactNode | string;
     headerRight?: React.ReactNode | string;
@@ -26,6 +27,7 @@ type FloatingPanelProps = {
 };
 
 export const FloatingPanel: React.FC<FloatingPanelProps> = ({
+    flowId,
     title = "Panel",
     headerClassName = "",
     headerLeft = undefined,
@@ -42,11 +44,29 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
     children,
 }) => {
     const headerHeight = 40;
-    // Derived initial width/height based on viewport
+    const getBoundaryRect = useCallback(() => {
+        const el = document.getElementById(`rf-root-${flowId}`);
+        if (el) {
+            return el.getBoundingClientRect();
+        }
+        // fallback to viewport
+        return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+    }, [flowId]);
+
     // eslint-disable-next-line max-statements
     const initialSize = useMemo(() => {
-        const iw = typeof window !== "undefined" ? window.innerWidth : 1200;
-        const ih = typeof window !== "undefined" ? window.innerHeight : 800;
+        if (typeof document === "undefined" || typeof window === "undefined") {
+            // sensible SSR fallback
+            const iw = 1200;
+            const ih = 800;
+            const w0 = toPixels(initialWidth, "w", iw, ih) ?? Math.round((iw * 35) / 100);
+            const h0 = toPixels(initialHeight, "h", iw, ih) ?? 300;
+            return { w: w0, h: h0 };
+        }
+        const container = document.getElementById(`rf-root-${flowId}`) || document.body;
+        const rect = container.getBoundingClientRect();
+        const iw = rect?.width ?? 1200;
+        const ih = rect?.height ?? 800;
 
         // Interpret props relative to viewport
         const parsedMinW = toPixels(minWidth, "w", iw, ih);
@@ -71,7 +91,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         const w = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
         const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
         return { w, h };
-    }, [minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
+    }, [flowId, minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
 
     // Position and size (used only when expanded)
     const [left, setLeft] = useState<number>(0);
@@ -90,20 +110,21 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
 
     // Clamp helpers
     const clampSize = useCallback(
+        // eslint-disable-next-line max-statements
         (w: number, h: number) => {
-            const iw = window.innerWidth;
-            const ih = window.innerHeight;
+            const rect = getBoundaryRect();
+            const iw = rect.width;
+            const ih = rect.height;
 
             const parsedMinW = toPixels(minWidth, "w", iw, ih);
             const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
             const parsedMinH = toPixels(minHeight, "h", iw, ih);
             const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
 
-            // Keep inside viewport no matter what
             const viewportMaxW = iw - rightOffset - 10;
             const viewportMaxH = ih - bottomOffset - 10;
 
-            const intrinsicMinW = 120; // tiny safety to keep header/actions usable
+            const intrinsicMinW = 120;
             const intrinsicMinH = headerHeight + 40;
 
             const effMinW = Math.max(parsedMinW ?? 0, intrinsicMinW);
@@ -117,26 +138,33 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
                 h: clampOpt(h, effMinH, effMaxH),
             };
         },
-        [bottomOffset, rightOffset, minWidth, maxWidth, minHeight, maxHeight],
+        [getBoundaryRect, minWidth, maxWidth, minHeight, maxHeight, rightOffset, bottomOffset],
     );
 
     const clampPos = useCallback(
         (l: number, t: number, w = width, h = height) => {
-            const iw = window.innerWidth;
-            const ih = window.innerHeight;
+            const rect = getBoundaryRect();
+            const iw = rect.width;
+            const ih = rect.height;
+
             const minLeft = 10;
             const minTop = 10;
             const maxLeft = Math.max(minLeft, iw - w - 10);
             const maxTop = Math.max(minTop, ih - h - 10);
-            return { l: Math.min(Math.max(l, minLeft), maxLeft), t: Math.min(Math.max(t, minTop), maxTop) };
+
+            return {
+                l: Math.min(Math.max(l, minLeft), maxLeft),
+                t: Math.min(Math.max(t, minTop), maxTop),
+            };
         },
-        [height, width],
+        [width, height, getBoundaryRect],
     );
 
     // Initialize at bottom-right (expanded layout uses left/top)
     useEffect(() => {
-        const iw = window.innerWidth;
-        const ih = window.innerHeight;
+        const rect = getBoundaryRect();
+        const iw = rect.width;
+        const ih = rect.height;
         const clamped = clampSize(initialSize.w, initialSize.h);
         const l = iw - clamped.w - rightOffset;
         const t = ih - clamped.h - bottomOffset;
@@ -145,7 +173,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         setHeight(clamped.h);
         setLeft(cl);
         setTop(ct);
-    }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos]);
+    }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos, getBoundaryRect]);
 
     // Window resize: keep panel in view
     useEffect(() => {
@@ -212,7 +240,6 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         }
     };
 
-    // Styles differ when collapsed (use bottom/right anchoring)
     const expandedStyle: React.CSSProperties = {
         position: "absolute",
         left,
