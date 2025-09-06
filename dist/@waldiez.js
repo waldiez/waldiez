@@ -17417,7 +17417,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     setResponseText(e.target.value);
   }, []);
   const onRespond = useCallback(() => {
-    if (!requestId || !responseText.trim()) {
+    if (!requestId) {
       return;
     }
     stepByStep?.handlers?.respond?.({
@@ -17437,7 +17437,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       if (e.nativeEvent?.isComposing) {
         return;
       }
-      if (!requestId || !responseText.trim()) {
+      if (!requestId) {
         return;
       }
       stepByStep?.handlers?.respond?.({

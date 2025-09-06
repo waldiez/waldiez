@@ -34,7 +34,7 @@ export const StepByStepView: React.FC<{
     }, []);
 
     const onRespond = useCallback(() => {
-        if (!requestId || !responseText.trim()) {
+        if (!requestId) {
             return;
         }
         stepByStep?.handlers?.respond?.({
@@ -55,7 +55,7 @@ export const StepByStepView: React.FC<{
             if (e.nativeEvent?.isComposing) {
                 return;
             }
-            if (!requestId || !responseText.trim()) {
+            if (!requestId) {
                 return;
             }
             stepByStep?.handlers?.respond?.({
