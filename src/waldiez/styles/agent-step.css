@@ -39,9 +39,11 @@
 }
 
 /* ── Colored chip (SENDING / RECEIVING) ──────────────────────────────── */
+
 .agent-badge-chip {
   display: inline-block;
   padding: 4px 6px;
+  margin-left: 20px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 700;
@@ -190,5 +192,132 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
   .agent-node.active-sender,
   .agent-node.active-recipient {
     animation: none;
+  }
+}
+
+.agent-activity-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+}
+
+.agent-activity-icon .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.9;
+}
+
+.agent-activity-icon .typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 2px;
+}
+
+.agent-activity-icon .typing-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.6;
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
+.agent-activity-icon .typing-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.agent-activity-icon .typing-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+/* Gear rotates while "tool" is active */
+.agent-activity-icon.is-tool .gear {
+  animation: spin-gear 1.2s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes spin-gear {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Chat bubble gently floats on "message" */
+.agent-activity-icon.is-message .bubble {
+  animation: float-bubble 2.2s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes float-bubble {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.95;
+  }
+
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+/* Thinking: subtle halo pulse behind dots */
+.agent-activity-icon.is-thinking {
+  position: relative;
+}
+
+.agent-activity-icon.is-thinking::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 0 currentcolor;
+  opacity: 0.18;
+  animation: halo-pulse 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes halo-pulse {
+  0% {
+    box-shadow: 0 0 0 0 currentcolor;
+    opacity: 0.18;
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px currentcolor;
+    opacity: 0.06;
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 currentcolor;
+    opacity: 0.18;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .agent-activity-icon .typing-dots i,
+  .agent-activity-icon.is-tool .gear,
+  .agent-activity-icon.is-message .bubble,
+  .agent-activity-icon.is-thinking::after {
+    animation: none !important;
   }
 }

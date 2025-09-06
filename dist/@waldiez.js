@@ -16,7 +16,7 @@ import MonacoEditor, { loader } from "@monaco-editor/react";
 import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
-import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
+import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaHourglassHalf, FaCog, FaCommentDots, FaCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
 import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import rehypeHighlight from "rehype-highlight";
@@ -22315,6 +22315,67 @@ const WaldiezEdgeModal = memo((props) => {
   );
 });
 WaldiezEdgeModal.displayName = "WaldiezEdgeModal";
+const ActivityIcon = ({ activity, title, className }) => {
+  if (!activity) {
+    return null;
+  }
+  if (activity === "thinking") {
+    return /* @__PURE__ */ jsxs(
+      "span",
+      {
+        className: `agent-activity-icon is-thinking ${className ?? ""}`,
+        title: title ?? "Thinking",
+        "data-activity": "thinking",
+        children: [
+          /* @__PURE__ */ jsx(FaHourglassHalf, {}),
+          /* @__PURE__ */ jsxs("span", { className: "typing-dots", "aria-label": "thinking", children: [
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {})
+          ] })
+        ]
+      }
+    );
+  }
+  if (activity === "tool") {
+    return /* @__PURE__ */ jsx(
+      "span",
+      {
+        className: `agent-activity-icon is-tool ${className ?? ""}`,
+        title: title ?? "Running tool",
+        "data-activity": "tool",
+        children: /* @__PURE__ */ jsx(FaCog, { className: "gear" })
+      }
+    );
+  }
+  if (activity === "message") {
+    return /* @__PURE__ */ jsxs(
+      "span",
+      {
+        className: `agent-activity-icon is-message ${className ?? ""}`,
+        title: title ?? "Composing",
+        "data-activity": "message",
+        children: [
+          /* @__PURE__ */ jsx(FaCommentDots, { className: "bubble" }),
+          /* @__PURE__ */ jsxs("span", { className: "typing-dots", "aria-label": "typing", children: [
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {})
+          ] })
+        ]
+      }
+    );
+  }
+  return /* @__PURE__ */ jsx(
+    "span",
+    {
+      className: `agent-activity-icon ${className ?? ""}`,
+      title: title ?? String(activity),
+      "data-activity": String(activity),
+      children: /* @__PURE__ */ jsx(FaCircle, { className: "status-dot" })
+    }
+  );
+};
 const ICON_SIZE = 14;
 const PREDEFINED_TOOL_INSTRUCTIONS = {
   wikipedia_search: void 0,
@@ -28151,7 +28212,7 @@ const WaldiezNodeAgentView = (props) => {
       children: [
         (isSender || isRecipient) && /* @__PURE__ */ jsxs("div", { className: "agent-badge-wrap", children: [
           /* @__PURE__ */ jsx("span", { className: "agent-badge-chip", children: isSender ? "SENDING" : "RECEIVING" }),
-          isSender && activeEvent && /* @__PURE__ */ jsx("span", { className: "agent-activity-label", "data-activity": activeEvent, children: activityEmoji(activeEvent) })
+          isSender && activeEvent && /* @__PURE__ */ jsx("span", { className: "agent-activity-label", children: /* @__PURE__ */ jsx(ActivityIcon, { activity: activeEvent }) })
         ] }),
         /* @__PURE__ */ jsx(
           NodeResizer,

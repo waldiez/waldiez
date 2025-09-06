@@ -10,6 +10,7 @@ import { FaTrash } from "react-icons/fa6";
 import { VscSettings } from "react-icons/vsc";
 
 import { WaldiezEdgeModal } from "@waldiez/containers/edges/modal";
+import { ActivityIcon } from "@waldiez/containers/nodes/agent/ActivityIcon";
 import { WaldiezNodeAgentBody } from "@waldiez/containers/nodes/agent/body";
 import { createHandles } from "@waldiez/containers/nodes/agent/handles";
 import { useWaldiezNodeAgent } from "@waldiez/containers/nodes/agent/hooks";
@@ -118,8 +119,8 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
                 <div className="agent-badge-wrap">
                     <span className="agent-badge-chip">{isSender ? "SENDING" : "RECEIVING"}</span>
                     {isSender && activeEvent && (
-                        <span className="agent-activity-label" data-activity={activeEvent}>
-                            {activityEmoji(activeEvent)}
+                        <span className="agent-activity-label">
+                            <ActivityIcon activity={activeEvent} />
                         </span>
                     )}
                 </div>
