@@ -264,7 +264,8 @@ export type WaldiezChatParticipant = {
 
 /**
  * Chat configuration type
- * @param showUI - Whether to display the chat UI
+ * @param show - Whether to display the chat UI
+ * @param active - Whether the flow has running
  * @param messages - Array of chat messages
  * @param userParticipants - Set of user participants
  * @param activeRequest - Active request information (if any)
@@ -274,7 +275,10 @@ export type WaldiezChatParticipant = {
  */
 export type WaldiezChatConfig = {
     // Whether to display the chat UI
-    showUI: boolean;
+    show: boolean;
+
+    // Whether the flow is running
+    active: boolean;
 
     // Chat content
     messages: WaldiezChatMessage[];

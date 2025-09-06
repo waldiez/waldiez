@@ -21,9 +21,10 @@ export const useWaldiezNodeAgent = (id: string) => {
     const deleteAgent = useWaldiez(s => s.deleteAgent);
     const cloneAgent = useWaldiez(s => s.cloneAgent);
     const onFlowChanged = useWaldiez(s => s.onFlowChanged);
-    const { isSender, isRecipient } = useWaldiez(s => ({
+    const { isSender, isRecipient, activeEvent } = useWaldiez(s => ({
         isSender: s.activeSenderId === id,
         isRecipient: s.activeRecipientId === id && s.activeRecipientId !== s.activeSenderId,
+        activeEvent: s.activeEventType,
     }));
     const flowId = useWaldiez(s => s.flowId);
     const readOnly = useWaldiez(s => s.isReadOnly);
@@ -158,6 +159,7 @@ export const useWaldiezNodeAgent = (id: string) => {
         isDragging,
         isSender,
         isRecipient,
+        activeEvent,
         onDelete,
         onClone,
         onOpenNodeModal,

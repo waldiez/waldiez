@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-statements */
+/* eslint-disable max-statements,max-lines */
 import React, { useCallback } from "react";
 
 import { nanoid } from "nanoid";
@@ -49,7 +49,66 @@ export function useUIMessageProcessor({
     setStepByStepState: React.Dispatch<React.SetStateAction<WaldiezStepByStep>>;
 }) {
     const serverBaseUrl = window.location.protocol + "//" + window.location.host;
+    type StepStateWithKeys = WaldiezStepByStep & {
+        /** seen event keys to keep history unique */
+        _seenEventKeys?: Set<string>;
+    };
 
+    // 2) a stable key for any event-like object
+    const makeEventKey = (e: any): string => {
+        // prefer existing ids, fall back to common identifiers, else a light hash
+        const explicit =
+            e?.id ??
+            e?.request_id ??
+            e?.data?.id ??
+            `${e?.type ?? "unknown"}|${e?.timestamp ?? ""}|${e?.debug_type ?? ""}|${e?.data?.request_id ?? ""}`;
+
+        // very light djb2 hash to avoid mega keys if needed
+        let h = 5381;
+        for (let i = 0; i < explicit.length; i++) {
+            h = ((h << 5) + h) ^ explicit.charCodeAt(i);
+        }
+        return `${e?.type ?? "evt"}:${h >>> 0}`;
+    };
+
+    // 3) one helper to append events uniquely (prepends new items)
+    const appendHistoryUnique = useCallback(
+        (
+            setStepByStepState: React.Dispatch<React.SetStateAction<WaldiezStepByStep>>,
+            incoming: any | any[],
+        ) => {
+            const arr = Array.isArray(incoming) ? incoming : [incoming];
+            setStepByStepState(prev0 => {
+                const prev = prev0 as StepStateWithKeys;
+                const seen = new Set(prev._seenEventKeys ?? []);
+
+                const uniqueIncoming: any[] = [];
+                for (const e of arr) {
+                    const k = makeEventKey(e);
+                    if (!seen.has(k)) {
+                        seen.add(k);
+                        // ensure event has an id for the UI, reuse the key as a stable fallback
+                        if (!e.id) {
+                            e.id = k;
+                        }
+                        uniqueIncoming.push(e);
+                    }
+                }
+
+                // no new unique items? return prev to avoid extra renders
+                if (uniqueIncoming.length === 0) {
+                    return prev;
+                }
+
+                return {
+                    ...prev,
+                    _seenEventKeys: seen,
+                    eventHistory: [...uniqueIncoming, ...(prev.eventHistory ?? [])],
+                };
+            });
+        },
+        [],
+    );
     const onmessage = useCallback(
         (newMessage: WaldiezChatMessage) => {
             if (isRunning && !isDebugging) {
@@ -59,13 +118,10 @@ export function useUIMessageProcessor({
                 newMessage.type !== "debug_input_request" &&
                 newMessage.type !== "input_request"
             ) {
-                setStepByStepState(prev => ({
-                    ...prev,
-                    eventHistory: [newMessage, ...prev.eventHistory],
-                }));
+                appendHistoryUnique(setStepByStepState, newMessage);
             }
         },
-        [isRunning, isDebugging, setMessages, setStepByStepState],
+        [isRunning, isDebugging, setMessages, appendHistoryUnique, setStepByStepState],
     );
 
     const onParticipants = useCallback(
@@ -205,16 +261,74 @@ export function useUIMessageProcessor({
                 if (isRunning && !isDebugging) {
                     setMessages(prev => [...prev, errorMessage]);
                 } else if (isDebugging) {
-                    setStepByStepState(prev => ({
-                        ...prev,
-                        eventHistory: [errorMessage, ...prev.eventHistory],
-                    }));
+                    appendHistoryUnique(setStepByStepState, errorMessage);
                 }
             }
         },
-        [flowId, isDebugging, isRunning, setError, setMessages, setStepByStepState],
+        [appendHistoryUnique, flowId, isDebugging, isRunning, setError, setMessages, setStepByStepState],
     );
 
+    const onDebugSubprocessOut = useCallback(
+        (parsedContent: any) => {
+            const result = WaldiezStepByStepProcessor.process(parsedContent, {
+                flowId,
+            });
+            if (result?.error) {
+                processGenericMessage(parsedContent);
+                return;
+            }
+            const newState = result?.stateUpdate ?? stepByStepState;
+            if (result?.stateUpdate?.participants) {
+                newState.participants = result.stateUpdate.participants;
+            }
+            let newMessage: Record<string, unknown>;
+            if (
+                result?.stateUpdate?.eventHistory &&
+                result.stateUpdate?.eventHistory.length > 0 &&
+                result.stateUpdate.eventHistory[0]
+            ) {
+                newMessage = result.stateUpdate.eventHistory[0];
+            } else if (
+                result?.debugMessage &&
+                result.debugMessage.type !== "debug_input_request" &&
+                result.debugMessage.type !== "input_request"
+            ) {
+                newMessage = {
+                    id: nanoid(),
+                    timestamp: new Date().toISOString(),
+                    type: "debug",
+                    data: result.debugMessage,
+                };
+            }
+            setStepByStepState(prev => ({
+                ...prev,
+                ...newState,
+                eventHistory: [newMessage, ...prev.eventHistory],
+            }));
+        },
+        [flowId, processGenericMessage, setStepByStepState, stepByStepState],
+    );
+    const onChatSubprocessOut = useCallback(
+        (parsedContent: any) => {
+            const result = WaldiezChatMessageProcessor.process(parsedContent);
+            if (result?.message) {
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    if (result.message) {
+                        newMessages.push(result.message);
+                    }
+                    return newMessages;
+                });
+            }
+            if (result?.participants) {
+                onParticipants(result.participants);
+            }
+            if (result?.timeline) {
+                setTimeline(result.timeline);
+            }
+        },
+        [setMessages, onParticipants, setTimeline],
+    );
     const processSubprocessOutput = useCallback(
         (data: SubprocessOutputMsg) => {
             // console.debug("Subprocess output received:", data.content);
@@ -227,62 +341,37 @@ export function useUIMessageProcessor({
                     // If parsing fails, keep the original content
                 }
                 if (typeof parsedContent === "object" && parsedContent !== null && "type" in parsedContent) {
-                    const result = WaldiezStepByStepProcessor.process(data.content, {
-                        flowId,
-                        currentState: stepByStepState,
-                    });
-                    if (result?.error) {
-                        processGenericMessage(parsedContent);
-                        return;
-                    }
-
-                    if (result?.stateUpdate || result?.debugMessage) {
-                        const newState = result?.stateUpdate ?? stepByStepState;
-                        const eventHistory =
-                            result?.debugMessage &&
-                            result.debugMessage.type !== "debug_input_request" &&
-                            result.debugMessage.type !== "input_request"
-                                ? [
-                                      {
-                                          id: nanoid(),
-                                          timestamp: new Date().toISOString(),
-                                          type: "debug",
-                                          data: result.debugMessage,
-                                      },
-                                  ]
-                                : [];
-                        setStepByStepState(prev => ({
-                            ...prev,
-                            ...newState,
-                            eventHistory: [...eventHistory, ...prev.eventHistory],
-                        }));
-                    }
-                    if (result?.controlAction) {
-                        console.debug("Control action:", result.controlAction);
+                    if (isDebugging) {
+                        onDebugSubprocessOut(parsedContent);
+                    } else if (isRunning) {
+                        onChatSubprocessOut(parsedContent);
                     }
                 } else {
                     // Handle as regular chat message
                     processGenericMessage(parsedContent);
                 }
             } catch {
-                setStepByStepState(prev => ({
-                    ...prev,
-                    eventHistory: [
-                        {
-                            id: nanoid(),
-                            timestamp: new Date().toISOString(),
-                            type: "raw",
-                            data: data.content,
-                        },
-                        ...prev.eventHistory,
-                    ],
-                }));
                 // console.error("Error processing subprocess output:", reason);
+                if (isDebugging) {
+                    appendHistoryUnique(setStepByStepState, {
+                        id: nanoid(),
+                        timestamp: new Date().toISOString(),
+                        type: "raw",
+                        data: data.content,
+                    });
+                }
             }
         },
-        [flowId, stepByStepState, processGenericMessage, setStepByStepState],
+        [
+            appendHistoryUnique,
+            isDebugging,
+            isRunning,
+            onChatSubprocessOut,
+            onDebugSubprocessOut,
+            processGenericMessage,
+            setStepByStepState,
+        ],
     );
-
     const processUIMessage = useCallback(
         // eslint-disable-next-line complexity
         (data: ServerMessage) => {
@@ -327,18 +416,12 @@ export function useUIMessageProcessor({
                 case "step_debug":
                     if ("debug_type" in data) {
                         // Add debug event to history
-                        setStepByStepState(prev => ({
-                            ...prev,
-                            eventHistory: [
-                                {
-                                    id: nanoid(),
-                                    timestamp: new Date().toISOString(),
-                                    type: data.debug_type,
-                                    data: data.data,
-                                },
-                                ...prev.eventHistory,
-                            ],
-                        }));
+                        appendHistoryUnique(setStepByStepState, {
+                            id: nanoid(),
+                            timestamp: new Date().toISOString(),
+                            type: data.debug_type,
+                            data: data.data,
+                        });
                     }
                     break;
 
@@ -384,6 +467,7 @@ export function useUIMessageProcessor({
             setInputPrompt,
             getPendingInputId,
             setStepByStepState,
+            appendHistoryUnique,
             processSaveResult,
             processConvertResult,
             processFlowError,

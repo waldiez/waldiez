@@ -135,7 +135,15 @@ const renderEvent = (ev: WaldiezEvent) => {
                     <div className="text-amber-500 font-semibold">
                         {sender} <span className="text-gray-400">→</span> {recipient}
                     </div>
-                    <pre className="whitespace-pre-wrap break-words mt-1">{c.content}</pre>
+                    {typeof c.content === "string" ? (
+                        <pre className="whitespace-pre-wrap break-words mt-1">{c.content}</pre>
+                    ) : typeof c.content === "object" ? (
+                        <pre className="whitespace-pre-wrap break-words mt-1">
+                            {JSON.stringify(c.content)}
+                        </pre>
+                    ) : (
+                        <pre className="whitespace-pre-wrap break-words mt-1">{String(c.content)}</pre>
+                    )}
                 </div>
             );
         }

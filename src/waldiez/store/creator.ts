@@ -77,6 +77,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 onConvert,
                 activeSenderId: null,
                 activeRecipientId: null,
+                activeEventType: null,
                 ...WaldiezChatParticipantsStore.create(get, set),
                 ...WaldiezAgentStore.create(get, set),
                 ...WaldiezModelStore.create(get, set),

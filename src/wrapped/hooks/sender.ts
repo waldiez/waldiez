@@ -107,7 +107,7 @@ export function useWebSocketSender(opts: {
 
     const stopWorkflow = useCallback(
         (sessionId?: string, force = false) => {
-            const sid = sessionId ?? getSessionId();
+            const sid = typeof sessionId === "string" ? (sessionId ?? getSessionId()) : getSessionId();
             if (!sid) {
                 return false;
             }

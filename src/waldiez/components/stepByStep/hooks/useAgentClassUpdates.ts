@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef } from "react";
 import type { WaldiezChatParticipant } from "@waldiez/components/chatUI/types";
 import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
 import { useWaldiez } from "@waldiez/store";
+import { eventToActivity } from "@waldiez/utils/activity";
 import { WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep/stepByStepUtils";
 
 /**
@@ -15,6 +16,8 @@ import { WaldiezStepByStepUtils } from "@waldiez/utils/stepByStep/stepByStepUtil
 export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
     const setActive = useWaldiez(s => s.setActiveParticipants);
     const resetActive = useWaldiez(s => s.resetActiveParticipants);
+    const setActiveEventType = useWaldiez(s => s.setActiveEventType);
+    const resetActiveEventType = useWaldiez(s => s.resetActiveEventType);
     const getGroupManager = useWaldiez(s => s.getGroupManager);
 
     const lastIndexRef = useRef(-1);
@@ -45,6 +48,7 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
     useEffect(() => {
         if (!stepByStep?.active) {
             resetActive();
+            resetActiveEventType();
             lastIndexRef.current = -1;
             return;
         }
@@ -67,6 +71,10 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
         if (senderId === null && recipientId === null) {
             return;
         }
+        const activity = eventToActivity(latest);
+        if (activity) {
+            setActiveEventType(activity);
+        }
         setActive(senderId ?? null, recipientId ?? null);
     }, [
         stepByStep?.active,
@@ -74,6 +82,8 @@ export const useAgentClassUpdates = (stepByStep?: WaldiezStepByStep | null) => {
         stepByStep?.participants,
         setActive,
         resetActive,
+        setActiveEventType,
+        resetActiveEventType,
         getGroupManager,
         getParticipantIds,
     ]);

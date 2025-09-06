@@ -44,4 +44,12 @@ export class WaldiezChatParticipantsStore implements IWaldiezChatParticipantsSto
         }
         this.set({ activeSenderId: null, activeRecipientId: null });
     };
+
+    setActiveEventType = (activeEventType: string | null) => {
+        this.set({ activeEventType });
+    };
+
+    resetActiveEventType = () => {
+        this.set({ activeEventType: null });
+    };
 }

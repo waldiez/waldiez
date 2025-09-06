@@ -74,7 +74,8 @@ export const renderFlow = async (
                                     chat={
                                         includeUserInput
                                             ? {
-                                                  showUI: isChatModalOpen,
+                                                  show: isChatModalOpen,
+                                                  active: true,
                                                   messages: options.previousMessages || [],
                                                   userParticipants: userInputProp.userParticipants,
                                                   activeRequest: {

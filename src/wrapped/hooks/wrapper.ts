@@ -28,6 +28,7 @@ export const useWaldiezWrapper = ({
     onError?: (error: any) => void;
 }): [WaldiezWrapperState, WaldiezWrapperActions] => {
     // Workflow state
+    const [showChat, setShowChat] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
     const [isDebugging, setIsDebugging] = useState(false);
     const [participants, setParticipants] = useState<WaldiezChatParticipant[]>([]);
@@ -60,8 +61,8 @@ export const useWaldiezWrapper = ({
             setIsDebugging(true);
         },
         onWorkflowComplete: () => {
-            // setIsRunning(false);
-            // setIsDebugging(false);
+            setIsRunning(false);
+            setIsDebugging(false);
             setInputPrompt(undefined);
         },
         onError: errorMsg => {
@@ -91,8 +92,9 @@ export const useWaldiezWrapper = ({
         clearPendingInput,
     });
 
-    // Step-by-step state - simplified to avoid infinite loops
+    // Step-by-step state
     const [stepByStepState, setStepByStepState] = useState<WaldiezStepByStep>(() => ({
+        show: false,
         active: false,
         stepMode: false,
         autoContinue: false,
@@ -107,6 +109,7 @@ export const useWaldiezWrapper = ({
             close: () => {
                 setStepByStepState(prev => ({
                     ...prev,
+                    show: false,
                     active: false,
                     stepMode: false,
                     autoContinue: false,
@@ -203,6 +206,7 @@ export const useWaldiezWrapper = ({
             pendingControlInput: null,
             activeRequest: null,
         }));
+        setShowChat(false);
     }, [clearPendingInput]);
 
     // Public API
@@ -210,6 +214,7 @@ export const useWaldiezWrapper = ({
         (flow: string) => {
             reset();
             runWorkflow(flow);
+            setShowChat(true);
         },
         [reset, runWorkflow],
     );
@@ -231,6 +236,7 @@ export const useWaldiezWrapper = ({
 
     return [
         {
+            showChat,
             timeline,
             messages,
             participants,

@@ -16,6 +16,7 @@ import { useWaldiezNodeAgent } from "@waldiez/containers/nodes/agent/hooks";
 import { WaldiezNodeAgentModal } from "@waldiez/containers/nodes/agent/modal";
 import { type WaldiezNodeAgentProps } from "@waldiez/containers/nodes/agent/types";
 import { AGENT_COLORS, AGENT_ICONS } from "@waldiez/theme";
+import { activityEmoji } from "@waldiez/utils/activity";
 
 const RESIZE_LIMITS = {
     manager: {
@@ -47,6 +48,7 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
         isDragging,
         isSender,
         isRecipient,
+        activeEvent,
         onDragOver,
         onDragLeave,
         onDrop,
@@ -110,7 +112,18 @@ export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
+            data-activity={isSender && activeEvent ? activityEmoji(activeEvent) : undefined}
         >
+            {(isSender || isRecipient) && (
+                <div className="agent-badge-wrap">
+                    <span className="agent-badge-chip">{isSender ? "SENDING" : "RECEIVING"}</span>
+                    {isSender && activeEvent && (
+                        <span className="agent-activity-label" data-activity={activeEvent}>
+                            {activityEmoji(activeEvent)}
+                        </span>
+                    )}
+                </div>
+            )}
             <NodeResizer
                 color={AGENT_COLORS[agentType]}
                 minWidth={minWidth}

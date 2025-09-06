@@ -62,6 +62,7 @@ export type WaldiezDebugPrint = {
  */
 export type WaldiezDebugInputRequest = {
     type: "debug_input_request" | "input_request";
+    // cspell: disable-next-line
     prompt: string; // e.g. "[Step] (c)ontinue, (r)un, ..."
     request_id: string; // opaque id; replies must echo this
 };
@@ -252,6 +253,8 @@ export type WaldiezStepHandlers = {
 
 /**
  * UI state slice for step-by-step mode.
+ * @param show - Whether to show the related view
+ * @param active - If true, step-by-step mode is active (a flow is running)
  * @param stepMode - Whether step mode is enabled
  * @param autoContinue - Whether auto continue is enabled
  * @param breakpoints - The list of event types to break on
@@ -264,6 +267,8 @@ export type WaldiezStepHandlers = {
  * @param handlers - Step-by-step specific handlers for UI actions
  */
 export type WaldiezStepByStep = {
+    // Whether to show the related view
+    show: boolean;
     /** If true, step-by-step mode is active (a flow is running) */
     active: boolean;
     /** If true, runner will pause at breakpoints */

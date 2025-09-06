@@ -14689,7 +14689,7 @@ const renderEvent = (ev) => {
           " ",
           recipient
         ] }),
-        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content })
+        typeof c.content === "string" ? /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content }) : typeof c.content === "object" ? /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: JSON.stringify(c.content) }) : /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: String(c.content) })
       ] });
     }
     case "post_carryover_processing": {
@@ -15834,6 +15834,12 @@ class WaldiezChatParticipantsStore {
       return;
     }
     this.set({ activeSenderId: null, activeRecipientId: null });
+  };
+  setActiveEventType = (activeEventType) => {
+    this.set({ activeEventType });
+  };
+  resetActiveEventType = () => {
+    this.set({ activeEventType: null });
   };
 }
 class WaldiezEdgeStore {
@@ -17211,6 +17217,7 @@ const createWaldiezStore = (props) => {
         onConvert,
         activeSenderId: null,
         activeRecipientId: null,
+        activeEventType: null,
         ...WaldiezChatParticipantsStore.create(get, set),
         ...WaldiezAgentStore.create(get, set),
         ...WaldiezModelStore.create(get, set),
@@ -17303,9 +17310,42 @@ function WaldiezProvider({ children, ...props }) {
   }, [flowId]);
   return /* @__PURE__ */ jsx(WaldiezContext.Provider, { value: store, children });
 }
+const eventToActivity = (e) => {
+  if (!e) {
+    return null;
+  }
+  let t = e.type ?? e.debug_type ?? e.data?.type ?? "";
+  if (!t) {
+    return null;
+  }
+  t = t.toString();
+  if (t.includes("process")) {
+    return "thinking";
+  }
+  if (t.includes("code") || t.includes("function") || t.includes("tool")) {
+    return "tool";
+  }
+  return "message";
+};
+const activityEmoji = (activity) => {
+  if (!activity) {
+    return "";
+  }
+  if (activity === "thinking") {
+    return " ⏳ ";
+  }
+  if (activity === "tool") {
+    return " ⚙️ ";
+  }
+  if (activity === "message") {
+    return " 💬 ";
+  }
+};
 const useAgentClassUpdates = (stepByStep) => {
   const setActive = useWaldiez((s) => s.setActiveParticipants);
   const resetActive = useWaldiez((s) => s.resetActiveParticipants);
+  const setActiveEventType = useWaldiez((s) => s.setActiveEventType);
+  const resetActiveEventType = useWaldiez((s) => s.resetActiveEventType);
   const getGroupManager = useWaldiez((s) => s.getGroupManager);
   const lastIndexRef = useRef(-1);
   const getParticipantIds = useCallback(
@@ -17330,6 +17370,7 @@ const useAgentClassUpdates = (stepByStep) => {
   useEffect(() => {
     if (!stepByStep?.active) {
       resetActive();
+      resetActiveEventType();
       lastIndexRef.current = -1;
       return;
     }
@@ -17350,6 +17391,10 @@ const useAgentClassUpdates = (stepByStep) => {
     if (senderId === null && recipientId === null) {
       return;
     }
+    const activity = eventToActivity(latest);
+    if (activity) {
+      setActiveEventType(activity);
+    }
     setActive(senderId ?? null, recipientId ?? null);
   }, [
     stepByStep?.active,
@@ -17357,6 +17402,8 @@ const useAgentClassUpdates = (stepByStep) => {
     stepByStep?.participants,
     setActive,
     resetActive,
+    setActiveEventType,
+    resetActiveEventType,
     getGroupManager,
     getParticipantIds
   ]);
@@ -17421,7 +17468,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     const raw = stepByStep?.eventHistory ?? [];
     const max2 = 500;
     const start = Math.max(0, raw.length - max2);
-    return raw.slice(start).filter((e) => !["debug", "print", "raw"].includes(String(e?.type))).map((e) => {
+    return raw.slice(start).filter((e) => e && !["debug", "print", "raw", "timeline"].includes(String(e?.type))).map((e) => {
       const x = e;
       const data = x.event ?? x.data ?? x.message ?? x;
       return Array.isArray(data) && data.length === 1 ? data[0] : data;
@@ -19111,7 +19158,7 @@ const ChatModal = memo((props) => {
   const [isLocallyOpen, setIsLocallyOpen] = useState(true);
   const inputRef = useRef(null);
   useEffect(() => {
-    if (chat?.showUI) {
+    if (chat?.show) {
       setIsLocallyOpen(true);
       setTextInput("");
       setImagePreview(null);
@@ -19123,7 +19170,7 @@ const ChatModal = memo((props) => {
         }
       });
     }
-  }, [chat?.showUI, chat?.activeRequest?.request_id, chat?.messages]);
+  }, [chat?.show, chat?.activeRequest?.request_id, chat?.messages]);
   const createInputResponse = useCallback(
     (includeData = true) => {
       const data = [];
@@ -19223,17 +19270,8 @@ const ChatModal = memo((props) => {
   const inputId = `rf-${flowId}-chat-modal-input`;
   const imageInputId = `rf-${flowId}-chat-modal-image`;
   const modalTestId = `rf-${flowId}-chat-modal`;
-  const isModalOpen = isLocallyOpen && (chat?.showUI === true || chat !== void 0 && chat.messages.length > 0);
-  const leftIcon = chat?.handlers?.onInterrupt ? /* @__PURE__ */ jsx(
-    "div",
-    {
-      role: "button",
-      className: "chat-modal-action clickable",
-      onClick: chat.handlers.onInterrupt,
-      title: "Interrupt",
-      children: /* @__PURE__ */ jsx(FaStop$1, { size: 18 })
-    }
-  ) : chat?.timeline ? /* @__PURE__ */ jsx(
+  const isModalOpen = isLocallyOpen && (chat?.show === true || chat !== void 0 && chat.messages.length > 0);
+  const leftIcon = chat?.timeline ? /* @__PURE__ */ jsx(
     "div",
     {
       role: "button",
@@ -19242,6 +19280,15 @@ const ChatModal = memo((props) => {
       title: "View Timeline",
       "data-testid": `rf-${flowId}-chat-modal-timeline`,
       children: /* @__PURE__ */ jsx(MdTimeline, { size: 18 })
+    }
+  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsx(
+    "div",
+    {
+      role: "button",
+      className: "chat-modal-action clickable",
+      onClick: () => chat?.handlers?.onInterrupt?.(),
+      title: "Interrupt",
+      children: /* @__PURE__ */ jsx(FaStop$1, { size: 18 })
     }
   ) : void 0;
   const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
@@ -19268,7 +19315,7 @@ const ChatModal = memo((props) => {
       beforeTitle: leftIcon,
       className: "chat-modal",
       hasMaximizeBtn: true,
-      hasCloseBtn: chat?.showUI === false,
+      hasCloseBtn: !chat?.active,
       dataTestId: modalTestId,
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,
@@ -22843,9 +22890,10 @@ const useWaldiezNodeAgent = (id) => {
   const deleteAgent = useWaldiez((s) => s.deleteAgent);
   const cloneAgent = useWaldiez((s) => s.cloneAgent);
   const onFlowChanged = useWaldiez((s) => s.onFlowChanged);
-  const { isSender, isRecipient } = useWaldiez((s) => ({
+  const { isSender, isRecipient, activeEvent } = useWaldiez((s) => ({
     isSender: s.activeSenderId === id,
-    isRecipient: s.activeRecipientId === id && s.activeRecipientId !== s.activeSenderId
+    isRecipient: s.activeRecipientId === id && s.activeRecipientId !== s.activeSenderId,
+    activeEvent: s.activeEventType
   }));
   const flowId = useWaldiez((s) => s.flowId);
   const readOnly = useWaldiez((s) => s.isReadOnly);
@@ -22928,6 +22976,7 @@ const useWaldiezNodeAgent = (id) => {
     isDragging,
     isSender,
     isRecipient,
+    activeEvent,
     onDelete,
     onClone,
     onOpenNodeModal,
@@ -28044,6 +28093,7 @@ const WaldiezNodeAgentView = (props) => {
     isDragging,
     isSender,
     isRecipient,
+    activeEvent,
     onDragOver,
     onDragLeave,
     onDrop,
@@ -28097,7 +28147,12 @@ const WaldiezNodeAgentView = (props) => {
       onDragOver,
       onDragLeave,
       onDrop,
+      "data-activity": isSender && activeEvent ? activityEmoji(activeEvent) : void 0,
       children: [
+        (isSender || isRecipient) && /* @__PURE__ */ jsxs("div", { className: "agent-badge-wrap", children: [
+          /* @__PURE__ */ jsx("span", { className: "agent-badge-chip", children: isSender ? "SENDING" : "RECEIVING" }),
+          isSender && activeEvent && /* @__PURE__ */ jsx("span", { className: "agent-activity-label", "data-activity": activeEvent, children: activityEmoji(activeEvent) })
+        ] }),
         /* @__PURE__ */ jsx(
           NodeResizer,
           {

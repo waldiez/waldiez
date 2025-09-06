@@ -47,6 +47,7 @@ describe("StepByStepView", () => {
     };
 
     const defaultStepByStep: WaldiezStepByStep = {
+        show: true,
         active: true,
         stepMode: true,
         autoContinue: false,

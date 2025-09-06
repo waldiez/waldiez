@@ -301,6 +301,8 @@ export declare interface IWaldiezAgentStore {
 export declare interface IWaldiezChatParticipantsStore {
     setActiveParticipants: (sender: string | null, recipient: string | null) => void;
     resetActiveParticipants: () => void;
+    setActiveEventType: (activeEventType: string | null) => void;
+    resetActiveEventType: () => void;
 }
 
 export declare interface IWaldiezEdgeStore {
@@ -1982,7 +1984,8 @@ export declare type WaldiezChatCodeExecutionReplyData = WaldiezChatBaseMessageDa
 
 /**
  * Chat configuration type
- * @param showUI - Whether to display the chat UI
+ * @param show - Whether to display the chat UI
+ * @param active - Whether the flow has running
  * @param messages - Array of chat messages
  * @param userParticipants - Set of user participants
  * @param activeRequest - Active request information (if any)
@@ -1991,7 +1994,8 @@ export declare type WaldiezChatCodeExecutionReplyData = WaldiezChatBaseMessageDa
  * @param mediaConfig - Media handling configuration
  */
 export declare type WaldiezChatConfig = {
-    showUI: boolean;
+    show: boolean;
+    active: boolean;
     messages: WaldiezChatMessage[];
     userParticipants: string[] | WaldiezChatParticipant[];
     activeRequest?: WaldiezActiveRequest;
@@ -2349,6 +2353,7 @@ export declare type WaldiezChatParticipantsData = {
 export declare type WaldiezChatParticipantsState = {
     activeSenderId: string | null;
     activeRecipientId: string | null;
+    activeEventType: string | null;
 };
 
 /**
@@ -3949,6 +3954,8 @@ export declare type WaldiezState = WaldiezStoreProps & IWaldiezToolStore & IWald
 
 /**
  * UI state slice for step-by-step mode.
+ * @param show - Whether to show the related view
+ * @param active - If true, step-by-step mode is active (a flow is running)
  * @param stepMode - Whether step mode is enabled
  * @param autoContinue - Whether auto continue is enabled
  * @param breakpoints - The list of event types to break on
@@ -3961,6 +3968,7 @@ export declare type WaldiezState = WaldiezStoreProps & IWaldiezToolStore & IWald
  * @param handlers - Step-by-step specific handlers for UI actions
  */
 export declare type WaldiezStepByStep = {
+    show: boolean;
     /** If true, step-by-step mode is active (a flow is running) */
     active: boolean;
     /** If true, runner will pause at breakpoints */

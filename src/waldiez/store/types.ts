@@ -153,6 +153,7 @@ export type ThingsToImport = {
 export type WaldiezChatParticipantsState = {
     activeSenderId: string | null;
     activeRecipientId: string | null;
+    activeEventType: string | null;
 };
 
 /**

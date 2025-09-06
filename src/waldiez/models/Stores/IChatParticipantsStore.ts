@@ -5,4 +5,6 @@
 export interface IWaldiezChatParticipantsStore {
     setActiveParticipants: (sender: string | null, recipient: string | null) => void;
     resetActiveParticipants: () => void;
+    setActiveEventType: (activeEventType: string | null) => void;
+    resetActiveEventType: () => void;
 }

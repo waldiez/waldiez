@@ -32,7 +32,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
 
     // Reset input fields and focus when modal opens
     useEffect(() => {
-        if (chat?.showUI) {
+        if (chat?.show) {
             setIsLocallyOpen(true);
             setTextInput("");
             setImagePreview(null);
@@ -46,7 +46,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
                 }
             });
         }
-    }, [chat?.showUI, chat?.activeRequest?.request_id, chat?.messages]);
+    }, [chat?.show, chat?.activeRequest?.request_id, chat?.messages]);
 
     /**
      * Create an input response object with current data
@@ -195,29 +195,13 @@ export const ChatModal = memo((props: ChatModalProps) => {
         setTimelineOpen(true);
     }, []);
 
-    /**
-     * Close timeline modal
-     */
-    // const onCloseTimeline = useCallback(() => {
-    //     setTimelineOpen(false);
-    // }, []);
-
-    // Generate unique IDs for accessibility
+    // Generate unique IDs
     const inputId = `rf-${flowId}-chat-modal-input`;
     const imageInputId = `rf-${flowId}-chat-modal-image`;
     const modalTestId = `rf-${flowId}-chat-modal`;
     const isModalOpen =
-        isLocallyOpen && (chat?.showUI === true || (chat !== undefined && chat.messages.length > 0));
-    const leftIcon = chat?.handlers?.onInterrupt ? (
-        <div
-            role="button"
-            className="chat-modal-action clickable"
-            onClick={chat.handlers.onInterrupt}
-            title="Interrupt"
-        >
-            <FaStop size={18} />
-        </div>
-    ) : chat?.timeline ? (
+        isLocallyOpen && (chat?.show === true || (chat !== undefined && chat.messages.length > 0));
+    const leftIcon = chat?.timeline ? (
         <div
             role="button"
             className="chat-modal-action clickable"
@@ -226,6 +210,15 @@ export const ChatModal = memo((props: ChatModalProps) => {
             data-testid={`rf-${flowId}-chat-modal-timeline`}
         >
             <MdTimeline size={18} />
+        </div>
+    ) : chat?.handlers?.onInterrupt && !chat.active ? (
+        <div
+            role="button"
+            className="chat-modal-action clickable"
+            onClick={() => chat?.handlers?.onInterrupt?.()}
+            title="Interrupt"
+        >
+            <FaStop size={18} />
         </div>
     ) : undefined;
     const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
@@ -251,7 +244,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             beforeTitle={leftIcon}
             className="chat-modal"
             hasMaximizeBtn={true}
-            hasCloseBtn={chat?.showUI === false}
+            hasCloseBtn={!chat?.active}
             dataTestId={modalTestId}
             hasUnsavedChanges={false}
             preventCloseIfUnsavedChanges={false}

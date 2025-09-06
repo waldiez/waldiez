@@ -25,7 +25,7 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
         showSnackbar({ message: "Workflow Error", details: error, level: "error", withCloseButton: true });
     }, []);
     const [
-        { messages, participants, isRunning, isDebugging, inputPrompt, timeline, stepByStepState },
+        { showChat, messages, participants, isRunning, isDebugging, inputPrompt, timeline, stepByStepState },
         { run, stepRun, stop, save, upload, convert, userInput, reset },
     ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId, onError });
     const userParticipants = participants
@@ -44,7 +44,8 @@ export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
         chat: isDebugging
             ? undefined
             : {
-                  showUI: isRunning && !timeline,
+                  show: showChat,
+                  active: isRunning,
                   messages,
                   userParticipants,
                   activeRequest: inputPrompt,

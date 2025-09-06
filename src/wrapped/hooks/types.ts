@@ -114,6 +114,7 @@ export type ServerMessage =
     | { type: string; [k: string]: any }; // catch-all for chat processor
 
 export type WaldiezWrapperState = {
+    showChat: boolean;
     timeline?: WaldiezTimelineData;
     messages: WaldiezChatMessage[];
     participants: WaldiezChatParticipant[];

@@ -57,7 +57,8 @@ const renderFlow = async (
                                 chat={
                                     includeUserInput
                                         ? {
-                                              showUI: false,
+                                              show: false,
+                                              active: true,
                                               messages: [],
                                               userParticipants: ["user_proxy"],
                                               activeRequest: undefined,

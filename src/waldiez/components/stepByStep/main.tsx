@@ -103,7 +103,7 @@ export const StepByStepView: React.FC<{
         const start = Math.max(0, raw.length - max);
         return raw
             .slice(start)
-            .filter(e => !["debug", "print", "raw"].includes(String((e as any)?.type)))
+            .filter(e => e && !["debug", "print", "raw", "timeline"].includes(String((e as any)?.type)))
             .map(e => {
                 const x: any = e;
                 const data = x.event ?? x.data ?? x.message ?? x;
