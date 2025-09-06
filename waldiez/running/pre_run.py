@@ -7,6 +7,8 @@ import io
 import os
 import subprocess
 import sys
+import tempfile
+from pathlib import Path
 from typing import Callable
 
 from waldiez.models import Waldiez
@@ -16,6 +18,7 @@ from .utils import (
     ensure_pip,
     get_pip_install_location,
     get_python_executable,
+    safe_filename,
     strip_ansi,
 )
 
@@ -238,3 +241,41 @@ def _after_pip(
         else:
             # Use pop to avoid KeyError if the key doesn't exist
             os.environ.pop("PIP_BREAK_SYSTEM_PACKAGES", None)
+
+
+def dump_waldiez(waldiez: Waldiez, output_path: str | Path | None) -> Path:
+    """Dump waldiez flow to a file.
+
+    Parameters
+    ----------
+    waldiez : Waldiez
+        The waldiez instance to dump.
+    output_path : str | Path | None
+        Optional output path to determine the directory to save the flow to.
+
+    Returns
+    -------
+    Path
+        The path to the generated file.
+    """
+    file_path = Path(output_path) if output_path else None
+    if file_path:
+        file_name = file_path.name
+        if not file_name.endswith(".waldiez"):
+            file_path.with_suffix(".waldiez")
+
+    else:
+        full_name = waldiez.name
+        file_name = safe_filename(full_name, "waldiez")
+    file_dir: Path
+    if file_path:
+        file_dir = file_path if file_path.is_dir() else file_path.parent
+    else:
+        file_dir = Path(tempfile.mkdtemp())
+    file_dir.mkdir(parents=True, exist_ok=True)
+    output_path = file_dir / file_name
+    with output_path.open(
+        "w", encoding="utf-8", errors="replace", newline="\n"
+    ) as f_open:
+        f_open.write(waldiez.model_dump_json())
+    return output_path

@@ -81,11 +81,13 @@ def test_after_run(tmp_path: Path) -> None:
     tmp_dir = tmp_path / "test_after_run"
     tmp_dir.mkdir(parents=True, exist_ok=True)
     output_file = str(tmp_path / "output_path" / "output.py")
+    waldiez_file = tmp_path / "output_path" / "output.waldiez"
 
     after_run(
         temp_dir=tmp_dir,
         output_file=output_file,
         flow_name=flow_name,
+        waldiez_file=waldiez_file,
         uploads_root=None,
         skip_mmd=False,
     )
@@ -104,6 +106,7 @@ def test_after_run(tmp_path: Path) -> None:
         temp_dir=tmp_dir,
         output_file=output_file,
         flow_name=flow_name,
+        waldiez_file=waldiez_file,
         skip_mmd=False,
         uploads_root=None,
     )
@@ -113,6 +116,7 @@ def test_after_run(tmp_path: Path) -> None:
         temp_dir=tmp_dir,
         output_file=None,
         flow_name=flow_name,
+        waldiez_file=waldiez_file,
         uploads_root=None,
         skip_mmd=True,
     )

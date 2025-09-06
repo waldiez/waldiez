@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=line-too-long,missing-param-doc,missing-return-doc,missing-raises-doc
-# pylint: disable=protected-access,too-few-public-methods,unused-argument
+# pylint: disable=protected-access,too-few-public-methods,unused-argument,missing-yield-doc
 # flake8: noqa: E501
 # pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false
 # pyright: reportUnknownVariableType=false, reportPrivateUsage=false
@@ -9,8 +9,9 @@
 """Test waldiez.running.base_runner.*."""
 
 import textwrap
+import uuid
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -19,6 +20,19 @@ from waldiez.models.flow.flow import WaldiezFlow
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.base_runner import WaldiezBaseRunner
 from waldiez.running.exceptions import StopRunningException
+
+
+@pytest.fixture(name="waldiez_file")
+def waldiez_file_fixture(tmp_path: Path) -> Generator[Path, None, None]:
+    """Get a dummy waldiez file."""
+    tmp_name = uuid.uuid4().hex
+    tmp_file = tmp_path / f"{tmp_name}.waldiez"
+    tmp_file.touch()
+    yield tmp_file
+    try:
+        tmp_file.unlink()
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 class DummyRunner(WaldiezBaseRunner):
@@ -63,12 +77,13 @@ def create_dummy_module(tmp_path: Path, async_main: bool = False) -> Path:
     return file_path
 
 
-def test_load_module(tmp_path: Path) -> None:
+def test_load_module(tmp_path: Path, waldiez_file: Path) -> None:
     """Test loading a module."""
     file_path = create_dummy_module(tmp_path)
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
         output_path=str(file_path),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         structured_io=False,
     )
@@ -76,13 +91,16 @@ def test_load_module(tmp_path: Path) -> None:
     assert hasattr(module, "main")
 
 
-def test_load_module_raises_without_main(tmp_path: Path) -> None:
+def test_load_module_raises_without_main(
+    tmp_path: Path, waldiez_file: Path
+) -> None:
     """Test loading a module without a main function."""
     file_path = tmp_path / "no_main.py"
     file_path.write_text("x = 1")
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
         output_path=str(file_path),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         structured_io=False,
     )
@@ -90,12 +108,15 @@ def test_load_module_raises_without_main(tmp_path: Path) -> None:
         runner._load_module(output_file=file_path, temp_dir=tmp_path)
 
 
-def test_run_sets_running_flag_and_returns_results(tmp_path: Path) -> None:
+def test_run_sets_running_flag_and_returns_results(
+    tmp_path: Path, waldiez_file: Path
+) -> None:
     """Test running flag and results."""
     file_path = create_dummy_module(tmp_path)
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False, get_flow_env_vars=lambda: {}),
         output_path=str(file_path),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         structured_io=False,
     )
@@ -107,12 +128,14 @@ def test_run_sets_running_flag_and_returns_results(tmp_path: Path) -> None:
 @pytest.mark.asyncio
 async def test_async_run_sets_running_flag_and_returns_results(
     tmp_path: Path,
+    waldiez_file: Path,
 ) -> None:
     """Test async running flag and results."""
     file_path = create_dummy_module(tmp_path, async_main=True)
     runner = DummyRunner(
         waldiez=MagicMock(is_async=True, get_flow_env_vars=lambda: {}),
         output_path=str(file_path),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         structured_io=False,
     )
@@ -121,12 +144,15 @@ async def test_async_run_sets_running_flag_and_returns_results(
     assert not runner.is_running()
 
 
-def test_run_raises_if_already_running(tmp_path: Path) -> None:
+def test_run_raises_if_already_running(
+    tmp_path: Path, waldiez_file: Path
+) -> None:
     """Test if run raises an error when already running."""
     file_path = create_dummy_module(tmp_path)
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False, get_flow_env_vars=lambda: {}),
         output_path=str(file_path),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         structured_io=False,
     )
@@ -137,12 +163,15 @@ def test_run_raises_if_already_running(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_async_run_raises_if_already_running(tmp_path: Path) -> None:
+async def test_async_run_raises_if_already_running(
+    tmp_path: Path, waldiez_file: Path
+) -> None:
     """Test if async run raises an error when already running."""
     file_path = create_dummy_module(tmp_path)
     runner = DummyRunner(
         waldiez=MagicMock(is_async=True, get_flow_env_vars=lambda: {}),
         output_path=str(file_path),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         structured_io=False,
     )
@@ -151,10 +180,13 @@ async def test_async_run_raises_if_already_running(tmp_path: Path) -> None:
         await runner.a_run(output_path=str(file_path))
 
 
-def test_process_event_calls_send(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_process_event_calls_send(
+    monkeypatch: pytest.MonkeyPatch, waldiez_file: Path
+) -> None:
     """Test if process_event calls the send method."""
     _runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -173,10 +205,13 @@ def test_process_event_calls_send(monkeypatch: pytest.MonkeyPatch) -> None:
     assert called.get("sent") is True
 
 
-def test_process_event_input_request(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_process_event_input_request(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waldiez_file: Path
+) -> None:
     """Test if process_event handles input_request events."""
     _runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -213,10 +248,12 @@ def test_process_event_input_request(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.mark.asyncio
 async def test_a_process_event_calls_send(
     monkeypatch: pytest.MonkeyPatch,
+    waldiez_file: Path,
 ) -> None:
     """Test if async process_event calls the send method."""
     _runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -238,10 +275,12 @@ async def test_a_process_event_calls_send(
 @pytest.mark.asyncio
 async def test_a_process_event_input_request(
     monkeypatch: pytest.MonkeyPatch,
+    waldiez_file: Path,
 ) -> None:
     """Test if async process_event handles input_request events."""
     _runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -281,11 +320,14 @@ async def test_a_process_event_input_request(
 
 
 def test_prepare_paths_and_before_run(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    waldiez_file: Path,
 ) -> None:
     """Test if _prepare_paths and _before_run work as expected."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -313,10 +355,12 @@ def test_prepare_paths_and_before_run(
 
 def test_context_manager_stop_requested(
     monkeypatch: pytest.MonkeyPatch,
+    waldiez_file: Path,
 ) -> None:
     """Test if context manager handles stop_requested flag."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -332,10 +376,14 @@ def test_context_manager_stop_requested(
             raise StopRunningException("stop")
 
 
-def test_get_input_function_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_input_function_overrides(
+    monkeypatch: pytest.MonkeyPatch,
+    waldiez_file: Path,
+) -> None:
     """Test if get_input_function returns the correct input function."""
     _runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -352,10 +400,13 @@ def test_get_input_function_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
     assert input_func == fake_input  # pylint: disable=comparison-with-callable
 
 
-def test_get_user_input_sync_and_async(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_user_input_sync_and_async(
+    monkeypatch: pytest.MonkeyPatch, waldiez_file: Path
+) -> None:
     """Test if get_user_input works with sync and async functions."""
     _runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -389,10 +440,11 @@ async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
     assert val == "async_input"
 
 
-def test_stop_method_sets_flags() -> None:
+def test_stop_method_sets_flags(waldiez_file: Path) -> None:
     """Test if stop() method sets the correct flags."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -410,10 +462,11 @@ def test_stop_method_sets_flags() -> None:
     assert runner._stop_requested.is_set()
 
 
-def test_stop_method_with_running_workflow() -> None:
+def test_stop_method_with_running_workflow(waldiez_file: Path) -> None:
     """Test stop() method behavior when workflow is running."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -435,10 +488,11 @@ def test_stop_method_with_running_workflow() -> None:
     assert not runner.is_running()
 
 
-def test_context_manager_enter_exit() -> None:
+def test_context_manager_enter_exit(waldiez_file: Path) -> None:
     """Test context manager __enter__ and __exit__ methods."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -449,10 +503,11 @@ def test_context_manager_enter_exit() -> None:
         assert context_runner is runner
 
 
-def test_context_manager_exit_when_running() -> None:
+def test_context_manager_exit_when_running(waldiez_file: Path) -> None:
     """Test __exit__ sets stop flag when runner is running."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -472,10 +527,11 @@ def test_context_manager_exit_when_running() -> None:
     WaldiezBaseRunner._running = False
 
 
-def test_context_manager_exit_when_not_running() -> None:
+def test_context_manager_exit_when_not_running(waldiez_file: Path) -> None:
     """Test __exit__ doesn't set stop flag when runner is not running."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -493,10 +549,11 @@ def test_context_manager_exit_when_not_running() -> None:
 
 
 @pytest.mark.asyncio
-async def test_async_context_manager_aenter_aexit() -> None:
+async def test_async_context_manager_aenter_aexit(waldiez_file: Path) -> None:
     """Test async context manager __aenter__ and __aexit__ methods."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -508,10 +565,13 @@ async def test_async_context_manager_aenter_aexit() -> None:
 
 
 @pytest.mark.asyncio
-async def test_async_context_manager_aexit_when_running() -> None:
+async def test_async_context_manager_aexit_when_running(
+    waldiez_file: Path,
+) -> None:
     """Test __aexit__ sets stop flag when runner is running."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -532,10 +592,13 @@ async def test_async_context_manager_aexit_when_running() -> None:
 
 
 @pytest.mark.asyncio
-async def test_async_context_manager_aexit_when_not_running() -> None:
+async def test_async_context_manager_aexit_when_not_running(
+    waldiez_file: Path,
+) -> None:
     """Test __aexit__ doesn't set stop flag when runner is not running."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,
@@ -552,10 +615,11 @@ async def test_async_context_manager_aexit_when_not_running() -> None:
     assert not runner.is_stop_requested()
 
 
-def test_base_runner_properties() -> None:
+def test_base_runner_properties(waldiez_file: Path) -> None:
     """Test base runner properties."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
+        waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,
         structured_io=False,

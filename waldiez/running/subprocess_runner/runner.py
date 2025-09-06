@@ -465,6 +465,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         self,
         results: list[dict[str, Any]],
         output_file: Path,
+        waldiez_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
@@ -478,6 +479,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Results from the workflow execution
         output_file : Path
             Output file path
+        waldiez_file : Path
+            The waldiez file used/dumped for the run.
         uploads_root : Path | None
             Uploads root directory
         temp_dir : Path
@@ -494,6 +497,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         self,
         results: list[dict[str, Any]],
         output_file: Path,
+        waldiez_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
@@ -507,6 +511,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Results from the workflow execution
         output_file : Path
             Output file path
+        waldiez_file : Path
+            The waldiez file used/dumped for the run.
         uploads_root : Path | None
             Uploads root directory
         temp_dir : Path

@@ -41,7 +41,9 @@ BASE_RUNNER = "waldiez.running.base_runner.WaldiezBaseRunner"
 def runner_fixture() -> WaldiezStepByStepRunner:
     """Fixture for WaldiezStepByStepRunner."""
     waldiez = MagicMock()
+    waldiez.name = "Waldiez flow"
     waldiez.info = WaldiezFlowInfo(participants=[])
+    waldiez.model_dump_json = MagicMock(return_value='{"type": "flow"}')
     runner = WaldiezStepByStepRunner(waldiez=waldiez)
     # noinspection PyProtectedMember
     runner._stop_requested.clear()
@@ -74,7 +76,7 @@ def test_parse_user_action_known_and_unknown(
     """Test parsing of user actions."""
     action = runner._parse_user_action("c", request_id="id1")
     assert action == WaldiezDebugStepAction.CONTINUE
-
+    # cspell: disable-next-line
     action = runner._parse_user_action("unknowncmd", request_id="id1")
     assert action == WaldiezDebugStepAction.UNKNOWN
 
@@ -379,9 +381,9 @@ def test_on_event_raises_runtime_error_on_generic_exception(
     """_on_event should raise RuntimeError when process_event raises generic exception."""
     runner._step_mode = False  # to skip break logic
     with patch(f"{BASE_RUNNER}.process_event", side_effect=ValueError("fail")):
-        with pytest.raises(RuntimeError) as excinfo:
+        with pytest.raises(RuntimeError) as exc_info:
             runner._on_event(text_event)
-        assert "fail" in str(excinfo.value)
+        assert "fail" in str(exc_info.value)
 
 
 def test_on_event_propagates_stop_running_exception(
@@ -407,9 +409,9 @@ async def test_async_on_event_raises_runtime_error_on_generic_exception(
     with patch(
         f"{BASE_RUNNER}.a_process_event", side_effect=ValueError("fail")
     ):
-        with pytest.raises(RuntimeError) as excinfo:
+        with pytest.raises(RuntimeError) as exc_info:
             await runner._a_on_event(text_event)
-        assert "fail" in str(excinfo.value)
+        assert "fail" in str(exc_info.value)
 
 
 @pytest.mark.asyncio

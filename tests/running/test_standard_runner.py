@@ -22,7 +22,9 @@ BASE_RUNNER = "waldiez.running.base_runner.WaldiezBaseRunner"
 def runner_fixture() -> WaldiezStandardRunner:
     """Fixture for WaldiezStandardRunner."""
     waldiez = MagicMock()
+    waldiez.name = "Waldiez flow"
     waldiez.info = WaldiezFlowInfo(participants=[])
+    waldiez.model_dump_json = MagicMock(return_value='{"type": "flow"}')
     return WaldiezStandardRunner(waldiez=waldiez)
 
 

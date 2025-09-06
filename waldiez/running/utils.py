@@ -574,3 +574,52 @@ def _run_in_thread(
 
     # Use cast since we know the result should be T if no exception occurred
     return cast(T, result_container.result)
+
+
+def safe_filename(name: str, ext: str = "") -> str:
+    """
+    Make a safe cross-platform filename from an arbitrary string.
+
+    Parameters
+    ----------
+    name : str
+        The string to turn into a safe filename.
+    ext :  str
+        Optional extension (with or without leading dot).
+
+    Returns
+    -------
+    str
+        A safe filename string.
+    """
+    # Normalize extension
+    # pylint: disable=inconsistent-quotes
+    ext = f".{ext.lstrip('.')}" if ext else ""
+
+    # Forbidden characters on Windows (also bad on Unix)
+    forbidden = r'[<>:"/\\|?*\x00-\x1F]'
+    name = re.sub(forbidden, "_", name)
+
+    # Trim trailing dots/spaces (illegal on Windows)
+    name = name.rstrip(". ")
+
+    # Collapse multiple underscores
+    name = re.sub(r"_+", "_", name)
+
+    # Reserved Windows device names
+    reserved = re.compile(
+        r"^(con|prn|aux|nul|com[1-9]|lpt[1-9])$", re.IGNORECASE
+    )
+    if reserved.match(name):
+        name = f"_{name}"
+
+    # Fallback if empty
+    if not name:
+        name = "file"
+
+    # Ensure length limit (NTFS max filename length = 255 bytes)
+    max_len = 255 - len(ext)
+    if len(name) > max_len:
+        name = name[:max_len]
+
+    return f"{name}{ext}"

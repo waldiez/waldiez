@@ -170,6 +170,7 @@ def run(
             structured_io=structured,
             dot_env=env_file,
             subprocess_mode=subprocess_mode,
+            waldiez_file=file,
         )
     except FileNotFoundError as error:
         typer.echo(f"File not found: {file}")

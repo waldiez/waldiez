@@ -20,6 +20,7 @@ def after_run(
     temp_dir: Path,
     output_file: Optional[Union[str, Path]],
     flow_name: str,
+    waldiez_file: Path,
     uploads_root: Optional[Path] = None,
     skip_mmd: bool = False,
     skip_timeline: bool = False,
@@ -34,6 +35,8 @@ def after_run(
         The output file.
     flow_name : str
         The flow name.
+    waldiez_file : Path
+        The path of the waldiez file used (or dumped) for the run.
     uploads_root : Optional[Path], optional
         The runtime uploads root, by default None
     skip_mmd : bool, optional
@@ -69,6 +72,9 @@ def after_run(
             output_file=output_file,
             destination_dir=destination_dir,
         )
+        dst_waldiez = destination_dir / waldiez_file.name
+        if not dst_waldiez.exists() and waldiez_file.is_file():
+            shutil.copyfile(waldiez_file, dst_waldiez)
     shutil.rmtree(temp_dir)
 
 

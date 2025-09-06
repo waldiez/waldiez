@@ -451,6 +451,7 @@ def test_runner_after_run(
         runner._after_run(
             results=[],
             output_file=Path("output.py"),
+            waldiez_file=Path("input.waldiez"),
             uploads_root=None,
             temp_dir=tmp_path,
             skip_mmd=False,
@@ -475,6 +476,7 @@ def test_runner_after_run_sync_running(
         runner._after_run(
             results=[],
             output_file=Path("output.py"),
+            waldiez_file=Path("input.waldiez"),
             uploads_root=None,
             temp_dir=tmp_path,
             skip_mmd=False,
@@ -501,6 +503,7 @@ async def test_a_runner_after_run_sync(
         await runner._a_after_run(
             results=[],
             output_file=Path("output.py"),
+            waldiez_file=Path("input.waldiez"),
             uploads_root=None,
             temp_dir=tmp_path,
             skip_mmd=False,
@@ -522,10 +525,13 @@ async def test_a_runner_after_run_async(
     mock_stop = AsyncMock()
     runner.async_runner.stop = mock_stop
     runner.sync_runner = None
+    waldiez_file = tmp_path / "input.waldiez"
+    waldiez_file.touch()
 
     await runner._a_after_run(
         results=[],
         output_file=Path("output.py"),
+        waldiez_file=waldiez_file,
         uploads_root=None,
         temp_dir=tmp_path,
         skip_mmd=False,
@@ -539,15 +545,18 @@ async def test_a_runner_after_run_async(
 
 @patch("waldiez.models.Waldiez.load")
 def test_create_with_callbacks(
-    mock_load: MagicMock, mock_waldiez: Waldiez
+    mock_load: MagicMock,
+    mock_waldiez: Waldiez,
+    tmp_path: Path,
 ) -> None:
     """Test creating runner with callbacks."""
     mock_load.return_value = mock_waldiez
     mock_output = MagicMock()
     mock_input = MagicMock()
-
+    waldiez_file = tmp_path / "test_create_with_callbacks.waldiez"
+    waldiez_file.touch()
     runner = WaldiezSubprocessRunner.create_with_callbacks(
-        "test.waldiez",
+        waldiez_file,
         on_output=mock_output,
         on_input_request=mock_input,
         mode="debug",
@@ -556,4 +565,5 @@ def test_create_with_callbacks(
     assert runner.sync_on_output == mock_output
     assert runner.sync_on_input_request == mock_input
     assert runner.mode == "debug"
-    mock_load.assert_called_once_with("test.waldiez")
+    mock_load.assert_called_once_with(waldiez_file)
+    waldiez_file.unlink()

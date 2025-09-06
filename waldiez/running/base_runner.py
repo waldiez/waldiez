@@ -27,7 +27,7 @@ from waldiez.models import Waldiez
 from .environment import refresh_environment, reset_env_vars, set_env_vars
 from .exceptions import StopRunningException
 from .post_run import after_run
-from .pre_run import RequirementsMixin
+from .pre_run import RequirementsMixin, dump_waldiez
 from .protocol import WaldiezRunnerProtocol
 from .utils import (
     a_chdir,
@@ -76,6 +76,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     _dot_env_path: str | Path | None
     _running: bool
     _is_async: bool
+    _waldiez_file: Path
     _input: Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
     _print: Callable[..., None]
     _send: Callable[[Union["BaseEvent", "BaseMessage"]], None]
@@ -112,6 +113,16 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             self._logger = logger
         else:
             self._logger = get_logger()
+        waldiez_file = kwargs.get("waldiez_file", "")
+        if isinstance(waldiez_file, str) and waldiez_file:
+            waldiez_file_path = Path(waldiez_file).resolve()
+        elif isinstance(waldiez_file, Path):
+            waldiez_file_path = waldiez_file.resolve()
+        else:
+            waldiez_file_path = dump_waldiez(waldiez, output_path=output_path)
+        if not waldiez_file_path or not waldiez_file_path.is_file():
+            raise ValueError("Could not resolve a waldiez file path")
+        WaldiezBaseRunner._waldiez_file = waldiez_file_path
 
     @staticmethod
     def print(*args: Any, **kwargs: Any) -> None:
@@ -330,6 +341,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         self,
         results: list[dict[str, Any]],
         output_file: Path,
+        waldiez_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
@@ -347,6 +359,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                 temp_dir=temp_dir,
                 output_file=output_file,
                 flow_name=self._waldiez.name,
+                waldiez_file=waldiez_file,
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
@@ -359,6 +372,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         self,
         results: list[dict[str, Any]],
         output_file: Path,
+        waldiez_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
@@ -372,6 +386,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            waldiez_file=waldiez_file,
         )
 
     @staticmethod
@@ -747,6 +762,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             results=results,
             output_file=output_file,
             uploads_root=uploads_root_path,
+            waldiez_file=WaldiezBaseRunner._waldiez_file,
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
@@ -784,6 +800,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         self._after_run(
             results=results,
             output_file=output_file,
+            waldiez_file=WaldiezBaseRunner._waldiez_file,
             uploads_root=uploads_root,
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
@@ -823,12 +840,18 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            waldiez_file=WaldiezBaseRunner._waldiez_file,
         )
 
     @property
     def waldiez(self) -> Waldiez:
         """Get the Waldiez instance."""
         return self._waldiez
+
+    @property
+    def waldiez_file(self) -> Path:
+        """Get the path to the waldiez file."""
+        return self._waldiez_file
 
     @property
     def is_async(self) -> bool:
