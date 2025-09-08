@@ -42,12 +42,13 @@ llama-index-vector-stores-chroma
 llama-index-vector-stores-mongodb
 llama-index>=0.12,<1
 pgvector>=0.4.0
-psycopg>=3.2.6;sys_platform == 'linux'
-psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'AARCH64'
-psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'ARM64'
-psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'aarch64'
-psycopg>=3.2.6;sys_platform == 'win32' and platform_machine == 'arm64'
-psycopg[binary]>=3.2.6;sys_platform != 'linux' and platform_machine != 'arm64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'AARCH64'
+psycopg>=3.2.9; sys_platform == 'linux'
+psycopg>=3.2.9; sys_platform == 'win32' and platform_machine == 'AARCH64'
+psycopg>=3.2.9; sys_platform == 'win32' and platform_machine == 'ARM64'
+psycopg>=3.2.9; sys_platform == 'win32' and platform_machine == 'aarch64'
+psycopg>=3.2.9; sys_platform == 'win32' and platform_machine == 'arm64'
+psycopg[binary]>=3.2.9; sys_platform == 'darwin'
+psycopg[binary]>=3.2.9; sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'ARM64' and platform_machine != 'aarch64' and platform_machine != 'AARCH64'
 pydantic-ai>=0.0.21
 pymongo>=4.11
 qdrant-client[fastembed];sys_platform != 'win32'
