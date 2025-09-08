@@ -14817,6 +14817,16 @@ const renderEvent = (ev) => {
         ] })
       ] });
     }
+    case "termination_and_human_reply_no_input": {
+      const c = ev.content ? ev.content : ev;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "No human input" }),
+        c.no_human_input_msg && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Message: ",
+          c.no_human_input_msg
+        ] })
+      ] });
+    }
     case "run_completion":
       return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "🏁 Run completed" });
     case "generate_code_execution_reply":

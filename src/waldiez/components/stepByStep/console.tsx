@@ -47,6 +47,11 @@ type InfoContent = string | Record<string, never>;
 type ErrorContent = string | Record<string, never>;
 type RunCompletionContent = Record<string, never>;
 type GenerateCodeExecutionReplyContent = Record<string, never>;
+type TerminationAndHumanReplyNoInputContent = {
+    no_human_input_msg: string;
+    sender: string;
+    recipient: string;
+};
 
 export type WaldiezEvent =
     | EventBase<"text", TextContent>
@@ -65,6 +70,7 @@ export type WaldiezEvent =
     | EventBase<"info", InfoContent>
     | EventBase<"error", ErrorContent>
     | EventBase<"empty", TextContent>
+    | EventBase<"termination_and_human_reply_no_input", TerminationAndHumanReplyNoInputContent>
     | EventBase<string, any>; // fallback/unknown
 
 type EventConsoleProps = {
@@ -283,6 +289,18 @@ const renderEvent = (ev: WaldiezEvent) => {
                     {c.termination_reason && (
                         <div className="text-sm">→ Termination_reason: {c.termination_reason}</div>
                     )}
+                </div>
+            );
+        }
+
+        case "termination_and_human_reply_no_input": {
+            const c = (ev as any).content
+                ? (ev.content as TerminationAndHumanReplyNoInputContent)
+                : (ev as any as TerminationAndHumanReplyNoInputContent);
+            return (
+                <div>
+                    <div className="font-semibold">No human input</div>
+                    {c.no_human_input_msg && <div className="text-sm">→ Message: {c.no_human_input_msg}</div>}
                 </div>
             );
         }
