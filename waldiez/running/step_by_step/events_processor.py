@@ -44,6 +44,7 @@ class EventProcessor:
         event_info = self._create_event_info(event)
         self._update_participant_info(event_info)
         self._manage_event_history(event_info)
+        self._check_for_input_request(event_info)
 
         should_break = self.runner.should_break_on_event(
             event, self.runner.step_mode
@@ -78,7 +79,6 @@ class EventProcessor:
         event_info["recipient"] = getattr(
             event, "recipient", self.runner.last_recipient
         )
-
         return event_info
 
     def _update_participant_info(self, event_info: dict[str, Any]) -> None:
@@ -179,3 +179,21 @@ class EventProcessor:
             excess = len(current_history) - self.runner.max_event_history
             for _ in range(excess):
                 self.runner.pop_event()
+
+    def _check_for_input_request(self, event_info: dict[str, Any]) -> None:
+        """Swap participant names if we have an input request."""
+        if (
+            event_info["type"] in ("input_request", "debug_input_request")
+            and "sender" in event_info
+            and "recipient" in event_info
+        ):
+            # swap them,
+            # before:
+            # "recipient" is the user (the one received the input request),
+            # make her the "sender" (the one typing...)
+            sender = event_info["sender"]
+            recipient = event_info["recipient"]
+            event_info["sender"] = recipient
+            event_info["recipient"] = sender
+            self.runner.last_sender = recipient
+            self.runner.last_recipient = sender

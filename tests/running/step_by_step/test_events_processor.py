@@ -313,3 +313,21 @@ def test_process_event_empty_event_history(
     runner.pop_event.assert_not_called()
     # Should still add to history
     runner.add_to_history.assert_called_once()
+
+
+def test_swap_participant_names_on_input_request(
+    processor: EventProcessor,
+    runner: MagicMock,
+) -> None:
+    """Test processing swaps participant names if the event is an input request."""
+    event = MagicMock()
+    event.model_dump.return_value = {"type": "input_request"}
+    event.sender = "sender"
+    event.recipient = "recipient"
+
+    result = processor.process_event(event)
+    assert runner.last_sender == "recipient"
+    assert runner.last_recipient == "sender"
+    event_info = result["event_info"]
+    assert event_info["sender"] == "recipient"
+    assert event_info["recipient"] == "sender"
