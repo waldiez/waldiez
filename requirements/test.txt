@@ -4,7 +4,7 @@ ag2[websockets]==0.9.9
 fakeredis==2.31.1
 paho-mqtt>=2.1.0,<3.0
 pytest-asyncio==1.1.0
-pytest-cov==6.2.1
+pytest-cov==6.3.0
 pytest-env==1.1.5
 pytest-html==4.1.1
 pytest-sugar==1.1.1
