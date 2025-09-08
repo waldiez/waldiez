@@ -126,6 +126,9 @@ export const TextInput = memo<{
                     name={name}
                     style={inputStyle}
                     aria-label={typeof label === "string" ? label : undefined}
+                    autoCapitalize="off"
+                    autoCorrect="off"
+                    autoComplete="off"
                 />
                 {isPassword && (
                     <button
