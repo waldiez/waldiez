@@ -213,13 +213,11 @@ export const StepByStepView: React.FC<{
                                     type={stepByStep.activeRequest.password === true ? "password" : "text"}
                                     onChange={onInputChange}
                                     onKeyDown={onInputKeyDown}
+                                    autoCapitalize="off"
+                                    autoCorrect="off"
+                                    autoComplete="off"
                                 />
-                                <button
-                                    className="btn btn-primary"
-                                    type="button"
-                                    onClick={onRespond}
-                                    disabled={!requestId || !responseText.trim()}
-                                >
+                                <button className="btn btn-primary" type="button" onClick={onRespond}>
                                     Send
                                 </button>
                             </div>

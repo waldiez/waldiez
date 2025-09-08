@@ -12347,7 +12347,10 @@ const TextInput = memo((props) => {
           id: `id-${name}`,
           name,
           style: inputStyle,
-          "aria-label": typeof label === "string" ? label : void 0
+          "aria-label": typeof label === "string" ? label : void 0,
+          autoCapitalize: "off",
+          autoCorrect: "off",
+          autoComplete: "off"
         }
       ),
       isPassword && /* @__PURE__ */ jsx(
@@ -17592,19 +17595,13 @@ const StepByStepView = ({ flowId, stepByStep }) => {
                 value: responseText,
                 type: stepByStep.activeRequest.password === true ? "password" : "text",
                 onChange: onInputChange,
-                onKeyDown: onInputKeyDown
+                onKeyDown: onInputKeyDown,
+                autoCapitalize: "off",
+                autoCorrect: "off",
+                autoComplete: "off"
               }
             ),
-            /* @__PURE__ */ jsx(
-              "button",
-              {
-                className: "btn btn-primary",
-                type: "button",
-                onClick: onRespond,
-                disabled: !requestId || !responseText.trim(),
-                children: "Send"
-              }
-            )
+            /* @__PURE__ */ jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
           ] })
         ] }),
         reducedHistory.length > 0 ? /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
