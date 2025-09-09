@@ -198,6 +198,9 @@ def convert_remote_examples() -> None:
     for example in EXAMPLES:
         example_dir = os.path.dirname(example)
         example_url = f"{REPO_URL}/{example}"
+        if sys.platform == "win32":
+            example_ = example.replace("\\", "/")
+            example_url = f"{REPO_URL}/{example_}"
         example_path = os.path.join(temp_dir, example)
         os.makedirs(os.path.dirname(example_path), exist_ok=True)
         LOG.info("Downloading %s ...", example)
@@ -432,7 +435,7 @@ def replace_root_dir_in_ipynb(file_path: str) -> None:
                     content = re.sub(pattern, r'"', content)
                     break
     if should_update:
-        with open(file_path, "w", encoding="utf-8") as file:
+        with open(file_path, "w", encoding="utf-8", newline="\n") as file:
             file.write(content)
 
 
@@ -454,7 +457,7 @@ def replace_root_dir_in_py(file_path: str) -> None:
         content = re.sub(root_pattern, r"\1", content)
         should_update = True
     if should_update:
-        with open(file_path, "w", encoding="utf-8") as file:
+        with open(file_path, "w", encoding="utf-8", newline="\n") as file:
             file.write(content)
 
 
