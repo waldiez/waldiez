@@ -147,8 +147,9 @@ class TestStructuredIOStream:
         assert result == "user input"
         mock_input.assert_called_once_with("Enter text: ")
 
+    @patch("builtins.input")
     @patch("builtins.print")
-    def test_input_timeout(self, mock_print: MagicMock) -> None:
+    def test_input_timeout(self, mock_print: MagicMock, _: MagicMock) -> None:
         """Test input timeout."""
         # Create a queue that will never return to simulate timeout
 
