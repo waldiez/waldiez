@@ -21,7 +21,7 @@ else:
     load_dotenv(override=False)
 
 os.environ["PYTHONUNBUFFERED"] = "1"
-_MY_ARCH = platform.machine()
+_MY_ARCH = platform.machine().lower()
 if _MY_ARCH == "x86_64":
     _MY_ARCH = "amd64"
 elif _MY_ARCH in ("aarch64", "arm64"):
@@ -285,11 +285,9 @@ def check_other_platform(container_command: str, platform_arg: str) -> bool:
     if not is_windows:
         is_other_platform = platform_arg_arch != _MY_ARCH
     # pylint: disable=line-too-long
-    # for multi-platform builds, we need qemu-user-static:
-    #
-    # docker/podman run --rm --privileged multiarch/qemu-user-static --reset -p yes  # noqa: E501
-    #
-    # (and maybe a reboot)
+    # for multi-platform builds:
+    # docker/podman run --rm --privileged tonistiigi/binfmt --install all # noqa: E501
+    # (and maybe a reboot)?
     #
     # with rootless podman, multi-platform builds might not work
     # sudo podman build --arch=... might do, but let's not
@@ -303,10 +301,9 @@ def check_other_platform(container_command: str, platform_arg: str) -> bool:
                     "run",
                     "--rm",
                     "--privileged",
-                    "multiarch/qemu-user-static",
-                    "reset",
-                    "-p",
-                    "yes",
+                    "tonistiigi/binfmt",
+                    "--install",
+                    "all",
                 ]
             )
         except BaseException:
