@@ -68,14 +68,14 @@ To just include waldiez on your website using CDN, here is a simple example:
         <script type="module" src="https://esm.sh/tsx"></script>
         <script type="text/babel">
           import { createRoot } from "react-dom/client"
-           import { Waldiez } from "@waldiez/react";
-           const root = document.getElementById("root");
-           document.getElementById("loading").style.display = "none";
-           createRoot(root).render(
-                <div id="waldiez-root">
-                    <Waldiez />
-                </div>
-            )
+          import { Waldiez } from "@waldiez/react";
+          const root = document.getElementById("root");
+          document.getElementById("loading").style.display = "none";
+          createRoot(root).render(
+            <div id="waldiez-root">
+              <Waldiez />
+            </div>
+          )
         </script>
     </body>
 </html>
@@ -145,19 +145,6 @@ These properties define the basic identity and metadata of your flow:
   requirements={[]}                   // Dependencies/requirements
   nodes={[]}                          // Initial nodes in the flow
   edges={[]}                          // Initial edges in the flow
-/>
-```
-
-#### Monaco Editor Configuration
-
-Monaco editor is used for code editing in several components (like in a waldiez tool). You can either host the required files locally or use a CDN. The `monacoVsPath` prop allows you to specify the path to the Monaco editor files.
-
-```tsx
-// In development, use local 'vs' folder in public directory
-// In production, set VITE_VS_PATH or use the default CDN
-// this means that http(s)://your.domain.com/vs/loader.js should be accessible.
-<Waldiez
-  monacoVsPath="vs"  // Path to Monaco editor files, or null to use CDN
 />
 ```
 
@@ -255,132 +242,6 @@ Handles file uploads, particularly useful for RAG nodes:
 />
 ```
 
-#### User Input
-
-Display an input prompt to the user and handle their response:
-
-```tsx
-// noinspection JSAnnotator
-
-import { useState } from "react";
-import { WaldiezPreviousMessage, WaldiezUserInput } from "@waldiez/react";
-
-/*
-Some useful types for user input handling:
-
-type WaldiezUserInput = {
-    id: string;
-    type: "input_response";
-    request_id: string;
-    data: {
-        text?: string | null;
-        image?: string | File | null;
-        // to add more types here in the future (audio, document, etc.)
-    };
-};
-type WaldiezMessageBase = {
-    id: string;
-    timestamp: string;
-    type: string; // print/error/input_request...
-    request_id?: string; // if type is input_request
-    password?: boolean;
-};
-type WaldiezContentItem = {
-    type: "text" | "image_url" | string;
-    text?: string;
-    image_url?: {
-        url: string;
-    };
-    [key: string]: any; // Allow for other properties
-};
-type WaldiezMessageData = {
-    content: string | WaldiezContentItem[];
-    sender?: string;
-    recipient?: string;
-    [key: string]: any; // Allow for other metadata
-};
-type WaldiezPreviousMessage = WaldiezMessageBase & {
-    data: string | WaldiezMessageData | { [key: string]: any };
-};
-
-// related props: 
-inputPrompt?: {
-        previousMessages: WaldiezPreviousMessage[];
-        request_id: string;
-        prompt: string;
-        userParticipants: Set<string>;
-    } | null;
-onUserInput?: ((input: WaldiezUserInput) => void) | null;
-
-// if handling the "onRun" event (through WebSockets?), 
-// we could/should keep track the input requests and have the:
-// - 'request_id' to pass with the user's input
-// - 'inputPrompt' to show the prompt to the user
-// - 'previousMessages' to send them to the chat-ui
-// - 'userParticipants' to determine if a message comes from a user, an assistant or the system 
-*/
-function FlowWithInput() {
-    const [messages, setMessages] = useState<{
-        previousMessages: WaldiezPreviousMessage[];
-        request_id: string;
-        prompt: string;
-        userParticipants: Set<string>;
-    } | null>(null);
-
-    const handleUserInput = (input: WaldiezUserInput) => {
-        console.log("User input:", input.data.text || "");
-        console.log("Request ID:", input.request_id);
-        // Process input (send to the backend, etc.)
-        // and close the prompt
-        setInputPrompt(null);
-    };
-
-    // just an example here, this depends on how
-    // we handle the messages when "onRun" is triggered
-    const onNewMessage = (message: Record<string, unknown>) => {
-        // extract the message.type, message.data, message.sender, message.recipient, message.request_id ...
-        const newMessage: WaldiezPreviousMessage = {
-            id: message.id,
-            timestamp: message.timestamp,
-            type: message.type,
-            request_id: message.request_id,
-            data: message.data,
-        };
-        setMessages((prev) => {
-            if (prev) {
-                return {
-                    ...prev,
-                    previousMessages: [...prev.previousMessages, newMessage],
-                };
-            }
-            return {
-                previousMessages: [newMessage],
-                request_id: message.request_id,
-                prompt: "Please provide your input:",
-                userParticipants: new Set([message.sender]),
-            };
-        });
-    };
-
-    // Show a prompt (e.g., in response to some flow action)
-    const showPrompt = () => {
-        setInputPrompt(messages);
-    };
-
-    return (
-        <div>
-            <Waldiez
-                flowId="flow-with-input"
-                storageId="storage-with-input"
-                inputPrompt={inputPrompt}
-                onUserInput={handleUserInput}
-                // ...other props
-            />
-        </div>
-    );
-}
-```
-
 ### Working with Existing Flows
 
 You can import flows from existing Waldiez files:
@@ -434,66 +295,97 @@ type WaldiezFlowProps = ReactFlowJsonObject & {
 //
 type WaldiezProps = WaldiezFlowProps & {
   nodes: Node[];
-  edges: Edge[];
-  viewport?: Viewport;
-  monacoVsPath?: string | null;
-  inputPrompt?: {
-    previousMessages: WaldiezPreviousMessage[];
-    prompt: string;
-    request_id: string;
-    userParticipants: Set<string>;
-  } | null;
-  readOnly?: boolean | null;
-  skipImport?: boolean | null;
-  skipExport?: boolean | null;
-  skipHub?: boolean | null;
-  onUpload?: ((files: File[]) => Promise<string[]>) | null;
-  onChange?: ((flow: string) => void) | null;
-  onRun?: ((flow: string) => void) | null;
-  onUserInput?: ((input: WaldiezUserInput) => void) | null;
-  onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
-  onSave?: ((flow: string) => void) | null;
+    edges: Edge[];
+    viewport?: Viewport;
+    chat?: WaldiezChatConfig;
+    stepByStep?: WaldiezStepByStep;
+    readOnly?: boolean;
+    skipImport?: boolean;
+    skipExport?: boolean;
+    skipHub?: boolean;
+    onUpload?: (files: File[]) => Promise<string[]>;
+    onChange?: (flow: string) => void;
+    onRun?: (flow: string) => void;
+    onStepRun?: (flow: string) => void;
+    onConvert?: (flow: string, to: "py" | "ipynb") => void;
+    onSave?: (flow: string) => void;
 };
 //
 // where:
-type WaldiezUserInput = {
-    id: string;
-    type: "input_response";
+type WaldiezChatConfig = {
+    show: boolean;
+    active: boolean;
+    messages: WaldiezChatMessage[];
+    userParticipants: string[] | WaldiezChatParticipant[];
+    activeRequest?: WaldiezActiveRequest;
+    error?: WaldiezChatError;
+    handlers?: WaldiezChatHandlers;
+    timeline?: WaldiezTimelineData;
+    mediaConfig?: WaldiezMediaConfig;
+};
+type WaldiezStepByStep = {
+    show: boolean;
+    active: boolean;
+    stepMode: boolean;
+    autoContinue: boolean;
+    breakpoints: (string | WaldiezBreakpoint)[];
+    stats?: WaldiezDebugStats["stats"];
+    eventHistory: Array<Record<string, unknown>>;
+    currentEvent?: Record<string, unknown>;
+    help?: WaldiezDebugHelp["help"];
+    lastError?: string;
+    participants?: WaldiezChatParticipant[];
+    timeline?: WaldiezTimelineData;
+    pendingControlInput: {
+        request_id: string;
+        prompt: string;
+    } | null;
+    activeRequest: WaldiezActiveRequest | null;
+    handlers: WaldiezStepHandlers;
+};
+type WaldiezActiveRequest = {
     request_id: string;
-    data: {
-        text?: string | null;
-        image?: string | File | null;
-        // to add more types here in the future (audio?)
-    };
-};
-//
-type WaldiezMessageBase = {
-    id: string;
-    timestamp: string;
-    type: string; // print/error/input_request...
-    request_id?: string; // if type is input_request
+    prompt: string;
     password?: boolean;
+    acceptedMediaTypes?: WaldiezMediaType[];
 };
-// Content structure for structured content (text, images, etc.)
-type WaldiezContentItem = {
-    type: "text" | "image_url" | string;
-    text?: string;
-    image_url?: {
-        url: string;
-    };
-    [key: string]: any; // Allow for other properties
+type WaldiezChatHandlers = {
+    onUserInput?: (input: WaldiezChatUserInput) => void;
+    onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
+    onChatError?: (error: WaldiezChatError) => void;
+    onMessageStreamEvent?: (event: WaldiezStreamEvent) => void;
+    onInterrupt?: () => void;
+    onClose?: () => void;
 };
-//
-type WaldiezMessageData = {
-    content: string | WaldiezContentItem[];
+type WaldiezStepHandlers = {
+    sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => void | Promise<void>;
+    respond: (response: WaldiezChatUserInput) => void | Promise<void>;
+    close?: () => void | Promise<void>;
+};
+type WaldiezChatError = {
+    message: string;
+    code?: string;
+};
+type WaldiezChatMessageCommon = {
+    id: string;
+    timestamp: string | number;
+    type: WaldiezChatMessageType;
     sender?: string;
     recipient?: string;
-    [key: string]: any; // Allow for other metadata
+    request_id?: string;
+} & {
+    [key: string]: any;
 };
-//
-type WaldiezPreviousMessage = WaldiezMessageBase & {
-    data: string | WaldiezMessageData | { [key: string]: any };
+type WaldiezChatContent =
+    | WaldiezMediaContent
+    | WaldiezMediaContent[]
+    | { content: WaldiezMediaContent | WaldiezMediaContent[] | string }
+    | string;
+
+type WaldiezChatMessage = WaldiezChatMessageCommon & {
+    content: WaldiezChatContent;
 };
+// ...
 ```
 
 ## License
