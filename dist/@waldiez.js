@@ -3,7 +3,6 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
-import stripAnsi from "strip-ansi";
 import { nanoid } from "nanoid";
 import JSZip from "jszip";
 import * as React from "react";
@@ -116,6 +115,20 @@ const MESSAGE_CONSTANTS = {
     SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
   }
 };
+function ansiRegex({ onlyFirst = false } = {}) {
+  const ST = "(?:\\u0007|\\u001B\\u005C|\\u009C)";
+  const osc = `(?:\\u001B\\][\\s\\S]*?${ST})`;
+  const csi = "[\\u001B\\u009B][[\\]()#;?]*(?:\\d{1,4}(?:[;:]\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]";
+  const pattern = `${osc}|${csi}`;
+  return new RegExp(pattern, onlyFirst ? void 0 : "g");
+}
+const regex = ansiRegex();
+function stripAnsi(string) {
+  if (typeof string !== "string") {
+    throw new TypeError(`Expected a \`string\`, got \`${typeof string}\``);
+  }
+  return string.replace(regex, "");
+}
 class WaldiezChatUsingAutoReplyHandler {
   canHandle(type) {
     return type === "using_auto_reply";
@@ -11521,11 +11534,11 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
   return /* @__PURE__ */ jsx("div", { className: "structured-content", children });
 };
 const parseTextWithImages = (text, isDarkMode, onImageClick) => {
-  const regex = /\[Image:\s*(.+?)\]/g;
+  const regex2 = /\[Image:\s*(.+?)\]/g;
   const parts = [];
   let lastIdx = 0;
   let match;
-  while (match = regex.exec(text)) {
+  while (match = regex2.exec(text)) {
     const [_placeholder, url] = match;
     const textBefore = text.slice(lastIdx, match.index);
     if (textBefore) {
@@ -11553,7 +11566,7 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
           `img-${match.index}`
         )
       );
-      lastIdx = regex.lastIndex;
+      lastIdx = regex2.lastIndex;
     }
   }
   const remainingText = text.slice(lastIdx);
