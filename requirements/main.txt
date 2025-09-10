@@ -7,7 +7,7 @@ graphviz<=0.21
 httpx<1
 jupytext
 nest_asyncio==1.6.0
-numpy<=2.3.2
+numpy<=2.3.3
 pandas>=2
 parso==0.8.5
 pillow
