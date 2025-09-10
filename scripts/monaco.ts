@@ -22,6 +22,9 @@ const PUBLIC_PATH = path.resolve(__dirname, "..", "public");
 const MONACO_DETAILS_PATH = path.join(PUBLIC_PATH, "monaco.json");
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const FORCE = process.argv.includes("--force");
+// 0.53.0 does not seem to play well with @monaco-editor/react
+// let's check periodically and make it undefined when we are good.
+const PINNED_VERSION: string | undefined = "0.52.2";
 
 interface IPackageDetails {
     version: string;
@@ -40,7 +43,11 @@ const readMonacoDetails = (): IPackageDetails | null => {
         if (Date.now() - lastCheck.getTime() >= ONE_DAY_MS) {
             return null;
         }
-        return data as IPackageDetails;
+        const details = data as IPackageDetails;
+        if (PINNED_VERSION && details.version !== PINNED_VERSION) {
+            return null;
+        }
+        return details;
     } catch {
         return null;
     }
@@ -60,7 +67,10 @@ const fetchPackageDetails = async (): Promise<IPackageDetails> => {
                 res.on("end", () => {
                     try {
                         const json = JSON.parse(data);
-                        const version = json["dist-tags"].latest;
+                        let version = json["dist-tags"].latest;
+                        if (PINNED_VERSION && version !== PINNED_VERSION && PINNED_VERSION in json.versions) {
+                            version = PINNED_VERSION;
+                        }
                         const dist = json.versions[version].dist;
 
                         if (!version || !dist.tarball || !dist.shasum) {

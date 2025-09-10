@@ -2167,12 +2167,12 @@ export declare type WaldiezChatGroupChatRunData = WaldiezChatBaseMessageData & {
  * @param onMessageStreamEvent - Callback for message stream events
  */
 export declare type WaldiezChatHandlers = {
-    onUserInput?: (input: WaldiezChatUserInput) => void;
+    onUserInput?: (input: WaldiezChatUserInput) => void | Promise<void>;
     onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
-    onChatError?: (error: WaldiezChatError) => void;
-    onMessageStreamEvent?: (event: WaldiezStreamEvent) => void;
-    onInterrupt?: () => void;
-    onClose?: () => void;
+    onChatError?: (error: WaldiezChatError) => void | Promise<void>;
+    onMessageStreamEvent?: (event: WaldiezStreamEvent) => void | Promise<void>;
+    onInterrupt?: () => void | Promise<void>;
+    onClose?: () => void | Promise<void>;
 };
 
 /**
@@ -2310,17 +2310,10 @@ export declare class WaldiezChatMessageProcessor {
  * @param system - System message
  * @param input_request - Input request message
  * @param input_response - Input response message
- * @param tool_call - Tool call message
- * @param tool_response - Tool response message
- * @param group_chat_run_chat - Group chat run chat message
- * @param generate_code_execution_reply - Generate code execution reply message
- * @param termination_and_human_reply_no_input - Termination and human reply without input
- * @param using_auto_reply - Using auto reply message
- * @param execute_function - Execute function message
+ * @param run_completion - Run completion indication
  * @param error - Error message
  * @param print - Print message
  * @param text - Text message
- * @param string - Other string types
  */
 export declare type WaldiezChatMessageType = "user" | "agent" | "system" | "input_request" | "input_response" | "run_completion" | "error" | "print" | "text" | (string & {});
 
@@ -4137,6 +4130,8 @@ export declare class WaldiezStepByStepUtils {
  * Step-by-step specific handlers for the UI layer.
  * These are distinct from the chat handlers to keep concerns separated.
  * @param sendControl - Send a control command to the backend.
+ * @param respond - Respond to an input request (in chat, not control)
+ * @param close - Close the panel view.
  */
 export declare type WaldiezStepHandlers = {
     /** Send a control command (e.g., Continue/Run/Step/Quit/Info/Help/Stats...). */

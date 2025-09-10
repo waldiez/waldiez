@@ -237,6 +237,8 @@ export type WaldiezBreakpoint = {
  * Step-by-step specific handlers for the UI layer.
  * These are distinct from the chat handlers to keep concerns separated.
  * @param sendControl - Send a control command to the backend.
+ * @param respond - Respond to an input request (in chat, not control)
+ * @param close - Close the panel view.
  */
 export type WaldiezStepHandlers = {
     /** Send a control command (e.g., Continue/Run/Step/Quit/Info/Help/Stats...). */

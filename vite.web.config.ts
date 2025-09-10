@@ -6,6 +6,7 @@
 // @ts-nocheck
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
+import fs from "fs-extra";
 import path from "path";
 import { defineConfig, normalizePath } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -70,7 +71,32 @@ const getPublicDir = (_command: "build" | "serve"): string => {
     return normalizedResolve("public");
 };
 
-/* additional config for building a static site (and not a library) */
+type CopyTarget = { src: string; dest: string };
+
+/**
+ * Build viteStaticCopy targets safely
+ */
+const safeTargets = (entries: [string, string][]): CopyTarget[] => {
+    return entries
+        .map(([src, dest]) => {
+            const abs = normalizedResolve("public", src);
+            const hasGlob = src.includes("*");
+
+            if (hasGlob) {
+                const dir = abs.replace(/\/\*.*$/, ""); // strip glob part
+                if (!fs.existsSync(dir)) {
+                    return null;
+                }
+            } else if (!fs.existsSync(abs)) {
+                return null;
+            }
+
+            return { src: abs, dest };
+        })
+        .filter((t): t is CopyTarget => t !== null);
+};
+
+/* separate config for building a static site (and not a library) */
 // https://vitejs.dev/config/
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig(({ command }) => {
@@ -109,6 +135,7 @@ export default defineConfig(({ command }) => {
                         }
                     },
                 },
+                // cspell: disable-next-line
                 onwarn(warning, warn) {
                     // Suppress specific "empty chunk" harmless warnings
                     if (warning.code === "EMPTY_BUNDLE") {
@@ -126,44 +153,21 @@ export default defineConfig(({ command }) => {
         plugins: [
             react(),
             transformPublicFiles("web"),
+            // addHeaderToDistFiles(),
             viteStaticCopy({
-                targets: [
-                    {
-                        src: `${normalizedResolve("public", "icons")}/*`,
-                        dest: "icons",
-                    },
-                    {
-                        src: `${normalizedResolve("public", "screenshots")}/*`,
-                        dest: "screenshots",
-                    },
-                    {
-                        src: normalizedResolve("public", "apple-touch-icon.png"),
-                        dest: "",
-                    },
-                    {
-                        src: normalizedResolve("public", "favicon.ico"),
-                        dest: "",
-                    },
-                    {
-                        src: normalizedResolve("public", "robots.txt"),
-                        dest: "",
-                    },
-                    {
-                        src: normalizedResolve("public", "vs"),
-                        dest: "",
-                    },
-                    {
-                        src: normalizedResolve("public", "min-maps"),
-                        dest: "",
-                    },
-                ],
+                targets: safeTargets([
+                    ["icons/*", "icons"],
+                    ["screenshots/*", "screenshots"],
+                    ["apple-touch-icon.png", ""],
+                    ["favicon.ico", ""],
+                    ["icon.icns", ""],
+                    ["robots.txt", ""],
+                    ["browserconfig.xml", ""],
+                    ["site.webmanifest", ""],
+                    ["vs/*", "vs"],
+                    ["min-maps/*", "min-maps"],
+                ]),
             }),
         ],
     };
 });
-
-console.log(`Waldiez web build configuration:
-- Version: ${getVersion()}
-- Base URL: ${getBaseUrl("build")}
-- Public Directory: ${getPublicDir("build")}
-- Hub API URL: ${getHubUrl()}`);

@@ -4154,8 +4154,7 @@ const WaldiezThemeProvider = ({ children, initialDark }) => {
       mutations.forEach((mutation) => {
         if (mutation.type === "attributes" && mutation.attributeName === "class") {
           const bodyClassList = document.body.classList;
-          const externalIsDark = bodyClassList.contains("waldiez-dark") || bodyClassList.contains("dark-theme") || // Add other possible dark class names
-          !bodyClassList.contains("waldiez-light") && !bodyClassList.contains("light-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const externalIsDark = bodyClassList.contains("waldiez-dark") || bodyClassList.contains("dark-theme") || !bodyClassList.contains("waldiez-light") && !bodyClassList.contains("light-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches;
           setIsDark((prev) => {
             if (prev !== externalIsDark) {
               return externalIsDark;
@@ -12088,12 +12087,15 @@ const Editor = (props) => {
       options: {
         wordWrap: "on",
         automaticLayout: true,
-        fontSize: 16,
+        fontSize: 13,
+        fontLigatures: true,
         formatOnType: true,
+        smoothScrolling: true,
         autoClosingBrackets: "always",
         tabSize: 4,
-        minimap: { scale: 1 },
-        renderWhitespace: "none"
+        minimap: { enabled: false },
+        renderWhitespace: "none",
+        cursorBlinking: "smooth"
       },
       onChange
     }

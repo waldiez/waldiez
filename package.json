@@ -11,11 +11,14 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/@waldiez.js",
-            "require": "./dist/@waldiez.js"
+            "require": "./dist/@waldiez.cjs",
+            "default": "./dist/@waldiez.js"
         },
         "./dist/*.css": "./dist/*.css",
         "./dist/*.svg": "./dist/*.svg"
     },
+    "unpkg": "dist/@waldiez.umd.cjs",
+    "jsdelivr": "dist/@waldiez.umd.cjs",
     "homepage": "https://waldiez.io",
     "repository": {
         "type": "git",
@@ -50,6 +53,7 @@
         "build:lib": "tsc -b && vite build",
         "build:web": "bun monaco && bun build:lib --config vite.web.config.ts",
         "build:site": "bun monaco && bun build:web && bun scripts/afterSite.ts",
+        "build:all": "bun build:lib && bun build:site",
         "docs": "typedoc --tsconfig tsconfig.docs.json",
         "examples:build:check": "bun build:lib && node --import=tsx scripts/examples.ts --check",
         "examples:build:update": "bun build:lib && node --import=tsx scripts/examples.ts --update",

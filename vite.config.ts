@@ -70,6 +70,32 @@ const getHubUrl = (): string => {
 const getPublicDir = (command: "build" | "serve"): string | false => {
     return command === "build" ? false : normalizedResolve("public");
 };
+
+type CopyTarget = { src: string; dest: string };
+
+/**
+ * Build viteStaticCopy targets safely
+ */
+const safeTargets = (entries: [string, string][]): CopyTarget[] => {
+    return entries
+        .map(([src, dest]) => {
+            const abs = normalizedResolve("public", src);
+            const hasGlob = src.includes("*");
+
+            if (hasGlob) {
+                const dir = abs.replace(/\/\*.*$/, ""); // strip glob part
+                if (!fs.existsSync(dir)) {
+                    return null;
+                }
+            } else if (!fs.existsSync(abs)) {
+                return null;
+            }
+
+            return { src: abs, dest };
+        })
+        .filter((t): t is CopyTarget => t !== null);
+};
+
 // https://vitejs.dev/config/
 /// <reference types="vitest/config" /
 // noinspection JSUnusedGlobalSymbols,DuplicatedCode
@@ -78,7 +104,7 @@ export default defineConfig(({ command }) => ({
     server: {
         headers: {
             "content-security-policy-report-only":
-                "default-src 'none'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; script-src 'self' https://drag-drop-touch-js.github.io/; font-src 'self'; img-src 'self' data:; connect-src *; report-to /_/csp",
+                "default-src 'none'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; script-src 'self' blob: https://cdn.jsdelivr.net/npm/ https://drag-drop-touch-js.github.io/; font-src 'self'; img-src 'self' data:; connect-src *; report-to /_/csp",
         },
     },
     define: {
@@ -90,9 +116,11 @@ export default defineConfig(({ command }) => ({
         outDir: normalizedResolve("dist"),
         lib: {
             entry: normalizedResolve("src", "waldiez", "index.ts"),
-            name: "@waldiez",
+            name: "Waldiez",
             formats: ["es", "cjs", "umd"],
-            fileName: "@waldiez",
+            fileName: (format: string) =>
+                format === "es" ? "@waldiez.js" : format === "cjs" ? "@waldiez.cjs" : "@waldiez.umd.cjs",
+            cssFileName: "@waldiez",
         },
         minify: "terser" as const,
         rollupOptions: {
@@ -194,46 +222,22 @@ export default defineConfig(({ command }) => ({
         viteStaticCopy({
             targets:
                 command === "build"
-                    ? [
-                          {
-                              src: normalizedResolve("public", "icons", "logo.svg"),
-                              dest: "",
-                          },
-                          {
-                              src: normalizedResolve("public", "icons", "icon.svg"),
-                              dest: "",
-                          },
-                      ]
-                    : [
-                          {
-                              src: `${normalizedResolve("public", "icons")}/*`,
-                              dest: "icons",
-                          },
-                          {
-                              src: `${normalizedResolve("public", "screenshots")}/*`,
-                              dest: "screenshots",
-                          },
-                          {
-                              src: normalizedResolve("public", "apple-touch-icon.png"),
-                              dest: "",
-                          },
-                          {
-                              src: normalizedResolve("public", "favicon.ico"),
-                              dest: "",
-                          },
-                          {
-                              src: normalizedResolve("public", "robots.txt"),
-                              dest: "",
-                          },
-                          {
-                              src: normalizedResolve("public", "vs"),
-                              dest: "",
-                          },
-                          {
-                              src: normalizedResolve("public", "min-maps"),
-                              dest: "",
-                          },
-                      ],
+                    ? safeTargets([
+                          ["icons/logo.svg", ""],
+                          ["icons/icon.svg", ""],
+                      ])
+                    : safeTargets([
+                          ["icons/*", "icons"],
+                          ["screenshots/*", "screenshots"],
+                          ["apple-touch-icon.png", ""],
+                          ["favicon.ico", ""],
+                          ["icon.icns", ""],
+                          ["robots.txt", ""],
+                          ["browserconfig.xml", ""],
+                          ["site.webmanifest", ""],
+                          ["vs/*", "vs"],
+                          ["min-maps/*", "min-maps"],
+                      ]),
         }),
     ],
     test: {
@@ -319,10 +323,3 @@ export default defineConfig(({ command }) => ({
         },
     },
 }));
-
-console.log(`Waldiez build configuration:
-- Version: ${getVersion()}
-- Hub API URL: ${getHubUrl()}`);
-if (getPublicDir("build")) {
-    console.log(`- Public Directory: ${getPublicDir("build")}`);
-}

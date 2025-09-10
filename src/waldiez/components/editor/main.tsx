@@ -25,12 +25,15 @@ export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
                 options={{
                     wordWrap: "on",
                     automaticLayout: true,
-                    fontSize: 16,
+                    fontSize: 13,
+                    fontLigatures: true,
                     formatOnType: true,
+                    smoothScrolling: true,
                     autoClosingBrackets: "always",
                     tabSize: 4,
-                    minimap: { scale: 1 },
+                    minimap: { enabled: false },
                     renderWhitespace: "none",
+                    cursorBlinking: "smooth",
                 }}
                 onChange={onChange}
             />

@@ -56,7 +56,7 @@ export const WaldiezThemeProvider: React.FC<{
                     const bodyClassList = document.body.classList;
                     const externalIsDark =
                         bodyClassList.contains("waldiez-dark") ||
-                        bodyClassList.contains("dark-theme") || // Add other possible dark class names
+                        bodyClassList.contains("dark-theme") ||
                         (!bodyClassList.contains("waldiez-light") &&
                             !bodyClassList.contains("light-theme") &&
                             window.matchMedia("(prefers-color-scheme: dark)").matches);
