@@ -10,6 +10,8 @@
 !browserconfig.xml
 !site.webmanifest
 !favicon.ico
+!favicon-32x32.png
+!favicon-48x48.png
 !robots.txt
 !icon.icns
 **/.DS_Store
