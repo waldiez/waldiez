@@ -71,6 +71,7 @@ body.waldiez-dark .flow-main .sidebar {
 .flow-main .sidebar ul li {
   padding: 10px;
   cursor: pointer;
+  overflow-y: hidden;
 }
 
 .flow-main .sidebar ul li.expandable {
