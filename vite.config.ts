@@ -235,6 +235,7 @@ export default defineConfig(({ command }) => ({
                           ["robots.txt", ""],
                           ["browserconfig.xml", ""],
                           ["site.webmanifest", ""],
+                          // optional? (might not exist)
                           ["vs/*", "vs"],
                           ["min-maps/*", "min-maps"],
                       ]),
