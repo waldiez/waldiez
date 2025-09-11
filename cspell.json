@@ -36,7 +36,9 @@
         "capsys",
         "captainagent",
         "cerebras",
+        "Chatzigeorgiou",
         "choco",
+        "Christos",
         "chromadb",
         "codeeditor",
         "codehilite",
@@ -98,6 +100,7 @@
         "groq",
         "groupchat",
         "hasattr",
+        "hchris",
         "healthz",
         "hnsw",
         "htmlcov",
@@ -106,6 +109,7 @@
         "huggingface",
         "icns",
         "IMAGENAME",
+        "importmap",
         "inlinehilite",
         "Ioannidou",
         "iopub",
@@ -184,6 +188,7 @@
         "Panagiotis",
         "parso",
         "partialize",
+        "pathlib",
         "pathvalidate",
         "pgvector",
         "Pixtral",
@@ -248,6 +253,7 @@
         "timespec",
         "tini",
         "topdown",
+        "Toum",
         "Toumanidis",
         "tracefile",
         "trivago",
@@ -294,6 +300,8 @@
         ".vscode",
         ".venv/**"
     ],
-    "files": ["/**"],
+    "files": [
+        "/**"
+    ],
     "useGitignore": true
 }
