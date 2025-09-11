@@ -8,5 +8,6 @@ site/
 .local/
 public/
 examples/
+cspell.json
 **/coverage/
 **/waldiez_out/
