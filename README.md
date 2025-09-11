@@ -109,7 +109,7 @@ docker run --rm `
 
 ```shell
 CONTAINER_COMMAND=docker # or podman
-# Asuming ./flow.waldiez exists
+# Assuming ./flow.waldiez exists
 HOST_INPUT="$(pwd)/flow.waldiez"
 CONTAINER_INPUT="/home/waldiez/workspace/flow.waldiez"
 HOST_OUTPUT_DIR="$(pwd)/output"
