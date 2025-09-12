@@ -4,15 +4,14 @@
     "license": "Apache-2.0",
     "version": "0.5.10",
     "type": "module",
-    "main": "./dist/@waldiez.cjs",
+    "main": "./dist/@waldiez.umd.cjs",
     "module": "./dist/@waldiez.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/@waldiez.js",
-            "require": "./dist/@waldiez.cjs",
-            "default": "./dist/@waldiez.js"
+            "require": "./dist/@waldiez.umd.cjs"
         },
         "./dist/*.css": "./dist/*.css",
         "./dist/*.svg": "./dist/*.svg"
@@ -55,7 +54,7 @@
         "build:lib": "tsc -b && vite build",
         "build:web": "bun monaco && bun build:lib --config vite.web.config.ts",
         "build:site": "bun monaco && bun build:web && bun scripts/afterSite.ts",
-        "build:all": "bun build:lib && bun build:site",
+        "build:all": "bun build:lib && bun build:web && bun build:site && bun archive",
         "docs": "typedoc --tsconfig tsconfig.docs.json",
         "examples:build:check": "bun build:lib && node --import=tsx scripts/examples.ts --check",
         "examples:build:update": "bun build:lib && node --import=tsx scripts/examples.ts --update",
@@ -97,7 +96,7 @@
         "test:all": "bun test:browser && bun test:coverage",
         "test": "bun test:all && bun lcov:merge",
         "changelog": "bun scripts/changelog.ts",
-        "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun examples:check && bun archive && bun docs"
+        "all": "bun clean && bun forlint && bun schema && bun test:all && bun run build && bun examples:check && bun docs"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx,json,css,md,yml,yaml}": [
@@ -114,62 +113,24 @@
         "@xyflow/react": "^12.8.4",
         "framer-motion": "^12.23.12",
         "jszip": "^3.10.1",
+        "marked": "^16.2.1",
+        "marked-highlight": "^2.2.2",
+        "marked-react": "^3.0.1",
         "microdiff": "^1.5.0",
         "nanoid": "^5.1.5",
         "react-error-boundary": "^6.0.0",
         "react-fast-compare": "^3.2.2",
         "react-hotkeys-hook": "^5.1.0",
         "react-icons": "^5.5.0",
-        "react-markdown": "^10.1.0",
         "react-select": "^5.10.2",
         "recharts": "^3.2.0",
-        "rehype-highlight": "^7.0.2",
-        "remark-gfm": "^4.0.1",
         "strip-ansi": "^7.1.2",
         "zundo": "^2.3.0",
         "zustand": "^5.0.8"
     },
     "peerDependencies": {
         "react": "^18.3.1 || ^19.1.1",
-        "react-dom": "^18.3.1 || ^19.1.1",
-        "@monaco-editor/react": "^4.7.0",
-        "@xyflow/react": "^12.8.4",
-        "react-markdown": "^10.1.0",
-        "react-select": "^5.10.2",
-        "remark-gfm": "^4.0.1",
-        "rehype-highlight": "^7.0.2",
-        "recharts": "^3.2.0",
-        "framer-motion": "^12.23.12",
-        "react-icons": "^5.5.0"
-    },
-    "peerDependenciesMeta": {
-        "@monaco-editor/react": {
-            "optional": false
-        },
-        "@xyflow/react": {
-            "optional": false
-        },
-        "react-markdown": {
-            "optional": false
-        },
-        "remark-gfm": {
-            "optional": false
-        },
-        "rehype-highlight": {
-            "optional": false
-        },
-        "react-select": {
-            "optional": false
-        },
-        "recharts": {
-            "optional": false
-        },
-        "framer-motion": {
-            "optional": false
-        },
-        "react-icons": {
-            "optional": false
-        }
+        "react-dom": "^18.3.1 || ^19.1.1"
     },
     "devDependencies": {
         "@apidevtools/openapi-schemas": "^2.1.0",

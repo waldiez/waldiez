@@ -303,7 +303,7 @@ export const Modal = forwardRef<{ close: () => void; showModal: () => void }, Mo
                     </div>
                 )}
                 {/* Confirmation content or main content */}
-                <div className={`modal-content ${isMinimized ? "hidden" : ""}`}>
+                <div className={`modal-content ${isMinimized ? "hidden" : ""}`} data-flow-id={flowId}>
                     {showConfirmation
                         ? renderConfirmationContent({
                               onSaveAndClose,

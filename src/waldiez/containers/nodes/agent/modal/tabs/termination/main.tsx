@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { Editor, Select, StringList } from "@waldiez/components";
+import { CodeEditor, Select, StringList } from "@waldiez/components";
 import { useWaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination/hooks";
 import type { WaldiezNodeAgentData } from "@waldiez/models/types";
 
@@ -95,7 +95,7 @@ export const WaldiezAgentTermination = memo((props: WaldiezAgentTerminationProps
                 <>
                     <label htmlFor={`termination-method-editor-${id}`}>Termination Method:</label>
                     <div className="margin-top-10" />
-                    <Editor
+                    <CodeEditor
                         data-testid={`termination-method-editor-${id}`}
                         darkMode={isDarkMode}
                         value={defaultTerminationMethodContent}

@@ -4,8 +4,8 @@
  */
 import React from "react";
 
+import { CodeEditor } from "@waldiez/components/codeEditor";
 import { Dict } from "@waldiez/components/dict";
-import { Editor } from "@waldiez/components/editor";
 import { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 import { useMessageInput } from "@waldiez/components/messageInput/hooks";
@@ -148,7 +148,7 @@ export const MessageInput: React.FC<MessageInputProps> = (props: {
                 </div>
             )}
             {current.type === "method" && (
-                <Editor
+                <CodeEditor
                     value={current.content ?? defaultContent}
                     onChange={onMethodContentUpdate}
                     darkMode={darkMode}

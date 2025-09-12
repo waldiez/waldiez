@@ -5,7 +5,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { Editor } from "@waldiez/components/editor";
+import { CodeEditor } from "@waldiez/components/codeEditor";
 
 const onChange = vi.fn();
 
@@ -16,7 +16,7 @@ const renderEditor = (overrides: { [key: string]: any } = {}) => {
         darkMode: false,
         ...overrides,
     };
-    return render(<Editor {...editorProps} />);
+    return render(<CodeEditor {...editorProps} />);
 };
 
 describe("Editor", () => {

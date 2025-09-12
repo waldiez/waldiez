@@ -4,7 +4,7 @@
  */
 import { memo, useMemo } from "react";
 
-import { CheckboxInput, Collapsible, Editor } from "@waldiez/components";
+import { CheckboxInput, CodeEditor, Collapsible } from "@waldiez/components";
 import { useWaldiezAgentRagUserCustomFunctions } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser/tabs/customFunctions/hooks";
 import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
@@ -196,7 +196,7 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                         <>
                             <label htmlFor={`${flowId}-embedding-function-editor`}>Embedding Function:</label>
                             <div className="margin-top-10">
-                                <Editor
+                                <CodeEditor
                                     darkMode={isDarkMode}
                                     value={embeddingFunctionValue}
                                     onChange={onEmbeddingFunctionChange}
@@ -233,7 +233,7 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                                 Custom Token Count Function:
                             </label>
                             <div className="margin-top-10">
-                                <Editor
+                                <CodeEditor
                                     darkMode={isDarkMode}
                                     value={tokenCountFunctionValue}
                                     onChange={onCustomTokenCountFunctionChange}
@@ -270,7 +270,7 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                                 Custom Text Split Function:
                             </label>
                             <div className="margin-top-10">
-                                <Editor
+                                <CodeEditor
                                     darkMode={isDarkMode}
                                     value={textSplitFunctionValue}
                                     onChange={onCustomTextSplitFunctionChange}

@@ -5,10 +5,10 @@
 export { AfterWork } from "@waldiez/components/afterWork";
 export { ChatUI, ImageModal } from "@waldiez/components/chatUI";
 export { CheckboxInput } from "@waldiez/components/checkboxInput";
+export { CodeEditor } from "@waldiez/components/codeEditor";
 export { Collapsible } from "@waldiez/components/collapsible";
 export { Dict } from "@waldiez/components/dict";
 export { DropZone } from "@waldiez/components/dropZone";
-export { Editor } from "@waldiez/components/editor";
 export { ErrorPage } from "@waldiez/components/error";
 export { HandoffAvailability } from "@waldiez/components/handoffAvailability";
 export { HandoffCondition } from "@waldiez/components/handoffCondition";

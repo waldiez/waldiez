@@ -2,53 +2,17 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import rehypeHighlight from "rehype-highlight";
-import remarkGfm from "remark-gfm";
+import hljs from "highlight.js";
+import { Marked } from "marked";
+import { markedHighlight } from "marked-highlight";
+import Renderer from "marked-react";
 
-import React, { useMemo } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { type JSX, useMemo } from "react";
 
 type MarkdownRendererProps = {
     content: any;
     isDarkMode?: boolean;
     onImageClick?: (url: string) => void;
-};
-
-/**
- * Type guard to check if a React node is a valid element with props
- */
-const isReactElementWithProps = (
-    node: React.ReactNode,
-): node is React.ReactElement<{ className?: string }> => {
-    return React.isValidElement(node) && typeof node.props === "object" && node.props !== null;
-};
-
-/**
- * Extract language from className string
- */
-const extractLanguageFromClassName = (className: string): string | null => {
-    const match = /language-(\w+)/.exec(className);
-    return match && match[1] !== "md" ? match[1] || null : null;
-};
-
-/**
- * Find language in React children recursively
- */
-const findLanguageInChildren = (children: React.ReactNode): string | null => {
-    if (isReactElementWithProps(children) && children.props.className) {
-        return extractLanguageFromClassName(children.props.className);
-    }
-
-    if (Array.isArray(children)) {
-        for (const child of children) {
-            const language = findLanguageInChildren(child);
-            if (language) {
-                return language;
-            }
-        }
-    }
-
-    return null;
 };
 
 /**
@@ -66,7 +30,6 @@ const mightBeMarkdown = (text: string): boolean => {
         /#+\s+.*/, // Headers
         />\s+.*/, // Blockquotes
         /\d+\.\s+.*/, // Ordered lists
-
         /[\*\-\+]\s+.*/, // Unordered lists
         /\|(.*?)\|/, // Tables
         /!\[(.*?)\]\((.*?)\)/, // Images
@@ -170,6 +133,7 @@ const extractText = (obj: any): string => {
  */
 export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode = false, onImageClick }) => {
     const strContent = useMemo(() => extractText(content), [content]);
+
     // Skip markdown processing for short texts or if it doesn't look like markdown
     const shouldRenderMarkdown = useMemo(() => {
         return strContent.length > 5 && mightBeMarkdown(strContent);
@@ -180,6 +144,112 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
         return preprocessContent(strContent);
     }, [strContent]);
 
+    // Configure marked with extensions
+    const markedInstance = useMemo(() => {
+        const instance = new Marked(
+            markedHighlight({
+                langPrefix: "hljs language-",
+                highlight(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+                    return hljs.highlight(code, { language }).value;
+                },
+            }),
+        );
+
+        // Configure marked options
+        instance.setOptions({
+            gfm: true,
+            breaks: false,
+            pedantic: false,
+        });
+
+        return instance;
+    }, []);
+
+    // Custom renderer components
+    const renderer = useMemo(
+        () => ({
+            // Custom rendering for links
+            link: (children: React.ReactNode, href?: string) => (
+                <a href={href} target="_blank" rel="noopener noreferrer" className="markdown-link">
+                    {children}
+                </a>
+            ),
+
+            // Custom rendering for images with preview capability
+            image: (alt: string, src?: string) => (
+                <img
+                    src={src}
+                    alt={alt || "Image"}
+                    className="chat-image markdown-image"
+                    onClick={() => src && onImageClick && onImageClick(src)}
+                />
+            ),
+
+            // Heading components
+            heading: (children: React.ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6) => {
+                const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+                return <HeadingTag className={`markdown-h${level}`}>{children}</HeadingTag>;
+            },
+
+            // List components
+            list: (children: React.ReactNode, ordered: boolean) => {
+                const ListTag = ordered ? "ol" : "ul";
+                const className = ordered ? "markdown-ol" : "markdown-ul";
+                return <ListTag className={className}>{children}</ListTag>;
+            },
+
+            listitem: (children: React.ReactNode) => <li className="markdown-li">{children}</li>,
+
+            // Block elements
+            blockquote: (children: React.ReactNode) => (
+                <blockquote className="markdown-blockquote">{children}</blockquote>
+            ),
+
+            // Table components
+            table: (children: React.ReactNode) => <table className="markdown-table">{children}</table>,
+            thead: (children: React.ReactNode) => <thead className="markdown-thead">{children}</thead>,
+            tbody: (children: React.ReactNode) => <tbody className="markdown-tbody">{children}</tbody>,
+            tablerow: (children: React.ReactNode) => <tr className="markdown-tr">{children}</tr>,
+            tablecell: (children: React.ReactNode, header: boolean) => {
+                const CellTag = header ? "th" : "td";
+                const className = header ? "markdown-th" : "markdown-td";
+                return <CellTag className={className}>{children}</CellTag>;
+            },
+
+            // Code components
+            codespan: (children: React.ReactNode) => <code className="markdown-inline-code">{children}</code>,
+
+            code: (children: React.ReactNode, lang?: string) => {
+                if (lang) {
+                    return (
+                        <div className="markdown-code-block-wrapper">
+                            <div className="markdown-code-block-header">
+                                <span className="markdown-code-language">{lang}</span>
+                            </div>
+                            <pre className="markdown-pre">
+                                <code className={`markdown-code hljs language-${lang}`}>{children}</code>
+                            </pre>
+                        </div>
+                    );
+                }
+
+                return (
+                    <pre className="markdown-pre">
+                        <code className="markdown-code">{children}</code>
+                    </pre>
+                );
+            },
+
+            // Paragraph
+            paragraph: (children: React.ReactNode) => <p className="markdown-p">{children}</p>,
+
+            // Horizontal rule
+            hr: () => <hr className="markdown-hr" />,
+        }),
+        [onImageClick],
+    );
+
     if (!shouldRenderMarkdown) {
         return <span>{strContent}</span>;
     }
@@ -187,180 +257,9 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
     // CSS class to handle dark/light mode
     const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
 
-    // noinspection JSUnusedGlobalSymbols
     return (
         <div className={`markdown-renderer ${themeClass}`}>
-            <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight]}
-                components={{
-                    // Custom rendering for links
-                    a: ({ children, ...props }) => (
-                        <a {...props} target="_blank" rel="noopener noreferrer" className="markdown-link">
-                            {children}
-                        </a>
-                    ),
-
-                    // Custom rendering for images with preview capability
-                    img: ({ src, alt, ...props }) => (
-                        <img
-                            src={src}
-                            alt={alt || "Image"}
-                            className="chat-image markdown-image"
-                            onClick={() => src && onImageClick && onImageClick(src)}
-                            {...props}
-                        />
-                    ),
-
-                    // Heading components
-                    h1: ({ children, ...props }) => (
-                        <h1 className="markdown-h1" {...props}>
-                            {children}
-                        </h1>
-                    ),
-                    h2: ({ children, ...props }) => (
-                        <h2 className="markdown-h2" {...props}>
-                            {children}
-                        </h2>
-                    ),
-                    h3: ({ children, ...props }) => (
-                        <h3 className="markdown-h3" {...props}>
-                            {children}
-                        </h3>
-                    ),
-                    h4: ({ children, ...props }) => (
-                        <h4 className="markdown-h4" {...props}>
-                            {children}
-                        </h4>
-                    ),
-                    h5: ({ children, ...props }) => (
-                        <h5 className="markdown-h5" {...props}>
-                            {children}
-                        </h5>
-                    ),
-                    h6: ({ children, ...props }) => (
-                        <h6 className="markdown-h6" {...props}>
-                            {children}
-                        </h6>
-                    ),
-
-                    // List items
-                    ul: ({ children, ...props }) => (
-                        <ul className="markdown-ul" {...props}>
-                            {children}
-                        </ul>
-                    ),
-                    ol: ({ children, ...props }) => (
-                        <ol className="markdown-ol" {...props}>
-                            {children}
-                        </ol>
-                    ),
-                    li: ({ children, ...props }) => (
-                        <li className="markdown-li" {...props}>
-                            {children}
-                        </li>
-                    ),
-
-                    // Block elements
-                    blockquote: ({ children, ...props }) => (
-                        <blockquote className="markdown-blockquote" {...props}>
-                            {children}
-                        </blockquote>
-                    ),
-
-                    // Table components
-                    table: ({ children, ...props }) => (
-                        <table className="markdown-table" {...props}>
-                            {children}
-                        </table>
-                    ),
-                    thead: ({ children, ...props }) => (
-                        <thead className="markdown-thead" {...props}>
-                            {children}
-                        </thead>
-                    ),
-                    tbody: ({ children, ...props }) => (
-                        <tbody className="markdown-tbody" {...props}>
-                            {children}
-                        </tbody>
-                    ),
-                    tr: ({ children, ...props }) => (
-                        <tr className="markdown-tr" {...props}>
-                            {children}
-                        </tr>
-                    ),
-                    th: ({ children, ...props }) => (
-                        <th className="markdown-th" {...props}>
-                            {children}
-                        </th>
-                    ),
-                    td: ({ children, ...props }) => (
-                        <td className="markdown-td" {...props}>
-                            {children}
-                        </td>
-                    ),
-
-                    // Custom code block rendering
-                    code: ({ children, className, ...props }) => {
-                        // Check if this is a block code (inside a pre) or inline code
-                        const isInline = !className;
-
-                        if (isInline) {
-                            return (
-                                <code className="markdown-inline-code" {...props}>
-                                    {children}
-                                </code>
-                            );
-                        }
-
-                        // For code blocks, just return the code and let the pre component handle the wrapper
-                        return (
-                            <code className={`markdown-code ${className || ""}`} {...props}>
-                                {children}
-                            </code>
-                        );
-                    },
-
-                    // Pre tag wrapper for code blocks
-                    pre: ({ children, ...props }) => {
-                        // Extract language information from the code block if available
-                        const language = findLanguageInChildren(children);
-
-                        // If we found a language, show it in the header
-                        if (language) {
-                            return (
-                                <div className="markdown-code-block-wrapper">
-                                    <div className="markdown-code-block-header">
-                                        <span className="markdown-code-language">{language}</span>
-                                    </div>
-                                    <pre className="markdown-pre" {...props}>
-                                        {children}
-                                    </pre>
-                                </div>
-                            );
-                        }
-
-                        // Otherwise, just render a normal pre block
-                        return (
-                            <pre className="markdown-pre" {...props}>
-                                {children}
-                            </pre>
-                        );
-                    },
-
-                    // Paragraph
-                    p: ({ children, ...props }) => (
-                        <p className="markdown-p" {...props}>
-                            {children}
-                        </p>
-                    ),
-
-                    // Horizontal rule
-                    hr: props => <hr className="markdown-hr" {...props} />,
-                }}
-            >
-                {processedContent}
-            </ReactMarkdown>
+            <Renderer value={processedContent} gfm breaks renderer={renderer} instance={markedInstance} />
         </div>
     );
 };

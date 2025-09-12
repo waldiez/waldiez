@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { Fragment, type ReactNode } from "react";
 
 import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
 import { Markdown } from "@waldiez/components/markdown";
@@ -69,7 +69,7 @@ const parseStructuredContent = (
                     `${path}/${idx}`,
                 );
                 if (nested) {
-                    return <React.Fragment key={keyOf(path, idx, "nested")}>{nested}</React.Fragment>;
+                    return <Fragment key={keyOf(path, idx, "nested")}>{nested}</Fragment>;
                 }
             }
 
@@ -89,7 +89,7 @@ const parseStructuredContent = (
 const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (url: string) => void) => {
     // noinspection RegExpRedundantEscape
     const regex = /\[Image:\s*(.+?)\]/g;
-    const parts: React.ReactNode[] = [];
+    const parts: ReactNode[] = [];
     let lastIdx = 0;
     let match;
 
@@ -133,7 +133,7 @@ export const parseMessageContent = (
     data: any,
     isDarkMode: boolean,
     onImageClick: (url: string) => void,
-): React.ReactNode => {
+): ReactNode => {
     if (typeof data === "string") {
         try {
             const parsed = JSON.parse(data);

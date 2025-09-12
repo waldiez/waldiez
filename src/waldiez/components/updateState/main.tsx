@@ -5,7 +5,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
-import { Editor } from "@waldiez/components/editor";
+import { CodeEditor } from "@waldiez/components/codeEditor";
 import { Select, type SingleValue } from "@waldiez/components/select";
 import { TextareaInput } from "@waldiez/components/textareaInput";
 import type { WaldiezAgentUpdateSystemMessageType, WaldiezNodeAgentData } from "@waldiez/models/types";
@@ -234,7 +234,7 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
                                 id="update-system-message-string"
                             />
                         ) : (
-                            <Editor
+                            <CodeEditor
                                 value={callableContent}
                                 onChange={onUpdateSystemMessageCallableChange}
                                 darkMode={darkMode}

@@ -4,7 +4,7 @@
  */
 import React, { memo, useCallback, useMemo } from "react";
 
-import { Editor, Select, type SingleValue, TextInput, TextareaInput } from "@waldiez/components";
+import { CodeEditor, Select, type SingleValue, TextInput, TextareaInput } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import { PREDEFINED_TOOL_INSTRUCTIONS, TOOL_TYPE_OPTIONS } from "@waldiez/containers/nodes/tool/utils";
@@ -154,7 +154,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                 <div>
                     <label htmlFor={contentEditorId}>Content:</label>
                     <div className="margin-top-10" />
-                    <Editor
+                    <CodeEditor
                         value={data.content || ""}
                         onChange={onToolContentChange}
                         darkMode={darkMode}

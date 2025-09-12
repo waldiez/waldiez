@@ -16,6 +16,7 @@ const { create: actualCreate, createStore: actualCreateStore } =
 // a variable to hold reset functions for all stores declared in the app
 export const storeResetFns = new Set<() => void>();
 
+// cspell: disable-next-line
 const createUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
     const store = actualCreate(stateCreator);
     const initialState = store.getInitialState();
@@ -29,9 +30,11 @@ const createUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator<T>) 
 // noinspection JSUnusedGlobalSymbols
 export const create = (<T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
     // to support curried version of create
+    // cspell: disable-next-line
     return typeof stateCreator === "function" ? createUncurried(stateCreator) : createUncurried;
 }) as typeof ZustandExportedTypes.create;
 
+// cspell: disable-next-line
 const createStoreUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
     const store = actualCreateStore(stateCreator);
     const initialState = store.getInitialState();
@@ -45,6 +48,7 @@ const createStoreUncurried = <T>(stateCreator: ZustandExportedTypes.StateCreator
 // noinspection JSUnusedGlobalSymbols
 export const createStore = (<T>(stateCreator: ZustandExportedTypes.StateCreator<T>) => {
     // to support curried version of createStore
+    // cspell: disable-next-line
     return typeof stateCreator === "function" ? createStoreUncurried(stateCreator) : createStoreUncurried;
 }) as typeof ZustandExportedTypes.createStore;
 

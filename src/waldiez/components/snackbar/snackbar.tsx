@@ -17,21 +17,36 @@ export const Snackbar: React.FC<SnackbarItem & { onClose: () => void }> = ({
 }) => {
     const [container, setContainer] = useState<HTMLElement | null>(null);
 
-    const resolveSnackbarContainer = (flowId: string | undefined): HTMLElement => {
-        const root =
-            document.getElementById(`rf-root-${flowId}`) ??
-            document.getElementById(`${flowId}-modal`) ??
-            document.body;
+    const resolveSnackbarContainer = (flowId?: string): HTMLElement => {
+        const isVisible = (el: HTMLElement) => {
+            if (el.classList.contains("hidden")) {
+                return false;
+            }
+            const r = el.getBoundingClientRect();
+            return r.width > 0 && r.height > 0;
+        };
 
-        const modalContent = document.querySelector(
-            `#${flowId}-modal .modal .modal-content`,
-        ) as HTMLElement | null;
-
-        if (modalContent && modalContent.getBoundingClientRect().height > 0) {
-            return modalContent;
+        // Look inside the modal portal root first
+        const modalRoot = document.getElementById("modal-root") || document.body;
+        if (flowId && modalRoot) {
+            const nodes = Array.from(
+                modalRoot.querySelectorAll<HTMLElement>(".modal .modal-content[data-flow-id]"),
+            );
+            // find the last visible content matching this flowId
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                const el = nodes[i];
+                if (el && el.dataset?.flowId === flowId && isVisible(el)) {
+                    return el;
+                }
+            }
         }
 
-        return root;
+        // Fallbacks identical to your original
+        return (
+            document.getElementById(`rf-root-${flowId}`) ??
+            document.getElementById(`${flowId}-modal`) ??
+            document.body
+        );
     };
 
     useLayoutEffect(() => {

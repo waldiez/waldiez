@@ -18,7 +18,7 @@ const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 beforeEach(() => {
-    // Cleanup any snackbars in DOM before each test
+    // Cleanup any snackbar items in DOM before each test
     document.body.innerHTML = "";
 });
 
@@ -128,7 +128,7 @@ describe("Snackbar System", () => {
         vi.useRealTimers();
     });
 
-    it("queues multiple snackbars and shows them in order", async () => {
+    it("queues multiple snackbar elements and shows them in order", async () => {
         vi.useFakeTimers();
         render(
             <Wrapper>
@@ -238,6 +238,7 @@ describe("Snackbar System", () => {
 
         const modalContent = document.createElement("div");
         modalContent.className = "modal-content";
+        modalContent.setAttribute("data-flow-id", FLOW_ID);
 
         modal.appendChild(modalContent);
         modalRoot.appendChild(modal);
@@ -314,6 +315,7 @@ describe("Snackbar System", () => {
             expect(screen.getByTestId("snackbar-details")).toHaveTextContent('{ "foo": "bar", "val": 2 }');
         });
 
+        // cspell: disable-next-line
         it("renders fallback for non-stringifiable detail", () => {
             const circular: any = {};
             circular.me = circular;

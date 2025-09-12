@@ -4,7 +4,7 @@
  */
 import React from "react";
 
-import MonacoEditor from "@monaco-editor/react";
+import { Editor } from "@monaco-editor/react";
 
 type EditorProps = {
     value: string;
@@ -12,12 +12,12 @@ type EditorProps = {
     darkMode: boolean;
 };
 
-export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
+export const CodeEditor: React.FC<EditorProps> = (props: EditorProps) => {
     const { value, onChange, darkMode } = props;
     const theme = darkMode ? "vs-dark" : "vs-light";
     return (
         <div className="code-editor">
-            <MonacoEditor
+            <Editor
                 defaultLanguage="python"
                 theme={theme}
                 value={value}
@@ -41,4 +41,4 @@ export const Editor: React.FC<EditorProps> = (props: EditorProps) => {
     );
 };
 
-Editor.displayName = "Editor";
+CodeEditor.displayName = "CodeEditor";
