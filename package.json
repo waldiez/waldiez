@@ -112,6 +112,7 @@
         "@radix-ui/react-tooltip": "^1.2.8",
         "@xyflow/react": "^12.8.4",
         "framer-motion": "^12.23.12",
+        "highlight.js": "^11.11.1",
         "jszip": "^3.10.1",
         "marked": "^16.2.1",
         "marked-highlight": "^2.2.2",
