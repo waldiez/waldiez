@@ -32,6 +32,7 @@
         "baselevel",
         "beautifulsoup",
         "blendsearch",
+        "Blockquotes",
         "caplog",
         "capsys",
         "captainagent",
